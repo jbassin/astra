@@ -1,0 +1,32 @@
+[project]
+name = "astra-smoke-substrate"
+version = "0.0.0"
+description = "Phase-1 exit-gate smoke: config+SOPS → OTel trace → litellm→Claude with cost, + being parity."
+requires-python = ">=3.12"
+dependencies = [
+    "astra-config",
+    "astra-observe",
+    "astra-llm",
+    "astra-ontology",
+    "astra-ontology-config",
+    "astra-ontology-being",
+    "pydantic>=2",
+]
+
+[project.scripts]
+astra-smoke-substrate = "astra_smoke_substrate:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astra_smoke_substrate"]
+
+[tool.uv.sources]
+astra-config = { workspace = true }
+astra-observe = { workspace = true }
+astra-llm = { workspace = true }
+astra-ontology = { workspace = true }
+astra-ontology-config = { workspace = true }
+astra-ontology-being = { workspace = true }
