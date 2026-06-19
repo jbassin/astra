@@ -1,0 +1,123 @@
+{
+  "frontmatter": {
+    "aliases": [],
+    "extra": {},
+    "tags": []
+  },
+  "mode": "mechanical",
+  "nodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "Encounter: The Drowned Vault"
+            }
+          ],
+          "depth": 1,
+          "type": "heading"
+        }
+      ],
+      "type": "prose"
+    },
+    {
+      "attributes": {},
+      "columns": [
+        [
+          {
+            "attributes": {
+              "level": "Creature 1"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "First card, guarding "
+                  },
+                  {
+                    "target": "The Vault",
+                    "type": "crossref"
+                  },
+                  {
+                    "type": "text",
+                    "value": "."
+                  }
+                ],
+                "type": "paragraph"
+              }
+            ],
+            "kind": "statblock",
+            "label": "Goblin A",
+            "labelNodes": [
+              {
+                "type": "text",
+                "value": "Goblin A"
+              }
+            ],
+            "type": "block"
+          }
+        ],
+        [
+          {
+            "children": [
+              {
+                "children": [
+                  {
+                    "type": "text",
+                    "value": "Right brief"
+                  }
+                ],
+                "depth": 2,
+                "type": "heading"
+              },
+              {
+                "children": [
+                  {
+                    "checked": null,
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "two guards"
+                          }
+                        ],
+                        "type": "paragraph"
+                      }
+                    ],
+                    "spread": false,
+                    "type": "listItem"
+                  },
+                  {
+                    "checked": null,
+                    "children": [
+                      {
+                        "children": [
+                          {
+                            "type": "text",
+                            "value": "one cogitator-lock"
+                          }
+                        ],
+                        "type": "paragraph"
+                      }
+                    ],
+                    "spread": false,
+                    "type": "listItem"
+                  }
+                ],
+                "ordered": false,
+                "spread": false,
+                "start": null,
+                "type": "list"
+              }
+            ],
+            "type": "prose"
+          }
+        ]
+      ],
+      "type": "columns"
+    }
+  ]
+}

@@ -1,0 +1,51 @@
+{
+  "crossrefs": [
+    {
+      "alias": null,
+      "heading": null,
+      "target": "Plain"
+    },
+    {
+      "alias": "an alias",
+      "heading": null,
+      "target": "Target"
+    },
+    {
+      "alias": null,
+      "heading": "heading",
+      "target": "Page"
+    },
+    {
+      "alias": "aliased heading",
+      "heading": "heading",
+      "target": "Page"
+    },
+    {
+      "alias": "Calaria",
+      "heading": null,
+      "target": "Geography/Calaria/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "target": "Færrin"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "target": "A"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "target": "B"
+    }
+  ],
+  "frontmatter": {
+    "aliases": [],
+    "extra": {},
+    "img": null,
+    "tags": [],
+    "title": null
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "frontmatter": {
+    "aliases": [],
+    "extra": {},
+    "tags": []
+  },
+  "mode": "mechanical",
+  "nodes": [
+    {
+      "attributes": {
+        "level": "Creature 4",
+        "traits": "undead,incorporeal,fire"
+      },
+      "children": [
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "A coil of burning incense-smoke that remembers being a priest of "
+            },
+            {
+              "target": "Belvedere",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": "."
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "Actions"
+            }
+          ],
+          "depth": 2,
+          "type": "heading"
+        },
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "Smoke Lash "
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "type": "text",
+                  "value": "1"
+                }
+              ],
+              "name": "action",
+              "type": "textDirective"
+            },
+            {
+              "type": "text",
+              "value": " — reach 10 ft, 2d6 fire.\nDissipate "
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "type": "text",
+                  "value": "reaction"
+                }
+              ],
+              "name": "action",
+              "type": "textDirective"
+            },
+            {
+              "type": "text",
+              "value": " — when hit by wind, it flickers away."
+            }
+          ],
+          "type": "paragraph"
+        }
+      ],
+      "kind": "statblock",
+      "label": "Censer-Wraith",
+      "labelNodes": [
+        {
+          "type": "text",
+          "value": "Censer-Wraith"
+        }
+      ],
+      "type": "block"
+    }
+  ]
+}

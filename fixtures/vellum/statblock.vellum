@@ -1,0 +1,7 @@
+:::statblock[Censer-Wraith]{level="Creature 4" traits="undead,incorporeal,fire"}
+A coil of burning incense-smoke that remembers being a priest of [[Belvedere]].
+
+## Actions
+Smoke Lash :action[1] — reach 10 ft, 2d6 fire.
+Dissipate :action[reaction] — when hit by wind, it flickers away.
+:::

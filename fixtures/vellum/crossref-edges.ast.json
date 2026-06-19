@@ -1,0 +1,106 @@
+{
+  "frontmatter": {
+    "aliases": [],
+    "extra": {},
+    "tags": []
+  },
+  "mode": "mechanical",
+  "nodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "All four forms: "
+            },
+            {
+              "target": "Plain",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": ", "
+            },
+            {
+              "alias": "an alias",
+              "target": "Target",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": ", "
+            },
+            {
+              "heading": "heading",
+              "target": "Page",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": ", and\n"
+            },
+            {
+              "alias": "aliased heading",
+              "heading": "heading",
+              "target": "Page",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": ". A pathed target "
+            },
+            {
+              "alias": "Calaria",
+              "target": "Geography/Calaria/index",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": "\nand a non-ascii one "
+            },
+            {
+              "target": "Færrin",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": ". Two adjacent "
+            },
+            {
+              "target": "A",
+              "type": "crossref"
+            },
+            {
+              "target": "B",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": " refs."
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "A literal "
+            },
+            {
+              "type": "inlineCode",
+              "value": "[[NotARef]]"
+            },
+            {
+              "type": "text",
+              "value": " inside inline code is left alone, and so is a lone [[ bracket."
+            }
+          ],
+          "type": "paragraph"
+        }
+      ],
+      "type": "prose"
+    }
+  ]
+}

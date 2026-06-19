@@ -1,0 +1,91 @@
+{
+  "frontmatter": {
+    "aliases": [
+      "The Enclave"
+    ],
+    "extra": {},
+    "tags": [
+      "Watcher",
+      "Religious"
+    ],
+    "title": "Belvedere"
+  },
+  "mode": "mechanical",
+  "nodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "Belvedere is one of the great old "
+            },
+            {
+              "alias": "Orgs",
+              "target": "Org/index",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": ", founded soon after the Dark\nAges ended and Aurelia brought the Gods' graces to "
+            },
+            {
+              "target": "Færrin",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": "."
+            }
+          ],
+          "type": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "What Have You Become?"
+            }
+          ],
+          "depth": 3,
+          "type": "heading"
+        },
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "The "
+            },
+            {
+              "alias": "Watcher",
+              "target": "Watcher With 1,000 Eyes",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": " gave the first Provost a mandate to chronicle\nthe planet. Few places concentrate "
+            },
+            {
+              "target": "Fanes",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": " and "
+            },
+            {
+              "target": "Hearts",
+              "type": "crossref"
+            },
+            {
+              "type": "text",
+              "value": " as densely."
+            }
+          ],
+          "type": "paragraph"
+        }
+      ],
+      "type": "prose"
+    }
+  ]
+}

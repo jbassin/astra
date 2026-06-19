@@ -1,0 +1,43 @@
+{
+  "crossrefs": [
+    {
+      "alias": null,
+      "heading": null,
+      "target": "Hierophant"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "target": "Færrin"
+    },
+    {
+      "alias": "the Aeon",
+      "heading": "harrow",
+      "target": "Lore"
+    }
+  ],
+  "frontmatter": {
+    "aliases": [
+      "The First Hierophant",
+      "The Æon"
+    ],
+    "extra": {
+      "created": "2024-01-15",
+      "draft": false,
+      "house": {
+        "card": "The Aeon",
+        "numbers": [
+          20,
+          7
+        ]
+      },
+      "updated": "2026-06-19",
+      "weight": 3
+    },
+    "img": null,
+    "tags": [
+      "Watcher"
+    ],
+    "title": "Aurelia I"
+  }
+}

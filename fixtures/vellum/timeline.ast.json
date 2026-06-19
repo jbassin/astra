@@ -1,0 +1,86 @@
+{
+  "frontmatter": {
+    "aliases": [],
+    "extra": {},
+    "tags": []
+  },
+  "mode": "mechanical",
+  "nodes": [
+    {
+      "entries": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The world is mundane. No magic permeates the air."
+                }
+              ],
+              "type": "paragraph"
+            }
+          ],
+          "marker": "Prehistory"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "text",
+                  "value": "A crack appears in the firmament, and magic floods into "
+                },
+                {
+                  "target": "Færrin",
+                  "type": "crossref"
+                },
+                {
+                  "type": "text",
+                  "value": "."
+                }
+              ],
+              "type": "paragraph"
+            }
+          ],
+          "marker": "Before 0ag"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "text",
+                  "value": "The "
+                },
+                {
+                  "target": "Iridescent Host",
+                  "type": "crossref"
+                },
+                {
+                  "type": "text",
+                  "value": " instructs the Hierophant Aurelia to widen the crack."
+                }
+              ],
+              "type": "paragraph"
+            }
+          ],
+          "marker": "0ag"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "type": "text",
+                  "value": "An age with no marker still becomes an entry."
+                }
+              ],
+              "type": "paragraph"
+            }
+          ]
+        }
+      ],
+      "type": "timeline"
+    }
+  ]
+}

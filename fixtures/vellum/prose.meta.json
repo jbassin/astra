@@ -1,0 +1,41 @@
+{
+  "crossrefs": [
+    {
+      "alias": "Orgs",
+      "heading": null,
+      "target": "Org/index"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "target": "Færrin"
+    },
+    {
+      "alias": "Watcher",
+      "heading": null,
+      "target": "Watcher With 1,000 Eyes"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "target": "Fanes"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "target": "Hearts"
+    }
+  ],
+  "frontmatter": {
+    "aliases": [
+      "The Enclave"
+    ],
+    "extra": {},
+    "img": null,
+    "tags": [
+      "Watcher",
+      "Religious"
+    ],
+    "title": "Belvedere"
+  }
+}

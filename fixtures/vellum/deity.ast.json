@@ -1,0 +1,84 @@
+{
+  "frontmatter": {
+    "aliases": [],
+    "extra": {},
+    "tags": [
+      "Outer God"
+    ],
+    "title": "The Green Father"
+  },
+  "mode": "mechanical",
+  "nodes": [
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "type": "text",
+              "value": "The Green Father is an Outer God of decay and rebirth."
+            }
+          ],
+          "type": "paragraph"
+        }
+      ],
+      "type": "prose"
+    },
+    {
+      "items": [
+        {
+          "term": "Category",
+          "value": [
+            {
+              "type": "text",
+              "value": "Outer God"
+            }
+          ]
+        },
+        {
+          "term": "Edicts",
+          "value": [
+            {
+              "type": "text",
+              "value": "Abide by the cycles of life, aid childbirth"
+            }
+          ]
+        },
+        {
+          "term": "Divine Raiment",
+          "value": [
+            {
+              "type": "text",
+              "value": "Deep red, fiery"
+            }
+          ]
+        },
+        {
+          "term": "Domains",
+          "value": [
+            {
+              "children": [
+                {
+                  "type": "text",
+                  "value": "air"
+                }
+              ],
+              "title": null,
+              "type": "link",
+              "url": "https://2e.aonprd.com/Domains.aspx?ID=1"
+            },
+            {
+              "type": "text",
+              "value": ", decay, and the "
+            },
+            {
+              "alias": "firmament",
+              "target": "Firmament",
+              "type": "crossref"
+            }
+          ]
+        }
+      ],
+      "type": "fields"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+All four forms: [[Plain]], [[Target|an alias]], [[Page#heading]], and
+[[Page#heading|aliased heading]]. A pathed target [[Geography/Calaria/index|Calaria]]
+and a non-ascii one [[Færrin]]. Two adjacent [[A]][[B]] refs.
+
+A literal `[[NotARef]]` inside inline code is left alone, and so is a lone [[ bracket.
