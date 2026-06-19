@@ -12,6 +12,19 @@ astra uses **plain git** on GitHub — no jujutsu. (faerrin used jj; astra delib
 messages follow **Conventional Commits** (`type(scope): subject`); CI lints them with commitlint. There
 are **no local hooks** — format/lint/typecheck/test run in CI (GitHub Actions), not pre-commit.
 
+## Memory + thoughts (project-local — astra owns its own)
+
+Project memory and planning docs live **in this repo**, not in faerrin and not in the harness default
+`~/.claude/…`. The memory index is auto-loaded each session via this import:
+
+@thoughts/shared/memory/MEMORY.md
+
+- **Writing memory:** create/update one-fact-per-file memories under `thoughts/shared/memory/` (harness
+  format — frontmatter + body), and add a one-line pointer in `MEMORY.md`. Do **not** write astra memory
+  to the faerrin repo or to `~/.claude`.
+- `thoughts/` is also the home for the migration **plans + specs** (`thoughts/astra/{plans,specs}`) and
+  **research** (`thoughts/shared/research/`). astra is the single canonical home for all of these.
+
 ## Two toolchains, disjoint workspaces
 
 - **Python (uv):** virtual workspace at the root `pyproject.toml`; members `apps/*`, `libs/py/*`,

@@ -1,0 +1,3 @@
+- [astra migration research](astra-migration-research.md) — the spine: re-architecting faerrin → this astra repo (Dagster+Compose/SigNoz/litellm+dspy/KDL+SOPS/uv+bun/TanStack); ledger A–H decided; **Phases 0 + 1 COMPLETE + Phase-2 vellum-lang (0004) COMPLETE**; next = Phase 2 gothic (0003); research at thoughts/shared/research/2026-06-18-astra-migration-discovery.md, plans/specs at thoughts/astra/
+- [SigNoz MCP](signoz-mcp.md) — prefer the `signoz_*` MCP tools for ALL astra observability queries (verified working vs the live SigNoz; not curl/clickhouse)
+- [no CI monitoring](no-ci-monitoring.md) — after pushing astra to origin/main, don't watch the GHA run to completion; reproduce CI lanes locally first, confirm push + one status check
