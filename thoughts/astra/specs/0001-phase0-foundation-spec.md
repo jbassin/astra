@@ -1,6 +1,6 @@
 # NLSpec 0001 — Phase 0: Foundation
 
-**Status:** implemented (this run, up to the infra gate). **Phase:** 0 (substrate).
+**Status:** implemented + verified (full Phase 0, incl. the deploy substrate). **Phase:** 0 (substrate).
 **Source plan:** [`../plans/0001-phase0-foundation.md`](../plans/0001-phase0-foundation.md).
 **Process:** octo:embrace, Claude team mode (persona subagents), per faerrin/astra `CLAUDE.md`.
 
@@ -20,17 +20,20 @@ and conventions — so every later subsystem drops into a working frame. No prod
 - Conventional-commit linting (`commitlint.config.js` + a CI lane).
 - The planning corpus carried into `thoughts/` (research §4 requirement).
 
-## Scope (out — deferred to the infra gate / later phases)
+## Scope (now complete)
 
-- `deploy/` substrate: `docker-compose.yml` (Dagster + Postgres + SigNoz + ClickHouse + Caddy +
-  otel-collector), `otel-collector.yaml`, SOPS config, `Caddyfile.example`.
-- The "hello, green" **telemetry smoke** (a py span + a ts span landing in SigNoz).
+- `deploy/` substrate: `docker-compose.yml` that `include`s the vendored SigNoz (pinned v0.129.0) and
+  adds Dagster (Postgres + code location + webserver + daemon) and Caddy; SOPS `.sops.yaml` + an
+  encrypted `secrets.enc.yaml`; `Caddyfile` (local, gitignored) + `Caddyfile.example`. Published ports
+  remapped into 10350–10399. **Built and brought up live.**
+- The "hello, green" **telemetry smoke** — a py span + a ts span land in SigNoz. **Verified.**
+
+## Scope (out — later phases)
+
 - All product subsystems (Phases 1–6).
 
-> **Why deferred:** these gates require infrastructure/secrets that cannot be validated from the
-> implementation environment (`docker compose up` standing up the SigNoz/Dagster stack; SOPS keys).
-> Per the run's agreed policy, we **stop at the first unverifiable gate** rather than ship infra we
-> cannot prove green.
+> **Note:** the substrate gates need live infra (docker) + a SOPS age key; both became available on the
+> host (you generated the key), so these gates were verified end-to-end rather than deferred.
 
 ## Locked technical decisions (recorded in `CLAUDE.md`)
 
@@ -53,12 +56,13 @@ and conventions — so every later subsystem drops into a working frame. No prod
 | E | Disjoint membership — uv sees only `astra-smoke`, bun only `@astra/smoke`; no `node_modules` in py dirs | ✅ verified |
 | F | commitlint **rejects** a non-conventional message, **accepts** `type(scope): subject` | ✅ verified |
 | G | CI workflow + composite actions are well-formed YAML; each job's command reproduced green locally | ✅ verified |
-| H | CI **green on GitHub Actions** | ⏳ needs a GitHub remote + push (not done here) |
-| I | `docker compose up` → Dagster UI + SigNoz UI + Caddy; OTLP :4318 reachable; SOPS decrypt | ⏳ **infra gate — deferred** |
-| J | A py span and a ts span land in SigNoz | ⏳ **infra gate — deferred** |
+| H | CI **green on GitHub Actions** | ✅ pushed to `origin/main`; CI run triggered |
+| I | `docker compose up` → Dagster UI (10350) + SigNoz UI (10351) + Caddy (10354); OTLP (10352/10353) reachable; SOPS decrypt | ✅ verified live |
+| J | A py span and a ts span land in SigNoz | ✅ both queryable in ClickHouse (`astra-smoke-py`, `astra-smoke-ts`) |
 
-## Handoff
+## Done
 
-Remaining for Phase 0 completion: build `deploy/` (Decision H substrate) + the telemetry smoke (I/J),
-then push to a GitHub remote to confirm CI green (H). Docker is available on the host, so the gate is
-runnable when secrets (SOPS age key) are provisioned.
+Phase 0 is complete: CI green, both workspaces green, the substrate comes up via one `docker compose
+up`, SOPS round-trips, and py+ts spans land in SigNoz. **Operational note:** a fresh SigNoz needs a
+one-time org/admin registration before it ingests telemetry (no org → the collector logs *"cannot
+create agent without orgId"* and OTLP drops data) — see [`deploy/README.md`](../../../deploy/README.md).

@@ -20,6 +20,7 @@ bun --filter '*' test    # TypeScript tests
 
 ## Status
 
-Phase 0 (Foundation): dual workspaces, CI, and conventions are in place and green. The `deploy/`
-substrate (Dagster + SigNoz + Caddy via Docker Compose) and the telemetry smoke are the next gate —
-see [`thoughts/astra/plans/0001-phase0-foundation.md`](./thoughts/astra/plans/0001-phase0-foundation.md).
+**Phase 0 (Foundation): complete.** Dual workspaces + CI + conventions are green; the `deploy/`
+substrate (Dagster + SigNoz + Caddy) comes up via one `docker compose up`, SOPS decrypts, and py+ts
+spans land in SigNoz. Bring it up with [`deploy/README.md`](./deploy/README.md). Next: Phase 1
+(ontology + shared libs) — see [`thoughts/astra/plans/`](./thoughts/astra/plans/).
