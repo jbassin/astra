@@ -1,6 +1,6 @@
 ---
 name: astra-migration-research
-description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 vellum-lang (0004) COMPLETE; next = Phase 2 gothic (0003)
+description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 vellum-lang (0004) + gothic (0003) COMPLETE; next = Phase 3 pipeline (or 0007 akasha-backend on the full-vellum critical path)
 metadata:
   type: project
 ---
@@ -93,6 +93,36 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   **exits 0 on warnings/infos** — trust the exit code. **Reviewer caught a real C1** (py date crash) the
   corpus didn't cover → added a date/bool/nested-map fixture; lesson: **seed the corpus with the
   divergence-prone inputs (dates, exotic scalars, code edges), not just happy paths.**
+
+- **gothic (0003) COMPLETE + verified** (2026-06-19; astra `main`; CI reproduced locally).
+  Spec `thoughts/astra/specs/0003-gothic-spec.md`; pre-impl thoughts
+  `thoughts/shared/research/2026-06-19-gothic-0003-thoughts.md`. `libs/ts/gothic` (`@astra/gothic`,
+  bun/React 19) = astra's UI framework: (1) **tokens as a Tailwind v4 `@theme`** CSS (the ~20 gothic
+  vars under `--color-*`/`--font-*` namespaces → both runtime vars AND utilities) + bundled fonts
+  (Caslon/ITC Serif Gothic + `@fontsource/ibm-plex-mono`); (2) **identity-color seam (I5)** =
+  `identityStyle()` sets a runtime `--identity-color` var w/ a **visible fallback** — gothic does NOT
+  import `@astra/ontology` (grow-as-consumed J3; the frontend passes `Player.color` in); (3) grow-as-
+  consumed **primitives** (Panel/Title/Button/Input/Columns); (4) the **vellum AST→React renderer**
+  lifted from faerrin `pkg/vellum/src/render/` (`mdastToReact` + StatCard/ProseCard/Trait/Redaction/
+  ErrorChip/DocumentView + inline-SVG action glyphs + FNV-1a grime) **restyled CSS-Modules→Tailwind v4**,
+  PLUS the 4 new constructs' components (Frontmatter header, `CrossRef` placeholder, `Fields`, `TimelineBlock`).
+  **J-forks decided w/ Josh:** J1=Tailwind **v4** (CSS `@theme`, not v3 JS-preset); renderer **rewritten
+  to utilities** (not CSS-Modules lift); J5=**Storybook**; **visual regression = a browser-free
+  `react-dom/server` "render every AST node" smoke in `bun test`** (the CI-enforced 0004 exit-gate H) +
+  a Storybook per-node gallery for the human eye — **PNG goldens DEFERRED to vellum-frontend** (which
+  owns the Playwright render service per 0003 §8); no pinned-container CI job added this phase.
+  **gothic gotchas (load-bearing):** (1) the renderer emits markdown it doesn't author (h1/table/li) with
+  no className → style generated content + the card *skin* (pseudo `::after` ring, seeded parchment
+  gradient, drop-cap) via `@layer components` + `@apply` (`gothic-content`/`gothic-prose`/`gothic-card*`);
+  authored structure uses direct utilities incl. ancestor variants `[[data-mode=diegetic]_&]:…` for the
+  theme axis; (2) **biome rejects Tailwind `@apply`/`@theme`** until `css.parser.tailwindDirectives:true`
+  in `biome.json`; (3) the renderer maps immutable render-once AST → array-index keys are correct →
+  scoped `noArrayIndexKey:off` for `gothic/src/render/**` (rule kept on elsewhere); (4) crossref renders
+  as an UNRESOLVED placeholder (`data-crossref-target`, **no `role`/`href`** — dropping the role killed
+  the a11y lint; 0007 wraps it in a real link); SVG glyphs need a `<title>` for `noSvgWithoutTitle`;
+  (5) `bun build` = no-op echo, **Storybook build is separate** (`build-storybook`, gitignore
+  `storybook-static/`, `core.disableTelemetry`) so no browser runs in the CI `build` lane; mdast's
+  `Nodes` union lacks `crossref` → renderer input widened to `Nodes | CrossRef`.
 
 **Shape:** faerrin's 13 pkgs re-cut into ~10 named subsystems + 2 net-new (`ontology-being` = table
 **META** — players → the PCs they play, campaigns, colors, host identities (weal-bot Discord hosts AND
