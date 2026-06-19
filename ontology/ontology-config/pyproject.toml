@@ -1,0 +1,18 @@
+[project]
+name = "astra-ontology-config"
+version = "0.0.0"
+description = "Owns config.kdl (the consolidated env inventory); load() returns the typed Config via astra-config."
+requires-python = ">=3.12"
+dependencies = [
+    "astra-config",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astra_ontology_config"]
+
+[tool.uv.sources]
+astra-config = { workspace = true }

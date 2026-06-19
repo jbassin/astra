@@ -1,0 +1,73 @@
+"""Config loader + lazy SOPS resolution — using the real config.kdl + SOPS file.
+
+These run against the live in-repo SOPS secrets (the age key is on the host), so they
+double as a check that `ref=` resolution works end-to-end without a network call.
+"""
+
+from __future__ import annotations
+
+import textwrap
+from pathlib import Path
+
+import pytest
+from astra_config import SecretRef, load_config
+from astra_config.secrets import resolve_sops_ref
+from astra_ontology_config import CONFIG_KDL_PATH, load
+
+
+def test_real_config_kdl_loads_and_types_are_right() -> None:
+    cfg = load()
+    assert cfg.llm.default_model == "claude-opus-4-8"
+    assert cfg.llm.default_max_tokens == 16000  # int, not str
+    assert cfg.linguist.review_port == 10116
+    assert cfg.orator.target_lufs == -16  # negative int
+    assert cfg.orator.measure_loudness is True  # bool, not str
+    assert cfg.weal.bind_addr == "127.0.0.1:10203"
+
+
+def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
+    cfg = load()
+    assert isinstance(cfg.llm.anthropic_api_key, SecretRef)
+    assert cfg.llm.anthropic_api_key.ref == "sops:anthropic_api_key"
+    # repr never leaks a value.
+    assert "sops:anthropic_api_key" in repr(cfg.llm.anthropic_api_key)
+
+
+def test_present_secret_resolves_via_sops() -> None:
+    cfg = load()
+    assert cfg.llm.anthropic_api_key is not None
+    value = cfg.llm.anthropic_api_key.resolve()
+    assert value.startswith("sk-ant-")  # the real key shape
+
+
+def test_env_override_wins_over_sops(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-env-override")
+    assert resolve_sops_ref("sops:anthropic_api_key") == "sk-ant-env-override"
+
+
+def test_absent_secret_raises_only_on_resolve() -> None:
+    # The rotated dice-feed url isn't in SOPS yet — the tree still loads (lazy),
+    # but resolving it raises loud.
+    cfg = load()
+    assert isinstance(cfg.weal.dice_feed_url, SecretRef)
+    with pytest.raises(KeyError):
+        cfg.weal.dice_feed_url.resolve()
+
+
+def test_unknown_kdl_key_is_rejected(tmp_path: Path) -> None:
+    bad = tmp_path / "config.kdl"
+    bad.write_text(
+        textwrap.dedent("""
+        llm {
+            default-model "x"
+            bogus-field "nope"
+        }
+    """)
+    )
+    with pytest.raises(Exception, match="bogus_field|bogus-field|extra"):
+        load_config(bad)
+
+
+def test_config_kdl_path_points_at_the_real_file() -> None:
+    assert CONFIG_KDL_PATH.is_file()
+    assert CONFIG_KDL_PATH.name == "config.kdl"

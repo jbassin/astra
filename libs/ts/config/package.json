@@ -1,0 +1,20 @@
+{
+  "name": "@astra/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "build": "echo '@astra/config: no build step'"
+  },
+  "dependencies": {
+    "@bgotink/kdl": "^0.4.0",
+    "yaml": "^2.9.0",
+    "zod": "^4.4.3"
+  }
+}

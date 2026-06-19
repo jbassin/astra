@@ -1,0 +1,81 @@
+// astra config — the consolidated faerrin env inventory (roadmap Decision E).
+//
+// Plaintext config lives here as node args. Secrets are NEVER plaintext: a secret
+// is a `ref="sops:KEY"` pointer whose value lives in deploy/sops/secrets.enc.yaml
+// and is decrypted on demand by libs/{py,ts}/config. Defaults below are the faerrin
+// code-defaults; deployment-specific values (URLs, paths) are set per-deploy via the
+// env override (an env var named like the KEY, upper-cased) or by editing this file.
+
+llm {
+    default-model "claude-opus-4-8"
+    default-max-tokens 16000
+    anthropic-api-key ref="sops:anthropic_api_key"
+}
+
+scribe {
+    data-path ""
+    incoming-path ""
+    tmp-path ""
+    state-file ""
+    downstream-cmd ""
+    keep-zip #false
+    skip-downstream #false
+    model "large-v3"
+    device "cpu"
+    compute-type "int8"
+    groq-api-key ref="sops:groq_api_key"
+}
+
+linguist {
+    ingest-source ""
+    ingest-saved-dir ""
+    review-port 10116
+    podcast-episodes-path ""
+    surface-model-judge "claude-haiku-4-5-20251001"
+    surface-model-escalate "claude-sonnet-4-6"
+}
+
+mouthpiece {
+    episodes-path ""
+    elevenlabs-api-key ref="sops:elevenlabs_api_key"
+}
+
+weal {
+    database-url ""
+    feed-ws-url ""
+    chart-base-url ""
+    bind-addr "127.0.0.1:10203"
+    players-path "players.toml"
+    rust-log "info"
+    discord-token ref="sops:weal_discord_key"
+    feed-token ref="sops:weal_token"
+    dice-feed-url ref="sops:dice_feed_url" // rotated webhook — added + resolved at cutover (Phase 6)
+}
+
+weal-overlay {
+    port 10360
+    token ref="sops:weal_token" // shared weal↔overlay secret
+}
+
+orator {
+    guild-id ""
+    spike-channel-id ""
+    port 8788
+    public-origin "http://localhost:8788"
+    allowed-user-ids ""
+    target-lufs -16
+    ingest-concurrency 2
+    measure-loudness #true
+    discord-token ref="sops:orator_discord_key"
+    discord-client-id ref="sops:orator_discord_client_id"
+    discord-client-secret ref="sops:orator_discord_client_secret"
+    session-secret ref="sops:orator_session_secret"
+}
+
+orator-controller {
+    api-key ref="sops:orator_controller_api_key"
+}
+
+caddy {
+    cloudflare-dns-token ref="sops:cloudflare_key"
+}
