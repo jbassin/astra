@@ -1,0 +1,461 @@
+{
+  "campaigns": [
+    {
+      "edition": "pathfinder_2e",
+      "main": true,
+      "name": "Through a Song, Darkly",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Argyle",
+          "character_class": "champion",
+          "descriptions": [
+            "Formerly a failed celestial and repentant devil both inhabiting an elven body.",
+            "The two halves have been separated and spread across the Infinite Horizon.",
+            "Now only the celestial, and a custode from the Scale on loan to Iconoclasm."
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Arctos",
+          "character_class": null,
+          "descriptions": [
+            "A polar bear, awakened by the grace of the Iridescent Host",
+            "Once a pet for a young Minister Vane, who would grow up to become a Calarian council member"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Benny",
+          "character_class": "fighter",
+          "descriptions": [
+            "A nine-year-old android with the visage (and personality) of a child but the martial prowess of an adult",
+            "The son of Atum, a high-ranking heart from Belvedere. His full name is Bennix."
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Johnny",
+          "character_class": "bard",
+          "descriptions": [
+            "A half-elven man from Raelion. Originally a bartender, but now a mid/high level member of the Ghosts of Raelion",
+            "He was blessed by the Watcher to come back from death, to serve as some his eyes across the continent"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Anzu",
+          "character_class": "psychic",
+          "descriptions": [
+            "A tengu, a bird person. Black feathered with blue feathertips",
+            "The scion of the Qureshi family, an aristocratic, well-known patron and member family of Belvedere. He's run away from home."
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "through-a-song-darkly"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "Interred in Iomenei",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Grant",
+          "character_class": null,
+          "descriptions": [
+            "a worker from the Undercroft; a dwarf"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Gage",
+          "character_class": null,
+          "descriptions": [
+            "a worker from the Undercroft; a human"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Barlow",
+          "character_class": null,
+          "descriptions": [
+            "a worker from the Undercroft; an elf"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Archie",
+          "character_class": null,
+          "descriptions": [
+            "a worker from the Undercroft; a human"
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "interred-in-iomenei"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "Fae and Forest",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Cedric",
+          "character_class": null,
+          "descriptions": [
+            "an investigator with the magical crimes convox; an elf"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Krod",
+          "character_class": null,
+          "descriptions": [
+            "an investigator with the magical crimes convox; a dog-person"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Andros",
+          "character_class": null,
+          "descriptions": [
+            "an investigator with the magical crimes convox; a half-minotaur, half-centaur"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Mickey",
+          "character_class": null,
+          "descriptions": [
+            "an investigator with the magical crimes convox; a dwarf"
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "fae-and-forest"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "A Hunt of Metal and Vine",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Cliff",
+          "character_class": null,
+          "descriptions": [
+            "a special operative of the Scale; a human"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Zangron",
+          "character_class": null,
+          "descriptions": [
+            "a special operative of the Scale; a human"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Reverend",
+          "character_class": null,
+          "descriptions": [
+            "a special operative of the Scale; a hobgoblin"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Gregor",
+          "character_class": null,
+          "descriptions": [
+            "a special operative of the Scale; a human"
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "a-hunt-of-metal-and-vine"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "The First Spark",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Pluckwort",
+          "character_class": null,
+          "descriptions": [
+            "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a lizardfolk"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Combo",
+          "character_class": null,
+          "descriptions": [
+            "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a robot"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Salvatore",
+          "character_class": null,
+          "descriptions": [
+            "a henchman in the Velvet Mark, a gang in Hallia's Masque District; an orc"
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Archie",
+          "character_class": null,
+          "descriptions": [
+            "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a human"
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "the-first-spark"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "Observatory, Slipped",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "josh"
+        },
+        {
+          "character": "Foral",
+          "character_class": null,
+          "descriptions": [
+            "a field agent of Sedecium; a goblin gunslinger/rogue"
+          ],
+          "player": "jorge"
+        },
+        {
+          "character": "Scrazzy",
+          "character_class": null,
+          "descriptions": [
+            "a field agent of Sedecium; a human wizard"
+          ],
+          "player": "mike"
+        },
+        {
+          "character": "Ozzie",
+          "character_class": null,
+          "descriptions": [
+            "a field agent of Sedecium; an orc guardian"
+          ],
+          "player": "tanner"
+        }
+      ],
+      "slug": "observatory-slipped"
+    },
+    {
+      "edition": "pathfinder_2e",
+      "main": false,
+      "name": "Fey in the Mists",
+      "roles": [
+        {
+          "character": "Gamemaster",
+          "character_class": "gm",
+          "descriptions": [],
+          "player": "tanner"
+        },
+        {
+          "character": "Mango",
+          "character_class": null,
+          "descriptions": [
+            "an elven ranger, following the caravan on Finnegan's Ring."
+          ],
+          "player": "josh"
+        },
+        {
+          "character": "Egan",
+          "character_class": null,
+          "descriptions": [
+            "an orc druid, following the caravan on Finnegan's Ring."
+          ],
+          "player": "noah"
+        },
+        {
+          "character": "Doug",
+          "character_class": null,
+          "descriptions": [
+            "a gnome rogue, following the caravan on Finnegan's Ring."
+          ],
+          "player": "mike"
+        }
+      ],
+      "slug": "fey-in-the-mists"
+    }
+  ],
+  "guest_color": "rgb(235,235,236)",
+  "players": [
+    {
+      "aliases": [
+        "jbassin",
+        "iiri__"
+      ],
+      "color": "rgb(232,184,232)",
+      "is_admin": true,
+      "is_dm": true,
+      "name": "Josh",
+      "player_id": 1,
+      "slug": "josh",
+      "snowflakes": [
+        "333321567926878209"
+      ]
+    },
+    {
+      "aliases": [
+        "boiledpacakes"
+      ],
+      "color": "rgb(143,216,240)",
+      "is_admin": false,
+      "is_dm": false,
+      "name": "Jorge",
+      "player_id": 2,
+      "slug": "jorge",
+      "snowflakes": [
+        "712150290169593856",
+        "753011285003730955"
+      ]
+    },
+    {
+      "aliases": [
+        "miked6187"
+      ],
+      "color": "rgb(255,173,173)",
+      "is_admin": false,
+      "is_dm": false,
+      "name": "Mike",
+      "player_id": 3,
+      "slug": "mike",
+      "snowflakes": [
+        "555850241912602631"
+      ]
+    },
+    {
+      "aliases": [
+        "nnaiman"
+      ],
+      "color": "rgb(184,212,168)",
+      "is_admin": false,
+      "is_dm": false,
+      "name": "Noah",
+      "player_id": 4,
+      "slug": "noah",
+      "snowflakes": [
+        "652106046571020299"
+      ]
+    },
+    {
+      "aliases": [
+        "tanner_kn",
+        "tanner"
+      ],
+      "color": "rgb(255,214,165)",
+      "is_admin": false,
+      "is_dm": false,
+      "name": "Tanner",
+      "player_id": 5,
+      "slug": "tanner",
+      "snowflakes": [
+        "417896818844893194"
+      ]
+    }
+  ],
+  "podcast_personas": [
+    {
+      "name": "Bram",
+      "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots",
+      "slug": "bram",
+      "voice_id": "3jR9BuQAOPMWUjWpi0ll",
+      "voice_name": "Mark"
+    },
+    {
+      "name": "Maeve",
+      "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes",
+      "slug": "maeve",
+      "voice_id": "BZgkqPqms7Kj9ulSkVzn",
+      "voice_name": "Juniper"
+    },
+    {
+      "name": "Pip",
+      "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish",
+      "slug": "pip",
+      "voice_id": "exsUS4vynmxd379XN4yO",
+      "voice_name": "Charlotte"
+    }
+  ],
+  "weal_hosts": [
+    {
+      "avatar": "https://i.imgur.com/9z9IaYS.png",
+      "color": "#276C4C",
+      "name": "Gin Soaked Rag",
+      "slug": "gsr"
+    },
+    {
+      "avatar": "https://i.imgur.com/pkuxeAF.png",
+      "color": "#00674F",
+      "name": "Knife-That-Teaches",
+      "slug": "knife"
+    },
+    {
+      "avatar": "https://i.imgur.com/sIxjMYW.png",
+      "color": "#CFBDDE",
+      "name": "Rex Panopticum",
+      "slug": "rex"
+    },
+    {
+      "avatar": "https://i.imgur.com/wP8hBWb.png",
+      "color": "#CFBDDE",
+      "name": "Stray-Thread Els",
+      "slug": "els"
+    },
+    {
+      "avatar": "https://i.imgur.com/GMVzufH.png",
+      "color": "#00674F",
+      "name": "Whiskers",
+      "slug": "whiskers"
+    },
+    {
+      "avatar": "https://i.imgur.com/Qp0EXST.png",
+      "color": "#478085",
+      "name": "Master of Ceremonies",
+      "slug": "master"
+    }
+  ]
+}

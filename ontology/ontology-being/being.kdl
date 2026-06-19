@@ -1,0 +1,221 @@
+// astra ontology-being — the META truth store (roadmap 0002 §B).
+//
+// Consolidates three faerrin sources into one tree:
+//   * mouth/players.toml            → players (snowflakes, player_id, is_dm/admin)
+//   * content/scripts/campaigns.yaml → campaigns + per-campaign player→PC roster + descs
+//   * content/scripts/lib/roster.ts  → recording-id aliases + identity colors
+//
+// This is META (who plays whom, host send-identities, podcast personas) — NOT in-world
+// setting characters (those are akasha). `player-id` integers are load-bearing dice FKs
+// (preserve verbatim). Identity color hexes are owned here (I5): the player values are the
+// live-site (aether theme.scss) set; host hexes come from mouth/host.rs.
+
+// --- players (the real people) -------------------------------------------------------
+
+player "josh" {
+    name "Josh"
+    player-id 1
+    snowflakes "333321567926878209"
+    aliases "jbassin" "iiri__"
+    is-dm #true
+    is-admin #true
+    color "rgb(232,184,232)"
+}
+
+player "jorge" {
+    name "Jorge"
+    player-id 2
+    snowflakes "712150290169593856" "753011285003730955"
+    aliases "boiledpacakes"
+    is-dm #false
+    is-admin #false
+    color "rgb(143,216,240)"
+}
+
+player "mike" {
+    name "Mike"
+    player-id 3
+    snowflakes "555850241912602631"
+    aliases "miked6187"
+    is-dm #false
+    is-admin #false
+    color "rgb(255,173,173)"
+}
+
+player "noah" {
+    name "Noah"
+    player-id 4
+    snowflakes "652106046571020299"
+    aliases "nnaiman"
+    is-dm #false
+    is-admin #false
+    color "rgb(184,212,168)"
+}
+
+player "tanner" {
+    name "Tanner"
+    player-id 5
+    snowflakes "417896818844893194"
+    aliases "tanner_kn" "tanner"
+    is-dm #false
+    is-admin #false
+    color "rgb(255,214,165)"
+}
+
+// Fallback color for unknown/guest speakers (roster.ts GUEST_COLOR).
+guest-color "rgb(235,235,236)"
+
+// --- campaigns (player → the PC[s] they play; "Gamemaster" marks the GM role) --------
+
+campaign "through-a-song-darkly" {
+    name "Through a Song, Darkly"
+    edition "pathfinder_2e"
+    main #true
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Argyle" class="champion" {
+        desc "Formerly a failed celestial and repentant devil both inhabiting an elven body."
+        desc "The two halves have been separated and spread across the Infinite Horizon."
+        desc "Now only the celestial, and a custode from the Scale on loan to Iconoclasm."
+    }
+    role player="jorge" character="Arctos" {
+        desc "A polar bear, awakened by the grace of the Iridescent Host"
+        desc "Once a pet for a young Minister Vane, who would grow up to become a Calarian council member"
+    }
+    role player="mike" character="Benny" class="fighter" {
+        desc "A nine-year-old android with the visage (and personality) of a child but the martial prowess of an adult"
+        desc "The son of Atum, a high-ranking heart from Belvedere. His full name is Bennix."
+    }
+    role player="noah" character="Johnny" class="bard" {
+        desc "A half-elven man from Raelion. Originally a bartender, but now a mid/high level member of the Ghosts of Raelion"
+        desc "He was blessed by the Watcher to come back from death, to serve as some his eyes across the continent"
+    }
+    role player="tanner" character="Anzu" class="psychic" {
+        desc "A tengu, a bird person. Black feathered with blue feathertips"
+        desc "The scion of the Qureshi family, an aristocratic, well-known patron and member family of Belvedere. He's run away from home."
+    }
+}
+
+campaign "interred-in-iomenei" {
+    name "Interred in Iomenei"
+    edition "pathfinder_2e"
+    main #false
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Grant" { desc "a worker from the Undercroft; a dwarf" }
+    role player="mike" character="Gage" { desc "a worker from the Undercroft; a human" }
+    role player="noah" character="Barlow" { desc "a worker from the Undercroft; an elf" }
+    role player="tanner" character="Archie" { desc "a worker from the Undercroft; a human" }
+}
+
+campaign "fae-and-forest" {
+    name "Fae and Forest"
+    edition "pathfinder_2e"
+    main #false
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Cedric" { desc "an investigator with the magical crimes convox; an elf" }
+    role player="mike" character="Krod" { desc "an investigator with the magical crimes convox; a dog-person" }
+    role player="noah" character="Andros" { desc "an investigator with the magical crimes convox; a half-minotaur, half-centaur" }
+    role player="tanner" character="Mickey" { desc "an investigator with the magical crimes convox; a dwarf" }
+}
+
+campaign "a-hunt-of-metal-and-vine" {
+    name "A Hunt of Metal and Vine"
+    edition "pathfinder_2e"
+    main #false
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Cliff" { desc "a special operative of the Scale; a human" }
+    role player="mike" character="Zangron" { desc "a special operative of the Scale; a human" }
+    role player="noah" character="Reverend" { desc "a special operative of the Scale; a hobgoblin" }
+    role player="tanner" character="Gregor" { desc "a special operative of the Scale; a human" }
+}
+
+campaign "the-first-spark" {
+    name "The First Spark"
+    edition "pathfinder_2e"
+    main #false
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Pluckwort" { desc "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a lizardfolk" }
+    role player="mike" character="Combo" { desc "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a robot" }
+    role player="noah" character="Salvatore" { desc "a henchman in the Velvet Mark, a gang in Hallia's Masque District; an orc" }
+    role player="tanner" character="Archie" { desc "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a human" }
+}
+
+campaign "observatory-slipped" {
+    name "Observatory, Slipped"
+    edition "pathfinder_2e"
+    main #false
+    role player="josh" character="Gamemaster" class="gm"
+    role player="jorge" character="Foral" { desc "a field agent of Sedecium; a goblin gunslinger/rogue" }
+    role player="mike" character="Scrazzy" { desc "a field agent of Sedecium; a human wizard" }
+    role player="tanner" character="Ozzie" { desc "a field agent of Sedecium; an orc guardian" }
+}
+
+campaign "fey-in-the-mists" {
+    name "Fey in the Mists"
+    edition "pathfinder_2e"
+    main #false
+    role player="tanner" character="Gamemaster" class="gm"
+    role player="josh" character="Mango" { desc "an elven ranger, following the caravan on Finnegan's Ring." }
+    role player="noah" character="Egan" { desc "an orc druid, following the caravan on Finnegan's Ring." }
+    role player="mike" character="Doug" { desc "a gnome rogue, following the caravan on Finnegan's Ring." }
+}
+
+// --- weal-host: weal-bot Discord message-send identities (mouth/host.rs) --------------
+
+weal-host "gsr" {
+    name "Gin Soaked Rag"
+    color "#276C4C"
+    avatar "https://i.imgur.com/9z9IaYS.png"
+}
+
+weal-host "knife" {
+    name "Knife-That-Teaches"
+    color "#00674F"
+    avatar "https://i.imgur.com/pkuxeAF.png"
+}
+
+weal-host "rex" {
+    name "Rex Panopticum"
+    color "#CFBDDE"
+    avatar "https://i.imgur.com/sIxjMYW.png"
+}
+
+weal-host "els" {
+    name "Stray-Thread Els"
+    color "#CFBDDE"
+    avatar "https://i.imgur.com/wP8hBWb.png"
+}
+
+weal-host "whiskers" {
+    name "Whiskers"
+    color "#00674F"
+    avatar "https://i.imgur.com/GMVzufH.png"
+}
+
+weal-host "master" {
+    name "Master of Ceremonies"
+    color "#478085"
+    avatar "https://i.imgur.com/Qp0EXST.png"
+}
+
+// --- podcast-persona: mouthpiece roundtable hosts (caster hosts.ts + elevenlabs.ts) ---
+
+podcast-persona "bram" {
+    name "Bram"
+    voice-id "3jR9BuQAOPMWUjWpi0ll"
+    voice-name "Mark"
+    persona #"warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like "you... you had to be there." Drives the recap forward and overshoots"#
+}
+
+podcast-persona "maeve" {
+    name "Maeve"
+    voice-id "BZgkqPqms7Kj9ulSkVzn"
+    voice-name "Juniper"
+    persona #"warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"#
+}
+
+podcast-persona "pip" {
+    name "Pip"
+    voice-id "exsUS4vynmxd379XN4yO"
+    voice-name "Charlotte"
+    persona #"quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"#
+}
