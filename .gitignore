@@ -7,7 +7,17 @@ dist/
 #   - SOPS age/PGP private keys never enter git; the encrypted secret file does.
 Caddyfile
 *.agekey
-deploy/sops/*.key
+
+# SOPS secrets directory — deny everything, then re-allow only what's safe to
+# commit. Makes it impossible to accidentally commit the age PRIVATE key
+# (deploy/sops/age.key); the .sops.yaml recipient list and *.enc.* ciphertext
+# are public and stay tracked. See deploy/sops/README.md.
+deploy/sops/*
+!deploy/sops/README.md
+!deploy/sops/.sops.yaml
+!deploy/sops/*.enc.yaml
+!deploy/sops/*.enc.json
+
 .env
 .env.*
 !.env.example
