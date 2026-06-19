@@ -22,6 +22,11 @@ deploy/sops/*
 .env.*
 !.env.example
 
+# SigNoz runtime artifacts — init-clickhouse downloads the histogram-quantile
+# binary into this bind-mounted dir on `up`; it's regenerated, not source.
+deploy/signoz/common/clickhouse/user_scripts/*
+!deploy/signoz/common/clickhouse/user_scripts/.gitkeep
+
 # Python (uv)
 .venv/
 __pycache__/

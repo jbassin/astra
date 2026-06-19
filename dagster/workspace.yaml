@@ -1,0 +1,7 @@
+# The webserver + daemon load the code location from the gRPC server that runs
+# in the dagster-code container (see deploy/docker-compose.yml).
+load_from:
+  - grpc_server:
+      host: dagster-code
+      port: 4000
+      location_name: astra-pipeline

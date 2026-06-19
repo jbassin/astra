@@ -1,0 +1,8 @@
+# SOPS config — which age recipients can decrypt which files (roadmap Decision E).
+# The recipient below is the PUBLIC half of deploy/sops/age.key; the private key
+# (gitignored) decrypts at load via SOPS_AGE_KEY_FILE.
+creation_rules:
+  # This .sops.yaml lives in deploy/sops/, so the regex is matched against the
+  # basename — any *.enc.{yaml,json} dropped here is encrypted to the recipient.
+  - path_regex: \.enc\.(ya?ml|json)$
+    age: age1q4l83znay8mrnlsnpv3anh0kkmj97vhx4fyn379tkalemxz0cyls5qw9s4

@@ -1,0 +1,33 @@
+# astra edge — production reverse proxy / static server (roadmap Decision H).
+#
+# The REAL Caddyfile is GITIGNORED because the production one embeds a Cloudflare
+# DNS token for ACME DNS-01 (faerrin gotcha). Copy this to ./Caddyfile and fill in.
+# A minimal local-dev Caddyfile (plain :80, no TLS) is what the compose mounts.
+#
+# {
+# 	email you@example.com
+# 	# acme_dns cloudflare {env.CF_API_TOKEN}
+# }
+
+# --- Static site builds (served from dist/, produced by the TanStack frontends) ---
+# heart.iridi.cc {
+# 	root * /srv/dist/akasha
+# 	encode zstd gzip
+# 	file_server
+# }
+# caster.iridi.cc {
+# 	root * /srv/dist/mouthpiece
+# 	encode zstd gzip
+# 	file_server
+# }
+
+# --- Service UIs / APIs (reverse-proxied to Compose services) ---
+# signoz.iridi.cc {
+# 	reverse_proxy signoz:8080
+# }
+# dagster.iridi.cc {
+# 	reverse_proxy dagster-webserver:3000
+# }
+# orator.iridi.cc {
+# 	reverse_proxy orator-backend:PORT
+# }

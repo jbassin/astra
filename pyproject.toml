@@ -16,3 +16,10 @@ dev-dependencies = [
 [tool.pytest.ini_options]
 testpaths = ["libs/py", "apps", "ontology"]
 addopts = "-q"
+
+[tool.ty.src]
+# dagster/ and deploy/ are NOT uv workspace members — they run in their own
+# environments (the Dagster Docker image; ephemeral `uv run --with` for the
+# telemetry smoke), so their imports aren't in the workspace venv. Keep them out
+# of the workspace type check.
+exclude = ["dagster/", "deploy/"]

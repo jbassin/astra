@@ -1,0 +1,21 @@
+# Phase 0 Dagster instance config — Postgres-backed run/event/schedule storage.
+# Secrets come from env (compose injects them); real values move to SOPS later.
+storage:
+  postgres:
+    postgres_db:
+      hostname: dagster-postgres
+      username:
+        env: DAGSTER_PG_USERNAME
+      password:
+        env: DAGSTER_PG_PASSWORD
+      db_name:
+        env: DAGSTER_PG_DB
+      port: 5432
+
+run_coordinator:
+  module: dagster.core.run_coordinator
+  class: QueuedRunCoordinator
+
+# No phone-home.
+telemetry:
+  enabled: false

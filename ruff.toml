@@ -2,6 +2,9 @@
 target-version = "py312"
 line-length = 100
 src = ["libs/py", "apps", "ontology"]
+# dagster/ and deploy/ aren't uv workspace members (they run in their own envs),
+# so the workspace lint/format tools don't govern them — same scope as ty.
+extend-exclude = ["dagster", "deploy"]
 
 [lint]
 select = ["E", "F", "I", "UP", "B", "SIM"]

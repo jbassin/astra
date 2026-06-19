@@ -1,0 +1,100 @@
+# Astra deploy substrate (roadmap Decision H):
+#   - SigNoz (ClickHouse + zookeeper + UI + otel-collector + schema migrator),
+#     vendored under deploy/signoz/ and `include`d so its own relative mounts
+#     (../common/...) resolve correctly. Published ports remapped into 10350-10399.
+#   - Dagster control plane (Postgres + code location + webserver + daemon).
+#   - Caddy edge.
+# SigNoz/OTel is the single pane across all three. Run from deploy/:
+#   docker compose up -d
+name: astra
+
+include:
+  - path: signoz/docker/docker-compose.yaml
+
+x-dagster-env: &dagster-env
+  DAGSTER_PG_USERNAME: ${DAGSTER_PG_USERNAME:-dagster}
+  DAGSTER_PG_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
+  DAGSTER_PG_DB: ${DAGSTER_PG_DB:-dagster}
+
+services:
+  # --- Dagster: the batch-pipeline control plane ---
+  dagster-postgres:
+    image: postgres:16-alpine
+    container_name: astra-dagster-postgres
+    environment:
+      POSTGRES_USER: ${DAGSTER_PG_USERNAME:-dagster}
+      POSTGRES_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
+      POSTGRES_DB: ${DAGSTER_PG_DB:-dagster}
+    volumes:
+      - dagster-pg:/var/lib/postgresql/data
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DAGSTER_PG_USERNAME:-dagster} -d ${DAGSTER_PG_DB:-dagster}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  dagster-code:
+    build:
+      context: ../dagster
+    image: astra-dagster:local
+    container_name: astra-dagster-code
+    command: ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "definitions.py"]
+    environment: *dagster-env
+    networks: [signoz-net]
+    restart: unless-stopped
+
+  dagster-webserver:
+    image: astra-dagster:local
+    container_name: astra-dagster-webserver
+    command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000", "-w", "/opt/dagster/home/workspace.yaml"]
+    ports:
+      - "10350:3000" # Dagster UI (astra range)
+    environment: *dagster-env
+    depends_on:
+      dagster-postgres:
+        condition: service_healthy
+      dagster-code:
+        condition: service_started
+    networks: [signoz-net]
+    restart: unless-stopped
+
+  dagster-daemon:
+    image: astra-dagster:local
+    container_name: astra-dagster-daemon
+    command: ["dagster-daemon", "run", "-w", "/opt/dagster/home/workspace.yaml"]
+    environment: *dagster-env
+    depends_on:
+      dagster-postgres:
+        condition: service_healthy
+      dagster-code:
+        condition: service_started
+    networks: [signoz-net]
+    restart: unless-stopped
+
+  # --- Caddy: TLS / static / reverse-proxy edge ---
+  caddy:
+    image: caddy:2-alpine
+    container_name: astra-caddy
+    ports:
+      - "10354:80" # edge http (astra range)
+      - "10355:443" # edge https (astra range)
+    volumes:
+      - ../Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+    networks: [signoz-net]
+    restart: unless-stopped
+
+volumes:
+  dagster-pg:
+    name: astra-dagster-pg
+  caddy-data:
+    name: astra-caddy-data
+  caddy-config:
+    name: astra-caddy-config
+
+networks:
+  signoz-net:
+    name: signoz-net
