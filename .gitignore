@@ -1,0 +1,30 @@
+# Build output (all site-gen lands here; served by Caddy)
+dist/
+
+# Secrets & edge config
+#   - real Caddyfile embeds a Cloudflare DNS token (faerrin gotcha); only the
+#     .example is committed.
+#   - SOPS age/PGP private keys never enter git; the encrypted secret file does.
+Caddyfile
+*.agekey
+deploy/sops/*.key
+.env
+.env.*
+!.env.example
+
+# Python (uv)
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ty_cache/
+
+# Node / bun
+node_modules/
+
+# Rust (defensive: astra is two-toolchain, but guard against stray target/)
+target/
+
+# OS / editor cruft
+.DS_Store
