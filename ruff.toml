@@ -1,0 +1,10 @@
+# Shared lint + format config for the whole uv workspace.
+target-version = "py312"
+line-length = 100
+src = ["libs/py", "apps", "ontology"]
+
+[lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[format]
+quote-style = "double"
