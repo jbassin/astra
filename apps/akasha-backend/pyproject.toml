@@ -1,0 +1,25 @@
+[project]
+name = "astra-akasha-backend"
+version = "0.0.0"
+description = "akasha content store — the SSOT setting corpus in full-vellum; Dagster snapshot asset (validate + metadata index + page→page crossref edges) for akasha-frontend + mouthpiece grounding (0007)."
+requires-python = ">=3.12"
+dependencies = [
+    "astra-observe",
+    "astra-vellum-lang",
+    "dagster",
+    "pydantic>=2",
+]
+
+[project.scripts]
+akasha-snapshot = "astra_akasha_backend.snapshot:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astra_akasha_backend"]
+
+[tool.uv.sources]
+astra-observe = { workspace = true }
+astra-vellum-lang = { workspace = true }

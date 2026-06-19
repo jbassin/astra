@@ -46,3 +46,4 @@ target/
 
 # OS / editor cruft
 .DS_Store
+apps/akasha-backend/migrate/convert-report.json
