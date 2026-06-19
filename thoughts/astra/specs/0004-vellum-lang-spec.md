@@ -1,6 +1,8 @@
 # NLSpec 0004 — vellum-lang (full-vellum grammar + dual parser)
 
-**Status:** draft → implementing. **Phase:** 2 (shared content + UI). **Source plan:** [`../plans/0004-vellum-lang.md`](../plans/0004-vellum-lang.md).
+**Status:** **implemented + verified.** Exit gates A–G green (H deferred to 0003 by design); CI green
+(uv ruff/format/ty/41 pytest; bun tsc/biome/31 tests/build); py↔ts parity holds across all 7 fixtures.
+Code-review findings folded in (the date-crash C1 fixed + regression-tested). **Phase:** 2 (shared content + UI). **Source plan:** [`../plans/0004-vellum-lang.md`](../plans/0004-vellum-lang.md).
 **Process:** octo:embrace, Claude team mode (persona subagents), per astra `CLAUDE.md`. **Sequencing:** built **before** 0003 (gothic renders this AST; vellum-lang has no gothic dep — the documented critical path).
 **Decisions in force:** C = full vellum (one format for ALL akasha content); D1 = **YAML** frontmatter; D2 = **metadata-only Python**; D3 = **`:::fields` block**; D4 = transcripts are NOT vellum (akasha-frontend renders them from linguist).
 
