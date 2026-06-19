@@ -12,6 +12,7 @@ members = [
     "astra-ontology-config",
     "astra-smoke",
     "astra-smoke-substrate",
+    "astra-vellum-lang",
 ]
 
 [manifest.dependency-groups]
@@ -292,6 +293,23 @@ requires-dist = [
     { name = "astra-ontology-being", editable = "ontology/ontology-being" },
     { name = "astra-ontology-config", editable = "ontology/ontology-config" },
     { name = "pydantic", specifier = ">=2" },
+]
+
+[[package]]
+name = "astra-vellum-lang"
+version = "0.0.0"
+source = { editable = "libs/py/vellum-lang" }
+dependencies = [
+    { name = "astra-observe" },
+    { name = "pydantic" },
+    { name = "pyyaml" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "astra-observe", editable = "libs/py/observe" },
+    { name = "pydantic", specifier = ">=2" },
+    { name = "pyyaml", specifier = ">=6" },
 ]
 
 [[package]]

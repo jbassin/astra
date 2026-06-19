@@ -3,7 +3,7 @@
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["**", "!**/being.canonical.json"]
+    "includes": ["**", "!**/being.canonical.json", "!**/fixtures/vellum/**"]
   },
   "formatter": {
     "enabled": true,
@@ -11,7 +11,19 @@
     "indentWidth": 2,
     "lineWidth": 100
   },
-  "linter": { "enabled": true, "rules": { "preset": "recommended" } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "suspicious": { "useBiomeIgnoreFolder": "off" }
+    }
+  },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
-  "javascript": { "formatter": { "quoteStyle": "double" } }
+  "javascript": { "formatter": { "quoteStyle": "double" } },
+  "overrides": [
+    {
+      "includes": ["**/vellum-lang/src/vss.ts"],
+      "linter": { "rules": { "style": { "noNonNullAssertion": "off", "useTemplate": "off" } } }
+    }
+  ]
 }
