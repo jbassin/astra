@@ -1,0 +1,291 @@
+/**
+ * @astra/gothic — the framework theme (Tailwind v4, CSS-first `@theme`).
+ *
+ * Frontends import this once: `@import "@astra/gothic/theme.css";` — it pulls in
+ * Tailwind, the bundled 40k-gothic fonts, and the ~20 gothic design tokens. The
+ * tokens live under Tailwind's `--color-*` / `--font-*` namespaces, so each one
+ * both (a) emits a `:root` CSS custom property (the runtime source) AND (b)
+ * generates a utility (`bg-panel`, `text-accent`, `font-display`, …).
+ *
+ * Per-player/host IDENTITY colors are NOT here — they come from ontology-being
+ * (I5) and are applied as runtime CSS vars (`--identity-color`) via `identity.ts`,
+ * referenced through arbitrary values (`text-[var(--identity-color)]`). gothic owns
+ * only the framework palette.
+ *
+ * Fonts are served from absolute `/fonts/` URLs (the faerrin gotcha): each
+ * consuming frontend copies `@astra/gothic/fonts/*` into its `public/fonts/`.
+ */
+@import "tailwindcss";
+
+/* Bundled display + body faces (mono is `@fontsource/ibm-plex-mono`). */
+@font-face {
+  font-family: "Caslon Antique";
+  src: url("/fonts/CaslonAntique.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Caslon Antique";
+  src: url("/fonts/CaslonAntique-Italic.ttf") format("truetype");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Caslon Antique";
+  src: url("/fonts/CaslonAntique-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Caslon Antique";
+  src: url("/fonts/CaslonAntique-BoldItalic.ttf") format("truetype");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "ITC Serif Gothic";
+  src: url("/fonts/ITCSerifGothicStd-Heavy.otf") format("opentype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  /* Void palette — teal cogitator-dataslate (mechanical default). */
+  --color-void: #090c10;
+  --color-panel: #0f1318;
+  --color-elevated: #171c24;
+  --color-hover: #1e2530;
+
+  --color-ink: #dce8f0;
+  --color-ink-dim: #7a8a99;
+  --color-ink-faint: #3a434f;
+
+  --color-accent: #6dd5c0; /* phosphor teal */
+  --color-accent-amber: #f0b46e;
+
+  --color-rule: #1e2730;
+  --color-rule-bright: #2f3c4e;
+
+  /* Diegetic substrate — aged Imperial parchment (the amber counterpart). */
+  --color-parchment: #d8c9a3;
+  --color-parchment-shade: #c2ad80;
+  --color-parchment-edge: #a98f5f;
+  --color-parchment-ink: #2c2114;
+  --color-parchment-ink-dim: #5c4a30;
+  --color-wax: #7c2a22; /* seal red */
+  --color-gold-leaf: #b4842f; /* illuminated drop-cap bronze */
+  --color-redaction: #120f0b; /* [DATA EXPUNGED] bar */
+
+  /* Type families. */
+  --font-display: "ITC Serif Gothic", serif;
+  --font-body: "Caslon Antique", serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Motion. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 120ms;
+  --duration-base: 220ms;
+  --duration-slow: 400ms;
+}
+
+/**
+ * Document-content classes — the ONE place gothic styles markdown it doesn't
+ * author (the h1/table/li/… `mdastToReact` emits without classNames). These are
+ * composed from Tailwind utilities via `@apply` (the same technique the upstream
+ * `prose` plugin uses), not a hand-maintained CSS-Modules file — so tokens still
+ * flow through utilities and the J1/B "styled with Tailwind" rule holds. The
+ * mechanical/diegetic axis is an ancestor `[data-mode="…"]` on the export frame.
+ *
+ *   <div class="gothic-content gothic-prose">         loose top-level markdown
+ *   <div class="gothic-content gothic-card-body">     stat-card body
+ *   <div class="gothic-content gothic-prose-body">    prose-card body (drop-cap)
+ */
+@layer components {
+  /* ── Card skin ────────────────────────────────────────────────────────
+     The seeded parchment gradient, the `::after` coffee-ring, and the stamp
+     rotation need a pseudo-element + content-seeded CSS vars + color-mix that
+     utilities can't reach cleanly, so the *skin* is a component class (@apply +
+     minimal raw CSS). The card's INNER structure (header/name/traits) stays
+     direct utilities on the authored elements. */
+  .gothic-card {
+    @apply rounded-[2px] border border-rule-bright bg-panel px-5 py-4;
+    box-shadow:
+      inset 0 0 0 1px var(--color-void),
+      0 10px 28px color-mix(in srgb, var(--color-void) 80%, transparent);
+  }
+  .gothic-card-stat {
+    @apply border-t-[3px] border-t-accent;
+  }
+  .gothic-card-prose {
+    @apply border-t-[3px] border-t-accent-amber;
+  }
+
+  [data-mode="diegetic"] .gothic-card {
+    @apply relative border-parchment-edge text-parchment-ink;
+    /* deterministic ±2° stamp rotation, seeded from content. */
+    transform: rotate(var(--vellum-rotate, 0deg));
+    border-top-width: 3px;
+    border-top-color: var(--color-wax);
+    background-color: var(--color-parchment);
+    background-image: radial-gradient(
+      ellipse at 30% 0%,
+      color-mix(in srgb, var(--color-parchment) 70%, var(--color-parchment-shade)) 0%,
+      var(--color-parchment) 45%,
+      color-mix(in srgb, var(--color-parchment) 60%, var(--color-parchment-edge)) 100%
+    );
+    box-shadow:
+      inset 0 0 2.5rem color-mix(in srgb, var(--color-parchment-edge) 55%, transparent),
+      0 10px 28px color-mix(in srgb, var(--color-void) 70%, transparent);
+  }
+  /* a faint, deterministically-placed coffee/blood ring. */
+  [data-mode="diegetic"] .gothic-card::after {
+    content: "";
+    @apply pointer-events-none absolute h-24 w-24 rounded-full opacity-55;
+    left: var(--vellum-ring-x, 50%);
+    top: var(--vellum-ring-y, 50%);
+    transform: translate(-50%, -50%) scale(var(--vellum-ring-scale, 1));
+    border: 2px solid color-mix(in srgb, var(--color-wax) 28%, transparent);
+    box-shadow: inset 0 0 0.6rem color-mix(in srgb, var(--color-wax) 14%, transparent);
+  }
+
+  /* ── Columns (`:::columns`) — equal-width tracks, count seeded at runtime;
+     collapse to a single stack on narrow viewports (the PNG export keeps the
+     full width). The dynamic count + media query are awkward as utilities. */
+  .gothic-columns {
+    @apply grid items-start gap-5;
+    grid-template-columns: repeat(var(--vellum-column-count, 2), minmax(0, 1fr));
+  }
+  @media (max-width: 40rem) {
+    .gothic-columns {
+      grid-template-columns: 1fr;
+    }
+  }
+  .gothic-column {
+    @apply flex min-w-0 flex-col gap-5;
+  }
+
+  /* ── Shared content base (prose, both card bodies) ────────────────────── */
+  .gothic-content {
+    @apply text-base leading-[1.55];
+  }
+  .gothic-content p {
+    @apply my-[0.45rem];
+  }
+  .gothic-content a {
+    @apply text-accent;
+  }
+  .gothic-content :is(ul, ol) {
+    @apply my-[0.4rem] pl-[1.2rem];
+  }
+  /* Inline action glyphs inherit color here (fill: currentColor). */
+  .gothic-content svg {
+    @apply text-accent-amber;
+  }
+
+  /* GFM — tables, task lists, footnotes. */
+  .gothic-content table {
+    @apply my-[0.6rem] w-full border-collapse text-[0.95rem];
+  }
+  .gothic-content :is(th, td) {
+    @apply border border-rule px-[0.55rem] py-[0.3rem] text-left;
+  }
+  .gothic-content th {
+    @apply bg-elevated font-display text-[0.85rem] uppercase tracking-[0.04em] text-accent;
+  }
+  .gothic-content tbody tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--color-elevated) 45%, transparent);
+  }
+  .gothic-content li[data-task] {
+    @apply -ml-4 list-none;
+  }
+  .gothic-content li[data-task] input {
+    @apply mr-[0.4em] align-middle accent-[var(--color-accent)];
+  }
+  /* Keep task/footnote item text on one line (remark wraps it in a <p>). */
+  .gothic-content :is(li[data-task], [data-footnote]) p {
+    @apply m-0 inline;
+  }
+  .gothic-content [data-footnote-ref] {
+    @apply text-accent;
+  }
+  .gothic-content [data-footnote] {
+    @apply mt-[0.5rem] border-t border-rule pt-[0.3rem] text-[0.82rem] text-ink-dim;
+  }
+
+  /* ── Top-level prose: a real heading hierarchy (`#` largest → `######`) ── */
+  .gothic-prose > :first-child {
+    @apply mt-0;
+  }
+  .gothic-prose :is(h1, h2, h3, h4, h5, h6) {
+    @apply mb-[0.45rem] mt-[1.1rem] font-display uppercase leading-[1.12] tracking-[0.03em] text-accent;
+  }
+  .gothic-prose h1 {
+    @apply border-b-2 border-rule-bright pb-[0.2rem] text-[2.2rem] tracking-[0.015em];
+  }
+  .gothic-prose h2 {
+    @apply border-b border-rule pb-[0.15rem] text-[1.7rem];
+  }
+  .gothic-prose h3 {
+    @apply text-[1.35rem];
+  }
+  .gothic-prose h4 {
+    @apply text-[1.12rem];
+  }
+  .gothic-prose h5 {
+    @apply text-[0.95rem] text-accent-amber;
+  }
+  .gothic-prose h6 {
+    @apply text-[0.82rem] tracking-[0.14em] text-accent-amber;
+  }
+
+  /* ── Card bodies: headings are flat, uniform section labels (`## Actions`) ── */
+  :is(.gothic-card-body, .gothic-prose-body) :is(h1, h2, h3, h4, h5, h6) {
+    @apply mb-[0.2rem] mt-[0.7rem] font-display text-base uppercase tracking-[0.04em] text-accent;
+  }
+
+  /* ── Diegetic overrides — aged parchment ink ──────────────────────────── */
+  [data-mode="diegetic"] .gothic-content a,
+  [data-mode="diegetic"] .gothic-content svg,
+  [data-mode="diegetic"] .gothic-content [data-footnote-ref] {
+    @apply text-wax;
+  }
+  [data-mode="diegetic"]
+    :is(.gothic-prose, .gothic-card-body, .gothic-prose-body)
+    :is(h1, h2, h3, h4, h5, h6) {
+    @apply text-wax;
+  }
+  [data-mode="diegetic"] .gothic-prose :is(h1, h2) {
+    border-bottom-color: color-mix(in srgb, var(--color-parchment-edge) 70%, transparent);
+  }
+  [data-mode="diegetic"] .gothic-content :is(th, td) {
+    border-color: color-mix(in srgb, var(--color-parchment-edge) 70%, transparent);
+  }
+  [data-mode="diegetic"] .gothic-content th {
+    color: var(--color-wax);
+    background-color: color-mix(in srgb, var(--color-parchment-shade) 55%, transparent);
+  }
+  [data-mode="diegetic"] .gothic-content tbody tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--color-parchment-shade) 28%, transparent);
+  }
+  [data-mode="diegetic"] .gothic-content [data-footnote] {
+    color: var(--color-parchment-ink-dim);
+    border-top-color: color-mix(in srgb, var(--color-parchment-edge) 70%, transparent);
+  }
+  [data-mode="diegetic"] .gothic-content li[data-task] input {
+    @apply accent-[var(--color-wax)];
+  }
+
+  /* Illuminated gold-leaf drop-cap — first paragraph of a diegetic prose card. */
+  [data-mode="diegetic"] .gothic-prose-body > p:first-of-type::first-letter {
+    @apply float-left mr-[0.09em] mt-[0.04em] font-display text-[3.4em] leading-[0.72] text-gold-leaf;
+    background-image: linear-gradient(160deg, var(--color-accent-amber), var(--color-gold-leaf));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+}

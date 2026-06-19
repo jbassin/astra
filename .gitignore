@@ -1,6 +1,9 @@
 # Build output (all site-gen lands here; served by Caddy)
 dist/
 
+# Storybook static build (gothic's dev/preview surface; regenerated, not source)
+storybook-static/
+
 # Secrets & edge config
 #   - real Caddyfile embeds a Cloudflare DNS token (faerrin gotcha); only the
 #     .example is committed.

@@ -20,10 +20,15 @@
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "javascript": { "formatter": { "quoteStyle": "double" } },
+  "css": { "parser": { "tailwindDirectives": true } },
   "overrides": [
     {
       "includes": ["**/vellum-lang/src/vss.ts"],
       "linter": { "rules": { "style": { "noNonNullAssertion": "off", "useTemplate": "off" } } }
+    },
+    {
+      "includes": ["**/gothic/src/render/**"],
+      "linter": { "rules": { "suspicious": { "noArrayIndexKey": "off" } } }
     }
   ]
 }
