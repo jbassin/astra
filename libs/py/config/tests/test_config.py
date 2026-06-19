@@ -6,13 +6,23 @@ double as a check that `ref=` resolution works end-to-end without a network call
 
 from __future__ import annotations
 
+import shutil
 import textwrap
 from pathlib import Path
 
 import pytest
 from astra_config import SecretRef, load_config
-from astra_config.secrets import resolve_sops_ref
+from astra_config.secrets import default_secrets_file, resolve_sops_ref
 from astra_ontology_config import CONFIG_KDL_PATH, load
+
+# Actually decrypting needs both the `sops` binary and the (gitignored) age key — host
+# only. CI has neither, so the decrypt-backed checks skip there; the env-override path
+# (test_env_override_wins_over_sops) still exercises resolution everywhere.
+_AGE_KEY = default_secrets_file().parent / "age.key"
+_SOPS_AVAILABLE = shutil.which("sops") is not None and _AGE_KEY.is_file()
+sops_required = pytest.mark.skipif(
+    not _SOPS_AVAILABLE, reason="needs the sops binary + age key (host only, not CI)"
+)
 
 
 def test_real_config_kdl_loads_and_types_are_right() -> None:
@@ -33,6 +43,7 @@ def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
     assert "sops:anthropic_api_key" in repr(cfg.llm.anthropic_api_key)
 
 
+@sops_required
 def test_present_secret_resolves_via_sops() -> None:
     cfg = load()
     assert cfg.llm.anthropic_api_key is not None
@@ -45,6 +56,7 @@ def test_env_override_wins_over_sops(monkeypatch: pytest.MonkeyPatch) -> None:
     assert resolve_sops_ref("sops:anthropic_api_key") == "sk-ant-env-override"
 
 
+@sops_required
 def test_absent_secret_raises_only_on_resolve() -> None:
     # The rotated dice-feed url isn't in SOPS yet — the tree still loads (lazy),
     # but resolving it raises loud.

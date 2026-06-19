@@ -1,5 +1,29 @@
 import { describe, expect, test } from "bun:test";
+import { execFileSync } from "node:child_process";
+import { existsSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { loadConfig, resolveSopsRef, SecretRef } from "./index";
+
+// Actually decrypting needs the `sops` binary + the gitignored age key — host only.
+// CI has neither, so the decrypt-backed check skips there (the env-override test still
+// exercises resolution everywhere), mirroring libs/py/config's `sops_required`.
+function sopsAvailable(): boolean {
+  let dir = resolve(import.meta.dir);
+  for (;;) {
+    if (existsSync(join(dir, "deploy", "sops"))) break;
+    const parent = dirname(dir);
+    if (parent === dir) return false;
+    dir = parent;
+  }
+  if (!existsSync(join(dir, "deploy", "sops", "age.key"))) return false;
+  try {
+    execFileSync("sops", ["--version"], { stdio: "ignore" });
+    return true;
+  } catch {
+    return false;
+  }
+}
+const SOPS = sopsAvailable();
 
 // Runs against the real in-repo config.kdl + SOPS file (age key on host), mirroring
 // libs/py/config's tests so both languages prove the same contract.
@@ -21,7 +45,7 @@ describe("@astra/config", () => {
     expect(JSON.stringify(cfg.llm.anthropicApiKey)).toContain("SecretRef"); // never leaks the value
   });
 
-  test("present secret resolves via sops", () => {
+  test.skipIf(!SOPS)("present secret resolves via sops", () => {
     const cfg = loadConfig();
     const value = cfg.llm.anthropicApiKey?.resolve();
     expect(value?.startsWith("sk-ant-")).toBe(true);
@@ -36,7 +60,7 @@ describe("@astra/config", () => {
     }
   });
 
-  test("absent secret raises only on resolve (lazy)", () => {
+  test.skipIf(!SOPS)("absent secret raises only on resolve (lazy)", () => {
     const cfg = loadConfig();
     expect(cfg.weal.diceFeedUrl).toBeInstanceOf(SecretRef);
     expect(() => cfg.weal.diceFeedUrl?.resolve()).toThrow();
