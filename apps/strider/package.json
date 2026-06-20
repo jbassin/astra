@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "start": "node .output/server/index.mjs",
+    "start": "bun run server.ts",
     "typecheck": "bun run scripts/build-content.ts && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "generate:content": "bun run scripts/build-content.ts",

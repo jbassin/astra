@@ -9,16 +9,22 @@
 # 	# acme_dns cloudflare {env.CF_API_TOKEN}
 # }
 
-# --- Static site builds (served from dist/, produced by the TanStack frontends) ---
-# heart.iridi.cc {
-# 	root * /srv/dist/akasha
+# --- SSR frontends (Decision I — reverse-proxied Compose services, NOT static dist/) ---
+# strider is the template: the SSR server owns the site's root paths; Caddy
+# reverse-proxies it and gates the /editor authoring write path. 0011-0013
+# (akasha-fe / mouthpiece-fe / vellum-fe) follow this same block.
+# strider.iridi.cc {
 # 	encode zstd gzip
-# 	file_server
-# }
-# caster.iridi.cc {
-# 	root * /srv/dist/mouthpiece
-# 	encode zstd gzip
-# 	file_server
+# 	# Authoring write path — restrict before exposing (basicauth / IP allow / mTLS).
+# 	@write path /write-layer
+# 	handle @write {
+# 		# basic_auth { editor $2a$14$...bcrypt... }
+# 		reverse_proxy strider-editor:3001
+# 	}
+# 	# Optionally gate the editor UI too:
+# 	# @editor path /editor*
+# 	# handle @editor { basic_auth { editor $2a$14$... } reverse_proxy strider:10360 }
+# 	reverse_proxy strider:10360
 # }
 
 # --- Service UIs / APIs (reverse-proxied to Compose services) ---

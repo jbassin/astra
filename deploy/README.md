@@ -31,8 +31,29 @@ docker compose restart otel-collector     # forces immediate OpAMP re-registrati
 | 10353 | OTLP HTTP | otel-collector:4318 |
 | 10354 | Caddy http | caddy:80 |
 | 10355 | Caddy https | caddy:443 |
+| 10360 | strider SSR | strider:10360 |
 
-ClickHouse, zookeeper, Dagster Postgres, and the query-service are **internal** (unpublished).
+ClickHouse, zookeeper, Dagster Postgres, the query-service, and `strider-editor:3001` are **internal**
+(unpublished — the editor writer is reached only through Caddy).
+
+## strider — the SSR frontend template (Decision I)
+
+`strider` is the first frontend and the **canonical SSR-Compose-behind-Caddy template** that
+`0011`–`0013` (akasha-fe / mouthpiece-fe / vellum-fe) copy. It is **not** prerendered static `dist/`
+served by `file_server` (the old Decision D model); it is a long-running SSR service:
+
+- **Image** (`apps/strider/Dockerfile`, build context = repo root): a Bun image that `bun install`s the
+  workspace, `bun run build`s the TanStack Start app, and ships `dist/` + `content/` + `server.ts`. One
+  image, two commands (like the Dagster image): `bun run start` (SSR) and `bun run editor:server` (the
+  authoring writer).
+- **`server.ts`**: `dist/server/server.js` is a bare Web-`fetch` handler, so this entry serves the hashed
+  client bundle from `dist/client/` and falls through to SSR for everything else — a self-contained unit.
+- **Edge**: Caddy **reverse-proxies** `strider:10360` for the site and the `/write-layer` authoring path
+  to `strider-editor:3001`. Restrict that write path before exposing it (basic_auth / IP allow / mTLS —
+  see `Caddyfile.example`); it is open at the app layer by design and gated only at the edge.
+
+The new frontend chunks build per-route; pixi stays in a client-only chunk (`<ClientOnly>` + `lazy`), so
+SSR never touches WebGL.
 
 ## Secrets (SOPS + age)
 

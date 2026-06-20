@@ -73,6 +73,40 @@ services:
     networks: [signoz-net]
     restart: unless-stopped
 
+  # --- strider: the first SSR frontend (Decision I) — the template for 0011-0013 ---
+  # One image, two commands (like dagster): the SSR server + the editor writer.
+  strider:
+    build:
+      context: ..
+      dockerfile: apps/strider/Dockerfile
+    image: astra-strider:local
+    container_name: astra-strider
+    command: ["bun", "run", "start"]
+    environment:
+      PORT: "10360"
+    ports:
+      - "10360:10360" # strider SSR (astra range) — also reachable directly
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Authoring sidecar for /editor — writes content/layers/*.md (POST /write-layer
+  # :3001). Open by design; access is gated at the Caddy edge (maintainer call).
+  # Writes are container-local; surfacing new layers in SSR needs an image rebuild.
+  strider-editor:
+    image: astra-strider:local
+    container_name: astra-strider-editor
+    command: ["bun", "run", "editor:server"]
+    depends_on:
+      strider:
+        condition: service_started
+    networks: [signoz-net]
+    restart: unless-stopped
+
   # --- Caddy: TLS / static / reverse-proxy edge ---
   caddy:
     image: caddy:2-alpine
