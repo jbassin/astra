@@ -1,0 +1,30 @@
+[project]
+name = "astra-scribe"
+version = "0.0.0"
+description = "scribe — Craig Discord recordings → per-session merged audio.mp3 + raw script.json transcript (Groq whisper-large-v3), as Dagster partitioned assets (0005). The pipeline head."
+requires-python = ">=3.12"
+dependencies = [
+    "astra-config",
+    "astra-llm",
+    "astra-observe",
+    "astra-ontology",
+    "astra-ontology-being",
+    "astra-ontology-config",
+    "dagster",
+    "pydantic>=2",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astra_scribe"]
+
+[tool.uv.sources]
+astra-config = { workspace = true }
+astra-llm = { workspace = true }
+astra-observe = { workspace = true }
+astra-ontology = { workspace = true }
+astra-ontology-being = { workspace = true }
+astra-ontology-config = { workspace = true }
