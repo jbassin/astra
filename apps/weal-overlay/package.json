@@ -1,0 +1,33 @@
+{
+  "name": "@astra/weal-overlay",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Live dice-roll OBS overlay — ingests weal-bot's v1 roll broadcast, fans it out over SSE, renders an animated ticker OBS captures as a Browser Source.",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "bun run --hot server.ts",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "bun run server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/gothic": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "pixi.js": "^8.18.1",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.13",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.4.0",
+    "tailwindcss": "^4.1.13",
+    "vite": "^6.3.6"
+  }
+}

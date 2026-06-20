@@ -1,0 +1,141 @@
+/* Transparent canvas for OBS. Colors/fonts come from @astra/gothic (imported in
+   main.tsx before this file). */
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+}
+
+.eerie-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  color: var(--color-ink);
+}
+
+/* pixi fx canvas sits behind the ticker text so rolls stay legible through bursts. */
+.eerie-fx {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+/* Top-left ticker. The list is newest-first; `column` puts the newest row at the
+   top, older rolls stacking downward beneath it. */
+.eerie-ticker {
+  position: absolute;
+  left: 2.5rem;
+  top: 2.5rem;
+  z-index: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.eerie-row {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  min-width: 16rem;
+  padding: 0.4rem 0.9rem;
+  font-family: var(--font-body);
+  background: color-mix(in srgb, var(--color-panel) 84%, transparent);
+  border: 1px solid var(--color-rule);
+  border-left: 3px solid var(--color-accent);
+  border-radius: 2px;
+  box-shadow: 0 2px 14px rgb(0 0 0 / 50%);
+  backdrop-filter: blur(2px);
+}
+
+.eerie-row__user {
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  color: var(--color-ink);
+}
+
+.eerie-row__expr {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  color: var(--color-ink-dim);
+}
+
+.eerie-row__dice {
+  font-family: var(--font-mono);
+  font-size: 0.78em;
+  color: var(--color-ink-faint);
+}
+
+.eerie-row__total {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.2em;
+  color: var(--color-accent);
+}
+
+.eerie-row__badge {
+  font-family: var(--font-display);
+  font-size: 0.66em;
+  letter-spacing: 0.12em;
+  padding: 0.12rem 0.42rem;
+  border-radius: 2px;
+}
+
+/* Crit — phosphor-teal glow. */
+.eerie-row--crit {
+  border-left-color: var(--color-accent);
+}
+.eerie-row--crit .eerie-row__total {
+  text-shadow: 0 0 10px var(--color-accent);
+}
+.eerie-row--crit .eerie-row__badge {
+  background: var(--color-accent);
+  color: var(--color-void);
+}
+
+/* Fumble — seal-wax red. */
+.eerie-row--fumble {
+  border-left-color: var(--color-wax);
+}
+.eerie-row--fumble .eerie-row__total {
+  color: var(--color-accent-amber);
+}
+.eerie-row--fumble .eerie-row__badge {
+  background: var(--color-wax);
+  color: var(--color-ink);
+}
+
+/* Whole-life animation: fade/slide in, hold, then fade out. The duration is set
+   inline (RollRow) so it stays in lockstep with Overlay's removal timer. `both`
+   keeps the row hidden after the final keyframe until React unmounts it. */
+.eerie-row {
+  animation-name: eerie-life;
+  animation-timing-function: var(--ease-out, ease-out);
+  animation-fill-mode: both;
+}
+
+@keyframes eerie-life {
+  0% {
+    opacity: 0;
+    transform: translateX(-14px) scale(0.98);
+  }
+  3% {
+    opacity: 1;
+    transform: none;
+  }
+  88% {
+    opacity: 1;
+    transform: none;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(10px) scale(0.98);
+  }
+}

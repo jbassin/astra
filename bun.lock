@@ -55,6 +55,27 @@
         "discord.js": "^14",
       },
     },
+    "apps/weal-overlay": {
+      "name": "@astra/weal-overlay",
+      "version": "0.0.0",
+      "dependencies": {
+        "@astra/config": "workspace:*",
+        "@astra/gothic": "workspace:*",
+        "@astra/observe": "workspace:*",
+        "@fontsource/ibm-plex-mono": "^5.2.7",
+        "pixi.js": "^8.18.1",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+      },
+      "devDependencies": {
+        "@tailwindcss/vite": "^4.1.13",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.4.0",
+        "tailwindcss": "^4.1.13",
+        "vite": "^6.3.6",
+      },
+    },
     "libs/ts/_smoke": {
       "name": "@astra/smoke",
       "version": "0.0.0",
@@ -156,6 +177,8 @@
     "@astra/vellum-lang": ["@astra/vellum-lang@workspace:libs/ts/vellum-lang"],
 
     "@astra/weal-bot": ["@astra/weal-bot@workspace:apps/weal-bot"],
+
+    "@astra/weal-overlay": ["@astra/weal-overlay@workspace:apps/weal-overlay"],
 
     "@babel/code-frame": ["@babel/code-frame@7.29.7", "", { "dependencies": { "@babel/helper-validator-identifier": "^7.29.7", "js-tokens": "^4.0.0", "picocolors": "^1.1.1" } }, "sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw=="],
 

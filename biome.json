@@ -78,6 +78,10 @@
           "suspicious": { "noArrayIndexKey": "off" }
         }
       }
+    },
+    {
+      "includes": ["**/weal-overlay/test/hub.test.ts", "**/weal-overlay/test/server.test.ts"],
+      "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
     }
   ]
 }
