@@ -1,4 +1,5 @@
 import path from "node:path";
+import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -14,5 +15,8 @@ export default defineConfig({
   // contentWatchPlugin runs build-content (content/*.md → src/generated/*.ts) at
   // buildStart and re-runs it on content edits in dev — the template's build-time
   // content pipeline; fs/remark/gray-matter never reach the client bundle.
-  plugins: [contentWatchPlugin(), tanstackStart(), viteReact()],
+  // @tailwindcss/vite compiles gothic's theme.css (`@import "tailwindcss"` +
+  // `@theme` tokens → :root vars, `@apply` → utilities). Without it the gothic
+  // stylesheet ships raw and every var(--color-*) is undefined.
+  plugins: [contentWatchPlugin(), tailwindcss(), tanstackStart(), viteReact()],
 });

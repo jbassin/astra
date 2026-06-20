@@ -11,7 +11,8 @@
       "!**/tests/fixtures/**",
       "!**/linguist/data/**",
       "!**/routeTree.gen.ts",
-      "!**/src/generated/**"
+      "!**/src/generated/**",
+      "!**/public/**"
     ]
   },
   "formatter": {
