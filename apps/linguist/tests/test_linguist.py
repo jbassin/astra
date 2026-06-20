@@ -184,3 +184,35 @@ def test_process_session_end_to_end() -> None:
     assert artifacts.matched is not None  # "Gandolf" keyword present
     assert artifacts.canonical is not None
     assert artifacts.canonical.startswith("000001\tGandolf: Gandolf casts a spell.  ")
+
+
+# ── real-data end-to-end parity (gates E/F/I) ──────────────────────────────
+def test_real_session_canonical_parity() -> None:
+    """A committed historical data.json → match → context → canonical reproduces
+    the committed transcripts/*.txt byte-for-byte (the whole deterministic pipeline)."""
+    from astra_linguist.campaigns import campaign_filename, campaign_views, match_campaign
+    from astra_linguist.canonical import to_canonical
+    from astra_linguist.context import build_context
+    from astra_linguist.historical import DATA_DIR
+    from astra_ontology import load_being
+    from astra_ontology_being import BEING_KDL_PATH
+
+    date = "2025-10-20"
+    transcript = Transcript.model_validate(json.loads((DATA_DIR / f"{date}.json").read_text()))
+    matched = match_campaign(transcript, campaign_views(load_being(BEING_KDL_PATH)))
+    assert matched is not None
+
+    canonical = to_canonical(build_context(transcript, matched))
+    expected = (
+        DATA_DIR.parent / "transcripts" / f"{campaign_filename(matched)}.{date}.txt"
+    ).read_text()
+    assert canonical == expected  # byte-identical to faerrin's committed transcript
+
+
+def test_historical_corpus_present() -> None:
+    """Gate I: the 76 historical sessions are committed + listable (pre-satisfied)."""
+    from astra_linguist.historical import historical_dates
+
+    dates = historical_dates()
+    assert len(dates) == 76
+    assert "2025-10-20" in dates

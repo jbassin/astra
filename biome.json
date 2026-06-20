@@ -8,7 +8,8 @@
       "!**/being.canonical.json",
       "!**/akasha-snapshot.json",
       "!**/fixtures/vellum/**",
-      "!**/tests/fixtures/**"
+      "!**/tests/fixtures/**",
+      "!**/linguist/data/**"
     ]
   },
   "formatter": {
