@@ -43,7 +43,8 @@
       "includes": [
         "**/strider/src/lib/hexUtils.ts",
         "**/strider/src/lib/hexUtils.test.ts",
-        "**/strider/src/lib/layers.test.ts"
+        "**/strider/src/lib/layers.test.ts",
+        "**/strider/src/components/HexMap/**"
       ],
       "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
     }
