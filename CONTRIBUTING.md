@@ -215,6 +215,7 @@ dist/        # site build output (gitignored)
 
 | Need | Where |
 |---|---|
+| **Resume / pick up work** | **`thoughts/shared/RESUME.md`** (current state + next action) |
 | The plan / decisions ledger | `thoughts/astra/plans/0000-astra-migration-roadmap.md` |
 | A subsystem's contract | `thoughts/astra/specs/NNNN-*-spec.md` |
 | Why a decision was made | the roadmap decisions table + the spec + the spine memory |
