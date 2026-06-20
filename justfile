@@ -1,21 +1,34 @@
-# astra task runner.
-#
-# The production edge is the SHARED host reverse proxy at /ruby/data/reverse-proxy
-# (a custom `caddy` binary built with the cloudflare-dns plugin — the stock
-# /usr/bin/caddy lacks it). Its Caddyfile `import`s this repo's sites.caddyfile.
-# These recipes reload/validate that edge with astra's sites, sourcing the
-# Cloudflare ACME-DNS token from SOPS (never from a committed file).
+# astra task runner. Two concerns:
+#   - the Docker substrate (deploy/): Dagster + SigNoz + the strider services.
+#   - the host edge: the SHARED reverse proxy at /ruby/data/reverse-proxy (a custom
+#     `caddy` binary w/ the cloudflare-dns plugin — the stock /usr/bin/caddy lacks
+#     it) whose Caddyfile `import`s this repo's sites.caddyfile. The caddy recipes
+#     reload/validate it, sourcing the ACME-DNS token from SOPS (never committed).
 
 reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"
 sops_file := "deploy/sops/secrets.enc.yaml"
 
+# --- Docker substrate (deploy/) ---
+
+# Bring the stack up (Dagster + SigNoz + strider): builds images, pulls the rest.
+up:
+    cd deploy && docker compose up -d
+
+# Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).
+down:
+    cd deploy && docker compose down
+
+# Stop AND drop volumes — a fresh SigNoz needs re-onboarding on the next `up`.
+down-volumes:
+    cd deploy && docker compose down -v
+
+# --- Host edge (shared reverse proxy) ---
+
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.
 cf_token := "CF_API_TOKEN=\"$(SOPS_AGE_KEY_FILE=" + sops_age_key + " sops -d --extract '[\"cloudflare_key\"]' " + sops_file + ")\""
 
-# Reload the shared reverse proxy (applies astra's sites + everything else it
-# imports). Token is substituted at adapt time, so it lands in the JSON sent to
-# the running daemon and is never written to disk.
+# Reload the shared reverse proxy with astra's sites (CF token from SOPS, substituted at adapt time — never on disk).
 caddy-reload:
     {{cf_token}} {{reverse_proxy_dir}}/caddy reload --config {{reverse_proxy_dir}}/Caddyfile --adapter caddyfile
 
