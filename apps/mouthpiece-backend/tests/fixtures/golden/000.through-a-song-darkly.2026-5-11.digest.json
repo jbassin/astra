@@ -1,0 +1,310 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-5-11",
+  "synopsis": "After finally swapping personal backstories at an inn, the party (Iconoclasm) drives to Ragged Roost, survives an ambush on the road, boards the colossal walking city-machine known as the Strider for a six-day pilgrimage, and plants their keystone — fighting off waves of \"thought\" creatures inside a void-space to birth their own heart, \"Eerie,\" and construct the beginnings of a home aboard the Strider.",
+  "beats": [
+    {
+      "order": 1,
+      "summary": "At the inn the night before departure, one party member calls a late-night talk over milk and whiskey, and for the first time in roughly nine months of in-world travel, the characters share pieces of their backstories with each other, realizing their reasons for traveling together actually align.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Johnny"
+      ],
+      "locations": [
+        "the inn"
+      ],
+      "wikiRefs": [
+        "Iconoclasm"
+      ],
+      "significance": "A rare vulnerability beat for a group that had guarded their pasts through repeated life-and-death experiences; it cements the trust that carries them into the pilgrimage and pays off long-running player reticence.",
+      "details": [
+        "Milk and whiskey as the ritual prompt for the heart-to-heart",
+        "Benny had been 'saving up' his backstory for years and grumbled it 'better have been worth it' once everyone felt obligated to reciprocate",
+        "The shared info made the party's coincidental traveling arrangement suddenly make sense"
+      ],
+      "tone": "warm, reflective",
+      "tableAngle": "Benny reluctantly cracking open backstory after years of hoarding it, then everyone piling on — was it a genuine bonding moment or peer-pressured oversharing?"
+    },
+    {
+      "order": 2,
+      "summary": "Before leaving, the party deliberately buys a bomb, loads into their car, and sets out on the road toward the pilgrimage site.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Johnny"
+      ],
+      "locations": [
+        "the road"
+      ],
+      "wikiRefs": [],
+      "significance": "Establishes the group's signature recklessness and foreshadows the road ambush — the bomb purchase becomes a running point of self-aware comedy about who this party is.",
+      "details": [
+        "'It wouldn't be one of our groups unless we had a cache of a bomb or something'",
+        "NPR playing in the car as they drive and 'shoot the shit'",
+        "The creepy twins doing magic in the back seat"
+      ],
+      "tone": "comedic, casual",
+      "tableAngle": "The party buying a bomb 'just in case' as standard operating procedure — bold prep or asking for trouble?"
+    },
+    {
+      "order": 3,
+      "summary": "On the road the party senses someone tampering with their vehicle, pulls over, discovers something attached to the car roof, and ditches the roof entirely; then ambushers with a rocket launcher and a magic-user attack. Benny evasively dodges the rocket, the party scares off most attackers with an illusory dragon and blows out a tire, leaving the ambushers stranded to menace the next pilgrims.",
+      "characters": [
+        "Benny",
+        "Argyle",
+        "Anzu",
+        "Johnny"
+      ],
+      "locations": [
+        "the road"
+      ],
+      "wikiRefs": [],
+      "significance": "A high-energy combat/chase that the party won decisively, sacrificing an expensive vehicle component to defuse a planted bomb and leaving a lingering threat on the road for less-prepared travelers behind them.",
+      "details": [
+        "Threw out the car roof ('bonnet') — joked it'd be a $20,000 part on a real G-Wagon",
+        "Ambusher tried to detonate the bomb planted on the roof they'd already discarded",
+        "Benny's evasive 'Mindbird' drive skipped the rocket 'like a Dragon Ball Z'",
+        "A scary fake dragon scared off most of the attackers",
+        "Compared to a Scott Pilgrim evil ex with a rocket launcher",
+        "Benny read a newspaper afterward; terrorists took credit for the bombs the party never claimed"
+      ],
+      "tone": "tense, action-comedy",
+      "tableAngle": "Discarding the whole car roof to ditch a bomb — genius improvisation or absurd overreaction that totaled their ride?"
+    },
+    {
+      "order": 4,
+      "summary": "The party has an encounter with Aut, who offers to answer any question and grant favors in exchange for two things, but the group can't think of anything they actually want to know and declines, leaving the boons on the table.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Johnny"
+      ],
+      "locations": [
+        "the road"
+      ],
+      "wikiRefs": [
+        "Aut"
+      ],
+      "significance": "A missed opportunity that the players consciously passed on — they didn't even know what to ask, so they walked away from free information from a clearly devil-adjacent figure.",
+      "details": [
+        "Aut offered to answer literally any question and grant favors like 'leave a door unlocked'",
+        "The party admitted they didn't know what they should want to know, so they took nothing",
+        "Compared Aut to the villain from Who Framed Roger Rabbit"
+      ],
+      "tone": "wry, anticlimactic",
+      "tableAngle": "Turning down a free 'ask any question' boon from a devil because they couldn't think of anything — admirable restraint or a wasted gift?"
+    },
+    {
+      "order": 5,
+      "summary": "The party arrives at Ragged Roost, the former mining town they last visited six months ago, now utterly dwarfed by the completed Strider — a city-on-legs roughly three-quarters of a mile wide standing 300 feet off the ground, casting the whole town in permanent shadow. The town sign's population has been updated from a crossed-out 0 to 75,000, though the party are among the very first to arrive.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Johnny",
+        "Benny"
+      ],
+      "locations": [
+        "Ragged Roost",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "Ragged Roost",
+        "Strider",
+        "Tywelwyn",
+        "Fane",
+        "astrolabe",
+        "orrery"
+      ],
+      "significance": "Establishes the scale and strangeness of the central setting for the arc; the party gets their first proper look at the strider and a mysterious astrolabe/orrery apparatus rising from its top that they can't identify.",
+      "details": [
+        "The Strider is arachnid/centipede-like with eight offset legs per side",
+        "Population sign: crossed-out 2,000, then 0, now 75,000",
+        "A strange gyroscopic astrolabe of interlocking rings tops the city, possibly modifications for the long journey",
+        "Johnny asked if it resembled the orrery found in Tywelwyn's Fane after they killed him",
+        "Driving under the lip plunges them into shadow, needing headlights at 4 p.m."
+      ],
+      "tone": "awe, ominous",
+      "tableAngle": "Noah/Johnny clocking the orrery's resemblance to Tywelwyn's basement device — meaningful clue or paranoid pattern-matching?"
+    },
+    {
+      "order": 6,
+      "summary": "A harlequin servant walking leashed ort-devils flags the party down, confirms they are guest number two, and directs them to load their car into a shipping container that is winched up into the Strider. After a keystone authentication check, they are routed to berth 14 and met by their assigned harlequin servant, who tells them to call him Butler — they later name him Chuck.",
+      "characters": [
+        "Benny",
+        "Anzu",
+        "Argyle",
+        "Johnny"
+      ],
+      "locations": [
+        "the Strider",
+        "parking garage",
+        "berth 14"
+      ],
+      "wikiRefs": [
+        "Strider",
+        "harlequin",
+        "ort",
+        "keystone",
+        "Hildebrandt Corporation",
+        "Master"
+      ],
+      "significance": "The party transitions from outsiders to honored guests/aristocrats aboard the Strider, learning the rules of the pilgrimage: access to most of the vessel, off-limits engine room, plot-of-land ground rights, and the looming social hierarchy of 'above decks' vs 'below decks.'",
+      "details": [
+        "The orts identified via a 29 Nature check — lowest-tier devils, semi-sentient cattle-workers",
+        "Smell of faint sulfur and copper pennies off the harlequin",
+        "Servant offers to be called 'Butler' or 'Thing'; party dubs him Chuck",
+        "Other early arrival is berth 6, the Hildebrandt Corporation, who tied two Humvee-like vehicles to one keystone",
+        "Party requests a casual one-on-one audience with the Master"
+      ],
+      "tone": "ceremonial, curious",
+      "tableAngle": "Naming their fancy caped servant 'Chuck' on the spot — charming or disrespectful to a being who offered to answer to anything?"
+    },
+    {
+      "order": 7,
+      "summary": "On their plot of land, the party places the keystone in an inscribed magic circle and activates it. Benny does the honors with eyes closed and runs away. The keystone pulls all four into a void-like starscape dais where they must feed energy into the burgeoning heart, and ghostly purple (void) and orange (star) 'thought' creatures begin rising from surrounding platforms and converging on them. The party works out that pulling the tether swaps the keystone's alignment color, and that killing a thought while matching its color feeds its energy into the keystone.",
+      "characters": [
+        "Benny",
+        "Anzu",
+        "Argyle",
+        "Johnny"
+      ],
+      "locations": [
+        "the Strider",
+        "the plot of land",
+        "the Fane / void-space"
+      ],
+      "wikiRefs": [
+        "keystone",
+        "Fane",
+        "heart",
+        "void",
+        "star",
+        "Watcher"
+      ],
+      "significance": "The core ritual of the arc: the party must literally fight to birth their own heart, and the void-vs-star color mechanic means every kill is a choice that tilts the heart's eventual nature.",
+      "details": [
+        "Benny crit a perception check (34) for a front-row view",
+        "The keystone's placeholder token looked exactly like Mysterio's helmet",
+        "One action to tug the tether and swap orange/star to purple/void",
+        "Anzu theorized correctly they'd need to be in a certain alignment to affect aligned thoughts",
+        "Benny's repeated 'turn-based decorating' bit reframing the fight as picking which thoughts become house servants"
+      ],
+      "tone": "eerie, tense",
+      "tableAngle": "Whether to lock one color and farm essence (Benny's plan) versus matching color per kill — and whether keeping void-heavy would have given them a cooler 'sinister heart.'"
+    },
+    {
+      "order": 8,
+      "summary": "Initiative-by-initiative, the party grinds through wave after wave of star- and void-aligned thoughts plus two larger spellcasting 'Fractured Ideals,' stacking Benediction, Bless, Dirge of Doom, and frightened debuffs that effectively gave everyone +2 AC and caused enemy after enemy to miss. Johnny weaponizes an unopened gingerbread-house kit as a focus for an 'Ode to a Gingerbread House.' Despite a mid-fight crit on Argyle (a natural 20 by zero) and Benny being repeatedly slowed and frightened by Crushing Despair and Phantasmal Killer, the party clears all twenty spawned thoughts and both Fractured Ideals.",
+      "characters": [
+        "Johnny",
+        "Benny",
+        "Argyle",
+        "Anzu"
+      ],
+      "locations": [
+        "the Fane / void-space"
+      ],
+      "wikiRefs": [
+        "Fractured Ideal",
+        "Benediction",
+        "Dirge of Doom",
+        "Crushing Despair",
+        "Phantasmal Killer",
+        "Othello",
+        "mythic point"
+      ],
+      "significance": "A long, attritional fight that the party dominated through buff-stacking and big crits, even as their action economy and saves got chewed up; the Fractured Ideals resisted most damage (force, ghost touch, and vitality being the exceptions) and the heavy void setup somehow ended star-tilted.",
+      "details": [
+        "Johnny's gingerbread house: 'Ode to a Gingerbread House,' filibustering an enemy into stupefied with it",
+        "Benny failed save after save against will effects, sobbing uncontrollably while still critting in melee",
+        "Argyle: 'That bitch got a 20! That son of a bitch!' on the crit against him",
+        "Anzu's sure strike missed; a re-rolled mythic telekinetic projectile turned into a crit named 'Dwayne the Rock Johnson'",
+        "Benny's Falcata leeched 25 healing — 'just what I needed, a little snack'",
+        "Phantasmal Killer/Crushing Despair kept Benny actionless; PC quips about killing the caster not stopping the spell",
+        "Final essence total: 11 star, 7 void; all 20 minions cleared"
+      ],
+      "tone": "chaotic, triumphant, comedic",
+      "tableAngle": "Benny eating will-save after will-save while everyone ribs him — bad luck or a fragile will-save build, and whether the gingerbread house was the real MVP."
+    },
+    {
+      "order": 9,
+      "summary": "With the keystone overfull of energy, a wordless thought asks what ideal the party strives for. After lengthy deliberation among knowledge, justice, good, and (jokingly) selfish 'just-us' partiality, they settle on knowledge and justice with a tinge of self-interest. The newborn heart manifests as a giant scrolling parchment/seismograph instrument whose text resolves into a face, and it names itself when the party steers it toward an ear theme: 'Ear That Hears the Truth,' nicknamed Eerie.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Johnny"
+      ],
+      "locations": [
+        "the Fane / void-space"
+      ],
+      "wikiRefs": [
+        "heart",
+        "Eerie",
+        "Iconoclasm",
+        "Voidsong",
+        "Voice of Many",
+        "Sigzil Haight",
+        "Prince of Shackles"
+      ],
+      "significance": "Defines the heart's permanent ideals and identity — a major, lasting party asset for the arc — born star-tilted because of how the fight resolved, and shaping what bonuses their future home provides.",
+      "details": [
+        "Argyle pushed for 'good for the sake of good'; Johnny wanted knowledge upholding good",
+        "Running 'just us' justice gag — partiality as the polite word for selfishness",
+        "Rejected names: Foresight, Voice of the Few, the Auditor, the Arbiter, Chronicle, Oracle, and assorted joke names",
+        "GM noted Voice of Many was a heart only Argyle's character would know, from a prior one-shot with Sigzil Haight the Prince of Shackles",
+        "Eerie's first words: 'Greetings. I am Eerie. You have created me.'"
+      ],
+      "tone": "deliberative, momentous, comedic",
+      "tableAngle": "Endless name-bickering ending on 'Eerie' — did they land a fittingly on-theme heart name or just give up, and should the void-tilt have been chased for a darker heart?"
+    },
+    {
+      "order": 10,
+      "summary": "Eerie builds the Fane and asks which third room to add alongside the mandatory bedroom and kitchen. The party chooses a workshop over a hot tub. The star tilt grants a kitchen breakfast bonus (5 temporary HP) and a workshop crafting discount. Chuck arrives to congratulate them, lists the Strider's amenities, confirms the Master audience request, and gives them a crushable figurine to summon him. Discussion turns to growing the heart by feeding it magic items — including possibly sacrificing Johnny's level-6 gingerbread house to unlock a fourth room like a library.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Johnny"
+      ],
+      "locations": [
+        "the Strider",
+        "the plot of land",
+        "Eerie's Fane / the house"
+      ],
+      "wikiRefs": [
+        "Eerie",
+        "Fane",
+        "Strider",
+        "Master",
+        "crushing rune",
+        "pickled demon tongue",
+        "spell heart"
+      ],
+      "significance": "Establishes the party's home base and its upgrade economy (feeding magic items to the heart, 'like Gale from Baldur's Gate'), plus the six-day window before departure with a Master audience and a farewell banquet to come.",
+      "details": [
+        "Chose workshop over Johnny's repeated hot tub lobbying",
+        "GM compared the heart's hunger for magic items to Gale from Baldur's Gate ('like a month before it explodes' — clarified untrue)",
+        "Argyle floated a rune-laundering exploit; GM preemptively vetoed it, joking the 'devs are watching you play and actively patching'",
+        "Johnny set up the gingerbread house as a decoy gatehouse on the path to the real house",
+        "Benny offered a Crushing Rune; Argyle a pickled demon tongue spell heart — both too low-level alone",
+        "Six days until departure, banquet on the evening they disembark"
+      ],
+      "tone": "satisfied, playful, settling-in",
+      "tableAngle": "Hot tub vs. workshop, and whether to torch the beloved level-6 gingerbread house to fund a library — practical upgrade or sacrilege."
+    }
+  ],
+  "discarded": [
+    "Argyle: Josh, I know it's not recorded in the transcript, but I flipped off your bot.",
+    "Argyle: I've started a new project, coding project... I got the Claude Code $100 a month one, and I am churning through stuff now.",
+    "Argyle: The idea is, it's post-apocalyptic world, and there's like steampunk-style Greek god-like things... mech warriors. (extended pitch for Argyle's personal novel/D&D world)",
+    "Gamemaster: I'm sorry, everybody, for PathBuilder being down... / Benny: I had to look at the GitLab to confirm that I wasn't doing something wrong.",
+    "Benny: I hate UPS. I ordered a vacuum one time and they shipped it via UPS... the Bayonne, New Jersey hub.",
+    "Anzu: Tanner is out Monday and Tuesday. / Gamemaster: Does Thursday work for people? (scheduling next session)",
+    "Benny: Josh, whatever you're doing, we're going to keep doing this. (Filipino-accent / 'that's actually him' image-sharing bit)",
+    "Anzu: Josh, do I not have a character assigned to me right now? ... let me just refresh (Foundry technical issues, dice not disappearing on Tanner's screen)"
+  ]
+}

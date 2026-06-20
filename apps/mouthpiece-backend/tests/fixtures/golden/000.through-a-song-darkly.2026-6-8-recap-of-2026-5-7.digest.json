@@ -1,0 +1,746 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-6-8-recap-of-2026-5-7",
+  "synopsis": "Over a month aboard the colossal walking city-machine the Strider, the band Iconoclasm goes from blowing up a city block in Hallia to becoming the political and military hub of a pilgrimage toward the Voidsong: they finally bare their backstories to one another, refuse a god's bargain on the road, board the Strider and birth their own heart \"Eerie,\" then learn the pilgrimage is a devil-hosted death game powered by a lethal energy tithe — culminating in a gala massacre, a harrowing dive into a collapsing void-pocket for a Voidheart, and a coalition summit where they remake themselves as the alliance that keeps the weak factions alive.",
+  "beats": [
+    {
+      "order": 1,
+      "summary": "Over whiskey and milk in a back room of the Sin and Tonic, the four members of Iconoclasm finally lay out their true motives and identities: Johnny lost contact with his god the Watcher after hearing the Voidsong; Anzu was called by the vocalist and fears his rogue sister; Benny reveals he is not a human child but a created android made by a heart named Atum; and Argyle reveals he is a celestial bound as punishment into a demon-spawn body, grandson of the Judge.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny"
+      ],
+      "locations": [
+        "Sin and Tonic",
+        "Hallia"
+      ],
+      "wikiRefs": [
+        "The Watcher",
+        "Voidsong",
+        "Embercall",
+        "hearts",
+        "Atum",
+        "The Judge",
+        "Qureshi family",
+        "Belvedere",
+        "Iconoclasm"
+      ],
+      "significance": "After roughly two years of play (and nine months of in-world travel), the campaign's central character mysteries hit the table at once — a major trust-building turning point that seeds each character's personal stake in the pilgrimage.",
+      "details": [
+        "Benny: 'I am nine years old... but I've been this size since I was zero days old'",
+        "Johnny dies and chats with the Watcher 'mano a mano,' but the last two deaths he heard the Voidsong instead and got nothing",
+        "Argyle: 'I was a celestial for the judge... I failed. Second chance.'",
+        "Benny grumbled his hoarded backstory 'better have been worth it'"
+      ],
+      "tone": "earnest",
+      "tableAngle": "Was the heart-to-heart genuine bonding or peer-pressured oversharing after Benny spent years refusing to crack open his backstory?"
+    },
+    {
+      "order": 2,
+      "summary": "As the party sleeps, three of four fail their saves and all are pulled into the Black and White, where the grinning, gangly god Aut greets them beneath the brutalist Faris, reveals the imprisoned Giant behind the firmament, and offers two deals in exchange for any information they want. As a free teaser he warns that the twins haven't been honest and to ask where Anouk and Anaïs were before the Hallian prime minister was assassinated. After a huddle, the party declines both deals.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Aut"
+      ],
+      "locations": [
+        "The Black and White",
+        "The Faris"
+      ],
+      "wikiRefs": [
+        "Aut",
+        "The Giant",
+        "the firmament",
+        "Voidsong",
+        "The Judge",
+        "Anouk",
+        "Anaïs",
+        "Hallia prime minister",
+        "Raelion"
+      ],
+      "significance": "A direct audience with a major god reveals the cosmic geography and lays a pivotal trust decision: the party refuses to bargain with a god, while Aut's free hint about the twins' role in the assassination plants a major seed of doubt about their own allies.",
+      "details": [
+        "Aut: tall, gangly, bulbous white head, grin 'from one side of the sphere to the other'",
+        "Argyle contemplated suicide rather than shake Aut's hand — 'do I need to kill myself to honor the judge?'",
+        "The deals: turn an unlock on bedroom 'birth four' aboard the strider, or draw three dots at the Voidsong site",
+        "Aut: 'I know everything... except specifically the Voidsong'",
+        "Compared to the villain from Who Framed Roger Rabbit"
+      ],
+      "tone": "eerie",
+      "tableAngle": "Was walking away from an all-knowing god's free information principled restraint or a wasted gift — Argyle admits he'd have signed instantly to kill 'that fat fuck that killed us'?"
+    },
+    {
+      "order": 3,
+      "summary": "Driving the ash-covered, panicking roads of Calaria, the party notices their car decelerating and finds long-range caltrops magically latched to the hood; Argyle's Dispel fails so they simply rip the hood off and drive on as a hoodless hot rod. They then hit a roadblock — three vehicles, a mercenary with a single-shot rocket launcher, and a caster. Johnny conjures an illusory dragon (voiced like Fozzie Bear) that scares off two cars, the 10,800-gold rocket whiffs, and Anzu crits a tire to pop it, flipping the last car.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny"
+      ],
+      "locations": [
+        "Calaria",
+        "the road"
+      ],
+      "wikiRefs": [
+        "long-range caltrops",
+        "Dispel Magic",
+        "Yamamoto Aerospace",
+        "Hildebrandt",
+        "keystone",
+        "the strider",
+        "Othello",
+        "Ragnroost"
+      ],
+      "significance": "First active sabotage tracking the party, resolved through clever non-combat improvisation and illusion rather than brute force — and reveals Yamamoto Aerospace as a desperate Hildebrandt competitor trying to steal a keystone. Leaving them alive was the 'best case' outcome for ambushers who'll now menace the next pilgrims.",
+      "details": [
+        "Anzu's deadpan 'You expect me to build a hood out of a box of scraps in a cave?'",
+        "Argyle's horror at becoming 'hot rod people'",
+        "Johnny's illusory dragon screaming 'I'm hungry for lunch' in a Fozzie Bear voice",
+        "Benny's evasive 'Mindbird' drive skipped the rocket 'like Dragon Ball Z'",
+        "The ambusher tried to detonate the bomb on the roof they'd already discarded",
+        "Argyle's racist guess of 'Yamamoto Airfield' the GM gleefully canonized"
+      ],
+      "tone": "action-packed",
+      "tableAngle": "Discarding the whole car hood to ditch a bomb — genius improvisation or absurd overreaction that totaled their ride?"
+    },
+    {
+      "order": 4,
+      "summary": "The party arrives at Ragged Roost — the former mining town they last visited six months ago, now utterly dwarfed by the completed colossal Strider: an arachnid city-on-legs three-quarters of a mile wide standing 300 feet up, casting permanent shadow. A strange gyroscopic astrolabe of interlocking rings tops the vessel. The town's population sign has been updated from a crossed-out 0 to 75,000, though the party are among the very first to arrive a week early.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny"
+      ],
+      "locations": [
+        "Ragged Roost",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "the Strider",
+        "Tywelwyn",
+        "Fane",
+        "astrolabe",
+        "orrery",
+        "Voidsong"
+      ],
+      "significance": "Marks the threshold of the new arc, ending the campaign's longest single-location stretch in Hallia and establishing the scale and strangeness of the central setting — including an orrery Johnny clocks as resembling the device they found in Tywelwyn's Fane after killing him.",
+      "details": [
+        "Driving under the lip plunges them into shadow, needing headlights at 4 p.m.",
+        "The rings move like a chaotic double pendulum",
+        "Population sign: crossed-out 2,000, then 0, now 75,000",
+        "Johnny asks if the orrery resembled the one in Tywelwyn's Fane"
+      ],
+      "tone": "awe",
+      "tableAngle": "Johnny clocking the orrery's resemblance to Tywelwyn's basement device — meaningful clue or paranoid pattern-matching?"
+    },
+    {
+      "order": 5,
+      "summary": "A harlequin servant leashing ort-devils confirms the party as guest number two, winches their car aboard, and routes them to berth 14 where they meet their assigned servant — who offers to be called 'Butler' or 'Thing' and gets dubbed Chuck. The party learns the rules of the pilgrimage: free run of most of the vessel, an off-limits engine room, a plot of land, and a looming 'above decks' hierarchy. Their other early neighbor is the Hildebrandt Corporation at berth 6.",
+      "characters": [
+        "Benny",
+        "Anzu",
+        "Argyle",
+        "Johnny",
+        "Chuck"
+      ],
+      "locations": [
+        "the Strider",
+        "berth 14"
+      ],
+      "wikiRefs": [
+        "harlequin",
+        "ort",
+        "keystone",
+        "Hildebrandt Corporation",
+        "Master of Ceremonies"
+      ],
+      "significance": "The party transitions from outsiders to honored guests aboard the Strider, getting the lay of the social and physical land — including the harlequins' faint sulfur-and-copper smell that later proves a fiendish tell.",
+      "details": [
+        "Orts identified as lowest-tier semi-sentient devils via a 29 Nature check",
+        "Faint sulfur and copper pennies off the harlequin",
+        "Hildebrandt tied two Humvee-like vehicles to one keystone",
+        "Chuck appears from a crushable figurine that crumbles to dust"
+      ],
+      "tone": "ceremonial",
+      "tableAngle": "Naming their fancy caped servant 'Chuck' on the spot — charming, or disrespectful to a being who offered to answer to anything?"
+    },
+    {
+      "order": 6,
+      "summary": "On their plot of land the party places the keystone in an inscribed circle and is pulled into a void-like starscape, where they must feed energy into a burgeoning heart by killing void-aligned (purple) and star-aligned (orange) 'thought' creatures while matching the keystone's tether color. They grind through twenty thoughts and two larger 'Fractured Ideals' — buff-stacking Benediction, Bless, and Dirge of Doom — while Benny weeps through repeated failed will saves and Johnny weaponizes a gingerbread-house kit as a spell focus.",
+      "characters": [
+        "Johnny",
+        "Benny",
+        "Argyle",
+        "Anzu"
+      ],
+      "locations": [
+        "the Strider",
+        "the plot of land",
+        "the Fane / void-space"
+      ],
+      "wikiRefs": [
+        "keystone",
+        "Fractured Ideal",
+        "heart",
+        "void",
+        "star",
+        "Benediction",
+        "Dirge of Doom",
+        "Crushing Despair",
+        "Phantasmal Killer"
+      ],
+      "significance": "The core ritual of the arc: the party literally fights to birth their own heart, with every kill tilting its eventual nature. The heavy void setup somehow ended star-tilted (11 star, 7 void), shaping the home's future bonuses.",
+      "details": [
+        "Johnny's 'Ode to a Gingerbread House,' filibustering an enemy into stupefied",
+        "Benny sobbing uncontrollably from Crushing Despair and Phantasmal Killer while still critting in melee",
+        "Argyle: 'That bitch got a 20! That son of a bitch!' on a crit against him",
+        "A re-rolled mythic telekinetic projectile crit named 'Dwayne the Rock Johnson'",
+        "The keystone token looked exactly like Mysterio's helmet"
+      ],
+      "tone": "chaotic",
+      "tableAngle": "Benny eating will-save after will-save while everyone ribs him — bad luck or a fragile build, and was the gingerbread house the real MVP?"
+    },
+    {
+      "order": 7,
+      "summary": "With the keystone overfull, a wordless thought asks what ideal the party strives for; after long deliberation among knowledge, justice, good, and jokingly selfish 'just-us' partiality, they settle on knowledge and justice with a tinge of self-interest. The newborn heart manifests as a giant scrolling parchment/seismograph whose text resolves into a face and names itself 'Ear That Hears the Truth,' nicknamed Eerie. It builds the Fane — bedroom, kitchen, and a workshop chosen over a hot tub — and the star tilt grants a breakfast HP bonus and crafting discount.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Johnny",
+        "Eerie"
+      ],
+      "locations": [
+        "the Strider",
+        "the Fane / void-space",
+        "the plot of land"
+      ],
+      "wikiRefs": [
+        "heart",
+        "Eerie",
+        "Fane",
+        "Voidsong",
+        "Voice of Many",
+        "Sigzil Haight",
+        "Prince of Shackles"
+      ],
+      "significance": "Defines the heart's permanent ideals and identity — a major lasting party asset and home base — and establishes the upgrade economy of feeding magic items to grow it, with a Master audience and farewell banquet looming six days out.",
+      "details": [
+        "Eerie's first words: 'Greetings. I am Eerie. You have created me.'",
+        "Rejected names: Foresight, Voice of the Few, the Auditor, the Arbiter, Chronicle, Oracle",
+        "GM compared the heart's hunger for magic items to Gale from Baldur's Gate",
+        "Chose workshop over Johnny's repeated hot tub lobbying",
+        "Argyle floated a rune-laundering exploit the GM preemptively vetoed"
+      ],
+      "tone": "momentous",
+      "tableAngle": "Endless name-bickering ending on 'Eerie' — fittingly on-theme or did they just give up, and should they have chased the void-tilt for a darker heart?"
+    },
+    {
+      "order": 8,
+      "summary": "Settling into the Strider during the pre-departure week, the party meets the field of rival orgs: Benny spars in the gym with the scarred, one-eyed gold lizardfolk Ralph Bishop of the Scale; Anzu meditates on his void paper and crits an occultism check, discovering the Strider's spinning rings reverse and intensify the void's pull; and the crew hosts a poolside cookout (Argyle's Soothing Spring hot tub, Johnny's musical accompaniment) that draws Hildebrandt's Voidsong-resonant Paavo Karu and an oblivious dwarf, Salvado Targona of Solari Sub-surface.",
+      "characters": [
+        "Benny",
+        "Anzu",
+        "Argyle",
+        "Johnny",
+        "Ralph Bishop",
+        "Paavo Karu",
+        "Salvado Targona"
+      ],
+      "locations": [
+        "the Strider",
+        "gym",
+        "the Fane"
+      ],
+      "wikiRefs": [
+        "the Scale",
+        "Hildebrandt Corporation",
+        "Solari Sub-surface",
+        "Voidsong",
+        "void paper",
+        "raiment",
+        "Asteris Lux"
+      ],
+      "significance": "Maps the social and cosmological landscape: the Scale are independent overseers investigating things that disrupt the gods (a natural ally), the spinning rings are propulsion tied to the void, and the cookout sorts the field into potential friends and small-fish underdogs ahead of the death game to come.",
+      "details": [
+        "Bishop turns chairs around to sit backwards — 'So cool'",
+        "Anzu's natural 38 occultism crit on the void paper",
+        "Salvado: 'you and I will be good friends, because I've got no fucking idea what's happening'",
+        "Johnny in 1970s swim trunks with a belt and cowboy boots; Argyle in cop glasses",
+        "Argyle repeatedly: 'They're so fucking cool. God damn it, I hope they're not evil'"
+      ],
+      "tone": "warm",
+      "tableAngle": "Argyle so smitten with how cool the Scale are that he keeps openly hoping they aren't evil — which the table treats as a flashing warning sign."
+    },
+    {
+      "order": 9,
+      "summary": "At a private restaurant meeting the masked Master of Ceremonies receives the party and, when pressed, removes his mask to reveal a deliberately, horrifically burned face. Argyle's religion crit identifies a fiendish sulfur-and-copper scent linking him to 'the Harlequin,' one of four newly organized devils. He reveals — and actively encourages — lethal conflict among the 19+ orgs during the voyage, says he'll meddle out of boredom, warns the party not to be his 'favorite,' and chillingly tells Benny to give his regards to Benny's father.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Anzu",
+        "Benny",
+        "Master of Ceremonies"
+      ],
+      "locations": [
+        "the Strider",
+        "Sardinian restaurant"
+      ],
+      "wikiRefs": [
+        "Master of Ceremonies",
+        "the Harlequin",
+        "the Shackle",
+        "Sigzilheit",
+        "the Hooded",
+        "the Loam",
+        "Illmari",
+        "keystones",
+        "Voidsong"
+      ],
+      "significance": "The session's bombshell: the pilgrimage's host is a devil-tied fiend who reframes the entire voyage as a death game where deaths are expected and 'whoever's left will fight for it' at the void's edge — and the 'father' line implies the devil knows Benny's devil parentage.",
+      "details": [
+        "Burned face 'like it had been dunked into a bonfire' — healed on purpose to stay scarred, meaning he likely died and was revived",
+        "Crit 43 deception against Johnny's Lie to Me feat — completely unreadable",
+        "MC: 'I'll be encouraging it. I'll get bored... it would be boring if you all hung out in a circle and sang together'",
+        "'I make a habit of not entering any kind of circle' — the devil tell",
+        "'Say my regards to your father when you next speak to him'"
+      ],
+      "tone": "grim",
+      "tableAngle": "Anzu's theory was rescuing an innocent singer; now they're ferrying a boatload of killers to hack it apart — was boarding the Strider a mistake at all?"
+    },
+    {
+      "order": 10,
+      "summary": "Rattled by the devil's framing — that killing a heart lets you harvest its leftover energy — the party nearly turns into the aggressors he wants, with Argyle reaching for his sword to pre-emptively jump orgs on the road and Benny proposing they wait for Amber Call's heart to fatten before killing it. Talked down, they commit instead to a defensive-but-armed posture: alliances, a buddy system, Fane defenses, and door-to-door networking among the orgs — securing ties with the Protectorate, an info-sharing skein link with Prime Meridian, and rebuffs from the Iridescent Church and Necrolog.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny"
+      ],
+      "locations": [
+        "the Fane",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "Amber Call",
+        "hearts",
+        "Protectorate",
+        "Prime Meridian",
+        "Tas Millet",
+        "Iridescent Church",
+        "Necrolog",
+        "Pale Lantern Society",
+        "Aut",
+        "Berth 4"
+      ],
+      "significance": "The party's reaction to the devil nearly weaponized them, but instead they pivot to recognizing allies as survival currency, building the intelligence and alliance network that defines the rest of the arc.",
+      "details": [
+        "GM: 'He said I expect there to be violence, and you guys jumped to, well, clearly we need to start killing people on the road'",
+        "Argyle building an 'It's Always Sunny' red-string board",
+        "Code word 'guac' debated to distinguish Argyle from a possible devil-double",
+        "Tas Millet does open cost-benefit analysis to their faces",
+        "Gaspar Caetano of Necrolog smells of formaldehyde and slams the door"
+      ],
+      "tone": "frantic",
+      "tableAngle": "Anzu objecting to the GM declaring the whole party equally devil-addled — even as all four were visibly gung-ho to start a war on the highway."
+    },
+    {
+      "order": 11,
+      "summary": "During the introductions week, two emotional contrasts land: the party grows attached to Garrick Textiles' elderly tiefling Letov Obratz, who proudly refuses shelter in his half-built, energy-starved Fane even as Johnny double-speaks to the team that 'this guy's going to die in a week,' and they connect his heart Whirling and Rags to their skein as a canary. Meanwhile they recruit warm genuine allies — Alkahest Freight's Kadou Floch, who shares his ridiculed theory that the Voidsong is the lost people of Raelion crying for help, and Radiant Arms' android Y'shael.",
+      "characters": [
+        "Letov Obratz",
+        "Kadou Floch",
+        "Y'shael",
+        "Johnny",
+        "Argyle",
+        "Anzu",
+        "Benny"
+      ],
+      "locations": [
+        "Garrick Textiles Fane",
+        "Alkahest Freight Fane",
+        "Radiant Arms Fane",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "Garrick Textiles",
+        "Whirling and Rags",
+        "Alkahest Freight",
+        "Chromatic Drift",
+        "Radiant Arms",
+        "Final Caliber",
+        "Voidsong",
+        "Raelion",
+        "skein network"
+      ],
+      "significance": "Builds the party's 'block' of allies while marking Obratz as a doomed underdog whose fate at the gala will gut-punch the table — and Floch's hopeful Raelion theory deeply moves Johnny, a counterweight to the devil's death-game framing.",
+      "details": [
+        "Obratz: 'I was taught not to lean on others when your own efforts can resolve your situation'",
+        "Argyle pleading with his eyes 'you're going to die'",
+        "Floch: 'You're literally the first person that hasn't laughed in my face'",
+        "Johnny slumps, deeply moved: 'I really like that theory, and I hope that theory's right'",
+        "Y'shael pours tea from water out of their own wrist; a fruit bowl holding three pistols"
+      ],
+      "tone": "bittersweet",
+      "tableAngle": "Argyle floating that they should kidnap Obratz 'for his own good' — the GM literally calling it giving him Stockholm Syndrome."
+    },
+    {
+      "order": 12,
+      "summary": "On the morning of the gala Anzu waits at a restaurant for his estranged, psychically-gifted sister, having sent a Dream Message inviting her to brunch — she never appears. Instead he meets the known antagonist Lark Crowe, a battle-scarred Tengu gun salesman from Sable & Suns. At the same brunch the crew clocks a 'nondescript' man they must make Will saves even to approach: Giannos of the Ministry of Cultural Progress, a glamoured high-level devout of the host who uses mental influence and refuses to ally.",
+      "characters": [
+        "Anzu",
+        "Lark Crowe",
+        "Giannos",
+        "Argyle",
+        "Johnny",
+        "Benny"
+      ],
+      "locations": [
+        "Giacomo's",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "Sable & Suns",
+        "Ministry of Cultural Progress",
+        "Iridescent Church",
+        "Dream Message",
+        "Galzu",
+        "Embercall"
+      ],
+      "significance": "Anzu's emotional reach toward his sister comes up empty while two dangerous threads tighten — Sable & Suns' shady reach aboard the Strider via Crowe, and the revelation that the powerful MoCuP can subtly manipulate the party's own impulses without their knowing.",
+      "details": [
+        "Benny fails the save: 'what would we gain out of talking to him?' — the others realize the impulse wasn't his own",
+        "Giannos's appearance can't be pinned down — human? elf? half? — clearly glamoured",
+        "MoCuP controls the radio waves of Calaria, Tormeré, and parts of Rithwin, 'like Embercall'",
+        "Lark Crowe's replaced glass eye and a sword-scar splitting his beak",
+        "Anzu's plan to greet his stronger sister: 'I would probably say hello'"
+      ],
+      "tone": "uneasy",
+      "tableAngle": "Benny getting compulsion'd out of a conversation while the others dragged him along — and Argyle ribbing Anzu about the chip on his shoulder over his sister."
+    },
+    {
+      "order": 13,
+      "summary": "At the evening departure gala the Master of Ceremonies toasts the pilgrims and the Strider begins its first slip, jumping one voidward every six seconds. He announces an energy 'tithe' drawn from everyone's Voidsong connection — leaving Argyle and Benny fatigued — and when Letov Obratz proves too weak to pay, he is horrifically wrung out like a towel, his skin tearing and leaking black-purple liquid. Johnny and Argyle frantically heal him, only prolonging the torture until his lungs burst, and from the congealing pool antlered Ki-Rin and barghests erupt as the MC steps away.",
+      "characters": [
+        "Letov Obratz",
+        "Johnny",
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Master of Ceremonies"
+      ],
+      "locations": [
+        "the gala ballroom",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "Tithe",
+        "Voidsong",
+        "Ki-Rin",
+        "Barghest",
+        "Voidheart",
+        "Garrick Textiles"
+      ],
+      "significance": "The arc's central mechanic and its first atrocity collide: the Strider runs on the pilgrims' own life-energy, and the doomed underdog the party adored is killed in the most grotesque way imaginable — his death birthing a monster swarm into a ballroom full of orgs, with the party fatigued and surrounded.",
+      "details": [
+        "'this pilgrimage isn't free' — a weekly tithe of energy; totem drains 100 -> 90",
+        "The healing only gave the ritual more to pull from — both lungs burst with a popping sound",
+        "Antlers shoot from the pool: half-deer half-horse Ki-Rin with carnivorous teeth and black chitin, plus slobbering barghests",
+        "After joking about Obratz dying 'like 20 times,' the table went quiet when he actually got dishragged"
+      ],
+      "tone": "grim",
+      "tableAngle": "After ribbing Obratz's inevitable death all session, the table goes silent when it actually happens — and Argyle regrets following 'good-spirited Johnny' up to the body and getting fatigued for it."
+    },
+    {
+      "order": 14,
+      "summary": "The party debates fleeing but chooses to stand and fight on the dance floor — partly to look good for their Prime Meridian allies, partly hoping for spoils. Combat is brutal: a Ki-Rin's divine fire breath incinerates attendees to ash, Benny is struck by an unhealing curse, and rival factions reveal their power — the Protectorate's Tamara and Yao go feral, the Scale's Bishop unleashes a 100-foot Storm of Battle, and Master Grayson casts a modified Dominate to seize a Ki-Rin. Anzu's Mindbird racks up kills with mental and sonic magic until the floor is cleared, leaving the central void portal open.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Benny",
+        "Anzu",
+        "Tamara",
+        "Yao",
+        "Mr. Bishop",
+        "Master Grayson"
+      ],
+      "locations": [
+        "the dance floor",
+        "the gala ballroom"
+      ],
+      "wikiRefs": [
+        "Protectorate",
+        "the Scale",
+        "Divine Wrath",
+        "Dominate",
+        "Storm of Battle",
+        "Ki-Rin",
+        "barghest",
+        "unhealing curse",
+        "Mindbird"
+      ],
+      "significance": "Establishes the lethality of the encounter and the relative might of the surrounding factions, while crucially exposing Grayson commandeering a monster — a hostile move the party scrambles to publicize and a slow-burn antagonist confirmed.",
+      "details": [
+        "Ki-Rin's 36-point fire breath: 'their ashes blown to the wind'",
+        "Benny's wound 'turns black' — unhealing curse",
+        "Tamara cracks an ampoule in her teeth, red mist pouring off as she berserks",
+        "Yao's will save spares only Argyle, vaporizing three unknowns",
+        "Anzu repeatedly 'snipes' kills from Benny — 'Mindbird claims another'"
+      ],
+      "tone": "spectacular",
+      "tableAngle": "Argyle's instant flip from 'the Protectorate are so cool' to 'the Scale are way cooler' the moment Bishop's lightning storm fired — fickle faction fandom; plus Anzu's gleeful kill-stealing from Benny."
+    },
+    {
+      "order": 15,
+      "summary": "Investigating the lingering portal, Anzu reveals it's a self-closing fracture in the weave caused by the tithe violently extracting energy — not a designed feature but a side effect of the Strider's crude void-tech, meaning the whole vessel's weave is now weakened and portals could open anywhere. Othello scouts beyond it: an inverted ballroom with hands pushing through elastic walls, a floating chitinous purple Voidheart orb above a Giant hand pulled from the ground, and echolocating hand-masses. Bishop gives a grim read that the tithe was designed to breed conflict and will escalate as factions die.",
+      "characters": [
+        "Anzu",
+        "Argyle",
+        "Johnny",
+        "Benny",
+        "Bishop",
+        "Lance",
+        "Othello"
+      ],
+      "locations": [
+        "the dance floor",
+        "the void portal",
+        "inverted ballroom"
+      ],
+      "wikiRefs": [
+        "the weave",
+        "tithe",
+        "Voidheart",
+        "hand of the void",
+        "Joker Worlds",
+        "the wall",
+        "Strider"
+      ],
+      "significance": "Major worldbuilding revelation that reframes the danger from a one-off to a structural hazard: the tithe damages the fabric of magic across the Strider, the journey leads to a mysterious 'wall' from which no one returns, and some factions will resort to murder to pay.",
+      "details": [
+        "Othello takes 20 void damage scouting and retreats",
+        "Lance habitually skins everything; Johnny tearfully forced to skin barghests",
+        "Argyle hacks off a Ki-Rin head as a trophy",
+        "Bishop: 'This is right fucked... somebody designed this to cause conflict amongst us'",
+        "A 'wall' past Void ~1.4 million from which no one returns"
+      ],
+      "tone": "ominous",
+      "tableAngle": "Argyle making Johnny — who had the worse survival skill — do the gross skinning anyway 'because I thought it'd be funny.'"
+    },
+    {
+      "order": 16,
+      "summary": "The party decides to extract the Voidheart before the portal closes: they stack Godspeed, silence, and guidance on Benny and send him sprinting 85 feet to crit-grab the orb. Removing the orb triggers a catastrophic collapse — temperature plummets, hands burst through the walls — and the thousand-foot-reach hand-of-the-void creatures batter the party until both Benny (dying) and Argyle are knocked unconscious. Benny shoves Johnny and Anzu through the portal before going down; the two dive back to drag the unconscious bodies out one at a time, and Anzu's Gravity Well crit-pulls both himself and the dropped Voidheart through just as the space collapses.",
+      "characters": [
+        "Benny",
+        "Argyle",
+        "Johnny",
+        "Anzu"
+      ],
+      "locations": [
+        "the void portal",
+        "inverted ballroom",
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "Voidheart",
+        "Godspeed",
+        "silence",
+        "hand of the void",
+        "Gravity Well",
+        "death save",
+        "hero point"
+      ],
+      "significance": "The dramatic climax — a near total-party-knockout escape from a collapsing pocket dimension that nonetheless secures the Voidheart, with Argyle surviving on a nat-20 death save and clutch use of Gravity Well, shoves, and drags. Cements the party as the craziest, most lethal crew aboard the Strider.",
+      "details": [
+        "Benny goes 'super saiyan' — 'His already blonde hair just gets longer'",
+        "Silence works because the hand-creatures echolocate",
+        "The monster's real stat-block reads 'reach 1000' — a re-skinned creature",
+        "Argyle survives on a nat-20 death save, burns his last hero point to stabilize",
+        "They drag a Giant hand-creature out into real space with them",
+        "GM: 'The whole thing took 12 seconds.'"
+      ],
+      "tone": "harrowing",
+      "tableAngle": "The debrief argument over whether the whole party needed to follow Benny in at all — Argyle: 'we definitely shouldn't have followed Benny,' since he could've soloed it."
+    },
+    {
+      "order": 17,
+      "summary": "Back in real space, combat against the dragged-out Hand of the Void: Ralph crits with a holy spear, revealing it's vulnerable to holy and suppressing its regeneration, while Silven Grayson — maintaining his 'innocent healthcare worker' charade — pointedly chooses NOT to catch Argyle in his Vampiric Exsanguination cone (a level 6-7 spell with a save DC of 35, 'much scarier than level 6'). Benny clutch hero-point-rerolls a crit-fail into a crit-success on the dominating-will save, and after Grayson is seen reaching for a scroll to possibly raise the corpse, Argyle Bone Shakers it and hauls the body into the void to deny him an undead minion.",
+      "characters": [
+        "Benny",
+        "Johnny",
+        "Ralph",
+        "Argyle",
+        "Silven Grayson",
+        "Lance",
+        "Ichel"
+      ],
+      "locations": [
+        "the gala ballroom",
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "Hand of the Void",
+        "Vampiric Exsanguination",
+        "Bone Shaker",
+        "the Scale",
+        "Voidheart"
+      ],
+      "significance": "Confirms the Scale's firepower as allies and tests Grayson, whose restraint keeps his cover intact but reveals him as a genuine high-level threat — and Argyle's reflex success denies Grayson the body, framing the slow-burn antagonist relationship going forward.",
+      "details": [
+        "Ralph crits for 48, spear 'burns with holy light'",
+        "Lance's sniper stat block literally reads 'Jaws' with a chomping animation",
+        "Grayson's Vampiric Exsanguination fails the Hand's save at DC 35",
+        "Argyle: 'Yeah, I'm going to bone shake him' — chucks the corpse into the void",
+        "Grayson quietly pockets the unused scroll"
+      ],
+      "tone": "triumphant",
+      "tableAngle": "Whether Argyle holding the Voidheart in the open was brave or dumb — he bet Grayson wouldn't blow his cover, and the dice happened to agree; plus Johnny burning a hero point and mythic die to still miss his one spell."
+    },
+    {
+      "order": 18,
+      "summary": "With the abomination dead, the party drives to the ruined Garrick Textiles Fane to loot it before Grayson can. They find it crumbling and the failing heart Whirling in Rags lucid about its abandonment; after debating talking it into surrender, they send Johnny and Benny — 'the two with the highest kill count' — to 'gently speak to the heart,' and Benny rips out its core thread, killing it instantly. The Fane collapses as everyone makes their reflex saves to escape. They net only ~10 energy since Garrick couldn't afford the tithe.",
+      "characters": [
+        "Johnny",
+        "Benny",
+        "Anzu",
+        "Argyle",
+        "Whirling in Rags"
+      ],
+      "locations": [
+        "Garrick Textiles Fane",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "Garrick Textiles",
+        "Whirling in Rags",
+        "Fane",
+        "the heart",
+        "tithe"
+      ],
+      "significance": "First demonstration of the three ways to handle a rival heart — kill (half energy), leave, or claim (full energy but must defend) — and establishes the rule that killing a heart from inside its Fane collapses the building.",
+      "details": [
+        "Whirling in Rags: 'I am aware that all of my contractors are dead... So not good.'",
+        "Benny's thievery check (36) plucks the core like 'a small ball of yarn'",
+        "GM: 'From now on I think I have to give hearts shorter names'",
+        "The fabric is still loaded in the truck out back, not in the Fane"
+      ],
+      "tone": "darkly comedic",
+      "tableAngle": "Benny wanting to ask the heart to 'go willingly' while Argyle just wanted to rip it out and dip — and the irony of sending the party's two most violent members in to negotiate gently."
+    },
+    {
+      "order": 19,
+      "summary": "Hauling the stolen 18-wheeler of fabric back to base, the party runs a long economy session: they feed magic items (a pickled demon tongue, the level-6 gingerbread house, a choker of elocution, a crushing rune, barghest fur, Ki-Rin blood) into Eerie, analyze the Voidheart as a magic-dampening item, and decide to feed in HALF of it to seed a future magic-negation project while buying a Siphon Array (+2 energy per future sacrifice) — earning a multi-purpose garage. Argyle insists on mounting the rotting, unpreserved Ki-Rin head above the front door as a trophy.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Anzu",
+        "Johnny",
+        "Eerie"
+      ],
+      "locations": [
+        "the party's Fane/base",
+        "Strider undercroft"
+      ],
+      "wikiRefs": [
+        "Eerie",
+        "Siphon Array",
+        "Voidheart",
+        "Ki-Rin",
+        "barghest",
+        "the tithe"
+      ],
+      "significance": "Major strategic investment: the Siphon Array compounds all future energy gains and preserving half the Voidheart opens a long-term path to magic-dampening defenses against Grayson's high-level spells — even as the party's increasingly ostentatious base (spy tower, 18-wheeler, rotting elk head) fuels rumors next to nervous rivals.",
+      "details": [
+        "Eerie: 'I have no allegiance to others of my kind. My only allegiance is to you.'",
+        "Argyle, gleeful: 'No, guys! I want it to go high! I want to buy something big!'",
+        "Anzu: don't bank too much or 'he's going to be like one of those flies' rubbing its hands",
+        "Anzu, repeatedly: 'This thing has not been properly preserved. This is disgusting.'",
+        "Benny's meme: the Voidheart 'hanging out with Eerie... the dog is the only one that realizes it's a fucking bobcat'"
+      ],
+      "tone": "strategic",
+      "tableAngle": "Argyle's giddy compulsion to dump every item and 'buy something big' versus Anzu's pragmatic 'the more you put in, the more he can steal from us' — and the trophy-hunter vanity of a rotting head out front while trying to lay low."
+    },
+    {
+      "order": 20,
+      "summary": "After the Protectorate doesn't respond and Prime Meridian declines to attend in person, the party gets paranoid and cancels their planned debrief to drive across the Strider for a midnight wellness check on the Protectorate's bunker — possibly tangled with Aut's secret task to unlock a door at Berth 4. They find the compound intact and are truthfully told that Yao and Tamara are fine, just recovering and not accepting visitors. Their Scale allies Ichel and Bishop, dragged along, are visibly unimpressed.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Benny",
+        "Anzu",
+        "Ichel",
+        "Bishop"
+      ],
+      "locations": [
+        "the Protectorate compound",
+        "Berth 4",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "the Protectorate",
+        "Yao",
+        "Tamara",
+        "Aut",
+        "Berth 4",
+        "the Scale"
+      ],
+      "significance": "A self-inflicted detour driven by paranoia that costs the party credibility with the very allies they'd summoned — framing the tension between their instincts and the patience their coalition requires.",
+      "details": [
+        "Benny: 'Sussy birth four.'",
+        "Ichel: 'That's it? We drove over here so that you could talk to the security guard out front?'",
+        "GM as Ichel: 'we're kind of just along for the entertainment at this point'",
+        "Johnny in sunglasses at night does the talking",
+        "Argyle, defensive on repeat: 'checking on our comrade really isn't that crazy'"
+      ],
+      "tone": "anticlimactic",
+      "tableAngle": "Whether the midnight wellness-check was 'good diplomacy' as Argyle insisted or a paranoid waste of everyone's time — especially after they were the ones who'd called the meeting."
+    },
+    {
+      "order": 21,
+      "summary": "The full alliance summit convenes. The factions surface the brutal math: the tithe is a shared ~400 pot split among all factions, so as factions fall the tithe rises for everyone — and Tas of Prime Meridian bluntly names the unspoken truth that 'at some point we will have to consider cutting away some of the members of the flock.' Closing hard-nosed negotiations, the party transforms into the alliance's hub: they agree to absorb the two non-combatant factions most likely to die — Solari Sub-surface and Alkahest Freight — gaining ~25 energy from their hearts, cede territory to the Protectorate, recruit Radiant Arms as a buffer base, and pledge to cover the tithe offsets for Prime Meridian and Hildebrandt.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Anzu",
+        "Benny",
+        "Tas",
+        "Bishop",
+        "Y'shael",
+        "Salvado",
+        "Kadou",
+        "Paavo"
+      ],
+      "locations": [
+        "the party's Fane/base",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "the tithe",
+        "Joker Worlds",
+        "Prime Meridian",
+        "Solari Sub-surface",
+        "Alkahest Freight",
+        "Radiant Arms",
+        "Hildebrandt",
+        "the Protectorate",
+        "the Scale"
+      ],
+      "significance": "The strategic core of the campaign crystallizes and the party remakes itself: from a single reckless band into the coalition hub that keeps the weak factions alive — locking in a bloc against Grayson at the cost of a higher recurring tithe they've sworn to bankroll, with a ~4.5-month journey to the wall ahead.",
+      "details": [
+        "Tas: 'it is obvious to me that at some point we will have to consider cutting away some of the members of the flock'",
+        "Salvado, near the chopping block: 'You guys, you wouldn't let me die, right?'",
+        "Johnny's mythic reroll on the debrief rolled ANOTHER natural one",
+        "Bishop: 'you don't need to pay our tithe. We're fine paying the increase if it means you're keeping other groups safe, because they'd die otherwise.'",
+        "Travel math: one void per 6 seconds, ~15 cycles to the wall"
+      ],
+      "tone": "tense",
+      "tableAngle": "Whether the party's generosity (paying everyone's tithe offsets, sparing the weak factions) is shrewd coalition-building or Argyle's spreadsheet-brain overcommitting them to bankrolling the whole ship — plus Johnny's cursed double-nat-1 nearly tanking the debrief."
+    }
+  ],
+  "discarded": []
+}

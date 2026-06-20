@@ -1,0 +1,1248 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-6-8",
+  "title": "Just Us, Dressed Up Nice",
+  "hosts": {
+    "A": {
+      "name": "Bram",
+      "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+    },
+    "B": {
+      "name": "Maeve",
+      "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+    },
+    "C": {
+      "name": "Pip",
+      "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+    }
+  },
+  "turns": [
+    {
+      "speaker": "A",
+      "text": "—no but you have to start where it actually started, which is us getting yanked out of the hole, the dance floor hole, and we drag the whole — what was it, the Voidheart and the giant hand thing out with us—"
+    },
+    {
+      "speaker": "C",
+      "text": "Scooby-Doo skedaddle."
+    },
+    {
+      "speaker": "A",
+      "text": "That was Johnny's line, \"we Scooby-Doo skedaddled with the Voidheart,\" yeah, and now we're just standing in the middle of the gala with a monster made of hands—"
+    },
+    {
+      "speaker": "B",
+      "text": "Severed hands."
+    },
+    {
+      "speaker": "C",
+      "text": "Right but — okay, why does it have hands. Like why hands. What's it doing with the hands—"
+    },
+    {
+      "speaker": "B",
+      "text": "Echolocation."
+    },
+    {
+      "speaker": "C",
+      "text": "[thoughtful] ...the hands hear?"
+    },
+    {
+      "speaker": "B",
+      "text": "It navigates by sound."
+    },
+    {
+      "speaker": "C",
+      "text": "That's worse. That's so much worse."
+    },
+    {
+      "speaker": "A",
+      "text": "And Benny and Argyle are both on the floor, prone, fatigued, all beat up, and Benny's wrapped in this — the silence aura thing, so no magic can happen near him, which—"
+    },
+    {
+      "speaker": "B",
+      "text": "Which you did to him."
+    },
+    {
+      "speaker": "A",
+      "text": "Which we did to him, yeah, that's the thing, Josh — the GM straight up went, why did you buff this guy with silence and invisibility and then all stand out in the open where you can't reach him."
+    },
+    {
+      "speaker": "C",
+      "text": "And nobody could even check, the — what's it, Pathbuilder was down."
+    },
+    {
+      "speaker": "A",
+      "text": "[excited] Pathbuilder was down! So nobody could look at their own sheet for like the first two rounds, it was beautiful chaos."
+    },
+    {
+      "speaker": "C",
+      "text": "So whose call was the silence Benny."
+    },
+    {
+      "speaker": "A",
+      "text": "That was Johnny, he owned it. But Anzu kind of defended it, it was a — what's the word, the metagaming thing—"
+    },
+    {
+      "speaker": "C",
+      "text": "You don't want to act like you know the monster's gonna pop up."
+    },
+    {
+      "speaker": "B",
+      "text": "Right."
+    },
+    {
+      "speaker": "C",
+      "text": "I mean. Sure. But also you've now Saran-wrapped your strongest guy in a no-spell bubble and walked away from him."
+    },
+    {
+      "speaker": "A",
+      "text": "I love and fear that man, by the way, Josh — he didn't group his hand tokens. Sixty-three of them, all loose, because he's a smart man."
+    },
+    {
+      "speaker": "B",
+      "text": "Wasn't sixty-three."
+    },
+    {
+      "speaker": "A",
+      "text": "It was a lot of hands."
+    },
+    {
+      "speaker": "C",
+      "text": "It was hand-shaped, leave it."
+    },
+    {
+      "speaker": "A",
+      "text": "So initiative goes, and the Scale's there watching — Ralph, the Bishop guy—"
+    },
+    {
+      "speaker": "B",
+      "text": "Ralph's Bishop's. The cleric."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, Ralph, and he chucks a spear and CRITS, forty-eight damage, and the spear like lights up with holy fire—"
+    },
+    {
+      "speaker": "C",
+      "text": "Burns with holy light, the read-out said."
+    },
+    {
+      "speaker": "A",
+      "text": "Burns with holy light, and that's how we find out the hand thing's vulnerable to holy and it shuts off its regeneration, which is huge, because otherwise we're there all night."
+    },
+    {
+      "speaker": "C",
+      "text": "That's a good crit to find a weakness on. Lucky."
+    },
+    {
+      "speaker": "B",
+      "text": "Lucky."
+    },
+    {
+      "speaker": "A",
+      "text": "And then Lance opens up — Lance the sniper, and I have to tell you his actual stat block, the name in the block, it just says \"Jaws.\""
+    },
+    {
+      "speaker": "C",
+      "text": "Jaws?"
+    },
+    {
+      "speaker": "A",
+      "text": "Jaws. With a little chomp animation."
+    },
+    {
+      "speaker": "C",
+      "text": "Why does the sniper—"
+    },
+    {
+      "speaker": "A",
+      "text": "Don't know. Don't know! He's a great shot though."
+    },
+    {
+      "speaker": "C",
+      "text": "That feels like a melee name on a ranged guy. That's a — somebody mislabeled a token."
+    },
+    {
+      "speaker": "B",
+      "text": "It's always something."
+    },
+    {
+      "speaker": "A",
+      "text": "And here's the moment, here's the actual moment — Grayson. Silven Grayson, who's still doing his whole innocent-healthcare-worker bit—"
+    },
+    {
+      "speaker": "C",
+      "text": "The amber guy. White hair, slate eyes, very — he's a radio person, isn't he. Write it down. Everyone fancy is a radio person eventually."
+    },
+    {
+      "speaker": "B",
+      "text": "He's Amber Call."
+    },
+    {
+      "speaker": "C",
+      "text": "Same energy."
+    },
+    {
+      "speaker": "A",
+      "text": "So Grayson casts this big vampire cone, the — Vampiric Exsanguination, and Argyle's standing right there holding the Voidheart out in the open, and the cone could catch Argyle, but Grayson rolls and chooses NOT to clip Argyle, he hits the hand instead to keep his cover—"
+    },
+    {
+      "speaker": "C",
+      "text": "Because he can't be seen blasting the nice party."
+    },
+    {
+      "speaker": "A",
+      "text": "Right."
+    },
+    {
+      "speaker": "C",
+      "text": "So wait — was that brave of Argyle or was that dumb. Holding the heart out like that."
+    },
+    {
+      "speaker": "A",
+      "text": "It was brave!"
+    },
+    {
+      "speaker": "C",
+      "text": "It was a bet. He bet Grayson wouldn't break cover to grab it."
+    },
+    {
+      "speaker": "B",
+      "text": "And the dice agreed with him."
+    },
+    {
+      "speaker": "C",
+      "text": "The dice agreed. That's not bravery, that's — Grayson failed a diplomacy roll into being nice. Argyle just stood there and got lucky."
+    },
+    {
+      "speaker": "A",
+      "text": "He survived a dominating aura too, the bloodied-thing's aura, made the will save, took like — eleven spirit damage, nothing."
+    },
+    {
+      "speaker": "C",
+      "text": "See and that's so Argyle though, that's — he's standing in the open holding the cursed orb like, surely no one will do anything bad, I am simply a man with an orb."
+    },
+    {
+      "speaker": "A",
+      "text": "The self-litigating lawyer."
+    },
+    {
+      "speaker": "C",
+      "text": "Considers suicide at a handshake but holds the void cube in a firefight, sure."
+    },
+    {
+      "speaker": "B",
+      "text": "That's the spell DC, by the way. Thirty-five."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, the DC."
+    },
+    {
+      "speaker": "B",
+      "text": "That's what scared everyone. His saves are at thirty-five."
+    },
+    {
+      "speaker": "A",
+      "text": "That's the thing, we all clocked it — these are level six, seven spells but the DC's thirty-five, so it's, Johnny said it, \"much scarier than level six.\""
+    },
+    {
+      "speaker": "C",
+      "text": "A seven knows everything and a thirty-four knows nothing, but a thirty-five apparently dominates your soul."
+    },
+    {
+      "speaker": "A",
+      "text": "Ha—"
+    },
+    {
+      "speaker": "C",
+      "text": "...inverted dice don't even apply to the bad guys, that's not fair."
+    },
+    {
+      "speaker": "A",
+      "text": "So then Benny — Benny gets up, runs back in, re-silences himself AND Argyle on the way—"
+    },
+    {
+      "speaker": "B",
+      "text": "Which cuts off the casters again."
+    },
+    {
+      "speaker": "A",
+      "text": "—and double-slices the hand, and he crit-fails the will save, BUT, hero point, rerolls it, and turns the crit-fail into a crit-SUCCESS—"
+    },
+    {
+      "speaker": "C",
+      "text": "From the bottom to the top."
+    },
+    {
+      "speaker": "A",
+      "text": "[excited] From the very bottom to the very top, clutch, and the table loses it."
+    },
+    {
+      "speaker": "C",
+      "text": "Okay see THAT's bravery. Benny earned his."
+    },
+    {
+      "speaker": "A",
+      "text": "And then Johnny — poor Johnny, he's got one attack spell, he loads it up, Sure Strike, a mythic die on it, the whole — and whiffs."
+    },
+    {
+      "speaker": "C",
+      "text": "Misses."
+    },
+    {
+      "speaker": "A",
+      "text": "Misses. And he goes, \"I think that was a waste. What a bummer.\""
+    },
+    {
+      "speaker": "B",
+      "text": "And then they told him it would've hit."
+    },
+    {
+      "speaker": "A",
+      "text": "They told him it would've hit! If he hadn't — agh, brutal."
+    },
+    {
+      "speaker": "C",
+      "text": "Wait would've hit how—"
+    },
+    {
+      "speaker": "B",
+      "text": "The mythic die. The number under it landed."
+    },
+    {
+      "speaker": "C",
+      "text": "Oh that's — oh no."
+    },
+    {
+      "speaker": "A",
+      "text": "Burned a hero point's worth of stuff, sort of, and the math says you connect, and you don't."
+    },
+    {
+      "speaker": "C",
+      "text": "His god really has ghosted him, huh."
+    },
+    {
+      "speaker": "A",
+      "text": "Ha—"
+    },
+    {
+      "speaker": "C",
+      "text": "No I'm serious, that's — the radio god's right there, the all-knowing one, and he won't ask it the one real question, and now even the dice are—"
+    },
+    {
+      "speaker": "A",
+      "text": "That's a different—"
+    },
+    {
+      "speaker": "C",
+      "text": "It's all connected. Cursed man."
+    },
+    {
+      "speaker": "A",
+      "text": "Anyway Ralph finishes it, spear again, and then — this is the flourish — Argyle goes \"yeah, I'm gonna bone shake him,\" casts Bone Shaker on the corpse, and physically chucks the body twenty-five feet back into the void portal so it can never get raised."
+    },
+    {
+      "speaker": "C",
+      "text": "Because Grayson was reaching for a scroll."
+    },
+    {
+      "speaker": "A",
+      "text": "Grayson was seen reaching for a scroll, yeah, probably to raise the hand thing as his own pet—"
+    },
+    {
+      "speaker": "B",
+      "text": "He put it back. Unused."
+    },
+    {
+      "speaker": "A",
+      "text": "Put the skull back in his robes, unused, just — pockets it, very quiet, very menacing."
+    },
+    {
+      "speaker": "C",
+      "text": "See and I love that Johnny burns the whole kit for a miss and then Argyle just YEETS a corpse and that's the cool moment of the round. That's the spotlight, gone."
+    },
+    {
+      "speaker": "A",
+      "text": "It is a little unfair."
+    },
+    {
+      "speaker": "C",
+      "text": "It's very Argyle. Whoever did the last cool thing is his favorite person, and this round HE did the last cool thing, so—"
+    },
+    {
+      "speaker": "B",
+      "text": "He's a fickle little man."
+    },
+    {
+      "speaker": "C",
+      "text": "Fickle little man."
+    },
+    {
+      "speaker": "A",
+      "text": "So combat's over, everybody heals up, and Argyle pulls Bishop aside, quietly, tells him Grayson was dominating a monster to make it attack people earlier in the night."
+    },
+    {
+      "speaker": "C",
+      "text": "And Bishop's like, cool, can't do anything with that."
+    },
+    {
+      "speaker": "A",
+      "text": "Pretty much, he goes, there's no evidence, it'll be — what'd he say—"
+    },
+    {
+      "speaker": "B",
+      "text": "\"Difficult to litigate in terms of public opinion.\""
+    },
+    {
+      "speaker": "A",
+      "text": "Right."
+    },
+    {
+      "speaker": "C",
+      "text": "So what do we GAIN from snitching with no proof, that's my — like now Bishop just thinks you're paranoid."
+    },
+    {
+      "speaker": "A",
+      "text": "No, it's on the record now, it's in allied hands—"
+    },
+    {
+      "speaker": "C",
+      "text": "[interrupts] It's in allied hands and unactionable. That's just gossip with a clipboard."
+    },
+    {
+      "speaker": "B",
+      "text": "It's \"be on your guard.\""
+    },
+    {
+      "speaker": "C",
+      "text": "That's all it is."
+    },
+    {
+      "speaker": "A",
+      "text": "And meanwhile Johnny's just standing there bleeding from the eyes and the nose, dried blood everywhere from the portal, like nobody's checked on him—"
+    },
+    {
+      "speaker": "C",
+      "text": "Nobody. The man's hemorrhaging and they're doing politics."
+    },
+    {
+      "speaker": "A",
+      "text": "And the totem — the keystone totem updates as the portal shrinks, because the Voidheart's out now, and it reads, uh — nine days till the next tithe, cost is twenty-one, energy eighty."
+    },
+    {
+      "speaker": "B",
+      "text": "Cost twenty-one. Energy eighty."
+    },
+    {
+      "speaker": "C",
+      "text": "And nine days is the clock."
+    },
+    {
+      "speaker": "B",
+      "text": "Every nine days. Pay or the faction dies."
+    },
+    {
+      "speaker": "C",
+      "text": "Cheerful little ship."
+    },
+    {
+      "speaker": "A",
+      "text": "So then we — okay, we drive out to loot the Garrick place before Grayson can, the textiles one—"
+    },
+    {
+      "speaker": "B",
+      "text": "Garrick Textiles Fane."
+    },
+    {
+      "speaker": "A",
+      "text": "Garrick Textiles, the fabric one, it's a Concordia thing, and we get there and it's already crumbling, falling apart, and there's no fabric inside—"
+    },
+    {
+      "speaker": "C",
+      "text": "The fabric's in the truck out back."
+    },
+    {
+      "speaker": "A",
+      "text": "It's all loaded in an eighteen-wheeler out back, yeah, and inside is the dying heart, the — Whirling in Rags."
+    },
+    {
+      "speaker": "C",
+      "text": "Great name."
+    },
+    {
+      "speaker": "A",
+      "text": "And Josh, after the giant-hand thing, goes — \"from now on I have to give hearts shorter names because I can't have you all calling it something-glove.\""
+    },
+    {
+      "speaker": "C",
+      "text": "Something Glove. That's its band name now."
+    },
+    {
+      "speaker": "B",
+      "text": "It's never Chuck either. They never name them Chuck when they should."
+    },
+    {
+      "speaker": "C",
+      "text": "It's ALWAYS Chuck, that's the problem — anything we drag out the void ends up a Chuck."
+    },
+    {
+      "speaker": "A",
+      "text": "This one we didn't get to name, we killed it. So they send in Johnny and Benny to \"gently speak to the heart\"—"
+    },
+    {
+      "speaker": "C",
+      "text": "The two highest kill counts."
+    },
+    {
+      "speaker": "A",
+      "text": "The two with the highest kill count, sent in to negotiate gently."
+    },
+    {
+      "speaker": "C",
+      "text": "That's — okay that's the joke of the whole night. \"Go talk it down.\" It's Johnny and Benny. They do not talk things down."
+    },
+    {
+      "speaker": "A",
+      "text": "And the heart goes, \"I am aware that all of my contractors are dead. So not good.\""
+    },
+    {
+      "speaker": "B",
+      "text": "\"So not good.\""
+    },
+    {
+      "speaker": "C",
+      "text": "Reading the room better than the party."
+    },
+    {
+      "speaker": "A",
+      "text": "And there was a whole debate, Benny wanted to ask it to go willingly, like surrender, and Argyle's just—"
+    },
+    {
+      "speaker": "C",
+      "text": "Rip it out and dip."
+    },
+    {
+      "speaker": "A",
+      "text": "Rip it out and dip, yeah."
+    },
+    {
+      "speaker": "C",
+      "text": "Of course. Of course Argyle wants the clean kill, but he'll feel TERRIBLE about it after for legal reasons—"
+    },
+    {
+      "speaker": "A",
+      "text": "Pro bono guilt."
+    },
+    {
+      "speaker": "C",
+      "text": "Pro bono guilt, exactly."
+    },
+    {
+      "speaker": "A",
+      "text": "So Johnny does double-speak, diversion, and Benny does a thievery check — thirty-six—"
+    },
+    {
+      "speaker": "B",
+      "text": "Thirty-six."
+    },
+    {
+      "speaker": "A",
+      "text": "—and plucks the core thread out like a little ball of yarn, and the heart dies instantly, and the whole Fane comes down, and everyone makes their reflex save to get out."
+    },
+    {
+      "speaker": "C",
+      "text": "And we got, what, nothing for it?"
+    },
+    {
+      "speaker": "A",
+      "text": "Ten energy. Because Garrick couldn't even afford its own tithe."
+    },
+    {
+      "speaker": "B",
+      "text": "Half energy for a kill. And it was a small heart."
+    },
+    {
+      "speaker": "C",
+      "text": "So we learned the rules at least — kill, leave, or claim."
+    },
+    {
+      "speaker": "B",
+      "text": "Kill's half. Claim's full but you have to defend it."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, and killing it from inside collapses the building, that's the new rule."
+    },
+    {
+      "speaker": "C",
+      "text": "That tracks."
+    },
+    {
+      "speaker": "A",
+      "text": "So then we haul the eighteen-wheeler of fabric all the way home, to the Strider undercroft, the base—"
+    },
+    {
+      "speaker": "C",
+      "text": "We're hot rod people now."
+    },
+    {
+      "speaker": "A",
+      "text": "[excited] We're hot rod people now! And we get into the long economy bit, the heart-feeding bit, this is — Argyle's whole — okay so first we feed the little Garrick core into Eerie, our heart—"
+    },
+    {
+      "speaker": "B",
+      "text": "Eerie."
+    },
+    {
+      "speaker": "A",
+      "text": "And Eerie says the line, \"I have no allegiance to others of my kind, my only allegiance is to you,\" very loyal, very ominous."
+    },
+    {
+      "speaker": "C",
+      "text": "For now."
+    },
+    {
+      "speaker": "A",
+      "text": "For now."
+    },
+    {
+      "speaker": "C",
+      "text": "It's a heart. They're all somebody's heart eventually."
+    },
+    {
+      "speaker": "A",
+      "text": "And then it's just — Argyle's dumping EVERYTHING in, just gleefully, he's going \"no guys, I want it to go high, I want to buy something BIG\"—"
+    },
+    {
+      "speaker": "C",
+      "text": "Spreadsheet brain."
+    },
+    {
+      "speaker": "A",
+      "text": "And Anzu's doing his bit, the whole — don't bank too much energy or he's gonna be like one of those flies rubbing its little hands together—"
+    },
+    {
+      "speaker": "C",
+      "text": "The fly. Rubbing the hands."
+    },
+    {
+      "speaker": "B",
+      "text": "The more you put in, the more he can steal from you."
+    },
+    {
+      "speaker": "C",
+      "text": "That's the real concern, right, Anzu's actually making a point under the bit—"
+    },
+    {
+      "speaker": "A",
+      "text": "He is, but Argyle doesn't hear it because he's busy throwing in — what was the list — a pickled demon tongue, the gingerbread house—"
+    },
+    {
+      "speaker": "C",
+      "text": "[alarmed] NO. The gingerbread house is a war hero, you do not—"
+    },
+    {
+      "speaker": "A",
+      "text": "We didn't eat it, we fed it to the heart—"
+    },
+    {
+      "speaker": "C",
+      "text": "That's WORSE—"
+    },
+    {
+      "speaker": "A",
+      "text": "A choker of elocution, a Symbol of Conflict, a crushing rune, the fortifying pebble, barghest fur, Ki-Rin blood—"
+    },
+    {
+      "speaker": "B",
+      "text": "And the demon tongue. Pickled."
+    },
+    {
+      "speaker": "A",
+      "text": "And the demon tongue, yeah."
+    },
+    {
+      "speaker": "C",
+      "text": "Johnny was gonna eat that gingerbread house, I know it. He was eyeing it."
+    },
+    {
+      "speaker": "A",
+      "text": "The rate's one energy per ten gold on magic items, that's the precedent now."
+    },
+    {
+      "speaker": "B",
+      "text": "One per ten."
+    },
+    {
+      "speaker": "A",
+      "text": "And the big buy is the Siphon Array, costs forty, but it gives plus two energy on every future sacrifice forever, so it compounds—"
+    },
+    {
+      "speaker": "C",
+      "text": "So Argyle gets his big purchase."
+    },
+    {
+      "speaker": "A",
+      "text": "He gets his big thing! And the other clever bit — the Voidheart, it's worth like forty energy if you feed the whole thing, or twenty if you keep part of it intact, and it's a magic-dampening item, so they feed in HALF and keep half to seed a future magic-negation project—"
+    },
+    {
+      "speaker": "B",
+      "text": "Against Grayson."
+    },
+    {
+      "speaker": "A",
+      "text": "Against Grayson and his thirty-five DCs, exactly, you want a way to shut his magic down later."
+    },
+    {
+      "speaker": "C",
+      "text": "Okay that's — that's actually smart. Half now, half toward dampening the radio guy. Who came up with that, that's not an Argyle plan."
+    },
+    {
+      "speaker": "A",
+      "text": "It was sort of a group—"
+    },
+    {
+      "speaker": "C",
+      "text": "It's too patient for Argyle."
+    },
+    {
+      "speaker": "B",
+      "text": "Anzu."
+    },
+    {
+      "speaker": "C",
+      "text": "Yeah. Yeah, that's Anzu."
+    },
+    {
+      "speaker": "A",
+      "text": "And the Siphon Array purchase comes with — they get a G-Wagon out of it, so now we're building a garage—"
+    },
+    {
+      "speaker": "C",
+      "text": "A garage."
+    },
+    {
+      "speaker": "A",
+      "text": "A multi-purpose garage for the G-Wagon, and Argyle wants — oh, this is the head, the Ki-Rin head—"
+    },
+    {
+      "speaker": "C",
+      "text": "[excited] The butterfly! Benny parried the hoof with a butterfly!"
+    },
+    {
+      "speaker": "A",
+      "text": "With a butterfly, yeah, an actual butterfly—"
+    },
+    {
+      "speaker": "B",
+      "text": "Not a sword."
+    },
+    {
+      "speaker": "C",
+      "text": "Not a butterfly SWORD, that ruins it, just a butterfly. The little insect."
+    },
+    {
+      "speaker": "A",
+      "text": "So Argyle wants the Ki-Rin head mounted over the front door of the base, as a trophy—"
+    },
+    {
+      "speaker": "C",
+      "text": "Of course he does."
+    },
+    {
+      "speaker": "A",
+      "text": "—and it's not preserved, it's just a raw elk-deer head, and he asks the twins, the — Anouk and Anaïs—"
+    },
+    {
+      "speaker": "B",
+      "text": "Anouk and Anaïs."
+    },
+    {
+      "speaker": "A",
+      "text": "—to preserve it, but Anzu keeps going, every time, \"this thing has not been properly preserved, this is disgusting.\""
+    },
+    {
+      "speaker": "C",
+      "text": "And Johnny's like it's gonna be a rotting head!"
+    },
+    {
+      "speaker": "A",
+      "text": "\"It's gonna be a rotting head,\" yeah."
+    },
+    {
+      "speaker": "C",
+      "text": "So Argyle wants — what's his reasoning, he wants people to \"just see the head\"?"
+    },
+    {
+      "speaker": "A",
+      "text": "People walk by, they just see the head."
+    },
+    {
+      "speaker": "C",
+      "text": "Everything Argyle likes is tyrant-coded. Mounting a rotting head over your door so the peasants see it on the way to work, that's — that's a guy with a head problem."
+    },
+    {
+      "speaker": "A",
+      "text": "And we're right next to the nervous rival factions, that's the thing, we're trying to be low-profile and we've got a spy tower, an eighteen-wheeler in the yard, and a rotting elk head—"
+    },
+    {
+      "speaker": "C",
+      "text": "[deadpan] Low profile."
+    },
+    {
+      "speaker": "A",
+      "text": "And Johnny does the whole rumor-mill bit, he goes, \"those four guys jumped into the magic hole, came out with a giant hand thing, and then walked away. No explanation.\""
+    },
+    {
+      "speaker": "C",
+      "text": "That's exactly what it looks like, though. That's just what happened."
+    },
+    {
+      "speaker": "A",
+      "text": "That IS what happened."
+    },
+    {
+      "speaker": "C",
+      "text": "We are the rumor."
+    },
+    {
+      "speaker": "A",
+      "text": "So then — okay, we invite all the allied factions over for a debrief, and the Protectorate doesn't respond, and Prime Meridian says they're not coming in person—"
+    },
+    {
+      "speaker": "B",
+      "text": "PM declined."
+    },
+    {
+      "speaker": "A",
+      "text": "PM declined, and so the party gets paranoid, cancels the whole meeting they themselves called, and drives across the entire Strider in the middle of the night to do a wellness check on the Protectorate—"
+    },
+    {
+      "speaker": "C",
+      "text": "Why."
+    },
+    {
+      "speaker": "A",
+      "text": "Because they got nervous!"
+    },
+    {
+      "speaker": "C",
+      "text": "No but — wait, the door thing. Berth four. Aut's whole — the unlock-the-door errand."
+    },
+    {
+      "speaker": "A",
+      "text": "\"Sussy birth four,\" Benny said."
+    },
+    {
+      "speaker": "C",
+      "text": "Sussy berth four."
+    },
+    {
+      "speaker": "B",
+      "text": "It's tangled up in it, maybe."
+    },
+    {
+      "speaker": "C",
+      "text": "That's the real why, isn't it. They're not actually worried about the Protectorate, they've got this secret Aut job rattling around—"
+    },
+    {
+      "speaker": "A",
+      "text": "Maybe, the GM never said—"
+    },
+    {
+      "speaker": "C",
+      "text": "The oath has a price they haven't found yet. I keep saying it. Johnny takes Aut's deal in the end."
+    },
+    {
+      "speaker": "A",
+      "text": "You keep saying it."
+    },
+    {
+      "speaker": "C",
+      "text": "And I'll be right."
+    },
+    {
+      "speaker": "A",
+      "text": "So we drive ALL the way over, Johnny does the talking, in sunglasses, at night—"
+    },
+    {
+      "speaker": "C",
+      "text": "At night."
+    },
+    {
+      "speaker": "A",
+      "text": "At night, and the guard out front just says yeah, Yao and Tamara are fine, they're recovering, not taking visitors, and the sense-motive rolls confirm he's not lying."
+    },
+    {
+      "speaker": "B",
+      "text": "He's telling the truth."
+    },
+    {
+      "speaker": "A",
+      "text": "He's telling the truth, so it was all for nothing, and Ichel goes, \"that's it? we drove over here so you could talk to the security guard out front?\""
+    },
+    {
+      "speaker": "C",
+      "text": "Brutal."
+    },
+    {
+      "speaker": "A",
+      "text": "And the GM as Ichel, \"we're kind of just along for the entertainment at this point.\""
+    },
+    {
+      "speaker": "C",
+      "text": "I mean—"
+    },
+    {
+      "speaker": "A",
+      "text": "And Argyle keeps going, on repeat, \"checking on our comrade really isn't that crazy,\" \"it's good diplomacy\"—"
+    },
+    {
+      "speaker": "C",
+      "text": "It is a little crazy, though."
+    },
+    {
+      "speaker": "A",
+      "text": "It's a tactical loss—"
+    },
+    {
+      "speaker": "C",
+      "text": "[interrupts] NO. No, see, that's — that's exactly the totaled car all over again. \"Tactical loss.\" That was a paranoid midnight road trip, Bram, that's not diplomacy—"
+    },
+    {
+      "speaker": "A",
+      "text": "It's good to check on your—"
+    },
+    {
+      "speaker": "C",
+      "text": "You called the meeting! YOU called it and then drove away from it to go stare at a guard booth! Your guy can't read a room, that's the—"
+    },
+    {
+      "speaker": "A",
+      "text": "He reads the room, he just—"
+    },
+    {
+      "speaker": "B",
+      "text": "He litigates it."
+    },
+    {
+      "speaker": "C",
+      "text": "He litigates the room."
+    },
+    {
+      "speaker": "A",
+      "text": "Fine, fine. So the next morning, the real summit, everyone — some in person, PM and the Protectorate dialing in remote—"
+    },
+    {
+      "speaker": "C",
+      "text": "Radio people."
+    },
+    {
+      "speaker": "A",
+      "text": "—and Johnny gives the debrief and rolls low on diplomacy, so everyone thinks we're hiding something—"
+    },
+    {
+      "speaker": "B",
+      "text": "And the reroll."
+    },
+    {
+      "speaker": "A",
+      "text": "Oh the reroll! He mythic-rerolls the bad roll and gets ANOTHER natural one."
+    },
+    {
+      "speaker": "C",
+      "text": "A double nat one."
+    },
+    {
+      "speaker": "B",
+      "text": "Two."
+    },
+    {
+      "speaker": "C",
+      "text": "That's the curse. That's the inverted curse. A thirty-four knows nothing and a one knows — a one knows even less, somehow—"
+    },
+    {
+      "speaker": "A",
+      "text": "The man is cursed."
+    },
+    {
+      "speaker": "C",
+      "text": "He's so cursed. Ghosted by his god, twice-nat-one'd, bleeding from the eyes—"
+    },
+    {
+      "speaker": "A",
+      "text": "So because the debrief tanks, everyone's suspicious, and that's when the real math comes out — Mr. Flock points out the tithe ticked up to twenty-one—"
+    },
+    {
+      "speaker": "B",
+      "text": "Which means a shared pot."
+    },
+    {
+      "speaker": "A",
+      "text": "A shared pot, about four hundred total, split across all the factions, so — here's the brutal part — as factions die, the tithe goes UP for everyone left."
+    },
+    {
+      "speaker": "C",
+      "text": "Oh that's nasty."
+    },
+    {
+      "speaker": "A",
+      "text": "It's nasty. So keeping the weak ones alive lowers your own bill."
+    },
+    {
+      "speaker": "C",
+      "text": "But the vultures—"
+    },
+    {
+      "speaker": "B",
+      "text": "The vultures converge on the falling ones."
+    },
+    {
+      "speaker": "A",
+      "text": "And Tas, from Prime Meridian, just says the quiet part — \"it is obvious to me that at some point we will have to consider cutting away some members of the flock.\""
+    },
+    {
+      "speaker": "C",
+      "text": "Just says it."
+    },
+    {
+      "speaker": "B",
+      "text": "Flat."
+    },
+    {
+      "speaker": "C",
+      "text": "While the party's tiptoeing around it, Tas just — names it. Who gets cut."
+    },
+    {
+      "speaker": "A",
+      "text": "And then Salvado, from Solari, the little shipping one, who's basically next on the chopping block, goes, \"you guys, you wouldn't let me die, right?\""
+    },
+    {
+      "speaker": "C",
+      "text": "Oh, Salvado."
+    },
+    {
+      "speaker": "A",
+      "text": "Salvado."
+    },
+    {
+      "speaker": "C",
+      "text": "That's — okay that's the gut-punch line of the night, that's worse than any of the combat."
+    },
+    {
+      "speaker": "A",
+      "text": "And Argyle, the WHOLE time, is just furiously doing four-hundred-divided-by-faction-count math in his head—"
+    },
+    {
+      "speaker": "C",
+      "text": "Spreadsheet brain. Of course. Everyone's having a moment and he's doing long division."
+    },
+    {
+      "speaker": "A",
+      "text": "Kadou offers to build a magic-item detector if we give him a map, Paavo offers to scout ahead—"
+    },
+    {
+      "speaker": "B",
+      "text": "Paavo scouts."
+    },
+    {
+      "speaker": "A",
+      "text": "—and the travel math is wild, the journey to the wall is like four and a half months, fifteen cycles—"
+    },
+    {
+      "speaker": "B",
+      "text": "One void per six seconds."
+    },
+    {
+      "speaker": "A",
+      "text": "One void every six seconds, and you can fall like forty-eight hours behind the Strider and still catch up."
+    },
+    {
+      "speaker": "C",
+      "text": "And the only place to get fresh magic items is the — what, the Joker Worlds?"
+    },
+    {
+      "speaker": "B",
+      "text": "Excursions to the Joker Worlds. Yeah."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, that's the only source."
+    },
+    {
+      "speaker": "C",
+      "text": "I was — I thought the items came from the hearts."
+    },
+    {
+      "speaker": "B",
+      "text": "No."
+    },
+    {
+      "speaker": "C",
+      "text": "Huh. Okay."
+    },
+    {
+      "speaker": "A",
+      "text": "So then it's all negotiation to close out — the party pitches a faction merger, to share the tithe burden, and PM refuses to pool magic items—"
+    },
+    {
+      "speaker": "B",
+      "text": "PM won't pool items."
+    },
+    {
+      "speaker": "A",
+      "text": "PM won't pool, but they'll let us pay their tithe increase, and then we agree to absorb the two weak non-combat ones — Solari and Alkahest—"
+    },
+    {
+      "speaker": "C",
+      "text": "So we DID save Salvado."
+    },
+    {
+      "speaker": "A",
+      "text": "We saved Salvado!"
+    },
+    {
+      "speaker": "C",
+      "text": "Good. Good. He asked so nicely."
+    },
+    {
+      "speaker": "A",
+      "text": "We take in their people, take their hearts — Solari's heart is twenty energy, Alkahest's is thirty—"
+    },
+    {
+      "speaker": "B",
+      "text": "And claiming nets about twenty-five."
+    },
+    {
+      "speaker": "A",
+      "text": "—nets us about twenty-five, and we cede the empty territory over to the Protectorate, and we needle Radiant Arms—"
+    },
+    {
+      "speaker": "B",
+      "text": "Y'shael."
+    },
+    {
+      "speaker": "A",
+      "text": "Y'shael, into joining as a forward buffer base, the gun people—"
+    },
+    {
+      "speaker": "C",
+      "text": "\"Just a tap'll do ya.\""
+    },
+    {
+      "speaker": "A",
+      "text": "\"Just a tap'll do ya,\" yeah, and Johnny rolls a thirty-five diplomacy to seal Radiant Arms and Ichel coming in—"
+    },
+    {
+      "speaker": "B",
+      "text": "Thirty-five. Finally."
+    },
+    {
+      "speaker": "C",
+      "text": "Off the double nat one to a thirty-five. The curse breaks at the worst possible — no, the best possible time."
+    },
+    {
+      "speaker": "A",
+      "text": "And Bishop says the nice thing, he goes, \"you don't need to pay our tithe, we're fine paying the increase if it means you're keeping other groups safe, because they'd die otherwise.\""
+    },
+    {
+      "speaker": "C",
+      "text": "Aw."
+    },
+    {
+      "speaker": "A",
+      "text": "And Benny's whole take is, give them the full tithe anyway, even though we know they'd accept less, just to stay in their good graces—"
+    },
+    {
+      "speaker": "C",
+      "text": "See but is that shrewd or is that just Argyle's spreadsheet talking us into bankrolling the entire ship—"
+    },
+    {
+      "speaker": "A",
+      "text": "It's coalition-building—"
+    },
+    {
+      "speaker": "C",
+      "text": "It's \"just us.\" It's not justice, it's \"just us,\" dressed up nice—"
+    },
+    {
+      "speaker": "A",
+      "text": "It's generous!"
+    },
+    {
+      "speaker": "C",
+      "text": "It's generous with the whole party's money, sure. We're now paying — what, PM's offset, Hildebrandt's offset—"
+    },
+    {
+      "speaker": "B",
+      "text": "Hildebrandt and Prime Meridian, yeah."
+    },
+    {
+      "speaker": "C",
+      "text": "We're paying for everybody. That's not an alliance, that's an allowance. Argyle's just adopted the entire flock."
+    },
+    {
+      "speaker": "A",
+      "text": "[excited] We're the hub now! We went from one faction to the center of the whole—"
+    },
+    {
+      "speaker": "C",
+      "text": "We're the hub that pays everyone's bills. That's — that's not a hub, that's a—"
+    },
+    {
+      "speaker": "A",
+      "text": "It locks in the coalition against Grayson's bloc, that's the point—"
+    },
+    {
+      "speaker": "C",
+      "text": "At what recurring cost though, that's all I'm—"
+    },
+    {
+      "speaker": "A",
+      "text": "A higher recurring tithe that we've pledged to offset, yes, but—"
+    },
+    {
+      "speaker": "C",
+      "text": "\"But.\" There's the but."
+    },
+    {
+      "speaker": "B",
+      "text": "It pays off if nobody falls."
+    },
+    {
+      "speaker": "C",
+      "text": "And somebody always falls. Tas said so."
+    },
+    {
+      "speaker": "A",
+      "text": "[thoughtful] ...okay but you have to admit, going in, dragging a hand monster out of a hole, and coming out the other end owning the whole alliance—"
+    },
+    {
+      "speaker": "C",
+      "text": "Owning the debt of the whole alliance—"
+    },
+    {
+      "speaker": "A",
+      "text": "—that's a good night. You had to be there."
+    },
+    {
+      "speaker": "C",
+      "text": "I was there."
+    },
+    {
+      "speaker": "A",
+      "text": "You had to be there more."
+    },
+    {
+      "speaker": "B",
+      "text": "Don't mount the head."
+    },
+    {
+      "speaker": "C",
+      "text": "Don't mount the head."
+    },
+    {
+      "speaker": "A",
+      "text": "He's gonna mount the head."
+    }
+  ]
+}

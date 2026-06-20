@@ -9,6 +9,14 @@ location is always non-empty/materializable.
 import dagster as dg
 from astra_akasha_backend.assets import akasha_corpus_snapshot
 from astra_linguist.assets import correction_candidates, scribe_output_sensor, session_transcripts
+from astra_mouthpiece.assets import (
+    linguist_output_sensor,
+    mega_digest,
+    session_audio_clips,
+    session_digest,
+    session_episode,
+    session_script,
+)
 from astra_observe import init_telemetry
 from astra_scribe.assets import craig_drop_sensor, session_outputs
 
@@ -25,9 +33,10 @@ def hello_astra() -> str:
     return "astra pipeline online"
 
 
-# The Phase-3 pipeline so far: scribe (audio→transcript) → linguist (processing) →
-# akasha (corpus snapshot). Each asset carries its DynamicPartitionsDefinition; the
-# sensors chain it — craig zip → scribe, then scribe's script.json → linguist.
+# The Phase-3 pipeline: scribe (audio→transcript) → linguist (processing) → akasha
+# (corpus snapshot) → mouthpiece (digest → two-pass script → clips → episode). Each
+# asset carries its DynamicPartitionsDefinition; the sensors chain it — craig zip →
+# scribe, scribe's script.json → linguist, then linguist's transcript → mouthpiece.
 defs = dg.Definitions(
     assets=[
         hello_astra,
@@ -35,6 +44,11 @@ defs = dg.Definitions(
         session_outputs,
         session_transcripts,
         correction_candidates,
+        session_digest,
+        session_script,
+        session_audio_clips,
+        session_episode,
+        mega_digest,
     ],
-    sensors=[craig_drop_sensor, scribe_output_sensor],
+    sensors=[craig_drop_sensor, scribe_output_sensor, linguist_output_sensor],
 )

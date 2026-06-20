@@ -1,0 +1,1404 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-5-21",
+  "title": "The Delivery Truck for a Massacre",
+  "hosts": {
+    "A": {
+      "name": "Bram",
+      "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+    },
+    "B": {
+      "name": "Maeve",
+      "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+    },
+    "C": {
+      "name": "Pip",
+      "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+    }
+  },
+  "turns": [
+    {
+      "speaker": "C",
+      "text": "—no, but see, that's my whole thing, why did he reach for the sword? Like immediately, first instinct—"
+    },
+    {
+      "speaker": "A",
+      "text": "because there's a devil running the boat, Pip, that's a perfectly reasonable—"
+    },
+    {
+      "speaker": "C",
+      "text": "[jumping in] a devil he just met! Met him for like five minutes and Argyle's already—"
+    },
+    {
+      "speaker": "B",
+      "text": "He didn't draw it."
+    },
+    {
+      "speaker": "C",
+      "text": "He reached."
+    },
+    {
+      "speaker": "B",
+      "text": "He reached. He put it back."
+    },
+    {
+      "speaker": "A",
+      "text": "He put it back, yeah, see, that's the — okay so what actually happened, right, so we get home from the restaurant, everybody's rattled, and Argyle's like, no, we have to get them on the road, we jump the other orgs before they even arrive, we hit 'em on the highway—"
+    },
+    {
+      "speaker": "C",
+      "text": "On the highway."
+    },
+    {
+      "speaker": "A",
+      "text": "—and Benny's going, no no no, we wait until Amber Call's heart gets fat, and then we kill them for the energy, and it's—"
+    },
+    {
+      "speaker": "C",
+      "text": "[annoyed] That's worse! That's so much worse than the sword guy!"
+    },
+    {
+      "speaker": "A",
+      "text": "It's calculated! It's patient!"
+    },
+    {
+      "speaker": "B",
+      "text": "They talked him down."
+    },
+    {
+      "speaker": "A",
+      "text": "They talked him down, eventually, yeah, it was Anzu and — hang on, was it Anzu and Johnny or—"
+    },
+    {
+      "speaker": "B",
+      "text": "Anzu and Benny."
+    },
+    {
+      "speaker": "A",
+      "text": "Anzu and Benny, right, even though Benny was the one wanting to wait for the fat heart, so he—"
+    },
+    {
+      "speaker": "C",
+      "text": "[overlapping] So Benny argues himself down. That's—"
+    },
+    {
+      "speaker": "A",
+      "text": "That tracks for this group honestly."
+    },
+    {
+      "speaker": "C",
+      "text": "Just us. Not justice. Just us."
+    },
+    {
+      "speaker": "A",
+      "text": "[chuckles] Ha. Yeah."
+    },
+    {
+      "speaker": "B",
+      "text": "The GM said it best. He goes, I said I expect there to be violence, and you jumped to, clearly we should start killing people on the road before they even get here."
+    },
+    {
+      "speaker": "A",
+      "text": "And the thing is the man — the MC, the Master of Ceremonies — he wants that. That's the trap. He's bored, he said he gets bored, he goes it would be boring if you all hung out in a circle and sang together—"
+    },
+    {
+      "speaker": "C",
+      "text": "Hold on, I love and fear that man."
+    },
+    {
+      "speaker": "A",
+      "text": "Which — Josh or the devil—"
+    },
+    {
+      "speaker": "C",
+      "text": "Yes."
+    },
+    {
+      "speaker": "A",
+      "text": "Fair."
+    },
+    {
+      "speaker": "B",
+      "text": "Mug's empty, by the way."
+    },
+    {
+      "speaker": "A",
+      "text": "I'll flag him down. Hey — when he comes back round."
+    },
+    {
+      "speaker": "C",
+      "text": "Okay but can we — the face. Can we do the face. He takes off the mask—"
+    },
+    {
+      "speaker": "A",
+      "text": "Oh the face is incredible."
+    },
+    {
+      "speaker": "C",
+      "text": "—and it's just burned. Like, all the way burned."
+    },
+    {
+      "speaker": "A",
+      "text": "Like it had been dunked into a bonfire, that was the GM's words, dunked into a bonfire, and then — this is the part — Argyle does a medicine check, and the burn was healed on purpose. To stay scarred."
+    },
+    {
+      "speaker": "B",
+      "text": "Which means he died."
+    },
+    {
+      "speaker": "C",
+      "text": "Right, you don't heal-to-stay-ruined unless you got brought back, so—"
+    },
+    {
+      "speaker": "A",
+      "text": "He died and somebody hauled him back and made a point of keeping the face."
+    },
+    {
+      "speaker": "C",
+      "text": "That's a guy with a relationship to dying I do not want to think about over burgers."
+    },
+    {
+      "speaker": "A",
+      "text": "Speaking of burgers—"
+    },
+    {
+      "speaker": "C",
+      "text": "Don't."
+    },
+    {
+      "speaker": "A",
+      "text": "[excited] The cookout!"
+    },
+    {
+      "speaker": "B",
+      "text": "The cookout was the day before."
+    },
+    {
+      "speaker": "A",
+      "text": "I know it was the day before, I'm just — the swimwear, Maeve, you have to talk about the swimwear, because Johnny shows up in like nineteen-seventies trunks, with a belt—"
+    },
+    {
+      "speaker": "C",
+      "text": "A belt on swim trunks."
+    },
+    {
+      "speaker": "A",
+      "text": "—a belt, and cowboy boots, and Argyle's got the cop glasses, the aviators—"
+    },
+    {
+      "speaker": "B",
+      "text": "Cop glasses."
+    },
+    {
+      "speaker": "A",
+      "text": "—and there's no pool. There's no pool! Argyle told Chuck to tell everyone bring your swim trunks and then Argyle has to summon a hot tub with a spell."
+    },
+    {
+      "speaker": "C",
+      "text": "Soothing Spring. As a hot tub."
+    },
+    {
+      "speaker": "B",
+      "text": "Twenty feet."
+    },
+    {
+      "speaker": "A",
+      "text": "Twenty foot hot tub, grilling burgers in his little swimsuit, it was — you had to be there, honestly."
+    },
+    {
+      "speaker": "C",
+      "text": "See and this is what kills me, because while the boys are out here in their little outfits doing the belt-trunks—"
+    },
+    {
+      "speaker": "A",
+      "text": "[interrupts] It was Johnny with the belt—"
+    },
+    {
+      "speaker": "C",
+      "text": "—Anzu is alone in a corner doing actual work. Crit on his occultism, what, a thirty-eight—"
+    },
+    {
+      "speaker": "B",
+      "text": "Natural thirty-eight."
+    },
+    {
+      "speaker": "C",
+      "text": "Natural thirty-eight, on the void paper, finds out the rings reverse the pull or whatever—"
+    },
+    {
+      "speaker": "A",
+      "text": "The gyroscope rings! When they spin the void pull goes the other way, toward the rings, and it's stronger on the Strider than it ever was on the Sin and Tonic, which is a big deal, that's like—"
+    },
+    {
+      "speaker": "C",
+      "text": "—and nobody's looking because they're picking swimsuits."
+    },
+    {
+      "speaker": "B",
+      "text": "He banks it quiet. Every time."
+    },
+    {
+      "speaker": "C",
+      "text": "Every single session that guy finds the actual plot in a corner while everyone else is—"
+    },
+    {
+      "speaker": "A",
+      "text": "To be fair the swimsuits were load-bearing for vibes."
+    },
+    {
+      "speaker": "C",
+      "text": "[deadpan] Load-bearing for vibes."
+    },
+    {
+      "speaker": "B",
+      "text": "The dwarf was good though."
+    },
+    {
+      "speaker": "A",
+      "text": "Oh, Salvado! Salvado Targona, Solari Sub-surface—"
+    },
+    {
+      "speaker": "C",
+      "text": "The little shipping guy. The small fish."
+    },
+    {
+      "speaker": "A",
+      "text": "—thinks it's a networking event. Just fully thinks it's a mixer. And he latches onto Johnny and goes, you and I are gonna be good friends, because I've got no idea what's happening—"
+    },
+    {
+      "speaker": "B",
+      "text": "No fucking idea what's happening."
+    },
+    {
+      "speaker": "A",
+      "text": "No fucking idea what's happening, yeah, and I respect that, that's an honest man."
+    },
+    {
+      "speaker": "C",
+      "text": "And he thinks Benny's a what—"
+    },
+    {
+      "speaker": "B",
+      "text": "A punished child super-soldier in training."
+    },
+    {
+      "speaker": "C",
+      "text": "A punished child super-soldier. Which — I mean — he's not wrong, is the thing."
+    },
+    {
+      "speaker": "A",
+      "text": "He's not even wrong! Benny's nine and carries a permission slip that turns heads."
+    },
+    {
+      "speaker": "C",
+      "text": "Speaking of which — the father line. At the end. The MC looks at the permission slip—"
+    },
+    {
+      "speaker": "A",
+      "text": "Oh that's the chilling one, save that, save that, because we gotta do the gym first—"
+    },
+    {
+      "speaker": "C",
+      "text": "Why do we gotta do the gym—"
+    },
+    {
+      "speaker": "A",
+      "text": "Because the gym is where Benny screws up Johnny's whole plan and he doesn't even know it yet."
+    },
+    {
+      "speaker": "B",
+      "text": "He hadn't made the plan yet either."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, that's the tragedy, the plan didn't exist! So — Benny goes to the fancy Strider gym, the luxury one, and he spars with Bishop—"
+    },
+    {
+      "speaker": "C",
+      "text": "The lizard guy. Gold. One eye."
+    },
+    {
+      "speaker": "A",
+      "text": "Ralph Bishop, scarred to hell, one eye, gold scales, ornate rapier, waistcoat too tight—"
+    },
+    {
+      "speaker": "B",
+      "text": "Slightly too tight."
+    },
+    {
+      "speaker": "A",
+      "text": "—and he's been fighting for, what was the line, multiple lifetimes of many—"
+    },
+    {
+      "speaker": "B",
+      "text": "Lifetimes of many. Yeah."
+    },
+    {
+      "speaker": "C",
+      "text": "What does that even mean, lifetimes of many—"
+    },
+    {
+      "speaker": "A",
+      "text": "It means he's old and scary, Pip, that's what it means."
+    },
+    {
+      "speaker": "C",
+      "text": "It means nothing! It's a cool nothing."
+    },
+    {
+      "speaker": "B",
+      "text": "It's a lot of lifetimes."
+    },
+    {
+      "speaker": "A",
+      "text": "And Benny does this nanite surge on an athletics check to read the guy's prowess, and he won't reroll—"
+    },
+    {
+      "speaker": "B",
+      "text": "Took the flat twenty-seven."
+    },
+    {
+      "speaker": "A",
+      "text": "Took the flat twenty-seven, and his actual quote was, it's so much of a risk with these fucking stupid points—"
+    },
+    {
+      "speaker": "C",
+      "text": "A seven knows everything, a thirty-four knows nothing."
+    },
+    {
+      "speaker": "A",
+      "text": "Don't — don't start the dice curse thing—"
+    },
+    {
+      "speaker": "C",
+      "text": "I'm just saying! The mythic points are the same energy! Aut thinks your arm's fine!"
+    },
+    {
+      "speaker": "B",
+      "text": "Different game."
+    },
+    {
+      "speaker": "C",
+      "text": "It's the same energy, Maeve."
+    },
+    {
+      "speaker": "A",
+      "text": "Anyway he reads Bishop, raiment three or four steps above his, way out of his league, and he clocks this thing where Bishop subtly pulls his attention back mid-spar—"
+    },
+    {
+      "speaker": "B",
+      "text": "A tell."
+    },
+    {
+      "speaker": "A",
+      "text": "—a tell that there's hidden ability there, and also there's this nearly invisible person on the treadmill that Benny's eye keeps sliding off of—"
+    },
+    {
+      "speaker": "C",
+      "text": "Okay that's creepy, an average guy you can't look at—"
+    },
+    {
+      "speaker": "A",
+      "text": "An average guy. Just dead average. And the eye won't stick."
+    },
+    {
+      "speaker": "C",
+      "text": "And Bishop sits in chairs backwards."
+    },
+    {
+      "speaker": "B",
+      "text": "Turns the chair around. Sits backward."
+    },
+    {
+      "speaker": "A",
+      "text": "So cool. Argyle's quote later, like four times, they're so fucking cool, god damn it, I hope they're not evil—"
+    },
+    {
+      "speaker": "C",
+      "text": "That. That right there. That's the flashing red light."
+    },
+    {
+      "speaker": "A",
+      "text": "Why's it a red light—"
+    },
+    {
+      "speaker": "C",
+      "text": "Because Argyle is a fickle little man! He's a fan of whoever did the last cool thing! Backwards chair guy, instant loyalty—"
+    },
+    {
+      "speaker": "A",
+      "text": "He vetted them though! He called home from the cookout, phoned home, did the religion check, thirty-four—"
+    },
+    {
+      "speaker": "B",
+      "text": "They're in good standing."
+    },
+    {
+      "speaker": "A",
+      "text": "In good standing, relatively senior Scale members, operating on their own, chose to come on their own, not blacklisted, not evil—"
+    },
+    {
+      "speaker": "C",
+      "text": "\"Not evil yet.\""
+    },
+    {
+      "speaker": "A",
+      "text": "—their heart's named Asteris Lux, which, you know, judgey-guy naming, expensive sounding—"
+    },
+    {
+      "speaker": "B",
+      "text": "Caelum scriptor energy."
+    },
+    {
+      "speaker": "A",
+      "text": "Exactly. And Bishop says to Argyle, it's good to see another member of the Scale, even if you're waving another flag right now—"
+    },
+    {
+      "speaker": "C",
+      "text": "See and that's the thing, Argyle's waving the Iconoclasm flag but the lizard clocks him as Scale, and Argyle just — eats it up."
+    },
+    {
+      "speaker": "A",
+      "text": "Because he is Scale. Sort of. It's complicated."
+    },
+    {
+      "speaker": "C",
+      "text": "It's the two Argyles thing."
+    },
+    {
+      "speaker": "A",
+      "text": "The angel stuffed in the demon, who was already named Argyle—"
+    },
+    {
+      "speaker": "B",
+      "text": "Lazy and incredible."
+    },
+    {
+      "speaker": "A",
+      "text": "Lazy and incredible, yeah."
+    },
+    {
+      "speaker": "C",
+      "text": "The self-litigating lawyer. Finds the loophole in his own oath, wins the case against himself—"
+    },
+    {
+      "speaker": "A",
+      "text": "Faced with a handshake, considers suicide—"
+    },
+    {
+      "speaker": "C",
+      "text": "Never reads the room. Ever."
+    },
+    {
+      "speaker": "B",
+      "text": "He read the giant thing wrong too."
+    },
+    {
+      "speaker": "A",
+      "text": "Oh — oh, the giant. We have to do the giant."
+    },
+    {
+      "speaker": "C",
+      "text": "What giant."
+    },
+    {
+      "speaker": "A",
+      "text": "So at the bunker — the Scale's forward base, the concrete bunker with the sonar dish, camouflaged, they ride one of Chuck's floating discs over—"
+    },
+    {
+      "speaker": "B",
+      "text": "Gun barrel through the porthole."
+    },
+    {
+      "speaker": "A",
+      "text": "—yeah, gun poked through the door's little window, just in case, very friendly — and Argyle's trying to ask them to look into his classified giant intel, and he keeps botching the scale of it, like he goes, look out for a ten-thousand-foot-tall red giant—"
+    },
+    {
+      "speaker": "B",
+      "text": "And the GM keeps correcting him."
+    },
+    {
+      "speaker": "A",
+      "text": "The GM has to feed him the real number mid-question, and Benny just deadpans, I don't think we'd have to look out for something that's ten thousand feet tall, it's pretty noticeable."
+    },
+    {
+      "speaker": "C",
+      "text": "[chuckles] It's pretty noticeable. Ha."
+    },
+    {
+      "speaker": "B",
+      "text": "It'd be over the horizon."
+    },
+    {
+      "speaker": "C",
+      "text": "And who'd they meet there — the sick kid—"
+    },
+    {
+      "speaker": "A",
+      "text": "Lance! Lance Vesper, the rifleman's Cassian, and Bishop, and Lance is — he looks awful, rheumy eyes, pale, and he goes, I am twenty-two—"
+    },
+    {
+      "speaker": "B",
+      "text": "You wouldn't believe it from my countenance."
+    },
+    {
+      "speaker": "A",
+      "text": "—you wouldn't believe it from my countenance, and then he offers Argyle a refund if he can't cure him—"
+    },
+    {
+      "speaker": "C",
+      "text": "A refund. On the sickness."
+    },
+    {
+      "speaker": "A",
+      "text": "And the sickness might be a curse, that's the hook, nobody knows, which is why Argyle later swaps a feat to Break Curse just in case—"
+    },
+    {
+      "speaker": "C",
+      "text": "Wait but Lance is the one who said the clown thing—"
+    },
+    {
+      "speaker": "A",
+      "text": "Yes! Lance, blunt, goes, these clowns clearly have an ulterior motive or twelve—"
+    },
+    {
+      "speaker": "B",
+      "text": "Or twelve."
+    },
+    {
+      "speaker": "C",
+      "text": "Smart kid. Sick, but smart."
+    },
+    {
+      "speaker": "A",
+      "text": "I've been this size since I was zero days old."
+    },
+    {
+      "speaker": "C",
+      "text": "That's not — that's a different—"
+    },
+    {
+      "speaker": "A",
+      "text": "I know, I just like saying it."
+    },
+    {
+      "speaker": "B",
+      "text": "Food coming?"
+    },
+    {
+      "speaker": "C",
+      "text": "I ordered the thing. The board thing."
+    },
+    {
+      "speaker": "A",
+      "text": "Okay but back to Johnny because this is the part that breaks my heart a little—"
+    },
+    {
+      "speaker": "C",
+      "text": "Johnny and the Jets."
+    },
+    {
+      "speaker": "A",
+      "text": "—so Johnny's whole plan, eventually, is to make the party look like harmless lucky bumblers, right, burns a performance check at the cookout to sell it, we're just idiots who got lucky—"
+    },
+    {
+      "speaker": "B",
+      "text": "Too late."
+    },
+    {
+      "speaker": "A",
+      "text": "Way too late! Because Benny already went and flexed in the gym in front of two of the same orgs that are at the cookout! Bishop watched him read a fight! Paavo watched!"
+    },
+    {
+      "speaker": "C",
+      "text": "So the bumbler plan's dead on arrival."
+    },
+    {
+      "speaker": "A",
+      "text": "Dead before he casts it."
+    },
+    {
+      "speaker": "B",
+      "text": "They saw the kid take a flat twenty-seven to scout a swordsman."
+    },
+    {
+      "speaker": "C",
+      "text": "That's not bumbling, that's casing the joint."
+    },
+    {
+      "speaker": "A",
+      "text": "And then on top of that Johnny burns Lie to Me on the MC—"
+    },
+    {
+      "speaker": "C",
+      "text": "Oh no."
+    },
+    {
+      "speaker": "A",
+      "text": "—the one guy at the table who rolls a forty-three crit on deception—"
+    },
+    {
+      "speaker": "B",
+      "text": "Crit. Against the feat."
+    },
+    {
+      "speaker": "A",
+      "text": "Crit against Lie to Me, learns absolutely nothing, the man is a sealed box, completely unreadable—"
+    },
+    {
+      "speaker": "C",
+      "text": "Okay so what is the point of Lie to Me, genuinely—"
+    },
+    {
+      "speaker": "A",
+      "text": "It works most of the time!"
+    },
+    {
+      "speaker": "C",
+      "text": "Does it though—"
+    },
+    {
+      "speaker": "B",
+      "text": "It works on people who aren't fiends."
+    },
+    {
+      "speaker": "C",
+      "text": "So, not the important ones."
+    },
+    {
+      "speaker": "A",
+      "text": "That's — okay that's a little harsh but—"
+    },
+    {
+      "speaker": "C",
+      "text": "And — here, here's my note, and I will die on this—"
+    },
+    {
+      "speaker": "A",
+      "text": "[sighs] Oh here we go."
+    },
+    {
+      "speaker": "C",
+      "text": "Johnny is in a room with a being tied to a devil, who resonates with the Voidsong, the literal song his whole life is about—"
+    },
+    {
+      "speaker": "A",
+      "text": "Mm."
+    },
+    {
+      "speaker": "C",
+      "text": "—and what's the question Johnny doesn't ask. Same as always. He'll prod a fiend with a feat but he won't ask anybody why his own god stopped picking up the phone."
+    },
+    {
+      "speaker": "A",
+      "text": "That's not — that's not the same situation, Pip."
+    },
+    {
+      "speaker": "C",
+      "text": "It's exactly the same situation! There's a being right there that resonates with the song—"
+    },
+    {
+      "speaker": "B",
+      "text": "The MC denied being Illmari, though."
+    },
+    {
+      "speaker": "C",
+      "text": "I'm not saying ask about Illmari—"
+    },
+    {
+      "speaker": "A",
+      "text": "Wait, he denied being Illmari? I thought—"
+    },
+    {
+      "speaker": "B",
+      "text": "Confirmed Illmari's alive. Said it's not my story to tell."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, right, not my story to tell, that was — okay yeah."
+    },
+    {
+      "speaker": "C",
+      "text": "I'm saying there's a guy who hears the song and Johnny's instinct is to lie-detector him, not ask him anything real. It's the totaled car all over again—"
+    },
+    {
+      "speaker": "A",
+      "text": "The car was a tactical loss—"
+    },
+    {
+      "speaker": "C",
+      "text": "[overlapping] THERE it is."
+    },
+    {
+      "speaker": "B",
+      "text": "It was not."
+    },
+    {
+      "speaker": "A",
+      "text": "It bought us time!"
+    },
+    {
+      "speaker": "C",
+      "text": "It bought you a wreck. You bet on the bet and the bet was bad."
+    },
+    {
+      "speaker": "A",
+      "text": "We're hot rod people now, that's just who we are—"
+    },
+    {
+      "speaker": "C",
+      "text": "Build me a hood out of a box of scraps in a cave."
+    },
+    {
+      "speaker": "A",
+      "text": "Exactly! That's the spirit!"
+    },
+    {
+      "speaker": "B",
+      "text": "You'll defend anything that's on fire."
+    },
+    {
+      "speaker": "A",
+      "text": "I — okay that one's fair."
+    },
+    {
+      "speaker": "C",
+      "text": "I'm telling you, Johnny's gonna take Aut's deal eventually. The oath's got a price, we just haven't hit it, and the day he can't ask his own god, Aut's gonna be right there with the toothy grin—"
+    },
+    {
+      "speaker": "A",
+      "text": "You keep saying that—"
+    },
+    {
+      "speaker": "C",
+      "text": "And I'll be right."
+    },
+    {
+      "speaker": "A",
+      "text": "You bet on that the way I bet on the car."
+    },
+    {
+      "speaker": "C",
+      "text": "That's — okay that's actually a good one, I'll allow it."
+    },
+    {
+      "speaker": "B",
+      "text": "Recap, though. We skipped Benny's recap."
+    },
+    {
+      "speaker": "A",
+      "text": "Oh god, the recap. Benny — wait, Benny did the recap? For the hero point?"
+    },
+    {
+      "speaker": "B",
+      "text": "Mike did. Benny's player."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, Mike did it, and the whole thing is supposedly just the facts, no embellishment, he arrives at the Strider, meets the orts—"
+    },
+    {
+      "speaker": "C",
+      "text": "The orts—"
+    },
+    {
+      "speaker": "A",
+      "text": "—the little — the orts, parks near Hildebrandt, plants the seed of inspiration, grows the heart, beats up monsters to power it, names the butler Chuck, names the heart—"
+    },
+    {
+      "speaker": "B",
+      "text": "Ear That Hears the Truth."
+    },
+    {
+      "speaker": "A",
+      "text": "Ear That Hears the Truth, and then the GM goes, oh, funny thing, that's actually the name of a real mythic feat. Half the party has it."
+    },
+    {
+      "speaker": "C",
+      "text": "And Benny doesn't."
+    },
+    {
+      "speaker": "A",
+      "text": "Benny named the heart, and Benny's the one guy who doesn't have the feat, so he gets none of the benefits—"
+    },
+    {
+      "speaker": "B",
+      "text": "You don't get the benefits even if they share the same name."
+    },
+    {
+      "speaker": "A",
+      "text": "Even if they share the same name, direct quote, brutal."
+    },
+    {
+      "speaker": "C",
+      "text": "Chuck the butler though. Offered any name in the world—"
+    },
+    {
+      "speaker": "A",
+      "text": "—picks Chuck."
+    },
+    {
+      "speaker": "C",
+      "text": "Most boring possible. And the heart's named Eerie?"
+    },
+    {
+      "speaker": "B",
+      "text": "Eerie's the heart. Ear That Hears the Truth's the name."
+    },
+    {
+      "speaker": "A",
+      "text": "Wait so it's both—"
+    },
+    {
+      "speaker": "B",
+      "text": "Eerie. That's the body. The name is the long one."
+    },
+    {
+      "speaker": "A",
+      "text": "Okay. Sure. And Chuck's a cat."
+    },
+    {
+      "speaker": "C",
+      "text": "Chuck's a cat?"
+    },
+    {
+      "speaker": "A",
+      "text": "Big, brown, just a cat. And he very passively accepted the name. Didn't want one. The figurine crumbles to dust, way more dust than a little figurine should have, and then Chuck hands you a replacement figurine—"
+    },
+    {
+      "speaker": "C",
+      "text": "I called it. Months ago. The eldritch hand-monster thing — I said whatever they drag out of the void's gonna get named Chuck."
+    },
+    {
+      "speaker": "A",
+      "text": "That was a different Chuck."
+    },
+    {
+      "speaker": "C",
+      "text": "It's always Chuck! That's my point!"
+    },
+    {
+      "speaker": "B",
+      "text": "The barber's fake, though."
+    },
+    {
+      "speaker": "A",
+      "text": "The — okay, see, this is the fight. Mike swears, no embellishment, just facts, and somewhere in the recap there's a barber on the Strider who only knows one haircut—"
+    },
+    {
+      "speaker": "C",
+      "text": "The flat top."
+    },
+    {
+      "speaker": "A",
+      "text": "—only does flat tops, and the whole table goes, you made that up, that wasn't in the session, and Mike insists it's real—"
+    },
+    {
+      "speaker": "B",
+      "text": "It wasn't real."
+    },
+    {
+      "speaker": "A",
+      "text": "—and Argyle, Argyle defends him, not because he remembers the barber, just on principle—"
+    },
+    {
+      "speaker": "C",
+      "text": "On principle alone—"
+    },
+    {
+      "speaker": "A",
+      "text": "—he goes, if Benny says there's a barber, there's a barber, and that's — that's so Argyle, good for the sake of good, even when the good thing is a haircut that doesn't exist."
+    },
+    {
+      "speaker": "C",
+      "text": "The self-litigating lawyer takes the barber case pro bono."
+    },
+    {
+      "speaker": "A",
+      "text": "[chuckles] Ha. Yeah."
+    },
+    {
+      "speaker": "B",
+      "text": "There's no barber."
+    },
+    {
+      "speaker": "C",
+      "text": "We hear you, Maeve."
+    },
+    {
+      "speaker": "A",
+      "text": "And the eight legs! Eight legs on each side of the Strider—"
+    },
+    {
+      "speaker": "B",
+      "text": "That part's real."
+    },
+    {
+      "speaker": "C",
+      "text": "How is THAT the real part and the barber's fake—"
+    },
+    {
+      "speaker": "B",
+      "text": "The ship has legs. It doesn't have a one-haircut barber."
+    },
+    {
+      "speaker": "C",
+      "text": "This world's broken."
+    },
+    {
+      "speaker": "A",
+      "text": "Oh — and the name, the group name, they finally landed on it. Chronicle."
+    },
+    {
+      "speaker": "C",
+      "text": "Chronicle. Hm."
+    },
+    {
+      "speaker": "A",
+      "text": "Before the GM even asked! He'd flagged he wants an in-world group name eventually, and they just settled on it on their own, which never happens with this group—"
+    },
+    {
+      "speaker": "B",
+      "text": "Anzu suggested it last session."
+    },
+    {
+      "speaker": "A",
+      "text": "Did he? I thought it was Argyle—"
+    },
+    {
+      "speaker": "B",
+      "text": "Anzu. Last session."
+    },
+    {
+      "speaker": "A",
+      "text": "Anzu, okay. And the alternatives got shot down, the Voice of the Few—"
+    },
+    {
+      "speaker": "C",
+      "text": "Voice of the Few sounds like a cult."
+    },
+    {
+      "speaker": "A",
+      "text": "The GM said it makes you sound like tyrants at best—"
+    },
+    {
+      "speaker": "B",
+      "text": "You're everything Bernie Sanders would hate."
+    },
+    {
+      "speaker": "C",
+      "text": "He said that? In a fantasy game?"
+    },
+    {
+      "speaker": "B",
+      "text": "He said that."
+    },
+    {
+      "speaker": "A",
+      "text": "I love and fear that man."
+    },
+    {
+      "speaker": "C",
+      "text": "And Argyle's still pushing his name that puns on some character nobody met—"
+    },
+    {
+      "speaker": "A",
+      "text": "Right, half the party never even met the guy, and the GM keeps vetoing it, confusing and tyrant-coded—"
+    },
+    {
+      "speaker": "C",
+      "text": "Everything Argyle likes is tyrant-coded, have you noticed—"
+    },
+    {
+      "speaker": "A",
+      "text": "He just wants good for the sake of good, the tyranny's incidental—"
+    },
+    {
+      "speaker": "C",
+      "text": "That's — yeah that's a sentence."
+    },
+    {
+      "speaker": "B",
+      "text": "Board's here."
+    },
+    {
+      "speaker": "C",
+      "text": "Oh thank god."
+    },
+    {
+      "speaker": "A",
+      "text": "Don't eat the — wait, is anything on there a war hero—"
+    },
+    {
+      "speaker": "C",
+      "text": "It's a cheese board, Bram."
+    },
+    {
+      "speaker": "A",
+      "text": "I'm just saying, last time—"
+    },
+    {
+      "speaker": "C",
+      "text": "Don't eat the gingerbread house, it's a war hero."
+    },
+    {
+      "speaker": "A",
+      "text": "That was one time and Johnny was the one who—"
+    },
+    {
+      "speaker": "B",
+      "text": "Johnny ate it."
+    },
+    {
+      "speaker": "A",
+      "text": "Johnny ate the war hero, yeah, not me."
+    },
+    {
+      "speaker": "C",
+      "text": "Okay but the father line. We keep dodging it. The MC inspects Benny's permission slip—"
+    },
+    {
+      "speaker": "A",
+      "text": "Right, the chilling one."
+    },
+    {
+      "speaker": "C",
+      "text": "—and goes, give my regards to your father when you next speak to him."
+    },
+    {
+      "speaker": "A",
+      "text": "And Benny's father's Atum, which Anzu half-remembers, something archival at Belvedere—"
+    },
+    {
+      "speaker": "B",
+      "text": "Doesn't quite resolve into a face."
+    },
+    {
+      "speaker": "C",
+      "text": "So the read is — and tell me I'm wrong — the read is one of these new organized devils might be Benny's other half."
+    },
+    {
+      "speaker": "A",
+      "text": "There's four of them, the new ones, the Harlequin's the one the MC's tied to, and then the Shackle—"
+    },
+    {
+      "speaker": "B",
+      "text": "Sigzilheit."
+    },
+    {
+      "speaker": "A",
+      "text": "—Sig— that one, the Hooded, and the Loam."
+    },
+    {
+      "speaker": "C",
+      "text": "And the devil knows Benny's dad. Personally enough to send regards."
+    },
+    {
+      "speaker": "A",
+      "text": "A nine-year-old with a permission slip and a devil who knows his father."
+    },
+    {
+      "speaker": "B",
+      "text": "Hand the baby a revolver. It's tradition."
+    },
+    {
+      "speaker": "C",
+      "text": "A bowl of children's guns. As a treat."
+    },
+    {
+      "speaker": "A",
+      "text": "And the worst part, the part that actually got the table quiet, is Anzu's whole theory going in, right—"
+    },
+    {
+      "speaker": "B",
+      "text": "The cry for help."
+    },
+    {
+      "speaker": "A",
+      "text": "—the Voidsong's a cry for help, the source is the vocalist, somebody singing, somebody we're maybe supposed to rescue—"
+    },
+    {
+      "speaker": "C",
+      "text": "And now—"
+    },
+    {
+      "speaker": "A",
+      "text": "—and now we find out we're on a boat the devil's steering toward the void on purpose, and he wants everybody aboard to kill each other on the way, and whoever's left fights for it at the wall—"
+    },
+    {
+      "speaker": "B",
+      "text": "Nineteen orgs."
+    },
+    {
+      "speaker": "A",
+      "text": "Nineteen-plus, and he says I'll be encouraging it, I'll get bored, I make a habit of not entering any kind of circle—"
+    },
+    {
+      "speaker": "C",
+      "text": "That's the devil tell, right, the circle thing—"
+    },
+    {
+      "speaker": "A",
+      "text": "That's the tell. Won't sing in a circle. And I have favorites, you don't want to be my favorite, but you might end up there anyway."
+    },
+    {
+      "speaker": "C",
+      "text": "So Anzu thought they were going to save a singer—"
+    },
+    {
+      "speaker": "A",
+      "text": "—and instead they're the delivery truck for a massacre."
+    },
+    {
+      "speaker": "B",
+      "text": "They confirmed the heart's not subservient to him, at least."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, the consult-the-spirits ritual, their own heart's not on his leash, small mercy—"
+    },
+    {
+      "speaker": "C",
+      "text": "Which Argyle then trades AWAY—"
+    },
+    {
+      "speaker": "A",
+      "text": "He swaps Consult the Spirits for Break Curse, because of Lance, the sickness thing—"
+    },
+    {
+      "speaker": "B",
+      "text": "And the code word."
+    },
+    {
+      "speaker": "C",
+      "text": "Oh the code word's the best part. Because they're scared of a devil-double—"
+    },
+    {
+      "speaker": "A",
+      "text": "A devil swapping in for Argyle, right, so they need a code word to tell which Argyle's the real Argyle—"
+    },
+    {
+      "speaker": "C",
+      "text": "Two Argyles AGAIN—"
+    },
+    {
+      "speaker": "A",
+      "text": "—and the word they land on is guac."
+    },
+    {
+      "speaker": "B",
+      "text": "Or \"what would you eat with what's on his shoulder.\""
+    },
+    {
+      "speaker": "C",
+      "text": "What's on his shoulder—"
+    },
+    {
+      "speaker": "A",
+      "text": "Don't ask, it's an Argyle thing, but if you can answer what you'd eat with it, you're the real one."
+    },
+    {
+      "speaker": "C",
+      "text": "This is how people get radicalized."
+    },
+    {
+      "speaker": "A",
+      "text": "I love and — yeah."
+    },
+    {
+      "speaker": "B",
+      "text": "Red string board too."
+    },
+    {
+      "speaker": "A",
+      "text": "The board! Argyle builds the whole It's Always Sunny red-string board, pins everything up—"
+    },
+    {
+      "speaker": "C",
+      "text": "Of course he does. The one guy who can't read a room builds the conspiracy wall."
+    },
+    {
+      "speaker": "A",
+      "text": "And orders Blast Boots. Moderate Blast Boots. On the cowboy boots."
+    },
+    {
+      "speaker": "C",
+      "text": "We're hot rod people now."
+    },
+    {
+      "speaker": "A",
+      "text": "We're hot rod people now! See, that one fits!"
+    },
+    {
+      "speaker": "C",
+      "text": "[deadpan] ...anyway."
+    },
+    {
+      "speaker": "B",
+      "text": "Eat your cheese."
+    },
+    {
+      "speaker": "A",
+      "text": "Okay but the door-to-door, real quick, the networking, because there's a whole bit where Benny keeps eyeing the biggest guy on the yard—"
+    },
+    {
+      "speaker": "C",
+      "text": "The yard. It's a prison yard to Benny."
+    },
+    {
+      "speaker": "A",
+      "text": "—to jump first, prison-yard logic, find the biggest guy day one, and Anzu and the GM both going, no, allies beat corpses—"
+    },
+    {
+      "speaker": "B",
+      "text": "Tas Millet did open math at them."
+    },
+    {
+      "speaker": "A",
+      "text": "Oh, Prime Meridian, the bean-counter, Tas Millet, does the cost-benefit out loud, to your face, and lands on, I'll do a two-way info link, not an alliance—"
+    },
+    {
+      "speaker": "C",
+      "text": "Dry. The road guys are always dry."
+    },
+    {
+      "speaker": "B",
+      "text": "Transit nexus energy."
+    },
+    {
+      "speaker": "A",
+      "text": "And the dhampir just slams the door—"
+    },
+    {
+      "speaker": "C",
+      "text": "Necrolog guy. Smells like formaldehyde."
+    },
+    {
+      "speaker": "A",
+      "text": "Gaspar, slams it, sends them to the Pale Lantern Society, very curt—"
+    },
+    {
+      "speaker": "B",
+      "text": "The radio people warning was Stoke, sort of."
+    },
+    {
+      "speaker": "A",
+      "text": "The blind reverend, Walter Stoke, glass robes, practiced in politics, friendly but won't commit to anything—"
+    },
+    {
+      "speaker": "C",
+      "text": "Everyone fancy's a radio person eventually and the radio people are always evil. Write it down."
+    },
+    {
+      "speaker": "A",
+      "text": "He's a priest, not a radio—"
+    },
+    {
+      "speaker": "C",
+      "text": "Write it down."
+    },
+    {
+      "speaker": "B",
+      "text": "He's not on the radio."
+    },
+    {
+      "speaker": "C",
+      "text": "Yet."
+    },
+    {
+      "speaker": "A",
+      "text": "And Tamara, the Protectorate one, the tile armor, she goes, we're friends so long as we're friends—"
+    },
+    {
+      "speaker": "B",
+      "text": "Don't do anything too shysty."
+    },
+    {
+      "speaker": "A",
+      "text": "—don't do anything too shysty, yeah, which, coming from the people who wanted to wait for the heart to get fat before murdering it—"
+    },
+    {
+      "speaker": "C",
+      "text": "A little rich. Yeah."
+    },
+    {
+      "speaker": "B",
+      "text": "They didn't tell anyone about Berth Four."
+    },
+    {
+      "speaker": "A",
+      "text": "Right, Aut told them to unlock Berth Four's door and they just — kept that one to themselves—"
+    },
+    {
+      "speaker": "C",
+      "text": "See, NOW you're listening to Aut—"
+    },
+    {
+      "speaker": "A",
+      "text": "That's Argyle, not Johnny—"
+    },
+    {
+      "speaker": "C",
+      "text": "It's gonna be Johnny in the end. I'm telling you."
+    },
+    {
+      "speaker": "A",
+      "text": "You bet the car money on that—"
+    },
+    {
+      "speaker": "C",
+      "text": "It's not the car, it's a read, I read people—"
+    },
+    {
+      "speaker": "B",
+      "text": "You read people. You don't read facts."
+    },
+    {
+      "speaker": "C",
+      "text": "...that's fair, actually."
+    },
+    {
+      "speaker": "A",
+      "text": "She got you."
+    },
+    {
+      "speaker": "C",
+      "text": "She gets one. There's no barber, fine, but she gets one wrong eventually—"
+    },
+    {
+      "speaker": "B",
+      "text": "Not tonight."
+    },
+    {
+      "speaker": "A",
+      "text": "Anyway the gala's on departure day, the welcoming one, they've got a week, Argyle got them moved physically next to Hildebrandt on the clock thing—"
+    },
+    {
+      "speaker": "C",
+      "text": "The plot clock. Wait, who's at twelve—"
+    },
+    {
+      "speaker": "A",
+      "text": "I don't — that I actually don't know—"
+    },
+    {
+      "speaker": "B",
+      "text": "We weren't told."
+    },
+    {
+      "speaker": "C",
+      "text": "So we're going into a death-game cruise and we don't know who's at twelve o'clock."
+    },
+    {
+      "speaker": "A",
+      "text": "We know there's eight legs a side."
+    },
+    {
+      "speaker": "C",
+      "text": "[deadpan] Great. Eight legs a side. That'll save us."
+    },
+    {
+      "speaker": "A",
+      "text": "...You really had to be there for the hot tub, though."
+    }
+  ]
+}

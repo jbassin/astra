@@ -1,0 +1,417 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-5-21",
+  "synopsis": "Newly arrived aboard the Strider, the crew of Iconoclasm settle into their freshly grown Fane, host a cookout to meet their fellow pilgrims, and hold a tense meeting with the masked Master of Ceremonies — only to discover he is a fiend tied to the devil \"the Harlequin\" who openly relishes the bloodshed he expects on the voyage to the edge of the void.",
+  "beats": [
+    {
+      "order": 1,
+      "summary": "Mike recapped the prior session for a hero point: arriving at the Strider, meeting the orts, parking near the Hildebrandt Corporation, planting the seed of inspiration to grow their heart, beating up monsters to power it, and naming both their butler Chuck and their heart 'Ear That Hears the Truth.' The crew also chose Star Focus.",
+      "characters": [
+        "Benny",
+        "Gamemaster",
+        "Argyle",
+        "Anzu",
+        "Johnny"
+      ],
+      "locations": [
+        "Strider",
+        "Ragged Roost"
+      ],
+      "wikiRefs": [
+        "Strider",
+        "orts",
+        "Hildebrandt Corporation",
+        "Star Focus",
+        "Ear That Hears the Truth",
+        "Ragged Roost"
+      ],
+      "significance": "Established the state of play — the group's Fane and heart are newly created — and set up a running gag when the GM revealed 'Ear That Hears the Truth' is actually the name of a real mythic feat half the party has, though Benny (who named the heart) doesn't have it and gets none of its benefits.",
+      "details": [
+        "Eight legs on each side of the Strider",
+        "Chuck 'very passively accepted the name' and didn't really want one",
+        "A barber on the Strider who only knows how to make one haircut — a flat top",
+        "GM: the heart name is secretly a mythic feat, but 'You don't get the benefits... even if they share the same name'"
+      ],
+      "tone": "comedic",
+      "tableAngle": "Benny insists his matter-of-fact notes had no embellishment while the table accuses him of inventing the one-haircut barber, and Argyle defends him on principle alone."
+    },
+    {
+      "order": 2,
+      "summary": "Discussing a group name, the party landed on calling themselves 'Chronicle' before the GM even formally asked, settling a long-running indecision.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Gamemaster",
+        "Johnny"
+      ],
+      "locations": [
+        "Strider"
+      ],
+      "wikiRefs": [
+        "Chronicle",
+        "Iconoclasm"
+      ],
+      "significance": "The GM flagged that he'll demand a group name in-world at some point, so the players coalescing on 'Chronicle' on their own was a useful bit of forward prep. Alternatives like 'the Voice of the Few' were shot down for sounding like tyrants or cult leaders.",
+      "details": [
+        "Anzu had previously suggested 'Chronicle' last session",
+        "GM on 'Voice of the Few': 'It makes you sound like tyrants at best' and 'You're everything Bernie Sanders would hate'"
+      ],
+      "tone": "lighthearted",
+      "tableAngle": "Argyle keeps lobbying for a name punning on a character most of the party never met, and the GM keeps vetoing it as confusing and tyrant-coded."
+    },
+    {
+      "order": 3,
+      "summary": "In their newly built Fane — centered on the heart Eerie, with bunks, workshop, and kitchen wings — Argyle summoned the butler Chuck via a crushable figurine and dispatched him to invite the neighboring Hildebrandt Corporation (and later other arriving orgs) to a cookout the next day.",
+      "characters": [
+        "Argyle",
+        "Gamemaster",
+        "Anzu",
+        "Johnny",
+        "Benny"
+      ],
+      "locations": [
+        "Fane",
+        "Strider",
+        "garage"
+      ],
+      "wikiRefs": [
+        "Fane",
+        "Eerie",
+        "Chuck",
+        "Hildebrandt Corporation",
+        "Polar Shiv",
+        "Arctos",
+        "Master of Ceremonies"
+      ],
+      "significance": "Set the social agenda for the session and introduced the Fane's mechanics: Eerie controls the structure, limited only by the energy fed to it. It also confirmed the crew arrived a week before departure, with a welcoming gala on departure day.",
+      "details": [
+        "Chuck appears from a figurine that crumbles to a surprising amount of dust, then hands over a replacement",
+        "Argyle told Chuck to invite Hildebrandt and 'tell them to bring their swim trunks' despite having no pool",
+        "Chuck, big and brown, is 'just a cat'"
+      ],
+      "tone": "casual",
+      "tableAngle": "Argyle keeps pushing Polar Shiv soda at the cookout despite having no connection to Arctos, which the GM ribs as pure fanboyism."
+    },
+    {
+      "order": 4,
+      "summary": "Benny went to the luxury Strider gym and sparred with Ralph Bishop, a heavily scarred, one-eyed gold lizardfolk wielding an ornate rapier, while old Paavo Karu of Hildebrandt watched. Benny used a nanite surge on an athletics check to read Bishop's combat prowess.",
+      "characters": [
+        "Benny",
+        "Gamemaster",
+        "Argyle",
+        "Johnny"
+      ],
+      "locations": [
+        "Strider",
+        "gym"
+      ],
+      "wikiRefs": [
+        "Ralph Bishop",
+        "Paavo Karu",
+        "Hildebrandt Corporation",
+        "the Scale",
+        "orts",
+        "Harlequins",
+        "raiment"
+      ],
+      "significance": "First contact with the Scale-affiliated overseer Bishop, established as a fighter who has been fighting 'for multiple lifetimes of many,' with a raiment 3-4 steps above Benny's. Benny also noticed Bishop subtly compelled his attention back mid-spar — a tell of hidden ability — and secured cookout attendance.",
+      "details": [
+        "Benny took a flat 27 rather than risk a low mythic reroll: 'It's so much of a risk with these fucking stupid points'",
+        "Bishop wears a Scale lapel icon; Paavo handed over a Hildebrandt business card",
+        "A nearly-invisible 'average' person on the treadmill that Benny's eye kept sliding off of",
+        "Bishop turns chairs around to sit on them backwards — 'So cool'"
+      ],
+      "tone": "tense",
+      "tableAngle": "Benny was simultaneously fact-finding AND showing off for Iconoclasm, undercutting Johnny's later plan to make the party look like harmless bumblers."
+    },
+    {
+      "order": 5,
+      "summary": "Over the week, Anzu meditated on his homemade 'void paper' and crit an occultism check, discovering the paper's voidward pull reverses toward the Strider's giant gyroscopic rings whenever they spin, and that the pull is noticeably stronger aboard the Strider than it was on the Sin and Tonic.",
+      "characters": [
+        "Anzu",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Strider",
+        "Sin and Tonic"
+      ],
+      "wikiRefs": [
+        "void paper",
+        "Voidsong",
+        "Strider",
+        "Sin and Tonic"
+      ],
+      "significance": "A concrete clue about the Voidsong and the Strider's propulsion: the spinning rings somehow redirect or intensify the void's pull, hinting at how the vessel will travel voidward — and that the Strider itself amplifies the phenomenon.",
+      "details": [
+        "A natural 38 crit on occultism",
+        "The rings move like a chaotic double pendulum, flinging the scoops forward and back",
+        "Pull goes back to voidward once the rings slow"
+      ],
+      "tone": "intriguing",
+      "tableAngle": "Anzu quietly banks the strongest roll of the session on solo investigation while everyone else is planning cookout swimwear."
+    },
+    {
+      "order": 6,
+      "summary": "The crew hosted their cookout. Argyle cast Soothing Spring as a 20-foot hot tub and grilled burgers in period swimwear; Johnny blasted Musical Accompaniment and worked the crowd. A drunken dwarf, Salvado Targona of Solari Sub-surface, befriended Johnny believing the whole thing was a networking event, with no idea what was really happening. Anzu spoke privately with Paavo, who resonates with the Voidsong.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Anzu",
+        "Benny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Fane",
+        "Strider"
+      ],
+      "wikiRefs": [
+        "Solari Sub-surface",
+        "Salvado Targona",
+        "Hildebrandt Corporation",
+        "Paavo Karu",
+        "Amber Call",
+        "Silven Grayson",
+        "Benjamin Grayson",
+        "Voidsong",
+        "the vocalist",
+        "Prime Meridian",
+        "the Scale"
+      ],
+      "significance": "Mapped the social landscape: Solari Sub-surface is a tiny, oblivious 'small fish' whose presence is a mystery; Hildebrandt's Paavo is a thoughtful Voidsong-resonant ally wary of the bloodshed spent on keystones; Amber Call (Silven Grayson) pointedly declined to attend. It also revealed nearly everyone received the invite mysteriously and 'just showed up.'",
+      "details": [
+        "Salvado: 'you and I will be good friends, because I've got no fucking idea what's happening'",
+        "Salvado thinks Benny is a punished child super-soldier-in-training",
+        "Paavo on the voyage: experienced navigators took 15 years to reach the wall at the edge of the void, and he'll be 'throwing up the whole time'",
+        "Anzu's theory: the Voidsong's source is 'the vocalist,' and it feels like 'a cry for help'",
+        "Johnny appears in 1970s swim trunks with a belt and cowboy boots; Argyle in cop glasses"
+      ],
+      "tone": "warm-comedic",
+      "tableAngle": "Johnny burned a performance check to make the party look like lucky bumblers — too late, since Benny had already flexed in the gym for two of the same orgs."
+    },
+    {
+      "order": 7,
+      "summary": "Argyle exchanged business cards with Seer Bishop and rolled a 34 religion check, learning Bishop once assisted on Scale excursions investigating weave disruptions that found hearts created by non-standard techniques. A call home confirmed Bishop, Cassian and Lance are senior Scale members in good standing, operating autonomously and choosing to attend on their own.",
+      "characters": [
+        "Argyle",
+        "Gamemaster",
+        "Anzu"
+      ],
+      "locations": [
+        "Fane",
+        "Strider"
+      ],
+      "wikiRefs": [
+        "Ralph Bishop",
+        "the Scale",
+        "Cassian",
+        "Lance Vesper",
+        "Asteris Lux",
+        "Voidsong",
+        "hearts",
+        "the weave"
+      ],
+      "significance": "Confirmed the Scale trio aren't blacklisted or evil but are independent overseers whose mission is investigating things that disrupt the gods — a natural alignment with the Voidsong mystery and a potential ally faction. Their heart is named Asteris Lux.",
+      "details": [
+        "Argyle phoned home from the cookout to vet them: 'they're in good standing... relatively senior members'",
+        "Argyle, repeatedly: 'They're so fucking cool. God damn it, I hope they're not evil'",
+        "Bishop: 'It's good to see another member of the Scale, even if you are waving another flag right now'"
+      ],
+      "tone": "intrigued",
+      "tableAngle": "Argyle is so smitten with how cool the Scale crew is that he keeps openly hoping they aren't evil — which the table treats as a flashing warning sign."
+    },
+    {
+      "order": 8,
+      "summary": "The party rode one of Chuck's floating discs to the Scale's forward operating base — a camouflaged concrete bunker with a sonar dish — and met the sickly-looking, 22-year-old Lance Vesper, the rifleman Cassian, and Bishop. They agreed to mutual aid, traded questions for the Master of Ceremonies meeting, and Argyle warned them hard against trusting Amber Call.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Benny",
+        "Anzu",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Strider",
+        "Scale forward operating base"
+      ],
+      "wikiRefs": [
+        "the Scale",
+        "Lance Vesper",
+        "Cassian",
+        "Ralph Bishop",
+        "Asteris Lux",
+        "Amber Call",
+        "Voidsong",
+        "overseers"
+      ],
+      "significance": "Cemented an alliance of convenience between the two Scale-aligned groups and surfaced shared suspicion of the whole pilgrimage: Lance bluntly said the clowns 'clearly have an ulterior motive or twelve.' Lance's chronic, possibly cursed sickness is an unexplained hook. Bishop agreed to query Scale HQ about Argyle's classified-giant intelligence.",
+      "details": [
+        "A gun barrel pointed through the door's porthole 'just in case'",
+        "Lance: 'I am 22... you wouldn't believe it from my countenance'; offers a refund if Argyle can't cure him",
+        "The bunker's heart is a gold-cracked concrete pillar, Asteris Lux",
+        "Argyle's botched questioning about a '10,000-foot tall red giant' that the GM kept correcting; Benny: 'I don't think we'd have to look out for something that's 10,000 feet tall, it's pretty noticeable'"
+      ],
+      "tone": "wary-comedic",
+      "tableAngle": "Argyle fumbles the giant intel so badly the GM has to feed him the correct scale mid-question, and Benny deadpans the whole 10,000-foot-giant problem away."
+    },
+    {
+      "order": 9,
+      "summary": "At a private restaurant meeting, the masked Master of Ceremonies received the party. When pressed, he removed his mask to reveal a deliberately, horrifically burned face. Argyle's 44 religion check identified a fiendish sulfur-and-copper scent linking him to 'the Harlequin,' one of four newly organized devils alongside the Shackle (Sigzilheit), the Hooded, and the Loam.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Anzu",
+        "Benny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Strider",
+        "Sardinian restaurant"
+      ],
+      "wikiRefs": [
+        "Master of Ceremonies",
+        "the Harlequin",
+        "the Shackle",
+        "Sigzilheit",
+        "the Hooded",
+        "the Loam",
+        "Illmari",
+        "Voidsong",
+        "Iconoclasm",
+        "Pyrelight",
+        "Lie to Me",
+        "Consult the Spirits"
+      ],
+      "significance": "The session's bombshell: the pilgrimage's host is a devil-tied fiend. He resonates with the Voidsong, denies being Illmari (whom he confirms is alive but 'not my story to tell'), and a consult-the-spirits ritual confirmed the party's own heart is at least not subservient to the devil. The crew now knows they're being shepherded toward the void by a being with infernal ties.",
+      "details": [
+        "A wrist-mounted firearm and oversized red gem 'gemstones' that are magical",
+        "Burned face: 'like it had been dunked into a bonfire' — Argyle's medicine check says it was healed on purpose to stay scarred, meaning he likely died and was revived",
+        "He rolled a 43 crit deception against Johnny's Lie to Me feat — completely unreadable",
+        "Removing the mask: 'we are in a restaurant and the typical reaction is not restaurant appropriate'"
+      ],
+      "tone": "ominous",
+      "tableAngle": "Johnny burns Lie to Me on the one NPC with a crit-tier deception and learns nothing — the table's debate over whether that feat is ever worth it writes itself."
+    },
+    {
+      "order": 10,
+      "summary": "The Master of Ceremonies revealed his expectation — and active encouragement — of lethal conflict among the 19+ orgs during the voyage, saying he'll meddle and that the party doesn't want to be his 'favorite.' He inspected Benny's 'permission slip' and chillingly said to give his regards to Benny's father.",
+      "characters": [
+        "Gamemaster",
+        "Argyle",
+        "Anzu",
+        "Johnny",
+        "Benny"
+      ],
+      "locations": [
+        "Strider",
+        "Sardinian restaurant"
+      ],
+      "wikiRefs": [
+        "Master of Ceremonies",
+        "the Harlequin",
+        "keystones",
+        "Voidsong",
+        "Benny"
+      ],
+      "significance": "Reframed the entire pilgrimage as a death game: the host will stoke violence out of boredom, deaths are expected, and 'whoever's left will fight for it' at the void's edge. The 'father' line implies the devil knows Benny's devil-related parentage — raising the dread that one of the organized devils may be Benny's other half.",
+      "details": [
+        "MC: 'I'll be encouraging it. I'll get bored... it would be boring if you all hung out in a circle and sang together'",
+        "'I make a habit of not entering any kind of circle' — the devil tell",
+        "'I do have favorites. You don't want to be my favorite. But you might end up there anyway'",
+        "On Benny: 'Say my regards to your father when you next speak to him'"
+      ],
+      "tone": "grim",
+      "tableAngle": "Anzu's theory was rescuing an innocent singer; now they're ferrying a boatload of killers to hack it apart — and the table has to reckon with whether boarding was a mistake at all."
+    },
+    {
+      "order": 11,
+      "summary": "Back home, the rattled crew spiraled into paranoid strategizing — Argyle reaching for his sword to pre-emptively jump orgs on the road, Benny advocating waiting until Amber Call's heart grew fatter before killing them for the energy. They settled instead on building alliances, a buddy system, and beefing up Fane defenses, and changed downtime feats (Break Curse, Doublespeak, Blast Boots) to prepare.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Fane",
+        "Strider"
+      ],
+      "wikiRefs": [
+        "Amber Call",
+        "hearts",
+        "Break Curse",
+        "Doublespeak",
+        "Blast Boots",
+        "Garrick Textiles",
+        "Solari Sub-surface"
+      ],
+      "significance": "The party's reaction to the devil's framing — that killing a heart lets you harvest its leftover energy — nearly turned them into the very aggressors he wants. Anzu and Benny talked Argyle down, but the group committed to a defensive-but-armed posture, recognizing allies are now survival currency.",
+      "details": [
+        "GM: 'He said I expect there to be violence, and you guys jumped to, well, clearly we need to start killing people on the road before they get here'",
+        "Argyle building an 'It's Always Sunny' red-string board",
+        "Code word debated: 'guac' / 'what would you eat with what's on his shoulder?' to distinguish Argyle from a possible devil-double",
+        "Argyle swaps Consult the Spirits for Break Curse fearing someone gets cursed; Johnny swaps to Doublespeak; orders moderate Blast Boots on his cowboy boots"
+      ],
+      "tone": "frantic-comedic",
+      "tableAngle": "Anzu objects to the GM declaring the whole party equally devil-addled, even as all four of them are visibly gung-ho to start a war on the highway."
+    },
+    {
+      "order": 12,
+      "summary": "The crew went door-to-door networking among the arriving orgs: re-establishing ties with Protectorate (Tamara and Yao, in ceramic-tile armor), securing a heart-network and info-sharing deal with Prime Meridian's bean-counter Tas Millet, a cordial-but-noncommittal meeting with the blind, politically savvy Reverend Walter Stoke of the Iridescent Church, and a curt brush-off from the dhampir Gaspar Caetano of Necrolog.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Johnny",
+        "Benny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Strider",
+        "Protectorate Fane",
+        "Prime Meridian office building",
+        "Iridescent Church temple",
+        "Necrolog Fane"
+      ],
+      "wikiRefs": [
+        "Protectorate",
+        "Tamara",
+        "Yao",
+        "Prime Meridian",
+        "Tas Millet",
+        "Iridescent Church",
+        "Walter Stoke",
+        "Necrolog",
+        "Gaspar Caetano",
+        "Pale Lantern Society",
+        "Verdant Holdings",
+        "Sable and Suns",
+        "Aut",
+        "Berth 4",
+        "Belvedere",
+        "the vocalist",
+        "Singers of the Herald Star"
+      ],
+      "significance": "Built out the party's intelligence and alliance network ahead of the gala and voyage, while sizing up the field of 19 orgs the GM laid out by birth number. They declined to disclose that Aut had urged them to unlock Berth 4's door. Yao's reaction to 'the vocalist' reinforced a quiet Voidsong connection.",
+      "details": [
+        "Tamara's warning: 'we're friends so long as we're friends... don't do anything too shysty'",
+        "Tas Millet does open cost-benefit analysis to their faces; agrees only to a two-way info-sharing heart link, not alliance",
+        "Reverend Stoke is blind and 'practiced in politics' — friendly but not seeking allies",
+        "Gaspar Caetano smells of formaldehyde and slams the door, redirecting them to the Pale Lantern Society",
+        "Argyle got the party moved to be physically next to Hildebrandt on the plot 'clock'"
+      ],
+      "tone": "businesslike",
+      "tableAngle": "Benny keeps eyeing 'the biggest guy on the yard' to jump first, while Anzu and the GM insist allies beat corpses — the prison-yard framing of high-stakes diplomacy."
+    }
+  ],
+  "discarded": [
+    "I had a strange experience at an interview at an on-site... and it's Claude. They're talking to Claude... having a meeting with it.",
+    "I like Noah's haircut subscription because so many times I go, he got a new haircut, but I'm like, it's not important.",
+    "The cost savings of not wiping your butt. Because toilet paper costs money and you can invest it.",
+    "The lady next to me decided to do deadlifts. And on a heavy deadlift, she just wet herself.",
+    "Do you know Ronnie Coleman?... they thought I was eating fries, but I wasn't... and all the comments are like, if Ronnie says they're not fries, they're not fried, guys.",
+    "So do you see this tiny bolt here? It's titanium Damascus... The space pen can write through grease.",
+    "Did his audio crash for everybody else? Okay, well now you sound fine.",
+    "Tanner, I hope your family member is okay... I think he's got a UTI or something like that.",
+    "Next Monday is a holiday... I'm around next Monday. I'm not around next Thursday.",
+    "What was up with the metamorphosis gene today? I hated that. (re: AI image generation)"
+  ]
+}

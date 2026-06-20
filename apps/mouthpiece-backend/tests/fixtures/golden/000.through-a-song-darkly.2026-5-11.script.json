@@ -1,0 +1,1500 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-5-11",
+  "title": "Crying and Critting on a City with Legs",
+  "hosts": {
+    "A": {
+      "name": "Bram",
+      "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+    },
+    "B": {
+      "name": "Maeve",
+      "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+    },
+    "C": {
+      "name": "Pip",
+      "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+    }
+  },
+  "turns": [
+    {
+      "speaker": "A",
+      "text": "—no but the thing is they sat there for nine months, NINE months of in-world travel, getting shot at, nearly dying like four times, and not one of them says a word about where they came from until somebody pours the milk—"
+    },
+    {
+      "speaker": "C",
+      "text": "milk and whiskey."
+    },
+    {
+      "speaker": "A",
+      "text": "milk and whiskey, right, and that's the magic combo, that's what cracks 'em."
+    },
+    {
+      "speaker": "B",
+      "text": "Benny called it."
+    },
+    {
+      "speaker": "C",
+      "text": "Benny didn't want to though, that's the part—"
+    },
+    {
+      "speaker": "A",
+      "text": "[jumping in] Benny hated it! Benny'd been saving the backstory up for like, what, years—"
+    },
+    {
+      "speaker": "B",
+      "text": "Years."
+    },
+    {
+      "speaker": "A",
+      "text": "years, and the second everyone else starts going around the circle he goes \"this better have been worth it.\""
+    },
+    {
+      "speaker": "C",
+      "text": "which is — that's not bonding, that's just peer pressure with a deadline."
+    },
+    {
+      "speaker": "A",
+      "text": "it's bonding!"
+    },
+    {
+      "speaker": "C",
+      "text": "is it? like if I have to share because everyone else shared—"
+    },
+    {
+      "speaker": "B",
+      "text": "They all shared."
+    },
+    {
+      "speaker": "C",
+      "text": "yeah but did they want to or did they just not want to be the guy who—"
+    },
+    {
+      "speaker": "A",
+      "text": "it turned out they were all there for the same reason basically, which is the wild part, the whole \"we happen to be in a car together\" thing suddenly made sense—"
+    },
+    {
+      "speaker": "C",
+      "text": "see THAT I liked. that I'll give you."
+    },
+    {
+      "speaker": "A",
+      "text": "nine months and nobody noticed."
+    },
+    {
+      "speaker": "C",
+      "text": "nobody asked! that's so them. that's so this party."
+    },
+    {
+      "speaker": "B",
+      "text": "They bought a bomb the next morning."
+    },
+    {
+      "speaker": "C",
+      "text": "[chuckles] ha — yeah."
+    },
+    {
+      "speaker": "A",
+      "text": "oh the bomb, the bomb's great, because it's just — it wouldn't be one of our groups unless we had a, you know, a cache of a bomb or something just sitting in the—"
+    },
+    {
+      "speaker": "C",
+      "text": "\"just in case.\""
+    },
+    {
+      "speaker": "A",
+      "text": "just in case! and then NPR's playing in the car—"
+    },
+    {
+      "speaker": "C",
+      "text": "wait was it NPR or—"
+    },
+    {
+      "speaker": "A",
+      "text": "it was the in-world NPR, the, whatever it is, and they're just shooting the shit driving to a pilgrimage and the twins are in the back doing magic—"
+    },
+    {
+      "speaker": "C",
+      "text": "the creepy twins. love the creepy twins. doing what magic though, like what were they actually—"
+    },
+    {
+      "speaker": "A",
+      "text": "doesn't matter, it's vibes, it's twins-in-the-backseat vibes—"
+    },
+    {
+      "speaker": "B",
+      "text": "They sensed the car got tampered with."
+    },
+    {
+      "speaker": "A",
+      "text": "right, so somebody's messing with the car, they pull over, and there's a thing stuck to the roof—"
+    },
+    {
+      "speaker": "C",
+      "text": "on the roof."
+    },
+    {
+      "speaker": "A",
+      "text": "on the roof, and so naturally — naturally — they just rip the whole roof off the car and throw it."
+    },
+    {
+      "speaker": "C",
+      "text": "the bonnet."
+    },
+    {
+      "speaker": "A",
+      "text": "the bonnet, yeah, they kept calling it the bonnet—"
+    },
+    {
+      "speaker": "B",
+      "text": "That's the hood."
+    },
+    {
+      "speaker": "A",
+      "text": "huh?"
+    },
+    {
+      "speaker": "B",
+      "text": "Bonnet's the hood. Roof's the roof."
+    },
+    {
+      "speaker": "A",
+      "text": "well they called it the bonnet and somebody said that's a twenty thousand dollar part on a real G-Wagon—"
+    },
+    {
+      "speaker": "C",
+      "text": "and they just chucked it."
+    },
+    {
+      "speaker": "A",
+      "text": "chucked it! with the bomb on it! and then the ambusher's standing there trying to set off the bomb on the roof that's now in a ditch like forty feet away—"
+    },
+    {
+      "speaker": "C",
+      "text": "that's the best part, he hits the button and it's just — nowhere near them."
+    },
+    {
+      "speaker": "B",
+      "text": "They threw the bomb away."
+    },
+    {
+      "speaker": "C",
+      "text": "was it genius though or did they just total their car? like—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's genius!"
+    },
+    {
+      "speaker": "C",
+      "text": "[deadpan] it's a totaled car, Bram."
+    },
+    {
+      "speaker": "A",
+      "text": "it's improvised genius, those are different from regular—"
+    },
+    {
+      "speaker": "C",
+      "text": "and then there's a guy with a rocket launcher—"
+    },
+    {
+      "speaker": "A",
+      "text": "ROCKET launcher, yeah, like a Scott Pilgrim evil ex, just shows up with a rocket—"
+    },
+    {
+      "speaker": "B",
+      "text": "Benny dodged it."
+    },
+    {
+      "speaker": "A",
+      "text": "Benny does the — what's the drive called—"
+    },
+    {
+      "speaker": "B",
+      "text": "Mindbird."
+    },
+    {
+      "speaker": "A",
+      "text": "the Mindbird drive, and the rocket like SKIPS off the car, like Dragon Ball Z, like it just—"
+    },
+    {
+      "speaker": "C",
+      "text": "it skipped?"
+    },
+    {
+      "speaker": "A",
+      "text": "it skipped! and then they scare everybody off with a fake dragon—"
+    },
+    {
+      "speaker": "C",
+      "text": "an illusion dragon."
+    },
+    {
+      "speaker": "A",
+      "text": "huge fake dragon, scares off most of the attackers, blows out one of their tires so they're stranded—"
+    },
+    {
+      "speaker": "B",
+      "text": "Stranded for the next pilgrims."
+    },
+    {
+      "speaker": "C",
+      "text": "oh that's mean actually. they just left them there to ambush whoever comes next."
+    },
+    {
+      "speaker": "A",
+      "text": "well they're not gonna fix the guys' tire, Pip."
+    },
+    {
+      "speaker": "C",
+      "text": "no but — they could've. anyway."
+    },
+    {
+      "speaker": "B",
+      "text": "Benny read the paper after."
+    },
+    {
+      "speaker": "A",
+      "text": "oh — yeah, yeah, and the newspaper says terrorists took credit for the bombs—"
+    },
+    {
+      "speaker": "C",
+      "text": "bombs the party never set off."
+    },
+    {
+      "speaker": "A",
+      "text": "bombs they didn't even — yeah, somebody's out there claiming the party's bombs."
+    },
+    {
+      "speaker": "C",
+      "text": "that's so funny. wrong terrorists."
+    },
+    {
+      "speaker": "B",
+      "text": "Then Aut."
+    },
+    {
+      "speaker": "C",
+      "text": "oh here we go."
+    },
+    {
+      "speaker": "A",
+      "text": "Aut! the white guy, the — he's got the grin, the giant grin all the way across, looks like the dip guy from Roger Rabbit—"
+    },
+    {
+      "speaker": "C",
+      "text": "the judge. Doom."
+    },
+    {
+      "speaker": "A",
+      "text": "Judge Doom, yeah, and he goes \"I'll answer any question, literally any question, and I'll do you favors—\""
+    },
+    {
+      "speaker": "C",
+      "text": "leave a door unlocked, that kind of favor."
+    },
+    {
+      "speaker": "A",
+      "text": "anything, any question in the world, and the party goes... uhh."
+    },
+    {
+      "speaker": "C",
+      "text": "nothing. they got nothing."
+    },
+    {
+      "speaker": "A",
+      "text": "they couldn't think of ANYTHING they wanted to know."
+    },
+    {
+      "speaker": "C",
+      "text": "which is — okay, this is my whole thing—"
+    },
+    {
+      "speaker": "B",
+      "text": "Here it comes."
+    },
+    {
+      "speaker": "C",
+      "text": "Johnny — JOHNNY — has a god who stopped answering him, right, stopped picking up the phone, and there's a guy in front of him who will answer any question, and he doesn't ask \"hey why'd my god ghost me?\""
+    },
+    {
+      "speaker": "A",
+      "text": "in fairness—"
+    },
+    {
+      "speaker": "C",
+      "text": "[interrupts] there's no fairness! it's the one question he's been carrying the whole campaign and he just—"
+    },
+    {
+      "speaker": "B",
+      "text": "He didn't trust Aut."
+    },
+    {
+      "speaker": "C",
+      "text": "nobody should trust Aut, that's not the point, the point is you ask the question and you sift the lie out later—"
+    },
+    {
+      "speaker": "A",
+      "text": "but that's the thing, taking the deal IS the price, that jacket's morally binding—"
+    },
+    {
+      "speaker": "C",
+      "text": "oof."
+    },
+    {
+      "speaker": "A",
+      "text": "worse. it's merch."
+    },
+    {
+      "speaker": "C",
+      "text": "[chuckles] ha—"
+    },
+    {
+      "speaker": "A",
+      "text": "somebody's gonna take Aut's deal eventually, I'm telling you, it's gonna be Johnny—"
+    },
+    {
+      "speaker": "C",
+      "text": "it's gonna be Johnny."
+    },
+    {
+      "speaker": "B",
+      "text": "The oath has a price."
+    },
+    {
+      "speaker": "A",
+      "text": "the oath has a price, we just haven't found it yet."
+    },
+    {
+      "speaker": "C",
+      "text": "and Argyle, meanwhile, faced with a handshake—"
+    },
+    {
+      "speaker": "A",
+      "text": "considers suicide—"
+    },
+    {
+      "speaker": "C",
+      "text": "considers suicide. the most Argyle thing. never reads a room in his life."
+    },
+    {
+      "speaker": "A",
+      "text": "two Argyles in there, remember, the angel stuffed in the demon—"
+    },
+    {
+      "speaker": "C",
+      "text": "who was ALSO already named Argyle."
+    },
+    {
+      "speaker": "A",
+      "text": "already named Argyle! lazy AND incredible."
+    },
+    {
+      "speaker": "B",
+      "text": "They turned Aut down."
+    },
+    {
+      "speaker": "C",
+      "text": "which — admirable restraint or a totally wasted gift, because—"
+    },
+    {
+      "speaker": "A",
+      "text": "restraint!"
+    },
+    {
+      "speaker": "C",
+      "text": "it's free information from a god, Bram—"
+    },
+    {
+      "speaker": "B",
+      "text": "Devil-adjacent."
+    },
+    {
+      "speaker": "C",
+      "text": "devil-adjacent, fine, free information from a devil, and you walk away because you can't think of a question? that's not restraint that's just—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's being thorough."
+    },
+    {
+      "speaker": "C",
+      "text": "it's being out of ideas."
+    },
+    {
+      "speaker": "A",
+      "text": "anyway then they get to Ragged Roost and the thing is just—"
+    },
+    {
+      "speaker": "C",
+      "text": "oh the city."
+    },
+    {
+      "speaker": "A",
+      "text": "the city's done. they were there six months ago, it's a mining town, dead, nothing, and now there's a — okay how big was it—"
+    },
+    {
+      "speaker": "B",
+      "text": "Three-quarters of a mile wide."
+    },
+    {
+      "speaker": "A",
+      "text": "three-quarters of a mile wide, and it's up on legs, like three hundred feet up—"
+    },
+    {
+      "speaker": "C",
+      "text": "on LEGS."
+    },
+    {
+      "speaker": "A",
+      "text": "on legs! it's a city on legs! eight legs a side, all offset, like a — like a centipede, a spider thing—"
+    },
+    {
+      "speaker": "B",
+      "text": "Arachnid. Centipede-ish."
+    },
+    {
+      "speaker": "A",
+      "text": "and the whole town's in permanent shadow under it, they roll in at four in the afternoon and have to put the headlights on because it's just—"
+    },
+    {
+      "speaker": "C",
+      "text": "that rules. that's a great image."
+    },
+    {
+      "speaker": "A",
+      "text": "and the population sign, this is the bit, the sign used to say two thousand crossed out, then zero—"
+    },
+    {
+      "speaker": "B",
+      "text": "Crossed out to zero."
+    },
+    {
+      "speaker": "A",
+      "text": "crossed out to zero, and now it says seventy-five thousand."
+    },
+    {
+      "speaker": "C",
+      "text": "but nobody's there yet."
+    },
+    {
+      "speaker": "A",
+      "text": "nobody's there yet! they're like guest number two!"
+    },
+    {
+      "speaker": "B",
+      "text": "Guest two. Hildebrandt was six."
+    },
+    {
+      "speaker": "C",
+      "text": "who's Hildebrandt."
+    },
+    {
+      "speaker": "B",
+      "text": "The dragon. Airframe company."
+    },
+    {
+      "speaker": "A",
+      "text": "the fortune dragon, runs the flight company, and they tied TWO of their Humvee things to one keystone—"
+    },
+    {
+      "speaker": "C",
+      "text": "can you do that?"
+    },
+    {
+      "speaker": "B",
+      "text": "Apparently."
+    },
+    {
+      "speaker": "A",
+      "text": "and there's the — on top of the city there's this big spinning, what'd they call it, the orrery, the astrolabe thing—"
+    },
+    {
+      "speaker": "B",
+      "text": "Gyroscopic. Interlocking rings."
+    },
+    {
+      "speaker": "A",
+      "text": "rings inside rings inside rings, spinning, and nobody knows what it is, and Johnny goes \"hey... doesn't that look like the orrery we found in the basement—\""
+    },
+    {
+      "speaker": "C",
+      "text": "Tywelwyn's."
+    },
+    {
+      "speaker": "A",
+      "text": "Tywelwyn's basement, the guy they killed, his fane had one—"
+    },
+    {
+      "speaker": "C",
+      "text": "okay but is that a real clue or is Johnny just—"
+    },
+    {
+      "speaker": "A",
+      "text": "I think it's real."
+    },
+    {
+      "speaker": "C",
+      "text": "or is he just seeing the last dungeon everywhere he goes, because that's a thing people do—"
+    },
+    {
+      "speaker": "B",
+      "text": "It looked like it."
+    },
+    {
+      "speaker": "C",
+      "text": "it LOOKED like it, sure, lots of things have rings—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's a clue. I'd bet on it."
+    },
+    {
+      "speaker": "C",
+      "text": "you'd bet on a totaled car, your bets are—"
+    },
+    {
+      "speaker": "A",
+      "text": "[interrupts] that car was a TACTICAL loss—"
+    },
+    {
+      "speaker": "B",
+      "text": "There's a harlequin with leashed devils at the gate."
+    },
+    {
+      "speaker": "A",
+      "text": "oh the harlequin, yeah, walking these little — what are they—"
+    },
+    {
+      "speaker": "B",
+      "text": "Orts. Ort-devils."
+    },
+    {
+      "speaker": "A",
+      "text": "the orts, lowest devils, basically cattle, semi-sentient, and Anzu rolls a — what was it, a Nature check—"
+    },
+    {
+      "speaker": "B",
+      "text": "Twenty-nine."
+    },
+    {
+      "speaker": "A",
+      "text": "twenty-nine Nature to clock that they're the bottom-of-the-barrel devils, just farm devils basically—"
+    },
+    {
+      "speaker": "C",
+      "text": "and the harlequin smells like—"
+    },
+    {
+      "speaker": "B",
+      "text": "Sulfur and pennies."
+    },
+    {
+      "speaker": "C",
+      "text": "copper pennies, yeah, that detail got me. faint sulfur and copper pennies."
+    },
+    {
+      "speaker": "A",
+      "text": "and they winch the car up into the city in a shipping container, and there's a keystone check, and they get sent to berth fourteen—"
+    },
+    {
+      "speaker": "C",
+      "text": "and the servant."
+    },
+    {
+      "speaker": "A",
+      "text": "and the servant! the caped guy, very formal, says you can call me Butler or you can call me Thing—"
+    },
+    {
+      "speaker": "C",
+      "text": "like Addams Family, Thing—"
+    },
+    {
+      "speaker": "A",
+      "text": "and the party immediately goes: Chuck."
+    },
+    {
+      "speaker": "C",
+      "text": "Chuck!"
+    },
+    {
+      "speaker": "A",
+      "text": "just Chuck. on the spot."
+    },
+    {
+      "speaker": "C",
+      "text": "which — he offers to be called literally anything and they pick the most—"
+    },
+    {
+      "speaker": "B",
+      "text": "The most boring name."
+    },
+    {
+      "speaker": "C",
+      "text": "the most aggressively boring name available, Chuck—"
+    },
+    {
+      "speaker": "A",
+      "text": "I think Chuck's respectful in a way—"
+    },
+    {
+      "speaker": "C",
+      "text": "how is Chuck respectful—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's familiar! it's affectionate—"
+    },
+    {
+      "speaker": "C",
+      "text": "he offered Butler, a dignified title, and Thing, a fun bit, and they went with the name of a guy who does your taxes—"
+    },
+    {
+      "speaker": "B",
+      "text": "He didn't seem to mind."
+    },
+    {
+      "speaker": "C",
+      "text": "he's a servant, he's not gonna say."
+    },
+    {
+      "speaker": "A",
+      "text": "and then — oh, hang on, can I get another one of these—"
+    },
+    {
+      "speaker": "C",
+      "text": "get me one too."
+    },
+    {
+      "speaker": "A",
+      "text": "—two of these when you get a sec, thanks — okay so then the actual ritual, the keystone, this is the big one—"
+    },
+    {
+      "speaker": "B",
+      "text": "The plot of land."
+    },
+    {
+      "speaker": "A",
+      "text": "they've got a plot of land aboard, ground rights, and there's a magic circle inscribed, and they put the keystone down in it, and Benny does the honors—"
+    },
+    {
+      "speaker": "C",
+      "text": "eyes closed."
+    },
+    {
+      "speaker": "A",
+      "text": "eyes closed AND he runs away after he activates it—"
+    },
+    {
+      "speaker": "C",
+      "text": "which is the correct response to a magic bomb you don't understand, honestly—"
+    },
+    {
+      "speaker": "A",
+      "text": "and it sucks all four of them into this — void, a starscape, like a black space full of stars, on a dais—"
+    },
+    {
+      "speaker": "B",
+      "text": "Benny crit perception to get there first."
+    },
+    {
+      "speaker": "A",
+      "text": "a thirty-four perception, front row seat to the void, lucky him—"
+    },
+    {
+      "speaker": "C",
+      "text": "front row to getting your saves shredded, we'll get there—"
+    },
+    {
+      "speaker": "A",
+      "text": "and the placeholder token for the keystone looked exactly like Mysterio's helmet—"
+    },
+    {
+      "speaker": "C",
+      "text": "the fishbowl."
+    },
+    {
+      "speaker": "A",
+      "text": "the green fishbowl, yeah, just floating there—"
+    },
+    {
+      "speaker": "B",
+      "text": "Then the thoughts came up."
+    },
+    {
+      "speaker": "A",
+      "text": "thoughts! little ghost guys, purple ones and orange ones, rising up off the platforms around them and converging—"
+    },
+    {
+      "speaker": "B",
+      "text": "Purple void. Orange star."
+    },
+    {
+      "speaker": "A",
+      "text": "purple's void, orange's star, and the deal is you've gotta match the color to feed it in—"
+    },
+    {
+      "speaker": "C",
+      "text": "how'd they even figure that out—"
+    },
+    {
+      "speaker": "B",
+      "text": "Anzu theorized it."
+    },
+    {
+      "speaker": "A",
+      "text": "Anzu called it, you have to be the right alignment to even affect the matching thoughts, and you tug the tether—"
+    },
+    {
+      "speaker": "B",
+      "text": "One action to swap."
+    },
+    {
+      "speaker": "A",
+      "text": "one action, tug the tether, and the whole keystone flips orange to purple or back, so every kill is a choice, you're tilting the thing—"
+    },
+    {
+      "speaker": "C",
+      "text": "and Benny wanted to just lock one color and farm."
+    },
+    {
+      "speaker": "B",
+      "text": "Lock void. Farm essence."
+    },
+    {
+      "speaker": "A",
+      "text": "Benny's whole bit was \"turn-based decorating,\" he kept calling it decorating—"
+    },
+    {
+      "speaker": "C",
+      "text": "ha, because—"
+    },
+    {
+      "speaker": "A",
+      "text": "because he's picking which thoughts become, like, house servants, which ones you keep—"
+    },
+    {
+      "speaker": "C",
+      "text": "see and the void plan, the lock-void plan, that's where you get the cool sinister heart, that's the—"
+    },
+    {
+      "speaker": "A",
+      "text": "did they though? because—"
+    },
+    {
+      "speaker": "B",
+      "text": "It ended star."
+    },
+    {
+      "speaker": "A",
+      "text": "it ended STAR-tilted, that's the thing, after ALL the void setup it came out the other way—"
+    },
+    {
+      "speaker": "C",
+      "text": "how does that even happen, you set up void and it goes—"
+    },
+    {
+      "speaker": "B",
+      "text": "Eleven star, seven void."
+    },
+    {
+      "speaker": "C",
+      "text": "eleven to seven STAR? after all that? that's a build going wrong in real time—"
+    },
+    {
+      "speaker": "A",
+      "text": "I think they just kept matching whatever spawned instead of committing—"
+    },
+    {
+      "speaker": "C",
+      "text": "that's so them again, no commitment, no follow-through—"
+    },
+    {
+      "speaker": "A",
+      "text": "but it's a long fight, twenty of these things plus the two big ones—"
+    },
+    {
+      "speaker": "B",
+      "text": "Fractured Ideals."
+    },
+    {
+      "speaker": "A",
+      "text": "the Fractured Ideals, the two spellcaster ones, and those things resisted basically everything—"
+    },
+    {
+      "speaker": "B",
+      "text": "Except force, ghost touch, vitality."
+    },
+    {
+      "speaker": "A",
+      "text": "yeah those three got through, everything else just bounced—"
+    },
+    {
+      "speaker": "C",
+      "text": "and meanwhile Benny."
+    },
+    {
+      "speaker": "A",
+      "text": "oh, Benny."
+    },
+    {
+      "speaker": "C",
+      "text": "Benny's having the worst night of his life."
+    },
+    {
+      "speaker": "A",
+      "text": "Benny failed every will save in the building, every single one—"
+    },
+    {
+      "speaker": "B",
+      "text": "Crushing Despair. Phantasmal Killer."
+    },
+    {
+      "speaker": "A",
+      "text": "Crushing Despair, Phantasmal Killer, he's slowed, he's frightened, he's sobbing—"
+    },
+    {
+      "speaker": "C",
+      "text": "he's literally sobbing uncontrollably—"
+    },
+    {
+      "speaker": "A",
+      "text": "sobbing! and STILL critting in melee—"
+    },
+    {
+      "speaker": "C",
+      "text": "that's the thing, he's crying and landing crits, his Falcata leeches twenty-five healing—"
+    },
+    {
+      "speaker": "B",
+      "text": "Twenty-five."
+    },
+    {
+      "speaker": "A",
+      "text": "and Benny goes \"just what I needed, a little snack\"—"
+    },
+    {
+      "speaker": "C",
+      "text": "while weeping. it's incredible. it's a fragile-will build though, right, that's not bad luck—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's a LITTLE bad luck—"
+    },
+    {
+      "speaker": "C",
+      "text": "that's four failed saves, that's a stat problem, that's not—"
+    },
+    {
+      "speaker": "B",
+      "text": "It was a few."
+    },
+    {
+      "speaker": "C",
+      "text": "it was a lot."
+    },
+    {
+      "speaker": "A",
+      "text": "and somebody quips that killing the caster doesn't even stop the spell, like Phantasmal Killer just keeps going—"
+    },
+    {
+      "speaker": "C",
+      "text": "right, it's already cast, the guy can die—"
+    },
+    {
+      "speaker": "A",
+      "text": "so Benny's just stuck, no actions, crying—"
+    },
+    {
+      "speaker": "B",
+      "text": "Argyle got crit too."
+    },
+    {
+      "speaker": "A",
+      "text": "oh the crit on Argyle! the natural twenty by — by like, the lowest thing on the board—"
+    },
+    {
+      "speaker": "B",
+      "text": "A zero."
+    },
+    {
+      "speaker": "A",
+      "text": "a ZERO, a thing called zero rolls a natural twenty on Argyle, and Argyle goes \"that bitch got a twenty! that SON of a bitch!\""
+    },
+    {
+      "speaker": "C",
+      "text": "by zero. I've been this size since I was zero days old—"
+    },
+    {
+      "speaker": "A",
+      "text": "[chuckles] ha—"
+    },
+    {
+      "speaker": "C",
+      "text": "somebody had to."
+    },
+    {
+      "speaker": "A",
+      "text": "and Anzu — Anzu's sure strike MISSES, which shouldn't even—"
+    },
+    {
+      "speaker": "B",
+      "text": "Sure Strike missed."
+    },
+    {
+      "speaker": "C",
+      "text": "how do you miss with Sure Strike—"
+    },
+    {
+      "speaker": "A",
+      "text": "but then the re-roll, the mythic telekinetic thing, turns into a crit, and they named the rock—"
+    },
+    {
+      "speaker": "B",
+      "text": "Dwayne the Rock Johnson."
+    },
+    {
+      "speaker": "A",
+      "text": "Dwayne the Rock Johnson! the telekinetic projectile, named on the spot—"
+    },
+    {
+      "speaker": "C",
+      "text": "okay but the real MVP—"
+    },
+    {
+      "speaker": "A",
+      "text": "the gingerbread house."
+    },
+    {
+      "speaker": "C",
+      "text": "the gingerbread house."
+    },
+    {
+      "speaker": "A",
+      "text": "Johnny had this — an unopened gingerbread house kit, like a magic item—"
+    },
+    {
+      "speaker": "B",
+      "text": "Level six."
+    },
+    {
+      "speaker": "A",
+      "text": "level six gingerbread house, and he uses it as a focus to cast — \"Ode to a Gingerbread House\"—"
+    },
+    {
+      "speaker": "C",
+      "text": "and just talks an enemy into being stupid—"
+    },
+    {
+      "speaker": "B",
+      "text": "Stupefied."
+    },
+    {
+      "speaker": "A",
+      "text": "filibusters it! just goes on and on about the gingerbread house until the thing is stupefied—"
+    },
+    {
+      "speaker": "C",
+      "text": "that's the MVP, not Benny's snack sword—"
+    },
+    {
+      "speaker": "A",
+      "text": "I mean Benny did clear half the board crying—"
+    },
+    {
+      "speaker": "C",
+      "text": "anyone can clear a board, not everyone can defeat a monster with a craft project—"
+    },
+    {
+      "speaker": "A",
+      "text": "and they stacked everything, Benediction, Bless, the — Dirge of Doom—"
+    },
+    {
+      "speaker": "B",
+      "text": "Frightened on everything."
+    },
+    {
+      "speaker": "A",
+      "text": "everything's frightened, everyone's got plus two AC, the enemies just miss and miss and miss—"
+    },
+    {
+      "speaker": "C",
+      "text": "so it was a stomp."
+    },
+    {
+      "speaker": "A",
+      "text": "it was a stomp that FELT scary because Benny was dying inside—"
+    },
+    {
+      "speaker": "B",
+      "text": "They cleared all twenty."
+    },
+    {
+      "speaker": "C",
+      "text": "and both big ones."
+    },
+    {
+      "speaker": "A",
+      "text": "and then the keystone's overfull, and a thought — wordless — asks what do you stand for, what's your ideal—"
+    },
+    {
+      "speaker": "C",
+      "text": "oh this is where they argued for an hour."
+    },
+    {
+      "speaker": "B",
+      "text": "Knowledge. Justice."
+    },
+    {
+      "speaker": "A",
+      "text": "they land on knowledge and justice, with a little — a tinge of self-interest—"
+    },
+    {
+      "speaker": "C",
+      "text": "the \"just us\" bit."
+    },
+    {
+      "speaker": "A",
+      "text": "the \"just us\"! somebody keeps saying justice but it's actually \"just us,\" like just for us—"
+    },
+    {
+      "speaker": "B",
+      "text": "Partiality."
+    },
+    {
+      "speaker": "C",
+      "text": "partiality's the polite word for selfishness, that was the whole gag—"
+    },
+    {
+      "speaker": "A",
+      "text": "and Argyle wanted \"good for the sake of good\"—"
+    },
+    {
+      "speaker": "C",
+      "text": "of course he did. Argyle the self-litigating lawyer wants good for its own sake—"
+    },
+    {
+      "speaker": "A",
+      "text": "and Johnny wanted knowledge that upholds good, which is different—"
+    },
+    {
+      "speaker": "B",
+      "text": "Slightly."
+    },
+    {
+      "speaker": "A",
+      "text": "and they're throwing out names, like a hundred names—"
+    },
+    {
+      "speaker": "B",
+      "text": "Foresight. Voice of the Few. The Auditor."
+    },
+    {
+      "speaker": "A",
+      "text": "the Auditor, the Arbiter, Chronicle, Oracle—"
+    },
+    {
+      "speaker": "C",
+      "text": "all rejected."
+    },
+    {
+      "speaker": "A",
+      "text": "all rejected, and the GM mentions there's a heart called Voice of Many, but only Argyle's character would even know that one—"
+    },
+    {
+      "speaker": "B",
+      "text": "From the one-shot."
+    },
+    {
+      "speaker": "A",
+      "text": "the one-shot with the — the Shackled Prince guy—"
+    },
+    {
+      "speaker": "B",
+      "text": "Sigzil Haight."
+    },
+    {
+      "speaker": "A",
+      "text": "Sigzil Haight, the Prince of Shackles, right—"
+    },
+    {
+      "speaker": "C",
+      "text": "and after ALL that they land on—"
+    },
+    {
+      "speaker": "A",
+      "text": "Eerie."
+    },
+    {
+      "speaker": "C",
+      "text": "Eerie."
+    },
+    {
+      "speaker": "A",
+      "text": "because it's \"Ear That Hears the Truth,\" and you nickname it Eerie—"
+    },
+    {
+      "speaker": "B",
+      "text": "They steered it to an ear theme."
+    },
+    {
+      "speaker": "C",
+      "text": "did they land it or did they just give up—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's on-theme!"
+    },
+    {
+      "speaker": "C",
+      "text": "it's on theme but it's also \"we've been at this forty minutes can we please—\""
+    },
+    {
+      "speaker": "A",
+      "text": "and its first words are \"Greetings. I am Eerie. You have created me.\""
+    },
+    {
+      "speaker": "C",
+      "text": "that's a good first line."
+    },
+    {
+      "speaker": "B",
+      "text": "It's a scrolling parchment. Seismograph thing."
+    },
+    {
+      "speaker": "A",
+      "text": "yeah it's this big — like a seismograph, paper scrolling out, and the text resolves into a FACE—"
+    },
+    {
+      "speaker": "C",
+      "text": "creepy."
+    },
+    {
+      "speaker": "A",
+      "text": "eerie, you might say—"
+    },
+    {
+      "speaker": "C",
+      "text": "[deadpan] don't."
+    },
+    {
+      "speaker": "A",
+      "text": "and then it builds the Fane, the house, and you get a bedroom and a kitchen mandatory, and you pick a third room—"
+    },
+    {
+      "speaker": "B",
+      "text": "Workshop."
+    },
+    {
+      "speaker": "A",
+      "text": "workshop, over the hot tub—"
+    },
+    {
+      "speaker": "C",
+      "text": "Johnny wanted the hot tub SO bad—"
+    },
+    {
+      "speaker": "A",
+      "text": "Johnny lobbied HARD for the hot tub, the whole session basically—"
+    },
+    {
+      "speaker": "C",
+      "text": "and they shot him down for a workshop."
+    },
+    {
+      "speaker": "A",
+      "text": "well the star tilt gives you the breakfast bonus in the kitchen, five temp HP—"
+    },
+    {
+      "speaker": "B",
+      "text": "And a crafting discount in the workshop."
+    },
+    {
+      "speaker": "A",
+      "text": "so the workshop's practical, but—"
+    },
+    {
+      "speaker": "C",
+      "text": "but the hot tub's the soul of the house, Bram—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's not—"
+    },
+    {
+      "speaker": "C",
+      "text": "a home needs a hot tub. that's not a tactical opinion that's a—"
+    },
+    {
+      "speaker": "A",
+      "text": "and the heart wants to be FED, it eats magic items to grow—"
+    },
+    {
+      "speaker": "B",
+      "text": "Like Gale."
+    },
+    {
+      "speaker": "A",
+      "text": "like Gale from Baldur's Gate, the GM said, you feed it items and it grows another room—"
+    },
+    {
+      "speaker": "C",
+      "text": "wait does it explode if you don't feed it—"
+    },
+    {
+      "speaker": "B",
+      "text": "The GM said that. Then said it wasn't true."
+    },
+    {
+      "speaker": "A",
+      "text": "he walked it back, he was joking about the month-until-it-explodes thing—"
+    },
+    {
+      "speaker": "C",
+      "text": "this is how people get radicalized."
+    },
+    {
+      "speaker": "A",
+      "text": "[chuckles] ha—"
+    },
+    {
+      "speaker": "C",
+      "text": "I love and fear that man."
+    },
+    {
+      "speaker": "A",
+      "text": "and Argyle floats some rune-laundering exploit—"
+    },
+    {
+      "speaker": "C",
+      "text": "of course he does."
+    },
+    {
+      "speaker": "A",
+      "text": "and the GM goes \"no, the devs are watching you play, we're actively patching that\"—"
+    },
+    {
+      "speaker": "C",
+      "text": "Argyle finds the loophole in the actual rules now, not just his own oaths—"
+    },
+    {
+      "speaker": "A",
+      "text": "and Johnny — this is great — Johnny wants to feed the level six gingerbread house to the heart to unlock a fourth room, a library—"
+    },
+    {
+      "speaker": "C",
+      "text": "NO."
+    },
+    {
+      "speaker": "A",
+      "text": "a library!"
+    },
+    {
+      "speaker": "C",
+      "text": "you don't sacrifice the gingerbread house, it just WON the fight—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's a magic item, it's worth a room—"
+    },
+    {
+      "speaker": "C",
+      "text": "it's a war hero, Bram, you don't eat the war hero—"
+    },
+    {
+      "speaker": "A",
+      "text": "and meanwhile he ALSO set it up as a decoy gatehouse—"
+    },
+    {
+      "speaker": "B",
+      "text": "A fake house on the path."
+    },
+    {
+      "speaker": "A",
+      "text": "a fake gingerbread house at the front so people hit that first before the real house—"
+    },
+    {
+      "speaker": "C",
+      "text": "so is he keeping it or eating it, pick one—"
+    },
+    {
+      "speaker": "A",
+      "text": "I — both? I think he wants both—"
+    },
+    {
+      "speaker": "C",
+      "text": "that's Johnny."
+    },
+    {
+      "speaker": "A",
+      "text": "and Benny offers a Crushing Rune to feed it, and Argyle's got a — a pickled demon tongue spell heart—"
+    },
+    {
+      "speaker": "B",
+      "text": "Both too low."
+    },
+    {
+      "speaker": "A",
+      "text": "both too low level on their own, so they don't—"
+    },
+    {
+      "speaker": "C",
+      "text": "build me a hood out of a box of scraps in a cave—"
+    },
+    {
+      "speaker": "A",
+      "text": "ha, we're hot rod people now—"
+    },
+    {
+      "speaker": "C",
+      "text": "we are NOT hot rod people, we threw the hood in a ditch—"
+    },
+    {
+      "speaker": "A",
+      "text": "that was the ROOF—"
+    },
+    {
+      "speaker": "B",
+      "text": "It was the roof."
+    },
+    {
+      "speaker": "A",
+      "text": "thank you—"
+    },
+    {
+      "speaker": "C",
+      "text": "and Chuck shows back up at the end, right—"
+    },
+    {
+      "speaker": "A",
+      "text": "Chuck comes back, congratulates them, lists all the amenities, confirms the Master audience—"
+    },
+    {
+      "speaker": "B",
+      "text": "Six days till departure."
+    },
+    {
+      "speaker": "A",
+      "text": "six days, and a banquet the night they get off—"
+    },
+    {
+      "speaker": "C",
+      "text": "and he gives them a little—"
+    },
+    {
+      "speaker": "B",
+      "text": "A figurine. Crush it to summon him."
+    },
+    {
+      "speaker": "A",
+      "text": "a crushable Chuck figurine, you squish it and he comes—"
+    },
+    {
+      "speaker": "C",
+      "text": "that's so grim, you crush a little man to call the big man—"
+    },
+    {
+      "speaker": "A",
+      "text": "it's convenient—"
+    },
+    {
+      "speaker": "C",
+      "text": "it's a voodoo doll of your butler—"
+    },
+    {
+      "speaker": "A",
+      "text": "and the Master audience, the one-on-one, casual—"
+    },
+    {
+      "speaker": "C",
+      "text": "which they requested. casual audience with the city god."
+    },
+    {
+      "speaker": "A",
+      "text": "I mean it's not — is the Master the city or—"
+    },
+    {
+      "speaker": "B",
+      "text": "We don't know yet."
+    },
+    {
+      "speaker": "A",
+      "text": "we don't know yet, fair—"
+    },
+    {
+      "speaker": "C",
+      "text": "I still can't get over the question thing."
+    },
+    {
+      "speaker": "A",
+      "text": "the Aut thing? you're back on—"
+    },
+    {
+      "speaker": "C",
+      "text": "any question in the world and Johnny's god is RIGHT THERE not answering and he—"
+    },
+    {
+      "speaker": "A",
+      "text": "[overlapping] I KNOW—"
+    },
+    {
+      "speaker": "C",
+      "text": "six days on a walking city and that's the thing I'm gonna be thinking about—"
+    },
+    {
+      "speaker": "A",
+      "text": "you say that every week about a different—"
+    },
+    {
+      "speaker": "C",
+      "text": "this one's different, this one's—"
+    },
+    {
+      "speaker": "B",
+      "text": "It's the same."
+    },
+    {
+      "speaker": "C",
+      "text": "...it's a little the same."
+    },
+    {
+      "speaker": "A",
+      "text": "anyway the heart's named, the house is up, they've got a workshop and no hot tub—"
+    },
+    {
+      "speaker": "C",
+      "text": "tragically no hot tub—"
+    },
+    {
+      "speaker": "A",
+      "text": "and there's a banquet coming, so—"
+    },
+    {
+      "speaker": "C",
+      "text": "so Johnny's gonna eat the gingerbread house."
+    },
+    {
+      "speaker": "A",
+      "text": "he's gonna eat the gingerbread house."
+    },
+    {
+      "speaker": "B",
+      "text": "Probably."
+    },
+    {
+      "speaker": "A",
+      "text": "you... you kind of had to be there for the crying-and-critting thing though, that doesn't—"
+    },
+    {
+      "speaker": "C",
+      "text": "it really doesn't land out loud."
+    },
+    {
+      "speaker": "A",
+      "text": "it doesn't, it was — he was just SOBBING—"
+    },
+    {
+      "speaker": "C",
+      "text": "anyway."
+    }
+  ]
+}

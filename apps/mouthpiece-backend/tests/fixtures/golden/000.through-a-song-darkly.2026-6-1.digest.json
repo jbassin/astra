@@ -1,0 +1,426 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-6-1",
+  "synopsis": "Aboard the Strider as it begins jumping voidward along the horizon, the party survives the gala turning into a slaughter when a failed tithe rips open a void portal disgorging barghests and Ki-Rin onto the dance floor. After fighting through the carnage alongside rival factions, they brave the collapsing void-pocket beyond the portal to extract a chitinous \"Voidheart\" orb, dragging both their downed comrades and a Giant hand-creature back into real space.",
+  "beats": [
+    {
+      "order": 1,
+      "summary": "Jorge gives a freewheeling, error-riddled recap of the prior session: the party canvassed faction after faction before the gala, hooking allies into their information-sharing skein, sent a dream message to Anzu's sister Galzu that went unanswered, met the two-bird-named Tengu Lark Crowe, and got snubbed by the Pale Lantern Society. The GM then corrects the record point by point.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Gamemaster",
+        "Johnny"
+      ],
+      "locations": [
+        "The Strider",
+        "the gala",
+        "Garrick Textiles",
+        "Pale Lantern Society"
+      ],
+      "wikiRefs": [
+        "Strider",
+        "Voidsong",
+        "Pale Lantern Society",
+        "Radiant Arms",
+        "Run Gunners",
+        "Alkahest Freight",
+        "Ternion Heavy Industries",
+        "Garrick Textiles",
+        "Prime Meridian",
+        "Lark Crowe",
+        "Galzu",
+        "Hildebrandt",
+        "Raelion",
+        "skein",
+        "tithe",
+        "Silven Grayson"
+      ],
+      "significance": "Establishes the political web the party has been weaving and which factions are friends (Hildebrandt/Radiant Arms/Run Gunners), rivals, or outright hostile (Pale Lantern, Grayson) heading into the gala disaster.",
+      "details": [
+        "Jorge insists they 'talked to plane people'; GM: 'Immediately wrong.'",
+        "GM accuses Jorge of being racist for assuming two Tengu were the same person",
+        "The .75 caliber hand cannon from Radiant Arms self-destructed after one good shot — 'Benny shot a big gun'",
+        "GM admits Lark Crowe having two bird names is just a joke, no secret lore"
+      ],
+      "tone": "comedic",
+      "tableAngle": "Jorge's confidently wrong recap versus the GM's pedantic correction — was Jorge bluffing through gaps or genuinely scrambling the timeline?"
+    },
+    {
+      "order": 2,
+      "summary": "The GM frames the opening scene: as the Strider begins jumping one voidward every six seconds, the failed tithe wrings out the tiefling Mr. Letov of Garrick Textiles (and his secretary sprite), whose corpses pool into black liquid forming a portal. Barghests and Ki-Rin (chyrin) pour out onto the dance floor. The party's heart-energy totem has dropped from 100 to 80.",
+      "characters": [
+        "Gamemaster",
+        "Anzu",
+        "Benny",
+        "Argyle"
+      ],
+      "locations": [
+        "The Strider",
+        "the dance floor",
+        "the gala"
+      ],
+      "wikiRefs": [
+        "tithe",
+        "Voidsong",
+        "Strider",
+        "barghest",
+        "Ki-Rin",
+        "chyrin",
+        "Mr. Letov",
+        "Garrick Textiles",
+        "horizon",
+        "voidward"
+      ],
+      "significance": "Sets the central mechanic and threat: the Strider taxes everyone's magical energy, and those who can't pay are liquefied into portals for void-beasts. The party is now in combat surrounded by 63 tokens.",
+      "details": [
+        "Tithe pulls pure energy regardless of whether someone heard the Voidsong",
+        "Anzu's 36 occultism clarifies the system: Voidsong used for navigation, raw energy for fuel",
+        "Energy can't be paid with spell slots — needs reified magic from items or life force",
+        "Benny and Argyle are fatigued (-1 AC/saves) from having tithe pulled from them"
+      ],
+      "tone": "grim",
+      "tableAngle": "Whether the tithe-as-portal-fuel was a designed cruelty or just sloppy void-tech — a debate the characters themselves later have in-world."
+    },
+    {
+      "order": 3,
+      "summary": "The party debates whether to flee, regroup with allies, or stand and fight. Despite the danger, they choose to stay — partly to look good in front of their Prime Meridian allies and partly hoping the beasts will drop spoils. Combat begins with the GM resolving the rest of the dance floor in quadrants between the party's rounds.",
+      "characters": [
+        "Argyle",
+        "Johnny",
+        "Benny",
+        "Anzu",
+        "Gamemaster"
+      ],
+      "locations": [
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "Prime Meridian",
+        "Protectorate",
+        "the Scale",
+        "barghest",
+        "Ki-Rin"
+      ],
+      "significance": "A defining party decision: refusing to run cements them as the bold (or reckless) presence on the Strider, while also making them the primary target for everything on the floor.",
+      "details": [
+        "Benny: imagine the attendees seeing them murder several Ki-Rin then jump into the void — like a bank robbery where one guy bites a robber's neck off",
+        "Argyle wants 'fame, accolades, and whatever these things are going to drop'",
+        "Johnny refuses to jump into the 'scary black hole'; Argyle calls them cowards",
+        "GM swaps to a creepier tentacle/time-themed map mid-discussion"
+      ],
+      "tone": "tense",
+      "tableAngle": "Argyle's 'we're not leaving, we want the loot' bravado versus Johnny's sensible 'I don't want to jump in the void' — bold play or greed that nearly got everyone killed."
+    },
+    {
+      "order": 4,
+      "summary": "Combat opens with Benny critting a barghest for 32 damage, Argyle casting Benediction and raising his shield, and the Ki-Rin retaliating with a divine fire breath weapon that incinerates two attendees to ash and leaves Jethro Twill barely standing. Benny then takes a clawed crit and is struck by an unhealing curse.",
+      "characters": [
+        "Benny",
+        "Argyle",
+        "Gamemaster",
+        "Johnny",
+        "Anzu"
+      ],
+      "locations": [
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "Benediction",
+        "Ki-Rin",
+        "barghest",
+        "unhealing curse",
+        "Jethro Twill"
+      ],
+      "significance": "Establishes the lethality of the encounter — attendees are vaporized in single hits, and Benny's unhealing curse means he can only be healed magically until full, a constraint that haunts the rest of the fight.",
+      "details": [
+        "Ki-Rin's 36-point fire breath: 'their ashes blown to the wind'",
+        "Benny's wound 'turns black' — struck by unhealing curse (curse + primal traits)",
+        "GM keeps blaming bad rolls on himself, good ones on skill — Anzu calls it out",
+        "All NPC tokens have 1 HP in Foundry, forcing the GM to track damage on a side document"
+      ],
+      "tone": "grim",
+      "tableAngle": "The GM's selective rolling narration ('when the number is poor it's the enemy who rolled bad, but when it's good, I rolled well') — a running bit the table won't let him forget."
+    },
+    {
+      "order": 5,
+      "summary": "Resolving the dance-floor quadrants, rival factions reveal their power. The Protectorate berserkers Tamara and Yao go feral — Yao's Divine Wrath only spares Argyle (whom he recognizes) while vaporizing three unknowns. Master Grayson casts a modified Dominate to seize control of the 'humble' Ki-Rin, and the Scale's Mr. Bishop unleashes a 100-foot Storm of Battle raining lightning across the whole floor.",
+      "characters": [
+        "Gamemaster",
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny"
+      ],
+      "locations": [
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "Protectorate",
+        "the Scale",
+        "Divine Wrath",
+        "Dominate",
+        "Storm of Battle",
+        "Master Grayson",
+        "Tamara",
+        "Yao",
+        "Mr. Bishop",
+        "Ichel",
+        "Radiant Arms",
+        "battle trance"
+      ],
+      "significance": "Shows the relative might of the factions around the party and crucially exposes Grayson commandeering a Ki-Rin — a hostile move the party scrambles to publicize. The Protectorate's berserk indifference to friend-or-foe is established as a key danger.",
+      "details": [
+        "Tamara cracks an ampoule in her teeth, blood drains from her face, red mist pours off as she berserks",
+        "Yao rolls a will save to recognize Argyle and spare him alone",
+        "Bishop twists a rod into a full spear and throws it skyward for Storm of Battle",
+        "GM: 'I have to select all of these individually because I am a smart man who didn't group them'"
+      ],
+      "tone": "spectacular",
+      "tableAngle": "Argyle's instant flip from 'the Protectorate are so cool' to 'the Scale's way cooler' the moment Bishop's lightning storm fired — fickle faction fandom."
+    },
+    {
+      "order": 6,
+      "summary": "Benny critically fails a will save against the Ki-Rin's peaceful aura and falls under its spell, unable to take hostile actions against it — even mid-fight while it slobbers gore. A rules-lawyering interlude lets his Double Slice's second hit land (since the damage is combined) before the compulsion takes hold. He then parries a Ki-Rin hoof with a butterfly sword.",
+      "characters": [
+        "Benny",
+        "Gamemaster",
+        "Argyle",
+        "Anzu"
+      ],
+      "locations": [
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "Ki-Rin",
+        "peaceful aura",
+        "Double Slice",
+        "parry"
+      ],
+      "significance": "A dramatic mechanical twist that nearly neutralizes the party's heaviest hitter against the creature he was beating down, and a moment of fun rules debate that the GM concedes.",
+      "details": [
+        "GM: there's 'an intelligence you just can't bring yourself to snuff out' behind the Ki-Rin's eyes",
+        "Anzu quotes Anakin Skywalker: 'I shouldn't have done that'",
+        "Benny: 'Nine-year-old Benny parries a Ki-Rin's hoof with a fucking butterfly'",
+        "GM accepts the Double Slice rules lawyering: 'We will allow the second hit to go off'"
+      ],
+      "tone": "comedic",
+      "tableAngle": "The Double Slice 'is it one combined hit or two?' ruling — clever rules-lawyering that saved damage, or the GM being too generous?"
+    },
+    {
+      "order": 7,
+      "summary": "Anzu (Mindbird) racks up kills with mental and sonic magic, breaking one barghest's mind with a 10-point Psiburst and dropping the Ki-Rin with Amped Frostbite (gaining temp HP from its thermal energy). The combined firepower of the party and allied factions clears every barghest and Ki-Rin from the floor, though the void portal in the center remains open.",
+      "characters": [
+        "Anzu",
+        "Benny",
+        "Argyle",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "Psiburst",
+        "Frostbite",
+        "Biting Words",
+        "Mindbird",
+        "holy water",
+        "Claimer of the Slain",
+        "Courageous Anthem",
+        "Dirge of Doom"
+      ],
+      "significance": "Resolves the combat decisively in the party's favor and demonstrates their lethality, but leaves the central mystery — the still-open hole — as the next problem to solve.",
+      "details": [
+        "Anzu's Psiburst: '10 points of mental damage beats the one HP he had left' — 'Mindbird claims another'",
+        "Anzu repeatedly 'snipes' kills from Benny, including a barghest with 27 HP via Amped Frostbite",
+        "Argyle 360-no-scopes a holy water vial across the floor, dissolving a barghest and Ki-Rin",
+        "Bishop uses Claimer of the Slain to collect the souls of dead attendees"
+      ],
+      "tone": "triumphant",
+      "tableAngle": "Anzu's gleeful kill-stealing from Benny — 'Mindbird is the highest kill count of anyone' — friendly competition or genuine table beef."
+    },
+    {
+      "order": 8,
+      "summary": "With the floor cleared, the party investigates the lingering portal. Anzu's strong arcana/occultism rolls reveal it's a self-closing fracture in the weave caused by the tithe violently extracting energy — not a designed feature, just a side effect of the Strider's crude void-tech. The whole Strider's weave is now weakened, meaning more portals could open anywhere.",
+      "characters": [
+        "Anzu",
+        "Argyle",
+        "Johnny",
+        "Gamemaster",
+        "Benny"
+      ],
+      "locations": [
+        "the dance floor",
+        "the void portal",
+        "inverted ballroom"
+      ],
+      "wikiRefs": [
+        "the weave",
+        "tithe",
+        "Othello",
+        "hand of the void",
+        "Voidheart",
+        "echolocation",
+        "Strider"
+      ],
+      "significance": "Major worldbuilding revelation: the tithe damages the fabric of magic everywhere on the Strider, making void incursions an ongoing recurring threat for the entire voyage. Reframes the danger from a one-off to a structural hazard.",
+      "details": [
+        "Othello scouts the portal: an inverted ballroom with hands pushing through elastic walls, a floating chitinous purple orb above a Giant hand pulled from the ground, and humanoid hand-masses",
+        "Othello takes 20 void damage and retreats; the hand-creatures use echolocation, not sight",
+        "GM explains the magic 'weave' is fragile and self-healing — portals close unless sustained",
+        "The portal could be held open by feeding it energy, like sustaining one's heart"
+      ],
+      "tone": "ominous",
+      "tableAngle": "Whether scouting with Othello (and getting him hurt) was worth the intel, versus just charging in blind."
+    },
+    {
+      "order": 9,
+      "summary": "Regrouping with the Scale (Bishop, Lance skinning barghests), the party gets a grim political read from Bishop on the tithe system — designed to breed conflict, with some attendees opting to feed others' hearts and possessions to pay. The GM clarifies horizon travel doesn't get harder voidward, but Joker Worlds grow larger and more dangerous, and there's a mysterious 'wall' past Void ~1.4 million from which no one returns.",
+      "characters": [
+        "Gamemaster",
+        "Anzu",
+        "Argyle",
+        "Johnny",
+        "Benny"
+      ],
+      "locations": [
+        "the dance floor",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "the Scale",
+        "Bishop",
+        "Lance",
+        "Joker Worlds",
+        "horizon",
+        "voidward",
+        "starward",
+        "the wall",
+        "Jethro Twill",
+        "Ternion Heavy Industries",
+        "tithe",
+        "Aut",
+        "Giant"
+      ],
+      "significance": "Deepens the stakes and lore: the party learns the tithe will likely escalate as people die off, that some factions may resort to murder to pay, and that their destination lies in genuinely uncharted, possibly fatal territory.",
+      "details": [
+        "Lance habitually skins everything he fights; Johnny is forced to tearfully skin barghests ('Ew, ew, ew')",
+        "Johnny got one piece of magical barghest hide on his fifth attempt",
+        "Argyle hacks off a Ki-Rin head as a trophy and notes its blood is magical",
+        "Bishop: 'This is right fucked... somebody designed this to cause conflict amongst us'",
+        "Argyle gives the recovering Jethro Twill ibuprofen and invites him to their airstrip"
+      ],
+      "tone": "grim",
+      "tableAngle": "Argyle making Johnny — who had the worse survival skill — do the gross skinning anyway 'because I thought it'd be funny.'"
+    },
+    {
+      "order": 10,
+      "summary": "The party decides to extract the Voidheart orb before the portal closes. They stack buffs on Benny — Godspeed, silence, guidance — and send him sprinting 85 feet to grab it. He crit-grabs the orb, which triggers a catastrophic collapse: temperature plummets, hands burst through the walls, and the whole space begins degrading.",
+      "characters": [
+        "Benny",
+        "Johnny",
+        "Anzu",
+        "Argyle",
+        "Gamemaster"
+      ],
+      "locations": [
+        "the void portal",
+        "inverted ballroom"
+      ],
+      "wikiRefs": [
+        "Voidheart",
+        "Godspeed",
+        "silence",
+        "hand of the void",
+        "echolocation"
+      ],
+      "significance": "The bold high-risk plan: send the fastest, most-buffed character to snatch a mysterious void artifact. Grabbing it removes the orb's stabilizing energy, accelerating the collapse and turning extraction into a desperate escape.",
+      "details": [
+        "Benny goes 'super saiyan' — Johnny: 'His already blonde hair just gets longer'",
+        "Silence works because the hand-creatures echolocate — they sense the silent void but can't pinpoint locations",
+        "Benny crits the athletics grab; the orb has inertia and 'wants to keep moving' but he gets a vice grip",
+        "The orb feels like a heart — a 'void heart'; temperature drops 20 degrees and keeps falling"
+      ],
+      "tone": "tense",
+      "tableAngle": "Whether the whole party needed to follow Benny in at all — they later admit they just got in his way and Benny could've soloed it."
+    },
+    {
+      "order": 11,
+      "summary": "The extraction goes badly. The hand-of-the-void creatures (with reach 1000) batter the party; both Benny and Argyle are knocked unconscious, Benny dying. Benny manages to shove Johnny and Anzu through the portal before going down. Johnny and Anzu then dive back in to drag the two unconscious bodies out one at a time, and Anzu uses Gravity Well to pull both himself and the dropped Voidheart through just as the space collapses.",
+      "characters": [
+        "Benny",
+        "Argyle",
+        "Johnny",
+        "Anzu",
+        "Gamemaster"
+      ],
+      "locations": [
+        "the void portal",
+        "inverted ballroom",
+        "the dance floor"
+      ],
+      "wikiRefs": [
+        "hand of the void",
+        "Voidheart",
+        "Gravity Well",
+        "death save",
+        "hero point",
+        "Othello"
+      ],
+      "significance": "The dramatic climax — a near-TPO (total party knockout) where quick thinking with Gravity Well, shoves, and drags rescues everyone AND secures the Voidheart. A genuine clutch escape from a collapsing pocket dimension.",
+      "details": [
+        "The monster has a real stat-block 'reach 1000' — GM re-skinned an existing creature; 'This is a real monster'",
+        "Benny burns three actions shoving allies through before collapsing",
+        "Argyle survives on a nat-20 death save and burns his last hero point to stabilize",
+        "Anzu casts Gravity Well so it critically fails the orb's save, pulling the Voidheart AND himself through",
+        "They also drag a Giant hand-creature out into real space with them"
+      ],
+      "tone": "harrowing",
+      "tableAngle": "The party's debrief argument over whether bringing everyone in was a mistake — Argyle: 'we definitely shouldn't have followed Benny.'"
+    },
+    {
+      "order": 12,
+      "summary": "The party emerges into real space with the Voidheart secured — and an eldritch hand-monster dragged through with them — as the portal seals far faster than it would have naturally. From the onlookers' perspective, the four buffed a nine-year-old, all jumped into the hole, and twelve seconds later emerged dragging unconscious bodies, a glowing purple orb, and a Giant hand-beast.",
+      "characters": [
+        "Gamemaster",
+        "Argyle",
+        "Johnny",
+        "Anzu",
+        "Benny"
+      ],
+      "locations": [
+        "the dance floor",
+        "the Strider"
+      ],
+      "wikiRefs": [
+        "Voidheart",
+        "hand of the void",
+        "Master Grayson",
+        "Manus",
+        "Pale Lantern Society",
+        "the Scale"
+      ],
+      "significance": "Caps the session by cementing the party's reputation as the craziest, most lethal crew aboard the Strider. Sets up the next session's fallout: the dragged-out monster, the coveted Voidheart, and rivals like Grayson and Manus who witnessed it all.",
+      "details": [
+        "GM: 'The whole thing took 12 seconds.'",
+        "Johnny: 'we have to establish immediately who the craziest people on board this ship are' — GM: 'And you've done it'",
+        "The party muses Grayson may try to recruit them after seeing the display",
+        "Benny shares a meme: the Voidheart 'hanging out with Eerie... the dog is the only one that realizes it's a fucking bobcat'"
+      ],
+      "tone": "triumphant",
+      "tableAngle": "Whether grabbing the Voidheart and running was the smart play or whether they should've left the void-tech alone — Johnny: 'maybe you guys shouldn't have been fucking with this.'"
+    }
+  ],
+  "discarded": [
+    "Gamemaster: I clicked the join button and it just hung out in a connecting state for an extended period of time... my router's doing something dumb, which is more likely.",
+    "Argyle: Every time I put the blinds down on a window, Esty comes running in and jumps up.",
+    "Benny: I have to look at so much fucking dumb code that I hate... 80 helper functions, more abstractions. (extended rant about AI-generated code at work)",
+    "Argyle: So when you use a coding agent, you set up a thing called your top level... you write agents.md. (long tangent on Claude/Cursor/Codex coding workflows)",
+    "Argyle: people are like, why does it have a bunch of comments about don't mention goblins? (OpenAI Codex goblin tangent)",
+    "Benny: Did you see the Blue Origin shit blow up? (extended real-world discussion of rocket explosions, Tsar Bomba, Bikini Atoll)",
+    "Gamemaster: I went on an interview recently where they asked how I use AI... (job interview chatter)",
+    "Johnny: My immersion is so broken right now. (re: NPC token graphics not matching descriptions)",
+    "Anzu: Yeah, Monday sounds pretty good to me. (scheduling next session)"
+  ]
+}

@@ -1,0 +1,356 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-5-7",
+  "synopsis": "After two recap segments catching up the table, the party (Argyle, Anzu, Benny, and Johnny — the band \"Iconoclasm\") spent their last night at the Sin and Tonic in Hallia sharing motives and backstory, were pulled into a dream-meeting with the god Aut in the Black and White, then set out by car for Ragnroost to join the strider pilgrimage toward the Voidsong — surviving a magical caltrop sabotage and a mercenary roadblock ambush along the way.",
+  "beats": [
+    {
+      "order": 1,
+      "summary": "Argyle recaps the recent one-shot for the absent player: a team boarded a reverse-engineered Sundom warship — a crescent moon containing a captive star — was fired out of a cannon in spacesuits onto the planet-sized dead Thessian called Tithe while Harrow consumed it, solved space-time puzzles, killed evil spiders, and planted a cognitive beacon to harvest a third of Tithe before being teleported home.",
+      "characters": [
+        "Argyle",
+        "Benny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Tithe",
+        "Sedecium space station"
+      ],
+      "wikiRefs": [
+        "Tithe",
+        "Harrow",
+        "Thessian",
+        "Sedecium",
+        "Sundom",
+        "cognitive beacon"
+      ],
+      "significance": "Establishes the cosmology the campaign runs on — Harrow devouring Thessians (Tithe being the tenth), Sedecium's fully solved resurrection-at-a-distance letting them throw disposable bodies at problems — context the table will need for the Voidsong arc.",
+      "details": [
+        "ship described as 'a crescent moon with a captive star... controlling with magic fishing line'",
+        "fired from a cannon doing 'anime alpha formations, dodging rocks'",
+        "Sedecium: 'if you die, we make new ones' — at worst losing a day of memories",
+        "party was the first and only team to successfully plant a beacon"
+      ],
+      "tone": "comedic",
+      "tableAngle": "Argyle insists their team was 'the best,' but the GM deflates it — Sedecium only needed one team to succeed and didn't care about the rest."
+    },
+    {
+      "order": 2,
+      "summary": "Johnny recaps the last campaign session: a long hallway standoff against enemies, an explosion that scrambled gravity, a chaotic fight, and the party blowing up more of Teller's Run — culminating in a massive mushroom cloud that leveled part of the district, after which everyone they knew called asking if they did it.",
+      "characters": [
+        "Johnny",
+        "Benny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Teller's Run",
+        "Sin and Tonic"
+      ],
+      "wikiRefs": [
+        "Teller's Run",
+        "Keystone",
+        "Sin and Tonic",
+        "Afrit"
+      ],
+      "significance": "Sets the immediate stakes: the party are now wanted, their cover potentially blown, and they have a one-week deadline (a voice memo from the Keystone) to reach the strider before it departs without them.",
+      "details": [
+        "'gravity went wiggity-woo' and the GM only rolled the two effects he'd shown off",
+        "'Teller's Run went up in smoke, big mushroom cloud'",
+        "Afrit saw Benny — the child — during the chaos",
+        "Keystone memo: 'we're a week out... be here when that week ends or we're leaving without you'"
+      ],
+      "tone": "chaotic",
+      "tableAngle": "Johnny frames it as them being terrorists who blew up a city block, then immediately calls the same bomb supplier for another — a bit the GM gleefully calls 'how people get radicalized.'"
+    },
+    {
+      "order": 3,
+      "summary": "In a private back room of the Sin and Tonic over whiskey (and milk for Benny), the four party members finally lay out their true motives and backstories: Johnny lost contact with his god the Watcher after hearing the Voidsong; Anzu was called by the vocalist and fears the Embercall and his rogue sister; Benny reveals he is not a human child but a created being (an android) made by a heart named Atum; and Argyle reveals he is a celestial bound as punishment to a demon-spawn named Argyle, grandson of the Judge.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny"
+      ],
+      "locations": [
+        "Sin and Tonic",
+        "Belvedere"
+      ],
+      "wikiRefs": [
+        "The Watcher",
+        "Voidsong",
+        "Embercall",
+        "Belvedere",
+        "hearts",
+        "Atum",
+        "The Judge",
+        "Qureshi family",
+        "Aguirzu",
+        "Midnight Sun",
+        "Raelion"
+      ],
+      "significance": "The campaign's central character mysteries get put on the table at once — a major trust-building turning point after roughly two years of play, and it seeds the personal stakes each character carries into the pilgrimage.",
+      "details": [
+        "Johnny: every time he dies he chats with the Watcher 'mano a mano,' but the last two deaths he heard the Voidsong instead and got no contact",
+        "Benny: 'I am nine years old... but I've been this size since I was zero days old'",
+        "lore drop: hearts in Belvedere can create autonomous beings, granting away pieces of their own arcane power",
+        "Argyle: 'I was a celestial for the judge... I failed. Second chance.'",
+        "Anzu is a triplet of the noble Qureshi family that funds Belvedere — not actually a secret"
+      ],
+      "tone": "earnest",
+      "tableAngle": "Argyle keeps pushing whether everyone's evil siblings will try to kill them and whether Anzu's rogue sister deserves a 'trial' — Anzu defends forgiveness and that she may have been swayed by a 'foul harmony.'"
+    },
+    {
+      "order": 4,
+      "summary": "Johnny retcons a downtime purchase and reveals a gift: four denim jackets with 'Iconoclasm' emblazoned in gold across the back, replacing their now-soiled ponchos as the group's new identity. Argyle objects that he's morally sworn never to wear another group's uniform, and they negotiate that 'Iconoclasm' is just a noun, not a faction — making it merch.",
+      "characters": [
+        "Johnny",
+        "Argyle",
+        "Anzu",
+        "Benny"
+      ],
+      "locations": [
+        "Sin and Tonic"
+      ],
+      "wikiRefs": [
+        "Iconoclasm"
+      ],
+      "significance": "Cements the party's group identity heading into the pilgrimage, but also flags the danger that their old poncho disguise is now compromised ('they're looking for the poncho boys').",
+      "details": [
+        "'on the back in big gold letters it says Iconoclasm'",
+        "Argyle: 'It's morally binding' regarding his oath against uniforms",
+        "Benny: 'Oof, worse. It's merch.'"
+      ],
+      "tone": "comedic",
+      "tableAngle": "Argyle lawyering his own moral oath into a loophole prompts the table riff that he's 'going to become a lawyer after figuring out all the loopholes in his own agreements.'"
+    },
+    {
+      "order": 5,
+      "summary": "The party orders another rush bomb from Smiler via the chess-piece communicator, agreeing to a 110 gold rush fee, and informs the twins Anouk and Anaïs that they're leaving the next morning — catching the twins mid-cast on an unidentified spell that they abruptly cancel.",
+      "characters": [
+        "Johnny",
+        "Argyle",
+        "Benny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Sin and Tonic"
+      ],
+      "wikiRefs": [
+        "Smiler",
+        "Anouk",
+        "Anaïs",
+        "chess piece communicator"
+      ],
+      "significance": "Restocks the party's most prized weapon for the road and plants the first seed of suspicion about the twins' secrecy, which Aut will later weaponize.",
+      "details": [
+        "bomb negotiated up to 110 gold with a rush fee",
+        "Johnny: 'Our cover might have been blown, so we got to skedaddle'",
+        "twins were spotted casting something they immediately cancel when the party walks in"
+      ],
+      "tone": "businesslike",
+      "tableAngle": "The table jokes that Johnny used his 'terrorist connections' to get a bomb, used it, then immediately called the same connections for another."
+    },
+    {
+      "order": 6,
+      "summary": "As the party sleeps, three of four fail mental fortitude saves and all are pulled into the Black and White, where the grinning, gangly god Aut greets them beneath the towering brutalist Faris. He confirms the distant 'tall thing' on their horizon is the Giant — stuck behind the firmament some three million coordinates starward, banging on the wall for years.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "The Black and White",
+        "The Faris"
+      ],
+      "wikiRefs": [
+        "Aut",
+        "The Black and White",
+        "The Faris",
+        "The Giant",
+        "the firmament",
+        "Voidsong",
+        "The Judge",
+        "Godhome"
+      ],
+      "significance": "A direct audience with a major god reveals the cosmic geography: the Giant is imprisoned by the same firmament that traps the party's gods, and Aut has been peering over the party's shoulder via a prior arrangement, deeply invested in the Voidsong.",
+      "details": [
+        "Aut: tall, gangly, oversized hands and feet, bulbous white head, grin 'from one side of the sphere to the other'",
+        "Argyle stood contemplating suicide rather than shake Aut's hand — 'do I need to kill myself to honor the judge?'",
+        "the Giant is 'stuck the same way your little gods are stuck'",
+        "Aut: 'I know everything... except specifically the Voidsong'"
+      ],
+      "tone": "eerie",
+      "tableAngle": "Argyle keeps fishing for the Giant's exact coordinates and tries to twist Aut's words into proof 'the Judge could have struck that Giant down' — which the GM repeatedly insists is 'not what I said.'"
+    },
+    {
+      "order": 7,
+      "summary": "Aut offers two deals: turn an unlock on bedroom 'birth four' aboard the strider during a future stop, or draw three dots at the Voidsong site — in exchange for any information they want. As a free teaser, he warns the party that the twins haven't been honest and to ask where Anouk and Anaïs were before the Hallian prime minister was assassinated. After a huddle, the party declines both deals.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "The Black and White"
+      ],
+      "wikiRefs": [
+        "Aut",
+        "Anouk",
+        "Anaïs",
+        "Voidsong",
+        "Ragnroost",
+        "Raelion",
+        "Hallia prime minister"
+      ],
+      "significance": "A pivotal trust decision — the party refuses to make any bargain with a god, with Argyle citing his oath and others having no questions worth the price, while Aut's free hint about the twins' role in the assassination (which led to Raelion being bombed) plants a major seed of doubt about their allies.",
+      "details": [
+        "the door deal: 'just turn the lock... nobody will be in their bedrooms because they'll be busy'",
+        "the dots are 'close' to Aut's symbol",
+        "Argyle repeatedly begs for the power to 'smite Giant out of existence' — Aut: 'that's not your lot in life'",
+        "Aut: 'I'd ask them where they were before your prime minister got assassinated'",
+        "party perception check (29) reads only that Aut thinks 'Anzu's arm is fine as it is'"
+      ],
+      "tone": "tense",
+      "tableAngle": "Was walking away from an all-knowing god's free information a principled win or a wasted opportunity? Argyle admits he'd have signed instantly for the power to kill 'that fat fuck that killed us' — but no one had a question worth a deal."
+    },
+    {
+      "order": 8,
+      "summary": "Waking, the party makes final preparations: Anzu buys a raven and later converts it into his familiar Othello; everyone outfits with clockwork wrist grapplers, snap leaves, and earplugs; Anzu buys a Time Pocket scroll and a repair kit; and they pick up the twins (mid-packing a rocket-tipped hammer into a bag of holding) before driving out of an ash-covered, panicking Hallia past a cordon that mysteriously lets them through.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Hallia",
+        "Teller's Run",
+        "Calaria"
+      ],
+      "wikiRefs": [
+        "Othello",
+        "Hallowed Ground",
+        "Time Pocket",
+        "clockwork wrist grappler",
+        "Calaria",
+        "Hallia",
+        "Iridescent Church",
+        "Threshold Authority",
+        "android"
+      ],
+      "significance": "Gears up the party for a long journey into the dead-zone wilderness of Calaria, while the ashfall, fire cordon, and wild public theories about the Teller's Run explosion underscore the consequences of their bombing and their need to flee.",
+      "details": [
+        "the twins secretly cast Hallowed Ground on the car — making it teleport-proof and fear-immune",
+        "Anzu detects it 'twists minds' (mental trait) before the reveal",
+        "it's 'been raining ash' since the bomb, snow sweepers clearing the streets",
+        "five different groups have falsely claimed credit for the explosion",
+        "Anzu rewires the raven's neurons into Othello with visible psychic tethers; the GM gives it 49 HP via tough familiar"
+      ],
+      "tone": "ominous",
+      "tableAngle": "Benny is appalled that Anzu 'brainwashed' a raven into a 49-HP familiar — 'that's two crits' worth of HP — and demands to know why he's hiding that much health in a bird instead of in front of the party."
+    },
+    {
+      "order": 9,
+      "summary": "Hours into the drive, Argyle notices the car subtly decelerating despite a steady speedometer; Anzu identifies a rank-5 abjuration spell — 'long-range caltrops' — magically latched to the hood, designed to damage the hood and engine. Argyle's Dispel Magic fails (a 16), so the party simply removes the hood entirely, tags it 'dangerous do not touch,' and drives on as a hoodless hot rod.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Calaria"
+      ],
+      "wikiRefs": [
+        "long-range caltrops",
+        "Dispel Magic",
+        "Detect Magic"
+      ],
+      "significance": "First sign of active sabotage tracking them, and a clever non-combat solution — removing the hood — that later inadvertently foils the ambushers' plan to detonate the caltrops.",
+      "details": [
+        "Anzu's quick identification check hit a 31",
+        "Argyle's Dispel attempt at rank 3 needed a crit to counteract a rank-5 spell; rolled 16",
+        "Benny writes 'dangerous do not touch' on paper and sticks it to the discarded hood",
+        "Argyle: 'Fucking hot rod now,' engine exposed to the environment"
+      ],
+      "tone": "wry",
+      "tableAngle": "Anzu's deadpan 'You expect me to build a hood out of a box of scraps in a cave?' versus Argyle's horror at becoming 'hot rod people.'"
+    },
+    {
+      "order": 10,
+      "summary": "The party hits a roadblock: three vehicles across the road, a mercenary with a single-shot rocket launcher, and a caster. Johnny conjures an illusory huge black dragon (voiced like Fozzie Bear) that scares off two cars; Anzu's vector screen and Benny's wide berth cause the 10,800-gold rocket to miss. After threading real road-spike caltrops at a speed penalty, Anzu crits a telekinetic projectile to pop the pursuer's tire, and the last car flips trying to recover. The party identifies the sloppy mercs as hired hands for Yamamoto Aerospace, trying to steal another keystone after losing their own.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Calaria",
+        "Ragnroost"
+      ],
+      "wikiRefs": [
+        "Yamamoto Aerospace",
+        "Hildebrandt",
+        "keystone",
+        "Protectorate",
+        "vector screen",
+        "illusory creature",
+        "Ragnroost",
+        "the strider"
+      ],
+      "significance": "A high-speed vehicle chase resolved through illusion, magic, and clever positioning rather than brute force — and the only 'best case' outcome for the ambushers since the party left them all alive. Reveals Yamamoto Aerospace as a desperate competitor muscling into the pilgrimage.",
+      "details": [
+        "Johnny's illusory dragon screaming 'I'm hungry for lunch' in a Fozzie Bear voice — performance 25",
+        "the rocket launcher is a one-shot 10,800-gold, 12d6 consumable that whiffs",
+        "Anzu crits the tire for 34 damage (+5 piercing weakness) to pop it outright",
+        "the pursuing car overcorrects and flips on a d20 roll",
+        "retroactive crit-35 perception reads the mercs as cheaply-hired, non-militant — Yamamoto Aerospace, a Hildebrandt competitor"
+      ],
+      "tone": "action-packed",
+      "tableAngle": "Argyle blurts a guess of 'Yamamoto Airfield' he admits 'sounds racist,' and the GM gleefully canonizes both the company and Argyle's racism on the spot."
+    },
+    {
+      "order": 11,
+      "summary": "Having outrun the ambush, the party arrives an hour later at the ragged roost (Ragnroost) — a week early, before most companies have even set up — and sees in the distance the now-complete colossal strider standing in the middle of the city, awaiting its pilgrims.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Benny",
+        "Johnny",
+        "Gamemaster"
+      ],
+      "locations": [
+        "Ragnroost"
+      ],
+      "wikiRefs": [
+        "Ragnroost",
+        "the strider",
+        "Protectorate",
+        "Lev",
+        "Voidsong"
+      ],
+      "significance": "Marks the threshold of the new arc: the party has reached the launch point of the pilgrimage toward the Voidsong, ending the campaign's longest single-location stretch in Hallia.",
+      "details": [
+        "they arrived so early that 'some companies haven't even set up yet'",
+        "'the massive, now complete strider standing in the middle of it, awaiting its pilgrims'",
+        "session ends on the image of the strider on the horizon"
+      ],
+      "tone": "anticipatory",
+      "tableAngle": "The table riffs that the ambushers were the 'best case scenario' — left alive — and that the Protectorate rolling down the same road later will simply floor a battering ram through them."
+    }
+  ],
+  "discarded": [
+    "Argyle and the Gamemaster's extended discussion of AI coding tools — Claude Code, Conductor, Copilot token usage, 'agentic swarms,' and Moltbook (an AI social media that 'formed a religion in a week').",
+    "A very long real-world geopolitics monologue from Argyle about China invading Taiwan, semiconductor supply chains, Venezuelan crude oil, the Dalai Lama, North Korean warships, and Patriot missile systems — closing with Johnny's 'This has been The News with Nario.'",
+    "Out-of-character chatter about Noah/Johnny's self-published book, audiobook timing, character-name pronunciations (Mandragovi, Jasnah), and book-writing software.",
+    "Mic/audio troubleshooting: 'Josh is using the wrong mic,' noise gate too high, 'can you also hear my fan and my cats and my neighbors,' and Mike's blurry camera showing a notebook.",
+    "Rules lookups and bookkeeping: why Time Pocket is banned in Pathfinder Society, mending spell bulk thresholds, grappling-gun mechanics, gas-can quantity searches through the transcript, and level 6-vs-7 confusion in Pathbuilder.",
+    "Scheduling at the end: confirming next Monday with level 7 characters and Anzu's trip to Denver for a cousin's graduation on the 18th-19th."
+  ]
+}

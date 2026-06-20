@@ -1,0 +1,404 @@
+{
+  "sessionId": "000.through-a-song-darkly.2026-5-25",
+  "synopsis": "As the Strider prepares to depart on its pilgrimage toward the Voidsong, the crew of Iconoclasm spends a week making introductions to the other orgs aboard, recruiting allies into their skein network, before attending the departure gala — where the energy tithe demanded by the Master of Ceremonies wrings a weak attendee inside-out and unleashes a swarm of monsters.",
+  "beats": [
+    {
+      "order": 1,
+      "summary": "Argyle arranges crafting during the pre-departure week: he speeds up his healing potion, makes his own holy water, and commissions the twins Anouk and Anaïs to craft a Dream Message scroll using a cast he'll provide, for use in contacting Anzu's missing sister.",
+      "characters": [
+        "Argyle",
+        "Anzu",
+        "Anouk",
+        "Anaïs"
+      ],
+      "locations": [
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Dream Message",
+        "Magical Crafting",
+        "Voidsong",
+        "The Herald"
+      ],
+      "significance": "Sets up the session's emotional thread — Anzu's reluctant attempt to reach his psychically-gifted sister, who has fallen in with followers of the Herald — and establishes the dream-message tool that drives the brunch subplot.",
+      "details": [
+        "Anzu lacks the Magical Crafting feat (only trained in Crafting), so the twins do the work",
+        "27 gold for a rank-3 scroll",
+        "Argyle's running list of downtime tasks he keeps 'giving Josh a heads up' on"
+      ],
+      "tone": "logistical",
+      "tableAngle": "Argyle insisting on pre-planning every craft while the GM keeps nudging 'do you want to just play Pathfinder?'"
+    },
+    {
+      "order": 2,
+      "summary": "Chuck the butler delivers a blue crystal totem linked to the party's heart, Eerie, allowing telepathic communication at range, and the crew is reminded of the upcoming end-of-week gala where every org topside will formally meet.",
+      "characters": [
+        "Chuck",
+        "Eerie"
+      ],
+      "locations": [
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Keystone",
+        "Eerie",
+        "Chuck",
+        "Harlequins"
+      ],
+      "significance": "Hands the party a key tool and frames the week's deadline — the gala and the Strider's first slip into the journey.",
+      "details": [
+        "The totem resembles the original keystone used to make their heart and board the Strider",
+        "Eerie is the heart's name"
+      ],
+      "tone": "anticipatory",
+      "tableAngle": "Whether anyone will remember they have this totem when it actually matters."
+    },
+    {
+      "order": 3,
+      "summary": "The crew visits the RunGunners, their neighbors, whose Fane is a fortified racetrack-trench with cars pouring out of an enchanted 18-wheeler. Representative Ceres, a colorless fetchling in oil-stained overalls, is friendly but firmly refuses any alliance or information-sharing — and won't even commit to letting them use the road.",
+      "characters": [
+        "Ceres",
+        "Argyle",
+        "Johnny",
+        "Anzu",
+        "Benny"
+      ],
+      "locations": [
+        "RunGunners Fane",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "RunGunners",
+        "Fetchling",
+        "Dura",
+        "Sin and Tonic"
+      ],
+      "significance": "First introduction of the week establishes the RunGunners as amiable-but-closed neighbors, a potential problem given their border-to-border smuggling base touches Iconoclasm's territory.",
+      "details": [
+        "Johnny's 23 Deception and Anzu's 20 Society — middling reads",
+        "RunGunner lore: a patchwork desert city of hundreds of uncoordinated hearts, members worship 'the open road'",
+        "Argyle offers medical/plastic-surgery services and hands over a business card that gets pocketed and ignored",
+        "Ceres and one other RunGunner resonate back"
+      ],
+      "tone": "guarded",
+      "tableAngle": "Argyle handing out doctor business cards to people who clearly don't want them, and whether the RunGunners snubbing them is personal or just standoffish."
+    },
+    {
+      "order": 4,
+      "summary": "The crew visits Garrick Textiles, finding a half-built Fane that ran out of energy — a grand staircase to nowhere and a sealed door — staffed only by elderly tiefling Letov Obratz and an overwhelmed pixie secretary. Despite a successful diplomacy pitch (Johnny's 27), Obratz proudly refuses shelter, insisting his own efforts will finish the place. The party connects his heart, Whirling and Rags, to their skein network.",
+      "characters": [
+        "Letov Obratz",
+        "Johnny",
+        "Benny",
+        "Argyle",
+        "Anzu",
+        "Whirling and Rags"
+      ],
+      "locations": [
+        "Garrick Textiles Fane",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Garrick Textiles",
+        "Tiefling",
+        "Velthara",
+        "Amber Call",
+        "Skein network"
+      ],
+      "significance": "Establishes Garrick Textiles as doomed underdogs the party grows attached to, and the skein connection becomes a literal canary-in-the-coal-mine — they explicitly hope to hear if he's attacked. Foreshadows his fate at the gala.",
+      "details": [
+        "Obratz: 'I was taught not to lean on others when your own efforts can resolve your situation'",
+        "Johnny uses 'double speak' to tell the team 'this guy's going to die in a week' while being warm to his face",
+        "Benny shows the Garrick tag on his performance poncho; Obratz beams about Velthara loving ponchos",
+        "Argyle pleads with his eyes 'you're going to die'",
+        "Arcana check on the skein: Benny rolled an 8, Anzu got 34 — connection only enables spoofing/eavesdropping, not remote takeover",
+        "Mid-week, Obratz donates a spell-pocketwatch to get running water"
+      ],
+      "tone": "bittersweet",
+      "tableAngle": "Argyle floating that they should kidnap Obratz 'for his own good' — the GM literally calling it giving him Stockholm Syndrome."
+    },
+    {
+      "order": 5,
+      "summary": "The crew visits the Pale Lantern Society, whose well-built Fane is staffed by skinless humanoid undead drones posing corpses into columbarium-style art dioramas. Lead figure Manus, an ironed-lab-coat elf reeking of formaldehyde, contemptuously rejects any alliance, framing cooperation as the recourse of the weak and flatly refusing to share the reincarnation ritual.",
+      "characters": [
+        "Manus",
+        "Brienne",
+        "Johnny",
+        "Argyle",
+        "Anzu",
+        "Benny"
+      ],
+      "locations": [
+        "Pale Lantern Society Fane",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Pale Lantern Society",
+        "Columbarium",
+        "Lich",
+        "Reincarnation",
+        "Eternal Pulse",
+        "Necrolog"
+      ],
+      "significance": "Confirms Anzu's fear that PLS is a powerful, hostile org, and crystallizes them as a likely enemy aligned with the party's necromancer-lich nemesis. Argyle leaves wanting to burn the place down.",
+      "details": [
+        "High perception (34 and 36 crits) lets them spot the drones' jerky movements from afar",
+        "Manus: 'It is often the position of the weak to band together'",
+        "The ant-vs-civilization debate Johnny picks with Manus",
+        "Manus snaps his fingers and three drones approach when Johnny suggests a pool party",
+        "Manus admits he HAS the reincarnation ritual but won't share it (Argyle's 18 diplomacy goads him)",
+        "Manus concedes: if they gather information better than him, 'you are clearly better and I made the wrong decision'",
+        "Two powerful elves, Manus and Brienne, possibly related"
+      ],
+      "tone": "hostile",
+      "tableAngle": "Whether Johnny's needling (and Argyle's reaching-for-holy-water hostility) made a needless enemy, with Argyle later scolding Johnny for being too goading."
+    },
+    {
+      "order": 6,
+      "summary": "The crew visits Alkahest Freight, where soft-spoken elf Kadou Floch — silver-raimented, devout of the Compels — immediately treats them as friends, asking for help mapping the journey's supply stops. He shares his ridiculed theory that the Voidsong is the lost people of Raelion crying for help from beyond the wall, and notes the Strider's spinning arms drained ambient energy by ~50%.",
+      "characters": [
+        "Kadou Floch",
+        "Anzu",
+        "Johnny",
+        "Argyle",
+        "Benny",
+        "Chromatic Drift"
+      ],
+      "locations": [
+        "Alkahest Freight Fane",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Alkahest Freight",
+        "Voidsong",
+        "Raelion",
+        "Compels",
+        "The Wall",
+        "Infinite Horizon"
+      ],
+      "significance": "A warm, genuine ally is recruited, and Floch's theory resonates emotionally with Johnny (and Anzu's instincts) — a hopeful read on the Voidsong, and a clue about the Strider's energy-hungry propulsion that pays off at the gala.",
+      "details": [
+        "Anzu rolled 28 Arcana; Floch identified as smart, logistics-focused, not combat/social",
+        "Floch: 'I just think they got thrown out there and this is the only way'",
+        "Johnny visibly slumps, deeply moved: 'I really like that theory, and I hope that theory's right'",
+        "Floch: 'You're literally the first person that hasn't laughed in my face'",
+        "Floch admits he didn't bring enough magical items to fully build his heart — gripes about his boss's enchanted palanquin",
+        "His heart, Chromatic Drift, joins the skein"
+      ],
+      "tone": "warm",
+      "tableAngle": "Johnny's thousand-yard stare and how badly he wants the Raelion theory to be true — the others ribbing him about getting his hopes up."
+    },
+    {
+      "order": 7,
+      "summary": "The crew skips Ternion Heavy Industries after Anzu points out the company directly competes with their ally Hildebrandt, choosing not to jeopardize that alliance — watching from afar as TIH assembles an airplane from kit parts on a rudimentary airstrip.",
+      "characters": [
+        "Anzu",
+        "Argyle"
+      ],
+      "locations": [
+        "Ternion Heavy Industries Fane",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Ternion Heavy Industries",
+        "Hildebrandt"
+      ],
+      "significance": "A deliberate, disciplined alliance-protection call rather than a snub of opportunity — notable restraint from a party prone to talking to everyone.",
+      "details": [
+        "Argyle: 'I'm not risking our alliance with Hildebrandt even talking to these people'",
+        "Anzu's good call-out before they walked in"
+      ],
+      "tone": "calculated",
+      "tableAngle": "Whether skipping TIH was smart loyalty or pointless pettiness — Anzu pre-empting the accusation of being petty."
+    },
+    {
+      "order": 8,
+      "summary": "The crew visits Radiant Arms, a firearm-decorated brownstone with murder holes, greeted by the android representative Y'shael. Benny test-fires their prototype .75 hand cannon (Athletics 29, misfire die clears) — a recoilless explosion that banana-peels the barrel. Y'shael proves genuinely friendly, was already planning to ask to join them, and connects their heart, Final Caliber, to the skein.",
+      "characters": [
+        "Y'shael",
+        "Benny",
+        "Johnny",
+        "Argyle",
+        "Anzu",
+        "Final Caliber"
+      ],
+      "locations": [
+        "Radiant Arms Fane",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Radiant Arms",
+        "Android",
+        "Sable & Suns",
+        "Istria",
+        "Hallia"
+      ],
+      "significance": "Lands a solid combat-capable ally adjacent to the party's territory, building the 'block' of Iconoclasm, Hildebrandt, and Radiant Arms into a defensible neighborhood.",
+      "details": [
+        "Y'shael is a visibly mechanical android with artistic glass panels showing internal machinery",
+        "A fruit bowl holding three pistols instead of fruit",
+        "Y'shael pours tea from water out of their own wrist",
+        "'Benny and the Jets' running gag",
+        "Radiant Arms lore: retail giant, the .75 hand cannon ad campaign that blew a mugger's upper half off and broke the shooter's arm",
+        "Y'shael is from Istria and grew up on a Strider",
+        "Note: the gun the RunGunners used against a friend's family was a Radiant Arms weapon",
+        "Benny: 'I hear it's good luck to give a pistol to a child' — Y'shael confirms a gift-shop bowl of firearms for kids in Hallia"
+      ],
+      "tone": "friendly",
+      "tableAngle": "Argyle floating gifting Y'shael a stolen Sable & Suns gun — and whether that'd be an act of war — quickly shot down."
+    },
+    {
+      "order": 9,
+      "summary": "On the morning of the gala, Anzu waits at Giacomo's restaurant for his sister, having sent a Dream Message inviting her to brunch. She never appears. Instead he meets Lark Crowe, a battle-scarred, glass-eyed Tengu gun salesman from Sable & Suns — whom the party recognizes as the contact who armed the bandits and supplied the ghosts' firearms.",
+      "characters": [
+        "Anzu",
+        "Lark Crowe",
+        "Othello",
+        "Paavo",
+        "Argyle",
+        "Johnny",
+        "Benny"
+      ],
+      "locations": [
+        "Giacomo's",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Lark Crowe",
+        "Sable & Suns",
+        "Tengu",
+        "Galzu",
+        "Hildebrandt",
+        "Othello",
+        "Pyrelight"
+      ],
+      "significance": "Anzu's emotional reach toward his sister comes up empty, while the appearance of known antagonist Lark Crowe confirms Sable & Suns' shady reach aboard the Strider.",
+      "details": [
+        "Anzu's medicine check of 7 still reads Lark's battle scars — replaced glass eye, a sword-scar splitting his beak, a lisp",
+        "Lark: friendly, offers to sell firearms 'to a friend of the people,' then crushes a figurine and rides off on a floating disc",
+        "Anzu sends his familiar Othello aloft (perception 13, nothing found)",
+        "Paavo and others from Hildebrandt drop in for brunch",
+        "The crew connects Lark Crowe to the bandits, the ghosts, and a name on the terminal under the television"
+      ],
+      "tone": "melancholy",
+      "tableAngle": "Anzu's plan to greet his stronger, earlier-blooming sister being 'I would probably say hello,' and Argyle ribbing him about a chip on his shoulder."
+    },
+    {
+      "order": 10,
+      "summary": "At brunch the crew notices a 'nondescript' man and must make Will saves to even approach him (Argyle 31, Johnny 34 with mythic point, Benny fails at 21). Pushing through the mental compulsion, they meet Giannos of the Ministry of Cultural Progress — a glamoured, ~level-12 devout of the host who refuses to share his network or join theirs, preferring competition.",
+      "characters": [
+        "Giannos",
+        "Argyle",
+        "Johnny",
+        "Benny",
+        "Anzu"
+      ],
+      "locations": [
+        "Giacomo's",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Ministry of Cultural Progress",
+        "Iridescent Church",
+        "Calaria",
+        "Tormeré",
+        "Rithwin",
+        "Amber Call"
+      ],
+      "significance": "Reveals MoCuP as a genuinely powerful, dangerous org wielding mental influence, tightly tied to the Iridescent Church — and that the party can be subtly manipulated without realizing it.",
+      "details": [
+        "Benny's failed save: 'what would we gain out of talking to him?' — the others realize the impulse wasn't their own",
+        "Giannos's appearance can't be pinned down — human? elf? half? — clearly glamoured",
+        "'Piercing nondescript eyes'",
+        "Religion check (36) reveals MoCuP spun off from the Iridescent Church and controls the radio waves of Calaria, Tormeré, and parts of Rithwin",
+        "Argyle notes MoCuP uses radio 'like Embercall' and sandwiches the Scale geographically"
+      ],
+      "tone": "uneasy",
+      "tableAngle": "Benny getting compulsion'd out of the conversation while the others had to drag him along — and the GM gleefully not labeling the gala tokens later."
+    },
+    {
+      "order": 11,
+      "summary": "At the evening gala the crew mingles with new faces — including Braxton Hall of Ætherion Limited — before the Master of Ceremonies toasts the pilgrims and the Strider begins its first slip. He announces an energy 'tithe' drawn from everyone's Voidsong connection; fortitude saves leave Argyle and Benny fatigued.",
+      "characters": [
+        "Master of Ceremonies",
+        "Braxton Hall",
+        "Anzu",
+        "Johnny",
+        "Argyle",
+        "Benny",
+        "Tas",
+        "Ceres",
+        "Silven Grayson"
+      ],
+      "locations": [
+        "The gala ballroom",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Voidsong",
+        "Ætherion Limited",
+        "Master of Ceremonies",
+        "Prime Meridian",
+        "Silven Grayson",
+        "Necrolog",
+        "Tithe",
+        "Keystone"
+      ],
+      "significance": "The departure ritual reveals the true cost of the journey — the Strider runs on the pilgrims' own Voidsong energy, an ominous, draining mechanic that immediately turns deadly.",
+      "details": [
+        "New attendees spotted: a too-tight-suited burly human arguing with a mossy-bearded rock dwarf/gnome, a sylph (Braxton Hall) with the RunGunners' Ceres and Prime Meridian's Tas, and Silven Grayson holding court with the PLS pair and the Necrolog dhampir",
+        "Anzu's 39 fortitude (with mythic point), Johnny crit 31; Argyle 28 and Benny 29 both just succeed and take fatigued (-1 AC and saves)",
+        "MoC: 'this pilgrimage isn't free' — a weekly tithe of energy",
+        "Anzu's keystone totem displays the heart's energy draining 100 -> 90"
+      ],
+      "tone": "ominous",
+      "tableAngle": "The party joking about hiring 'non-listening bodyguards' right as the cosmic price of the trip reveals itself."
+    },
+    {
+      "order": 12,
+      "summary": "When the tithe begins, Letov Obratz — too weak to pay — collapses and is horrifically wrung out like a towel, his skin tearing and leaking black-purple liquid as his keystone energy drains. Johnny (Soothe, 38) and Argyle (Heal, 62) frantically pump healing into him, only prolonging the torture, until his lungs burst. From the congealing pool, antlered chitinous Ki-Rin and barghest creatures erupt as the Master of Ceremonies steps away. The session ends on the brink of combat.",
+      "characters": [
+        "Letov Obratz",
+        "Johnny",
+        "Argyle",
+        "Master of Ceremonies",
+        "Benny",
+        "Anzu"
+      ],
+      "locations": [
+        "The gala ballroom",
+        "The Strider"
+      ],
+      "wikiRefs": [
+        "Ki-Rin",
+        "Barghest",
+        "Voidheart",
+        "Voidsong",
+        "Tithe",
+        "Garrick Textiles"
+      ],
+      "significance": "The session's gut-punch: the doomed underdog the party adored is killed in the most grotesque way imaginable — by the very ritual powering their journey — and his death births a monster swarm into a ballroom full of orgs, leaving the party fatigued and surrounded.",
+      "details": [
+        "Obratz is the purple-skinned tiefling writhing at center; the healing only gave the ritual more to pull from",
+        "'a popping sound as both of his lungs burst in his chest and then almost deflate'",
+        "Antlers shoot from the pool — half-deer, half-horse hybrids with carnivorous teeth and black chitin (Ki-Rin), plus slobbering dog-like barghests",
+        "Argyle takes 23 piercing on a failed reflex save (19, worsened by his fatigue penalty)",
+        "GM ties this to recurring 'dream' mechanics: Voidhearts and Ki-Rin returning from the second campaign",
+        "Black liquid 'reflecting something that isn't outside'",
+        "Combat held for next session due to the late hour; party discusses fleeing, sacrificing Silven Grayson as bait, or opportunistically attacking a rival faction"
+      ],
+      "tone": "grim",
+      "tableAngle": "After joking about Obratz dying 'like 20 times,' the table going quiet when he actually got dishragged — and Argyle's regret at following 'good-spirited Johnny' up to the body and getting fatigued for it."
+    }
+  ],
+  "discarded": [
+    "Gamemaster: while those little lines that connect the different groups are on the like scan layer, it increases the percentage utilization of my CPU by like 70%. And I can't figure out why",
+    "Benny: If you want to feel the magic of AGI, just have it make you a UI for whatever you're doing... So if it makes a box that moves and shit, I'm like, holy fuck, this thing is insane.",
+    "Gamemaster: End of September is Sukkot. I can't believe you're fine with ignoring Sukkot. (followed by a long tangent on the Manhattan eruv wire and Talmudic loopholes)",
+    "Johnny: I'm planning on coming out to New York around the end of August or end of September. Does one of those work better for everybody?",
+    "Argyle: I created a Pathfinder 2E Spell Creator Claude skill. I spent a lot of tokens to optimize this.",
+    "Gamemaster: It's 1045. I don't think we have time for combat right now... I think we might want to just hold off until the start of next session.",
+    "Gamemaster: the fact puller for this session is just going to be like, liches are gay. And then chuck that into the...",
+    "Argyle: I always have to calibrate myself on this goddamn game, because this would have been like endgame for 5e."
+  ]
+}

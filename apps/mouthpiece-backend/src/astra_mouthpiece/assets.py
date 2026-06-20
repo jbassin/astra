@@ -1,0 +1,209 @@
+"""Dagster wiring — the per-session partition, the 4-asset episode graph, mega.
+
+One partition per session/date (a `DynamicPartitionsDefinition`); a sensor
+registers a partition + run request for each new linguist canonical transcript
+(the linguist→mouthpiece trigger). The four assets chain on disk under
+``episodes_path/<key>/`` (faerrin's `out/` disk-cache seams → asset
+materialization):
+
+    session_digest → session_script → session_audio_clips → session_episode
+
+``mega_digest`` fuses a date range into one synthetic-id partition that the same
+script/clips/episode assets then run on (reusing Stages 3-5).
+
+The **live** materialization is deferred (gate K): distill + the two-pass script
+spend Claude tokens, and the v3 audio path is paid ElevenLabs. This layer is
+import-/structure-tested; the per-stage logic is unit-tested via injected seams.
+"""
+
+# No `from __future__ import annotations`: Dagster introspects the `context`/`config`
+# annotations at definition time and needs the real types, not strings (scribe N.B.).
+import os
+from pathlib import Path
+
+import dagster as dg
+from astra_akasha_backend.corpus import load_corpus
+from astra_llm import LiteLLMClient
+from astra_observe import get_logger, get_meter
+
+from . import linguist_io
+from .assemble import assemble_episode
+from .digest import distill_session
+from .grounding import pages_from_corpus
+from .hosts import load_hosts
+from .mega import MegaMember, fuse_digests, mega_id, select_members
+from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfig
+from .session import build_episode_script
+from .threads import format_threads, load_threads
+from .tts.elevenlabs import ElevenLabsTTSProvider
+from .tts.mock import MockTTSProvider
+from .tts.provider import TTSProvider
+from .tts.synth import synthesize_script
+
+SESSIONS_NAME = "mouthpiece_sessions"
+mouthpiece_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
+
+_log = get_logger("astra.mouthpiece")
+_meter = get_meter("astra.mouthpiece")
+_episodes_counter = _meter.create_counter(
+    "astra.mouthpiece.episodes", description="episodes produced"
+)
+
+
+def _config():
+    from astra_ontology_config import load as load_config
+
+    return load_config().mouthpiece
+
+
+def _out_root() -> Path:
+    return Path(_config().episodes_path)
+
+
+def _session_dir(key: str) -> Path:
+    d = _out_root() / key
+    d.mkdir(parents=True, exist_ok=True)
+    return d
+
+
+def _atomic_write(path: Path, text: str) -> None:
+    """Write `.tmp`→rename so an output only appears whole (a partition = done)."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(text, encoding="utf-8")
+    os.replace(tmp, path)
+
+
+def _provider() -> TTSProvider:
+    """ElevenLabs v3 when the key resolves (gate K, paid), else the offline mock."""
+    key = _config().elevenlabs_api_key
+    if key is not None and key.resolve():
+        return ElevenLabsTTSProvider(key.resolve())
+    return MockTTSProvider()
+
+
+def _voices(hosts: HostConfig) -> VoiceConfig:
+    return VoiceConfig(a=hosts.a.voice_id, b=hosts.b.voice_id, c=hosts.c.voice_id)
+
+
+def _read_digest(key: str) -> SessionDigest:
+    return SessionDigest.model_validate_json((_session_dir(key) / "digest.json").read_text())
+
+
+def _read_script(key: str) -> Script:
+    return Script.model_validate_json((_session_dir(key) / "script.json").read_text())
+
+
+# ── the 4-asset per-session graph ────────────────────────────────────────────
+
+
+@dg.asset(partitions_def=mouthpiece_sessions, group_name="mouthpiece")
+def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """linguist canonical transcript → distilled `SessionDigest` (Stage 2)."""
+    date = context.partition_key
+    tpath = linguist_io.transcript_for(date)
+    if tpath is None:
+        raise FileNotFoundError(f"no linguist transcript for session {date}")
+    session_id, arc, _ = linguist_io.parse_filename(tpath)
+    turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
+    digest = distill_session(LiteLLMClient(), session_id, date, turns, arc_title=arc)
+    _atomic_write(_session_dir(date) / "digest.json", digest.model_dump_json(indent=2))
+    return dg.MaterializeResult(metadata={"beats": len(digest.beats), "session_id": session_id})
+
+
+@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_digest], group_name="mouthpiece")
+def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """digest + akasha grounding → the two-pass tavern-tone `Script` (Stage 3)."""
+    key = context.partition_key
+    digest = _read_digest(key)
+    pages = pages_from_corpus(load_corpus())
+    hosts = load_hosts()
+    threads_block = format_threads(load_threads(_out_root() / "threads.json"))
+    script = build_episode_script(
+        LiteLLMClient(), digest, pages, hosts, two_pass=True, threads_block=threads_block
+    )
+    _atomic_write(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
+    return dg.MaterializeResult(metadata={"turns": len(script.turns), "title": script.title})
+
+
+@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_script], group_name="mouthpiece")
+def session_audio_clips(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """Script → TTS clips + manifest (Stage 4; ElevenLabs v3 / mock)."""
+    key = context.partition_key
+    script = _read_script(key)
+    hosts = load_hosts()
+    manifest = synthesize_script(
+        script, provider=_provider(), voices=_voices(hosts), out_dir=_session_dir(key)
+    )
+    _atomic_write(_session_dir(key) / "manifest.json", manifest.model_dump_json(indent=2))
+    return dg.MaterializeResult(metadata={"clips": len(manifest.clips), "mode": manifest.mode})
+
+
+@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_audio_clips], group_name="mouthpiece")
+def session_episode(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """Clips → `episode.mp3` + `transcript.md` (Stage 5; ffmpeg concat + loudnorm)."""
+    key = context.partition_key
+    script = _read_script(key)
+    manifest = AudioManifest.model_validate_json((_session_dir(key) / "manifest.json").read_text())
+    episode, transcript = assemble_episode(manifest, script, out_dir=_session_dir(key))
+    _episodes_counter.add(1)
+    _log.info("mouthpiece produced episode %s: %s", key, episode.name)
+    return dg.MaterializeResult(metadata={"episode": str(episode), "transcript": str(transcript)})
+
+
+# ── mega (date-range fuse → a synthetic-id partition) ────────────────────────
+
+
+class MegaConfig(dg.Config):
+    """Run config for a mega episode: the inclusive date span (+ optional arc)."""
+
+    start: str
+    end: str
+    arc: str | None = None
+    target_beats: int | None = None
+
+
+@dg.asset(group_name="mouthpiece")
+def mega_digest(context: dg.AssetExecutionContext, config: MegaConfig) -> dg.MaterializeResult:
+    """Fuse the member digests in [start, end] into one month-in-review digest under a
+    synthetic mega id, and register that id as a session partition so the
+    script/clips/episode assets run on it (reusing Stages 3-5)."""
+    members: list[MegaMember] = []
+    for digest_file in sorted(_out_root().glob("*/digest.json")):
+        digest = SessionDigest.model_validate_json(digest_file.read_text())
+        parts = digest.session_id.split(".")
+        date = parts[-1]
+        arc = ".".join(parts[1:-1]) if len(parts) > 2 else digest.session_id
+        members.append(MegaMember(session_id=digest.session_id, date=date, arc=arc, digest=digest))
+
+    selected = select_members(members, config.start, config.end, config.arc)
+    fused_id = mega_id(selected)
+    fused = fuse_digests(LiteLLMClient(), fused_id, selected, target_beats=config.target_beats)
+    _atomic_write(_session_dir(fused_id) / "digest.json", fused.model_dump_json(indent=2))
+    context.instance.add_dynamic_partitions(SESSIONS_NAME, [fused_id])
+    return dg.MaterializeResult(
+        metadata={"mega_id": fused_id, "members": len(selected), "beats": len(fused.beats)}
+    )
+
+
+# ── sensor: linguist → mouthpiece ────────────────────────────────────────────
+
+
+@dg.sensor(
+    target=[session_digest, session_script, session_audio_clips, session_episode],
+    minimum_interval_seconds=30,
+)
+def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
+    """Register a partition + run for each new linguist canonical transcript."""
+    existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
+    found = linguist_io.new_sessions(existing)
+    adds = [mouthpiece_sessions.build_add_request(list(found))] if found else []
+    return dg.SensorResult(
+        run_requests=[dg.RunRequest(partition_key=key) for key in found],
+        dynamic_partitions_requests=adds,
+    )
+
+
+defs = dg.Definitions(
+    assets=[session_digest, session_script, session_audio_clips, session_episode, mega_digest],
+    sensors=[linguist_output_sensor],
+)
