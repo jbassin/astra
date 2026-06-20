@@ -10,7 +10,7 @@ dependencies = [
     "astra-ontology",
     "astra-ontology-being",
     "dagster",
-    "dspy>=2.5",
+    "dspy[optuna]>=2.5",  # optuna powers the MIPROv2 judge optimizer (gate J)
     "metaphone>=0.6",
     "pydantic>=2",
     "pyyaml>=6",

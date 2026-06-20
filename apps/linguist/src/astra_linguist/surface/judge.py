@@ -11,6 +11,8 @@ dspy run + optimizer are deferred (H1).
 from __future__ import annotations
 
 import re
+from collections.abc import Callable
+from pathlib import Path
 from typing import Literal, Protocol
 
 from pydantic import BaseModel
@@ -67,10 +69,19 @@ SYSTEM = "\n".join(
         "  confirm : a mistranscription of exactly one lexicon term.",
         "  new     : a plausible NEW proper noun not in the lexicon (correctly transcribed;",
         "            do NOT map it to a near-miss lexicon term).",
-        "  reject  : an ordinary English word/phrase the filter caught by accident.",
+        "  reject  : an ordinary English word/phrase the filter caught by accident, or a",
+        "            correctly-transcribed inflection of a lexicon term (see Rules).",
         "",
         "Rules:",
         "- Only confirm when sound AND context both fit. Prefer reject/new over a shaky confirm.",
+        "- Inflected or derived forms of a lexicon term are NOT mistranscriptions: a plural",
+        "  (Raelians), possessive (Calaria's), or demonym/adjective (Calarian, Oreskian) is",
+        "  correctly transcribed as spoken — reject it; do NOT confirm it to the base canonical",
+        "  (Raelion / Calaria) or strip it to the singular.",
+        "- Out-of-fiction vocabulary is correctly transcribed, never a garble: real-world names",
+        "  (people, software/apps, websites — Pathbuilder, ChatGPT, Foundry) and Pathfinder 2e",
+        "  rules terms (skills, saves, conditions, actions, DCs — Arcana, Will save, Darkvision)",
+        "  are reject, even when they sound like a lexicon term.",
         "- suggestedCanonical MUST be copied verbatim from the lexicon (exact casing/diacritics),",
         "  and is null unless verdict is confirm.",
         "- span MUST be copied verbatim from the line at lineRef. Multi-word spans are allowed.",
@@ -205,9 +216,47 @@ def judge_session(
     return out
 
 
-#: Builder for the production dspy-backed CompleteFn (deferred live run, H1/J).
-def make_dspy_complete_fn() -> CompleteFn:  # pragma: no cover - exercised at the live run
-    """A `CompleteFn` backed by dspy → litellm. Not used in unit tests (J deferred)."""
-    raise NotImplementedError(
-        "live dspy judge is deferred (NLSpec 0006 gate J); inject a CompleteFn stub in tests"
+#: How `make_dspy_complete_fn` builds a `dspy.LM` for a model id. Tests inject a factory
+#: returning a `DummyLM` to stay hermetic; production uses `astra_llm.make_dspy_lm`.
+LmFactory = Callable[[str], object]
+
+
+def make_dspy_complete_fn(
+    compiled_path: str | Path | None = None, *, lm_factory: LmFactory | None = None
+) -> CompleteFn:
+    """A production `CompleteFn` backed by the dspy judge program → litellm → Claude (J).
+
+    Resolves the Anthropic key through `astra_config` (via `ensure_anthropic_env`), loads
+    the committed compiled program if present (else runs uncompiled), and adapts each
+    `CompleteArgs` to a `ScanResult`. The model varies per call (`judge` on haiku,
+    `judge-escalate` on sonnet) so the LM is swapped per call via `dspy.context`; the
+    same compiled program serves both (J4). `judge_session` is unchanged. Tests inject a
+    `lm_factory` (a `DummyLM`) instead of touching the network — it never runs live in CI.
+    """
+    import dspy
+    from astra_llm import ensure_anthropic_env, make_dspy_lm
+
+    from .dspy_judge import DEFAULT_COMPILED_PATH, build_judge_program, load_compiled
+
+    # Only resolve the real key on the production path; an injected stub factory (tests)
+    # stays fully key-free + hermetic (no SOPS/astra_config side effect).
+    if lm_factory is None:
+        ensure_anthropic_env()
+    make_lm: LmFactory = lm_factory or (
+        lambda model: make_dspy_lm(model, max_tokens=config.JUDGE_MAX_TOKENS)
     )
+    path = Path(compiled_path) if compiled_path is not None else DEFAULT_COMPILED_PATH
+    program = load_compiled(path) if path.exists() else build_judge_program()
+
+    lm_cache: dict[str, object] = {}
+
+    def complete(args: CompleteArgs) -> ScanResult:
+        lm = lm_cache.get(args.model)
+        if lm is None:
+            lm = make_lm(args.model)
+            lm_cache[args.model] = lm
+        with dspy.context(lm=lm):
+            pred = program(lexicon=args.cached, window=args.user)
+        return ScanResult(candidates=[Candidate.model_validate(c) for c in pred.candidates])
+
+    return complete

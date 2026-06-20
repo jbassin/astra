@@ -1,0 +1,83 @@
+{
+  "predict": {
+    "traces": [],
+    "train": [],
+    "demos": [
+      {
+        "augmented": true,
+        "lexicon": "CANONICAL LEXICON (235 terms):\n6d6\n8:15\nAlfie Gallagher\nAlkahest Freight\nAlthane\nAmber Call\nAnaïs\nAnouk\nAnouk and Anaïs\nAnouk's\nAnzu\nAnzu said he's\nArchmechanic\nArchmechanic's\nArchmechanics\nArctos\nArctos'\nArgyle\nArgyle's\nAtum\nAurideon\nAustrene\nAut\nBait-and-Tackle Shop\nBeats in Time\nBennix\nBennix's\nBenny\nBenny Boy\nBev Sirnow\nBlack and White\nBrithwyn\nCalaria\nCalarian\nCalarians\nChildren of the Heir\nChorath\nConvox\nCopperjaw\nCrowe\nDame Quay\nDeosil\nDivex\nDorcan\nDura\nElara Vance\nEmbercall\nEmbercall's\nEsoterica\nEstañion\nExitum-ρ-15\nFae\nFalcata\nFane\nFeep\nFirmament\nFlintlock\nFlintlock Toboggan\nFloch\nForal\nFort DC\nFærrin\nFūlwinter\nGarrick\nGarrick Textiles\nGas-n-Go℠\nGaspar Caetano\nGhosts of Raelion\nGiannos\nGiant\nGin Soaked Rag\nGodhome\nGrayson\nGryphon\nGryphonline\nHallia\nHerald\nHey, Aut\nHildebrandt\nHlarf\nHollowpact\nI'm Aut\nIchel\nIconoclasm\nIllmari\nImmix\nInsuperlex\nIomenei\nIridescent Church\nIridescent Host\nIridite Mutual\nJethro\nJoker World\nJoker Worlds\nJorge\nKaathe\nKadou\nKi-Rin\nKi-Rin's\nLark Crowe\nLetov\nLorandris\nLow-Mechanitor\nLow-Mechanitor Exitum-ρ-15\nMajor-Chaplain\nManus\nManus Sudrenus\nMasque District\nMaster Grayson\nMenhir\nMeridian\nMetCon\nMoCuP\nMr. Whiskers\nMutagen\nNecroLog\nNoire\nObie and Parmann\nOrbits-Upon-Light\nOrg\nOzzie\nP'ter\nP.O. Box\nPaSuun\nPaavo\nPaavo's\nPale Lantern Society\nPharos\nPrime Meridian\nPrime Meridian's\nProtectorate\nProtectorates\nPsiburst\nPyre\nPyrelight\nRaelion\nRegent\nRenge\nRhaedon\nRoll an arcana check\nRoundhat Gang\nRoundhats\nRunGunners\nSable and Suns\nSableclutch\nSalvado\nSalvado Tarragona\nSbrtlby\nSbrtlby and\nSbrtlby will\nScale\nScrazzy\nSeRaan\nSecond Sun Diner\nSedecium\nSigzil Haight\nSilven\nSin and Tonic\nSmiler\nSolari Sub-surface\nSubmechanitor\nSundom\nSyrin\nTas\nTeller's Run\nTernion\nTernion Heavy Industries\nThe Crowded Flea\nThe Harlequins\nThe Scale\nThe Zorbon\nThistle Monroe\nTithe\nTormeré\nTrevils\nTuRiin\nTywelwyn\nTywelwyn Leatherhide\nTywelwyn's\nUgathal\nVaino\nVane\nVelthara\nVerdant\nVerdant Expanse\nVilksnake\nVoidsong\nWar\nWhiskers\nWiddershins\nWrenford\nYeenut\nYeenut Guy\nZorbon\nZugg\n\\\\\\\\$\na Will save\nampoule\nautobody\nbarghest\nbarghests\nbenediction\ncadre\ndhampir\nfirearm manufacturer\ngale\ngame\nhttps://btl.iridi.cc\nice floes\nin Hallia\nkeystone\nmajordomo\nmajordomo Ossain\nmaître d'\nmeeting you, Aut\nmental\nnosh on\noccultism\nof Hallia\nof Iconoclasm\nor Edan\noread\norreries\norts\nour door\npactbroker\nparries\nsewer\nskein\nstarward\nthe Heart\nthe Scale's\ntwo-timing\nvoidward\nÆtherion",
+        "window": "TRANSCRIPT WINDOW:\n[0] (Josh) It sounds like Quinsentius, but slightly different.\n\nPre-flagged spans to judge (also report any others you spot):\n- [0] \"Quinsentius\"",
+        "reasoning": "The span \"Quinsentius\" is flagged for judgment. Scanning the lexicon, there is no term that phonetically or orthographically matches \"Quinsentius\". The lexicon contains no Q-words at all, and no similar-sounding proper nouns. \"Quinsentius\" does not appear to be an English word either. Given that Josh says \"It sounds like Quinsentius, but slightly different,\" this suggests uncertainty about the actual name—it could be a mishearing or ASR garble of an invented proper noun not in the current lexicon. However, without a clear phonetic match to any lexicon term and no context establishing what it \"actually\" is, this appears to be a plausible new proper noun that was transcribed as spoken (even if the speaker themselves was uncertain).",
+        "candidates": [
+          {
+            "line_ref": 0,
+            "span": "Quinsentius",
+            "verdict": "new",
+            "suggested_canonical": null,
+            "confidence": 0.85,
+            "reason": "No lexicon match; sounds like a plausible invented proper noun. Speaker explicitly expresses uncertainty ('sounds like... but slightly different'), suggesting this may be a character or place name not yet catalogued."
+          }
+        ]
+      },
+      {
+        "lexicon": "CANONICAL LEXICON (235 terms):\n6d6\n8:15\nAlfie Gallagher\nAlkahest Freight\nAlthane\nAmber Call\nAnaïs\nAnouk\nAnouk and Anaïs\nAnouk's\nAnzu\nAnzu said he's\nArchmechanic\nArchmechanic's\nArchmechanics\nArctos\nArctos'\nArgyle\nArgyle's\nAtum\nAurideon\nAustrene\nAut\nBait-and-Tackle Shop\nBeats in Time\nBennix\nBennix's\nBenny\nBenny Boy\nBev Sirnow\nBlack and White\nBrithwyn\nCalaria\nCalarian\nCalarians\nChildren of the Heir\nChorath\nConvox\nCopperjaw\nCrowe\nDame Quay\nDeosil\nDivex\nDorcan\nDura\nElara Vance\nEmbercall\nEmbercall's\nEsoterica\nEstañion\nExitum-ρ-15\nFae\nFalcata\nFane\nFeep\nFirmament\nFlintlock\nFlintlock Toboggan\nFloch\nForal\nFort DC\nFærrin\nFūlwinter\nGarrick\nGarrick Textiles\nGas-n-Go℠\nGaspar Caetano\nGhosts of Raelion\nGiannos\nGiant\nGin Soaked Rag\nGodhome\nGrayson\nGryphon\nGryphonline\nHallia\nHerald\nHey, Aut\nHildebrandt\nHlarf\nHollowpact\nI'm Aut\nIchel\nIconoclasm\nIllmari\nImmix\nInsuperlex\nIomenei\nIridescent Church\nIridescent Host\nIridite Mutual\nJethro\nJoker World\nJoker Worlds\nJorge\nKaathe\nKadou\nKi-Rin\nKi-Rin's\nLark Crowe\nLetov\nLorandris\nLow-Mechanitor\nLow-Mechanitor Exitum-ρ-15\nMajor-Chaplain\nManus\nManus Sudrenus\nMasque District\nMaster Grayson\nMenhir\nMeridian\nMetCon\nMoCuP\nMr. Whiskers\nMutagen\nNecroLog\nNoire\nObie and Parmann\nOrbits-Upon-Light\nOrg\nOzzie\nP'ter\nP.O. Box\nPaSuun\nPaavo\nPaavo's\nPale Lantern Society\nPharos\nPrime Meridian\nPrime Meridian's\nProtectorate\nProtectorates\nPsiburst\nPyre\nPyrelight\nRaelion\nRegent\nRenge\nRhaedon\nRoll an arcana check\nRoundhat Gang\nRoundhats\nRunGunners\nSable and Suns\nSableclutch\nSalvado\nSalvado Tarragona\nSbrtlby\nSbrtlby and\nSbrtlby will\nScale\nScrazzy\nSeRaan\nSecond Sun Diner\nSedecium\nSigzil Haight\nSilven\nSin and Tonic\nSmiler\nSolari Sub-surface\nSubmechanitor\nSundom\nSyrin\nTas\nTeller's Run\nTernion\nTernion Heavy Industries\nThe Crowded Flea\nThe Harlequins\nThe Scale\nThe Zorbon\nThistle Monroe\nTithe\nTormeré\nTrevils\nTuRiin\nTywelwyn\nTywelwyn Leatherhide\nTywelwyn's\nUgathal\nVaino\nVane\nVelthara\nVerdant\nVerdant Expanse\nVilksnake\nVoidsong\nWar\nWhiskers\nWiddershins\nWrenford\nYeenut\nYeenut Guy\nZorbon\nZugg\n\\\\\\\\$\na Will save\nampoule\nautobody\nbarghest\nbarghests\nbenediction\ncadre\ndhampir\nfirearm manufacturer\ngale\ngame\nhttps://btl.iridi.cc\nice floes\nin Hallia\nkeystone\nmajordomo\nmajordomo Ossain\nmaître d'\nmeeting you, Aut\nmental\nnosh on\noccultism\nof Hallia\nof Iconoclasm\nor Edan\noread\norreries\norts\nour door\npactbroker\nparries\nsewer\nskein\nstarward\nthe Heart\nthe Scale's\ntwo-timing\nvoidward\nÆtherion",
+        "window": "TRANSCRIPT WINDOW:\n[0] (Player) Then Superlex arrived.\n\nPre-flagged spans to judge (also report any others you spot):\n- [0] \"Superlex\"",
+        "candidates": [
+          {
+            "line_ref": 0,
+            "span": "Superlex",
+            "verdict": "confirm",
+            "suggested_canonical": "Insuperlex",
+            "confidence": 1.0,
+            "reason": "gold confirm"
+          }
+        ],
+        "line_text": "Then Superlex arrived."
+      },
+      {
+        "lexicon": "CANONICAL LEXICON (235 terms):\n6d6\n8:15\nAlfie Gallagher\nAlkahest Freight\nAlthane\nAmber Call\nAnaïs\nAnouk\nAnouk and Anaïs\nAnouk's\nAnzu\nAnzu said he's\nArchmechanic\nArchmechanic's\nArchmechanics\nArctos\nArctos'\nArgyle\nArgyle's\nAtum\nAurideon\nAustrene\nAut\nBait-and-Tackle Shop\nBeats in Time\nBennix\nBennix's\nBenny\nBenny Boy\nBev Sirnow\nBlack and White\nBrithwyn\nCalaria\nCalarian\nCalarians\nChildren of the Heir\nChorath\nConvox\nCopperjaw\nCrowe\nDame Quay\nDeosil\nDivex\nDorcan\nDura\nElara Vance\nEmbercall\nEmbercall's\nEsoterica\nEstañion\nExitum-ρ-15\nFae\nFalcata\nFane\nFeep\nFirmament\nFlintlock\nFlintlock Toboggan\nFloch\nForal\nFort DC\nFærrin\nFūlwinter\nGarrick\nGarrick Textiles\nGas-n-Go℠\nGaspar Caetano\nGhosts of Raelion\nGiannos\nGiant\nGin Soaked Rag\nGodhome\nGrayson\nGryphon\nGryphonline\nHallia\nHerald\nHey, Aut\nHildebrandt\nHlarf\nHollowpact\nI'm Aut\nIchel\nIconoclasm\nIllmari\nImmix\nInsuperlex\nIomenei\nIridescent Church\nIridescent Host\nIridite Mutual\nJethro\nJoker World\nJoker Worlds\nJorge\nKaathe\nKadou\nKi-Rin\nKi-Rin's\nLark Crowe\nLetov\nLorandris\nLow-Mechanitor\nLow-Mechanitor Exitum-ρ-15\nMajor-Chaplain\nManus\nManus Sudrenus\nMasque District\nMaster Grayson\nMenhir\nMeridian\nMetCon\nMoCuP\nMr. Whiskers\nMutagen\nNecroLog\nNoire\nObie and Parmann\nOrbits-Upon-Light\nOrg\nOzzie\nP'ter\nP.O. Box\nPaSuun\nPaavo\nPaavo's\nPale Lantern Society\nPharos\nPrime Meridian\nPrime Meridian's\nProtectorate\nProtectorates\nPsiburst\nPyre\nPyrelight\nRaelion\nRegent\nRenge\nRhaedon\nRoll an arcana check\nRoundhat Gang\nRoundhats\nRunGunners\nSable and Suns\nSableclutch\nSalvado\nSalvado Tarragona\nSbrtlby\nSbrtlby and\nSbrtlby will\nScale\nScrazzy\nSeRaan\nSecond Sun Diner\nSedecium\nSigzil Haight\nSilven\nSin and Tonic\nSmiler\nSolari Sub-surface\nSubmechanitor\nSundom\nSyrin\nTas\nTeller's Run\nTernion\nTernion Heavy Industries\nThe Crowded Flea\nThe Harlequins\nThe Scale\nThe Zorbon\nThistle Monroe\nTithe\nTormeré\nTrevils\nTuRiin\nTywelwyn\nTywelwyn Leatherhide\nTywelwyn's\nUgathal\nVaino\nVane\nVelthara\nVerdant\nVerdant Expanse\nVilksnake\nVoidsong\nWar\nWhiskers\nWiddershins\nWrenford\nYeenut\nYeenut Guy\nZorbon\nZugg\n\\\\\\\\$\na Will save\nampoule\nautobody\nbarghest\nbarghests\nbenediction\ncadre\ndhampir\nfirearm manufacturer\ngale\ngame\nhttps://btl.iridi.cc\nice floes\nin Hallia\nkeystone\nmajordomo\nmajordomo Ossain\nmaître d'\nmeeting you, Aut\nmental\nnosh on\noccultism\nof Hallia\nof Iconoclasm\nor Edan\noread\norreries\norts\nour door\npactbroker\nparries\nsewer\nskein\nstarward\nthe Heart\nthe Scale's\ntwo-timing\nvoidward\nÆtherion",
+        "window": "TRANSCRIPT WINDOW:\n[0] (Josh) The other two people that you hadn't interacted with and didn't know were arguing off in a corner, and you saw them from a distance, but before you could investigate, the Harlequin, the Master of Ceremonies, came up.\n\nPre-flagged spans to judge (also report any others you spot):\n- [0] \"the Harlequin\"",
+        "candidates": [
+          {
+            "line_ref": 0,
+            "span": "the Harlequin",
+            "verdict": "reject",
+            "suggested_canonical": null,
+            "confidence": 1.0,
+            "reason": "gold reject"
+          }
+        ],
+        "line_text": "The other two people that you hadn't interacted with and didn't know were arguing off in a corner, and you saw them from a distance, but before you could investigate, the Harlequin, the Master of Ceremonies, came up."
+      }
+    ],
+    "signature": {
+      "instructions": "You are a transcription-error auditor for a Pathfinder 2e fantasy campaign. Your task is to classify each pre-flagged span (and any additional suspicious spans you spot) in an ASR transcript window using the canonical lexicon provided.\n\n**VERDICTS:**\n- `confirm` — The span is a mistranscription of exactly one canonical lexicon term (phonetically and contextually plausible substitution).\n- `new` — The span is a plausible novel proper noun correctly transcribed by the ASR; it is not in the lexicon and is not a garbled version of any lexicon term.\n- `reject` — The span is an ordinary English word/phrase caught by accident, a correctly transcribed inflection/derivation of a lexicon term, a real-world proper noun (person, app, website), or a Pathfinder 2e rules term.\n\n**RULES (apply in order):**\n\n1. **Confirm only when BOTH phonetic similarity AND narrative context support it.** When in doubt, prefer `reject` or `new` over a weak `confirm`.\n\n2. **Inflected and derived forms are NOT mistranscriptions.** Plurals (e.g., \"Raelians\"), possessives (e.g., \"Calaria's\"), demonyms, and adjectival forms (e.g., \"Calarian\", \"Orestian\") derived from a lexicon term are correctly transcribed as spoken — verdict is `reject`. Do NOT confirm them to their base canonical form or strip morphology.\n\n3. **Out-of-fiction vocabulary is always `reject`.** Real-world names (people, software, apps, websites — e.g., Pathbuilder, ChatGPT, Foundry), Pathfinder 2e rules terminology (skills, saves, conditions, action types, DCs — e.g., Arcana, Will save, Darkvision, Fort DC), and common English words are never mistranscriptions.\n\n4. **`suggestedCanonical` must be copied VERBATIM from the lexicon** (exact spelling, casing, diacritics, punctuation). It must be `null` for any verdict other than `confirm`.\n\n5. **`span` must be copied VERBATIM** from the transcript line at the given `lineRef`. Multi-word spans are permitted.\n\n6. **Novel proper nouns** (invented names for places, factions, entities, people) that are phonetically distinct from all lexicon entries and appear plausibly correct as transcribed should be labeled `new`.\n\n7. **Do not hallucinate lexicon entries.** If you cannot find an exact verbatim match in the provided lexicon for a candidate canonical, do not confirm.\n\nFor each candidate, provide: `line_ref`, `span` (verbatim), `verdict`, `suggested_canonical` (verbatim from lexicon or null), `confidence`, and `reason`.",
+      "fields": [
+        {
+          "prefix": "Lexicon:",
+          "description": "CANONICAL LEXICON (N terms): one canonical correct term per line"
+        },
+        {
+          "prefix": "Window:",
+          "description": "transcript window — [lineRef] (speaker) text lines, plus the pre-flagged spans to judge (report any others you spot too)"
+        },
+        {
+          "prefix": "Reasoning:",
+          "description": "${reasoning}"
+        },
+        {
+          "prefix": "Candidates:",
+          "description": "one classification per suspicious span: confirm (maps to a lexicon term), new (a real proper noun not in the lexicon), or reject (ordinary English)"
+        }
+      ]
+    },
+    "lm": null
+  },
+  "metadata": {
+    "dependency_versions": {
+      "python": "3.14",
+      "dspy": "3.2.1",
+      "cloudpickle": "3.1"
+    }
+  }
+}

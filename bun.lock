@@ -55,6 +55,7 @@
       "name": "@astra/observe",
       "version": "0.0.0",
       "dependencies": {
+        "@astra/config": "workspace:*",
         "@opentelemetry/api": "^1.9.1",
         "@opentelemetry/exporter-metrics-otlp-http": "^0.219.0",
         "@opentelemetry/exporter-trace-otlp-http": "^0.219.0",
