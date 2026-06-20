@@ -175,9 +175,15 @@ def render_candidate(row: dict[str, Any], pos: int, total: int, *, width: int = 
     vcolor = _LABEL_COLOR.get(verdict, "")
     decision = str(row.get("decision", "pending"))
     dcolor = _DECISION_COLOR.get(decision, _DIM)
+    count = int(row.get("count", 1))
+    occurs = (
+        f"  {_DIM}×{count} on lines {row.get('line_refs', [row['line_ref']])}{_RESET}"
+        if count > 1
+        else ""
+    )
     header = (
         f"{_BOLD}[ {pos + 1} / {total} ]{_RESET}  line {row['line_ref']}  ({row['speaker']})   "
-        f"judge: {vcolor}{verdict}{arrow}{_RESET}   decision: {dcolor}{decision}{_RESET}"
+        f"judge: {vcolor}{verdict}{arrow}{_RESET}   decision: {dcolor}{decision}{_RESET}{occurs}"
     )
     body = [
         f"  {_BOLD}span{_RESET}:    {_CYAN}{row['span']!r}{_RESET}",

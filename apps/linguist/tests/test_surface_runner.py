@@ -14,6 +14,7 @@ from astra_linguist.surface.judge import Candidate, CompleteArgs, ScanResult
 from astra_linguist.surface.lexicon import build_lexicon_from
 from astra_linguist.surface.surface import (
     candidates_payload,
+    dedupe_candidate_rows,
     load_session,
     surface_session,
     write_candidates,
@@ -89,6 +90,40 @@ def test_candidates_payload_and_io_round_trip(tmp_path: Path) -> None:
     out = tmp_path / "cands.json"
     write_candidates(payload, out)
     assert json.loads(out.read_text())["candidates"][0]["suggested_canonical"] == "Calaria"
+
+
+def test_dedupe_candidate_rows_collapses_by_correction() -> None:
+    def row(line_ref, span, verdict, canon, conf, line_text="ctx", decision=None):
+        r = {
+            "line_ref": line_ref,
+            "speaker": "Josh",
+            "span": span,
+            "verdict": verdict,
+            "suggested_canonical": canon,
+            "confidence": conf,
+            "reason": "x",
+            "line_text": line_text,
+        }
+        if decision:
+            r["decision"] = decision
+        return r
+
+    rows = [
+        row(10, "Galaria", "confirm", "Calaria", 0.8),
+        row(
+            42, "galaria", "confirm", "Calaria", 0.9, line_text="richer context here"
+        ),  # dup (folds same)
+        row(7, "Galaria", "confirm", "Calaria", 0.7, decision="accept"),  # dup w/ a decision
+        row(99, "Thessian", "new", None, 0.6),
+    ]
+    out = dedupe_candidate_rows(rows)
+    assert len(out) == 2  # one confirm correction (3 occurrences) + one new
+    conf = next(r for r in out if r["verdict"] == "confirm")
+    assert conf["count"] == 3 and conf["line_refs"] == [7, 10, 42]
+    # representative is the highest-confidence occurrence (0.9, span 'galaria')
+    assert conf["confidence"] == 0.9 and conf["span"] == "galaria"
+    assert conf["line_text"] == "richer context here"
+    assert conf["decision"] == "accept"  # a decision anywhere in the group is preserved
 
 
 def test_load_session_round_trips(tmp_path: Path) -> None:

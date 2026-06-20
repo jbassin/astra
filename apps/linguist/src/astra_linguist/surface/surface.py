@@ -50,29 +50,55 @@ def surface_session(
     return judge_session(transcript, spans, lex, complete_fn=complete_fn, mode=mode)
 
 
+def dedupe_candidate_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Collapse to one row per `(verdict, span-fold, canonical)` — the actionable unit.
+
+    A garble flagged on many lines is one correction (a `defs.yaml` entry is a global
+    regex), so the reviewer decides it once. Keeps the highest-confidence/richest-context
+    occurrence + `count` + all `line_refs`; preserves any review `decision` (accept wins).
+    """
+    from .normalize import fold_for_match
+
+    groups: dict[tuple[str, str, Any], list[dict[str, Any]]] = {}
+    for r in rows:
+        key = (str(r["verdict"]), fold_for_match(str(r["span"])), r.get("suggested_canonical"))
+        groups.setdefault(key, []).append(r)
+    out: list[dict[str, Any]] = []
+    for group in groups.values():
+        rep = dict(max(group, key=lambda r: (float(r["confidence"]), len(str(r["line_text"])))))
+        rep["count"] = len(group)
+        rep["line_refs"] = sorted({int(r["line_ref"]) for r in group})
+        decisions = {r.get("decision") for r in group if r.get("decision")}
+        if "accept" in decisions:
+            rep["decision"] = "accept"
+        elif decisions:
+            rep["decision"] = next(iter(decisions))
+        out.append(rep)
+    out.sort(key=lambda r: (str(r["verdict"]), -int(r["count"]), str(r["span"]).lower()))
+    return out
+
+
 def candidates_payload(
     candidates: list[Candidate], transcript: Transcript, *, date: str, flagged: int, lex_terms: int
 ) -> dict[str, Any]:
-    """A reviewable record: each candidate enriched with its speaker + line text."""
-    rows = []
-    for c in candidates:
-        line = transcript.script[c.line_ref]
-        rows.append(
-            {
-                "line_ref": c.line_ref,
-                "speaker": line.user.name,
-                "span": c.span,
-                "verdict": c.verdict,
-                "suggested_canonical": c.suggested_canonical,
-                "confidence": round(c.confidence, 3),
-                "reason": c.reason,
-                "line_text": line.text,
-            }
-        )
-    rows.sort(key=lambda r: (int(r["line_ref"]), str(r["span"])))
+    """A reviewable record: one row per unique correction, enriched with speaker + line text."""
+    rows = [
+        {
+            "line_ref": c.line_ref,
+            "speaker": transcript.script[c.line_ref].user.name,
+            "span": c.span,
+            "verdict": c.verdict,
+            "suggested_canonical": c.suggested_canonical,
+            "confidence": round(c.confidence, 3),
+            "reason": c.reason,
+            "line_text": transcript.script[c.line_ref].text,
+        }
+        for c in candidates
+    ]
+    rows = dedupe_candidate_rows(rows)
     by_verdict: dict[str, int] = {}
-    for c in candidates:
-        by_verdict[c.verdict] = by_verdict.get(c.verdict, 0) + 1
+    for r in rows:
+        by_verdict[str(r["verdict"])] = by_verdict.get(str(r["verdict"]), 0) + 1
     return {
         "session": date,
         "lexicon_terms": lex_terms,
