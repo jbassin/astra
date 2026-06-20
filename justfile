@@ -11,9 +11,10 @@ sops_file := "deploy/sops/secrets.enc.yaml"
 
 # --- Docker substrate (deploy/) ---
 
-# Bring the stack up (Dagster + SigNoz + strider): builds images, pulls the rest.
+# Bring the stack up (Dagster + SigNoz + strider). --build so local code changes
+# take effect (cached layers keep it fast when nothing changed).
 up:
-    cd deploy && docker compose up -d
+    cd deploy && docker compose up -d --build
 
 # Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).
 down:
