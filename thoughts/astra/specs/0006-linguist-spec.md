@@ -1,6 +1,6 @@
 # NLSpec 0006 — linguist (transcript processing)
 
-**Status:** **implemented + verified** (gates A–I + K; **J deferred by design**, H1). Built in 3 slices,
+**Status:** **implemented + verified** (gates A–K; **J live-compiled 2026-06-20**). Built in 3 slices,
 all green (py ruff/format/ty/**20 linguist tests**; biome). The deterministic pipeline reproduces faerrin
 **byte-for-byte** — both the `formatted_transcript` (vs `data/2024-10-15.json`) AND a full real-session
 `data.json → match → context → canonical` round-trip vs the committed 234 KB `transcripts/*.txt`. The
@@ -88,7 +88,7 @@ formats — as **Python Dagster assets** (per-session partitions). linguist owns
 | G | phonetic filter ensemble flags known OOV mistranscriptions on the lexicon set (recall) | unit test |
 | H | dspy judge: Signature + guardrails + escalation; **confirm/new/reject + guardrails reproduce faerrin** on a fixture set with a stubbed LM | unit test |
 | I | Historical 76 sessions present as committed canonical outputs + pre-satisfied partitions (no re-run) | files + mechanism test |
-| J | **(deferred, H1)** live dspy judge run + optimizer tuning | one-command follow-up |
+| J | **implemented (2026-06-20)** live dspy judge + MIPROv2 optimizer; committed `judge.compiled.json`; held-out confirm P=0.915, restraint 0.946; metric 58.3→69.4 (see [`0006-linguist-gate-J-spec.md`](./0006-linguist-gate-J-spec.md)) | live compile + eval |
 | K | No wiki-page/render code in linguist; speakers + campaigns from ontology-being | review |
 
 ## Risks
