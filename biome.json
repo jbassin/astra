@@ -38,6 +38,14 @@
     {
       "includes": ["**/gothic/src/render/**"],
       "linter": { "rules": { "suspicious": { "noArrayIndexKey": "off" } } }
+    },
+    {
+      "includes": [
+        "**/strider/src/lib/hexUtils.ts",
+        "**/strider/src/lib/hexUtils.test.ts",
+        "**/strider/src/lib/layers.test.ts"
+      ],
+      "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
     }
   ]
 }

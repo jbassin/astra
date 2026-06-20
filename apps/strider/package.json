@@ -7,7 +7,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "start": "node .output/server/index.mjs",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "bun run scripts/build-content.ts && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "generate:content": "bun run scripts/build-content.ts"
   },
