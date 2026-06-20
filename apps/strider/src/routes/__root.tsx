@@ -1,8 +1,12 @@
 /// <reference types="vite/client" />
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import PixiHost from "@/components/PixiHost/PixiHost";
+import { EntitiesObservedProvider } from "@/components/SiteHeader/entitiesObserved";
+import SiteHeader from "@/components/SiteHeader/SiteHeader";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
+import "@/styles/globals.css";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -24,8 +28,13 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
-        <Outlet />
-        <Scripts />
+        <PixiHost>
+          <EntitiesObservedProvider>
+            <SiteHeader />
+            <Outlet />
+          </EntitiesObservedProvider>
+          <Scripts />
+        </PixiHost>
       </body>
     </html>
   );

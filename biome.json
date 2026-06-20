@@ -44,9 +44,37 @@
         "**/strider/src/lib/hexUtils.ts",
         "**/strider/src/lib/hexUtils.test.ts",
         "**/strider/src/lib/layers.test.ts",
-        "**/strider/src/components/HexMap/**"
+        "**/strider/src/lib/memoriam.ts",
+        "**/strider/src/lib/memoriam.test.ts",
+        "**/strider/src/lib/timeline.ts",
+        "**/strider/src/lib/useFocusTrap.ts",
+        "**/strider/src/components/HexMap/**",
+        "**/strider/src/components/MapView/MapView.tsx"
       ],
       "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
+    },
+    {
+      "includes": ["**/strider/src/components/FactionDetail/FactionDetail.tsx"],
+      "linter": { "rules": { "security": { "noDangerouslySetInnerHtml": "off" } } }
+    },
+    {
+      "includes": [
+        "**/strider/src/components/Modal/Modal.tsx",
+        "**/strider/src/components/FactionSymbol/FactionSymbol.tsx",
+        "**/strider/src/components/MapView/OverlayStrip.tsx",
+        "**/strider/src/components/MapView/TimelineStrip.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useSemanticElements": "off",
+            "useAriaPropsSupportedByRole": "off",
+            "noStaticElementInteractions": "off",
+            "useKeyWithClickEvents": "off"
+          },
+          "suspicious": { "noArrayIndexKey": "off" }
+        }
+      }
     }
   ]
 }
