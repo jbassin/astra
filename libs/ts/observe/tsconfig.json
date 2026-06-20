@@ -1,4 +1,7 @@
 {
   "extends": "../../../tsconfig.base.json",
+  // DOM lib for the browser RUM entry (src/web.ts uses window/document); the
+  // node entries (index.ts/telemetry.ts) ignore it.
+  "compilerOptions": { "lib": ["ESNext", "DOM", "DOM.Iterable"] },
   "include": ["src"]
 }

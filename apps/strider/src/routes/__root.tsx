@@ -27,7 +27,7 @@ function RootComponent() {
   // dynamic import keeps the web SDK out of the SSR bundle.
   useEffect(() => {
     void import("@/observe/rum").then((m) => {
-      void m.initRum();
+      void m.startRum();
     });
   }, []);
 

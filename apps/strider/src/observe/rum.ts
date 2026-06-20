@@ -1,39 +1,17 @@
-// Client RUM (S1): browser OpenTelemetry → SigNoz. Emits a page-load span from
-// the browser to the public OTLP endpoint. The endpoint comes from config.kdl
-// (config-single-source) via the `getRumEndpoint` server function — the browser
-// can't read config, so it RPCs the server for the value. Strictly client-only —
-// imported behind a mount guard so it never runs during SSR.
+// Client RUM glue (S1): fetch the config-sourced endpoint via the server fn,
+// then hand off to @astra/observe/web. Kept tiny + client-only (imported behind
+// a mount guard in __root) so neither @astra/config nor the OTel web SDK reaches
+// the SSR bundle. The browser-OTel machinery lives in the shared library; this
+// is the per-frontend seam (service name + config endpoint) that 0011-0013 copy.
 
-import { trace } from "@opentelemetry/api";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { resourceFromAttributes } from "@opentelemetry/resources";
-import { BatchSpanProcessor, WebTracerProvider } from "@opentelemetry/sdk-trace-web";
-import { ATTR_SERVICE_NAME } from "@opentelemetry/semantic-conventions";
+import { initRum } from "@astra/observe/web";
 import { getRumEndpoint } from "./rumConfig";
 
-let started = false;
-
-export async function initRum(): Promise<void> {
-  if (started || typeof window === "undefined") return;
-  started = true;
+export async function startRum(): Promise<void> {
+  if (typeof window === "undefined") return;
   try {
-    const raw = await getRumEndpoint();
-    if (!raw) return; // no endpoint configured → RUM disabled
-    const endpoint = raw.replace(/\/$/, "");
-    const provider = new WebTracerProvider({
-      resource: resourceFromAttributes({ [ATTR_SERVICE_NAME]: "astra.strider-rum" }),
-      spanProcessors: [
-        new BatchSpanProcessor(new OTLPTraceExporter({ url: `${endpoint}/v1/traces` })),
-      ],
-    });
-    provider.register();
-
-    const span = trace.getTracer("astra.strider-rum").startSpan("page-load", {
-      attributes: { "page.path": window.location.pathname },
-    });
-    const finish = () => span.end();
-    if (document.readyState === "complete") finish();
-    else window.addEventListener("load", finish, { once: true });
+    const endpoint = await getRumEndpoint();
+    if (endpoint) initRum({ serviceName: "astra.strider-rum", endpoint });
   } catch (err) {
     console.warn("[strider] RUM init skipped:", err);
   }
