@@ -30,10 +30,26 @@
 	header ?Strict-Transport-Security "max-age=31536000"
 }
 
+(local_only) {
+	@not-local not client_ip private_ranges
+	respond @not-local "Access Denied"
+}
+
+# gothic owns the webfonts (theme.css references absolute /fonts/*). Serve them
+# straight from the gothic package dir so no frontend has to vendor a copy — the
+# single source of truth. 0011-0013 import this too.
+(gothic_fonts) {
+	handle /fonts/* {
+		root * /ruby/data/experiments/astra/libs/ts/gothic/src
+		file_server
+	}
+}
+
 # strider — the first SSR frontend (more blocks follow as 0011-0013 ship). The
 # compose `strider` service publishes host port 10360.
 strider.iridi.cc {
 	import astra_site
+	import gothic_fonts
 
 	# Authoring write path (the /editor save endpoint → strider-editor sidecar).
 	# OPEN at the app layer by design; access is gated HERE, and only when you
@@ -46,5 +62,37 @@ strider.iridi.cc {
 	#       reverse_proxy localhost:10361
 	#   }
 
-	reverse_proxy localhost:10360
+	handle {
+		reverse_proxy localhost:10360
+	}
+}
+
+# OTLP/HTTP ingest for browser RUM (config.kdl telemetry.rum-endpoint points
+# here). Reverse-proxies the SigNoz collector's host port; the collector has no
+# CORS of its own, so reflect it here for *.iridi.cc frontends only.
+otel.iridi.cc {
+	import astra_site
+
+	@preflight {
+		method OPTIONS
+		header_regexp Origin ^https://([a-z0-9-]+\.)?iridi\.cc$
+	}
+	handle @preflight {
+		header Access-Control-Allow-Origin "{http.request.header.Origin}"
+		header Access-Control-Allow-Methods "POST, OPTIONS"
+		header Access-Control-Allow-Headers "Content-Type"
+		header Access-Control-Max-Age "86400"
+		respond 204
+	}
+
+	@iridi header_regexp Origin ^https://([a-z0-9-]+\.)?iridi\.cc$
+	handle @iridi {
+		header Access-Control-Allow-Origin "{http.request.header.Origin}"
+		header Vary Origin
+		reverse_proxy localhost:10353
+	}
+
+	handle {
+		reverse_proxy localhost:10353
+	}
 }
