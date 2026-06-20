@@ -33,9 +33,10 @@ cf_token := "CF_API_TOKEN=\"$(SOPS_AGE_KEY_FILE=" + sops_age_key + " sops -d --e
 caddy-reload:
     {{cf_token}} {{reverse_proxy_dir}}/caddy reload --config {{reverse_proxy_dir}}/Caddyfile --adapter caddyfile
 
-# Validate astra's sites.caddyfile in isolation (adapt-only; no provisioning).
+# Validate the merged edge (main Caddyfile imports astra's sites) — so parent
+# snippets like local_only resolve. Adapt-only; no provisioning.
 caddy-validate:
-    {{cf_token}} {{reverse_proxy_dir}}/caddy validate --config sites.caddyfile --adapter caddyfile
+    {{cf_token}} {{reverse_proxy_dir}}/caddy validate --config {{reverse_proxy_dir}}/Caddyfile --adapter caddyfile
 
 # Tail the edge logs (mirrors the reverse-proxy justfile's `logs`).
 caddy-logs:

@@ -74,7 +74,9 @@ services:
     restart: unless-stopped
 
   # --- strider: the first SSR frontend (Decision I) — the template for 0011-0013 ---
-  # One image, two commands (like dagster): the SSR server + the editor writer.
+  # One SSR process; the editor save runs in it as a TanStack server function
+  # (writes content/layers/*.md). The /editor UI is gated to the local network at
+  # the Caddy edge.
   strider:
     build:
       context: ..
@@ -92,19 +94,6 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
-    restart: unless-stopped
-
-  # Authoring sidecar for /editor — writes content/layers/*.md (POST /write-layer
-  # :3001). Open by design; access is gated at the Caddy edge (maintainer call).
-  # Writes are container-local; surfacing new layers in SSR needs an image rebuild.
-  strider-editor:
-    image: astra-strider:local
-    container_name: astra-strider-editor
-    command: ["bun", "run", "editor:server"]
-    depends_on:
-      strider:
-        condition: service_started
-    networks: [signoz-net]
     restart: unless-stopped
 
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy

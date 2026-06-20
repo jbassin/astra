@@ -31,8 +31,7 @@ docker compose restart otel-collector     # forces immediate OpAMP re-registrati
 | 10353 | OTLP HTTP | otel-collector:4318 |
 | 10360 | strider SSR | strider:10360 |
 
-ClickHouse, zookeeper, Dagster Postgres, the query-service, and `strider-editor:3001` are **internal**
-(unpublished — the editor writer is reached only through Caddy).
+ClickHouse, zookeeper, Dagster Postgres, and the query-service are **internal** (unpublished).
 
 ## strider — the SSR frontend template (Decision I)
 
@@ -41,18 +40,18 @@ ClickHouse, zookeeper, Dagster Postgres, the query-service, and `strider-editor:
 served by `file_server` (the old Decision D model); it is a long-running SSR service:
 
 - **Image** (`apps/strider/Dockerfile`, build context = repo root): a Bun image that `bun install`s the
-  workspace, `bun run build`s the TanStack Start app, and ships `dist/` + `content/` + `server.ts`. One
-  image, two commands (like the Dagster image): `bun run start` (SSR) and `bun run editor:server` (the
-  authoring writer).
+  workspace, `bun run build`s the TanStack Start app, and ships `dist/` + `content/` + `server.ts`. `bun
+  run start` is the only command — one SSR process.
 - **`server.ts`**: `dist/server/server.js` is a bare Web-`fetch` handler, so this entry serves the hashed
-  client bundle from `dist/client/` and falls through to SSR for everything else — a self-contained unit.
+  client bundle from `dist/client/`, handles the editor save API (`POST /write-layer` → `content/layers`),
+  and falls through to SSR for everything else — a self-contained unit.
 - **Edge**: the substrate runs **no Caddy of its own** — the production edge is the shared host reverse
   proxy at `/ruby/data/reverse-proxy/` (custom caddy binary w/ the cloudflare-dns plugin), which `import`s
   this repo's root **`sites.caddyfile`** (`strider.iridi.cc` → `reverse_proxy localhost:10360`, NOT static
   `file_server` — Decision I). That file carries no secret: the Cloudflare ACME-DNS token is the
   `{$CF_API_TOKEN}` adapt-time placeholder, supplied from SOPS by **`just caddy-reload`** (`just
-  caddy-validate` to dry-run). The `/write-layer` authoring path is left commented there — gate it
-  (basic_auth / IP allow / mTLS) before exposing. For local dev, hit services on their published ports
+  caddy-validate` to dry-run). The editor (`/editor` + `POST /write-layer`) is gated to the local network
+  there (`import local_only`). For local dev, hit services on their published ports
   directly (no edge needed).
 
 The new frontend chunks build per-route; pixi stays in a client-only chunk (`<ClientOnly>` + `lazy`), so

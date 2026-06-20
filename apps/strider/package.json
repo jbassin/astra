@@ -9,8 +9,7 @@
     "start": "bun run server.ts",
     "typecheck": "bun run scripts/build-content.ts && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "generate:content": "bun run scripts/build-content.ts",
-    "editor:server": "bun run --hot scripts/editor-server.ts"
+    "generate:content": "bun run scripts/build-content.ts"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

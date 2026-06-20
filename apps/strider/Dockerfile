@@ -1,6 +1,5 @@
-# Astra strider — SSR frontend service (Decision I). One image, two commands:
-#   - `bun run start`         → the TanStack Start SSR server (serves dist/ + SSR)
-#   - `bun run editor:server` → the /editor layer-writer API (authoring sidecar)
+# Astra strider — SSR frontend service (Decision I). `bun run start` runs the
+# TanStack Start SSR server (serves dist/ + SSR + the editor write server fn).
 #
 # Build context is the REPO ROOT (strider is a bun workspace member depending on
 # @astra/gothic + @astra/observe via workspace:*), so the whole bun workspace must
@@ -37,7 +36,6 @@ COPY --from=build /repo/apps/strider/dist ./dist
 COPY --from=build /repo/apps/strider/content ./content
 COPY --from=build /repo/apps/strider/src/generated ./src/generated
 COPY --from=build /repo/apps/strider/server.ts ./server.ts
-COPY --from=build /repo/apps/strider/scripts/editor-server.ts ./scripts/editor-server.ts
 COPY --from=build /repo/apps/strider/package.json ./package.json
 # config.kdl is the single source for the OTLP endpoint (read via @astra/config);
 # @astra/config locates it by walking up to <repo>/ontology/ontology-config.
