@@ -8,5 +8,8 @@
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "build": "echo '@astra/weal-bot: no build step (bun runs TS directly)'"
+  },
+  "dependencies": {
+    "@astra/ontology": "workspace:*"
   }
 }

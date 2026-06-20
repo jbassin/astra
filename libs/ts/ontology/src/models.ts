@@ -38,12 +38,24 @@ export const CampaignSchema = z
   })
   .strict();
 
+export const HostLinesSchema = z
+  .object({
+    crit: z.array(z.string()),
+    good: z.array(z.string()),
+    okay: z.array(z.string()),
+    bad: z.array(z.string()),
+    fumble: z.array(z.string()),
+  })
+  .strict();
+
 export const WealHostSchema = z
   .object({
     slug: z.string(),
     name: z.string(),
     color: z.string(),
     avatar: z.string(),
+    // goodness → flavor lines (host_says); empty for bankless hosts (knife/master).
+    lines: HostLinesSchema,
   })
   .strict();
 
@@ -70,6 +82,7 @@ export const BeingSchema = z
 export type Player = z.infer<typeof PlayerSchema>;
 export type Role = z.infer<typeof RoleSchema>;
 export type Campaign = z.infer<typeof CampaignSchema>;
+export type HostLines = z.infer<typeof HostLinesSchema>;
 export type WealHost = z.infer<typeof WealHostSchema>;
 export type PodcastPersona = z.infer<typeof PodcastPersonaSchema>;
 export type Being = z.infer<typeof BeingSchema>;

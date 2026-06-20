@@ -165,6 +165,67 @@ weal-host "gsr" {
     name "Gin Soaked Rag"
     color "#276C4C"
     avatar "https://i.imgur.com/9z9IaYS.png"
+    lines {
+        crit #"That? That was sublime. The _Host_ might actually take notice. Try not to squander this on something stupid."#
+        crit #"You magnificent bastard, you actually pulled it off! Even the _Judge_ would rule in your favor on this one!"#
+        crit #"A rare and beautiful moment of competence. I’d say ‘remember this feeling,’ but let’s be honest -- you’ll never do it again."#
+        crit #"A perfect roll? Either the _Watcher_ himself is guiding your hand or the Horizon just glitched in your favor."#
+        crit #"Astonishing. Truly. If only you could bottle this and drink it before every battle -- oh wait, that’s just Tormerén wine."#
+        crit #"You roll like a hero in a Brithwyn propaganda broadcast—unbelievably well and against all odds."#
+        crit #"The _Host_ shines bright on you today! Or maybe it’s just the sun. Either way, take the win!"#
+        crit #"A perfect roll! Even the _Host_ might stop preening to take notice!"#
+        crit #"Now that is the kind of result that gets you canonized in a very biased Calarian history book."#
+        crit #"An outcome so magnificent, even the _Watcher’s_ nebula might twinkle in appreciation."#
+        crit #"You didn’t just roll well. You rolled so well that an Istrian caravan might name a strider after you."#
+        crit #"The _Host’s_ aurora just flared slightly brighter in the sky. Probably unrelated, but I’m choosing to believe otherwise."#
+        crit #"A success so flawless I half suspect you slipped into an alternate Faerrin where you’re actually competent."#
+        crit #"If you keep rolling like this, someone’s going to start whispering about divine intervention. And not subtly."#
+        good #"Hey! You did it! Kind of! In a roundabout, barely competent way, like a smuggler slipping past a Scale blockade!"#
+        good #"Ah, there’s that spark of potential. I’d bottle it up and sell it in Tor's Strand if I thought you could do it again."#
+        good #"A surprising display of adequacy. Keep this up and you might just avoid being sacrificed to the Heir of the Plague."#
+        good #"Not bad! You’ve got more luck than an Istrian with a well-tuned Slide."#
+        good #"This could actually be worth writing about in the next Liturgy. Maybe. If I’m desperate for content."#
+        good #"Skill or luck? I’d bet luck, but the Compelled might say otherwise."#
+        good #"A performance worthy of at least one verse in a Lorandrin sea shanty. Maybe even two."#
+        good #"If this were Calaria, you’d get a commendation. If it were Brithwyn, you’d get a raise. If it were Velthara, you’d just get more work."#
+        good #"Ah, there’s that spark of potential. If you were a miner in Tor’s Strand, you’d call it a promising deposit."#
+        good #"Good! Not great, but good! A performance worthy of a junior clerk in the Iridescent Church, perhaps."#
+        good #"Your dice have made the _Host_ proud today. Not enough to grant divine favor, but just enough to avoid divine smiting."#
+        good #"This is the kind of success that gets turned into an over-embellished Tormerén painting. Take it and run."#
+        okay #"Ah, a completely unremarkable roll. The kind the _Judge_ would rule ‘uninteresting’ and move on from."#
+        okay #"Well, the good news is you didn’t make it onto the Midnight Sun casualty list. The bad news? You’re still not winning any medals."#
+        okay #"The _Host_ smiles upon you. Not brightly, just... politely."#
+        okay #"I’d inscribe this in the records of Hallia, but I think even the scribes would find it too dull to bother."#
+        okay #"Hey, at least it’s better than rolling your way straight into the Stillness."#
+        okay #"A solidly middle-of-the-road performance, like a Brithwyn merchant trying to undercut Fenrith."#
+        okay #"You exist in a perfectly neutral state, like a diplomat from Rhædon who refuses to take sides. Admirable, but boring."#
+        okay #"That was as middle-of-the-road as an Austrenite balancing their spiritual enlightenment with their ski lodge investment portfolio."#
+        okay #"You roll like a Calarian bureaucrat—efficient, uninspired, and just barely competent enough to keep your job."#
+        okay #"A result so unremarkable it will be neither recorded in Belvedere’s archives nor banned by the Pontifex. A rare feat."#
+        okay #"Could be worse. Could be better. But if you’re praying to the _Watcher_, expect nothing more than a raised eyebrow."#
+        bad #"Not your worst work, but let’s just say the _Host_ isn’t commissioning statues in your honor just yet."#
+        bad #"You grazed success before tripping face-first into a pit in Istria."#
+        bad #"A performance worthy of a Lorandrin pirate: flashy, messy, and ending with someone else taking your stuff."#
+        bad #"I’ve seen Veltharan miners with better luck cracking a voidward deposit."#
+        bad #"Mediocrity suits you. Comfortable, isn’t it? Like an old seerhorse you should’ve retired three campaigns ago."#
+        bad #"You rolled like you were fighting a Fenrithi sea storm -- badly and with a sinking feeling."#
+        bad #"Not quite a disaster, but definitely the kind of failure that gets archived in Belvedere for future scholars to laugh at."#
+        bad #"That wasn’t even close. Did your dice slip into an adjacent Faerrin before landing?"#
+        bad #"If the _Compelled_ saw that, they’d demand you work twice as hard to make up for it. Maybe even three times."#
+        bad #"At least you didn’t botch it so hard the _Host_ personally descended to revoke your citizenship."#
+        bad #"Like a Fenrithi cargo ship running late—you’re off course, off balance, and barely scraping by."#
+        fumble #"Oh, fantastic. I think even the _Judge_ winced at that one."#
+        fumble #"Did you offend the _Host_ recently? Because that was cursed."#
+        fumble #"If failure were a work of art, this would be auctioned off in Tormeré for an obscene amount."#
+        fumble #"You just fumbled hard enough to make the _Watcher_ look away in embarrassment."#
+        fumble #"I’d blame sabotage, but let’s be honest—you did this to yourself."#
+        fumble #"You roll like a Brithwyn noble negotiating with Calaria -- poorly and with devastating consequences."#
+        fumble #"I think even the _Stillness_ took pity on you there. That's saying something."#
+        fumble #"You just rolled like a Veltharan miner ignoring voidward safety protocols -- expect a cave-in on your hopes and dreams."#
+        fumble #"You just made a Brithwyn noble look competent. That’s how bad this shit is."#
+        fumble #"I’ve seen Lorandrin pirates with better luck escaping a blockade. Spoiler: they didn’t."#
+        fumble #"On a scale from ‘not great’ to ‘obliterated by an Outer God,’ you’re leaning dangerously close to the latter."#
+    }
 }
 
 weal-host "knife" {
@@ -177,18 +238,95 @@ weal-host "rex" {
     name "Rex Panopticum"
     color "#CFBDDE"
     avatar "https://i.imgur.com/sIxjMYW.png"
+    lines {
+        crit #"Exemplary. You are now a threat to chaos."#
+        crit #"This is what balance aspires to be."#
+        crit #"Perfection. Enjoy it. It’s on loan."#
+        crit #"If you do that again, I may need to update your file. To include the word ‘competent.’"#
+        crit #"A statistical outlier. You’ll be studied. Dissected, if necessary."#
+        crit #"All variables aligned. Either you are blessed… or supervised."#
+        good #"A favorable result. Sustain it, and you might avoid further embarrassment."#
+        good #"Above threshold. Noted. Do not let it go to your head."#
+        good #"Commendable. Slightly."#
+        good #"Statistical windfall. Attribute it to preparation, not providence."#
+        good #"Order asserts itself. The _Judge_ approves."#
+        good #"An encouraging deviation. Maintain the trajectory."#
+        good #"Above expectation. Commendable. Temporarily."#
+        good #"Success achieved through effort or accident. I decline to guess."#
+        good #"A fine result. It will be noted. Briefly."#
+        okay #"Acceptable. In the strictest, least enthusiastic sense of the word."#
+        okay #"Mediocrity acknowledged. Proceed."#
+        okay #"Neither justice nor injustice. Equilibrium."#
+        okay #"Balance maintained. Momentum, questionable."#
+        okay #"You’ve neither violated nor validated expectations."#
+        okay #"A straight line through the noise. Useful. Barely."#
+        okay #"This is the result we calibrate against. Do not mistake it for success."#
+        bad #"Below the mean. Below the mode. Below my patience."#
+        bad #"I have witnessed worse. But only barely."#
+        bad #"A suboptimal manifestation. Note it. Improve."#
+        bad #"Errors compound. This is one."#
+        bad #"Insufficient for resolution. Sufficient for documentation."#
+        bad #"A stumble. Let’s hope not habitual."#
+        bad #"One more data point in a growing concern."#
+        bad #"You tripped on the first stair. The staircase is long."#
+        fumble #"Anomalous variance exceeds acceptable thresholds. Recommend recalibration of personal expectations."#
+        fumble #"Result logged. Performance review: abysmal. Remediation: unlikely."#
+        fumble #"This result constitutes a structural collapse in probability space. Avoid repeating."#
+        fumble #"Catastrophic misalignment detected. Please remain still while judgment recalibrates your worth."#
+        fumble #"Collapse observed. Dignity not found in the wreckage."#
+        fumble #"Your incompetence has become measurable. I am building a scale."#
+        fumble #"This result has been filed under 'incident.' Expect paperwork."#
+        fumble #"A reminder: entropy requires no help. And yet, you insist."#
+    }
 }
 
 weal-host "els" {
     name "Stray-Thread Els"
     color "#CFBDDE"
     avatar "https://i.imgur.com/wP8hBWb.png"
+    lines {
+        crit #"Now that’s a stitch so tight it hums. The kind they write chants about."#
+        crit #"If I had half your luck, I’d still have both arms. Well done."#
+        crit #"That’s the kind of magic we used to dream of. You earned this spark."#
+        crit #"Even the dead gods would’ve clapped. Not bad for a sack of meat and nerves."#
+        good #"Clean weave, solid stitch. You’ll live to botch another day."#
+        good #"Even _Vigil_ might’ve nodded at that one, before he vaporized."#
+        good #"You shine like a flare in the fog. Just try not to attract anything."#
+        good #"Tidy work. You'd make a half-decent Whisperer if the Weave wasn’t in tatters."#
+        okay #"Thread’s thin, but it holds. You’ll pass. Barely."#
+        okay #"That’s one way to survive. Not a good way. But a way."#
+        okay #"Didn’t impress the gods, but didn’t wake anything hungry. Call it a win."#
+        bad #"Almost stitched something useful… then pricked your thumb instead."#
+        bad #"If that’s your best, I hope you brought friends. Or a shovel."#
+        bad #"The Knot’s still holding. Shame your aim isn’t."#
+        fumble #"Weave’s laughing at you. Don’t let it hear you cry."#
+        fumble #"Even Slumber would’ve winced at that one. And she’s dead."#
+        fumble #"Congratulations. You’ve made failure look like performance art."#
+    }
 }
 
 weal-host "whiskers" {
     name "Whiskers"
     color "#00674F"
     avatar "https://i.imgur.com/GMVzufH.png"
+    lines {
+        crit #"By the _Host’s_ shimmering teeth, that’s it! That’s the roll that’ll crack The Zorbon’s grip on this rotten city."#
+        crit #"Crit like that? Makes me think maybe we'll avoid it yet. Maybe the fungus hasn’t already hollowed us out."#
+        crit #"That’s _Host_-touched, fungus-proof, spire-high. Enough to make even the Scale blink twice before weighin’ you."#
+        good #"Ha! Now that’s a roll stout enough to shake spores off a beggar’s coat."#
+        good #"If you’d rolled that in the alleys of Hallia, folk would’ve bought you a drink. Or at least not thrown rocks."#
+        good #"Luck’s kissin’ your whiskers tonight, friend. Careful, though, sometimes it’s the _Judge_ leanin’ in, breath smellin’ of rope."#
+        okay #"Could’ve been worse, could’ve been better. Story of my nine lives, really."#
+        okay #"Middle o’ the road, eh? Careful -- roads here belong to Prime Meridian, and the potholes got teeth."#
+        okay #"Didn’t impress the gods, but didn’t wake anything hungry. Call it a win."#
+        bad #"Ha! That’s the kind of roll that makes the fuzz twitch their whiskers. They’re all spore-ridden, you know."#
+        bad #"Not the worst thing I’ve seen in Hallia, but close. Reminds me of the time Sticks drank rainwater and found mushrooms growin’ in his ears."#
+        bad #"Pfft. That roll’s weaker than Brithwyn ale on a church day. Makes me itch like mold in my fur."#
+        fumble #"Ah, that’s how it starts -- the spores slip in through your teeth when you yawn. Careful now, it likes failures best."#
+        fumble #"A roll that bad? The Zorbon just wrote your obituary in mold across a sewer wall."#
+        fumble #"That’s a dice-tumble straight outta Sableclutch gutterball -- _Host_-forsaken luck. The Zorbon’ll be wearin’ your bones as marionette strings by dawn."#
+        fumble #"The _Host’s_ aurora don’t shine on that number. That’s fungus-shade, spores in your teeth, hyphae growin’ on your lungs"#
+    }
 }
 
 weal-host "master" {

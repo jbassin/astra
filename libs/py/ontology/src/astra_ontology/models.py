@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class _Base(BaseModel):
@@ -39,6 +39,20 @@ class Campaign(_Base):
     roles: list[Role]
 
 
+class HostLines(_Base):
+    """A weal-host's `host_says` flavor banks, keyed by roll goodness (mouth/host.rs).
+
+    Empty for bankless hosts (knife/master). Lifted into the ontology per 0009 K8 so
+    identity + voice live together; weal-bot reads these via the ontology accessor.
+    """
+
+    crit: list[str] = []
+    good: list[str] = []
+    okay: list[str] = []
+    bad: list[str] = []
+    fumble: list[str] = []
+
+
 class WealHost(_Base):
     """A weal-bot Discord message-send identity (mouth/host.rs) — distinct from a persona."""
 
@@ -46,6 +60,7 @@ class WealHost(_Base):
     name: str
     color: str
     avatar: str
+    lines: HostLines = Field(default_factory=HostLines)
 
 
 class PodcastPersona(_Base):

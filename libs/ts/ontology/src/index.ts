@@ -12,12 +12,13 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { type Node, parse } from "@bgotink/kdl";
-import { type Being, BeingSchema, type Campaign, type Role } from "./models";
+import { type Being, BeingSchema, type Campaign, type HostLines, type Role } from "./models";
 
 export {
   type Being,
   BeingSchema,
   type Campaign,
+  type HostLines,
   type Player,
   type PodcastPersona,
   type Role,
@@ -58,6 +59,21 @@ function toRole(node: Node): Role {
     descriptions: childrenNamed(node, "desc").map((c) =>
       String(c.getArgumentEntries()[0]?.getValue()),
     ),
+  };
+}
+
+function toHostLines(node: Node): HostLines {
+  const block = childrenNamed(node, "lines")[0];
+  const bank = (goodness: string): string[] =>
+    block === undefined
+      ? []
+      : childrenNamed(block, goodness).map((n) => String(n.getArgumentEntries()[0]?.getValue()));
+  return {
+    crit: bank("crit"),
+    good: bank("good"),
+    okay: bank("okay"),
+    bad: bank("bad"),
+    fumble: bank("fumble"),
   };
 }
 
@@ -120,6 +136,7 @@ export function loadBeing(path?: string): Being {
           name: String(scalar(node, "name")),
           color: String(scalar(node, "color")),
           avatar: String(scalar(node, "avatar")),
+          lines: toHostLines(node),
         });
         break;
       case "podcast-persona":

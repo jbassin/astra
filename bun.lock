@@ -48,6 +48,9 @@
     "apps/weal-bot": {
       "name": "@astra/weal-bot",
       "version": "0.0.0",
+      "dependencies": {
+        "@astra/ontology": "workspace:*",
+      },
     },
     "libs/ts/_smoke": {
       "name": "@astra/smoke",

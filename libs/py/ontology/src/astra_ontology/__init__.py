@@ -16,11 +16,12 @@ from typing import Any
 
 from astra_config.kdl import load_document
 
-from .models import Being, Campaign, Player, PodcastPersona, Role, WealHost
+from .models import Being, Campaign, HostLines, Player, PodcastPersona, Role, WealHost
 
 __all__ = [
     "Being",
     "Campaign",
+    "HostLines",
     "Player",
     "PodcastPersona",
     "Role",
@@ -80,12 +81,31 @@ def _campaign(node: Any) -> Campaign:
     )
 
 
+def _host_lines(node: Any) -> HostLines:
+    found = _children(node, "lines")
+    if not found:
+        return HostLines()
+    block = found[0]
+
+    def bank(goodness: str) -> list[str]:
+        return [str(c.args[0]) for c in _children(block, goodness) if list(c.args)]
+
+    return HostLines(
+        crit=bank("crit"),
+        good=bank("good"),
+        okay=bank("okay"),
+        bad=bank("bad"),
+        fumble=bank("fumble"),
+    )
+
+
 def _weal_host(node: Any) -> WealHost:
     return WealHost(
         slug=str(node.args[0]),
         name=str(_scalar(node, "name")),
         color=str(_scalar(node, "color")),
         avatar=str(_scalar(node, "avatar")),
+        lines=_host_lines(node),
     )
 
 
