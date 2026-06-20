@@ -1,12 +1,12 @@
 # NLSpec 0006 — linguist (transcript processing)
 
-**Status:** **in progress** (built in slices, P9). ✅ **Slice 1a:** `apps/linguist` scaffolded;
-`formatted_transcript` transform (corrections from `defs.yaml`, speaker-resolve from ontology-being,
-timestamps, duration) — **byte-parity verified** against faerrin `data/2024-10-15.json` (gates B/C/D);
-py lanes green. ⏳ **Remaining:** Slice 1b (campaign match → `mouthpiece_context` + `canonical_transcript`
-+ Dagster assets, gates E/F/K), Slice 2 (phonetic filter + dspy judge + guardrails, gates G/H), Slice 3
-(the ~75 MB historical import + pre-satisfy, gate I); live judge (J) deferred. **Phase:** 3 (pipeline).
-**Source plan:**
+**Status:** **implemented + verified** (gates A–I + K; **J deferred by design**, H1). Built in 3 slices,
+all green (py ruff/format/ty/**20 linguist tests**; biome). The deterministic pipeline reproduces faerrin
+**byte-for-byte** — both the `formatted_transcript` (vs `data/2024-10-15.json`) AND a full real-session
+`data.json → match → context → canonical` round-trip vs the committed 234 KB `transcripts/*.txt`. The
+surfacer (phonetic ensemble + Mode-1 filter + judge guardrails/escalation) is stub-tested; the 76
+historical sessions are committed + pre-satisfied. Live dspy judge + optimizer (J) deferred. **Phase:** 3
+(pipeline). **Source plan:**
 [`../plans/0006-linguist.md`](../plans/0006-linguist.md). **Pre-impl thoughts:**
 [`../../shared/research/2026-06-19-linguist-0006-thoughts.md`](../../shared/research/2026-06-19-linguist-0006-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (python-pro, code-reviewer), per astra `CLAUDE.md`.

@@ -1,6 +1,6 @@
 ---
 name: astra-migration-research
-description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 (0004 vellum-lang, 0003 gothic) COMPLETE + Phase 3 akasha-backend (0007) + scribe (0005) COMPLETE; next = 0006 linguist / 0008 mouthpiece-backend
+description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 (0004 vellum-lang, 0003 gothic) COMPLETE + Phase 3 (0007 akasha-backend, 0005 scribe, 0006 linguist) COMPLETE; next = 0008 mouthpiece-backend
 metadata:
   type: project
 ---
@@ -177,6 +177,31 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   `script.json`) → exclude `**/tests/fixtures/**` from biome (verbatim data); (5) `astra_config` already
   carried a `ScribeConfig` (incoming_path/data_path/`groq_api_key` SecretRef) from faerrin — reuse it.
   ScribeConfig + the live run still need a real Craig zip + the SOPS `groq_api_key` (present since Phase 1).
+
+- **linguist (0006) COMPLETE + verified** (2026-06-19; astra `main`; gates A–I + K; **J=live dspy judge
+  deferred**). Spec `thoughts/astra/specs/0006-linguist-spec.md`; thoughts
+  `thoughts/shared/research/2026-06-19-linguist-0006-thoughts.md`. The largest subsystem (faerrin
+  `content/scripts`), built in 3 slices. **Decided forks (with Josh):** H1 pipeline + surfacer machinery
+  now, **defer the live dspy judge + optimizer**; **H2 commit ALL ~75 MB** historical; **H3 rapidfuzz +
+  metaphone(double) + hand-Dice**. **`apps/linguist`:** the deterministic pipeline (`models` byte-order,
+  `corrections` = defs.yaml named-group alternation regex, `roster.SpeakerResolver` alias→name→`--text{Name}`
+  from ontology-being, `ingest`/`to_json` matching `JSON.stringify(x,null,2)`, `campaigns` match/billing/
+  context adapting ontology campaigns by slug→display-name, `canonical` line-numbered `NNNNNN\t…`,
+  `pipeline.process_session`) wired into a Dagster `session_transcripts` asset; the surfacer
+  (`surface/{phonetics,normalize,english,lexicon,known,judge}` — the 4-signal ensemble, Mode-1 `find_known`
+  pre-filter, and the judge's deterministic guardrails + haiku→sonnet escalation behind a `CompleteFn`
+  stub); `historical` (76 sessions committed under `data/` + `transcripts/`, pre-satisfy mechanism).
+  **PARITY PROVEN BYTE-FOR-BYTE on real data:** a committed `data/2025-10-20.json` → match → context →
+  canonical reproduces the 234 KB committed `transcripts/000.through-a-song-darkly.2025-10-20.txt` exactly
+  (so ontology-being's campaign/role descriptions match the old campaigns.yaml). **0006 gotchas
+  (load-bearing):** (1) the formatted `user.color` is a CSS-var NAME `--textJosh` (not rgb — gothic owns
+  the value); (2) ontology Role.player is a **slug** → map to Player.name for billing/context (the text
+  bills by display name); (3) `to_json`/`shibboleth` need `ensure_ascii=False` + indent=2 to match
+  `JSON.stringify`; (4) english OOV gate uses **wordfreq** (not faerrin's curated 275k list) — tolerable
+  since the filter only pre-flags (the judge decides); (5) the surfacer needs `rapidfuzz`+`metaphone`+
+  `wordfreq`+`dspy`; the live dspy judge (`make_dspy_complete_fn`) is the deferred J seam; (6) exclude
+  `apps/linguist/data/**` (65 MB JSON) from biome (`.txt` skipped via ignoreUnknown). Still needs a real
+  Craig→scribe→linguist live run + the dspy judge live (J) when new sessions arrive.
 
 **Shape:** faerrin's 13 pkgs re-cut into ~10 named subsystems + 2 net-new (`ontology-being` = table
 **META** — players → the PCs they play, campaigns, colors, host identities (weal-bot Discord hosts AND
