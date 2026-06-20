@@ -8,6 +8,7 @@ location is always non-empty/materializable.
 
 import dagster as dg
 from astra_akasha_backend.assets import akasha_corpus_snapshot
+from astra_linguist.assets import session_transcripts
 from astra_scribe.assets import craig_drop_sensor, session_outputs
 
 
@@ -17,9 +18,9 @@ def hello_astra() -> str:
     return "astra pipeline online"
 
 
-# `session_outputs` carries its DynamicPartitionsDefinition, so Dagster discovers
-# the `scribe_sessions` partitions from the asset (no separate registration).
+# The Phase-3 pipeline so far: scribe (audio→transcript) → linguist (processing) →
+# akasha (corpus snapshot). Each asset carries its DynamicPartitionsDefinition.
 defs = dg.Definitions(
-    assets=[hello_astra, akasha_corpus_snapshot, session_outputs],
+    assets=[hello_astra, akasha_corpus_snapshot, session_outputs, session_transcripts],
     sensors=[craig_drop_sensor],
 )
