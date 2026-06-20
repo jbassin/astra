@@ -88,6 +88,11 @@ def write_candidates(payload: dict[str, Any], path: Path | str) -> None:
     out.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
+def load_candidates(path: Path | str) -> dict[str, Any]:
+    """Load a surfacer `{date}.candidates.json` payload (for the review TUI)."""
+    return json.loads(Path(path).read_text(encoding="utf-8"))
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Run the live correction surfacer on a session.")
     ap.add_argument("--session", type=Path, required=True, help="path to a data/{date}.json")

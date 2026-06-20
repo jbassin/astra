@@ -9,7 +9,27 @@ from __future__ import annotations
 from pathlib import Path
 
 from astra_linguist.surface.goldset import MinedRecord, load_mined_artifact, write_mined_artifact
-from astra_linguist.surface.review_tui import apply_action, highlight_span, render_record
+from astra_linguist.surface.review_tui import (
+    apply_action,
+    apply_candidate_action,
+    highlight_span,
+    render_candidate,
+    render_record,
+)
+from astra_linguist.surface.surface import load_candidates, write_candidates
+
+
+def _cand(verdict: str = "confirm") -> dict:
+    return {
+        "line_ref": 412,
+        "speaker": "Josh",
+        "span": "Galaria",
+        "verdict": verdict,
+        "suggested_canonical": "Calaria" if verdict == "confirm" else None,
+        "confidence": 0.88,
+        "reason": "phonetic + context",
+        "line_text": "we traveled to Galaria this evening",
+    }
 
 
 def _rec(label: str = "skip") -> MinedRecord:
@@ -67,6 +87,34 @@ def test_render_record_includes_key_facts() -> None:
     assert "5 / 10" in view  # 1-based position
     assert "Filksnake" in view and "Vilksnake" in view
     assert "[c]" in view and "[r]" in view  # action keys shown
+
+
+# ── surfacer-candidate review ───────────────────────────────────────────────
+def test_apply_candidate_action_accept_reject() -> None:
+    row = _cand()
+    assert apply_candidate_action(row, "a") is True
+    assert row["decision"] == "accept"
+    assert apply_candidate_action(row, "r") is True
+    assert row["decision"] == "reject"
+    assert apply_candidate_action(row, "k") is False  # non-action key, decision unchanged
+    assert row["decision"] == "reject"
+
+
+def test_render_candidate_shows_verdict_and_canonical() -> None:
+    view = render_candidate(_cand(), 2, 9)
+    assert "3 / 9" in view
+    assert "Galaria" in view and "Calaria" in view  # span + suggested canonical
+    assert "[a]ccept" in view and "[r]eject" in view
+
+
+def test_candidate_decisions_round_trip(tmp_path: Path) -> None:
+    payload = {"session": "2026-6-8", "candidates": [_cand("confirm"), _cand("reject")]}
+    apply_candidate_action(payload["candidates"][0], "a")  # accept the first
+    path = tmp_path / "2026-6-8.candidates.json"
+    write_candidates(payload, path)
+    back = load_candidates(path)
+    assert back["candidates"][0]["decision"] == "accept"
+    assert "decision" not in back["candidates"][1]  # untouched stays pending
 
 
 def test_edits_round_trip_through_artifact(tmp_path: Path) -> None:
