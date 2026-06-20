@@ -1,0 +1,34 @@
+{
+  "name": "@astra/strider",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "start": "node .output/server/index.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "generate:content": "bun run scripts/build-content.ts"
+  },
+  "dependencies": {
+    "@astra/gothic": "workspace:*",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@tanstack/react-router": "^1.170.7",
+    "@tanstack/react-start": "^1.168.10",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tanstack/router-generator": "^1.167.13",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.4.0",
+    "gray-matter": "^4.0.3",
+    "jsdom": "^26.0.0",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1",
+    "vite": "^6.3.6",
+    "vitest": "^3.0.0"
+  }
+}

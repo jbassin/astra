@@ -9,7 +9,9 @@
       "!**/akasha-snapshot.json",
       "!**/fixtures/vellum/**",
       "!**/tests/fixtures/**",
-      "!**/linguist/data/**"
+      "!**/linguist/data/**",
+      "!**/routeTree.gen.ts",
+      "!**/src/generated/**"
     ]
   },
   "formatter": {
