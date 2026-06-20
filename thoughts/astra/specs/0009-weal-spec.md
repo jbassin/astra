@@ -41,9 +41,11 @@ faerrin's `host_says` only ever picks **GSR** — `Distribution<HostPicker> for 
   (**revises plan K5**, which had lines in weal-bot data). weal-bot reads both identity *and* voice via
   `@astra/ontology`. The GSR banks are extracted from `host.rs`; the Rex/Els/Whiskers banks are carried as
   data for the eventual switch.
-- **Ontology naming:** Josh said "ontology-people"; the existing META member is **`ontology-being`** (already
-  holds `player`, `weal-host`, `podcast-persona`). This spec extends `ontology-being`'s `weal-host` blocks
-  unless a rename to `ontology-people` is intended — **confirm at embrace** (W11).
+- **Ontology home — DECIDED (Josh, 2026-06-20): extend `ontology-being`, no rename.** The goodness→line
+  banks become children of the existing `weal-host` blocks in `ontology-being` (which already holds `player`,
+  `weal-host`, `podcast-persona`); identity + voice stay together. "ontology-people" is Josh's informal name
+  for that store — **no member rename** (a rename would be a separate cross-cutting slice across the py
+  `astra_ontology_being` + ts `@astra/ontology` libs and every reader; not done here).
 
 ### K7 — **DECIDED: weal-overlay keeps eerie's Bun.serve SPA + SSE (not strider's SSR template)**
 
@@ -132,7 +134,7 @@ explicitly sanctioned by plan §3.)
 | W1 | Roller location | Hand-port (K6) faithful to faerrin's module split (parser/ast/eval/die/utils). Pure, no I/O; the **only** randomness is `Die.value(faces)` — injectable for the harness. Keep `roll()`'s 4-bucket result shape (`to_roll/to_plot/to_roll_lazy/to_save`). |
 | W2 | Parity is the gate (K1) | The harness must be green before the Rust is retired. Compare **deterministic surfaces only** (parse AST, eval-given-faces, plot prob/avg/std, properties). **Never** compare raw RNG sequences (Rust `StdRng` ≠ TS RNG — Risk 2). Reuse faerrin's `parser.rs`/`eval.rs` test vectors as the seed corpus. |
 | W3 | Number semantics | `isize`-faithful: integer math, **truncating** division (`BinOpr::Div`), `Semi`→rhs, `Dot`→lhs, list-broadcast over binops, Die⊕Number lifts Number to `Die::Constant`. Watch JS number pitfalls — use integer-safe arithmetic; values are small but `possibilities()` can blow up (guard the plot path against huge pools). |
-| W4 | Hosts source (K5/K8) | identity (`name/color/avatar`) **and** goodness→lines from `@astra/ontology` `weal_hosts`. `host_says(host, roll)` is host-parameterized but **always passed GSR** today. Extend the `weal-host` KDL blocks with goodness→line children; GSR banks extracted from `host.rs` verbatim. |
+| W4 | Hosts source (K5/K8) | identity (`name/color/avatar`) **and** goodness→lines from `@astra/ontology` `weal_hosts`. `host_says(host, roll)` is host-parameterized but **always passed GSR** today. Extend the existing **`ontology-being`** `weal-host` KDL blocks with goodness→line children (no member rename — decided); GSR banks extracted from `host.rs` verbatim; this means the `WealHost` model in both py + ts ontology libs grows a `lines` field (goodness→string[]). |
 | W5 | Goodness | `RollGoodness` ported exactly (min/max → Fumble/Crit; thirds for Bad/Okay/Good). `invert()` ported for fidelity even if unused on the GSR path. |
 | W6 | Webhooks (K2) | per-host embed (`username`+`avatar_url`+`color`) via Discord `ExecuteWebhook`; auto-discover/create one `faceless-host` webhook per text channel at ready; key guild→channel. The dice-**feed** webhook = `cfg.weal.diceFeedUrl` (rotated secret, P6). |
 | W7 | Overlay wire = v1 only | weal-bot ships **v1** from day one; weal-overlay **drops the v0 branch** in `schema.ts` (`parseRollEvent` stops accepting `value`/inferring v0). `is_crit`/`is_fumble` mirrored from `RollGoodness`; overlay does **no** rule logic. |
