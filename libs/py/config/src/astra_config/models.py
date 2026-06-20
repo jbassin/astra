@@ -23,6 +23,10 @@ class LlmConfig(_Base):
     anthropic_api_key: SecretRef | None = None
 
 
+class TelemetryConfig(_Base):
+    otlp_endpoint: str = "http://localhost:10353"
+
+
 class ScribeConfig(_Base):
     data_path: str = ""
     incoming_path: str = ""
@@ -42,8 +46,21 @@ class LinguistConfig(_Base):
     ingest_saved_dir: str = ""
     review_port: int = 10116
     podcast_episodes_path: str = ""
+    # Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
     surface_model_judge: str = "claude-haiku-4-5-20251001"
     surface_model_escalate: str = "claude-sonnet-4-6"
+    surface_max_ngram: int = 3
+    surface_min_token_len: int = 3
+    surface_known_floor_unigram: float = 0.78
+    surface_known_floor_multi: float = 0.8
+    surface_strong_score: float = 0.88
+    surface_known_near_floor: float = 0.6
+    surface_judge_chunk_size: int = 150
+    surface_judge_overlap: int = 10
+    surface_escalate_low: float = 0.4
+    surface_escalate_high: float = 0.75
+    surface_confidence_floor: float = 0.6
+    surface_judge_max_tokens: int = 4096
 
 
 class MouthpieceConfig(_Base):
@@ -93,6 +110,7 @@ class CaddyConfig(_Base):
 
 class Config(_Base):
     llm: LlmConfig = Field(default_factory=LlmConfig)
+    telemetry: TelemetryConfig = Field(default_factory=TelemetryConfig)
     scribe: ScribeConfig = Field(default_factory=ScribeConfig)
     linguist: LinguistConfig = Field(default_factory=LinguistConfig)
     mouthpiece: MouthpieceConfig = Field(default_factory=MouthpieceConfig)

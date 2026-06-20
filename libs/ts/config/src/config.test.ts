@@ -33,6 +33,7 @@ describe("@astra/config", () => {
     expect(cfg.llm.defaultModel).toBe("claude-opus-4-8");
     expect(cfg.llm.defaultMaxTokens).toBe(16000); // number, not string
     expect(cfg.linguist.reviewPort).toBe(10116);
+    expect(cfg.telemetry.otlpEndpoint).toBe("http://localhost:10353");
     expect(cfg.orator.targetLufs).toBe(-16); // negative number
     expect(cfg.orator.measureLoudness).toBe(true); // boolean
     expect(cfg.weal.bindAddr).toBe("127.0.0.1:10203");

@@ -12,6 +12,11 @@ llm {
     anthropic-api-key ref="sops:anthropic_api_key"
 }
 
+telemetry {
+    // OTLP/HTTP receiver of the local SigNoz collector (deploy/ remaps it into the astra range).
+    otlp-endpoint "http://localhost:10353"
+}
+
 scribe {
     data-path ""
     incoming-path ""
@@ -31,8 +36,21 @@ linguist {
     ingest-saved-dir ""
     review-port 10116
     podcast-episodes-path ""
+    // Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
     surface-model-judge "claude-haiku-4-5-20251001"
     surface-model-escalate "claude-sonnet-4-6"
+    surface-max-ngram 3
+    surface-min-token-len 3
+    surface-known-floor-unigram 0.78
+    surface-known-floor-multi 0.8
+    surface-strong-score 0.88
+    surface-known-near-floor 0.6
+    surface-judge-chunk-size 150
+    surface-judge-overlap 10
+    surface-escalate-low 0.4
+    surface-escalate-high 0.75
+    surface-confidence-floor 0.6
+    surface-judge-max-tokens 4096
 }
 
 mouthpiece {

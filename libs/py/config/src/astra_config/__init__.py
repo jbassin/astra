@@ -23,6 +23,7 @@ from .models import (
     OratorConfig,
     OratorControllerConfig,
     ScribeConfig,
+    TelemetryConfig,
     WealConfig,
     WealOverlayConfig,
 )
@@ -38,6 +39,7 @@ __all__ = [
     "OratorControllerConfig",
     "ScribeConfig",
     "SecretRef",
+    "TelemetryConfig",
     "WealConfig",
     "WealOverlayConfig",
     "default_config_file",

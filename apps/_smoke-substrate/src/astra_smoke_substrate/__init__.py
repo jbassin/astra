@@ -13,10 +13,9 @@ with no network — see tests/test_smoke.py.
 
 from __future__ import annotations
 
-import os
 from typing import Any
 
-from astra_llm import LiteLLMClient
+from astra_llm import LiteLLMClient, ensure_anthropic_env
 from astra_observe import get_tracer, init_telemetry, shutdown
 from astra_ontology_being import CANONICAL_JSON_PATH
 from astra_ontology_being import load as load_being
@@ -41,10 +40,9 @@ def run(client: LiteLLMClient) -> dict[str, Any]:
     """
     cfg = load_config()
 
-    # Config + SOPS: a plaintext value and a lazily-resolved secret.
-    assert cfg.llm.anthropic_api_key is not None, "config.kdl missing llm.anthropic-api-key ref"
-    api_key = cfg.llm.anthropic_api_key.resolve()
-    os.environ.setdefault("ANTHROPIC_API_KEY", api_key)
+    # Resolve the Anthropic key through astra_config (config.kdl → SOPS) and expose it to
+    # litellm via the single sanctioned bridge — no ad-hoc env handling in app code.
+    ensure_anthropic_env()
 
     # ontology-being round-trips against the committed canonical snapshot.
     being = load_being()

@@ -7,8 +7,9 @@ lands in SigNoz with no per-app wiring.
 Two ways to wire, both export to the same collector:
 
 * **Programmatic (primary).** ``init_telemetry(service)`` installs global Tracer +
-  Meter providers exporting OTLP/HTTP to ``OTEL_EXPORTER_OTLP_ENDPOINT`` (default
-  the local collector). Idempotent — safe to call once at process start.
+  Meter providers exporting OTLP/HTTP to the endpoint from ``config.kdl``
+  (``telemetry.otlp-endpoint``, via astra_config; pass ``endpoint=`` to override).
+  Idempotent — safe to call once at process start.
 * **Auto-instrumentation (optional).** Install ``opentelemetry-distro`` in the app
   and launch via ``opentelemetry-instrument python -m app`` with ``OTEL_*`` env set;
   it layers library spans on top. Phase 1 ships the programmatic path.
@@ -20,8 +21,6 @@ dropped on exit — exactly the failure the Phase-0 smoke had to guard against.
 
 from __future__ import annotations
 
-import os
-
 from opentelemetry import metrics, trace
 from opentelemetry.exporter.otlp.proto.http.metric_exporter import OTLPMetricExporter
 from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
@@ -32,9 +31,22 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
 # The local collector's OTLP/HTTP receiver (deploy/ remaps it into the astra range).
+# Mirrors the `telemetry.otlp-endpoint` default in config.kdl — kept as a constant so
+# `import astra_observe` stays config-free until `init_telemetry` actually runs.
 DEFAULT_ENDPOINT = "http://localhost:10353"
 
 _state: tuple[TracerProvider, MeterProvider] | None = None
+
+
+def _config_endpoint() -> str:
+    """The OTLP endpoint from `config.kdl` via astra_config (no ad-hoc env lookup).
+
+    Imported lazily so `import astra_observe` (which every app does first) stays light
+    and config-free; only `init_telemetry` pulls it in.
+    """
+    from astra_config import load_config
+
+    return load_config().telemetry.otlp_endpoint
 
 
 def init_telemetry(service_name: str, *, endpoint: str | None = None) -> None:
@@ -48,8 +60,7 @@ def init_telemetry(service_name: str, *, endpoint: str | None = None) -> None:
     if _state is not None:
         return
 
-    raw = endpoint or os.environ.get("OTEL_EXPORTER_OTLP_ENDPOINT") or DEFAULT_ENDPOINT
-    endpoint = raw.rstrip("/")
+    endpoint = (endpoint or _config_endpoint()).rstrip("/")
     resource = Resource.create({SERVICE_NAME: service_name})
 
     tracer_provider = TracerProvider(resource=resource)

@@ -46,6 +46,18 @@ const Linguist = z
     podcastEpisodesPath: z.string().default(""),
     surfaceModelJudge: z.string().default("claude-haiku-4-5-20251001"),
     surfaceModelEscalate: z.string().default("claude-sonnet-4-6"),
+    surfaceMaxNgram: z.number().default(3),
+    surfaceMinTokenLen: z.number().default(3),
+    surfaceKnownFloorUnigram: z.number().default(0.78),
+    surfaceKnownFloorMulti: z.number().default(0.8),
+    surfaceStrongScore: z.number().default(0.88),
+    surfaceKnownNearFloor: z.number().default(0.6),
+    surfaceJudgeChunkSize: z.number().default(150),
+    surfaceJudgeOverlap: z.number().default(10),
+    surfaceEscalateLow: z.number().default(0.4),
+    surfaceEscalateHigh: z.number().default(0.75),
+    surfaceConfidenceFloor: z.number().default(0.6),
+    surfaceJudgeMaxTokens: z.number().default(4096),
   })
   .strict();
 
@@ -98,12 +110,15 @@ const OratorController = z.object({ apiKey: secret() }).strict();
 
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
+const Telemetry = z.object({ otlpEndpoint: z.string().default("http://localhost:10353") }).strict();
+
 // A missing namespace falls back to its all-defaults form (matches the py
 // default_factory leniency). Zod v4 types `.default()` against the *output* shape,
 // so we hand it the parsed all-defaults object rather than `{}`.
 export const ConfigSchema = z
   .object({
     llm: Llm.default(() => Llm.parse({})),
+    telemetry: Telemetry.default(() => Telemetry.parse({})),
     scribe: Scribe.default(() => Scribe.parse({})),
     linguist: Linguist.default(() => Linguist.parse({})),
     mouthpiece: Mouthpiece.default(() => Mouthpiece.parse({})),

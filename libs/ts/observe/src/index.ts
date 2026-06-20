@@ -3,14 +3,17 @@
  *
  * Standing principle (CLAUDE.md): *telemetry from day one*. Every app installs this
  * once at startup, either programmatically (`initTelemetry`) or — preferred for
- * servers/bots — via `bun --preload @astra/observe/preload` (see `./telemetry.ts`),
- * which reads `OTEL_SERVICE_NAME` + `OTEL_EXPORTER_OTLP_ENDPOINT` from the env so a
- * span lands in SigNoz with no per-app wiring.
+ * servers/bots — via `bun --preload @astra/observe/preload` (see `./telemetry.ts`).
+ * The collector endpoint comes from `config.kdl` (`telemetry.otlpEndpoint`); the
+ * preload reads only `OTEL_SERVICE_NAME` (process identity, not config) so a span
+ * lands in SigNoz with no per-app wiring.
  *
  * Mirrors `libs/py/observe`: same default endpoint, same `astra.<subsystem>` service
  * naming, same idempotency + explicit `shutdown()` (force-flush before a short-lived
  * process exits, or buffered spans are dropped).
  */
+
+import { loadConfig } from "@astra/config";
 import { type Meter, metrics, type Tracer, trace } from "@opentelemetry/api";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
@@ -38,11 +41,9 @@ let state: { providers: Telemetry } | null = null;
 export function initTelemetry(serviceName: string, opts?: { endpoint?: string }): Telemetry {
   if (state) return state.providers;
 
-  const endpoint = (
-    opts?.endpoint ??
-    process.env.OTEL_EXPORTER_OTLP_ENDPOINT ??
-    DEFAULT_ENDPOINT
-  ).replace(/\/$/, "");
+  // Endpoint comes from config.kdl (telemetry.otlpEndpoint) via @astra/config — no
+  // ad-hoc env lookup. `opts.endpoint` overrides for tests / embedding.
+  const endpoint = (opts?.endpoint ?? loadConfig().telemetry.otlpEndpoint).replace(/\/$/, "");
   const resource = resourceFromAttributes({ [ATTR_SERVICE_NAME]: serviceName });
 
   const tracerProvider = new NodeTracerProvider({
