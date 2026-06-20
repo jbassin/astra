@@ -77,6 +77,27 @@ services:
   # One SSR process; the editor save runs in it as a TanStack server function
   # (writes content/layers/*.md). The /editor UI is gated to the local network at
   # the Caddy edge.
+
+  # --- weal: the dice/host bot's roll-history + macro store (0009, Decision F) ---
+  weal-postgres:
+    image: postgres:16-alpine
+    container_name: astra-weal-postgres
+    environment:
+      POSTGRES_USER: ${WEAL_PG_USERNAME:-weal}
+      POSTGRES_PASSWORD: ${WEAL_PG_PASSWORD:-weal}
+      POSTGRES_DB: ${WEAL_PG_DB:-weal}
+    volumes:
+      - weal-pg:/var/lib/postgresql/data
+    ports:
+      - "10362:5432" # weal dice/funcs store (astra range) — for the P6 SQLite→PG migration
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${WEAL_PG_USERNAME:-weal} -d ${WEAL_PG_DB:-weal}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   strider:
     build:
       context: ..
@@ -104,6 +125,8 @@ services:
 volumes:
   dagster-pg:
     name: astra-dagster-pg
+  weal-pg:
+    name: astra-weal-pg
 
 networks:
   signoz-net:
