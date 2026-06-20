@@ -15,6 +15,7 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Literal, Protocol
 
+from astra_observe import get_meter
 from pydantic import BaseModel
 
 from ..models import Transcript
@@ -23,6 +24,12 @@ from .lexicon import Lexicon
 from .normalize import fold_for_match
 
 Verdict = Literal["confirm", "new", "reject"]
+
+_judge_meter = get_meter("astra.linguist.judge")
+_judge_calls = _judge_meter.create_counter("astra.judge.calls", description="judge LM calls")
+_judge_cost = _judge_meter.create_counter(
+    "astra.judge.cost_usd", unit="USD", description="judge spend"
+)
 
 
 class Candidate(BaseModel):
@@ -257,6 +264,10 @@ def make_dspy_complete_fn(
             lm_cache[args.model] = lm
         with dspy.context(lm=lm):
             pred = program(lexicon=args.cached, window=args.user)
+        history = getattr(lm, "history", None) or []
+        cost = float(history[-1].get("cost") or 0.0) if history else 0.0
+        _judge_calls.add(1, {"stage": args.stage, "model": args.model})
+        _judge_cost.add(cost, {"stage": args.stage, "model": args.model})
         return ScanResult(candidates=[Candidate.model_validate(c) for c in pred.candidates])
 
     return complete

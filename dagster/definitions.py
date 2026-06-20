@@ -9,7 +9,14 @@ location is always non-empty/materializable.
 import dagster as dg
 from astra_akasha_backend.assets import akasha_corpus_snapshot
 from astra_linguist.assets import correction_candidates, scribe_output_sensor, session_transcripts
+from astra_observe import init_telemetry
 from astra_scribe.assets import craig_drop_sensor, session_outputs
+
+# Telemetry from day one (CLAUDE.md): every process that loads this code location — the
+# Dagster daemon and each run worker — installs the OTel providers here, so the pipeline's
+# spans, metrics, and logs actually flow to SigNoz (without this, the assets' instrumentation
+# is a no-op in the runtime). Idempotent; endpoint comes from config.kdl.
+init_telemetry("astra.pipeline")
 
 
 @dg.asset(group_name="smoke")

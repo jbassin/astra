@@ -15,6 +15,7 @@ import json
 from pathlib import Path
 
 import dagster as dg
+from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
 
@@ -26,6 +27,15 @@ from .roster import SpeakerResolver
 from .sensor import new_sessions
 from .surface.lexicon import build_lexicon
 from .surface.surface import load_session, surface_session_payload, write_candidates
+
+_log = get_logger("astra.linguist")
+_meter = get_meter("astra.linguist")
+_sessions_counter = _meter.create_counter(
+    "astra.linguist.sessions", description="sessions ingested"
+)
+_candidates_counter = _meter.create_counter(
+    "astra.linguist.candidates", description="surfaced correction candidates"
+)
 
 APP_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = APP_ROOT / "data"
@@ -71,6 +81,13 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
         if artifacts.canonical is not None:
             _atomic_write(TRANSCRIPT_DIR / f"{stem}.{date}.txt", artifacts.canonical)
 
+    _sessions_counter.add(1)
+    _log.info(
+        "linguist ingested session %s: %d lines, campaign=%s",
+        date,
+        len(artifacts.transcript.script),
+        matched_name,
+    )
     return dg.MaterializeResult(
         metadata={"lines": len(artifacts.transcript.script), "campaign": matched_name}
     )
@@ -95,6 +112,15 @@ def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeRe
         transcript, lex, complete_fn=make_dspy_complete_fn(), date=date
     )
     write_candidates(payload, DATA_DIR / f"{date}.candidates.json")
+    for verdict, n in payload["counts"].items():
+        _candidates_counter.add(n, {"verdict": verdict})
+    _log.info(
+        "linguist surfaced %d candidate(s) for %s: flagged=%d %s",
+        sum(payload["counts"].values()),
+        date,
+        payload["flagged_spans"],
+        payload["counts"],
+    )
     return dg.MaterializeResult(
         metadata={
             "flagged": payload["flagged_spans"],
