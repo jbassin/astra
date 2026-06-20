@@ -1,17 +1,19 @@
-"""Phase 0 smoke Dagster code location — proves the pipeline runtime comes up.
+"""The astra Dagster code location — the Phase-3 asset graph lands here.
 
-The real asset graph (one partition per session: scribe -> linguist -> akasha ->
-mouthpiece) lands here in Phase 3. For now a single trivial asset gives the
-webserver a non-empty, materializable code location to load.
+The full pipeline (one partition per session: scribe -> linguist -> akasha ->
+mouthpiece) grows here per subsystem. First real member: akasha-backend's
+corpus-snapshot asset (0007). The trivial Phase-0 smoke asset stays so the code
+location is always non-empty/materializable.
 """
 
 import dagster as dg
+from astra_akasha_backend.assets import akasha_corpus_snapshot
 
 
 @dg.asset(group_name="smoke")
 def hello_astra() -> str:
-    """Trivial asset so the Phase 0 code location is non-empty and materializable."""
+    """Trivial asset so the code location is non-empty and materializable."""
     return "astra pipeline online"
 
 
-defs = dg.Definitions(assets=[hello_astra])
+defs = dg.Definitions(assets=[hello_astra, akasha_corpus_snapshot])
