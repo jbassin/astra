@@ -38,7 +38,14 @@ Each subsystem moves through three gates, leaving a paper trail in `thoughts/`:
    built on the scoping doc and the sub-plan's settled decisions.
 3. **Implement** — drive the build with **`octo:embrace`** against that spec; wire telemetry from day one,
    reproduce CI lanes locally before pushing, then update the memory (`thoughts/shared/memory/`) with the
-   load-bearing gotchas.
+   load-bearing gotchas. Build the spec's scope **in full** — don't quietly collapse or defer pieces to fit
+   a budget; surface the trade-off and ask (only spec-sanctioned deferrals are OK). And **port faerrin's
+   existing implementation** rather than reinventing it — grep faerrin first.
+
+**Version control cadence (not "commit only when asked"):** commit each CI-green slice with a Conventional
+Commit message as you go, and **push when a chunk/subsystem is done** — after reproducing the CI lanes
+locally (don't then watch the GHA run; confirm push + one status check, per the memory). Mirror the git
+log's per-slice rhythm; don't accumulate a large uncommitted/unpushed working tree.
 
 ## Two toolchains, disjoint workspaces
 

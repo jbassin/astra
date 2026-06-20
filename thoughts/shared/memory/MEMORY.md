@@ -4,3 +4,5 @@
 - [config single-source](config-single-source.md) — ALL config lives in ontology/ontology-config + read via astra_config (py+ts); no hardcoded/duplicated config or ad-hoc env reads outside astra_config
 - [telemetry built-in](telemetry-built-in.md) — every app/asset must wire traces+metrics+logs to SigNoz in its actual runtime (call init_telemetry in the Dagster code location / service entrypoint); importing observe ≠ wiring it
 - [linguist gate J — dspy judge compile](linguist-gate-j-dspy-judge.md) — how the optimizable judge + MIPROv2 compile works (gold set, miner, TUI, optimize.py --live); committed judge.compiled.json
+- [verify before acting](verify-before-acting.md) — FEEDBACK: check what exists (faerrin's impl, skill docs, repo conventions) before acting; astra is a port — port faerrin's function, don't reinvent it
+- [no silent scope cuts](no-silent-scope-cuts.md) — FEEDBACK: never shrink/defer spec'd scope to fit my budget; surface the trade-off and let the user decide; only defer what the spec sanctions
