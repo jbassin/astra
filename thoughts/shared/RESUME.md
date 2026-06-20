@@ -36,22 +36,30 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `db5b39d`, 2026-06-20)
+## Current state — UPDATE THIS SECTION (as of commit `fedd4b8`, 2026-06-20)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
 - **IN PROGRESS — strider (0014):** the first TS app in `apps/` and the canonical **SSR frontend
-  template**. **Slice 1 (SSR scaffold) shipped + green** — TanStack Start on vite 6 + React 19, SSR build
-  (`dist/server/server.js`), gothic via `@astra/gothic/theme.css`, port 10360.
+  template**.
+  - **Slice 1 (SSR scaffold) shipped + green** — TanStack Start on vite 6 + React 19, SSR build
+    (`dist/server/server.js`), gothic via `@astra/gothic/theme.css`, port 10360.
+  - **Slice 2 (build-content + data model) shipped + green** (`fedd4b8`) — the template's build-time
+    content pipeline: `scripts/build-content.ts` (gray-matter + remark → `src/generated/`),
+    `contentWatchPlugin` (buildStart + dev re-gen), `generate-routes.ts`; the faction/territory/layer/
+    skein model (`src/lib/{regions,hexUtils,factions,layers}.ts` + tests); `content/{factions,layers}/*.md`.
+    `src/generated/**` gitignored (except `.gitignore`) + biome-ignored. **58 tests pass**; client bundle
+    is free of fs/remark/gray-matter (invariant T9). Lift adaptation for astra's stricter base tsconfig
+    (`noUncheckedIndexedAccess`/`verbatimModuleSyntax`): `verts()` is a fixed 6-tuple; provably-safe index
+    sites use `!` with a per-file biome override on the lib (spec T2). **Not yet pushed.**
   - Contract: `thoughts/astra/specs/0014-strider-spec.md`
   - Verified scoping: `thoughts/shared/research/2026-06-20-strider-0014-thoughts.md`
   - Source to port: `/ruby/data/experiments/faerrin/pkg/strider`
 
 ### Next: continue strider, one committed+pushed slice at a time (per the spec)
 
-2. **build-content + data model** — `scripts/build-content.ts` + the Vite watch plugin + generate-routes;
-   lift the faction/territory/layer/skein model + `content/{factions,layers}/*.md` + generated types.
-3. **pixi hexmap** — `lib/hexUtils` + `components/HexMap` + `PixiHost`, gated `<ClientOnly>` (no WebGL in SSR).
+3. **pixi hexmap** — `components/HexMap` (`pixiScene`/`animationManager`/`skeinGeometry`) + `PixiHost`,
+   gated `<ClientOnly>` (no WebGL in SSR). `lib/hexUtils` already lifted in slice 2.
 4. **routes + map layer** — `MapView`, `FactionDetail`, the faction routes.
 5. **editor + editor-server** — in scope (a Compose service / API surface).
 6. **deploy** — a strider Compose service in `deploy/docker-compose.yml` + Caddy reverse-proxy (frontends
