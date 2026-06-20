@@ -45,17 +45,31 @@ what `0011`–`0013` copy (CLAUDE.md standing principle #4). So the value isn't 
 - **Data model + content (P1/P3):** `content/{factions,layers}/*.md` + the faction/territory/layer/skein
   model + map routes, lifted unchanged. strider-local content (not sourced from akasha/ontology).
 
-## Decisions to surface before the NLSpec (the astra-ify, not in the plan)
+## Decisions — RESOLVED with Josh (2026-06-20)
 
-| # | Decision | Why it's open |
+**Headline: Decision I — strider is SSR-hosted, not prerendered static** (and *all* frontends follow).
+strider runs as a **TanStack Start SSR server = a Compose service behind Caddy** (reverse-proxied, not
+static `dist/`), with **client RUM**. This revises roadmap Decision D's "Caddy serves static `dist/`" and
+principle #4 (strider = the **SSR** template now); the build-content → generated-modules → loader
+**structural** pattern is unchanged — only the render/host mode flips. Recorded in roadmap §2 (Decision I),
+CLAUDE.md (runtime split + principle #4), and [[astra-migration-research]]. **0011–0013 replan as SSR
+services** when they're speced.
+
+| # | Decision | Resolution |
 |---|---|---|
-| S1 | **OTel/observe for a static frontend** | Standing principle #1 says every app wires `libs/ts/observe` to SigNoz — but strider is a prerendered static site (served by Caddy), not a running service. Wire build-time spans? client RUM? or declare static-frontend observe out of scope? The template answer propagates to 0011–0013, so decide deliberately. |
-| S2 | **Editor + editor-server scope** | strider ships an authoring **Editor** (`routes/editor.tsx`, `EditorHexMap`, `saveLayer`) backed by a **long-running bun `editor-server.ts`** (`--hot`). Per Decision H a long-running server = a **Compose** unit. Lift the editor now (as a Compose service) or defer it (ship the read-only site first)? The plan's work items don't mention it. |
-| S3 | **OG-image build in CI** | `build` runs `vite build && build-og-image.ts`; OG-image gen typically needs a headless browser at build time (cf. gothic's Storybook-in-CI concern). Keep it in the `build` lane, or gate it behind a flag so the CI `bun --filter build` stays browser-free? |
-| S4 | **Test runner** | faerrin strider uses **vitest + testing-library + playwright(e2e)**; gothic (the precedent) uses **`bun test`**. Keep vitest+jsdom (runs fine under `bun --filter test`) or convert to `bun test`? Pixi/DOM tests likely need jsdom either way. |
-| S5 | **vite version** | gothic pins **vite 6**; faerrin strider uses **vite 8**. Align the workspace (vite 6 to match gothic, or bump gothic to 8). A shared resolution avoids a split vite across the bun lane. |
+| S1 | observe for the frontend | **Client RUM (browser OTel → SigNoz) + server-side `observe` in the SSR runtime** — strider is a running server now, so it wires observe like any service (principle #1 satisfied directly). |
+| S2 | editor + editor-server | **Lift now** — the Editor + `editor-server` ship as part of strider (a Compose service; likely the strider SSR server also serves the editor API + auth). |
+| S3 | OG-image build in CI | **Gate behind a flag** so the CI `bun --filter build` stays browser-free; OG-image is an opt-in build step. *(default — confirm if wrong)* |
+| S4 | test runner | **Keep vitest + jsdom** (runs under `bun --filter test`); pixi/DOM tests need jsdom. *(default)* |
+| S5 | vite version | **Pin vite 6 to match gothic** (avoid a split vite across the bun lane). *(default)* |
 
-*(P1 lift-the-faction-map, P2 reuse-hex-rendering, P3 strider-local-content are already DECIDED in the plan.)*
+*(P1 lift-the-faction-map, P2 reuse-hex-rendering, P3 strider-local-content already DECIDED in the plan.)*
+
+**Implications the spec must carry:** strider is no longer a static-`dist/` lift — it's a **running SSR
+service** (TanStack Start server target) deployed via **Docker Compose** behind Caddy, bundling the editor +
+editor-server, with client RUM + server observe to SigNoz. The pixi hexmap stays `<ClientOnly>` (no WebGL in
+SSR either). This makes strider the **SSR template** 0011–0013 copy — so the deploy wiring (Compose unit +
+Caddy reverse-proxy + RUM) is as load-bearing a template artifact as the build-content pattern.
 
 ## Suggested slicing (for the NLSpec)
 

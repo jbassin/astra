@@ -254,6 +254,12 @@ F Postgres; G scribe = Groq hosted `whisper-large-v3` API (no GPU worker / no lo
 H **split runtime** — Dagster runs the pipeline (asset graph, one partition per session), Docker Compose
 supervises the long-running services (bots/overlay/render), Caddy = edge, SigNoz = single pane. **Windmill
 was evaluated and dropped** (one tool forced to be both workflow engine + service supervisor).
+**I (2026-06-20, decided on 0014): frontends are SSR-hosted, not prerendered static.** ALL frontends
+(strider, akasha-fe, mouthpiece-fe, vellum-fe) run as **SSR servers = Compose services behind Caddy**
+(reverse-proxied, not static `dist/`) with **client RUM** + server `observe`; strider's editor +
+editor-server lift with it. Revises D's "Caddy serves static `dist/`" (the akasha build-time snapshot stays
+the data source) and principle #4 (strider = the **SSR** template; the build-content→generated→loader
+structural pattern is unchanged, only render/host mode flips). Grows Phase 5 — 0011–0013 replan as services.
 Preserve `player_id` FKs + exclude the 47M-row junk roll; **do not re-transcribe** the 76 historical
 sessions (import verbatim). Related: [[eerie-obs-overlay-plan]] (→weal-overlay), [[lark-discord-music-bot-spec]]
 + [[birdfeed-streamdeck-plugin]] (→orator), [[mouth-ts-rewrite-deferred]] (→weal-bot rewrite),

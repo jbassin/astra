@@ -70,9 +70,10 @@ Three non-overlapping concerns; **SigNoz/OTel is the single pane across all thre
 - **Pipeline** (craig → scribe → linguist → akasha → mouthpiece) = a **Dagster** asset graph, one
   partition per session/date, scheduled/sensor-triggered, with lineage. *(This supersedes the older
   "windmill" mention in earlier drafts of `ASTRA.md`.)*
-- **Long-running services** (Discord bots, overlay SSE, vellum render service, DBs) = **Docker Compose**
-  units (`restart: unless-stopped` + healthchecks).
-- **Edge** = **Caddy** (TLS + static `dist/` + reverse-proxying service APIs).
+- **Long-running services** (Discord bots, overlay SSE, vellum render service, DBs, **the SSR frontends** —
+  Decision I) = **Docker Compose** units (`restart: unless-stopped` + healthchecks).
+- **Edge** = **Caddy** (TLS + reverse-proxying service APIs **+ the SSR frontend servers**). *(Frontends are
+  SSR Compose services now, not prerendered static `dist/` — Decision I, decided on 0014.)*
 - **CI** = GitHub Actions (`.github/workflows/ci.yml`) — parallel, path-filtered jobs.
 
 ## Standing principles (apply in every subsystem)
@@ -84,7 +85,8 @@ Three non-overlapping concerns; **SigNoz/OTel is the single pane across all thre
    plaintext in git.
 3. **All LLM calls** go through `libs/py/llm` (litellm + dspy); never call a provider SDK directly.
 4. **strider is the frontend template** — every TanStack frontend follows its build-time-content →
-   generated-modules → route-loader → prerender pattern.
+   generated-modules → route-loader pattern, and runs **SSR as a Compose service behind Caddy** with
+   client RUM (Decision I — not prerendered static `dist/`).
 5. **Preserve identity keys.** `player_id` integers are load-bearing FKs; carry them verbatim.
 
 ## Layout

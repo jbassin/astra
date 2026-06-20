@@ -38,11 +38,12 @@ Two user decisions set the program's character:
 | A | Migration strategy | **Big-bang cutover** | Front-load validation; staging parallel-run; rehearsed cutover + rollback (§7). |
 | B | weal-bot language | **Rewrite Rust→TS/Bun** | Two toolchains only. **Roller parity harness before deleting Rust** (Phase 4). |
 | C | "vellum format" scope | **Full vellum — one format for all content** | Critical path: expand vellum-lang (Phase 2) → convert 100+ pages (Phase 3 akasha-backend). |
-| D | akasha consumption | Build-time snapshot | akasha-frontend reads an akasha export at build; no live content API in v1. |
+| D | akasha consumption | Build-time snapshot | akasha-frontend reads an akasha export at build; no live content API in v1. *(Build-time snapshot still the data source; the frontend that serves it is now SSR — see Decision I.)* |
 | E | Secrets backend | **SOPS-encrypted in-repo + KDL `ref=`** *(updated 2026-06-18 after H)* | ontology-config KDL holds `ref=` pointers; values in a SOPS-encrypted file (age/PGP), decrypted into env / Dagster config at deploy; nothing plaintext in git. |
 | F | Datastore | **Postgres** | weal roll-history + orator library SQLite→PG; preserve `player_id` FKs; drop 47M-row junk. |
 | G | Transcription engine | **Groq hosted `whisper-large-v3`** (API) | Per-track + local VAD-trim; preserve Craig speaker separation. **No GPU worker, no local model.** Import the 76 historical whisperx outputs verbatim — **do not re-transcribe.** Cost ≈ $25/yr ongoing. |
 | H | App runtime | **Split: Dagster (pipeline) + Docker Compose (services)** *(2026-06-18, replaces Windmill)* | Pipeline = Dagster **asset graph** (one partition per session, lineage); the ~5 daemons + DBs = **Compose services** (restart + healthchecks); Caddy = TLS/static edge; **SigNoz/OTel = the single pane**. No single runtime forced to do both jobs. |
+| I | Frontend hosting | **SSR-hosted, not prerendered static** *(2026-06-20, decided on 0014)* | **All frontends (strider, akasha-fe, mouthpiece-fe, vellum-fe) run as SSR servers = Docker Compose services** behind Caddy (reverse-proxied, not static `dist/`), with **client RUM** (browser OTel) + server-side `observe` to SigNoz. Revises the "build to `dist/`, Caddy serves static" model and **principle #4** (strider = the *SSR* template now, not prerender). The build-time-content → generated-modules → loader **structural** pattern is unchanged; only the render/host mode flips. Decision D's akasha snapshot stays the data source; the cutover (§7) reverse-proxies Caddy to the SSR services + the editor service. Grows Phase 5 (0011–0013 replan as services). |
 
 ## 3. Source → target map (disposition + sub-plan)
 
@@ -83,7 +84,8 @@ Two user decisions set the program's character:
 5. **Contracts are frozen** (research §6): weal-bot→overlay payload, orator REST + Bearer auth,
    transcript line format, gothic `workspace:*` import. Preserve or version explicitly.
 6. **strider is the frontend template.** Every TanStack frontend follows its build-time-content →
-   generated-modules → route-loader → prerender pattern.
+   generated-modules → route-loader pattern. *(Render/host mode is now **SSR** per Decision I — frontends
+   are Compose services behind Caddy, not prerendered static `dist/`; the structural pattern is unchanged.)*
 7. **Preserve identity keys.** `player_id` integers are load-bearing FKs; carry them verbatim.
 
 ## 5. Phases
@@ -186,8 +188,10 @@ Compose service that survives restart; weal-bot passes the parity harness + reco
 the overlay; orator plays audio + the controller drives it (hardware test still open from faerrin — note
 in runbook).
 
-### Phase 5 — Frontends (TanStack/React → dist/)  → 0011 akasha-fe, 0012 mouthpiece-fe, 0013 vellum-fe, 0014 strider
-**Goal:** all sites, strider-templated, building to `dist/` (served by Caddy).
+### Phase 5 — Frontends (TanStack/React, SSR)  → 0011 akasha-fe, 0012 mouthpiece-fe, 0013 vellum-fe, 0014 strider
+**Goal:** all sites, strider-templated, running as **SSR Compose services behind Caddy** (Decision I —
+not prerendered static `dist/`), with client RUM. strider (0014) ships first as the SSR template; the
+editor + editor-server lift with it.
 **Work items:**
 1. **strider (0014)** first — establish/confirm the canonical template; new hexmap-journey data model.
 2. **akasha-frontend (0011)**: rewrite aether on TanStack; consume akasha's vellum snapshot via
@@ -232,7 +236,8 @@ is green, so the slowest lane sets the date — protect the akasha lane.
    → orator library (PG) → caster `out/` artifacts.
 3. **Staging parallel-run**: run astra fully against migrated data; diff akasha URLs/pages vs faerrin;
    run the pipeline once end-to-end (one Dagster backfill over recent partitions); smoke every site + bot.
-4. **Flip**: point Caddy hosts at astra `dist/` + service ports; update DNS; enable the Dagster schedule.
+4. **Flip**: point Caddy hosts at the astra **SSR frontend services** + service ports (Decision I — reverse-
+   proxy, not static `dist/`); update DNS; enable the Dagster schedule.
 5. **Rotate secrets** (esp. the historically-leaked webhook) as part of the flip, not before.
 6. **Hold faerrin** as rollback for a defined window; document the revert (Caddy + DNS back).
 
