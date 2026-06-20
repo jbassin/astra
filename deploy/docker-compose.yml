@@ -98,6 +98,44 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # weal-bot: the dice/host Discord bot (discord.js gateway + internal speak API).
+  # No published port — Discord dials outbound; the speak API binds 127.0.0.1 only.
+  # Won't fully run until the SOPS secrets (discord token, weal_token) are provisioned.
+  weal-bot:
+    build:
+      context: ..
+      dockerfile: apps/weal-bot/Dockerfile
+    image: astra-weal-bot:local
+    container_name: astra-weal-bot
+    depends_on:
+      weal-postgres:
+        condition: service_healthy
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://127.0.0.1:10203/health').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # weal-overlay: the dice-roll OBS overlay (SSE). Behind Caddy with flush_interval -1.
+  weal-overlay:
+    build:
+      context: ..
+      dockerfile: apps/weal-overlay/Dockerfile
+    image: astra-weal-overlay:local
+    container_name: astra-weal-overlay
+    command: ["bun", "run", "start"]
+    ports:
+      - "10361:10360" # weal-overlay (astra range); strider holds 10360
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   strider:
     build:
       context: ..

@@ -66,8 +66,10 @@ mouthpiece {
 }
 
 weal {
-    database-url ""
-    feed-ws-url ""
+    // In-cluster addresses (Compose service DNS). The PG creds are the dev defaults
+    // (match deploy/ POSTGRES_* defaults); prod overrides them at the Phase-6 cutover.
+    database-url "postgres://weal:weal@weal-postgres:5432/weal"
+    feed-ws-url "http://weal-overlay:10360/api/v1/roll"
     chart-base-url ""
     bind-addr "127.0.0.1:10203"
     players-path "players.toml"

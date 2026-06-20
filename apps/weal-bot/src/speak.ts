@@ -16,6 +16,9 @@ export function startSpeakServer(bindAddr: string, gateway: Gateway): { stop: ()
     port: Number(portStr ?? "10203"),
     async fetch(req): Promise<Response> {
       const { pathname } = new URL(req.url);
+      if (req.method === "GET" && pathname === "/health") {
+        return new Response("ok\n");
+      }
       if (req.method === "POST" && pathname === "/api/v1/speak") {
         let body: SpeakArgs;
         try {

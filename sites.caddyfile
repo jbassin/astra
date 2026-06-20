@@ -65,6 +65,17 @@ strider.iridi.cc {
 	}
 }
 
+# weal-overlay — the dice-roll OBS overlay (0009). SSE: flush_interval -1 disables
+# response buffering so text/event-stream reaches OBS immediately. The overlay
+# self-serves its fonts from dist/, so no gothic_fonts import. Compose publishes
+# host port 10361. (Needs a weal-overlay.iridi.cc DNS record — manual, like strider.)
+weal-overlay.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10361 {
+		flush_interval -1
+	}
+}
+
 # OTLP/HTTP ingest for browser RUM (config.kdl telemetry.rum-endpoint points
 # here). Reverse-proxies the SigNoz collector's host port; the collector has no
 # CORS of its own, so reflect it here for *.iridi.cc frontends only.
