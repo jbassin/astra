@@ -1,6 +1,6 @@
 ---
 name: astra-migration-research
-description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 (0004 vellum-lang, 0003 gothic) COMPLETE + Phase 3 akasha-backend (0007) COMPLETE; next = rest of Phase 3 pipeline (0005 scribe / 0006 linguist / 0008 mouthpiece-backend)
+description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 (0004 vellum-lang, 0003 gothic) COMPLETE + Phase 3 akasha-backend (0007) + scribe (0005) COMPLETE; next = 0006 linguist / 0008 mouthpiece-backend
 metadata:
   type: project
 ---
@@ -151,6 +151,32 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   `libs/ts/vellum-lang/**` (pytest must NOT shell to bun — bun absent in the py CI lane; the asset shells
   to bun only at materialization); (5) Quartz red-links are normal — `[[Heart]]`≠`Hearts`,
   `[[Undertable]]`≠`The Undertable` correctly stay unresolved (match by path, slug is 0011's job).
+
+- **scribe (0005) COMPLETE + verified** (2026-06-19; astra `main`; gates A–G; **H=live run deferred** by
+  design). Spec `thoughts/astra/specs/0005-scribe-spec.md`; thoughts
+  `thoughts/shared/research/2026-06-19-scribe-0005-thoughts.md`. The pipeline **head**: Craig `.zip` →
+  per-session `audio.mp3` + raw `script.json` (`[{start,end,text,user}]`, line-level, raw-id speakers,
+  **words dropped** F1) as a Dagster **per-session partitioned** asset, transcribing on **Groq
+  `whisper-large-v3`** (Decision G — no GPU/local model). **Decided forks (with Josh):** G1 build
+  machinery + hermetic tests now, **defer the live run** (needs a real zip + Groq spend); **G2 ffmpeg
+  `silencedetect`** (no torch); **G3 transcribe via `libs/py/llm`** (added `astra_llm.transcribe`,
+  litellm `verbose_json`). **Shipped** `apps/scribe`: `naming.py` (Craig stem parse, ported verbatim),
+  `roster.py` (track filter from **ontology-being** `Player.aliases`, N2), `audio.py` (pure ffmpeg
+  arg-builders: amix/silencedetect/chunk + probe), `vad.py` (voiced_spans/chunk_spans — pure), `transcribe.py`
+  (`TrackTranscriber`: VAD→chunk→16k-mono-flac→Groq→**re-offset**), `sound_stack.py` (port + round-trip
+  parity vs a real sample), `session.py` orchestration, `sensor.py`+`assets.py` (DynamicPartitionsDefinition
+  + Craig-drop sensor), wired into `dagster/definitions.py`. **0005 gotchas (load-bearing):** (1) **Groq
+  limits** — 25 MB direct-upload cap (100 MB URL-only), accepts flac/mp3/m4a but **NOT raw `.aac`** →
+  transcode each chunk to 16 kHz mono flac (~1 MB/min, ≤~20-min chunks); `verbose_json` for segments;
+  (2) re-offset stays trivial+safe by making **each contiguous voiced run its own chunk** (offset =
+  `+chunk_start`, no concatenation seam — Risk 2 dissolved); (3) **Dagster + `from __future__ import
+  annotations` conflict** — an asset's `context: dg.AssetExecutionContext` becomes a string Dagster can't
+  introspect → DROP the future-import in the asset module (3.12 has native `X|Y`); `dg.Definitions` has no
+  `partitions=` kwarg (assets carry `partitions_def`, discovered); `DynamicPartitionsDefinition.name` is
+  `str|None` → use a string constant for `get_dynamic_partitions`; (4) test fixtures (real captured
+  `script.json`) → exclude `**/tests/fixtures/**` from biome (verbatim data); (5) `astra_config` already
+  carried a `ScribeConfig` (incoming_path/data_path/`groq_api_key` SecretRef) from faerrin — reuse it.
+  ScribeConfig + the live run still need a real Craig zip + the SOPS `groq_api_key` (present since Phase 1).
 
 **Shape:** faerrin's 13 pkgs re-cut into ~10 named subsystems + 2 net-new (`ontology-being` = table
 **META** — players → the PCs they play, campaigns, colors, host identities (weal-bot Discord hosts AND
