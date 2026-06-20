@@ -1,6 +1,6 @@
 ---
 name: astra-migration-research
-description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 + 2 (0004 vellum-lang, 0003 gothic) COMPLETE + **Phase 3 (pipeline) COMPLETE — 0005 scribe, 0006 linguist, 0007 akasha-backend, 0008 mouthpiece-backend all done**; next = Phase 4 (services: 0009 weal, 0010 orator) + Phase 5 (frontends: 0014 strider template → 0011 akasha-frontend long pole, 0012 mouthpiece-fe, 0013 vellum-fe), which parallelize; recommend 0014 strider next
+description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 + 2 (0004 vellum-lang, 0003 gothic) COMPLETE + **Phase 3 (pipeline) COMPLETE** (0005 scribe, 0006 linguist, 0007 akasha-backend, 0008 mouthpiece-backend) + **Phase 5 0014 strider COMPLETE — the SSR frontend template, 7 slices, both toolchains green (NOT pushed)**; next = Phase 4 (services: 0009 weal, 0010 orator) + the remaining Phase-5 frontends (0011 akasha-fe long pole, 0012 mouthpiece-fe, 0013 vellum-fe) which copy strider's SSR template + parallelize
 metadata:
   type: project
 ---
@@ -234,6 +234,44 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   ruff E501 on verbatim long prompt lines → express as implicit string concatenation (byte-identical), not
   triple-quoted; (4) hermetic tests = stub `LlmClient` + mock TTS + fake ffmpeg runner (no live
   ElevenLabs/Anthropic/ffmpeg); the live v3 run is the one deferred item (gate K).
+
+- **strider (0014) COMPLETE + verified** (2026-06-20; astra `main`; 7 slices, all CI-green locally; both
+  toolchains). Spec `thoughts/astra/specs/0014-strider-spec.md`; thoughts
+  `thoughts/shared/research/2026-06-20-strider-0014-thoughts.md`. The **first `apps/*` TS frontend** and the
+  **canonical SSR-Compose-behind-Caddy template** (Decision I) that 0011–0013 copy. Lifted faerrin
+  `pkg/strider` (TanStack Start + vite 6 + React 19 + pixi 8): build-content→generated→loader pipeline,
+  faction/territory/layer/skein data model, pixi hexmap, MapView + faction routes, editor + layer-writer
+  server, SSR deploy, server `observe` + client RUM. **strider gotchas (load-bearing — the template
+  0011–0013 inherit):** (1) **uv hard-errors on a TS-only `apps/*` member** (package.json, no
+  pyproject.toml — uv's `apps/*` glob claims it) → add each bun frontend to `[tool.uv.workspace] exclude`
+  in the root `pyproject.toml` (latent since slice 1; only surfaces when a py lane runs — strider is
+  TS-only so I only ran bun lanes); (2) **gothic v4 token rename on every lifted CSS** — faerrin's
+  `--bg-void/--ink/--ink-dim/--accent/--accent-amber/--bg-panel/--bg-elevated/--rule` → astra gothic
+  `--color-void/-ink/-ink-dim/-accent/-accent-amber/-panel/-elevated/-rule`; `--font-*`/`--duration-*`/
+  `--ease-out` already match (Risk #2 was real); (3) **pixi never in SSR** — HexMap + EditorHexMap behind
+  `lazy()` + `<ClientOnly>`; verified `/`, `/factions/$slug`, `/editor` all SSR-200 with zero WebGL errors,
+  pixi only in a client chunk; (4) **`vite build` emits a bare Web-`fetch` handler** (`dist/server/server.js`),
+  no static serving + no `.output/` nitro dir → a Bun `server.ts` entry serves `dist/client` static and
+  falls through to SSR (`start` = `bun run server.ts`; the scaffold's `node .output/...` never existed);
+  (5) **vite.config CANNOT import `@astra/config`** — vite loads the config under Node ESM, which rejects
+  @astra/config's extensionless relative imports (bun resolves them; Node/`vite build` does not) → for a
+  config value the browser needs, use a TanStack Start **`createServerFn`** (esbuild/rollup bundle it
+  server-side, keeping @astra/config + the config read OUT of the client bundle — verified — and the
+  browser RPCs for it); do NOT window-inject or vite-`define`; (6) **telemetry is config-single-source**
+  ([[config-single-source]]) — OTLP endpoint from `config.kdl` via @astra/config, NOT env/compose
+  (corrected mid-build); added `telemetry.rum-endpoint` (browser-reachable OTLP) to `config.kdl` + BOTH
+  the TS zod (`.strict()`) and PY pydantic (`extra="forbid"`) schemas in lockstep; (7) **lifted-component
+  biome overrides** — `noNonNullAssertion` for the index-heavy pixi/geometry/lib files, plus per-file
+  a11y/security: `noDangerouslySetInnerHtml` off for FactionDetail (trusted build-time remark HTML),
+  modal-backdrop a11y off (ESC + focus trap), role-styled strips, array-index keys (real fixes for
+  useButtonType + forEach-callback-returns; inline-ignore for the `fit` false-positive + decorative
+  aria-hidden canvas); (8) **`routeTree.gen.ts` is committed** (biome-ignored) — regenerate with
+  `scripts/generate-routes.ts` when adding a route; editor served in prod (NO `routeFileIgnorePattern`
+  strip) so Caddy can gate it; the **editor write path is open by design** (maintainer call — access
+  control at the Caddy edge, slice 6); (9) **Decision-I deploy** = `strider` SSR + `strider-editor` writer
+  Compose services (one image, two commands like dagster), Caddy reverse-proxies (NOT `file_server`);
+  Dockerfile build context = repo root, runtime stage carries `libs/ts` + `ontology/ontology-config` so
+  @astra/config resolves `config.kdl` at runtime. **NOT yet pushed** (held per session).
 
 **Shape:** faerrin's 13 pkgs re-cut into ~10 named subsystems + 2 net-new (`ontology-being` = table
 **META** — players → the PCs they play, campaigns, colors, host identities (weal-bot Discord hosts AND

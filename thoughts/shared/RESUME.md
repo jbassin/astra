@@ -36,45 +36,42 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `fedd4b8`, 2026-06-20)
+## Current state — UPDATE THIS SECTION (as of commit `a91a72b`, 2026-06-20)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
-- **IN PROGRESS — strider (0014):** the first TS app in `apps/` and the canonical **SSR frontend
-  template**.
-  - **Slice 1 (SSR scaffold) shipped + green** — TanStack Start on vite 6 + React 19, SSR build
-    (`dist/server/server.js`), gothic via `@astra/gothic/theme.css`, port 10360.
-  - **Slice 2 (build-content + data model) shipped + green** (`fedd4b8`) — the template's build-time
-    content pipeline: `scripts/build-content.ts` (gray-matter + remark → `src/generated/`),
-    `contentWatchPlugin` (buildStart + dev re-gen), `generate-routes.ts`; the faction/territory/layer/
-    skein model (`src/lib/{regions,hexUtils,factions,layers}.ts` + tests); `content/{factions,layers}/*.md`.
-    `src/generated/**` gitignored (except `.gitignore`) + biome-ignored. **58 tests pass**; client bundle
-    is free of fs/remark/gray-matter (invariant T9). Lift adaptation for astra's stricter base tsconfig
-    (`noUncheckedIndexedAccess`/`verbatimModuleSyntax`): `verts()` is a fixed 6-tuple; provably-safe index
-    sites use `!` with a per-file biome override on the lib (spec T2). **Not yet pushed.**
-  - Contract: `thoughts/astra/specs/0014-strider-spec.md`
-  - Verified scoping: `thoughts/shared/research/2026-06-20-strider-0014-thoughts.md`
-  - Source to port: `/ruby/data/experiments/faerrin/pkg/strider`
+- **strider (0014) COMPLETE — all 7 slices, both toolchains green, NOT yet pushed.** The first `apps/*`
+  TS frontend and the canonical **SSR-Compose-behind-Caddy template** for 0011–0013. Commits:
+  - `fedd4b8` slice 2 — build-content pipeline + faction/territory data model
+  - `152193c` slice 3 — pixi hexmap + PixiHost + ClientOnly
+  - `fc9f3ff` slice 4 — MapView + faction routes (the wired SSR hexmap)
+  - `48eb0be` slice 5 — editor + layer-writer server (open by design; gated at Caddy)
+  - `6e64db8` slice 6 — SSR Compose service + Caddy reverse-proxy (`server.ts`, Dockerfile)
+  - `a91a72b` slice 7 — server `observe` + client RUM (`createServerFn` for the config-sourced
+    endpoint) + the `config.kdl` `telemetry.rum-endpoint` field (TS+PY schemas) + a uv-workspace fix
+    (exclude TS-only `apps/*` members)
+  - Contract `thoughts/astra/specs/0014-strider-spec.md`; load-bearing gotchas captured in the spine
+    memory `[[astra-migration-research]]` (the 9-point strider list — read it before starting 0011–0013).
+- **Acceptance left open:** criterion H (RUM + SSR spans visibly landing in SigNoz) is wired + structurally
+  verified but not confirmed end-to-end against a live SigNoz stack + real browser — do that once the
+  deploy stack is up. The strider service hasn't had its Docker image built/run (no `docker compose build`
+  in this env); `docker compose config` validates and `bun run start` serves a real build locally.
 
-### Next: continue strider, one committed+pushed slice at a time (per the spec)
+### Next: push strider, then the remaining subsystems
 
-3. **pixi hexmap** — `components/HexMap` (`pixiScene`/`animationManager`/`skeinGeometry`) + `PixiHost`,
-   gated `<ClientOnly>` (no WebGL in SSR). `lib/hexUtils` already lifted in slice 2.
-4. **routes + map layer** — `MapView`, `FactionDetail`, the faction routes.
-5. **editor + editor-server** — in scope (a Compose service / API surface).
-6. **deploy** — a strider Compose service in `deploy/docker-compose.yml` + Caddy reverse-proxy (frontends
-   are SSR services now — Decision I; editing docker-compose is authorized).
-7. **telemetry** — client RUM + server-side `libs/ts/observe` → SigNoz.
+1. **Push** the strider chunk to `origin/main` (reproduce CI lanes locally first — both toolchains green;
+   confirm push + one status check, don't watch the GHA run — `[[no-ci-monitoring]]`).
+2. **Phase 4 services:** 0009 weal (Rust→TS, roller parity harness first), 0010 orator.
+3. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
+   template**: build-content→generated→loader, `server.ts` SSR entry, the Compose+Caddy deploy, server
+   `observe` + client-RUM-via-`createServerFn`, and the uv-exclude for the new `apps/*` dir.
+4. **Phase 6** (0015) big-bang cutover, last.
 
-**Frontend gotchas:** SSR (no `prerender` block); commit `src/routeTree.gen.ts` (biome-ignored); `vite.config`
-is ESM (`import.meta.dirname`, not `__dirname`).
-
-### After strider
-
-Update the spine memory (`astra-migration-research`) with strider's load-bearing gotchas. Then the
-remaining subsystems: **Phase 4** services (0009 weal — Rust→TS with a roller parity harness; 0010 orator)
-and the other **frontends** (0011 akasha-fe, 0012 mouthpiece-fe, 0013 vellum-fe) — all now SSR per Decision
-I, so they replan as services when speced. **Phase 6** (0015) is the big-bang cutover, last.
+**Frontend gotchas (template — full list in `[[astra-migration-research]]`):** SSR (no `prerender` block);
+commit `src/routeTree.gen.ts` (biome-ignored); `vite.config` is ESM and **cannot import `@astra/config`**
+(use `createServerFn` for browser-needed config); gothic v4 `--color-*` token rename on lifted CSS; pixi
+behind `lazy()`+`<ClientOnly>`; new `apps/*` TS dir must be added to `pyproject.toml` `[tool.uv.workspace]`
+`exclude`.
 
 ---
 
