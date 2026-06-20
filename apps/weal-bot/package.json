@@ -10,6 +10,9 @@
     "build": "echo '@astra/weal-bot: no build step (bun runs TS directly)'"
   },
   "dependencies": {
-    "@astra/ontology": "workspace:*"
+    "@astra/config": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@astra/ontology": "workspace:*",
+    "discord.js": "^14"
   }
 }
