@@ -47,3 +47,7 @@ target/
 # OS / editor cruft
 .DS_Store
 apps/akasha-backend/migrate/convert-report.json
+
+# linguist surfacer review state — per-session candidate triage files (surface.py
+# output, reviewed in review_tui, applied to defs.yaml via apply.py); not source.
+apps/linguist/data/*.candidates.json
