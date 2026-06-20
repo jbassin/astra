@@ -1,0 +1,50 @@
+# astra host-edge sites — imported by the shared reverse proxy at
+# /ruby/data/reverse-proxy/Caddyfile (custom caddy binary w/ the cloudflare-dns
+# plugin), the same way faerrin's sites.caddyfile is. Add this line to that file:
+#   import /ruby/data/experiments/astra/sites.caddyfile
+# (and drop faerrin's strider import — both can't own strider.iridi.cc at once).
+#
+# Decision I: frontends are SSR Compose services, REVERSE-PROXIED here (not the
+# static `file_server` faerrin used). Reload with `just caddy-reload`.
+#
+# The Cloudflare ACME-DNS token is NOT committed: `{$CF_API_TOKEN}` is substituted
+# at config-adapt time from the SOPS-decrypted value the reload command exports —
+# so the token is never written to this file or to disk.
+
+(astra_site) {
+	tls {
+		issuer acme {
+			dns cloudflare {$CF_API_TOKEN}
+			propagation_timeout 5m
+			resolvers 1.1.1.1 8.8.8.8
+		}
+	}
+
+	encode zstd gzip
+
+	header -Server
+	header -X-Powered-By
+	header ?Referrer-Policy strict-origin-when-cross-origin
+	header ?X-Content-Type-Options nosniff
+	header ?X-Frame-Options SAMEORIGIN
+	header ?Strict-Transport-Security "max-age=31536000"
+}
+
+# strider — the first SSR frontend (more blocks follow as 0011-0013 ship). The
+# compose `strider` service publishes host port 10360.
+strider.iridi.cc {
+	import astra_site
+
+	# Authoring write path (the /editor save endpoint → strider-editor sidecar).
+	# OPEN at the app layer by design; access is gated HERE, and only when you
+	# choose to expose it. To enable: publish strider-editor on a host port (e.g.
+	# `127.0.0.1:10361:3001` in deploy/docker-compose.yml), add a guard
+	# (basic_auth / IP allow / mTLS), then uncomment:
+	#   @write path /write-layer
+	#   handle @write {
+	#       # basic_auth { editor $2a$14$...bcrypt... }
+	#       reverse_proxy localhost:10361
+	#   }
+
+	reverse_proxy localhost:10360
+}

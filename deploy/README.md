@@ -48,9 +48,13 @@ served by `file_server` (the old Decision D model); it is a long-running SSR ser
   authoring writer).
 - **`server.ts`**: `dist/server/server.js` is a bare Web-`fetch` handler, so this entry serves the hashed
   client bundle from `dist/client/` and falls through to SSR for everything else — a self-contained unit.
-- **Edge**: Caddy **reverse-proxies** `strider:10360` for the site and the `/write-layer` authoring path
-  to `strider-editor:3001`. Restrict that write path before exposing it (basic_auth / IP allow / mTLS —
-  see `Caddyfile.example`); it is open at the app layer by design and gated only at the edge.
+- **Edge**: two Caddy contexts. (a) The compose `caddy` here is the **local-dev** edge (plain `:80`,
+  `../Caddyfile`). (b) **Production** is the shared host reverse proxy at `/ruby/data/reverse-proxy/`
+  (custom caddy binary w/ the cloudflare-dns plugin), which `import`s this repo's root **`sites.caddyfile`**
+  (`strider.iridi.cc` → `reverse_proxy localhost:10360`, NOT static `file_server` — Decision I). That file
+  carries no secret: the Cloudflare ACME-DNS token is the `{$CF_API_TOKEN}` adapt-time placeholder, supplied
+  from SOPS by **`just caddy-reload`** (`just caddy-validate` to dry-run). The `/write-layer` authoring path
+  is left commented there — gate it (basic_auth / IP allow / mTLS) before exposing.
 
 The new frontend chunks build per-route; pixi stays in a client-only chunk (`<ClientOnly>` + `lazy`), so
 SSR never touches WebGL.
