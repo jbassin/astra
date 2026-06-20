@@ -2,4 +2,5 @@
 - [SigNoz MCP](signoz-mcp.md) — prefer the `signoz_*` MCP tools for ALL astra observability queries (verified working vs the live SigNoz; not curl/clickhouse)
 - [no CI monitoring](no-ci-monitoring.md) — after pushing astra to origin/main, don't watch the GHA run to completion; reproduce CI lanes locally first, confirm push + one status check
 - [config single-source](config-single-source.md) — ALL config lives in ontology/ontology-config + read via astra_config (py+ts); no hardcoded/duplicated config or ad-hoc env reads outside astra_config
+- [telemetry built-in](telemetry-built-in.md) — every app/asset must wire traces+metrics+logs to SigNoz in its actual runtime (call init_telemetry in the Dagster code location / service entrypoint); importing observe ≠ wiring it
 - [linguist gate J — dspy judge compile](linguist-gate-j-dspy-judge.md) — how the optimizable judge + MIPROv2 compile works (gold set, miner, TUI, optimize.py --live); committed judge.compiled.json
