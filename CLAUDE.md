@@ -4,7 +4,8 @@ Root guidance for **astra** — the next-generation rebuild of [faerrin](/ruby/d
 astra is a **polyglot monorepo**: Python (data + LLM, managed by **uv**) and TypeScript (web servers +
 frontends, managed by **bun**) — two toolchains, no third language. Read [`ASTRA.md`](./ASTRA.md) for the
 product vision and [`thoughts/astra/plans/`](./thoughts/astra/plans/) for the migration roadmap (`0000`)
-and per-subsystem sub-plans.
+and per-subsystem sub-plans. **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** is the practical onboarding guide —
+the dev process, exact CI commands, working-style expectations, and the load-bearing gotchas catalog.
 
 ## Version control: plain git + conventional commits (NOT jj)
 
