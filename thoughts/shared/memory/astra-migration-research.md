@@ -178,8 +178,9 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   carried a `ScribeConfig` (incoming_path/data_path/`groq_api_key` SecretRef) from faerrin — reuse it.
   ScribeConfig + the live run still need a real Craig zip + the SOPS `groq_api_key` (present since Phase 1).
 
-- **linguist (0006) COMPLETE + verified** (2026-06-19; astra `main`; gates A–I + K; **J=live dspy judge
-  deferred**). Spec `thoughts/astra/specs/0006-linguist-spec.md`; thoughts
+- **linguist (0006) COMPLETE + verified** (2026-06-19; astra `main`; gates A–K — **J (live dspy judge +
+  MIPROv2 compile) NOW DONE**, committed `judge.compiled.json`; see [[linguist-gate-j-dspy-judge]]). Spec
+  `thoughts/astra/specs/0006-linguist-spec.md`; thoughts
   `thoughts/shared/research/2026-06-19-linguist-0006-thoughts.md`. The largest subsystem (faerrin
   `content/scripts`), built in 3 slices. **Decided forks (with Josh):** H1 pipeline + surfacer machinery
   now, **defer the live dspy judge + optimizer**; **H2 commit ALL ~75 MB** historical; **H3 rapidfuzz +
@@ -201,7 +202,15 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   since the filter only pre-flags (the judge decides); (5) the surfacer needs `rapidfuzz`+`metaphone`+
   `wordfreq`+`dspy`; the live dspy judge (`make_dspy_complete_fn`) is the deferred J seam; (6) exclude
   `apps/linguist/data/**` (65 MB JSON) from biome (`.txt` skipped via ignoreUnknown). Still needs a real
-  Craig→scribe→linguist live run + the dspy judge live (J) when new sessions arrive.
+  Craig→scribe→linguist live run when new sessions arrive (scribe gate H, the only deferred live run left).
+
+- **POST-0006 substrate hardening (2026-06-20; astra `main`):** three follow-ups landed after the
+  pipeline subsystems: (1) **gate J live** — optimizable dspy judge + MIPROv2 compile, surfacer wired as
+  the `correction_candidates` Dagster asset, triage TUI + defs.yaml write-back for accepted corrections
+  ([[linguist-gate-j-dspy-judge]]); (2) **config single-source** — surfacer + telemetry config now read
+  via `astra_config` (no ad-hoc env reads — [[config-single-source]]); (3) **full SigNoz instrumentation**
+  — OTel **logs** wired into the observe libs (py+ts) and traces+metrics+logs wired into scribe + linguist
+  in their actual Dagster runtime ([[telemetry-built-in]] — importing observe ≠ wiring it).
 
 **Shape:** faerrin's 13 pkgs re-cut into ~10 named subsystems + 2 net-new (`ontology-being` = table
 **META** — players → the PCs they play, campaigns, colors, host identities (weal-bot Discord hosts AND

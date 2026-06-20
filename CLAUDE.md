@@ -25,6 +25,21 @@ Project memory and planning docs live **in this repo**, not in faerrin and not i
 - `thoughts/` is also the home for the migration **plans + specs** (`thoughts/astra/{plans,specs}`) and
   **research** (`thoughts/shared/research/`). astra is the single canonical home for all of these.
 
+## Development process (per subsystem)
+
+Each subsystem moves through three gates, leaving a paper trail in `thoughts/`:
+
+1. **Scope** — a verified pre-implementation research doc at
+   `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`: read the faerrin source + the sub-plan,
+   **verify claims against the actual repos** (resolve real config/secrets, load real ontology, inspect
+   real fixtures — don't list "open questions" that are checkable now), and call out decisions to revisit
+   before speccing.
+2. **Spec** — author the NLSpec with **`octo:spec`** → `thoughts/astra/specs/<NNNN>-<subsystem>-spec.md`,
+   built on the scoping doc and the sub-plan's settled decisions.
+3. **Implement** — drive the build with **`octo:embrace`** against that spec; wire telemetry from day one,
+   reproduce CI lanes locally before pushing, then update the memory (`thoughts/shared/memory/`) with the
+   load-bearing gotchas.
+
 ## Two toolchains, disjoint workspaces
 
 - **Python (uv):** virtual workspace at the root `pyproject.toml`; members `apps/*`, `libs/py/*`,
