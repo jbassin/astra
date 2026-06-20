@@ -15,6 +15,10 @@ COPY apps/strider/package.json apps/strider/package.json
 COPY libs/ts ./libs/ts
 RUN bun install --frozen-lockfile
 
+# The shared base tsconfig that every member extends — vite's esbuild follows
+# `extends` at build time, so it must be present at the repo root.
+COPY tsconfig.base.json ./
+
 # Build strider (build-content runs in the vite buildStart hook).
 COPY apps/strider ./apps/strider
 WORKDIR /repo/apps/strider
