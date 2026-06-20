@@ -30,10 +30,9 @@
 	header ?Strict-Transport-Security "max-age=31536000"
 }
 
-(local_only) {
-	@not-local not client_ip private_ranges
-	respond @not-local "Access Denied"
-}
+# NB: (local_only) — gate to private IPs — is already defined by the parent
+# reverse-proxy Caddyfile; blocks here can `import local_only` directly (don't
+# redeclare it, that collides on reload).
 
 # gothic owns the webfonts (theme.css references absolute /fonts/*). Serve them
 # straight from the gothic package dir so no frontend has to vendor a copy — the
@@ -51,16 +50,16 @@ strider.iridi.cc {
 	import astra_site
 	import gothic_fonts
 
-	# Authoring write path (the /editor save endpoint → strider-editor sidecar).
-	# OPEN at the app layer by design; access is gated HERE, and only when you
-	# choose to expose it. To enable: publish strider-editor on a host port (e.g.
-	# `127.0.0.1:10361:3001` in deploy/docker-compose.yml), add a guard
-	# (basic_auth / IP allow / mTLS), then uncomment:
-	#   @write path /write-layer
-	#   handle @write {
-	#       # basic_auth { editor $2a$14$...bcrypt... }
-	#       reverse_proxy localhost:10361
-	#   }
+	# Editor UI — local network only: import local_only denies non-private clients
+	# ("Access Denied") before the route reaches strider. NB: the editor's save
+	# still posts to host:3001 directly (saveLayer.ts WRITER_PORT), so making writes
+	# work behind the edge additionally needs that rewired to a same-origin
+	# /write-layer proxy (→ strider-editor) — separate from this access gate.
+	@editor path /editor /editor/*
+	handle @editor {
+		import local_only
+		reverse_proxy localhost:10360
+	}
 
 	handle {
 		reverse_proxy localhost:10360
