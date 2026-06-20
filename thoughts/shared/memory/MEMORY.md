@@ -6,3 +6,5 @@
 - [linguist gate J — dspy judge compile](linguist-gate-j-dspy-judge.md) — how the optimizable judge + MIPROv2 compile works (gold set, miner, TUI, optimize.py --live); committed judge.compiled.json
 - [verify before acting](verify-before-acting.md) — FEEDBACK: check what exists (faerrin's impl, skill docs, repo conventions) before acting; astra is a port — port faerrin's function, don't reinvent it
 - [no silent scope cuts](no-silent-scope-cuts.md) — FEEDBACK: never shrink/defer spec'd scope to fit my budget; surface the trade-off and let the user decide; only defer what the spec sanctions
+- [deploy: apply with just](deploy-apply-with-just.md) — FEEDBACK: after a deploy/edge change (compose/Dockerfile/server.ts/config.kdl/sites.caddyfile), `just up` (rebuild+recreate) + `just caddy-reload` + verify — local edits aren't live until then
+- [tanstack start skill](tanstack-start-skill.md) — REFERENCE: working on a frontend? read the bundled `@tanstack/react-start/skills/.../SKILL.md` first; server-side = `createServerFn` (no file server-routes in the pinned 1.168), don't reach for middleware

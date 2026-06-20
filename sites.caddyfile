@@ -94,3 +94,11 @@ otel.iridi.cc {
 		reverse_proxy localhost:10353
 	}
 }
+
+# SigNoz UI — the observability single pane (deploy substrate). Local network
+# only: import local_only denies non-private clients for the whole site.
+signoz.iridi.cc {
+	import astra_site
+	import local_only
+	reverse_proxy localhost:10351
+}
