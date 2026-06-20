@@ -1,0 +1,12 @@
+{
+  "name": "@astra/weal-bot",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "module": "src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "build": "echo '@astra/weal-bot: no build step (bun runs TS directly)'"
+  }
+}

@@ -6,8 +6,9 @@ members = ["apps/*", "libs/py/*", "ontology/*"]
 # TS-only apps live under apps/* too (manifest-decided membership: package.json →
 # bun, pyproject.toml → uv). uv would otherwise hard-error on a glob-matched dir
 # without a pyproject.toml, so exclude the bun-only frontends explicitly. Add each
-# new TS app here (0011-0013 frontends follow strider).
-exclude = ["apps/strider"]
+# new TS app here (0011-0013 frontends follow strider; weal-bot/weal-overlay are
+# bun services + SPA per 0009).
+exclude = ["apps/strider", "apps/weal-bot"]
 
 [tool.uv]
 # Workspace-wide dev tooling — the Astral Python stack.
