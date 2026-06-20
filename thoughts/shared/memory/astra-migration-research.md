@@ -257,7 +257,12 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   @astra/config's extensionless relative imports (bun resolves them; Node/`vite build` does not) → for a
   config value the browser needs, use a TanStack Start **`createServerFn`** (esbuild/rollup bundle it
   server-side, keeping @astra/config + the config read OUT of the client bundle — verified — and the
-  browser RPCs for it); do NOT window-inject or vite-`define`; (6) **telemetry is config-single-source**
+  browser RPCs for it); do NOT window-inject or vite-`define`. The browser-OTel machinery itself is the
+shared **`@astra/observe/web`** export (`initRum({ serviceName, endpoint })` — WebTracerProvider + page-load
+span; imports neither @astra/config nor the node SDK, verified absent from the client bundle); each
+frontend keeps only ~15 lines of glue (the `createServerFn` in app source + a `__root` useEffect calling
+`initRum` with its own service name) — so 0011–0013 **import the lib, don't copy it**; (6) **telemetry is
+config-single-source**
   ([[config-single-source]]) — OTLP endpoint from `config.kdl` via @astra/config, NOT env/compose
   (corrected mid-build); added `telemetry.rum-endpoint` (browser-reachable OTLP) to `config.kdl` + BOTH
   the TS zod (`.strict()`) and PY pydantic (`extra="forbid"`) schemas in lockstep; (7) **lifted-component
