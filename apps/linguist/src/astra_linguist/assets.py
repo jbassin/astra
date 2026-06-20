@@ -24,6 +24,8 @@ from .models import RawLine
 from .pipeline import process_session
 from .roster import SpeakerResolver
 from .sensor import new_sessions
+from .surface.lexicon import build_lexicon
+from .surface.surface import load_session, surface_session_payload, write_candidates
 
 APP_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = APP_ROOT / "data"
@@ -74,11 +76,39 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
     )
 
 
-@dg.sensor(target=session_transcripts, minimum_interval_seconds=30)
+@dg.asset(partitions_def=linguist_sessions, deps=[session_transcripts], group_name="linguist")
+def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """Surface NEW correction candidates for a session: the Phase-1 phonetic filter + the
+    compiled dspy judge → a reviewable `{date}.candidates.json` (triage with `review_tui
+    --candidates`, then `apply.py` appends the accepted ones to `defs.yaml`).
+
+    Runs automatically after `session_transcripts` (it reads that asset's `data/{date}.json`).
+    **Live** — spends Claude tokens per session (haiku judge + sonnet escalation); the judge
+    is skipped when nothing is flagged. *Discovery* is automatic; *applying* accepted
+    corrections to `defs.yaml` stays a human-gated CLI step (we never auto-edit the SSOT)."""
+    from .surface.judge import make_dspy_complete_fn  # lazy: pulls dspy + resolves the key
+
+    date = context.partition_key
+    transcript = load_session(DATA_DIR / f"{date}.json")
+    lex = build_lexicon()
+    payload = surface_session_payload(
+        transcript, lex, complete_fn=make_dspy_complete_fn(), date=date
+    )
+    write_candidates(payload, DATA_DIR / f"{date}.candidates.json")
+    return dg.MaterializeResult(
+        metadata={
+            "flagged": payload["flagged_spans"],
+            **{k: v for k, v in payload["counts"].items()},
+        }
+    )
+
+
+@dg.sensor(target=[session_transcripts, correction_candidates], minimum_interval_seconds=30)
 def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a linguist partition + run request for each scribe session
     (`{date}/script.json` under `ingest_saved_dir`) not yet processed — the scribe→linguist
-    trigger, so corrections apply automatically once a session is transcribed."""
+    trigger. Each run materializes `session_transcripts` (apply known corrections) then
+    `correction_candidates` (surface new ones for review), so a session is fully processed."""
     saved = _linguist_config().ingest_saved_dir
     if not saved or not Path(saved).is_dir():
         return dg.SensorResult()
@@ -110,4 +140,6 @@ def _atomic_write(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
-defs = dg.Definitions(assets=[session_transcripts], sensors=[scribe_output_sensor])
+defs = dg.Definitions(
+    assets=[session_transcripts, correction_candidates], sensors=[scribe_output_sensor]
+)

@@ -8,7 +8,7 @@ location is always non-empty/materializable.
 
 import dagster as dg
 from astra_akasha_backend.assets import akasha_corpus_snapshot
-from astra_linguist.assets import scribe_output_sensor, session_transcripts
+from astra_linguist.assets import correction_candidates, scribe_output_sensor, session_transcripts
 from astra_scribe.assets import craig_drop_sensor, session_outputs
 
 
@@ -22,6 +22,12 @@ def hello_astra() -> str:
 # akasha (corpus snapshot). Each asset carries its DynamicPartitionsDefinition; the
 # sensors chain it — craig zip → scribe, then scribe's script.json → linguist.
 defs = dg.Definitions(
-    assets=[hello_astra, akasha_corpus_snapshot, session_outputs, session_transcripts],
+    assets=[
+        hello_astra,
+        akasha_corpus_snapshot,
+        session_outputs,
+        session_transcripts,
+        correction_candidates,
+    ],
     sensors=[craig_drop_sensor, scribe_output_sensor],
 )

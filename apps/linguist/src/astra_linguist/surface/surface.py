@@ -33,6 +33,12 @@ def load_session(path: Path | str) -> Transcript:
     return Transcript.model_validate(json.loads(Path(path).read_text(encoding="utf-8")))
 
 
+def find_flagged(transcript: Transcript, lex: Lexicon) -> list[Flagged]:
+    """The Phase-1 filter's flags, deduped to `Flagged` spans (one per line+span)."""
+    pairs = {(c.line_ref, c.span) for c in find_known(transcript, lex)}
+    return [Flagged(line_ref=line_ref, span=span) for line_ref, span in pairs]
+
+
 def surface_session(
     transcript: Transcript,
     lex: Lexicon,
@@ -45,9 +51,31 @@ def surface_session(
     `find_known` flags OOV spans near a canonical; each becomes a `Flagged` span the judge
     classifies. Pure except for `complete_fn` (the injected judge); tests pass a stub.
     """
-    flagged = list({(c.line_ref, c.span) for c in find_known(transcript, lex)})
-    spans = [Flagged(line_ref=line_ref, span=span) for line_ref, span in flagged]
-    return judge_session(transcript, spans, lex, complete_fn=complete_fn, mode=mode)
+    return judge_session(
+        transcript, find_flagged(transcript, lex), lex, complete_fn=complete_fn, mode=mode
+    )
+
+
+def surface_session_payload(
+    transcript: Transcript,
+    lex: Lexicon,
+    *,
+    complete_fn: CompleteFn,
+    date: str,
+    mode: Mode = "hybrid",
+) -> dict[str, Any]:
+    """The full surfacer for one session → a reviewable candidates payload (shared by the CLI
+    and the `correction_candidates` Dagster asset). Skips the judge entirely when nothing is
+    flagged (no LLM spend). Computes `find_known` once."""
+    flagged = find_flagged(transcript, lex)
+    candidates = (
+        judge_session(transcript, flagged, lex, complete_fn=complete_fn, mode=mode)
+        if flagged
+        else []
+    )
+    return candidates_payload(
+        candidates, transcript, date=date, flagged=len(flagged), lex_terms=len(lex.entries)
+    )
 
 
 def dedupe_candidate_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
@@ -130,7 +158,7 @@ def main(argv: list[str] | None = None) -> int:
 
     transcript = load_session(args.session)
     lex = build_lexicon()
-    flagged = list({(c.line_ref, c.span) for c in find_known(transcript, lex)})
+    flagged = find_flagged(transcript, lex)
     print(f"{args.session.name}: {len(transcript.script)} lines, {len(flagged)} pre-flagged spans")
     if not flagged:
         print("nothing to judge — no OOV mistranscriptions flagged.")
@@ -139,20 +167,17 @@ def main(argv: list[str] | None = None) -> int:
     from .judge import make_dspy_complete_fn  # lazy: pulls dspy + resolves the key
 
     print(f"judging (compiled dspy judge, {args.mode})…")
-    candidates = surface_session(
-        transcript, lex, complete_fn=make_dspy_complete_fn(), mode=cast(Mode, args.mode)
+    payload = surface_session_payload(
+        transcript,
+        lex,
+        complete_fn=make_dspy_complete_fn(),
+        date=args.session.stem,
+        mode=cast(Mode, args.mode),
     )
 
     out = args.out or args.session.with_suffix(".candidates.json")
-    payload = candidates_payload(
-        candidates,
-        transcript,
-        date=args.session.stem,
-        flagged=len(flagged),
-        lex_terms=len(lex.entries),
-    )
     write_candidates(payload, out)
-    print(f"{len(candidates)} candidate(s) {payload['counts']} → {out}")
+    print(f"{sum(payload['counts'].values())} candidate(s) {payload['counts']} → {out}")
     return 0
 
 

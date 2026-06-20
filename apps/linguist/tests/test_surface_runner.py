@@ -15,8 +15,10 @@ from astra_linguist.surface.lexicon import build_lexicon_from
 from astra_linguist.surface.surface import (
     candidates_payload,
     dedupe_candidate_rows,
+    find_flagged,
     load_session,
     surface_session,
+    surface_session_payload,
     write_candidates,
 )
 
@@ -67,6 +69,41 @@ def test_surface_session_no_flags_skips_judge() -> None:
         raise AssertionError("judge called with no flagged spans")
 
     assert surface_session(transcript, lex, complete_fn=stub, mode="hybrid") == []
+
+
+def test_surface_session_payload_builds_reviewable_record() -> None:
+    lex = build_lexicon_from(["Calaria"])
+    transcript = _transcript("We finally traveled to Galaria this evening.")
+
+    def stub(args: CompleteArgs) -> ScanResult:
+        return ScanResult(
+            candidates=[
+                Candidate(
+                    line_ref=0,
+                    span="Galaria",
+                    verdict="confirm",
+                    suggested_canonical="Calaria",
+                    confidence=0.9,
+                    reason="x",
+                )
+            ]
+        )
+
+    payload = surface_session_payload(transcript, lex, complete_fn=stub, date="2026-6-8")
+    assert payload["session"] == "2026-6-8" and payload["flagged_spans"] >= 1
+    assert payload["counts"].get("confirm") == 1
+
+
+def test_surface_session_payload_no_flags_skips_judge() -> None:
+    lex = build_lexicon_from(["Calaria"])
+    transcript = _transcript("we walked to the store and bought some bread")
+    assert find_flagged(transcript, lex) == []
+
+    def stub(args: CompleteArgs) -> ScanResult:  # judge must be skipped (no spend)
+        raise AssertionError("judge called with no flagged spans")
+
+    payload = surface_session_payload(transcript, lex, complete_fn=stub, date="d")
+    assert payload["flagged_spans"] == 0 and payload["candidates"] == []
 
 
 def test_candidates_payload_and_io_round_trip(tmp_path: Path) -> None:
