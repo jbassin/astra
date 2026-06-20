@@ -397,6 +397,7 @@ Hildebrandt:
   - Hildebrand
   - Hildebrant
   - Hildemarant
+  - Hiltabrand
 or Edan:
   - on a Don
   - of\s*Edan
@@ -685,6 +686,7 @@ Solari Sub-surface:
   - Solari\s*Subsurface
   - Solari\s*subspace
   - Solari\s*Subservice
+  - Solaria\s*Subservice
 the Scale's:
   - the\s*Scales
 Salvado:
@@ -710,6 +712,8 @@ Joker Worlds:
 Alkahest Freight:
   - Alka-Heist\s*Freight
   - Alkahast\s*Freight
+  - Alkahaz\s*Freight
+  - Alkahazprate
 The Scale:
   - the\s*Sable
   - the\s*Scaled
@@ -725,6 +729,7 @@ Velthara:
   - Althara
 Prime Meridian:
   - Primerudian
+  - Prime\s*Marudine
 Embercall's:
   - Ember\s*Calls
 Prime Meridian's:
