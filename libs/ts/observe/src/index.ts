@@ -1,5 +1,5 @@
 /**
- * OTel init shim for astra TypeScript apps — traces + metrics → the SigNoz collector.
+ * OTel init shim for astra TypeScript apps — traces + metrics + logs → the SigNoz collector.
  *
  * Standing principle (CLAUDE.md): *telemetry from day one*. Every app installs this
  * once at startup, either programmatically (`initTelemetry`) or — preferred for
@@ -15,9 +15,12 @@
 
 import { loadConfig } from "@astra/config";
 import { type Meter, metrics, type Tracer, trace } from "@opentelemetry/api";
+import { type Logger, logs } from "@opentelemetry/api-logs";
+import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
+import { BatchLogRecordProcessor, LoggerProvider } from "@opentelemetry/sdk-logs";
 import { MeterProvider, PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { BatchSpanProcessor } from "@opentelemetry/sdk-trace-base";
 import { NodeTracerProvider } from "@opentelemetry/sdk-trace-node";
@@ -34,8 +37,8 @@ export interface Telemetry {
 let state: { providers: Telemetry } | null = null;
 
 /**
- * Install global tracer + meter providers exporting OTLP/HTTP to the SigNoz collector.
- * Idempotent: a second call returns the first handle. `serviceName` should be
+ * Install global tracer + meter + logger providers exporting OTLP/HTTP to the SigNoz
+ * collector. Idempotent: a second call returns the first handle. `serviceName` should be
  * `astra.<subsystem>`.
  */
 export function initTelemetry(serviceName: string, opts?: { endpoint?: string }): Telemetry {
@@ -64,10 +67,17 @@ export function initTelemetry(serviceName: string, opts?: { endpoint?: string })
   });
   metrics.setGlobalMeterProvider(meterProvider);
 
+  const loggerProvider = new LoggerProvider({
+    resource,
+    processors: [new BatchLogRecordProcessor(new OTLPLogExporter({ url: `${endpoint}/v1/logs` }))],
+  });
+  logs.setGlobalLoggerProvider(loggerProvider);
+
   const providers: Telemetry = {
     shutdown: async () => {
       await tracerProvider.shutdown();
       await meterProvider.shutdown();
+      await loggerProvider.shutdown();
       state = null;
     },
   };
@@ -83,4 +93,10 @@ export function getTracer(name: string): Tracer {
 /** A meter from the installed provider (a no-op meter if init wasn't called). */
 export function getMeter(name: string): Meter {
   return metrics.getMeter(name);
+}
+
+/** A logger from the installed provider (a no-op logger if init wasn't called). `name`
+ * should be `astra.<subsystem>`. Records export to SigNoz once initTelemetry has run. */
+export function getLogger(name: string): Logger {
+  return logs.getLogger(name);
 }

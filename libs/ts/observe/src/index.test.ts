@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { getMeter, getTracer, initTelemetry } from "./index";
+import { getLogger, getMeter, getTracer, initTelemetry } from "./index";
 
 // Offline wiring checks — the end-to-end "a span lands in SigNoz" check is the
 // substrate smoke (exit gate E). The exporter never connects here.
@@ -17,6 +17,7 @@ describe("@astra/observe", () => {
     span.setAttribute("astra.lane", "ts");
     span.end();
     getMeter("astra.test").createCounter("astra.test.calls").add(1);
+    getLogger("astra.test").emit({ body: "a record that would export to SigNoz" });
     await t.shutdown();
   });
 

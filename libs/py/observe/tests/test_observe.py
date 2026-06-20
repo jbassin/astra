@@ -6,8 +6,11 @@ end-to-end "a span lands in SigNoz" check is the substrate smoke (exit gate E).
 
 from __future__ import annotations
 
+import logging
+
 import astra_observe
 from opentelemetry import trace
+from opentelemetry.sdk._logs import LoggingHandler
 
 
 def teardown_function() -> None:
@@ -39,3 +42,14 @@ def test_shutdown_allows_reinit() -> None:
     # After shutdown, init takes effect again (state was cleared).
     astra_observe.init_telemetry("astra.second", endpoint="http://localhost:10353")
     assert astra_observe.get_tracer("astra.second") is not None
+
+
+def test_logs_are_wired_to_the_astra_namespace() -> None:
+    astra_observe.init_telemetry("astra.test", endpoint="http://localhost:10353")
+    astra_log = logging.getLogger(astra_observe.LOG_NAMESPACE)
+    # init attaches an OTLP logging handler to the `astra` logger (and only that namespace)
+    assert any(isinstance(h, LoggingHandler) for h in astra_log.handlers)
+    astra_observe.get_logger("astra.test").info("a record that would export to SigNoz")
+    # shutdown detaches the handler again (no leak across processes/tests)
+    astra_observe.shutdown()
+    assert not any(isinstance(h, LoggingHandler) for h in astra_log.handlers)
