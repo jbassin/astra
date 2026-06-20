@@ -128,3 +128,31 @@ def test_cost_known_model_and_unknown_zero() -> None:
     assert cost_usd("claude-opus-4-8", TokenCounts(1_000_000, 0, 0, 0)) == pytest.approx(5.0)
     assert cost_usd("claude-opus-4-8", TokenCounts(0, 0, 0, 1_000_000)) == pytest.approx(25.0)
     assert cost_usd("no-such-model", TokenCounts(1_000_000, 0, 0, 0)) == 0.0
+
+
+# --- transcription seam (scribe 0005, gate E) ------------------------------------------
+def test_transcribe_normalizes_verbose_json_segments(tmp_path: Any) -> None:
+    from astra_llm import Segment, transcribe
+
+    audio = tmp_path / "chunk.flac"
+    audio.write_bytes(b"")
+    captured: dict[str, Any] = {}
+
+    class _Resp:
+        segments = [
+            {"start": 0.0, "end": 1.2, "text": "hi", "no_speech_prob": 0.1},
+            {"start": 1.5, "end": 2.0, "text": "there"},
+        ]
+
+    def fake_transcription(**kwargs: Any) -> Any:
+        captured.update(kwargs)
+        return _Resp()
+
+    segs = transcribe(audio, transcription_fn=fake_transcription)
+
+    assert segs == [
+        Segment(start=0.0, end=1.2, text="hi"),
+        Segment(start=1.5, end=2.0, text="there"),
+    ]
+    assert captured["model"] == "groq/whisper-large-v3"
+    assert captured["response_format"] == "verbose_json"  # segments only; words dropped (F1)

@@ -26,23 +26,28 @@ from .client import (
     Usage,
 )
 from .pricing import PRICING_USD_PER_1M, ModelPricing, TokenCounts, cost_usd
+from .transcription import GROQ_WHISPER, Segment, TranscriptionFn, transcribe
 
 __all__ = [
     "DEFAULT_MAX_TOKENS",
     "DEFAULT_MODEL",
+    "GROQ_WHISPER",
     "PRICING_USD_PER_1M",
     "LiteLLMClient",
     "LlmClient",
     "LlmError",
     "ModelPricing",
     "Result",
+    "Segment",
     "TextRequest",
     "TokenCounts",
     "ToolCallRequest",
     "ToolSpec",
+    "TranscriptionFn",
     "Usage",
     "cost_usd",
     "make_dspy_lm",
+    "transcribe",
 ]
 
 
