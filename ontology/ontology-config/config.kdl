@@ -18,8 +18,9 @@ telemetry {
 }
 
 scribe {
-    data-path ""
-    incoming-path ""
+    // Craig zips land in incoming-path; each session is written to {data-path}/saved/{date}.
+    data-path "/ruby/data/experiments/astra/apps/scribe/data"
+    incoming-path "/ruby/data/experiments/astra/apps/scribe/incoming"
     tmp-path ""
     state-file ""
     downstream-cmd ""
@@ -33,7 +34,9 @@ scribe {
 
 linguist {
     ingest-source ""
-    ingest-saved-dir ""
+    // INVARIANT: must equal scribe's {data-path}/saved — the scribe→linguist handoff
+    // (scribe writes saved/{date}/script.json; the linguist sensor + ingest read it).
+    ingest-saved-dir "/ruby/data/experiments/astra/apps/scribe/data/saved"
     review-port 10116
     podcast-episodes-path ""
     // Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).

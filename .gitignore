@@ -51,3 +51,8 @@ apps/akasha-backend/migrate/convert-report.json
 # linguist surfacer review state — per-session candidate triage files (surface.py
 # output, reviewed in review_tui, applied to defs.yaml via apply.py); not source.
 apps/linguist/data/*.candidates.json
+
+# scribe runtime data — Craig zips (incoming/) + extracted audio.mp3/script.json
+# (data/saved/{date}/); transient pipeline I/O on this deploy, not source.
+apps/scribe/incoming/
+apps/scribe/data/
