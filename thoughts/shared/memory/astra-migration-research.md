@@ -1,6 +1,6 @@
 ---
 name: astra-migration-research
-description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 (0004 vellum-lang, 0003 gothic) COMPLETE + Phase 3 (0007 akasha-backend, 0005 scribe, 0006 linguist) COMPLETE; next = 0008 mouthpiece-backend
+description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 + 2 (0004 vellum-lang, 0003 gothic) COMPLETE + **Phase 3 (pipeline) COMPLETE — 0005 scribe, 0006 linguist, 0007 akasha-backend, 0008 mouthpiece-backend all done**; next = Phase 4 (services: 0009 weal, 0010 orator) + Phase 5 (frontends: 0014 strider template → 0011 akasha-frontend long pole, 0012 mouthpiece-fe, 0013 vellum-fe), which parallelize; recommend 0014 strider next
 metadata:
   type: project
 ---
@@ -211,6 +211,29 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   via `astra_config` (no ad-hoc env reads — [[config-single-source]]); (3) **full SigNoz instrumentation**
   — OTel **logs** wired into the observe libs (py+ts) and traces+metrics+logs wired into scribe + linguist
   in their actual Dagster runtime ([[telemetry-built-in]] — importing observe ≠ wiring it).
+
+- **mouthpiece-backend (0008) COMPLETE + verified** (2026-06-20; astra `main` `2bbbcaa`; gates A–J; **K =
+  live ElevenLabs v3 run deferred** by design, paid/tier-gated). Spec
+  `thoughts/astra/specs/0008-mouthpiece-backend-spec.md`; thoughts
+  `thoughts/shared/research/2026-06-20-mouthpiece-backend-0008-thoughts.md`. Rewrote faerrin `caster`
+  (Bun TTS) → `apps/mouthpiece-backend` (uv) as a **Dagster per-session asset graph**: session_digest →
+  session_script → session_audio_clips → session_episode (+ mega_digest date-range fuse) + a
+  linguist→mouthpiece sensor; wired into `dagster/definitions.py`. **Decided H1 (with Josh): script +
+  distill use RAW `libs/py/llm`** (`call_text` Pass A → `call_tool` Pass B), typed I/O via Pydantic, **no
+  dspy** (dspy reserved for the linguist judge — `make_dspy_lm` is a bare `dspy.LM` that bypasses the
+  `max_tokens→raise` guard/caching/cost, and its adapter breaks prompt byte-fidelity). **All 5 prompts
+  ported BYTE-FOR-BYTE** (distill, improv/PassA, dressing/PassB, one-shot, mega — asserted vs faerrin in
+  `test_prompt_fidelity`, skips when faerrin absent). Tone gate = `lint.ts` ported verbatim; thresholds
+  calibrated against the 7 committed faerrin `out/*.script.json` (8–10/10, zero podcast-tells — `CALIBRATION.md`).
+  Hosts/voices from ontology-being `PodcastPersona`; ElevenLabs key resolves via SOPS. **0008 gotchas
+  (load-bearing):** (1) **akasha grounding folder-notes** — 45/141 pages are `…/index.vellum` whose
+  path-key ends `/index`; a naive basename collapses all to "index" → port faerrin's **`folderIndexName`**
+  (`pkg/content/scripts/lib/folder-index.ts`: folder-index page inherits title+alias from the PARENT dir)
+  and key BOTH title + basename lookups on the effective name; (2) Dagster asset modules must NOT
+  `from __future__ import annotations` (context/config introspection needs real types — scribe N.B.); (3)
+  ruff E501 on verbatim long prompt lines → express as implicit string concatenation (byte-identical), not
+  triple-quoted; (4) hermetic tests = stub `LlmClient` + mock TTS + fake ffmpeg runner (no live
+  ElevenLabs/Anthropic/ffmpeg); the live v3 run is the one deferred item (gate K).
 
 **Shape:** faerrin's 13 pkgs re-cut into ~10 named subsystems + 2 net-new (`ontology-being` = table
 **META** — players → the PCs they play, campaigns, colors, host identities (weal-bot Discord hosts AND
