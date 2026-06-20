@@ -48,8 +48,10 @@
         "**/strider/src/lib/memoriam.test.ts",
         "**/strider/src/lib/timeline.ts",
         "**/strider/src/lib/useFocusTrap.ts",
+        "**/strider/src/lib/editorHelpers.ts",
         "**/strider/src/components/HexMap/**",
-        "**/strider/src/components/MapView/MapView.tsx"
+        "**/strider/src/components/MapView/MapView.tsx",
+        "**/strider/src/components/Editor/**"
       ],
       "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
     },
