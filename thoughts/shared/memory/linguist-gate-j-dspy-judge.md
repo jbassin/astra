@@ -23,6 +23,10 @@ transcription-correction surfacer. Live-compiled 2026-06-20.
 - `optimize.py` — the **one-command offline step, never CI**. `--mine-only`, `--propose`, dry-run (prints a
   pre-spend estimate), `--live` (real MIPROv2-medium compile, sonnet proposes / haiku executes, spend-gated),
   `--eval-only` (re-eval the committed artifact). Needs `optuna` (MIPROv2 dep; guarded by a test).
+- `surface.py` — the **live session runner** (the actual product use): `surface_session` = `find_known` →
+  `judge_session(make_dspy_complete_fn())` → candidates; `--session data/{date}.json` writes a reviewable
+  `{date}.candidates.json` (verdict + canonical + speaker/line context). Live (key+network, not CI);
+  orchestration unit-tested with a stub.
 
 **Committed artifacts:** `surface/judge.compiled.json` (tuned prompt+demos) and
 `surface/gold/mined_negatives.json` (the curated 111-record gold negatives). MIPROv2 always keeps the
