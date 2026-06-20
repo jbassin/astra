@@ -36,10 +36,23 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `15aab1a`, 2026-06-20)
+## Current state — UPDATE THIS SECTION (as of commit `21d1f18`, 2026-06-20)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
+- **0009 weal BUILT (Phase 4) — first bun *service*.** Scope+spec at `thoughts/{shared/research/
+  2026-06-20-weal-0009-thoughts.md, astra/specs/0009-weal-spec.md}`. Six CI-green slices (`c40a026`…
+  `21d1f18`; last `21d1f18` deploy-wiring is the only UNPUSHED commit): (1) **roller** hand-ported
+  faithfully + the **K1 parity harness** (parse/eval-given-faces/plot/property + a serde-codec
+  round-trip on the 10 real `mouth.db` `funcs` payloads — the gate); (2) **hosts** — GSR/Rex/Els/
+  Whiskers flavor banks lifted into `ontology-being` `weal-host` `lines{}` (py+ts model+reader,
+  canonical-JSON parity holds); GSR-only but host-swappable (K8); (3) **Postgres** store + `save_die`
+  guards + dedicated `weal-postgres` Compose unit (K9); (4) **discord.js gateway** — full message
+  pipeline tested dry via injected deps (acceptance D), I/O shell (gateway/speak/index) typechecked;
+  (5) **weal-overlay** — eerie lifted (Bun.serve SPA+SSE, K7), v1-only schema, gothic v4 re-consume,
+  client RUM; (6) **deploy** — both Dockerfiles + Compose units + overlay Caddy block (`flush_interval
+  -1`). **Deferred (spec-sanctioned):** the live Discord run (acceptance I — needs the SOPS token) +
+  the Phase-6 SQLite→PG data migration + webhook rotation. See `[[weal-0009-gotchas]]`.
 - **strider (0014) COMPLETE + PUSHED + DEPLOYED LIVE.** The first `apps/*` TS frontend and the canonical
   **SSR-Compose-behind-Caddy template** for 0011–0013. All on `origin/main`. The 7 build slices (`fedd4b8`
   …`a91a72b`): build-content+data-model, pixi hexmap, MapView+routes, editor, SSR Compose deploy
@@ -63,9 +76,9 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   before browser RUM spans actually land in SigNoz (cert + reachability); the write server fn isn't itself
   IP-gated (only the `/editor` UI is).
 
-### Next: the remaining subsystems (strider is done)
+### Next: the remaining subsystems (strider + weal are done)
 
-1. **Phase 4 services:** 0009 weal (Rust→TS, roller parity harness first), 0010 orator.
+1. **Phase 4 services:** 0010 orator (0009 weal is BUILT — see Current state).
 2. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
    template** (build-content→generated→loader, `server.ts`, the Compose+Caddy deploy, server `observe` +
    `@astra/observe/web` RUM via a `createServerFn` endpoint, the uv-exclude). akasha-fe still consumes the
