@@ -12,18 +12,19 @@ Austrene is technically a kingdom, complete with a king, but like most else here
 
 :::handout[Belvedere Heart Chat Log]
 
-<pre style="font-variant: small-caps;">
-(<em>BLV Clear Air Turbulence</em> signal sequence file №12-877-61)
+
+```
+(BLV Clear Air Turbulence signal sequence file №12-877-61)
 
 [swept-to-tightbeam, M16.4, @ts862.03.13.254.15.188]
-p<em>BLV Clear Air Turbulence</em>#CT
-p<em>BLV Nervous Energy</em>#NE
-p<em>BLV Prime Mover</em>#PM
+pBLV Clear Air Turbulence#CT
+pBLV Nervous Energy#NE
+pBLV Prime Mover#PM
 
 CT> Strange firmament thinning above outpost C12.
 CT> Take a look:
 CT> [skein broadcast, L//info,
-<span>         </span>received @ts862.03.13.254.15.189]
+         received @ts862.03.13.254.15.189]
 
 NE> Inconsistent with predictions, bad actor?
 
@@ -38,6 +39,7 @@ PM> Significant developmental anomaly, time to escalate.
 
 CT> Acknowledged, forwarding to Provost, assoc. fane.
 CT> [skein broadcast, L//warn,
-<span>         </span>received @ts862.03.13.254.15.192]
-</pre>
+         received @ts862.03.13.254.15.192]
+```
+
 :::

@@ -6,16 +6,18 @@
  *
  * Reads faerrin's Obsidian wiki and writes the akasha SSOT corpus (full-vellum)
  * under apps/akasha-backend/content/. Idempotent. Emits a per-page conversion
- * report (convert-report.json) flagging pages that need hand-review. The TS
- * validator (validate-corpus.ts) is the zero-error-chips gate that follows.
+ * report (convert-report.json) flagging any page that still needs a human eye.
+ * The TS validator (validate-corpus.ts) is the zero-error-chips gate that follows.
  *
  * Per-page rules (NLSpec 0007 §"Converter rules"):
  *   1. frontmatter → normalize + BAKE the faerrin git-modified date into `date:`.
  *   2. prose / [[wikilinks]] / md+AON links → pass through (vellum is CommonMark+).
  *   3. Obsidian callouts `> [!type] Title` → `:::handout` / `:::edict`.
  *   4. `**Term** :: value <br/>` runs → `:::fields`.
- *   5. raw HTML (Timeline, index/flavor pages) → flagged for hand-review.
- *   6. sigil collisions (`#word`/`@token`/`||…||`/`:word`) → flagged (validator gates).
+ *   5. Timeline.md's nested HTML → `:::timeline`; the index/flavor pages' inline
+ *      HTML (`<pre>` verse → fenced code, `<em>`/`<div>`/`<li>`/`<sup>` → markdown).
+ *   6. sigil-collision scan — a `@`/`#`/`||` outside code is reported; the
+ *      validator (zero error chips + zero collisions) is the gate.
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
@@ -171,7 +173,8 @@ function convertCallouts(body: string, report: PageReport): string {
     out.push(...inner.map((l) => l.replace(/\s+$/, "")));
     out.push(":::", "");
     report.transforms.push(`${kind}(callout:${type})`);
-    if (/<\w+/.test(inner.join("\n"))) report.flags.push("callout-contains-html");
+    // HTML inside the callout body is cleaned by the later htmlToMarkdown pass;
+    // flagResiduals re-checks the final body, so no flag is raised here.
   }
   return out.join("\n");
 }
@@ -201,12 +204,49 @@ function convertTimeline(body: string, report: PageReport): string {
   return `:::timeline\n${entries.join("\n")}\n:::\n`;
 }
 
-/** Markers that need a human eye before the corpus is final. */
+/**
+ * Targeted HTML→markdown for the ~8 index/flavor pages' inline HTML (vellum
+ * renders raw HTML inert, so these tags would otherwise show as literal text).
+ * The tag set is small + closed: `<pre>` verse → fenced code (layout preserved);
+ * `<div>`/`<span>`/`<small>` → unwrapped; `<li>` → `- `; `<em>`/`<strong>` →
+ * `*`/`**`; `<br/>` → a markdown hard break. Runs last, after the structural
+ * transforms, so it also cleans HTML that lived inside a converted callout body.
+ */
+function htmlToMarkdown(body: string, report: PageReport): string {
+  if (!/<[a-z]/i.test(body)) return body;
+  let s = body;
+  // `<pre>` preformatted (verse) → fenced code; strip inner tags, keep newlines.
+  s = s.replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, (_m, inner: string) => {
+    const text = inner.replace(/<[^>]+>/g, "").replace(/^\n+|\n+$/g, "");
+    return `\n\`\`\`\n${text}\n\`\`\`\n`;
+  });
+  s = s
+    .replace(
+      /<li[^>]*>([\s\S]*?)<\/li>/gi,
+      (_m, t: string) => `- ${t.replace(/<[^>]+>/g, "").trim()}`,
+    )
+    .replace(/<\/?(ul|ol|div)[^>]*>/gi, "")
+    .replace(/<(em|i)>([\s\S]*?)<\/\1>/gi, "*$2*")
+    .replace(/<(strong|b)>([\s\S]*?)<\/\1>/gi, "**$2**")
+    .replace(/<br\s*\/?>/gi, "  \n")
+    .replace(/<\/?(span|small|sup|sub)[^>]*>/gi, "");
+  report.transforms.push("html→md");
+  if (/<[a-z][^>]*>/i.test(s)) report.flags.push("residual-html");
+  return s;
+}
+
+/**
+ * Markers that need a human eye before the corpus is final. Sigil checks run on
+ * the body with fenced code stripped — a `@`/`#`/`||` inside ``` is inert (the
+ * parser never expands sigils in code), so flagging it would be a false alarm.
+ */
 function flagResiduals(body: string, report: PageReport): void {
-  if (/<\/?(ul|ol|li|div|span|pre|table|small)\b/i.test(body)) report.flags.push("raw-html");
-  if (/(^|\s)#[A-Za-z]/.test(body)) report.flags.push("hash-sigil");
-  if (/(^|\s)@[A-Za-z0-9]/.test(body)) report.flags.push("at-sigil");
-  if (/\|\|/.test(body)) report.flags.push("pipe-redact");
+  const noCode = body.replace(/```[\s\S]*?```/g, "");
+  if (/<\/?(ul|ol|li|div|span|pre|table|small|sup|sub)\b/i.test(noCode))
+    report.flags.push("raw-html");
+  if (/(^|\s)#[A-Za-z]/.test(noCode)) report.flags.push("hash-sigil");
+  if (/(^|\s)@[A-Za-z0-9]/.test(noCode)) report.flags.push("at-sigil");
+  if (/\|\|/.test(noCode)) report.flags.push("pipe-redact");
 }
 
 function convertPage(
@@ -223,9 +263,11 @@ function convertPage(
   // Timeline.md is bespoke nested HTML → a dedicated `:::timeline` parse.
   if (rel === "Timeline.md") {
     converted = convertTimeline(converted, report);
+    converted = htmlToMarkdown(converted, report);
   } else {
     converted = convertCallouts(converted, report);
     converted = convertFields(converted, report);
+    converted = htmlToMarkdown(converted, report);
   }
   flagResiduals(converted, report);
 

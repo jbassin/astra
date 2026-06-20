@@ -13,7 +13,9 @@ Natives to Lorandris all work building, sailing, or sinking ships. Mere Lorandri
 :::handout[The Black-Tide Bargain]
 From Estañion's Selection of Sea Shanties, p. 56.
 
-<pre><em>Oh, we sail on ships that the storms can’t break,
+
+```
+Oh, we sail on ships that the storms can’t break,
 With decks that groan but never quake.
 From the Fūlwinter coast to the Edan shore,
 We take what’s ours and then take more.
@@ -42,5 +44,6 @@ So hoist the black, let the cannons sing,
 To the Pirate Kings, our voices ring!
 We’re the wolves of the waves, the scourge of the sea,
 Forever we’ll sail, Lorandris free!
-</em></pre>
+```
+
 :::
