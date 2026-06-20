@@ -29,7 +29,7 @@ so it also establishes the bun-service conventions (Dockerfile, healthcheck, `re
 | K1 (plan) | Parity rigor | **Deterministic-surface golden parity** — gate parse / eval-given-faces / plot-math / property; RNG diverges so raw output is never compared. Hard gate before retiring the Rust. |
 | K2 (plan) | Host send | **Discord webhooks** (per-host `username`+`avatar`+`color` embed); rotate the leaked webhook at cutover (P6). |
 | K4 (plan) | `chart` crate | **DROP** — the historical `plot(base,interval)` *command* + `get_dice` analytics move to akasha-frontend (0011). The **in-roller `plot()` builtin** (single-expression probability) **stays** in the roller. |
-| K6 (plan) | Parser tech | **Hand-port** the Pratt parser (faithful to the Rust structure; no parser-lib semantics drift). |
+| K6 (plan) | Parser tech | **Hand-port** the Pratt parser (faithful to the Rust structure; no parser-lib semantics drift). **Validated (2026-06-20):** surveyed the JS/TS parser ecosystem (chevrotain/peggy/nearley/ohm/tree-sitter/langium/combinators) — every generator re-expresses the grammar in a different formalism (PEG/Earley/rule-ladder) and yields a CST you'd re-map to the Rust AST anyway, *relocating* parity risk rather than removing it; the grammar is frozen + tiny, so a generator's payoff doesn't apply. Hand-roll = zero-dep, Bun-trivial, mirrors the Rust flatten→precedence-climb 1:1. Chevrotain was the only near-miss (TS-native RD) but still imposes a CST→AST shim + a precedence-ladder remap. |
 
 ### K5-revised + K8 — **DECIDED (Josh, 2026-06-20): GSR-only now; flavor lines move into the ontology**
 
