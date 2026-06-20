@@ -107,27 +107,14 @@ services:
     networks: [signoz-net]
     restart: unless-stopped
 
-  # --- Caddy: TLS / static / reverse-proxy edge ---
-  caddy:
-    image: caddy:2-alpine
-    container_name: astra-caddy
-    ports:
-      - "10354:80" # edge http (astra range)
-      - "10355:443" # edge https (astra range)
-    volumes:
-      - ../Caddyfile:/etc/caddy/Caddyfile
-      - caddy-data:/data
-      - caddy-config:/config
-    networks: [signoz-net]
-    restart: unless-stopped
+# The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
+# (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
+# the substrate runs no Caddy of its own — services are reachable on their
+# published host ports (Dagster 10350, SigNoz 10351, strider 10360).
 
 volumes:
   dagster-pg:
     name: astra-dagster-pg
-  caddy-data:
-    name: astra-caddy-data
-  caddy-config:
-    name: astra-caddy-config
 
 networks:
   signoz-net:

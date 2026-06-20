@@ -98,7 +98,8 @@ libs/py/     # observe, config, llm  (+ _smoke)
 libs/ts/     # observe, config, gothic, vellum-lang  (+ _smoke)
 ontology/    # ontology-being, ontology-config (py truth + config stores)
 dagster/     # Dagster definitions (loads each pipeline app's assets; schedules/sensors)
-deploy/      # docker-compose.yml, otel-collector.yaml, SOPS, Caddyfile.example
+deploy/      # docker-compose.yml (Dagster + SigNoz + services), otel-collector.yaml, SOPS
+sites.caddyfile  # host-edge config for the shared reverse proxy; `just caddy-reload`
 .github/     # CI workflow + composite setup-{uv,bun} actions
 thoughts/    # research + per-subsystem plans (carried from faerrin)
 dist/        # all site-gen output (gitignored), served by Caddy

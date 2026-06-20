@@ -5,10 +5,9 @@ dist/
 storybook-static/
 
 # Secrets & edge config
-#   - real Caddyfile embeds a Cloudflare DNS token (faerrin gotcha); only the
-#     .example is committed.
 #   - SOPS age/PGP private keys never enter git; the encrypted secret file does.
-Caddyfile
+#   - The host-edge sites.caddyfile IS committed (token-free — {$CF_API_TOKEN} is
+#     supplied from SOPS at reload, never written to the file).
 *.agekey
 
 # SOPS secrets directory — deny everything, then re-allow only what's safe to

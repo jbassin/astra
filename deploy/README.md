@@ -9,7 +9,7 @@ compose; its published ports are remapped into the astra **10350–10399** range
 
 ```sh
 cd deploy
-docker compose up -d        # builds the Dagster image; pulls SigNoz / Postgres / Caddy
+docker compose up -d        # builds the Dagster + strider images; pulls SigNoz / Postgres
 ```
 
 **First run only** — a fresh SigNoz needs a one-time org/admin before it ingests telemetry (until then
@@ -29,8 +29,6 @@ docker compose restart otel-collector     # forces immediate OpAMP re-registrati
 | 10351 | SigNoz UI | signoz:8080 |
 | 10352 | OTLP gRPC | otel-collector:4317 |
 | 10353 | OTLP HTTP | otel-collector:4318 |
-| 10354 | Caddy http | caddy:80 |
-| 10355 | Caddy https | caddy:443 |
 | 10360 | strider SSR | strider:10360 |
 
 ClickHouse, zookeeper, Dagster Postgres, the query-service, and `strider-editor:3001` are **internal**
@@ -48,13 +46,14 @@ served by `file_server` (the old Decision D model); it is a long-running SSR ser
   authoring writer).
 - **`server.ts`**: `dist/server/server.js` is a bare Web-`fetch` handler, so this entry serves the hashed
   client bundle from `dist/client/` and falls through to SSR for everything else — a self-contained unit.
-- **Edge**: two Caddy contexts. (a) The compose `caddy` here is the **local-dev** edge (plain `:80`,
-  `../Caddyfile`). (b) **Production** is the shared host reverse proxy at `/ruby/data/reverse-proxy/`
-  (custom caddy binary w/ the cloudflare-dns plugin), which `import`s this repo's root **`sites.caddyfile`**
-  (`strider.iridi.cc` → `reverse_proxy localhost:10360`, NOT static `file_server` — Decision I). That file
-  carries no secret: the Cloudflare ACME-DNS token is the `{$CF_API_TOKEN}` adapt-time placeholder, supplied
-  from SOPS by **`just caddy-reload`** (`just caddy-validate` to dry-run). The `/write-layer` authoring path
-  is left commented there — gate it (basic_auth / IP allow / mTLS) before exposing.
+- **Edge**: the substrate runs **no Caddy of its own** — the production edge is the shared host reverse
+  proxy at `/ruby/data/reverse-proxy/` (custom caddy binary w/ the cloudflare-dns plugin), which `import`s
+  this repo's root **`sites.caddyfile`** (`strider.iridi.cc` → `reverse_proxy localhost:10360`, NOT static
+  `file_server` — Decision I). That file carries no secret: the Cloudflare ACME-DNS token is the
+  `{$CF_API_TOKEN}` adapt-time placeholder, supplied from SOPS by **`just caddy-reload`** (`just
+  caddy-validate` to dry-run). The `/write-layer` authoring path is left commented there — gate it
+  (basic_auth / IP allow / mTLS) before exposing. For local dev, hit services on their published ports
+  directly (no edge needed).
 
 The new frontend chunks build per-route; pixi stays in a client-only chunk (`<ClientOnly>` + `lazy`), so
 SSR never touches WebGL.
