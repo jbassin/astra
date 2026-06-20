@@ -36,42 +36,48 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `a91a72b`, 2026-06-20)
+## Current state — UPDATE THIS SECTION (as of commit `15aab1a`, 2026-06-20)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
-- **strider (0014) COMPLETE — all 7 slices, both toolchains green, NOT yet pushed.** The first `apps/*`
-  TS frontend and the canonical **SSR-Compose-behind-Caddy template** for 0011–0013. Commits:
-  - `fedd4b8` slice 2 — build-content pipeline + faction/territory data model
-  - `152193c` slice 3 — pixi hexmap + PixiHost + ClientOnly
-  - `fc9f3ff` slice 4 — MapView + faction routes (the wired SSR hexmap)
-  - `48eb0be` slice 5 — editor + layer-writer server (open by design; gated at Caddy)
-  - `6e64db8` slice 6 — SSR Compose service + Caddy reverse-proxy (`server.ts`, Dockerfile)
-  - `a91a72b` slice 7 — server `observe` + client RUM (`createServerFn` for the config-sourced
-    endpoint) + the `config.kdl` `telemetry.rum-endpoint` field (TS+PY schemas) + a uv-workspace fix
-    (exclude TS-only `apps/*` members)
-  - Contract `thoughts/astra/specs/0014-strider-spec.md`; load-bearing gotchas captured in the spine
-    memory `[[astra-migration-research]]` (the 9-point strider list — read it before starting 0011–0013).
-- **Acceptance left open:** criterion H (RUM + SSR spans visibly landing in SigNoz) is wired + structurally
-  verified but not confirmed end-to-end against a live SigNoz stack + real browser — do that once the
-  deploy stack is up. The strider service hasn't had its Docker image built/run (no `docker compose build`
-  in this env); `docker compose config` validates and `bun run start` serves a real build locally.
+- **strider (0014) COMPLETE + PUSHED + DEPLOYED LIVE.** The first `apps/*` TS frontend and the canonical
+  **SSR-Compose-behind-Caddy template** for 0011–0013. All on `origin/main`. The 7 build slices (`fedd4b8`
+  …`a91a72b`): build-content+data-model, pixi hexmap, MapView+routes, editor, SSR Compose deploy
+  (`server.ts`/Dockerfile), server `observe`+client RUM. Then this session hardened + shipped it:
+  - **Styling fix** (`abbf017`) — the scaffold never wired `@tailwindcss/vite`, so gothic's `@theme`/`@apply`
+    shipped raw (black text, no panel bg); add the plugin + the missing `public/` assets.
+  - **RUM lib** (`171f28d`) — browser RUM extracted to **`@astra/observe/web`** (`initRum`); frontends import
+    it, the `createServerFn` config seam stays per-app.
+  - **Host edge** (`e6b3878`, `9374fb4`, `a9a0bf4`, `6a0fdaf`, `15aab1a`) — root **`sites.caddyfile`** is the
+    real prod edge (the compose Caddy was dropped): `strider.iridi.cc` (SSR), `otel.iridi.cc` (browser-RUM
+    OTLP ingest, CORS for `*.iridi.cc`), `signoz.iridi.cc` (UI). Fonts served from gothic via Caddy (no
+    vendored copies; dev middleware for parity). `/editor` + `signoz` gated **local-only**. CF token from
+    SOPS via `just caddy-reload`.
+  - **Editor → server fn** (`9b87a1b`) — the editor write is now a **`createServerFn`** in the one SSR
+    process (the sidecar/`editor-server` is gone). This stack (react-start 1.168) has **no file server
+    routes** — `createServerFn` is the server primitive (see `[[tanstack-start-skill]]`).
+- **Tooling:** `just up` (rebuild+recreate the stack), `just down`, `just caddy-reload`/`caddy-validate`.
+  Apply deploy/edge changes with these — `[[deploy-apply-with-just]]`.
+- **Live + verified:** `astra-strider` healthy; the edge serves `/`, `/editor` (local), `/fonts/*`,
+  `signoz.iridi.cc` (all 200 via the loopback edge test). **Open:** `otel.iridi.cc` needs a **DNS record**
+  before browser RUM spans actually land in SigNoz (cert + reachability); the write server fn isn't itself
+  IP-gated (only the `/editor` UI is).
 
-### Next: push strider, then the remaining subsystems
+### Next: the remaining subsystems (strider is done)
 
-1. **Push** the strider chunk to `origin/main` (reproduce CI lanes locally first — both toolchains green;
-   confirm push + one status check, don't watch the GHA run — `[[no-ci-monitoring]]`).
-2. **Phase 4 services:** 0009 weal (Rust→TS, roller parity harness first), 0010 orator.
-3. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
-   template**: build-content→generated→loader, `server.ts` SSR entry, the Compose+Caddy deploy, server
-   `observe` + client-RUM-via-`createServerFn`, and the uv-exclude for the new `apps/*` dir.
-4. **Phase 6** (0015) big-bang cutover, last.
+1. **Phase 4 services:** 0009 weal (Rust→TS, roller parity harness first), 0010 orator.
+2. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
+   template** (build-content→generated→loader, `server.ts`, the Compose+Caddy deploy, server `observe` +
+   `@astra/observe/web` RUM via a `createServerFn` endpoint, the uv-exclude). akasha-fe still consumes the
+   akasha build-time snapshot (Decision D).
+3. **Phase 6** (0015) big-bang cutover, last.
 
 **Frontend gotchas (template — full list in `[[astra-migration-research]]`):** SSR (no `prerender` block);
-commit `src/routeTree.gen.ts` (biome-ignored); `vite.config` is ESM and **cannot import `@astra/config`**
-(use `createServerFn` for browser-needed config); gothic v4 `--color-*` token rename on lifted CSS; pixi
-behind `lazy()`+`<ClientOnly>`; new `apps/*` TS dir must be added to `pyproject.toml` `[tool.uv.workspace]`
-`exclude`.
+commit `src/routeTree.gen.ts` (biome-ignored); `vite.config` is ESM and **cannot import `@astra/config`**;
+**wire `@tailwindcss/vite`** + ship `public/` (favicon, symbols) or gothic styling is dead; gothic v4
+`--color-*` token rename on lifted CSS + Caddy `gothic_fonts` serves the webfonts; pixi behind
+`lazy()`+`<ClientOnly>`; server-side endpoints = **`createServerFn`** (no middleware — `[[tanstack-start-skill]]`);
+client RUM = `@astra/observe/web`; new `apps/*` TS dir → add to `pyproject.toml` `[tool.uv.workspace]` `exclude`.
 
 ---
 
