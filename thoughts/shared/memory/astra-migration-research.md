@@ -1,6 +1,6 @@
 ---
 name: astra-migration-research
-description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 vellum-lang (0004) + gothic (0003) COMPLETE; next = Phase 3 pipeline (or 0007 akasha-backend on the full-vellum critical path)
+description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 COMPLETE + Phase 2 (0004 vellum-lang, 0003 gothic) COMPLETE + Phase 3 akasha-backend (0007) COMPLETE; next = rest of Phase 3 pipeline (0005 scribe / 0006 linguist / 0008 mouthpiece-backend)
 metadata:
   type: project
 ---
@@ -123,6 +123,34 @@ faerrin, not a lift-and-shift. Approach chosen: research-first → phased progra
   (5) `bun build` = no-op echo, **Storybook build is separate** (`build-storybook`, gitignore
   `storybook-static/`, `core.disableTelemetry`) so no browser runs in the CI `build` lane; mdast's
   `Nodes` union lacks `crossref` → renderer input widened to `Nodes | CrossRef`.
+
+- **akasha-backend (0007) COMPLETE + verified** (2026-06-19; astra `main`; CI reproduced locally incl. a
+  new `corpus-validate` job). Spec `thoughts/astra/specs/0007-akasha-backend-spec.md`; thoughts
+  `thoughts/shared/research/2026-06-19-akasha-backend-0007-thoughts.md`. The critical-path long pole.
+  **Decided forks (with Josh):** F1 full end-to-end now; **F2 TS converter**; **F3 validator in
+  `libs/ts/vellum-lang/scripts/`** (the one-shot TS tools co-locate with the parser since the uv app
+  can't be a dual manifest); resulting split = build-time TS (convert+validate, reference parser) vs
+  runtime Python/Dagster (metadata/crossref/snapshot, D2). E1 graph@frontend-build · E2 corpus under
+  akasha-backend · E3 one-shot+archived · E4 page→page crossrefs only (ontology-being is META, deferred).
+  **Shipped:** `convert-wiki.ts` (frontmatter+git-date bake, callouts→handout/edict, `**Term**::value`→
+  `:::fields`, Timeline `<ul>`→`:::timeline`, index/flavor HTML→markdown/fenced) + `validate-corpus.ts`
+  (the structural gate) → **all 141 pages converted to `apps/akasha-backend/content/*.vellum`, 0 flagged,
+  zero error chips + zero collisions**; the uv app `astra-akasha-backend` = `corpus.py` (load_corpus = the
+  mouthpiece read path) + `crossref.py` (page→page resolve, Quartz-shortest by PATH not slug; 354 edges,
+  71 dangling red-links reported) + `snapshot.py`/`assets.py` (Dagster `akasha_corpus_snapshot` asset →
+  committed `snapshot/akasha-snapshot.json`, the being.canonical.json parity pattern), wired into
+  `dagster/definitions.py`. **0007 gotchas (load-bearing):** (1) the plan assumed sigil collisions surface
+  as error chips, but `#word`→`:trait[word]` is a VALID pill (not a chip) → the validator must ALSO flag
+  trait/action/redact EXPANSIONS (a wiki has zero statblocks, so any is a collision); in practice the
+  corpus had ~0 (parser scoping: `#`/`@` need specific neighbors), a real de-risking; (2) wrapping the
+  exotic `<pre>` CIC-log in a fenced block NEUTRALIZES its `@ts000`/`#L`/`#C` sigils for free (code is
+  never sigil-expanded) — fenced code is the cleanest converter target for collision-dense verse;
+  (3) the akasha snapshot is Python-only (no ts parity) → `ensure_ascii=False` + sort_keys (Færrin/Rhædon
+  survive); exclude it + `.vellum` from biome (`akasha-snapshot.json`, `ignoreUnknown` skips `.vellum`);
+  (4) the `corpus-validate` CI job is bun-only + path-filtered on `apps/akasha-backend/content/**` +
+  `libs/ts/vellum-lang/**` (pytest must NOT shell to bun — bun absent in the py CI lane; the asset shells
+  to bun only at materialization); (5) Quartz red-links are normal — `[[Heart]]`≠`Hearts`,
+  `[[Undertable]]`≠`The Undertable` correctly stay unresolved (match by path, slug is 0011's job).
 
 **Shape:** faerrin's 13 pkgs re-cut into ~10 named subsystems + 2 net-new (`ontology-being` = table
 **META** — players → the PCs they play, campaigns, colors, host identities (weal-bot Discord hosts AND

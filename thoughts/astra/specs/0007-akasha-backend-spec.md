@@ -1,11 +1,12 @@
 # NLSpec 0007 — akasha-backend (content store + wiki→vellum conversion)
 
-**Status:** **in progress.** ✅ TS conversion machinery (`convert-wiki.ts` + `validate-corpus.ts`) +
-**all 141 pages converted** to full-vellum, **zero error chips + zero sigil collisions** (gates A, B, E;
-C green for `:::fields` (9) + `:::timeline` (Timeline.md → 47 entries)); uv app scaffolded; uv+bun+py CI
-lanes green. ⏳ **Remaining:** ~8 raw-HTML *flavor* pages hand-pass (gate C tail); the **Python runtime
-side** — metadata index + page→page crossref resolver + Dagster snapshot asset + mouthpiece loader (gates
-D, F, G); the `corpus-validate` CI job (M9). **Phase:** 3 (pipeline). **Source plan:**
+**Status:** **implemented + verified.** All exit gates A–H green; CI reproduced locally (py
+ruff/format/ty/pytest incl. 4 akasha-backend tests; bun tsc/biome/test/build; the new **`corpus-validate`**
+job — zero error chips + zero sigil collisions over all 141 pages). All 141 pages converted to full-vellum
+(`:::fields` ×9, `Timeline.md` → 47-entry `:::timeline`, callouts → `:::handout`/`:::edict`, index/flavor
+HTML → markdown/fenced code; **0 pages flagged**); page→page crossref edges resolved (354 edges, 71
+unresolved red-links reported, E4); the Dagster snapshot asset + committed `akasha-snapshot.json` (parity
+test); the `load_corpus` mouthpiece read path. **Phase:** 3 (pipeline). **Source plan:**
 [`../plans/0007-akasha-backend.md`](../plans/0007-akasha-backend.md). **Pre-impl thoughts:**
 [`../../shared/research/2026-06-19-akasha-backend-0007-thoughts.md`](../../shared/research/2026-06-19-akasha-backend-0007-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (persona subagents — python-pro, code-reviewer),
