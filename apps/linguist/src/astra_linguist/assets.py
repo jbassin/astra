@@ -23,6 +23,7 @@ from .corrections import load_corrections
 from .models import RawLine
 from .pipeline import process_session
 from .roster import SpeakerResolver
+from .sensor import new_sessions
 
 APP_ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = APP_ROOT / "data"
@@ -73,6 +74,23 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
     )
 
 
+@dg.sensor(target=session_transcripts, minimum_interval_seconds=30)
+def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
+    """Register a linguist partition + run request for each scribe session
+    (`{date}/script.json` under `ingest_saved_dir`) not yet processed — the scribe→linguist
+    trigger, so corrections apply automatically once a session is transcribed."""
+    saved = _linguist_config().ingest_saved_dir
+    if not saved or not Path(saved).is_dir():
+        return dg.SensorResult()
+    existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
+    found = new_sessions(saved, existing)
+    adds = [linguist_sessions.build_add_request(found)] if found else []
+    return dg.SensorResult(
+        run_requests=[dg.RunRequest(partition_key=key) for key in found],
+        dynamic_partitions_requests=adds,
+    )
+
+
 def _linguist_config():
     from astra_ontology_config import load as load_config
 
@@ -92,4 +110,4 @@ def _atomic_write(path: Path, text: str) -> None:
     os.replace(tmp, path)
 
 
-defs = dg.Definitions(assets=[session_transcripts])
+defs = dg.Definitions(assets=[session_transcripts], sensors=[scribe_output_sensor])
