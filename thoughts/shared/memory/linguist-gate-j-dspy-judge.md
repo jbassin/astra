@@ -25,8 +25,13 @@ transcription-correction surfacer. Live-compiled 2026-06-20.
   `--eval-only` (re-eval the committed artifact). Needs `optuna` (MIPROv2 dep; guarded by a test).
 - `surface.py` — the **live session runner** (the actual product use): `surface_session` = `find_known` →
   `judge_session(make_dspy_complete_fn())` → candidates; `--session data/{date}.json` writes a reviewable
-  `{date}.candidates.json` (verdict + canonical + speaker/line context). Live (key+network, not CI);
-  orchestration unit-tested with a stub.
+  `{date}.candidates.json` (deduped one row per correction; verdict + canonical + speaker/line context).
+  Live (key+network, not CI); orchestration unit-tested with a stub.
+- **The G1 loop closes** (built as CLIs, not yet the Dagster asset): `review_tui --candidates {file}` to
+  accept/reject the judge's corrections, then `surface/apply.py --candidates {file}` appends the accepted
+  `confirm`s to `defs.yaml` via `corrections.add_correction` (faerrin-parity fragment encoding +
+  idempotency + **minimal-diff text append**, not a YAML redump — clean PRs). Full loop:
+  **surface → review → apply → defs.yaml**. Accepted `new`s are lexicon/akasha material, not defs.
 
 **Committed artifacts:** `surface/judge.compiled.json` (tuned prompt+demos) and
 `surface/gold/mined_negatives.json` (the curated 111-record gold negatives). MIPROv2 always keeps the
