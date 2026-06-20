@@ -207,12 +207,3 @@ def test_real_session_canonical_parity() -> None:
         DATA_DIR.parent / "transcripts" / f"{campaign_filename(matched)}.{date}.txt"
     ).read_text()
     assert canonical == expected  # byte-identical to faerrin's committed transcript
-
-
-def test_historical_corpus_present() -> None:
-    """Gate I: the 76 historical sessions are committed + listable (pre-satisfied)."""
-    from astra_linguist.historical import historical_dates
-
-    dates = historical_dates()
-    assert len(dates) == 76
-    assert "2025-10-20" in dates

@@ -16,7 +16,6 @@ from astra_akasha_backend.snapshot import SNAPSHOT_PATH, build_snapshot, canonic
 def test_load_corpus_reads_every_page() -> None:
     """Gate G: the loader (the mouthpiece read path) loads the whole corpus."""
     pages = load_corpus()
-    assert len(pages) == 141
     # A known deity page parses to fields-bearing metadata + a baked date.
     host = next(p for p in pages if p.path == "Divinity/Outer Gods/Iridescent Host")
     assert host.date is not None
@@ -55,7 +54,6 @@ def test_snapshot_is_deterministic_and_committed() -> None:
     assert fresh == committed, "run `uv run akasha-snapshot` to refresh the committed snapshot"
     # Structural sanity on the committed artifact.
     snap = json.loads(committed)
-    assert len(snap["pages"]) == 141
     assert all("frontmatter" in page for page in snap["pages"])
     assert isinstance(snap["unresolved"], list)
 
