@@ -25,6 +25,7 @@ class LlmConfig(_Base):
 
 class TelemetryConfig(_Base):
     otlp_endpoint: str = "http://localhost:10353"
+    rum_endpoint: str = "http://localhost:10353"
 
 
 class ScribeConfig(_Base):

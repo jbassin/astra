@@ -110,7 +110,12 @@ const OratorController = z.object({ apiKey: secret() }).strict();
 
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
-const Telemetry = z.object({ otlpEndpoint: z.string().default("http://localhost:10353") }).strict();
+const Telemetry = z
+  .object({
+    otlpEndpoint: z.string().default("http://localhost:10353"),
+    rumEndpoint: z.string().default("http://localhost:10353"),
+  })
+  .strict();
 
 // A missing namespace falls back to its all-defaults form (matches the py
 // default_factory leniency). Zod v4 types `.default()` against the *output* shape,

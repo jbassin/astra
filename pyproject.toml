@@ -3,6 +3,11 @@
 # Empty placeholder dirs are NOT created up front: uv rejects a glob-matched
 # directory that lacks a `pyproject.toml`, so member dirs appear per-phase.
 members = ["apps/*", "libs/py/*", "ontology/*"]
+# TS-only apps live under apps/* too (manifest-decided membership: package.json →
+# bun, pyproject.toml → uv). uv would otherwise hard-error on a glob-matched dir
+# without a pyproject.toml, so exclude the bun-only frontends explicitly. Add each
+# new TS app here (0011-0013 frontends follow strider).
+exclude = ["apps/strider"]
 
 [tool.uv]
 # Workspace-wide dev tooling — the Astral Python stack.

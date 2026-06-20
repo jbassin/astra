@@ -1,5 +1,6 @@
 /// <reference types="vite/client" />
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { useEffect } from "react";
 import PixiHost from "@/components/PixiHost/PixiHost";
 import { EntitiesObservedProvider } from "@/components/SiteHeader/entitiesObserved";
 import SiteHeader from "@/components/SiteHeader/SiteHeader";
@@ -22,6 +23,14 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  // Client RUM (S1): browser OTel → SigNoz. Effects never run during SSR, and the
+  // dynamic import keeps the web SDK out of the SSR bundle.
+  useEffect(() => {
+    void import("@/observe/rum").then((m) => {
+      void m.initRum();
+    });
+  }, []);
+
   return (
     <html lang="en">
       <head>

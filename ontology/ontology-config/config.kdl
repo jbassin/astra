@@ -15,6 +15,10 @@ llm {
 telemetry {
     // OTLP/HTTP receiver of the local SigNoz collector (deploy/ remaps it into the astra range).
     otlp-endpoint "http://localhost:10353"
+    // Public OTLP/HTTP endpoint the *browser* RUM posts spans to directly. The
+    // server-side otlp-endpoint above is not browser-reachable in prod; set this
+    // to the publicly-exposed collector URL per environment.
+    rum-endpoint "http://localhost:10353"
 }
 
 scribe {
