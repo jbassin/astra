@@ -1,12 +1,11 @@
 /**
  * orator-backend entrypoint — astra's lift of faerrin `lark` (single-process Bun
  * Discord music bot: voice + library + REST + operator SPA). Wires telemetry first
- * (principle #1 / [[telemetry-built-in]]), then config + ontology, then serves.
+ * (principle #1 / [[telemetry-built-in]]), then config + ontology + the Postgres
+ * store, then optionally the Discord bot, then serves the REST API + the SPA.
  *
- * This scaffold (slice 1) stands up the telemetry-first entry, the ontology-derived
- * operator allowlist (M1), and a minimal HTTP surface (`/api/v1/health`). Later slices
- * lift the Postgres store (2), the bot + voice + full REST (3), auth (4), ingest (5),
- * the data migration (6), and the served Router SPA (7).
+ * The bot is **optional**: without a resolved token the web UI + library + REST
+ * still run, and playback routes return 503 (the deferred live-Discord seam).
  */
 
 import { getLogger, initTelemetry } from "@astra/observe";
@@ -15,40 +14,96 @@ import { getLogger, initTelemetry } from "@astra/observe";
 initTelemetry("astra.orator-backend");
 const log = getLogger("astra.orator-backend");
 
+import { mkdirSync } from "node:fs";
+import { resolve } from "node:path";
 import { loadConfig } from "@astra/config";
 import { loadBeing } from "@astra/ontology";
 import { buildAllowlist } from "./allowlist";
+import { startBot } from "./bot/index";
+import type { PlaybackEngine } from "./bot/playback";
+import { PostgresStore } from "./db/store";
+import { type AppConfig, startServer } from "./server/app";
 
-function main(): void {
+/** Resolve a SOPS `ref=` secret; unresolved (e.g. not provisioned) → "" (feature off). */
+function resolveSecret(ref: { resolve: () => string } | null | undefined): string {
+  try {
+    return ref?.resolve() ?? "";
+  } catch {
+    return "";
+  }
+}
+
+async function main(): Promise<void> {
   const cfg = loadConfig();
   const being = loadBeing();
 
   // Operators = ontology admin snowflakes ∪ the optional config override (M1).
   const allowlist = buildAllowlist(being, cfg.orator.allowedUserIds);
-  log.emit({ severityText: "INFO", body: `operator allowlist: ${allowlist.size} id(s)` });
 
-  // PORT overrides config (the Compose unit sets it; cfg.orator.port is the default).
-  const port = Number(process.env.PORT) || cfg.orator.port;
-  const server = Bun.serve({
-    port,
-    // Voice join can take a few seconds; the default 10s idle timeout would cut a
-    // /playback/play off mid-join. Give it room (lark's idleTimeout:60).
-    idleTimeout: 60,
-    fetch(req): Response {
-      const { pathname } = new URL(req.url);
-      if (pathname === "/api/v1/health") {
-        return new Response(JSON.stringify({ ok: true }), {
-          headers: { "content-type": "application/json" },
-        });
-      }
-      return new Response("not found\n", { status: 404 });
+  const dataDir = resolve(process.env.ORATOR_DATA_DIR ?? resolve(import.meta.dir, "../data"));
+  const distDir = resolve(process.env.ORATOR_DIST_DIR ?? resolve(import.meta.dir, "../dist"));
+  mkdirSync(dataDir, { recursive: true });
+
+  const store = new PostgresStore(cfg.orator.databaseUrl);
+  await store.ensureSchema();
+
+  const publicOrigin = cfg.orator.publicOrigin;
+  const config: AppConfig = {
+    port: Number(process.env.PORT) || cfg.orator.port,
+    sessionSecret: resolveSecret(cfg.orator.sessionSecret),
+    allowlist,
+    oauth: {
+      clientId: resolveSecret(cfg.orator.discordClientId),
+      clientSecret: resolveSecret(cfg.orator.discordClientSecret),
+      redirectUri: `${publicOrigin}/auth/callback`,
     },
-  });
+    publicOrigin,
+    secureCookies: publicOrigin.startsWith("https://"),
+    distDir,
+    dataDir,
+    guildId: cfg.orator.guildId,
+    targetLufs: cfg.orator.targetLufs,
+  };
 
+  // The Discord bot (voice/playback) is optional: without a token the web UI +
+  // library still run, and playback routes return 503.
+  let playback: PlaybackEngine | undefined;
+  const token = resolveSecret(cfg.orator.discordToken);
+  if (token && config.guildId) {
+    try {
+      const bot = await startBot({
+        token,
+        guildId: config.guildId,
+        store,
+        targetLufs: config.targetLufs,
+      });
+      playback = bot.engine;
+      log.emit({ severityText: "INFO", body: "discord bot online (in-process voice)" });
+    } catch (err) {
+      log.emit({
+        severityText: "ERROR",
+        body: `discord bot failed to start (playback disabled): ${err}`,
+      });
+    }
+  } else {
+    log.emit({
+      severityText: "INFO",
+      body: "no DISCORD_TOKEN/guild — playback disabled (web UI + library still run)",
+    });
+  }
+
+  const { server } = startServer(config, store, { services: { playback } });
   log.emit({
     severityText: "INFO",
     body: `orator-backend listening on http://localhost:${server.port}`,
   });
+  log.emit({
+    severityText: "INFO",
+    body: `operator allowlist: ${allowlist.size} id(s); data dir: ${dataDir}`,
+  });
 }
 
-main();
+main().catch((e) => {
+  log.emit({ severityText: "FATAL", body: `orator-backend failed to start: ${e}` });
+  process.exit(1);
+});

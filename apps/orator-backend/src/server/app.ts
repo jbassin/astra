@@ -1,0 +1,240 @@
+/**
+ * The orator HTTP app (lark §7). `createApp()` returns a pure `handle(req)` that
+ * can be unit-tested without binding a port, opening a Discord connection, or
+ * hitting the network. `startServer()` binds it on `Bun.serve`.
+ *
+ * Layering: auth routes (login/callback/logout) + an open health check are
+ * special-cased; everything under `/api/` is dispatched through the router, which
+ * resolves the actor from a **web session** (Discord OAuth → signed cookie) OR a
+ * Bearer **API key** (same `uid` either way). The operator allowlist is derived
+ * from the ontology (M1) and threaded in as `config.allowlist`.
+ *
+ * astra port: the sync `bun:sqlite` `db` → the async `LibraryStore`; cookie
+ * `lark_session`→`orator_session`; logs `[lark]`→`[orator]`. The HMAC OAuth
+ * `state` (stateless CSRF), the "Add to Server" callback branch, and
+ * `idleTimeout:60` are preserved verbatim.
+ */
+import { randomBytes } from "node:crypto";
+import { resolve } from "node:path";
+import type { Server } from "bun";
+import type { LibraryStore } from "../db/store";
+import { extractApiKey, hashKey } from "./apikeys";
+import { buildAuthorizeUrl, exchangeCodeForUser, type OAuthConfig } from "./oauth";
+import {
+  type ApiRoute,
+  type ApiServices,
+  HttpError,
+  json,
+  matchRoute,
+  type Session,
+} from "./router";
+import { keyRoutes } from "./routes/keys";
+import { libraryRoutes } from "./routes/library";
+import { playbackRoutes } from "./routes/playback";
+import { clearCookie, parseCookies, sessionCookie, signSession, verifySession } from "./sessions";
+
+const SESSION_COOKIE = "orator_session";
+
+/** API routes that require a valid session or API key. Extended per slice. */
+const API_ROUTES: ApiRoute[] = [...libraryRoutes, ...playbackRoutes, ...keyRoutes];
+
+/** The full runtime config the app needs (built in the entrypoint from cfg.orator). */
+export interface AppConfig {
+  port: number;
+  sessionSecret: string;
+  allowlist: Set<string>;
+  oauth: OAuthConfig;
+  publicOrigin: string;
+  /** `Secure` cookies whenever the public origin is https (i.e. in prod). */
+  secureCookies: boolean;
+  distDir: string;
+  dataDir: string;
+  guildId: string;
+  targetLufs: number;
+}
+
+export interface AppDeps {
+  fetchImpl?: (input: string, init?: RequestInit) => Promise<Response>;
+  now?: () => number;
+  makeState?: () => string;
+  /** Runtime service handles (playback engine, ingest…). */
+  services?: ApiServices;
+}
+
+export interface App {
+  readonly store: LibraryStore;
+  readonly config: AppConfig;
+  handle(req: Request): Promise<Response>;
+}
+
+export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps = {}): App {
+  const fetchImpl = deps.fetchImpl ?? fetch;
+  const now = deps.now ?? Date.now;
+  const makeState = deps.makeState ?? (() => randomBytes(16).toString("hex"));
+  const services = deps.services ?? {};
+
+  function getSession(req: Request): Session | null {
+    const cookies = parseCookies(req.headers.get("cookie"));
+    const session = verifySession(cookies[SESSION_COOKIE], config.sessionSecret, now());
+    if (!session) return null;
+    if (config.allowlist.size > 0 && !config.allowlist.has(session.uid)) return null;
+    return session;
+  }
+
+  /** Resolve the actor from a web session OR a Stream Deck API key (B26/D4). */
+  async function authenticate(
+    req: Request,
+  ): Promise<{ session: Session; method: "session" | "apikey" } | null> {
+    const session = getSession(req);
+    if (session) return { session, method: "session" };
+
+    const raw = extractApiKey(req.headers);
+    if (raw) {
+      const key = await store.getApiKeyByHash(hashKey(raw));
+      if (
+        key &&
+        !key.revoked_at &&
+        (config.allowlist.size === 0 || config.allowlist.has(key.user_id))
+      ) {
+        await store.touchApiKey(key.id);
+        return {
+          session: { uid: key.user_id, exp: Math.floor(now() / 1000) + 60 },
+          method: "apikey",
+        };
+      }
+    }
+    return null;
+  }
+
+  function login(): Response {
+    // Stateless CSRF: the `state` is an HMAC-signed, self-expiring token (10 min)
+    // rather than a value we must round-trip in a cookie. This avoids the whole
+    // class of SameSite/Secure/lost-cookie failures (invalid_oauth_state).
+    const state = signSession(makeState(), config.sessionSecret, 600, now());
+    return new Response(null, {
+      status: 302,
+      headers: { location: buildAuthorizeUrl(config.oauth, state) },
+    });
+  }
+
+  async function callback(req: Request, url: URL): Promise<Response> {
+    const code = url.searchParams.get("code");
+    const state = url.searchParams.get("state");
+    // The "Add to Server" (bot install) flow redirects here with guild_id/
+    // permissions and no login `state` — a different OAuth flow. Guide the user
+    // instead of returning a confusing invalid_oauth_state.
+    if (url.searchParams.has("guild_id") || url.searchParams.has("permissions")) {
+      return new Response(
+        `<!doctype html><meta charset="utf-8"><title>orator</title>` +
+          `<body style="font-family:system-ui;max-width:36rem;margin:4rem auto;padding:0 1rem;background:#0e0f13;color:#e7e9ee">` +
+          `<h1>orator</h1><p>✅ orator is added to your server. To control playback, ` +
+          `<a style="color:#c8a24a" href="/">open the app</a> and click <b>Sign in with Discord</b>.</p></body>`,
+        { status: 200, headers: { "content-type": "text/html; charset=utf-8" } },
+      );
+    }
+    if (!code || !verifySession(state ?? undefined, config.sessionSecret, now())) {
+      return json({ error: "invalid_oauth_state" }, 400);
+    }
+    let user: Awaited<ReturnType<typeof exchangeCodeForUser>>;
+    try {
+      user = await exchangeCodeForUser(config.oauth, code, fetchImpl);
+    } catch {
+      return json({ error: "oauth_exchange_failed" }, 502);
+    }
+    if (config.allowlist.size > 0 && !config.allowlist.has(user.id))
+      return json({ error: "not_allowlisted" }, 403);
+    const token = signSession(user.id, config.sessionSecret, undefined, now());
+    return new Response(null, {
+      status: 302,
+      headers: {
+        location: "/",
+        "set-cookie": sessionCookie(SESSION_COOKIE, token, { secure: config.secureCookies }),
+      },
+    });
+  }
+
+  function logout(): Response {
+    return new Response(null, {
+      status: 302,
+      headers: { location: "/", "set-cookie": clearCookie(SESSION_COOKIE) },
+    });
+  }
+
+  async function dispatchApi(req: Request, url: URL): Promise<Response> {
+    const auth = await authenticate(req);
+    if (!auth) return json({ error: "unauthenticated" }, 401);
+    const matched = matchRoute(API_ROUTES, req.method, url.pathname);
+    if (!matched) return json({ error: "not_found" }, 404);
+    try {
+      return await matched.route.handler({
+        req,
+        url,
+        params: matched.params,
+        session: auth.session,
+        authMethod: auth.method,
+        store,
+        config: { guildId: config.guildId, dataDir: config.dataDir },
+        services,
+      });
+    } catch (err) {
+      if (err instanceof HttpError) return json({ error: err.message }, err.status);
+      // PlaybackError and similar carry a numeric `status`.
+      const status = (err as { status?: unknown }).status;
+      if (typeof status === "number")
+        return json({ error: (err as Error).message ?? "error" }, status);
+      console.error("[orator] api error", err);
+      return json({ error: "internal" }, 500);
+    }
+  }
+
+  async function serveStatic(req: Request): Promise<Response> {
+    const pathname = decodeURIComponent(new URL(req.url).pathname);
+    const target = resolve(config.distDir, `.${pathname}`);
+    if (target !== config.distDir && !target.startsWith(`${config.distDir}/`)) {
+      return new Response("forbidden\n", { status: 403 });
+    }
+    const candidate =
+      pathname === "/" || pathname.endsWith("/") ? resolve(target, "index.html") : target;
+    let file = Bun.file(candidate);
+    if (!(await file.exists())) {
+      file = Bun.file(resolve(config.distDir, "index.html"));
+      if (!(await file.exists())) return new Response("not found\n", { status: 404 });
+    }
+    return new Response(file);
+  }
+
+  async function handle(req: Request): Promise<Response> {
+    const url = new URL(req.url);
+    const { pathname } = url;
+
+    if (req.method === "GET" && pathname === "/auth/login") return login();
+    if (req.method === "GET" && pathname === "/auth/callback") return callback(req, url);
+    if (req.method === "POST" && pathname === "/auth/logout") return logout();
+
+    if (pathname === "/api/v1/health") return json({ ok: true });
+    if (pathname.startsWith("/api/")) return dispatchApi(req, url);
+
+    if (req.method === "GET" || req.method === "HEAD") return serveStatic(req);
+    return json({ error: "method_not_allowed" }, 405);
+  }
+
+  return { store, config, handle };
+}
+
+export interface RunningServer {
+  server: Server<undefined>;
+  app: App;
+  stop(): void;
+}
+
+export function startServer(
+  config: AppConfig,
+  store: LibraryStore,
+  deps: AppDeps = {},
+): RunningServer {
+  const app = createApp(config, store, deps);
+  // Voice join can take a few seconds; the default 10s idle timeout would cut a
+  // /playback/play request off mid-join. Give it room.
+  const server = Bun.serve({ port: config.port, fetch: app.handle, idleTimeout: 60 });
+  return { server, app, stop: () => server.stop(true) };
+}
