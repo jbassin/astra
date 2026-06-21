@@ -20,6 +20,17 @@ export function drawEdgesPath(
   }
 }
 
+// Stroke a polyline (moveTo + lineTo across the points). Caller applies the
+// stroke style afterward. Shared by the skein line/curve renderers.
+export function strokePolyline(
+  g: Graphics,
+  points: ReadonlyArray<readonly [number, number]>,
+): void {
+  if (points.length < 2) return;
+  g.moveTo(points[0]![0], points[0]![1]);
+  for (let i = 1; i < points.length; i++) g.lineTo(points[i]![0], points[i]![1]);
+}
+
 export interface WorldHandle {
   world: Container;
   fit: (width: number, height: number) => void;

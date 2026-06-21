@@ -3,7 +3,41 @@
 // caller emits Graphics commands by walking the polyline samples this module
 // produces.
 
+import { hexPixel } from "@/lib/hexUtils";
+import type { SkeinState } from "@/lib/layers";
+
 const CURVE_SAMPLE_STEPS = 32; // → 33 polyline points per connection
+
+// Canonical, direction-independent key for a connection. Both renderers key
+// connections this way so signatures and curves agree regardless of edge order.
+export function connKey(from: string, to: string): string {
+  return from < to ? `${from}|${to}` : `${to}|${from}`;
+}
+
+export interface SkeinEndpoints {
+  key: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
+// Resolve each connection to canonical-keyed pixel endpoints, skipping any whose
+// node is missing. Pixi-free + deterministic, so both renderers build the same
+// curve set from it.
+export function connectionEndpoints(skein: SkeinState): SkeinEndpoints[] {
+  const bySlug = new Map(skein.regions.map((r) => [r.slug, r]));
+  const out: SkeinEndpoints[] = [];
+  for (const { from, to } of skein.connections) {
+    const a = bySlug.get(from);
+    const b = bySlug.get(to);
+    if (!a || !b) continue;
+    const [x1, y1] = hexPixel(a.hex[0], a.hex[1]);
+    const [x2, y2] = hexPixel(b.hex[0], b.hex[1]);
+    out.push({ key: connKey(from, to), x1, y1, x2, y2 });
+  }
+  return out;
+}
 
 export interface SkeinSignature {
   // Perpendicular offset of the Bezier control point as a fraction of chord

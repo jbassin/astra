@@ -25,9 +25,18 @@ import {
   totalEdgeLength,
 } from "./animations";
 import styles from "./HexMap.module.css";
-import { drawEdgesPath, hexVertsAtPixel, prefersReducedMotion, WORLD_VIEWBOX } from "./pixiScene";
+import { paintRegionBorder, paintRegionFill } from "./mapPaint";
+import {
+  drawEdgesPath,
+  hexVertsAtPixel,
+  prefersReducedMotion,
+  strokePolyline,
+  WORLD_VIEWBOX,
+} from "./pixiScene";
 import {
   computeSkeinCurve,
+  connectionEndpoints,
+  connKey,
   partialCurvePolyline,
   type SkeinCurve,
   type SkeinSignature,
@@ -425,33 +434,9 @@ function buildScene(
         entry.factionIdx = factionIdx;
       }
 
-      entry.fill.clear();
-      for (const [q, r] of region.hexes) {
-        const [cx, cy] = hexPixel(q, r);
-        const verts = hexVertsAtPixel(cx, cy);
-        entry.fill.poly(verts);
-        entry.fill.fill({
-          color: "#0a0d12",
-          alpha: hoveredRegionSlug === region.slug ? 0.55 : 0.4,
-        });
-      }
-
-      // Rebuild border
-      entry.border.clear();
-      const edges = computeRegionBorders(region.hexes);
-      const hovered = hoveredRegionSlug === region.slug;
-      drawEdgesPath(entry.border, edges);
-      entry.border.stroke({
-        color: hovered ? "#6dd5c0" : "#f0b46e",
-        width: hovered ? 0.35 : 0.22,
-        alpha: hovered ? 0.9 : 0.55,
-        cap: "round",
-      });
-      const glow = entry.border.filters?.[0] as GlowFilter | undefined;
-      if (glow) {
-        glow.color = hovered ? 0x6dd5c0 : 0xf0b46e;
-        glow.outerStrength = hovered ? 1.4 : 0.8;
-      }
+      const active = hoveredRegionSlug === region.slug;
+      paintRegionFill(entry.fill, region, active);
+      paintRegionBorder(entry.border, region, active);
     }
 
     for (const [slug, entry] of regionEntries) {
@@ -480,29 +465,8 @@ function buildScene(
       const region = currentRegions.find((r) => r.slug === targetSlug);
       if (!region) continue;
       const hovered = targetSlug === hoveredRegionSlug;
-
-      entry.fill.clear();
-      for (const [q, r] of region.hexes) {
-        const [cx, cy] = hexPixel(q, r);
-        const verts = hexVertsAtPixel(cx, cy);
-        entry.fill.poly(verts);
-        entry.fill.fill({ color: "#0a0d12", alpha: hovered ? 0.55 : 0.4 });
-      }
-
-      entry.border.clear();
-      const edges = computeRegionBorders(region.hexes);
-      drawEdgesPath(entry.border, edges);
-      entry.border.stroke({
-        color: hovered ? "#6dd5c0" : "#f0b46e",
-        width: hovered ? 0.35 : 0.22,
-        alpha: hovered ? 0.9 : 0.55,
-        cap: "round",
-      });
-      const glow = entry.border.filters?.[0] as GlowFilter | undefined;
-      if (glow) {
-        glow.color = hovered ? 0x6dd5c0 : 0xf0b46e;
-        glow.outerStrength = hovered ? 1.4 : 0.8;
-      }
+      paintRegionFill(entry.fill, region, hovered);
+      paintRegionBorder(entry.border, region, hovered);
     }
   }
 
@@ -565,15 +529,8 @@ function buildScene(
   // identifier regardless of direction).
   const connectionGraphics = new Map<string, ConnectionGraphics>();
 
-  function connKey(from: string, to: string): string {
-    return from < to ? `${from}|${to}` : `${to}|${from}`;
-  }
-
   function strokeCurveInto(g: Graphics, curve: SkeinCurve, tEnd: number): void {
-    const pts = partialCurvePolyline(curve, tEnd);
-    if (pts.length < 2) return;
-    g.moveTo(pts[0]![0], pts[0]![1]);
-    for (let i = 1; i < pts.length; i++) g.lineTo(pts[i]![0], pts[i]![1]);
+    strokePolyline(g, partialCurvePolyline(curve, tEnd));
   }
 
   function strokeConnection(cg: ConnectionGraphics, tEnd: number): void {
@@ -674,15 +631,9 @@ function buildScene(
     const skeinBySlug = new Map<string, SkeinRegion>();
     for (const r of skein.regions) skeinBySlug.set(r.slug, r);
 
-    const desired = new Map<string, { x1: number; y1: number; x2: number; y2: number }>();
-    for (const { from, to } of skein.connections) {
-      const a = skeinBySlug.get(from);
-      const b = skeinBySlug.get(to);
-      if (!a || !b) continue;
-      const [x1, y1] = hexPixel(a.hex[0], a.hex[1]);
-      const [x2, y2] = hexPixel(b.hex[0], b.hex[1]);
-      desired.set(connKey(from, to), { x1, y1, x2, y2 });
-    }
+    // Canonical-keyed pixel endpoints (shared resolver — same set EditorHexMap
+    // builds). Downstream diffs against connectionGraphics by this key.
+    const desired = new Map(connectionEndpoints(skein).map((e) => [e.key, e] as const));
 
     // Remove stale connection graphics + pulses.
     for (const [key, cg] of connectionGraphics) {

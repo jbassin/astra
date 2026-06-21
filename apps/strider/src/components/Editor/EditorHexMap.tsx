@@ -9,15 +9,16 @@ import {
   CURRENT_FACTION_HEXES,
   CURRENT_UNOWNED_HEXES,
 } from "@/lib/layers";
-import { attachWorld, drawEdgesPath, hexVertsAtPixel } from "../HexMap/pixiScene";
-import { computeSkeinCurve, type SkeinCurve, skeinSignature } from "../HexMap/skeinGeometry";
+import { paintRegionBorder, paintRegionFill } from "../HexMap/mapPaint";
+import { attachWorld, drawEdgesPath, hexVertsAtPixel, strokePolyline } from "../HexMap/pixiScene";
+import {
+  computeSkeinCurve,
+  connectionEndpoints,
+  connKey,
+  type SkeinCurve,
+  skeinSignature,
+} from "../HexMap/skeinGeometry";
 import styles from "./EditorView.module.css";
-
-// Canonical skein connection key (matches the production HexMap implementation
-// so signatures and curves agree between the two renderers).
-function connKey(from: string, to: string): string {
-  return from < to ? `${from}|${to}` : `${to}|${from}`;
-}
 
 // Walk a polyline and emit dash/gap segments preserving rhythm across vertices
 // — without this, dashes restart at every vertex and the line reads as a
@@ -249,31 +250,6 @@ function buildEditorScene(
   let currentRegions: Region[] = [];
   let pickedRegionSlug: string | null = null;
 
-  function paintRegionFill(g: Graphics, region: Region, picked: boolean) {
-    g.clear();
-    for (const [q, r] of region.hexes) {
-      const [cx, cy] = hexPixel(q, r);
-      g.poly(hexVertsAtPixel(cx, cy));
-      g.fill({ color: "#0a0d12", alpha: picked ? 0.55 : 0.4 });
-    }
-  }
-
-  function paintRegionBorder(g: Graphics, region: Region, picked: boolean) {
-    g.clear();
-    drawEdgesPath(g, computeRegionBorders(region.hexes));
-    g.stroke({
-      color: picked ? "#6dd5c0" : "#f0b46e",
-      width: picked ? 0.35 : 0.22,
-      alpha: picked ? 0.9 : 0.55,
-      cap: "round",
-    });
-    const glow = g.filters?.[0] as GlowFilter | undefined;
-    if (glow) {
-      glow.color = picked ? 0x6dd5c0 : 0xf0b46e;
-      glow.outerStrength = picked ? 1.4 : 0.8;
-    }
-  }
-
   function setRegions(regions: Region[]) {
     currentRegions = regions;
     const seen = new Set<string>();
@@ -347,31 +323,16 @@ function buildEditorScene(
 
   async function setSkein(skein: SkeinState) {
     currentSkein = skein;
-    const skeinBySlug = new Map<string, SkeinRegion>();
-    for (const r of skein.regions) skeinBySlug.set(r.slug, r);
 
-    const curves: SkeinCurve[] = [];
-    for (const { from, to } of skein.connections) {
-      const a = skeinBySlug.get(from);
-      const b = skeinBySlug.get(to);
-      if (!a || !b) continue;
-      const [x1, y1] = hexPixel(a.hex[0], a.hex[1]);
-      const [x2, y2] = hexPixel(b.hex[0], b.hex[1]);
-      const sig = skeinSignature(connKey(from, to));
-      curves.push(computeSkeinCurve(x1, y1, x2, y2, sig));
-    }
+    const curves: SkeinCurve[] = connectionEndpoints(skein).map((e) =>
+      computeSkeinCurve(e.x1, e.y1, e.x2, e.y2, skeinSignature(e.key)),
+    );
 
     haloGraphics.clear();
     baseGraphics.clear();
     for (const curve of curves) {
-      const pts = curve.samples;
-      if (pts.length < 2) continue;
-      haloGraphics.moveTo(pts[0]![0], pts[0]![1]);
-      baseGraphics.moveTo(pts[0]![0], pts[0]![1]);
-      for (let i = 1; i < pts.length; i++) {
-        haloGraphics.lineTo(pts[i]![0], pts[i]![1]);
-        baseGraphics.lineTo(pts[i]![0], pts[i]![1]);
-      }
+      strokePolyline(haloGraphics, curve.samples);
+      strokePolyline(baseGraphics, curve.samples);
     }
     haloGraphics.stroke({ color: "#06080b", width: 2.0, cap: "round" });
     baseGraphics.stroke({
