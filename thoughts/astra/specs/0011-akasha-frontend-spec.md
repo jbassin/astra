@@ -1,7 +1,10 @@
 # NLSpec 0011 — akasha-frontend (the wiki read-surface)
 
-**Status:** **PLAN** (pre-implementation) — scope gate complete (N1/N3 spiked, N2/N4–N8 decided with the user
-2026-06-21); ready for `octo:embrace`. **Phase:** 5 (frontends).
+**Status:** **IN PROGRESS** — **slice 1 of 9 BUILT + PUSHED** (`c165b01`): scaffold on the strider SSR
+template (config namespace 10365 mirrored in both schemas, the shell + RUM seam + SSR smoke, a placeholder
+`@astra/content-build` source, templated Dockerfile, uv exclude). CI-green (SSR boots/renders, biome + 14/14
+typecheck + uv all pass). Scope gate complete (N1/N3 spiked, N2/N4–N8 decided 2026-06-21). **Resume at slice 2**
+(slug/site lift + snapshot adapter). **Phase:** 5 (frontends).
 **Source plan:** [`../plans/0011-akasha-frontend.md`](../plans/0011-akasha-frontend.md).
 **Pre-impl thoughts:** [`../../shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`](../../shared/research/2026-06-21-akasha-frontend-0011-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (typescript-pro, frontend-developer, code-reviewer), per astra `CLAUDE.md`.
