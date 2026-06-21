@@ -33,7 +33,6 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
 const FACTIONS_DIR = path.join(ROOT, "content", "factions");
 const LAYERS_DIR = path.join(ROOT, "content", "layers");
-const SYMBOLS_DIR = path.join(ROOT, "public", "symbols");
 const OUT_DIR = path.join(ROOT, "src", "generated");
 
 interface Member {
@@ -354,26 +353,8 @@ export const CURRENT_FACTION_TERRITORY_BORDERS: ReadonlyArray<ReadonlyArray<Edge
   emit("layers.ts", source);
 }
 
-function emitContentHash(hash: string): void {
-  emit("contentHash.ts", `${HEADER}export const CONTENT_HASH = ${JSON.stringify(hash)};\n`);
-}
-
 function emitGitignore(): void {
   emit(".gitignore", "*\n!.gitignore\n");
-}
-
-function walkFilesRecursive(dir: string): string[] {
-  if (!fs.existsSync(dir)) return [];
-  const out: string[] = [];
-  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) {
-      out.push(...walkFilesRecursive(full));
-    } else if (entry.isFile()) {
-      out.push(full);
-    }
-  }
-  return out;
 }
 
 // Pure, order-independent content digest: sorts by relative path, then hashes
@@ -389,28 +370,6 @@ export function hashFiles(files: ReadonlyArray<{ rel: string; bytes: Buffer | st
     hash.update("\0");
   }
   return hash.digest("hex").slice(0, 16);
-}
-
-function computeContentHash(): string {
-  const factionFiles = fs.existsSync(FACTIONS_DIR)
-    ? fs
-        .readdirSync(FACTIONS_DIR)
-        .filter((f) => f.endsWith(".md"))
-        .map((f) => path.join(FACTIONS_DIR, f))
-    : [];
-  const layerFiles = fs.existsSync(LAYERS_DIR)
-    ? fs
-        .readdirSync(LAYERS_DIR)
-        .filter((f) => f.endsWith(".md") && f !== "README.md" && f !== "CLAUDE.md")
-        .map((f) => path.join(LAYERS_DIR, f))
-    : [];
-  const symbolFiles = walkFilesRecursive(SYMBOLS_DIR);
-
-  const files = [...factionFiles, ...layerFiles, ...symbolFiles].map((abs) => ({
-    rel: path.relative(ROOT, abs),
-    bytes: fs.readFileSync(abs),
-  }));
-  return hashFiles(files);
 }
 
 async function main(): Promise<void> {
@@ -430,8 +389,6 @@ async function main(): Promise<void> {
     effective.perFaction,
   );
 
-  const contentHash = computeContentHash();
-
   emitFactions(factions);
   emitLayers(
     layers,
@@ -442,11 +399,10 @@ async function main(): Promise<void> {
     factionBorders,
     territoryBorders,
   );
-  emitContentHash(contentHash);
   emitGitignore();
 
   console.log(
-    `[build-content] ${factions.length} factions, ${layers.length} layers, ${regions.length} regions, ${skein.regions.length} skein regions, ${skein.connections.length} skein connections, ${overrides.size} hex overrides (${effective.unowned.length} unowned), hash=${contentHash}`,
+    `[build-content] ${factions.length} factions, ${layers.length} layers, ${regions.length} regions, ${skein.regions.length} skein regions, ${skein.connections.length} skein connections, ${overrides.size} hex overrides (${effective.unowned.length} unowned)`,
   );
 }
 

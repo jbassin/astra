@@ -91,25 +91,22 @@ changes:
 ## Authoring with the editor
 
 The `/editor` page provides a click-to-pick UI that writes a new layer file for
-you. It needs a sidecar Bun script running on `127.0.0.1:3001` to perform the
-write (the production site is statically exported and has no server).
+you. strider runs as a TanStack Start **SSR** server (Decision I), so the save
+goes through a **server function** (`writeLayerFn` → `scripts/writeLayer.ts`) on
+the same origin — there is no sidecar process. The `/editor` route is client-only
+(`ssr: false`) and gated to the local network at the Caddy edge.
 
-In one terminal:
+Just run the dev server:
 
 ```bash
 bun dev
 ```
 
-In a second terminal:
-
-```bash
-bun run editor:server
-```
-
-Then open <http://localhost:3000/editor>. Saving a layer POSTs to the sidecar
-which writes the new file under `content/layers/`. The sidecar refuses to
-overwrite existing files; if you need to revise a layer, edit the markdown
-directly or write a follow-up layer with an `update` / `remove` change.
+Then open <http://localhost:10360/editor>. Saving a layer calls the server
+function, which validates (filename regex, 64 KB cap, no overwrite) and writes
+the new file under `content/layers/`. After the file lands, `contentWatchPlugin`
+re-runs `build-content` and Vite full-reloads. To revise a layer, edit the
+markdown directly or write a follow-up layer with an `update` / `remove` change.
 
 Toggle the **REGION** / **SKEIN** kind at the top of the panel to switch
 between authoring kinds. The editor handles `add`/`update`/`remove` for

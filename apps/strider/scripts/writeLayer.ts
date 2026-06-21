@@ -73,7 +73,6 @@ export function writeLayer(body: unknown, layersDir: string = LAYERS_DIR): Write
     };
   }
 
-  const rel = `content/layers/${v.req.filename}`;
-  console.log(`[strider] editor wrote ${rel}`);
-  return { status: 200, body: { ok: true, path: rel } };
+  // Pure of transport + telemetry: writeLayerFn wraps this in a span + log.
+  return { status: 200, body: { ok: true, path: `content/layers/${v.req.filename}` } };
 }

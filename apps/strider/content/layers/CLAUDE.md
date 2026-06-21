@@ -4,7 +4,7 @@ Each file is one event in the timeline. Filename order = chronological order; th
 
 ## Filename
 
-Strict regex (enforced by `scripts/editor-server.ts`, also validated at parse time in `scripts/build-content.ts`):
+Strict regex (enforced by `scripts/writeLayer.ts`, the server function's writer, and also validated at parse time in `scripts/build-content.ts`):
 
 ```
 ^\d{4}-\d{2}-\d{2}T\d{6}-[a-z0-9-]+\.md$
@@ -12,7 +12,7 @@ Strict regex (enforced by `scripts/editor-server.ts`, also validated at parse ti
 
 i.e. `0863-07-18T200001-garrick-textiles-falls-fallow.md`. Lowercase kebab-case slug, six-digit `HHMMSS` (no colons). The in-world year is 4-digit (e.g. `0863`) — keep zero-padding.
 
-Don't hand-write a colliding filename — the editor sidecar rejects existing files with HTTP 409.
+Don't hand-write a colliding filename — the writer rejects existing files with HTTP 409.
 
 ## Frontmatter
 
@@ -58,4 +58,5 @@ Notes:
 
 ## Writing layers via `/editor`
 
-`bun dev` + `bun run editor:server` exposes a `/editor` UI that POSTs validated layer JSON to `http://0.0.0.0:3001/write-layer`, which writes the file into this directory. The sidecar enforces the filename regex, a 64 KB content cap, and refuses to overwrite existing files. After the file lands, `contentWatchPlugin` re-runs `build-content` and Vite full-reloads.
+`bun dev` exposes a client-only `/editor` UI (`ssr: false`) whose save calls the
+`writeLayerFn` **server function** (TanStack Start, same origin — no sidecar), which writes the file into this directory via `scripts/writeLayer.ts`. The writer enforces the filename regex, a 64 KB content cap, and refuses to overwrite existing files. After the file lands, `contentWatchPlugin` re-runs `build-content` and Vite full-reloads.

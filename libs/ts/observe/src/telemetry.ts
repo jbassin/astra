@@ -9,4 +9,14 @@
  */
 import { initTelemetry } from "./index";
 
-initTelemetry(process.env.OTEL_SERVICE_NAME ?? "astra.unknown");
+const telemetry = initTelemetry(process.env.OTEL_SERVICE_NAME ?? "astra.unknown");
+
+// Force-flush buffered spans/metrics/logs before the process exits, or the
+// BatchSpanProcessor drops whatever it's holding when the container stops.
+// (Adding a signal listener overrides Bun's default terminate, so we must exit
+// ourselves once the flush settles.) `once` keeps it idempotent.
+for (const sig of ["SIGTERM", "SIGINT"] as const) {
+  process.once(sig, () => {
+    void telemetry.shutdown().finally(() => process.exit(0));
+  });
+}
