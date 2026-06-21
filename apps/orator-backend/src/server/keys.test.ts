@@ -18,6 +18,7 @@ function cfg(allow = ["uid"]): AppConfig {
     dataDir: "/tmp",
     guildId: "g",
     targetLufs: -16,
+    rumEndpoint: "http://localhost:10353",
   };
 }
 

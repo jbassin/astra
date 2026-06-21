@@ -1,0 +1,652 @@
+/*
+ * orator operator console — ported from faerrin lark `src/web/styles.css`,
+ * re-skinned onto the @astra/gothic design system. gothic's theme.css (imported
+ * first in main.tsx) supplies the Tailwind layer, the void/amber `--color-*`
+ * tokens, and the fonts; here we alias lark's local variable names onto those
+ * tokens so the lifted component CSS adopts the gothic palette + faces unchanged.
+ */
+:root {
+  --bg: var(--color-void);
+  --panel: var(--color-panel);
+  --ink: var(--color-ink);
+  --muted: var(--color-ink-dim);
+  --accent: var(--color-accent-amber);
+  --accent-ink: var(--color-void);
+  --danger: #e0654a;
+  --border: var(--color-rule);
+  --row-sel: #14223a;
+  --motion-fast: 200ms;
+  --modal-backdrop: #000000aa;
+  --shadow-pop: 0 8px 28px #000000aa;
+  --z-modal: 100;
+  --z-toast: 200;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body), serif;
+}
+
+.app {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+}
+
+.app__header {
+  margin-bottom: 1.5rem;
+}
+
+.app__tagline {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.btn {
+  display: inline-block;
+  margin-top: 0.5rem;
+  padding: 0.6rem 1rem;
+  border: 0;
+  border-radius: 8px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--border);
+}
+
+/* --- userbar + library --- */
+.app__userbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.lib {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.25rem;
+}
+
+.lib__facets h3 {
+  margin: 1rem 0 0.4rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+
+.lib__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.lib__list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.3rem 0.5rem;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.lib__list button.is-active {
+  background: var(--panel);
+  color: var(--accent);
+}
+
+.lib__bar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.lib__search {
+  flex: 1 1 200px;
+  padding: 0.5rem 0.6rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+}
+
+.lib__tracks {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+
+.lib__tracks th,
+.lib__tracks td {
+  text-align: left;
+  padding: 0.4rem 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.lib__tracks tr.is-selected {
+  background: #14223044;
+}
+
+.lib__title {
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+}
+
+.is-error {
+  color: var(--danger);
+}
+
+/* --- import panel --- */
+.import {
+  margin-bottom: 1.25rem;
+}
+.import__form {
+  display: flex;
+  gap: 0.5rem;
+}
+.import__items {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.import__item {
+  display: grid;
+  grid-template-columns: 1fr 120px 90px;
+  gap: 0.6rem;
+  align-items: center;
+  font-size: 0.85rem;
+}
+.import__item-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.import__bar {
+  height: 6px;
+  background: var(--border);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.import__bar-fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.2s;
+}
+.import__item.is-error .import__bar-fill {
+  background: var(--danger);
+}
+
+/* --- playback bar --- */
+.pb {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0.9rem;
+  margin-bottom: 1rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  flex-wrap: wrap;
+}
+.pb--off {
+  justify-content: center;
+}
+.pb__controls {
+  display: flex;
+  gap: 0.35rem;
+}
+.pb__controls .btn {
+  margin-top: 0;
+  padding: 0.35rem 0.6rem;
+}
+.lib__play {
+  background: transparent;
+  border: 0;
+  color: var(--accent);
+  cursor: pointer;
+  margin-right: 0.4rem;
+}
+
+/* --- keys --- */
+.keys {
+  margin-bottom: 1.25rem;
+}
+.keys__toggle {
+  margin-top: 0;
+}
+.keys__body {
+  margin-top: 0.75rem;
+}
+.keys__raw {
+  display: block;
+  padding: 0.5rem;
+  background: var(--bg);
+  border-radius: 6px;
+  word-break: break-all;
+  margin: 0.4rem 0;
+}
+.keys__list {
+  list-style: none;
+  padding: 0;
+  margin: 0.75rem 0 0;
+}
+.keys__list li {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.keys__list li.is-revoked {
+  opacity: 0.5;
+}
+
+/* --- bulk strip/delete controls (Library) --- */
+.lib__selcount {
+  align-self: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.btn--danger {
+  color: var(--danger);
+  border-color: #5a2a22;
+}
+.btn--danger-solid {
+  background: var(--danger);
+  color: #1a0805;
+}
+
+/* --- collection management (Library sidebar + move) --- */
+.lib__facets h3 .lib__add {
+  background: transparent;
+  border: 0;
+  color: var(--accent);
+  cursor: pointer;
+  font-size: 1rem;
+  margin-left: 0.4rem;
+  text-transform: none;
+}
+.lib__collrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lib__collrow > button:first-child {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.lib__collacts {
+  display: none;
+  gap: 0.1rem;
+}
+.lib__collrow:hover .lib__collacts {
+  display: flex;
+}
+.lib__collacts button {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+}
+.lib__collacts button:hover {
+  color: var(--ink);
+}
+
+/* --- selection action bar (Library) --- */
+.lib__selbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.75rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+.lib__bar .btn,
+.lib__selbar .btn {
+  margin-top: 0;
+}
+.lib__selbar .lib__selcount {
+  margin-right: auto;
+}
+
+/* --- dropdown menu (toolbar) --- */
+.menu {
+  position: relative;
+  display: inline-block;
+}
+.menu__pop {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 10;
+  min-width: 12rem;
+  max-height: 18rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 0.25rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-pop);
+}
+.menu__item {
+  text-align: left;
+  background: transparent;
+  border: 0;
+  color: var(--ink);
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+.menu__item:hover:not(:disabled) {
+  background: #ffffff10;
+}
+.menu__item.is-danger {
+  color: var(--danger);
+}
+.menu__dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--muted);
+  margin-right: 0.5rem;
+  vertical-align: baseline;
+}
+.menu__item:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* --- tag rows + color dots (sidebar) --- */
+.lib__tagrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.lib__tagrow > button:first-child {
+  flex: 1;
+  min-width: 0;
+  white-space: normal;
+}
+.lib__tagdot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1px solid var(--muted);
+  margin-right: 0.4rem;
+  vertical-align: baseline;
+}
+.lib__tagedit {
+  flex: 0 0 auto;
+  opacity: 0;
+  pointer-events: none;
+  background: transparent;
+  border: 0;
+  padding: 0 0.2rem;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.78rem;
+  line-height: 1;
+}
+.lib__tagrow:hover .lib__tagedit,
+.lib__tagedit:focus-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.lib__tagedit:hover {
+  color: var(--ink);
+}
+
+/* --- section headers + colored chips (track table) --- */
+.lib__secthead td {
+  padding-top: 0.8rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  border-bottom: 1px solid var(--border);
+}
+.lib__sectdot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  border: 1px solid var(--muted);
+  margin-right: 0.45rem;
+  vertical-align: baseline;
+}
+.lib__tagcell {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  align-items: center;
+}
+.lib__chip {
+  font-size: 0.75rem;
+  padding: 0.05rem 0.45rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  white-space: nowrap;
+}
+.lib__warn {
+  color: var(--danger);
+  margin-right: 0.3rem;
+  cursor: help;
+}
+
+/* --- toasts (corner notifications) --- */
+.toasts {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: min(24rem, calc(100vw - 2rem));
+}
+.toast {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.6rem 0.8rem;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--muted);
+  border-radius: 8px;
+  box-shadow: var(--shadow-pop);
+  font-size: 0.88rem;
+  animation: toast-in var(--motion-fast) ease;
+}
+.toast--success {
+  border-left-color: #6fa86f;
+}
+.toast--error {
+  border-left-color: var(--danger);
+}
+.toast--info {
+  border-left-color: var(--accent);
+}
+.toast__msg {
+  flex: 1;
+  white-space: pre-line;
+  word-break: break-word;
+}
+.toast__close {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+.toast__close:hover {
+  color: var(--ink);
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* --- modals (dialogs) --- */
+.modal__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: var(--modal-backdrop);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: modal-fade var(--motion-fast) ease;
+}
+.modal {
+  width: min(30rem, 100%);
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-pop);
+  padding: 1.25rem;
+}
+.modal__title {
+  margin: 0 0 0.75rem;
+  font-size: 1.15rem;
+}
+.modal__body {
+  margin-bottom: 1rem;
+  font-size: 0.92rem;
+}
+.modal__label {
+  display: block;
+  margin: 0.5rem 0 0.3rem;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+.modal__input {
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+}
+.modal__diff {
+  max-height: 14rem;
+  overflow: auto;
+  margin: 0.5rem 0 0;
+  padding: 0.6rem;
+  background: var(--bg);
+  border-radius: 6px;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.modal__actions .btn {
+  margin-top: 0;
+}
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* --- swatch picker (tag editor) --- */
+.swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+.swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.swatch.is-active {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 2px var(--bg);
+}
+.swatch--none {
+  background: var(--bg);
+  border: 1px dashed var(--muted);
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast,
+  .modal__backdrop {
+    animation: none;
+  }
+}

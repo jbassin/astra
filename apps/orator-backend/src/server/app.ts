@@ -52,6 +52,9 @@ export interface AppConfig {
   dataDir: string;
   guildId: string;
   targetLufs: number;
+  /** Public browser-RUM OTLP endpoint (config.kdl `telemetry.rumEndpoint`), handed
+   * to the static SPA via `/api/v1/rum-config` (the client can't read config). */
+  rumEndpoint: string;
 }
 
 export interface AppDeps {
@@ -213,6 +216,9 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     if (req.method === "POST" && pathname === "/auth/logout") return logout();
 
     if (pathname === "/api/v1/health") return json({ ok: true });
+    // Public, unauthenticated: the static operator SPA fetches this at startup to
+    // configure browser RUM (it can't read config.kdl itself — see web/observe).
+    if (pathname === "/api/v1/rum-config") return json({ endpoint: config.rumEndpoint });
     if (pathname.startsWith("/api/")) return dispatchApi(req, url);
 
     if (req.method === "GET" || req.method === "HEAD") return serveStatic(req);

@@ -82,6 +82,20 @@
     {
       "includes": ["**/weal-overlay/test/hub.test.ts", "**/weal-overlay/test/server.test.ts"],
       "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
+    },
+    {
+      "includes": [
+        "**/orator-backend/src/web/ui/Dialog.tsx",
+        "**/orator-backend/src/web/ui/TagEditModal.tsx"
+      ],
+      "linter": {
+        "rules": {
+          "a11y": {
+            "useKeyWithClickEvents": "off",
+            "noStaticElementInteractions": "off"
+          }
+        }
+      }
     }
   ]
 }

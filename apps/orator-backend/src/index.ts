@@ -87,6 +87,7 @@ async function main(): Promise<void> {
     dataDir,
     guildId: cfg.orator.guildId,
     targetLufs: cfg.orator.targetLufs,
+    rumEndpoint: cfg.telemetry.rumEndpoint,
   };
 
   // The Discord bot (voice/playback) is optional: without a token the web UI +

@@ -21,6 +21,7 @@ function testConfig(overrides: Partial<AppConfig> = {}): AppConfig {
     dataDir: "/tmp/orator-test",
     guildId: "guild",
     targetLufs: -16,
+    rumEndpoint: "http://localhost:10353",
     ...overrides,
   };
 }
@@ -38,6 +39,12 @@ describe("health + auth guard", () => {
     const res = await makeApp().handle(get("/api/v1/health"));
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
+  });
+
+  test("rum-config is open (the static SPA reads it to configure browser RUM)", async () => {
+    const res = await makeApp().handle(get("/api/v1/rum-config"));
+    expect(res.status).toBe(200);
+    expect(await res.json()).toEqual({ endpoint: "http://localhost:10353" });
   });
 
   test("/api/v1/me is 401 without a session", async () => {
