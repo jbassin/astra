@@ -94,8 +94,10 @@ const Orator = z
     guildId: z.string().default(""),
     spikeChannelId: z.string().default(""),
     databaseUrl: z.string().default(""),
-    port: z.number().default(8788),
-    publicOrigin: z.string().default("http://localhost:8788"),
+    port: z.number().default(10363),
+    publicOrigin: z.string().default("https://orator.iridi.cc"),
+    /** Audio + data dir (the Compose volume mount); single source for the service + migrator. */
+    dataDir: z.string().default("/data"),
     allowedUserIds: z.string().default(""),
     targetLufs: z.number().default(-16),
     ingestConcurrency: z.number().default(2),

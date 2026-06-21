@@ -44,27 +44,27 @@ async function main(): Promise<void> {
   // Operators = ontology admin snowflakes ∪ the optional config override (M1).
   const allowlist = buildAllowlist(being, cfg.orator.allowedUserIds);
 
-  const dataDir = resolve(process.env.ORATOR_DATA_DIR ?? resolve(import.meta.dir, "../data"));
-  const distDir = resolve(process.env.ORATOR_DIST_DIR ?? resolve(import.meta.dir, "../dist"));
+  // All runtime config comes from config.kdl via @astra/config (config-single-source)
+  // — no env overrides. The data dir is the Compose audio-volume mount; the dist dir
+  // is a fixed structural path (the SPA Vite-built next to the app), not config.
+  const dataDir = resolve(cfg.orator.dataDir);
+  const distDir = resolve(import.meta.dir, "../dist");
   mkdirSync(dataDir, { recursive: true });
 
   const store = new PostgresStore(cfg.orator.databaseUrl);
   await store.ensureSchema();
 
-  // Ingest: yt-dlp + ffmpeg through a bounded pool. Loudness measurement is a
-  // memory-pressure knob (each item can spawn yt-dlp + an ffmpeg pass), as is
-  // concurrency — both tunable via env, mirroring lark's server entrypoint.
+  // Ingest: yt-dlp + ffmpeg through a bounded pool. Concurrency + loudness-measurement
+  // are memory-pressure knobs (each item can spawn yt-dlp + an ffmpeg pass), sourced
+  // from kdl (lark exposed them as LARK_* env; astra keeps them config-single-source).
   const hub = new JobHub();
-  const ingestConcurrency =
-    Number(process.env.ORATOR_INGEST_CONCURRENCY) || cfg.orator.ingestConcurrency;
-  const measureLoudness = process.env.ORATOR_MEASURE_LOUDNESS !== "0" && cfg.orator.measureLoudness;
   const ingest = new IngestService({
     store,
     dataDir,
     ytdlp: realYtDlp,
     hub,
-    prober: measureLoudness ? ffmpegProber : undefined,
-    concurrency: ingestConcurrency,
+    prober: cfg.orator.measureLoudness ? ffmpegProber : undefined,
+    concurrency: cfg.orator.ingestConcurrency,
   });
   // Resume any import interrupted by a crash/restart (dedup skips finished items).
   const resumed = await ingest.resumeInterrupted();
@@ -73,7 +73,7 @@ async function main(): Promise<void> {
 
   const publicOrigin = cfg.orator.publicOrigin;
   const config: AppConfig = {
-    port: Number(process.env.PORT) || cfg.orator.port,
+    port: cfg.orator.port,
     sessionSecret: resolveSecret(cfg.orator.sessionSecret),
     allowlist,
     oauth: {

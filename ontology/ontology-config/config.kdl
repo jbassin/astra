@@ -90,8 +90,14 @@ orator {
     // In-cluster Postgres (Compose service DNS); creds match deploy/ POSTGRES_*
     // defaults; prod overrides at the Phase-6 cutover. Library store (Decision F).
     database-url "postgres://orator:orator@orator-postgres:5432/orator"
-    port 8788
-    public-origin "http://localhost:8788"
+    // Deploy values are the single source (config-single-source) — orator-backend
+    // binds this port + origin directly; no PORT/env overrides. Behind Caddy at
+    // orator.iridi.cc → host 10363.
+    port 10363
+    public-origin "https://orator.iridi.cc"
+    // Audio + data dir = the Compose `orator-audio` volume mount (read by both the
+    // service and the migrator; no ORATOR_DATA_DIR env).
+    data-dir "/data"
     allowed-user-ids ""
     target-lufs -16
     ingest-concurrency 2

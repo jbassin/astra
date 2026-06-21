@@ -8,15 +8,18 @@
  *
  * Reads `bun:sqlite` + writes Bun `SQL` (Postgres), so it needs both a live PG
  * and the sqlite file — it is **not** run in CI (only the pure `audioDestPath`
- * helper is unit-tested). Run it at deploy once orator-postgres is up:
+ * helper is unit-tested). The destination DB URL comes from config.kdl via
+ * `@astra/config` (config-single-source — NOT an env duplicate); the only
+ * argument is the path to the source `lark.sqlite`. Run it at deploy once
+ * orator-postgres is up:
  *
- *   ORATOR_DATABASE_URL=… ORATOR_MIGRATE_SQLITE=…/lark.sqlite \
- *   ORATOR_MIGRATE_AUDIO_DEST=…/data/audio  bun run src/migrate/migrate.ts
+ *   bun run src/migrate/migrate.ts /path/to/lark.sqlite [audioDestDir]
  */
 
 import { Database } from "bun:sqlite";
 import { copyFile, mkdir } from "node:fs/promises";
 import { basename, join, resolve } from "node:path";
+import { loadConfig } from "@astra/config";
 import { SQL } from "bun";
 import { SCHEMA } from "../db/schema";
 
@@ -112,15 +115,16 @@ export async function migrate(opts: MigrateOpts): Promise<MigrateResult> {
 }
 
 if (import.meta.main) {
-  const sqlitePath = process.env.ORATOR_MIGRATE_SQLITE;
-  const databaseUrl = process.env.ORATOR_DATABASE_URL ?? process.env.DATABASE_URL;
-  const destAudioDir =
-    process.env.ORATOR_MIGRATE_AUDIO_DEST ?? resolve(import.meta.dir, "../../data/audio");
-  if (!sqlitePath || !databaseUrl) {
-    console.error(
-      "set ORATOR_MIGRATE_SQLITE + ORATOR_DATABASE_URL (and optionally ORATOR_MIGRATE_AUDIO_DEST)",
-    );
+  // The ONLY external input is the path to faerrin's lark.sqlite (a one-shot
+  // migration source, not astra config) — taken as an explicit CLI arg. The
+  // destination DB + audio dir come from the single config source (config.kdl via
+  // @astra/config), NOT from ad-hoc env duplicates (config-single-source).
+  const sqlitePath = process.argv[2];
+  if (!sqlitePath) {
+    console.error("usage: bun run src/migrate/migrate.ts <lark.sqlite> [audioDestDir]");
     process.exit(1);
   }
-  await migrate({ sqlitePath, databaseUrl, destAudioDir });
+  const cfg = loadConfig().orator;
+  const destAudioDir = process.argv[3] ?? resolve(cfg.dataDir, "audio");
+  await migrate({ sqlitePath, databaseUrl: cfg.databaseUrl, destAudioDir });
 }

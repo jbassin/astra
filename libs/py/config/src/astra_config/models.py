@@ -90,8 +90,10 @@ class OratorConfig(_Base):
     guild_id: str = ""
     spike_channel_id: str = ""
     database_url: str = ""
-    port: int = 8788
-    public_origin: str = "http://localhost:8788"
+    port: int = 10363
+    public_origin: str = "https://orator.iridi.cc"
+    # Audio + data dir (the Compose volume mount); single source for the service + migrator.
+    data_dir: str = "/data"
     allowed_user_ids: str = ""
     target_lufs: int = -16
     ingest_concurrency: int = 2
