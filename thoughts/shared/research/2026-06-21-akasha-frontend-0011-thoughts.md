@@ -284,14 +284,46 @@ wiki pages + transcripts + search + graph.
 
 | # | Decision | Why it's open | Recommendation |
 |---|---|---|---|
-| **N1** | **Pagefind index production under SSR** | Plan assumed CLI over `dist/` HTML; Decision I → no static HTML | **Pagefind NodeJS Indexing API** over the rendered corpus at build; serve `/pagefind/` static. Spike in slice 1–2. |
+| **N1** | **Pagefind index production under SSR** | Plan assumed CLI over `dist/` HTML; Decision I → no static HTML | ✅ **RESOLVED — spiked 2026-06-21** (§6.1). Pagefind's **NodeJS Indexing API** builds the full `/pagefind/` bundle from in-memory HTML strings; serve it static. No prerender needed. |
 | **N2** | Static endpoints (RSS/sitemap/contentIndex/alias-redirects) under SSR | No prerender pass to emit them | **Emit at build** into the client output dir as static files at the exact faerrin paths; SSR static-serves them. |
-| **N3** | **Crossref → href resolution seam** | gothic `CrossRef` has no `href` by design; emits `data-crossref-target` | Resolve page-path (snapshot `edges`) → slug (`slug.ts`) → href. Decide the mechanism: (a) a gothic renderer wrapper/prop, (b) a post-render element transform, or (c) akasha-fe supplies its own CrossRef. **Recommend (a)** if gothic can take an optional resolver; else (b). Confirm gothic's API surface with the gothic owner. |
+| **N3** | **Crossref → href resolution seam** | gothic `CrossRef` has no `href` by design; emits `data-crossref-target` | ✅ **RESOLVED — landed 2026-06-21** (§6.2). gothic now takes an optional **`resolveCrossref` context resolver** (backward-compatible); akasha-fe supplies `node → {href}` from snapshot `edges` + lifted `slug.ts`. |
 | **N4** | Date semantics: author vs committer | faerrin site.ts used `--format=@%aI` (author); akasha M3 bakes `%cI` (committer) | Usually identical. If displayed-date parity matters, ask 0007 to switch to `%aI`. Low priority — likely **accept committer date**. |
 | **N5** | MPA→SPA island lifecycle | faerrin relied on full-page unload for teardown; astra keeps the app alive across client nav | Scope every island's listeners/pixi-app/global-handlers to component unmount (`useEffect` cleanup). Audit Popover/Graph/TranscriptPlayer specifically. |
 | **N6** | site.ts edges: re-derive vs consume snapshot | Verbatim-lift extracts edges from body; the snapshot already has parity-gated `edges` | **Consume the snapshot `edges`** (single source of truth); adapt site.ts's edge-extraction out. Document the deviation from "verbatim." |
 | **N7** | Transcript campaign/slug mapping | Need the `Script/<campaign>/<date>` campaign source + the `Unsorted` fallback | Verify campaign assignment (ontology-being campaigns vs faerrin's export logic) before building; the slugs are URL-parity-gated. |
 | **N8** | Snapshot vendoring | Does akasha-frontend read the snapshot from `apps/akasha-backend/` across the monorepo, or is it copied in? | Read across the workspace at build (it's committed + deterministic); COPY `apps/akasha-backend/snapshot` + `content` into the Dockerfile build stage (like strider COPYs `ontology/`). |
+
+### 6.1 Spike N1 — Pagefind under SSR (RESOLVED ✅)
+Ran the real `pagefind@1.5.2` NodeJS Indexing API against 3 synthetic akasha-shaped pages **as in-memory
+HTML strings** (no static `dist/` on disk — the Decision-I constraint):
+```js
+const { index } = await pagefind.createIndex();
+await index.addHTMLFile({ url: "/Anzu/", content: "<html>…<main data-pagefind-body>…</main>…</html>" });
+await index.writeFiles({ outputPath: "./pagefind-out" });
+```
+**Result:** a complete `/pagefind/` bundle was produced — **`pagefind.js` (the exact file the Search island
+lazy-loads), `pagefind-worker.js`, `wasm.en.pagefind`, one `fragment/*.pf_fragment` per page, `index/*.pf_index`,
+`pagefind-entry.json`**. URLs were preserved verbatim, including the spaced `/Script/A Hunt of Metal and
+Vine/2025-6-16/` transcript path. **Conclusion:** akasha-fe's build-content step renders each page (vellum +
+transcripts) to an HTML string, feeds `addHTMLFile`, `writeFiles` the bundle into the client output dir, and
+the SSR static handler / Caddy serves `/pagefind/`. The **client Search island is unchanged** (still
+`import("/pagefind/pagefind.js")` + `pf.search`). The `data-pagefind-body` scoping marker carries over.
+*(Spike scratch: `/tmp/pagefind-spike/spike.mjs` — throwaway; the real integration is a build-content source.)*
+
+### 6.2 Spike N3 — gothic crossref→href resolver (RESOLVED ✅, change landed)
+Added a **backward-compatible, SSR-safe** resolver seam to `@astra/gothic` (not throwaway — a small enabling
+change, default behaviour byte-unchanged so vellum-frontend/the render service are unaffected):
+- new `libs/ts/gothic/src/render/crossrefResolver.ts` — `CrossRefResolver = (node) => {href} | null` + a
+  `CrossRefResolverContext`;
+- `CrossRef` consumes the context: a hit renders a real `<a href>` (keeping the `data-crossref-*` attrs for
+  Popover/backlink tooling), a `null`/no-provider falls back to the placeholder `<span>` (honouring L6);
+- `DocumentView` takes an optional `resolveCrossref` prop and wraps its subtree in the provider;
+- proven by `crossrefResolver.test.tsx` (renders via `react-dom/server`): resolver hits → `href="/Belvedere/"`,
+  **nested crossrefs inside `:::fields` resolve through the same context** (`href="/Iridescent-Host/"`),
+  dangling targets stay placeholders, and no-resolver output is unchanged.
+**akasha-fe's job** is just to supply the resolver: `node → snapshot.edges[source=…,target=node.target].resolved
+→ slug.ts → href`. gothic still doesn't *know how* to resolve (L6 intact) — it calls the consumer's function.
+gothic: 11/11 tests pass, typecheck clean, biome clean over the whole repo.
 
 ---
 
@@ -328,9 +360,10 @@ wiki pages + transcripts + search + graph.
    `Ætherion Limited`) — exactly what `sluggify` preserves; do not "improve" it.
 2. **TranscriptPlayer port** — naive React reactivity re-renders 1.6 MB of markup. SSR-emit the line markup;
    attach imperatively in `useEffect`; port the warning comment verbatim.
-3. **Crossref-href seam (N3)** — gothic deliberately stops at a placeholder; getting real internal links +
-   Popover previews right is net-new integration, not a copy.
-4. **Pagefind on TanStack SSR (N1)** — unproven; the NodeJS indexing path needs an early spike.
+3. **Crossref-href seam (N3)** — ✅ **retired** (§6.2): gothic now exposes a resolver seam; akasha-fe wires
+   `node → edges → slug → href`. Residual: Popover previews still need the resolved internal links to exist.
+4. **Pagefind on TanStack SSR (N1)** — ✅ **retired** (§6.1): the NodeJS indexing path is proven against
+   in-memory HTML; no prerender needed.
 5. **Graph/pixi under SSR (M2)** — must stay strictly client-only; SSR/loaders must never touch WebGL.
 6. **Transcript reconstitution + merge** — transcripts leave linguist as data and must rejoin the page graph
    (slugs, edges, backlinks, Explorer) to match faerrin; the campaign→slug mapping (N7) is parity-critical.
