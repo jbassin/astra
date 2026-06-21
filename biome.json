@@ -42,6 +42,10 @@
       "linter": { "rules": { "suspicious": { "noArrayIndexKey": "off" } } }
     },
     {
+      "includes": ["**/akasha-frontend/src/domain/lib/slug.ts"],
+      "linter": { "rules": { "style": { "useTemplate": "off" } } }
+    },
+    {
       "includes": [
         "**/strider/src/domain/lib/hexUtils.ts",
         "**/strider/src/domain/lib/hexUtils.test.ts",

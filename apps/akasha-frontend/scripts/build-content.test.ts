@@ -10,9 +10,12 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const GENERATED = path.resolve(HERE, "../src/generated/site.ts");
 
 describe("build-content", () => {
-  it("emits the generated site module", async () => {
+  it("emits the generated site module with the snapshot-derived page index", async () => {
     await main();
     expect(existsSync(GENERATED)).toBe(true);
-    expect(readFileSync(GENERATED, "utf8")).toContain('title: "Akasha"');
+    const out = readFileSync(GENERATED, "utf8");
+    expect(out).toContain('title: "Akasha"');
+    expect(out).toContain("export const PAGES");
+    expect(out).toContain("export const EXPLORER_TREE");
   });
 });
