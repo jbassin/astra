@@ -16,6 +16,11 @@ export { Redaction } from "./components/Redaction";
 export { StatCard } from "./components/StatCard";
 export { TimelineBlock } from "./components/TimelineBlock";
 export { TraitPill } from "./components/TraitPill";
+export {
+  type CrossRefResolution,
+  type CrossRefResolver,
+  CrossRefResolverContext,
+} from "./crossrefResolver";
 export { type ActionCost, ActionGlyph, normalizeActionCost } from "./glyphs/actions";
 export { grimeStyle } from "./grimeStyle";
 export { collectText, type RenderableNode, renderNodes } from "./mdastToReact";

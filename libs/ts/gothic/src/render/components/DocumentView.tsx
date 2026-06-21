@@ -1,5 +1,6 @@
 import type { VellumBlock, VellumDocument, VellumNode } from "@astra/vellum-lang";
 import type { CSSProperties, ReactElement, ReactNode } from "react";
+import { type CrossRefResolver, CrossRefResolverContext } from "../crossrefResolver";
 import { renderNodes } from "../mdastToReact";
 import { Fields } from "./Fields";
 import { Frontmatter } from "./Frontmatter";
@@ -60,9 +61,19 @@ function Node({ node }: { node: VellumNode }): ReactNode {
  * boundary the render service screenshots (vellum-frontend); `data-mode` drives
  * the mechanical|diegetic skin entirely in CSS (structure stays theme-agnostic).
  * The frontmatter (title/tags) renders as a page header above the nodes.
+ *
+ * `resolveCrossref` (optional) lets a consuming app (akasha-frontend 0011) turn
+ * `[[crossref]]` placeholders into real `<a href>` links; omitted, crossrefs stay
+ * unresolved placeholders (gothic's L6 default — render service / Storybook).
  */
-export function DocumentView({ document }: { document: VellumDocument }): ReactElement {
-  return (
+export function DocumentView({
+  document,
+  resolveCrossref,
+}: {
+  document: VellumDocument;
+  resolveCrossref?: CrossRefResolver;
+}): ReactElement {
+  const article = (
     <article
       data-vellum-export=""
       data-mode={document.mode}
@@ -73,5 +84,12 @@ export function DocumentView({ document }: { document: VellumDocument }): ReactE
         <Node key={i} node={node} />
       ))}
     </article>
+  );
+  return resolveCrossref ? (
+    <CrossRefResolverContext.Provider value={resolveCrossref}>
+      {article}
+    </CrossRefResolverContext.Provider>
+  ) : (
+    article
   );
 }
