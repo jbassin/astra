@@ -1,6 +1,6 @@
 ---
 name: strider-0016-gotchas
-description: strider template-hardening (spec 0016) — load-bearing gotchas + the resume-at-6b plan; slices 1–6a built+pushed
+description: strider template-hardening (spec 0016) — load-bearing gotchas + the resume-at-7 plan; slices 1–6b built+pushed (6b live-verified)
 metadata:
   type: project
 ---
@@ -48,7 +48,49 @@ from slice 6b onward. Don't "fix" the old commit messages (immutable history).
   shares slugs via a closure and relies on `buildContent` running sources in declaration order — NOT the clean
   independent-source model. strider dropped remark/remark-html devDeps (kept gray-matter for editorHelpers.test).
 
-**RESUME AT SLICE 6b — `libs/ts/site-kit` + config + Dockerfile (DEPLOY-TOUCHING):**
+**6b DONE + PUSHED + LIVE-VERIFIED (`a03f06c`, `0ac2cec`) — `@astra/site-kit` extracted:**
+- `libs/ts/site-kit` (pure TS source, no build step — repo convention): `createSsrServer({serviceName,
+  port, ssr, clientDir})` (app's server.ts passes its own built `ssr` + `dist/client`; the lib owns Bun.serve
+  + OTel span-per-request + SIGTERM flush; ssr.fetch contract kept), `startRum` (./web subpath, client-only),
+  `contentWatchPlugin`/`gothicFontsPlugin`/`generateRouteTree`, `loadSiteConfig`/`siteConfigFile`.
+- **THE load-bearing gotcha: importing a workspace TS package from `vite.config.ts` REQUIRES vite's
+  `--configLoader runner`** (added to strider's dev/build scripts). vite's default loader esbuild-bundles the
+  config and **Node-externalizes** workspace packages, and the vite bin is `#!/usr/bin/env node` → Node can't
+  execute a package's raw `.ts` → import fails (`ERR_MODULE_NOT_FOUND` on the lib's extensionless re-exports).
+  `runner` loads the config through vite's own TS pipeline, which resolves workspace source. This IS the precise
+  mechanism behind the old "vite.config can't import @astra/config" note. 0011-0013 MUST set the flag.
+- **createServerFn stays in app source** (`rumConfig.ts`, ~12 lines) — the tanstackStart vite plugin only
+  transforms server fns from the app, not a workspace lib (unproven + can't runtime-verify browser RUM this
+  session). site-kit owns the glue (`startRum`); the server fn now returns BOTH endpoint AND serviceName from
+  config (`${cfg.strider.serviceName}-rum`) since the browser can't read config.kdl.
+- **config-single-source:** new `strider { service-name; port }` namespace in config.kdl, mirrored in BOTH the
+  ts (Zod) + py (Pydantic) schemas. `loadSiteConfig` walks from a plain dir (`process.cwd()`) — avoids
+  @astra/config's Bun-only `import.meta.dir` so vite can read the dev port from the same config.kdl.
+- **Dockerfile templatized (`ARG APP`)**; dropped `PORT` env from Dockerfile + compose (config-sourced).
+  **Build-stage gotcha:** vite.config now reads config.kdl AT BUILD time → the build stage must `COPY
+  ontology/ontology-config` too (not just runtime), else the config load throws and the build fails.
+- **Font self-serve (`0ac2cec`):** `gothicFontsPlugin({clientOutDir})` now ALSO copies gothic fonts →
+  `dist/client/fonts` at build (closeBundle), so the container self-serves /fonts (server.ts static-serve);
+  **removed strider's `import gothic_fonts` + the now-unused `(gothic_fonts)` snippet** from sites.caddyfile
+  (matches orator/weal-overlay; removes host-path coupling). Live: /fonts via the edge → 200 font/ttf from the
+  container.
+- **Live re-verify (targeted `docker compose up -d --build strider` + `just caddy-reload`):** container healthy;
+  `/` 200, `/editor` 200 (local_only), `/fonts/CaslonAntique.ttf` 200 font/ttf 86308 B both direct (10360) and
+  via the edge. **NB the host Caddy edge listens on 2650/2651, NOT 443** (loopback test: `curl --resolve
+  strider.iridi.cc:2651:127.0.0.1`).
+- **PRE-EXISTING telemetry gap found (NOT a 6b regression, surfaced not buried):** server-side SSR spans don't
+  reach SigNoz. The container exports to config `telemetry.otlp-endpoint = http://localhost:10353`, which is
+  **unreachable inside a container** (collector = `signoz-otel-collector:4318` on signoz-net, confirmed
+  reachable). `astra.strider-rum` (browser) lands fine; `astra.strider`/orator/weal **server-side never have**
+  (absent from `signoz_list_services` 7d). createSsrServer's initTelemetry is byte-identical to old server.ts →
+  not introduced here. **Fix = a cross-cutting in-container OTLP-endpoint / config-single-source dual-address
+  decision** (host localhost:10353 vs container signoz-otel-collector:4318) touching ALL services — its own
+  change, not 6b. See [[telemetry-built-in]].
+
+**RESUME AT SLICE 7 — split strider's tree (`src/domain/`) + port-recipe README.** Then 0016 is done. Also
+open: the cross-cutting in-container OTLP-endpoint fix above (decide with the user — affects orator/weal too).
+
+**(historical 6b plan, now done) — `libs/ts/site-kit` + config + Dockerfile (DEPLOY-TOUCHING):**
 - Create `libs/ts/site-kit`: `createSsrServer({serviceName, port})` lifting `server.ts` (KEEP the `ssr.fetch`
   contract — the smoke test asserts it; decide: keep programmatic `initTelemetry` like server.ts does, or use
   the now-signal-flushing preload); `startRum({serviceName})` + the `getRumEndpoint` server-fn factory (lift
