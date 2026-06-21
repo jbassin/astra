@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `2c2fd10`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `4658bcb`, 2026-06-21)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
@@ -109,19 +109,47 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 - **Live + verified:** `astra-strider` healthy; the edge serves `/`, `/editor` (local), `/fonts/*`,
   `signoz.iridi.cc` (all 200 via the loopback edge test). **Open:** `otel.iridi.cc` needs a **DNS record**
   before browser RUM spans actually land in SigNoz (cert + reachability); the write server fn isn't itself
-  IP-gated (only the `/editor` UI is).
+  IP-gated (only the `/editor` UI is — **accepted won't-fix**, `[[strider-editor-auth-accepted]]`).
+- **strider HARDENING (spec 0016) — IN PROGRESS: slices 1–6a of 7 BUILT + PUSHED** (`68fcff0`…`4658bcb`).
+  Readies strider as the *copy* template per the 2026-06-21 review
+  (`thoughts/shared/research/2026-06-21-strider-template-review-thoughts.md`); spec
+  `thoughts/astra/specs/0016-strider-hardening-spec.md`. **NB renumber:** drafted/committed as "0015" but
+  `0015` is the reserved **cutover** plan, so the spec is **0016** (early commit messages still say 0015;
+  6b onward use 0016). Done + pushed: (1) idiom/correctness — frontend `verbatimModuleSyntax:false`, router
+  error/not-found boundaries, `/editor` `ssr:false`, dead-code + the misapplied `noFocusedTests` ignore;
+  (2) tests — `build-content` parsers, `writeLayer` guards, an SSR render smoke (`scripts/ssrSmoke.ts` via
+  `src/ssrSmoke.test.ts`, builds-if-needed) + `ssr.fetch`-exists insurance; (3a) one source of hex geometry
+  (`hexCorners`/`HEX_SIZE`/`HEX_NEIGHBORS` in hexUtils; pixiScene derives); (3b) shared region paint + skein
+  helpers (`mapPaint.ts`, `connKey`/`connectionEndpoints` in skeinGeometry, `strokePolyline` in pixiScene);
+  (4) perf — incremental hex updates (reuse unchanged / recreate changed → flip contract intact) + reused
+  hover GlowFilter (pixi-filters subpath = 0 B; rollup already tree-shakes); (5) observability — `writeLayerFn`
+  traced (span+counter+log), `@astra/observe` preload flushes on SIGTERM/SIGINT, dropped dead CONTENT_HASH,
+  rewrote stale layer docs to SSR/server-fn; (6a) extracted **`@astra/content-build`** (generic markdown→
+  modules pipeline + `defineContentSource`/`buildContent`), strider consumes it. All CI-green locally;
+  **renderer changes (3–4) visually verified in dev.** Nitro+bun migration deferred (non-nightly).
+  **RESUME AT SLICE 6b:** create **`libs/ts/site-kit`** — `createSsrServer({serviceName,port})` (lift
+  `server.ts`), `startRum` + the `getRumEndpoint` seam (from `src/observe/rum.ts`+`rumConfig.ts`), the vite
+  plugins `contentWatchPlugin`/`gothicFontsDevPlugin`, `generateRouteTree`; move `serviceName`/`port` into
+  **config.kdl** via `@astra/config` (mirror both schemas); templatize the **Dockerfile** (`ARG APP`). Then
+  **slice 7** = split `apps/strider/src` into a thin shell vs **`src/domain/`** + a port-recipe README. 6b is
+  **deploy-touching** — acceptance includes a live re-verify (`just up` + `just caddy-reload`, user-triggered,
+  `[[deploy-apply-with-just]]`). See `[[strider-0016-gotchas]]`.
 
-### Next: the remaining subsystems (strider + weal are done)
+### Next: finish strider 0016 hardening, then the frontends
 
-1. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
+1. **strider hardening (spec 0016) — RESUME AT SLICE 6b** (`libs/ts/site-kit` extraction + config.kdl
+   serviceName/port + Dockerfile `ARG APP`), then **slice 7** (`src/domain/` split + port-recipe README).
+   6b is **deploy-touching** (live re-verify is user-triggered). See the 0016 block above +
+   `[[strider-0016-gotchas]]`. This makes the eventual 0011–0013 copies cheap.
+2. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
    public edge (`just caddy-reload` + `orator.iridi.cc` DNS record — outward-facing, like strider/weal-overlay)
    and the deferred live Discord run (SOPS token). orator-postgres + orator-backend are running locally
    (deployed + verified) on 10364/10363. See `[[orator-0010-gotchas]]`.
-2. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
-   template** (build-content→generated→loader, `server.ts`, the Compose+Caddy deploy, server `observe` +
-   `@astra/observe/web` RUM via a `createServerFn` endpoint, the uv-exclude). akasha-fe still consumes the
-   akasha build-time snapshot (Decision D).
-3. **Phase 6** (0015) big-bang cutover, last.
+3. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
+   template** (after 0016: consume `@astra/site-kit` + `@astra/content-build`; build-content→generated→loader,
+   the Compose+Caddy deploy, server `observe` + `@astra/observe/web` RUM via a `createServerFn` endpoint, the
+   uv-exclude). akasha-fe still consumes the akasha build-time snapshot (Decision D).
+4. **Phase 6 cutover** (plan `0015-cutover.md`) big-bang, last.
 
 **Frontend gotchas (template — full list in `[[astra-migration-research]]`):** SSR (no `prerender` block);
 commit `src/routeTree.gen.ts` (biome-ignored); `vite.config` is ESM and **cannot import `@astra/config`**;

@@ -1,6 +1,11 @@
-# NLSpec 0015 — strider template hardening
+# NLSpec 0016 — strider template hardening
 
-**Status:** **Plan (pre-implementation)** — scope chosen (FULL template-readiness); ready for
+> **Numbering note:** originally drafted as `0015` (slices 1–6a were committed with `0015` in their commit
+> messages) — renumbered to **0016** because `0015` is the reserved Phase-6 **cutover** sub-plan
+> (`plans/0015-cutover.md`). Commit messages from slice 6b onward use `0016`.
+
+**Status:** **IN PROGRESS — slices 1–6a of 7 BUILT + PUSHED** (`68fcff0`…`4658bcb`); resume at slice 6b.
+Scope chosen (FULL template-readiness); originally ready for
 `octo:embrace`. **Phase:** 5 (frontends — template prep). **Source review:**
 [`../../shared/research/2026-06-21-strider-template-review-thoughts.md`](../../shared/research/2026-06-21-strider-template-review-thoughts.md)
 (the multi-agent review; all findings carry `file:line` + severity). **Builds on:**

@@ -4,7 +4,7 @@ import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 
 // SSR render smoke. We chose a build + ssr.fetch('/') assertion over a full
-// Playwright lane (spec 0015 slice 2): it runs in the existing `test` lane with
+// Playwright lane (spec 0016 slice 2): it runs in the existing `test` lane with
 // no new CI infra. Build prerequisite: the smoke needs dist/server/server.js, so
 // beforeAll builds once if it's absent (CI's test job starts without a build).
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
