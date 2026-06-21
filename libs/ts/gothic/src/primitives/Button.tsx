@@ -18,7 +18,6 @@ export function Button({
   ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "solid" | "ghost" }): ReactElement {
   return (
-    // biome-ignore lint/a11y/useButtonType: explicit type is threaded through, defaulting to "button".
     <button
       type={type ?? "button"}
       className={cx(

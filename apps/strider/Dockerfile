@@ -9,8 +9,16 @@ FROM oven/bun:1.3.14 AS build
 WORKDIR /repo
 
 # Install against the full workspace manifest set (cached unless manifests change).
+# Every workspace member's manifest must be present so the shared bun.lock
+# reconciles: the root `apps/*`/`libs/ts/*` globs resolve the FULL workspace, so a
+# partial app set reads as "lockfile had changes" under --frozen-lockfile. (Add a
+# new app's manifest here too; libs/ts is copied wholesale below.)
 COPY package.json bun.lock ./
-COPY apps/strider/package.json apps/strider/package.json
+COPY apps/orator-backend/package.json apps/orator-backend/
+COPY apps/orator-controller/package.json apps/orator-controller/
+COPY apps/strider/package.json apps/strider/
+COPY apps/weal-bot/package.json apps/weal-bot/
+COPY apps/weal-overlay/package.json apps/weal-overlay/
 COPY libs/ts ./libs/ts
 RUN bun install --frozen-lockfile
 

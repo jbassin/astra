@@ -1,7 +1,7 @@
+import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import {
   buildContent,
   defineContentSource,
@@ -20,7 +20,7 @@ describe("markdownToHtml", () => {
 
 describe("parseFrontmatter", () => {
   it("splits frontmatter data from body", () => {
-    const { data, content } = parseFrontmatter('---\nname: Solari\ncount: 3\n---\nBody.\n');
+    const { data, content } = parseFrontmatter("---\nname: Solari\ncount: 3\n---\nBody.\n");
     expect(data).toEqual({ name: "Solari", count: 3 });
     expect(content.trim()).toBe("Body.");
   });

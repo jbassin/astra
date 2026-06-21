@@ -41,7 +41,9 @@ export function paintRegionBorder(g: Graphics, region: Region, active: boolean):
   // The border Graphics carries a single GlowFilter, tinted to match the stroke.
   const glow = g.filters?.[0] as GlowFilter | undefined;
   if (glow) {
-    glow.color = active ? mapTheme.regionBorderGlowColor.active : mapTheme.regionBorderGlowColor.idle;
+    glow.color = active
+      ? mapTheme.regionBorderGlowColor.active
+      : mapTheme.regionBorderGlowColor.idle;
     glow.outerStrength = active
       ? mapTheme.regionBorderGlowStrength.active
       : mapTheme.regionBorderGlowStrength.idle;
