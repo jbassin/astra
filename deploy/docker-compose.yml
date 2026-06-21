@@ -155,6 +155,26 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- orator: the music bot's library store (0010, Decision F) ---
+  orator-postgres:
+    image: postgres:16-alpine
+    container_name: astra-orator-postgres
+    environment:
+      POSTGRES_USER: ${ORATOR_PG_USERNAME:-orator}
+      POSTGRES_PASSWORD: ${ORATOR_PG_PASSWORD:-orator}
+      POSTGRES_DB: ${ORATOR_PG_DB:-orator}
+    volumes:
+      - orator-pg:/var/lib/postgresql/data
+    ports:
+      - "10364:5432" # orator music-library store (astra range)
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ORATOR_PG_USERNAME:-orator} -d ${ORATOR_PG_DB:-orator}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
 # (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
 # the substrate runs no Caddy of its own — services are reachable on their
@@ -165,6 +185,8 @@ volumes:
     name: astra-dagster-pg
   weal-pg:
     name: astra-weal-pg
+  orator-pg:
+    name: astra-orator-pg
 
 networks:
   signoz-net:

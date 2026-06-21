@@ -87,6 +87,9 @@ weal-overlay {
 orator {
     guild-id ""
     spike-channel-id ""
+    // In-cluster Postgres (Compose service DNS); creds match deploy/ POSTGRES_*
+    // defaults; prod overrides at the Phase-6 cutover. Library store (Decision F).
+    database-url "postgres://orator:orator@orator-postgres:5432/orator"
     port 8788
     public-origin "http://localhost:8788"
     allowed-user-ids ""

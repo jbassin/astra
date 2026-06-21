@@ -93,6 +93,7 @@ const Orator = z
   .object({
     guildId: z.string().default(""),
     spikeChannelId: z.string().default(""),
+    databaseUrl: z.string().default(""),
     port: z.number().default(8788),
     publicOrigin: z.string().default("http://localhost:8788"),
     allowedUserIds: z.string().default(""),
