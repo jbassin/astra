@@ -22,7 +22,11 @@ import { buildAllowlist } from "./allowlist";
 import { startBot } from "./bot/index";
 import type { PlaybackEngine } from "./bot/playback";
 import { PostgresStore } from "./db/store";
+import { ffmpegProber } from "./media/probe";
+import { realYtDlp } from "./media/ytdlp";
 import { type AppConfig, startServer } from "./server/app";
+import { IngestService } from "./server/ingest";
+import { JobHub } from "./server/jobhub";
 
 /** Resolve a SOPS `ref=` secret; unresolved (e.g. not provisioned) → "" (feature off). */
 function resolveSecret(ref: { resolve: () => string } | null | undefined): string {
@@ -46,6 +50,26 @@ async function main(): Promise<void> {
 
   const store = new PostgresStore(cfg.orator.databaseUrl);
   await store.ensureSchema();
+
+  // Ingest: yt-dlp + ffmpeg through a bounded pool. Loudness measurement is a
+  // memory-pressure knob (each item can spawn yt-dlp + an ffmpeg pass), as is
+  // concurrency — both tunable via env, mirroring lark's server entrypoint.
+  const hub = new JobHub();
+  const ingestConcurrency =
+    Number(process.env.ORATOR_INGEST_CONCURRENCY) || cfg.orator.ingestConcurrency;
+  const measureLoudness = process.env.ORATOR_MEASURE_LOUDNESS !== "0" && cfg.orator.measureLoudness;
+  const ingest = new IngestService({
+    store,
+    dataDir,
+    ytdlp: realYtDlp,
+    hub,
+    prober: measureLoudness ? ffmpegProber : undefined,
+    concurrency: ingestConcurrency,
+  });
+  // Resume any import interrupted by a crash/restart (dedup skips finished items).
+  const resumed = await ingest.resumeInterrupted();
+  if (resumed > 0)
+    log.emit({ severityText: "INFO", body: `resuming ${resumed} interrupted download job(s)` });
 
   const publicOrigin = cfg.orator.publicOrigin;
   const config: AppConfig = {
@@ -92,7 +116,9 @@ async function main(): Promise<void> {
     });
   }
 
-  const { server } = startServer(config, store, { services: { playback } });
+  const { server } = startServer(config, store, {
+    services: { playback, ingest, hub, prober: ffmpegProber },
+  });
   log.emit({
     severityText: "INFO",
     body: `orator-backend listening on http://localhost:${server.port}`,

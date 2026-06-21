@@ -9,6 +9,9 @@
 
 import type { PlaybackEngine } from "../bot/playback";
 import type { LibraryStore } from "../db/store";
+import type { AudioProber } from "../media/probe";
+import type { IngestService } from "./ingest";
+import type { JobHub } from "./jobhub";
 
 /** The authenticated actor — `uid` is the Discord user id (session or API key). */
 export interface Session {
@@ -28,6 +31,12 @@ export interface ApiConfig {
 export interface ApiServices {
   /** The single-session playback engine (present only when a bot token is set). */
   playback?: PlaybackEngine;
+  /** Audio prober for uploads/ingest (injected; real one shells out to ffmpeg). */
+  prober?: AudioProber;
+  /** YouTube ingest orchestration (jobs, downloads, loudness). */
+  ingest?: IngestService;
+  /** SSE hub for download-job progress. */
+  hub?: JobHub;
 }
 
 export interface ApiCtx {

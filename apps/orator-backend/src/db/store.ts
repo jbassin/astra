@@ -201,6 +201,8 @@ export interface LibraryStore extends PlaybackStore {
   createDownloadJob(input: NewDownloadJob): Promise<DownloadJob>;
   getDownloadJob(id: number): Promise<DownloadJob | null>;
   listDownloadJobs(limit?: number): Promise<DownloadJob[]>;
+  /** Jobs in any of the given statuses, id-ordered (resume recovery). */
+  listJobsByStatus(statuses: DownloadJob["status"][]): Promise<DownloadJob[]>;
   updateDownloadJob(
     id: number,
     patch: {
@@ -616,6 +618,13 @@ export class PostgresStore implements LibraryStore {
     return this.#all<DownloadJob>(`select ${JOB} from download_jobs order by id desc limit $1`, [
       limit,
     ]);
+  }
+
+  listJobsByStatus(statuses: DownloadJob["status"][]): Promise<DownloadJob[]> {
+    return this.#all<DownloadJob>(
+      `select ${JOB} from download_jobs where status = any($1) order by id`,
+      [statuses],
+    );
   }
 
   async updateDownloadJob(

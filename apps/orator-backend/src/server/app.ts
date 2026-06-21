@@ -28,6 +28,7 @@ import {
   matchRoute,
   type Session,
 } from "./router";
+import { ingestRoutes } from "./routes/ingest";
 import { keyRoutes } from "./routes/keys";
 import { libraryRoutes } from "./routes/library";
 import { playbackRoutes } from "./routes/playback";
@@ -36,7 +37,7 @@ import { clearCookie, parseCookies, sessionCookie, signSession, verifySession } 
 const SESSION_COOKIE = "orator_session";
 
 /** API routes that require a valid session or API key. Extended per slice. */
-const API_ROUTES: ApiRoute[] = [...libraryRoutes, ...playbackRoutes, ...keyRoutes];
+const API_ROUTES: ApiRoute[] = [...libraryRoutes, ...playbackRoutes, ...ingestRoutes, ...keyRoutes];
 
 /** The full runtime config the app needs (built in the entrypoint from cfg.orator). */
 export interface AppConfig {
@@ -117,7 +118,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     });
   }
 
-  async function callback(req: Request, url: URL): Promise<Response> {
+  async function callback(url: URL): Promise<Response> {
     const code = url.searchParams.get("code");
     const state = url.searchParams.get("state");
     // The "Add to Server" (bot install) flow redirects here with guild_id/
@@ -208,7 +209,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     const { pathname } = url;
 
     if (req.method === "GET" && pathname === "/auth/login") return login();
-    if (req.method === "GET" && pathname === "/auth/callback") return callback(req, url);
+    if (req.method === "GET" && pathname === "/auth/callback") return callback(url);
     if (req.method === "POST" && pathname === "/auth/logout") return logout();
 
     if (pathname === "/api/v1/health") return json({ ok: true });
