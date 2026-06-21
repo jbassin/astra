@@ -76,6 +76,28 @@ weal-overlay.iridi.cc {
 	}
 }
 
+# orator-backend — the Discord music console (0010): Bun.serve REST + the served
+# operator SPA (one origin, M3). The SPA self-serves its gothic fonts from dist/
+# (gothicFontsPlugin copies them in), so no gothic_fonts import. Auth is handled in
+# the app (Discord OAuth + ontology allowlist), so no IP gate. Compose publishes
+# host port 10363. (Needs an orator.iridi.cc DNS record — manual, like strider.)
+orator.iridi.cc {
+	import astra_site
+
+	# SSE: the ingest job-progress stream (EventSource) needs unbuffered proxying
+	# so text/event-stream reaches the browser immediately.
+	@sse path /api/v1/ingest/jobs/*/events
+	handle @sse {
+		reverse_proxy localhost:10363 {
+			flush_interval -1
+		}
+	}
+
+	handle {
+		reverse_proxy localhost:10363
+	}
+}
+
 # OTLP/HTTP ingest for browser RUM (config.kdl telemetry.rum-endpoint points
 # here). Reverse-proxies the SigNoz collector's host port; the collector has no
 # CORS of its own, so reflect it here for *.iridi.cc frontends only.

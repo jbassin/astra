@@ -175,6 +175,32 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # orator-backend: the Discord music service — Bun.serve REST + voice + ingest +
+  # the served operator SPA. Behind Caddy at orator.iridi.cc. ALL runtime config is
+  # read from config.kdl via @astra/config (no config env — config-single-source);
+  # the only mount is the audio/data volume (kdl `orator.data-dir = /data`). The bot
+  # is optional: without resolved SOPS secrets it runs web+library, playback → 503.
+  orator-backend:
+    build:
+      context: ..
+      dockerfile: apps/orator-backend/Dockerfile
+    image: astra-orator-backend:local
+    container_name: astra-orator-backend
+    depends_on:
+      orator-postgres:
+        condition: service_healthy
+    volumes:
+      - orator-audio:/data # matches kdl orator.data-dir; audio under /data/audio
+    ports:
+      - "10363:10363" # orator-backend (astra range) — also reachable directly
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10363/api/v1/health').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
 # (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
 # the substrate runs no Caddy of its own — services are reachable on their
@@ -187,6 +213,8 @@ volumes:
     name: astra-weal-pg
   orator-pg:
     name: astra-orator-pg
+  orator-audio:
+    name: astra-orator-audio
 
 networks:
   signoz-net:
