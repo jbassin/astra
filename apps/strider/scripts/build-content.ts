@@ -58,7 +58,7 @@ async function toHtml(markdown: string): Promise<string> {
 
 const HIDDEN_RE = /<!--\s*hidden\s*-->/i;
 
-function splitBody(body: string): {
+export function splitBody(body: string): {
   descriptionMd: string;
   memberEntries: Array<{ name: string; content: string }>;
 } {
@@ -94,7 +94,7 @@ function splitBody(body: string): {
   return { descriptionMd, memberEntries };
 }
 
-async function parseFaction(filePath: string): Promise<Faction> {
+export async function parseFaction(filePath: string): Promise<Faction> {
   const filename = path.basename(filePath, ".md");
   const dashIndex = filename.indexOf("-");
   const order = Number.parseInt(filename.slice(0, dashIndex), 10);
@@ -135,7 +135,7 @@ function isHexPair(v: unknown): v is [number, number] {
   return Array.isArray(v) && v.length === 2 && typeof v[0] === "number" && typeof v[1] === "number";
 }
 
-function parseChange(raw: unknown, ctx: string): Change {
+export function parseChange(raw: unknown, ctx: string): Change {
   if (!raw || typeof raw !== "object") throw new Error(`${ctx}: change must be an object`);
   const c = raw as Record<string, unknown>;
 
@@ -263,7 +263,7 @@ function parseChange(raw: unknown, ctx: string): Change {
 
 const LAYER_FILENAME_RE = /^(\d{4}-\d{2}-\d{2}T\d{6})-(.+)$/;
 
-function parseLayer(filePath: string): Layer {
+export function parseLayer(filePath: string): Layer {
   const filename = path.basename(filePath, ".md");
   const m = LAYER_FILENAME_RE.exec(filename);
   if (!m) {
@@ -376,6 +376,21 @@ function walkFilesRecursive(dir: string): string[] {
   return out;
 }
 
+// Pure, order-independent content digest: sorts by relative path, then hashes
+// (rel, bytes) pairs with NUL separators. Extracted so it's unit-testable
+// without touching the filesystem.
+export function hashFiles(files: ReadonlyArray<{ rel: string; bytes: Buffer | string }>): string {
+  const sorted = [...files].sort((a, b) => (a.rel < b.rel ? -1 : a.rel > b.rel ? 1 : 0));
+  const hash = crypto.createHash("sha256");
+  for (const { rel, bytes } of sorted) {
+    hash.update(rel);
+    hash.update("\0");
+    hash.update(bytes);
+    hash.update("\0");
+  }
+  return hash.digest("hex").slice(0, 16);
+}
+
 function computeContentHash(): string {
   const factionFiles = fs.existsSync(FACTIONS_DIR)
     ? fs
@@ -391,18 +406,11 @@ function computeContentHash(): string {
     : [];
   const symbolFiles = walkFilesRecursive(SYMBOLS_DIR);
 
-  const files = [...factionFiles, ...layerFiles, ...symbolFiles]
-    .map((abs) => ({ abs, rel: path.relative(ROOT, abs) }))
-    .sort((a, b) => (a.rel < b.rel ? -1 : a.rel > b.rel ? 1 : 0));
-
-  const hash = crypto.createHash("sha256");
-  for (const { abs, rel } of files) {
-    hash.update(rel);
-    hash.update("\0");
-    hash.update(fs.readFileSync(abs));
-    hash.update("\0");
-  }
-  return hash.digest("hex").slice(0, 16);
+  const files = [...factionFiles, ...layerFiles, ...symbolFiles].map((abs) => ({
+    rel: path.relative(ROOT, abs),
+    bytes: fs.readFileSync(abs),
+  }));
+  return hashFiles(files);
 }
 
 async function main(): Promise<void> {
@@ -442,7 +450,12 @@ async function main(): Promise<void> {
   );
 }
 
-main().catch((err: unknown) => {
-  console.error("[build-content] failed:", err);
-  process.exit(1);
-});
+// Only run the generator when invoked directly (`bun run build-content.ts` — via
+// the build/typecheck scripts and contentWatchPlugin's subprocess). Importing
+// this module (e.g. from build-content.test.ts) must NOT regenerate content.
+if (import.meta.main) {
+  main().catch((err: unknown) => {
+    console.error("[build-content] failed:", err);
+    process.exit(1);
+  });
+}

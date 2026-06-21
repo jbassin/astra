@@ -21,7 +21,10 @@ interface WriteRequest {
   content: string;
 }
 
-function validate(body: unknown): { ok: true; req: WriteRequest } | { ok: false; error: string } {
+function validate(
+  body: unknown,
+  layersDir: string,
+): { ok: true; req: WriteRequest } | { ok: false; error: string } {
   if (!body || typeof body !== "object") return { ok: false, error: "body must be a JSON object" };
   const b = body as Record<string, unknown>;
   if (typeof b.filename !== "string") return { ok: false, error: "'filename' must be a string" };
@@ -36,26 +39,30 @@ function validate(body: unknown): { ok: true; req: WriteRequest } | { ok: false;
       error: "'filename' must match ^\\d{4}-\\d{2}-\\d{2}T\\d{6}-[a-z0-9-]+\\.md$",
     };
   }
-  const fullPath = path.resolve(LAYERS_DIR, b.filename);
-  if (!fullPath.startsWith(LAYERS_DIR + path.sep)) {
+  const fullPath = path.resolve(layersDir, b.filename);
+  if (!fullPath.startsWith(layersDir + path.sep)) {
     return { ok: false, error: "'filename' resolves outside content/layers" };
   }
   return { ok: true, req: { filename: b.filename, content: b.content } };
 }
 
-/** Validate + write a layer file. Never overwrites (flag wx). */
-export function writeLayer(body: unknown): WriteResult {
-  const v = validate(body);
+/**
+ * Validate + write a layer file. Never overwrites (flag wx). `layersDir`
+ * defaults to the real content/layers dir; tests pass a temp dir so the guard
+ * logic is exercised without touching the repo's content.
+ */
+export function writeLayer(body: unknown, layersDir: string = LAYERS_DIR): WriteResult {
+  const v = validate(body, layersDir);
   if (!v.ok) return { status: 400, body: { ok: false, error: v.error } };
 
-  const target = path.join(LAYERS_DIR, v.req.filename);
+  const target = path.join(layersDir, v.req.filename);
   if (existsSync(target)) {
     return {
       status: 409,
       body: { ok: false, error: `file already exists: content/layers/${v.req.filename}` },
     };
   }
-  if (!existsSync(LAYERS_DIR)) mkdirSync(LAYERS_DIR, { recursive: true });
+  if (!existsSync(layersDir)) mkdirSync(layersDir, { recursive: true });
 
   try {
     writeFileSync(target, v.req.content, { encoding: "utf8", flag: "wx" });
