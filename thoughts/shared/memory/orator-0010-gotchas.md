@@ -14,7 +14,13 @@ react-start 1.168 has no file server routes (see [[tanstack-start-skill]]).
 
 **Substrate was pre-staged (headline):** `config.kdl` already had `orator`/`orator-controller` blocks +
 `@astra/config` parsed them 1:1 with lark's env, and SOPS already carried `orator_*` keys. Only addition:
-`orator.database-url` (KDL + Zod). So config/secrets needed almost no new wiring.
+`orator.database-url`. **GOTCHA — config is single-source across BOTH toolchains** ([[config-single-source]]):
+`config.kdl` is parsed by the TS Zod schema *and* the **strict** Python `OratorConfig`
+(`libs/py/config/.../models.py`). Adding the KDL key + only the TS field passed every bun lane but failed
+`uv run pytest` collection with `extra_forbidden` on `orator.database_url` for **every** config-loading test
+(the whole linguist suite) — a cross-toolchain CI failure invisible to app-scoped local checks. Always mirror
+a new KDL field in **KDL + Zod + the Python pydantic model**, and reproduce the **full** CI lanes
+(`uv run pytest`, `bunx biome ci .`, `bun --filter '*' …`), not just the app you touched.
 
 **Load-bearing gotchas (slices 1–6):**
 - **sync `bun:sqlite` → async Bun `SQL` (Postgres) is the whole port's spine (Decision F).** lark's `repo.ts`
