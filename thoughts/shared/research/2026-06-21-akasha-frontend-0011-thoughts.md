@@ -257,8 +257,11 @@ ported to a **build-content source**:
    faerrin's `remark-transcript.mjs` — the `data-second`/`data-user`/`data-char`/`id="{second}-{user}"`
    attributes are the contract TranscriptPlayer attaches to). Audio `<source src>` = the external
    `static-audio` URL verbatim.
-4. Place pages at `Script/<campaign>/<date>` slugs (campaign from ontology-being; faerrin used
-   `Unsorted` as the fallback bucket — verify the campaign mapping source).
+4. Place pages at `Script/<campaign>/<date>` slugs. **Port faerrin's `matchCampaign` heuristic** (N7,
+   Option A — content match over each campaign's character names past a `matchThreshold`; `Unsorted/`
+   fallback) so new sessions auto-route forward; campaigns/roster come from ontology-being. Lift the
+   **billing inference** (player→character per session) for the name-toggle. Guard with a parity test vs
+   faerrin's captured historical `Script/` paths.
 5. Merge these pages into the routing list, the graph edges, backlinks, and the Explorer tree (§5.3).
 Speaker name/color from `user` + ontology-being (§1.4); the character↔real name toggle data
 (`data-char`/`data-real`) carries through.
@@ -285,13 +288,13 @@ wiki pages + transcripts + search + graph.
 | # | Decision | Why it's open | Recommendation |
 |---|---|---|---|
 | **N1** | **Pagefind index production under SSR** | Plan assumed CLI over `dist/` HTML; Decision I → no static HTML | ✅ **RESOLVED — spiked 2026-06-21** (§6.1). Pagefind's **NodeJS Indexing API** builds the full `/pagefind/` bundle from in-memory HTML strings; serve it static. No prerender needed. |
-| **N2** | Static endpoints (RSS/sitemap/contentIndex/alias-redirects) under SSR | No prerender pass to emit them | **Emit at build** into the client output dir as static files at the exact faerrin paths; SSR static-serves them. |
+| **N2** | Static endpoints (RSS/sitemap/contentIndex/alias-redirects) under SSR | No prerender pass to emit them | ✅ **DECIDED (2026-06-21):** **emit at build** into the client output dir at the exact faerrin paths; SSR static-serves them. **Alias redirects** stay `<meta http-equiv="refresh">` static stubs (Popover `fetchCanonical` + bookmarks rely on them), not server 301s. |
 | **N3** | **Crossref → href resolution seam** | gothic `CrossRef` has no `href` by design; emits `data-crossref-target` | ✅ **RESOLVED — landed 2026-06-21** (§6.2). gothic now takes an optional **`resolveCrossref` context resolver** (backward-compatible); akasha-fe supplies `node → {href}` from snapshot `edges` + lifted `slug.ts`. |
-| **N4** | Date semantics: author vs committer | faerrin site.ts used `--format=@%aI` (author); akasha M3 bakes `%cI` (committer) | Usually identical. If displayed-date parity matters, ask 0007 to switch to `%aI`. Low priority — likely **accept committer date**. |
-| **N5** | MPA→SPA island lifecycle | faerrin relied on full-page unload for teardown; astra keeps the app alive across client nav | Scope every island's listeners/pixi-app/global-handlers to component unmount (`useEffect` cleanup). Audit Popover/Graph/TranscriptPlayer specifically. |
-| **N6** | site.ts edges: re-derive vs consume snapshot | Verbatim-lift extracts edges from body; the snapshot already has parity-gated `edges` | **Consume the snapshot `edges`** (single source of truth); adapt site.ts's edge-extraction out. Document the deviation from "verbatim." |
-| **N7** | Transcript campaign/slug mapping | Need the `Script/<campaign>/<date>` campaign source + the `Unsorted` fallback | Verify campaign assignment (ontology-being campaigns vs faerrin's export logic) before building; the slugs are URL-parity-gated. |
-| **N8** | Snapshot vendoring | Does akasha-frontend read the snapshot from `apps/akasha-backend/` across the monorepo, or is it copied in? | Read across the workspace at build (it's committed + deterministic); COPY `apps/akasha-backend/snapshot` + `content` into the Dockerfile build stage (like strider COPYs `ontology/`). |
+| **N4** | Date semantics: author vs committer | faerrin site.ts used `--format=@%aI` (author); akasha M3 bakes `%cI` (committer) | ✅ **DECIDED (2026-06-21):** **accept committer date** — don't churn 0007. Displayed-date byte-parity is not required. |
+| **N5** | MPA→SPA island lifecycle | faerrin relied on full-page unload for teardown; astra keeps the app alive across client nav | ✅ **DECIDED (2026-06-21):** scope every island's listeners/pixi-app/global-handlers to component unmount (`useEffect` cleanup); audit Popover/Graph/TranscriptPlayer. Discipline, not a branch point. |
+| **N6** | site.ts edges: re-derive vs consume snapshot | Verbatim-lift extracts edges from body; the snapshot already has parity-gated `edges` | ✅ **DECIDED (2026-06-21):** **consume the snapshot `edges`** (the gated single source of truth); adapt site.ts's edge-extraction out. The gated Python edges *are* the canonical behaviour; re-deriving in TS risks divergence. Documented deviation from pure verbatim. |
+| **N7** | Transcript campaign/slug mapping | `Script/<campaign>/<date>` folder is decided by faerrin's content **heuristic** (`matchCampaign`, threshold over character-name hits) → URL-parity-critical | ✅ **DECIDED (2026-06-21): port the heuristic (Option A).** The pipeline is live (Dagster ingests new sessions), so a frozen table would go stale — `matchCampaign` + threshold + roster/campaigns (from ontology-being) must run forward. **Guard:** capture faerrin's historical `Script/` paths as the **URL-parity test fixture** (not runtime data) + assert the port reproduces them. Also lift the **billing inference** (player→character per session) for the name-toggle. |
+| **N8** | Snapshot vendoring | Does akasha-frontend read the snapshot from `apps/akasha-backend/` across the monorepo, or is it copied in? | ✅ **DECIDED (2026-06-21):** read across the workspace at build (committed + deterministic); COPY `apps/akasha-backend/{snapshot,content}` into the Dockerfile build stage (like strider COPYs `ontology/`). |
 
 ### 6.1 Spike N1 — Pagefind under SSR (RESOLVED ✅)
 Ran the real `pagefind@1.5.2` NodeJS Indexing API against 3 synthetic akasha-shaped pages **as in-memory
