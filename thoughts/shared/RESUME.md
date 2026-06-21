@@ -158,7 +158,9 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 3. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
    template** (after 0016: consume `@astra/site-kit` + `@astra/content-build`; build-content→generated→loader,
    the Compose+Caddy deploy, server `observe` + `@astra/observe/web` RUM via a `createServerFn` endpoint, the
-   uv-exclude). akasha-fe still consumes the akasha build-time snapshot (Decision D).
+   uv-exclude). akasha-fe still consumes the akasha build-time snapshot (Decision D). **READ FIRST:**
+   `thoughts/shared/guides/migrating-an-app-into-astra.md` (the migration playbook + dos/don'ts) and
+   `apps/strider/README.md` (the concrete port recipe).
 4. **Phase 6 cutover** (plan `0015-cutover.md`) big-bang, last.
 
 **Frontend gotchas (template — full list in `[[astra-migration-research]]`):** SSR (no `prerender` block);
