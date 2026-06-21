@@ -128,6 +128,8 @@ const AkashaFrontend = z
   .object({
     serviceName: z.string().default("astra.akasha-frontend"),
     port: z.number().default(10365),
+    // Absolute base URL baked into the build-emitted RSS/sitemap/og links.
+    publicOrigin: z.string().default("https://akasha.iridi.cc"),
   })
   .strict();
 

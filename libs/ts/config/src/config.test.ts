@@ -39,6 +39,7 @@ describe("@astra/config", () => {
     expect(cfg.weal.bindAddr).toBe("127.0.0.1:10203");
     expect(cfg.akashaFrontend.serviceName).toBe("astra.akasha-frontend");
     expect(cfg.akashaFrontend.port).toBe(10365);
+    expect(cfg.akashaFrontend.publicOrigin).toBe("https://akasha.iridi.cc");
   });
 
   test("secret fields are lazy refs, not plaintext", () => {

@@ -124,6 +124,8 @@ class AkashaFrontendConfig(_Base):
     # vite's dev port; service_name also derives the browser RUM name.
     service_name: str = "astra.akasha-frontend"
     port: int = 10365
+    # Absolute base URL baked into the build-emitted RSS/sitemap/og links.
+    public_origin: str = "https://akasha.iridi.cc"
 
 
 class CaddyConfig(_Base):

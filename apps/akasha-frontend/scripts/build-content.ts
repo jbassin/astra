@@ -1,30 +1,54 @@
-// Pre-build content pipeline (slice 2 — the akasha snapshot → generated modules).
+// Pre-build content pipeline (slices 2–3 — the akasha snapshot → generated modules
+// + static endpoints).
 //
-// Reads the committed akasha-backend snapshot, lifts faerrin's slug.ts/site.ts to derive
-// the URL slugs + the page graph (backlinks/folders/tags/Explorer), and emits typed TS
-// modules under src/generated/. The runtime app imports those modules — never the
-// snapshot/fs — so the production bundle has no build-time data dependency.
+// Reads the committed akasha-backend snapshot, lifts faerrin's slug.ts/site.ts to
+// derive the URL slugs + the page graph (backlinks/folders/tags/Explorer/aliases),
+// and emits:
+//   - a typed TS module under src/generated/ (the runtime imports it — never the
+//     snapshot/fs — so the production bundle has no build-time data dependency);
+//   - the static endpoints into public/ (RSS index.xml, sitemap.xml,
+//     static/contentIndex.json) at the exact faerrin paths (N2) — vite copies
+//     public/ into dist/client, where the Bun server static-serves them.
 //
 // Vellum-body rendering + transcript pages + Pagefind land in later slices.
 
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildContent, defineContentSource, emitModule } from "@astra/content-build";
+import { loadSiteConfig } from "@astra/site-kit";
 import {
+  type AliasRedirect,
   allFolders,
   allTags,
+  buildAliases,
   buildExplorerTree,
   buildSite,
+  type SiteData,
   type SiteDoc,
 } from "../src/domain/lib/site";
 import { loadSnapshot } from "../src/domain/lib/snapshot";
+import {
+  buildContentIndex,
+  renderRss,
+  renderSitemap,
+  type SiteMeta,
+} from "../src/domain/lib/staticEmit";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const OUT_DIR = path.resolve(HERE, "../src/generated");
+const PUBLIC_DIR = path.resolve(HERE, "../public");
 const SNAPSHOT = path.resolve(HERE, "../../akasha-backend/snapshot/akasha-snapshot.json");
+const CORPUS_DIR = path.resolve(HERE, "../../akasha-backend/content");
 
-/** Serializable page record (Date → ISO string) the runtime imports. */
+// astra's brand for the wiki (faerrin shipped "Heart of Hearts"; the rebuild is
+// "Akasha" — matches __root.tsx + the slice-2 SITE const). Not a parity gate.
+const SITE_TITLE = "Akasha";
+const SITE_DESCRIPTION = "The Færrin wiki";
+
+/** Serializable page record (Date → ISO string) the runtime imports + reconstructs. */
 interface GeneratedPage {
+  rel: string;
   slug: string;
   simple: string;
   title: string;
@@ -36,6 +60,7 @@ interface GeneratedPage {
 }
 
 const toGenerated = (d: SiteDoc): GeneratedPage => ({
+  rel: d.rel,
   slug: d.slug,
   simple: d.simple,
   title: d.title,
@@ -46,46 +71,96 @@ const toGenerated = (d: SiteDoc): GeneratedPage => ({
   ...(d.date ? { date: d.date.toISOString() } : {}),
 });
 
+const toGeneratedAlias = (a: AliasRedirect) => ({
+  slug: a.slug,
+  redirUrl: a.redirUrl,
+  ogSlug: a.ogSlug,
+});
+
+/** Read a page's raw `.vellum` body (for the RSS description snippet); "" if absent. */
+function bodyOf(doc: SiteDoc): string {
+  const file = path.join(CORPUS_DIR, `${doc.rel.replace(/\.md$/, "")}.vellum`);
+  try {
+    return fs.readFileSync(file, "utf8");
+  } catch {
+    return "";
+  }
+}
+
+/** The generated runtime module (slugs/backlinks/folders/tags/Explorer/aliases). */
+function emitGeneratedModule(site: SiteData): string {
+  const pages = site.docs.map(toGenerated);
+  const tree = buildExplorerTree(site);
+  const tags = allTags(site);
+  const folders = allFolders(site);
+  const aliases = buildAliases(site).map(toGeneratedAlias);
+
+  const body = [
+    "/** The akasha wiki index — slugs/backlinks/folders/tags/Explorer/aliases derived",
+    " *  from the akasha-backend snapshot via the lifted slug.ts/site.ts (0011). The",
+    " *  runtime reconstructs a queryable SiteData from PAGES (see runtimeSite.ts). */",
+    "",
+    "export interface GeneratedPage {",
+    "  rel: string;",
+    "  slug: string;",
+    "  simple: string;",
+    "  title: string;",
+    "  tags: string[];",
+    "  aliases: string[];",
+    "  img?: string;",
+    "  links: string[];",
+    "  date?: string;",
+    "}",
+    "",
+    "export interface TreeNode {",
+    "  slug: string;",
+    "  displayName: string;",
+    "  isFolder: boolean;",
+    "  children: TreeNode[];",
+    "}",
+    "",
+    "export interface AliasRedirect {",
+    "  slug: string;",
+    "  redirUrl: string;",
+    "  ogSlug: string;",
+    "}",
+    "",
+    `export const SITE = { title: ${JSON.stringify(SITE_TITLE)}, description: ${JSON.stringify(SITE_DESCRIPTION)} } as const;`,
+    `export const PAGES: GeneratedPage[] = ${JSON.stringify(pages, null, 2)};`,
+    `export const EXPLORER_TREE: TreeNode[] = ${JSON.stringify(tree, null, 2)};`,
+    `export const ALL_TAGS: string[] = ${JSON.stringify(tags)};`,
+    `export const ALL_FOLDERS: string[] = ${JSON.stringify(folders)};`,
+    `export const ALIASES: AliasRedirect[] = ${JSON.stringify(aliases, null, 2)};`,
+    "",
+  ].join("\n");
+  emitModule(OUT_DIR, "site.ts", body);
+  return `site: ${pages.length} pages, ${folders.length} folders, ${tags.length} tags, ${aliases.length} aliases`;
+}
+
+/** Emit the static endpoints into public/ (vite copies them into dist/client). */
+function emitStatic(site: SiteData, meta: SiteMeta): string {
+  const writePublic = (rel: string, content: string) => {
+    const file = path.join(PUBLIC_DIR, rel);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, content);
+  };
+  writePublic("index.xml", renderRss(site, meta, bodyOf));
+  writePublic("sitemap.xml", renderSitemap(site, meta));
+  writePublic("static/contentIndex.json", JSON.stringify(buildContentIndex(site)));
+  return `static: index.xml, sitemap.xml, static/contentIndex.json @ ${meta.baseUrl}`;
+}
+
 const siteSource = defineContentSource({
   name: "site",
   build() {
     const site = buildSite(loadSnapshot(SNAPSHOT));
-    const pages = site.docs.map(toGenerated);
-    const tree = buildExplorerTree(site);
-    const tags = allTags(site);
-    const folders = allFolders(site);
-
-    const body = [
-      "/** The akasha wiki index — slugs/backlinks/folders/tags/Explorer derived from",
-      " *  the akasha-backend snapshot via the lifted slug.ts/site.ts (0011 slice 2). */",
-      "",
-      "export interface GeneratedPage {",
-      "  slug: string;",
-      "  simple: string;",
-      "  title: string;",
-      "  tags: string[];",
-      "  aliases: string[];",
-      "  img?: string;",
-      "  links: string[];",
-      "  date?: string;",
-      "}",
-      "",
-      "export interface TreeNode {",
-      "  slug: string;",
-      "  displayName: string;",
-      "  isFolder: boolean;",
-      "  children: TreeNode[];",
-      "}",
-      "",
-      `export const SITE = { title: "Akasha", description: "The Færrin wiki" } as const;`,
-      `export const PAGES: GeneratedPage[] = ${JSON.stringify(pages, null, 2)};`,
-      `export const EXPLORER_TREE: TreeNode[] = ${JSON.stringify(tree, null, 2)};`,
-      `export const ALL_TAGS: string[] = ${JSON.stringify(tags)};`,
-      `export const ALL_FOLDERS: string[] = ${JSON.stringify(folders)};`,
-      "",
-    ].join("\n");
-    emitModule(OUT_DIR, "site.ts", body);
-    return `site: ${pages.length} pages, ${folders.length} folders, ${tags.length} tags`;
+    // Node-safe config locator (works under bun-run, vite, and vitest — unlike
+    // @astra/config's Bun-only default path resolution).
+    const baseUrl = loadSiteConfig().akashaFrontend.publicOrigin.replace(/\/$/, "");
+    const meta: SiteMeta = { title: SITE_TITLE, baseUrl };
+    const moduleSummary = emitGeneratedModule(site);
+    const staticSummary = emitStatic(site, meta);
+    return `${moduleSummary}\n  ${staticSummary}`;
   },
 });
 

@@ -1,18 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PAGES, SITE } from "@/generated/site";
+import { ContentArticle } from "@/domain/components/ContentArticle";
+import { contentView } from "@/domain/lib/runtimeSite";
+import type { FullSlug } from "@/domain/lib/slug";
 
+// The wiki home is the content page with slug "index" (faerrin's root index.vellum).
+// The catch-all `$` route owns every other path; "/" is its own index route.
 export const Route = createFileRoute("/")({
+  loader: () => {
+    const view = contentView("index" as FullSlug);
+    return { slug: view.slug, view };
+  },
   component: HomePage,
 });
 
-// Slice 2 home — proves the snapshot-derived generated modules flow to the runtime.
-// Slice 3 replaces this with the real content/folder/tags routes + loaders.
 function HomePage() {
-  return (
-    <main className="page-shell">
-      <h1>{SITE.title}</h1>
-      <p>{SITE.description}</p>
-      <p>{PAGES.length} pages indexed.</p>
-    </main>
-  );
+  const { view } = Route.useLoaderData();
+  return <ContentArticle view={view} />;
 }

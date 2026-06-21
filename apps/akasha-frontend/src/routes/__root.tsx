@@ -1,5 +1,11 @@
 /// <reference types="vite/client" />
-import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import {
+  createRootRoute,
+  HeadContent,
+  Outlet,
+  Scripts,
+  useRouterState,
+} from "@tanstack/react-router";
 import { useEffect } from "react";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
@@ -28,12 +34,25 @@ function RootComponent() {
     });
   }, []);
 
+  // `<body data-slug>` is the load-bearing contract the Graph + TranscriptPlayer
+  // islands read (faerrin set it in PageLayout). Each route's loader returns its
+  // `slug`; surface the deepest match's value here.
+  const slug = useRouterState({
+    select: (s) => {
+      for (let i = s.matches.length - 1; i >= 0; i--) {
+        const ld = s.matches[i]?.loaderData as { slug?: string } | undefined;
+        if (ld?.slug) return ld.slug;
+      }
+      return "";
+    },
+  });
+
   return (
     <html lang="en">
       <head>
         <HeadContent />
       </head>
-      <body suppressHydrationWarning>
+      <body data-slug={slug} suppressHydrationWarning>
         <Outlet />
         <Scripts />
       </body>

@@ -12,7 +12,6 @@
  * Pure (no fs): `buildSite(snapshot)` is total + unit-testable; the build-content script
  * loads the snapshot and feeds it here.
  */
-import path from "node:path";
 import { folderIndexName } from "./folderIndex";
 import {
   type FilePath,
@@ -38,6 +37,14 @@ export interface SiteDoc {
   links: SimpleSlug[];
   /** baked git "modified" date (snapshot frontmatter, committer date — N4), if any */
   date?: Date;
+}
+
+/** Pure basename-without-`.md` (was `path.basename(rel, ".md")`). Kept node-free so
+ *  this whole module is safe to import from the SSR/client runtime, not just the
+ *  build (`runtimeSite.ts` reconstructs SiteData from the generated pages). */
+function baseStem(rel: string): string {
+  const base = rel.slice(rel.lastIndexOf("/") + 1);
+  return base.endsWith(".md") ? base.slice(0, -".md".length) : base;
 }
 
 // ── the index ──────────────────────────────────────────────────────────────────
@@ -82,7 +89,7 @@ export function buildSite(snapshot: Snapshot): SiteData {
     // Title fallback matches Quartz's FrontMatter transformer: file.stem — filename
     // without extension, spaces/case PRESERVED. Folder index pages fall back to their
     // parent directory name (and pick it up as an implicit alias below).
-    const stem = path.basename(rel, ".md");
+    const stem = baseStem(rel);
     const folderName = folderIndexName(rel);
     return {
       rel,
@@ -97,7 +104,18 @@ export function buildSite(snapshot: Snapshot): SiteData {
     };
   });
 
+  return indexDocs(docs);
+}
+
+/**
+ * Build the queryable index ({@link SiteData}) from a ready list of {@link SiteDoc}.
+ * Shared by `buildSite` (build-time, from the snapshot) and `runtimeSite.ts`
+ * (runtime, from the generated `PAGES`) so the backlink/lookup semantics have a
+ * single source of truth.
+ */
+export function indexDocs(docs: SiteDoc[]): SiteData {
   const bySlug = new Map(docs.map((d) => [d.slug, d]));
+  const allSlugs = docs.map((d) => d.slug);
 
   // reverse backlink index. Quartz's Backlinks does an EXACT
   // `file.links.includes(simplifySlug(fileData.slug))`, so we key by the resolved edge
@@ -342,4 +360,43 @@ export function buildExplorerTree(site: SiteData): TreeNode[] {
   };
   sortRec(root.children);
   return root.children;
+}
+
+// ── alias redirects (build-time) ─────────────────────────────────────────────────
+export interface AliasRedirect {
+  /** the alias's own slug (where the redirect stub lives), e.g. "the-city" */
+  slug: FullSlug;
+  /** relative URL to the canonical page (Quartz resolveRelative) */
+  redirUrl: RelativeURL;
+  /** canonical page's simplified slug (the redirect target, shown as <title>) */
+  ogSlug: SimpleSlug;
+}
+
+/**
+ * Ports faerrin `[...slug].astro` getStaticPaths' AliasRedirects: each page's
+ * `aliases` (frontmatter + the implicit folder-index alias, already merged into
+ * `SiteDoc.aliases`) maps to a redirect stub at `slugifyFilePath(alias + ".md")`
+ * pointing at the owning page. A real content/folder page wins over an alias of the
+ * same slug (ContentPage overwrites AliasRedirects in Quartz's emitter order), so
+ * those are skipped; first alias wins on intra-alias collisions.
+ */
+export function buildAliases(site: SiteData): AliasRedirect[] {
+  const taken = new Set<string>();
+  for (const d of site.docs) {
+    if (d.slug === "index" || !d.slug.endsWith("/index")) taken.add(d.slug); // content pages
+  }
+  for (const f of allFolders(site)) taken.add(`${f}/index`); // folder listing pages
+
+  const seen = new Set<string>();
+  const out: AliasRedirect[] = [];
+  for (const d of site.docs) {
+    const ogSlug = simplifySlug(d.slug);
+    for (const alias of d.aliases) {
+      const aSlug = slugifyFilePath(`${alias}.md` as FilePath);
+      if (taken.has(aSlug) || seen.has(aSlug)) continue;
+      seen.add(aSlug);
+      out.push({ slug: aSlug, redirUrl: resolveRelative(aSlug, ogSlug), ogSlug });
+    }
+  }
+  return out;
 }

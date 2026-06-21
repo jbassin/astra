@@ -8,14 +8,24 @@ import { main } from "./build-content";
 // site module the app imports. Slice 2 extends this to the snapshot sources.
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const GENERATED = path.resolve(HERE, "../src/generated/site.ts");
+const PUBLIC = path.resolve(HERE, "../public");
 
 describe("build-content", () => {
-  it("emits the generated site module with the snapshot-derived page index", async () => {
+  it("emits the generated site module with the snapshot-derived page index + aliases", async () => {
     await main();
     expect(existsSync(GENERATED)).toBe(true);
     const out = readFileSync(GENERATED, "utf8");
     expect(out).toContain('title: "Akasha"');
     expect(out).toContain("export const PAGES");
     expect(out).toContain("export const EXPLORER_TREE");
+    expect(out).toContain("export const ALIASES");
+  });
+
+  it("emits the static endpoints into public/ at the faerrin paths (N2)", async () => {
+    await main();
+    expect(existsSync(path.join(PUBLIC, "index.xml"))).toBe(true);
+    expect(existsSync(path.join(PUBLIC, "sitemap.xml"))).toBe(true);
+    const idx = JSON.parse(readFileSync(path.join(PUBLIC, "static/contentIndex.json"), "utf8"));
+    expect(Object.keys(idx).length).toBe(141);
   });
 });

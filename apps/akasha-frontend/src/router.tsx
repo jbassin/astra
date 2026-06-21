@@ -18,12 +18,15 @@ function DefaultErrorComponent({ error }: ErrorComponentProps) {
   );
 }
 
+// Ports faerrin's 404.astro (NotFoundPage): minimal, no sidebars.
 function DefaultNotFoundComponent() {
   return (
-    <main className="route-boundary">
-      <h1>Not found</h1>
-      <p>That page doesn&rsquo;t exist.</p>
-      <Link to="/">Back to the wiki</Link>
+    <main className="center">
+      <article className="popover-hint">
+        <h1>404</h1>
+        <p>Either this page is private or doesn&rsquo;t exist.</p>
+        <Link to="/">Home</Link>
+      </article>
     </main>
   );
 }

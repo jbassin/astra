@@ -132,9 +132,11 @@ akasha-frontend {
     // template (Decision I). Same config-single-source contract as strider:
     // server.ts binds this port + names telemetry; no PORT env. Behind Caddy at
     // akasha.iridi.cc → host 10365. service-name derives the browser RUM name
-    // (`{service-name}-rum`).
+    // (`{service-name}-rum`). public-origin = the absolute base URL baked into
+    // the build-emitted RSS/sitemap/og links (the Quartz ContentIndex contract).
     service-name "astra.akasha-frontend"
     port 10365
+    public-origin "https://akasha.iridi.cc"
 }
 
 caddy {

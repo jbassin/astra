@@ -2,7 +2,14 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
-import { allFolders, allTags, backlinksFor, buildExplorerTree, buildSite } from "./site";
+import {
+  allFolders,
+  allTags,
+  backlinksFor,
+  buildAliases,
+  buildExplorerTree,
+  buildSite,
+} from "./site";
 import { loadSnapshot } from "./snapshot";
 
 // The akasha snapshot (committed, deterministic) is the build-time source. Read it from
@@ -58,6 +65,19 @@ describe("site index — derived structure (lifted Quartz semantics)", () => {
   it("bakes the snapshot git date (committer date — N4) onto dated pages", () => {
     const dated = site.docs.find((d) => d.date);
     expect(dated?.date).toBeInstanceOf(Date);
+  });
+
+  it("builds alias redirects, skipping ones that collide with real pages", () => {
+    const aliases = buildAliases(site);
+    expect(aliases.length).toBeGreaterThan(0);
+    // every alias points somewhere and never shadows a real content/folder slug
+    const realSlugs = new Set(site.docs.map((d) => d.slug));
+    for (const a of aliases) {
+      expect(a.redirUrl.length).toBeGreaterThan(0);
+      expect(realSlugs.has(a.slug as never)).toBe(false);
+    }
+    // alias slugs are unique (first-wins on collision)
+    expect(new Set(aliases.map((a) => a.slug)).size).toBe(aliases.length);
   });
 });
 
