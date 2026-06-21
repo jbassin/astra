@@ -1,0 +1,19 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "astra",
+  "description": "Repo-local skills for the astra monorepo — session save/load (record + recall the durable docs).",
+  "owner": {
+    "name": "astra"
+  },
+  "plugins": [
+    {
+      "name": "astra",
+      "description": "astra session workflow — /astra:load (orient at session start) and /astra:save (checkpoint the durable docs at session end).",
+      "author": {
+        "name": "astra"
+      },
+      "source": "./",
+      "category": "productivity"
+    }
+  ]
+}

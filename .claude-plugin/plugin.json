@@ -1,0 +1,6 @@
+{
+  "name": "astra",
+  "description": "astra session workflow — /astra:load (orient at session start) and /astra:save (checkpoint the durable docs at session end).",
+  "version": "0.1.0",
+  "skills": "./.claude/skills/"
+}
