@@ -89,6 +89,7 @@ class WealOverlayConfig(_Base):
 class OratorConfig(_Base):
     guild_id: str = ""
     spike_channel_id: str = ""
+    database_url: str = ""
     port: int = 8788
     public_origin: str = "http://localhost:8788"
     allowed_user_ids: str = ""
