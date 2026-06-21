@@ -69,6 +69,16 @@ from slice 6b onward. Don't "fix" the old commit messages (immutable history).
 - **6b acceptance includes a LIVE deploy re-verify** (`just up` + `just caddy-reload` + a `signoz_*` span check) —
   outward-facing/user-triggered ([[deploy-apply-with-just]], [[no-ci-monitoring]]). Don't run it without go-ahead.
 
+**CI gotchas (bit us at `306808f`, after 6a):** (1) Adding a workspace member re-runs `bun install` which
+**regenerates bun.lock AND can bump tools within their semver range** — biome `2.x`→`2.5.0` here, which is
+stricter (new `suppressions/unused`, format tweaks). Reproduce CI **exactly**: `bunx biome ci .` on the WHOLE
+repo, not `biome ci <scoped-path>` (scoped runs missed real violations the full run flags, incl. in untouched
+files like gothic Button.tsx). (2) A **new workspace member breaks `--frozen-lockfile` in any Dockerfile that
+copies only a partial manifest set** — bun recomputes the lock from present package.json's and the root
+`apps/*`/`libs/ts/*` globs resolve the FULL workspace, so a partial set = "lockfile had changes". Every
+service Dockerfile must COPY all five app manifests (strider's now does, mirroring orator). Verify with
+`bun install --frozen-lockfile` at root + `docker compose build <svc>`.
+
 **Decisions locked:** editor write-endpoint auth = accepted won't-fix ([[strider-editor-auth-accepted]]);
 Nitro+bun-preset migration deferred until non-nightly (fold into `createSsrServer` then). Local CI lanes for any
 slice: `bun --filter '*' typecheck && bunx biome ci . && bun --filter '*' test && bun --filter '*' build`.
