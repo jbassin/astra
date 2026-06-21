@@ -56,8 +56,11 @@ The `<body data-slug>` attr is a load-bearing contract (Graph + TranscriptPlayer
 
 **Slice-1 scaffold facts:** config namespace `akasha-frontend { service-name "astra.akasha-frontend"; port
 10365 }` → Zod key `akashaFrontend`, Pydantic `akasha_frontend` (kdl kebab auto-maps); **mirror in BOTH
-schemas + spot-check tests**. Adding the workspace member: ran `bun install`, added akasha's manifest to
-strider + orator-backend Dockerfiles too (else their `--frozen-lockfile` breaks), added `apps/akasha-frontend`
+schemas + spot-check tests**. Adding the workspace member: ran `bun install` (updates `bun.lock`), then added akasha's manifest to
+**ALL FOUR** frozen-lockfile service Dockerfiles — strider, orator-backend, **weal-bot, weal-overlay** (else
+their `bun install --frozen-lockfile` fails "lockfile had changes": the root `apps/*` glob resolves the full
+workspace, so any new member must appear in every service's manifest-COPY list — weal's two used a minimal
+single-manifest pattern and broke `just up` until brought up to the full set). Added `apps/akasha-frontend`
 to `pyproject.toml` uv `exclude`. `src/generated/` gitignored; `src/routeTree.gen.ts` committed (biome-ignored).
 Standard frontend gotchas still apply: vite `--configLoader runner` (to import `@astra/site-kit` from
 vite.config), `@tailwindcss/vite` (or gothic styling ships raw), pixi behind `<ClientOnly>`, `createServerFn`
