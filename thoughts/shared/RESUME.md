@@ -36,24 +36,33 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `c165b01`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `bff194e`, 2026-06-21)
 
-- **0011 akasha-frontend IN PROGRESS (Phase 5) — slice 1 of 9 BUILT + PUSHED.** The wiki read-surface; the
-  critical-path long pole. **Scope + Spec gates COMPLETE:** scope `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`
-  (verified against the live repos; N1/N3 spiked, N2/N4–N8 decided), spec `thoughts/astra/specs/0011-akasha-frontend-spec.md`.
-  Two seams **pre-proven**: **N1** Pagefind via the NodeJS Indexing API over in-memory HTML (no prerender),
-  **N3** the gothic **`resolveCrossref`** seam (landed `f13ed5f` — backward-compatible). **Slice 1 (`c165b01`):**
-  scaffolded the SSR app by copying the strider template — `akasha-frontend { service-name; port 10365 }` in
-  config.kdl mirrored in both schemas, the full shell (server/vite/router/RUM seam/SSR smoke), a placeholder
-  `@astra/content-build` source, templated `ARG APP` Dockerfile (COPYs the akasha snapshot/corpus + linguist
-  data), uv exclude. CI-green (SSR boots, renders / 200; biome 332 files; 14/14 typecheck; uv green).
-  **Resume at slice 2:** lift `slug.ts` **verbatim** + `site.ts` (swap input to a snapshot reader, **consume
-  the snapshot `edges`** per N6, delete `gitModifiedDates`); emit generated modules (page index/backlinks/
-  folder-index/breadcrumbs/tags/Explorer); the **slug-parity unit test vs a captured faerrin slug set** is the
-  gate. Remaining slices 3–9: routes+static emits → vellum+crossref → easy islands+Explorer → Graph(M2) →
-  transcripts+player(D4,N7) → Pagefind(N1) → URL-parity gate + deploy. **Decisions in force:** SSR (Decision I),
-  port faerrin, consume snapshot edges (N6), port `matchCampaign` heuristic (N7), committer date (N4),
-  DiceDashboard deferred (M3). See `[[akasha-frontend-0011-gotchas]]`.
+- **0011 akasha-frontend IN PROGRESS (Phase 5) — slices 1–2 of 9 BUILT + PUSHED.** The wiki read-surface; the
+  critical-path long pole. **Scope + Spec gates COMPLETE:** scope `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`,
+  spec `thoughts/astra/specs/0011-akasha-frontend-spec.md`. Two seams **pre-proven**: **N1** Pagefind via the
+  NodeJS Indexing API over in-memory HTML (no prerender), **N3** the gothic **`resolveCrossref`** seam
+  (`f13ed5f`). **Slice 1 (`c165b01`):** scaffolded the SSR app from the strider template (config namespace
+  10365 mirrored in both schemas, the shell + RUM seam + SSR smoke, placeholder content source, templated
+  Dockerfile, uv exclude). **Slice 2 (`bff194e`):** lifted `slug.ts` **verbatim** + `folderIndex` + `site.ts`
+  (input swapped to a snapshot reader, edges **consumed** from the snapshot per N6, `gitModifiedDates`/Astro
+  `entry` dropped); `build-content` emits the generated site module (PAGES/EXPLORER_TREE/tags/folders) from the
+  committed `akasha-snapshot.json`. **THE PARITY GATE IS GREEN** — a unit test asserts akasha-fe's 141
+  snapshot-derived slugs **byte-equal** faerrin's 141 authoritative non-Script `contentIndex` slugs (fixture
+  `src/domain/lib/__fixtures__/faerrin-slugs.json`). CI-green: typecheck, 9 tests, build, biome clean.
+  **Resume at slice 3:** routes + static emits — TanStack SSR routes/loaders for content/folder/`tags/$tag`/404;
+  **build-emit** RSS (`index.xml`), `sitemap.xml`, `/static/contentIndex.json` (the `{title,links,tags}` graph
+  contract), and the alias `<meta refresh>` stubs (N2); the SSR shell must emit `body[data-slug]` (load-bearing
+  for Graph + TranscriptPlayer). Remaining 4–9: vellum+crossref → easy islands+Explorer → Graph(M2) →
+  transcripts+player(D4,N7) → Pagefind(N1) → URL-parity gate (snapshot ∪ transcripts) + deploy. **Decisions:**
+  SSR (I), consume snapshot edges (N6), port `matchCampaign` (N7), committer date (N4), DiceDashboard deferred
+  (M3). See `[[akasha-frontend-0011-gotchas]]`.
+- **Deploy now fully healthy (this session's detours):** fixed `just up` end-to-end — the dagster image was
+  stale Phase-0 (now `uv sync`s the pipeline workspace from repo root, `4ac8b94`); weal Dockerfiles needed the
+  full manifest set after the new member (`33377b3`); and — load-bearing — **built the repo-wide SOPS
+  secret-injection** the deploy never had (`just up` decrypts on the host + injects UPPER_CASED env; config's
+  env-override resolves in-container — `20195ec`). **weal-bot is now LIVE** (real token). See
+  `[[deploy-sops-injection]]`.
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
 - **0010 orator BUILT (Phase 4) — all 9 slices DONE + PUSHED** (`98b5618`…`2c2fd10`; the slice-9 chain pushes
@@ -162,15 +171,14 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ### Next: akasha-frontend 0011 — resume at slice 2
 
-1. **0011 akasha-frontend — IN PROGRESS, resume at slice 2.** Slice 1 (scaffold) is built + pushed (`c165b01`).
-   **Slice 2 = the slug/site lift + snapshot adapter:** lift `slug.ts` **verbatim** (240 LOC, `github-slugger`,
-   zero Astro), lift `site.ts` swapping its input from `getCollection("docs")` to a **snapshot reader**,
-   **consume the snapshot `edges`** (N6 — don't re-derive), **delete `gitModifiedDates`** (dates pre-baked),
-   emit generated modules (page index/backlinks/folder-index/breadcrumbs/tags/Explorer) via
-   `@astra/content-build`. The **slug-parity unit test vs a captured faerrin slug set is the gate** (Risk 1).
-   Then slices 3–9 per the spec. **READ FIRST each session:** the spec
-   `thoughts/astra/specs/0011-akasha-frontend-spec.md`, the scope doc, `apps/strider/README.md`, and
-   `thoughts/shared/guides/migrating-an-app-into-astra.md`. See `[[akasha-frontend-0011-gotchas]]`.
+1. **0011 akasha-frontend — IN PROGRESS, resume at slice 3.** Slices 1–2 built + pushed (`c165b01`, `bff194e`);
+   the slug/site lift is done and **the URL-parity gate is GREEN**. **Slice 3 = routes + static emits:** TanStack
+   SSR routes/loaders for content / folder-listing / `tags/$tag` / 404 reading the generated modules;
+   **build-emit** `index.xml` (RSS), `sitemap.xml`, `/static/contentIndex.json` (the `{title,links,tags}` graph
+   contract Graph fetches), and the alias `<meta http-equiv="refresh">` static stubs (N2) — all at the exact
+   faerrin paths; the SSR shell emits **`body[data-slug]`** (Graph + TranscriptPlayer read it). Then slices 4–9
+   per the spec. **READ FIRST each session:** the spec `thoughts/astra/specs/0011-akasha-frontend-spec.md`, the
+   scope doc, `apps/strider/README.md`, the migration guide. See `[[akasha-frontend-0011-gotchas]]`.
 2. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
    public edge (`just caddy-reload` + `orator.iridi.cc` DNS record — outward-facing, like strider/weal-overlay)
    and the deferred live Discord run (SOPS token). orator-postgres + orator-backend deployed locally on

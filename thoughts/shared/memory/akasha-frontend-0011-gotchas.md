@@ -54,6 +54,20 @@ NOTHING, attaches to SSR-emitted `.transcript-line`/`audio[data-transcript]` mar
 precomputed `seconds[]` binary search + single-root-class filter). **Never make it reactive** (1.2–1.6 MB pages).
 The `<body data-slug>` attr is a load-bearing contract (Graph + TranscriptPlayer read it).
 
+**Slice-2 lift facts (done, `bff194e`):** `slug.ts` lifts to `src/domain/lib/slug.ts` — but faerrin's
+`astro/strict` is LOOSER than astra's base tsconfig (`noUncheckedIndexedAccess: true`), so the lift needs
+**type-only** fixes at guarded index-access sites (`as FullSlug`, `?? ""`, destructure `as [string, string|
+undefined]`) — runtime logic unchanged. biome reformats it to astra style + a `useTemplate: "off"` override in
+`biome.json` marks the verbatim `+` concatenations (Quartz style). `site.ts`'s `buildSite(snapshot)` appends
+`.md` to each snapshot `path` so `slugifyFilePath`/`basename` behave byte-identically to faerrin (`rel` had the
+ext). **Parity gate** (`src/domain/lib/site.test.ts`): the authoritative fixture is faerrin's shipped
+`contentIndex.json` keys (217 = 141 non-Script + 76 Script), filtered to the 141 non-Script, sorted →
+`__fixtures__/faerrin-slugs.json`; the test asserts akasha-fe's 141 snapshot slugs (FullSlug form, folder
+indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/`ALL_TAGS`/`ALL_FOLDERS` (Date→
+ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
+only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
+unaffected, but the graph/backlink parity is a slice-4 check.
+
 **Slice-1 scaffold facts:** config namespace `akasha-frontend { service-name "astra.akasha-frontend"; port
 10365 }` → Zod key `akashaFrontend`, Pydantic `akasha_frontend` (kdl kebab auto-maps); **mirror in BOTH
 schemas + spot-check tests**. Adding the workspace member: ran `bun install` (updates `bun.lock`), then added akasha's manifest to
