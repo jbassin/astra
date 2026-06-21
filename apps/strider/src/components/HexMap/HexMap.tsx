@@ -9,7 +9,7 @@ import {
   Sprite,
   type Texture,
 } from "pixi.js";
-import { GlowFilter } from "pixi-filters";
+import { GlowFilter } from "pixi-filters/glow";
 import { useEffect, useRef } from "react";
 import { usePixi } from "@/components/PixiHost/pixiContext";
 import type { Faction } from "@/lib/factions";
@@ -245,6 +245,17 @@ function buildScene(
   const hoverGlowLayer = new Graphics();
   hoverGlowLayer.label = "hoverGlow";
   hoverGlowLayer.visible = false;
+  // One reusable glow filter (its color is mutated per faction on hover) instead
+  // of allocating a fresh GPU filter on every hover-in. Pixi skips filters on
+  // hidden objects, so leaving it attached while hidden costs nothing.
+  const hoverGlowFilter = new GlowFilter({
+    distance: 6,
+    outerStrength: 2,
+    innerStrength: 0,
+    color: 0xffffff,
+    quality: 0.15,
+  });
+  hoverGlowLayer.filters = [hoverGlowFilter];
   world.addChild(hoverGlowLayer);
 
   // Overlay layer for one-shot replay animations. Lives above the static
@@ -265,6 +276,9 @@ function buildScene(
   // hex directly. Rebuilt every setFactionState — animations always look up
   // graphics from the *current* snapshot, so the map never goes stale.
   const factionHexByCoord = new Map<string, Graphics>();
+  // Current owner per coord (faction index, or null = unowned) so setFactionState
+  // updates only the hexes that actually changed owner between timeline steps.
+  const hexOwnerByCoord = new Map<string, number | null>();
 
   // --- Faction / unowned / border layers — rebuilt whenever the effective
   // assignment changes (e.g. timeline scrubs, claim ops fold in). ---
@@ -279,29 +293,37 @@ function buildScene(
     unownedHexes: ReadonlyArray<readonly [number, number]>,
     factionBorders: ReadonlyArray<EdgeSegment>,
   ) {
-    factionHexLayer.removeChildren().forEach((c) => {
-      c.destroy({ children: true });
-    });
-    unownedHexLayer.removeChildren().forEach((c) => {
-      c.destroy({ children: true });
-    });
-    factionHexByCoord.clear();
+    const seen = new Set<string>();
 
-    factionHexes.forEach((hexes, factionIdx) => {
-      const faction = propsRef.current.factions[factionIdx];
-      if (!faction) return;
-      const color = faction.color;
-      for (const [q, r] of hexes) {
-        const [cx, cy] = hexPixel(q, r);
-        const g = new Graphics();
-        g.poly(LOCAL_HEX_VERTS);
-        g.fill({ color });
-        g.stroke({ color: "#090c10", width: 0.2 });
-        g.position.set(cx, cy);
+    // Reuse the Graphics for any hex whose owner is unchanged; only hexes that
+    // actually changed owner are destroyed + recreated. That keeps the flip
+    // animation's contract intact — it animates exactly those fresh graphics —
+    // while avoiding a full teardown/rebuild of the grid on every timeline step.
+    const ensure = (q: number, r: number, owner: number | null) => {
+      const key = `${q},${r}`;
+      seen.add(key);
+      const existing = factionHexByCoord.get(key);
+      if (existing) {
+        if (hexOwnerByCoord.get(key) === owner) {
+          existing.scale.y = 1; // clear any leftover from an interrupted flip
+          return;
+        }
+        existing.destroy();
+        factionHexByCoord.delete(key);
+      }
+      const faction = owner === null ? null : propsRef.current.factions[owner];
+      if (owner !== null && !faction) return;
+      const [cx, cy] = hexPixel(q, r);
+      const g = new Graphics();
+      g.poly(LOCAL_HEX_VERTS);
+      g.fill({ color: faction ? faction.color : "#787c80" });
+      g.stroke({ color: "#090c10", width: 0.2 });
+      g.position.set(cx, cy);
+      if (faction) {
         g.eventMode = "static";
         g.cursor = "pointer";
         g.hitArea = LOCAL_HEX_HITAREA;
-        const fIdx = factionIdx;
+        const fIdx = owner as number;
         g.on("pointerdown", () => {
           propsRef.current.onFactionClick(propsRef.current.factions[fIdx]!);
         });
@@ -312,19 +334,25 @@ function buildScene(
           propsRef.current.onFactionHover(null);
         });
         factionHexLayer.addChild(g);
-        factionHexByCoord.set(`${q},${r}`, g);
+      } else {
+        unownedHexLayer.addChild(g);
       }
-    });
+      factionHexByCoord.set(key, g);
+      hexOwnerByCoord.set(key, owner);
+    };
 
-    for (const [q, r] of unownedHexes) {
-      const [cx, cy] = hexPixel(q, r);
-      const g = new Graphics();
-      g.poly(LOCAL_HEX_VERTS);
-      g.fill({ color: "#787c80" });
-      g.stroke({ color: "#090c10", width: 0.2 });
-      g.position.set(cx, cy);
-      unownedHexLayer.addChild(g);
-      factionHexByCoord.set(`${q},${r}`, g);
+    factionHexes.forEach((hexes, factionIdx) => {
+      for (const [q, r] of hexes) ensure(q, r, factionIdx);
+    });
+    for (const [q, r] of unownedHexes) ensure(q, r, null);
+
+    // Drop hexes no longer present in the new snapshot.
+    for (const [key, g] of factionHexByCoord) {
+      if (!seen.has(key)) {
+        g.destroy();
+        factionHexByCoord.delete(key);
+        hexOwnerByCoord.delete(key);
+      }
     }
 
     factionBorderLayer.clear();
@@ -475,11 +503,9 @@ function buildScene(
     hoverGlowLayer.clear();
     if (idx === null) {
       hoverGlowLayer.visible = false;
-      hoverGlowLayer.filters = [];
       return;
     }
     const faction = propsRef.current.factions[idx]!;
-    const colorNum = new Color(faction.color).toNumber();
     const territoryEdges = propsRef.current.territoryBorders[idx] ?? [];
     drawEdgesPath(hoverGlowLayer, territoryEdges);
     hoverGlowLayer.stroke({
@@ -487,15 +513,7 @@ function buildScene(
       width: 0.5,
       cap: "round",
     });
-    hoverGlowLayer.filters = [
-      new GlowFilter({
-        distance: 6,
-        outerStrength: 2,
-        innerStrength: 0,
-        color: colorNum,
-        quality: 0.15,
-      }),
-    ];
+    hoverGlowFilter.color = new Color(faction.color).toNumber();
     hoverGlowLayer.visible = true;
   }
 

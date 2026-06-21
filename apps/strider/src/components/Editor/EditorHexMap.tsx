@@ -1,5 +1,5 @@
 import { Application, Assets, Container, Graphics, Polygon, Sprite, type Texture } from "pixi.js";
-import { GlowFilter } from "pixi-filters";
+import { GlowFilter } from "pixi-filters/glow";
 import { useEffect, useRef } from "react";
 import type { Faction } from "@/lib/factions";
 import { computeRegionBorders, hexPixel } from "@/lib/hexUtils";
