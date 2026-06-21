@@ -11,9 +11,24 @@ sops_file := "deploy/sops/secrets.enc.yaml"
 
 # --- Docker substrate (deploy/) ---
 
-# Bring the stack up (Dagster + SigNoz + strider). --build so local code changes
-# take effect (cached layers keep it fast when nothing changed).
+# Bring the stack up (Dagster + SigNoz + the services). --build so local code changes
+# take effect (cached layers keep it fast when nothing changed). Secrets are decrypted
+# from SOPS on the host and injected as env (roadmap Decision E): each service's compose
+# `environment:` passes the UPPER_CASED keys it needs, and @astra/config's env-override
+# path (`process.env[KEY.toUpperCase()]` wins) resolves them in-container — so no
+# sops/age-key/secrets file is ever baked into an image. Run on a host with the age key.
 up:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    export SOPS_AGE_KEY_FILE="{{sops_age_key}}"
+    # Decrypt once on the host; export each secret as KEY upper-cased (the env-override
+    # name config checks first). The host shell holds the secrets only for this process;
+    # compose scopes each container to the keys its `environment:` block references.
+    secrets="$(sops -d --output-type dotenv "{{sops_file}}")"
+    while IFS='=' read -r k v; do
+      [ -n "$k" ] || continue
+      export "${k^^}=$v"
+    done <<< "$secrets"
     cd deploy && docker compose up -d --build
 
 # Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).

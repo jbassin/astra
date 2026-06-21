@@ -15,6 +15,12 @@ x-dagster-env: &dagster-env
   DAGSTER_PG_USERNAME: ${DAGSTER_PG_USERNAME:-dagster}
   DAGSTER_PG_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
   DAGSTER_PG_DB: ${DAGSTER_PG_DB:-dagster}
+  # Pipeline secrets injected as env by `just up` (Decision E) so the assets'
+  # LLM/transcription calls resolve their `ref="sops:KEY"`s in-container (the code
+  # server, daemon, and run workers all inherit this anchor).
+  ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+  GROQ_API_KEY: ${GROQ_API_KEY:-}
+  ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
 
 services:
   # --- Dagster: the batch-pipeline control plane ---
@@ -113,6 +119,12 @@ services:
     depends_on:
       weal-postgres:
         condition: service_healthy
+    # SOPS secrets injected as env by `just up` (Decision E); config's env-override
+    # resolves the `ref="sops:KEY"`s in-container. Empty when not run via `just up`
+    # (degrades). dice_feed_url is not provisioned yet (lands at cutover) → unset.
+    environment:
+      WEAL_DISCORD_KEY: ${WEAL_DISCORD_KEY:-}
+      WEAL_TOKEN: ${WEAL_TOKEN:-}
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "bun", "-e", "await fetch('http://127.0.0.1:10203/health').then(r=>process.exit(r.ok?0:1))"]
@@ -129,6 +141,9 @@ services:
     image: astra-weal-overlay:local
     container_name: astra-weal-overlay
     command: ["bun", "run", "start"]
+    # Shared weal↔overlay token (Decision E env injection via `just up`).
+    environment:
+      WEAL_TOKEN: ${WEAL_TOKEN:-}
     ports:
       - "10361:10360" # weal-overlay (astra range); strider holds 10360
     networks: [signoz-net]
@@ -194,6 +209,13 @@ services:
     depends_on:
       orator-postgres:
         condition: service_healthy
+    # SOPS secrets injected as env by `just up` (Decision E) → config env-override
+    # resolves them in-container. Empty when not run via `just up` (bot off, 503).
+    environment:
+      ORATOR_DISCORD_KEY: ${ORATOR_DISCORD_KEY:-}
+      ORATOR_DISCORD_CLIENT_ID: ${ORATOR_DISCORD_CLIENT_ID:-}
+      ORATOR_DISCORD_CLIENT_SECRET: ${ORATOR_DISCORD_CLIENT_SECRET:-}
+      ORATOR_SESSION_SECRET: ${ORATOR_SESSION_SECRET:-}
     volumes:
       - orator-audio:/data # matches kdl orator.data-dir; audio under /data/audio
     ports:
