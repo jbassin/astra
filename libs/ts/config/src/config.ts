@@ -111,6 +111,16 @@ const Orator = z
 
 const OratorController = z.object({ apiKey: secret() }).strict();
 
+// The SSR frontend service (Decision I). serviceName + port are the single source
+// for server.ts (bind + telemetry name) and vite's dev port; serviceName also
+// derives the browser RUM name (`{serviceName}-rum`). (config-single-source)
+const Strider = z
+  .object({
+    serviceName: z.string().default("astra.strider"),
+    port: z.number().default(10360),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -134,6 +144,7 @@ export const ConfigSchema = z
     wealOverlay: WealOverlay.default(() => WealOverlay.parse({})),
     orator: Orator.default(() => Orator.parse({})),
     oratorController: OratorController.default(() => OratorController.parse({})),
+    strider: Strider.default(() => Strider.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

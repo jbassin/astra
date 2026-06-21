@@ -1,11 +1,18 @@
-# Astra strider — SSR frontend service (Decision I). `bun run start` runs the
-# TanStack Start SSR server (serves dist/ + SSR + the editor write server fn).
+# Astra SSR frontend service (Decision I) — the template Dockerfile for 0011-0013.
+# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR + any
+# editor write server fn). One knob: `ARG APP` selects which apps/<APP> is built;
+# everything else is workspace-generic except the two content-pipeline COPYs in the
+# runtime stage (noted inline) — replace those per app's content layout.
 #
-# Build context is the REPO ROOT (strider is a bun workspace member depending on
-# @astra/gothic + @astra/observe via workspace:*), so the whole bun workspace must
+# Build context is the REPO ROOT (a frontend is a bun workspace member depending on
+# @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must
 # be present for `bun install` to resolve workspace links. Build from deploy/ via
-# compose.
+# compose. Port + service name come from config.kdl (config-single-source) — no
+# PORT env; compose maps the published host port.
+ARG APP=strider
+
 FROM oven/bun:1.3.14 AS build
+ARG APP
 WORKDIR /repo
 
 # Install against the full workspace manifest set (cached unless manifests change).
@@ -26,28 +33,36 @@ RUN bun install --frozen-lockfile
 # `extends` at build time, so it must be present at the repo root.
 COPY tsconfig.base.json ./
 
-# Build strider (build-content runs in the vite buildStart hook).
-COPY apps/strider ./apps/strider
-WORKDIR /repo/apps/strider
+# config.kdl must be present at BUILD time too: vite.config.ts reads serviceName/port
+# from it via @astra/config (config-single-source). @astra/config locates it by
+# walking up to <repo>/ontology/ontology-config; without it the config load throws
+# and the build fails. (The runtime stage copies it again for server.ts.)
+COPY ontology/ontology-config /repo/ontology/ontology-config
+
+# Build the selected app (build-content runs in the vite buildStart hook).
+COPY apps/${APP} ./apps/${APP}
+WORKDIR /repo/apps/${APP}
 RUN bun run build
 
 # --- Runtime: slim image carrying the built app + its content + workspace deps ---
 FROM oven/bun:1.3.14-slim AS runtime
-WORKDIR /repo/apps/strider
-ENV NODE_ENV=production PORT=10360
+ARG APP
+WORKDIR /repo/apps/${APP}
+ENV NODE_ENV=production
 # node_modules + libs/ts together preserve the @astra/* workspace symlinks that
-# server.ts resolves at runtime (@astra/observe → @astra/config).
+# server.ts resolves at runtime (@astra/site-kit → @astra/observe → @astra/config).
 COPY --from=build /repo/node_modules /repo/node_modules
 COPY --from=build /repo/libs/ts /repo/libs/ts
-COPY --from=build /repo/apps/strider/node_modules ./node_modules
-COPY --from=build /repo/apps/strider/dist ./dist
-COPY --from=build /repo/apps/strider/content ./content
-COPY --from=build /repo/apps/strider/src/generated ./src/generated
-COPY --from=build /repo/apps/strider/server.ts ./server.ts
-COPY --from=build /repo/apps/strider/package.json ./package.json
-# config.kdl is the single source for the OTLP endpoint (read via @astra/config);
-# @astra/config locates it by walking up to <repo>/ontology/ontology-config.
+COPY --from=build /repo/apps/${APP}/node_modules ./node_modules
+COPY --from=build /repo/apps/${APP}/dist ./dist
+COPY --from=build /repo/apps/${APP}/server.ts ./server.ts
+COPY --from=build /repo/apps/${APP}/package.json ./package.json
+# Content-pipeline-specific (replace per app's content layout): the markdown source
+# + its generated TS modules the runtime imports.
+COPY --from=build /repo/apps/${APP}/content ./content
+COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
+# config.kdl is the single source for serviceName/port + the OTLP endpoint (read via
+# @astra/config); @astra/config locates it by walking up to <repo>/ontology/ontology-config.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-EXPOSE 10360
 CMD ["bun", "run", "start"]

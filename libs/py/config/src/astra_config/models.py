@@ -108,6 +108,14 @@ class OratorControllerConfig(_Base):
     api_key: SecretRef | None = None
 
 
+class StriderConfig(_Base):
+    # The SSR frontend service (Decision I). service_name + port are the single
+    # source for server.ts (bind + telemetry name) and vite's dev port; service_name
+    # also derives the browser RUM name (``{service_name}-rum``).
+    service_name: str = "astra.strider"
+    port: int = 10360
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -122,4 +130,5 @@ class Config(_Base):
     weal_overlay: WealOverlayConfig = Field(default_factory=WealOverlayConfig)
     orator: OratorConfig = Field(default_factory=OratorConfig)
     orator_controller: OratorControllerConfig = Field(default_factory=OratorControllerConfig)
+    strider: StriderConfig = Field(default_factory=StriderConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

@@ -112,6 +112,16 @@ orator-controller {
     api-key ref="sops:orator_controller_api_key"
 }
 
+strider {
+    // The SSR frontend service (Decision I) — the template for 0011-0013. Deploy
+    // values are the single source (config-single-source): server.ts binds this
+    // port + names telemetry with service-name; no PORT env. Behind Caddy at
+    // strider.iridi.cc → host 10360. service-name also derives the browser RUM
+    // service name (`{service-name}-rum`).
+    service-name "astra.strider"
+    port 10360
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }

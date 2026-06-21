@@ -1,0 +1,26 @@
+{
+  "name": "@astra/site-kit",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "module": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./web": "./src/web.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "build": "echo '@astra/site-kit: no build step'"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/gothic": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@opentelemetry/api": "^1.9.1",
+    "@tanstack/router-generator": "^1.167.13"
+  },
+  "devDependencies": {
+    "vite": "^6.3.6"
+  }
+}

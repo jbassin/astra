@@ -140,11 +140,13 @@ services:
     build:
       context: ..
       dockerfile: apps/strider/Dockerfile
+      args:
+        APP: strider # the one knob in the templated frontend Dockerfile
     image: astra-strider:local
     container_name: astra-strider
     command: ["bun", "run", "start"]
-    environment:
-      PORT: "10360"
+    # No PORT env — serviceName/port come from config.kdl (config-single-source);
+    # compose only maps the published host port below.
     ports:
       - "10360:10360" # strider SSR (astra range) — also reachable directly
     networks: [signoz-net]

@@ -67,6 +67,7 @@
         "@astra/content-build": "workspace:*",
         "@astra/gothic": "workspace:*",
         "@astra/observe": "workspace:*",
+        "@astra/site-kit": "workspace:*",
         "@fontsource/ibm-plex-mono": "^5.2.7",
         "@opentelemetry/api": "^1.9.1",
         "@tanstack/react-router": "^1.170.7",
@@ -78,7 +79,6 @@
       },
       "devDependencies": {
         "@tailwindcss/vite": "^4.1.13",
-        "@tanstack/router-generator": "^1.167.13",
         "@testing-library/dom": "^10.4.0",
         "@testing-library/react": "^16.3.2",
         "@types/react": "^19.0.0",
@@ -197,6 +197,20 @@
         "zod": "^4.4.3",
       },
     },
+    "libs/ts/site-kit": {
+      "name": "@astra/site-kit",
+      "version": "0.0.0",
+      "dependencies": {
+        "@astra/config": "workspace:*",
+        "@astra/gothic": "workspace:*",
+        "@astra/observe": "workspace:*",
+        "@opentelemetry/api": "^1.9.1",
+        "@tanstack/router-generator": "^1.167.13",
+      },
+      "devDependencies": {
+        "vite": "^6.3.6",
+      },
+    },
     "libs/ts/vellum-lang": {
       "name": "@astra/vellum-lang",
       "version": "0.0.0",
@@ -230,6 +244,8 @@
     "@astra/orator-backend": ["@astra/orator-backend@workspace:apps/orator-backend"],
 
     "@astra/orator-controller": ["@astra/orator-controller@workspace:apps/orator-controller"],
+
+    "@astra/site-kit": ["@astra/site-kit@workspace:libs/ts/site-kit"],
 
     "@astra/smoke": ["@astra/smoke@workspace:libs/ts/_smoke"],
 

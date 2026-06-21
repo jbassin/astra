@@ -1,9 +1,17 @@
 import { loadConfig } from "@astra/config";
 import { createServerFn } from "@tanstack/react-start";
 
-// Server-only RPC: returns the browser RUM ingest endpoint from config.kdl
-// (config-single-source). createServerFn keeps @astra/config — and the config
-// read — out of the client bundle; the client gets a typed fetch stub.
-export const getRumEndpoint = createServerFn({ method: "GET" }).handler(() => {
-  return loadConfig().telemetry.rumEndpoint;
+// Server-only RPC: the browser RUM endpoint + service name from config.kdl
+// (config-single-source — including the client-side service name, which the
+// browser can't read directly). createServerFn keeps @astra/config — and the
+// config read — out of the client bundle; the client gets a typed fetch stub.
+// The createServerFn stays in app source (the tanstackStart vite plugin transforms
+// it here); @astra/site-kit owns the generic glue (startRum). This is the per-app
+// seam 0011-0013 copy verbatim.
+export const getRumConfig = createServerFn({ method: "GET" }).handler(() => {
+  const cfg = loadConfig();
+  return {
+    endpoint: cfg.telemetry.rumEndpoint,
+    serviceName: `${cfg.strider.serviceName}-rum`,
+  };
 });
