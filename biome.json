@@ -12,7 +12,8 @@
       "!**/linguist/data/**",
       "!**/routeTree.gen.ts",
       "!**/src/generated/**",
-      "!**/public/**"
+      "!**/public/**",
+      "!**/*.sdPlugin/**"
     ]
   },
   "formatter": {

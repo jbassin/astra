@@ -1,0 +1,48 @@
+{
+  "$schema": "https://schemas.elgato.com/streamdeck/plugins/manifest.json",
+  "Name": "orator",
+  "Version": "0.1.0.0",
+  "Author": "astra",
+  "UUID": "com.astra.orator",
+  "Category": "orator",
+  "CategoryIcon": "imgs/plugin/category-icon",
+  "Description": "Browse and play your orator music library from the Stream Deck: orator → collection → tag, with the currently-playing track highlighted. Points at your configurable orator-backend origin.",
+  "CodePath": "bin/plugin.js",
+  "Icon": "imgs/plugin/marketplace",
+  "SDKVersion": 2,
+  "Software": {
+    "MinimumVersion": "6.6"
+  },
+  "OS": [
+    {
+      "Platform": "mac",
+      "MinimumVersion": "13"
+    },
+    {
+      "Platform": "windows",
+      "MinimumVersion": "10"
+    }
+  ],
+  "Nodejs": {
+    "Version": "20",
+    "Debug": "enabled"
+  },
+  "Actions": [
+    {
+      "UUID": "com.astra.orator.slot",
+      "Name": "Library Slot",
+      "Icon": "imgs/actions/slot/icon",
+      "Tooltip": "An orator navigation/track key. Place these across the deck; orator paints each one based on where you are (collections → tags → tracks).",
+      "PropertyInspectorPath": "ui/orator.html",
+      "Controllers": ["Keypad"],
+      "VisibleInActionsList": true,
+      "States": [
+        {
+          "Image": "imgs/actions/slot/key",
+          "TitleAlignment": "middle",
+          "ShowTitle": false
+        }
+      ]
+    }
+  ]
+}
