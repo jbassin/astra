@@ -121,6 +121,16 @@ const Strider = z
   })
   .strict();
 
+// The akasha wiki read-surface (0011) — same SSR-frontend contract as Strider
+// (Decision I): serviceName + port are the single source for server.ts + vite's
+// dev port; serviceName derives the browser RUM name. (config-single-source)
+const AkashaFrontend = z
+  .object({
+    serviceName: z.string().default("astra.akasha-frontend"),
+    port: z.number().default(10365),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -147,6 +157,7 @@ export const ConfigSchema = z
     orator: Orator.default(() => Orator.parse({})),
     oratorController: OratorController.default(() => OratorController.parse({})),
     strider: Strider.default(() => Strider.parse({})),
+    akashaFrontend: AkashaFrontend.default(() => AkashaFrontend.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

@@ -1,25 +1,23 @@
-# Astra SSR frontend service (Decision I) — the template Dockerfile for 0011-0013.
-# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR + any
-# editor write server fn). One knob: `ARG APP` selects which apps/<APP> is built;
-# everything else is workspace-generic except the two content-pipeline COPYs in the
-# runtime stage (noted inline) — replace those per app's content layout.
+# Astra SSR frontend service (Decision I) — akasha-frontend, on the strider template.
+# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR). One knob:
+# `ARG APP` selects which apps/<APP> is built; everything else is workspace-generic
+# except the content-pipeline COPYs in the runtime stage (noted inline).
 #
 # Build context is the REPO ROOT (a frontend is a bun workspace member depending on
-# @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must
-# be present for `bun install` to resolve workspace links. Build from deploy/ via
-# compose. Port + service name come from config.kdl (config-single-source) — no
-# PORT env; compose maps the published host port.
-ARG APP=strider
+# @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must be
+# present for `bun install` to resolve workspace links. Build from deploy/ via compose.
+# Port + service name come from config.kdl (config-single-source) — no PORT env;
+# compose maps the published host port.
+ARG APP=akasha-frontend
 
 FROM oven/bun:1.3.14 AS build
 ARG APP
 WORKDIR /repo
 
 # Install against the full workspace manifest set (cached unless manifests change).
-# Every workspace member's manifest must be present so the shared bun.lock
-# reconciles: the root `apps/*`/`libs/ts/*` globs resolve the FULL workspace, so a
-# partial app set reads as "lockfile had changes" under --frozen-lockfile. (Add a
-# new app's manifest here too; libs/ts is copied wholesale below.)
+# Every workspace member's manifest must be present so the shared bun.lock reconciles:
+# the root `apps/*`/`libs/ts/*` globs resolve the FULL workspace, so a partial app set
+# reads as "lockfile had changes" under --frozen-lockfile.
 COPY package.json bun.lock ./
 COPY apps/akasha-frontend/package.json apps/akasha-frontend/
 COPY apps/orator-backend/package.json apps/orator-backend/
@@ -34,18 +32,23 @@ RUN bun install --frozen-lockfile
 # `extends` at build time, so it must be present at the repo root.
 COPY tsconfig.base.json ./
 
-# config.kdl must be present at BUILD time too: vite.config.ts reads serviceName/port
-# from it via @astra/config (config-single-source). @astra/config locates it by
-# walking up to <repo>/ontology/ontology-config; without it the config load throws
-# and the build fails. (The runtime stage copies it again for server.ts.)
+# config.kdl must be present at BUILD time: vite.config.ts reads serviceName/port from
+# it via @astra/config (config-single-source). Without it the config load throws.
 COPY ontology/ontology-config /repo/ontology/ontology-config
+
+# akasha-frontend's build-time content sources read the akasha-backend snapshot/corpus
+# (slug.ts/site.ts lift + vellum render) + linguist transcripts (D4) — COPY them so
+# build-content (run in the vite buildStart hook) can read them.
+COPY apps/akasha-backend/snapshot /repo/apps/akasha-backend/snapshot
+COPY apps/akasha-backend/content /repo/apps/akasha-backend/content
+COPY apps/linguist/data /repo/apps/linguist/data
 
 # Build the selected app (build-content runs in the vite buildStart hook).
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 RUN bun run build
 
-# --- Runtime: slim image carrying the built app + its content + workspace deps ---
+# --- Runtime: slim image carrying the built app + workspace deps ---
 FROM oven/bun:1.3.14-slim AS runtime
 ARG APP
 WORKDIR /repo/apps/${APP}
@@ -58,12 +61,11 @@ COPY --from=build /repo/apps/${APP}/node_modules ./node_modules
 COPY --from=build /repo/apps/${APP}/dist ./dist
 COPY --from=build /repo/apps/${APP}/server.ts ./server.ts
 COPY --from=build /repo/apps/${APP}/package.json ./package.json
-# Content-pipeline-specific (replace per app's content layout): the markdown source
-# + its generated TS modules the runtime imports.
-COPY --from=build /repo/apps/${APP}/content ./content
+# Content-pipeline-specific: the generated TS modules the runtime imports (the app
+# imports @/generated/*, never the filesystem — so the snapshot/corpus are build-only).
 COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
 # config.kdl is the single source for serviceName/port + the OTLP endpoint (read via
-# @astra/config); @astra/config locates it by walking up to <repo>/ontology/ontology-config.
+# @astra/config); it's located by walking up to <repo>/ontology/ontology-config.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
 CMD ["bun", "run", "start"]

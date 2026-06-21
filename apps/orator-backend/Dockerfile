@@ -21,6 +21,7 @@ WORKDIR /repo
 # reconciles: the root `apps/*`/`libs/ts/*` globs resolve the FULL workspace, so a
 # partial app set reads as "lockfile changed". (Add a new app's manifest here too.)
 COPY package.json bun.lock ./
+COPY apps/akasha-frontend/package.json apps/akasha-frontend/
 COPY apps/orator-backend/package.json apps/orator-backend/
 COPY apps/orator-controller/package.json apps/orator-controller/
 COPY apps/strider/package.json apps/strider/

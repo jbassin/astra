@@ -1,0 +1,74 @@
+/* Design tokens (palette, motion) and fonts come from @astra/gothic, imported in
+   src/routes/__root.tsx. This file keeps only akasha-frontend's reset + the page
+   shell. The Quartz 3-column grid + sidebars land with the islands (later slices). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  background-color: var(--color-void);
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-ink);
+  font-family: var(--font-body), serif;
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  flex: 1;
+}
+
+.page-shell {
+  max-width: 50rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+
+/* Router-wide error / not-found boundaries (see src/router.tsx). */
+.route-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 60vh;
+  padding: 2rem;
+  text-align: center;
+}
+
+.route-boundary button,
+.route-boundary a {
+  color: var(--color-ink);
+  border: 1px solid currentcolor;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override must defeat component animation declarations */
+    animation-duration: 1ms !important;
+    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override must defeat component transition declarations */
+    transition-duration: 1ms !important;
+  }
+}

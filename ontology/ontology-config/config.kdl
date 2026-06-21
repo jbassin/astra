@@ -127,6 +127,16 @@ strider {
     port 10360
 }
 
+akasha-frontend {
+    // The akasha wiki read-surface (0011) — an SSR frontend on the strider
+    // template (Decision I). Same config-single-source contract as strider:
+    // server.ts binds this port + names telemetry; no PORT env. Behind Caddy at
+    // akasha.iridi.cc → host 10365. service-name derives the browser RUM name
+    // (`{service-name}-rum`).
+    service-name "astra.akasha-frontend"
+    port 10365
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }

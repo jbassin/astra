@@ -118,6 +118,14 @@ class StriderConfig(_Base):
     port: int = 10360
 
 
+class AkashaFrontendConfig(_Base):
+    # The akasha wiki read-surface (0011) — same SSR-frontend contract as Strider
+    # (Decision I). service_name + port are the single source for server.ts +
+    # vite's dev port; service_name also derives the browser RUM name.
+    service_name: str = "astra.akasha-frontend"
+    port: int = 10365
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -133,4 +141,5 @@ class Config(_Base):
     orator: OratorConfig = Field(default_factory=OratorConfig)
     orator_controller: OratorControllerConfig = Field(default_factory=OratorControllerConfig)
     strider: StriderConfig = Field(default_factory=StriderConfig)
+    akasha_frontend: AkashaFrontendConfig = Field(default_factory=AkashaFrontendConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

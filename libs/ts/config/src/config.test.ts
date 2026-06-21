@@ -37,6 +37,8 @@ describe("@astra/config", () => {
     expect(cfg.orator.targetLufs).toBe(-16); // negative number
     expect(cfg.orator.measureLoudness).toBe(true); // boolean
     expect(cfg.weal.bindAddr).toBe("127.0.0.1:10203");
+    expect(cfg.akashaFrontend.serviceName).toBe("astra.akasha-frontend");
+    expect(cfg.akashaFrontend.port).toBe(10365);
   });
 
   test("secret fields are lazy refs, not plaintext", () => {

@@ -34,6 +34,8 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.orator.target_lufs == -16  # negative int
     assert cfg.orator.measure_loudness is True  # bool, not str
     assert cfg.weal.bind_addr == "127.0.0.1:10203"
+    assert cfg.akasha_frontend.service_name == "astra.akasha-frontend"
+    assert cfg.akasha_frontend.port == 10365
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
