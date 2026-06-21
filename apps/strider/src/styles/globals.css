@@ -39,6 +39,31 @@ main {
   flex: 1;
 }
 
+/* Router-wide error / not-found boundaries (see src/router.tsx). pointer-events
+   is re-enabled because body defaults to none (clicks fall through to Pixi). */
+.route-boundary {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 60vh;
+  padding: 2rem;
+  text-align: center;
+  pointer-events: auto;
+}
+
+.route-boundary button,
+.route-boundary a {
+  color: var(--color-ink);
+  border: 1px solid currentcolor;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-decoration: none;
+}
+
 /* Scanline overlay — decorative, non-interactive */
 @keyframes scanline-drift {
   from {

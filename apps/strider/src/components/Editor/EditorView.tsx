@@ -1,5 +1,4 @@
 import { lazy, useCallback, useMemo, useReducer, useState } from "react";
-import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import type { EditableChange } from "@/lib/editorHelpers";
 import { hexFactionMap, hexRegionMap } from "@/lib/editorHelpers";
 import type { Faction } from "@/lib/factions";
@@ -184,18 +183,16 @@ export default function EditorView({ factions, regions, skein }: EditorViewProps
   return (
     <div className={styles.root}>
       <div className={styles.mapColumn}>
-        <ClientOnly>
-          <EditorHexMap
-            factions={factions}
-            regions={regions}
-            skein={skein}
-            selectedHexes={state.selectedHexes}
-            pickedRegionSlug={state.pickedRegionSlug}
-            pickedSkeinSlug={state.pickedSkeinSlug}
-            skeinConnectFrom={state.skeinConnectFrom}
-            onHexClick={handleHexClick}
-          />
-        </ClientOnly>
+        <EditorHexMap
+          factions={factions}
+          regions={regions}
+          skein={skein}
+          selectedHexes={state.selectedHexes}
+          pickedRegionSlug={state.pickedRegionSlug}
+          pickedSkeinSlug={state.pickedSkeinSlug}
+          skeinConnectFrom={state.skeinConnectFrom}
+          onHexClick={handleHexClick}
+        />
       </div>
 
       <aside className={styles.panel}>

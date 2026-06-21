@@ -1,11 +1,4 @@
-import { FACTIONS } from "@/generated/factions";
-import {
-  type Change,
-  CURRENT_FACTION_HEXES,
-  CURRENT_UNOWNED_HEXES,
-  type Layer,
-  type Region,
-} from "./layers";
+import { type Change, CURRENT_FACTION_HEXES, type Layer, type Region } from "./layers";
 
 // The editor authors region ops, three Skein ops, and the claim op. The other
 // two Skein ops (skein-update, skein-disconnect) stay hand-authored.
@@ -28,10 +21,9 @@ export function slugify(name: string): string {
 let _hexFactionMap: Map<string, number> | null = null;
 
 // "Hex → faction index" for hexes currently owned by a faction in the
-// post-claim effective state. Unowned hexes are absent from the map (use
-// `effectiveHexFactionMap` below if you need to distinguish unowned from
-// off-grid). Sourced from CURRENT_FACTION_HEXES so the editor reflects what
-// the player sees at the end of the timeline.
+// post-claim effective state. Unowned hexes are absent from the map. Sourced
+// from CURRENT_FACTION_HEXES so the editor reflects what the player sees at the
+// end of the timeline.
 export function hexFactionMap(): Map<string, number> {
   if (_hexFactionMap) return _hexFactionMap;
   const m = new Map<string, number>();
@@ -41,22 +33,6 @@ export function hexFactionMap(): Map<string, number> {
     }
   });
   _hexFactionMap = m;
-  return m;
-}
-
-// Returns effective per-hex ownership after applying all claim layers. Faction
-// hexes map to their faction slug; explicitly unowned hexes map to `null`.
-// Hexes outside the grid are absent from the map.
-export function effectiveHexFactionMap(): Map<string, string | null> {
-  const m = new Map<string, string | null>();
-  CURRENT_FACTION_HEXES.forEach((hexes, factionIdx) => {
-    const slug = FACTIONS[factionIdx]?.slug;
-    if (!slug) return;
-    for (const [q, r] of hexes) m.set(`${q},${r}`, slug);
-  });
-  for (const [q, r] of CURRENT_UNOWNED_HEXES) {
-    m.set(`${q},${r}`, null);
-  }
   return m;
 }
 
@@ -147,10 +123,6 @@ function serializeChange(c: EditableChange): string[] {
 // need it inside a double-quoted YAML scalar.
 function yamlString(s: string): string {
   return `"${s.replace(/\\/g, "\\\\").replace(/"/g, '\\"')}"`;
-}
-
-export function nowIsoUtc(): string {
-  return new Date().toISOString().replace(/\.\d{3}Z$/, "Z");
 }
 
 export type { Layer };

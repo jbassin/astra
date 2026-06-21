@@ -34,29 +34,6 @@ export function drawEdgesPath(
   }
 }
 
-export function dashedLinePath(
-  g: Graphics,
-  x1: number,
-  y1: number,
-  x2: number,
-  y2: number,
-  dash: number,
-  gap: number,
-): void {
-  const dx = x2 - x1;
-  const dy = y2 - y1;
-  const len = Math.hypot(dx, dy);
-  if (len === 0) return;
-  const ux = dx / len;
-  const uy = dy / len;
-  const period = dash + gap;
-  for (let t = 0; t < len; t += period) {
-    const tEnd = Math.min(t + dash, len);
-    g.moveTo(x1 + ux * t, y1 + uy * t);
-    g.lineTo(x1 + ux * tEnd, y1 + uy * tEnd);
-  }
-}
-
 export interface WorldHandle {
   world: Container;
   fit: (width: number, height: number) => void;
@@ -66,14 +43,13 @@ export function attachWorld(app: Application): WorldHandle {
   const world = new Container();
   world.label = "world";
   app.stage.addChild(world);
-  function fit(width: number, height: number) {
+  function fitToViewport(width: number, height: number) {
     const scale = Math.min(width / WORLD_VIEWBOX.width, height / WORLD_VIEWBOX.height);
     world.scale.set(scale);
     world.position.set(width / 2, height / 2);
   }
-  // biome-ignore lint/suspicious/noFocusedTests: `fit` is a local fit-to-viewport helper, not a focused test
-  fit(app.renderer.width, app.renderer.height);
-  return { world, fit };
+  fitToViewport(app.renderer.width, app.renderer.height);
+  return { world, fit: fitToViewport };
 }
 
 export function prefersReducedMotion(): boolean {
