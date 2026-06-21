@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { hashFiles, parseChange, parseFaction, parseLayer, splitBody } from "./build-content";
+import { parseChange, parseFaction, parseLayer, splitBody } from "./build-content";
 
 // --- parseChange (pure) ---
 
@@ -167,34 +167,5 @@ describe("parseLayer / parseFaction (fixtures)", () => {
     expect(faction.description).toContain("sub-surface miners");
     expect(faction.members.map((m) => m.name)).toEqual(["Vask"]);
     expect(faction.members[0]?.bio).toContain("Foreman.");
-  });
-});
-
-// --- hashFiles (pure) ---
-
-describe("hashFiles", () => {
-  const files = [
-    { rel: "a.md", bytes: "alpha" },
-    { rel: "b.md", bytes: "beta" },
-  ];
-
-  it("is deterministic", () => {
-    expect(hashFiles(files)).toBe(hashFiles(files));
-  });
-
-  it("is order-independent (sorts by rel)", () => {
-    expect(hashFiles(files)).toBe(hashFiles([...files].reverse()));
-  });
-
-  it("changes when any byte changes", () => {
-    const flipped = [
-      { rel: "a.md", bytes: "alphb" },
-      { rel: "b.md", bytes: "beta" },
-    ];
-    expect(hashFiles(files)).not.toBe(hashFiles(flipped));
-  });
-
-  it("changes when a path changes (NUL-separated, not concatenation-ambiguous)", () => {
-    expect(hashFiles([{ rel: "ab", bytes: "c" }])).not.toBe(hashFiles([{ rel: "a", bytes: "bc" }]));
   });
 });
