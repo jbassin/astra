@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import EditorView from "@/components/Editor/EditorView";
+import EditorView from "@/domain/components/Editor/EditorView";
 import { FACTIONS } from "@/generated/factions";
 import { CURRENT_REGIONS, CURRENT_SKEIN } from "@/generated/layers";
 

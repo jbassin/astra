@@ -22,7 +22,7 @@ import {
   type EdgeSegment,
   FACTION_HEXES,
   UNOWNED_BASE_HEXES,
-} from "../src/lib/hexUtils.ts";
+} from "../src/domain/lib/hexUtils.ts";
 import {
   type Change,
   foldFactionOverrides,
@@ -31,7 +31,7 @@ import {
   type Layer,
   type Region,
   type SkeinState,
-} from "../src/lib/regions.ts";
+} from "../src/domain/lib/regions.ts";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(HERE, "..");
@@ -302,7 +302,7 @@ function emitFactions(factions: Faction[]): void {
   emitModule(
     OUT_DIR,
     "factions.ts",
-    `import type { Faction } from "@/lib/factions";
+    `import type { Faction } from "@/domain/lib/factions";
 
 export const FACTIONS: readonly Faction[] = ${JSON.stringify(factions, null, 2)};
 
@@ -327,8 +327,8 @@ function emitLayers(
   emitModule(
     OUT_DIR,
     "layers.ts",
-    `import type { Layer, Region, SkeinState } from "@/lib/regions";
-import type { EdgeSegment } from "@/lib/hexUtils";
+    `import type { Layer, Region, SkeinState } from "@/domain/lib/regions";
+import type { EdgeSegment } from "@/domain/lib/hexUtils";
 
 export const LAYERS: readonly Layer[] = ${JSON.stringify(layers, null, 2)};
 

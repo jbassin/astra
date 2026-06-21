@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
-import MapView from "@/components/MapView/MapView";
+import MapView from "@/domain/components/MapView/MapView";
+import { parseOverlaysParam } from "@/domain/lib/overlays";
 import { FACTIONS } from "@/generated/factions";
 import { LAYERS } from "@/generated/layers";
-import { parseOverlaysParam } from "@/lib/overlays";
 
 interface HomeSearch {
   seen?: boolean;
