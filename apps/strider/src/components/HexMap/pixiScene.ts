@@ -1,27 +1,13 @@
 import type { Application } from "pixi.js";
 import { Container, type Graphics } from "pixi.js";
-
-export const HEX_SIZE = 2;
-const SQRT3 = Math.sqrt(3);
-const HEX_HEIGHT = (SQRT3 / 2) * HEX_SIZE;
+import { hexCornersAtPixel } from "@/lib/hexUtils";
 
 export const WORLD_VIEWBOX = { width: 224, height: 256 };
 
+// Pixi polygons want a flat [x0, y0, x1, y1, …] list; the corner geometry itself
+// is owned by hexUtils so the renderer and the border walks never diverge.
 export function hexVertsAtPixel(px: number, py: number): number[] {
-  return [
-    px + HEX_SIZE,
-    py,
-    px + HEX_SIZE / 2,
-    py + HEX_HEIGHT,
-    px - HEX_SIZE / 2,
-    py + HEX_HEIGHT,
-    px - HEX_SIZE,
-    py,
-    px - HEX_SIZE / 2,
-    py - HEX_HEIGHT,
-    px + HEX_SIZE / 2,
-    py - HEX_HEIGHT,
-  ];
+  return hexCornersAtPixel(px, py).flat();
 }
 
 export function drawEdgesPath(

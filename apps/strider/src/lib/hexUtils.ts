@@ -1,5 +1,5 @@
 export const GRID_RADIUS = 35;
-const HEX_SIZE = 2; // pixels per unit, must match Layout size prop in HexMap
+export const HEX_SIZE = 2; // pixels per axial unit — the single source of truth
 const RING_RADIUS = 85; // pixel distance from center to each faction center
 const TERRITORY_RADIUS = 38; // pixel radius of each faction's territory; visual tuning parameter
 
@@ -89,10 +89,44 @@ export const UNOWNED_BASE_HEXES: ReadonlyArray<readonly [number, number]> = unow
 export type EdgeSegment = readonly [number, number, number, number]; // [x1, y1, x2, y2]
 
 // The six flat-top hex corner points, in fixed order. A fixed-length tuple so
-// indexing by a NEIGHBORS vertex index (0–5) is provably in-bounds under
+// indexing by a HEX_NEIGHBORS vertex index (0–5) is provably in-bounds under
 // noUncheckedIndexedAccess.
 type Pt = [number, number];
-type HexVerts = [Pt, Pt, Pt, Pt, Pt, Pt];
+export type HexVerts = [Pt, Pt, Pt, Pt, Pt, Pt];
+
+const HEX_CORNER_HEIGHT = (Math.sqrt(3) / 2) * HEX_SIZE;
+
+// Six flat-top hex corners around a pixel center, in fixed order — the ONE
+// definition of hex corner geometry, shared by the border walks (below) and the
+// Pixi renderer (pixiScene.hexVertsAtPixel).
+export function hexCornersAtPixel(px: number, py: number): HexVerts {
+  return [
+    [px + HEX_SIZE, py],
+    [px + HEX_SIZE / 2, py + HEX_CORNER_HEIGHT],
+    [px - HEX_SIZE / 2, py + HEX_CORNER_HEIGHT],
+    [px - HEX_SIZE, py],
+    [px - HEX_SIZE / 2, py - HEX_CORNER_HEIGHT],
+    [px + HEX_SIZE / 2, py - HEX_CORNER_HEIGHT],
+  ];
+}
+
+// Corners of the hex at axial (q, r).
+export function hexCorners(q: number, r: number): HexVerts {
+  const [px, py] = hexPixel(q, r);
+  return hexCornersAtPixel(px, py);
+}
+
+// Each entry: [dq, dr, vertexA, vertexB] — the neighbor in direction (dq, dr)
+// shares the edge between corners vertexA and vertexB. The ONE neighbor/edge
+// table for both border walks.
+export const HEX_NEIGHBORS = [
+  [+1, 0, 0, 1],
+  [0, +1, 1, 2],
+  [-1, +1, 2, 3],
+  [-1, 0, 3, 4],
+  [0, -1, 4, 5],
+  [+1, -1, 5, 0],
+] as const;
 
 // Border computation, parameterized so it can be applied to either the static
 // base assignment or the effective (claim-folded) assignment.
@@ -102,38 +136,12 @@ export function computeAssignmentBorders(
   allBorders: EdgeSegment[];
   perFaction: EdgeSegment[][];
 } {
-  const SQRT3 = Math.sqrt(3);
-
   const hexFaction = new Map<string, number>();
   for (let i = 0; i < assignments.length; i++) {
     for (const [q, r] of assignments[i]!) {
       hexFaction.set(`${q},${r}`, i);
     }
   }
-
-  function verts(q: number, r: number): HexVerts {
-    const px = 1.5 * q * HEX_SIZE;
-    const py = SQRT3 * (q / 2 + r) * HEX_SIZE;
-    const h = (SQRT3 / 2) * HEX_SIZE;
-    return [
-      [px + HEX_SIZE, py],
-      [px + HEX_SIZE / 2, py + h],
-      [px - HEX_SIZE / 2, py + h],
-      [px - HEX_SIZE, py],
-      [px - HEX_SIZE / 2, py - h],
-      [px + HEX_SIZE / 2, py - h],
-    ];
-  }
-
-  // Each entry: [dq, dr, vertex_a_index, vertex_b_index]
-  const NEIGHBORS = [
-    [+1, 0, 0, 1],
-    [0, +1, 1, 2],
-    [-1, +1, 2, 3],
-    [-1, 0, 3, 4],
-    [0, -1, 4, 5],
-    [+1, -1, 5, 0],
-  ] as const;
 
   const allEdgeSet = new Set<string>();
   const allBorders: EdgeSegment[] = [];
@@ -142,8 +150,8 @@ export function computeAssignmentBorders(
   for (let fi = 0; fi < assignments.length; fi++) {
     const factionEdgeSet = new Set<string>();
     for (const [q, r] of assignments[fi]!) {
-      const v = verts(q, r);
-      for (const [dq, dr, va, vb] of NEIGHBORS) {
+      const v = hexCorners(q, r);
+      for (const [dq, dr, va, vb] of HEX_NEIGHBORS) {
         const nfi = hexFaction.get(`${q + dq},${r + dr}`) ?? -1;
         if (nfi === fi) continue;
 
@@ -183,37 +191,13 @@ export const FACTION_TERRITORY_BORDERS: ReadonlyArray<ReadonlyArray<EdgeSegment>
 export function computeRegionBorders(
   regionHexes: ReadonlyArray<readonly [number, number]>,
 ): EdgeSegment[] {
-  const SQRT3 = Math.sqrt(3);
   const inRegion = new Set(regionHexes.map(([q, r]) => `${q},${r}`));
-
-  function verts(q: number, r: number): HexVerts {
-    const px = 1.5 * q * HEX_SIZE;
-    const py = SQRT3 * (q / 2 + r) * HEX_SIZE;
-    const h = (SQRT3 / 2) * HEX_SIZE;
-    return [
-      [px + HEX_SIZE, py],
-      [px + HEX_SIZE / 2, py + h],
-      [px - HEX_SIZE / 2, py + h],
-      [px - HEX_SIZE, py],
-      [px - HEX_SIZE / 2, py - h],
-      [px + HEX_SIZE / 2, py - h],
-    ];
-  }
-
-  const NEIGHBORS = [
-    [+1, 0, 0, 1],
-    [0, +1, 1, 2],
-    [-1, +1, 2, 3],
-    [-1, 0, 3, 4],
-    [0, -1, 4, 5],
-    [+1, -1, 5, 0],
-  ] as const;
 
   const seen = new Set<string>();
   const edges: EdgeSegment[] = [];
   for (const [q, r] of regionHexes) {
-    const v = verts(q, r);
-    for (const [dq, dr, va, vb] of NEIGHBORS) {
+    const v = hexCorners(q, r);
+    for (const [dq, dr, va, vb] of HEX_NEIGHBORS) {
       if (inRegion.has(`${q + dq},${r + dr}`)) continue;
       const key = `${v[va][0]},${v[va][1]},${v[vb][0]},${v[vb][1]}`;
       if (seen.has(key)) continue;
