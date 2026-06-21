@@ -621,9 +621,14 @@ export class PostgresStore implements LibraryStore {
   }
 
   listJobsByStatus(statuses: DownloadJob["status"][]): Promise<DownloadJob[]> {
+    if (statuses.length === 0) return Promise.resolve([]);
+    // Expand to `in ($1, $2, …)` with one scalar param per status. Bun `SQL.unsafe`
+    // serializes a JS array param as a comma-joined string, so `= any($1)` fails with
+    // "malformed array literal" — pass scalars instead (mirrors the migrator's insert).
+    const placeholders = statuses.map((_, i) => `$${i + 1}`).join(", ");
     return this.#all<DownloadJob>(
-      `select ${JOB} from download_jobs where status = any($1) order by id`,
-      [statuses],
+      `select ${JOB} from download_jobs where status in (${placeholders}) order by id`,
+      statuses,
     );
   }
 
