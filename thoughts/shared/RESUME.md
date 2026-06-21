@@ -36,10 +36,24 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `21d1f18`, 2026-06-20)
+## Current state — UPDATE THIS SECTION (as of commit `6474eb2`, 2026-06-20)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
+- **0010 orator IN PROGRESS (Phase 4) — slices 1–6 DONE + PUSHED** (`98b5618`…`6474eb2`). Scope+spec at
+  `thoughts/{shared/research/2026-06-20-orator-0010-thoughts.md, astra/specs/0010-orator-spec.md}`; decisions
+  **M1–M5** locked. Lifting faerrin `lark` → **orator-backend** (Bun Compose service) + merging `birdfeed` →
+  **orator-controller** (Node/Elgato). Done: (1) **scaffold** both apps + M1 ontology-derived allowlist; (2)
+  **Postgres library store** — lark's 9-table schema SQLite→PG + the async `LibraryStore`/`PostgresStore`
+  (sync `bun:sqlite`→async Bun `SQL`) + `orator-postgres` Compose unit (10364); (3) **bot+voice+REST** —
+  `@discordjs/voice` adapter + the single-session playback engine + the `/api/v1/*` router/library/playback
+  routes; (4) **auth** — OAuth2-identify→signed cookie OR Bearer key, session-gated key mgmt, `lark_`→`orator_`
+  rebrands; (5) **ingest** — yt-dlp+ffmpeg+R128 + SSE jobs + upload; (6) **data migrator** — lark.sqlite→PG
+  (preserve ids) + audio copy (M2, runs at deploy). **Remaining: 7 operator UI (TanStack *Router* client SPA
+  served by orator-backend — M3, the biggest), 8 orator-controller (birdfeed lift), 9 deploy (Dockerfile w/
+  ffmpeg+yt-dlp+davey, Compose `orator-backend`@10363, Caddy `orator.iridi.cc`, then RUN the migrator).**
+  **Deferred (spec-sanctioned):** live Discord run (SOPS token) + the physical Stream Deck hardware test. CI
+  green both toolchains each slice (113 backend tests). See `[[orator-0010-gotchas]]`.
 - **0009 weal BUILT (Phase 4) — first bun *service*.** Scope+spec at `thoughts/{shared/research/
   2026-06-20-weal-0009-thoughts.md, astra/specs/0009-weal-spec.md}`. Six CI-green slices (`c40a026`…
   `21d1f18`; last `21d1f18` deploy-wiring is the only UNPUSHED commit): (1) **roller** hand-ported
@@ -78,7 +92,11 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ### Next: the remaining subsystems (strider + weal are done)
 
-1. **Phase 4 services:** 0010 orator (0009 weal is BUILT — see Current state).
+1. **Phase 4 services:** 0010 orator **IN PROGRESS — resume at slice 7** (operator UI: a TanStack **Router**
+   client SPA — `@tanstack/react-router` + gothic + `@astra/observe/web` RUM, built by Vite to a static
+   `dist/` served by orator-backend's `serveStatic`; **not** react-start/SSR, see M3). Then slice 8
+   (orator-controller birdfeed lift) + slice 9 (deploy + run the migrator). See `[[orator-0010-gotchas]]`.
+   (0009 weal is BUILT; 0010 slices 1–6 done — see Current state.)
 2. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
    template** (build-content→generated→loader, `server.ts`, the Compose+Caddy deploy, server `observe` +
    `@astra/observe/web` RUM via a `createServerFn` endpoint, the uv-exclude). akasha-fe still consumes the

@@ -1,8 +1,9 @@
 # NLSpec 0010 — orator (orator-backend + orator-controller)
 
-**Status:** **Plan (pre-implementation)** — scoping verified against both repos + the live config/SOPS/
-ontology substrate; **decisions locked (M1–M5 resolved below)**; ready for `octo:embrace`. **Phase:** 4
-(services). **Source plan:** [`../plans/0010-orator.md`](../plans/0010-orator.md). **Pre-impl thoughts:**
+**Status:** **IN PROGRESS** (`octo:embrace`) — **slices 1–6 of 9 built, CI-green both toolchains + pushed**
+(`98b5618`…`6474eb2`): scaffold, Postgres store, bot+voice+REST, auth, ingest, data-migrator. **Remaining:
+7 operator UI (Router SPA), 8 orator-controller, 9 deploy + run-the-migrator.** Decisions M1–M5 locked below.
+**Phase:** 4 (services). **Source plan:** [`../plans/0010-orator.md`](../plans/0010-orator.md). **Pre-impl thoughts:**
 [`../../shared/research/2026-06-20-orator-0010-thoughts.md`](../../shared/research/2026-06-20-orator-0010-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (typescript-pro, code-reviewer), per astra `CLAUDE.md`.
 **Depends-on:** Phase 1 (`@astra/config`+SOPS [`orator`/`orator-controller` blocks already wired],
