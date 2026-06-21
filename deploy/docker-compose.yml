@@ -37,7 +37,10 @@ services:
 
   dagster-code:
     build:
-      context: ../dagster
+      # Repo root (like the frontend services) — the image `uv sync`s the Python
+      # workspace so definitions.py can import the real pipeline packages.
+      context: ..
+      dockerfile: dagster/Dockerfile
     image: astra-dagster:local
     container_name: astra-dagster-code
     command: ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "definitions.py"]
