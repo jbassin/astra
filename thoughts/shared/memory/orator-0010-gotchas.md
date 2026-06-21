@@ -1,6 +1,6 @@
 ---
 name: orator-0010-gotchas
-description: Building orator (0010) — lark→orator-backend lift gotchas — sync-sqlite→async-PG ripple, no-live-PG test doubles, voice/DAVE, auth rebrands, Router-SPA decision; slices 1–6 done+pushed, 7–9 remain
+description: Building orator (0010) — lark→orator-backend lift gotchas — sync-sqlite→async-PG ripple, no-live-PG test doubles, voice/DAVE, auth rebrands, Router-SPA (slice 7) + birdfeed controller (slice 8); slices 1–8 done+pushed, only 9 (deploy) remains
 metadata:
   type: project
 ---
@@ -53,8 +53,46 @@ a new KDL field in **KDL + Zod + the Python pydantic model**, and reproduce the 
 - **astra biome is stricter than faerrin's** — lifted lark code tripped `noNonNullAssertion`,
   `noAssignInExpressions`, `noUnusedFunctionParameters`, and organizeImports; fix on lift, don't fight it.
 
-**Status:** slices **1–6 DONE + pushed** (`98b5618`…`6474eb2`): scaffold, PG store+schema, bot+voice+REST,
-auth, ingest, data-migrator. **Remaining: 7 (operator UI — TanStack Router SPA, the biggest), 8 (controller
-birdfeed lift), 9 (deploy: Dockerfile w/ ffmpeg+yt-dlp+davey, Compose, Caddy `orator.iridi.cc`→10363, then
-RUN the migrator + memory/RESUME).** **Deferred (spec-sanctioned):** live Discord run (SOPS token) + the
-physical Stream Deck hardware test. See [[no-ci-monitoring]], [[deploy-apply-with-just]], [[verify-before-acting]].
+**Load-bearing gotchas (slice 7 — operator UI):**
+- **M3 in practice: the SPA lives IN the orator-backend package** (`src/web/`, mirroring lark), built by Vite
+  to `apps/orator-backend/dist/` and served by the **already-existing** `serveStatic` (SPA-fallback to
+  `index.html` was already there). One tsconfig covers Bun server + React client (add `jsx`, `DOM` lib,
+  `vite/client` types). `build` script flips `echo`→`vite build`; `typecheck`/`test` unchanged.
+- **Client SPA can't use `createServerFn`** (Start-only — orator is `@tanstack/react-router`, NOT react-start).
+  The RUM endpoint comes from a new **PUBLIC `/api/v1/rum-config`** route on orator-backend (special-cased
+  like `/health`, returns `cfg.telemetry.rumEndpoint`); the client fetches it then calls `initRum` from
+  `@astra/observe/web`. `AppConfig` gained a `rumEndpoint` field (mirror it in the app.test/keys.test configs).
+- **Code-based router** (`createRootRoute`+`createRoute`+`createRouter`, RootLayout shell + index Console) →
+  **no `routeTree.gen.ts`**, sidestepping the strider commit-the-generated-tree biome gotcha.
+- **Self-contained fonts:** a `gothicFontsPlugin` (`scripts/`) serves `/fonts` in dev AND copies gothic fonts
+  → `dist/fonts/` at build (`closeBundle`), so the static dist works hitting orator-backend directly (strider
+  leans on Caddy `gothic_fonts`; orator can't, it serves its own dist). gothic stays the single font source.
+- **gothic re-skin without a rewrite:** import `@astra/gothic/theme.css` (Tailwind v4 `@theme` via
+  `@tailwindcss/vite` — the strider styling gotcha) + alias lark's local CSS vars (`--bg`/`--panel`/`--accent`…)
+  to gothic `--color-*` tokens in `styles.css`; lifted lark components adopt the palette+fonts unchanged.
+  Lift friction: add `type="button"` to every bare `<button>`; decorative `<label>`→`<span>`
+  (`noLabelWithoutControl`); a11y override for the two modal backdrops.
+
+**Load-bearing gotchas (slice 8 — orator-controller, birdfeed lift):**
+- **Same-language lift, mechanical rename** (`lark`→`orator`): pure logic (nav/grid/tags/svg/color) ports
+  verbatim; `src/lark/`→`src/orator/`. Tests **colocate** next to source (astra convention — settings.test.ts
+  was already in `src/`), so fix the moved import paths.
+- **M4 configurable origin (the one real change):** birdfeed hardcoded `LARK_ORIGIN="lark.iridi.cc"`. Removed;
+  `applySettings` now builds the client from `normalizeOrigin(settings.oratorOrigin)`. `OratorGlobalSettings`
+  = `{ oratorOrigin?, apiKey? }`; `isConfigured` requires both; the PI (`ui/orator.html`) gained an Origin
+  field. **Key minting stays server-side** — the plugin has no web session, only consumes a pasted `orator_`
+  key. `normalizeOrigin` is single-homed in `settings.ts` (client imports it; dropped birdfeed's dup).
+- **astra is stricter than faerrin's birdfeed** (which lacked `noUncheckedIndexedAccess`): guard every
+  `arr[i]`-as-index/assignment in grid/svg/color; `forEach` callbacks need **block bodies**
+  (`useIterableCallbackReturn`); run `biome check --write` for organizeImports.
+- **`*.sdPlugin/` is a packaged-artifact dir** (manifest + PI html + icon SVGs + the built `bin/`): excluded
+  from biome globally (`!**/*.sdPlugin/**`, like `public/`) — else the icon SVGs trip `noSvgWithoutTitle` and
+  the PI boilerplate trips a11y/template rules. `bin/`+`dist/` gitignored. rollup `bundle` verified
+  (`bin/plugin.js`); `streamdeck pack` (the `.streamDeckPlugin`) is **not CI-gated** (M4) and not run here.
+
+**Status:** slices **1–8 DONE + pushed** (`98b5618`…`d14557f`): scaffold, PG store+schema, bot+voice+REST,
+auth, ingest, data-migrator, operator UI (Router SPA), orator-controller (birdfeed lift). **Remaining: only 9
+(deploy: orator-backend Dockerfile w/ ffmpeg+yt-dlp+davey native, Compose `orator-backend`@10363 +
+`orator-postgres`@10364, Caddy `orator.iridi.cc`→10363, then RUN the migrator).** **Deferred (spec-sanctioned):**
+live Discord run (SOPS token) + the physical Stream Deck hardware test. See [[no-ci-monitoring]],
+[[deploy-apply-with-just]], [[verify-before-acting]].

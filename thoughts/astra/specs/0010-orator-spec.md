@@ -1,8 +1,9 @@
 # NLSpec 0010 — orator (orator-backend + orator-controller)
 
-**Status:** **IN PROGRESS** (`octo:embrace`) — **slices 1–6 of 9 built, CI-green both toolchains + pushed**
-(`98b5618`…`6474eb2`): scaffold, Postgres store, bot+voice+REST, auth, ingest, data-migrator. **Remaining:
-7 operator UI (Router SPA), 8 orator-controller, 9 deploy + run-the-migrator.** Decisions M1–M5 locked below.
+**Status:** **IN PROGRESS** (`octo:embrace`) — **slices 1–8 of 9 built, CI-green both toolchains + pushed**
+(`98b5618`…`d14557f`): scaffold, Postgres store, bot+voice+REST, auth, ingest, data-migrator, operator UI
+(`@tanstack/react-router` client SPA, M3), orator-controller (birdfeed lift w/ configurable origin, M4).
+**Remaining: 9 deploy + run-the-migrator** (the last slice). Decisions M1–M5 locked below.
 **Phase:** 4 (services). **Source plan:** [`../plans/0010-orator.md`](../plans/0010-orator.md). **Pre-impl thoughts:**
 [`../../shared/research/2026-06-20-orator-0010-thoughts.md`](../../shared/research/2026-06-20-orator-0010-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (typescript-pro, code-reviewer), per astra `CLAUDE.md`.
@@ -174,11 +175,15 @@ build is validated in the container **early** (slice 1/2) — L3 is the #1 risk.
 - [ ] **Voice** (validated as far as no-live-token allows): the davey native module **builds in the image**
       (no 4017 by construction); the voice adapter + playback engine unit tests pass (queue/loop/gain/auto-leave).
 - [ ] **Ingest**: yt-dlp + ffmpeg + R128-on-ingest + resume logic port; loudness→gain math preserved (gain tests pass).
-- [ ] **Operator UI**: the `@tanstack/react-router` SPA (static `dist/` via `serveStatic`, **not** SSR) loads
-      from orator-backend, lists collections/tracks, drives playback, manages tags (color) + mints/revokes API
-      keys (session-gated); gothic styling live (Tailwind v4 `@theme` wired); RUM emits.
-- [ ] **orator-controller**: builds the `.streamDeckPlugin`; origin **configurable**; Bearer-key client +
-      now-playing poll + nav logic tests pass; **hardware test flagged** as the remaining gap (runbook note).
+- [x] **Operator UI** (slice 7, `866463c`): the `@tanstack/react-router` SPA (static `dist/` via `serveStatic`,
+      **not** SSR) loads from orator-backend, lists collections/tracks, drives playback, manages tags (color) +
+      mints/revokes API keys (session-gated); gothic styling live (Tailwind v4 `@theme` wired via
+      `@tailwindcss/vite`); RUM via the public `/api/v1/rum-config` seam. Smoke: `serveStatic` serves `/`,
+      `/fonts/*`, SPA fallback; `/api/v1/rum-config` returns the endpoint.
+- [x] **orator-controller** (slice 8, `d14557f`): rollup bundles the plugin (`bin/plugin.js`); origin
+      **configurable** (PI Origin field + `normalizeOrigin(settings.oratorOrigin)`); Bearer-key client +
+      2500ms now-playing poll + nav logic tests pass (36 tests); **hardware test flagged** as the remaining
+      gap (carry into the cutover runbook).
 - [ ] **Identity/secrets**: a separate Discord app/token from weal; all secrets via SOPS; operator allowlist
       from the ontology (M1).
 - [ ] **Deploy applied**: `just up` + `just caddy-reload`, `orator.iridi.cc` serves the UI + API via the edge.
