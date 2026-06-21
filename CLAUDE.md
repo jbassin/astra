@@ -10,8 +10,13 @@ the dev process, exact CI commands, working-style expectations, and the load-bea
 ## Version control: plain git + conventional commits (NOT jj)
 
 astra uses **plain git** on GitHub — no jujutsu. (faerrin used jj; astra deliberately does not.) Commit
-messages follow **Conventional Commits** (`type(scope): subject`); CI lints them with commitlint. There
-are **no local hooks** — format/lint/typecheck/test run in CI (GitHub Actions), not pre-commit.
+messages follow **Conventional Commits** (`type(scope): subject`); CI lints them with commitlint. A
+**pre-commit gate** (`.githooks/pre-commit`, auto-installed via the root `package.json` `prepare` script →
+`git config core.hooksPath .githooks`) blocks a commit on any **format/lint** issue across both lanes —
+**biome** (`--error-on-warnings`, so warnings block too) for TS and **ruff** (check + format) for Python.
+It's a check-only gate (never modifies files); fix with `bun run format` / `uv run ruff format .`, or bypass
+in a genuine emergency with `git commit --no-verify`. **Typecheck + tests stay CI-only** (too slow for every
+commit); the hook is the fast format/lint subset of CI.
 
 ## Memory + thoughts (project-local — astra owns its own)
 

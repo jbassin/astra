@@ -100,8 +100,13 @@ bun --filter '*' typecheck && bunx biome ci . && bun --filter '*' test && bun --
 ```
 
 CI (GitHub Actions, `.github/workflows/ci.yml`) is parallel + path-filtered, so scope your local run to
-the lane/app you touched. There are **no local git hooks** — format/lint/typecheck/test run in CI and
-locally, never pre-commit. Conventional-commit messages are linted by commitlint.
+the lane/app you touched. A **pre-commit gate** (`.githooks/pre-commit`) blocks a commit on any
+**format/lint** issue across both lanes — `biome ci --error-on-warnings .` (TS) + `ruff check` /
+`ruff format --check` (Python). It's auto-installed by the root `prepare` script on `bun install`
+(`git config core.hooksPath .githooks`); to install manually run that command. It's **check-only** (never
+edits files) — fix with `bun run format` / `uv run ruff format .`, or bypass in an emergency with
+`git commit --no-verify`. **Typecheck + tests are NOT in the hook** (too slow) — run them locally + in CI.
+Conventional-commit messages are linted by commitlint.
 
 ---
 
