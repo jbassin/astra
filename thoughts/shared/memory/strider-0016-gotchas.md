@@ -1,6 +1,6 @@
 ---
 name: strider-0016-gotchas
-description: strider template-hardening (spec 0016) — load-bearing gotchas + the resume-at-7 plan; slices 1–6b built+pushed (6b live-verified)
+description: strider template-hardening (spec 0016) COMPLETE — all 7 slices built+pushed+live-verified; load-bearing gotchas for the 0011–0013 copies
 metadata:
   type: project
 ---
@@ -87,8 +87,37 @@ from slice 6b onward. Don't "fix" the old commit messages (immutable history).
   decision** (host localhost:10353 vs container signoz-otel-collector:4318) touching ALL services — its own
   change, not 6b. See [[telemetry-built-in]].
 
-**RESUME AT SLICE 7 — split strider's tree (`src/domain/`) + port-recipe README.** Then 0016 is done. Also
-open: the cross-cutting in-container OTLP-endpoint fix above (decide with the user — affects orator/weal too).
+**7 DONE + PUSHED + LIVE-VERIFIED (`0aaae5f`) — shell vs `src/domain/` split:**
+- Moved all faction/hex/skein/timeline/memoriam/editor logic + components → `apps/strider/src/domain/`
+  (`lib/` + `components/{HexMap,Editor,FactionDetail,FactionSymbol,MapView,Modal}`). 47 git renames; imports
+  `@/lib|components/*` → `@/domain/...` (sed), incl. build-content.ts's **relative** `../src/lib/*` imports +
+  its **emitted-module template strings** + writeLayerFn's now-deeper `../../../../scripts/writeLayer`.
+- **Shell stays:** ClientOnly, PixiHost, SiteHeader (+ `entitiesObserved` = a generic `number|null` context,
+  kept in shell; domain→shell import is fine), generic hooks (useIsMobile/useFocusTrap), observe/ RUM seam,
+  router/routes/styles/generated. **Modal moved to domain** (it's the faction modal, not generic — relocated,
+  not rewritten).
+- **biome.json gotcha:** the strider lint suppressions (noNonNullAssertion / dangerouslySetInnerHtml / a11y)
+  are keyed on **exact paths**; moving files re-exposed them as 11 errors + 93 warnings until I repointed the
+  override globs `**/strider/src/lib|components/...` → `...src/domain/...` (useFocusTrap stayed → its glob
+  unchanged). A path-glob refactor must update biome.json overrides too.
+- Added `apps/strider/README.md` = the port recipe (shell vs domain, 6-step copy, inherited gotchas).
+- Routes still hard-import domain → a literal `rm -rf src/domain` won't compile until route bodies are
+  replaced; the README frames routes as the wiring seam (edited, not deleted).
+
+**6b TELEMETRY FIX DONE + LIVE-VERIFIED (`ee8f831`):** OTLP endpoint → `http://signoz-otel-collector:4318`
+(in-cluster; `localhost:10353` is unreachable inside a container). Changed in config.kdl + both schema
+defaults + both `DEFAULT_ENDPOINT` constants + 2 config-test assertions; rum-endpoint untouched. **Verified:
+`astra.strider` `SSR GET /` spans now land in SigNoz.** Fixes orator/weal/Dagster too on their next redeploy.
+Tradeoff: host-run/dev can't resolve the name (pass `endpoint=` explicitly). Plaintext config has NO env
+override (only secrets do).
+
+**CI gotcha (slice 6b shipped a RED test lane, fixed in 7):** a TS lib with **no test file** fails
+`bun test` ("0 test files matching") = exit 1, so `bun --filter '*' test` goes red. Every new TS lib needs at
+least one test (added `libs/ts/site-kit/src/index.test.ts`). Watch the **aggregate exit code**, not just the
+per-package "Exited with code 0" lines.
+
+**0016 COMPLETE — all 7 slices pushed + live-verified.** Next subsystem = frontends 0011–0013 (copy strider
+per the README). No open 0016 items.
 
 **(historical 6b plan, now done) — `libs/ts/site-kit` + config + Dockerfile (DEPLOY-TOUCHING):**
 - Create `libs/ts/site-kit`: `createSsrServer({serviceName, port})` lifting `server.ts` (KEEP the `ssr.fetch`

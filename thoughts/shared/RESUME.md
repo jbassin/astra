@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `0ac2cec`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `0aaae5f`, 2026-06-21)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
@@ -110,7 +110,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   `signoz.iridi.cc` (all 200 via the loopback edge test). **Open:** `otel.iridi.cc` needs a **DNS record**
   before browser RUM spans actually land in SigNoz (cert + reachability); the write server fn isn't itself
   IP-gated (only the `/editor` UI is — **accepted won't-fix**, `[[strider-editor-auth-accepted]]`).
-- **strider HARDENING (spec 0016) — IN PROGRESS: slices 1–6b of 7 BUILT + PUSHED** (`68fcff0`…`0ac2cec`).
+- **strider HARDENING (spec 0016) — COMPLETE: all 7 slices BUILT + PUSHED + LIVE-VERIFIED** (`68fcff0`…`0aaae5f`).
   Readies strider as the *copy* template per the 2026-06-21 review
   (`thoughts/shared/research/2026-06-21-strider-template-review-thoughts.md`); spec
   `thoughts/astra/specs/0016-strider-hardening-spec.md`. **NB renumber:** drafted/committed as "0015" but
@@ -137,16 +137,20 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   gap (not a 6b regression):** containers export to `otlp-endpoint=localhost:10353` which is unreachable
   in-container (collector = `signoz-otel-collector:4318`); server-side SSR spans for strider/orator/weal never
   land — its own cross-cutting fix. See `[[strider-0016-gotchas]]`.
-  **RESUME AT SLICE 7:** split `apps/strider/src` into a thin shell vs **`src/domain/`** + a port-recipe
-  README. Then 0016 is done. See `[[strider-0016-gotchas]]`.
+  **7 DONE** (`0aaae5f`): split `apps/strider/src` into a thin shell vs **`src/domain/`** (47 renames; the
+  faction/hex/skein/editor domain relocated, shell = generic components/hooks + observe + router/routes) +
+  `apps/strider/README.md` port recipe. biome.json lint-override globs repointed to `src/domain/`.
+  **Telemetry endpoint FIXED** (`ee8f831`): OTLP → `signoz-otel-collector:4318` (in-cluster); `astra.strider`
+  SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
+  **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
 ### Next: finish strider 0016 hardening, then the frontends
 
-1. **strider hardening (spec 0016) — RESUME AT SLICE 7** (`src/domain/` split + port-recipe README); 6b
-   (`libs/ts/site-kit` + config.kdl + Dockerfile `ARG APP` + font self-serve) is DONE + pushed + live-verified.
-   After slice 7, 0016 is done. Also open (cross-cutting, decide with user): the in-container OTLP-endpoint fix
-   (`localhost:10353`→`signoz-otel-collector:4318`) so server-side spans land — affects orator/weal too. See
-   `[[strider-0016-gotchas]]`. This makes the eventual 0011–0013 copies cheap.
+1. **strider hardening (spec 0016) — COMPLETE** (all 7 slices + the telemetry fix, pushed + live-verified).
+   strider is now the copy-ready template: `@astra/site-kit` + `@astra/content-build` own the spine, the
+   shell-vs-`src/domain/` boundary is mechanical, and `apps/strider/README.md` documents the port recipe. The
+   in-cluster OTLP fix is in — server-side spans land for strider now, and for orator/weal/Dagster on their
+   next redeploy. See `[[strider-0016-gotchas]]`.
 2. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
    public edge (`just caddy-reload` + `orator.iridi.cc` DNS record — outward-facing, like strider/weal-overlay)
    and the deferred live Discord run (SOPS token). orator-postgres + orator-backend are running locally
