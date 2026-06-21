@@ -17,5 +17,6 @@ export { createSsrServer, type SsrHandler, type SsrServerOptions } from "./ssrSe
 export {
   type ContentWatchOptions,
   contentWatchPlugin,
-  gothicFontsDevPlugin,
+  type GothicFontsOptions,
+  gothicFontsPlugin,
 } from "./vitePlugins";

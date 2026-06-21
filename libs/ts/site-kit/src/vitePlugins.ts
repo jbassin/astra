@@ -4,7 +4,7 @@
 // client bundle).
 
 import { spawnSync } from "node:child_process";
-import { createReadStream, existsSync } from "node:fs";
+import { copyFileSync, createReadStream, existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fontsDir } from "@astra/gothic/fontsDir";
 import type { Plugin, ViteDevServer } from "vite";
@@ -72,17 +72,22 @@ const FONT_CONTENT_TYPE: Record<string, string> = {
   ".woff2": "font/woff2",
 };
 
+export interface GothicFontsOptions {
+  /** Build output dir to copy fonts into (e.g. `<app>/dist/client`); `/fonts/*` is served from there. */
+  clientOutDir: string;
+}
+
 /**
- * gothic owns the webfonts (theme.css references absolute /fonts/*). In prod the
- * host Caddy file-serves them from the gothic package dir (sites.caddyfile
- * `gothic_fonts`); this dev-only middleware does the same for `vite dev`, so no
- * frontend ever vendors a font copy — gothic stays the single source of truth
- * (resolved via the `@astra/gothic/fontsDir` package export, not a path climb).
+ * gothic owns the webfonts (theme.css references absolute /fonts/*); gothic stays
+ * the single source of truth (resolved via the `@astra/gothic/fontsDir` package
+ * export, not a path climb), no frontend vendors a copy into git. This (a) serves
+ * /fonts in `vite dev` and (b) copies the gothic fonts into `clientOutDir/fonts`
+ * at build, so the SSR container self-serves them (server static-serves the client
+ * dir) — no host-Caddy `gothic_fonts` dependency, matching orator/weal-overlay.
  */
-export function gothicFontsDevPlugin(): Plugin {
+export function gothicFontsPlugin(opts: GothicFontsOptions): Plugin {
   return {
-    name: "site-kit:gothic-fonts-dev",
-    apply: "serve",
+    name: "site-kit:gothic-fonts",
     configureServer(server) {
       server.middlewares.use("/fonts", (req, res, next) => {
         const name = path.basename(req.url ?? "");
@@ -94,6 +99,13 @@ export function gothicFontsDevPlugin(): Plugin {
         );
         createReadStream(file).pipe(res);
       });
+    },
+    closeBundle() {
+      const out = path.join(opts.clientOutDir, "fonts");
+      mkdirSync(out, { recursive: true });
+      for (const name of readdirSync(fontsDir)) {
+        copyFileSync(path.join(fontsDir, name), path.join(out, name));
+      }
     },
   };
 }

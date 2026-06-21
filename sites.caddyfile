@@ -34,21 +34,13 @@
 # reverse-proxy Caddyfile; blocks here can `import local_only` directly (don't
 # redeclare it, that collides on reload).
 
-# gothic owns the webfonts (theme.css references absolute /fonts/*). Serve them
-# straight from the gothic package dir so no frontend has to vendor a copy — the
-# single source of truth. 0011-0013 import this too.
-(gothic_fonts) {
-	handle /fonts/* {
-		root * /ruby/data/experiments/astra/libs/ts/gothic/src
-		file_server
-	}
-}
-
 # strider — the first SSR frontend (more blocks follow as 0011-0013 ship). The
-# compose `strider` service publishes host port 10360.
+# compose `strider` service publishes host port 10360. It self-serves gothic's
+# fonts from dist/ (site-kit's gothicFontsPlugin copies them in at build), so
+# /fonts/* falls through to the reverse_proxy — no gothic_fonts import, matching
+# orator/weal-overlay. 0011-0013 inherit this.
 strider.iridi.cc {
 	import astra_site
-	import gothic_fonts
 
 	# Editor UI — local network only (import local_only → "Access Denied" for
 	# non-private clients). The save runs as a TanStack server function (POST to

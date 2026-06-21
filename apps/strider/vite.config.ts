@@ -1,5 +1,5 @@
 import path from "node:path";
-import { contentWatchPlugin, gothicFontsDevPlugin, loadSiteConfig } from "@astra/site-kit";
+import { contentWatchPlugin, gothicFontsPlugin, loadSiteConfig } from "@astra/site-kit";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
@@ -39,7 +39,7 @@ export default defineConfig({
       generatedDir: path.join(ROOT, "src", "generated"),
       invalidate: ["factions.ts", "layers.ts"],
     }),
-    gothicFontsDevPlugin(),
+    gothicFontsPlugin({ clientOutDir: path.join(ROOT, "dist", "client") }),
     tailwindcss(),
     tanstackStart(),
     viteReact(),
