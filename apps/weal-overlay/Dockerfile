@@ -6,8 +6,16 @@
 FROM oven/bun:1.3.14 AS build
 WORKDIR /repo
 
+# Install against the FULL workspace manifest set: the root `apps/*`/`libs/ts/*` globs
+# resolve the whole workspace, so a partial set reads as "lockfile had changes" under
+# --frozen-lockfile. Add a new app's manifest here too (libs/ts is copied wholesale).
 COPY package.json bun.lock ./
-COPY apps/weal-overlay/package.json apps/weal-overlay/package.json
+COPY apps/akasha-frontend/package.json apps/akasha-frontend/
+COPY apps/orator-backend/package.json apps/orator-backend/
+COPY apps/orator-controller/package.json apps/orator-controller/
+COPY apps/strider/package.json apps/strider/
+COPY apps/weal-bot/package.json apps/weal-bot/
+COPY apps/weal-overlay/package.json apps/weal-overlay/
 COPY libs/ts ./libs/ts
 RUN bun install --frozen-lockfile
 
