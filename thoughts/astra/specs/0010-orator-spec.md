@@ -1,9 +1,12 @@
 # NLSpec 0010 — orator (orator-backend + orator-controller)
 
-**Status:** **IN PROGRESS** (`octo:embrace`) — **slices 1–8 of 9 built, CI-green both toolchains + pushed**
-(`98b5618`…`d14557f`): scaffold, Postgres store, bot+voice+REST, auth, ingest, data-migrator, operator UI
-(`@tanstack/react-router` client SPA, M3), orator-controller (birdfeed lift w/ configurable origin, M4).
-**Remaining: 9 deploy + run-the-migrator** (the last slice). Decisions M1–M5 locked below.
+**Status:** **BUILT** (`octo:embrace`) — **all 9 slices built, CI-green both toolchains + pushed**
+(`98b5618`…`2c2fd10`): scaffold, Postgres store, bot+voice+REST, auth, ingest, data-migrator, operator UI
+(`@tanstack/react-router` client SPA, M3), orator-controller (birdfeed lift w/ configurable origin, M4), a
+config-single-source scrub, and deploy. orator-backend is **deployed locally + verified live** (healthy on
+10363, serves SPA+API+fonts, restart-survives) against the **M2-migrated** library (87 tracks/87 audio).
+**Deferred (spec-sanctioned):** the public edge (`just caddy-reload` + `orator.iridi.cc` DNS), the live Discord
+run (SOPS token), and the physical Stream Deck hardware test. Decisions M1–M5 locked below.
 **Phase:** 4 (services). **Source plan:** [`../plans/0010-orator.md`](../plans/0010-orator.md). **Pre-impl thoughts:**
 [`../../shared/research/2026-06-20-orator-0010-thoughts.md`](../../shared/research/2026-06-20-orator-0010-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (typescript-pro, code-reviewer), per astra `CLAUDE.md`.
@@ -165,16 +168,21 @@ build is validated in the container **early** (slice 1/2) — L3 is the #1 risk.
 
 ## Acceptance criteria (exit gate)
 
-- [ ] **Both toolchains green locally** before pushing: bun lane (`bun --filter '*' typecheck && bunx biome ci . &&
-      bun --filter '*' test && bun --filter '*' build`) covers orator-backend + orator-controller; uv lane
-      unaffected (both dirs in uv `exclude`). Per [[no-ci-monitoring]]: reproduce locally, confirm push + one check.
-- [ ] **orator-backend (Compose)** starts telemetry-first, serves `/api/v1/*` + the operator SPA, survives a
-      container restart (healthcheck green), and **without a resolved token** runs web+library with playback → 503.
-- [ ] **Postgres**: the 9-table schema applies on PG; the repo layer's tests pass; the **live library data is
-      migrated** (row counts match; `loudness_lufs`/gain preserved) and the ~88 audio files are on the volume.
-- [ ] **Voice** (validated as far as no-live-token allows): the davey native module **builds in the image**
-      (no 4017 by construction); the voice adapter + playback engine unit tests pass (queue/loop/gain/auto-leave).
-- [ ] **Ingest**: yt-dlp + ffmpeg + R128-on-ingest + resume logic port; loudness→gain math preserved (gain tests pass).
+- [x] **Both toolchains green locally** before pushing: bun lane covers orator-backend + orator-controller; uv
+      lane unaffected (both dirs in uv `exclude`) — and the config scrub re-verified the **full** uv lane
+      (ruff/format/ty/pytest) since it touched config.kdl + both schemas. Per [[no-ci-monitoring]]: reproduced
+      locally, confirmed push + one check each slice.
+- [x] **orator-backend (Compose)** — verified live: starts telemetry-first, serves `/api/v1/*` + the operator
+      SPA + fonts, survives a container restart (healthcheck green on 10363). Without a resolved token the bot is
+      off; auth-gated routes 401 unauthenticated (and would 503 for an authenticated playback call).
+- [x] **Postgres**: the 9-table schema applies on PG; the repo tests pass; the **live library data is migrated**
+      (M2 ran — 87 tracks/1 coll/5 tags/76 track_tags/api_keys; `loudness_lufs` preserved; `file_path`→
+      `/data/audio`) and the **87 audio files are on the `orator-audio` volume** (0 missing).
+- [x] **Voice** (as far as no-live-token allows): @snazzah/davey **loads in the runtime image** (`require()` ok →
+      no 4017 by construction; it's a prebuilt napi module, not a compile); voice adapter + playback engine unit
+      tests pass (queue/loop/gain/auto-leave).
+- [x] **Ingest**: yt-dlp + ffmpeg on PATH in the image; R128-on-ingest + resume logic port; loudness→gain math
+      preserved (gain tests pass). The resume path (`listJobsByStatus`) was fixed for live PG (`2c2fd10`).
 - [x] **Operator UI** (slice 7, `866463c`): the `@tanstack/react-router` SPA (static `dist/` via `serveStatic`,
       **not** SSR) loads from orator-backend, lists collections/tracks, drives playback, manages tags (color) +
       mints/revokes API keys (session-gated); gothic styling live (Tailwind v4 `@theme` wired via
@@ -184,9 +192,12 @@ build is validated in the container **early** (slice 1/2) — L3 is the #1 risk.
       **configurable** (PI Origin field + `normalizeOrigin(settings.oratorOrigin)`); Bearer-key client +
       2500ms now-playing poll + nav logic tests pass (36 tests); **hardware test flagged** as the remaining
       gap (carry into the cutover runbook).
-- [ ] **Identity/secrets**: a separate Discord app/token from weal; all secrets via SOPS; operator allowlist
-      from the ontology (M1).
-- [ ] **Deploy applied**: `just up` + `just caddy-reload`, `orator.iridi.cc` serves the UI + API via the edge.
+- [x] **Identity/secrets**: a separate Discord app/token from weal; all secrets via SOPS `ref=` (resolved at
+      runtime — unresolved ⇒ feature off, the deferred posture); operator allowlist from the ontology (M1).
+- [~] **Deploy applied**: artifacts authored + validated (image builds; `docker compose config` + `caddy
+      validate` pass); orator-backend + orator-postgres are **up locally** (10363/10364, healthy, migrated). The
+      **public edge** (`just caddy-reload` + an `orator.iridi.cc` DNS record) is the remaining manual,
+      outward-facing step — deferred like strider/weal-overlay's DNS.
 - [ ] Memory updated (`thoughts/shared/memory/`) with orator's load-bearing gotchas; RESUME "Current state" bumped.
 
 ## Risks

@@ -1,6 +1,6 @@
 ---
 name: orator-0010-gotchas
-description: Building orator (0010) — lark→orator-backend lift gotchas — sync-sqlite→async-PG ripple, no-live-PG test doubles, voice/DAVE, auth rebrands, Router-SPA (slice 7) + birdfeed controller (slice 8); slices 1–8 done+pushed, only 9 (deploy) remains
+description: Building orator (0010) — lark→orator-backend lift gotchas — sync-sqlite→async-PG ripple (incl. the = any($1) live-PG bug), no-live-PG test doubles, voice/DAVE prebuilt napi, Router-SPA (s7) + birdfeed controller (s8) + config-single-source scrub + deploy (s9); BUILT + deployed-local-verified, public edge deferred
 metadata:
   type: project
 ---
@@ -90,9 +90,41 @@ a new KDL field in **KDL + Zod + the Python pydantic model**, and reproduce the 
   the PI boilerplate trips a11y/template rules. `bin/`+`dist/` gitignored. rollup `bundle` verified
   (`bin/plugin.js`); `streamdeck pack` (the `.streamDeckPlugin`) is **not CI-gated** (M4) and not run here.
 
-**Status:** slices **1–8 DONE + pushed** (`98b5618`…`d14557f`): scaffold, PG store+schema, bot+voice+REST,
-auth, ingest, data-migrator, operator UI (Router SPA), orator-controller (birdfeed lift). **Remaining: only 9
-(deploy: orator-backend Dockerfile w/ ffmpeg+yt-dlp+davey native, Compose `orator-backend`@10363 +
-`orator-postgres`@10364, Caddy `orator.iridi.cc`→10363, then RUN the migrator).** **Deferred (spec-sanctioned):**
-live Discord run (SOPS token) + the physical Stream Deck hardware test. See [[no-ci-monitoring]],
-[[deploy-apply-with-just]], [[verify-before-acting]].
+**Load-bearing gotchas (config scrub + slice 9 — deploy):**
+- **config-single-source scrub (`8157a42`):** the migrator + entrypoint had `process.env` overrides that
+  duplicated kdl (`ORATOR_DATABASE_URL`/`PORT`/`ORATOR_INGEST_CONCURRENCY`/`ORATOR_MEASURE_LOUDNESS`/
+  `ORATOR_DATA_DIR`). Removed — kdl is the single source: it now carries the real deploy values (port **10363**,
+  public-origin `https://orator.iridi.cc`, a new **`data-dir "/data"`**). The migrator takes only the source
+  `lark.sqlite` path as a CLI arg (a one-shot external input, not config); dist dir is a fixed structural path,
+  not env. **Mirror any kdl key in BOTH the TS Zod + Python pydantic `OratorConfig`** ([[config-single-source]]).
+- **Dockerfile (`8b937ca`) — `--frozen-lockfile` needs ALL app manifests.** The shared `bun.lock` records the
+  full workspace; copying only `apps/orator-backend/package.json` makes a frozen install fail ("lockfile had
+  changes") because the `apps/*` glob resolves a smaller set. Copy **every** `apps/*/package.json` before
+  `bun install` (add a new app's manifest there too). (Latent for strider/weal Dockerfiles since orator-controller
+  was added.)
+- **davey is a PREBUILT napi module, not a compile.** `@snazzah/davey` ships per-platform binaries (bun installs
+  a `*-linux-x64-gnu` optional pkg); bun never runs dep build scripts anyway. So **no node-gyp/python/g++ toolchain
+  is needed** — `require("@snazzah/davey")` just loads in the runtime image (L3 satisfied; no WS 4017). ffmpeg via
+  apt; yt-dlp = the release binary curl'd to `/usr/local/bin` (+ python3, it's a zipapp). SPA is Vite-built in the
+  build stage; the runtime copies `dist/`.
+- **Compose:** `orator-backend`@10363 (zero config env — config-single-source) + `orator-audio` volume@`/data`
+  (= kdl `data-dir`); depends_on orator-postgres healthy; healthcheck on `/api/v1/health`. Caddy `orator.iridi.cc`
+  self-serves gothic fonts from `dist/` (no `gothic_fonts`); a **scoped** `flush_interval -1` on the ingest SSE
+  path only. The **public edge** (`just caddy-reload` + DNS) is deferred/manual — outward-facing.
+- **LIVE-PG BUG found by deploy (`2c2fd10`):** `listJobsByStatus(["queued","running"])` used `where status =
+  any($1)` — Bun `SQL.unsafe` serializes a JS array param as a **comma-joined string**, so PG threw "malformed
+  array literal: queued,running" and orator-backend **crash-looped** on `resumeInterrupted()`. Fix: expand to
+  `in ($1,$2,…)` with scalar params (mirrors the migrator insert). **The fake-store doubles can't catch this —
+  no live PG in CI; verify the real PG wire path at deploy.** App logs to OTel only, so a startup crash is silent
+  on stdout — reproduce startup steps inline (`docker compose run … bun -e`) to surface the error.
+- **M2 migration verified live:** `docker compose run --rm -v <faerrin lark data>:<same abs path>:ro
+  orator-backend bun run src/migrate/migrate.ts <…/lark.sqlite>` (in-network → resolves the kdl
+  `orator-postgres:5432`; the orator-audio volume auto-mounts at /data). Result: 87 tracks/1 coll/5 tags/76
+  track_tags/3 jobs/90 items/1 key, 87 audio copied (0 missing), loudness preserved, `file_path`→`/data/audio`.
+  The sqlite `file_path`s are ABSOLUTE faerrin paths, so mount the source at its original path for the copy.
+
+**Status:** **all 9 slices DONE + pushed** (`98b5618`…`2c2fd10`) — orator **BUILT**. orator-backend +
+orator-postgres are **up locally + verified** (10363/10364: healthy, serves SPA+API+fonts, restart-survives,
+migrated library). **Deferred (spec-sanctioned):** the **public edge** (`just caddy-reload` + `orator.iridi.cc`
+DNS — outward-facing/manual), the **live Discord run** (SOPS token), and the **physical Stream Deck hardware
+test**. See [[no-ci-monitoring]], [[deploy-apply-with-just]], [[verify-before-acting]], [[config-single-source]].

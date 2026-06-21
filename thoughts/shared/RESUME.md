@@ -36,12 +36,15 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `d14557f`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `2c2fd10`, 2026-06-21)
 
 - **Phases 0–3 COMPLETE:** substrate + shared libs + the full pipeline (scribe → linguist →
   akasha-backend → mouthpiece-backend), all wired in `dagster/definitions.py`.
-- **0010 orator IN PROGRESS (Phase 4) — slices 1–8 DONE + PUSHED** (`98b5618`…`d14557f`; slice 8 pushes with
-  this docs commit). Scope+spec at
+- **0010 orator BUILT (Phase 4) — all 9 slices DONE + PUSHED** (`98b5618`…`2c2fd10`; the slice-9 chain pushes
+  with this docs commit). orator-backend is **deployed locally + verified live** (container healthy on
+  `10363`, serves the SPA + `/api/v1/*` + fonts, survives restart) against the **migrated** library; the
+  remaining manual step is the public edge (`just caddy-reload` + an `orator.iridi.cc` DNS record — outward-
+  facing, like strider/weal-overlay). Scope+spec at
   `thoughts/{shared/research/2026-06-20-orator-0010-thoughts.md, astra/specs/0010-orator-spec.md}`; decisions
   **M1–M5** locked. Lifting faerrin `lark` → **orator-backend** (Bun Compose service) + merging `birdfeed` →
   **orator-controller** (Node/Elgato). Done: (1) **scaffold** both apps + M1 ontology-derived allowlist; (2)
@@ -58,11 +61,20 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   (`d14557f`) — birdfeed lifted (nav/grid/tags/svg/color pure logic + controller/Slot/plugin) with the
   **configurable origin** (M4: PI Origin field + `normalizeOrigin(settings.oratorOrigin)`; key minting stays
   server-side, plugin only consumes a pasted `orator_` key); Bearer client + 2500ms now-playing poll +
-  collection→tag nav (5 named tags + "other") preserved; rollup bundles `bin/plugin.js` (not CI-gated).
-  **Remaining: 9 deploy (orator-backend Dockerfile w/ ffmpeg+yt-dlp+davey native, Compose `orator-backend`@10363
-  + `orator-postgres`@10364, Caddy `orator.iridi.cc`, then RUN the migrator).** **Deferred (spec-sanctioned):**
-  live Discord run (SOPS token) + the physical Stream Deck hardware test. CI green both toolchains each slice
-  (121 backend + 36 controller tests). See `[[orator-0010-gotchas]]`.
+  collection→tag nav (5 named tags + "other") preserved; rollup bundles `bin/plugin.js` (not CI-gated);
+  (config scrub `8157a42`) **config-single-source** — dropped the migrator/entrypoint env overrides, kdl now
+  holds the real deploy values (port 10363, public-origin, new `data-dir`; mirrored in BOTH config schemas);
+  (9) **deploy** (`8b937ca`) — orator-backend Dockerfile (Vite-builds the SPA; ffmpeg+yt-dlp on PATH; davey is
+  a **prebuilt napi** module, no compile; all app manifests copied so `--frozen-lockfile` reconciles the shared
+  lock), Compose `orator-backend`@10363 + `orator-audio` volume@`/data` (zero config env), Caddy
+  `orator.iridi.cc` (self-serves fonts, SSE `flush_interval -1`). **Verified live:** image builds; `docker
+  compose config` + `caddy validate` pass; the **M2 migrator RAN** (87 tracks/1 coll/5 tags/87 audio, 0
+  missing, loudness preserved, `file_path`→`/data/audio`); orator-backend boots healthy, serves SPA+API+fonts,
+  survives restart. Found+fixed a real PG bug en route (`2c2fd10` `listJobsByStatus` — Bun `SQL.unsafe` array
+  param → `= any($1)` "malformed array literal"; expand to `in (…)`). **Deferred (spec-sanctioned):** the public
+  edge (`just caddy-reload` + `orator.iridi.cc` DNS — outward-facing/manual) + live Discord run (SOPS token) +
+  the physical Stream Deck hardware test. CI green both toolchains (121 backend + 36 controller tests). See
+  `[[orator-0010-gotchas]]`.
 - **0009 weal BUILT (Phase 4) — first bun *service*.** Scope+spec at `thoughts/{shared/research/
   2026-06-20-weal-0009-thoughts.md, astra/specs/0009-weal-spec.md}`. Six CI-green slices (`c40a026`…
   `21d1f18`; last `21d1f18` deploy-wiring is the only UNPUSHED commit): (1) **roller** hand-ported
@@ -101,13 +113,10 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ### Next: the remaining subsystems (strider + weal are done)
 
-1. **Phase 4 services:** 0010 orator **IN PROGRESS — resume at slice 9 (deploy, the last slice)**: an
-   orator-backend Dockerfile that bakes **ffmpeg + yt-dlp on PATH + the native `@snazzah/davey`** build (M5 —
-   else voice WS 4017), the Compose units (`orator-backend`@10363 + `orator-postgres`@10364, healthcheck,
-   `restart: unless-stopped`), a Caddy block `orator.iridi.cc`→10363, applied via `just up` + `just caddy-reload`
-   ([[deploy-apply-with-just]]); **then RUN the M2 migrator** (lark.sqlite→PG + ~88 audio files, verify row
-   counts + gain). Needs an `orator.iridi.cc` DNS record (manual, like strider). See `[[orator-0010-gotchas]]`.
-   (0009 weal is BUILT; 0010 slices 1–8 done + pushed — see Current state.)
+1. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
+   public edge (`just caddy-reload` + `orator.iridi.cc` DNS record — outward-facing, like strider/weal-overlay)
+   and the deferred live Discord run (SOPS token). orator-postgres + orator-backend are running locally
+   (deployed + verified) on 10364/10363. See `[[orator-0010-gotchas]]`.
 2. **Frontends 0011–0013** (akasha-fe long pole, mouthpiece-fe, vellum-fe) — each **copies strider's SSR
    template** (build-content→generated→loader, `server.ts`, the Compose+Caddy deploy, server `observe` +
    `@astra/observe/web` RUM via a `createServerFn` endpoint, the uv-exclude). akasha-fe still consumes the
