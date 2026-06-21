@@ -38,10 +38,10 @@ from opentelemetry.sdk.resources import SERVICE_NAME, Resource
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 
-# The local collector's OTLP/HTTP receiver (deploy/ remaps it into the astra range).
-# Mirrors the `telemetry.otlp-endpoint` default in config.kdl — kept as a constant so
+# In-cluster SigNoz collector OTLP/HTTP (services run on signoz-net; :4318). Mirrors
+# the `telemetry.otlp-endpoint` default in config.kdl — kept as a constant so
 # `import astra_observe` stays config-free until `init_telemetry` actually runs.
-DEFAULT_ENDPOINT = "http://localhost:10353"
+DEFAULT_ENDPOINT = "http://signoz-otel-collector:4318"
 
 #: The logger namespace whose records are exported to SigNoz (app logs, not lib noise).
 LOG_NAMESPACE = "astra"

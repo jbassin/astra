@@ -13,8 +13,13 @@ llm {
 }
 
 telemetry {
-    // OTLP/HTTP receiver of the local SigNoz collector (deploy/ remaps it into the astra range).
-    otlp-endpoint "http://localhost:10353"
+    // In-cluster OTLP/HTTP receiver of the SigNoz collector. Astra services run as
+    // Compose units on signoz-net and reach the collector by its container name
+    // (:4318 = the collector's OTLP/HTTP port). The host-published port (10353) is
+    // NOT reachable from inside a container, so this MUST be the in-cluster address
+    // for server-side spans to land. A host-run/dev process (no container) can't
+    // resolve this name — pass `endpoint=`/`{endpoint}` explicitly, or run in-cluster.
+    otlp-endpoint "http://signoz-otel-collector:4318"
     // Public OTLP/HTTP endpoint the *browser* RUM posts spans to directly. The
     // server-side otlp-endpoint above is not browser-reachable in prod; this is
     // the Caddy-exposed collector (otel.iridi.cc → localhost:10353, with CORS).

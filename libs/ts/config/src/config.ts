@@ -125,7 +125,9 @@ const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
   .object({
-    otlpEndpoint: z.string().default("http://localhost:10353"),
+    // In-cluster SigNoz collector (services run on signoz-net; :4318 = OTLP/HTTP).
+    // localhost:10353 is only host-reachable; a container needs this name.
+    otlpEndpoint: z.string().default("http://signoz-otel-collector:4318"),
     rumEndpoint: z.string().default("http://localhost:10353"),
   })
   .strict();

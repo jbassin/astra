@@ -24,7 +24,9 @@ class LlmConfig(_Base):
 
 
 class TelemetryConfig(_Base):
-    otlp_endpoint: str = "http://localhost:10353"
+    # In-cluster SigNoz collector (services run on signoz-net; :4318 = OTLP/HTTP).
+    # localhost:10353 is only host-reachable; a container needs this name.
+    otlp_endpoint: str = "http://signoz-otel-collector:4318"
     rum_endpoint: str = "http://localhost:10353"
 
 

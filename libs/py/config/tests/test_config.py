@@ -30,7 +30,7 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.llm.default_model == "claude-opus-4-8"
     assert cfg.llm.default_max_tokens == 16000  # int, not str
     assert cfg.linguist.review_port == 10116
-    assert cfg.telemetry.otlp_endpoint == "http://localhost:10353"
+    assert cfg.telemetry.otlp_endpoint == "http://signoz-otel-collector:4318"
     assert cfg.orator.target_lufs == -16  # negative int
     assert cfg.orator.measure_loudness is True  # bool, not str
     assert cfg.weal.bind_addr == "127.0.0.1:10203"
