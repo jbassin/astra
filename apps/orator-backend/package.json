@@ -12,6 +12,14 @@
   "dependencies": {
     "@astra/config": "workspace:*",
     "@astra/observe": "workspace:*",
-    "@astra/ontology": "workspace:*"
+    "@astra/ontology": "workspace:*",
+    "@discordjs/voice": "^0.19.2",
+    "@noble/ciphers": "^1.2.1",
+    "discord.js": "^14",
+    "opusscript": "^0.1.1",
+    "prism-media": "^1.3.5"
+  },
+  "optionalDependencies": {
+    "@snazzah/davey": "^0.1.11"
   }
 }

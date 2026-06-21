@@ -145,8 +145,18 @@ export interface NewDownloadJob {
   collectionId?: number | null;
 }
 
+/**
+ * The narrow surface the playback engine needs — just track lookup + the
+ * file-missing/play-failed error marker. Kept separate so the engine's tests
+ * inject a 2-method fake instead of the whole {@link LibraryStore}.
+ */
+export interface PlaybackStore {
+  getTrack(id: number): Promise<Track | null>;
+  markTrackError(id: number): Promise<void>;
+}
+
 /** The async persistence surface (the routes/playback/ingest inject this). */
-export interface LibraryStore {
+export interface LibraryStore extends PlaybackStore {
   ensureSchema(): Promise<void>;
 
   // collections
@@ -158,7 +168,6 @@ export interface LibraryStore {
 
   // tracks
   createTrack(t: NewTrack): Promise<Track>;
-  getTrack(id: number): Promise<Track | null>;
   findTrackByVideoId(videoId: string): Promise<Track | null>;
   listTracks(f?: TrackFilter): Promise<Track[]>;
   updateTrackTitle(id: number, title: string): Promise<boolean>;
@@ -420,6 +429,10 @@ export class PostgresStore implements LibraryStore {
       [lufs, id],
     );
     return rows.length > 0;
+  }
+
+  async markTrackError(id: number): Promise<void> {
+    await this.#all("update tracks set status = 'error', updated_at = now() where id = $1", [id]);
   }
 
   async deleteTrack(id: number): Promise<{ filePath: string | null } | null> {
