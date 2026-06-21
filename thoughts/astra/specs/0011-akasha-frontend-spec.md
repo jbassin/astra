@@ -1,10 +1,13 @@
 # NLSpec 0011 — akasha-frontend (the wiki read-surface)
 
-**Status:** **IN PROGRESS** — **slices 1–2 of 9 BUILT + PUSHED** (`c165b01`, `bff194e`): (1) scaffold on the
+**Status:** **IN PROGRESS** — **slices 1–3 of 9 BUILT** (`c165b01`, `bff194e`, `67dfbd3`): (1) scaffold on the
 strider SSR template; (2) `slug.ts`/`site.ts` verbatim lift + snapshot adapter (edges consumed per N6) +
 generated modules — **the URL-parity gate is GREEN** (141 snapshot slugs byte-equal faerrin's 141 authoritative
-non-Script slugs). CI-green (typecheck, 9 tests, build, biome). Scope gate complete (N1/N3 spiked, N2/N4–N8
-decided). **Resume at slice 3** (routes + static emits). **Phase:** 5 (frontends).
+non-Script slugs); (3) **routes + static emits** — TanStack SSR catch-all (content/folder/alias) + `tags`
+routes + 404, `body[data-slug]`, build-emitted RSS/sitemap/contentIndex (N2) + alias `meta-refresh` stubs (React
+19 head hoisting). CI-green both lanes (typecheck, 26 fe tests, build, biome; uv re-verified for the config
+touch). Scope gate complete (N1/N3 spiked, N2/N4–N8 decided). **Resume at slice 4** (vellum rendering +
+crossref hrefs). **Phase:** 5 (frontends).
 **Source plan:** [`../plans/0011-akasha-frontend.md`](../plans/0011-akasha-frontend.md).
 **Pre-impl thoughts:** [`../../shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`](../../shared/research/2026-06-21-akasha-frontend-0011-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (typescript-pro, frontend-developer, code-reviewer), per astra `CLAUDE.md`.

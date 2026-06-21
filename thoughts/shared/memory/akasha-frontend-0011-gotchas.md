@@ -1,6 +1,6 @@
 ---
 name: akasha-frontend-0011-gotchas
-description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slice 1 (scaffold) built
+description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–3 built (scaffold, slug/site lift, routes+static emits)
 metadata:
   type: project
 ---
@@ -67,6 +67,31 @@ indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/
 ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
+
+**Slice-3 facts (done, `67dfbd3`) — routes + static emits:** faerrin's catch-all `[...slug].astro` (which
+emitted content + folder + alias) ports to a TanStack **splat `$.tsx`** route (param `_splat`); `index.tsx` owns
+`/` (home = content slug "index"); tags get their own `tags/index.tsx` (all-tags) + `tags/$.tsx` (per-tag,
+hierarchical) — TanStack ranks the literal `tags` prefix above the root splat. **URL→slug mapping** (faerrin
+`build:{format:"file"}`, `trailingSlash:"ignore"`): content `Foo/Bar`→`/Foo/Bar`; folder-index `Foo/index`→
+served at **both `/Foo` and `/Foo/index`** (Astro emitted `Foo/index.html`) — so `resolvePath` checks content,
+then `FOLDER_SET.has(slug)`, then `slug.endsWith("/index")`. **`runtimeSite.ts`** reconstructs a queryable
+`SiteData` from the generated `PAGES` (reusing site.ts's extracted **`indexDocs`** — same backlink semantics as
+the build) and exposes serializable **view models with pre-resolved hrefs** (components stay dumb; loaders return
+plain data, dates as ISO strings). **site.ts made node-free** (replaced `path.basename` with a pure `baseStem`)
+so it's safe in the SSR **and client** bundle — TanStack re-runs loaders on client nav, so loader-imported code
+must not pull `node:*`. **Aliases:** `buildAliases` (ported from getStaticPaths) bakes an `ALIASES` map; the
+catch-all renders a **`<meta http-equiv="refresh">` stub via React 19 head hoisting** (render `<title>`/`<link
+rel=canonical>`/`<meta>` in the component → React 19 hoists to `<head>`), NOT a server 301 (N2 — Popover
+fetchCanonical + bookmarks). **Static endpoints** (RSS/sitemap/contentIndex) are emitted by build-content into
+**`public/`** (vite copies `public/`→`dist/client`, where createSsrServer static-serves them; a `public/.gitignore`
+keeps the generated ones out of git but tracks `favicon.svg`) — there are NO file server routes in the pinned
+react-start, so "static" = real files, not endpoints. **`body[data-slug]`** is set in `__root` via
+`useRouterState` reading the deepest match's `loaderData.slug` (every route returns `slug`). **Config:** added
+`public-origin` (the RSS/sitemap absolute base URL) to the akasha-frontend block + BOTH schemas; build-content
+reads it via **site-kit `loadSiteConfig()`** (node-safe — `@astra/config`'s `loadConfig()` needs Bun's
+`import.meta.dir`, undefined under vitest). **Dates** formatted with `timeZone:"UTC"` (deterministic SSR↔client,
+no hydration drift; exact faerrin day not required — N4). **Deferred to slice 4:** ContentMeta (needs body) +
+the vellum article body (the `data-pagefind-body` container ships empty); sidebars/islands = slice 5.
 
 **Slice-1 scaffold facts:** config namespace `akasha-frontend { service-name "astra.akasha-frontend"; port
 10365 }` → Zod key `akashaFrontend`, Pydantic `akasha_frontend` (kdl kebab auto-maps); **mirror in BOTH
