@@ -72,3 +72,298 @@ main {
     transition-duration: 1ms !important;
   }
 }
+
+/* ── Quartz page shell (faerrin PageLayout) — the 3-column grid + sidebars ──────── */
+#quartz-root.page {
+  width: 100%;
+}
+#quartz-body {
+  display: grid;
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr) minmax(0, 17rem);
+  gap: 2rem;
+  max-width: 90rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+.sidebar {
+  position: sticky;
+  top: 2rem;
+  align-self: start;
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  font-family: var(--font-display), sans-serif;
+}
+.center {
+  min-width: 0;
+}
+.center > * + * {
+  margin-top: 1.5rem;
+}
+
+/* left sidebar chrome */
+.page-title {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+}
+.page-title a {
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.sidebar-tools {
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+  align-items: center;
+}
+.darkmode,
+.readermode {
+  background: transparent;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.25rem;
+  color: var(--color-ink);
+  cursor: pointer;
+  padding: 0.35rem;
+  width: 2rem;
+  height: 2rem;
+}
+.darkmode svg,
+.readermode svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+/* Dark-only void theme: hide the day icon (the light branch is dead). */
+.darkmode .dayIcon {
+  display: none;
+}
+
+/* ── Explorer tree ──────────────────────────────────────────────────────────────── */
+.explorer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: none;
+  color: var(--color-ink);
+  cursor: pointer;
+  font: inherit;
+}
+.explorer-toggle h2 {
+  font-size: 1.1rem;
+  letter-spacing: 0.03em;
+}
+.explorer.collapsed .explorer-content {
+  display: none;
+}
+.explorer-ul,
+.explorer-ul ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.explorer-ul ul {
+  padding-left: 0.9rem;
+  border-left: 1px solid var(--color-rule);
+  margin-left: 0.3rem;
+}
+.explorer-content li {
+  margin: 0.15rem 0;
+}
+.explorer-content a {
+  color: var(--color-ink);
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+.explorer-content a:hover {
+  color: var(--color-accent);
+}
+.explorer-content a.active {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+.folder-container {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.folder-icon {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.folder-container:not(.open) .folder-icon {
+  transform: rotate(-90deg);
+}
+.folder-outer {
+  display: none;
+}
+.folder-outer.open {
+  display: block;
+}
+
+/* ── content chrome (breadcrumbs / title / meta / tags / backlinks / listings) ───── */
+.breadcrumb-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: var(--color-wax);
+}
+.breadcrumb-element {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.breadcrumb-container a {
+  color: var(--color-wax);
+  text-decoration: none;
+}
+.breadcrumb-container a:hover {
+  color: var(--color-accent);
+}
+.article-title {
+  font-family: var(--font-display), sans-serif;
+  font-size: 2.2rem;
+  line-height: 1.1;
+  margin: 0.5rem 0;
+}
+.content-meta {
+  display: flex;
+  gap: 0.75rem;
+  color: var(--color-wax);
+  font-size: 0.85rem;
+}
+ul.tags {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.tag-link {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 1rem;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.tag-link:hover {
+  background: var(--color-elevated);
+}
+.backlinks h3 {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1rem;
+  margin-bottom: 0.4rem;
+}
+.backlinks ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.backlinks a,
+.section-li a.internal {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.section-ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.section-li .meta {
+  color: var(--color-wax);
+  font-size: 0.8rem;
+}
+.section-li h3 {
+  font-size: 1.05rem;
+  margin: 0.1rem 0;
+}
+.page-listing > p {
+  color: var(--color-wax);
+  font-size: 0.85rem;
+  margin: 0.75rem 0;
+}
+
+/* sidebar image */
+.sidebar-image img {
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--color-rule);
+  object-fit: cover;
+}
+
+/* ── Popover hover-preview card ──────────────────────────────────────────────────── */
+.popover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  pointer-events: none;
+}
+.popover.active-popover {
+  visibility: visible;
+  opacity: 1;
+}
+.popover-inner {
+  max-width: 28rem;
+  max-height: 22rem;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  background: var(--color-elevated);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.4rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+  font-size: 0.85rem;
+}
+.popover-inner img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── reader mode: fade the sidebars ──────────────────────────────────────────────── */
+html[reader-mode="on"] .sidebar {
+  opacity: 0.15;
+  transition: opacity 0.3s ease;
+}
+html[reader-mode="on"] .sidebar:hover {
+  opacity: 1;
+}
+
+/* ── responsive: stack to one column ─────────────────────────────────────────────── */
+@media (max-width: 60rem) {
+  #quartz-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sidebar {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+  .right.sidebar {
+    order: 3;
+  }
+  .desktop-only {
+    display: none;
+  }
+}

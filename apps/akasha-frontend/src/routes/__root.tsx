@@ -50,6 +50,15 @@ function RootComponent() {
   return (
     <html lang="en">
       <head>
+        {/* Dark-only void theme: force the dark palette before first paint (the
+            light branch is intentionally dead — see Darkmode island). Runs pre-
+            hydration so there's no flash. */}
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: tiny static pre-paint theme script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.setAttribute("saved-theme","dark")`,
+          }}
+        />
         <HeadContent />
       </head>
       <body data-slug={slug} suppressHydrationWarning>

@@ -1,19 +1,25 @@
-// A wiki content page: breadcrumbs ❯ title ❯ tags, then the article body and
-// backlinks (ports the content branch of faerrin's [...slug].astro). The vellum
-// body itself renders in slice 4 (gothic DocumentView via resolveCrossref); slice 3
-// emits the `data-pagefind-body` article container the renderer + Pagefind index
-// will fill. ContentMeta (date + reading time) also lands in slice 4 (needs the body).
+// A wiki content page: breadcrumbs ❯ title ❯ meta ❯ tags, then the article body;
+// the right sidebar carries the optional frontmatter image + backlinks (ports the
+// content branch of faerrin's [...slug].astro + its quartz.layout right rail).
 import { ArticleTitle } from "@/domain/components/ArticleTitle";
 import { Backlinks } from "@/domain/components/Backlinks";
 import { Breadcrumbs } from "@/domain/components/Breadcrumbs";
 import { ContentMeta } from "@/domain/components/ContentMeta";
 import { PageLayout } from "@/domain/components/PageLayout";
+import { SidebarImage } from "@/domain/components/SidebarImage";
 import { TagList } from "@/domain/components/TagList";
 import type { ContentView } from "@/domain/lib/runtimeSite";
 
 export function ContentArticle({ view }: { view: ContentView }) {
   return (
-    <PageLayout>
+    <PageLayout
+      rightSidebar={
+        <>
+          <SidebarImage img={view.img} />
+          <Backlinks backlinks={view.backlinks} />
+        </>
+      }
+    >
       <div className="page-header">
         <div className="popover-hint">
           {view.showBreadcrumbs && <Breadcrumbs crumbs={view.crumbs} />}
@@ -31,7 +37,6 @@ export function ContentArticle({ view }: { view: ContentView }) {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: build-rendered trusted vellum
         dangerouslySetInnerHTML={{ __html: view.bodyHtml }}
       />
-      <Backlinks backlinks={view.backlinks} />
     </PageLayout>
   );
 }
