@@ -1,6 +1,6 @@
 ---
 name: akasha-frontend-0011-gotchas
-description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–6 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell, client-only pixi/d3 graph)
+description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–7 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell, client-only pixi/d3 graph, transcripts D4/N7)
 metadata:
   type: project
 ---
@@ -67,6 +67,49 @@ indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/
 ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
+
+**Slice-7 facts (done, `97e0cec`) — transcripts (D4/N7):** reconstitute faerrin's 76 Script pages from
+linguist `data/*.json` and merge into the site graph (217 = 141 wiki + 76 tx = faerrin's contentIndex count).
+**`matchCampaign`** (`campaigns.ts`) ports faerrin `pkg/content/scripts/lib/campaigns.ts` BUT adapts to astra's
+`@astra/ontology` Campaign: roles are a flat `Role[]` of `{player, character, character_class}` (not faerrin's
+`roles:Record<player,CharacterRole[]>`), GM excluded via `character_class==="gm"` (not the GM_NAMES set), and
+**`role.player` is the player SLUG ("jorge") so billing is re-keyed to the display NAME ("Jorge")** to match the
+transcript's `user.name`. `MATCH_THRESHOLD=15` (faerrin config.ts; a heuristic constant kept in code, not
+ontology/deploy config). First campaign past threshold **in being.kdl order** wins (order matches faerrin's
+campaigns.yaml — load-bearing); else Unsorted. `main`/idx don't affect the URL (only `campaign.name` → folder
+does). **N7 parity fixture** = faerrin's shipped `pkg/aether/public/static/contentIndex.json` Script keys (76) →
+`src/domain/lib/__fixtures__/faerrin-script-slugs.json`; the test (`transcriptParity.test.ts`) asserts
+matchCampaign+slug.ts reproduce them **EXACTLY (1:1, no missing/extra)** — GREEN. (Slug facts: `sluggify` turns
+spaces→`-` but KEEPS commas → `Script/Through-a-Song,-Darkly/2025-10-20`; dates stay non-padded `2025-6-9`.)
+**linker.ts** ports faerrin's proper-noun auto-linker (longest-first combined regex over corpus titles+aliases)
+but — no remark chain in astra — resolves each target to a real href (`resolveRelative`, N6-style) + emits
+`<a class="internal">` on **HTML-escaped** text (escape FIRST, key the name→slug map by `escapeHtml(name)`
+since matches come from escaped text). **transcriptBuild.ts** (build-only) server-emits faerrin's
+`remark-transcript.mjs` OUTPUT shape: `<audio id="audio-{date}" data-transcript="{date}" …>` + per line
+`<div id="{second}-{user}" class="transcript-line {user}" data-second/user/char><button.transcript-time><span
+.transcript-name data-real data-char>{char}:</span><span.transcript-content>{linked}</span></div>`. **No
+episodes.json in astra → the faerrin podcast-tip block is omitted** (not load-bearing). **TranscriptPlayer.tsx**
+= React port of the Solid island, imperative body VERBATIM (onMount→useEffect, onCleanup→cleanup return);
+renders **null**, attaches to the SSR markup (delegated click + precomputed `seconds[]` binary search + single
+root-class filtering + name toggle char↔real); mounted in ContentArticle for EVERY content page — `initTranscript
+Player()` returns null (binds nothing) when no `audio[data-transcript]`, so it's a no-op off Script pages.
+**Speaker colors (I5):** `emitSpeakers(being)` generates `--text<Name>` vars (name = player.name capitalized,
+e.g. `--textJorge`; linguist `user.color` already = `"--textJorge"`) + per-speaker `.transcript-name.<Name>` /
+`.tp-chip.<Name>` / `.transcript-root.hide-<Name>` rules from being.kdl → `SPEAKER_CSS` injected as a `<style>`
+in `__root`. **THE BIG ARCHITECTURE GOTCHA — transcript bodies are ~115 MB (76 × ~1 MB) and CANNOT live in the
+in-bundle `BODIES` module** (it ballooned to 115 MB → vitest OOM + a 115 MB client+server bundle). Fix: bodies
+are **code-split one lazy module per session** (`generated/transcripts/<i>.ts`) + an index of dynamic-import
+thunks (`TRANSCRIPT_BODIES`) and a tiny `TRANSCRIPT_MINUTES` map; a **`transcriptBody` createServerFn**
+(`transcriptBodyFn.ts`) imports the thunks so they're stripped from the CLIENT bundle (server-only). The
+`$.tsx` loader is **async** and, for a transcript (`view.transcript` flag from `TRANSCRIPT_MINUTES`), does
+`view.bodyHtml = await transcriptBody({data: slug})` — runs server-side because **this app navigates with
+full-page `<a href>` (slice-5), so loaders always run on the server** (the createServerFn executes inline at
+SSR, no client RPC). Result: client bundle stays **2.3 MB** (transcripts server-only), server bundle ~109 MB
+(lazy chunks, only the requested page loads). **loadBeing()'s default path uses Bun's `import.meta.dir`
+(undefined under vitest)** → build-content + the parity test pass an explicit `being.kdl` path resolved from
+`import.meta.url` (works under bun AND vitest); same class of fix as slice-3's `loadSiteConfig`. biome override:
+`TranscriptPlayer.tsx` gets `noNonNullAssertion` off (verbatim guarded index access). Verified live: a transcript
+SSRs 3847 lines + audio + 223 resolved internal links + `--textJorge` + `body[data-slug]`; Script folder lists.
 
 **Slice-6 facts (done, `c9ab69b`) — client-only pixi/d3 force-graph:** ported faerrin's Solid `Graph.tsx`
 island to React. **faerrin's graph does NOT use strider's PixiHost/usePixi shared-context pattern** — it

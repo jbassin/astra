@@ -1,11 +1,17 @@
 # NLSpec 0011 — akasha-frontend (the wiki read-surface)
 
-**Status:** **IN PROGRESS** — **slices 1–6 of 9 BUILT + PUSHED** (`c165b01`, `bff194e`, `67dfbd3`, `c58517c`,
-`30d6e47`, `c9ab69b`); slice 6 = **pixi/d3 force-graph (client-only)** — faerrin's Solid Graph island ported to
-React (imperative `renderGraph` body VERBATIM; pure data-shaping split to `graphData.ts` + 4 tests), mounted in
-PageLayout's right sidebar behind `lazy()` + strider's `<ClientOnly>` so pixi never reaches SSR (Risk 5); reads
-`/static/contentIndex.json` + `body[data-slug]`, re-renders on `themechange`, Quartz color vars shimmed to the
-gothic palette; CI-green whole repo (44 fe tests). **Resume at slice 7** (transcripts D4/N7). slice 5 =
+**Status:** **IN PROGRESS** — **slices 1–7 of 9 BUILT** (1–6 pushed; slice 7 `97e0cec`); slice 7 =
+**transcripts (D4/N7)** — reconstitute faerrin's 76 Script pages from linguist `data/*.json`: `matchCampaign`
+(faerrin heuristic adapted to the ontology Campaign shape) → `Script/<campaign>/<date>`, the proper-noun
+auto-linker (`linker.ts` → resolved `<a class="internal">`), faerrin's remark-transcript OUTPUT markup, the
+verbatim `TranscriptPlayer` (renders null, attaches at SSR), speaker colors from ontology-being (I5). **N7
+PARITY GATE GREEN: reproduces faerrin's 76 Script slugs EXACTLY (1:1).** Bodies (~115 MB) code-split + loaded
+server-side via a `transcriptBody` createServerFn (client bundle stays 2.3 MB); contentIndex = 217 = faerrin's.
+CI-green whole repo (56 fe tests). **Resume at slice 8** (Search/Pagefind N1). slice 6 =
+**pixi/d3 force-graph (client-only)** — faerrin's Solid Graph island ported to React (imperative `renderGraph`
+body VERBATIM; pure data-shaping split to `graphData.ts`), mounted in PageLayout's right sidebar behind
+`lazy()` + strider's `<ClientOnly>` so pixi never reaches SSR (Risk 5); reads `/static/contentIndex.json` +
+`body[data-slug]`, re-renders on `themechange`, Quartz color vars shimmed to the gothic palette. slice 5 =
 **islands → React** (Darkmode dark-only + FOUC head script, ReaderMode, Popover on `a[data-crossref]`/
 `a.internal` via @floating-ui/dom, Explorer recursive tree w/ SSR-safe localStorage collapse) + the full 3-column
 Quartz page shell (sidebars) + functional gothic CSS; N5 unmount teardown. Earlier slices: (1) scaffold
@@ -210,9 +216,10 @@ Slices (each CI-green before commit; push on chunk completion; reproduce both la
       work; each cleans up on unmount (N5). Graph renders the force-graph client-only from `contentIndex.json`.
       **TranscriptPlayer plays a transcript without re-rendering the markup** (delegated click + binary-search
       seek + filter; verified on a real ≥1 MB transcript).
-- [ ] **Transcripts (D4):** transcript pages render from linguist data at `Script/<campaign>/<date>`, proper
+- [x] **Transcripts (D4):** transcript pages render from linguist data at `Script/<campaign>/<date>`, proper
       nouns auto-linked against the akasha corpus, audio = external `static-audio` URL, speaker colors from
-      ontology-being. Merged into the graph/Explorer.
+      ontology-being. Merged into the graph/Explorer. **(slice 7 — N7 parity EXACT 1:1; TranscriptPlayer
+      verbatim; Search + the full 7-island gate land in slice 8.)**
 - [ ] **Search:** the Pagefind index builds at build (NodeJS API, no prerender) and `/pagefind/` serves; the
       Search island returns results over the built site. (Dice dashboard deferred — M3.)
 - [ ] **SSR + deploy:** runs as an SSR Compose service on 10365 (no PORT env), behind a Caddy `astra_site`

@@ -36,10 +36,10 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `c9ab69b`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `97e0cec`, 2026-06-21)
 
-- **0011 akasha-frontend IN PROGRESS (Phase 5) — slices 1–6 of 9 BUILT + PUSHED.** The wiki read-surface;
-  the critical-path long pole. **Scope + Spec gates COMPLETE:** scope
+- **0011 akasha-frontend IN PROGRESS (Phase 5) — slices 1–7 of 9 BUILT** (1–6 pushed; slice 7 `97e0cec`
+  unpushed pending this docs commit). The wiki read-surface; the critical-path long pole. **Scope + Spec gates COMPLETE:** scope
   `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`, spec `thoughts/astra/specs/0011-akasha-frontend-spec.md`.
   Two seams **pre-proven**: **N1** Pagefind via the NodeJS Indexing API over in-memory HTML (no prerender),
   **N3** the gothic **`resolveCrossref`** seam (`f13ed5f`). **Slice 1 (`c165b01`):** scaffolded the SSR app from
@@ -101,14 +101,25 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   from getComputedStyle in some browsers → pixi can't parse it). biome override for the verbatim
   any/non-null-assert/`useIterableCallbackReturn` (tween/Set forEach callbacks) idioms. Verified live: home +
   /Anzu render 200, `.graph-slot` + `data-slug` present in SSR HTML, **no `<canvas>`/pixi server-side**. CI
-  green whole repo (biome, typecheck, **44 fe tests**, build all workspaces). **Resume at slice 7:**
-  **transcripts (D4/N7)** — a `@astra/content-build` source over linguist `data/*.json` (77 files): port the
-  proper-noun auto-linker (`linker.ts`), server-emit `.transcript-line`/`audio[data-transcript]` markup (port
-  remark-transcript.mjs OUTPUT shape: `data-second`/`data-user`/`data-char`/`id="{second}-{user}"`), port
-  `matchCampaign` + billing (N7) for `Script/<campaign>/<date>` slugs + a parity-fixture guard, merge
-  transcripts into routing/edges/backlinks/Explorer, speaker colors from **ontology-being** (`--text<Name>`
-  vars, I5), and the **TranscriptPlayer** attach VERBATIM in a useEffect (renders nothing; never reactive —
-  Risk 2, 1.2–1.6 MB pages). See `[[akasha-frontend-0011-gotchas]]`.
+  green whole repo (biome, typecheck, **44 fe tests**, build all workspaces).
+  **Slice 7 (`97e0cec`):** **transcripts (D4/N7)** — reconstitute faerrin's 76 Script pages from linguist
+  `data/*.json` and merge into the site graph. **`matchCampaign`** (faerrin content heuristic, adapted to the
+  `@astra/ontology` Campaign shape — flat `Role[]`, `role.player` is a slug → billing re-keyed to display
+  name; first campaign past threshold-15 in being order wins → `Script/<campaign>/<date>`, else Unsorted).
+  **`linker.ts`** (proper-noun auto-linker, longest-first regex over wiki titles+aliases → resolved
+  `<a class="internal">` on HTML-escaped text — no remark chain). **transcriptBuild** server-emits faerrin's
+  remark-transcript OUTPUT shape (`audio[data-transcript]` + `.transcript-line` rows). **TranscriptPlayer**
+  React-ported VERBATIM (renders null, attaches to SSR markup, never reactive — Risk 2). **Speaker colors
+  (I5)** `--text<Name>` + per-speaker rules generated from ontology-being → `SPEAKER_CSS` in `__root`. **N7
+  PARITY GATE GREEN: reproduces faerrin's 76 Script slugs EXACTLY (1:1).** **Architecture (load-bearing):**
+  transcript bodies are ~115 MB (76 × ~1 MB) — too big for in-bundle BODIES, so code-split one lazy module
+  per session + loaded server-side via a `transcriptBody` **createServerFn** (full-page nav → loader runs on
+  the server; client bundle stays 2.3 MB, transcripts server-only). contentIndex now 217 (141 wiki + 76 tx) =
+  faerrin's 217. CI green whole repo (biome, typecheck, **56 fe tests**, build). **Resume at slice 8:**
+  **Search / Pagefind (N1)** — build the index via the **Pagefind NodeJS Indexing API** (`createIndex` →
+  `addHTMLFile({url,content})` → `writeFiles`) over the rendered corpus + transcripts (`data-pagefind-body`-
+  scoped HTML), write `/pagefind/` into the client output dir; port the **Search island** (Ctrl/Cmd-K modal,
+  lazy `import("/pagefind/pagefind.js")`) framework-agnostically. See `[[akasha-frontend-0011-gotchas]]`.
 - **Deploy now fully healthy (this session's detours):** fixed `just up` end-to-end — the dagster image was
   stale Phase-0 (now `uv sync`s the pipeline workspace from repo root, `4ac8b94`); weal Dockerfiles needed the
   full manifest set after the new member (`33377b3`); and — load-bearing — **built the repo-wide SOPS
@@ -221,21 +232,22 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: akasha-frontend 0011 — resume at slice 7
+### Next: akasha-frontend 0011 — resume at slice 8
 
-1. **0011 akasha-frontend — IN PROGRESS, resume at slice 7.** Slices 1–6 built + pushed (`c165b01`, `bff194e`,
-   `67dfbd3`, `c58517c`, `30d6e47`, `c9ab69b`); slug/site lift done + **URL-parity gate GREEN**, routes + static
-   endpoints + alias stubs, the **vellum body renders**, the **4 easy islands + full page shell**, and the
-   **client-only pixi/d3 force-graph** all ship. **Slice 7 = transcripts (D4):** a `@astra/content-build` source
-   over linguist `data/*.json` (77 files) — port the proper-noun auto-linker (`linker.ts`), server-emit the
-   `.transcript-line`/`audio[data-transcript]` markup (port `remark-transcript.mjs`'s OUTPUT shape), port
-   `matchCampaign` + billing (N7) → `Script/<campaign>/<date>` slugs + a URL-parity fixture guard, **merge**
-   transcript pages into routing/edges/backlinks/Explorer, speaker colors from **ontology-being** (`--text<Name>`
-   vars, I5), and the **TranscriptPlayer** attach **verbatim** in a `useEffect` (renders nothing; never reactive
-   — Risk 2). Then slices 8–9 (Pagefind N1 → URL-parity gate + deploy). **READ FIRST each session:** the spec
-   `thoughts/astra/specs/0011-akasha-frontend-spec.md`, the scope doc, the migration guide, and grep faerrin
-   `pkg/aether` (`linker.ts`, `remark-transcript.mjs`, `TranscriptPlayer.tsx`, `pkg/content/scripts/lib/campaigns.ts`).
-   See `[[akasha-frontend-0011-gotchas]]`.
+1. **0011 akasha-frontend — IN PROGRESS, resume at slice 8.** Slices 1–7 built (`c165b01`, `bff194e`,
+   `67dfbd3`, `c58517c`, `30d6e47`, `c9ab69b`, `97e0cec`; 1–6 pushed): slug/site lift + **URL-parity gate
+   GREEN**, routes + static emits + alias stubs, **vellum body renders**, **4 islands + page shell**,
+   **client-only pixi/d3 graph**, and **transcripts (76 pages, N7 parity EXACT 1:1)**. **Slice 8 = Search /
+   Pagefind (N1):** build the index via the **Pagefind NodeJS Indexing API** (`pagefind@1.5.2` — already spiked:
+   `createIndex` → `addHTMLFile({url, content})` → `writeFiles`) over the rendered corpus + transcripts
+   (`data-pagefind-body`-scoped HTML strings — wiki bodies are in `BODIES`, transcript bodies in the
+   code-split `generated/transcripts/*`), write the full `/pagefind/` bundle into the client output dir
+   (gitignored, served static). Port faerrin's **Search island** (Ctrl/Cmd-K modal, lazy
+   `import("/pagefind/pagefind.js")` + `pf.search`) to React — framework-agnostic. Then slice 9 (URL-parity gate
+   over snapshot ∪ transcripts + deploy). **READ FIRST each session:** the spec
+   `thoughts/astra/specs/0011-akasha-frontend-spec.md` (N1 section), the scope doc, the migration guide, and grep
+   faerrin `pkg/aether` for the Search island + how `data-pagefind-body` was scoped. See
+   `[[akasha-frontend-0011-gotchas]]`.
 2. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
    public edge (`just caddy-reload` + `orator.iridi.cc` DNS record — outward-facing, like strider/weal-overlay)
    and the deferred live Discord run (SOPS token). orator-postgres + orator-backend deployed locally on
