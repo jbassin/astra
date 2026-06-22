@@ -6,6 +6,7 @@
 import { ArticleTitle } from "@/domain/components/ArticleTitle";
 import { Backlinks } from "@/domain/components/Backlinks";
 import { Breadcrumbs } from "@/domain/components/Breadcrumbs";
+import { ContentMeta } from "@/domain/components/ContentMeta";
 import { PageLayout } from "@/domain/components/PageLayout";
 import { TagList } from "@/domain/components/TagList";
 import type { ContentView } from "@/domain/lib/runtimeSite";
@@ -17,11 +18,19 @@ export function ContentArticle({ view }: { view: ContentView }) {
         <div className="popover-hint">
           {view.showBreadcrumbs && <Breadcrumbs crumbs={view.crumbs} />}
           <ArticleTitle title={view.title} />
+          {view.bodyHtml && <ContentMeta date={view.date} minutes={view.readingMinutes} />}
           <TagList tags={view.tags} />
         </div>
       </div>
-      {/* slice 4: gothic DocumentView(parseDocument(.vellum)) fills this container */}
-      <article className="popover-hint" data-pagefind-body />
+      {/* The build-rendered vellum body (gothic DocumentView + resolved crossref hrefs,
+          N3). dangerouslySetInnerHTML: the HTML is static + author-trusted (the akasha
+          corpus, build-time). data-pagefind-body scopes the slice-8 search index. */}
+      <article
+        className="popover-hint"
+        data-pagefind-body
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: build-rendered trusted vellum
+        dangerouslySetInnerHTML={{ __html: view.bodyHtml }}
+      />
       <Backlinks backlinks={view.backlinks} />
     </PageLayout>
   );

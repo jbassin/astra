@@ -8,8 +8,9 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 // Ensure the generated content modules exist before any test imports them
 // (@/generated/*); build-content emits them.
 export default function setup(): void {
-  const generated = path.resolve(HERE, "src/generated/site.ts");
-  if (!existsSync(generated)) {
+  const site = path.resolve(HERE, "src/generated/site.ts");
+  const bodies = path.resolve(HERE, "src/generated/bodies.ts");
+  if (!existsSync(site) || !existsSync(bodies)) {
     execSync("bun run scripts/build-content.ts", {
       cwd: HERE,
       stdio: "inherit",

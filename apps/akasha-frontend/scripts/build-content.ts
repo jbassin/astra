@@ -1,22 +1,27 @@
-// Pre-build content pipeline (slices 2–3 — the akasha snapshot → generated modules
+// Pre-build content pipeline (slices 2–4 — the akasha snapshot → generated modules
 // + static endpoints).
 //
 // Reads the committed akasha-backend snapshot, lifts faerrin's slug.ts/site.ts to
 // derive the URL slugs + the page graph (backlinks/folders/tags/Explorer/aliases),
 // and emits:
-//   - a typed TS module under src/generated/ (the runtime imports it — never the
+//   - src/generated/site.ts — the page index (the runtime imports it, never the
 //     snapshot/fs — so the production bundle has no build-time data dependency);
+//   - src/generated/bodies.ts — each page's vellum body rendered through gothic
+//     (DocumentView + the N3 resolveCrossref seam) to static HTML (slice 4);
 //   - the static endpoints into public/ (RSS index.xml, sitemap.xml,
 //     static/contentIndex.json) at the exact faerrin paths (N2) — vite copies
 //     public/ into dist/client, where the Bun server static-serves them.
 //
-// Vellum-body rendering + transcript pages + Pagefind land in later slices.
+// Transcript pages + Pagefind land in later slices.
 
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildContent, defineContentSource, emitModule } from "@astra/content-build";
+import type { CrossRefResolver } from "@astra/gothic";
 import { loadSiteConfig } from "@astra/site-kit";
+import { buildResolvers } from "../src/domain/lib/crossref";
+import { readingMinutes, renderBody } from "../src/domain/lib/renderBody";
 import {
   type AliasRedirect,
   allFolders,
@@ -27,7 +32,7 @@ import {
   type SiteData,
   type SiteDoc,
 } from "../src/domain/lib/site";
-import { loadSnapshot } from "../src/domain/lib/snapshot";
+import { loadSnapshot, type Snapshot } from "../src/domain/lib/snapshot";
 import {
   buildContentIndex,
   renderRss,
@@ -137,6 +142,42 @@ function emitGeneratedModule(site: SiteData): string {
   return `site: ${pages.length} pages, ${folders.length} folders, ${tags.length} tags, ${aliases.length} aliases`;
 }
 
+/**
+ * Render every page's `.vellum` body through gothic (DocumentView + the N3
+ * resolveCrossref seam) to a static HTML string, baked by FullSlug. The route
+ * injects it (dangerouslySetInnerHTML) — build-only render keeps react-dom/server +
+ * gothic's renderer + vellum-lang out of the client bundle. Covers content pages AND
+ * folder-index pages (a folder's own body renders above its listing).
+ */
+function emitBodies(site: SiteData, snapshot: Snapshot): string {
+  const resolvers = buildResolvers(snapshot);
+  const noResolver: CrossRefResolver = () => null;
+  const bodies: Record<string, { html: string; minutes: number }> = {};
+  for (const d of site.docs) {
+    const src = bodyOf(d);
+    const pagePath = d.rel.replace(/\.md$/, "");
+    bodies[d.slug] = {
+      html: renderBody(src, resolvers.get(pagePath) ?? noResolver),
+      minutes: readingMinutes(src),
+    };
+  }
+  emitModule(
+    OUT_DIR,
+    "bodies.ts",
+    [
+      "/** Build-rendered vellum bodies (gothic DocumentView + resolved crossref hrefs,",
+      " *  N3) keyed by FullSlug — injected into the page via dangerouslySetInnerHTML. */",
+      "export interface RenderedBody {",
+      "  html: string;",
+      "  minutes: number;",
+      "}",
+      `export const BODIES: Record<string, RenderedBody> = ${JSON.stringify(bodies)};`,
+      "",
+    ].join("\n"),
+  );
+  return `bodies: ${Object.keys(bodies).length} rendered`;
+}
+
 /** Emit the static endpoints into public/ (vite copies them into dist/client). */
 function emitStatic(site: SiteData, meta: SiteMeta): string {
   const writePublic = (rel: string, content: string) => {
@@ -153,14 +194,16 @@ function emitStatic(site: SiteData, meta: SiteMeta): string {
 const siteSource = defineContentSource({
   name: "site",
   build() {
-    const site = buildSite(loadSnapshot(SNAPSHOT));
+    const snapshot = loadSnapshot(SNAPSHOT);
+    const site = buildSite(snapshot);
     // Node-safe config locator (works under bun-run, vite, and vitest — unlike
     // @astra/config's Bun-only default path resolution).
     const baseUrl = loadSiteConfig().akashaFrontend.publicOrigin.replace(/\/$/, "");
     const meta: SiteMeta = { title: SITE_TITLE, baseUrl };
     const moduleSummary = emitGeneratedModule(site);
+    const bodiesSummary = emitBodies(site, snapshot);
     const staticSummary = emitStatic(site, meta);
-    return `${moduleSummary}\n  ${staticSummary}`;
+    return `${moduleSummary}\n  ${bodiesSummary}\n  ${staticSummary}`;
   },
 });
 

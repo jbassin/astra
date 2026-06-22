@@ -17,6 +17,15 @@
  */
 @import "tailwindcss";
 
+/* gothic's React components carry Tailwind utility classes (DocumentView's
+   `flex flex-col gap-5 font-body text-ink`, CrossRef's `text-accent underline …`,
+   etc.). Tailwind v4 auto-detection skips node_modules, so a consuming app that
+   renders gothic (akasha-frontend renders the vellum body via DocumentView) would
+   ship those classes UNSTYLED. Declaring gothic's own source here forces Tailwind to
+   scan it from wherever theme.css is imported (relative to this file), so consumers
+   generate exactly the utilities gothic emits — no per-app @source needed. */
+@source "./";
+
 /* Bundled display + body faces (mono is `@fontsource/ibm-plex-mono`). */
 @font-face {
   font-family: "Caslon Antique";

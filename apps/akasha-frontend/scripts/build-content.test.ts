@@ -21,6 +21,15 @@ describe("build-content", () => {
     expect(out).toContain("export const ALIASES");
   });
 
+  it("emits the rendered vellum bodies module (gothic + resolved crossrefs)", async () => {
+    await main();
+    const bodies = path.resolve(HERE, "../src/generated/bodies.ts");
+    expect(existsSync(bodies)).toBe(true);
+    const out = readFileSync(bodies, "utf8");
+    expect(out).toContain("export const BODIES");
+    expect(out).toContain("data-vellum-export");
+  });
+
   it("emits the static endpoints into public/ at the faerrin paths (N2)", async () => {
     await main();
     expect(existsSync(path.join(PUBLIC, "index.xml"))).toBe(true);

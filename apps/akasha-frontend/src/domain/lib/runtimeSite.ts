@@ -12,6 +12,7 @@
  * both the SSR server bundle and the client bundle (TanStack re-runs loaders on client
  * navigation).
  */
+import { BODIES } from "@/generated/bodies";
 import { ALIASES, type GeneratedPage, PAGES, SITE } from "@/generated/site";
 import {
   allFolders,
@@ -72,6 +73,10 @@ export interface ContentView {
   img?: string;
   /** the page's baked committer date (ISO), if any */
   date?: string;
+  /** approximate reading time (minutes) — for ContentMeta */
+  readingMinutes: number;
+  /** build-rendered vellum body HTML (gothic + resolved crossrefs, N3) */
+  bodyHtml: string;
   showBreadcrumbs: boolean;
   crumbs: Crumb[];
   backlinks: LinkView[];
@@ -82,8 +87,8 @@ export interface FolderView {
   folder: string;
   title: string;
   crumbs: Crumb[];
-  /** the folder's own index doc, if it has one (its vellum body renders in slice 4) */
-  hasIndexBody: boolean;
+  /** the folder index's own vellum body HTML (empty if the folder has no index page) */
+  bodyHtml: string;
   itemsLabel: string;
   entries: PageEntryView[];
 }
@@ -167,12 +172,15 @@ export function contentView(slug: FullSlug): ContentView {
     .slice()
     .sort((a, b) => a.title.localeCompare(b.title))
     .map((f) => ({ label: f.title, href: resolveRelative(slug, f.slug) }));
+  const body = BODIES[slug];
   return {
     slug,
     title: doc.title,
     tags: doc.tags.map((t) => tagsLink(slug, t)),
     img: doc.img,
     date: doc.date?.toISOString(),
+    readingMinutes: body?.minutes ?? 0,
+    bodyHtml: body?.html ?? "",
     showBreadcrumbs: slug !== "index",
     crumbs: breadcrumbsFor(SITE_DATA, slug, doc.title),
     backlinks,
@@ -192,7 +200,7 @@ export function folderView(folder: string): FolderView {
     folder,
     title,
     crumbs: breadcrumbsFor(SITE_DATA, slug, crumbTitle),
-    hasIndexBody: idx !== null,
+    bodyHtml: BODIES[slug]?.html ?? "",
     itemsLabel:
       children.length === 1
         ? "1 item under this folder"

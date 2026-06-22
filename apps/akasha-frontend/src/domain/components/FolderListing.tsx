@@ -17,8 +17,12 @@ export function FolderListing({ view }: { view: FolderView }) {
         </div>
       </div>
       <div className="popover-hint">
-        {/* slice 4: the folder index's own vellum body renders above the listing */}
-        <article data-pagefind-body />
+        {/* the folder index's own vellum body (if any) renders above the listing */}
+        <article
+          data-pagefind-body
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: build-rendered trusted vellum
+          dangerouslySetInnerHTML={{ __html: view.bodyHtml }}
+        />
         <div className="page-listing">
           <p>{view.itemsLabel}</p>
           <div>

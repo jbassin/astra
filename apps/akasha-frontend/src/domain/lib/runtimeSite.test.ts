@@ -49,13 +49,16 @@ describe("resolvePath — URL → page kind (faerrin's catch-all)", () => {
 });
 
 describe("view builders", () => {
-  it("contentView exposes title, tag links, breadcrumbs, sorted backlinks", () => {
+  it("contentView exposes title, tag links, breadcrumbs, sorted backlinks, rendered body", () => {
     const v = contentView("Anzu" as FullSlug);
     expect(v.title).toBe("Anzu");
     expect(v.showBreadcrumbs).toBe(true);
     expect(v.crumbs[0]?.displayName).toBe("Home");
     const titles = v.backlinks.map((b) => b.label);
     expect([...titles].sort()).toEqual(titles); // sorted by title
+    // slice 4: the build-rendered vellum body + reading time
+    expect(v.bodyHtml).toContain("data-vellum-export");
+    expect(v.readingMinutes).toBeGreaterThanOrEqual(1);
   });
 
   it("the home content view hides breadcrumbs", () => {

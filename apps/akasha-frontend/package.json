@@ -17,6 +17,7 @@
     "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/site-kit": "workspace:*",
+    "@astra/vellum-lang": "workspace:*",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "@opentelemetry/api": "^1.9.1",
     "@tanstack/react-router": "^1.170.7",
