@@ -446,6 +446,113 @@ html[reader-mode="on"] .sidebar:hover {
   }
 }
 
+/* ── Search (faerrin Search island over Pagefind) ─────────────────────────────────
+   Sidebar trigger + a fixed Ctrl/Cmd-K modal of result cards. Gothic-toned (not a
+   port of faerrin's search.scss). */
+.search {
+  width: 100%;
+}
+.search-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 2rem;
+  padding: 0 0.6rem;
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.25rem;
+  color: var(--color-ink);
+  cursor: pointer;
+  font: inherit;
+  white-space: nowrap;
+}
+.search-button:hover {
+  border-color: var(--color-rule-bright);
+}
+.search-button p {
+  margin: 0;
+}
+.search-path {
+  stroke: var(--color-ink-dim);
+  stroke-width: 2px;
+}
+.search-container {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  width: 100vw;
+  height: 100vh;
+  overflow-y: auto;
+  display: none;
+  backdrop-filter: blur(4px);
+  background: rgb(0 0 0 / 40%);
+}
+.search-container.active {
+  display: block;
+}
+.search-space {
+  width: 65%;
+  max-width: 42rem;
+  margin: 12vh auto 0;
+}
+.search-space > * {
+  width: 100%;
+  border-radius: 0.4rem;
+  background: var(--color-elevated);
+  margin-bottom: 1.5em;
+  box-shadow: 0 14px 50px rgb(0 0 0 / 45%);
+}
+.search-bar {
+  box-sizing: border-box;
+  padding: 0.6em 1em;
+  font-family: var(--font-body), serif;
+  color: var(--color-ink);
+  font-size: 1.1em;
+  background: var(--color-void);
+  border: 1px solid var(--color-rule);
+}
+.search-bar:focus {
+  outline: 1px solid var(--color-accent);
+}
+.search-layout {
+  display: none;
+}
+.search-layout.display-results {
+  display: block;
+  padding: 0.5rem;
+}
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.result-card {
+  display: block;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.3rem;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.result-card:hover {
+  background: var(--color-panel);
+}
+.result-card h3 {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1rem;
+  margin: 0 0 0.2rem;
+  color: var(--color-accent);
+}
+.result-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-ink-dim);
+}
+.result-card mark {
+  background: var(--color-accent-amber);
+  color: var(--color-void);
+}
+
 /* ── Transcripts (faerrin Script pages + TranscriptPlayer) ────────────────────────
    Functional gothic-toned styling for the SSR-emitted transcript markup
    (transcriptBuild.ts) + the player UI the TranscriptPlayer island injects. Speaker

@@ -11,6 +11,7 @@ import { Darkmode } from "@/domain/components/islands/Darkmode";
 import { Explorer } from "@/domain/components/islands/Explorer";
 import { Popover } from "@/domain/components/islands/Popover";
 import { ReaderMode } from "@/domain/components/islands/ReaderMode";
+import { Search } from "@/domain/components/islands/Search";
 import { PageTitle } from "@/domain/components/PageTitle";
 
 // Pixi/d3 are pulled in only by this lazy chunk, which ClientOnly resolves in the
@@ -33,6 +34,7 @@ export function PageLayout({
             <Darkmode />
             <ReaderMode />
           </div>
+          <Search />
           <Explorer />
         </aside>
         <div className="center">{children}</div>
