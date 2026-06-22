@@ -1,6 +1,10 @@
 # NLSpec 0011 — akasha-frontend (the wiki read-surface)
 
-**Status:** **IN PROGRESS** — **slices 1–7 of 9 BUILT** (1–6 pushed; slice 7 `97e0cec`); slice 7 =
+**Status:** **IN PROGRESS** — **slices 1–8 of 9 BUILT** (1–7 pushed; slice 8 `92d551d`); **only slice 9
+(URL-parity gate + deploy) remains.** slice 8 = **search via Pagefind (N1)** — `build-search.ts` builds the
+`/pagefind/` bundle via the NodeJS Indexing API over in-memory HTML docs (wiki + transcripts) after `vite
+build`; the **Search island** is a React port of faerrin's Solid one (Ctrl/Cmd-K modal, lazy
+`import("/pagefind/pagefind.js")`); 217 pages indexed, verified served live. slice 7 =
 **transcripts (D4/N7)** — reconstitute faerrin's 76 Script pages from linguist `data/*.json`: `matchCampaign`
 (faerrin heuristic adapted to the ontology Campaign shape) → `Script/<campaign>/<date>`, the proper-noun
 auto-linker (`linker.ts` → resolved `<a class="internal">`), faerrin's remark-transcript OUTPUT markup, the
@@ -220,8 +224,9 @@ Slices (each CI-green before commit; push on chunk completion; reproduce both la
       nouns auto-linked against the akasha corpus, audio = external `static-audio` URL, speaker colors from
       ontology-being. Merged into the graph/Explorer. **(slice 7 — N7 parity EXACT 1:1; TranscriptPlayer
       verbatim; Search + the full 7-island gate land in slice 8.)**
-- [ ] **Search:** the Pagefind index builds at build (NodeJS API, no prerender) and `/pagefind/` serves; the
-      Search island returns results over the built site. (Dice dashboard deferred — M3.)
+- [x] **Search:** the Pagefind index builds at build (NodeJS API, no prerender) and `/pagefind/` serves; the
+      Search island returns results over the built site. (Dice dashboard deferred — M3.) **(slice 8 — 217 pages
+      indexed; /pagefind/pagefind.js + entry serve 200; Search island SSRs the Ctrl/Cmd-K modal.)**
 - [ ] **SSR + deploy:** runs as an SSR Compose service on 10365 (no PORT env), behind a Caddy `astra_site`
       block, fonts self-served from the container, healthcheck green, restart-survives. Telemetry verified —
       `service.name=astra.akasha-frontend` SSR span in SigNoz (MCP); browser RUM posts to the public endpoint.

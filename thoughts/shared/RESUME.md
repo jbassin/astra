@@ -36,10 +36,11 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `97e0cec`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `92d551d`, 2026-06-21)
 
-- **0011 akasha-frontend IN PROGRESS (Phase 5) — slices 1–7 of 9 BUILT** (1–6 pushed; slice 7 `97e0cec`
-  unpushed pending this docs commit). The wiki read-surface; the critical-path long pole. **Scope + Spec gates COMPLETE:** scope
+- **0011 akasha-frontend IN PROGRESS (Phase 5) — slices 1–8 of 9 BUILT** (1–7 pushed; slice 8 `92d551d`
+  unpushed pending this docs commit). The wiki read-surface; the critical-path long pole. **Only slice 9
+  (URL-parity gate + deploy) remains.** **Scope + Spec gates COMPLETE:** scope
   `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`, spec `thoughts/astra/specs/0011-akasha-frontend-spec.md`.
   Two seams **pre-proven**: **N1** Pagefind via the NodeJS Indexing API over in-memory HTML (no prerender),
   **N3** the gothic **`resolveCrossref`** seam (`f13ed5f`). **Slice 1 (`c165b01`):** scaffolded the SSR app from
@@ -115,11 +116,29 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   transcript bodies are ~115 MB (76 × ~1 MB) — too big for in-bundle BODIES, so code-split one lazy module
   per session + loaded server-side via a `transcriptBody` **createServerFn** (full-page nav → loader runs on
   the server; client bundle stays 2.3 MB, transcripts server-only). contentIndex now 217 (141 wiki + 76 tx) =
-  faerrin's 217. CI green whole repo (biome, typecheck, **56 fe tests**, build). **Resume at slice 8:**
-  **Search / Pagefind (N1)** — build the index via the **Pagefind NodeJS Indexing API** (`createIndex` →
-  `addHTMLFile({url,content})` → `writeFiles`) over the rendered corpus + transcripts (`data-pagefind-body`-
-  scoped HTML), write `/pagefind/` into the client output dir; port the **Search island** (Ctrl/Cmd-K modal,
-  lazy `import("/pagefind/pagefind.js")`) framework-agnostically. See `[[akasha-frontend-0011-gotchas]]`.
+  faerrin's 217. CI green whole repo (biome, typecheck, **56 fe tests**, build).
+  **Slice 8 (`92d551d`):** **search via Pagefind (N1)** — `scripts/build-search.ts` runs AFTER `vite build`
+  (dist/client + generated modules exist) and uses Pagefind's **NodeJS Indexing API** (`createIndex` →
+  `addHTMLFile({url, content})` → `writeFiles`) over **in-memory** HTML docs (no prerendered static HTML —
+  Decision I): wiki bodies from `BODIES`, transcript bodies from the code-split lazy chunks; writes the full
+  `/pagefind/` bundle into `dist/client/pagefind` (static-served). Build-time only (the `build` script — NOT
+  typecheck/test, so the pagefind binary + 115 MB never load under vitest). `searchDoc.ts` = pure unit-tested
+  doc-shape helpers. **Search.tsx** = React port of faerrin's Solid island (sidebar trigger + Ctrl/Cmd-K modal,
+  lazy `import("/pagefind/pagefind.js")` via `@vite-ignore` variable path, debounced `pf.search`, result cards;
+  N5 teardown), mounted in the left sidebar; gothic `.search-*` CSS. Search is empty under `vite dev` until a
+  build (faerrin's caveat). Added `pagefind` devDep. CI green whole repo (biome, typecheck, **59 fe tests**,
+  build). Verified live: pagefind indexed **217 pages (217 fragments)**, `/pagefind/pagefind.js` +
+  `pagefind-entry.json` serve 200, the Search button SSRs. **Resume at slice 9 (LAST):** **URL-parity gate +
+  deploy** — (1) the **full slug-set diff** vs faerrin (snapshot ∪ transcript pages = 217 — the transcript half
+  is already EXACT via N7; assert the wiki+transcript union byte-matches faerrin's contentIndex keys) as a CI
+  test (the cutover gate); (2) **deploy**: the templated `ARG APP` Dockerfile (COPY all app manifests +
+  `ontology/ontology-config` + `apps/akasha-backend/{snapshot,content}` + `apps/linguist/data`; the build stage
+  needs the pagefind binary; runtime COPYs `dist`, `src/generated` incl. `transcripts/`, `server.ts`,
+  `node_modules`, `libs/ts`), a Compose unit (`akasha-frontend` on **10365**, no PORT env, healthcheck,
+  `restart: unless-stopped`), a Caddy `astra_site` block (fonts self-serve), add to `pyproject.toml` uv
+  `exclude` (already done slice 1). **Telemetry** verified: a `service.name=astra.akasha-frontend` SSR span in
+  SigNoz via the `signoz_*` MCP. **Public DNS (`akasha.iridi.cc`) is deferred** (outward-facing, like
+  strider/orator). See `[[akasha-frontend-0011-gotchas]]`.
 - **Deploy now fully healthy (this session's detours):** fixed `just up` end-to-end — the dagster image was
   stale Phase-0 (now `uv sync`s the pipeline workspace from repo root, `4ac8b94`); weal Dockerfiles needed the
   full manifest set after the new member (`33377b3`); and — load-bearing — **built the repo-wide SOPS
@@ -232,21 +251,24 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: akasha-frontend 0011 — resume at slice 8
+### Next: akasha-frontend 0011 — resume at slice 9 (LAST)
 
-1. **0011 akasha-frontend — IN PROGRESS, resume at slice 8.** Slices 1–7 built (`c165b01`, `bff194e`,
-   `67dfbd3`, `c58517c`, `30d6e47`, `c9ab69b`, `97e0cec`; 1–6 pushed): slug/site lift + **URL-parity gate
-   GREEN**, routes + static emits + alias stubs, **vellum body renders**, **4 islands + page shell**,
-   **client-only pixi/d3 graph**, and **transcripts (76 pages, N7 parity EXACT 1:1)**. **Slice 8 = Search /
-   Pagefind (N1):** build the index via the **Pagefind NodeJS Indexing API** (`pagefind@1.5.2` — already spiked:
-   `createIndex` → `addHTMLFile({url, content})` → `writeFiles`) over the rendered corpus + transcripts
-   (`data-pagefind-body`-scoped HTML strings — wiki bodies are in `BODIES`, transcript bodies in the
-   code-split `generated/transcripts/*`), write the full `/pagefind/` bundle into the client output dir
-   (gitignored, served static). Port faerrin's **Search island** (Ctrl/Cmd-K modal, lazy
-   `import("/pagefind/pagefind.js")` + `pf.search`) to React — framework-agnostic. Then slice 9 (URL-parity gate
-   over snapshot ∪ transcripts + deploy). **READ FIRST each session:** the spec
-   `thoughts/astra/specs/0011-akasha-frontend-spec.md` (N1 section), the scope doc, the migration guide, and grep
-   faerrin `pkg/aether` for the Search island + how `data-pagefind-body` was scoped. See
+1. **0011 akasha-frontend — IN PROGRESS, resume at slice 9 (the last slice).** Slices 1–8 built (`c165b01`,
+   `bff194e`, `67dfbd3`, `c58517c`, `30d6e47`, `c9ab69b`, `97e0cec`, `92d551d`; 1–7 pushed): slug/site lift +
+   **URL-parity gate GREEN**, routes + static emits + alias stubs, **vellum body renders**, **4 islands + page
+   shell**, **client-only pixi/d3 graph**, **transcripts (76 pages, N7 parity EXACT 1:1)**, and **Pagefind
+   search (217 pages indexed)**. **Slice 9 = URL-parity gate + deploy:** (a) a CI test asserting the produced
+   slug set (141 wiki ∪ 76 transcripts = 217) byte-matches faerrin's full contentIndex keys — the cutover gate
+   (the transcript half is already EXACT via N7; add the wiki+union assertion); (b) **deploy** — the templated
+   `ARG APP` Dockerfile (COPY all app manifests + `ontology/ontology-config` + `apps/akasha-backend/{snapshot,
+   content}` + `apps/linguist/data`; **build stage needs the pagefind binary**; runtime COPYs `dist`,
+   `src/generated` incl. the `transcripts/` chunks, `server.ts`, `node_modules`, `libs/ts`), a Compose unit on
+   **10365** (no PORT env, healthcheck, `restart: unless-stopped`), a Caddy `astra_site` block (fonts
+   self-serve), uv `exclude` (done). **Telemetry** verified via SigNoz MCP (`service.name=astra.akasha-frontend`
+   SSR span). **Public DNS deferred** (outward-facing). **READ FIRST:** the spec
+   `thoughts/astra/specs/0011-akasha-frontend-spec.md` (slice 9 + acceptance gate), `apps/strider`'s Dockerfile +
+   the deploy compose/Caddyfile, `[[deploy-apply-with-just]]`, `[[deploy-sops-injection]]`,
+   `[[strider-0016-gotchas]]` (ARG APP / fonts-in-container), the migration guide. See
    `[[akasha-frontend-0011-gotchas]]`.
 2. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
    public edge (`just caddy-reload` + `orator.iridi.cc` DNS record — outward-facing, like strider/weal-overlay)

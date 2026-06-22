@@ -1,6 +1,6 @@
 ---
 name: akasha-frontend-0011-gotchas
-description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–7 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell, client-only pixi/d3 graph, transcripts D4/N7)
+description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–8 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell, client-only pixi/d3 graph, transcripts D4/N7, Pagefind search N1); only slice 9 (parity gate + deploy) left
 metadata:
   type: project
 ---
@@ -67,6 +67,28 @@ indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/
 ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
+
+**Slice-8 facts (done, `92d551d`) — search via Pagefind (N1):** `pagefind@^1.5.2` npm pkg (NOT astro-pagefind —
+no Astro). **`scripts/build-search.ts`** runs in the **`build` script only** (`vite build … && bun run
+scripts/build-search.ts`) — NOT typecheck/test, so the pagefind binary + the 115 MB of transcript HTML never
+load under vitest. It runs AFTER vite build (dist/client + generated modules exist), imports `BODIES` +
+`TRANSCRIPT_BODIES` (await the code-split chunks) + `PAGES`, and uses the **NodeJS Indexing API**
+(`pagefind.createIndex()` → `index.addHTMLFile({url, content})` per page → `index.writeFiles({outputPath:
+dist/client/pagefind})` → `pagefind.close()`) over **in-memory** HTML docs — there's NO prerendered static HTML
+to index (Decision I), so `addDirectory` (faerrin's astro-pagefind path) is out. `searchDoc.ts` (pure,
+unit-tested) builds each doc: `<article data-pagefind-body><h1>{title}</h1>{body}</article>` (pagefind lifts the
+title from the h1) + `searchUrl(slug)` (index→`/`). **`Search.tsx`** = React port of faerrin's Solid island:
+sidebar `.search-button` → fixed `.search-container.active` modal, **Ctrl/Cmd-K** toggle + Escape, lazy
+`import(/* @vite-ignore */ "/pagefind/pagefind.js")` on first open (variable path so the bundler can't resolve
+the runtime-only asset), `pf.options({excerptLength:25})` + `pf.init()`, debounced `pf.search` (180 ms) with a
+token guard, result cards (`.result-card` h3 + excerpt via dangerouslySetInnerHTML). Solid→React: signals→
+useState, refs→useRef (+ an `openRef`/`tokenRef` so the keydown/async closures read current values), onMount/
+onCleanup→useEffect; N5 teardown (remove keydown + clear timer). Mounted in PageLayout's LEFT sidebar; gothic
+`.search-*` CSS. **Caveat (faerrin's too):** search is EMPTY under `vite dev` (no `/pagefind/` until a build).
+The SSR server static-serves `/pagefind/*` from dist/client. **For slice-9 deploy:** the Docker **build stage
+needs the pagefind binary** (downloaded on `bun install`); runtime only needs the static `dist/client/pagefind`
+output (23 MB index + 217 fragments) — no binary at runtime. Verified live: 217 pages indexed, pagefind.js +
+pagefind-entry.json serve 200, Search button SSRs.
 
 **Slice-7 facts (done, `97e0cec`) — transcripts (D4/N7):** reconstitute faerrin's 76 Script pages from
 linguist `data/*.json` and merge into the site graph (217 = 141 wiki + 76 tx = faerrin's contentIndex count).
