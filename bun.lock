@@ -20,6 +20,7 @@
         "@astra/content-build": "workspace:*",
         "@astra/gothic": "workspace:*",
         "@astra/observe": "workspace:*",
+        "@astra/ontology": "workspace:*",
         "@astra/site-kit": "workspace:*",
         "@astra/vellum-lang": "workspace:*",
         "@floating-ui/dom": "^1.7.6",

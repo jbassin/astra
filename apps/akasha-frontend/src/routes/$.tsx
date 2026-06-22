@@ -2,16 +2,20 @@ import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ContentArticle } from "@/domain/components/ContentArticle";
 import { FolderListing } from "@/domain/components/FolderListing";
 import { contentView, folderView, resolvePath } from "@/domain/lib/runtimeSite";
+import { transcriptBody } from "@/domain/lib/transcriptBodyFn";
 
 // The root catch-all — owns the whole namespace below "/" the way faerrin's
 // [...slug].astro did: content pages, folder listings (Foo and Foo/index both land
 // here), and alias redirect stubs. Tag pages live under their own /tags routes.
 export const Route = createFileRoute("/$")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const resolved = resolvePath(params._splat ?? "");
     if (!resolved) throw notFound();
     if (resolved.kind === "content") {
       const view = contentView(resolved.slug);
+      // Transcript bodies aren't in the BODIES bundle; fetch the code-split body
+      // server-side (full-page nav → loader runs on the server).
+      if (view.transcript) view.bodyHtml = await transcriptBody({ data: view.slug });
       return { kind: "content" as const, slug: view.slug, title: view.title, view };
     }
     if (resolved.kind === "folder") {

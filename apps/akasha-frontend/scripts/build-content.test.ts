@@ -35,6 +35,7 @@ describe("build-content", () => {
     expect(existsSync(path.join(PUBLIC, "index.xml"))).toBe(true);
     expect(existsSync(path.join(PUBLIC, "sitemap.xml"))).toBe(true);
     const idx = JSON.parse(readFileSync(path.join(PUBLIC, "static/contentIndex.json"), "utf8"));
-    expect(Object.keys(idx).length).toBe(141);
+    // 141 wiki pages + 76 reconstituted transcript pages (slice 7) = faerrin's 217.
+    expect(Object.keys(idx).length).toBe(217);
   });
 });

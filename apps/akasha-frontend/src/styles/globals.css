@@ -446,6 +446,168 @@ html[reader-mode="on"] .sidebar:hover {
   }
 }
 
+/* ── Transcripts (faerrin Script pages + TranscriptPlayer) ────────────────────────
+   Functional gothic-toned styling for the SSR-emitted transcript markup
+   (transcriptBuild.ts) + the player UI the TranscriptPlayer island injects. Speaker
+   colors (`.transcript-name.<Name>`, `.tp-chip.<Name>`, `.transcript-root.hide-<Name>`)
+   are generated from ontology-being (see SPEAKER_CSS in __root). */
+.transcript-player {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  margin-bottom: 1rem;
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.4rem;
+}
+.transcript-transport {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.tp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  padding: 0.3rem;
+  background: transparent;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.25rem;
+  color: var(--color-ink);
+  cursor: pointer;
+}
+.tp-btn:hover {
+  background: var(--color-elevated);
+}
+.tp-btn svg {
+  width: 100%;
+  height: 100%;
+  fill: currentColor;
+}
+.tp-locate.is-active {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+.tp-scrubber {
+  flex: 1;
+  accent-color: var(--color-accent);
+  cursor: pointer;
+}
+.tp-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  color: var(--color-ink-dim);
+  white-space: nowrap;
+}
+.transcript-search {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.tp-search-input {
+  flex: 1;
+  padding: 0.3rem 0.5rem;
+  background: var(--color-void);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.25rem;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.85rem;
+}
+.tp-search-count {
+  font-size: 0.8rem;
+  color: var(--color-ink-dim);
+  white-space: nowrap;
+}
+.transcript-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.tp-chip,
+.tp-names-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.2rem 0.5rem;
+  background: var(--color-void);
+  border: 1px solid var(--color-rule);
+  border-radius: 1rem;
+  color: var(--color-ink);
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+.tp-chip[aria-pressed="false"] {
+  opacity: 0.4;
+}
+.tp-chip-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--color-ink-dim);
+}
+.tp-names-toggle svg {
+  width: 1rem;
+  height: 1rem;
+  fill: currentColor;
+}
+
+/* transcript lines */
+.transcript-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.25rem 0.4rem;
+  border-radius: 0.25rem;
+  scroll-margin-top: 8rem;
+}
+.transcript-line:hover {
+  background: var(--color-panel);
+}
+.transcript-line.is-playing {
+  background: var(--color-elevated);
+  box-shadow: inset 0.2rem 0 0 var(--color-accent);
+}
+.transcript-line.is-target {
+  background: var(--color-elevated);
+  box-shadow: inset 0.2rem 0 0 var(--color-accent-amber);
+}
+.transcript-line.search-match {
+  outline: 1px dashed var(--color-rule-bright);
+}
+.transcript-line.search-current {
+  outline: 1px solid var(--color-accent);
+}
+.transcript-time {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+  color: var(--color-ink-dim);
+  font-variant-numeric: tabular-nums;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.transcript-time:hover {
+  color: var(--color-accent);
+}
+.transcript-name {
+  flex-shrink: 0;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.transcript-content {
+  flex: 1;
+  min-width: 12rem;
+}
+
 /* ── responsive: stack to one column ─────────────────────────────────────────────── */
 @media (max-width: 60rem) {
   #quartz-body {

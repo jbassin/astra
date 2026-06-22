@@ -58,6 +58,10 @@
       }
     },
     {
+      "includes": ["**/akasha-frontend/src/domain/components/islands/TranscriptPlayer.tsx"],
+      "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
+    },
+    {
       "includes": [
         "**/strider/src/domain/lib/hexUtils.ts",
         "**/strider/src/domain/lib/hexUtils.test.ts",

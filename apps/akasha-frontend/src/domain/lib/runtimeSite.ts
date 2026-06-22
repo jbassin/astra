@@ -14,6 +14,7 @@
  */
 import { BODIES } from "@/generated/bodies";
 import { ALIASES, type GeneratedPage, PAGES, SITE } from "@/generated/site";
+import { TRANSCRIPT_MINUTES } from "@/generated/transcripts";
 import {
   allFolders,
   allTags,
@@ -75,8 +76,13 @@ export interface ContentView {
   date?: string;
   /** approximate reading time (minutes) — for ContentMeta */
   readingMinutes: number;
-  /** build-rendered vellum body HTML (gothic + resolved crossrefs, N3) */
+  /** build-rendered vellum body HTML (gothic + resolved crossrefs, N3). For a
+   *  transcript this is "" from contentView — the (much larger) body is loaded by
+   *  the route loader via the transcriptBody server fn (see `transcript`). */
   bodyHtml: string;
+  /** true for a reconstituted transcript page (Script/<campaign>/<date>) — its body
+   *  is code-split + server-loaded, not baked into the BODIES bundle (slice 7). */
+  transcript: boolean;
   showBreadcrumbs: boolean;
   crumbs: Crumb[];
   backlinks: LinkView[];
@@ -172,6 +178,8 @@ export function contentView(slug: FullSlug): ContentView {
     .slice()
     .sort((a, b) => a.title.localeCompare(b.title))
     .map((f) => ({ label: f.title, href: resolveRelative(slug, f.slug) }));
+  const transcriptMinutes = TRANSCRIPT_MINUTES[slug];
+  const isTranscript = transcriptMinutes !== undefined;
   const body = BODIES[slug];
   return {
     slug,
@@ -179,8 +187,11 @@ export function contentView(slug: FullSlug): ContentView {
     tags: doc.tags.map((t) => tagsLink(slug, t)),
     img: doc.img,
     date: doc.date?.toISOString(),
-    readingMinutes: body?.minutes ?? 0,
+    // Transcript bodies are code-split + server-loaded by the route loader, so their
+    // 115 MB of HTML never enters the BODIES bundle; minutes come from the small map.
+    readingMinutes: isTranscript ? transcriptMinutes : (body?.minutes ?? 0),
     bodyHtml: body?.html ?? "",
+    transcript: isTranscript,
     showBreadcrumbs: slug !== "index",
     crumbs: breadcrumbsFor(SITE_DATA, slug, doc.title),
     backlinks,

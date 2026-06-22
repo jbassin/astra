@@ -11,6 +11,7 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
 import "@/styles/globals.css";
+import { SPEAKER_CSS } from "@/generated/speakers";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -58,6 +59,12 @@ function RootComponent() {
           dangerouslySetInnerHTML={{
             __html: `document.documentElement.setAttribute("saved-theme","dark")`,
           }}
+        />
+        {/* Speaker colors (I5) — `--text<Name>` vars + per-speaker transcript rules,
+            generated from ontology-being at build (see scripts/build-content.ts). */}
+        <style
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: build-generated trusted CSS
+          dangerouslySetInnerHTML={{ __html: SPEAKER_CSS }}
         />
         <HeadContent />
       </head>

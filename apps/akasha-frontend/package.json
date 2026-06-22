@@ -17,6 +17,7 @@
     "@astra/content-build": "workspace:*",
     "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
+    "@astra/ontology": "workspace:*",
     "@astra/site-kit": "workspace:*",
     "@astra/vellum-lang": "workspace:*",
     "@fontsource/ibm-plex-mono": "^5.2.7",

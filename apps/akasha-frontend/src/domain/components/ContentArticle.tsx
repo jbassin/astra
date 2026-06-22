@@ -5,6 +5,7 @@ import { ArticleTitle } from "@/domain/components/ArticleTitle";
 import { Backlinks } from "@/domain/components/Backlinks";
 import { Breadcrumbs } from "@/domain/components/Breadcrumbs";
 import { ContentMeta } from "@/domain/components/ContentMeta";
+import { TranscriptPlayer } from "@/domain/components/islands/TranscriptPlayer";
 import { PageLayout } from "@/domain/components/PageLayout";
 import { SidebarImage } from "@/domain/components/SidebarImage";
 import { TagList } from "@/domain/components/TagList";
@@ -37,6 +38,9 @@ export function ContentArticle({ view }: { view: ContentView }) {
         // biome-ignore lint/security/noDangerouslySetInnerHtml: build-rendered trusted vellum
         dangerouslySetInnerHTML={{ __html: view.bodyHtml }}
       />
+      {/* Progressive-enhancement: attaches to the SSR-emitted transcript markup on
+          Script pages; a no-op (returns null, binds nothing) on every other page. */}
+      <TranscriptPlayer />
     </PageLayout>
   );
 }
