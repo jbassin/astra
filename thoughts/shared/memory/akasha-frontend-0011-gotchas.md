@@ -69,6 +69,23 @@ ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from sn
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
 
+**CI-only test gotchas (fixed post-slice-9, `b72ffd4`+`03f0fcd`) — a heavy content build is expensive in the
+test lane; this masked itself locally.** slices 7–9 went RED in GHA `ts-test` while passing locally (faster
+machine + warm `src/generated`) — the `no-ci-monitoring` lesson in the flesh: **confirm the status check, don't
+trust a local pass.** Two failures, both rooted in slice 7 making `build-content`'s `main()` heavy (renders 141
+vellum bodies + writes 76 ~1 MB transcript modules ≈ 115 MB):
+- **`build-content.test.ts` timed out** — it called `await main()` in EACH of 3 `it`s, blowing vitest's **5 s
+  default test timeout** on slower CI runners. Fix: run `main()` ONCE in a `beforeAll(async …, 120_000)`; the
+  tests just assert the emitted files. (Rule: never call a heavy build per-test — `beforeAll` + raised timeout.)
+- **`ssrSmoke.test.ts` threw `[vitest-worker]: Timeout calling "onTaskUpdate"`** (an unhandled error → run
+  fails) — the strider-template smoke ran `bun run build` via **synchronous `execFileSync`**. akasha's build
+  (vite + 76 transcript chunks + Pagefind ~115 MB) blocks the vitest **worker thread** so long it can't answer
+  the runner's RPC heartbeat. The 180 s hook timeout was NEVER the issue — the heartbeat is separate + shorter.
+  Fix: **async `execFile` (promisified)** so the worker's event loop stays responsive while the child builds,
+  AND build the SSR server with **`vite build` only** (the smoke renders `/`, never needs the Pagefind index —
+  skip `bun run build`'s build-search pass). **For 0012/0013 (same template): if the content build is heavy,
+  keep it ASYNC and OUT of per-test bodies — sync `execFileSync` of a long build is the trap.**
+
 **Slice-9 facts (done, `99f6657`) — URL-parity cutover gate + deploy:** `urlParity.test.ts` is THE cutover
 gate — the produced slug set (141 wiki from `buildSite(snapshot)` ∪ 76 transcript slugs from `matchCampaign` +
 `slugifyFilePath`) **byte-matches faerrin's full `contentIndex.json` keys EXACTLY (217, no missing/extra/
