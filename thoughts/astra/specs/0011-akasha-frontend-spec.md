@@ -1,10 +1,14 @@
 # NLSpec 0011 — akasha-frontend (the wiki read-surface)
 
-**Status:** **IN PROGRESS** — **slices 1–5 of 9 BUILT** (`c165b01`, `bff194e`, `67dfbd3`, `c58517c`, `30d6e47`);
-slice 5 = **islands → React** (Darkmode dark-only + FOUC head script, ReaderMode, Popover on `a[data-crossref]`/
+**Status:** **IN PROGRESS** — **slices 1–6 of 9 BUILT + PUSHED** (`c165b01`, `bff194e`, `67dfbd3`, `c58517c`,
+`30d6e47`, `c9ab69b`); slice 6 = **pixi/d3 force-graph (client-only)** — faerrin's Solid Graph island ported to
+React (imperative `renderGraph` body VERBATIM; pure data-shaping split to `graphData.ts` + 4 tests), mounted in
+PageLayout's right sidebar behind `lazy()` + strider's `<ClientOnly>` so pixi never reaches SSR (Risk 5); reads
+`/static/contentIndex.json` + `body[data-slug]`, re-renders on `themechange`, Quartz color vars shimmed to the
+gothic palette; CI-green whole repo (44 fe tests). **Resume at slice 7** (transcripts D4/N7). slice 5 =
+**islands → React** (Darkmode dark-only + FOUC head script, ReaderMode, Popover on `a[data-crossref]`/
 `a.internal` via @floating-ui/dom, Explorer recursive tree w/ SSR-safe localStorage collapse) + the full 3-column
-Quartz page shell (sidebars) + functional gothic CSS; N5 unmount teardown; CI-green both lanes (40 fe tests).
-**Resume at slice 6** (Graph M2). Earlier slices: (1) scaffold
+Quartz page shell (sidebars) + functional gothic CSS; N5 unmount teardown. Earlier slices: (1) scaffold
 on the strider SSR template; (2) `slug.ts`/`site.ts` verbatim lift + snapshot adapter (edges consumed per N6) +
 generated modules — **the URL-parity gate is GREEN** (141 snapshot slugs byte-equal faerrin's 141 authoritative
 non-Script slugs); (3) **routes + static emits** — TanStack SSR catch-all (content/folder/alias) + `tags`

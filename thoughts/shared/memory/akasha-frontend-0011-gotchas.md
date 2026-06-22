@@ -1,6 +1,6 @@
 ---
 name: akasha-frontend-0011-gotchas
-description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–5 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell)
+description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–6 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell, client-only pixi/d3 graph)
 metadata:
   type: project
 ---
@@ -67,6 +67,40 @@ indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/
 ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
+
+**Slice-6 facts (done, `c9ab69b`) — client-only pixi/d3 force-graph:** ported faerrin's Solid `Graph.tsx`
+island to React. **faerrin's graph does NOT use strider's PixiHost/usePixi shared-context pattern** — it
+creates its OWN `new Application()` inside `renderGraph` per local/global graph, so I only needed strider's
+`<ClientOnly>` wrapper (copied verbatim to `apps/akasha-frontend/src/components/ClientOnly/ClientOnly.tsx`),
+not PixiHost/pixiContext. **Mount = `lazy()` + `<ClientOnly>` + `<Suspense fallback={null}>` in PageLayout's
+right sidebar** (so it's on every page — ContentArticle/FolderListing/TagListing all route through PageLayout):
+pixi's static `import` lives only in the lazy chunk, ClientOnly returns null on the server, so the lazy import
+never fires during SSR → pixi (getComputedStyle/WebGPU at setup) never evaluates server-side (Risk 5). The
+build emits a 19 KB server Graph chunk (shell only) + a 349 KB CLIENT Graph chunk (pixi) — confirm pixi is in
+the CLIENT chunk. **The imperative `renderGraph` body is VERBATIM**; only the shell changed: Solid
+`onMount`→`useEffect([])`, `onCleanup`→the effect's cleanup return, `let xRef`/Solid `ref={xRef}`→`useRef` +
+`xRef.current`. Capture `globalIcon.current` into a local at effect-run for symmetric add/removeEventListener.
+**Pure-logic split (testable, like slice-5 `explorerState.ts`):** the link/tag extraction + depth-limited
+neighbourhood BFS + node/link assembly → `graphData.ts` `buildGraphData(data, slug, cfg)` (no DOM/pixi → unit-
+testable under jsdom; pixi/WebGL can't run there). **COLOR REALITY (don't "fix"):** faerrin colors nodes by
+PAGE-STATE — current page=`--secondary`, visited|tag=`--tertiary`, else=`--gray`; tag fill=`--light` — read
+from Quartz CSS vars via `getComputedStyle`, NOT per-entity identity colors. I5 ontology-being colors are the
+slice-7 transcript-SPEAKER concern, not the graph. So the spec's "graph colors from ontology-being" is a loose
+paraphrase; the verbatim-port rule governs → kept page-state coloring. **Quartz var shim (load-bearing):** the
+graph reads `--secondary/--tertiary/--gray/--light/--lightgray/--dark/--darkgray/--bodyFont`; define them in
+`globals.css :root` as **CONCRETE hex** mirroring gothic tokens (#6dd5c0/#f0b46e/#7a8a99/#090c10/#1e2730/
+#dce8f0/…) + `"Caslon Antique", serif` — **NOT `var(--color-*)`**, because `getComputedStyle().getPropertyValue`
+on a custom prop can return the unresolved `var()` ref (not the substituted value) in some browsers and pixi
+then can't parse the color. `.graph-slot { min-height: 290px }` reserves the column server-side (no hydration
+layout shift). Re-renders on the `themechange` CustomEvent the Darkmode island dispatches; **N5** teardown
+destroys every pixi app (`app.destroy()`) + every listener on unmount (+ the async-abort `disposed` guard, kept
+verbatim). **biome override** (`Graph.tsx`+`graphData.ts`): `noNonNullAssertion`+`noExplicitAny`+
+`useIterableCallbackReturn` off (the last for the verbatim tween `tg.getAll().forEach(tw=>tw.start())` + `Set`
+`forEach(x=>set.add(x))` callbacks that return a value). **Deps added to akasha's package.json** (pixi.js ^8.18.1,
+d3-{force,zoom,drag,selection} ^3, @tweenjs/tween.js ^25 + @types/d3-*) — NO new workspace member, so the four
+service Dockerfiles' manifest-COPY lists are unchanged; `bun install` updates `bun.lock` and the frozen-lockfile
+Dockerfiles reconcile. **Verified live:** home + /Anzu render 200; `.graph-slot` + `data-slug` present in SSR
+HTML; `.graph`/`Graph View`/`global-graph-icon`/`<canvas>` ABSENT server-side (client-only confirmed).
 
 **Slice-5 facts (done, `30d6e47`) — islands → React + the page shell:** ported faerrin's 4 Solid islands to
 React (`src/domain/components/islands/`): Solid `onMount/onCleanup` → `useEffect` + cleanup return (**N5** unmount
