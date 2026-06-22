@@ -175,6 +175,30 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- akasha-frontend: the wiki read-surface (0011) — SSR Compose service (Decision
+  # I), the second 0011-0013 frontend on the strider template. Build-time snapshot +
+  # transcripts + Pagefind index baked into the image; no live backend (Decision D). ---
+  akasha-frontend:
+    build:
+      context: ..
+      dockerfile: apps/akasha-frontend/Dockerfile
+      args:
+        APP: akasha-frontend # the one knob in the templated frontend Dockerfile
+    image: astra-akasha-frontend:local
+    container_name: astra-akasha-frontend
+    command: ["bun", "run", "start"]
+    # No PORT env — serviceName/port come from config.kdl (config-single-source);
+    # compose only maps the published host port below.
+    ports:
+      - "10365:10365" # akasha-frontend SSR (astra range) — also reachable directly
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   # --- orator: the music bot's library store (0010, Decision F) ---
   orator-postgres:
     image: postgres:16-alpine

@@ -57,6 +57,17 @@ strider.iridi.cc {
 	}
 }
 
+# akasha-frontend — the wiki read-surface (0011), the second SSR frontend on the
+# strider template. A read-only surface (no /editor), so no local_only gate. Like
+# strider it self-serves gothic's fonts from dist/ (gothicFontsPlugin), so /fonts/*
+# falls through to the reverse_proxy. /pagefind/* (the search index) is likewise just
+# static under dist/client. Compose publishes host port 10365. (Needs an
+# akasha.iridi.cc DNS record — manual, deferred like strider/orator/weal-overlay.)
+akasha.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10365
+}
+
 # weal-overlay — the dice-roll OBS overlay (0009). SSE: flush_interval -1 disables
 # response buffering so text/event-stream reaches OBS immediately. The overlay
 # self-serves its fonts from dist/, so no gothic_fonts import. Compose publishes
