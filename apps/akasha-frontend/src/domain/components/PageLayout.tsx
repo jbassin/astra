@@ -3,13 +3,19 @@
 // (page-specific: SidebarImage, Backlinks). The Popover island mounts once here.
 // `<body data-slug>` is set in __root (the Graph + TranscriptPlayer contract).
 //
-// Graph (slice 6) + Search (slice 8) join the right/left sidebars in their slices.
-import type { ReactNode } from "react";
+// Graph (slice 6) lives in the right sidebar — lazy + ClientOnly so pixi never
+// reaches SSR. Search (slice 8) joins later.
+import { lazy, type ReactNode, Suspense } from "react";
+import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import { Darkmode } from "@/domain/components/islands/Darkmode";
 import { Explorer } from "@/domain/components/islands/Explorer";
 import { Popover } from "@/domain/components/islands/Popover";
 import { ReaderMode } from "@/domain/components/islands/ReaderMode";
 import { PageTitle } from "@/domain/components/PageTitle";
+
+// Pixi/d3 are pulled in only by this lazy chunk, which ClientOnly resolves in the
+// browser — keeps WebGL off the SSR path (Risk 5).
+const Graph = lazy(() => import("@/domain/components/islands/Graph"));
 
 export function PageLayout({
   children,
@@ -30,7 +36,18 @@ export function PageLayout({
           <Explorer />
         </aside>
         <div className="center">{children}</div>
-        <aside className="right sidebar">{rightSidebar}</aside>
+        <aside className="right sidebar">
+          {rightSidebar}
+          {/* graph-slot reserves height server-side so the client-only graph
+              doesn't shift the layout when it hydrates. */}
+          <div className="graph-slot">
+            <ClientOnly>
+              <Suspense fallback={null}>
+                <Graph />
+              </Suspense>
+            </ClientOnly>
+          </div>
+        </aside>
       </div>
       <Popover />
     </div>

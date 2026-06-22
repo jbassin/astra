@@ -47,6 +47,18 @@
     },
     {
       "includes": [
+        "**/akasha-frontend/src/domain/components/islands/Graph.tsx",
+        "**/akasha-frontend/src/domain/components/islands/graphData.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": { "noNonNullAssertion": "off" },
+          "suspicious": { "noExplicitAny": "off", "useIterableCallbackReturn": "off" }
+        }
+      }
+    },
+    {
+      "includes": [
         "**/strider/src/domain/lib/hexUtils.ts",
         "**/strider/src/domain/lib/hexUtils.test.ts",
         "**/strider/src/domain/lib/layers.test.ts",

@@ -350,6 +350,102 @@ html[reader-mode="on"] .sidebar:hover {
   opacity: 1;
 }
 
+/* ── Graph (faerrin Graph island) ─────────────────────────────────────────────────
+   The verbatim-ported Graph reads these Quartz CSS-var names via getComputedStyle to
+   color nodes/labels/links. They're shimmed here to the gothic void palette as
+   CONCRETE hex (not `var(--color-*)`): getComputedStyle returns a custom property's
+   value with var() references left unresolved in some browsers, and pixi.js needs a
+   parseable color. Values mirror @astra/gothic's tokens. */
+:root {
+  --secondary: #6dd5c0; /* current page node — gothic --color-accent */
+  --tertiary: #f0b46e; /* visited / tag nodes — --color-accent-amber */
+  --gray: #7a8a99; /* default node + active link — --color-ink-dim */
+  --light: #090c10; /* tag fill — --color-void */
+  --lightgray: #1e2730; /* idle link + borders — --color-rule */
+  --dark: #dce8f0; /* label text — --color-ink */
+  --darkgray: #7a8a99;
+  --bodyFont: "Caslon Antique", serif; /* label font — --font-body */
+}
+
+/* graph-slot reserves the column server-side (h3 + 250px graph-outer) so the
+   client-only graph doesn't shift layout when it hydrates. */
+.graph-slot {
+  min-height: 290px;
+}
+.graph > h3 {
+  font-family: var(--font-display), sans-serif;
+  font-size: 1rem;
+  margin: 0;
+}
+.graph .graph-outer {
+  position: relative;
+  height: 250px;
+  margin: 0.5rem 0;
+  border: 1px solid var(--color-rule);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.graph .graph-container {
+  width: 100%;
+  height: 100%;
+}
+.global-graph-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 28px;
+  height: 28px;
+  padding: 0.3rem;
+  margin: 0.3rem;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: var(--color-ink-dim);
+  cursor: pointer;
+  opacity: 0.6;
+  transition:
+    background-color 0.3s ease,
+    opacity 0.3s ease;
+}
+.global-graph-icon:hover {
+  background-color: var(--color-elevated);
+  opacity: 1;
+}
+.global-graph-icon svg {
+  width: 100%;
+  height: 100%;
+}
+.global-graph-outer {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  width: 100vw;
+  height: 100%;
+  display: none;
+  overflow: hidden;
+  backdrop-filter: blur(4px);
+  background: rgb(0 0 0 / 40%);
+}
+.global-graph-outer.active {
+  display: inline-block;
+}
+.global-graph-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 80vw;
+  height: 80vh;
+  border: 1px solid var(--color-rule);
+  background-color: var(--color-panel);
+  border-radius: 5px;
+}
+@media (max-width: 60rem) {
+  .global-graph-container {
+    width: 90%;
+  }
+}
+
 /* ── responsive: stack to one column ─────────────────────────────────────────────── */
 @media (max-width: 60rem) {
   #quartz-body {
