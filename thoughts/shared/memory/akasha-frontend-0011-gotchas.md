@@ -1,6 +1,6 @@
 ---
 name: akasha-frontend-0011-gotchas
-description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–3 built (scaffold, slug/site lift, routes+static emits)
+description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–4 built (scaffold, slug/site lift, routes+static emits, vellum body render+crossref)
 metadata:
   type: project
 ---
@@ -67,6 +67,33 @@ indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/
 ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
+
+**Slice-4 facts (done, `c58517c`) — vellum body render + crossref hrefs:** the wiki body renders at **BUILD
+time**, not runtime — `build-content` (under bun) calls `renderToStaticMarkup(<DocumentView document=
+parseDocument(vellum) resolveCrossref=…/>)` and bakes the HTML string per page into `src/generated/bodies.ts`
+(`BODIES: slug→{html,minutes}`, 141 pages incl. folder-index bodies, ~295 KB); the route injects via
+`dangerouslySetInnerHTML` into the slice-3 `data-pagefind-body` article. Build-time (not runtime DocumentView)
+keeps react-dom/server + gothic's renderer + vellum-lang OUT of the client bundle, matches faerrin's SSG-baked
+pages, and lets the slice-5 Popover attach to the static `a[data-crossref]` links via DOM (no React body needed).
+**N3 resolver** (`crossref.ts`, build-only): per source page-path, map a `[[target#heading]]` node → the snapshot
+edge `(source,target,heading).resolved` (the parity-gated SSOT, N6) → `slugifyFilePath`→`simplifySlug`→
+`resolveRelative(sourceSlug, destSimple)` href; `resolved==null` (dangling) → return null → gothic keeps the
+placeholder span. **`renderBody.tsx` is build-only** (imported only by build-content) — never a route/runtime
+import, so the heavy deps stay out of the client bundle; needs `@astra/vellum-lang` as a dep (added; 1-line lock
+delta — all 4 service Dockerfiles already COPY akasha's manifest). **LOAD-BEARING gothic fix:** gothic's React
+components carry **Tailwind utility classes** (DocumentView `flex flex-col gap-5 font-body text-ink`, CrossRef
+`text-accent underline decoration-dotted`), but **Tailwind v4 auto-detection skips `node_modules`** (+ gitignored
+`src/generated`), so a consumer rendering DocumentView shipped those classes **UNSTYLED** (only gothic's
+hand-written `.gothic-prose`/`.gothic-card` CSS in theme.css survives). Fix = **`@source "./"` in gothic
+`theme.css`** (right after `@import "tailwindcss"`) — forces Tailwind to scan gothic's own source from wherever
+theme.css is imported, generating exactly the utilities gothic emits. This is the template fix (mouthpiece-fe/
+vellum-fe will hit it too); strider was the first gothic consumer but only used PRIMITIVES (hand-written CSS), so
+it never tripped it — re-verified strider builds + gothic tests green after the change. **ContentMeta** (date +
+reading-time) was deferred from slice 3 (needs the body); reading-time = `Math.max(1, ceil(words/200))` from raw
+source (display parity not required, N4). Dropped faerrin's `show-comma="true"` attr (non-standard → fails strict
+TSX; cosmetic CSS hook, re-add typed if the custom.scss port needs it). **Popover island = slice 5** (the
+resolved links already carry `data-crossref-*` it attaches to — not a scope cut, the spec lists Popover under the
+slice-5 island set).
 
 **Slice-3 facts (done, `67dfbd3`) — routes + static emits:** faerrin's catch-all `[...slug].astro` (which
 emitted content + folder + alias) ports to a TanStack **splat `$.tsx`** route (param `_splat`); `index.tsx` owns

@@ -1,13 +1,16 @@
 # NLSpec 0011 — akasha-frontend (the wiki read-surface)
 
-**Status:** **IN PROGRESS** — **slices 1–3 of 9 BUILT** (`c165b01`, `bff194e`, `67dfbd3`): (1) scaffold on the
-strider SSR template; (2) `slug.ts`/`site.ts` verbatim lift + snapshot adapter (edges consumed per N6) +
+**Status:** **IN PROGRESS** — **slices 1–4 of 9 BUILT** (`c165b01`, `bff194e`, `67dfbd3`, `c58517c`): (1) scaffold
+on the strider SSR template; (2) `slug.ts`/`site.ts` verbatim lift + snapshot adapter (edges consumed per N6) +
 generated modules — **the URL-parity gate is GREEN** (141 snapshot slugs byte-equal faerrin's 141 authoritative
 non-Script slugs); (3) **routes + static emits** — TanStack SSR catch-all (content/folder/alias) + `tags`
 routes + 404, `body[data-slug]`, build-emitted RSS/sitemap/contentIndex (N2) + alias `meta-refresh` stubs (React
-19 head hoisting). CI-green both lanes (typecheck, 26 fe tests, build, biome; uv re-verified for the config
-touch). Scope gate complete (N1/N3 spiked, N2/N4–N8 decided). **Resume at slice 4** (vellum rendering +
-crossref hrefs). **Phase:** 5 (frontends).
+19 head hoisting); (4) **vellum body rendering + crossref hrefs** — build-time `renderToStaticMarkup(gothic
+DocumentView)` with the **N3 `resolveCrossref`** seam (snapshot edges → slug → href), baked to
+`generated/bodies.ts` + injected via `dangerouslySetInnerHTML`; ContentMeta wired; gothic `theme.css @source "./"`
+(so a DocumentView consumer ships gothic's utility CSS). CI-green both lanes (typecheck, 33 fe tests, build,
+biome; uv re-verified). Scope gate complete (N1/N3 spiked, N2/N4–N8 decided). **Resume at slice 5** (islands →
+React: Darkmode/ReaderMode/Popover/Explorer). **Phase:** 5 (frontends).
 **Source plan:** [`../plans/0011-akasha-frontend.md`](../plans/0011-akasha-frontend.md).
 **Pre-impl thoughts:** [`../../shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`](../../shared/research/2026-06-21-akasha-frontend-0011-thoughts.md).
 **Process:** octo:spec → octo:embrace, Claude team mode (typescript-pro, frontend-developer, code-reviewer), per astra `CLAUDE.md`.
