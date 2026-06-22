@@ -1,6 +1,6 @@
 ---
 name: akasha-frontend-0011-gotchas
-description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–4 built (scaffold, slug/site lift, routes+static emits, vellum body render+crossref)
+description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–5 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell)
 metadata:
   type: project
 ---
@@ -67,6 +67,33 @@ indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/
 ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
+
+**Slice-5 facts (done, `30d6e47`) — islands → React + the page shell:** ported faerrin's 4 Solid islands to
+React (`src/domain/components/islands/`): Solid `onMount/onCleanup` → `useEffect` + cleanup return (**N5** unmount
+teardown). All SSR-render + hydrate (no `<ClientOnly>` needed — none touch WebGL; that's Graph/slice 6). **Darkmode
+is dark-only** (gothic ships the dark palette unconditionally) — the OS prefers-color-scheme listener is omitted,
+the button hidden (CSS), kept only for the click path + the `themechange` CustomEvent the Graph island subscribes
+to; the FOUC pre-paint `<html saved-theme="dark">` is an **inline `<script dangerouslySetInnerHTML>` in `__root`'s
+`<head>`** (before HeadContent, runs pre-hydration). **Explorer SSR-safe collapse pattern (important):** seed the
+open-map from `currentSlug` ONLY in `useState(() => …)` (NO localStorage) so the first client render byte-matches
+SSR, then apply saved state in a `useEffect` — reading localStorage during render = hydration mismatch. Prefix-of-
+current auto-open uses `simplifySlug` segment-boundary match; pure logic (`folderSlugs`/`isPrefixOfCurrent`/
+`computeOpen(tree,currentSlug,saved)`) lives in `explorerState.ts` (testable without router/DOM). `currentSlug`
+comes from `useRouterState` (deepest match's `loaderData.slug`, same selector as `__root`'s data-slug). **Popover**
+binds to **`a[data-crossref]` (gothic crossref links) + `a.internal`** (our backlink/tag/breadcrumb/listing links),
+fetches the target + extracts its `.popover-hint`, floats via **@floating-ui/dom** (new external dep, 7-line lock
+delta); re-binds in a `useEffect([pathname])` (the dep is a re-run TRIGGER, not read in the body → needs a
+`biome-ignore useExhaustiveDependencies`). **PageLayout** is now the full Quartz 3-column grid (`#quartz-body`):
+left sidebar (PageTitle + Darkmode/ReaderMode + Explorer), center, right sidebar (SidebarImage + **Backlinks moved
+out of the center**), Popover mounted once. Wrote **functional gothic-toned CSS** in `globals.css` (grid, explorer
+tree/collapse via `.folder-outer`/`.folder-outer.open`, popover card, tag/breadcrumb/listing chrome, reader-mode
+sidebar fade, 1-col mobile) — NOT a port of faerrin's Quartz custom.scss (akasha is gothic-skinned). **biome a11y:**
+a clickable chevron must be a `<button>` (not `<svg onClick>` → `useKeyWithClickEvents`); `aria-expanded` only on
+button-role elements (not a bare div → `useAriaPropsSupportedByRole`); use `<nav>` not `<div role="group">`
+(`useSemanticElements`). **Navigation is full-page `<a href>` throughout** (gothic crossrefs are plain `<a>`, so
+mixing TanStack `<Link>` client-nav would be inconsistent) — islands still implement N5 cleanup for correctness.
+Graph (slice 6) + Search (slice 8) join the sidebars in their slices; TableOfContents is out of v1 scope (not in
+the 7-island acceptance set).
 
 **Slice-4 facts (done, `c58517c`) — vellum body render + crossref hrefs:** the wiki body renders at **BUILD
 time**, not runtime — `build-content` (under bun) calls `renderToStaticMarkup(<DocumentView document=
