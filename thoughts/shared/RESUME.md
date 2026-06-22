@@ -36,11 +36,12 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `92d551d`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `99f6657`, 2026-06-21)
 
-- **0011 akasha-frontend IN PROGRESS (Phase 5) — slices 1–8 of 9 BUILT** (1–7 pushed; slice 8 `92d551d`
-  unpushed pending this docs commit). The wiki read-surface; the critical-path long pole. **Only slice 9
-  (URL-parity gate + deploy) remains.** **Scope + Spec gates COMPLETE:** scope
+- **0011 akasha-frontend BUILT (Phase 5) — ALL 9 slices DONE** (1–8 pushed; slice 9 `99f6657` + this docs
+  commit push together). The wiki read-surface + the critical-path long pole — **COMPLETE**, deployed locally
+  + verified live. **URL-parity cutover gate GREEN** (217 produced slugs == faerrin's contentIndex EXACTLY).
+  akasha-frontend is the **second 0011–0013 SSR frontend** on the strider template. **Scope + Spec gates COMPLETE:** scope
   `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`, spec `thoughts/astra/specs/0011-akasha-frontend-spec.md`.
   Two seams **pre-proven**: **N1** Pagefind via the NodeJS Indexing API over in-memory HTML (no prerender),
   **N3** the gothic **`resolveCrossref`** seam (`f13ed5f`). **Slice 1 (`c165b01`):** scaffolded the SSR app from
@@ -128,17 +129,19 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   N5 teardown), mounted in the left sidebar; gothic `.search-*` CSS. Search is empty under `vite dev` until a
   build (faerrin's caveat). Added `pagefind` devDep. CI green whole repo (biome, typecheck, **59 fe tests**,
   build). Verified live: pagefind indexed **217 pages (217 fragments)**, `/pagefind/pagefind.js` +
-  `pagefind-entry.json` serve 200, the Search button SSRs. **Resume at slice 9 (LAST):** **URL-parity gate +
-  deploy** — (1) the **full slug-set diff** vs faerrin (snapshot ∪ transcript pages = 217 — the transcript half
-  is already EXACT via N7; assert the wiki+transcript union byte-matches faerrin's contentIndex keys) as a CI
-  test (the cutover gate); (2) **deploy**: the templated `ARG APP` Dockerfile (COPY all app manifests +
-  `ontology/ontology-config` + `apps/akasha-backend/{snapshot,content}` + `apps/linguist/data`; the build stage
-  needs the pagefind binary; runtime COPYs `dist`, `src/generated` incl. `transcripts/`, `server.ts`,
-  `node_modules`, `libs/ts`), a Compose unit (`akasha-frontend` on **10365**, no PORT env, healthcheck,
-  `restart: unless-stopped`), a Caddy `astra_site` block (fonts self-serve), add to `pyproject.toml` uv
-  `exclude` (already done slice 1). **Telemetry** verified: a `service.name=astra.akasha-frontend` SSR span in
-  SigNoz via the `signoz_*` MCP. **Public DNS (`akasha.iridi.cc`) is deferred** (outward-facing, like
-  strider/orator). See `[[akasha-frontend-0011-gotchas]]`.
+  `pagefind-entry.json` serve 200, the Search button SSRs.
+  **Slice 9 (`99f6657`) — DONE (the last slice):** **URL-parity cutover gate + deploy.** `urlParity.test.ts`
+  asserts the produced slug set (141 wiki ∪ 76 transcripts) **byte-matches faerrin's full contentIndex keys
+  EXACTLY (217, no missing/extra/overlap)** — the cutover gate. Deploy: Dockerfile gained `COPY
+  ontology/ontology-being` (loadBeing — else the transcript build throws); `akasha-frontend` Compose service
+  (ARG APP, 10365, healthcheck, restart unless-stopped) mirroring strider; `akasha.iridi.cc` Caddy block
+  (read-only, no /editor; fonts + /pagefind/ self-serve). **Deployed locally + verified live:** image builds,
+  container **healthy on 10365**, serves `/` + `/Anzu` + a transcript + `/pagefind/pagefind.js` +
+  `/static/contentIndex.json` + `/tags` (all 200), **restart-survives**; **telemetry confirmed via SigNoz MCP**
+  — `service.name=astra.akasha-frontend` SSR spans (incl. `SSR GET /Script/Fae-and-Forest/2025-9-11`, the
+  server-loaded transcript route). **Deferred (spec-sanctioned):** the public edge (`just caddy-reload` +
+  `akasha.iridi.cc` DNS record — outward-facing, like strider/orator/weal-overlay). CI green whole repo (biome,
+  typecheck, **61 fe tests**, build). **0011 is COMPLETE.** See `[[akasha-frontend-0011-gotchas]]`.
 - **Deploy now fully healthy (this session's detours):** fixed `just up` end-to-end — the dagster image was
   stale Phase-0 (now `uv sync`s the pipeline workspace from repo root, `4ac8b94`); weal Dockerfiles needed the
   full manifest set after the new member (`33377b3`); and — load-bearing — **built the repo-wide SOPS
@@ -251,31 +254,21 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: akasha-frontend 0011 — resume at slice 9 (LAST)
+### Next: frontends 0012–0013 (akasha-frontend 0011 COMPLETE)
 
-1. **0011 akasha-frontend — IN PROGRESS, resume at slice 9 (the last slice).** Slices 1–8 built (`c165b01`,
-   `bff194e`, `67dfbd3`, `c58517c`, `30d6e47`, `c9ab69b`, `97e0cec`, `92d551d`; 1–7 pushed): slug/site lift +
-   **URL-parity gate GREEN**, routes + static emits + alias stubs, **vellum body renders**, **4 islands + page
-   shell**, **client-only pixi/d3 graph**, **transcripts (76 pages, N7 parity EXACT 1:1)**, and **Pagefind
-   search (217 pages indexed)**. **Slice 9 = URL-parity gate + deploy:** (a) a CI test asserting the produced
-   slug set (141 wiki ∪ 76 transcripts = 217) byte-matches faerrin's full contentIndex keys — the cutover gate
-   (the transcript half is already EXACT via N7; add the wiki+union assertion); (b) **deploy** — the templated
-   `ARG APP` Dockerfile (COPY all app manifests + `ontology/ontology-config` + `apps/akasha-backend/{snapshot,
-   content}` + `apps/linguist/data`; **build stage needs the pagefind binary**; runtime COPYs `dist`,
-   `src/generated` incl. the `transcripts/` chunks, `server.ts`, `node_modules`, `libs/ts`), a Compose unit on
-   **10365** (no PORT env, healthcheck, `restart: unless-stopped`), a Caddy `astra_site` block (fonts
-   self-serve), uv `exclude` (done). **Telemetry** verified via SigNoz MCP (`service.name=astra.akasha-frontend`
-   SSR span). **Public DNS deferred** (outward-facing). **READ FIRST:** the spec
-   `thoughts/astra/specs/0011-akasha-frontend-spec.md` (slice 9 + acceptance gate), `apps/strider`'s Dockerfile +
-   the deploy compose/Caddyfile, `[[deploy-apply-with-just]]`, `[[deploy-sops-injection]]`,
-   `[[strider-0016-gotchas]]` (ARG APP / fonts-in-container), the migration guide. See
+1. **0011 akasha-frontend — COMPLETE (all 9 slices built; 1–8 pushed, slice 9 `99f6657` pushes with this docs
+   commit).** Deployed locally + verified live (healthy on 10365, telemetry in SigNoz), URL-parity cutover gate
+   GREEN. **Only open item = the manual public edge** (`just caddy-reload` + an `akasha.iridi.cc` DNS record —
+   outward-facing, like strider/orator/weal-overlay; the Caddy block is authored + in `sites.caddyfile`). See
    `[[akasha-frontend-0011-gotchas]]`.
-2. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT**. orator's only open item is the manual
-   public edge (`just caddy-reload` + `orator.iridi.cc` DNS record — outward-facing, like strider/weal-overlay)
-   and the deferred live Discord run (SOPS token). orator-postgres + orator-backend deployed locally on
-   10364/10363. See `[[orator-0010-gotchas]]`. **strider 0016 COMPLETE** — the copy-ready template; `[[strider-0016-gotchas]]`.
-3. **Frontends 0012–0013** (mouthpiece-fe, vellum-fe) after 0011 — same strider SSR template copy.
-4. **Phase 6 cutover** (plan `0015-cutover.md`) big-bang, last.
+2. **Frontends 0012–0013** (mouthpiece-fe, vellum-fe) — **NEXT.** Same strider SSR template copy; 0011 is now a
+   second worked example alongside strider (esp. for build-time content + the createServerFn server-only-data
+   pattern + Pagefind). Scope → spec → implement per `CLAUDE.md`. **READ FIRST:** `apps/strider/README.md` +
+   `apps/akasha-frontend` (Dockerfile/compose/Caddy + build-content), the migration guide, `[[strider-0016-gotchas]]`,
+   `[[akasha-frontend-0011-gotchas]]`.
+3. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT** (deployed-local; public edge + live
+   Discord run deferred on SOPS/DNS). **strider 0016 COMPLETE** — the copy-ready template.
+4. **Phase 6 cutover** (plan `0015-cutover.md`) big-bang, last — needs frontends 0012–0013 first.
 
 **Frontend gotchas (template — full list in `[[astra-migration-research]]`):** SSR (no `prerender` block);
 commit `src/routeTree.gen.ts` (biome-ignored); `vite.config` is ESM and **cannot import `@astra/config`**;

@@ -1,12 +1,13 @@
 ---
 name: akasha-frontend-0011-gotchas
-description: Building akasha-frontend (0011) — the wiki read-surface; SSR strider-template port of faerrin aether, scope+spec done, slices 1–8 built (scaffold, slug/site lift, routes+static emits, vellum render+crossref, islands+page shell, client-only pixi/d3 graph, transcripts D4/N7, Pagefind search N1); only slice 9 (parity gate + deploy) left
+description: akasha-frontend (0011) COMPLETE — the wiki read-surface; SSR strider-template port of faerrin aether, all 9 slices built + deployed-local-verified (URL-parity cutover gate GREEN 217==faerrin; telemetry in SigNoz; public DNS deferred). The second 0011–0013 frontend; a worked example for 0012/0013
 metadata:
   type: project
 ---
 
 Porting faerrin `aether` (Astro 5 SSG + 8 Solid islands, a Quartz port) → **akasha-frontend**, an SSR
-TanStack-Start site on the strider template. **Scope+Spec gates done; slice 1 of 9 built+pushed (`c165b01`).**
+TanStack-Start site on the strider template. **COMPLETE — all 9 slices built; deployed-local-verified
+(healthy on 10365, SigNoz SSR spans, URL-parity cutover gate GREEN 217==faerrin); public DNS deferred.**
 Scope `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`, spec
 `thoughts/astra/specs/0011-akasha-frontend-spec.md`. The critical-path long pole; `[[migration-guide]]` +
 `apps/strider/README.md` are the recipe; pairs with `[[strider-0016-gotchas]]`, `[[tanstack-start-skill]]`.
@@ -67,6 +68,29 @@ indexes end `/index`) byte-equal it. Generated module = `PAGES`/`EXPLORER_TREE`/
 ISO string, Maps rebuilt at runtime in slice 3). N6 caveat: `links` come from snapshot `edges` (resolved!=null
 only) — may differ slightly from faerrin's link set (which included dead absolute edges); the SLUG gate is
 unaffected, but the graph/backlink parity is a slice-4 check.
+
+**Slice-9 facts (done, `99f6657`) — URL-parity cutover gate + deploy:** `urlParity.test.ts` is THE cutover
+gate — the produced slug set (141 wiki from `buildSite(snapshot)` ∪ 76 transcript slugs from `matchCampaign` +
+`slugifyFilePath`) **byte-matches faerrin's full `contentIndex.json` keys EXACTLY (217, no missing/extra/
+overlap)**; fixture `__fixtures__/faerrin-all-slugs.json`. **Dockerfile fix (load-bearing):** the slice-1
+Dockerfile already COPYs snapshot/content/linguist-data + ontology-config, but slice 7's `loadBeing()` needs
+**`COPY ontology/ontology-being`** in the build stage — without it the in-vite-build transcript step throws.
+The runtime stage already carries `dist` (incl. `dist/client/pagefind`) + `src/generated` (incl. the
+`transcripts/` chunks) + server.ts, so no runtime change. The Docker **build stage's `bun install` fetches the
+pagefind binary** (devDep) for the `bun run build` search step; runtime needs only the static output.
+Compose: `akasha-frontend` service (ARG APP=akasha-frontend, 10365, healthcheck, restart unless-stopped),
+mirrors strider, no PORT env. Caddy: `akasha.iridi.cc` → `reverse_proxy localhost:10365` (read-only, NO
+/editor gate; fonts + /pagefind/ self-serve). **caddy validate of sites.caddyfile standalone FAILS on
+`import local_only`** (defined by the PARENT reverse-proxy Caddyfile, not sites.caddyfile) — pre-existing, not
+a regression; `just caddy-validate` composes them. **Deployed locally + verified:** `docker compose build
+akasha-frontend` + `up -d` → container healthy on 10365, serves `/`+`/Anzu`+a transcript+`/pagefind/pagefind.js`+
+`/static/contentIndex.json`+`/tags` (all 200), restart-survives; **SigNoz MCP `signoz_search_traces
+service.name='astra.akasha-frontend'` returns SSR spans** (`SSR GET /`, `/Org`, `/tags`, `/Benny`, and `SSR
+GET /Script/Fae-and-Forest/2025-9-11` — the server-loaded transcript route, ~44 ms). OTLP endpoint in
+config.kdl = `signoz-otel-collector:4318` (in-cluster, the strider-0016 fix — inherited). **Deferred
+(spec-sanctioned):** the public edge (`just caddy-reload` + `akasha.iridi.cc` DNS — outward-facing, like
+strider/orator/weal-overlay). Did NOT `just up` (akasha needs no SOPS secrets — build-time snapshot read
+surface; brought up the single service directly with `docker compose up -d akasha-frontend`).
 
 **Slice-8 facts (done, `92d551d`) — search via Pagefind (N1):** `pagefind@^1.5.2` npm pkg (NOT astro-pagefind —
 no Astro). **`scripts/build-search.ts`** runs in the **`build` script only** (`vite build … && bun run

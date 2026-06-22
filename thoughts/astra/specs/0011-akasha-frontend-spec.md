@@ -1,10 +1,14 @@
 # NLSpec 0011 — akasha-frontend (the wiki read-surface)
 
-**Status:** **IN PROGRESS** — **slices 1–8 of 9 BUILT** (1–7 pushed; slice 8 `92d551d`); **only slice 9
-(URL-parity gate + deploy) remains.** slice 8 = **search via Pagefind (N1)** — `build-search.ts` builds the
-`/pagefind/` bundle via the NodeJS Indexing API over in-memory HTML docs (wiki + transcripts) after `vite
-build`; the **Search island** is a React port of faerrin's Solid one (Ctrl/Cmd-K modal, lazy
-`import("/pagefind/pagefind.js")`); 217 pages indexed, verified served live. slice 7 =
+**Status:** **BUILT — ALL 9 SLICES DONE** (1–8 pushed; slice 9 `99f6657`). Deployed locally + verified live
+(container healthy on 10365, serves wiki/transcript/search/contentIndex/tags, restart-survives; SigNoz has
+`astra.akasha-frontend` SSR spans incl. a transcript route). **URL-parity cutover gate GREEN: 217 produced
+slugs == faerrin's contentIndex EXACTLY.** Only open item = the manual public edge (`just caddy-reload` +
+`akasha.iridi.cc` DNS — outward-facing, deferred). slice 9 = **URL-parity gate + deploy** (urlParity.test.ts +
+Dockerfile `ontology-being` COPY + Compose 10365 + Caddy block). slice 8 = **search via Pagefind (N1)** —
+`build-search.ts` builds the `/pagefind/` bundle via the NodeJS Indexing API over in-memory HTML docs (wiki +
+transcripts) after `vite build`; the **Search island** is a React port of faerrin's Solid one (Ctrl/Cmd-K
+modal, lazy `import("/pagefind/pagefind.js")`); 217 pages indexed. slice 7 =
 **transcripts (D4/N7)** — reconstitute faerrin's 76 Script pages from linguist `data/*.json`: `matchCampaign`
 (faerrin heuristic adapted to the ontology Campaign shape) → `Script/<campaign>/<date>`, the proper-noun
 auto-linker (`linker.ts` → resolved `<a class="internal">`), faerrin's remark-transcript OUTPUT markup, the
@@ -206,20 +210,21 @@ Slices (each CI-green before commit; push on chunk completion; reproduce both la
 
 ## Acceptance criteria (exit gate)
 
-- [ ] **Both toolchains green locally** before pushing (per [[no-ci-monitoring]]): `bun --filter '*'
-      {typecheck,test,build}` + `bunx biome ci .` over the **whole** repo; the uv lane re-verified (config.kdl +
-      both schemas touched). akasha-frontend has ≥1 test; biome clean repo-wide.
-- [ ] **URL-slug parity (the hard gate):** the produced slug set (snapshot pages ∪ reconstituted transcript
-      pages) **byte-matches** faerrin's; a slug-set diff is clean. Unicode/space/apostrophe filenames preserved
-      (`slug.ts` lifted verbatim, unmodified). `matchCampaign` reproduces faerrin's historical `Script/` paths
-      (N7 parity fixture).
-- [ ] **Vellum rendering:** every akasha page renders via gothic — prose/GFM, **resolved** crossref links +
-      Popover previews, `:::handout`/`:::edict`, `:::fields`, `:::timeline`. Backlinks / folder-index /
-      breadcrumbs / tags / Explorer match `site.ts` semantics (from the snapshot edges, N6).
-- [ ] **Islands (7 for v1) in React:** Darkmode/ReaderMode/Popover/Explorer/Graph/Search/TranscriptPlayer all
-      work; each cleans up on unmount (N5). Graph renders the force-graph client-only from `contentIndex.json`.
-      **TranscriptPlayer plays a transcript without re-rendering the markup** (delegated click + binary-search
-      seek + filter; verified on a real ≥1 MB transcript).
+- [x] **Both toolchains green locally** before pushing (per [[no-ci-monitoring]]): `bun --filter '*'
+      {typecheck,test,build}` + `bunx biome ci .` over the **whole** repo. akasha-frontend has 61 tests; biome
+      clean repo-wide. (uv lane untouched — no config.kdl/schema changes after slice 1.)
+- [x] **URL-slug parity (the hard gate):** the produced slug set (141 snapshot ∪ 76 transcript pages = 217)
+      **byte-matches** faerrin's contentIndex EXACTLY (urlParity.test.ts — no missing/extra/overlap).
+      Unicode/space/apostrophe/comma filenames preserved (`slug.ts` verbatim). `matchCampaign` reproduces
+      faerrin's historical `Script/` paths 1:1 (N7 fixture).
+- [x] **Vellum rendering:** every akasha page renders via gothic — prose/GFM, **resolved** crossref links +
+      Popover previews, `:::handout`/`:::edict`, `:::fields`, `:::timeline` (slices 4–5). Backlinks /
+      folder-index / breadcrumbs / tags / Explorer from the snapshot edges (N6).
+- [x] **Islands (7 for v1) in React:** Darkmode/ReaderMode/Popover/Explorer (slice 5) + Graph (slice 6) +
+      TranscriptPlayer (slice 7) + Search (slice 8) — all SSR + hydrate with N5 unmount teardown. Graph renders
+      the force-graph client-only from `contentIndex.json`. **TranscriptPlayer attaches to the SSR markup
+      without re-rendering** (delegated click + binary-search seek + filter; verified live on a 3847-line / 3.25
+      MB transcript).
 - [x] **Transcripts (D4):** transcript pages render from linguist data at `Script/<campaign>/<date>`, proper
       nouns auto-linked against the akasha corpus, audio = external `static-audio` URL, speaker colors from
       ontology-being. Merged into the graph/Explorer. **(slice 7 — N7 parity EXACT 1:1; TranscriptPlayer
@@ -227,12 +232,13 @@ Slices (each CI-green before commit; push on chunk completion; reproduce both la
 - [x] **Search:** the Pagefind index builds at build (NodeJS API, no prerender) and `/pagefind/` serves; the
       Search island returns results over the built site. (Dice dashboard deferred — M3.) **(slice 8 — 217 pages
       indexed; /pagefind/pagefind.js + entry serve 200; Search island SSRs the Ctrl/Cmd-K modal.)**
-- [ ] **SSR + deploy:** runs as an SSR Compose service on 10365 (no PORT env), behind a Caddy `astra_site`
-      block, fonts self-served from the container, healthcheck green, restart-survives. Telemetry verified —
-      `service.name=astra.akasha-frontend` SSR span in SigNoz (MCP); browser RUM posts to the public endpoint.
-      (Public DNS deferred.)
-- [ ] Memory updated (`thoughts/shared/memory/`) with akasha-frontend's load-bearing gotchas; RESUME "Current
-      state" bumped; committed per-slice + pushed.
+- [x] **SSR + deploy:** runs as an SSR Compose service on 10365 (no PORT env), behind a Caddy `astra_site`
+      block, fonts + /pagefind/ self-served from the container, healthcheck green, restart-survives. Telemetry
+      verified — `service.name=astra.akasha-frontend` SSR spans in SigNoz (MCP, slice 9). Browser RUM seam is
+      the strider template's (`createServerFn` rumConfig + `@astra/observe/web`). **(Public DNS deferred —
+      `just caddy-reload` + `akasha.iridi.cc` record, outward-facing.)**
+- [x] Memory updated (`thoughts/shared/memory/akasha-frontend-0011-gotchas.md`) with the load-bearing gotchas;
+      RESUME "Current state" bumped; committed per-slice + pushed.
 
 ## Risks
 
