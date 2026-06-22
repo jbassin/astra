@@ -36,10 +36,28 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `99f6657`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `0184ed9`, 2026-06-21)
 
-- **0011 akasha-frontend BUILT (Phase 5) — ALL 9 slices DONE** (1–8 pushed; slice 9 `99f6657` + this docs
-  commit push together). The wiki read-surface + the critical-path long pole — **COMPLETE**, deployed locally
+- **0012 mouthpiece-frontend — SCOPE GATE COMPLETE (next: Spec).** Scope/pre-spec research doc written +
+  verified against the live repos: `thoughts/shared/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md`
+  (UNCOMMITTED until this docs commit). The verification overturned **three** sub-plan assumptions (the gate
+  earning its keep): (1) the plan's "DECIDED N1: mouthpiece-backend emits `episodes.json`" is **FALSE** — 0008
+  emits a flat per-session dir tree, **no manifest**; (2) "static prerender" → **SSR** (Decision I); (3)
+  "gothic preset" but faerrin `face` is ~810 lines of **bespoke neon-HUD CSS**. **Decisions LOCKED with the
+  user (2026-06-21):** **D1** = ADD an `episodes_index` asset to mouthpiece-backend (0008) emitting
+  `episodes.json`, frontend consumes it (→ 0012's first slice reaches into the backend, py-CI-gated); **D2** =
+  seed the **7 real episodes (173 MB, verified on disk** at `faerrin/pkg/caster/out/`) into the episodes dir +
+  **mount as a Docker volume**, serve same-origin (audio out of the image layer); **D3** = **re-skin onto
+  gothic** Tailwind (keep face's structure+player behaviour, drop its CSS). D4–D7 (transcript from
+  script.json turns; duration; helper producer/consumer split; the `episodes.json` input-vs-output naming
+  collision) recommended-but-open, settle in the spec. Port **10366**. The renderer work is genuinely small
+  (1 self-contained `Player` island — MediaSession/scrubbing/localStorage; 2 routes; speaker-colored
+  transcript spans; arc titles from ontology-being `campaign.name` — akasha already imports the `Campaign`
+  shape). See `[[mouthpiece-frontend-0012-gotchas]]`. **Resume at: the Spec gate** (`octo:spec` →
+  `thoughts/astra/specs/0012-mouthpiece-frontend-spec.md`).
+- **0011 akasha-frontend BUILT (Phase 5) — ALL 9 slices DONE + PUSHED** (1–9 pushed; HEAD now `0184ed9`,
+  four post-slice-9 CI-fix/docs commits: `34b92c3` 0011-COMPLETE docs, `b72ffd4`/`03f0fcd` build-content-test
+  + SSR-smoke fixes, `0184ed9` CI-only-test gotchas). The wiki read-surface + the critical-path long pole — **COMPLETE**, deployed locally
   + verified live. **URL-parity cutover gate GREEN** (217 produced slugs == faerrin's contentIndex EXACTLY).
   akasha-frontend is the **second 0011–0013 SSR frontend** on the strider template. **Scope + Spec gates COMPLETE:** scope
   `thoughts/shared/research/2026-06-21-akasha-frontend-0011-thoughts.md`, spec `thoughts/astra/specs/0011-akasha-frontend-spec.md`.
@@ -254,18 +272,21 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: frontends 0012–0013 (akasha-frontend 0011 COMPLETE)
+### Next: 0012 mouthpiece-frontend Spec gate (Scope DONE), then 0013
 
-1. **0011 akasha-frontend — COMPLETE (all 9 slices built; 1–8 pushed, slice 9 `99f6657` pushes with this docs
-   commit).** Deployed locally + verified live (healthy on 10365, telemetry in SigNoz), URL-parity cutover gate
-   GREEN. **Only open item = the manual public edge** (`just caddy-reload` + an `akasha.iridi.cc` DNS record —
-   outward-facing, like strider/orator/weal-overlay; the Caddy block is authored + in `sites.caddyfile`). See
-   `[[akasha-frontend-0011-gotchas]]`.
-2. **Frontends 0012–0013** (mouthpiece-fe, vellum-fe) — **NEXT.** Same strider SSR template copy; 0011 is now a
-   second worked example alongside strider (esp. for build-time content + the createServerFn server-only-data
-   pattern + Pagefind). Scope → spec → implement per `CLAUDE.md`. **READ FIRST:** `apps/strider/README.md` +
-   `apps/akasha-frontend` (Dockerfile/compose/Caddy + build-content), the migration guide, `[[strider-0016-gotchas]]`,
-   `[[akasha-frontend-0011-gotchas]]`.
+1. **0012 mouthpiece-frontend — SCOPE DONE, author the SPEC next.** D1–D3 locked (see Current state +
+   `[[mouthpiece-frontend-0012-gotchas]]`); D4–D7 open for the spec. `octo:spec` →
+   `thoughts/astra/specs/0012-mouthpiece-frontend-spec.md` off the scope doc
+   `thoughts/shared/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md`. **NB:** slice 1 is a
+   mouthpiece-**backend** addition (the `episodes_index` asset, D1) — not pure frontend.
+2. **0011 akasha-frontend — COMPLETE (all 9 slices built + PUSHED).** Deployed locally + verified live (healthy
+   on 10365, telemetry in SigNoz), URL-parity cutover gate GREEN. **Only open item = the manual public edge**
+   (`just caddy-reload` + an `akasha.iridi.cc` DNS record — outward-facing, like strider/orator/weal-overlay;
+   the Caddy block is authored + in `sites.caddyfile`). See `[[akasha-frontend-0011-gotchas]]`.
+3. **Frontends 0012–0013** (mouthpiece-fe, vellum-fe) — the strider SSR template copy; 0011 is a second worked
+   example alongside strider (esp. build-time content + the createServerFn server-only-data pattern + Pagefind).
+   **READ FIRST:** `apps/strider/README.md` + `apps/akasha-frontend` (Dockerfile/compose/Caddy + build-content),
+   the migration guide, `[[strider-0016-gotchas]]`, `[[akasha-frontend-0011-gotchas]]`.
 3. **Phase 4 services DONE** — 0009 weal + 0010 orator both **BUILT** (deployed-local; public edge + live
    Discord run deferred on SOPS/DNS). **strider 0016 COMPLETE** — the copy-ready template.
 4. **Phase 6 cutover** (plan `0015-cutover.md`) big-bang, last — needs frontends 0012–0013 first.
