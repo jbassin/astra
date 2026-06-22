@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { describe, expect, it } from "vitest";
+import { beforeAll, describe, expect, it } from "vitest";
 import { main } from "./build-content";
 
 // Proves the content pipeline is wired: running build-content emits the generated
@@ -11,8 +11,14 @@ const GENERATED = path.resolve(HERE, "../src/generated/site.ts");
 const PUBLIC = path.resolve(HERE, "../public");
 
 describe("build-content", () => {
-  it("emits the generated site module with the snapshot-derived page index + aliases", async () => {
+  // Run the full pipeline ONCE (slice 7 made it heavy — it renders 141 vellum
+  // bodies + writes 76 ~1 MB transcript modules). Per-test `await main()` blew the
+  // 5 s vitest default on slower CI runners; a generous beforeAll fixes it.
+  beforeAll(async () => {
     await main();
+  }, 120_000);
+
+  it("emits the generated site module with the snapshot-derived page index + aliases", () => {
     expect(existsSync(GENERATED)).toBe(true);
     const out = readFileSync(GENERATED, "utf8");
     expect(out).toContain('title: "Akasha"');
@@ -21,8 +27,7 @@ describe("build-content", () => {
     expect(out).toContain("export const ALIASES");
   });
 
-  it("emits the rendered vellum bodies module (gothic + resolved crossrefs)", async () => {
-    await main();
+  it("emits the rendered vellum bodies module (gothic + resolved crossrefs)", () => {
     const bodies = path.resolve(HERE, "../src/generated/bodies.ts");
     expect(existsSync(bodies)).toBe(true);
     const out = readFileSync(bodies, "utf8");
@@ -30,8 +35,7 @@ describe("build-content", () => {
     expect(out).toContain("data-vellum-export");
   });
 
-  it("emits the static endpoints into public/ at the faerrin paths (N2)", async () => {
-    await main();
+  it("emits the static endpoints into public/ at the faerrin paths (N2)", () => {
     expect(existsSync(path.join(PUBLIC, "index.xml"))).toBe(true);
     expect(existsSync(path.join(PUBLIC, "sitemap.xml"))).toBe(true);
     const idx = JSON.parse(readFileSync(path.join(PUBLIC, "static/contentIndex.json"), "utf8"));
