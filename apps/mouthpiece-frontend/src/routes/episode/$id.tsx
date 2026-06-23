@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import Player from "@/domain/components/Player";
 import { formatRuntime } from "@/domain/lib/format";
 import { EPISODES } from "@/generated/episodes";
 import { TRANSCRIPTS } from "@/generated/transcripts";
@@ -50,12 +51,17 @@ function EpisodeComponent() {
         </div>
       </header>
 
-      {/* Player island slot (slice 5 replaces this native control with the custom
-          Player — MediaSession/scrubbing/localStorage resume). preload="none" so it
-          doesn't fetch until play; the audio serves once seeded (D2, slice 6). */}
+      {/* The custom Player island (slice 5) — MediaSession / pointer-capture
+          scrubbing / localStorage resume. SSR-renders the transport + hydrates; the
+          audio serves once seeded (D2, slice 6). */}
       <section className="ep-player" aria-label="Player">
-        {/* biome-ignore lint/a11y/useMediaCaption: the transcript below is the caption */}
-        <audio className="ep-audio" controls preload="none" src={episode.mp3Url} />
+        <Player
+          id={episode.id}
+          src={episode.mp3Url}
+          title={episode.episodeTitle}
+          artist={episode.arcTitle}
+          runtimeMs={episode.durationMs}
+        />
       </section>
 
       {episode.synopsis && (

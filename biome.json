@@ -62,6 +62,10 @@
       "linter": { "rules": { "style": { "noNonNullAssertion": "off" } } }
     },
     {
+      "includes": ["**/mouthpiece-frontend/src/domain/components/Player.tsx"],
+      "linter": { "rules": { "a11y": { "useSemanticElements": "off" } } }
+    },
+    {
       "includes": [
         "**/strider/src/domain/lib/hexUtils.ts",
         "**/strider/src/domain/lib/hexUtils.test.ts",
