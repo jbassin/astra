@@ -36,8 +36,28 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `9639bd5`, 2026-06-23)
+## Current state — UPDATE THIS SECTION (as of commit `079c045`, 2026-06-23)
 
+- **🔴 LIVE PIPELINE IS RUNNING + VERIFIED END-TO-END (this session, `851c1c6`…`079c045`).** The Dagster
+  pipeline (craig→scribe→linguist→akasha→mouthpiece) ran its **first real end-to-end run** on two Craig
+  sessions (2026-6-18, 2026-6-22) → both produced complete `episode.mp3` + transcript; the 42 migrated-seed
+  transcripts were never reprocessed. Landed: cascade-sensor **backlog adoption** so sensors re-enable
+  without sweeping seed (`851c1c6`); four scribe Groq/ffmpeg fixes (`3400c60`/`628bebe`/`97501e7` + the
+  s16/480s chunk cap); transient-provider resilience (litellm `num_retries` `56081e6` + mouthpiece
+  `RetryPolicy` `19c945c`); **config.kdl now authoritative for the scribe/mouthpiece models** (`93641e9`);
+  a **host-side `linguist-commit` systemd timer** that auto-commits+pushes new transcripts AND
+  auto-rebuilds+redeploys **akasha-frontend** (`96e0b96`/`079c045`); akasha cutover gates loosened for live
+  growth (`ed3c561`). **akasha-frontend is live with the 2 new sessions** (HTTP 200). All in
+  `[[pipeline-live-run-gotchas]]`.
+  - **▶ NEXT SESSION (user-requested): the mouthpiece-frontend LIVE-PIPELINE INTEGRATION.** mouthpiece-frontend
+    still shows a fixed 7-episode golden-fixture demo; the 2 live episodes can't even be discovered (pipeline
+    writes **date-keyed** episode dirs but `discover_sessions`/the snapshot/the frontend key on the **episode
+    id**). User chose a **live-derived snapshot**. **Resume at step 1: reconcile the layout** (make the
+    `session_episode` asset write episode-id-keyed dirs + matching audio names, or make `discover_sessions`
+    derive id from the script/stem + glob audio). Then: catalog union (historical golden + live), seed live
+    audio into the `mouthpiece-audio` volume, repoint the snapshot + freshness gate (golden→live) + make
+    frontend count-tests content-agnostic, then the publish/redeploy hook. Full plan in
+    `[[pipeline-live-run-gotchas]]`.
 - **0012 mouthpiece-frontend — COMPLETE: all 6 slices BUILT + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE**
   (`032e107`(s1)…`9639bd5`(s6)). The podcast read-surface (faerrin `face` → SSR TanStack), the **third
   0011–0013 frontend** on the strider/akasha template, healthy on **10366**. Scope+spec gates done
@@ -285,8 +305,14 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: 0013 vellum-frontend (the last 0011–0013 frontend), then Phase-6 cutover
+### Next: mouthpiece-frontend live-pipeline integration (user-requested), then 0013 vellum-frontend + Phase-6 cutover
 
+0. **▶ mouthpiece-frontend LIVE-PIPELINE INTEGRATION (user asked to take this on next session).** The live
+   pipeline now produces real episodes but mouthpiece-frontend shows a golden-fixture demo and can't discover
+   live episodes (date-keyed dirs vs episode-id catalog). User chose a **live-derived snapshot**. **Start at
+   step 1 = layout reconciliation** (see `[[pipeline-live-run-gotchas]]` for the full 5-step plan + the exact
+   `discover_sessions` mismatch). Touches the mouthpiece backend asset layout + its tests + the frontend tests
+   + the deployed frontend — do it deliberately, not as a timer hack.
 1. **0013 vellum-frontend — the final frontend.** Stamp from the strider/akasha/**mouthpiece** template (three
    worked examples now). **READ FIRST:** `apps/strider/README.md` + `apps/akasha-frontend` + `apps/mouthpiece-frontend`
    (the simplest worked example — single committed snapshot → generated modules → routes, `createSsrServer`
