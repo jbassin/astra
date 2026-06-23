@@ -1,32 +1,34 @@
 import { describe, expect, test } from "vitest";
-// The global-setup runs build-content first, so the generated module exists.
-import { EPISODES, type GeneratedEpisode, SITE } from "@/generated/episodes";
+// The global-setup runs build-content first, so the generated modules exist.
+import { EPISODES, SITE } from "@/generated/episodes";
+import { TRANSCRIPTS } from "@/generated/transcripts";
 
-describe("build-content (placeholder)", () => {
-  test("emits a typed EPISODES module + SITE meta", () => {
-    expect(Array.isArray(EPISODES)).toBe(true);
+describe("build-content (reads the committed episodes-index.json)", () => {
+  test("emits the catalog + SITE meta", () => {
     expect(SITE.title).toBe("Mouthpiece");
-    expect(SITE.description).toBe("The Færrin podcast");
+    expect(EPISODES.length).toBe(7);
   });
 
-  test("the GeneratedEpisode shape carries the load-bearing fields", () => {
-    // a compile-time + runtime sanity check on the placeholder shape slice 3 fills
-    const ep: GeneratedEpisode = {
-      id: "000.through-a-song-darkly.2026-5-7",
-      arcNo: 0,
-      arcSlug: "through-a-song-darkly",
-      arcTitle: "Through a Song, Darkly",
-      episodeNo: 1,
-      isMain: true,
-      date: "2026-5-7",
-      title: "We're Hot Rod People Now",
-      episodeTitle: "We're Hot Rod People Now",
-      hosts: { A: { name: "Bram", persona: "warm" } },
-      synopsis: "…",
-      durationMs: 0,
-      mp3Url: "/audio/000.through-a-song-darkly.2026-5-7.mp3",
-      transcript: [{ speaker: "A", name: "Bram", text: "hi" }],
-    };
-    expect(ep.hosts.A.name).toBe("Bram");
+  test("episodes are sorted arc-then-date with the recap capstone last", () => {
+    expect(EPISODES[0].episodeNo).toBe(1);
+    expect(EPISODES.at(-1)?.episodeNo).toBe(0); // the mega recap
+    const keys = EPISODES.map((e) => e.dateSortKey);
+    expect([...keys]).toEqual([...keys].sort((a, b) => a - b));
+  });
+
+  test("catalog carries the load-bearing fields incl. a same-origin mp3Url", () => {
+    const e = EPISODES[0];
+    expect(e.arcTitle).toBe("Through a Song, Darkly");
+    expect(e.hosts.A.name).toBe("Bram");
+    expect(e.mp3Url).toBe(`/audio/${e.id}.mp3`); // no ?v= until audio is seeded
+  });
+
+  test("transcripts split into their own module, keyed by episode id, stripped", () => {
+    const e = EPISODES[0];
+    const lines = TRANSCRIPTS[e.id];
+    expect(lines.length).toBeGreaterThan(0);
+    expect(lines[0].name).toMatch(/Bram|Maeve|Pip/);
+    // the catalog episode shape no longer carries the transcript inline
+    expect((e as Record<string, unknown>).transcript).toBeUndefined();
   });
 });

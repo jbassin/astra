@@ -41,6 +41,11 @@ COPY tsconfig.base.json ./
 # it via @astra/config (config-single-source). Without it the config load throws.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
+# The committed episode catalog (the akasha-snapshot pattern): build-content reads
+# mouthpiece-backend's episodes-index.json (D1) → the generated modules. The 173 MB of
+# audio is NOT here — it's the runtime volume (D2, slice 6).
+COPY apps/mouthpiece-backend/snapshot /repo/apps/mouthpiece-backend/snapshot
+
 # Build the selected app (build-content runs in the vite buildStart hook).
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}

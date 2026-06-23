@@ -108,17 +108,18 @@ def _session_inputs() -> list[SessionInput]:
     out: list[SessionInput] = []
     for script_path in SCRIPTS:
         sid = script_path.name[: -len(".script.json")]
-        title = json.loads(script_path.read_text())["title"]
+        script = json.loads(script_path.read_text())
         digest = json.loads((GOLDEN / f"{sid}.digest.json").read_text())
         out.append(
             SessionInput(
                 id=sid,
-                title=title,
+                title=script["title"],
                 synopsis=digest["synopsis"],
                 duration_ms=0,
                 has_audio=False,
                 has_transcript=False,
                 audio_version="",
+                turns=tuple((t["speaker"], t["text"]) for t in script["turns"]),
             )
         )
     return out
@@ -167,6 +168,18 @@ def test_index_hosts_and_episode_title(index) -> None:
     assert not e.episode_title.lower().startswith("through a song, darkly")
 
 
+def test_index_inlines_a_stripped_named_transcript(index) -> None:
+    import re
+
+    e = index.episodes[0]
+    assert e.transcript, "transcript turns are inlined into the manifest (D4)"
+    for line in e.transcript:
+        # speaker labels resolve to host names; no leftover ElevenLabs [..] cues
+        assert line.speaker in {"A", "B", "C"}
+        assert line.name in {"Bram", "Maeve", "Pip"}
+        assert not re.search(r"\[[^\][]*\]", line.text)
+
+
 def test_index_dumps_camelcase_for_the_ts_consumer(index) -> None:
     row = json.loads(index.model_dump_json(by_alias=True))["episodes"][0]
     for key in (
@@ -180,9 +193,11 @@ def test_index_dumps_camelcase_for_the_ts_consumer(index) -> None:
         "hasAudio",
         "hasTranscript",
         "audioVersion",
+        "transcript",
     ):
         assert key in row
     assert row["hosts"]["A"]["name"] == "Bram"
+    assert row["transcript"][0]["name"] in {"Bram", "Maeve", "Pip"}
 
 
 # ── the impure shell over a session-dir tree ─────────────────────────────────
@@ -206,6 +221,7 @@ def test_discover_sessions_globs_dirs_and_skips_scriptless(tmp_path: Path) -> No
     for s in sessions:
         assert s.title
         assert s.synopsis
+        assert s.turns  # script turns read for the inlined transcript
         assert s.has_audio is False  # no mp3 seeded in this tree
         assert s.duration_ms == 0
         assert s.audio_version == ""

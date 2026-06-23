@@ -6,13 +6,14 @@ mouthpiece-backend's per-session graph writes a flat tree under
 (0012) needs one to build its grid + episode pages, so this asset globs the
 session dirs and writes a single sorted **``episodes-index.json``** manifest.
 
-This is the producer half of the producer/consumer split (spec 0012, D6): the
-**backend owns** what it is authoritative for — id-parse, the sort
-(``date_sort_key``, already here in :mod:`mega`), the per-arc episode numbering,
-the arc display title (from ontology-being ``campaign.name`` — Python is the
-ontology truth), the audio duration (``ffprobe`` over the seeded mp3s, D5) and
-the cache-bust token. The **frontend** ports only the display-shaping helpers it
-still needs (``stripAudioTags`` over turn text, ``stripCampaignPrefix``).
+This is the producer half of the producer/consumer split (spec 0012, D6 — revised:
+the **transcript is inlined** so the frontend is a pure single-artifact consumer).
+The **backend owns** everything: id-parse, the sort (``date_sort_key``, already here
+in :mod:`mega`), the per-arc episode numbering, the arc display title (from
+ontology-being ``campaign.name`` — Python is the ontology truth), the audio duration
+(``ffprobe`` over the seeded mp3s, D5), the cache-bust token, and the displayable
+transcript (``strip_audio_tags`` over each turn + host names from ontology-being).
+The frontend reads this one manifest and ports no helpers.
 
 Ported faithfully from faerrin ``pkg/face/src/lib/episodes.ts`` (``parseId``,
 ``dateKey``, ``stripCampaignPrefix``, ``stripAudioTags``, the arc/episode
@@ -139,6 +140,19 @@ class EpisodeHost(_CamelModel):
     persona: str
 
 
+class TranscriptLine(_CamelModel):
+    """One displayable transcript line — audio tags stripped, host name resolved.
+
+    Inlined into the manifest so mouthpiece-frontend is a pure single-artifact
+    consumer (it never re-reads script.json): the backend already owns the helpers
+    (`strip_audio_tags`, host names from ontology-being), so the frontend ports none.
+    """
+
+    speaker: str
+    name: str
+    text: str
+
+
 class EpisodeEntry(_CamelModel):
     """One episode's catalog row — everything the grid + episode page need."""
 
@@ -159,6 +173,8 @@ class EpisodeEntry(_CamelModel):
     has_transcript: bool
     #: Cache-bust token for `mp3Url` (`size36-mtime36`); "" when no mp3 on disk.
     audio_version: str
+    #: The roundtable transcript (speaker-attributed, audio-tags stripped) — D4.
+    transcript: list[TranscriptLine]
 
 
 class EpisodesIndex(_CamelModel):
@@ -181,6 +197,8 @@ class SessionInput:
     has_audio: bool
     has_transcript: bool
     audio_version: str
+    #: Raw script turns as (speaker, text) — build_index strips + resolves names.
+    turns: tuple[tuple[str, str], ...] = ()
 
 
 def build_index(
@@ -202,6 +220,14 @@ def build_index(
     for s in sessions:
         arc_no, slug, date = parse_id(s.id)
         arc_title = arc_titles.get(slug, slug)
+        transcript = [
+            TranscriptLine(
+                speaker=speaker,
+                name=hosts[speaker].name if speaker in hosts else speaker,
+                text=strip_audio_tags(text),
+            )
+            for speaker, text in s.turns
+        ]
         entries.append(
             EpisodeEntry(
                 id=s.id,
@@ -220,6 +246,7 @@ def build_index(
                 has_audio=s.has_audio,
                 has_transcript=s.has_transcript,
                 audio_version=s.audio_version,
+                transcript=transcript,
             )
         )
     entries.sort(key=lambda e: (e.arc_no, e.date_sort_key, is_recap(e.id)))
@@ -287,6 +314,24 @@ def discover_sessions(out_root: Path) -> list[SessionInput]:
                 has_audio=mp3.is_file(),
                 has_transcript=transcript.is_file(),
                 audio_version=_audio_version(mp3),
+                turns=_read_turns(script),
             )
         )
     return sessions
+
+
+def _read_turns(script: dict) -> tuple[tuple[str, str], ...]:
+    """`script["turns"]` → ((speaker, text), …); format-stable across the faerrin
+    wire fixtures and astra's model dump (both key on `turns`/`speaker`/`text`)."""
+    raw = script.get("turns")
+    if not isinstance(raw, list):
+        return ()
+    out: list[tuple[str, str]] = []
+    for t in raw:
+        if (
+            isinstance(t, dict)
+            and isinstance(t.get("speaker"), str)
+            and isinstance(t.get("text"), str)
+        ):
+            out.append((t["speaker"], t["text"]))
+    return tuple(out)
