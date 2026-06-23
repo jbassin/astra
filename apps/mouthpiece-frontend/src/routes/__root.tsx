@@ -1,5 +1,5 @@
 /// <reference types="vite/client" />
-import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Link, Outlet, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
@@ -42,7 +42,16 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
+        <header className="site-head">
+          <Link to="/" className="site-brand">
+            Mouthpiece
+          </Link>
+          <span className="site-tagline">the Færrin roundtable</span>
+        </header>
         <Outlet />
+        <footer className="site-foot">
+          <span>Mouthpiece — built from transcripts</span>
+        </footer>
         <Scripts />
       </body>
     </html>

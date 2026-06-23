@@ -1,39 +1,396 @@
-/* App-level styles (slice 2 skeleton). The full gothic re-skin of face's structure
- * — masthead/hero, EpisodeCard grid, the player transport, speaker-colored
- * transcript — lands in slice 4 (D3). gothic's theme.css (imported in __root)
- * provides the base tokens + reset; this file holds only mouthpiece-frontend's own
- * layout. @source so Tailwind v4 scans this app's class usage. */
-@import "tailwindcss";
-@source "./";
+/* mouthpiece-frontend's page shell + the podcast surface, re-skinned onto gothic
+ * (D3). gothic's theme.css (imported in __root) provides the tokens (--color-void/
+ * panel/ink/accent/…, --font-display/body/mono) + reset baseline; this file keeps
+ * face's *structure* (masthead / hero / episode grid / episode page / transcript)
+ * rebuilt in the gothic void idiom — the neon "Marathon HUD" chrome is dropped.
+ * Plain CSS layered after gothic (which already imports tailwindcss + @source). */
 
-body {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
   margin: 0;
-  font-family: var(--font-mono, "IBM Plex Mono", monospace);
+  padding: 0;
 }
 
-.masthead {
-  max-width: 48rem;
+html,
+body {
+  height: 100%;
+}
+html {
+  background-color: var(--color-void);
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  color: var(--color-ink);
+  font-family: var(--font-body), serif;
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Speaker palette (A=Bram, B=Maeve, C=Pip) — the 3 fixed podcast hosts (D4). Not
+ * ontology-being colors; mouthpiece hosts are the roundtable, not wiki players. */
+:root {
+  --speaker-A: var(--color-accent);
+  --speaker-B: var(--color-accent-amber);
+  --speaker-C: #d98a96;
+}
+
+/* ── shell: masthead + footer (persistent, from __root) ───────────────────── */
+.site-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  border-bottom: 1px solid var(--color-rule);
+}
+.site-brand {
+  font-family: var(--font-display), serif;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: var(--color-ink);
+}
+.site-brand:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.site-tagline {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-ink-dim);
+}
+.site-foot {
+  margin-top: auto;
+  padding: 2rem clamp(1rem, 4vw, 2.5rem);
+  border-top: 1px solid var(--color-rule);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--color-ink-faint);
+}
+
+.wrap {
+  flex: 1;
+  width: 100%;
+  max-width: 64rem;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2.5rem);
+}
+.wrap-narrow {
+  flex: 1;
+  width: 100%;
+  max-width: 44rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2.5rem);
 }
 
+/* ── hero ─────────────────────────────────────────────────────────────────── */
+.hero {
+  position: relative;
+  padding: clamp(2rem, 1rem + 4vw, 4rem) 0 clamp(1.5rem, 1rem + 2vw, 2.5rem);
+  overflow: hidden;
+}
+.hero-ghost {
+  position: absolute;
+  top: -0.4em;
+  right: -0.1em;
+  font-family: var(--font-display), serif;
+  font-size: clamp(8rem, 22vw, 16rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px var(--color-rule-bright);
+  pointer-events: none;
+  user-select: none;
+}
+.hero-kicker {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  color: var(--color-accent);
+}
+.hero-title {
+  font-family: var(--font-display), serif;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.02;
+  margin: 0.4rem 0 0.8rem;
+}
+.hero-lede {
+  max-width: 38rem;
+  color: var(--color-ink-dim);
+}
+.hero-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 1.4rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-ink-dim);
+}
+
+/* ── episode grid + card ──────────────────────────────────────────────────── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1.25rem;
+  background: var(--color-panel);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.5rem;
+  color: var(--color-ink);
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+.card:hover {
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-dim);
+}
+.card-num {
+  padding: 0.1rem 0.45rem;
+  background: var(--color-elevated);
+  border-radius: 0.25rem;
+  color: var(--color-accent);
+}
+.card-date {
+  margin-left: auto;
+}
+.card-title {
+  font-family: var(--font-display), serif;
+  font-size: 1.3rem;
+  line-height: 1.15;
+}
+.card-arc {
+  font-size: 0.85rem;
+  color: var(--color-ink-dim);
+}
+.card-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+.card-runtime {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  color: var(--color-ink-dim);
+}
+
+/* hosts (shared by card + episode head) */
+.hosts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.9rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  color: var(--color-ink-dim);
+}
+.host {
+  position: relative;
+  padding-left: 0.8rem;
+}
+.host::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: var(--color-ink-faint);
+}
+.host.A::before {
+  background: var(--speaker-A);
+}
+.host.B::before {
+  background: var(--speaker-B);
+}
+.host.C::before {
+  background: var(--speaker-C);
+}
+
+/* ── episode page ─────────────────────────────────────────────────────────── */
+.ep-back {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.5rem;
+}
+.ep-head {
+  border-bottom: 1px solid var(--color-rule);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+.ep-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.7rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-ink-dim);
+}
+.ep-num {
+  color: var(--color-accent);
+}
+.ep-kind {
+  padding: 0.1rem 0.45rem;
+  background: var(--color-elevated);
+  border-radius: 0.25rem;
+}
+.ep-title {
+  font-family: var(--font-display), serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  line-height: 1.05;
+  margin: 0.6rem 0 0.4rem;
+}
+.ep-arc {
+  color: var(--color-ink-dim);
+  margin-bottom: 0.9rem;
+}
+.ep-hosts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.74rem;
+  color: var(--color-ink-dim);
+}
+
+.ep-player {
+  margin-bottom: 1.75rem;
+}
+.ep-audio {
+  width: 100%;
+}
+
+.ep-section {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--color-accent);
+  margin-bottom: 0.5rem;
+}
+.ep-synopsis {
+  margin-bottom: 1.75rem;
+}
+.ep-lede {
+  color: var(--color-ink);
+}
+
+/* ── transcript ───────────────────────────────────────────────────────────── */
+.ep-transcript {
+  border-top: 1px solid var(--color-rule);
+  padding-top: 1.25rem;
+}
+.ep-summary {
+  cursor: pointer;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-ink);
+}
+.ep-count {
+  color: var(--color-ink-faint);
+  margin-left: 0.5rem;
+}
+.transcript-root {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+.transcript-line {
+  line-height: 1.55;
+}
+.transcript-name {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--color-ink-dim);
+}
+.transcript-line.A .transcript-name {
+  color: var(--speaker-A);
+}
+.transcript-line.B .transcript-name {
+  color: var(--speaker-B);
+}
+.transcript-line.C .transcript-name {
+  color: var(--speaker-C);
+}
+
+/* ── states + router boundaries ───────────────────────────────────────────── */
+.empty-state {
+  margin-top: 2rem;
+  color: var(--color-ink-dim);
+}
 .center {
+  flex: 1;
   display: grid;
   place-items: center;
   min-height: 60vh;
   text-align: center;
 }
-
 .route-boundary {
-  max-width: 40rem;
-  margin: 3rem auto;
-  padding: 1.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 60vh;
+  padding: 2rem;
+  text-align: center;
 }
-
+.route-boundary button,
+.popover-hint a {
+  color: var(--color-ink);
+  border: 1px solid currentcolor;
+  padding: 0.4rem 1rem;
+  background: transparent;
+  cursor: pointer;
+}
 .popover-hint {
   padding: 1.5rem;
-}
-
-.empty-state {
-  opacity: 0.7;
 }

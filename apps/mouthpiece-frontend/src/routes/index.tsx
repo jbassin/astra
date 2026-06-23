@@ -1,35 +1,45 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
+import { EpisodeCard } from "@/domain/components/EpisodeCard";
+import { formatRuntime, sumRuntimeMs } from "@/domain/lib/format";
 import { EPISODES, SITE } from "@/generated/episodes";
 
-// The episode grid (slice 3 — data wired from episodes-index.json). EPISODES is a
-// static, fully-typed generated module, so the component reads it directly (no
-// loader needed). The gothic masthead + hero (count + summed runtime) + the
-// EpisodeCard grid land in slice 4; for now a minimal linked list.
+// The episode grid (slice 4 — gothic re-skin of faerrin face's index). Masthead +
+// footer live in __root; this route owns the hero (count + summed runtime) + the
+// EpisodeCard grid. EPISODES is a static, fully-typed generated module.
 export const Route = createFileRoute("/")({
   component: HomeComponent,
 });
 
 function HomeComponent() {
+  const totalMs = sumRuntimeMs(EPISODES);
   return (
-    <main className="masthead">
-      <h1>{SITE.title}</h1>
-      <p>{SITE.description}</p>
+    <main className="wrap">
+      <section className="hero">
+        <span className="hero-ghost" aria-hidden="true">
+          {String(EPISODES.length).padStart(2, "0")}
+        </span>
+        <p className="hero-kicker">Transmission Log</p>
+        <h1 className="hero-title">{SITE.title}</h1>
+        <p className="hero-lede">
+          Three hosts talk through each Pathfinder&nbsp;2e session like a roundtable, grounded
+          against the campaign wiki and rendered to audio.
+        </p>
+        <div className="hero-stats">
+          <span>
+            {EPISODES.length} Episode{EPISODES.length === 1 ? "" : "s"}
+          </span>
+          {totalMs > 0 && <span>{formatRuntime(totalMs)} total</span>}
+        </div>
+      </section>
+
       {EPISODES.length === 0 ? (
         <p className="empty-state">No episodes yet.</p>
       ) : (
-        <ul>
+        <section className="grid" aria-label="Episodes">
           {EPISODES.map((e) => (
-            <li key={e.id}>
-              <Link to="/episode/$id" params={{ id: e.id }}>
-                {e.episodeNo > 0 ? `#${e.episodeNo} · ` : ""}
-                {e.episodeTitle}
-              </Link>{" "}
-              <small>
-                {e.arcTitle} — {e.date}
-              </small>
-            </li>
+            <EpisodeCard key={e.id} episode={e} />
           ))}
-        </ul>
+        </section>
       )}
     </main>
   );
