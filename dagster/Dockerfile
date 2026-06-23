@@ -10,6 +10,12 @@
 
 FROM python:3.12-slim
 
+# Pipeline runtime binaries the assets shell out to: `unzip` (scribe extracts the Craig
+# zip), `ffmpeg` + `ffprobe` (scribe per-speaker merge + mouthpiece assembly/duration).
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg unzip \
+    && rm -rf /var/lib/apt/lists/*
+
 # uv pinned to the host's line (matches uv.lock's format).
 COPY --from=ghcr.io/astral-sh/uv:0.11.19 /uv /bin/uv
 
