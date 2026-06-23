@@ -9,9 +9,13 @@ reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"
 sops_file := "deploy/sops/secrets.enc.yaml"
 
-# Source of the rendered podcast episodes for the mouthpiece-frontend audio seed
-# (faerrin's caster out/). Override with MOUTHPIECE_AUDIO_SRC for another host.
+# Source of the HISTORICAL podcast episodes for the mouthpiece-frontend audio seed
+# (faerrin's caster out/ — the pre-astra back-catalog). Override with MOUTHPIECE_AUDIO_SRC.
 mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/experiments/faerrin/pkg/caster/out")
+
+# astra's own episodes corpus (the live Dagster pipeline's renders + migrated catalog).
+# Mirrors config.kdl mouthpiece.episodes-path; override with MOUTHPIECE_EPISODES.
+mouthpiece_episodes := env_var_or_default("MOUTHPIECE_EPISODES", "/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes")
 
 # --- Docker substrate (deploy/) ---
 
@@ -147,18 +151,25 @@ linguist-commit-timer-install:
 mouthpiece-migrate-history:
     MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" uv run python -m astra_mouthpiece.migrate
 
-# Seed the mouthpiece-frontend audio volume from faerrin's rendered episodes (D2 — a
-# MANUAL step; the live pipeline→audio path is the deferred follow-up). Flattens
-# `<id>.episode.mp3` → `<id>.mp3` into the astra-mouthpiece-audio volume (created by
-# `up`), served same-origin at /audio/<id>.mp3. Re-run to refresh; idempotent.
+# Seed the mouthpiece-frontend audio volume (D2). Flattens `<id>.episode.mp3` →
+# `<id>.mp3` into the astra-mouthpiece-audio volume (created by `up`), served
+# same-origin at /audio/<id>.mp3. Two sources, in order: the faerrin historical
+# back-catalog (flat) first, then astra's own live pipeline renders (nested
+# `<date>/<id>.episode.mp3`) which OVERWRITE for any date both produced (live wins —
+# matches the catalog dedup). Re-run to refresh; idempotent.
 mouthpiece-seed:
     #!/usr/bin/env bash
     set -euo pipefail
     docker volume create astra-mouthpiece-audio >/dev/null
     docker run --rm \
       -v astra-mouthpiece-audio:/audio \
-      -v "{{mouthpiece_audio_src}}":/src:ro \
-      alpine sh -c 'set -e; n=0; for f in /src/*.episode.mp3; do b=$(basename "$f" .episode.mp3); cp "$f" "/audio/$b.mp3"; n=$((n+1)); done; echo "seeded $n episode(s) into astra-mouthpiece-audio"; ls -1 /audio'
+      -v "{{mouthpiece_audio_src}}":/hist:ro \
+      -v "{{mouthpiece_episodes}}":/live:ro \
+      alpine sh -c '
+        set -e
+        for f in /hist/*.episode.mp3; do [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$f" .episode.mp3).mp3"; done
+        find /live -name "*.episode.mp3" -exec sh -c "cp \"\$1\" \"/audio/\$(basename \"\$1\" .episode.mp3).mp3\"" _ {} \;
+        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n episode(s) into astra-mouthpiece-audio"; ls -1 /audio'
 
 # --- Host edge (shared reverse proxy) ---
 
