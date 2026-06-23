@@ -183,8 +183,10 @@ def test_short_cut_flac_is_skipped_even_when_span_is_long() -> None:
         out = args[-1]
         if out.endswith(".flac"):
             Path(out).write_bytes(b"")
-        # Source probes long (5s span passes the pre-filter) but the cut flac probes 5ms.
-        stdout = "0.005" if args[0] == "ffprobe" and out.endswith(".flac") else "5.0"
+        # Source probes long (5s span passes the pre-filter) but the degenerate cut flac
+        # probes "N/A" — ffprobe's real output for an empty/near-empty clip (the actual
+        # 2026-06-23 failure: float("N/A") crashed before this was made non-fatal).
+        stdout = "N/A" if args[0] == "ffprobe" and out.endswith(".flac") else "5.0"
         return SimpleNamespace(stdout=stdout, stderr="")
 
     tx = TrackTranscriber(

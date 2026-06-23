@@ -44,8 +44,14 @@ class TrackTranscriber:
     run: FfmpegRunner = field(default=audio.run_ffmpeg)
 
     def _duration(self, path: str) -> float:
+        # ffprobe prints "N/A" (not a number) for a degenerate/near-empty cut whose
+        # header carries no duration — treat any unparseable value as 0.0 so such a clip
+        # is skipped as too-short rather than crashing the session.
         out = self.run(audio.probe_duration_args(path)).stdout.strip()
-        return float(out) if out else 0.0
+        try:
+            return float(out)
+        except ValueError:
+            return 0.0
 
     def _voiced(self, path: str, duration: float) -> list[tuple[float, float]]:
         stderr = self.run(audio.silencedetect_args(path)).stderr
