@@ -90,8 +90,8 @@ weal-overlay {
 }
 
 orator {
-    guild-id ""
-    spike-channel-id ""
+    guild-id "753007205510545469"
+    spike-channel-id "1206675724090609714"
     // In-cluster Postgres (Compose service DNS); creds match deploy/ POSTGRES_*
     // defaults; prod overrides at the Phase-6 cutover. Library store (Decision F).
     database-url "postgres://orator:orator@orator-postgres:5432/orator"
