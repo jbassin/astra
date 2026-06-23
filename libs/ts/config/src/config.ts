@@ -31,7 +31,7 @@ const Scribe = z
     downstreamCmd: z.string().default(""),
     keepZip: z.boolean().default(false),
     skipDownstream: z.boolean().default(false),
-    model: z.string().default("large-v3"),
+    model: z.string().default("groq/whisper-large-v3"), // full litellm id (Groq Whisper)
     device: z.string().default("cpu"),
     computeType: z.string().default("int8"),
     groqApiKey: secret(),

@@ -45,6 +45,14 @@ def test_session_script_depends_on_digest() -> None:
     assert "session_digest" in upstream
 
 
+def test_llm_model_comes_from_config_not_the_client_constant() -> None:
+    """distill/script/mega use the configured `llm.default-model` (config-single-source),
+    so changing config.kdl actually moves the pipeline's model."""
+    from astra_ontology_config import load
+
+    assert mp._llm_model() == load().llm.default_model
+
+
 def test_external_api_assets_have_a_retry_policy() -> None:
     """distill/script/clips hit Anthropic/ElevenLabs → must retry transient outages;
     the local ffmpeg episode assembly needs no retry."""

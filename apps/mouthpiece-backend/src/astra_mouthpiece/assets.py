@@ -62,6 +62,14 @@ def _config():
     return load_config().mouthpiece
 
 
+def _llm_model() -> str:
+    """The configured LLM for distill/script/mega (config-single-source) — not the
+    LiteLLMClient constant default. linguist reads its judge models from config the same way."""
+    from astra_ontology_config import load as load_config
+
+    return load_config().llm.default_model
+
+
 def _out_root() -> Path:
     return Path(_config().episodes_path)
 
@@ -119,7 +127,9 @@ def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         raise FileNotFoundError(f"no linguist transcript for session {date}")
     session_id, arc, _ = linguist_io.parse_filename(tpath)
     turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
-    digest = distill_session(LiteLLMClient(), session_id, date, turns, arc_title=arc)
+    digest = distill_session(
+        LiteLLMClient(), session_id, date, turns, arc_title=arc, model=_llm_model()
+    )
     _atomic_write(_session_dir(date) / "digest.json", digest.model_dump_json(indent=2))
     return dg.MaterializeResult(metadata={"beats": len(digest.beats), "session_id": session_id})
 
@@ -138,7 +148,13 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     hosts = load_hosts()
     threads_block = format_threads(load_threads(_out_root() / "threads.json"))
     script = build_episode_script(
-        LiteLLMClient(), digest, pages, hosts, two_pass=True, threads_block=threads_block
+        LiteLLMClient(),
+        digest,
+        pages,
+        hosts,
+        two_pass=True,
+        threads_block=threads_block,
+        model=_llm_model(),
     )
     _atomic_write(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
     return dg.MaterializeResult(metadata={"turns": len(script.turns), "title": script.title})
@@ -201,7 +217,9 @@ def mega_digest(context: dg.AssetExecutionContext, config: MegaConfig) -> dg.Mat
 
     selected = select_members(members, config.start, config.end, config.arc)
     fused_id = mega_id(selected)
-    fused = fuse_digests(LiteLLMClient(), fused_id, selected, target_beats=config.target_beats)
+    fused = fuse_digests(
+        LiteLLMClient(), fused_id, selected, target_beats=config.target_beats, model=_llm_model()
+    )
     _atomic_write(_session_dir(fused_id) / "digest.json", fused.model_dump_json(indent=2))
     context.instance.add_dynamic_partitions(SESSIONS_NAME, [fused_id])
     return dg.MaterializeResult(

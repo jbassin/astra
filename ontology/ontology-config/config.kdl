@@ -40,7 +40,9 @@ scribe {
     downstream-cmd ""
     keep-zip #false
     skip-downstream #false
-    model "large-v3"
+    // Transcription model — full litellm id (Decision G uses Groq Whisper, not whisperx).
+    // scribe reads this and passes it to TrackTranscriber; this value is authoritative.
+    model "groq/whisper-large-v3"
     device "cpu"
     compute-type "int8"
     groq-api-key ref="sops:groq_api_key"

@@ -38,7 +38,7 @@ class ScribeConfig(_Base):
     downstream_cmd: str = ""
     keep_zip: bool = False
     skip_downstream: bool = False
-    model: str = "large-v3"
+    model: str = "groq/whisper-large-v3"  # full litellm id (Groq Whisper, Decision G)
     device: str = "cpu"
     compute_type: str = "int8"
     groq_api_key: SecretRef | None = None

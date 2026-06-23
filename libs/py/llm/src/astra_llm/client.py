@@ -27,6 +27,9 @@ from pydantic import BaseModel
 
 from .pricing import TokenCounts, cost_usd
 
+# Fallback when a caller passes no model (kept config-agnostic — this lib is a pure seam).
+# The PIPELINE is authoritative via config.kdl: scribe passes `scribe.model` and the
+# mouthpiece assets pass `llm.default-model`. Keep this in sync with config's default-model.
 DEFAULT_MODEL = "claude-opus-4-8"
 DEFAULT_MAX_TOKENS = 16_000
 _ANTHROPIC_PREFIX = "anthropic/"
