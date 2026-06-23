@@ -128,6 +128,17 @@ class AkashaFrontendConfig(_Base):
     public_origin: str = "https://akasha.iridi.cc"
 
 
+class MouthpieceFrontendConfig(_Base):
+    # The podcast read-surface (0012) — same SSR-frontend contract as Strider
+    # (Decision I). service_name + port are the single source for server.ts +
+    # vite's dev port; service_name also derives the browser RUM name. Distinct
+    # from MouthpieceConfig (the backend).
+    service_name: str = "astra.mouthpiece-frontend"
+    port: int = 10366
+    # Absolute base URL baked into the build-emitted /episodes.json deep-link map.
+    public_origin: str = "https://mouthpiece.iridi.cc"
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -144,4 +155,5 @@ class Config(_Base):
     orator_controller: OratorControllerConfig = Field(default_factory=OratorControllerConfig)
     strider: StriderConfig = Field(default_factory=StriderConfig)
     akasha_frontend: AkashaFrontendConfig = Field(default_factory=AkashaFrontendConfig)
+    mouthpiece_frontend: MouthpieceFrontendConfig = Field(default_factory=MouthpieceFrontendConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

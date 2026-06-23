@@ -139,6 +139,19 @@ akasha-frontend {
     public-origin "https://akasha.iridi.cc"
 }
 
+mouthpiece-frontend {
+    // The podcast read-surface (0012) — an SSR frontend on the strider/akasha
+    // template (Decision I). Same config-single-source contract: server.ts binds
+    // this port + names telemetry; no PORT env. Behind Caddy at mouthpiece.iridi.cc
+    // → host 10366. service-name derives the browser RUM name (`{service-name}-rum`).
+    // public-origin = the absolute base URL baked into the build-emitted
+    // /episodes.json deep-link map (the wiki/Discord contract). NB: distinct from
+    // `mouthpiece` (the backend) — this is the frontend.
+    service-name "astra.mouthpiece-frontend"
+    port 10366
+    public-origin "https://mouthpiece.iridi.cc"
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }

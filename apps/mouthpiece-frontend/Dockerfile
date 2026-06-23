@@ -1,14 +1,18 @@
-# Astra SSR frontend service (Decision I) — akasha-frontend, on the strider template.
-# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR). One knob:
-# `ARG APP` selects which apps/<APP> is built; everything else is workspace-generic
-# except the content-pipeline COPYs in the runtime stage (noted inline).
+# Astra SSR frontend service (Decision I) — mouthpiece-frontend, on the strider/akasha
+# template. `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR).
+# One knob: `ARG APP` selects which apps/<APP> is built; everything else is
+# workspace-generic except the content-pipeline COPYs in the build stage (noted inline).
 #
 # Build context is the REPO ROOT (a frontend is a bun workspace member depending on
 # @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must be
 # present for `bun install` to resolve workspace links. Build from deploy/ via compose.
 # Port + service name come from config.kdl (config-single-source) — no PORT env;
 # compose maps the published host port.
-ARG APP=akasha-frontend
+#
+# NB (slice 6): the real episode inputs — the backend `episodes-index.json` + per-session
+# `script.json` (D1) — get COPYed into the build stage here, and the 173 MB of seeded
+# audio is mounted as a runtime VOLUME (D2), never baked into the image layer.
+ARG APP=mouthpiece-frontend
 
 FROM oven/bun:1.3.14 AS build
 ARG APP
@@ -37,17 +41,6 @@ COPY tsconfig.base.json ./
 # it via @astra/config (config-single-source). Without it the config load throws.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-# akasha-frontend's build-time content sources read the akasha-backend snapshot/corpus
-# (slug.ts/site.ts lift + vellum render) + linguist transcripts (D4) — COPY them so
-# build-content (run in the vite buildStart hook) can read them. ontology-being carries
-# the campaign roster (matchCampaign) + speaker colors (loadBeing, slice 7); without it
-# the transcript build throws. (The Pagefind index step in `bun run build` uses the
-# pagefind binary that `bun install` already fetched into node_modules.)
-COPY apps/akasha-backend/snapshot /repo/apps/akasha-backend/snapshot
-COPY apps/akasha-backend/content /repo/apps/akasha-backend/content
-COPY apps/linguist/data /repo/apps/linguist/data
-COPY ontology/ontology-being /repo/ontology/ontology-being
-
 # Build the selected app (build-content runs in the vite buildStart hook).
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
@@ -66,8 +59,8 @@ COPY --from=build /repo/apps/${APP}/node_modules ./node_modules
 COPY --from=build /repo/apps/${APP}/dist ./dist
 COPY --from=build /repo/apps/${APP}/server.ts ./server.ts
 COPY --from=build /repo/apps/${APP}/package.json ./package.json
-# Content-pipeline-specific: the generated TS modules the runtime imports (the app
-# imports @/generated/*, never the filesystem — so the snapshot/corpus are build-only).
+# The generated TS modules the runtime imports (the app imports @/generated/*, never
+# the filesystem — so the episode manifest is build-only).
 COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
 # config.kdl is the single source for serviceName/port + the OTLP endpoint (read via
 # @astra/config); it's located by walking up to <repo>/ontology/ontology-config.

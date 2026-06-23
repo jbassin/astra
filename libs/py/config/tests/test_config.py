@@ -37,6 +37,9 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.akasha_frontend.service_name == "astra.akasha-frontend"
     assert cfg.akasha_frontend.port == 10365
     assert cfg.akasha_frontend.public_origin == "https://akasha.iridi.cc"
+    assert cfg.mouthpiece_frontend.service_name == "astra.mouthpiece-frontend"
+    assert cfg.mouthpiece_frontend.port == 10366
+    assert cfg.mouthpiece_frontend.public_origin == "https://mouthpiece.iridi.cc"
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:

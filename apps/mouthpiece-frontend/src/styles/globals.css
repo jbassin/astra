@@ -1,0 +1,39 @@
+/* App-level styles (slice 2 skeleton). The full gothic re-skin of face's structure
+ * — masthead/hero, EpisodeCard grid, the player transport, speaker-colored
+ * transcript — lands in slice 4 (D3). gothic's theme.css (imported in __root)
+ * provides the base tokens + reset; this file holds only mouthpiece-frontend's own
+ * layout. @source so Tailwind v4 scans this app's class usage. */
+@import "tailwindcss";
+@source "./";
+
+body {
+  margin: 0;
+  font-family: var(--font-mono, "IBM Plex Mono", monospace);
+}
+
+.masthead {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.center {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.route-boundary {
+  max-width: 40rem;
+  margin: 3rem auto;
+  padding: 1.5rem;
+}
+
+.popover-hint {
+  padding: 1.5rem;
+}
+
+.empty-state {
+  opacity: 0.7;
+}

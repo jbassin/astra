@@ -8,7 +8,7 @@ members = ["apps/*", "libs/py/*", "ontology/*"]
 # without a pyproject.toml, so exclude the bun-only frontends explicitly. Add each
 # new TS app here (0011-0013 frontends follow strider; weal-bot/weal-overlay are
 # bun services + SPA per 0009).
-exclude = ["apps/strider", "apps/akasha-frontend", "apps/weal-bot", "apps/weal-overlay", "apps/orator-backend", "apps/orator-controller"]
+exclude = ["apps/strider", "apps/akasha-frontend", "apps/mouthpiece-frontend", "apps/weal-bot", "apps/weal-overlay", "apps/orator-backend", "apps/orator-controller"]
 
 [tool.uv]
 # Workspace-wide dev tooling — the Astral Python stack.

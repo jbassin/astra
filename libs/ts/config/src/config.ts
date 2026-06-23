@@ -133,6 +133,19 @@ const AkashaFrontend = z
   })
   .strict();
 
+// The podcast read-surface (0012) — same SSR-frontend contract as AkashaFrontend
+// (Decision I). serviceName + port are the single source for server.ts + vite's dev
+// port; serviceName derives the browser RUM name. Distinct from `mouthpiece` (the
+// backend). (config-single-source)
+const MouthpieceFrontend = z
+  .object({
+    serviceName: z.string().default("astra.mouthpiece-frontend"),
+    port: z.number().default(10366),
+    // Absolute base URL baked into the build-emitted /episodes.json deep-link map.
+    publicOrigin: z.string().default("https://mouthpiece.iridi.cc"),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -160,6 +173,7 @@ export const ConfigSchema = z
     oratorController: OratorController.default(() => OratorController.parse({})),
     strider: Strider.default(() => Strider.parse({})),
     akashaFrontend: AkashaFrontend.default(() => AkashaFrontend.parse({})),
+    mouthpieceFrontend: MouthpieceFrontend.default(() => MouthpieceFrontend.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();
