@@ -34,7 +34,9 @@
       "Icon": "imgs/actions/slot/icon",
       "Tooltip": "An orator navigation/track key. Place these across the deck; orator paints each one based on where you are (collections → tags → tracks).",
       "PropertyInspectorPath": "ui/orator.html",
-      "Controllers": ["Keypad"],
+      "Controllers": [
+        "Keypad"
+      ],
       "VisibleInActionsList": true,
       "States": [
         {
