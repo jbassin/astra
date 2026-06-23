@@ -201,6 +201,19 @@ class SessionInput:
     turns: tuple[tuple[str, str], ...] = ()
 
 
+def _dedup_by_id(sessions: list[SessionInput]) -> list[SessionInput]:
+    """One entry per episode id, keeping the most complete (has audio, then more
+    turns). The migrated back-catalog and a live pipeline render can both surface a
+    given id (a historical seed dir + a date-keyed live dir) — live, which has the
+    mp3 on disk + the fuller transcript, wins. Deterministic regardless of order."""
+    best: dict[str, SessionInput] = {}
+    for s in sessions:
+        cur = best.get(s.id)
+        if cur is None or (s.has_audio, len(s.turns)) > (cur.has_audio, len(cur.turns)):
+            best[s.id] = s
+    return list(best.values())
+
+
 def build_index(
     sessions: list[SessionInput],
     *,
@@ -213,8 +226,10 @@ def build_index(
     `arc_titles`/`arc_main` map an arc slug → its ontology-being `campaign.name`
     / `campaign.main`; `hosts` is the A/B/C persona block (same for every episode,
     carried from ontology-being). Sort: arc asc, then date asc, then the recap
-    capstone last within a tie.
+    capstone last within a tie. Duplicate ids (historical seed ∪ live) collapse to
+    the most complete entry first.
     """
+    sessions = _dedup_by_id(sessions)
     numbers = build_episode_numbers([s.id for s in sessions])
     entries: list[EpisodeEntry] = []
     for s in sessions:

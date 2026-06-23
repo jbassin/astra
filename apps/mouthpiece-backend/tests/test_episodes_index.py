@@ -227,6 +227,30 @@ def test_discover_sessions_globs_dirs_and_skips_scriptless(tmp_path: Path) -> No
         assert s.audio_version == ""
 
 
+def test_build_index_dedups_same_id_keeping_most_complete() -> None:
+    # the migrated back-catalog (metadata only) and a live render can both surface an
+    # id; the live one (audio on disk + fuller transcript) must win, exactly once.
+    from astra_mouthpiece.assets import _arc_maps, _episode_hosts
+
+    eid = "000.through-a-song-darkly.2026-5-7"
+    historical = SessionInput(
+        id=eid, title="t", synopsis="s", duration_ms=0, has_audio=False,
+        has_transcript=False, audio_version="", turns=(("A", "hi"),),
+    )  # fmt: skip
+    live = SessionInput(
+        id=eid, title="t", synopsis="s", duration_ms=1000, has_audio=True,
+        has_transcript=True, audio_version="ab-cd", turns=(("A", "hi"), ("B", "yo")),
+    )  # fmt: skip
+    arc_titles, arc_main = _arc_maps()
+    index = build_index(
+        [historical, live], arc_titles=arc_titles, arc_main=arc_main, hosts=_episode_hosts()
+    )
+    assert len(index.episodes) == 1
+    e = index.episodes[0]
+    assert e.has_audio is True  # the live render won
+    assert len(e.transcript) == 2
+
+
 def test_discover_sessions_keys_on_script_id_not_dir_name(tmp_path: Path) -> None:
     # The LIVE pipeline keys its dir by DATE but names audio/transcript by episode id
     # (assemble_episode) and writes the id into script.json as snake_case `session_id`.

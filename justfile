@@ -139,6 +139,14 @@ linguist-commit-timer-install:
     systemctl --user enable --now linguist-commit.timer
     echo "installed. timer schedule:"; systemctl --user list-timers linguist-commit.timer --no-pager
 
+# Migrate faerrin's historical episode CATALOG (script + digest) into astra's
+# episodes corpus (step 2 — catalog union), so episodes_index + the snapshot include
+# the back-catalog alongside live pipeline renders. Idempotent; live renders win for
+# any date both produced; audio is separate (`mouthpiece-seed`). Source override:
+# MOUTHPIECE_AUDIO_SRC (same store the audio seed uses → catalog + audio stay aligned).
+mouthpiece-migrate-history:
+    MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" uv run python -m astra_mouthpiece.migrate
+
 # Seed the mouthpiece-frontend audio volume from faerrin's rendered episodes (D2 — a
 # MANUAL step; the live pipeline→audio path is the deferred follow-up). Flattens
 # `<id>.episode.mp3` → `<id>.mp3` into the astra-mouthpiece-audio volume (created by
