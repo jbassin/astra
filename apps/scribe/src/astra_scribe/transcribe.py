@@ -31,7 +31,10 @@ class TrackTranscriber:
 
     api_key: str | None = None
     model: str = GROQ_WHISPER
-    max_chunk_sec: float = 1200.0
+    # 8-min chunks: with chunk_args' 16 kHz mono s16 flac (32 KB/s, lossless = raw ceiling),
+    # any chunk is ≤ ~14.6 MiB — safely under Groq's ~25 MB direct-upload cap (1200s/s32 was
+    # 413-ing "Request Entity Too Large"). Smaller chunks just mean a few more cheap calls.
+    max_chunk_sec: float = 480.0
     # Groq rejects audio shorter than 0.01s ("Audio file is too short"); a sub-100ms
     # voiced blip (a mic pop, a breath) carries no transcribable speech anyway. Drop
     # such chunks so one near-silent Craig track can't fail the whole session.

@@ -50,7 +50,13 @@ def silencedetect_args(
 
 
 def chunk_args(input_path: str, start: float, end: float, out_path: str) -> list[str]:
-    """ffmpeg argv to cut [start,end] → 16 kHz mono flac (a Groq-accepted chunk, N3)."""
+    """ffmpeg argv to cut [start,end] → 16 kHz mono **16-bit** flac (a Groq-accepted chunk, N3).
+
+    `-sample_fmt s16` is load-bearing for the Groq 25 MB direct-upload cap: flac is lossless
+    so it never exceeds raw PCM, and 16 kHz mono s16 is 32 KB/s — without it ffmpeg can emit
+    s32 (64 KB/s), doubling the file and 413-ing on long chunks. 16-bit is ASR-standard (no
+    quality loss at 16 kHz). With `max_chunk_sec` this bounds every chunk's size.
+    """
     return [
         *_BASE,
         "-ss",
@@ -63,6 +69,8 @@ def chunk_args(input_path: str, start: float, end: float, out_path: str) -> list
         "1",
         "-ar",
         "16000",
+        "-sample_fmt",
+        "s16",
         "-c:a",
         "flac",
         "-y",

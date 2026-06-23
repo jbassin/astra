@@ -42,7 +42,8 @@ def voiced_spans(
 
 
 def chunk_spans(spans: list[Span], max_sec: float = 1200.0) -> list[Span]:
-    """Split voiced spans so no chunk exceeds `max_sec` (default 20 min, ~20 MB flac)."""
+    """Split voiced spans so no chunk exceeds `max_sec`. Callers pass a budget sized to
+    Groq's upload cap (TrackTranscriber uses 8 min → ≤ ~14.6 MiB at 16 kHz mono s16 flac)."""
     out: list[Span] = []
     for start, end in spans:
         cursor = start

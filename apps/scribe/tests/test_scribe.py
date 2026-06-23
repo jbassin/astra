@@ -246,7 +246,10 @@ def test_groq_too_short_rejection_is_caught_not_fatal() -> None:
 def test_ffmpeg_arg_builders_are_pure() -> None:
     assert merge_args(["a.aac", "b.aac"], "out.mp3")[-3:] == ["mp3", "-y", "out.mp3"]
     assert "amix=inputs=2:duration=longest:normalize=0" in merge_args(["a", "b"], "o")
-    assert "16000" in chunk_args("in.aac", 1.0, 3.0, "o.flac")
+    cut = chunk_args("in.aac", 1.0, 3.0, "o.flac")
+    assert "16000" in cut
+    # s16 keeps the flac at 32 KB/s (raw ceiling) so chunks stay under Groq's upload cap.
+    assert cut[cut.index("-sample_fmt") + 1] == "s16"
     assert "silencedetect=noise=-30dB:d=0.5" in silencedetect_args("in.aac")
 
 
