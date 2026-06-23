@@ -281,7 +281,7 @@ is green, so the slowest lane sets the date — protect the akasha lane.
 | 0010 | orator-backend + orator-controller | **drafted** |
 | 0011 | akasha-frontend | **drafted** |
 | 0012 | mouthpiece-frontend | **drafted** |
-| 0013 | vellum-frontend | **drafted** |
+| 0013 | vellum-frontend | **spec** (scope+spec gates done 2026-06-23) |
 | 0014 | strider | **drafted** |
 | 0015 | Phase 6 — cutover | **drafted** |
 
