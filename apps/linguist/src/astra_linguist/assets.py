@@ -129,10 +129,16 @@ def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeRe
     )
 
 
-# NB: STOPPED by default (no default_status). Enabling it auto-back-fills every
-# existing scribe output as "new" on first run — the linguist→mouthpiece chain for a
-# new session is triggered deliberately, not by a sensor that sweeps history.
-@dg.sensor(target=[session_transcripts, correction_candidates], minimum_interval_seconds=30)
+# Safe to run by default: the scribe `saved/` dir it scans is seed-free by construction —
+# the migrated-at-rest history was loaded straight into linguist's transcript dir, never
+# through scribe, so `saved/` only ever holds craig-produced sessions. (A session appears
+# here only once scribe writes its `script.json`, so a mid-transcription session won't fire
+# prematurely.) The downstream linguist→mouthpiece sweep is what needed adoption, not this.
+@dg.sensor(
+    target=[session_transcripts, correction_candidates],
+    minimum_interval_seconds=30,
+    default_status=dg.DefaultSensorStatus.RUNNING,
+)
 def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a linguist partition + run request for each scribe session
     (`{date}/script.json` under `ingest_saved_dir`) not yet processed — the scribe→linguist

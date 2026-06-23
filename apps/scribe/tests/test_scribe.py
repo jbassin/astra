@@ -130,6 +130,44 @@ def test_reoffset_maps_segments_to_session_time() -> None:
     assert all(s["text"] == "hi" for s in segs)
 
 
+def test_subminimum_chunks_are_skipped_not_sent_to_groq() -> None:
+    """A sub-100ms voiced sliver is dropped, so Groq never sees a too-short clip."""
+    calls: list[str] = []
+
+    def fake_run(args: list[str]) -> Any:
+        out = args[-1]
+        if out.endswith(".flac"):
+            Path(out).write_bytes(b"")
+
+        class R:
+            stdout = "10.0"  # probe_duration
+            # voiced runs: (0,5) [transcribed] and (9.95,10.0) = 0.05s [too short]
+            stderr = "silence_start: 5\nsilence_end: 9.95\n"
+
+        return R()
+
+    def fake_transcribe(**_kwargs: Any) -> Any:
+        calls.append(str(_kwargs.get("file")))
+
+        class Resp:
+            segments = [{"start": 0.0, "end": 1.0, "text": "hi"}]
+
+        return Resp()
+
+    tx = TrackTranscriber(
+        transcription_fn=fake_transcribe,
+        run=fake_run,
+        max_chunk_sec=20.0,
+        pre_roll=0.0,
+        post_roll=0.0,
+        merge_gap=0.0,
+    )
+    segs = tx.transcribe_track("x.aac", "/tmp/scribe-test-work-short")
+    # Only the (0,5) chunk reaches Groq; the 0.05s sliver is dropped before the call.
+    assert len(calls) == 1
+    assert [s["start"] for s in segs] == [0.0]
+
+
 # ── ffmpeg arg-builders (gate F) ───────────────────────────────────────────
 def test_ffmpeg_arg_builders_are_pure() -> None:
     assert merge_args(["a.aac", "b.aac"], "out.mp3")[-3:] == ["mp3", "-y", "out.mp3"]

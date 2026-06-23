@@ -32,6 +32,10 @@ class TrackTranscriber:
     api_key: str | None = None
     model: str = GROQ_WHISPER
     max_chunk_sec: float = 1200.0
+    # Groq rejects audio shorter than 0.01s ("Audio file is too short"); a sub-100ms
+    # voiced blip (a mic pop, a breath) carries no transcribable speech anyway. Drop
+    # such chunks so one near-silent Craig track can't fail the whole session.
+    min_chunk_sec: float = 0.1
     # VAD tuning (Risk 3 — finalize against a real session at the live run).
     pre_roll: float = 0.2
     post_roll: float = 0.2
@@ -59,7 +63,11 @@ class TrackTranscriber:
         work = Path(work_dir)
         work.mkdir(parents=True, exist_ok=True)
         duration = self._duration(path)
-        chunks = chunk_spans(self._voiced(path, duration), self.max_chunk_sec)
+        chunks = [
+            (start, end)
+            for start, end in chunk_spans(self._voiced(path, duration), self.max_chunk_sec)
+            if end - start >= self.min_chunk_sec
+        ]
 
         segments: list[dict[str, Any]] = []
         for i, (start, end) in enumerate(chunks):

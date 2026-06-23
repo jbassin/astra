@@ -238,19 +238,32 @@ def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 # ── sensor: linguist → mouthpiece ────────────────────────────────────────────
 
 
-# NB: STOPPED by default (no default_status). Enabling it back-fills every existing
-# linguist transcript (incl. the 42 committed historical) as "new" → 42 PAID mouthpiece
-# runs (distill + two-pass script + ElevenLabs TTS). The historical is migrated-at-rest;
-# mouthpiece for a new session is triggered deliberately, not by a history-sweeping sensor.
+# Safe to run by default because of the one-time backlog ADOPTION below: the input dir
+# holds the migrated-at-rest history (incl. the 42 committed historical transcripts), and
+# without adoption, enabling this sensor would treat all of them as "new" → 42 PAID
+# mouthpiece runs (distill + two-pass script + ElevenLabs TTS). The incident on 2026-06-23
+# was exactly that. Adoption registers the existing transcripts as done-at-rest partitions
+# without running them, so only sessions that appear AFTER enable trigger the paid chain.
 @dg.sensor(
     target=[session_digest, session_script, session_audio_clips, session_episode],
     minimum_interval_seconds=30,
+    default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
-    """Register a partition + run for each new linguist canonical transcript."""
+    """Register a partition + run for each new linguist canonical transcript.
+
+    First eval after enable ADOPTS the migrated-at-rest backlog: register every existing
+    transcript as a partition but emit NO run requests, then stamp the cursor. Thereafter
+    only transcripts that appear after adoption are "new" and trigger the (paid) chain — so
+    re-enabling the sensor never reprocesses seed data. Reset the cursor (Dagit / the CLI)
+    to re-adopt; deliberately reprocessing history is a manual backfill, not a sensor sweep.
+    """
     existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
     found = linguist_io.new_sessions(existing)
     adds = [mouthpiece_sessions.build_add_request(list(found))] if found else []
+    if context.cursor is None:
+        # One-time adoption: register the backlog as known partitions, no runs.
+        return dg.SensorResult(dynamic_partitions_requests=adds, cursor="adopted")
     return dg.SensorResult(
         run_requests=[dg.RunRequest(partition_key=key) for key in found],
         dynamic_partitions_requests=adds,
