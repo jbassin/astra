@@ -17,6 +17,10 @@ mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/e
 # Mirrors config.kdl mouthpiece.episodes-path; override with MOUTHPIECE_EPISODES.
 mouthpiece_episodes := env_var_or_default("MOUTHPIECE_EPISODES", "/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes")
 
+# uv binary (absolute — the linguist-commit systemd user timer has a minimal PATH without
+# uv, same reason the service hardcodes just's path). Override with UV_BIN on another host.
+uv_bin := env_var_or_default("UV_BIN", "/home/jbassin/.local/bin/uv")
+
 # --- Docker substrate (deploy/) ---
 
 # Bring the stack up (Dagster + SigNoz + the services). --build so local code changes
@@ -117,9 +121,7 @@ linguist-commit:
     # If this run committed akasha content (it reads apps/linguist/{transcripts,data} at build),
     # rebuild + redeploy the wiki so the new sessions actually appear. akasha bakes content at
     # build time and needs no secrets, so a plain targeted compose up suffices; a failed build
-    # leaves the running container untouched (no downtime). NOTE: mouthpiece-frontend is NOT
-    # handled here yet — its live-pipeline catalog/audio integration is still deferred (the
-    # pipeline writes date-keyed episode dirs the index builder can't discover).
+    # leaves the running container untouched (no downtime).
     if printf '%s\n' "$changed" | grep -qE '^apps/linguist/(transcripts|data)/'; then
       echo "linguist-commit: akasha content changed — rebuilding + redeploying akasha-frontend"
       if (cd deploy && docker compose up -d --build akasha-frontend); then
@@ -127,6 +129,30 @@ linguist-commit:
       else
         echo "linguist-commit: akasha-frontend redeploy FAILED (rerun: just up, or compose up --build akasha-frontend)" >&2
       fi
+    fi
+    # Mouthpiece phase: unlike akasha (build-time content read), mouthpiece-frontend reads a
+    # COMMITTED snapshot, so regenerate it from the live corpus (the pipeline writes new
+    # episodes under episodes_path). Idempotent + deterministic → a no-op until a new episode
+    # lands. A separate commit (own message); on change, seed the audio volume + redeploy the
+    # frontend. Non-fatal: a publish/redeploy hiccup must not fail the linguist push above.
+    if {{just_executable()}} mouthpiece-publish; then
+      git add apps/mouthpiece-backend/snapshot/episodes-index.json
+      if ! git diff --cached --quiet; then
+        git commit --no-verify -q \
+          -m "chore(mouthpiece): auto-publish episode catalog snapshot" \
+          -m "Regenerated from the live corpus by the linguist-commit timer."
+        if git push -q origin main; then echo "linguist-commit: mouthpiece snapshot pushed"; else
+          echo "linguist-commit: mouthpiece snapshot push FAILED (will retry next run)" >&2; fi
+        echo "linguist-commit: mouthpiece snapshot changed — seeding audio + redeploying frontend"
+        {{just_executable()}} mouthpiece-seed || echo "linguist-commit: mouthpiece-seed FAILED (rerun: just mouthpiece-seed)" >&2
+        if (cd deploy && docker compose up -d --build mouthpiece-frontend); then
+          echo "linguist-commit: mouthpiece-frontend redeployed"
+        else
+          echo "linguist-commit: mouthpiece-frontend redeploy FAILED (rerun: compose up --build mouthpiece-frontend)" >&2
+        fi
+      fi
+    else
+      echo "linguist-commit: mouthpiece-publish FAILED (snapshot not refreshed this run)" >&2
     fi
 
 # Install + start the systemd USER timer that runs `linguist-commit` every 15 min. One-time
@@ -149,7 +175,21 @@ linguist-commit-timer-install:
 # any date both produced; audio is separate (`mouthpiece-seed`). Source override:
 # MOUTHPIECE_AUDIO_SRC (same store the audio seed uses → catalog + audio stay aligned).
 mouthpiece-migrate-history:
-    MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" uv run python -m astra_mouthpiece.migrate
+    MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" {{uv_bin}} run python -m astra_mouthpiece.migrate
+
+# Regenerate the committed mouthpiece snapshot (apps/mouthpiece-backend/snapshot/
+# episodes-index.json) from the live corpus — the frontend's single committed build
+# input (step 4/5). Ensures the historical back-catalog is present (idempotent migrate),
+# then rebuilds the catalog over the full corpus (migrated ∪ live renders). Deterministic,
+# so a no-op when nothing new landed. Run on the HOST (needs uv + ffprobe + the repo; the
+# dagster container can't reach the committed snapshot/ dir). Pairs with `mouthpiece-seed`
+# (audio) + a frontend redeploy — all three are wired into the linguist-commit timer.
+mouthpiece-publish:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    MOUTHPIECE_AUDIO_SRC="{{mouthpiece_audio_src}}" {{uv_bin}} run python -m astra_mouthpiece.migrate
+    {{uv_bin}} run python -m astra_mouthpiece.publish
 
 # Seed the mouthpiece-frontend audio volume (D2). Flattens `<id>.episode.mp3` →
 # `<id>.mp3` into the astra-mouthpiece-audio volume (created by `up`), served
