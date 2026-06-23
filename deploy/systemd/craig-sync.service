@@ -1,0 +1,11 @@
+[Unit]
+Description=Sync new Craig recordings (Drive fuse mount -> scribe incoming) for the astra pipeline
+Documentation=https://github.com/jbassin/astra
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/experiments/astra
+# `just` lives in the user's cargo bin; the recipe copies new *.zip from the Drive
+# fuse mount into apps/scribe/incoming, where the containerised craig_drop_sensor sees
+# them (Docker can't bind-mount the FUSE mount, so the host bridges it).
+ExecStart=/home/jbassin/.cargo/bin/just craig-sync

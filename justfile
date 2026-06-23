@@ -43,6 +43,45 @@ down:
 down-volumes:
     cd deploy && docker compose down -v
 
+# Bridge new Craig recordings from the Drive fuse mount → scribe's LOCAL incoming dir.
+# Docker can't bind-mount the google-drive-ocamlfuse mount (not in the daemon's
+# namespace), so the host copies new zips down; the craig_drop_sensor (watching the
+# local dir) then runs the pipeline. Idempotent: skips zips already synced, copies via
+# a `.partial` + atomic rename so the sensor never sees a half-downloaded file. Run on
+# a 5-min systemd user timer (`just craig-timer-install`).
+craig_drop_dir := env_var_or_default("CRAIG_DROP_DIR", "/ruby/data/home/drive/Craig")
+craig-sync:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    src="{{craig_drop_dir}}"
+    dest="/ruby/data/experiments/astra/apps/scribe/incoming"
+    mkdir -p "$dest"
+    shopt -s nullglob
+    synced=0
+    for f in "$src"/*.zip; do
+      base=$(basename "$f")
+      final="$dest/$base"
+      [ -e "$final" ] && continue            # already synced — skip (no re-download)
+      cp "$f" "$final.partial" && mv "$final.partial" "$final"  # atomic: sensor sees only complete .zip
+      echo "craig-sync: synced $base"
+      synced=$((synced + 1))
+    done
+    echo "craig-sync: $synced new, $(ls "$dest"/*.zip 2>/dev/null | wc -l) total in incoming"
+
+# Install + start the systemd USER timer that runs `craig-sync` every 5 min. One-time
+# setup; copies the committed units (deploy/systemd/) → ~/.config/systemd/user/ and
+# enables the timer. Needs lingering (`loginctl enable-linger $USER`) to run without an
+# active login — already on for this deploy.
+craig-timer-install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    unit_dir="$HOME/.config/systemd/user"
+    mkdir -p "$unit_dir"
+    cp deploy/systemd/craig-sync.service deploy/systemd/craig-sync.timer "$unit_dir/"
+    systemctl --user daemon-reload
+    systemctl --user enable --now craig-sync.timer
+    echo "installed. timer schedule:"; systemctl --user list-timers craig-sync.timer --no-pager
+
 # Seed the mouthpiece-frontend audio volume from faerrin's rendered episodes (D2 — a
 # MANUAL step; the live pipeline→audio path is the deferred follow-up). Flattens
 # `<id>.episode.mp3` → `<id>.mp3` into the astra-mouthpiece-audio volume (created by

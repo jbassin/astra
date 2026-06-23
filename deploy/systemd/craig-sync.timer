@@ -1,0 +1,13 @@
+[Unit]
+Description=Run craig-sync every 5 minutes (bridge new Craig recordings into the pipeline)
+
+[Timer]
+# Wall-clock every 5 minutes (:00, :05, …) — always has a valid next trigger no matter
+# when the timer is enabled (unlike OnUnitActiveSec, which needs a prior run). Persistent
+# catches up a missed run if the host was off. The craig_drop_sensor dedupes by session
+# date, so re-syncs are harmless.
+OnCalendar=*:0/5
+Persistent=true
+
+[Install]
+WantedBy=timers.target
