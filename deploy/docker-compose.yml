@@ -199,6 +199,34 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- mouthpiece-frontend: the podcast read-surface (0012) — SSR Compose service
+  # (Decision I), the third 0011-0013 frontend on the strider/akasha template. The
+  # episode catalog (snapshot) is baked into the image; the 173 MB of episode audio is
+  # a runtime VOLUME (mouthpiece-audio), served same-origin at /audio/ — never in the
+  # image layer (D2). Seed the volume with `just mouthpiece-seed`. ---
+  mouthpiece-frontend:
+    build:
+      context: ..
+      dockerfile: apps/mouthpiece-frontend/Dockerfile
+      args:
+        APP: mouthpiece-frontend # the one knob in the templated frontend Dockerfile
+    image: astra-mouthpiece-frontend:local
+    container_name: astra-mouthpiece-frontend
+    command: ["bun", "run", "start"]
+    # No PORT env — serviceName/port come from config.kdl (config-single-source);
+    # compose only maps the published host port below.
+    ports:
+      - "10366:10366" # mouthpiece-frontend SSR (astra range) — also reachable directly
+    volumes:
+      - mouthpiece-audio:/audio:ro # matches kdl mouthpiece-frontend.audio-dir; served at /audio/<id>.mp3
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   # --- orator: the music bot's library store (0010, Decision F) ---
   orator-postgres:
     image: postgres:16-alpine
@@ -266,6 +294,8 @@ volumes:
     name: astra-orator-pg
   orator-audio:
     name: astra-orator-audio
+  mouthpiece-audio:
+    name: astra-mouthpiece-audio
 
 networks:
   signoz-net:

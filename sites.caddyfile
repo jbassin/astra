@@ -68,6 +68,17 @@ akasha.iridi.cc {
 	reverse_proxy localhost:10365
 }
 
+# mouthpiece-frontend — the podcast read-surface (0012), the third SSR frontend on the
+# strider/akasha template. Read-only (no /editor → no local_only gate). Self-serves
+# gothic's fonts from dist/; /audio/<id>.mp3 is served by the SSR process off the
+# mounted audio volume (D2), so it falls through to the reverse_proxy like any other
+# path. Compose publishes host port 10366. (Needs a mouthpiece.iridi.cc DNS record —
+# manual, deferred like strider/akasha/orator/weal-overlay.)
+mouthpiece.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10366
+}
+
 # weal-overlay — the dice-roll OBS overlay (0009). SSE: flush_interval -1 disables
 # response buffering so text/event-stream reaches OBS immediately. The overlay
 # self-serves its fonts from dist/, so no gothic_fonts import. Compose publishes

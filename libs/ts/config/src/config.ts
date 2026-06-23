@@ -143,6 +143,8 @@ const MouthpieceFrontend = z
     port: z.number().default(10366),
     // Absolute base URL baked into the build-emitted /episodes.json deep-link map.
     publicOrigin: z.string().default("https://mouthpiece.iridi.cc"),
+    // In-container dir the audio volume mounts at; served same-origin at /audio/ (D2).
+    audioDir: z.string().default("/audio"),
   })
   .strict();
 

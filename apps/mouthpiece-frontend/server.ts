@@ -11,11 +11,14 @@ import { createSsrServer } from "@astra/site-kit";
 import ssr from "./dist/server/server.js";
 
 const HERE = fileURLToPath(new URL(".", import.meta.url));
-const { serviceName, port } = loadConfig().mouthpieceFrontend;
+const { serviceName, port, audioDir } = loadConfig().mouthpieceFrontend;
 
 createSsrServer({
   serviceName,
   port,
   ssr,
   clientDir: `${HERE}dist/client`,
+  // The episode audio volume (D2) — served same-origin at /audio/<id>.mp3. The dir
+  // is the runtime mount; the 173 MB never enters the image (Decision I).
+  staticMounts: [{ urlPrefix: "/audio/", dir: audioDir }],
 });

@@ -19,6 +19,14 @@ export interface SsrHandler {
   fetch: (req: Request) => Promise<Response> | Response;
 }
 
+/** An extra static dir served under a URL prefix (e.g. a mounted media volume). */
+export interface StaticMount {
+  /** URL prefix to match, with trailing slash (e.g. "/audio/"). */
+  urlPrefix: string;
+  /** Absolute dir the files live in (e.g. the mounted audio volume). */
+  dir: string;
+}
+
 export interface SsrServerOptions {
   /** OTel service name (config.kdl) — names the SSR spans + resource. */
   serviceName: string;
@@ -28,6 +36,25 @@ export interface SsrServerOptions {
   ssr: SsrHandler;
   /** Absolute path to the built client assets dir (`<app>/dist/client`). */
   clientDir: string;
+  /**
+   * Extra static dirs served under a URL prefix, ahead of SSR — e.g. mouthpiece's
+   * audio volume at "/audio/" (Decision I keeps large media out of the image: it's
+   * a runtime volume, served same-origin here). A path matching a prefix is served
+   * from the dir or 404s; it never falls through to SSR.
+   */
+  staticMounts?: StaticMount[];
+}
+
+/**
+ * Resolve a request path to a file under a static mount, or null if it doesn't
+ * match the prefix / is unsafe. Pure — path-traversal-guarded (no `..`, NUL, or
+ * absolute escape) so a crafted URL can't read outside `mount.dir`.
+ */
+export function staticMountPath(mount: StaticMount, pathname: string): string | null {
+  if (!pathname.startsWith(mount.urlPrefix)) return null;
+  const rel = pathname.slice(mount.urlPrefix.length);
+  if (rel === "" || rel.includes("..") || rel.includes("\0") || rel.startsWith("/")) return null;
+  return `${mount.dir}/${rel}`;
 }
 
 async function isFile(p: string): Promise<boolean> {
@@ -46,7 +73,7 @@ async function isFile(p: string): Promise<boolean> {
  * server handle.
  */
 export function createSsrServer(opts: SsrServerOptions): ReturnType<typeof Bun.serve> {
-  const { serviceName, port, ssr, clientDir } = opts;
+  const { serviceName, port, ssr, clientDir, staticMounts = [] } = opts;
 
   // Guarded so a telemetry misconfig never takes the site down.
   let telemetry: { shutdown: () => Promise<void> } | null = null;
@@ -65,6 +92,15 @@ export function createSsrServer(opts: SsrServerOptions): ReturnType<typeof Bun.s
     idleTimeout: 30,
     async fetch(req) {
       const url = new URL(req.url);
+      // Static mounts (e.g. the audio volume at /audio/) win ahead of SSR: a path
+      // under a mount prefix is served from disk or 404s — never SSR'd. Bun.file
+      // responses honour Range requests, so audio seeking works.
+      for (const mount of staticMounts) {
+        if (!url.pathname.startsWith(mount.urlPrefix)) continue;
+        const filePath = staticMountPath(mount, url.pathname);
+        if (filePath && (await isFile(filePath))) return new Response(Bun.file(filePath));
+        return new Response("Not found", { status: 404 });
+      }
       // Serve built client assets (hashed bundles, fonts, favicon) directly. The
       // root path always goes to SSR so "/" renders the document, not a file.
       if (url.pathname !== "/") {

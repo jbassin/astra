@@ -13,7 +13,13 @@
  */
 export { loadSiteConfig, siteConfigFile } from "./config";
 export { generateRouteTree, type RouteTreeOptions } from "./routeTree";
-export { createSsrServer, type SsrHandler, type SsrServerOptions } from "./ssrServer";
+export {
+  createSsrServer,
+  type SsrHandler,
+  type SsrServerOptions,
+  type StaticMount,
+  staticMountPath,
+} from "./ssrServer";
 export {
   type ContentWatchOptions,
   contentWatchPlugin,

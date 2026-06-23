@@ -150,6 +150,10 @@ mouthpiece-frontend {
     service-name "astra.mouthpiece-frontend"
     port 10366
     public-origin "https://mouthpiece.iridi.cc"
+    // The in-container dir the episode audio volume mounts at (D2). The SSR server
+    // serves `<audio-dir>/<id>.mp3` same-origin at /audio/<id>.mp3 — the 173 MB of
+    // seeded audio is a runtime volume, never baked into the image (Decision I).
+    audio-dir "/audio"
 }
 
 caddy {

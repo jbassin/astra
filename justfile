@@ -9,6 +9,10 @@ reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"
 sops_file := "deploy/sops/secrets.enc.yaml"
 
+# Source of the rendered podcast episodes for the mouthpiece-frontend audio seed
+# (faerrin's caster out/). Override with MOUTHPIECE_AUDIO_SRC for another host.
+mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/experiments/faerrin/pkg/caster/out")
+
 # --- Docker substrate (deploy/) ---
 
 # Bring the stack up (Dagster + SigNoz + the services). --build so local code changes
@@ -38,6 +42,19 @@ down:
 # Stop AND drop volumes — a fresh SigNoz needs re-onboarding on the next `up`.
 down-volumes:
     cd deploy && docker compose down -v
+
+# Seed the mouthpiece-frontend audio volume from faerrin's rendered episodes (D2 — a
+# MANUAL step; the live pipeline→audio path is the deferred follow-up). Flattens
+# `<id>.episode.mp3` → `<id>.mp3` into the astra-mouthpiece-audio volume (created by
+# `up`), served same-origin at /audio/<id>.mp3. Re-run to refresh; idempotent.
+mouthpiece-seed:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    docker volume create astra-mouthpiece-audio >/dev/null
+    docker run --rm \
+      -v astra-mouthpiece-audio:/audio \
+      -v "{{mouthpiece_audio_src}}":/src:ro \
+      alpine sh -c 'set -e; n=0; for f in /src/*.episode.mp3; do b=$(basename "$f" .episode.mp3); cp "$f" "/audio/$b.mp3"; n=$((n+1)); done; echo "seeded $n episode(s) into astra-mouthpiece-audio"; ls -1 /audio'
 
 # --- Host edge (shared reverse proxy) ---
 

@@ -43,6 +43,7 @@ describe("@astra/config", () => {
     expect(cfg.mouthpieceFrontend.serviceName).toBe("astra.mouthpiece-frontend");
     expect(cfg.mouthpieceFrontend.port).toBe(10366);
     expect(cfg.mouthpieceFrontend.publicOrigin).toBe("https://mouthpiece.iridi.cc");
+    expect(cfg.mouthpieceFrontend.audioDir).toBe("/audio");
   });
 
   test("secret fields are lazy refs, not plaintext", () => {

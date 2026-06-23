@@ -7,6 +7,7 @@ import {
   gothicFontsPlugin,
   loadSiteConfig,
   siteConfigFile,
+  staticMountPath,
 } from "./index";
 
 describe("@astra/site-kit config locator", () => {
@@ -50,5 +51,24 @@ describe("@astra/site-kit exports", () => {
   test("createSsrServer + generateRouteTree are callable factories", () => {
     expect(typeof createSsrServer).toBe("function");
     expect(typeof generateRouteTree).toBe("function");
+  });
+});
+
+describe("staticMountPath (audio mount path resolution)", () => {
+  const mount = { urlPrefix: "/audio/", dir: "/audio" };
+
+  test("resolves a matching path under the dir", () => {
+    expect(staticMountPath(mount, "/audio/000.x.2026-5-7.mp3")).toBe("/audio/000.x.2026-5-7.mp3");
+  });
+
+  test("returns null when the prefix does not match", () => {
+    expect(staticMountPath(mount, "/episode/000.x")).toBeNull();
+    expect(staticMountPath(mount, "/")).toBeNull();
+  });
+
+  test("guards path traversal + empty + absolute escape", () => {
+    expect(staticMountPath(mount, "/audio/../../etc/passwd")).toBeNull();
+    expect(staticMountPath(mount, "/audio/")).toBeNull();
+    expect(staticMountPath(mount, "/audio//etc")).toBeNull();
   });
 });

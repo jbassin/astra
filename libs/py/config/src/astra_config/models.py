@@ -137,6 +137,8 @@ class MouthpieceFrontendConfig(_Base):
     port: int = 10366
     # Absolute base URL baked into the build-emitted /episodes.json deep-link map.
     public_origin: str = "https://mouthpiece.iridi.cc"
+    # In-container dir the audio volume mounts at; served same-origin at /audio/ (D2).
+    audio_dir: str = "/audio"
 
 
 class CaddyConfig(_Base):
