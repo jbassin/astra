@@ -227,6 +227,33 @@ def test_discover_sessions_globs_dirs_and_skips_scriptless(tmp_path: Path) -> No
         assert s.audio_version == ""
 
 
+def test_discover_sessions_keys_on_script_id_not_dir_name(tmp_path: Path) -> None:
+    # The LIVE pipeline keys its dir by DATE but names audio/transcript by episode id
+    # (assemble_episode) and writes the id into script.json as snake_case `session_id`.
+    # Discovery must key on the script id, not the date dir, and still find the audio.
+    episode_id = "000.through-a-song-darkly.2026-6-22"
+    date_dir = tmp_path / "2026-6-22"
+    date_dir.mkdir()
+    script = json.loads((GOLDEN / "000.through-a-song-darkly.2026-6-8.script.json").read_text())
+    del script["sessionId"]  # astra model dump uses snake_case, not the faerrin wire key
+    script["session_id"] = episode_id
+    (date_dir / "script.json").write_text(json.dumps(script))
+    (date_dir / "digest.json").write_text(
+        (GOLDEN / "000.through-a-song-darkly.2026-6-8.digest.json").read_text()
+    )
+    # audio + transcript are named by the EPISODE ID, not the date dir
+    (date_dir / f"{episode_id}.episode.mp3").write_bytes(b"\x00")
+    (date_dir / f"{episode_id}.transcript.md").write_text("# x")
+
+    sessions = discover_sessions(tmp_path)
+    assert len(sessions) == 1
+    s = sessions[0]
+    assert s.id == episode_id  # the real id, not "2026-6-22"
+    assert s.has_audio is True  # found despite the date-keyed dir
+    assert s.has_transcript is True
+    assert s.audio_version  # cache-bust token computed off the seeded mp3
+
+
 def test_episode_host_model_drops_voice_id() -> None:
     # the manifest host shape carries name+persona only (voice ids stay TTS-only)
     assert set(EpisodeHost(name="Bram", persona="warm").model_dump().keys()) == {"name", "persona"}

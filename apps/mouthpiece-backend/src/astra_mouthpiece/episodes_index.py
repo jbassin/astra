@@ -289,18 +289,36 @@ def _probe_duration_ms(mp3: Path) -> int:
     return round(seconds * 1000) if seconds > 0 else 0
 
 
-def discover_sessions(out_root: Path) -> list[SessionInput]:
-    """Glob `out_root/<id>/script.json` → SessionInput (skip a script-less dir).
+def _episode_id(script: dict, fallback: str) -> str:
+    """The true episode id from the script, falling back to the dir name.
 
-    `title`/`synopsis` are read by their format-stable keys (faerrin camelCase and
-    astra snake_case both use `title`/`synopsis`), so no model parsing is needed.
+    The pipeline keys its Dagster partition (and thus the on-disk dir) by **date**
+    (`episodes/2026-6-22/`), but `assemble_episode` names the audio/transcript by the
+    **episode id** (`000.through-a-song-darkly.2026-6-22.episode.mp3`). Taking the id
+    from the script — not the dir — lets discovery key on the stable episode identity
+    over both the date-keyed live dirs and the id-keyed golden/seed layout, and find
+    `<id>.episode.mp3` either way. The id lives under `session_id` (astra model dump)
+    or `sessionId` (faerrin wire fixtures); the dir name is the last-resort fallback.
+    """
+    sid = script.get("session_id") or script.get("sessionId")
+    return sid if isinstance(sid, str) and sid else fallback
+
+
+def discover_sessions(out_root: Path) -> list[SessionInput]:
+    """Glob `out_root/<dir>/script.json` → SessionInput (skip a script-less dir).
+
+    The session id comes from the script (`_episode_id`), NOT the dir name, so a
+    date-keyed live dir and an id-keyed golden dir both resolve to the real episode
+    id and find their `<id>.episode.mp3`. `title`/`synopsis` are read by their
+    format-stable keys (faerrin camelCase and astra snake_case both use
+    `title`/`synopsis`), so no model parsing is needed.
     """
     sessions: list[SessionInput] = []
     for script_path in sorted(out_root.glob("*/script.json")):
-        sid = script_path.parent.name
         script = _read_json(script_path)
         if script is None or not isinstance(script.get("title"), str):
             continue
+        sid = _episode_id(script, script_path.parent.name)
         digest = _read_json(script_path.parent / "digest.json") or {}
         synopsis = digest.get("synopsis")
         mp3 = script_path.parent / f"{sid}{EPISODE_SUFFIX}"
