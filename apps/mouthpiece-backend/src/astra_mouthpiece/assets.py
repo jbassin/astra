@@ -32,6 +32,7 @@ from .digest import distill_session
 from .episodes_index import (
     INDEX_FILENAME,
     EpisodeHost,
+    EpisodesIndex,
     build_index,
     discover_sessions,
 )
@@ -253,15 +254,23 @@ def _arc_maps() -> tuple[dict[str, str], dict[str, bool]]:
     )
 
 
+def build_episodes_index(root: Path | None = None) -> EpisodesIndex:
+    """The cross-episode catalog over a corpus dir (shared by the Dagster asset and
+    the snapshot publisher — config-single-source for the build): discover sessions
+    + ontology arc/host maps → sorted, deduped index. Defaults to the configured
+    episodes path."""
+    sessions = discover_sessions(root or _out_root())
+    arc_titles, arc_main = _arc_maps()
+    return build_index(sessions, arc_titles=arc_titles, arc_main=arc_main, hosts=_episode_hosts())
+
+
 @dg.asset(group_name="mouthpiece")
 def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Glob the session dirs → one sorted ``episodes-index.json`` catalog that
     mouthpiece-frontend (0012) reads at build. Owns id-parse, the arc-then-date
     sort, per-arc episode numbering, arc titles (campaign.name), ffprobe duration
     + the audio cache-bust token (episodes_index.py)."""
-    sessions = discover_sessions(_out_root())
-    arc_titles, arc_main = _arc_maps()
-    index = build_index(sessions, arc_titles=arc_titles, arc_main=arc_main, hosts=_episode_hosts())
+    index = build_episodes_index()
     _atomic_write(_out_root() / INDEX_FILENAME, index.model_dump_json(indent=2, by_alias=True))
     return dg.MaterializeResult(
         metadata={

@@ -14130,6 +14130,3087 @@
           "text": "It's fine."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-6-18",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 7,
+      "isMain": true,
+      "date": "2026-6-18",
+      "dateSortKey": 20260618,
+      "title": "A Big Juicy Heart",
+      "episodeTitle": "A Big Juicy Heart",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "After their meeting of the minds, the party hunts for a route-map of the Strider's path ahead — tracking it to the silent Harlequins' theatrical front-town and Curator Ocelith's library, where they learn the cosmology of the four Princes and the awakening eye and accept a quest to recover Ocelith's stolen ink ribbon from Subdeck 12. Along the way they fail to recruit Verdant Holdings, gather repeated warnings about Hildebrandt and Grayson's rival alliance, then under cover of night consume the hearts of their two newest small-faction allies for energy and fortify their base with walls, a moat, and a honeycomb maze design.",
+      "durationMs": 1389688,
+      "hasAudio": true,
+      "hasTranscript": true,
+      "audioVersion": "153494f-6a3ab9a5",
+      "transcript": [
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "— no but see that's what I don't get, you spend a whole evening figuring out who's got a map and the answer is just, oh, the clowns have it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "well it wasn't just like that, we had leads, we sat down after the meeting of the minds and Argyle's going right, we need a route map, voidward, because Kadou can't build the — the thing —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "the locator."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the locator, right, for magic items, and without a map of what's ahead the whole thing just stalls, so the goal becomes find a map."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "okay but you knew the Harlequins had one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "we suspected."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Prime Meridian and the Protectorate both said they didn't have one."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "said."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "said."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "see Pip's already doing the thing, the both-said voice —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "I'm just saying everyone else conveniently doesn't have the map and the spooky clowns do, that's not a fishing expedition, that's a railroad —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "it is a little bit a fishing expedition though, I'll give you that, we did kind of go who has a map, who has a map, like —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "we crushed the figurine."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "right! we crush the figurine and Chuck shows up."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Chuck's different now though."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Chuck is so different, he comes in and he's like, licking his fingers, like he just had a — what was it, a messy meal, glove off, the pocket square's wrong —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which pocket, the —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I don't — does it matter —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "it was on the wrong side."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "see that's the read though, that's the whole thing, something changed Chuck since the thing that happened and nobody —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle clocked it! Argyle's like, I feel like you're lying to me."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu rolled the sense motive. Twenty."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and it comes back, what, less servile?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "a bit less servile."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "a bit less servile, that's — that does nothing, what do you do with a bit less servile."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "well Argyle just keeps going you're lying, you're lying, and he's got nothing, he's just deciding Chuck's lying —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "but he's right though."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he's — we don't know that yet."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "he's right, you can feel he's right, Chuck's doing the that's-not-my-purview thing on every single question —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "that's not proof."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it's a vibe."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "it's not proof."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "anyway Chuck can't give us the map himself but he points us at the library, Curator Ocelith, and — oh, and he drops that the head of Verdant Holdings got killed the night before and they're electing a new guy."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which mattered later."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "which mattered later, yeah, hold that."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "wait before that, the twins, didn't Anzu — the twins were being weird."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "oh the bonnet thing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anouk and Anaïs."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "right, so before we head out Argyle's arranging to grab the new recruits at night so nobody intercepts them, and Anzu's poking the twins about what they've been up to, and Johnny — Johnny does the sunglasses bit."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "takes the glasses off to —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "takes the sunglasses off, very dramatic, like, lie to me, like he's — and Anzu rolls a thirty-four on it —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "deception. Thirty-four."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "thirty-four! and all it gets is, yeah they did the work, the bonnet, the boots —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the rocket boots."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the blast boots, rocket boots, whatever — but they're hiding something else."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "a thirty-four to find out someone's not being forthcoming. That's — you burn a thirty-four for that?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "it's a high vehicle."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "what?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "that was their cover, the bonnet, they're like it's a pretty high vehicle, replacing the bonnet, like that's why it took so long —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "it is a high vehicle."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "okay but what are they actually building, that's the —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "we don't know, that's the mystery, that's the point —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it's never the point, the mystery's never the point, you just leave them building a secret thing and go eat dessert."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the brigadeiros!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "brigadeiros."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "we bring brigadeiros to Verdant Holdings, there was a whole thing about whether to bring Citadel food or Scale food —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which nobody resolved —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "nobody resolved, we just landed on brigadeiros, and we go meet Dr. Thrain."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the big guy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "huge, half-giant-looking guy, botany doctor, and he does the handshake and his hand just — fully covers Argyle's hand, like —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "it covers your whole hand."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the whole hand, yeah."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and they say no."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "they turn us down, but — and this is the good part — it's because Verdant Holdings has a personal feud with Hildebrandt."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "see and this is where I start going hang on, because Argyle's building the whole alliance around Hildebrandt —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and now there's a faction that hates him, yeah."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and that's not the only one, that's like the first of —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "hold on, let me — Thrain says we're a bit late, too, which, the dead leader —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Cross."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Cross, right, the —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "dwarven oread."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the one we didn't save."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "you saved Jethro instead."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "oh that's grim, so the guy you didn't save is the dead election guy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and Anzu's sense motive — what was it —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "thirty-three."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "thirty-three, catches that some of his own people are dismissive of him, like a few of them don't think Thrain should be speaking for the org —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and there's the quiet gnome."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the quiet gnome who maybe actually runs it, yeah."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which, again, you noted and did nothing with."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "we were busy! also Benny got asked what he's a doctor of —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he's not."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he just goes I'm not, and somebody — was it Anzu — he's a child."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he's a child."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "see this is my thing about Johnny being the face —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "oh here we go."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "no, you guys called him the most punchable face at the table, that was a real thing somebody said —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he'll get the group killed."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "he'll get the group killed! that's a direct quote and you made him the face!"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he's charismatic."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "he's punchable."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "those can both — anyway, anyway, we go back and re-summon Chuck to take us to the library, and this is where it becomes a whole thing about wording."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the genie thing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Chuck's basically a genie now, he's lawyering us, so first summon, we ask for a map, and he hands us this useless crude exterior map, like a doodle of the outside, and he goes — what was the line —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "you only put the no-shenanigans clause on the if-I-can't-give-you-a-map-immediately bit."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "right! you only put the no-shenanigans rider on the one clause, that's a rookie mistake, he actually says rookie mistake —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "so you summon him again."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "we summon him again, and again, like three times, dialing in the phrasing, eventually it's the quickest of the safest routes, and then he leads us on foot —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "three summons to learn to talk to a devil. Why not just nail it the first time?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "because you don't know the loophole till he's exploited it!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "you knew he was being a snake the second he showed up licking his fingers —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny wouldn't take the floating disc."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "oh, the disc, yeah, Chuck offers a floating disc and Johnny's like absolutely not, he'll drop us in a pit, he'll find a way to drop us —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which is probably correct."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "probably."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "so we walk, and we get to the Harlequin base and it's — okay, it's not a circus."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "everyone thinks circus."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I thought circus. It's a town. A whole little colorful town, eerie, theatrical, near the front of the Strider, most developed area we've seen, like fifty masked Harlequins, ort workers, big clock tower —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and they don't talk."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "they never talk! they communicate over distance with this — skein, mana current thing —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "a current."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "a mana current, and Anzu's doing checks, and the buildings —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "this is the occultism thing, right, where she —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "so there's options, she can go theater lore, religion, occultism, and she picks occultism and crits —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "thirty-seven."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "thirty-seven, and catches this — void-heart twinge over the whole town, the half-metallic taste —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "half-metallic taste, like the void creatures."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "like the void things we fought, yeah."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "okay but — was occultism the right call though, because the theater lore told you the whole town's fake, it's a set, it's a story —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "theater lore was twenty-one."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and that's the actually useful one, no? it's all a facade, none of it's real, that changes how you walk through the place —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "but the void connection is the read of the whole session —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the void connection is the cool one, the it's-all-fake one is the useful one, those aren't the same —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the icon though! there's a library, cathedral-looking, and on it there's this icon, four hands wrapped around an eye —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "religion check IDed it. Twenty-three."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "but it rings no bells, it's too esoteric, and Chuck just goes, deadpan, it's an eyeball in some hands."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "an eyeball in some hands. Thanks Chuck."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "so we go in and the library's — oh man, the librarians."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "zabub."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the zabub, half-beetle half-baby —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "half-baby? you keep saying half-baby —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "half-beetle, half-baby."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "that's so much worse than circus clowns, why is nobody —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and there's spectral hands floating around, and then Ocelith."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "describe Ocelith."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "giant skeletal — dragon-armadillo thing, and his head rotates one-eighty —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "a hundred and eighty."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "all the way around, yeah, and he's got the map, the book, but you need a library card —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which is a contract."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "which is a contract signing away any knowledge you get from using it, and we negotiate instead, and Johnny — okay, Johnny's diplomacy thing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he rolled deception first."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he rolled deception by mistake, that one didn't count, and then it turns out his Pathbuilder numbers were all wrong because he'd been tinkering over the weekend —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "classic."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "so he fixes it and rolls the real one, twenty-nine diplomacy —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "twenty-nine."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and Ocelith likes that they know the rules."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he goes, I love it when people know the rules before they come, yeah."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and Argyle wants to just kill him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle the whole time is like we should've just ganked him at the door —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "he says that about everyone."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he says it about everyone."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "but Ocelith — sense motive catches his kind tells the future —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "thirty. He wasn't certain. He had reason to expect what you'd do."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which is creepy, right, like he saw the negotiation coming —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and then he offers the lesser deal — instead of the card, go get back this thing that got stolen from him three months ago —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the ink ribbon."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the ink ribbon! and someone asks what it is and he goes, it goes in a typewriter, it lets you type —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it lets you type. That's the treasured item. A typewriter ribbon."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "taken by an undercrofter. Probably on Subdeck twelve."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Subdeck twelve, that's the quest now, descend to twelve, get the ribbon, get the book."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and the red-green thing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "oh the red or green! he makes us pick red or green and we pick red, and Anzu had called it, she said it's a smokescreen, the choice doesn't matter —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "but if he tells the future, then picking red is exactly what he —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "see, see, that's the —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "like did we choose red or did he know we'd choose red, which is it —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "it doesn't matter."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it kind of matters."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "that was the point. It's a smokescreen."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "...anyway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and this is where the big lore drops, the icon — Ocelith explains it, the four hands are the four Princes —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "the Shackled, the Harlequin, the Hooded, the Loam."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the Shackled, the Harlequin, the Hooded, and the Loam, and the eye is the thing that woke them up —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "woke them from being subservient."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "from subservience, yeah, and he's very snippy about it, he goes you worshippers of the six are so rigid, it's four —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "four and one. Five total."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "four and one, five total, right, very — he's pleased with himself about it."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "so that's separate from the Voidsong, that's a whole other —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "it seems separate, yeah, this is Princes, the awakening eye, that's new —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and the Harlequins serve one of them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "serve a Prince, presumably the Harlequin one, yeah, which reframes Chuck entirely, which is why I think Argyle's lying-read was —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "thank you."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I didn't say you were right."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "you nearly did."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and the book — it's the only thing on his holds shelf, it's got every known location from prime Færin out to the wall at voidward's edge, and he puts it on hold for us."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "on hold."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "then we detour to Ternion Heavy for Jethro's gift."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the guy you did save."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the guy we saved, and he goes if it isn't my saviors —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "aw."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and he's mid-build on this weird plane, twin-winged, but there's a second set of little wings at the back —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "smaller rear wings."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "smaller rear wings, no seats inside, bare bones, rapid build, and over paper-cup coffee he tells us he's allied with Grayson."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Grayson of Amber Call."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Amber Call, the medical insurance — they bandage you and bill you — and Grayson's giving him protection, guns, the skeleton workers —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Pale Lantern."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Pale Lantern skeleton-workers, and tithe support, in exchange for scouting."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "so that's the second alliance."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "that's the rival alliance, Grayson's building his own thing, and Jethro warns us hard about Hildebrandt — Ternion planes got shot out of the sky —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "by Belvedere."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "by Belvedere, and engineers poached, and that's like the second Hildebrandt warning in one day —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "but Argyle privately writes Jethro off, right."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle goes they're cooked, Grayson's going to kill that group the second he's done with them —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and doesn't warn them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "doesn't warn them, no."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "that's cold. That's the guy you saved."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "it's pragmatic."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it's cold and pragmatic, those aren't —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he might be right that they're cooked!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "you can be right and still tell the guy."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he didn't tell the guy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he didn't tell the guy. Then Aetherion, the power company —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Ætherion Limited."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Braxton Hall, the sylph, the wispy hair guy, and Anzu's only note on him is chill af —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "chill af."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "she doesn't remember writing it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "she doesn't remember writing it but it's canon now, chill af, and his office is in a fane with disabled minefields, like you drive in through a minefield —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "an active minefield."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "was it active or disabled —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he says you drove through an active one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "through an active minefield, great, and Braxton says no, he's already promised to someone —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Tas's group."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Tas's group, and — this is the thesis of the day basically — he tells us we're too friendly, too undiscerning, we've shown our juicy heart to everyone —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the big juicy heart line."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "you've got a big juicy heart full of energy on your property and now everyone knows where it is."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "sense motive caught the cold under it. Thirty-seven."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "thirty-seven, yeah, friendly words, cold underneath, and he confirms Tas is playing both alliances —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "double-dipping."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "double-dipping, and Tas calls us — what — spunky, good-natured, but kids."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "good-natured, spunky, but kids."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which, honestly? fair."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "it's a little fair."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "like that's the whole problem, you go around being everyone's friend handing out brigadeiros and the actual operators are like, cute, the children are here —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "but is that not soft power though, is being everyone's friend not —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it's not soft power if they all know where your heart is —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "he told them to their faces it's naive."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he did, and then we go act on it that night, the —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the heart stuff."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the grim part."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "yeah let's — because this is where the recruiting thing actually means what it means."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "right, so recruiting a small faction means — you take their heart. For energy. And we'd just signed up Alkahest and Solari, so under cover of night we drive the empty truck, pass a stealth check —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and the hearts know."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the hearts know! that's the gut-punch, at Alkahest, Kadou's totally cooperative, but the heart — it's this desk cabinet, a ream of paper —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Chromatic Drift."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the Chromatic Drift heart, and it's drawing on itself, drawing please don't kill me —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "oh that's —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and there's a note, it overheard Kadou packing, so it knew, and the note's like why would I make killing me easy, you're about to end my life —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "that's bleak."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and it goes did you think I wouldn't notice, it's happening in my fane —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "fame."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "did it say fame or fane —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "fame. It said fame."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it said fame? that's almost funnier —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and Benny rips the chad-paper cord — perception crit, thirty-four — thirty energy, building collapses, everyone makes the reflex save."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and Johnny's distraction is —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny's just doing a bit, he's just like, doing this —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "doing what?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I can't — it was a bit, you had to be there, and Benny's worried the meat'll be sour if they're upset."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "sour meat."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "sour meat, yeah, if the heart's upset the meat's sour."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "that's — see that's the moment for me, that's where it stops being bookkeeping, like Benny just said the quiet part —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "it's a joke."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "it's a joke that's also true, that's the worst kind —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and then Solari, which is the big argument."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Salvado."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Salvado, the drunk guy, half-packed, treating the whole apocalypse like a vacation —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and Argyle wants to leave him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle wants to leave him, he's useless, and Anzu's like you can't just abandon a man who got thrown into this without —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "without knowing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and it's a long, long argument, and the compromise we land on is — and this is the part that's actually worse —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "take his heart, take his crew, take his stuff —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "take the heart, take the two sleeping crewmates, take his stuff, and leave him."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which is crueler than either!"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "it's crueler than either thing! and the Credence Flow heart —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "the shipping containers."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the rattly stacked-containers sculpture, it's begging, but not for itself, it's like can you help him, help Salvado, he'd been yanking on it, physically pulling on the heart —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "oh."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he'd cried and then started drinking, and the heart's worried about him —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the heart's worried about the guy who was abusing it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "yeah."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "and Anzu says the line."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu says to Argyle — for the half of you that is not a demon, I do not like your discern for human life."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "discern, like —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "disregard."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "disregard, yeah, your disregard for human life, for the non-demon half of him —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "that's the whole campaign in one sentence, kind of."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and the heart's last words when Benny pulls the load-bearing container —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "oh, fuck."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "oh, fuck. Twenty energy, building down, all save."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and then they keep Salvado."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "then we keep Salvado! the heart humanized him, so we end up taking him after all, and later Argyle cures the drunkenness —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Cleanse Affliction."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Cleanse Affliction, sobers him up, and Salvado's mad about it, he didn't want to be sober —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "so let me get this straight, you take his hometown's heart, you dump his booze, you sober him against his will, and that's — mercy?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "we kept him alive."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "you decided he gets to be a person and the heart doesn't."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "that's — okay that's a little —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "that's exactly what happened."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "that is what happened."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...anyway, we get home, two heart-cores, twenty-five more energy, we're at one-eighty-three —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which is too juicy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "which is way too juicy, Braxton just told us, so we spend down, we want to be in the — fifty to seventy range, less of a target —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "spend down by murdering people for hearts and then spend the hearts so you're less murderable."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "yeah."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "there's a loop there I don't love."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "and we buy walls, reinforced bulkheads, a moat —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "DC twenty-three. Prone on a fail."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "prone on a failed save, and new rooms, a warehouse and a War room, and the whole base is designed like a maze, a honeycomb —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "the Rust thing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "somebody said if you've ever played Rust we're doing a honeycomb, yeah, so intruders have to wind through layers to get to the heart —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "and the twins' moat —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "the moat request gets fulfilled, the ground literally drops out from under them, and then they pivot to building a minesweeper —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "from the bonnet thing to the moat to a minesweeper, what is the through-line on these two —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "there isn't one, they just keep getting new jobs —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "there were turrets for a second."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "oh! Josh narrated turrets and then took them back —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "none of the turrets show up."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "none of the turrets show up, retconned, and Benny's like — well that's the min-max worry, right, if turrets are that good you just buy turrets forever —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "you turn the base into an exploit."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "versus Argyle who just wants the island fortress vibe, very fortifiable from pirates —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "pirates."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "he kept saying pirates."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "and you've got one more hex than Hildebrandt now."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "one more hex than Hildebrandt, which, given two factions hate the guy —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "which you're still allied to."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "which we're still — yeah, that's gonna be a problem, that's like a whole — that's next week probably —"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "no but go back to the sour meat thing for a second because I —"
+        }
+      ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-6-22",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 8,
+      "isMain": true,
+      "date": "2026-6-22",
+      "dateSortKey": 20260622,
+      "title": "Six Sandwiches for a Dead Man",
+      "episodeTitle": "Six Sandwiches for a Dead Man",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm, unhurried, precise but terse; the long-time regular whose knowledge of the setting is lived rather than studied. Speaks the least and lands the exact word, name, or date the others fumble for; her power is the deadpan beat and the flat one-line correction, NOT the paragraph — she finishes her sentences and finishes them short. The only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle. Grounds events in how the world actually works and reins Bram in when he embellishes"
+        },
+        "C": {
+          "name": "Pip",
+          "persona": "quick, fond, incorrigible, fast but scattered; the needler who cares more about WHY the characters did the thing than what they did. Talks in fragments and questions, interrupts himself, free-associates sideways into tangents that go nowhere and deflate, and rarely sticks the landing on a thought; right about people, wrong about facts, and won't fully admit either. Second-guesses the table's heroics, pokes at sentiment with a wink, and goads the others into defending their takes — without waiting for his own point to finish"
+        }
+      },
+      "synopsis": "After firming up alliances (Radiant Arms) and a failed plan to magically bind the whole group with the Gaius ritual, the party descends into the Undercroft of their Strider to recover a stolen ink ribbon for the library Curator. They meet the indentured mongrelfolk, follow a lead into a forsaken sector, slaughter a band of far-gone usurper-cultists, loot the ribbon and cult artifacts, and press on until they reach the threshold of a spider-infested Fane — ending on a cliffhanger.",
+      "durationMs": 1165949,
+      "hasAudio": true,
+      "hasTranscript": true,
+      "audioVersion": "11ca9a3-6a3ab946",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—no, no, but you've gotta start where we started, which is Benny sitting there with the actual notebook, right, the physical—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "\"Session thirty-two. I think I may have lost count.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Yes! Yeah. Out loud. And nobody corrected him."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Nobody could. He had the notes."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "That's the thing about Benny, the man's blind in-game but he's the only one with a paper trail, it's—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay but the recap, the recap was great because we go around and it's like, who's with us, who's against us, and they just casually drop that Ætherion called us naive—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"You were naive to think we wouldn't kill them.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That line! That's the line."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Wait, was that Ætherion or was that the cold-but-not-rude people, the—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Ternion. Kurnian. Different one."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Right, right, the ones who already shacked up with Grayson."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And see, Doug tried to argue that Ternion was only \"cold but not rude\" because they had, like, a metaphorical gun to their head, and Josh just—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Quibbled him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Flatly. Just, \"no.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "But that's the question though, isn't it, were they polite or were they polite the way you're polite to a guy who can absolutely kill you—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's what Doug said!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "I know, I'm agreeing with Doug, I just—anyway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then Johnny, God love him, the eyeball church thing comes up, the eye in the hands, the four princes—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Four princes and the eye that woke them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and Johnny goes \"who's the ace? You don't even have a brain!\" Which, I still don't fully—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "It didn't land. Nobody laughed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I laughed."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "You laughed late."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay so then before we even get moving Argyle pulls the inner circle and pitches the big brain plan, the loyalty thing, the—what's it called, the binding—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Gaius."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Gaius! Bind the whole group, the whole house, so nobody can hurt each other or touch the heart without a vote, root out the spies—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Which is genuinely smart, like, I was sat there going oh that's clever—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We all were! The table got loud."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "—for about a minute."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "One day of casting per person."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it just dies. Right there. Because it's seven new arrivals alone—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Solari trio and the Alkahest four."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Was it Alkahest, I thought it was—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Alkahest Freight. Kadou's lot."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Kadou, yeah. And Salvado was the other—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Solari."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So that's a week of nonstop casting just for the newbies, and Benny, deadpan, just goes \"well, we just kill all our allies then, Josh.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "\"You want us to just kill everyone in our house.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Anzu! Anzu, no hesitation—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"Screw every single one of them.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "See, that's Anzu though, that's the whole character right there, the second a plan gets hard the answer is murder—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But here's the part that actually killed it, and this is Josh being a little bit evil, the willing version of Gaius needs a wish to undo it, but the second somebody turns unwilling—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It becomes a curse. Remove curse."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So a spy just defects and your unbreakable pact is, what, a level three spell away from—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "So it's pointless."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's pointless! Dead on arrival the moment Josh said \"one day per person.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Where'd Argyle even learn this, anyway, I missed—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Pact brokers. During his time with the Scale."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The Scale, right, the contract people. Makes sense he'd—anyway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Then there's the little morning stuff, the housekeeping, Argyle gets gifted a ritual, the wall one—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Oil-Slicked Walls. Lance transcribed it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and Radiant Arms officially signs on, they're paying the tithe as a group—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "But their hearts don't pool, right, that was a—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Separate hearts. They pay collectively. Energy stays separate."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And we hand them one of the laser guns. The looted ones."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The Sable guns."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Sable and Sons."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Which—okay, is that not espionage? You're handing your tech secrets to a partner—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's the whole argument we had! Is it espionage, is it larceny—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Grand larceny, somebody said grand larceny—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's theft. We stole them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Yeah we landed on theft because they were the guns somebody tried to kill us with, so it's, like, finders keepers but violent."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "I still think handing a rival faction a free laser is how you lose a war in eighteen months, but, you know—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And our rep goes up! \"Your reputation has increased with Radiant Arms\"—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The Skyrim noise. Somebody made the Skyrim noise."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I made the Skyrim noise."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You did."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, and Argyle medicates this drunk NPC and gives him a little lecture, \"don't be a drunkard, you know, we'll help out\"—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "That's such an Argyle thing. Heal you and shame you in the same breath."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Who's Argyle even talking to, like nobody asked him to—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Y'shael was the Radiant Arms contact. Different person."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No I know, the drunk was just some guy. Anyway."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "So then we go down. The elevator."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The elevator! Okay so this is our first time actually going into the Undercroft, which we've never—this whole hidden under-world of the Strider—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Manual lever. Two positions. Groaning like it hasn't moved in years."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the legs! Every six seconds, boom. Boom. The whole machine stomping. And the smell, burnt oil, rust—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Twelve floors down."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Down to level twelve, yeah, and Benny—Benny's blind, minus one perception, and he still rolls a sixteen and we clock fifteen floors of shaft before it just goes black—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And Josh kept saying nine."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh my God."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Four times. \"You descend to level nine—\" no, twelve. \"—nine—\" twelve!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was twelve."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Benny's got it written down, on paper, and he goes \"I SSH'd into your computer and changed the number\"—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "\"—unless you have it on paper.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"Unless you have it on paper!\" And he does! He physically does! There's no hacking a notebook!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Josh has no defense. Genuinely the smuggest I've seen Benny play him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the crafting check, this is the bit I loved, it's a brand new Strider, supposedly, and the rust says otherwise—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Bought used."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"They bought a used Strider and did some adjustments.\" Like a dodgy car lot."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "There was also the number thing, the magic number, the religion riff—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh the fifteen! Four hands plus the eye is five, times three—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Times three is fifteen, fifteen active hearts now, which—did that mean anything or did Tanner just like the math—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Tanner liked the math."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So we get down and there's this round work-room, and there's—how many, fifteen?—mongrelfolk—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "About fifteen."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—working on a lubricant platform for one of the legs, and they're keeping time with this sea shanty, this ragged—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Which becomes important. File that away."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and Anzu rolls occultism, Johnny aids, and it's a thirty-five—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And we get the whole lecture."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The whole thing! Slip exposure, warp exposure, what mongrelfolk even are—it's people who jumped too many slips at once and got—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Mutated. Irreversibly."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "One had a third arm growing out of his neck. Out of the neck!"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "There was a dwarf with mismatched feet, a peeling-scale elf—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Tumor-lumps on one."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "But this is what I mean about a thirty-five turning a creepy room into a Wikipedia article, like Anzu rolls one good die and suddenly Tanner's explaining the reproductive—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They can't have kids! With non-mongrelfolk, that was the—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Slip exposure precludes it."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Where'd Anzu even learn all that, that's not—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Belvedere."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Belvedere, sure. The school people. Of course it's the school people."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And planar teleport's a sixth-rank spell, that's why, because of all the protection you need to not get warped on a long jump—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Which retroactively makes every casual teleport in this game sound horrifying, but, anyway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So then Johnny goes up to the foreman to ask about the ribbon, the—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Marin."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Marin, right, Maranthorn—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Marin."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and he's got feathers for hair, a half-formed beak, and when he snorts it comes out all shrill—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And gold's useless down there, that was the great bit, Johnny tries to flash gold and it's—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"We ain't got no use for gold down here.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "A gallon of wine just gets you mugged—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Mugged. Shanked."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But a sandwich! A sandwich is currency! And Johnny's got a BLT—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Why does Johnny have a BLT—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He just has one! And Marin snatches it, rolls athletics, a nineteen against—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "DC seventeen."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and Benny reflex-saves and yoinks it back, with a plus three—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The sandwich yoink bonus."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The official sandwich yoink bonus! Josh just gave him plus three for it!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And then intimidates the guy. Over the sandwich."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And out of this Johnny promises him six sandwiches a day."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Six! A day!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "With a return note."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, the note scheme, send a note every day, if the note doesn't come back—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Marin's been shanked. You stop."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Which is the bleakest charity I've ever—like the whole table agreed this guy is dead within the week, and Johnny's out here going full Bernie Sanders—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"Everyone in the Undercroft gets a sandwich! The people deserve sandwiches!\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "But is it kindness, that's what I keep—is Johnny actually moved by this guy's situation or does he just like being the sandwich messiah—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Why can't it be both—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Because it's Johnny, that's why, the man does nothing without an audience—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Marin owed eighteen thousand."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the debt! Started at two hundred gold—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Two hundred. Now eighteen thousand. Interest."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "To a Harlequin, was it?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A Harlequin."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "That's—two hundred to eighteen thousand, that's not interest, that's a—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's the Undercroft, baby."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "That's not even—anyway. Doomed. He's doomed. Six sandwiches for a dead man."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But Marin points us on! Past the acid vats, into the dark sector, the forsaken bit, where the scavengers collect \"things that don't belong.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Ominous."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it's this twisted grate scaffold over a pit, an endless pit, and the floor's all warped, frozen mid-twist like something grabbed it—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Slip damage. Made physical."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Yeah, that was the read, the warp made solid. And the walls are covered in this crude art, all about perfection, ascension, getting better—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Apotheosis. Big word for graffiti."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and we hear voices down there, this chittering, and Anzu—or somebody—clocks it's Urthram—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A dialect of Urthram. Evolved."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, Josh did the whole \"if you learned modern English this'd sound like old English\" thing, but with bugs underneath—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And this is when Johnny refuses to take the sunglasses off."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the sunglasses—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Pitch black. Pitch black dungeon. Johnny's sneaking with the shades on the whole approach and then halfway through goes—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"Oh shit, I could see the whole time.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "He had darkvision! The whole stealth bit! He's been squinting through sunglasses in the dark for no reason—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle plugs his earplugs in—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Earplugs for the language."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—so we've got one guy who can't see on purpose and one guy who can't hear on purpose, sneaking up on a cult. And we sneak terribly."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The mongrelfolk down here are way worse, by the way, the mutations—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anglerfish head! One had—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "An atrophied face. One swollen eye."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Porcupine guy. Quills."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And one of them's wearing this carved horn talisman, and we crit perception—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Thirty-four."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and it matches the horned figure from the stained glass at—whatsit—Tywelwyn's base."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The usurper gods. The Sinister Six thing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the thread, yeah."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So we know these are the bad bad ones. Unholy. And then our terrible stealth blows it and they win initiative—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And open with a fireball. Immediately."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But here's the thing, half the party's got the fire-eating cantrips, so we just—eat it—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu got temp HP off it."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Off the fireball that was supposed to kill us. Got healed by it. Love that."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Only Johnny got a spell off before the fireball—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Everybody else just stood there and opened their mouths."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then we confirm they're unholy and it's on, Argyle's chucking holy water with the unholy vulnerability stacking—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Which he did wrong, by the way—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He applied the vulnerability twice on accident! Josh had to refund health—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And vowed to fix the spellbook entry."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "\"Vowed.\" We'll see."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Benny's double-slicing, Johnny's hasting Benny and doing the bardic buffs, and Anzu's got the amped Frostbite going, and meanwhile these things are dimension-dooring all over—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The Manus and the Oris, the—what were they, the beard-claw ones and the flying ones—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Manus on the ground. Oris flying."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And an Oris charges Benny and crits him for—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Forty-seven."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Forty-seven! And then persistent infernal bleed, so he's making DC twenty recovery checks over and over—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And Johnny gets the fever, the—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Infernal fever. Failed the fort save."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "From getting hit by a beard. A magic beard gave him a disease."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But then a feat just negates the ill effects for a day, so—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "So nothing happened. Great. Drama."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the best bit, Johnny's little guys, the bolt things, plus the made-up vulnerability—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The Wellerman bit!"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"The Wellerman's coming!\"—because of the shanty earlier, see, it pays off—\"give us your capital gains!\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Thirty-ish bonus weakness damage off that combo. From a sea shanty joke."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle's Divine Wrath crit-fails two of them straight into instant death—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Death's Call. Nine temp HP off it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nine temp HP just for them dying near him. And Anzu freezes the last Manus with Frostbite and it's over—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And here's my thing, we did not move. The entire fight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Not an inch!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "We charged in, planted, and the teleporting enemies just kept porting into the blender. Was that genius or did the enemies just—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's a kill-box! It's a masterstroke!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "It's a masterstroke if they don't have to come to you, and they did have to come to you, because Josh played them aggressive—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So it's a masterstroke."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "It's lucky. Different word."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They had dimension door. They chose to charge."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Thank you, that's my point."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's not your point, your point was—whatever. We loot the bodies."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the ribbon's there! The deep red ink ribbon, in a little film-reel container—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "With rags, a bar of lye, and a skull key."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "A skull key, ominous, again, this place loves a skull—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And two pamphlets, \"Perfection's First Step,\" and they're incomplete spell scrolls—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Unbreaking Wave Advance. Anzu can finish them in ten minutes."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And the energy in them traces back to whatever the cult worships, which—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The patron. Yeah."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the tincture! The mongrelfolk tincture, grows you an extra finger per hand—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Per hand! Nobody wanted it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Plus two to reflex DC, twenty-foot climb. Ten minutes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "For the price of extra fingers."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "\"Gritty and spicy,\" Josh said. Gritty and spicy and it gives you eight fingers. Hard pass."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But here's the bit, the horn talisman, Argyle crits religion on it, a thirty-eight—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Thirty-eight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and it's nothing. It's just a carving. Non-magical."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And the GM just goes \"what were you hoping to hear?\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Dead flat! And Argyle's got no answer!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Because what do you say, you rolled a thirty-eight to ask a piece of bone its feelings—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle does the Sacred Ground thing and heals everybody up out of combat, the plus fourteen treat wounds engine—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The healing factory. Sacred Ground, treat wounds, treat wounds, treat wounds—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So now we're topped off, mission's done, we've got the ribbon, and the smart move—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Is to leave."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Is to leave! And we do not leave."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "We never leave."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle swaps a spell—he'd misunderstood one—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Locate. There was a whole argument first."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The Show the Way thing, right, versus—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Wanderer's Guide. Show the Way doesn't give a direction."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "That was twenty minutes of rules. Twenty real minutes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Josh just lets him swap to Locate to end it, and Locate pings the ribbon north, which we already—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Which we already have. We located the thing in our pocket."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But then he probes further and we push deeper. Through the art hallway, then the barracks—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The acid barracks."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—this rotted mongrelfolk barracks, beds all twisted from oversized sleepers, and the acid stink is—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Like breathing pure acid."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Got another magic pack out of it, though."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Worth the lungs."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the spiderweb tunnel, and we run it like a heist, like a laser grid—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Johnny crits a thirty-two and covers Anzu's fail—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu touched a strand. Johnny cut it before it mattered."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"Anzu touches the web but Johnny backflips and cuts the string\"—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And the whole time Johnny's going \"there's bugs! I hear bugs!\"—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"These spiders know Morse code!\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "The Morse code thing, yeah, Charlotte's Web, the whole—and then Argyle, the nerd, has to point out spiders aren't bugs—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Josh actually looks up the definition of \"bug\" mid-game—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "Derails the whole tunnel to define an arthropod—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They're not insects."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "See, Maeve knows."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then we hit it, the tingle, going through a Fane's threshold, a heart lair—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A Fane. Spider heart."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"Spider heart, spider heart,\" everybody's chanting it, and the skittering's getting louder, all around—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "And that's where Josh ends it. Right there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"I think that's where we'll end it.\""
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "On depleted big-hitters, by the way—we just used Divine Wrath, we burned through—pushing into a boss Fane on fumes—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's bold!"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "It's how we get ambushed by a spider next week, is what it is."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's bold and we'll be fine."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "That's what you said about the kobolds."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That was Doug."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was Doug."
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "It was Doug."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the spiders, see, you've gotta picture the webs, the whole place laced with it, and the sound, it's—"
+        },
+        {
+          "speaker": "C",
+          "name": "Pip",
+          "text": "You had to be there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You had to be there. Yeah."
+        }
+      ]
     }
   ]
 }
