@@ -15,6 +15,18 @@ storage:
 run_coordinator:
   module: dagster.core.run_coordinator
   class: QueuedRunCoordinator
+  config:
+    # The pipeline runs are heavy (Whisper transcription, LLM distill/script, TTS) — cap
+    # concurrency low so they don't pile 10-deep and thrash the box (the default is 10).
+    max_concurrent_runs: 2
+
+# Auto-detect + fail "zombie" runs whose worker died (e.g. a container recreated mid-run
+# via `just up`) instead of leaving them STARTED forever, holding queue slots. Without
+# this, a redeploy during a run jams the QueuedRunCoordinator.
+run_monitoring:
+  enabled: true
+  start_timeout_seconds: 300
+  max_resume_attempts: 0
 
 # No phone-home.
 telemetry:

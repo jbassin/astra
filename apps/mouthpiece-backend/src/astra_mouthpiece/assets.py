@@ -238,10 +238,13 @@ def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 # ── sensor: linguist → mouthpiece ────────────────────────────────────────────
 
 
+# NB: STOPPED by default (no default_status). Enabling it back-fills every existing
+# linguist transcript (incl. the 42 committed historical) as "new" → 42 PAID mouthpiece
+# runs (distill + two-pass script + ElevenLabs TTS). The historical is migrated-at-rest;
+# mouthpiece for a new session is triggered deliberately, not by a history-sweeping sensor.
 @dg.sensor(
     target=[session_digest, session_script, session_audio_clips, session_episode],
     minimum_interval_seconds=30,
-    default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a partition + run for each new linguist canonical transcript."""

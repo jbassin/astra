@@ -129,11 +129,10 @@ def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeRe
     )
 
 
-@dg.sensor(
-    target=[session_transcripts, correction_candidates],
-    minimum_interval_seconds=30,
-    default_status=dg.DefaultSensorStatus.RUNNING,
-)
+# NB: STOPPED by default (no default_status). Enabling it auto-back-fills every
+# existing scribe output as "new" on first run — the linguist→mouthpiece chain for a
+# new session is triggered deliberately, not by a sensor that sweeps history.
+@dg.sensor(target=[session_transcripts, correction_candidates], minimum_interval_seconds=30)
 def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a linguist partition + run request for each scribe session
     (`{date}/script.json` under `ingest_saved_dir`) not yet processed — the scribe→linguist
