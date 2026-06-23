@@ -28,11 +28,13 @@ telemetry {
 
 scribe {
     // Craig zips land in incoming-path; each session is written to {data-path}/saved/{date}.
-    // incoming-path = the live Craig drop dir (recordings land here); bind-mounted
-    // read-only into the Dagster services (scribe reads + extracts, never deletes —
-    // keep-zip is unused). The craig_drop_sensor globs it for *.zip.
+    // incoming-path is a LOCAL dir (bind-mounted into the Dagster services). The live
+    // Craig recordings live on a google-drive-ocamlfuse mount, which Docker can't
+    // bind-mount (FUSE isn't in the daemon's namespace) — so zips are copied here from
+    // Drive (e.g. `cp /ruby/data/home/drive/Craig/*.zip apps/scribe/incoming/`, or a
+    // host-side rclone sync). The craig_drop_sensor globs it for *.zip; keep-zip unused.
     data-path "/ruby/data/experiments/astra/apps/scribe/data"
-    incoming-path "/ruby/data/home/drive/Craig"
+    incoming-path "/ruby/data/experiments/astra/apps/scribe/incoming"
     tmp-path "/ruby/data/experiments/astra/apps/scribe/tmp"
     state-file ""
     downstream-cmd ""

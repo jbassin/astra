@@ -29,9 +29,8 @@ x-dagster-env: &dagster-env
 # linguist resolves them package-relative → `/repo/apps/linguist/...` in-container, so
 # its mounts target /repo while scribe/mouthpiece bind same-path under /ruby).
 x-dagster-volumes: &dagster-pipeline-volumes
-  # The live Craig drop dir (scribe.incoming-path) — read-only: scribe reads + extracts
-  # the zips, never deletes them, so the ~1 GB originals are protected.
-  - /ruby/data/home/drive/Craig:/ruby/data/home/drive/Craig:ro
+  # scribe.incoming-path — the local Craig drop dir (zips copied here from the Drive
+  # fuse mount, which Docker can't bind-mount). scribe reads + extracts, never deletes.
   - /ruby/data/experiments/astra/apps/scribe/incoming:/ruby/data/experiments/astra/apps/scribe/incoming
   - /ruby/data/experiments/astra/apps/scribe/data:/ruby/data/experiments/astra/apps/scribe/data
   - /ruby/data/experiments/astra/apps/scribe/tmp:/ruby/data/experiments/astra/apps/scribe/tmp
