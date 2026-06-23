@@ -45,6 +45,15 @@ def test_session_script_depends_on_digest() -> None:
     assert "session_digest" in upstream
 
 
+def test_external_api_assets_have_a_retry_policy() -> None:
+    """distill/script/clips hit Anthropic/ElevenLabs → must retry transient outages;
+    the local ffmpeg episode assembly needs no retry."""
+    for asset in (mp.session_digest, mp.session_script, mp.session_audio_clips):
+        policy = asset.op.retry_policy
+        assert policy is not None and policy.max_retries >= 1
+    assert mp.session_episode.op.retry_policy is None
+
+
 def test_linguist_sensor_first_eval_adopts_backlog_without_running(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:

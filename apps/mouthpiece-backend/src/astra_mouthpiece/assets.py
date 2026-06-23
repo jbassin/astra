@@ -101,8 +101,16 @@ def _read_script(key: str) -> Script:
 
 # ── the 4-asset per-session graph ────────────────────────────────────────────
 
+# A transient external-API failure (Anthropic 529 "Overloaded", an ElevenLabs blip)
+# shouldn't fail an unattended run — the sensor won't re-fire an already-partitioned
+# session, so a one-off provider outage would otherwise need a manual re-run. Retry the
+# step a few times with a growing delay to ride through a multi-minute outage (libs/py/llm
+# also retries within each attempt). Applied only to the steps that hit an external API;
+# the local ffmpeg assembly doesn't need it.
+_EXTERNAL_RETRY = dg.RetryPolicy(max_retries=3, delay=120, backoff=dg.Backoff.EXPONENTIAL)
 
-@dg.asset(partitions_def=mouthpiece_sessions, group_name="mouthpiece")
+
+@dg.asset(partitions_def=mouthpiece_sessions, group_name="mouthpiece", retry_policy=_EXTERNAL_RETRY)
 def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """linguist canonical transcript → distilled `SessionDigest` (Stage 2)."""
     date = context.partition_key
@@ -116,7 +124,12 @@ def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     return dg.MaterializeResult(metadata={"beats": len(digest.beats), "session_id": session_id})
 
 
-@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_digest], group_name="mouthpiece")
+@dg.asset(
+    partitions_def=mouthpiece_sessions,
+    deps=[session_digest],
+    group_name="mouthpiece",
+    retry_policy=_EXTERNAL_RETRY,
+)
 def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """digest + akasha grounding → the two-pass tavern-tone `Script` (Stage 3)."""
     key = context.partition_key
@@ -131,7 +144,12 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     return dg.MaterializeResult(metadata={"turns": len(script.turns), "title": script.title})
 
 
-@dg.asset(partitions_def=mouthpiece_sessions, deps=[session_script], group_name="mouthpiece")
+@dg.asset(
+    partitions_def=mouthpiece_sessions,
+    deps=[session_script],
+    group_name="mouthpiece",
+    retry_policy=_EXTERNAL_RETRY,
+)
 def session_audio_clips(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Script → TTS clips + manifest (Stage 4; ElevenLabs v3 / mock)."""
     key = context.partition_key
