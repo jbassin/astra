@@ -82,6 +82,47 @@ craig-timer-install:
     systemctl --user enable --now craig-sync.timer
     echo "installed. timer schedule:"; systemctl --user list-timers craig-sync.timer --no-pager
 
+# Commit + push new linguist transcripts/data (the pipeline's tracked source-of-record).
+# The Dagster run workers write apps/linguist/{transcripts,data} to the host via bind mounts,
+# but the containers have no .git — so this host-side recipe is what tracks them. gitignore
+# already excludes *.candidates.json and the large scribe/mouthpiece binaries, so a plain
+# `add` of those two dirs stages exactly the right files. No-ops cleanly when nothing's new.
+# Uses --no-verify: the commit is data-only (the biome/ruff pre-commit gate is irrelevant and
+# needs bunx/uv on PATH, which the systemd user service lacks); CI still lints on push.
+linguist-commit:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    git add apps/linguist/transcripts apps/linguist/data
+    if ! git diff --cached --quiet; then
+      n=$(git diff --cached --name-only | grep -c .)
+      git commit --no-verify -q \
+        -m "chore(linguist): auto-commit ${n} new transcript/data file(s)" \
+        -m "Pipeline-generated source-of-record, committed by the linguist-commit timer."
+      echo "linguist-commit: committed ${n} file(s)"
+    fi
+    # Push if local main is ahead of origin — also retries a prior run whose push failed.
+    if [ -n "$(git rev-list origin/main..HEAD 2>/dev/null || true)" ]; then
+      if git push -q origin main; then echo "linguist-commit: pushed"; else
+        echo "linguist-commit: push FAILED (will retry next run)" >&2; exit 1; fi
+    else
+      echo "linguist-commit: nothing to push"
+    fi
+
+# Install + start the systemd USER timer that runs `linguist-commit` every 15 min. One-time
+# setup (mirrors craig-timer-install); needs lingering for the user. The timer pushes to
+# origin/main, so the user's git identity + a non-interactive SSH push key must be available
+# to the systemd user session (same key the user pushes with).
+linguist-commit-timer-install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    unit_dir="$HOME/.config/systemd/user"
+    mkdir -p "$unit_dir"
+    cp deploy/systemd/linguist-commit.service deploy/systemd/linguist-commit.timer "$unit_dir/"
+    systemctl --user daemon-reload
+    systemctl --user enable --now linguist-commit.timer
+    echo "installed. timer schedule:"; systemctl --user list-timers linguist-commit.timer --no-pager
+
 # Seed the mouthpiece-frontend audio volume from faerrin's rendered episodes (D2 — a
 # MANUAL step; the live pipeline→audio path is the deferred follow-up). Flattens
 # `<id>.episode.mp3` → `<id>.mp3` into the astra-mouthpiece-audio volume (created by

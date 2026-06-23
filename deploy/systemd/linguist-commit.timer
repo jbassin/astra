@@ -1,0 +1,12 @@
+[Unit]
+Description=Commit + push new linguist transcripts/data every 15 minutes
+
+[Timer]
+# Wall-clock every 15 minutes (:00, :15, …) — always has a valid next trigger no matter
+# when enabled (unlike OnUnitActiveSec). Persistent catches up a missed run if the host was
+# off. Transcripts land only when a session runs, so most ticks are quiet no-ops.
+OnCalendar=*:0/15
+Persistent=true
+
+[Install]
+WantedBy=timers.target

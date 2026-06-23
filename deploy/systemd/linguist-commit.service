@@ -1,0 +1,12 @@
+[Unit]
+Description=Auto-commit + push new linguist transcripts/data (pipeline source-of-record) for astra
+Documentation=https://github.com/jbassin/astra
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/experiments/astra
+# `just` lives in the user's cargo bin. The recipe stages apps/linguist/{transcripts,data}
+# — which the Dagster run workers write to the host via bind mounts — then commits + pushes
+# to origin/main. Runs as the user (not in a container) so it has the real .git, the git
+# identity, and the SSH push key; the Dagster containers have none of those.
+ExecStart=/home/jbassin/.cargo/bin/just linguist-commit
