@@ -177,7 +177,7 @@ Single React component (`App.tsx`), all state via `useState`. Files (each ports 
 |---|---|---|
 | 1 | Next free ports | **10367** (vellum-frontend SSR), **10368** (vellum-render). 10360–10366 taken (verified config.kdl + compose). |
 | 2 | Does the render/parse logic still need porting? | **No.** It moved to `@astra/vellum-lang` (`parseDocument`,`compileVss`,`DOCUMENT_KINDS`) + `@astra/gothic` (`DocumentView`, grime). We port the **editor shell** + the **service shell** only. |
-| 3 | Is `canonicalToVss` available? | **No** — `@astra/vellum-lang` exports `compileVss` but not the reverse. Needs porting (D5). `compileVss` ✓. |
+| 3 | Is `canonicalToVss` available? | **No** — `@astra/vellum-lang` exports `compileVss` but not the reverse. **D5 LOCKED: drop the `⇄ Syntax` button** → `canonicalToVss` is NOT needed and is not ported. VSS authoring is preserved regardless (typed VSS compiles through `parseDocument` → preview). |
 | 4 | Crossref resolver for the editor? | **Omit it** — gothic renders unresolved `[[…]]` as placeholders (correct for an authoring tool). |
 | 5 | Any astra browser-in-container precedent? | **None.** Render service is the first; bun image has no Chromium/libs. Closest mechanism: orator's runtime stage already `apt-get`s a heavy dep (ffmpeg) onto `oven/bun:1.3.14-slim`. |
 | 6 | Visual-regression CI job exist? | **No.** `ci.yml` has zero playwright/visual/chromium. Net-new (plan §5 + exit-criteria require it). |
@@ -191,16 +191,17 @@ Single React component (`App.tsx`), all state via `useState`. Files (each ports 
 ## 4. Decisions to revisit before speccing
 
 > The plan's O1/O2/O3 are already decided; these (**D1–D6**) are the *implementation-shape* decisions the
-> spec must lock. Recommendations are mine — surface for confirmation; do not silently pick.
+> spec must lock. **Status (2026-06-23): D2, D4, D5 LOCKED by the user; D1, D3, D6 accepted as the
+> recommendations below (uncontested).**
 
-**D1 — Editor hosting: SSR shell + `ssr:false` editor route (RECOMMEND).** Reconciles Decision I ("all
+**D1 — Editor hosting: SSR shell + `ssr:false` editor route (ACCEPTED).** Reconciles Decision I ("all
 frontends are SSR Compose services") with an inherently client-only editor. The app is an SSR frontend (for
 the template, telemetry, RUM, Caddy edge) but the editor route is `ssr:false` (strider precedent). The
 React components from faerrin `src/app/` port ~verbatim — so "TanStack rewrite" (O1) is mostly the *shell*,
 not the editor internals. Alternative (a pure static SPA like orator's `web/`) loses the SSR template
 consistency the roadmap wants for 0011–0014; reject.
 
-**D2 — Two apps + same-origin render via Caddy (RECOMMEND).**
+**D2 — Two apps + same-origin render via Caddy (LOCKED ✅).**
 - `apps/vellum-frontend` (SSR editor, 10367) and `apps/vellum-render` (Bun+Playwright service, 10368) are
   **separate apps/Compose units** — disjoint runtime, Dockerfile, lifecycle (mirrors weal/orator's 2-unit
   split). The **render-entry page + `render.html`** live in **vellum-render** (built with plain Vite — it is
@@ -216,14 +217,15 @@ consistency the roadmap wants for 0011–0014; reject.
   capability-bounded public surface (caps + semaphore + rate-limit already in faerrin) — decide in spec
   whether `/render` is `local_only` too or left public-but-capped (faerrin left it public-but-capped).
 
-**D3 — vellum-render Docker base image (RECOMMEND: bun-slim + apt Chromium deps).** Keep
+**D3 — vellum-render Docker base image (ACCEPTED: bun-slim + apt Chromium deps).** Keep
 `oven/bun:1.3.14-slim` and `apt-get install` the Playwright/Chromium system libs + `bunx playwright install
 --with-deps chromium`, pinning the Chromium version (precedent: orator apt-gets ffmpeg onto the same slim
 base). Keeps the bun toolchain + lets us **share the exact pinned Chromium with the CI VR container**
 (plan Risk 1 — same env or goldens drift). Alternative `mcr.microsoft.com/playwright` (Node-based) abandons
 bun; reject. `--no-sandbox` required (no user-namespace sandbox in-container).
 
-**D4 — Visual-regression: port the gate, regenerate the baseline, run it in CI (DO NOT DEFER).** Plan §5 +
+**D4 — Visual-regression: port the gate, regenerate the baseline, run it in CI (LOCKED ✅ — full gate ships
+in 0013, not deferred).** Plan §5 +
 exit-criteria require it; `no-silent-scope-cuts` says build it. Port faerrin's custom Bun
 `visual-regression.ts` (pixelmatch, 0.5%, 5 fixtures) → run **inside `oven/bun:1.3.14` +
 `PLAYWRIGHT_BROWSERS_PATH=/ms-playwright`** as a new path-filtered `ci.yml` job. **Regenerate goldens
@@ -232,12 +234,15 @@ faerrin-parity gate. The render-service runtime Chromium and the VR-job Chromium
 version**. *Possible spec-sanctioned phasing to surface:* land the editor+service+manual-PNG verification
 first, then the VR job — but the gate itself ships in 0013.
 
-**D5 — `canonicalToVss` home (RECOMMEND: port into `@astra/vellum-lang`).** The `⇄ Syntax` button needs the
-reverse transform. It is a language concern and belongs beside `compileVss` in vellum-lang (with its
-parity/round-trip tests), not buried in the editor. Confirm, then add it as a small vellum-lang slice (a
-0004 follow-on) before the editor's syntax-toggle slice. Verify whether the VSS *editor grammar*
-(`vssLanguage.ts` / `vellumHighlight.ts`) also belongs in a shared lib or stays app-local (it is CodeMirror-
-specific → likely app-local, but it couples to vellum-lang's `surface.ts` SIGIL set — R2).
+**D5 — Drop the `⇄ Syntax` button (LOCKED ✅).** faerrin's editor had a canonical↔VSS toggle
+(`convertSyntax()`), which needed the reverse transform `canonicalToVss`. **We drop the button** — so
+`canonicalToVss` is **not ported** and no 0004 follow-on slice is needed. **VSS authoring (O3) is fully
+preserved without it:** typed VSS is compiled to canonical *inside* `parseDocument` (the live preview + the
+render service both render VSS correctly), the slash palette still emits VSS snippets, and
+`vssLanguage.ts`/`vellumHighlight.ts` still provide VSS grammar + highlighting. The only thing removed is the
+*explicit* "convert my buffer between syntaxes" button — `compileVss` is never called directly by the editor
+(parseDocument owns it). The VSS *editor grammar* stays app-local (CodeMirror-specific) but couples to
+vellum-lang's `surface.ts` SIGIL set — keep the R2 sync test.
 
 **D6 — New full-vellum authoring surface (genuinely new, not a pure port).** Plan work-item 2 requires
 **adding `:::fields`, `:::timeline`, `[[crossref]]`** to the slash palette + templates (faerrin's palette
@@ -274,16 +279,15 @@ for fields/timeline (canonical-only snippet vs a `@fields`/`@timeline` VSS form)
 
 ## 6. Proposed slice sketch (for the spec to refine — not locked)
 
-0. *(pre-req, D5)* **vellum-lang `canonicalToVss`** — port the reverse transform + round-trip test
-   (small 0004 follow-on).
 1. **Scaffold `apps/vellum-frontend`** from the strider shell — config namespace `vellum-frontend`
    (10367, service-name, public-origin) mirrored in kdl+Zod+Pydantic (+ tests); uv-exclude; the 6-sibling
    Dockerfile-manifest ripple; RUM seam; SSR smoke + ≥1 test.
 2. **Editor port** — CodeMirror host + `Preview` (`parseDocument`→`<DocumentView>`) + docStore +
    slashComplete + templates + shareLink + vssLanguage/vellumHighlight; gothic theme + fonts. Port the
-   `src/app/` tests (docStore/shareLink/vssLanguage).
-3. **`⇄ Syntax` + new full-vellum authoring (D6)** — wire `compileVss`/`canonicalToVss`; add
-   `:::fields`/`:::timeline`/`[[crossref]]` palette snippets + templates + highlight decoration.
+   `src/app/` tests (docStore/shareLink/vssLanguage). **Drop `convertSyntax`/the ⇄ Syntax button (D5)** —
+   no `compileVss`/`canonicalToVss` direct calls (parseDocument owns VSS compilation).
+3. **New full-vellum authoring (D6)** — add `:::fields`/`:::timeline`/`[[crossref]]` palette snippets +
+   templates + highlight decoration (genuinely new surface; faerrin's palette predates full-vellum).
 4. **Scaffold `apps/vellum-render`** — Bun.serve server (`/render`,`/health`, caps, semaphore(2),
    egress-block) + render-entry (`window.vellumRender`, rAF/fonts settle) built with plain Vite; config
    namespace `vellum-render` (10368); `init_telemetry`+render span+SIGTERM flush; caps/semaphore unit tests.
@@ -306,8 +310,8 @@ incl. the VR gate (D4) and the render service — ships in 0013.
 ## 7. Hand-off to the Spec gate
 
 Author the NLSpec at `thoughts/astra/specs/0013-vellum-frontend-spec.md` (`octo:spec`) building on this doc +
-the sub-plan's settled O1–O3. Lock **D1–D6** with the user first (esp. D2 two-apps/Caddy routing, D3 base
-image, D4 don't-defer-VR, D5 `canonicalToVss` home). Then drive `octo:embrace` against the spec, porting
+the sub-plan's settled O1–O3. **D1–D6 are settled (§4): D2/D4/D5 LOCKED by the user 2026-06-23, D1/D3/D6
+accepted.** Then drive `octo:embrace` against the spec, porting
 faerrin verbatim where the contract is fixed (the render service, the editor internals) and adding only the
 genuinely-new surface (telemetry, the SSR shell, the full-vellum palette, the VR CI job).
 
