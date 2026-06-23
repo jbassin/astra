@@ -1,0 +1,216 @@
+"""The `episodes_index` catalog (D1, plan 0012) — pure helpers + the build over
+the committed golden fixtures (the 7 real `through-a-song-darkly` sessions:
+6 regular + 1 mega recap).
+
+The build is exercised through its pure core (`build_index`) against the real
+ontology-being arc titles + hosts (committed + deterministic, like
+`test_mouthpiece` uses `load_hosts`). The Dagster wiring is asserted in
+`test_assets`.
+"""
+
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+import pytest
+from astra_mouthpiece.episodes_index import (
+    EpisodeHost,
+    SessionInput,
+    build_episode_numbers,
+    build_index,
+    discover_sessions,
+    episode_title,
+    is_recap,
+    parse_id,
+    strip_audio_tags,
+)
+
+GOLDEN = Path(__file__).parent / "fixtures" / "golden"
+SCRIPTS = sorted(GOLDEN.glob("*.script.json"))
+
+MEGA_ID = "000.through-a-song-darkly.2026-6-8-recap-of-2026-5-7"
+# The 6 regular sessions in date order → their expected 1-based episode numbers.
+REGULAR_IN_ORDER = [
+    "000.through-a-song-darkly.2026-5-7",
+    "000.through-a-song-darkly.2026-5-11",
+    "000.through-a-song-darkly.2026-5-21",
+    "000.through-a-song-darkly.2026-5-25",
+    "000.through-a-song-darkly.2026-6-1",
+    "000.through-a-song-darkly.2026-6-8",
+]
+
+
+# ── pure helpers ─────────────────────────────────────────────────────────────
+
+
+def test_strip_audio_tags() -> None:
+    assert strip_audio_tags("[warm] Hey — [laughs] big week.") == "Hey — big week."
+    assert strip_audio_tags("clean prose") == "clean prose"
+    # punctuation isn't stranded after a removed tag
+    assert strip_audio_tags("Wait [beat] , no.") == "Wait, no."
+
+
+def test_parse_id_regular() -> None:
+    assert parse_id("000.through-a-song-darkly.2026-5-25") == (
+        0,
+        "through-a-song-darkly",
+        "2026-5-25",
+    )
+
+
+def test_parse_id_mega_keeps_recap_token_as_date() -> None:
+    assert parse_id(MEGA_ID) == (0, "through-a-song-darkly", "2026-6-8-recap-of-2026-5-7")
+
+
+def test_is_recap() -> None:
+    assert is_recap(MEGA_ID)
+    assert not is_recap("000.through-a-song-darkly.2026-6-8")
+
+
+def test_episode_title_strips_campaign_prefix() -> None:
+    assert (
+        episode_title("Through a Song, Darkly — The Ballroom", "Through a Song, Darkly")
+        == "The Ballroom"
+    )
+    # tolerant of a colon separator + case
+    assert episode_title("through a song, darkly: Canary", "Through a Song, Darkly") == "Canary"
+    # no prefix → unchanged
+    assert (
+        episode_title("We're Hot Rod People Now", "Through a Song, Darkly")
+        == "We're Hot Rod People Now"
+    )
+    # an all-prefix title falls back to the full title (never empties)
+    assert (
+        episode_title("Through a Song, Darkly", "Through a Song, Darkly")
+        == "Through a Song, Darkly"
+    )
+
+
+def test_build_episode_numbers_ranks_by_date_recap_zero() -> None:
+    ids = [*REGULAR_IN_ORDER, MEGA_ID]
+    numbers = build_episode_numbers(ids)
+    assert [numbers[i] for i in REGULAR_IN_ORDER] == [1, 2, 3, 4, 5, 6]
+    assert numbers[MEGA_ID] == 0
+
+
+def test_build_episode_numbers_is_date_ordered_not_input_ordered() -> None:
+    # shuffle the input; numbering must follow date, not list order
+    numbers = build_episode_numbers(list(reversed(REGULAR_IN_ORDER)))
+    assert numbers["000.through-a-song-darkly.2026-5-7"] == 1
+    assert numbers["000.through-a-song-darkly.2026-6-8"] == 6
+
+
+# ── build over the golden fixtures ───────────────────────────────────────────
+
+
+def _session_inputs() -> list[SessionInput]:
+    out: list[SessionInput] = []
+    for script_path in SCRIPTS:
+        sid = script_path.name[: -len(".script.json")]
+        title = json.loads(script_path.read_text())["title"]
+        digest = json.loads((GOLDEN / f"{sid}.digest.json").read_text())
+        out.append(
+            SessionInput(
+                id=sid,
+                title=title,
+                synopsis=digest["synopsis"],
+                duration_ms=0,
+                has_audio=False,
+                has_transcript=False,
+                audio_version="",
+            )
+        )
+    return out
+
+
+@pytest.fixture
+def index():
+    from astra_mouthpiece.assets import _arc_maps, _episode_hosts
+
+    arc_titles, arc_main = _arc_maps()
+    return build_index(
+        _session_inputs(), arc_titles=arc_titles, arc_main=arc_main, hosts=_episode_hosts()
+    )
+
+
+def test_index_covers_every_golden_session(index) -> None:
+    assert len(index.episodes) == 7
+    assert {e.id for e in index.episodes} == {*REGULAR_IN_ORDER, MEGA_ID}
+
+
+def test_index_sorted_arc_then_date_recap_last(index) -> None:
+    # the mega shares 2026-6-8's sort key but is the capstone → sorts last
+    assert [e.id for e in index.episodes] == [*REGULAR_IN_ORDER, MEGA_ID]
+
+
+def test_index_episode_numbers(index) -> None:
+    by_id = {e.id: e for e in index.episodes}
+    assert [by_id[i].episode_no for i in REGULAR_IN_ORDER] == [1, 2, 3, 4, 5, 6]
+    assert by_id[MEGA_ID].episode_no == 0
+
+
+def test_index_arc_title_and_main_from_ontology(index) -> None:
+    for e in index.episodes:
+        assert e.arc_slug == "through-a-song-darkly"
+        assert e.arc_title == "Through a Song, Darkly"
+        assert e.is_main is True
+
+
+def test_index_hosts_and_episode_title(index) -> None:
+    e = index.episodes[0]
+    assert e.hosts["A"].name == "Bram"
+    assert e.hosts["B"].name == "Maeve"
+    assert e.hosts["C"].name == "Pip"
+    # episode_title never empties and has no leading arc prefix
+    assert e.episode_title
+    assert not e.episode_title.lower().startswith("through a song, darkly")
+
+
+def test_index_dumps_camelcase_for_the_ts_consumer(index) -> None:
+    row = json.loads(index.model_dump_json(by_alias=True))["episodes"][0]
+    for key in (
+        "arcNo",
+        "arcTitle",
+        "episodeNo",
+        "isMain",
+        "dateSortKey",
+        "episodeTitle",
+        "durationMs",
+        "hasAudio",
+        "hasTranscript",
+        "audioVersion",
+    ):
+        assert key in row
+    assert row["hosts"]["A"]["name"] == "Bram"
+
+
+# ── the impure shell over a session-dir tree ─────────────────────────────────
+
+
+def test_discover_sessions_globs_dirs_and_skips_scriptless(tmp_path: Path) -> None:
+    # two real sessions laid out as episodes_path/<id>/{script,digest}.json
+    for sid in ("000.through-a-song-darkly.2026-5-7", "000.through-a-song-darkly.2026-6-8"):
+        d = tmp_path / sid
+        d.mkdir()
+        (d / "script.json").write_text((GOLDEN / f"{sid}.script.json").read_text())
+        (d / "digest.json").write_text((GOLDEN / f"{sid}.digest.json").read_text())
+    # a dir with no script.json is skipped
+    (tmp_path / "000.through-a-song-darkly.2026-9-9").mkdir()
+
+    sessions = discover_sessions(tmp_path)
+    assert {s.id for s in sessions} == {
+        "000.through-a-song-darkly.2026-5-7",
+        "000.through-a-song-darkly.2026-6-8",
+    }
+    for s in sessions:
+        assert s.title
+        assert s.synopsis
+        assert s.has_audio is False  # no mp3 seeded in this tree
+        assert s.duration_ms == 0
+        assert s.audio_version == ""
+
+
+def test_episode_host_model_drops_voice_id() -> None:
+    # the manifest host shape carries name+persona only (voice ids stay TTS-only)
+    assert set(EpisodeHost(name="Bram", persona="warm").model_dump().keys()) == {"name", "persona"}

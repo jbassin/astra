@@ -10,6 +10,7 @@ import dagster as dg
 from astra_akasha_backend.assets import akasha_corpus_snapshot
 from astra_linguist.assets import correction_candidates, scribe_output_sensor, session_transcripts
 from astra_mouthpiece.assets import (
+    episodes_index,
     linguist_output_sensor,
     mega_digest,
     session_audio_clips,
@@ -49,6 +50,7 @@ defs = dg.Definitions(
         session_audio_clips,
         session_episode,
         mega_digest,
+        episodes_index,
     ],
     sensors=[craig_drop_sensor, scribe_output_sensor, linguist_output_sensor],
 )

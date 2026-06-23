@@ -29,6 +29,12 @@ from astra_observe import get_logger, get_meter
 from . import linguist_io
 from .assemble import assemble_episode
 from .digest import distill_session
+from .episodes_index import (
+    INDEX_FILENAME,
+    EpisodeHost,
+    build_index,
+    discover_sessions,
+)
 from .grounding import pages_from_corpus
 from .hosts import load_hosts
 from .mega import MegaMember, fuse_digests, mega_id, select_members
@@ -185,6 +191,50 @@ def mega_digest(context: dg.AssetExecutionContext, config: MegaConfig) -> dg.Mat
     )
 
 
+# ── the cross-episode catalog (D1, plan 0012) ────────────────────────────────
+
+
+def _episode_hosts() -> dict[str, EpisodeHost]:
+    """The A/B/C persona block (name+persona) from ontology-being — every episode
+    shares it (astra carries hosts from ontology, not the script's echoed block)."""
+    h = load_hosts()
+    return {
+        "A": EpisodeHost(name=h.a.name, persona=h.a.persona),
+        "B": EpisodeHost(name=h.b.name, persona=h.b.persona),
+        "C": EpisodeHost(name=h.c.name, persona=h.c.persona),
+    }
+
+
+def _arc_maps() -> tuple[dict[str, str], dict[str, bool]]:
+    """arc slug → (campaign.name, campaign.main) from ontology-being (the arc title
+    truth — replaces faerrin's shibboleth.json)."""
+    from astra_ontology_being import load as load_being
+
+    being = load_being()
+    return (
+        {c.slug: c.name for c in being.campaigns},
+        {c.slug: c.main for c in being.campaigns},
+    )
+
+
+@dg.asset(group_name="mouthpiece")
+def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """Glob the session dirs → one sorted ``episodes-index.json`` catalog that
+    mouthpiece-frontend (0012) reads at build. Owns id-parse, the arc-then-date
+    sort, per-arc episode numbering, arc titles (campaign.name), ffprobe duration
+    + the audio cache-bust token (episodes_index.py)."""
+    sessions = discover_sessions(_out_root())
+    arc_titles, arc_main = _arc_maps()
+    index = build_index(sessions, arc_titles=arc_titles, arc_main=arc_main, hosts=_episode_hosts())
+    _atomic_write(_out_root() / INDEX_FILENAME, index.model_dump_json(indent=2, by_alias=True))
+    return dg.MaterializeResult(
+        metadata={
+            "episodes": len(index.episodes),
+            "with_audio": sum(1 for e in index.episodes if e.has_audio),
+        }
+    )
+
+
 # ── sensor: linguist → mouthpiece ────────────────────────────────────────────
 
 
@@ -204,6 +254,13 @@ def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResu
 
 
 defs = dg.Definitions(
-    assets=[session_digest, session_script, session_audio_clips, session_episode, mega_digest],
+    assets=[
+        session_digest,
+        session_script,
+        session_audio_clips,
+        session_episode,
+        mega_digest,
+        episodes_index,
+    ],
     sensors=[linguist_output_sensor],
 )
