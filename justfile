@@ -94,8 +94,10 @@ linguist-commit:
     set -euo pipefail
     cd /ruby/data/experiments/astra
     git add apps/linguist/transcripts apps/linguist/data
+    changed=""
     if ! git diff --cached --quiet; then
-      n=$(git diff --cached --name-only | grep -c .)
+      changed=$(git diff --cached --name-only)
+      n=$(printf '%s\n' "$changed" | grep -c .)
       git commit --no-verify -q \
         -m "chore(linguist): auto-commit ${n} new transcript/data file(s)" \
         -m "Pipeline-generated source-of-record, committed by the linguist-commit timer."
@@ -107,6 +109,20 @@ linguist-commit:
         echo "linguist-commit: push FAILED (will retry next run)" >&2; exit 1; fi
     else
       echo "linguist-commit: nothing to push"
+    fi
+    # If this run committed akasha content (it reads apps/linguist/{transcripts,data} at build),
+    # rebuild + redeploy the wiki so the new sessions actually appear. akasha bakes content at
+    # build time and needs no secrets, so a plain targeted compose up suffices; a failed build
+    # leaves the running container untouched (no downtime). NOTE: mouthpiece-frontend is NOT
+    # handled here yet — its live-pipeline catalog/audio integration is still deferred (the
+    # pipeline writes date-keyed episode dirs the index builder can't discover).
+    if printf '%s\n' "$changed" | grep -qE '^apps/linguist/(transcripts|data)/'; then
+      echo "linguist-commit: akasha content changed — rebuilding + redeploying akasha-frontend"
+      if (cd deploy && docker compose up -d --build akasha-frontend); then
+        echo "linguist-commit: akasha-frontend redeployed"
+      else
+        echo "linguist-commit: akasha-frontend redeploy FAILED (rerun: just up, or compose up --build akasha-frontend)" >&2
+      fi
     fi
 
 # Install + start the systemd USER timer that runs `linguist-commit` every 15 min. One-time
