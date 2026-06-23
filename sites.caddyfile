@@ -149,3 +149,13 @@ signoz.iridi.cc {
 	import local_only
 	reverse_proxy localhost:10351
 }
+
+# Dagster UI — the pipeline control plane (run/asset/sensor management). Internal
+# admin surface, so local network only (import local_only). Compose's dagster-webserver
+# publishes host port 10350. (Needs a dagster.iridi.cc DNS record — manual, like the
+# other internal/outward-facing hosts.)
+dagster.iridi.cc {
+	import astra_site
+	import local_only
+	reverse_proxy localhost:10350
+}
