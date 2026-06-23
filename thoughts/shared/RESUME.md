@@ -49,15 +49,16 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   auto-rebuilds+redeploys **akasha-frontend** (`96e0b96`/`079c045`); akasha cutover gates loosened for live
   growth (`ed3c561`). **akasha-frontend is live with the 2 new sessions** (HTTP 200). All in
   `[[pipeline-live-run-gotchas]]`.
-  - **▶ NEXT SESSION (user-requested): the mouthpiece-frontend LIVE-PIPELINE INTEGRATION.** mouthpiece-frontend
-    still shows a fixed 7-episode golden-fixture demo; the 2 live episodes can't even be discovered (pipeline
-    writes **date-keyed** episode dirs but `discover_sessions`/the snapshot/the frontend key on the **episode
-    id**). User chose a **live-derived snapshot**. **Resume at step 1: reconcile the layout** (make the
-    `session_episode` asset write episode-id-keyed dirs + matching audio names, or make `discover_sessions`
-    derive id from the script/stem + glob audio). Then: catalog union (historical golden + live), seed live
-    audio into the `mouthpiece-audio` volume, repoint the snapshot + freshness gate (golden→live) + make
-    frontend count-tests content-agnostic, then the publish/redeploy hook. Full plan in
-    `[[pipeline-live-run-gotchas]]`.
+  - **✅ mouthpiece-frontend LIVE-PIPELINE INTEGRATION — DONE + LIVE-VERIFIED** (`a472d54`…`7c25d2f`, this
+    session, all 5 steps). The frontend now serves the **full 9-episode corpus** (7 migrated historical ∪ 2
+    live), and auto-publishes as the pipeline produces more. (1) `discover_sessions` reads the id from
+    `script.json` not the date-keyed dir; (2) `astra_mouthpiece.migrate` (`just mouthpiece-migrate-history`)
+    seeds faerrin's flat back-catalog into id-keyed dirs, live-precedence + `_dedup_by_id`; (3) `mouthpiece-seed`
+    gathers faerrin-historical then astra-live (live overwrites); (4) `astra_mouthpiece.publish` regenerates the
+    committed snapshot from the live corpus (9 eps) + the gates went content-agnostic (superset-of-golden floor,
+    "exactly one recap"); (5) the `linguist-commit` timer auto-publishes + redeploys mouthpiece-frontend on a new
+    episode (deterministic no-op otherwise). Verified live: 10366 healthy, `/episodes.json`=9, SSR home 9 cards
+    incl. live "Six Sandwiches", live episode 200 + audio Range 206. Full facts in `[[pipeline-live-run-gotchas]]`.
 - **0012 mouthpiece-frontend — COMPLETE: all 6 slices BUILT + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE**
   (`032e107`(s1)…`9639bd5`(s6)). The podcast read-surface (faerrin `face` → SSR TanStack), the **third
   0011–0013 frontend** on the strider/akasha template, healthy on **10366**. Scope+spec gates done
@@ -305,14 +306,8 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: mouthpiece-frontend live-pipeline integration (user-requested), then 0013 vellum-frontend + Phase-6 cutover
+### Next: 0013 vellum-frontend + Phase-6 cutover (mouthpiece live-integration DONE this session)
 
-0. **▶ mouthpiece-frontend LIVE-PIPELINE INTEGRATION (user asked to take this on next session).** The live
-   pipeline now produces real episodes but mouthpiece-frontend shows a golden-fixture demo and can't discover
-   live episodes (date-keyed dirs vs episode-id catalog). User chose a **live-derived snapshot**. **Start at
-   step 1 = layout reconciliation** (see `[[pipeline-live-run-gotchas]]` for the full 5-step plan + the exact
-   `discover_sessions` mismatch). Touches the mouthpiece backend asset layout + its tests + the frontend tests
-   + the deployed frontend — do it deliberately, not as a timer hack.
 1. **0013 vellum-frontend — the final frontend.** Stamp from the strider/akasha/**mouthpiece** template (three
    worked examples now). **READ FIRST:** `apps/strider/README.md` + `apps/akasha-frontend` + `apps/mouthpiece-frontend`
    (the simplest worked example — single committed snapshot → generated modules → routes, `createSsrServer`
