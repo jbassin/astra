@@ -30,7 +30,7 @@ scribe {
     // Craig zips land in incoming-path; each session is written to {data-path}/saved/{date}.
     data-path "/ruby/data/experiments/astra/apps/scribe/data"
     incoming-path "/ruby/data/experiments/astra/apps/scribe/incoming"
-    tmp-path ""
+    tmp-path "/ruby/data/experiments/astra/apps/scribe/tmp"
     state-file ""
     downstream-cmd ""
     keep-zip #false
@@ -66,7 +66,12 @@ linguist {
 }
 
 mouthpiece {
-    episodes-path ""
+    // Where the per-session asset graph writes (digest/script/clips/episode.mp3/
+    // transcript.md per session) + the episodes_index asset globs. Host-absolute
+    // under the repo, bind-mounted into the Dagster services at the same path (deploy/
+    // docker-compose.yml). Empty would resolve to the cwd — set it so a real pipeline
+    // run lands here. (NB the mouthpiece-FRONTEND audio volume is separate, D2.)
+    episodes-path "/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes"
     elevenlabs-api-key ref="sops:elevenlabs_api_key"
 }
 

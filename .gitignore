@@ -55,3 +55,14 @@ apps/linguist/data/*.candidates.json
 # (data/saved/{date}/); transient pipeline I/O on this deploy, not source.
 apps/scribe/incoming/
 apps/scribe/data/
+
+# Pipeline output dirs bind-mounted into the Dagster services (deploy/docker-compose).
+# Keep the dir (a .gitkeep so the bind-mount source exists on clone), ignore the live
+# pipeline writes. (linguist/transcripts + linguist/data keep their committed historical
+# data, so they're NOT ignored — live writes there are uncommitted operator state.)
+apps/scribe/tmp/*
+!apps/scribe/tmp/.gitkeep
+apps/linguist/script/*
+!apps/linguist/script/.gitkeep
+apps/mouthpiece-backend/episodes/*
+!apps/mouthpiece-backend/episodes/.gitkeep
