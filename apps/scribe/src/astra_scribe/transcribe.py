@@ -73,12 +73,30 @@ class TrackTranscriber:
         for i, (start, end) in enumerate(chunks):
             flac = work / f"chunk-{i:04d}.flac"
             self.run(audio.chunk_args(path, start, end, str(flac)))
-            for seg in transcribe(
-                flac,
-                model=self.model,
-                api_key=self.api_key,
-                transcription_fn=self.transcription_fn,
-            ):
+            # The cut flac can be far shorter than its span — `chunk_args` uses `-ss`
+            # input-seek (snaps to a keyframe, overshoots near EOF) and ffprobe's container
+            # duration can overstate the real audio stream — so re-check the ACTUAL flac,
+            # not the span. Groq 400s on audio < 0.01s; skip a too-short (speechless) cut.
+            if self._duration(str(flac)) < self.min_chunk_sec:
+                continue
+            try:
+                chunk_segments = list(
+                    transcribe(
+                        flac,
+                        model=self.model,
+                        api_key=self.api_key,
+                        transcription_fn=self.transcription_fn,
+                    )
+                )
+            except Exception as exc:  # noqa: BLE001 — backstop on Groq's own length floor
+                # Belt-and-suspenders beyond the duration probe: if Groq still rejects the
+                # clip as too short (a silence-padded AAC whose probed duration overstates
+                # the decodable audio), skip it rather than fail the whole session. Any
+                # other error is real — re-raise it.
+                if "too short" in str(exc).lower():
+                    continue
+                raise
+            for seg in chunk_segments:
                 # Each chunk is a contiguous session slice → offset is just `start`.
                 segments.append(
                     {
