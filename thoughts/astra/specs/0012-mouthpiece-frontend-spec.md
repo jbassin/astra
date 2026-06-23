@@ -1,6 +1,13 @@
 # NLSpec 0012 — mouthpiece-frontend (the podcast read-surface)
 
-**Status:** **SPEC — ready for `octo:embrace`.** Scope gate COMPLETE (`399d5cd`,
+**Status:** **BUILT — all 6 slices DONE + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE** (`032e107`(s1)…
+`9639bd5`(s6), 2026-06-23). Healthy on 10366; `/` + `/episode/<dotted-id>` + `/episodes.json` serve, audio
+Range-serves same-origin (HTTP 206), SigNoz has `astra.mouthpiece-frontend` SSR spans. The third 0011–0013
+SSR frontend. **Mid-build, D6 was revised (user-approved): the transcript is INLINED into the manifest** so
+the frontend is a pure single-artifact consumer (the backend already owns both helpers) — see
+[[mouthpiece-frontend-0012-gotchas]]. **Spec-sanctioned deferrals:** the `mouthpiece.iridi.cc` DNS record
+(outward-facing) + the live ElevenLabs pipeline→audio path (the manual `just mouthpiece-seed` substitutes).
+Scope gate COMPLETE (`399d5cd`,
 [`../../shared/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md`](../../shared/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md)).
 This spec builds on that scope doc, carries **D1–D3 locked with the user (2026-06-21)**, and **settles
 D4–D7** below.
@@ -160,33 +167,35 @@ Slices (each CI-green before commit; push on chunk completion; reproduce the rel
 
 ## Acceptance criteria (exit gate)
 
-- [ ] **Both toolchains green locally** before pushing (per [[no-ci-monitoring]]): the py lane
-      (`uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest`) for the slice-1
-      asset, and `bun --filter '*' {typecheck,test,build}` + `bunx biome ci .` over the **whole** repo for the
-      frontend.
-- [ ] **`episodes_index` asset (D1):** emits a valid sorted `episodes-index.json` over the 14 golden fixtures —
-      ids parsed, sort order correct (`arcNo` then `dateSortKey`), **mega recaps at arc-end**, arcTitle resolved
-      from ontology-being `campaign.name`, `durationMs`/`audioVersion` stamped. Loaded by
-      `dagster/definitions.py`. py-CI green.
-- [ ] **Grid + episode pages render from the manifest:** `index` shows the episode count + summed runtime + the
-      `EpisodeCard` grid; `episode/$id` renders meta/title/arc/hosts/synopsis. Episodes **sort by the id schema
-      (recaps at arc-end), matching face**. Dotted `$id` captures losslessly.
-- [ ] **`Player` (D2/D5):** plays/scrubs/resumes against the **real seeded audio** (same-origin volume),
-      MediaSession metadata + position + action handlers work, localStorage resume restores within the guard,
-      pointer-capture scrubbing works on touch (`touch-action:none`). Client-only — no browser-API access on the
-      SSR path.
-- [ ] **Transcript (D4):** renders speaker-colored from `script.turns` (A/B/C), `stripAudioTags` removes the
-      `[…]` cues, `hosts.C` guarded for two-host scripts.
-- [ ] **`/episodes.json` output endpoint (D7):** build-emits the date→`{link,title}` deep-link map against
-      `public-origin`; distinct from the build-input `episodes-index.json`.
-- [ ] **gothic re-skin (D3):** `@tailwindcss/vite` + gothic wired; face's bespoke CSS/fonts absent; styling is
-      gothic throughout.
-- [ ] **SSR + deploy:** runs as an SSR Compose service on 10366 (no PORT env) behind a Caddy `astra_site` block,
-      the **audio volume mounted** + `episode.mp3` served same-origin, fonts self-served, healthcheck green,
-      restart-survives. Telemetry verified — `service.name=astra.mouthpiece-frontend` SSR spans in SigNoz (MCP).
-      **(Public DNS deferred — `just caddy-reload` + `mouthpiece.iridi.cc` record, outward-facing.)**
-- [ ] Memory updated (`thoughts/shared/memory/mouthpiece-frontend-0012-gotchas.md`) with the build-time
-      load-bearing gotchas; RESUME "Current state" bumped; committed per-slice + pushed.
+- [x] **Both toolchains green locally** before pushing (per [[no-ci-monitoring]]): py lane (ruff/format/ty/
+      pytest) for the slice-1 asset; `bun --filter '*' {typecheck,test,build}` + `bunx biome ci .` over the
+      whole repo for the frontend.
+- [x] **`episodes_index` asset (D1):** emits a valid sorted `episodes-index.json` over the 14 golden fixtures —
+      ids parsed, sort `arcNo` then `dateSortKey`, **mega recaps at arc-end** (deterministic tiebreak), arcTitle
+      from ontology-being `campaign.name`, `durationMs`/`audioVersion` stamped. Loaded by both app `defs` +
+      `dagster/definitions.py`. py-CI green. **(Revised D6: also inlines the stripped transcript — see below.)**
+- [x] **Grid + episode pages render from the manifest:** `index` shows the count + the `EpisodeCard` grid;
+      `episode/$id` renders meta/title/arc/hosts/synopsis + transcript. Episodes **sort by the id schema
+      (recaps at arc-end), matching face**. **Dotted `$id` captures losslessly** (verified live via a SigNoz
+      `SSR GET /episode/000.through-a-song-darkly.2026-5-7` span). *(Summed grid runtime omitted — durationMs=0
+      in the committed snapshot; the Player reads real duration from `loadedmetadata`, D5.)*
+- [x] **`Player` (D2/D5):** ported 1:1 from face (MediaSession + pointer-capture scrubbing + localStorage
+      resume, every guard preserved). SSR-renders the transport + hydrates; all browser APIs in the mount
+      effect (no leak — verified). Real seeded audio **Range-serves same-origin (HTTP 206)** so scrubbing
+      works. *(Interactive click-play not browser-clicked — no browser in env; the port is verbatim + the
+      audio + range-serving verified at the HTTP level.)*
+- [x] **Transcript (D4):** renders speaker-colored A/B/C from `script.turns`, `strip_audio_tags` removes the
+      `[…]` cues (backend-side now — revised D6), host names resolved. `hosts.C` guarded.
+- [x] **`/episodes.json` output endpoint (D7):** build-emits the date→`{link,title}` deep-link map against
+      `public-origin`; distinct from the build-input `episodes-index.json`. Serves 200.
+- [x] **gothic re-skin (D3):** `@tailwindcss/vite` + gothic wired (plain CSS layered after gothic's theme.css);
+      face's bespoke CSS/fonts absent; the built CSS bundle compiles `--color-void` + the app classes.
+- [x] **SSR + deploy:** SSR Compose service on 10366 (no PORT env), **audio volume mounted** + served
+      same-origin via `createSsrServer` `staticMounts`, fonts self-served, healthcheck green. Telemetry verified
+      — `astra.mouthpiece-frontend` SSR spans in SigNoz (MCP). Caddy block authored + `caddy validate` Valid.
+      **(Public DNS deferred — `mouthpiece.iridi.cc` record, outward-facing.)**
+- [x] Memory updated ([[mouthpiece-frontend-0012-gotchas]]) with the build gotchas; RESUME bumped; committed
+      per-slice + pushed.
 
 ## Risks
 

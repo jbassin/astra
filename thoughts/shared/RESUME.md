@@ -36,25 +36,38 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `0184ed9`, 2026-06-21)
+## Current state — UPDATE THIS SECTION (as of commit `9639bd5`, 2026-06-23)
 
-- **0012 mouthpiece-frontend — SCOPE GATE COMPLETE (next: Spec).** Scope/pre-spec research doc written +
-  verified against the live repos: `thoughts/shared/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md`
-  (UNCOMMITTED until this docs commit). The verification overturned **three** sub-plan assumptions (the gate
-  earning its keep): (1) the plan's "DECIDED N1: mouthpiece-backend emits `episodes.json`" is **FALSE** — 0008
-  emits a flat per-session dir tree, **no manifest**; (2) "static prerender" → **SSR** (Decision I); (3)
-  "gothic preset" but faerrin `face` is ~810 lines of **bespoke neon-HUD CSS**. **Decisions LOCKED with the
-  user (2026-06-21):** **D1** = ADD an `episodes_index` asset to mouthpiece-backend (0008) emitting
-  `episodes.json`, frontend consumes it (→ 0012's first slice reaches into the backend, py-CI-gated); **D2** =
-  seed the **7 real episodes (173 MB, verified on disk** at `faerrin/pkg/caster/out/`) into the episodes dir +
-  **mount as a Docker volume**, serve same-origin (audio out of the image layer); **D3** = **re-skin onto
-  gothic** Tailwind (keep face's structure+player behaviour, drop its CSS). D4–D7 (transcript from
-  script.json turns; duration; helper producer/consumer split; the `episodes.json` input-vs-output naming
-  collision) recommended-but-open, settle in the spec. Port **10366**. The renderer work is genuinely small
-  (1 self-contained `Player` island — MediaSession/scrubbing/localStorage; 2 routes; speaker-colored
-  transcript spans; arc titles from ontology-being `campaign.name` — akasha already imports the `Campaign`
-  shape). See `[[mouthpiece-frontend-0012-gotchas]]`. **Resume at: the Spec gate** (`octo:spec` →
-  `thoughts/astra/specs/0012-mouthpiece-frontend-spec.md`).
+- **0012 mouthpiece-frontend — COMPLETE: all 6 slices BUILT + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE**
+  (`032e107`(s1)…`9639bd5`(s6)). The podcast read-surface (faerrin `face` → SSR TanStack), the **third
+  0011–0013 frontend** on the strider/akasha template, healthy on **10366**. Scope+spec gates done
+  (`399d5cd` scope, `b223abd` spec). **D1–D3 locked; D4–D7 settled in the spec; D6 REVISED mid-build
+  (user-approved): the transcript is INLINED into the manifest** so the frontend is a pure single-artifact
+  consumer (the backend already owns `strip_audio_tags` + `episode_title`) — the frontend ports NO helpers.
+  - **s1 (`032e107`)** `episodes_index` **backend** asset (D1) — globs `episodes_path/<id>/` → one sorted
+    `episodes-index.json`; backend owns ALL shaping (id-parse + `mega.date_sort_key` sort + per-arc
+    `episode_no` + arcTitle from `campaign.name` + ffprobe durationMs + audioVersion + the inlined stripped
+    transcript). 2 documented refinements over face (materialized-session numbering; deterministic recap-last
+    tiebreak). Wired into app `defs` + `dagster/definitions.py`. Tested over the 14 golden fixtures.
+  - **s2 (`669b50d`)** scaffold from the akasha SSR shell — SLIM deps (no pixi/d3/pagefind/vellum/ontology),
+    config namespace `mouthpiece-frontend` (10366) in kdl+Zod+Pydantic, **new-member Dockerfile ripple
+    handled** (5 siblings).
+  - **s3 (`ecbfcee`)** build-content reads the committed `apps/mouthpiece-backend/snapshot/episodes-index.json`
+    (akasha-snapshot pattern + freshness-gate test) → `src/generated/{episodes,transcripts}.ts` (split) +
+    `public/episodes.json` (D7 deep-links). Routes read static modules directly (not `useLoaderData`). Dotted
+    `$id` losslessly (Risk 2 ✓).
+  - **s4 (`887b961`)** gothic re-skin (D3) — masthead/hero/EpisodeCard grid + episode page + speaker-colored
+    transcript (3 fixed hosts).
+  - **s5 (`4ab82aa`)** the `Player` island (Solid→React 1:1) — MediaSession/scrubbing/localStorage; the
+    live-ref fix for React's stale-closure trap; SSR-renders (no ClientOnly); icon PNGs.
+  - **s6 (`9639bd5`)** deploy (D2) — `createSsrServer` `staticMounts` (Range-serving audio), `audio-dir`
+    config, `mouthpiece-audio` volume + `just mouthpiece-seed`, Compose @10366 + Caddy block. **Verified
+    live:** healthy; /, /episode, /episodes.json 200; `/audio/<id>.mp3` HTTP 206 Range (real 24 MB mp3);
+    SigNoz `astra.mouthpiece-frontend` SSR spans.
+  **Spec-sanctioned deferrals:** `mouthpiece.iridi.cc` DNS (outward-facing; Caddy block authored + validated,
+  no `caddy-reload`); the live ElevenLabs pipeline→audio path (manual seed substitutes); grid summed-runtime
+  (durationMs=0 in the committed snapshot — the Player's `loadedmetadata` is authoritative, D5). See
+  `[[mouthpiece-frontend-0012-gotchas]]`.
 - **0011 akasha-frontend BUILT (Phase 5) — ALL 9 slices DONE + PUSHED** (1–9 pushed; HEAD now `0184ed9`,
   four post-slice-9 CI-fix/docs commits: `34b92c3` 0011-COMPLETE docs, `b72ffd4`/`03f0fcd` build-content-test
   + SSR-smoke fixes, `0184ed9` CI-only-test gotchas). The wiki read-surface + the critical-path long pole — **COMPLETE**, deployed locally
@@ -272,14 +285,18 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: 0012 mouthpiece-frontend Spec gate (Scope DONE), then 0013
+### Next: 0013 vellum-frontend (the last 0011–0013 frontend), then Phase-6 cutover
 
-1. **0012 mouthpiece-frontend — SCOPE DONE, author the SPEC next.** D1–D3 locked (see Current state +
-   `[[mouthpiece-frontend-0012-gotchas]]`); D4–D7 open for the spec. `octo:spec` →
-   `thoughts/astra/specs/0012-mouthpiece-frontend-spec.md` off the scope doc
-   `thoughts/shared/research/2026-06-21-mouthpiece-frontend-0012-thoughts.md`. **NB:** slice 1 is a
-   mouthpiece-**backend** addition (the `episodes_index` asset, D1) — not pure frontend.
-2. **0011 akasha-frontend — COMPLETE (all 9 slices built + PUSHED).** Deployed locally + verified live (healthy
+1. **0013 vellum-frontend — the final frontend.** Stamp from the strider/akasha/**mouthpiece** template (three
+   worked examples now). **READ FIRST:** `apps/strider/README.md` + `apps/akasha-frontend` + `apps/mouthpiece-frontend`
+   (the simplest worked example — single committed snapshot → generated modules → routes, `createSsrServer`
+   `staticMounts` for media, no editor) + the migration guide + `[[strider-0016-gotchas]]`,
+   `[[akasha-frontend-0011-gotchas]]`, `[[mouthpiece-frontend-0012-gotchas]]`. Run the Scope → Spec → Implement
+   gates. After 0013: **Phase-6 cutover** (plan `0015-cutover.md`).
+2. **0012 mouthpiece-frontend — COMPLETE** (all 6 slices built + pushed + deployed-local + verified live on
+   10366; audio Range-serves, SigNoz SSR spans). Only open item = the manual `mouthpiece.iridi.cc` DNS edge
+   (outward-facing; Caddy block authored + validated). See `[[mouthpiece-frontend-0012-gotchas]]`.
+3. **0011 akasha-frontend — COMPLETE (all 9 slices built + PUSHED).** Deployed locally + verified live (healthy
    on 10365, telemetry in SigNoz), URL-parity cutover gate GREEN. **Only open item = the manual public edge**
    (`just caddy-reload` + an `akasha.iridi.cc` DNS record — outward-facing, like strider/orator/weal-overlay;
    the Caddy block is authored + in `sites.caddyfile`). See `[[akasha-frontend-0011-gotchas]]`.
