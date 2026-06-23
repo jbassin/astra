@@ -156,3 +156,20 @@ def test_transcribe_normalizes_verbose_json_segments(tmp_path: Any) -> None:
     ]
     assert captured["model"] == "groq/whisper-large-v3"
     assert captured["response_format"] == "verbose_json"  # segments only; words dropped (F1)
+
+
+def test_default_completion_sets_num_retries(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The real litellm path retries transient provider blips (529 Overloaded / 429 /
+    timeout) via litellm's backoff; an explicit num_retries still wins."""
+    import litellm
+    from astra_llm.client import _default_completion
+
+    captured: dict[str, Any] = {}
+    monkeypatch.setattr(litellm, "completion", lambda **kw: captured.update(kw) or "ok")
+
+    assert _default_completion(model="x", messages=[]) == "ok"
+    assert captured["num_retries"] == 5
+
+    captured.clear()
+    _default_completion(model="x", messages=[], num_retries=0)
+    assert captured["num_retries"] == 0

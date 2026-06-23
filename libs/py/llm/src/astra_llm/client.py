@@ -301,4 +301,9 @@ def _default_completion(**kwargs: Any) -> Any:
     # litellm's import cost or require it for offline use.
     import litellm
 
+    # The pipeline runs unattended, so survive transient provider blips — Anthropic 529
+    # "Overloaded" (→ litellm InternalServerError), 429s, timeouts — with litellm's built-in
+    # exponential backoff instead of failing a whole mouthpiece run. Only the real path
+    # retries; a stubbed `completion_fn` never reaches here. Callers can override.
+    kwargs.setdefault("num_retries", 5)
     return litellm.completion(**kwargs)
