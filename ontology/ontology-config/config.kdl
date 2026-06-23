@@ -168,6 +168,29 @@ mouthpiece-frontend {
     audio-dir "/audio"
 }
 
+vellum-frontend {
+    // The PF2e document forge (0013) — the editor read/write surface, an SSR frontend
+    // on the strider/akasha template (Decision I). Same config-single-source contract:
+    // server.ts binds this port + names telemetry; no PORT env. Behind Caddy at
+    // vellum.iridi.cc → host 10367. service-name derives the browser RUM name
+    // (`{service-name}-rum`). public-origin = the absolute base URL (the share-link
+    // origin + the host the render service is reached same-origin under). The PNG
+    // export POSTs same-origin to /render, which Caddy routes to vellum-render (10368).
+    service-name "astra.vellum-frontend"
+    port 10367
+    public-origin "https://vellum.iridi.cc"
+}
+
+vellum-render {
+    // The PNG render service (0013) — a Bun.serve + Playwright sidecar (warm Chromium,
+    // per-request isolated contexts, egress-blocked, semaphore-gated). Same
+    // config-single-source contract: the server binds this port + names telemetry; no
+    // PORT env. The editor reaches it same-origin via Caddy (vellum.iridi.cc/render →
+    // host 10368). A SEPARATE Compose unit from vellum-frontend (D2).
+    service-name "astra.vellum-render"
+    port 10368
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }

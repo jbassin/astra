@@ -148,6 +148,29 @@ const MouthpieceFrontend = z
   })
   .strict();
 
+// The PF2e document-forge editor (0013) — same SSR-frontend contract as the other
+// frontends (Decision I). serviceName + port are the single source for server.ts +
+// vite's dev port; serviceName derives the browser RUM name. The PNG export POSTs
+// same-origin to /render (Caddy routes it to vellum-render). (config-single-source)
+const VellumFrontend = z
+  .object({
+    serviceName: z.string().default("astra.vellum-frontend"),
+    port: z.number().default(10367),
+    // Absolute base URL — the share-link origin + the same-origin host for /render.
+    publicOrigin: z.string().default("https://vellum.iridi.cc"),
+  })
+  .strict();
+
+// The PNG render service (0013) — a Bun.serve + Playwright sidecar, a SEPARATE Compose
+// unit from vellum-frontend (D2). serviceName names its telemetry; port is the bind
+// port (the editor reaches it same-origin via Caddy). (config-single-source)
+const VellumRender = z
+  .object({
+    serviceName: z.string().default("astra.vellum-render"),
+    port: z.number().default(10368),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -176,6 +199,8 @@ export const ConfigSchema = z
     strider: Strider.default(() => Strider.parse({})),
     akashaFrontend: AkashaFrontend.default(() => AkashaFrontend.parse({})),
     mouthpieceFrontend: MouthpieceFrontend.default(() => MouthpieceFrontend.parse({})),
+    vellumFrontend: VellumFrontend.default(() => VellumFrontend.parse({})),
+    vellumRender: VellumRender.default(() => VellumRender.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

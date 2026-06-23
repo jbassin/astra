@@ -141,6 +141,25 @@ class MouthpieceFrontendConfig(_Base):
     audio_dir: str = "/audio"
 
 
+class VellumFrontendConfig(_Base):
+    # The PF2e document-forge editor (0013) — same SSR-frontend contract as the
+    # other frontends (Decision I). service_name + port are the single source for
+    # server.ts + vite's dev port; service_name also derives the browser RUM name.
+    # The PNG export POSTs same-origin to /render (Caddy routes it to vellum-render).
+    service_name: str = "astra.vellum-frontend"
+    port: int = 10367
+    # Absolute base URL — the share-link origin + the same-origin host for /render.
+    public_origin: str = "https://vellum.iridi.cc"
+
+
+class VellumRenderConfig(_Base):
+    # The PNG render service (0013) — a Bun.serve + Playwright sidecar, a SEPARATE
+    # Compose unit from vellum-frontend (D2). service_name names its telemetry; port
+    # is the bind port (the editor reaches it same-origin via Caddy).
+    service_name: str = "astra.vellum-render"
+    port: int = 10368
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -158,4 +177,6 @@ class Config(_Base):
     strider: StriderConfig = Field(default_factory=StriderConfig)
     akasha_frontend: AkashaFrontendConfig = Field(default_factory=AkashaFrontendConfig)
     mouthpiece_frontend: MouthpieceFrontendConfig = Field(default_factory=MouthpieceFrontendConfig)
+    vellum_frontend: VellumFrontendConfig = Field(default_factory=VellumFrontendConfig)
+    vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

@@ -1,0 +1,133 @@
+/* vellum-frontend's page shell, re-skinned onto gothic. gothic's theme.css (imported
+ * in __root) provides the tokens (--color-void/panel/ink/accent/…, --font-display/
+ * body/mono) + reset baseline; this file owns the masthead / landing hero / the
+ * editor-shell frame. The editor's own (CodeMirror + preview + toolbar) styling lands
+ * with the port in slice 2. Plain CSS layered after gothic (which already imports
+ * tailwindcss + @source). */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+html {
+  background-color: var(--color-void);
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  color: var(--color-ink);
+  font-family: var(--font-body), serif;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+/* --- Masthead --- */
+.site-head {
+  display: flex;
+  align-items: baseline;
+  gap: 1.25rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--color-panel);
+}
+.site-brand {
+  font-family: var(--font-display), serif;
+  font-size: 1.4rem;
+  letter-spacing: 0.04em;
+  color: var(--color-ink);
+  text-decoration: none;
+}
+.site-nav {
+  margin-left: auto;
+}
+.site-nav a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.site-nav a:hover {
+  text-decoration: underline;
+}
+
+/* --- Landing hero --- */
+.wrap {
+  flex: 1;
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 3rem 1.5rem;
+}
+.hero-kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.8rem;
+  color: var(--color-accent);
+}
+.hero-title {
+  font-family: var(--font-display), serif;
+  font-size: clamp(2.5rem, 8vw, 4.5rem);
+  line-height: 1.05;
+  margin: 0.25rem 0 1rem;
+}
+.hero-lede {
+  max-width: 40ch;
+  color: var(--color-ink);
+  opacity: 0.85;
+}
+.hero-cta {
+  margin-top: 2rem;
+}
+.cta-button {
+  display: inline-block;
+  padding: 0.7rem 1.4rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 0.4rem;
+  color: var(--color-accent);
+  text-decoration: none;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.95rem;
+}
+.cta-button:hover {
+  background-color: var(--color-accent);
+  color: var(--color-void);
+}
+
+/* --- Editor shell (placeholder until slice 2) --- */
+.editor-shell {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
+}
+.editor-placeholder {
+  color: var(--color-ink);
+  opacity: 0.6;
+  font-family: var(--font-mono), monospace;
+}
+
+/* --- Router boundaries --- */
+.route-boundary {
+  flex: 1;
+  display: grid;
+  place-content: center;
+  gap: 0.75rem;
+  padding: 3rem;
+  text-align: center;
+}
+.route-boundary button {
+  justify-self: center;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--color-accent);
+  border-radius: 0.4rem;
+  background: transparent;
+  color: var(--color-accent);
+  cursor: pointer;
+  font-family: var(--font-mono), monospace;
+}

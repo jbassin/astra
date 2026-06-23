@@ -1,0 +1,50 @@
+{
+  "name": "@astra/vellum-frontend",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev --configLoader runner",
+    "build": "vite build --configLoader runner",
+    "start": "bun run server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "generate:routes": "bun run scripts/generate-routes.ts"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/gothic": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@astra/site-kit": "workspace:*",
+    "@astra/vellum-lang": "workspace:*",
+    "@codemirror/autocomplete": "^6.18.0",
+    "@codemirror/commands": "^6.10.3",
+    "@codemirror/lang-markdown": "^6.3.0",
+    "@codemirror/language": "^6.12.3",
+    "@codemirror/state": "^6.4.1",
+    "@codemirror/view": "^6.34.0",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
+    "@lezer/highlight": "^1.2.3",
+    "@lezer/markdown": "^1.6.4",
+    "@opentelemetry/api": "^1.9.1",
+    "@tanstack/react-router": "^1.170.7",
+    "@tanstack/react-start": "^1.168.10",
+    "codemirror": "^6.0.1",
+    "lz-string": "^1.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.13",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/react": "^16.3.2",
+    "@types/mdast": "^4.0.4",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^4.4.0",
+    "jsdom": "^26.0.0",
+    "tailwindcss": "^4.1.13",
+    "vite": "^6.3.6",
+    "vitest": "^3.0.0"
+  }
+}

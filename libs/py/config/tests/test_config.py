@@ -41,6 +41,11 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.mouthpiece_frontend.port == 10366
     assert cfg.mouthpiece_frontend.public_origin == "https://mouthpiece.iridi.cc"
     assert cfg.mouthpiece_frontend.audio_dir == "/audio"
+    assert cfg.vellum_frontend.service_name == "astra.vellum-frontend"
+    assert cfg.vellum_frontend.port == 10367
+    assert cfg.vellum_frontend.public_origin == "https://vellum.iridi.cc"
+    assert cfg.vellum_render.service_name == "astra.vellum-render"
+    assert cfg.vellum_render.port == 10368
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:

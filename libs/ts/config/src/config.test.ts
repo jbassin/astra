@@ -44,6 +44,11 @@ describe("@astra/config", () => {
     expect(cfg.mouthpieceFrontend.port).toBe(10366);
     expect(cfg.mouthpieceFrontend.publicOrigin).toBe("https://mouthpiece.iridi.cc");
     expect(cfg.mouthpieceFrontend.audioDir).toBe("/audio");
+    expect(cfg.vellumFrontend.serviceName).toBe("astra.vellum-frontend");
+    expect(cfg.vellumFrontend.port).toBe(10367);
+    expect(cfg.vellumFrontend.publicOrigin).toBe("https://vellum.iridi.cc");
+    expect(cfg.vellumRender.serviceName).toBe("astra.vellum-render");
+    expect(cfg.vellumRender.port).toBe(10368);
   });
 
   test("secret fields are lazy refs, not plaintext", () => {
