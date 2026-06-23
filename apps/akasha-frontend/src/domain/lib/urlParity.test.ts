@@ -33,14 +33,20 @@ describe("URL-slug parity — the cutover gate (snapshot ∪ transcripts)", () =
     return slugifyFilePath(`Script/${folder}/${t.date}.md` as FilePath) as string;
   });
 
-  it("produces exactly faerrin's full contentIndex slug set (141 wiki + 76 transcripts = 217)", () => {
-    const produced = [...wiki, ...transcripts].sort();
-    expect(produced).toEqual([...faerrinAllSlugs].sort());
+  it("reproduces faerrin's full contentIndex slug set (no inbound link lost), adding only new transcripts", () => {
+    const produced = new Set([...wiki, ...transcripts]);
+    // The hard cutover invariant: every faerrin URL still resolves (links/bookmarks survive).
+    const missing = faerrinAllSlugs.filter((s) => !produced.has(s));
+    expect(missing).toEqual([]);
+    // Post-cutover the only additions are new live-session transcript pages — the wiki half
+    // stays frozen to the snapshot, so no new non-`Script/` slug may appear.
+    const extra = [...produced].filter((s) => !faerrinAllSlugs.includes(s));
+    expect(extra.every((s) => s.startsWith("Script/"))).toBe(true);
   });
 
   it("has no duplicate slugs across the wiki/transcript union", () => {
     const produced = [...wiki, ...transcripts];
     expect(produced.length).toBe(new Set(produced).size);
-    expect(produced.length).toBe(faerrinAllSlugs.length);
+    expect(produced.length).toBeGreaterThanOrEqual(faerrinAllSlugs.length);
   });
 });

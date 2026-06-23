@@ -39,7 +39,8 @@ describe("build-content", () => {
     expect(existsSync(path.join(PUBLIC, "index.xml"))).toBe(true);
     expect(existsSync(path.join(PUBLIC, "sitemap.xml"))).toBe(true);
     const idx = JSON.parse(readFileSync(path.join(PUBLIC, "static/contentIndex.json"), "utf8"));
-    // 141 wiki pages + 76 reconstituted transcript pages (slice 7) = faerrin's 217.
-    expect(Object.keys(idx).length).toBe(217);
+    // 141 wiki + faerrin's 76 transcripts = 217 at cutover; the live pipeline keeps adding
+    // session transcripts, so the index only grows (parity gates assert none are ever lost).
+    expect(Object.keys(idx).length).toBeGreaterThanOrEqual(217);
   });
 });

@@ -39,9 +39,13 @@ describe("transcript URL-slug parity (N7)", () => {
     expect(missing).toEqual([]);
   });
 
-  it("produces no Script slugs faerrin lacked (no extra) — exact 1:1 parity", () => {
-    const extra = [...produced].filter((s) => !faerrinScriptSlugs.includes(s)).sort();
-    expect(extra).toEqual([]);
-    expect(produced.size).toBe(faerrinScriptSlugs.length);
+  it("adds only well-formed new Script slugs beyond faerrin (live sessions), never drops one", () => {
+    // Post-cutover the pipeline keeps producing sessions, so the set GROWS beyond faerrin's
+    // frozen 76. Exact reproduction of every faerrin slug is the "no missing" test above; the
+    // durable check here is that any extras are valid `Script/<folder>/<date>` slugs — catching
+    // a slug-generation bug in new content — rather than a frozen count.
+    const extra = [...produced].filter((s) => !faerrinScriptSlugs.includes(s));
+    expect(extra.every((s) => /^Script\/[^/]+\/\d{4}-\d{1,2}-\d{1,2}$/.test(s))).toBe(true);
+    expect(produced.size).toBeGreaterThanOrEqual(faerrinScriptSlugs.length);
   });
 });
