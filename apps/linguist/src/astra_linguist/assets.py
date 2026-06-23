@@ -129,7 +129,11 @@ def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeRe
     )
 
 
-@dg.sensor(target=[session_transcripts, correction_candidates], minimum_interval_seconds=30)
+@dg.sensor(
+    target=[session_transcripts, correction_candidates],
+    minimum_interval_seconds=30,
+    default_status=dg.DefaultSensorStatus.RUNNING,
+)
 def scribe_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a linguist partition + run request for each scribe session
     (`{date}/script.json` under `ingest_saved_dir`) not yet processed — the scribe→linguist

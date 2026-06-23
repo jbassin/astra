@@ -28,8 +28,11 @@ telemetry {
 
 scribe {
     // Craig zips land in incoming-path; each session is written to {data-path}/saved/{date}.
+    // incoming-path = the live Craig drop dir (recordings land here); bind-mounted
+    // read-only into the Dagster services (scribe reads + extracts, never deletes —
+    // keep-zip is unused). The craig_drop_sensor globs it for *.zip.
     data-path "/ruby/data/experiments/astra/apps/scribe/data"
-    incoming-path "/ruby/data/experiments/astra/apps/scribe/incoming"
+    incoming-path "/ruby/data/home/drive/Craig"
     tmp-path "/ruby/data/experiments/astra/apps/scribe/tmp"
     state-file ""
     downstream-cmd ""

@@ -241,6 +241,7 @@ def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 @dg.sensor(
     target=[session_digest, session_script, session_audio_clips, session_episode],
     minimum_interval_seconds=30,
+    default_status=dg.DefaultSensorStatus.RUNNING,
 )
 def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a partition + run for each new linguist canonical transcript."""

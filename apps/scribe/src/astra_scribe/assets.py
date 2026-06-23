@@ -69,7 +69,11 @@ def session_outputs(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     return dg.MaterializeResult(metadata={k: v for k, v in counts.items()})
 
 
-@dg.sensor(target=session_outputs, minimum_interval_seconds=30)
+@dg.sensor(
+    target=session_outputs,
+    minimum_interval_seconds=30,
+    default_status=dg.DefaultSensorStatus.RUNNING,
+)
 def craig_drop_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResult:
     """Register a partition + run request for each new Craig zip in `incoming_path`."""
     incoming = load_config().scribe.incoming_path
