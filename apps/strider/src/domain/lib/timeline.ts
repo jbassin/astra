@@ -92,6 +92,21 @@ export function stepDwellMs(step: number): number {
   return Math.max(MIN_DWELL_MS, Math.round(t));
 }
 
+// --- Tithe wave timing (shared by the HexMap animation and the playback dwell) ---
+// The wave fills the board center→edge (a FILL travel window plus a per-tile
+// FLIP), holds briefly at full purple, then fades the whole board out. The total
+// is FIXED (budget-independent) so playback can dwell exactly long enough for the
+// wave to finish before the next layer applies — otherwise the accelerated dwell
+// floors at MIN_DWELL_MS and later layers start applying mid-wave.
+export const TITHE_FILL_MS = 900; // center→edge travel of the flip-in wave
+export const TITHE_FLIP_MS = 220; // per-tile flip-in duration
+export const TITHE_HOLD_MS = 120; // dwell at full purple before fading
+export const TITHE_FADE_MS = 300; // quick fade-out of the filled board
+export const TITHE_TOTAL_MS = TITHE_FILL_MS + TITHE_FLIP_MS + TITHE_HOLD_MS + TITHE_FADE_MS;
+// Hold a tithe layer on screen for the whole wave plus a short beat of black, so
+// the wave is fully gone before the next layer is applied.
+export const TITHE_DWELL_MS = TITHE_TOTAL_MS + 160;
+
 export function slotOpacity(slot: number): number {
   const steps = [1, 0.78, 0.55, 0.32, 0.14];
   return steps[Math.min(slot, steps.length - 1)] ?? 0;

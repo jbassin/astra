@@ -69,9 +69,19 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
   const [visibleOverlays, setVisibleOverlays] = useState<Set<OverlayId>>(
     () => new Set(initialVisibleOverlays),
   );
+  // Layer indices carrying a tithe op — these hold on screen for the full wave
+  // so it completes before the next layer applies.
+  const titheSteps = useMemo(() => {
+    const s = new Set<number>();
+    layers.forEach((layer, i) => {
+      if (layer.changes.some((c) => c.op === "tithe")) s.add(i);
+    });
+    return s;
+  }, [layers]);
   const { layerIndex, prevLayerIndex, isPlaying, setIndex } = useTimelinePlayback(
     layers.length,
     seen,
+    titheSteps,
   );
   const isMobile = useIsMobile();
   const navigate = useNavigate();

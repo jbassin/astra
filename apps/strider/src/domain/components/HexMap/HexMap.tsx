@@ -25,6 +25,7 @@ import {
 } from "@/domain/lib/hexUtils";
 import type { LayerAnimation, Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
 import type { OverlayId } from "@/domain/lib/overlays";
+import { TITHE_FADE_MS, TITHE_FILL_MS, TITHE_FLIP_MS, TITHE_HOLD_MS } from "@/domain/lib/timeline";
 import { AnimationManager } from "./animationManager";
 import {
   axialDistance,
@@ -868,10 +869,6 @@ function buildScene(
   const SKEIN_LINK_MAX_MS = 600;
   const FLIP_WAVE_MAX_MS = 800;
   const PER_HEX_FLIP_MS = 280;
-  const TITHE_FLIP_MS = 220; // per-tile flip-in duration (the fill wave)
-  const TITHE_HOLD_MS = 160; // brief dwell at full purple before the board fades
-  const TITHE_FADE_MS = 720; // uniform fade-out of the filled board
-  const TITHE_MAX_MS = 2900; // total wall-clock budget for the whole wave
 
   function animateRegionBorder(slug: string, durationMs: number): void {
     const region = currentRegions.find((r) => r.slug === slug);
@@ -1072,15 +1069,15 @@ function buildScene(
   // board with purple from the center to the edges; each tile holds once it has
   // flipped in. Once the last ring is filled (+ a hold), the entire filled board
   // fades out together (uniform flip-down). So: fill first, then fade.
-  function animateTithe(budgetMs: number): void {
-    const total = Math.min(TITHE_MAX_MS, Math.max(2200, budgetMs));
-    // Reserve the tail (hold + fade); the rest is the fill wave's travel time.
-    const fillBudget = Math.max(0, total - TITHE_HOLD_MS - TITHE_FADE_MS - TITHE_FLIP_MS);
-    const waveStep = Math.max(14, fillBudget / Math.max(1, titheMaxRing));
+  function animateTithe(): void {
+    // Fixed total (TITHE_TOTAL_MS): the fill wave travels center→edge over
+    // TITHE_FILL_MS regardless of ring count, so playback can dwell exactly long
+    // enough for the wave to finish before the next layer applies.
+    const waveStep = TITHE_FILL_MS / Math.max(1, titheMaxRing);
     const startAt = performance.now();
     const fillDoneAt = titheMaxRing * waveStep + TITHE_FLIP_MS; // last ring fully in
     const fadeStartAt = fillDoneAt + TITHE_HOLD_MS;
-    const durationMs = fadeStartAt + TITHE_FADE_MS + 40;
+    const durationMs = fadeStartAt + TITHE_FADE_MS;
 
     const scaleYAt = (d: number, now: number): number => {
       const local = now - startAt;
@@ -1150,7 +1147,7 @@ function buildScene(
 
   function startAnimation(anim: LayerAnimation): void {
     if (reduced) return;
-    if (anim.tithe) animateTithe(anim.budgetMs);
+    if (anim.tithe) animateTithe();
     const regionDur = Math.min(REGION_BORDER_MAX_MS, anim.budgetMs);
     for (const { slug } of anim.regionAdds) {
       animateRegionBorder(slug, regionDur);
