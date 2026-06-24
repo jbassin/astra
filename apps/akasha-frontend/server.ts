@@ -11,11 +11,15 @@ import { createSsrServer } from "@astra/site-kit";
 import ssr from "./dist/server/server.js";
 
 const HERE = fileURLToPath(new URL(".", import.meta.url));
-const { serviceName, port } = loadConfig().akashaFrontend;
+const { serviceName, port, audioDir } = loadConfig().akashaFrontend;
 
 createSsrServer({
   serviceName,
   port,
   ssr,
   clientDir: `${HERE}dist/client`,
+  // The session-audio volume (~31 GB) — the combined Craig recording each transcript
+  // page plays, served same-origin at /audio/<date>.mp3. A runtime mount; the audio
+  // never enters the image (Decision I). Replaces faerrin's static-audio.iridi.cc.
+  staticMounts: [{ urlPrefix: "/audio/", dir: audioDir }],
 });

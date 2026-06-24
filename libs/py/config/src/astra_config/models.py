@@ -126,6 +126,10 @@ class AkashaFrontendConfig(_Base):
     port: int = 10365
     # Absolute base URL baked into the build-emitted RSS/sitemap/og links.
     public_origin: str = "https://akasha.iridi.cc"
+    # In-container dir the session-audio volume mounts at; the combined Craig recording
+    # each transcript plays is served same-origin at /audio/<date>.mp3 (replaces the
+    # surviving faerrin static-audio.iridi.cc dependency).
+    audio_dir: str = "/audio"
 
 
 class MouthpieceFrontendConfig(_Base):

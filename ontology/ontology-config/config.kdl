@@ -149,6 +149,12 @@ akasha-frontend {
     service-name "astra.akasha-frontend"
     port 10365
     public-origin "https://akasha.iridi.cc"
+    // The in-container dir the session-audio volume mounts at. The SSR server serves
+    // `<audio-dir>/<date>.mp3` same-origin at /audio/<date>.mp3 — the combined Craig
+    // recording each transcript page plays. A runtime volume (akasha-audio, ~31 GB),
+    // never baked into the image (Decision I). This replaces the surviving faerrin
+    // static-audio.iridi.cc dependency; seed with `just akasha-seed`.
+    audio-dir "/audio"
 }
 
 mouthpiece-frontend {

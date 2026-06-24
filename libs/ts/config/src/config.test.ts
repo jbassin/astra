@@ -40,6 +40,7 @@ describe("@astra/config", () => {
     expect(cfg.akashaFrontend.serviceName).toBe("astra.akasha-frontend");
     expect(cfg.akashaFrontend.port).toBe(10365);
     expect(cfg.akashaFrontend.publicOrigin).toBe("https://akasha.iridi.cc");
+    expect(cfg.akashaFrontend.audioDir).toBe("/audio");
     expect(cfg.mouthpieceFrontend.serviceName).toBe("astra.mouthpiece-frontend");
     expect(cfg.mouthpieceFrontend.port).toBe(10366);
     expect(cfg.mouthpieceFrontend.publicOrigin).toBe("https://mouthpiece.iridi.cc");

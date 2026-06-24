@@ -130,6 +130,10 @@ const AkashaFrontend = z
     port: z.number().default(10365),
     // Absolute base URL baked into the build-emitted RSS/sitemap/og links.
     publicOrigin: z.string().default("https://akasha.iridi.cc"),
+    // In-container dir the session-audio volume mounts at; the combined Craig recording
+    // each transcript plays is served same-origin at /audio/<date>.mp3 (replaces the
+    // surviving faerrin static-audio.iridi.cc dependency).
+    audioDir: z.string().default("/audio"),
   })
   .strict();
 

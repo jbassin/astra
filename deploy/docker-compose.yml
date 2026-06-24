@@ -197,7 +197,10 @@ services:
 
   # --- akasha-frontend: the wiki read-surface (0011) — SSR Compose service (Decision
   # I), the second 0011-0013 frontend on the strider template. Build-time snapshot +
-  # transcripts + Pagefind index baked into the image; no live backend (Decision D). ---
+  # transcripts + Pagefind index baked into the image; no live backend (Decision D).
+  # The combined session audio each transcript plays is a runtime VOLUME (akasha-audio,
+  # ~31 GB), served same-origin at /audio/<date>.mp3 — never in the image (D2). Seed
+  # with `just akasha-seed`; this replaces faerrin's static-audio.iridi.cc. ---
   akasha-frontend:
     build:
       context: ..
@@ -211,6 +214,8 @@ services:
     # compose only maps the published host port below.
     ports:
       - "10365:10365" # akasha-frontend SSR (astra range) — also reachable directly
+    volumes:
+      - akasha-audio:/audio:ro # matches kdl akasha-frontend.audio-dir; served at /audio/<date>.mp3
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "bun", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
@@ -365,6 +370,8 @@ volumes:
     name: astra-orator-audio
   mouthpiece-audio:
     name: astra-mouthpiece-audio
+  akasha-audio:
+    name: astra-akasha-audio
 
 networks:
   signoz-net:
