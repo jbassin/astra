@@ -141,14 +141,13 @@ describe("parseLayer / parseFaction (fixtures)", () => {
   it("parses a valid KDL layer file", () => {
     const p = write(
       "0863-07-13T192559-solari-arrives.kdl",
-      'timestamp "0863-07-13T19:25:59"\nmessage "Solari arrives."\nbody "Body text."\n\nclaim faction="solari" {\n    hex 1 2\n}\n',
+      'timestamp "0863-07-13T19:25:59"\nmessage "Solari arrives."\n\nclaim faction="solari" {\n    hex 1 2\n}\n',
     );
     const layer = parseLayer(p);
     expect(layer.slug).toBe("solari-arrives");
     expect(layer.timestamp).toBe("0863-07-13T19:25:59");
     expect(layer.message).toBe("Solari arrives.");
     expect(layer.changes).toEqual([{ op: "claim", faction: "solari", hexes: [[1, 2]] }]);
-    expect(layer.body).toBe("Body text.");
   });
 
   it("maps op=node-name, positional slug, and hex/member children to records", () => {
@@ -230,12 +229,12 @@ describe("serializeLayer ↔ parseLayer round-trip", () => {
   });
   afterAll(() => rmSync(dir, { recursive: true, force: true }));
 
-  function roundTrip(changes: Change[], body?: string) {
+  function roundTrip(changes: Change[]) {
     const file = path.join(dir, "0863-07-13T192559-rt.kdl");
     rmSync(file, { force: true });
     writeFileSync(
       file,
-      serializeLayer({ timestamp: "0863-07-13T19:25:59", message: "m", changes, body }),
+      serializeLayer({ timestamp: "0863-07-13T19:25:59", message: "m", changes }),
       "utf8",
     );
     return parseLayer(file);
@@ -286,10 +285,9 @@ describe("serializeLayer ↔ parseLayer round-trip", () => {
     }
   });
 
-  it("preserves a multi-line body and full timestamp/message", () => {
-    const layer = roundTrip([{ op: "tithe" }], "Line one.\nLine two.");
+  it("preserves the timestamp and message", () => {
+    const layer = roundTrip([{ op: "tithe" }]);
     expect(layer.timestamp).toBe("0863-07-13T19:25:59");
     expect(layer.message).toBe("m");
-    expect(layer.body).toBe("Line one.\nLine two.");
   });
 });

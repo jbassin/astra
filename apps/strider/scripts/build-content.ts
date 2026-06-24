@@ -311,7 +311,6 @@ export function parseLayer(filePath: string): Layer {
 
   let timestamp: string | undefined;
   let message = "";
-  let body = "";
   const changeNodes: Node[] = [];
   for (const node of doc.nodes) {
     const name = node.name.name;
@@ -322,9 +321,6 @@ export function parseLayer(filePath: string): Layer {
     } else if (name === "message") {
       const v = kdlArgs(node)[0];
       message = typeof v === "string" ? v : "";
-    } else if (name === "body") {
-      const v = kdlArgs(node)[0];
-      body = typeof v === "string" ? v.trim() : "";
     } else {
       changeNodes.push(node);
     }
@@ -334,7 +330,7 @@ export function parseLayer(filePath: string): Layer {
   const changes = changeNodes.map((n, i) =>
     parseChange(nodeToChangeRecord(n), `layer ${slug} change #${i}`),
   );
-  return { slug, timestamp, message, changes, body };
+  return { slug, timestamp, message, changes };
 }
 
 function buildLayers(): Layer[] {

@@ -17,7 +17,7 @@ function fakeFactions(): Faction[] {
 }
 
 function layer(slug: string, timestamp: string, changes: Layer["changes"]): Layer {
-  return { slug, timestamp, message: "", changes, body: "" };
+  return { slug, timestamp, message: "", changes };
 }
 
 describe("computeFallenStateByCursor", () => {

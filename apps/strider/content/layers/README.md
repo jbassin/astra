@@ -19,16 +19,15 @@ and the fold agree.
 
 ## Format
 
-The file is **flat KDL**: `timestamp` / `message` / optional `body` are
-top-level metadata nodes, and **every other top-level node is a change whose
-node name is the op**. The first positional argument is the `slug` (where the
-op has one); scalar fields are `key="value"` properties; coordinates are
-`hex q r` child nodes; banner members are `member "slug"` child nodes.
+The file is **flat KDL**: `timestamp` / `message` are top-level metadata nodes,
+and **every other top-level node is a change whose node name is the op**. The
+first positional argument is the `slug` (where the op has one); scalar fields are
+`key="value"` properties; coordinates are `hex q r` child nodes; banner members
+are `member "slug"` child nodes.
 
 ```kdl
 timestamp "2026-05-22T14:30:00Z"   // required, string
 message "Short log line for this event."
-body "Optional flavour prose, unused at render."
 
 add "alkahest-hq" name="Alkahest HQ" faction="alkahest-freight" {
     hex 16 -27

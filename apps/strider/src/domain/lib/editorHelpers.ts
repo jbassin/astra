@@ -71,19 +71,16 @@ interface SerializableLayer {
   timestamp: string;
   message: string;
   changes: Change[];
-  body?: string;
 }
 
 // Serialize a layer to its KDL form (the on-disk authoring format). Flat: the
-// `timestamp`/`message`/`body` metadata nodes, then one node per change whose
-// NAME is the op. parse side lives in scripts/build-content.ts (parseLayerKdl).
+// `timestamp`/`message` metadata nodes, then one node per change whose NAME is
+// the op. parse side lives in scripts/build-content.ts (parseLayer).
 export function serializeLayer(layer: SerializableLayer): string {
   const lines: string[] = [
     `timestamp ${kdlString(layer.timestamp)}`,
     `message ${kdlString(layer.message)}`,
   ];
-  const body = layer.body?.trim() ?? "";
-  if (body) lines.push(`body ${kdlString(body)}`);
   for (const c of layer.changes) {
     lines.push("");
     lines.push(...serializeChange(c));

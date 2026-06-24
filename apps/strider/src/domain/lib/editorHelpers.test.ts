@@ -76,14 +76,12 @@ describe("serializeLayer", () => {
     expect(out).not.toContain("faction=");
   });
 
-  it("emits a body node when a body is present", () => {
+  it("emits a bare op node with no fields", () => {
     const out = serializeLayer({
       timestamp: "2026-05-22T14:30:00Z",
-      message: "with body",
+      message: "removal",
       changes: [{ op: "remove", slug: "gone" }],
-      body: "Notes about this event.",
     });
-    expect(out).toContain('body "Notes about this event."');
     expect(out).toContain('remove "gone"');
   });
 

@@ -97,7 +97,6 @@ export interface Layer {
   timestamp: string;
   message: string;
   changes: Change[];
-  body: string;
 }
 
 // One-shot animation hint passed from MapView to HexMap when the timeline

@@ -16,12 +16,11 @@ Don't hand-write a colliding filename — the writer rejects existing files with
 
 ## File shape (flat KDL)
 
-`timestamp` / `message` (and an optional `body`) are top-level nodes; **every other top-level node is a change, and its node name is the op**. Coordinates are `hex q r` child nodes; banner members are `member "slug"` child nodes.
+`timestamp` / `message` are top-level nodes; **every other top-level node is a change, and its node name is the op**. Coordinates are `hex q r` child nodes; banner members are `member "slug"` child nodes.
 
 ```kdl
 timestamp "0863-07-18T04:14:00Z"   // ISO-ish; the build only requires it be a string
 message "Radiant Arms Base established."
-body "Optional flavour prose — unused at render, kept for the log."
 
 add "radiant-arms-base" name="Radiant Arms Base" faction="radiant-arms" {
     hex -23 5
@@ -35,7 +34,7 @@ skein-add "final-caliber" name="Final Caliber" faction="radiant-arms" symbol="sy
 skein-connect from="final-caliber" to="ears-that-hear-the-truth"
 ```
 
-`message` may be the empty string (`message ""`); the build defaults a missing one to `""`. `body` is optional and unused at render.
+`message` may be the empty string (`message ""`); the build defaults a missing one to `""`.
 
 ## `Change` op cheat sheet
 

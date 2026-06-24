@@ -10,7 +10,6 @@ function makeLayer(overrides: Partial<Layer> = {}): Layer {
     timestamp: "863-07-13T14:21:00Z",
     message: "Hildebrandt arrives on the strider",
     changes: [],
-    body: "",
     ...overrides,
   };
 }
