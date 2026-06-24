@@ -195,6 +195,16 @@ describe("serializeLayer", () => {
       slug: "concord",
     });
   });
+
+  it("round-trips a tithe (no fields)", () => {
+    const out = serializeLayer({
+      timestamp: "2026-05-22T14:30:00Z",
+      message: "The strider takes its tithe.",
+      changes: [{ op: "tithe" }],
+    });
+    const parsed = matter(out);
+    expect(parsed.data.changes[0]).toEqual({ op: "tithe" });
+  });
 });
 
 describe("hexFactionMap", () => {

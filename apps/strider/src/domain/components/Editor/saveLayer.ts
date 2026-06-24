@@ -19,9 +19,11 @@ export async function saveLayer({ draftChange, logMessage, timestamp }: SaveArgs
       : draftChange.op === "claim"
         ? slugify(logMessage) ||
           `claim-${draftChange.faction ?? "none"}-${draftChange.hexes.length}`
-        : draftChange.op === "update"
-          ? slugify(logMessage) || draftChange.slug
-          : draftChange.slug;
+        : draftChange.op === "tithe"
+          ? slugify(logMessage) || "tithe"
+          : draftChange.op === "update"
+            ? slugify(logMessage) || draftChange.slug
+            : draftChange.slug;
   const filename = layerFilename(timestamp, fileSlug);
   const content = serializeLayer({
     timestamp,

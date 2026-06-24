@@ -518,3 +518,24 @@ describe("foldBanners", () => {
     ).toThrow(/not active/);
   });
 });
+
+describe("tithe op (inert across every fold)", () => {
+  const titheLayer = layer("t", "2026-01-01T00:00:00Z", [{ op: "tithe" }]);
+
+  it("changes no region / skein / banner / override state", () => {
+    expect(foldRegions([titheLayer])).toEqual([]);
+    expect(foldSkein([titheLayer])).toEqual({ regions: [], connections: [] });
+    expect(foldBanners([titheLayer])).toEqual([]);
+    expect(foldFactionOverrides([titheLayer]).size).toBe(0);
+  });
+
+  it("does not disturb a real change in the same fold", () => {
+    const regions = foldRegions([
+      layer("one", "2026-01-01T00:00:00Z", [
+        { op: "add", slug: "hq", name: "HQ", faction: "a", hexes: [[0, 0]] },
+        { op: "tithe" },
+      ]),
+    ]);
+    expect(regions.map((r) => r.slug)).toEqual(["hq"]);
+  });
+});

@@ -86,7 +86,11 @@ export type Change =
       symbol?: string | null;
       members: string[];
     }
-  | { op: "banner-dissolve"; slug: string };
+  | { op: "banner-dissolve"; slug: string }
+  // A transient visual event: a wave of flipping purple tiles emanates from the
+  // map's center to the edges, then flips back. Changes no persistent state, so
+  // every fold ignores it — it only produces a LayerAnimation when played.
+  | { op: "tithe" };
 
 export interface Layer {
   slug: string;
@@ -113,6 +117,8 @@ export interface LayerAnimation {
   regionAdds: ReadonlyArray<{ slug: string }>;
   skeinConnects: ReadonlyArray<{ from: string; to: string }>;
   factionFlips: ReadonlyArray<FactionFlipAnim>;
+  // True when the just-applied layer carried a `tithe` op — play the wave.
+  tithe: boolean;
 }
 
 export function foldRegions(layers: Layer[]): Region[] {

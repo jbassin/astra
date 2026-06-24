@@ -88,6 +88,7 @@ describe("parseChange", () => {
       op: "banner-dissolve",
       slug: "b",
     });
+    expect(parseChange({ op: "tithe" }, ctx)).toEqual({ op: "tithe" });
   });
 
   it("throws on each invalid case", () => {

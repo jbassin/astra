@@ -149,6 +149,8 @@ export function parseChange(raw: unknown, ctx: string): Change {
     return { op: c.op, from: c.from, to: c.to };
   }
 
+  if (c.op === "tithe") return { op: "tithe" };
+
   if (c.op === "claim") {
     if (!Array.isArray(c.hexes) || !c.hexes.every(isHexPair)) {
       throw new Error(`${ctx}: claim 'hexes' must be an array of [q, r] pairs`);
@@ -283,7 +285,7 @@ export function parseChange(raw: unknown, ctx: string): Change {
   if (c.op === "banner-dissolve") return { op: "banner-dissolve", slug };
 
   throw new Error(
-    `${ctx}: unknown op '${String(c.op)}' (expected add | update | remove | skein-add | skein-update | skein-remove | skein-connect | skein-disconnect | claim | banner-form | banner-dissolve)`,
+    `${ctx}: unknown op '${String(c.op)}' (expected add | update | remove | skein-add | skein-update | skein-remove | skein-connect | skein-disconnect | claim | banner-form | banner-dissolve | tithe)`,
   );
 }
 

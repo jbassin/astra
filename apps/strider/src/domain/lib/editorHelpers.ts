@@ -14,7 +14,8 @@ export type EditableChange = Extract<
       | "skein-remove"
       | "claim"
       | "banner-form"
-      | "banner-dissolve";
+      | "banner-dissolve"
+      | "tithe";
   }
 >;
 
@@ -135,6 +136,7 @@ function serializeChange(c: EditableChange): string[] {
   } else if (c.op === "banner-dissolve") {
     out.push(`    slug: ${yamlString(c.slug)}`);
   }
+  // `tithe` carries no fields — `- op: tithe` is the whole change.
   return out;
 }
 
