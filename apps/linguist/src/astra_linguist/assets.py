@@ -7,8 +7,11 @@ materialization runs once scribe has emitted a session.
 
 NOTE: the plan models three assets (formatted/context/canonical); v1 ships one
 `session_transcripts` asset producing all three files (downstream consumers read
-files, not asset boundaries). Splitting is a refinement. Static audio is external
-(F4); linguist just composes the URL.
+files, not asset boundaries). Splitting is a refinement. The combined session audio
+is now served same-origin by akasha-frontend at `/audio/<date>.mp3` (off the
+akasha-audio volume) — linguist composes that relative URL; akasha also normalizes it
+at build time, so the 78 already-committed transcripts (which baked faerrin's old
+absolute static-audio.iridi.cc URL) need no re-gen.
 """
 
 import json
@@ -42,7 +45,10 @@ DATA_DIR = APP_ROOT / "data"
 SCRIPT_DIR = APP_ROOT / "script"
 TRANSCRIPT_DIR = APP_ROOT / "transcripts"
 SHIBBOLETH_PATH = APP_ROOT / "shibboleth.json"
-STATIC_AUDIO_BASE = "https://static-audio.iridi.cc"  # external host (F4)
+# Same-origin base: akasha-frontend serves the combined recording at /audio/<date>.mp3
+# off its audio volume (akasha also build-time-normalizes, so the form is belt-and-
+# suspenders). Replaces the old absolute faerrin static-audio.iridi.cc host.
+AUDIO_BASE = "/audio"
 
 SESSIONS_NAME = "linguist_sessions"
 linguist_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
@@ -60,7 +66,7 @@ def session_transcripts(context: dg.AssetExecutionContext) -> dg.MaterializeResu
 
     artifacts = process_session(
         date,
-        f"{STATIC_AUDIO_BASE}/{date}/audio.mp3",
+        f"{AUDIO_BASE}/{date}.mp3",
         raw,
         replace=load_corrections(),
         resolver=SpeakerResolver.from_being(BEING_KDL_PATH),

@@ -32,7 +32,7 @@ def test_formatted_transcript_parity() -> None:
 
     transcript = format_transcript(
         date="2024-10-15",
-        audio="https://static-audio.iridi.cc/2024-10-15/audio.mp3",
+        audio="/audio/2024-10-15.mp3",
         raw=raw,
         replace=load_corrections(),
         resolver=_resolver(),
@@ -173,7 +173,7 @@ def test_process_session_end_to_end() -> None:
     raw = [RawLine(start=4.25, end=7.695, user="jbassin", text=" Gandolf casts a spell.")]
     artifacts = process_session(
         "2025-01-01",
-        "https://static-audio.iridi.cc/2025-01-01/audio.mp3",
+        "/audio/2025-01-01.mp3",
         raw,
         replace=build_replacer({}),
         resolver=SpeakerResolver({"jbassin": "Bob"}),  # alias→player for billing
