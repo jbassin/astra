@@ -7,9 +7,9 @@ metadata:
 
 strider's `content/layers/*` are **KDL** (`.kdl`), migrated from YAML-frontmatter
 markdown on 2026-06-24 (`fe69136` infra + `1fdef3f` strider). Markdown bought
-nothing there — the body was unused. **Factions stay markdown** (real prose
-description + `## Known Members` bios → HTML); the user wants factions to move
-to **vellum** (not KDL, not markdown) in a *future* change.
+nothing there — the body was unused. **Layers are KDL; factions are vellum**
+(`.vellum`, done `8161283` — see [[strider-factions-vellum]]) — two different
+formats, by design.
 
 **Flat schema** (user-chosen): `timestamp` / `message` / optional `body` are
 top-level nodes; **every other top-level node is a change whose node NAME is the
