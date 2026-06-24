@@ -5,9 +5,7 @@ import {
   Container,
   type FederatedPointerEvent,
   Graphics,
-  Matrix,
   Polygon,
-  RenderTexture,
   Sprite,
   type Texture,
 } from "pixi.js";
@@ -283,19 +281,23 @@ function buildScene(
   world.addChild(skeinLayer);
 
   // --- Tithe wave (topmost; transient, no persistent state) ---
-  // A purple/black copy of the page-background shader is BAKED to a RenderTexture
-  // (in pixi v8 a live filter can't be masked or flipped), then each grid hex is
-  // drawn as its own Graphics filled with that texture via a per-hex matrix so
-  // the field stays continuous across tiles. Tiles flip (vertical scale around
-  // their center) in a wave from the map center to the edges and back. No mask,
-  // no live filter on the rendered tiles — both fail to compose here. Tiles are
-  // created per-ring as the wave front arrives and destroyed once they flip back.
+  // The purple/black copy of the page-background shader runs LIVE as a filter on
+  // the tithe container — the balatro shader computes its color in screen space
+  // and ignores its input, so we gate it by input coverage (the shader multiplies
+  // by texture alpha). The container holds plain white hex "tiles" that flip
+  // (vertical scale around their center) in a wave; wherever a tile is opaque the
+  // continuous, ANIMATED field shows through, so it never looks tiled and the
+  // swirl moves. A full-grid bounds anchor keeps the filter region stable so the
+  // field doesn't shift as tiles flip in/out.
   const titheLayer = new Container();
   titheLayer.label = "tithe";
   titheLayer.eventMode = "none";
   world.addChild(titheLayer);
 
+  // The filter is attached only while a tithe plays (see animateTithe) so it
+  // doesn't run a full-map shader pass every frame at rest.
   const { filter: titheFilter, setTime: setTitheTime } = createBalatroFilter(TITHE_PALETTE);
+
   const TITHE_LOCAL_VERTS = hexCornersAtPixel(0, 0).flat(); // hex corners centered on origin
   const titheTiles = hexesInRadius(GRID_RADIUS).map(([q, r]) => {
     const [cx, cy] = hexPixel(q, r);
@@ -311,28 +313,14 @@ function buildScene(
   titheHalfW += HEX_SIZE * 2;
   titheHalfH += HEX_SIZE * 2;
 
-  // Off-screen shader rect baked to a RenderTexture at ~4× world resolution.
-  const TITHE_RT_SCALE = 4;
-  const titheRtW = Math.ceil(titheHalfW * 2 * TITHE_RT_SCALE);
-  const titheRtH = Math.ceil(titheHalfH * 2 * TITHE_RT_SCALE);
-  const titheShaderRect = new Graphics().rect(0, 0, titheRtW, titheRtH).fill(0x000000);
-  titheShaderRect.filters = [titheFilter];
-  const titheTexture = RenderTexture.create({ width: titheRtW, height: titheRtH });
-  const titheSx = titheRtW / (titheHalfW * 2);
-  const titheSy = titheRtH / (titheHalfH * 2);
-  // Per-hex fill matrix: maps a tile's local geometry → the texture region at the
-  // hex's world position, so adjacent tiles sample one continuous field.
-  const titheMatrices = titheTiles.map(
-    (t) =>
-      new Matrix(
-        titheSx,
-        0,
-        0,
-        titheSy,
-        (t.cx + titheHalfW) * titheSx,
-        (t.cy + titheHalfH) * titheSy,
-      ),
-  );
+  // Invisible full-grid rect: contributes the filter's bounds (so the field is
+  // screen-stable as tiles flip) but is transparent (coverage ≈ 0 → no shader).
+  const titheAnchor = new Graphics()
+    .rect(-titheHalfW, -titheHalfH, titheHalfW * 2, titheHalfH * 2)
+    .fill({ color: 0x000000, alpha: 0 });
+  titheAnchor.eventMode = "none";
+  titheLayer.addChild(titheAnchor);
+
   // Tile indices grouped by ring distance (all tiles in a ring share a flip phase).
   const titheRings: number[][] = Array.from({ length: titheMaxRing + 1 }, () => []);
   titheTiles.forEach((t, i) => {
@@ -1108,12 +1096,14 @@ function buildScene(
       return 1;
     };
 
+    // Tiles are plain opaque white — the filter overwrites their color with the
+    // shader and uses only their coverage (alpha) to mask the field to hex shapes.
     const ensureTile = (i: number): Graphics => {
       const existing = titheActiveTiles.get(i);
       if (existing) return existing;
       const t = titheTiles[i]!;
       const g = new Graphics();
-      g.poly(TITHE_LOCAL_VERTS).fill({ texture: titheTexture, matrix: titheMatrices[i]! });
+      g.poly(TITHE_LOCAL_VERTS).fill(0xffffff);
       g.position.set(t.cx, t.cy);
       g.scale.y = 0;
       g.eventMode = "none";
@@ -1132,16 +1122,14 @@ function buildScene(
       }
     };
 
-    // Bake the purple field ONCE up front (a fixed, pleasant shader frame).
-    // Rendering to the RenderTexture from inside the ticker produces a blank
-    // target, so the field is static for the wave — the flip motion carries it.
-    setTitheTime(600);
-    app.renderer.render({ container: titheShaderRect, target: titheTexture });
+    titheLayer.filters = [titheFilter];
     animMgr.start({
       startAt,
       durationMs,
       update: () => {
         const now = performance.now();
+        // Advance the live shader so the purple field actually swirls.
+        setTitheTime(now - startAt);
         for (let d = 0; d <= titheMaxRing; d++) {
           const ring = titheRings[d]!;
           const s = scaleYAt(d, now);
@@ -1155,6 +1143,7 @@ function buildScene(
       cleanup: () => {
         for (const g of titheActiveTiles.values()) g.destroy();
         titheActiveTiles.clear();
+        titheLayer.filters = [];
       },
     });
   }
@@ -1180,8 +1169,7 @@ function buildScene(
     app.ticker.remove(tickerCb);
     animMgr.clear();
     titheActiveTiles.clear();
-    titheShaderRect.destroy();
-    titheTexture.destroy(true);
+    titheLayer.filters = [];
     titheFilter.destroy();
     regionEntries.clear();
     symbolSprites.clear();

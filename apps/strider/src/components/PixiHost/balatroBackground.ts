@@ -79,7 +79,12 @@ void main() {
   // is in CSS pixels — using gl_FragCoord directly desyncs the pattern from the
   // viewport on high-DPR devices and pushes it into the bottom-left corner. Derive
   // screen coords from vTextureCoord instead so both are in the same units.
-  finalColor = effect(uInputSize.xy, vTextureCoord * uInputSize.xy);
+  // Gate by the input's alpha so the shader shows only where the filtered content
+  // is opaque: the page background is a full opaque rect (alpha 1 → unchanged),
+  // while the tithe applies this filter to a container of flipping tiles so the
+  // continuous, animated field shows through the tile shapes.
+  float coverage = texture(uTexture, vTextureCoord).a;
+  finalColor = effect(uInputSize.xy, vTextureCoord * uInputSize.xy) * coverage;
 }
 `;
 
