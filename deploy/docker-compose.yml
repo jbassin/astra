@@ -247,6 +247,55 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- vellum-frontend: the document-forge editor (0013) — SSR Compose service
+  # behind Caddy (Decision I). The editor route is client-only (ssr:false); the PNG
+  # export POSTs same-origin /render, which Caddy routes to vellum-render below. ---
+  vellum-frontend:
+    build:
+      context: ..
+      dockerfile: apps/vellum-frontend/Dockerfile
+      args:
+        APP: vellum-frontend # the one knob in the templated frontend Dockerfile
+    image: astra-vellum-frontend:local
+    container_name: astra-vellum-frontend
+    command: ["bun", "run", "start"]
+    # No PORT env — serviceName/port come from config.kdl (config-single-source);
+    # compose only maps the published host port below.
+    ports:
+      - "10367:10367" # vellum-frontend SSR (astra range) — also reachable directly
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10367/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # --- vellum-render: the PNG render service (0013, D2) — a SEPARATE unit, the first
+  # browser-in-a-container in astra (warm Chromium, egress-blocked, semaphore-gated).
+  # Caddy routes vellum.iridi.cc/render + /health here. ---
+  vellum-render:
+    build:
+      context: ..
+      dockerfile: apps/vellum-render/Dockerfile
+      args:
+        APP: vellum-render
+    image: astra-vellum-render:local
+    container_name: astra-vellum-render
+    command: ["bun", "run", "start"]
+    # No PORT env — serviceName/port come from config.kdl (config-single-source).
+    ports:
+      - "10368:10368" # vellum-render (astra range) — reached same-origin via Caddy /render
+    networks: [signoz-net]
+    healthcheck:
+      # /health reports the warm-Chromium readiness; start_period covers the launch.
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10368/health').then(r=>r.json()).then(j=>process.exit(j.ready?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 25s
+    restart: unless-stopped
+
   # --- orator: the music bot's library store (0010, Decision F) ---
   orator-postgres:
     image: postgres:16-alpine

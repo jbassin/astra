@@ -79,6 +79,37 @@ mouthpiece.iridi.cc {
 	reverse_proxy localhost:10366
 }
 
+# vellum-frontend — the document-forge editor (0013), the fourth SSR frontend on the
+# strider/akasha template. Two upstreams (D2, mirroring faerrin's old vellum block):
+# /render + /health proxy to the vellum-render service (the PNG render sidecar), so the
+# editor's export POSTs same-origin; everything else (the editor + preview) goes to the
+# SSR frontend. The /editor UI is gated local_only (like strider) — the export still
+# works for local clients; a public visitor sees the read-only landing page. Self-serves
+# gothic's fonts from the container. Compose publishes 10367 (frontend) + 10368 (render).
+# (Needs a vellum.iridi.cc DNS record — manual, deferred like the other frontends.)
+vellum.iridi.cc {
+	import astra_site
+
+	# The PNG render API → the vellum-render service (warm Chromium, egress-blocked,
+	# semaphore-gated). Same-origin so the editor needs no CORS / env var.
+	@render path /render /health
+	handle @render {
+		reverse_proxy localhost:10368
+	}
+
+	# Editor UI — local network only (import local_only → "Access Denied" for
+	# non-private clients). Same posture as strider's editor.
+	@editor path /editor /editor/*
+	handle @editor {
+		import local_only
+		reverse_proxy localhost:10367
+	}
+
+	handle {
+		reverse_proxy localhost:10367
+	}
+}
+
 # weal-overlay — the dice-roll OBS overlay (0009). SSE: flush_interval -1 disables
 # response buffering so text/event-stream reaches OBS immediately. The overlay
 # self-serves its fonts from dist/, so no gothic_fonts import. Compose publishes

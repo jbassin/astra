@@ -28,6 +28,8 @@ COPY apps/mouthpiece-frontend/package.json apps/mouthpiece-frontend/
 COPY apps/orator-backend/package.json apps/orator-backend/
 COPY apps/orator-controller/package.json apps/orator-controller/
 COPY apps/strider/package.json apps/strider/
+COPY apps/vellum-frontend/package.json apps/vellum-frontend/
+COPY apps/vellum-render/package.json apps/vellum-render/
 COPY apps/weal-bot/package.json apps/weal-bot/
 COPY apps/weal-overlay/package.json apps/weal-overlay/
 COPY libs/ts ./libs/ts
