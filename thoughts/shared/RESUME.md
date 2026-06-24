@@ -36,10 +36,30 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `1c51229`, 2026-06-24)
+## Current state — UPDATE THIS SECTION (as of commit `1c7e507`, 2026-06-24)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
+
+### Gothic / frontend design polish (2026-06-24 session — COMPLETE + PUSHED, NOT yet redeployed)
+
+A critical design pass over how **gothic** renders content + the 4 public frontends (live-captured with
+Playwright, each fix screenshot-verified). Audit: `thoughts/shared/research/2026-06-24-gothic-frontend-design-audit-thoughts.md`;
+memory `[[gothic-frontend-design-polish]]`. 15 findings, 6 CI-green slices (`0d39ea1` audit … `1c7e507`):
+- **gothic** (`e3f7581`): style bare `pre`/`code`/`blockquote`; card fill `bg-panel`→`bg-elevated`;
+  padded trait pills; emoji fallbacks. **VR goldens regenerated in the pinned container (0 drift).**
+- **akasha** (`da5516a`,`c95ee90`): the **`@layer base` reset fix** (THE cross-cutting gotcha — unlayered
+  reset was zeroing all gothic content padding), reading-measure cap + larger prose, centered 404,
+  mobile content-first, tag-index/graph-empty/search polish, dropped noise dates.
+- **strider** (`d3d8b98`): faction dossier headings (member names in faction color) + reset fix + dead CSS.
+- **orator** (`d889053`): compact centered sign-in card.
+- **vellum-frontend** (`a9131dd`): reset fix (editor preview) + the cross-cutting gotcha documented in
+  `apps/strider/README.md`.
+- **akasha content** (`1c7e507`): repaired the Tormeré Situation Room transcript (mis-fenced `:::fields`).
+- **NOT redeployed yet** — changes are pushed to `main` but the live containers still serve the old build.
+  Run `just up` (rebuild akasha/strider/orator/vellum-frontend) to deploy; `[[deploy-apply-with-just]]`.
+- **Open/optional:** a first-class dialogue/transcript vellum construct (vellum-lang + spec change) —
+  surfaced, deliberately not invented ad-hoc.
 
 ### Post-migration product work — strider (2026-06-24 session, all COMPLETE + PUSHED + DEPLOYED LIVE)
 

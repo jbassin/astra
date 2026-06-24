@@ -222,5 +222,15 @@ grid gets tight at 390px. Low priority.
     (a) fix the reset gotcha across all gothic-rendering frontends [done] and (b)
     document the two cross-cutting rules (layer your reset; cap your reading measure)
     in `apps/strider/README.md` so the next frontend inherits the lesson, not the bug.
-- **Remaining:** F10 (Tormeré transcript) needs a design call — quick content re-nest
-  vs. a first-class dialogue/transcript vellum construct. Surfaced to the user.
+  - slice 6 `1c7e507` akasha-content: F10 — the Tormeré transcript wrapped each turn
+    in a `:::fields` block inside `:::handout`, all sharing the 3-colon fence, so the
+    first inner `:::` closed the handout early and the dialogue spilled out. Fixed in
+    content (every word preserved): one handout with `**Speaker:**` prose lines.
+- **All 15 findings addressed.** F14 reframed (docs, not a component); the only
+  deliberately-not-done item is the **optional** first-class dialogue/transcript
+  vellum construct (a vellum-lang + spec change) — surfaced to the user as a future
+  enhancement, not invented ad-hoc.
+- **Verification:** each slice screenshot-verified on a dev server (akasha/strider/
+  vellum-frontend) or the built dist (orator) + the regenerated VR goldens (gothic);
+  CI reproduced locally per lane; pushed in chunks (gothic+akasha green on CI incl.
+  the vellum VR gate).
