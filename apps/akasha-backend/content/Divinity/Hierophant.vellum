@@ -16,7 +16,8 @@ The day Aurelia met the Host marked the literal dawn of a new age for Færrin. T
 
 The Gods' blessings provided a way for the powerless to defend against the tyrants that ruled them and precipitated rapid upheaval as near-everyone flocked to the Outer Gods and their guidance. Old regimes fell, and new, more stable governments took their place, consolidating around religious institutions that followed the deities. Calaria announced a new calendar, marking Aurelia's gift as the first day, and in reverence, it was quickly adopted across the planet.
 
-:::handout[Harrow Decks]
+@handout "Harrow Decks"
+{
 Soothsayers use decks of cards with the likenesses of the hierophants throughout history as a medium for their future-telling. Each card is associated with an image and personality, and for those far removed from the centers of their belief, the hierophants are known more by their card than their name.
 
 Aurelia I is, as her title would imply, the Hierophant card. She may have been the first to commune with a God, but she wasn't the only one. Today, there are four known hierophants:
@@ -30,4 +31,4 @@ Aurelia I is, as her title would imply, the Hierophant card. She may have been t
 **XVII The Star** — Alaster Fayn was the head of the Raelic Church and hierophant of [[The Compelled]]. His card implies hope and faith, but Alaster was lost on the Night of the Midnight Sun and his replacement has yet to surface.
 
 **XX The Æon** — Aurelia VII, the current Pontifex of the [[Org/Iridescent Church/index|Iridescent Church]], is the card of the Æon. Pulling her from an oracle deck portends an awakening or reckoning, depending on the context.
-:::
+}

@@ -10,7 +10,8 @@ Truthfully, for as perfectly as they've honed their craft, Lorandris is a small 
 
 Natives to Lorandris all work building, sailing, or sinking ships. Mere Lorandrin citizenship is a felony in other countries, so when traveling in different countries, a Lorandrin will likely deflect their country of origin.
 
-:::handout[The Black-Tide Bargain]
+@handout "The Black-Tide Bargain"
+{
 From Estañion's Selection of Sea Shanties, p. 56.
 
 
@@ -46,4 +47,4 @@ We’re the wolves of the waves, the scourge of the sea,
 Forever we’ll sail, Lorandris free!
 ```
 
-:::
+}

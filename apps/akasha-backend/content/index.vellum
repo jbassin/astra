@@ -3,7 +3,8 @@ title: Heart of Hearts
 date: 2026-06-05T16:40:21-04:00
 ---
 
-:::handout[Recovered Log 2a]
+@handout "Recovered Log 2a"
+{
 
 
 ```
@@ -40,4 +41,4 @@ R> GLORY!
 C> ⟨glory/glory/glory⟩
 ```
 
-:::
+}

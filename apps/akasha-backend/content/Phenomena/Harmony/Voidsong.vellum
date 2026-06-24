@@ -4,12 +4,14 @@ tags:
 date: 2026-06-05T16:40:21-04:00
 ---
 
-:::fields
+@fields
+{
 Traditions :: Divine, Occult
-:::
+}
 
 
-:::handout
+@handout
+{
 You dreamt of a riverbank. Wildflowers, unfamiliar yet beautiful, cradled your body. The warmth of [[Godhome|twin suns]] kissed your face, and a soft breeze carried the scent of earth and water. Across the river, a grand city rose—its architecture strange, unplaceable.
 
 Someone lay beside you in the flowers. They were breathtaking, yet their features slipped from your mind before they could settle, like mist in the morning light. They sang.
@@ -29,4 +31,4 @@ The world is divided. The faithful and the fearful, the seekers and the skeptics
 And it wants something.
 
 Whatever life you led before, the Voidsong has marked you. The need for answers burns within you. Your search leads you to [[Geography/Calaria/Hallia/index|Hallia]], to [[Org/Iconoclasm/index|Iconoclasm]].
-:::
+}

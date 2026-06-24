@@ -6,7 +6,8 @@ Brithwyn is [[Geography/Calaria/index|Calaria's]] greatest mistake and Calaria's
 
 Life in Brithwyn is very similar to that of Calaria -- worship of the [[Iridescent Host|Host]] is still the predominant religion, and the general technological level is identical to that of their sister nation. The most significant difference, and the reason for the separation in the first place, is their more hardline stance against [[Org/index|Orgs]]. Brithwyn limits how deep into the country most Orgs can integrate themselves. Instead, they've reinstated the nobility that Calaria had done away with, offering title and capital as incentives to manage territory and public works. The Regent Administrator leads Brithwyn, but the nobles manage the day-to-day under him.
 
-:::handout[Chorath Engineering Ad, Belwick Sun]
+@handout "Chorath Engineering Ad, Belwick Sun"
+{
 Behold, the 862 Aventine: Chorath Engineering's latest marvel in vehicle innovation. Designed to embody the resilience of the Brith spirit, the Aventine offers unparalleled security, performance, and reliability—whether transporting precious cargo or navigating the most treacherous terrain. With reinforced Palladium-Alloy plating and a magically-imbued chassis, this is no ordinary truck. This is your sanctuary on wheels.
 
 ###### Key Features
@@ -19,4 +20,4 @@ Behold, the 862 Aventine: Chorath Engineering's latest marvel in vehicle innovat
 Secure your Aventine today. _Available through authorized Chorath dealers or directly from the Royal Brithwyn Authority Ministry of Commerce. Financing options available for registered clergy and Protectorate agents._
 
 Chorath Engineering: _"Strength. Precision. Faith."_
-:::
+}

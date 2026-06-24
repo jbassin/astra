@@ -10,7 +10,8 @@ Just on the other side of the lift-dotted peaks are the observatories of [[Belve
 
 Austrene is technically a kingdom, complete with a king, but like most else here, the royal family has become more attraction than power. In practice, the country is led by the Provost of Belvedere and a handful of oligarchs that control most of the resorts (and their land).
 
-:::handout[Belvedere Heart Chat Log]
+@handout "Belvedere Heart Chat Log"
+{
 
 
 ```
@@ -42,4 +43,4 @@ CT> [skein broadcast, L//warn,
          received @ts862.03.13.254.15.192]
 ```
 
-:::
+}

@@ -8,7 +8,8 @@ Rhædon might not wield the same power as its contemporaries on the continent, b
 
 Historically, Rhædon couldn't trade with others and needed to be self-sufficient. As such, much of the population worked in some agrarian field -- farming or ranching. This is no longer true with the world getting smaller as it has been. Businesses span the desert, and young folk migrate towards the rest of the continent, picking up odd jobs along the way. [[Org/index|Orgs]] have moved manufacturing to Rhædon to capitalize on lower wages, and the country has shifted away from its agricultural roots.
 
-:::handout[Speech Given by Asaid Al-Taiiq at his Inauguration]
+@handout "Speech Given by Asaid Al-Taiiq at his Inauguration"
+{
 *
 My people, we are no longer the forgotten nation, lost amidst the Siksithys sands or marooned by the Tenchwin’s cruel waves. For too long, we have been forced to rely on our own blood, sweat, and ingenuity, while the rest of the world traded riches across seas and skies, unburdened by the barriers we endured. But those days of isolation and neglect are over.
 
@@ -16,4 +17,4 @@ The world now sees us as they should: as a rising tide that will not be ignored.
 
 I call upon you to seize what is rightfully ours. Let no rival outbid us, let no border contain us, and let no voice silence the roar of Rhædon. This is our time to expand, to thrive, and to take our place as masters of this continent. We are compelled forward, to greatness and glory! We are compelled forward, as Rhædon rises!
 *
-:::
+}

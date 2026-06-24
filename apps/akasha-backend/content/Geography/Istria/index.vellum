@@ -10,7 +10,8 @@ Those brave enough to call Istria home live in giant, mobile caravan-cities call
 
 Due to the Stillness, the Istrians are famous for their seemingly inherent wanderlust -- Istrians are usually the first to break new ground in the [[Infinite Horizon]], an Istrian was the first to circumnavigate the globe, the Istrian mobile spaceport is currently the closest any [[Færrin]] group has come to leaving the atmosphere, and so on.
 
-:::handout[Failed Ruin Expedition, Transcript 12a]
+@handout "Failed Ruin Expedition, Transcript 12a"
+{
 
 Debrief of Anari Thesrim, Expedition Team B:
 
@@ -26,4 +27,4 @@ The others say we should abandon the ruins, leave Haren and whatever treasure li
 
 Is it too late for me, too? For all of us?
 *
-:::
+}

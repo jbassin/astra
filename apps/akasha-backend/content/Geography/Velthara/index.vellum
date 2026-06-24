@@ -8,7 +8,8 @@ Veltharan cities are stranger than most, as they took to the [[Infinite Horizon|
 
 Velthara used to be primarily family-led, with individual worlds in a city controlled by the matriarch or patriarch of a group. Recently, however, families have banded together to form clans as a way to compete with other countries. Nowadays, most people belong to one of a few clan-nations, and all of the clans cooperate to keep Velthara strong and competitive globally.
 
-:::handout[Excerpt from the Horizon Post]
+@handout "Excerpt from the Horizon Post"
+{
 
 _**MYSTERIOUS DISAPPEARANCE IN WIL'S STRAND**_
 
@@ -21,4 +22,4 @@ The Blains have issued a brief but emphatic statement regarding the tragedy. "Th
 Local officials have asked that people spend as little time in Star 13 as possible while their investigation is ongoing. Residents are instructed to slide from 12S to 14S when possible, and the trolly will be making no stops at 13S for the time being.
 
 Commissioner Ervine has...
-:::
+}

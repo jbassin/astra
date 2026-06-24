@@ -8,12 +8,14 @@ Nowadays, most Fenrithi live in giant, reinforced glass domes under the surface.
 
 Fenrith is ruled by the Fisher-Kings, a group of the four heads of the largest cargo companies. They rule over their cities but come together when making decisions that impact their people. By nature of their location, most Fenrithi ply their trade in some form on the sea -- in shipping, fishing, marine biology, meteorology, aquamancy, and others. Due to the worldliness of their trade, there's no one state religion in Fenrith. [[The Compelled]] likely has the most considerable following, but all faiths maintain a foothold here.
 
-:::handout[Inhabitants of the Veinlands]
+@handout "Inhabitants of the Veinlands"
+{
 While most Fenrithi live in their dome-cities on the coast, some live in the Termean Veinlands. Most who live there do so to stay away from prying eyes -- fugitives from the law, so-called sovereign citizens, and self-supporting homesteaders all eke an out existence to avoid prying eyes. Crossing the Veinlands can be difficult, so most use modified automobiles adapted to run across the soft sand.
-:::
+}
 
 
-:::handout[Fenrithi Shipping Manifest]
+@handout "Fenrithi Shipping Manifest"
+{
 Manifest from the _FMV Drops of Sunset_.
 
 - 10t. kelp flour
@@ -25,4 +27,4 @@ Manifest from the _FMV Drops of Sunset_.
 - 2 boxes _Radiant Arms_ hand grenades
 - 3 seerhorse corpses, refrigerated
 - 10 watervanes, accompanying manual
-:::
+}

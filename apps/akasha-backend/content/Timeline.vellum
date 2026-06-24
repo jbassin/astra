@@ -2,7 +2,8 @@
 date: 2026-06-05T16:40:21-04:00
 ---
 
-:::timeline
+@timeline
+{
 - {Prehistory} The world is mundane. No magic permeates the air, and no worlds are seen in the night sky.
 - {Before 0ag} A crack appears in the firmament, and magic floods into [[Færrin]]. Warlords obtain this magic and subjugate the populace, beginning the Dark Ages.
 - {0ag} The [[Iridescent Host]] instructs the Hierophant Aurelia to widen the crack, allowing divine blessings to pass through and ending the Dark Ages.
@@ -50,4 +51,4 @@ date: 2026-06-05T16:40:21-04:00
 - {858ag} The [[Voidsong]] is first heard in Calaria. Scholars across the continent debate its importance and meaning.
 - {862ag} A wall of fire surrounds the district of [[Geography/Calaria/Hallia/Teller's Run/index|Teller's Run]] in Hallia. Attempts to reclaim it by the Calarian government fail, and an accord is reached between the Church and [[Org/Pyrelight/index|Pyrelight]]. Teller's Run is declared a sovereign city-state.
 - {863ag} The Party joins [[Org/Iconoclasm/index|Iconoclasm]].
-:::
+}

@@ -10,7 +10,8 @@ Artists come to Tormeré to gain inspiration and jewelers visit for the renowned
 
 The Tormerén government is completely democratic, a rarity for Edan. That said, while local politics does tend to stay local, the greater Tormerén government usually defers to the [[Org/Iridescent Church/index|Iridescent Church]] when relevant. In return, Calaria serves as a protector of Tormeré on the global stage, acting a staunch ally when dealing with the other countries.
 
-:::handout[Situation Room Transcript, 101.2 WSTR]
+@handout "Situation Room Transcript, 101.2 WSTR"
+{
 **Bev:** Welcome back to the Situation Room. I'm Bev Sirnow, and next to me is Chuck Vessler.
 
 Tonight's top story: Outrage at the National Gallery after famous Tormerén sculptor Paolo Barreto unveiled his latest work. Called "The Grace of God," Barreto revealed the sculpture for the first time at a charity auction, where it was supposed to be the centerpiece of the event.
@@ -26,4 +27,4 @@ Tonight's top story: Outrage at the National Gallery after famous Tormerén scul
 **Chuck:** A PA just brought me a picture -- I don't see the problem, I think she looks good.
 
 **Bev:** And that's why you had those court cases, Chuck.
-:::
+}
