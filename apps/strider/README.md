@@ -76,6 +76,15 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
   lib. `@astra/site-kit/web`'s `startRum` consumes the app's tiny server fn.
 - **Wire `@tailwindcss/vite`** in `vite.config.ts` and ship `public/` (favicon,
   symbols), or gothic's `@theme`/`@apply` styling ships raw (black text, no panels).
+- **Layer your CSS reset** — wrap any `*{margin:0;padding:0}` reset in `@layer base`.
+  Unlayered it outranks gothic's `@layer components` content styles and silently
+  zeroes every rendered-vellum margin/padding (paragraph spacing, list indents,
+  trait-pill + code-block padding). Only frontends that render gothic `DocumentView`
+  (akasha, strider factions, the vellum editor preview) are affected — but layering
+  is free, so do it everywhere. See the 2026-06-24 design audit.
+- **Cap the reading measure** — if a route renders long-form vellum prose, cap the
+  reading column at ~42rem/68ch; gothic's content base is sized for cards, and an
+  un-capped grid column runs prose to 100+ chars/line.
 - **Fonts self-serve**: `gothicFontsPlugin({ clientOutDir })` copies gothic fonts into
   `dist/client/fonts` at build; the SSR server static-serves them. No Caddy
   `gothic_fonts` import, no vendored copy in git.

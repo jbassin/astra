@@ -5,12 +5,17 @@
  * with the port in slice 2. Plain CSS layered after gothic (which already imports
  * tailwindcss + @source). */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* In @layer base so it sits below gothic's @layer-components content styles —
+   unlayered, the bare reset zeroed the gothic-content padding/margins in the
+   editor preview (trait-pill, code-block, blockquote padding; prose spacing). */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 html,

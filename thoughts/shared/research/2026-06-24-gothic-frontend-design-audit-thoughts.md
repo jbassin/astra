@@ -201,3 +201,26 @@ grid gets tight at 390px. Low priority.
 ## Status log
 
 - 2026-06-24: audit authored. Implementation starting at slice 1 (gothic primitives).
+- 2026-06-24: **slices 1–5 done + pushed** (CI green incl. the vellum VR gate).
+  - **F0 (discovered during verification):** every frontend's `*{margin:0;padding:0}`
+    reset was UNLAYERED, outranking gothic's `@layer components` and zeroing all
+    rendered-vellum padding/margins (paragraph spacing, list indents, trait-pill +
+    code-block padding). This was a hidden multiplier on F1/F5. Fixed by moving the
+    reset into `@layer base` in every gothic-rendering frontend (akasha, strider,
+    vellum-frontend; mouthpiece renders no gothic-content). The gothic slice-1 work
+    only became visible once this landed.
+  - slice 1 `e3f7581` gothic: F2 (code/pre/blockquote + emoji fallback), F3 (card
+    contrast), F5 (pills); VR goldens regenerated in the pinned container, 0 drift.
+  - slice 2a `da5516a` akasha: F0 (reset), F1 (measure+size), F4 (404).
+  - slice 2b `c95ee90` akasha: F12 (date noise), F11 (tag index + chips), F8 (graph
+    empty-state), F13 (search highlight).
+  - slice 3 `d3d8b98` strider: F7 (faction headings + F0 reset + dead CSS).
+  - slice 4 `d889053` orator: F9 (centered auth card).
+  - slice 5 vellum-frontend F0 reset + **F14 reframed**: the shared-masthead-component
+    idea was rejected as over-engineering — the mastheads (mouthpiece/orator/akasha/
+    vellum) are deliberately distinct. The durable, proportionate version of F14 is
+    (a) fix the reset gotcha across all gothic-rendering frontends [done] and (b)
+    document the two cross-cutting rules (layer your reset; cap your reading measure)
+    in `apps/strider/README.md` so the next frontend inherits the lesson, not the bug.
+- **Remaining:** F10 (Tormeré transcript) needs a design call — quick content re-nest
+  vs. a first-class dialogue/transcript vellum construct. Surfaced to the user.
