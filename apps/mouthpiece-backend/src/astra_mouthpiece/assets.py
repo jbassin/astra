@@ -97,7 +97,11 @@ def _provider() -> TTSProvider:
 
 
 def _voices(hosts: HostConfig) -> VoiceConfig:
-    return VoiceConfig(a=hosts.a.voice_id, b=hosts.b.voice_id, c=hosts.c.voice_id)
+    return VoiceConfig(
+        a=hosts.a.voice_id,
+        b=hosts.b.voice_id,
+        c=hosts.c.voice_id if hosts.c else None,
+    )
 
 
 def _read_digest(key: str) -> SessionDigest:
@@ -232,13 +236,14 @@ def mega_digest(context: dg.AssetExecutionContext, config: MegaConfig) -> dg.Mat
 
 
 def _episode_hosts() -> dict[str, EpisodeHost]:
-    """The A/B/C persona block (name+persona) from ontology-being — every episode
-    shares it (astra carries hosts from ontology, not the script's echoed block)."""
+    """The current-roster persona block (A=Bram, B=Maeve) from ontology-being, used as
+    the FALLBACK host block in build_index. Each episode normally carries its own stored
+    hosts (so legacy three-host episodes keep their roster); this covers a script that
+    omits hosts entirely."""
     h = load_hosts()
     return {
         "A": EpisodeHost(name=h.a.name, persona=h.a.persona),
         "B": EpisodeHost(name=h.b.name, persona=h.b.persona),
-        "C": EpisodeHost(name=h.c.name, persona=h.c.persona),
     }
 
 

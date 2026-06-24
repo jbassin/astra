@@ -21,7 +21,7 @@ function HomeComponent() {
         <p className="hero-kicker">Transmission Log</p>
         <h1 className="hero-title">{SITE.title}</h1>
         <p className="hero-lede">
-          Three hosts talk through each Pathfinder&nbsp;2e session like a roundtable, grounded
+          Two hosts talk through each Pathfinder&nbsp;2e session over a tavern table, grounded
           against the campaign wiki and rendered to audio.
         </p>
         <div className="hero-stats">

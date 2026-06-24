@@ -2,7 +2,7 @@
 
 One focused pass per host, each pushing exactly that host's lines further into
 their archetype while copying the rest verbatim — done one host at a time so the
-model can't re-average the three voices toward a shared mean. Uses only
+model can't re-average the two voices toward a shared mean. Uses only
 `call_tool`. Fails loud if a pass changes the turn count (never quietly shrinks a
 paid-for script).
 """
@@ -19,7 +19,7 @@ from .schemas import script_tool
 from .script import DEFAULT_SCRIPT_MAX_TOKENS, ScriptParseError, parse_script
 
 #: One focused pass per host, in order.
-SHARPEN_ORDER: tuple[SpeakerId, ...] = ("A", "B", "C")
+SHARPEN_ORDER: tuple[SpeakerId, ...] = ("A", "B")
 
 
 def sharpen_voices(

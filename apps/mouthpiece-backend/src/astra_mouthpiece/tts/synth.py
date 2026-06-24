@@ -24,7 +24,7 @@ from .provider import (
 from .tags import render_delivery
 
 #: Placeholder voice ids for the mock provider; real providers override these.
-DEFAULT_VOICES = VoiceConfig(a="mock-voice-a", b="mock-voice-b", c="mock-voice-c")
+DEFAULT_VOICES = VoiceConfig(a="mock-voice-a", b="mock-voice-b")
 
 
 def _clip_name(index: int, fmt: str) -> str:

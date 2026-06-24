@@ -104,7 +104,7 @@ def _script() -> Script:
     )
 
 
-def test_sharpen_runs_three_passes() -> None:
+def test_sharpen_runs_one_pass_per_host() -> None:
     class Stub:
         def __init__(self) -> None:
             self.passes = 0
@@ -121,7 +121,7 @@ def test_sharpen_runs_three_passes() -> None:
 
     stub = Stub()
     sharpen_voices(stub, _script(), HOSTS)
-    assert stub.passes == 3  # one pass per host (A, B, C)
+    assert stub.passes == 2  # one pass per host (A, B)
 
 
 def test_sharpen_rejects_turn_count_drift() -> None:

@@ -156,9 +156,9 @@ def generate_script(
     threads_block: str = "",
     sharpen: bool = False,
 ) -> Script:
-    """Generate a three-host script from a digest. Two-pass by default (the crux);
+    """Generate a two-host script from a digest. Two-pass by default (the crux);
     `two_pass=False` is the one-shot legacy path used for the golden A/B. With
-    `sharpen`, run a focused per-host voice pass afterward (3 extra calls)."""
+    `sharpen`, run a focused per-host voice pass afterward (one call per host)."""
     gen = generate_two_pass if two_pass else generate_one_shot
     script = gen(
         client,
@@ -176,5 +176,5 @@ def generate_script(
     return script
 
 
-# Speaker ids, for callers that need to iterate them.
-SPEAKERS: tuple[SpeakerId, ...] = ("A", "B", "C")
+# Speaker ids in the current (two-host) roster, for callers that need to iterate them.
+SPEAKERS: tuple[SpeakerId, ...] = ("A", "B")

@@ -179,12 +179,14 @@ def render_transcript(script: Script) -> str:
     def name_of(s: SpeakerId) -> str:
         return script.hosts.by_id(s).name
 
+    hosts = script.hosts
+    byline = [f"{hosts.a.name} (the Recapper)", f"{hosts.b.name} (the grounded foil)"]
+    if hosts.c is not None:  # legacy three-host episodes
+        byline.append(f"{hosts.c.name} (the Instigator)")
     lines = [
         f"# {script.title}",
         "",
-        f"*Hosts: {script.hosts.a.name} (the Recapper) · "
-        f"{script.hosts.b.name} (the Lorekeeper) · "
-        f"{script.hosts.c.name} (the Instigator)*",
+        f"*Hosts: {' · '.join(byline)}*",
         "",
     ]
     for turn in script.turns:

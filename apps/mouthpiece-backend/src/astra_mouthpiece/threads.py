@@ -79,7 +79,7 @@ def format_threads(threads: list[Thread]) -> str:
     body = "\n".join(lines)
     return (
         "RUNNING THREADS — inside references, bits, and grudges from past episodes that\n"
-        "these three already share. Drop a FEW of them naturally as callbacks, WITHOUT explaining\n"
+        "these two already share. Drop a FEW of them naturally as callbacks, WITHOUT explaining\n"
         "them to the listener; don't force them and don't gloss them.\n"
         f"{body}"
     )
@@ -132,9 +132,9 @@ threads_tool = ToolSpec(
 
 
 def build_threads_system_prompt(hosts: HostConfig) -> str:
-    return f"""You just heard a finished recap episode by three friends — {hosts.a.name},
-{hosts.b.name}, and {hosts.c.name} — talking about a Pathfinder 2e session at their
-tavern table. Identify the RUNNING THREADS worth carrying into FUTURE episodes: inside
+    return f"""You just heard a finished recap episode by two friends — {hosts.a.name}
+and {hosts.b.name} — talking about a Pathfinder 2e session at their tavern table.
+Identify the RUNNING THREADS worth carrying into FUTURE episodes: inside
 jokes or bits they coined, a grudge or a bold prediction one of them staked out, a
 recurring character they clearly love or love to hate. Three to seven of them. Each must
 be something they could reference again later WITHOUT explaining it — it has legs as a

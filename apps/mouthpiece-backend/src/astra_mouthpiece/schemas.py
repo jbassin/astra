@@ -40,7 +40,7 @@ _TONE_DESC = (
     '"triumphant", "grim", "comedic", "bittersweet").'
 )
 _TABLE_ANGLE_DESC = (
-    "What three friends recapping this beat over drinks would ARGUE or rib "
+    "What the hosts recapping this beat over drinks would ARGUE or rib "
     "each other about: the contested or questionable call, the bold/dumb "
     "decision, the read one of them would defend and another would mock. A "
     "seed for table friction — grounded in what happened, not invented drama. "
@@ -133,8 +133,8 @@ distill_tool = ToolSpec(
 SCRIPT_TOOL_NAME = "record_script"
 
 _SCRIPT_DESC = (
-    "Record the finished three-host podcast script as an episode title plus an "
-    "ordered list of spoken turns shared across the three hosts (a roundtable, not "
+    "Record the finished two-host podcast script as an episode title plus an "
+    "ordered list of spoken turns shared between the two hosts (a conversation, not "
     "a fixed rotation). Call this exactly once with the full script."
 )
 _TITLE_DESC = (
@@ -147,13 +147,12 @@ _TITLE_DESC = (
 _TURNS_DESC = (
     "The dialogue in spoken order. Each turn is one host speaking. Write "
     "natural, conversational lines — not narration or stage directions. The "
-    "three hosts should genuinely share the floor, unevenly and overlapping; "
-    "avoid a fixed A-B-C rotation. Vary turn length hard (long riffs next to "
-    "one-word reactions); most lines are plain talk, not a punchline per turn."
+    "two hosts should genuinely share the floor, unevenly; avoid a rigid "
+    "A-B-A-B rotation, but mostly they take turns and finish their thoughts. "
+    "Vary turn length hard (long riffs next to one-word reactions); most lines "
+    "are plain talk, not a punchline per turn."
 )
-_SPEAKER_DESC = (
-    "A = Host A (the Recapper), B = Host B (the Lorekeeper), C = Host C (the Instigator)."
-)
+_SPEAKER_DESC = "A = Host A (the Recapper, Bram), B = Host B (the grounded foil, Maeve)."
 _TEXT_DESC = (
     "What this host says, as it should be spoken aloud. Punctuate for prosody: "
     "an ellipsis for a trailing-off or hesitation, an em-dash for an abrupt cut, "
@@ -162,9 +161,10 @@ _TEXT_DESC = (
     "guide, infer similar ones: direction ([happy], [excited], [annoyed], "
     "[thoughtful], [whisper], [deadpan]), non-verbal ([laughing], [chuckles], "
     "[sighs], [exhales sharply], [inhales deeply], [clears throat], [short pause], "
-    "[long pause]), and overlap/turn-timing ([jumping in], [overlapping], "
-    "[interrupts]). Place a tag right where the delivery shifts; use them "
-    "sparingly. Everything outside the brackets must be plain speakable words."
+    "[long pause]); reach for an overlap tag ([interrupts], [overlapping]) only on "
+    "the rare line where one host genuinely cuts in. Place a tag right where the "
+    "delivery shifts; use them sparingly. Everything outside the brackets must be "
+    "plain speakable words."
 )
 
 script_tool = ToolSpec(
@@ -184,7 +184,7 @@ script_tool = ToolSpec(
                     "properties": {
                         "speaker": {
                             "type": "string",
-                            "enum": ["A", "B", "C"],
+                            "enum": ["A", "B"],
                             "description": _SPEAKER_DESC,
                         },
                         "text": {"type": "string", "description": _TEXT_DESC},

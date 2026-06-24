@@ -11,7 +11,8 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-#: Which host is speaking. A=Recapper, B=Lorekeeper, C=Instigator (script prompt).
+#: Which host is speaking. A=Recapper (Bram), B=the grounded foil (Maeve). "C" is a
+#: retired third host (Pip) kept only so the pre-2026-06 three-host episodes still parse.
 SpeakerId = Literal["A", "B", "C"]
 
 
@@ -48,7 +49,7 @@ class ScriptTurn(BaseModel):
 
 
 class HostPersona(BaseModel):
-    """One host's identity for the script. Speaker A/B/C resolve to these."""
+    """One host's identity for the script. Speaker A/B (and legacy C) resolve to these."""
 
     name: str
     #: One-line persona used in the (static, cacheable) system prompt.
@@ -58,21 +59,26 @@ class HostPersona(BaseModel):
 
 
 class HostConfig(BaseModel):
-    """The three hosts (A=Bram, B=Maeve, C=Pip) read from ontology-being."""
+    """The podcast hosts read from ontology-being. The current roster is two
+    (A=Bram, B=Maeve); `c` is an optional retired third host (Pip), present only on the
+    legacy three-host episodes recorded before the 2026-06 two-host change."""
 
     a: HostPersona
     b: HostPersona
-    c: HostPersona
+    c: HostPersona | None = None
 
     def by_id(self, speaker: SpeakerId) -> HostPersona:
-        return {"A": self.a, "B": self.b, "C": self.c}[speaker]
+        host = {"A": self.a, "B": self.b, "C": self.c}.get(speaker)
+        if host is None:
+            raise KeyError(f"no host configured for speaker {speaker!r}")
+        return host
 
     def voice_of(self, speaker: SpeakerId) -> str:
         return self.by_id(speaker).voice_id
 
 
 class Script(BaseModel):
-    """A three-host podcast script for one session."""
+    """A two-host podcast script for one session (legacy episodes carry a third)."""
 
     session_id: str
     title: str
@@ -103,14 +109,17 @@ class Thread(BaseModel):
 
 
 class VoiceConfig(BaseModel):
-    """Provider voice ids for the hosts (speaker A/B/C)."""
+    """Provider voice ids for the hosts (speaker A/B, plus legacy C)."""
 
     a: str
     b: str
-    c: str
+    c: str | None = None
 
     def by_id(self, speaker: SpeakerId) -> str:
-        return {"A": self.a, "B": self.b, "C": self.c}[speaker]
+        voice = {"A": self.a, "B": self.b, "C": self.c}.get(speaker)
+        if voice is None:
+            raise KeyError(f"no voice configured for speaker {speaker!r}")
+        return voice
 
 
 class TtsClip(BaseModel):

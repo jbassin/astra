@@ -108,27 +108,34 @@ def test_distill_session_uses_call_tool() -> None:
     assert "Archie: hello" in client.last_tool_req.user_content
 
 
-# ── prompts (gate C — verbatim load-bearing lines + interpolation) ──────────
+# ── prompts (gate C — load-bearing lines + interpolation; two-host, calmer) ──
 def test_improv_prompt_is_the_raw_transcript_prompt() -> None:
     p = build_improv_system_prompt(HOSTS)
-    assert "RAW, unedited recording of three friends" in p
-    assert "At least a third of the lines should fail as standalone wit." in p
-    # Host names interpolate into the speaker-label example.
+    assert "recording of two friends" in p
+    # Calmer-but-human: interruptions are the exception, not the rhythm.
+    assert "Real talk isn't airless" in p
+    assert "should be RARE" in p
+    # Host names interpolate into the speaker-label example, two hosts only.
     assert "Bram: what they said" in p
-    assert "Maeve, and Pip" in p
+    assert "Bram and Maeve" in p
+    assert "Pip" not in p
 
 
 def test_dressing_prompt_forbids_polishing() -> None:
     p = build_dressing_system_prompt(HOSTS)
     assert "You are a careful transcript FORMATTER, not a writer." in p
     assert "DO NOT improve the dialogue." in p
-    assert "Bram → A" in p and "Maeve → B" in p and "Pip → C" in p
+    assert "Bram → A" in p and "Maeve → B" in p
+    assert "Pip" not in p and "→ C" not in p
 
 
-def test_script_system_prompt_has_the_imperfection_budget() -> None:
+def test_script_system_prompt_is_two_host_and_calm() -> None:
     p = build_script_system_prompt(HOSTS)
-    assert "at least a third of all lines should fail as standalone wit" in p
+    # The interruption-heavy "imperfection budget" is gone; calmer guidance replaces it.
+    assert "standalone wit" not in p
+    assert "Interruptions should be RARE" in p
     assert "HOST A — Bram, the Recapper. fluent but imprecise." in p
+    assert "HOST B — Maeve, the grounded foil." in p
 
 
 # ── grounding (gate D — akasha seam, pure over injected pages) ──────────────

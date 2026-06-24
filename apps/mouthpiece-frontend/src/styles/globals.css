@@ -39,8 +39,9 @@ a:hover {
   text-decoration: underline;
 }
 
-/* Speaker palette (A=Bram, B=Maeve, C=Pip) — the 3 fixed podcast hosts (D4). Not
- * ontology-being colors; mouthpiece hosts are the roundtable, not wiki players. */
+/* Speaker palette — current hosts are A=Bram, B=Maeve; C (Pip) is retired but kept so
+ * the legacy three-host episodes still color their transcripts. Not ontology-being
+ * colors; mouthpiece hosts are the roundtable, not wiki players (D4). */
 :root {
   --speaker-A: var(--color-accent);
   --speaker-B: var(--color-accent-amber);

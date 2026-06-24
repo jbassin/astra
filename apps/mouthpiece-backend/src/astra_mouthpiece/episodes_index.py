@@ -199,6 +199,10 @@ class SessionInput:
     audio_version: str
     #: Raw script turns as (speaker, text) — build_index strips + resolves names.
     turns: tuple[tuple[str, str], ...] = ()
+    #: This episode's OWN host block (from its script.json), so legacy three-host
+    #: episodes keep their roster while new two-host ones carry theirs. Falls back to
+    #: the shared ontology block when a script omits hosts (faerrin wire fixtures).
+    hosts: dict[str, EpisodeHost] | None = None
 
 
 def _dedup_by_id(sessions: list[SessionInput]) -> list[SessionInput]:
@@ -224,10 +228,12 @@ def build_index(
     """Assemble + sort the catalog (pure — the unit under test).
 
     `arc_titles`/`arc_main` map an arc slug → its ontology-being `campaign.name`
-    / `campaign.main`; `hosts` is the A/B/C persona block (same for every episode,
-    carried from ontology-being). Sort: arc asc, then date asc, then the recap
-    capstone last within a tie. Duplicate ids (historical seed ∪ live) collapse to
-    the most complete entry first.
+    / `campaign.main`; `hosts` is the shared ontology persona block, used as the
+    fallback for any episode whose script omits its own hosts (each episode prefers
+    its OWN stored block via `SessionInput.hosts`, so the two-host roster change
+    leaves the legacy three-host episodes untouched). Sort: arc asc, then date asc,
+    then the recap capstone last within a tie. Duplicate ids (historical seed ∪ live)
+    collapse to the most complete entry first.
     """
     sessions = _dedup_by_id(sessions)
     numbers = build_episode_numbers([s.id for s in sessions])
@@ -235,10 +241,11 @@ def build_index(
     for s in sessions:
         arc_no, slug, date = parse_id(s.id)
         arc_title = arc_titles.get(slug, slug)
+        ep_hosts = s.hosts or hosts
         transcript = [
             TranscriptLine(
                 speaker=speaker,
-                name=hosts[speaker].name if speaker in hosts else speaker,
+                name=ep_hosts[speaker].name if speaker in ep_hosts else speaker,
                 text=strip_audio_tags(text),
             )
             for speaker, text in s.turns
@@ -255,7 +262,7 @@ def build_index(
                 date_sort_key=date_sort_key(date),
                 title=s.title,
                 episode_title=episode_title(s.title, arc_title),
-                hosts=hosts,
+                hosts=ep_hosts,
                 synopsis=strip_audio_tags(s.synopsis),
                 duration_ms=s.duration_ms,
                 has_audio=s.has_audio,
@@ -348,9 +355,31 @@ def discover_sessions(out_root: Path) -> list[SessionInput]:
                 has_transcript=transcript.is_file(),
                 audio_version=_audio_version(mp3),
                 turns=_read_turns(script),
+                hosts=_read_hosts(script),
             )
         )
     return sessions
+
+
+def _read_hosts(script: dict) -> dict[str, EpisodeHost] | None:
+    """The episode's own host block, normalized to speaker ids. Handles both the
+    faerrin wire shape (keys ``A``/``B``/``C``) and astra's model dump (keys
+    ``a``/``b``/``c``, with a null ``c`` on a two-host episode). Returns None when the
+    script carries no hosts, so build_index falls back to the shared ontology block."""
+    raw = script.get("hosts")
+    if not isinstance(raw, dict):
+        return None
+    out: dict[str, EpisodeHost] = {}
+    for key, val in raw.items():
+        speaker = key.upper() if isinstance(key, str) else ""
+        if speaker not in ("A", "B", "C") or not isinstance(val, dict):
+            continue
+        name = val.get("name")
+        if not isinstance(name, str) or not name:
+            continue
+        persona = val.get("persona")
+        out[speaker] = EpisodeHost(name=name, persona=persona if isinstance(persona, str) else "")
+    return out or None
 
 
 def _read_turns(script: dict) -> tuple[tuple[str, str], ...]:

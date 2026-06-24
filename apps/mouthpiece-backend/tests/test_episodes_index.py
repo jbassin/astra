@@ -17,6 +17,7 @@ import pytest
 from astra_mouthpiece.episodes_index import (
     EpisodeHost,
     SessionInput,
+    _read_hosts,
     build_episode_numbers,
     build_index,
     discover_sessions,
@@ -120,6 +121,7 @@ def _session_inputs() -> list[SessionInput]:
                 has_transcript=False,
                 audio_version="",
                 turns=tuple((t["speaker"], t["text"]) for t in script["turns"]),
+                hosts=_read_hosts(script),
             )
         )
     return out

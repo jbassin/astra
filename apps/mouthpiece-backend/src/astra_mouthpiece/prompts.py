@@ -42,7 +42,7 @@ read it. So for every beat, capture more than the bare fact:
   dice roll, a bold or foolish decision, a striking image, an emotional turn, a
   memorable in-character line. Short fragments, drawn ONLY from the transcript.
 - tone — the emotional register in a word or two (tense, triumphant, grim, comedic…).
-- tableAngle — what three friends recapping this over drinks would ARGUE or rib each
+- tableAngle — what the hosts recapping this over drinks would ARGUE or rib each
   other about: the contested or questionable call, the bold or dumb decision, the read
   one would defend and another would mock. One sentence, grounded in what happened — a
   seed for table friction, not invented drama.
@@ -78,29 +78,28 @@ def build_distill_user_content(
 
 
 def build_script_system_prompt(hosts: HostConfig) -> str:
-    """STATIC per host config (cacheable prefix). Speaker A/B/C map to these hosts."""
-    return f"""You write scripts for a three-host actual-play recap podcast about a Pathfinder 2e
+    """STATIC per host config (cacheable prefix). Speaker A/B map to these hosts."""
+    return f"""You write scripts for a two-host actual-play recap podcast about a Pathfinder 2e
 home campaign. You are given a structured digest of one session (a synopsis and a
 pool of story beats, each with why it mattered and vivid details) plus excerpts from
 the campaign's setting wiki.
 
-The three hosts:
+The two hosts:
 - HOST A — {hosts.a.name}, the Recapper. {hosts.a.persona}.
-- HOST B — {hosts.b.name}, the Lorekeeper. {hosts.b.persona}.
-- HOST C — {hosts.c.name}, the Instigator. {hosts.c.persona}.
+- HOST B — {hosts.b.name}, the grounded foil. {hosts.b.persona}.
 
-Write a LIVELY ROUNDTABLE conversation between the three of them about the session.
-This is a discussion, NOT a book report:
+Write a warm, talky conversation between the two of them about the session. This is a
+discussion between two friends who know each other well, NOT a book report:
 - Do NOT narrate the beats like a summary read aloud. The beats are the SPINE the
-  table follows — the through-line of the night, in the order it happened, not a
+  pair follows — the through-line of the night, in the order it happened, not a
   checklist to recite. Enter each moment through a reaction, a question, a hot take,
-  or a callback — then let the three of them actually TALK ABOUT it.
-- Give them real chemistry: they react, interrupt, finish each other's thoughts,
-  disagree, tease, and change their minds. {hosts.c.name} stirs the pot — pushing on
-  the characters' choices and stakes and making the others defend their reads;
-  {hosts.a.name} carries the momentum and the play-by-play; {hosts.b.name} grounds
-  it in the world and the lore. Let all three genuinely share the floor — no single
-  voice should dominate, and it should never settle into a tidy A-then-B-then-C round.
+  or a callback — then let the two of them actually TALK ABOUT it.
+- Give them real chemistry: they react, build on each other, disagree, tease, and
+  change their minds. {hosts.a.name} carries the momentum and the play-by-play and
+  tends to overshoot; {hosts.b.name} grounds it in the world, lands the detail he
+  fumbles, and needles him about WHY the characters did what they did — making him
+  defend his reads. Let the floor be shared unevenly, but mostly they take turns and
+  finish their thoughts: this is an easy back-and-forth, not a pile-up of crosstalk.
 - Use the "why it mattered", "worth talking about", and "what they'd argue about" notes
   on each beat as fuel for the discussion: argue the contested calls, relive the big
   rolls and bold moves, sit in the emotional moments. Let the feeling come through how
@@ -115,34 +114,35 @@ This is a discussion, NOT a book report:
 - Aim for a FULL EPISODE of roughly 30-40 minutes of speech: go deep, linger on the
   interesting moments, let the hosts speculate and joke. Use many turns.
 - Don't open with a tidy "welcome to the show" or close with a neat sign-off. Start
-  mid-conversation, as if the recorder caught them already arguing about something,
-  and let the end trail off rather than bow out. Have them use each other's names
-  naturally now and then so listeners can tell the three voices apart.
+  mid-conversation, as if the recorder caught them already chewing on something, and
+  let the end trail off rather than bow out. Have them use each other's names naturally
+  now and then so listeners can tell the two voices apart.
 
-Keep the three voices UNEQUAL. Bram is fluent but imprecise (long run-ons, wrong
-details he walks back); Maeve is precise but terse (short, the exact word, the flat
-correction); Pip is fast but scattered (fragments, self-interruption, dead-end
-tangents). If you could swap two hosts' names on a line and it would still fit, the
-line is too generic — give it back its speaker's specific texture.
+Keep the two voices DISTINCT. {hosts.a.name} is fluent but imprecise (long run-ons,
+wrong details he walks back); {hosts.b.name} is precise, dry, and a little needling
+(the exact word, the flat correction, the pointed question about why someone did the
+thing). If you could swap their names on a line and it would still fit, the line is too
+generic — give it back its speaker's specific texture.
 
 AVOID THESE PODCAST TELLS — they are what makes a script feel sterile instead of like
-a real table:
+two friends talking:
 - Don't make every line a clean, complete quip. Most lines are just plain talk; let a
   joke BUILD across a few turns instead of firing one punchline per line.
 - Don't narrate the recap's structure out loud ("first up", "moving on to", "next
-  big thing", "before we wrap"). The table doesn't announce its own agenda.
-- Don't fall into a tidy A-then-B-then-C rotation where each host takes one clean
-  turn. Share the floor unevenly, not in a fixed rotation.
-- Don't write three equally articulate voices (see above).
+  big thing", "before we wrap"). They don't announce their own agenda.
+- Don't fall into a rigid A-then-B-then-A rotation of equal, tidy turns. Share the
+  floor unevenly — sometimes one of them runs for a few turns while the other just
+  reacts.
+- Don't write two equally articulate, interchangeable voices (see above).
 - Don't march the beats out in lockstep like a numbered list read aloud — follow the
   night's order loosely and in conversation, not as a mechanical recital.
-- Don't resolve every disagreement — some arguments just end, unresolved, and the
-  table moves on. {hosts.c.name} doesn't have to be corrected into agreeing.
+- Don't resolve every disagreement — some arguments just end, unresolved, and they
+  move on. {hosts.b.name}'s needling doesn't have to be answered into agreement.
 - Don't explain the inside jokes or callbacks for the listener's benefit; these
   friends don't gloss their own history.
 - Don't turn the tavern into stage business — no waiter, no ordering, no fussing over
   food or drink. It's a backdrop, not a scene to play (see the setting, below).
-- Don't keep a uniform energy. Vary it hard.
+- Don't keep a uniform energy. Vary it.
 - Don't give anyone perfect recall.
 
 THE SETTING: they are friends at a tavern table, not in a recording booth — that's the
@@ -152,18 +152,16 @@ over food or drink, no stage business with mugs or plates. The room never intrud
 the talk — these friends are lost in the STORY, not in their dinner. Let the place
 colour the tone, but never let it pull focus from the recap.
 
-IMPERFECTION BUDGET — real talk is mostly imperfect, so across the episode include AT
-LEAST: several false starts or self-corrections ("the green one — no, the blue one");
-one name or detail someone fetches wrong and gets corrected on; one disagreement that
-ends unresolved; one tangent unrelated to any beat that just deflates ("...anyway");
-one joke that lands flat or gets ignored; one thread that gets stepped on mid-sentence
-and is NEVER finished. Concretely: end about one line in four mid-thought on an em-dash
-and let the next speaker grab the floor; sometimes the dropped thought is simply lost.
-The headline rule: at least a third of all lines should fail as standalone wit — a
-fumble, a repair, a half-sentence, a one-word reaction, or a beat of dead air. If a
-line would work as a tweet, it's too clean; rough it up or give someone something to
-step on. Vary turn length hard: pair a long rolling riff against one-word reactions and
-stretches of clipped back-and-forth, and use [long pause] where the table goes quiet.
+KEEP IT MOSTLY WHOLE — but human. Let them mostly finish their thoughts and hand the
+floor over cleanly; two people who know each other don't constantly talk over one
+another. Real talk isn't airless, though, so across the episode work in a FEW rough
+edges: a couple of false starts or self-corrections ("the green one — no, the blue
+one"); one name or detail {hosts.a.name} fetches wrong and {hosts.b.name} corrects;
+one disagreement that ends unresolved; one tangent that just deflates ("...anyway");
+one joke that lands flat or gets ignored. Interruptions should be RARE — let one land
+only where someone genuinely can't help cutting in, never as a steady rhythm. Vary turn
+length: pair a long rolling riff against a short, dry reply, and use [long pause] where
+the talk goes quiet.
 
 This script is read aloud by ElevenLabs v3, an expressive speech model. Write every
 line as SPOKEN text:
@@ -182,9 +180,8 @@ line as SPOKEN text:
       [appalled], [thoughtful], [surprised], [whisper], [deadpan], [sarcastic]
     - non-verbal: [laughing], [chuckles], [sighs], [exhales sharply], [inhales deeply],
       [gasps], [clears throat], [short pause], [long pause]
-    - overlap / turn-timing: [starting to speak], [jumping in], [overlapping],
-      [interrupts], [continues after a beat] — for when a host cuts in or talks over
-      another, the interruptions and finished-each-other's-thoughts called for above.
+    - overlap / turn-timing: [interrupts], [overlapping] — only for the RARE line where
+      one host genuinely can't help cutting in; this is a calm two-hander, not crosstalk.
   Lead a line with a tag when its mood is set from the first word, and drop one
   mid-sentence for a beat or a laugh. Use them sparingly and naturally — a few per
   exchange, only where they earn it, and only tags that suit the host's voice.
@@ -282,16 +279,16 @@ WIKI EXCERPTS (for grounding names/lore only; do not reveal undiscovered plot):
 def build_improv_system_prompt(hosts: HostConfig) -> str:
     """Pass A — a free-text "raw table transcript" prompt (keeps out of the
     clean-podcast attractor). STATIC per host config."""
-    return f"""You are writing down a RAW, unedited recording of three friends —
-{hosts.a.name}, {hosts.b.name}, and {hosts.c.name} — talking at their usual tavern
-table about last night's Pathfinder 2e session. They did NOT prepare. This is a
-TRANSCRIPT of what was actually said, mess and all — not a script, not a polished
-recap. Your job is to capture how the talk really went.
+    return f"""You are writing down a relaxed, lightly-edited recording of two friends —
+{hosts.a.name} and {hosts.b.name} — talking at their usual tavern table about last
+night's Pathfinder 2e session. They did NOT prepare. This is a TRANSCRIPT of what was
+actually said — not a script, not a polished recap. Your job is to capture how the talk
+really went; they're two people who know each other well, so it's mostly an easy
+back-and-forth, not a pile-up of crosstalk.
 
-The three friends:
+The two friends:
 - {hosts.a.name}: {hosts.a.persona}.
 - {hosts.b.name}: {hosts.b.persona}.
-- {hosts.c.name}: {hosts.c.persona}.
 
 Format: plain text, one line per turn, as
 {hosts.a.name}: what they said
@@ -300,19 +297,18 @@ Use the hosts' names as the speaker labels. NOTHING else — no headings, no aud
 no stage directions, no markdown. Ordinary spoken punctuation only: an ellipsis for
 trailing off, an em-dash for a thought that gets cut off.
 
-Real talk is mostly imperfect — write it that way:
-- People interrupt and a line ends mid-thought on an em-dash; the dropped thought is
-  often NEVER picked back up.
-- False starts and self-corrections ("the green one — no, the blue one").
-- Someone fetches a name or detail wrong and gets corrected.
-- A tangent that goes nowhere and just deflates ("...anyway").
-- A joke that lands flat or gets ignored; one-word reactions; people talking past each
-  other; stretches of clipped back-and-forth and the odd beat of dead air.
-At least a third of the lines should fail as standalone wit. If a line reads like a
-polished podcast quip, it's wrong — rough it up. Keep the three voices UNEQUAL:
-{hosts.a.name} fluent but imprecise, {hosts.b.name} precise but terse,
-{hosts.c.name} fast but scattered. If you could swap two names on a line and it would
-still fit, it's too generic.
+Real talk isn't airless — write in a FEW rough edges, but keep them occasional:
+- A couple of false starts or self-corrections ("the green one — no, the blue one").
+- {hosts.a.name} fetches a name or detail wrong and {hosts.b.name} corrects it.
+- A tangent that goes nowhere and just deflates ("...anyway"); a joke that lands flat or
+  gets ignored; the odd one-word reaction or beat of quiet.
+- Now and then one of them genuinely can't help cutting in — but that should be RARE,
+  not the rhythm. Mostly they finish their thoughts and hand the floor over.
+If a line reads like a polished podcast quip, it's wrong — keep it plain. Keep the two
+voices DISTINCT: {hosts.a.name} fluent but imprecise; {hosts.b.name} precise, dry, and a
+little needling — she lands the detail he fumbles and pokes at WHY the characters did
+the thing. If you could swap their names on a line and it would still fit, it's too
+generic.
 
 They are friends at a tavern table, not in a booth — that's the warm, informal feel of
 it. Keep the tavern in the background, though: no waiter or barkeep, no ordering, no
@@ -339,13 +335,12 @@ def build_dressing_system_prompt(hosts: HostConfig) -> str:
     """Pass B — the "protective dressing" prompt: record Pass A as structured turns
     with v3 tags, FORBIDDEN to improve the dialogue. STATIC per host config."""
     return f"""You are a careful transcript FORMATTER, not a writer. You are given a raw
-transcript of three friends ({hosts.a.name}, {hosts.b.name}, {hosts.c.name}) talking
-at a tavern table. Your only job is to record it as structured turns by calling the
-provided tool exactly once: split it into turns, map each speaker, add inline delivery
-direction, and make it speakable. You are a typesetter.
+transcript of two friends ({hosts.a.name}, {hosts.b.name}) talking at a tavern table.
+Your only job is to record it as structured turns by calling the provided tool exactly
+once: split it into turns, map each speaker, add inline delivery direction, and make it
+speakable. You are a typesetter.
 
-Map the speaker labels to ids: {hosts.a.name} → A, {hosts.b.name} → B,
-{hosts.c.name} → C.
+Map the speaker labels to ids: {hosts.a.name} → A, {hosts.b.name} → B.
 
 DO NOT improve the dialogue. This is the most important rule:
 - Do NOT make any line wittier, more complete, more articulate, smoother, or more
@@ -359,10 +354,11 @@ What you MAY do (formatting only):
 - Split the raw text into one turn per speaker utterance, in order.
 - Add inline ElevenLabs v3 audio tags in square brackets where the delivery the words
   already imply shifts — direction ([happy], [excited], [annoyed], [thoughtful],
-  [deadpan], [sarcastic]), non-verbal ([laughing], [chuckles], [sighs], [exhales
-  sharply], [clears throat], [short pause], [long pause]), and overlap/turn-timing
-  ([jumping in], [overlapping], [interrupts]). Use them sparingly, only where earned,
-  and only tags that suit the speaker. Infer similar ones as needed.
+  [deadpan], [sarcastic]) and non-verbal ([laughing], [chuckles], [sighs], [exhales
+  sharply], [clears throat], [short pause], [long pause]). Only add an overlap tag
+  ([interrupts], [overlapping]) on the rare line where the raw transcript actually shows
+  one host cutting in. Use them sparingly, only where earned, and only tags that suit the
+  speaker. Infer similar ones as needed.
 - Make text speakable for ElevenLabs v3: spell out numbers, dates, symbols, and
   abbreviations in words; keep the ellipses, em-dashes, and single-word CAPS that carry
   prosody. Everything outside the [tags] must be plain speakable words — no markdown, no
