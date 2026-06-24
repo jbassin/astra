@@ -36,7 +36,35 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `f1171fd`, 2026-06-23)
+## Current state — UPDATE THIS SECTION (as of commit `47a6538`, 2026-06-23)
+
+> **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
+> product/ops on the live stack**, not migration slices.
+
+### Post-migration product work — strider map (this session, all COMPLETE + PUSHED + DEPLOYED LIVE)
+
+Two new **strider** map "layer changes" were added on top of the finished migration. Both are live on
+`astra-strider` (10360 / `strider.iridi.cc`), verified error-free, with their own gotchas memories.
+
+- **✅ Banner / alliance layer change** (`4873609`…`13c2032`, memory `4aa6dfa`). Multiple factions ally and
+  combine their land under one **banner** — a new first-class entity `{slug,name,color,symbol?,members[]}`
+  with two `Change` ops `banner-form` / `banner-dissolve` (mirroring skein-connect/disconnect; dissolve
+  reverts for free). Renders by appending each active banner as a **synthetic pseudo-faction** to the
+  faction list, so all the existing pixi fill/hover/click/border-dissolve/flip machinery applies untouched
+  (member hexes merge into one banner-colored bloc, inner seams gone). Click → an alliance Modal listing
+  constituents; `banner-form` animates as a member→banner color flip; editor `banner` kind (form/dissolve).
+  Seed: the **Tri-Faction Concord**. Full facts in `[[strider-banner-alliance-gotchas]]`.
+- **✅ Tithe transient event** (`62ddf4e`…`47a6538`, memories `acf4862`/`90b27a7`). A one-shot visual event
+  (`{op:"tithe"}`) that **changes no persistent state** — every fold ignores it; it only fires a
+  `LayerAnimation`. A wave of flipping purple/black-shader hex tiles **fills** the board center→edge, holds
+  briefly (`TITHE_HOLD_MS` 160), then **fades** (`TITHE_FADE_MS` 720). The purple is a **live, animated**
+  copy of the page balatro shader (uniform-driven palette, `TITHE_PALETTE`), run as a **filter on a
+  container of white flipping tiles, gated by input alpha** (continuous + animated — NOT a baked/tiled
+  RenderTexture). Editor `event` kind → `tithe` mode. **Load-bearing pixi v8 gotchas** (filters+masks don't
+  compose; RenderTexture-in-ticker is blank; the live-filter recipe; headless-RAF capture caveat) in
+  `[[strider-tithe-pixi-gotchas]]`.
+
+---
 
 - **✅ 0013 vellum-frontend COMPLETE — all 7 slices BUILT + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE**
   (`3835dae`(s1)…`f1171fd`(s7)). The **final** 0011–0013 frontend: faerrin's `vellum` (CodeMirror editor +
