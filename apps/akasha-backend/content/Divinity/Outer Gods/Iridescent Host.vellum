@@ -6,7 +6,9 @@ date: 2026-06-05T16:40:21-04:00
 
 The Iridescent Host is the patron deity of the [[Org/Iridescent Church/index|Iridescent Church]] and, by extension, the Thearchy of [[Geography/Calaria/index|Calaria]]. Above all else, the Host favors the prosperity of her people in spite of (or to the detriment of) others. She commands her followers to create great works and establish lasting monuments such that the reputation of the Host endures the ages.
 
-:::deity[Iridescent Host]{category="Outer God"}
+@deity "Iridescent Host"
+| category: Outer God
+{
 Edicts :: Establish cultural superiority, create great works
 Anathema :: Forgo credit for your accomplishments
 [[Divine Raiment]] :: Pearlescent, shimmering
@@ -20,4 +22,4 @@ Divine Skill :: Diplomacy
 Favored Weapon :: [mace](https://2e.aonprd.com/Weapons.aspx?ID=362)
 Domains :: [confidence](https://2e.aonprd.com/Domains.aspx?ID=67), [cities](https://2e.aonprd.com/Domains.aspx?ID=66), [indulgence](https://2e.aonprd.com/Domains.aspx?ID=79), [passion](https://2e.aonprd.com/Domains.aspx?ID=88), [toil](https://2e.aonprd.com/Domains.aspx?ID=122), [wealth](https://2e.aonprd.com/Domains.aspx?ID=99)
 Cleric Spells :: 1st: [soothe](https://2e.aonprd.com/Spells.aspx?ID=1678), 4th: [creation](https://2e.aonprd.com/Spells.aspx?ID=1477), 6th: [collective transposition](https://2e.aonprd.com/Spells.aspx?ID=1978)
-:::
+}

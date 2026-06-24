@@ -1,0 +1,5 @@
+# `.vellum` is full-vellum — a markdown superset (the akasha authored-content format).
+# Tell GitHub Linguist to detect + syntax-highlight it as Markdown in the web UI and
+# count it toward language stats.
+*.vellum linguist-language=Markdown
+*.vellum linguist-detectable=true
