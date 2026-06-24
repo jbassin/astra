@@ -17,6 +17,15 @@ mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/e
 # Mirrors config.kdl mouthpiece.episodes-path; override with MOUTHPIECE_EPISODES.
 mouthpiece_episodes := env_var_or_default("MOUTHPIECE_EPISODES", "/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes")
 
+# Sources for the akasha-frontend session-audio seed (the combined Craig recordings the
+# transcript pages play, served same-origin at /audio/<date>.mp3). HIST = faerrin's
+# frozen back-catalog (~31 GB, the old static-audio.iridi.cc store); LIVE = astra
+# scribe's saved dir (mirrors config.kdl scribe ingest-saved-dir, the scribe→linguist
+# handoff). Both are `<date>/audio.mp3`; live wins for any date in both. Override with
+# AKASHA_AUDIO_HIST / AKASHA_AUDIO_LIVE.
+akasha_audio_hist := env_var_or_default("AKASHA_AUDIO_HIST", "/ruby/data/experiments/faerrin/pkg/wretch/data/saved")
+akasha_audio_live := env_var_or_default("AKASHA_AUDIO_LIVE", "/ruby/data/experiments/astra/apps/scribe/data/saved")
+
 # uv binary (absolute — the linguist-commit systemd user timer has a minimal PATH without
 # uv, same reason the service hardcodes just's path). Override with UV_BIN on another host.
 uv_bin := env_var_or_default("UV_BIN", "/home/jbassin/.local/bin/uv")
@@ -123,7 +132,11 @@ linguist-commit:
     # build time and needs no secrets, so a plain targeted compose up suffices; a failed build
     # leaves the running container untouched (no downtime).
     if printf '%s\n' "$changed" | grep -qE '^apps/linguist/(transcripts|data)/'; then
-      echo "linguist-commit: akasha content changed — rebuilding + redeploying akasha-frontend"
+      echo "linguist-commit: akasha content changed — seeding audio + rebuilding + redeploying akasha-frontend"
+      # The new session's combined recording is already on disk (scribe wrote it before
+      # linguist produced the transcript); land it in the audio volume before redeploy so
+      # the transcript page's /audio/<date>.mp3 resolves. Incremental → cheap (see akasha-seed).
+      {{just_executable()}} akasha-seed || echo "linguist-commit: akasha-seed FAILED (rerun: just akasha-seed)" >&2
       if (cd deploy && docker compose up -d --build akasha-frontend); then
         echo "linguist-commit: akasha-frontend redeployed"
       else
@@ -210,6 +223,27 @@ mouthpiece-seed:
         for f in /hist/*.episode.mp3; do [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$f" .episode.mp3).mp3"; done
         find /live -name "*.episode.mp3" -exec sh -c "cp \"\$1\" \"/audio/\$(basename \"\$1\" .episode.mp3).mp3\"" _ {} \;
         n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n episode(s) into astra-mouthpiece-audio"; ls -1 /audio'
+
+# Seed the akasha-frontend session-audio volume (the combined Craig recordings the
+# transcript pages play, served same-origin at /audio/<date>.mp3 — replaces faerrin's
+# static-audio.iridi.cc). Flattens `<date>/audio.mp3` → `<date>.mp3` from two sources:
+# HIST (faerrin's frozen ~31 GB back-catalog) is INCREMENTAL — only copied when absent,
+# so the one-time 31 GB seed isn't re-copied on every timer redeploy; LIVE (astra
+# scribe's saved dir) is always overwritten (small, grows with new sessions, and live
+# wins for any date in both). Re-run to refresh; idempotent + cheap in steady state.
+akasha-seed:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    docker volume create astra-akasha-audio >/dev/null
+    docker run --rm \
+      -v astra-akasha-audio:/audio \
+      -v "{{akasha_audio_hist}}":/hist:ro \
+      -v "{{akasha_audio_live}}":/live:ro \
+      alpine sh -c '
+        set -e
+        for d in /hist/*/; do f="${d}audio.mp3"; [ -e "$f" ] || continue; dest="/audio/$(basename "$d").mp3"; [ -e "$dest" ] || cp "$f" "$dest"; done
+        for d in /live/*/; do f="${d}audio.mp3"; [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$d").mp3"; done
+        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n session(s) into astra-akasha-audio"'
 
 # --- Host edge (shared reverse proxy) ---
 
