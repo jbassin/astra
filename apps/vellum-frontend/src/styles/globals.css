@@ -99,19 +99,6 @@ body {
   color: var(--color-void);
 }
 
-/* --- Editor shell (placeholder until slice 2) --- */
-.editor-shell {
-  flex: 1;
-  display: grid;
-  place-items: center;
-  padding: 2rem;
-}
-.editor-placeholder {
-  color: var(--color-ink);
-  opacity: 0.6;
-  font-family: var(--font-mono), monospace;
-}
-
 /* --- Router boundaries --- */
 .route-boundary {
   flex: 1;
