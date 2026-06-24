@@ -880,9 +880,10 @@ function buildScene(
   const SKEIN_LINK_MAX_MS = 600;
   const FLIP_WAVE_MAX_MS = 800;
   const PER_HEX_FLIP_MS = 280;
-  const TITHE_FLIP_MS = 220; // per-tile flip-in (and flip-out) duration
-  const TITHE_HOLD_MS = 160; // dwell at full purple before flipping back
-  const TITHE_MAX_MS = 2600; // total wall-clock budget for the whole wave
+  const TITHE_FLIP_MS = 220; // per-tile flip-in duration (the fill wave)
+  const TITHE_HOLD_MS = 280; // dwell at full purple once the whole board is filled
+  const TITHE_FADE_MS = 720; // uniform fade-out of the filled board
+  const TITHE_MAX_MS = 2900; // total wall-clock budget for the whole wave
 
   function animateRegionBorder(slug: string, durationMs: number): void {
     const region = currentRegions.find((r) => r.slug === slug);
@@ -1079,26 +1080,32 @@ function buildScene(
     });
   }
 
-  // The tithe wave: each tile's vertical scale (flip) is staggered by its ring
-  // distance from center, so a band of flipping purple tiles travels out to the
-  // edges and back. The mask is rebuilt each frame from the active (s > 0) tiles
-  // — squished hex polygons — and the shader field shows through it.
+  // The tithe wave: a flip-in wave (staggered by ring distance) fills the whole
+  // board with purple from the center to the edges; each tile holds once it has
+  // flipped in. Once the last ring is filled (+ a hold), the entire filled board
+  // fades out together (uniform flip-down). So: fill first, then fade.
   function animateTithe(budgetMs: number): void {
-    const total = Math.min(TITHE_MAX_MS, Math.max(2000, budgetMs));
-    const span = TITHE_FLIP_MS * 2 + TITHE_HOLD_MS;
-    const travel = Math.max(0, total - span);
-    const waveStep = Math.max(14, travel / Math.max(1, titheMaxRing));
+    const total = Math.min(TITHE_MAX_MS, Math.max(2200, budgetMs));
+    // Reserve the tail (hold + fade); the rest is the fill wave's travel time.
+    const fillBudget = Math.max(0, total - TITHE_HOLD_MS - TITHE_FADE_MS - TITHE_FLIP_MS);
+    const waveStep = Math.max(14, fillBudget / Math.max(1, titheMaxRing));
     const startAt = performance.now();
-    const durationMs = titheMaxRing * waveStep + span + 40;
+    const fillDoneAt = titheMaxRing * waveStep + TITHE_FLIP_MS; // last ring fully in
+    const fadeStartAt = fillDoneAt + TITHE_HOLD_MS;
+    const durationMs = fadeStartAt + TITHE_FADE_MS + 40;
 
     const scaleYAt = (d: number, now: number): number => {
-      const local = now - startAt - d * waveStep;
-      if (local <= 0) return 0;
-      if (local < TITHE_FLIP_MS) return easeOutCubic(local / TITHE_FLIP_MS);
-      if (local < TITHE_FLIP_MS + TITHE_HOLD_MS) return 1;
-      const out = local - TITHE_FLIP_MS - TITHE_HOLD_MS;
-      if (out < TITHE_FLIP_MS) return 1 - easeOutCubic(out / TITHE_FLIP_MS);
-      return 0;
+      const local = now - startAt;
+      // Once the board is filled + held, every tile fades out together.
+      if (local >= fadeStartAt) {
+        const f = (local - fadeStartAt) / TITHE_FADE_MS;
+        return f >= 1 ? 0 : 1 - easeOutCubic(f);
+      }
+      // Flip-in wave: this ring stays at 0 until its turn, then ramps to 1 and holds.
+      const inLocal = local - d * waveStep;
+      if (inLocal <= 0) return 0;
+      if (inLocal < TITHE_FLIP_MS) return easeOutCubic(inLocal / TITHE_FLIP_MS);
+      return 1;
     };
 
     const ensureTile = (i: number): Graphics => {
