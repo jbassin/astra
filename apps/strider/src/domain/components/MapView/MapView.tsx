@@ -239,18 +239,22 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
       hexes: Array<[number, number]>;
       faction: string | null;
     }> = [];
+    const bannerForms: Array<{ members: string[] }> = [];
     for (const change of justAppliedLayer.changes) {
       if (change.op === "add") regionAdds.push({ slug: change.slug });
       else if (change.op === "skein-connect")
         skeinConnects.push({ from: change.from, to: change.to });
       else if (change.op === "claim")
         claimChanges.push({ hexes: change.hexes, faction: change.faction });
+      else if (change.op === "banner-form") bannerForms.push({ members: change.members });
     }
 
     // Only compute prev faction state if we actually have flips to animate —
-    // saves the fold on the common no-claim layer.
+    // saves the fold on the common no-flip layer. A banner-form flips every
+    // member faction's hexes (their previous owners) to the banner color, so it
+    // needs the same prev-state fold as a claim.
     let factionFlips: FactionFlipAnim[] = [];
-    if (claimChanges.length > 0) {
+    if (claimChanges.length > 0 || bannerForms.length > 0) {
       const prevOverrides = foldFactionOverrides(layers.slice(0, layerIndex - 1));
       const prevEffective = computeEffectiveAssignments(
         FACTION_HEXES,
@@ -281,6 +285,31 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
             prevFactionIdxByHex: lookups,
           };
         });
+
+      // A banner-form flips each member faction's previously-owned hexes to the
+      // banner color, as one wave per banner (the underlying snapshot hex already
+      // shows the banner color, so the existing flip reveals member → banner).
+      if (bannerForms.length > 0) {
+        const slugToIdx = new Map<string, number>();
+        factionSlugs.forEach((slug, i) => {
+          slugToIdx.set(slug, i);
+        });
+        for (const bf of bannerForms) {
+          const hexes: Array<[number, number]> = [];
+          const lookups: Array<readonly [string, number | null]> = [];
+          for (const member of bf.members) {
+            const idx = slugToIdx.get(member);
+            if (idx === undefined) continue;
+            for (const [q, r] of prevEffective.perFaction[idx]!) {
+              hexes.push([q, r]);
+              lookups.push([`${q},${r}`, idx]);
+            }
+          }
+          if (hexes.length > 0) {
+            factionFlips.push({ originHex: hexes[0]!, hexes, prevFactionIdxByHex: lookups });
+          }
+        }
+      }
     }
 
     if (regionAdds.length === 0 && skeinConnects.length === 0 && factionFlips.length === 0) {
