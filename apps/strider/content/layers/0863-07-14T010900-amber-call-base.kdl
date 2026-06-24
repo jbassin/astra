@@ -1,0 +1,21 @@
+timestamp "863-07-14T01:09:00Z"
+message "Amber Call Base established."
+
+add "amber-call-base" name="Amber Call Base" faction="amber-call" {
+    hex -20 -14
+    hex -21 -13
+    hex -22 -12
+    hex -21 -12
+    hex -20 -13
+    hex -20 -12
+    hex -21 -11
+    hex -22 -11
+    hex -19 -14
+    hex -19 -13
+    hex -18 -14
+    hex -17 -14
+    hex -18 -13
+    hex -19 -12
+    hex -18 -15
+    hex -17 -15
+}

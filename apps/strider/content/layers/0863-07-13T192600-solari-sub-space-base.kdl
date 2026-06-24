@@ -1,0 +1,12 @@
+timestamp "863-07-13T19:26:00Z"
+message "Solari Base established."
+
+add "solari-sub-space-base" name="Solari Base" faction="solari-sub-surface" {
+    hex 23 -27
+    hex 23 -26
+    hex 24 -27
+}
+
+skein-add "credence-floe" name="Credence Floe" faction="solari-sub-surface" symbol="symbols/skein-eye.svg" {
+    hex 23 -26
+}

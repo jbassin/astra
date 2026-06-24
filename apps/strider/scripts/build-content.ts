@@ -1,9 +1,9 @@
 // Pre-build content pipeline.
 //
-// Reads content/factions/*.md and content/layers/*.md, converts markdown to
-// HTML, and emits typed TS modules under src/generated/. The runtime app
-// imports those modules — never the filesystem — so the production bundle has
-// no fs/remark/gray-matter dependency.
+// Reads content/factions/*.md (markdown → HTML) and content/layers/*.kdl (KDL →
+// change records), folds the layers, and emits typed TS modules under
+// src/generated/. The runtime app imports those modules — never the filesystem —
+// so the production bundle has no fs/remark/gray-matter/kdl dependency.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -12,10 +12,12 @@ import {
   buildContent,
   defineContentSource,
   emitModule,
+  listFilesWithExtension,
   listMarkdownFiles,
   markdownToHtml,
   parseFrontmatter,
 } from "@astra/content-build";
+import { type Node, parse } from "@bgotink/kdl";
 import {
   computeAssignmentBorders,
   computeBannerAssignments,
@@ -291,35 +293,91 @@ export function parseChange(raw: unknown, ctx: string): Change {
 
 const LAYER_FILENAME_RE = /^(\d{4}-\d{2}-\d{2}T\d{6})-(.+)$/;
 
+// --- KDL → change record (keeps KDL at the edge: the fold + parseChange below
+// consume plain records, never raw KDL nodes). ---
+
+function kdlArgs(node: Node): unknown[] {
+  return node.getArgumentEntries().map((e) => e.getValue());
+}
+
+function kdlProps(node: Node): Record<string, unknown> {
+  const props: Record<string, unknown> = {};
+  for (const [key, entry] of node.getPropertyEntryMap()) props[key] = entry.getValue();
+  return props;
+}
+
+function kdlChildren(node: Node): Node[] {
+  return node.children?.nodes ?? [];
+}
+
+// One change node → the same record shape the YAML frontmatter used to produce,
+// so parseChange (the single validator) is unchanged. The node NAME is the op;
+// the first positional arg is the slug (where the op has one); `hex q r` and
+// `member "slug"` children collect into hexes/hex and members.
+function nodeToChangeRecord(node: Node): Record<string, unknown> {
+  const rec: Record<string, unknown> = { op: node.name.name, ...kdlProps(node) };
+  const argv = kdlArgs(node);
+  if (argv.length > 0 && rec.slug === undefined) rec.slug = argv[0];
+
+  const hexes: Array<[unknown, unknown]> = [];
+  const members: unknown[] = [];
+  for (const child of kdlChildren(node)) {
+    const name = child.name.name;
+    if (name === "hex") {
+      const a = kdlArgs(child);
+      hexes.push([a[0], a[1]]);
+    } else if (name === "member") {
+      members.push(kdlArgs(child)[0]);
+    }
+  }
+  if (hexes.length > 0) {
+    rec.hexes = hexes;
+    if (hexes.length === 1) rec.hex = hexes[0];
+  }
+  if (members.length > 0) rec.members = members;
+  return rec;
+}
+
 export function parseLayer(filePath: string): Layer {
-  const filename = path.basename(filePath, ".md");
+  const filename = path.basename(filePath, ".kdl");
   const m = LAYER_FILENAME_RE.exec(filename);
   if (!m) {
-    throw new Error(`Layer filename must be {YYYY}-{MM}-{DD}T{HHMMSS}-{slug}.md: ${filename}.md`);
+    throw new Error(`Layer filename must be {YYYY}-{MM}-{DD}T{HHMMSS}-{slug}.kdl: ${filename}.kdl`);
   }
   const slug = m[2];
 
-  const raw = fs.readFileSync(filePath, "utf8");
-  const { data, content } = parseFrontmatter(raw);
+  const doc = parse(fs.readFileSync(filePath, "utf8"));
 
-  if (typeof data.timestamp !== "string") {
-    throw new Error(`Layer ${slug} missing string 'timestamp' in frontmatter`);
+  let timestamp: string | undefined;
+  let message = "";
+  let body = "";
+  const changeNodes: Node[] = [];
+  for (const node of doc.nodes) {
+    const name = node.name.name;
+    if (name === "timestamp") {
+      const v = kdlArgs(node)[0];
+      if (typeof v !== "string") throw new Error(`Layer ${slug}: 'timestamp' must be a string`);
+      timestamp = v;
+    } else if (name === "message") {
+      const v = kdlArgs(node)[0];
+      message = typeof v === "string" ? v : "";
+    } else if (name === "body") {
+      const v = kdlArgs(node)[0];
+      body = typeof v === "string" ? v.trim() : "";
+    } else {
+      changeNodes.push(node);
+    }
   }
-  const message = typeof data.message === "string" ? data.message : "";
-  if (!Array.isArray(data.changes)) throw new Error(`Layer ${slug} 'changes' must be an array`);
+  if (timestamp === undefined) throw new Error(`Layer ${slug} missing string 'timestamp'`);
 
-  const changes = data.changes.map((c, i) => parseChange(c, `layer ${slug} change #${i}`));
-  return {
-    slug,
-    timestamp: data.timestamp,
-    message,
-    changes,
-    body: content.trim(),
-  };
+  const changes = changeNodes.map((n, i) =>
+    parseChange(nodeToChangeRecord(n), `layer ${slug} change #${i}`),
+  );
+  return { slug, timestamp, message, changes, body };
 }
 
 function buildLayers(): Layer[] {
-  const layers = listMarkdownFiles(LAYERS_DIR, ["README.md", "CLAUDE.md"]).map(parseLayer);
+  const layers = listFilesWithExtension(LAYERS_DIR, ".kdl").map(parseLayer);
   return layers.sort((a, b) => {
     if (a.timestamp !== b.timestamp) return a.timestamp < b.timestamp ? -1 : 1;
     return a.slug.localeCompare(b.slug);

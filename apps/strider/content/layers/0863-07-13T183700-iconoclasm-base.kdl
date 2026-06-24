@@ -1,0 +1,13 @@
+timestamp "863-07-13T18:37:00Z"
+message "Iconoclasm Base established."
+
+add "iconoclasm-base" name="Iconoclasm Base" faction="iconoclasm" {
+    hex -29 22
+    hex -28 22
+    hex -27 21
+    hex -28 23
+}
+
+skein-add "ears-that-hear-the-truth" name="Ears that Hear the Truth" faction="iconoclasm" symbol="symbols/skein-eye.svg" {
+    hex -28 22
+}

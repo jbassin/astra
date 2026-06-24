@@ -1,0 +1,9 @@
+timestamp "863-07-14T13:02:00Z"
+message "NecroLog Base established."
+
+add "necrolog-base" name="NecroLog Base" faction="necrolog" {
+    hex 14 10
+    hex 15 9
+    hex 14 9
+    hex 13 10
+}

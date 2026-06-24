@@ -2,13 +2,13 @@
 // sidecar into the SSR server (strider is SSR now, so the authoring write API is
 // just a same-origin route). Pure of any transport: takes the parsed request
 // body, returns {status, body}; server.ts (Bun) and the vite dev middleware each
-// adapt their own request/response shapes. Writes a new content/layers/*.md.
+// adapt their own request/response shapes. Writes a new content/layers/*.kdl.
 
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import path from "node:path";
 
 const LAYERS_DIR = path.resolve(process.cwd(), "content", "layers");
-const FILENAME_RE = /^\d{4}-\d{2}-\d{2}T\d{6}-[a-z0-9-]+\.md$/;
+const FILENAME_RE = /^\d{4}-\d{2}-\d{2}T\d{6}-[a-z0-9-]+\.kdl$/;
 const MAX_CONTENT_BYTES = 64 * 1024;
 
 export interface WriteResult {
@@ -36,7 +36,7 @@ function validate(
   if (!FILENAME_RE.test(b.filename)) {
     return {
       ok: false,
-      error: "'filename' must match ^\\d{4}-\\d{2}-\\d{2}T\\d{6}-[a-z0-9-]+\\.md$",
+      error: "'filename' must match ^\\d{4}-\\d{2}-\\d{2}T\\d{6}-[a-z0-9-]+\\.kdl$",
     };
   }
   const fullPath = path.resolve(layersDir, b.filename);

@@ -80,7 +80,7 @@ const { factionHexes, unownedBase } = computeAssignments();
 // Static hex assignments. Each inner array contains [q, r] coords for that faction (0-based index).
 // Computed at module load and never recalculated at render time. Only the
 // Harlequins (index 19) have a non-empty base segment; the other 19 factions
-// hold no territory until their `*-arrives.md` claim layer fires.
+// hold no territory until their `*-arrives.kdl` claim layer fires.
 export const FACTION_HEXES: ReadonlyArray<ReadonlyArray<readonly [number, number]>> = factionHexes;
 
 // Hexes that the geometric algorithm assigns to factions 0-18 — i.e. every

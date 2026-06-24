@@ -1,0 +1,15 @@
+timestamp "863-07-17T13:41:00Z"
+message "Verdant Holdings Base established."
+
+add "verdant-holdings-base" name="Verdant Holdings Base" faction="verdant-holdings" {
+    hex -19 32
+    hex -20 32
+    hex -19 31
+    hex -18 30
+    hex -17 29
+    hex -16 28
+    hex -16 29
+    hex -17 30
+    hex -18 31
+    hex -20 31
+}

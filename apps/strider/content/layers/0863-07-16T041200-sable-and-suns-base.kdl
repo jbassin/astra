@@ -1,0 +1,10 @@
+timestamp "863-07-16T04:12:00Z"
+message "S&S Base established."
+
+add "sable-and-suns-base" name="S&S Base" faction="sable-and-suns" {
+    hex 0 15
+    hex -1 16
+    hex 0 16
+    hex 1 15
+    hex 1 16
+}

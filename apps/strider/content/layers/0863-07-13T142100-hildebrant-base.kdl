@@ -1,0 +1,16 @@
+timestamp "863-07-13T14:21:00Z"
+message "Hildebrant Base established."
+
+add "hildebrant-base" name="Hildebrant Base" faction="hildebrant-corp" {
+    hex -28 14
+    hex -27 13
+    hex -26 13
+    hex -27 14
+    hex -26 14
+    hex -27 15
+    hex -28 15
+}
+
+skein-add "softlight-memory" name="Softlight Memory" faction="hildebrant-corp" symbol="symbols/skein-eye.svg" {
+    hex -27 14
+}

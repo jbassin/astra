@@ -1,0 +1,19 @@
+timestamp "863-07-16T19:41:00Z"
+message "Prime Meridian Base established."
+
+add "prime-meridian-base" name="Prime Meridian Base" faction="prime-meridian" {
+    hex 8 20
+    hex 9 19
+    hex 10 18
+    hex 10 19
+    hex 10 20
+    hex 11 20
+    hex 10 21
+    hex 9 21
+    hex 9 20
+    hex 11 21
+}
+
+skein-add "axis-interlink" name="PM Axis Interlink" faction="prime-meridian" symbol="symbols/skein-eye.svg" {
+    hex 11 20
+}

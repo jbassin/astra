@@ -1,12 +1,5 @@
-import matter from "gray-matter";
 import { describe, expect, it } from "vitest";
-import {
-  type EditableChange,
-  hexFactionMap,
-  layerFilename,
-  serializeLayer,
-  slugify,
-} from "./editorHelpers";
+import { hexFactionMap, layerFilename, serializeLayer, slugify } from "./editorHelpers";
 
 describe("slugify", () => {
   it("converts a plain name to lowercase kebab-case", () => {
@@ -29,13 +22,13 @@ describe("slugify", () => {
 describe("layerFilename", () => {
   it("formats an ISO timestamp into a sortable filename", () => {
     expect(layerFilename("2026-05-22T14:30:00Z", "alkahest-hq")).toBe(
-      "2026-05-22T143000-alkahest-hq.md",
+      "2026-05-22T143000-alkahest-hq.kdl",
     );
   });
 
   it("zero-pads short years to four digits so sort stays correct past year 999", () => {
     expect(layerFilename("863-07-13T14:21:00Z", "hildebrant-base")).toBe(
-      "0863-07-13T142100-hildebrant-base.md",
+      "0863-07-13T142100-hildebrant-base.kdl",
     );
   });
 
@@ -44,41 +37,33 @@ describe("layerFilename", () => {
   });
 });
 
+// Serializer format (KDL): op = node name, positional slug, props for scalar
+// fields, `hex q r` / `member "x"` children. The serialize↔parse fidelity
+// round-trip lives in scripts/build-content.test.ts (which may import the
+// bun-run parser without dragging it into the src typecheck program).
 describe("serializeLayer", () => {
-  it("round-trips through gray-matter back to the same shape", () => {
-    const changes: EditableChange[] = [
-      {
-        op: "add",
-        slug: "alkahest-hq",
-        name: "Alkahest HQ",
-        faction: "alkahest-freight",
-        hexes: [
-          [16, -27],
-          [17, -27],
-        ],
-      },
-    ];
+  it("emits metadata nodes then op nodes with positional slug + hex children", () => {
     const out = serializeLayer({
       timestamp: "2026-05-22T14:30:00Z",
       message: "A new HQ rises.",
-      changes,
+      changes: [
+        {
+          op: "add",
+          slug: "alkahest-hq",
+          name: "Alkahest HQ",
+          faction: "alkahest-freight",
+          hexes: [
+            [16, -27],
+            [17, -27],
+          ],
+        },
+      ],
     });
-
-    const parsed = matter(out);
-    expect(parsed.data.timestamp).toBe("2026-05-22T14:30:00Z");
-    expect(parsed.data.message).toBe("A new HQ rises.");
-    expect(parsed.data.changes).toEqual([
-      {
-        op: "add",
-        slug: "alkahest-hq",
-        name: "Alkahest HQ",
-        faction: "alkahest-freight",
-        hexes: [
-          [16, -27],
-          [17, -27],
-        ],
-      },
-    ]);
+    expect(out).toContain('timestamp "2026-05-22T14:30:00Z"');
+    expect(out).toContain('message "A new HQ rises."');
+    expect(out).toContain('add "alkahest-hq" name="Alkahest HQ" faction="alkahest-freight" {');
+    expect(out).toContain("hex 16 -27");
+    expect(out).toContain("hex 17 -27");
   });
 
   it("omits absent fields from an update change", () => {
@@ -87,82 +72,35 @@ describe("serializeLayer", () => {
       message: "rename only",
       changes: [{ op: "update", slug: "hq", name: "New Name" }],
     });
-    const parsed = matter(out);
-    expect(parsed.data.changes[0]).toEqual({
-      op: "update",
-      slug: "hq",
-      name: "New Name",
-    });
+    expect(out).toContain('update "hq" name="New Name"');
+    expect(out).not.toContain("faction=");
   });
 
-  it("preserves an optional body", () => {
+  it("emits a body node when a body is present", () => {
     const out = serializeLayer({
       timestamp: "2026-05-22T14:30:00Z",
       message: "with body",
       changes: [{ op: "remove", slug: "gone" }],
       body: "Notes about this event.",
     });
-    const parsed = matter(out);
-    expect(parsed.content.trim()).toBe("Notes about this event.");
+    expect(out).toContain('body "Notes about this event."');
+    expect(out).toContain('remove "gone"');
   });
 
-  it("round-trips a skein-add", () => {
+  it("emits #null for an unowned claim", () => {
     const out = serializeLayer({
       timestamp: "2026-05-22T14:30:00Z",
-      message: "Place a relay.",
-      changes: [
-        {
-          op: "skein-add",
-          slug: "signal-relay",
-          name: "Signal Relay",
-          faction: "alkahest-freight",
-          hex: [16, -27],
-          symbol: "symbols/skein-eye.svg",
-        },
-      ],
+      message: "Land falls fallow.",
+      changes: [{ op: "claim", faction: null, hexes: [[3, 4]] }],
     });
-    const parsed = matter(out);
-    expect(parsed.data.changes[0]).toEqual({
-      op: "skein-add",
-      slug: "signal-relay",
-      name: "Signal Relay",
-      faction: "alkahest-freight",
-      hex: [16, -27],
-      symbol: "symbols/skein-eye.svg",
-    });
+    expect(out).toContain("claim faction=#null {");
+    expect(out).toContain("hex 3 4");
   });
 
-  it("round-trips a skein-connect (no slug field)", () => {
+  it("emits member child nodes for a banner-form", () => {
     const out = serializeLayer({
       timestamp: "2026-05-22T14:30:00Z",
-      message: "Wire two nodes.",
-      changes: [{ op: "skein-connect", from: "a-node", to: "b-node" }],
-    });
-    const parsed = matter(out);
-    expect(parsed.data.changes[0]).toEqual({
-      op: "skein-connect",
-      from: "a-node",
-      to: "b-node",
-    });
-  });
-
-  it("round-trips a skein-remove", () => {
-    const out = serializeLayer({
-      timestamp: "2026-05-22T14:30:00Z",
-      message: "Pull a relay.",
-      changes: [{ op: "skein-remove", slug: "dead-drop" }],
-    });
-    const parsed = matter(out);
-    expect(parsed.data.changes[0]).toEqual({
-      op: "skein-remove",
-      slug: "dead-drop",
-    });
-  });
-
-  it("round-trips a banner-form (members + color, no symbol)", () => {
-    const out = serializeLayer({
-      timestamp: "2026-05-22T14:30:00Z",
-      message: "Three powers unite.",
+      message: "Powers unite.",
       changes: [
         {
           op: "banner-form",
@@ -173,37 +111,18 @@ describe("serializeLayer", () => {
         },
       ],
     });
-    const parsed = matter(out);
-    expect(parsed.data.changes[0]).toEqual({
-      op: "banner-form",
-      slug: "concord",
-      name: "The Concord",
-      color: "#c9a24b",
-      members: ["solari", "protectorate", "ministry"],
-    });
+    expect(out).toContain('banner-form "concord" name="The Concord" color="#c9a24b" {');
+    expect(out).toContain('member "solari"');
+    expect(out).toContain('member "ministry"');
   });
 
-  it("round-trips a banner-dissolve", () => {
-    const out = serializeLayer({
-      timestamp: "2026-05-22T14:30:00Z",
-      message: "The alliance fractures.",
-      changes: [{ op: "banner-dissolve", slug: "concord" }],
-    });
-    const parsed = matter(out);
-    expect(parsed.data.changes[0]).toEqual({
-      op: "banner-dissolve",
-      slug: "concord",
-    });
-  });
-
-  it("round-trips a tithe (no fields)", () => {
+  it("emits a bare node for a fieldless tithe", () => {
     const out = serializeLayer({
       timestamp: "2026-05-22T14:30:00Z",
       message: "The strider takes its tithe.",
       changes: [{ op: "tithe" }],
     });
-    const parsed = matter(out);
-    expect(parsed.data.changes[0]).toEqual({ op: "tithe" });
+    expect(out).toMatch(/\ntithe\n?$/);
   });
 });
 

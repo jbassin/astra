@@ -2,6 +2,8 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { serializeLayer } from "../src/domain/lib/editorHelpers";
+import type { Change } from "../src/domain/lib/regions";
 import { parseChange, parseFaction, parseLayer, splitBody } from "./build-content";
 
 // --- parseChange (pure) ---
@@ -169,10 +171,10 @@ describe("parseLayer / parseFaction (fixtures)", () => {
     return p;
   }
 
-  it("parses a valid layer file", () => {
+  it("parses a valid KDL layer file", () => {
     const p = write(
-      "0863-07-13T192559-solari-arrives.md",
-      '---\ntimestamp: "0863-07-13T19:25:59"\nmessage: Solari arrives.\nchanges:\n  - op: claim\n    faction: solari\n    hexes:\n      - [1, 2]\n---\nBody text.\n',
+      "0863-07-13T192559-solari-arrives.kdl",
+      'timestamp "0863-07-13T19:25:59"\nmessage "Solari arrives."\nbody "Body text."\n\nclaim faction="solari" {\n    hex 1 2\n}\n',
     );
     const layer = parseLayer(p);
     expect(layer.slug).toBe("solari-arrives");
@@ -182,22 +184,52 @@ describe("parseLayer / parseFaction (fixtures)", () => {
     expect(layer.body).toBe("Body text.");
   });
 
+  it("maps op=node-name, positional slug, and hex/member children to records", () => {
+    const p = write(
+      "0863-07-14T091200-mixed.kdl",
+      'timestamp "0863-07-14T09:12:00"\nmessage ""\n\n' +
+        'skein-add "node-a" name="Node A" faction="f" symbol="s.svg" {\n    hex 3 4\n}\n\n' +
+        'banner-form "bnr" name="B" color="#fff" {\n    member "a"\n    member "c"\n}\n\n' +
+        "claim faction=#null {\n    hex 5 6\n}\n",
+    );
+    const layer = parseLayer(p);
+    expect(layer.changes).toEqual([
+      {
+        op: "skein-add",
+        slug: "node-a",
+        name: "Node A",
+        faction: "f",
+        hex: [3, 4],
+        symbol: "s.svg",
+      },
+      {
+        op: "banner-form",
+        slug: "bnr",
+        name: "B",
+        color: "#fff",
+        symbol: null,
+        members: ["a", "c"],
+      },
+      { op: "claim", faction: null, hexes: [[5, 6]] },
+    ]);
+  });
+
   it("throws on a bad filename", () => {
-    const p = write("not-a-timestamp.md", "---\ntimestamp: x\nchanges: []\n---\n");
+    const p = write("not-a-timestamp.kdl", 'timestamp "x"\n');
     expect(() => parseLayer(p)).toThrow(/filename must be/);
   });
 
   it("throws when timestamp is missing", () => {
-    const p = write("0863-07-13T192559-no-ts.md", "---\nmessage: hi\nchanges: []\n---\n");
+    const p = write("0863-07-13T192559-no-ts.kdl", 'message "hi"\n');
     expect(() => parseLayer(p)).toThrow(/missing string 'timestamp'/);
   });
 
-  it("throws when changes is not an array", () => {
+  it("throws on an unknown op node", () => {
     const p = write(
-      "0863-07-13T192559-bad-changes.md",
-      '---\ntimestamp: "0863-07-13T19:25:59"\nchanges: nope\n---\n',
+      "0863-07-13T192559-bogus.kdl",
+      'timestamp "0863-07-13T19:25:59"\n\nbogus "s"\n',
     );
-    expect(() => parseLayer(p)).toThrow(/'changes' must be an array/);
+    expect(() => parseLayer(p)).toThrow(/unknown op 'bogus'/);
   });
 
   it("parses a faction file with members", async () => {
@@ -214,5 +246,81 @@ describe("parseLayer / parseFaction (fixtures)", () => {
     expect(faction.description).toContain("sub-surface miners");
     expect(faction.members.map((m) => m.name)).toEqual(["Vask"]);
     expect(faction.members[0]?.bio).toContain("Foreman.");
+  });
+});
+
+// --- serializeLayer (editor writer) ↔ parseLayer (build reader) round-trip ---
+// The editor and the build must agree on the KDL format. This file lives in
+// scripts/ (run by vitest, outside the src tsc program) so it can import the
+// bun-run parser without dragging it into typecheck.
+
+describe("serializeLayer ↔ parseLayer round-trip", () => {
+  let dir: string;
+  beforeAll(() => {
+    dir = mkdtempSync(path.join(os.tmpdir(), "strider-rt-"));
+  });
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  function roundTrip(changes: Change[], body?: string) {
+    const file = path.join(dir, "0863-07-13T192559-rt.kdl");
+    rmSync(file, { force: true });
+    writeFileSync(
+      file,
+      serializeLayer({ timestamp: "0863-07-13T19:25:59", message: "m", changes, body }),
+      "utf8",
+    );
+    return parseLayer(file);
+  }
+
+  it("round-trips every change op", () => {
+    const cases: Change[] = [
+      {
+        op: "add",
+        slug: "hq",
+        name: "HQ",
+        faction: "f",
+        hexes: [
+          [16, -27],
+          [17, -27],
+        ],
+      },
+      { op: "update", slug: "hq", name: "New Name" },
+      { op: "remove", slug: "hq" },
+      {
+        op: "skein-add",
+        slug: "relay",
+        name: "Relay",
+        faction: "f",
+        hex: [16, -27],
+        symbol: "symbols/skein-eye.svg",
+      },
+      { op: "skein-update", slug: "relay", name: "Relay 2" },
+      { op: "skein-remove", slug: "relay" },
+      { op: "skein-connect", from: "a", to: "b" },
+      { op: "skein-disconnect", from: "a", to: "b" },
+      { op: "claim", faction: "f", hexes: [[1, 2]] },
+      { op: "claim", faction: null, hexes: [[3, 4]] },
+      {
+        op: "banner-form",
+        slug: "bnr",
+        name: "B",
+        color: "#fff",
+        symbol: null,
+        members: ["a", "c"],
+      },
+      { op: "banner-dissolve", slug: "bnr" },
+      { op: "tithe" },
+    ];
+    for (const c of cases) {
+      const layer = roundTrip([c]);
+      expect(layer.changes[0], c.op).toEqual(c);
+    }
+  });
+
+  it("preserves a multi-line body and full timestamp/message", () => {
+    const layer = roundTrip([{ op: "tithe" }], "Line one.\nLine two.");
+    expect(layer.timestamp).toBe("0863-07-13T19:25:59");
+    expect(layer.message).toBe("m");
+    expect(layer.body).toBe("Line one.\nLine two.");
   });
 });

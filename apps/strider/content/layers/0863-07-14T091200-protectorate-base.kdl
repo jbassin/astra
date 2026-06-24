@@ -1,0 +1,24 @@
+timestamp "863-07-14T09:12:00Z"
+message "Protectorate Base established."
+
+add "protectorate-base" name="Protectorate Base" faction="protectorate" {
+    hex 18 -14
+    hex 19 -14
+    hex 20 -15
+    hex 21 -16
+    hex 22 -17
+    hex 23 -18
+    hex 24 -19
+    hex 23 -19
+    hex 22 -18
+    hex 21 -17
+    hex 20 -16
+    hex 19 -15
+    hex 23 -17
+    hex 24 -18
+    hex 22 -16
+}
+
+skein-add "exigent-tether" name="exigent.tether" faction="protectorate" symbol="symbols/skein-eye.svg" {
+    hex 18 -14
+}

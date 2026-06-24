@@ -1,0 +1,21 @@
+timestamp "863-07-13T20:47:00Z"
+message "Scale Base established."
+
+add "the-scale-base" name="Scale Base" faction="the-scale" {
+    hex 28 -7
+    hex 27 -6
+    hex 26 -5
+    hex 26 -4
+    hex 27 -4
+    hex 28 -4
+    hex 29 -5
+    hex 29 -7
+    hex 28 -5
+    hex 27 -5
+    hex 28 -6
+    hex 29 -6
+}
+
+skein-add "astris-lux" name="Astris Lux" faction="the-scale" symbol="symbols/skein-eye.svg" {
+    hex 27 -5
+}

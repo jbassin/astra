@@ -1,0 +1,11 @@
+timestamp "863-07-18T14:11:00Z"
+message "Aetherion Base established."
+
+add "aetherion-base" name="Aetherion Base" faction="aetherion-limited" {
+    hex -6 18
+    hex -7 19
+    hex -6 19
+    hex -7 20
+    hex -6 20
+    hex -7 21
+}

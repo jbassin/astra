@@ -1,0 +1,11 @@
+timestamp "863-07-16T14:01:00Z"
+message "Garrick Textiles Base established."
+
+add "garrick-textiles-base" name="Garrick Textiles Base" faction="garrick-textiles" {
+    hex -6 -12
+    hex -5 -13
+}
+
+skein-add "whirling-in-rags" name="Whirling-in-Rags" faction="garrick-textiles" symbol="symbols/skein-eye.svg" {
+    hex -6 -12
+}

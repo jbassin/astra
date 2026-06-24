@@ -1,0 +1,12 @@
+timestamp "863-07-17T00:34:00Z"
+message "Alkahest Base established."
+
+add "alkahest-freight-base" name="Alkahest Base" faction="alkahest-freight" {
+    hex 19 -29
+    hex 18 -28
+    hex 20 -30
+}
+
+skein-add "chromatic-drift" name="Chromatic Drift" faction="alkahest-freight" symbol="symbols/skein-eye.svg" {
+    hex 18 -28
+}

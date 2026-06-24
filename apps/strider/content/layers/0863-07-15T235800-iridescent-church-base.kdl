@@ -1,0 +1,16 @@
+timestamp "863-07-15T23:58:00Z"
+message "Iridescent Base established."
+
+add "iridescent-church-base" name="Iridescent Base" faction="iridescent-church" {
+    hex 25 6
+    hex 25 7
+    hex 26 7
+    hex 27 7
+    hex 26 8
+    hex 26 6
+    hex 27 6
+    hex 28 5
+    hex 27 4
+    hex 27 5
+    hex 28 4
+}

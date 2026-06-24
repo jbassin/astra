@@ -1,0 +1,9 @@
+timestamp "863-07-18T09:56:00Z"
+message "THI Base established."
+
+add "ternion-heavy-industries-base" name="THI Base" faction="ternion-heavy-industries" {
+    hex 7 -22
+    hex 7 -21
+    hex 6 -21
+    hex 8 -22
+}

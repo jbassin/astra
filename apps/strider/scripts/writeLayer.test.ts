@@ -7,7 +7,7 @@ import { writeLayer } from "./writeLayer";
 // All writes target a throwaway temp dir (the `layersDir` seam) so the guard
 // logic is exercised without touching the repo's real content/layers.
 let dir: string;
-const VALID = "0863-07-13T192559-test-node.md";
+const VALID = "0863-07-13T192559-test-node.kdl";
 
 beforeEach(() => {
   dir = mkdtempSync(path.join(os.tmpdir(), "strider-writelayer-"));
@@ -40,13 +40,14 @@ describe("writeLayer — rejects bad input (400)", () => {
 
   it("filenames that don't match the allowlist (incl. traversal attempts)", () => {
     for (const filename of [
-      "evil.md",
-      "0863-7-13T192559-bad-month.md",
-      "0863-07-13T192559-UPPER.md",
+      "evil.kdl",
+      "0863-7-13T192559-bad-month.kdl",
+      "0863-07-13T192559-UPPER.kdl",
       "0863-07-13T192559-x.txt",
+      "0863-07-13T192559-legacy.md",
       "../../etc/passwd",
-      "../0863-07-13T192559-escape.md",
-      "0863-07-13T192559-x.md/../../escape.md",
+      "../0863-07-13T192559-escape.kdl",
+      "0863-07-13T192559-x.kdl/../../escape.kdl",
     ]) {
       const res = writeLayer({ filename, content: "x" }, dir);
       expect(res.status, filename).toBe(400);
@@ -65,7 +66,7 @@ describe("writeLayer — never overwrites (409)", () => {
   });
 
   it("does not leave a partial file when input is invalid", () => {
-    writeLayer({ filename: "evil.md", content: "x" }, dir);
-    expect(existsSync(path.join(dir, "evil.md"))).toBe(false);
+    writeLayer({ filename: "evil.kdl", content: "x" }, dir);
+    expect(existsSync(path.join(dir, "evil.kdl"))).toBe(false);
   });
 });
