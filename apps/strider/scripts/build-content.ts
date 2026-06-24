@@ -18,13 +18,16 @@ import {
 } from "@astra/content-build";
 import {
   computeAssignmentBorders,
+  computeBannerAssignments,
   computeEffectiveAssignments,
   type EdgeSegment,
   FACTION_HEXES,
   UNOWNED_BASE_HEXES,
 } from "../src/domain/lib/hexUtils.ts";
 import {
+  type Banner,
   type Change,
+  foldBanners,
   foldFactionOverrides,
   foldRegions,
   foldSkein,
@@ -253,8 +256,34 @@ export function parseChange(raw: unknown, ctx: string): Change {
 
   if (c.op === "skein-remove") return { op: "skein-remove", slug };
 
+  if (c.op === "banner-form") {
+    if (typeof c.name !== "string" || c.name === "")
+      throw new Error(`${ctx}: banner-form ${slug} missing 'name'`);
+    if (typeof c.color !== "string" || c.color === "")
+      throw new Error(`${ctx}: banner-form ${slug} missing 'color'`);
+    if (
+      !Array.isArray(c.members) ||
+      c.members.length < 2 ||
+      !c.members.every((m) => typeof m === "string" && m !== "")
+    ) {
+      throw new Error(`${ctx}: banner-form ${slug} 'members' must be ≥2 faction slugs`);
+    }
+    if (c.symbol !== undefined && c.symbol !== null && typeof c.symbol !== "string")
+      throw new Error(`${ctx}: banner-form ${slug} 'symbol' must be a string or null`);
+    return {
+      op: "banner-form",
+      slug,
+      name: c.name,
+      color: c.color,
+      symbol: (c.symbol as string | null | undefined) ?? null,
+      members: c.members as string[],
+    };
+  }
+
+  if (c.op === "banner-dissolve") return { op: "banner-dissolve", slug };
+
   throw new Error(
-    `${ctx}: unknown op '${String(c.op)}' (expected add | update | remove | skein-add | skein-update | skein-remove | skein-connect | skein-disconnect | claim)`,
+    `${ctx}: unknown op '${String(c.op)}' (expected add | update | remove | skein-add | skein-update | skein-remove | skein-connect | skein-disconnect | claim | banner-form | banner-dissolve)`,
   );
 }
 
@@ -319,6 +348,7 @@ function emitLayers(
   layers: Layer[],
   regions: Region[],
   skein: SkeinState,
+  banners: Banner[],
   factionHexes: ReadonlyArray<ReadonlyArray<readonly [number, number]>>,
   unownedHexes: ReadonlyArray<readonly [number, number]>,
   factionBorders: ReadonlyArray<EdgeSegment>,
@@ -327,7 +357,7 @@ function emitLayers(
   emitModule(
     OUT_DIR,
     "layers.ts",
-    `import type { Layer, Region, SkeinState } from "@/domain/lib/regions";
+    `import type { Banner, Layer, Region, SkeinState } from "@/domain/lib/regions";
 import type { EdgeSegment } from "@/domain/lib/hexUtils";
 
 export const LAYERS: readonly Layer[] = ${JSON.stringify(layers, null, 2)};
@@ -335,6 +365,8 @@ export const LAYERS: readonly Layer[] = ${JSON.stringify(layers, null, 2)};
 export const CURRENT_REGIONS: readonly Region[] = ${JSON.stringify(regions, null, 2)};
 
 export const CURRENT_SKEIN: SkeinState = ${JSON.stringify(skein, null, 2)};
+
+export const CURRENT_BANNERS: readonly Banner[] = ${JSON.stringify(banners, null, 2)};
 
 export const CURRENT_FACTION_HEXES: ReadonlyArray<ReadonlyArray<readonly [number, number]>> = ${JSON.stringify(factionHexes)};
 
@@ -368,6 +400,7 @@ const layersSource = defineContentSource({
     const layers = buildLayers();
     const regions = foldRegions(layers);
     const skein = foldSkein(layers);
+    const banners = foldBanners(layers);
     const overrides = foldFactionOverrides(layers);
     const effective = computeEffectiveAssignments(
       FACTION_HEXES,
@@ -375,17 +408,21 @@ const layersSource = defineContentSource({
       overrides,
       factionSlugs,
     );
+    // Validate banner membership against the real factions at build time (throws
+    // on an unknown slug), so a bad banner-form fails the build, not the render.
+    computeBannerAssignments(effective.perFaction, factionSlugs, banners);
     const { allBorders, perFaction } = computeAssignmentBorders(effective.perFaction);
     emitLayers(
       layers,
       regions,
       skein,
+      banners,
       effective.perFaction,
       effective.unowned,
       allBorders,
       perFaction,
     );
-    return `${layers.length} layers, ${regions.length} regions, ${skein.regions.length} skein regions, ${skein.connections.length} skein connections, ${overrides.size} hex overrides (${effective.unowned.length} unowned)`;
+    return `${layers.length} layers, ${regions.length} regions, ${skein.regions.length} skein regions, ${skein.connections.length} skein connections, ${banners.length} banners, ${overrides.size} hex overrides (${effective.unowned.length} unowned)`;
   },
 });
 

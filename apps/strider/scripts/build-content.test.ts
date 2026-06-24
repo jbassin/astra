@@ -51,6 +51,43 @@ describe("parseChange", () => {
       op: "skein-remove",
       slug: "s",
     });
+    expect(
+      parseChange(
+        { op: "banner-form", slug: "b", name: "B", color: "#fff", members: ["a", "c"] },
+        ctx,
+      ),
+    ).toEqual({
+      op: "banner-form",
+      slug: "b",
+      name: "B",
+      color: "#fff",
+      symbol: null,
+      members: ["a", "c"],
+    });
+    expect(
+      parseChange(
+        {
+          op: "banner-form",
+          slug: "b",
+          name: "B",
+          color: "#fff",
+          symbol: "s.svg",
+          members: ["a", "c"],
+        },
+        ctx,
+      ),
+    ).toEqual({
+      op: "banner-form",
+      slug: "b",
+      name: "B",
+      color: "#fff",
+      symbol: "s.svg",
+      members: ["a", "c"],
+    });
+    expect(parseChange({ op: "banner-dissolve", slug: "b" }, ctx)).toEqual({
+      op: "banner-dissolve",
+      slug: "b",
+    });
   });
 
   it("throws on each invalid case", () => {
@@ -69,6 +106,15 @@ describe("parseChange", () => {
     expect(() => parseChange({ op: "add", name: "N", faction: "f", hexes: [] }, ctx)).toThrow(
       /string 'slug'/,
     );
+    expect(() =>
+      parseChange({ op: "banner-form", slug: "b", color: "#fff", members: ["a", "c"] }, ctx),
+    ).toThrow(/missing 'name'/);
+    expect(() =>
+      parseChange({ op: "banner-form", slug: "b", name: "B", members: ["a", "c"] }, ctx),
+    ).toThrow(/missing 'color'/);
+    expect(() =>
+      parseChange({ op: "banner-form", slug: "b", name: "B", color: "#fff", members: ["a"] }, ctx),
+    ).toThrow(/≥2 faction slugs/);
   });
 });
 
