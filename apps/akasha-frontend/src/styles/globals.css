@@ -2,12 +2,19 @@
    src/routes/__root.tsx. This file keeps only akasha-frontend's reset + the page
    shell. The Quartz 3-column grid + sidebars land with the islands (later slices). */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* The reset lives in @layer base so it sits BELOW gothic's @layer components
+   content styles (and Tailwind's utilities). Unlayered, the bare `* { margin:0;
+   padding:0 }` overrode every gothic-content margin/padding — paragraph spacing,
+   list indents, trait-pill and code-block padding all collapsed to 0 on rendered
+   vellum. Layering it fixes that while still zeroing the UA defaults on chrome. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 html,
@@ -101,6 +108,19 @@ main {
 }
 .center > * + * {
   margin-top: 1.5rem;
+}
+
+/* Reading measure + size (F1). The center grid column is ~52rem wide, which runs
+   wiki prose to 100+ characters per line at gothic's dense 16px. Cap the reading
+   content (header + body + listings) to ~68ch and lift the body a notch, matching
+   the mouthpiece episode page (the in-repo reading benchmark). */
+.center > .page-header,
+.center > .popover-hint {
+  max-width: 42rem;
+}
+.center .gothic-prose {
+  font-size: 1.0625rem;
+  line-height: 1.7;
 }
 
 /* left sidebar chrome */
