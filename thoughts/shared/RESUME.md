@@ -36,15 +36,40 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `47a6538`, 2026-06-23)
+## Current state — UPDATE THIS SECTION (as of commit `1c51229`, 2026-06-24)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
 
-### Post-migration product work — strider map (this session, all COMPLETE + PUSHED + DEPLOYED LIVE)
+### Post-migration product work — strider (2026-06-24 session, all COMPLETE + PUSHED + DEPLOYED LIVE)
 
-Two new **strider** map "layer changes" were added on top of the finished migration. Both are live on
-`astra-strider` (10360 / `strider.iridi.cc`), verified error-free, with their own gotchas memories.
+All on `astra-strider` (10360 / `strider.iridi.cc`), each rebuilt via `docker compose up -d --build strider`
+and verified (healthy + local 200 + public-edge 200; the faction panel screenshot-verified).
+
+- **Map content edits** (`1ffe9df`…`bf9bc04`): added the **Final Caliber** skein node at the centre of the
+  Radiant Arms base + a skein-connect to iconoclasm's `ears-that-hear-the-truth` (new
+  `symbols/final-caliber.svg`); a **tithe** event 3 s before Garrick is removed; then **removed** the
+  Tri-Faction Concord + the closing strider-tithe and instead formed the **Team TBD** banner
+  (iconoclasm/solari-sub-surface/radiant-arms/alkahest-freight, orange `#E8702E`) on 07-19 10:00, with
+  Alkahest struck 07-20 01:02 and Solari 07-20 01:47 (bases + skein nodes; dangling edges skipped at render).
+- **✅ Tithe timing fix** (`f183dab`): the wave is now a **fixed-duration** animation (`TITHE_TOTAL_MS`,
+  budget-independent — fill travels center→edge over `TITHE_FILL_MS`), fade quicker (`TITHE_FADE_MS`
+  720→300), and playback **dwells the full wave** after a tithe layer (`TITHE_DWELL_MS`) so it completes
+  before the next layer applies (timing lives in `timeline.ts`, shared by HexMap + useTimelinePlayback).
+- **✅ Layers → KDL** (`fe69136` infra + `1fdef3f`; memory `[[strider-layers-kdl]]`). `content/layers/*` are
+  now flat **KDL** (op = node name, `slug` positional, `hex q r`/`member` children, `faction=#null`). Parse
+  seam keeps `parseChange`+folds unchanged → regenerated `layers.ts` byte-identical (the gate);
+  `@bgotink/kdl` build-time devDep; `@astra/content-build` gained `listFilesWithExtension`.
+- **✅ Factions → vellum** (`8161283`; memory `[[strider-factions-vellum]]`). `content/factions/*` are now
+  **`.vellum`**, one document per faction, rendered build-only via gothic `DocumentView` (no-op crossref);
+  member-split/cards gone (personnel = in-document headings); `@astra/vellum-lang` build-time devDep. Plain
+  prose renders in gothic mechanical-mode (teal headings). NOT byte-identical — verified visually.
+- **✅ Dropped the unused layer `body` field** (`1c51229`): it was parsed/stored/round-tripped but never
+  rendered — removed from the schema, `Layer` type, parser/serializer, the 2 files, docs, tests.
+
+### Prior post-migration session — strider map (banner + tithe, COMPLETE + PUSHED + DEPLOYED LIVE)
+
+Two **strider** map "layer changes" added on top of the finished migration, each with its own gotchas memory.
 
 - **✅ Banner / alliance layer change** (`4873609`…`13c2032`, memory `4aa6dfa`). Multiple factions ally and
   combine their land under one **banner** — a new first-class entity `{slug,name,color,symbol?,members[]}`

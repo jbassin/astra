@@ -11,9 +11,10 @@ nothing there — the body was unused. **Layers are KDL; factions are vellum**
 (`.vellum`, done `8161283` — see [[strider-factions-vellum]]) — two different
 formats, by design.
 
-**Flat schema** (user-chosen): `timestamp` / `message` / optional `body` are
-top-level nodes; **every other top-level node is a change whose node NAME is the
-op**. `slug` = first positional arg; scalar fields = `key="value"` props;
+**Flat schema** (user-chosen): `timestamp` / `message` are top-level nodes;
+**every other top-level node is a change whose node NAME is the op**. (An unused
+`body` node existed briefly post-migration; dropped `1c51229` — nothing rendered
+it.) `slug` = first positional arg; scalar fields = `key="value"` props;
 coordinates = `hex q r` children; banner members = `member "slug"` children. A
 fieldless tithe is a bare `tithe` node.
 
