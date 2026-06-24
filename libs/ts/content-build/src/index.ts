@@ -31,14 +31,27 @@ export function parseFrontmatter(raw: string): {
   return { data: data as Record<string, unknown>, content };
 }
 
-/** Absolute paths of `*.md` files in `dir`, excluding the given basenames. */
-export function listMarkdownFiles(dir: string, exclude: ReadonlyArray<string> = []): string[] {
+/**
+ * Absolute paths of files with the given extension (e.g. `".md"`, `".kdl"`) in
+ * `dir`, excluding the given basenames. The extension is matched verbatim, so
+ * pass it with the leading dot.
+ */
+export function listFilesWithExtension(
+  dir: string,
+  ext: string,
+  exclude: ReadonlyArray<string> = [],
+): string[] {
   if (!fs.existsSync(dir)) return [];
   const skip = new Set(exclude);
   return fs
     .readdirSync(dir)
-    .filter((f) => f.endsWith(".md") && !skip.has(f))
+    .filter((f) => f.endsWith(ext) && !skip.has(f))
     .map((f) => path.join(dir, f));
+}
+
+/** Absolute paths of `*.md` files in `dir`, excluding the given basenames. */
+export function listMarkdownFiles(dir: string, exclude: ReadonlyArray<string> = []): string[] {
+  return listFilesWithExtension(dir, ".md", exclude);
 }
 
 /**

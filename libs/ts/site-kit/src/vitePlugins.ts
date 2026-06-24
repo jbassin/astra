@@ -35,8 +35,8 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
     if (result.status !== 0) console.error("[content-watch] build-content failed");
   }
 
-  const isContentMarkdown = (file: string) =>
-    file.startsWith(contentDir + path.sep) && file.endsWith(".md");
+  const isContentFile = (file: string) =>
+    file.startsWith(contentDir + path.sep) && (file.endsWith(".md") || file.endsWith(".kdl"));
 
   return {
     name: "site-kit:content-watch",
@@ -48,7 +48,7 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
       server.watcher.add(contentDir);
 
       const onChange = (file: string) => {
-        if (!isContentMarkdown(file)) return;
+        if (!isContentFile(file)) return;
         rebuild();
         // Invalidate generated modules so the next HMR cycle picks up new data.
         for (const name of invalidate) {

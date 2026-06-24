@@ -7,6 +7,7 @@ import {
   defineContentSource,
   emitModule,
   hashFiles,
+  listFilesWithExtension,
   listMarkdownFiles,
   markdownToHtml,
   parseFrontmatter,
@@ -70,6 +71,26 @@ describe("listMarkdownFiles", () => {
 
   it("returns [] for a missing dir", () => {
     expect(listMarkdownFiles(path.join(dir, "nope"))).toEqual([]);
+  });
+});
+
+describe("listFilesWithExtension", () => {
+  let dir: string;
+  beforeAll(() => {
+    dir = mkdtempSync(path.join(os.tmpdir(), "content-build-ext-"));
+    for (const f of ["01-a.kdl", "02-b.kdl", "README.md", "notes.txt"]) {
+      writeFileSync(path.join(dir, f), "x");
+    }
+  });
+  afterAll(() => rmSync(dir, { recursive: true, force: true }));
+
+  it("lists files matching the extension, excluding the given basenames", () => {
+    const got = listFilesWithExtension(dir, ".kdl", ["02-b.kdl"]).map((p) => path.basename(p));
+    expect(got.sort()).toEqual(["01-a.kdl"]);
+  });
+
+  it("returns [] for a missing dir", () => {
+    expect(listFilesWithExtension(path.join(dir, "nope"), ".kdl")).toEqual([]);
   });
 });
 
