@@ -227,10 +227,13 @@ mouthpiece-seed:
 # Seed the akasha-frontend session-audio volume (the combined Craig recordings the
 # transcript pages play, served same-origin at /audio/<date>.mp3 — replaces faerrin's
 # static-audio.iridi.cc). Flattens `<date>/audio.mp3` → `<date>.mp3` from two sources:
-# HIST (faerrin's frozen ~31 GB back-catalog) is INCREMENTAL — only copied when absent,
-# so the one-time 31 GB seed isn't re-copied on every timer redeploy; LIVE (astra
-# scribe's saved dir) is always overwritten (small, grows with new sessions, and live
-# wins for any date in both). Re-run to refresh; idempotent + cheap in steady state.
+# HIST (faerrin's frozen back-catalog) is INCREMENTAL — only copied when absent, so the
+# one-time seed isn't re-copied on every timer redeploy; LIVE (astra scribe's saved dir)
+# is always overwritten (small, grows with new sessions, and live wins for any date in
+# both). HIST is scanned at ANY depth (faerrin mislocated a few recent sessions under a
+# nested `saved/saved/<date>/` — the reason faerrin's own static-audio 404s them); the
+# session date is the parent dir of each audio.mp3, guarded to YYYY-M-D so stray files
+# can't seed junk. Re-run to refresh; idempotent + cheap in steady state.
 akasha-seed:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -241,7 +244,11 @@ akasha-seed:
       -v "{{akasha_audio_live}}":/live:ro \
       alpine sh -c '
         set -e
-        for d in /hist/*/; do f="${d}audio.mp3"; [ -e "$f" ] || continue; dest="/audio/$(basename "$d").mp3"; [ -e "$dest" ] || cp "$f" "$dest"; done
+        find /hist -name audio.mp3 | while IFS= read -r f; do
+          date=$(basename "$(dirname "$f")")
+          echo "$date" | grep -qE "^[0-9]{4}-[0-9]{1,2}-[0-9]{1,2}$" || continue
+          dest="/audio/${date}.mp3"; [ -e "$dest" ] || cp "$f" "$dest"
+        done
         for d in /live/*/; do f="${d}audio.mp3"; [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$d").mp3"; done
         n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n session(s) into astra-akasha-audio"'
 
