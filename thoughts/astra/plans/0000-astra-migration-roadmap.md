@@ -1,6 +1,7 @@
 # Astra Migration — Program Roadmap (0000)
 
-**Status:** Plan (pre-implementation). **Author:** octo:auto → Plan, team mode (Claude personas).
+**Status:** **COMPLETE — the migration program (Phases 0–6) is finished, 2026-06-23; astra is the live stack.**
+(Originally: Plan, pre-implementation.) **Author:** octo:auto → Plan, team mode (Claude personas).
 **Date:** 2026-06-18. **Source:** `/ruby/data/experiments/faerrin`. **Target:** `/ruby/data/experiments/astra`.
 **Research foundation:** [`thoughts/shared/research/2026-06-18-astra-migration-discovery.md`](../../shared/research/2026-06-18-astra-migration-discovery.md).
 
@@ -269,19 +270,19 @@ is green, so the slowest lane sets the date — protect the akasha lane.
 
 | # | Sub-plan | Status |
 |---|---|---|
-| 0001 | Phase 0 — Foundation | **drafted** (this batch) |
-| 0002 | Phase 1 — ontology + shared libs | **drafted** |
-| 0003 | gothic — UI framework | **drafted** |
-| 0004 | vellum-lang — full-vellum grammar ⚠ | **drafted** |
-| 0005 | scribe | **drafted** |
-| 0006 | linguist | **drafted** |
-| 0007 | akasha-backend — content store + corpus conversion ⚠ | **drafted** |
-| 0008 | mouthpiece-backend | **drafted** |
-| 0009 | weal-bot + weal-overlay | **drafted** |
-| 0010 | orator-backend + orator-controller | **drafted** |
-| 0011 | akasha-frontend | **drafted** |
-| 0012 | mouthpiece-frontend | **drafted** |
-| 0013 | vellum-frontend | **spec** (scope+spec gates done 2026-06-23) |
+| 0001 | Phase 0 — Foundation | **COMPLETE** |
+| 0002 | Phase 1 — ontology + shared libs | **COMPLETE** |
+| 0003 | gothic — UI framework | **COMPLETE** |
+| 0004 | vellum-lang — full-vellum grammar ⚠ | **COMPLETE** |
+| 0005 | scribe | **COMPLETE** |
+| 0006 | linguist | **COMPLETE** |
+| 0007 | akasha-backend — content store + corpus conversion ⚠ | **COMPLETE** |
+| 0008 | mouthpiece-backend | **COMPLETE** |
+| 0009 | weal-bot + weal-overlay | **COMPLETE** |
+| 0010 | orator-backend + orator-controller | **COMPLETE** |
+| 0011 | akasha-frontend | **COMPLETE** |
+| 0012 | mouthpiece-frontend | **COMPLETE** |
+| 0013 | vellum-frontend | **COMPLETE (live)** |
 | 0014 | strider | **COMPLETE (live)** |
 | 0015 | Phase 6 — cutover | **COMPLETE 2026-06-23 — astra is live; migration program 0000–0015 finished** |
 

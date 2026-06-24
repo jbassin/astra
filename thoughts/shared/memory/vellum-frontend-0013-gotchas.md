@@ -82,4 +82,4 @@ runner`; the editor's `.app` is a direct flex-child of `<body>` so it uses `flex
 **0013 is COMPLETE — fully live on `https://vellum.iridi.cc` (DNS set + `just caddy-reload` applied
 2026-06-23): `/`+`/editor` 200, `/health` ready, `POST /render` returns a real PNG through the public TLS
 edge; faerrin's block decommissioned.** The FIRST 0011–0013 frontend taken all the way to a public edge (the
-others' DNS is still deferred). **No open items. Next: Phase-6 cutover (`0015-cutover.md`).**
+all the others are live too now). **No open items — the migration (Phases 0–6) is COMPLETE; astra is the live stack.**
