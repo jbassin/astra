@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  computeBannerAssignments,
   computeEffectiveAssignments,
   FACTION_BORDERS,
   FACTION_HEXES,
@@ -8,6 +9,7 @@ import {
   hexesInRadius,
   UNOWNED_BASE_HEXES,
 } from "./hexUtils";
+import type { Banner } from "./regions";
 
 const HARLEQUINS_INDEX = 19;
 
@@ -244,5 +246,69 @@ describe("FACTION_HEXES + UNOWNED_BASE_HEXES coverage", () => {
     for (const key of allGrid) {
       expect(assigned.has(key)).toBe(true);
     }
+  });
+});
+
+describe("computeBannerAssignments", () => {
+  const slugs = ["alpha", "beta", "gamma"];
+  // alpha owns [0,0],[1,0]; beta owns [2,0]; gamma owns [3,0]
+  const perFaction = [
+    [
+      [0, 0],
+      [1, 0],
+    ],
+    [[2, 0]],
+    [[3, 0]],
+  ] as const;
+  const banner = (members: string[]): Banner => ({
+    slug: "concord",
+    name: "Concord",
+    color: "#c9a24b",
+    symbol: null,
+    members,
+  });
+
+  it("returns the input unchanged when there are no banners", () => {
+    const { bannerGroups, remainingPerFaction } = computeBannerAssignments(perFaction, slugs, []);
+    expect(bannerGroups).toEqual([]);
+    expect(remainingPerFaction).toEqual(perFaction);
+  });
+
+  it("pulls member hexes into one banner group, recording constituents", () => {
+    const { bannerGroups, remainingPerFaction } = computeBannerAssignments(perFaction, slugs, [
+      banner(["alpha", "beta"]),
+    ]);
+    expect(bannerGroups).toHaveLength(1);
+    expect(bannerGroups[0]?.banner.slug).toBe("concord");
+    expect(bannerGroups[0]?.hexes).toEqual([
+      [0, 0],
+      [1, 0],
+      [2, 0],
+    ]);
+    // constituents map each hex back to its original faction index
+    expect(bannerGroups[0]?.constituents).toEqual([
+      ["0,0", 0],
+      ["1,0", 0],
+      ["2,0", 1],
+    ]);
+    // member factions no longer paint their own color; non-members untouched
+    expect(remainingPerFaction[0]).toEqual([]);
+    expect(remainingPerFaction[1]).toEqual([]);
+    expect(remainingPerFaction[2]).toEqual([[3, 0]]);
+  });
+
+  it("does not mutate the input perFaction arrays", () => {
+    const input = perFaction.map((h) => h.map(([q, r]) => [q, r] as [number, number]));
+    computeBannerAssignments(input, slugs, [banner(["alpha"])]);
+    expect(input[0]).toEqual([
+      [0, 0],
+      [1, 0],
+    ]);
+  });
+
+  it("throws when a banner references an unknown faction", () => {
+    expect(() => computeBannerAssignments(perFaction, slugs, [banner(["alpha", "nope"])])).toThrow(
+      /unknown faction 'nope'/,
+    );
   });
 });

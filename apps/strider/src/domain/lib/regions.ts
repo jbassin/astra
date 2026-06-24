@@ -25,6 +25,19 @@ export interface SkeinState {
   connections: SkeinConnection[];
 }
 
+// An alliance: multiple factions combine their land under one banner. While a
+// banner is active, every hex owned by a member faction renders in the single
+// banner color (the constituent faction is retained for hover/detail). Folded
+// from `banner-form`/`banner-dissolve` ops; a faction may belong to at most one
+// active banner at a time.
+export interface Banner {
+  slug: string;
+  name: string;
+  color: string;
+  symbol: string | null;
+  members: string[];
+}
+
 export type Change =
   | {
       op: "add";
@@ -64,7 +77,16 @@ export type Change =
       op: "claim";
       hexes: Array<[number, number]>;
       faction: string | null;
-    };
+    }
+  | {
+      op: "banner-form";
+      slug: string;
+      name: string;
+      color: string;
+      symbol?: string | null;
+      members: string[];
+    }
+  | { op: "banner-dissolve"; slug: string };
 
 export interface Layer {
   slug: string;
@@ -225,4 +247,60 @@ export function foldSkein(layers: Layer[]): SkeinState {
     .sort((a, b) => (a.from === b.from ? a.to.localeCompare(b.to) : a.from.localeCompare(b.from)));
 
   return { regions: sortedRegions, connections: sortedConnections };
+}
+
+// Walks every layer's banner ops in chronological order → the active banner set.
+// `banner-form` opens a banner; `banner-dissolve` closes it (members revert to
+// their own land because assignment reads only the active set). A faction may be
+// in at most one active banner at a time — overlapping membership throws, since
+// a hex can't render in two banner colors. Faction-existence is validated later
+// (computeBannerAssignments), where the faction slugs are known.
+export function foldBanners(layers: Layer[]): Banner[] {
+  const banners = new Map<string, Banner>();
+  // faction slug → owning banner slug, for the at-most-one invariant.
+  const factionBanner = new Map<string, string>();
+
+  for (const layer of layers) {
+    for (const change of layer.changes) {
+      if (change.op === "banner-form") {
+        if (banners.has(change.slug)) {
+          throw new Error(
+            `layer ${layer.slug}: cannot banner-form '${change.slug}' — already active`,
+          );
+        }
+        if (change.members.length < 2) {
+          throw new Error(
+            `layer ${layer.slug}: banner '${change.slug}' must have at least 2 members`,
+          );
+        }
+        for (const member of change.members) {
+          const held = factionBanner.get(member);
+          if (held) {
+            throw new Error(
+              `layer ${layer.slug}: faction '${member}' is already in banner '${held}'`,
+            );
+          }
+        }
+        for (const member of change.members) factionBanner.set(member, change.slug);
+        banners.set(change.slug, {
+          slug: change.slug,
+          name: change.name,
+          color: change.color,
+          symbol: change.symbol ?? null,
+          members: [...change.members],
+        });
+      } else if (change.op === "banner-dissolve") {
+        const existing = banners.get(change.slug);
+        if (!existing) {
+          throw new Error(
+            `layer ${layer.slug}: cannot banner-dissolve '${change.slug}' — not active`,
+          );
+        }
+        for (const member of existing.members) factionBanner.delete(member);
+        banners.delete(change.slug);
+      }
+    }
+  }
+
+  return Array.from(banners.values()).sort((a, b) => a.slug.localeCompare(b.slug));
 }

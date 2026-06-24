@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  foldBanners,
   foldFactionOverrides,
   foldRegions,
   foldSkein,
@@ -411,5 +412,109 @@ describe("foldFactionOverrides", () => {
       ]),
     ]);
     expect(result.size).toBe(0);
+  });
+});
+
+describe("foldBanners", () => {
+  it("returns an empty array when there are no layers", () => {
+    expect(foldBanners([])).toEqual([]);
+  });
+
+  it("opens a banner with its members, color, and symbol", () => {
+    const result = foldBanners([
+      layer("one", "2026-01-01T00:00:00Z", [
+        {
+          op: "banner-form",
+          slug: "concord",
+          name: "The Concord",
+          color: "#c9a24b",
+          symbol: "symbols/concord.svg",
+          members: ["a", "b", "c"],
+        },
+      ]),
+    ]);
+    expect(result).toEqual([
+      {
+        slug: "concord",
+        name: "The Concord",
+        color: "#c9a24b",
+        symbol: "symbols/concord.svg",
+        members: ["a", "b", "c"],
+      },
+    ]);
+  });
+
+  it("defaults a missing symbol to null", () => {
+    const [banner] = foldBanners([
+      layer("one", "2026-01-01T00:00:00Z", [
+        { op: "banner-form", slug: "concord", name: "C", color: "#fff", members: ["a", "b"] },
+      ]),
+    ]);
+    expect(banner?.symbol).toBeNull();
+  });
+
+  it("banner-dissolve removes the banner — members revert", () => {
+    const result = foldBanners([
+      layer("one", "2026-01-01T00:00:00Z", [
+        { op: "banner-form", slug: "concord", name: "C", color: "#fff", members: ["a", "b"] },
+      ]),
+      layer("two", "2026-01-02T00:00:00Z", [{ op: "banner-dissolve", slug: "concord" }]),
+    ]);
+    expect(result).toEqual([]);
+  });
+
+  it("a faction freed by dissolve can join a new banner", () => {
+    const result = foldBanners([
+      layer("one", "2026-01-01T00:00:00Z", [
+        { op: "banner-form", slug: "concord", name: "C", color: "#fff", members: ["a", "b"] },
+      ]),
+      layer("two", "2026-01-02T00:00:00Z", [{ op: "banner-dissolve", slug: "concord" }]),
+      layer("three", "2026-01-03T00:00:00Z", [
+        { op: "banner-form", slug: "pact", name: "P", color: "#000", members: ["b", "c"] },
+      ]),
+    ]);
+    expect(result.map((b) => b.slug)).toEqual(["pact"]);
+  });
+
+  it("throws when a banner has fewer than 2 members", () => {
+    expect(() =>
+      foldBanners([
+        layer("one", "2026-01-01T00:00:00Z", [
+          { op: "banner-form", slug: "concord", name: "C", color: "#fff", members: ["a"] },
+        ]),
+      ]),
+    ).toThrow(/at least 2 members/);
+  });
+
+  it("throws when a faction is in two active banners", () => {
+    expect(() =>
+      foldBanners([
+        layer("one", "2026-01-01T00:00:00Z", [
+          { op: "banner-form", slug: "concord", name: "C", color: "#fff", members: ["a", "b"] },
+        ]),
+        layer("two", "2026-01-02T00:00:00Z", [
+          { op: "banner-form", slug: "pact", name: "P", color: "#000", members: ["b", "c"] },
+        ]),
+      ]),
+    ).toThrow(/already in banner 'concord'/);
+  });
+
+  it("throws when banner-form reuses an active slug", () => {
+    expect(() =>
+      foldBanners([
+        layer("one", "2026-01-01T00:00:00Z", [
+          { op: "banner-form", slug: "concord", name: "C", color: "#fff", members: ["a", "b"] },
+          { op: "banner-form", slug: "concord", name: "C2", color: "#aaa", members: ["c", "d"] },
+        ]),
+      ]),
+    ).toThrow(/already active/);
+  });
+
+  it("throws when banner-dissolve targets an inactive banner", () => {
+    expect(() =>
+      foldBanners([
+        layer("one", "2026-01-01T00:00:00Z", [{ op: "banner-dissolve", slug: "ghost" }]),
+      ]),
+    ).toThrow(/not active/);
   });
 });

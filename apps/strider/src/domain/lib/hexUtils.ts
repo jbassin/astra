@@ -1,3 +1,5 @@
+import type { Banner } from "./regions";
+
 export const GRID_RADIUS = 35;
 export const HEX_SIZE = 2; // pixels per axial unit — the single source of truth
 const RING_RADIUS = 85; // pixel distance from center to each faction center
@@ -277,6 +279,59 @@ export function computeEffectiveAssignments(
   }
 
   return { perFaction, unowned };
+}
+
+export interface BannerAssignment {
+  banner: Banner;
+  hexes: Array<[number, number]>;
+  // "q,r" → constituent faction index (which member the hex belonged to), so
+  // hover/detail can name the original owner under the unified banner color.
+  constituents: Array<readonly [string, number]>;
+}
+
+// Pulls member-faction hexes into banner groups, run AFTER
+// computeEffectiveAssignments. Any hex owned by a member faction joins its
+// banner (painted the single banner color); the constituent faction index is
+// retained per hex. Returns the banner groups plus the per-faction assignment
+// with member hexes removed, so a banner's factions don't also paint their own
+// color. Throws if a banner names a faction slug that doesn't exist.
+export function computeBannerAssignments(
+  perFaction: ReadonlyArray<ReadonlyArray<readonly [number, number]>>,
+  factionSlugs: ReadonlyArray<string>,
+  banners: ReadonlyArray<Banner>,
+): {
+  bannerGroups: BannerAssignment[];
+  remainingPerFaction: Array<Array<[number, number]>>;
+} {
+  const slugToIdx = new Map<string, number>();
+  factionSlugs.forEach((slug, i) => {
+    slugToIdx.set(slug, i);
+  });
+
+  const remainingPerFaction: Array<Array<[number, number]>> = perFaction.map((hexes) =>
+    hexes.map(([q, r]) => [q, r] as [number, number]),
+  );
+
+  const bannerGroups: BannerAssignment[] = banners.map((banner) => {
+    const hexes: Array<[number, number]> = [];
+    const constituents: Array<readonly [string, number]> = [];
+    for (const member of banner.members) {
+      const idx = slugToIdx.get(member);
+      if (idx === undefined) {
+        throw new Error(
+          `computeBannerAssignments: banner '${banner.slug}' references unknown faction '${member}'`,
+        );
+      }
+      for (const [q, r] of remainingPerFaction[idx]!) {
+        hexes.push([q, r]);
+        constituents.push([`${q},${r}`, idx]);
+      }
+      remainingPerFaction[idx] = [];
+    }
+    return { banner, hexes, constituents };
+  });
+
+  return { bannerGroups, remainingPerFaction };
 }
 
 export function hexesInRadius(R: number): Array<[number, number]> {

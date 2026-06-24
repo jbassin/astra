@@ -8,8 +8,10 @@ import {
   LAYERS,
 } from "@/generated/layers";
 import {
+  type Banner,
   type Change,
   type FactionFlipAnim,
+  foldBanners,
   foldFactionOverrides,
   foldRegions,
   foldSkein,
@@ -22,6 +24,7 @@ import {
 } from "./regions";
 
 export type {
+  Banner,
   Change,
   FactionFlipAnim,
   Layer,
@@ -36,6 +39,7 @@ export {
   CURRENT_FACTION_HEXES,
   CURRENT_FACTION_TERRITORY_BORDERS,
   CURRENT_UNOWNED_HEXES,
+  foldBanners,
   foldFactionOverrides,
   foldRegions,
   foldSkein,
