@@ -274,15 +274,24 @@ ul.tags {
 }
 .tag-link {
   display: inline-block;
-  padding: 0.1rem 0.5rem;
+  padding: 0.2rem 0.6rem;
   border: 1px solid var(--color-rule);
   border-radius: 1rem;
   font-size: 0.8rem;
+  line-height: 1.1;
   color: var(--color-accent);
   text-decoration: none;
 }
 .tag-link:hover {
   background: var(--color-elevated);
+  border-color: var(--color-rule-bright);
+}
+/* Tag index: a bare <h2> wrapping a tag chip rendered oversized. Calm the heading
+   and separate the tag groups so the index is scannable (F11). */
+h2:has(> .tag-link) {
+  margin-top: 1.4rem;
+  font-size: 1rem;
+  font-weight: 400;
 }
 .backlinks h3 {
   font-family: var(--font-display), sans-serif;
@@ -408,6 +417,17 @@ html[reader-mode="on"] .sidebar:hover {
 .graph .graph-container {
   width: 100%;
   height: 100%;
+}
+/* placeholder shown when a page has no graph connections (F8) */
+.graph .graph-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: var(--color-ink-dim);
+  font-size: 0.8rem;
+  font-style: italic;
 }
 .global-graph-icon {
   position: absolute;
@@ -569,8 +589,10 @@ html[reader-mode="on"] .sidebar:hover {
   color: var(--color-ink-dim);
 }
 .result-card mark {
-  background: var(--color-accent-amber);
-  color: var(--color-void);
+  background: color-mix(in srgb, var(--color-accent-amber) 20%, transparent);
+  color: var(--color-accent-amber);
+  border-radius: 2px;
+  padding: 0 0.1em;
 }
 
 /* ── Transcripts (faerrin Script pages + TranscriptPlayer) ────────────────────────
@@ -744,6 +766,15 @@ html[reader-mode="on"] .sidebar:hover {
     position: static;
     max-height: none;
     overflow: visible;
+  }
+  /* Content first (F6). The left sidebar leads with the ~25-row Explorer tree, so
+     in the stacked single-column layout it buried the article — you scrolled past
+     the whole nav to reach the page you opened. Order content above the nav. */
+  .center {
+    order: 1;
+  }
+  .left.sidebar {
+    order: 2;
   }
   .right.sidebar {
     order: 3;

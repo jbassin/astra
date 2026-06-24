@@ -134,6 +134,19 @@ async function renderGraph(
 
   const data = rawData;
   const graphData: { nodes: any[]; links: any[] } = buildGraphData(data, slug, cfg);
+
+  // No edges → skip pixi entirely and show an intentional placeholder. Otherwise a
+  // connection-less page (home, the tags index) renders an empty canvas that reads
+  // as a broken widget (F8). The global-graph icon stays — the full graph is still
+  // worth opening. No pixi app is created here, so there's nothing to tear down.
+  if (graphData.links.length === 0) {
+    const note = document.createElement("p");
+    note.className = "graph-empty";
+    note.textContent = "No connections to show.";
+    graph.appendChild(note);
+    return () => removeAllChildren(graph);
+  }
+
   const tweens = new Map<string, { update: (t: number) => void; stop: () => void }>();
 
   const width = graph.offsetWidth;
