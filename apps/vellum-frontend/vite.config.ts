@@ -11,9 +11,11 @@ import { defineConfig } from "vite";
 // which can't execute their raw `.ts`. (The "vite.config can't import @astra/config"
 // gotcha — see strider/README + the migration guide.)
 const ROOT = import.meta.dirname;
-// Dev port from config.kdl via site-kit's node-safe locator (same source as
-// server.ts's runtime read — config-single-source).
-const { port } = loadSiteConfig(ROOT).vellumFrontend;
+// Dev port + render-service port from config.kdl via site-kit's node-safe locator
+// (same source as server.ts's runtime read — config-single-source).
+const siteConfig = loadSiteConfig(ROOT);
+const { port } = siteConfig.vellumFrontend;
+const renderTarget = `http://localhost:${siteConfig.vellumRender.port}`;
 
 // SSR — no `prerender` block (Decision I): vellum-frontend runs as a TanStack Start
 // server, a Compose service behind Caddy, not prerendered to static `dist/`. Unlike
@@ -22,7 +24,18 @@ const { port } = loadSiteConfig(ROOT).vellumFrontend;
 // @tailwindcss/vite compiles gothic's theme.css (`@theme` tokens + `@apply`); without
 // it the gothic stylesheet ships raw and every var(--color-*) is undefined.
 export default defineConfig({
-  server: { port, host: true },
+  // Dev only: proxy the editor's same-origin PNG export (`POST /render`) + /health to
+  // the vellum-render service (D2). The editor's exportClient posts to `/render` with
+  // an empty base (same-origin); in prod Caddy routes /render+/health → vellum-render,
+  // so this proxy gives dev the same same-origin contract without an env var.
+  server: {
+    port,
+    host: true,
+    proxy: {
+      "/render": { target: renderTarget, changeOrigin: true },
+      "/health": { target: renderTarget, changeOrigin: true },
+    },
+  },
   resolve: {
     alias: { "@": path.resolve(ROOT, "./src") },
   },
