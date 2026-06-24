@@ -13,4 +13,15 @@ changes:
       - [-22, 5]
       - [-21, 5]
       - [-20, 4]
+
+  - op: skein-add
+    slug: "final-caliber"
+    name: "Final Caliber"
+    faction: "radiant-arms"
+    hex: [-22, 5]
+    symbol: "symbols/final-caliber.svg"
+
+  - op: skein-connect
+    from: "final-caliber"
+    to: "ears-that-hear-the-truth"
 ---
