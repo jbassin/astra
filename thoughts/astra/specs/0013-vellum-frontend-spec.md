@@ -3,9 +3,10 @@
 **Status:** **BUILT — all 7 slices DONE + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE** (`3835dae`(s1)…
 `f1171fd`(s7), 2026-06-23). Two Compose units healthy (vellum-frontend 10367 + vellum-render 10368);
 containerized Chromium renders a real PNG; SigNoz has `astra.vellum-frontend` SSR + `astra.vellum-render`
-render spans; the VR gate passes 0.000% drift on 7 fixtures in the pinned container. **Spec-sanctioned
-deferral:** the `vellum.iridi.cc` DNS record (outward-facing; Caddy block authored + validated, faerrin's
-block decommissioned). See `[[vellum-frontend-0013-gotchas]]`. (Originally: SPEC pre-implementation.) Scope
+render spans; the VR gate passes 0.000% drift on 7 fixtures in the pinned container. **NOW FULLY LIVE on
+`https://vellum.iridi.cc`** (DNS set + `just caddy-reload` applied 2026-06-23 — `/`+`/editor` 200, `/health`
+ready, `POST /render` returns a real PNG through the public TLS edge; faerrin's block decommissioned).
+**No open items.** See `[[vellum-frontend-0013-gotchas]]`. (Originally: SPEC pre-implementation.) Scope
 gate COMPLETE (`ab04539`/`0dba4ef`, 2026-06-23,
 [`../../shared/research/2026-06-23-vellum-frontend-0013-thoughts.md`](../../shared/research/2026-06-23-vellum-frontend-0013-thoughts.md)).
 This spec builds on that verified scope doc and carries **D1–D6 settled** (D2/D4/D5 locked with the user

@@ -331,8 +331,10 @@ everything else points at durable docs). Update it when you finish a slice/subsy
    `strider.iridi.cc` + `vellum.iridi.cc` blocks are already decommissioned in-repo.)
 2. **0013 vellum-frontend — COMPLETE** (all 7 slices built + pushed + deployed-local + verified live; the
    editor on 10367 + the render service on 10368; containerized Chromium renders PNGs; SigNoz spans for both;
-   the VR gate is green in the pinned container). Only open item = the `vellum.iridi.cc` DNS record. See
-   `[[vellum-frontend-0013-gotchas]]`.
+   the VR gate is green in the pinned container). **NOW FULLY LIVE on `https://vellum.iridi.cc`** (DNS set +
+   `just caddy-reload` applied 2026-06-23 — `/`+`/editor` 200, `/health` ready, `POST /render` returns a real
+   PNG through the public TLS edge). **No open items** — the first 0011–0013 frontend taken all the way to the
+   public edge. See `[[vellum-frontend-0013-gotchas]]`.
 3. **0012 mouthpiece-frontend — COMPLETE** (all 6 slices built + pushed + deployed-local + verified live on
    10366; audio Range-serves, SigNoz SSR spans). Only open item = the manual `mouthpiece.iridi.cc` DNS edge
    (outward-facing; Caddy block authored + validated). See `[[mouthpiece-frontend-0012-gotchas]]`.

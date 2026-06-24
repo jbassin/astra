@@ -79,6 +79,7 @@ render spans** (MCP-confirmed); `caddy validate` Valid.
 non-null assertions, the `??=` test accumulator, `role=group`); **`@types/pixelmatch`** is needed (pixelmatch
 v6 ships no types); importing `@astra/site-kit` from a render-app vite.config still needs `--configLoader
 runner`; the editor's `.app` is a direct flex-child of `<body>` so it uses `flex:1` not `height:100%`.
-**Spec-sanctioned deferral:** the `vellum.iridi.cc` **DNS record** (outward-facing, like every other
-frontend; the Caddy block is authored + validated, faerrin's is decommissioned). **0013 is COMPLETE — only
-open item is the manual DNS record. Next: Phase-6 cutover (`0015-cutover.md`).**
+**0013 is COMPLETE — fully live on `https://vellum.iridi.cc` (DNS set + `just caddy-reload` applied
+2026-06-23): `/`+`/editor` 200, `/health` ready, `POST /render` returns a real PNG through the public TLS
+edge; faerrin's block decommissioned.** The FIRST 0011–0013 frontend taken all the way to a public edge (the
+others' DNS is still deferred). **No open items. Next: Phase-6 cutover (`0015-cutover.md`).**
