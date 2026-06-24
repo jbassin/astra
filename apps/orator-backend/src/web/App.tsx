@@ -32,7 +32,7 @@ export function Console() {
 
   if (auth.status === "anon") {
     return (
-      <section className="card">
+      <section className="card card--auth">
         <p>Sign in with Discord to manage the library and control playback.</p>
         <a className="btn" href="/auth/login">
           Sign in with Discord
