@@ -5,7 +5,16 @@ import { type Change, CURRENT_FACTION_HEXES, type Layer, type Region } from "./l
 export type EditableChange = Extract<
   Change,
   {
-    op: "add" | "update" | "remove" | "skein-add" | "skein-connect" | "skein-remove" | "claim";
+    op:
+      | "add"
+      | "update"
+      | "remove"
+      | "skein-add"
+      | "skein-connect"
+      | "skein-remove"
+      | "claim"
+      | "banner-form"
+      | "banner-dissolve";
   }
 >;
 
@@ -114,6 +123,17 @@ function serializeChange(c: EditableChange): string[] {
     out.push(`    faction: ${c.faction === null ? "null" : yamlString(c.faction)}`);
     out.push("    hexes:");
     for (const [q, r] of c.hexes) out.push(`      - [${q}, ${r}]`);
+  } else if (c.op === "banner-form") {
+    out.push(`    slug: ${yamlString(c.slug)}`);
+    out.push(`    name: ${yamlString(c.name)}`);
+    out.push(`    color: ${yamlString(c.color)}`);
+    if (c.symbol !== undefined && c.symbol !== null) {
+      out.push(`    symbol: ${yamlString(c.symbol)}`);
+    }
+    out.push("    members:");
+    for (const m of c.members) out.push(`      - ${yamlString(m)}`);
+  } else if (c.op === "banner-dissolve") {
+    out.push(`    slug: ${yamlString(c.slug)}`);
   }
   return out;
 }

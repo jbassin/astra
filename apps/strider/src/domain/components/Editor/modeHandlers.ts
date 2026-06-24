@@ -149,6 +149,22 @@ export function handleClaimClick(ctx: HexClickContext, q: number, r: number): vo
   dispatch({ type: "toggleHex", q, r });
 }
 
+export function handleBannerFormClick(ctx: HexClickContext, q: number, r: number): void {
+  const { hexFaction, dispatch } = ctx;
+  dispatch({ type: "setError", error: null });
+
+  // Unlike a region, an alliance spans multiple factions — toggle any
+  // faction-owned hex; the members derive from the selection's owner factions.
+  if (hexFaction.get(`${q},${r}`) === undefined) {
+    dispatch({
+      type: "setError",
+      error: "Click a hex inside a faction's territory to add it to the alliance.",
+    });
+    return;
+  }
+  dispatch({ type: "toggleHex", q, r });
+}
+
 export function handleSkeinRemoveClick(ctx: HexClickContext, q: number, r: number): void {
   const { skeinByHex, dispatch } = ctx;
   dispatch({ type: "setError", error: null });

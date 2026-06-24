@@ -158,6 +158,43 @@ describe("serializeLayer", () => {
       slug: "dead-drop",
     });
   });
+
+  it("round-trips a banner-form (members + color, no symbol)", () => {
+    const out = serializeLayer({
+      timestamp: "2026-05-22T14:30:00Z",
+      message: "Three powers unite.",
+      changes: [
+        {
+          op: "banner-form",
+          slug: "concord",
+          name: "The Concord",
+          color: "#c9a24b",
+          members: ["solari", "protectorate", "ministry"],
+        },
+      ],
+    });
+    const parsed = matter(out);
+    expect(parsed.data.changes[0]).toEqual({
+      op: "banner-form",
+      slug: "concord",
+      name: "The Concord",
+      color: "#c9a24b",
+      members: ["solari", "protectorate", "ministry"],
+    });
+  });
+
+  it("round-trips a banner-dissolve", () => {
+    const out = serializeLayer({
+      timestamp: "2026-05-22T14:30:00Z",
+      message: "The alliance fractures.",
+      changes: [{ op: "banner-dissolve", slug: "concord" }],
+    });
+    const parsed = matter(out);
+    expect(parsed.data.changes[0]).toEqual({
+      op: "banner-dissolve",
+      slug: "concord",
+    });
+  });
 });
 
 describe("hexFactionMap", () => {

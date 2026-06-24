@@ -7,7 +7,11 @@ export type Mode =
   | "skein-add"
   | "skein-connect"
   | "skein-remove"
-  | "claim";
+  | "claim"
+  | "banner-form"
+  | "banner-dissolve";
+
+export const DEFAULT_BANNER_COLOR = "#c9a24b";
 
 export interface EditorState {
   mode: Mode;
@@ -19,6 +23,7 @@ export interface EditorState {
   regionSlug: string;
   slugTouched: boolean;
   targetFaction: string | null;
+  bannerColor: string;
   logMessage: string;
   timestamp: string;
   error: string | null;
@@ -42,6 +47,7 @@ export type EditorAction =
   | { type: "setRegionName"; value: string }
   | { type: "setRegionSlug"; value: string }
   | { type: "setTargetFaction"; value: string | null }
+  | { type: "setBannerColor"; value: string }
   | { type: "setLogMessage"; value: string }
   | { type: "setTimestamp"; value: string }
   | { type: "setError"; error: string | null }
@@ -61,6 +67,7 @@ export const initialState: EditorState = {
   regionSlug: "",
   slugTouched: false,
   targetFaction: null,
+  bannerColor: DEFAULT_BANNER_COLOR,
   logMessage: "",
   timestamp: DEFAULT_TIMESTAMP,
   error: null,
@@ -84,6 +91,7 @@ function withDraftCleared(state: EditorState): EditorState {
     regionSlug: "",
     slugTouched: false,
     targetFaction: null,
+    bannerColor: DEFAULT_BANNER_COLOR,
     error: null,
   };
 }
@@ -117,7 +125,10 @@ export function reducer(state: EditorState, action: EditorAction): EditorState {
       return { ...state, skeinConnectFrom: action.slug, error: null };
     case "setRegionName": {
       const next = { ...state, regionName: action.value };
-      if ((state.mode === "add" || state.mode === "skein-add") && !state.slugTouched) {
+      if (
+        (state.mode === "add" || state.mode === "skein-add" || state.mode === "banner-form") &&
+        !state.slugTouched
+      ) {
         next.regionSlug = slugify(action.value);
       }
       return next;
@@ -126,6 +137,8 @@ export function reducer(state: EditorState, action: EditorAction): EditorState {
       return { ...state, regionSlug: slugify(action.value), slugTouched: true };
     case "setTargetFaction":
       return { ...state, targetFaction: action.value, error: null };
+    case "setBannerColor":
+      return { ...state, bannerColor: action.value, error: null };
     case "setLogMessage":
       return { ...state, logMessage: action.value };
     case "setTimestamp":
@@ -139,6 +152,7 @@ export function reducer(state: EditorState, action: EditorAction): EditorState {
         ...withDraftCleared(state),
         logMessage: "",
         timestamp: DEFAULT_TIMESTAMP,
+        bannerColor: DEFAULT_BANNER_COLOR,
         saving: false,
       };
     case "saveFailed":

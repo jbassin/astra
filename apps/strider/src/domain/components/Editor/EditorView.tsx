@@ -2,12 +2,13 @@ import { lazy, useCallback, useMemo, useReducer, useState } from "react";
 import type { EditableChange } from "@/domain/lib/editorHelpers";
 import { hexFactionMap, hexRegionMap } from "@/domain/lib/editorHelpers";
 import type { Faction } from "@/domain/lib/factions";
-import type { Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
+import type { Banner, Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
 import styles from "./EditorView.module.css";
-import { initialState, type Mode, reducer } from "./editorReducer";
+import { DEFAULT_BANNER_COLOR, initialState, type Mode, reducer } from "./editorReducer";
 import {
   type HexClickContext,
   handleAddClick,
+  handleBannerFormClick,
   handleClaimClick,
   handleRemoveClick,
   handleSkeinAddClick,
@@ -21,12 +22,13 @@ const EditorHexMap = lazy(() => import("./EditorHexMap"));
 
 const DEFAULT_SKEIN_SYMBOL = "symbols/skein-eye.svg";
 
-type Kind = "region" | "skein" | "base";
+type Kind = "region" | "skein" | "base" | "banner";
 
 const KIND_MODES: Record<Kind, ReadonlyArray<Mode>> = {
   region: ["add", "update", "remove"],
   skein: ["skein-add", "skein-connect", "skein-remove"],
   base: ["claim"],
+  banner: ["banner-form", "banner-dissolve"],
 };
 
 const MODE_LABELS: Record<Mode, string> = {
@@ -37,21 +39,25 @@ const MODE_LABELS: Record<Mode, string> = {
   "skein-connect": "connect",
   "skein-remove": "remove",
   claim: "claim",
+  "banner-form": "form",
+  "banner-dissolve": "dissolve",
 };
 
 const KIND_DEFAULT_MODE: Record<Kind, Mode> = {
   region: "add",
   skein: "skein-add",
   base: "claim",
+  banner: "banner-form",
 };
 
 interface EditorViewProps {
   factions: Faction[];
   regions: Region[];
   skein: SkeinState;
+  banners: Banner[];
 }
 
-export default function EditorView({ factions, regions, skein }: EditorViewProps) {
+export default function EditorView({ factions, regions, skein, banners }: EditorViewProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [kind, setKind] = useState<Kind>("region");
 
@@ -77,6 +83,22 @@ export default function EditorView({ factions, regions, skein }: EditorViewProps
   }, [state.selectedHexes, hexFaction]);
   const selectionFaction =
     factionIdxForSelection !== null ? (factions[factionIdxForSelection] ?? null) : null;
+
+  // For banner-form: the alliance members are the distinct owner factions of the
+  // selected hexes (one click anywhere in a faction's land enrolls it).
+  const bannerMembers = useMemo<Faction[]>(() => {
+    if (state.mode !== "banner-form") return [];
+    const seen = new Set<number>();
+    const members: Faction[] = [];
+    for (const [q, r] of state.selectedHexes) {
+      const idx = hexFaction.get(`${q},${r}`);
+      if (idx === undefined || seen.has(idx)) continue;
+      seen.add(idx);
+      const faction = factions[idx];
+      if (faction) members.push(faction);
+    }
+    return members;
+  }, [state.mode, state.selectedHexes, hexFaction, factions]);
 
   const pickedRegion = useMemo<Region | null>(
     () =>
@@ -134,6 +156,12 @@ export default function EditorView({ factions, regions, skein }: EditorViewProps
         case "claim":
           handleClaimClick(ctx, q, r);
           break;
+        case "banner-form":
+          handleBannerFormClick(ctx, q, r);
+          break;
+        case "banner-dissolve":
+          // Dissolve picks an active banner from the dropdown, not the map.
+          break;
       }
     },
     [
@@ -150,8 +178,8 @@ export default function EditorView({ factions, regions, skein }: EditorViewProps
   );
 
   const draftChange = useMemo<EditableChange | null>(
-    () => computeDraftChange(state, selectionFaction, pickedRegion, skeinByHex),
-    [state, selectionFaction, pickedRegion, skeinByHex],
+    () => computeDraftChange(state, selectionFaction, pickedRegion, skeinByHex, bannerMembers),
+    [state, selectionFaction, pickedRegion, skeinByHex, bannerMembers],
   );
 
   const canSave = draftChange !== null && state.logMessage.trim().length > 0 && !state.saving;
@@ -220,7 +248,7 @@ export default function EditorView({ factions, regions, skein }: EditorViewProps
         </header>
 
         <div className={styles.modeRow}>
-          {(["region", "skein", "base"] as const).map((k) => (
+          {(["region", "skein", "base", "banner"] as const).map((k) => (
             <button
               key={k}
               type="button"
@@ -441,6 +469,76 @@ export default function EditorView({ factions, regions, skein }: EditorViewProps
           </section>
         )}
 
+        {state.mode === "banner-form" && (
+          <section className={styles.section}>
+            <div className={styles.hint}>
+              Click one hex in each faction's land to ally them under one banner.
+            </div>
+            <label className={styles.field}>
+              <span>Banner name</span>
+              <input
+                type="text"
+                value={state.regionName}
+                onChange={(e) => dispatch({ type: "setRegionName", value: e.target.value })}
+                placeholder="The Tri-Faction Concord"
+              />
+            </label>
+            <label className={styles.field}>
+              <span>Slug</span>
+              <input
+                type="text"
+                value={state.regionSlug}
+                onChange={(e) => dispatch({ type: "setRegionSlug", value: e.target.value })}
+                placeholder="tri-faction-concord"
+              />
+            </label>
+            <label className={styles.field}>
+              <span>Color</span>
+              <input
+                type="text"
+                value={state.bannerColor}
+                onChange={(e) => dispatch({ type: "setBannerColor", value: e.target.value })}
+                placeholder={DEFAULT_BANNER_COLOR}
+              />
+            </label>
+            <div className={styles.readout}>
+              <span>Members</span>
+              <span>
+                {bannerMembers.length > 0 ? bannerMembers.map((f) => f.name).join(", ") : "—"}
+              </span>
+            </div>
+          </section>
+        )}
+
+        {state.mode === "banner-dissolve" && (
+          <section className={styles.section}>
+            <div className={styles.hint}>
+              {banners.length > 0
+                ? "Pick an active banner to dissolve — its members revert to their own land."
+                : "No active banners to dissolve."}
+            </div>
+            <label className={styles.field}>
+              <span>Banner</span>
+              <select
+                value={state.targetFaction ?? ""}
+                onChange={(e) =>
+                  dispatch({
+                    type: "setTargetFaction",
+                    value: e.target.value === "" ? null : e.target.value,
+                  })
+                }
+              >
+                <option value="">— None —</option>
+                {banners.map((b) => (
+                  <option key={b.slug} value={b.slug}>
+                    {b.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </section>
+        )}
+
         <section className={styles.section}>
           <label className={styles.field}>
             <span>Log message</span>
@@ -514,6 +612,17 @@ export default function EditorView({ factions, regions, skein }: EditorViewProps
                 </strong>
               </>
             )}
+            {draftChange.op === "banner-form" && (
+              <>
+                ⚑ form <strong>{draftChange.slug}</strong> &ldquo;{draftChange.name}&rdquo; (
+                {draftChange.members.length} factions)
+              </>
+            )}
+            {draftChange.op === "banner-dissolve" && (
+              <>
+                ⚐ dissolve banner <strong>{draftChange.slug}</strong>
+              </>
+            )}
           </div>
         )}
 
@@ -536,10 +645,12 @@ function computeDraftChange(
     pickedSkeinSlug: string | null;
     skeinConnectFrom: string | null;
     targetFaction: string | null;
+    bannerColor: string;
   },
   selectionFaction: Faction | null,
   pickedRegion: Region | null,
   skeinByHex: Map<string, SkeinRegion>,
+  bannerMembers: Faction[],
 ): EditableChange | null {
   if (state.mode === "add") {
     if (
@@ -619,6 +730,23 @@ function computeDraftChange(
       hexes: state.selectedHexes.map(([q, r]) => [q, r]),
       faction: state.targetFaction,
     };
+  }
+  if (state.mode === "banner-form") {
+    if (!state.regionSlug || !state.regionName || !state.bannerColor || bannerMembers.length < 2) {
+      return null;
+    }
+    return {
+      op: "banner-form",
+      slug: state.regionSlug,
+      name: state.regionName,
+      color: state.bannerColor,
+      members: bannerMembers.map((f) => f.slug),
+    };
+  }
+  if (state.mode === "banner-dissolve") {
+    // targetFaction doubles as the picked banner slug for this mode.
+    if (!state.targetFaction) return null;
+    return { op: "banner-dissolve", slug: state.targetFaction };
   }
   void skeinByHex;
   return null;
