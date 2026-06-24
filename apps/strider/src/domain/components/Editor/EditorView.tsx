@@ -22,13 +22,14 @@ const EditorHexMap = lazy(() => import("./EditorHexMap"));
 
 const DEFAULT_SKEIN_SYMBOL = "symbols/skein-eye.svg";
 
-type Kind = "region" | "skein" | "base" | "banner";
+type Kind = "region" | "skein" | "base" | "banner" | "event";
 
 const KIND_MODES: Record<Kind, ReadonlyArray<Mode>> = {
   region: ["add", "update", "remove"],
   skein: ["skein-add", "skein-connect", "skein-remove"],
   base: ["claim"],
   banner: ["banner-form", "banner-dissolve"],
+  event: ["tithe"],
 };
 
 const MODE_LABELS: Record<Mode, string> = {
@@ -41,6 +42,7 @@ const MODE_LABELS: Record<Mode, string> = {
   claim: "claim",
   "banner-form": "form",
   "banner-dissolve": "dissolve",
+  tithe: "tithe",
 };
 
 const KIND_DEFAULT_MODE: Record<Kind, Mode> = {
@@ -48,6 +50,7 @@ const KIND_DEFAULT_MODE: Record<Kind, Mode> = {
   skein: "skein-add",
   base: "claim",
   banner: "banner-form",
+  event: "tithe",
 };
 
 interface EditorViewProps {
@@ -162,6 +165,9 @@ export default function EditorView({ factions, regions, skein, banners }: Editor
         case "banner-dissolve":
           // Dissolve picks an active banner from the dropdown, not the map.
           break;
+        case "tithe":
+          // A tithe is a map-wide event — no hex selection.
+          break;
       }
     },
     [
@@ -248,7 +254,7 @@ export default function EditorView({ factions, regions, skein, banners }: Editor
         </header>
 
         <div className={styles.modeRow}>
-          {(["region", "skein", "base", "banner"] as const).map((k) => (
+          {(["region", "skein", "base", "banner", "event"] as const).map((k) => (
             <button
               key={k}
               type="button"
@@ -539,6 +545,15 @@ export default function EditorView({ factions, regions, skein, banners }: Editor
           </section>
         )}
 
+        {state.mode === "tithe" && (
+          <section className={styles.section}>
+            <div className={styles.hint}>
+              A tithe plays a one-shot wave of flipping purple tiles from the map's center to the
+              edges. It changes no territory — add a log message and save.
+            </div>
+          </section>
+        )}
+
         <section className={styles.section}>
           <label className={styles.field}>
             <span>Log message</span>
@@ -623,6 +638,7 @@ export default function EditorView({ factions, regions, skein, banners }: Editor
                 ⚐ dissolve banner <strong>{draftChange.slug}</strong>
               </>
             )}
+            {draftChange.op === "tithe" && <>✦ tithe — a map-wide wave</>}
           </div>
         )}
 
@@ -747,6 +763,9 @@ function computeDraftChange(
     // targetFaction doubles as the picked banner slug for this mode.
     if (!state.targetFaction) return null;
     return { op: "banner-dissolve", slug: state.targetFaction };
+  }
+  if (state.mode === "tithe") {
+    return { op: "tithe" };
   }
   void skeinByHex;
   return null;

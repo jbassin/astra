@@ -9,7 +9,8 @@ export type Mode =
   | "skein-remove"
   | "claim"
   | "banner-form"
-  | "banner-dissolve";
+  | "banner-dissolve"
+  | "tithe";
 
 export const DEFAULT_BANNER_COLOR = "#c9a24b";
 
