@@ -23,7 +23,6 @@ export default function BannerDetail({ banner, members, onSelectFaction }: Banne
     order: 0,
     symbol: banner.symbol,
     description: "",
-    members: [],
   };
 
   return (

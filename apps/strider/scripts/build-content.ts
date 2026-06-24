@@ -1,9 +1,10 @@
 // Pre-build content pipeline.
 //
-// Reads content/factions/*.md (markdown → HTML) and content/layers/*.kdl (KDL →
-// change records), folds the layers, and emits typed TS modules under
-// src/generated/. The runtime app imports those modules — never the filesystem —
-// so the production bundle has no fs/remark/gray-matter/kdl dependency.
+// Reads content/factions/*.vellum (vellum → HTML via gothic's DocumentView) and
+// content/layers/*.kdl (KDL → change records), folds the layers, and emits typed
+// TS modules under src/generated/. The runtime app imports those modules — never
+// the filesystem — so the production bundle ships no fs / vellum / gothic-renderer
+// / kdl dependency.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -13,11 +14,13 @@ import {
   defineContentSource,
   emitModule,
   listFilesWithExtension,
-  listMarkdownFiles,
-  markdownToHtml,
   parseFrontmatter,
 } from "@astra/content-build";
+import { DocumentView } from "@astra/gothic";
+import { parseDocument } from "@astra/vellum-lang";
 import { type Node, parse } from "@bgotink/kdl";
+import { createElement } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 import {
   computeAssignmentBorders,
   computeBannerAssignments,
@@ -44,76 +47,35 @@ const FACTIONS_DIR = path.join(ROOT, "content", "factions");
 const LAYERS_DIR = path.join(ROOT, "content", "layers");
 const OUT_DIR = path.join(ROOT, "src", "generated");
 
-interface Member {
-  name: string;
-  bio: string;
-}
-
 interface Faction {
   name: string;
   slug: string;
   color: string;
   order: number;
   symbol: string | null;
+  /** The whole faction body, authored in vellum and rendered to static HTML. */
   description: string;
-  members: Member[];
 }
 
-const HIDDEN_RE = /<!--\s*hidden\s*-->/i;
-
-export function splitBody(body: string): {
-  descriptionMd: string;
-  memberEntries: Array<{ name: string; content: string }>;
-} {
-  const knownMembersMatch = body.match(/^## Known Members([^\n]*)$/m);
-  let descriptionMd = body.trim();
-  const memberEntries: Array<{ name: string; content: string }> = [];
-
-  if (knownMembersMatch && knownMembersMatch.index !== undefined) {
-    const knownMembersIndex = knownMembersMatch.index;
-    descriptionMd = body.slice(0, knownMembersIndex).trim();
-
-    if (HIDDEN_RE.test(knownMembersMatch[1])) {
-      return { descriptionMd, memberEntries };
-    }
-
-    const afterHeading = body
-      .slice(knownMembersIndex)
-      .replace(/^## Known Members[^\n]*\n/, "")
-      .trim();
-
-    for (const part of afterHeading.split(/^### /m).filter(Boolean)) {
-      const newlineIdx = part.indexOf("\n");
-      if (newlineIdx === -1) continue;
-      const headingLine = part.slice(0, newlineIdx).trim();
-      if (HIDDEN_RE.test(headingLine)) continue;
-      memberEntries.push({
-        name: headingLine,
-        content: part.slice(newlineIdx).trim(),
-      });
-    }
-  }
-
-  return { descriptionMd, memberEntries };
+// Render a faction's vellum body to static HTML at build time via gothic's
+// DocumentView — the same renderer the akasha wiki uses. Build-only: react-dom/
+// server + gothic + vellum-lang never reach the client bundle (the route injects
+// the baked HTML). Factions have no wiki to cross-reference into, so the crossref
+// resolver is a no-op.
+function renderVellumBody(source: string): string {
+  return renderToStaticMarkup(
+    createElement(DocumentView, { document: parseDocument(source), resolveCrossref: () => null }),
+  );
 }
 
-export async function parseFaction(filePath: string): Promise<Faction> {
-  const filename = path.basename(filePath, ".md");
+export function parseFaction(filePath: string): Faction {
+  const filename = path.basename(filePath, ".vellum");
   const dashIndex = filename.indexOf("-");
   const order = Number.parseInt(filename.slice(0, dashIndex), 10);
   const slug = filename.slice(dashIndex + 1);
 
   const raw = fs.readFileSync(filePath, "utf8");
   const { data, content } = parseFrontmatter(raw);
-  const { descriptionMd, memberEntries } = splitBody(content);
-
-  const description = await markdownToHtml(descriptionMd);
-  const members = await Promise.all(
-    memberEntries.map(async ({ name, content: bioMd }) => ({
-      name,
-      bio: await markdownToHtml(bioMd),
-    })),
-  );
 
   return {
     name: data.name as string,
@@ -121,13 +83,12 @@ export async function parseFaction(filePath: string): Promise<Faction> {
     color: data.color as string,
     order,
     symbol: (data.symbol as string | null) ?? null,
-    description,
-    members,
+    description: renderVellumBody(content),
   };
 }
 
-async function buildFactions(): Promise<Faction[]> {
-  const factions = await Promise.all(listMarkdownFiles(FACTIONS_DIR).map(parseFaction));
+function buildFactions(): Faction[] {
+  const factions = listFilesWithExtension(FACTIONS_DIR, ".vellum").map(parseFaction);
   return factions.sort((a, b) => a.order - b.order);
 }
 
@@ -446,8 +407,8 @@ let factionSlugs: string[] = [];
 
 const factionsSource = defineContentSource({
   name: "factions",
-  build: async () => {
-    const factions = await buildFactions();
+  build: () => {
+    const factions = buildFactions();
     factionSlugs = factions.map((f) => f.slug);
     emitFactions(factions);
     return `${factions.length} factions`;

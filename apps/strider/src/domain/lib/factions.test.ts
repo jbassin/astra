@@ -46,11 +46,10 @@ describe("getFactionBySlug", () => {
     expect(result).toBeNull();
   });
 
-  it("returns non-empty members array with non-empty HTML bios", async () => {
+  it("renders the vellum body to non-empty HTML", async () => {
     const faction = await getFactionBySlug("ternion-heavy-industries");
-    expect(faction?.members.length).toBeGreaterThan(0);
-    for (const member of faction?.members ?? []) {
-      expect(member.bio.trim(), `member "${member.name}" bio is empty`).not.toBe("");
-    }
+    expect(faction?.description.trim()).not.toBe("");
+    // Personnel now live in the body as in-document headings (one vellum doc).
+    expect(faction?.description).toContain("Jethro Twill");
   });
 });

@@ -1,18 +1,13 @@
 import { FACTIONS, factionBySlug } from "@/generated/factions";
 
-export interface Member {
-  name: string;
-  bio: string;
-}
-
 export interface Faction {
   name: string;
   slug: string;
   color: string;
   order: number;
   symbol: string | null;
+  /** The whole faction body, authored in vellum and rendered to static HTML. */
   description: string;
-  members: Member[];
 }
 
 export async function getAllFactions(): Promise<Faction[]> {

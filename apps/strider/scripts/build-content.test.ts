@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { serializeLayer } from "../src/domain/lib/editorHelpers";
 import type { Change } from "../src/domain/lib/regions";
-import { parseChange, parseFaction, parseLayer, splitBody } from "./build-content";
+import { parseChange, parseFaction, parseLayer } from "./build-content";
 
 // --- parseChange (pure) ---
 
@@ -121,39 +121,6 @@ describe("parseChange", () => {
   });
 });
 
-// --- splitBody (pure) ---
-
-describe("splitBody", () => {
-  it("splits a description and member entries", () => {
-    const { descriptionMd, memberEntries } = splitBody(
-      "Intro paragraph.\n\n## Known Members\n\n### Alice\nAlice bio.\n\n### Bob\nBob bio.",
-    );
-    expect(descriptionMd).toBe("Intro paragraph.");
-    expect(memberEntries.map((m) => m.name)).toEqual(["Alice", "Bob"]);
-    expect(memberEntries[0]?.content).toContain("Alice bio.");
-  });
-
-  it("returns no members when the section is marked hidden", () => {
-    const { memberEntries } = splitBody(
-      "Desc.\n\n## Known Members <!-- hidden -->\n\n### Alice\nx",
-    );
-    expect(memberEntries).toEqual([]);
-  });
-
-  it("skips individually hidden members", () => {
-    const { memberEntries } = splitBody(
-      "Desc.\n\n## Known Members\n\n### Alice <!-- hidden -->\na\n\n### Bob\nb",
-    );
-    expect(memberEntries.map((m) => m.name)).toEqual(["Bob"]);
-  });
-
-  it("treats the whole body as description when there is no Known Members heading", () => {
-    const { descriptionMd, memberEntries } = splitBody("Just a description.");
-    expect(descriptionMd).toBe("Just a description.");
-    expect(memberEntries).toEqual([]);
-  });
-});
-
 // --- parseLayer / parseFaction (read a file; exercised against temp fixtures) ---
 
 describe("parseLayer / parseFaction (fixtures)", () => {
@@ -232,20 +199,22 @@ describe("parseLayer / parseFaction (fixtures)", () => {
     expect(() => parseLayer(p)).toThrow(/unknown op 'bogus'/);
   });
 
-  it("parses a faction file with members", async () => {
+  it("parses a faction's vellum file and renders its body to HTML", () => {
     const p = write(
-      "05-solari-sub-surface.md",
+      "05-solari-sub-surface.vellum",
       '---\nname: Solari Sub-Surface\ncolor: "#ff8800"\nsymbol: symbols/solari.svg\n---\nThe sub-surface miners.\n\n## Known Members\n\n### Vask\nForeman.\n',
     );
-    const faction = await parseFaction(p);
+    const faction = parseFaction(p);
     expect(faction.order).toBe(5);
     expect(faction.slug).toBe("solari-sub-surface");
     expect(faction.name).toBe("Solari Sub-Surface");
     expect(faction.color).toBe("#ff8800");
     expect(faction.symbol).toBe("symbols/solari.svg");
+    // The whole body is one rendered vellum document — prose plus the personnel
+    // headings (Known Members / Vask) all land in the HTML.
     expect(faction.description).toContain("sub-surface miners");
-    expect(faction.members.map((m) => m.name)).toEqual(["Vask"]);
-    expect(faction.members[0]?.bio).toContain("Foreman.");
+    expect(faction.description).toContain("Vask");
+    expect(faction.description).toContain("Foreman.");
   });
 });
 

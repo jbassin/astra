@@ -31,27 +31,13 @@ export default function FactionDetail({ faction }: FactionDetailProps) {
       {faction.description && (
         <section className={styles.section}>
           <h3 className={styles.sectionLabel}>{"++ DOSSIER ++"}</h3>
+          {/* The whole faction body — authored in vellum, rendered to HTML at
+              build time by gothic's DocumentView. Personnel appear as in-document
+              headings. */}
           <div
             className={styles.description}
             dangerouslySetInnerHTML={{ __html: faction.description }}
           />
-        </section>
-      )}
-
-      {faction.members.length > 0 && (
-        <section className={styles.section}>
-          <h3 className={styles.sectionLabel}>{"++ KNOWN PERSONNEL ++"}</h3>
-          {faction.members.map((member) => (
-            <div key={member.name} className={styles.member}>
-              <h4 className={styles.memberName}>
-                <span className={styles.memberGlyph} aria-hidden="true">
-                  +{" "}
-                </span>
-                {member.name.toUpperCase()}
-              </h4>
-              <div className={styles.memberBio} dangerouslySetInnerHTML={{ __html: member.bio }} />
-            </div>
-          ))}
         </section>
       )}
     </div>

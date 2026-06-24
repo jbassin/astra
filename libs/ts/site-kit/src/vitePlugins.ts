@@ -36,7 +36,8 @@ export function contentWatchPlugin(opts: ContentWatchOptions): Plugin {
   }
 
   const isContentFile = (file: string) =>
-    file.startsWith(contentDir + path.sep) && (file.endsWith(".md") || file.endsWith(".kdl"));
+    file.startsWith(contentDir + path.sep) &&
+    (file.endsWith(".md") || file.endsWith(".kdl") || file.endsWith(".vellum"));
 
   return {
     name: "site-kit:content-watch",

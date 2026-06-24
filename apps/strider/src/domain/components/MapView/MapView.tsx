@@ -59,7 +59,6 @@ function bannerPseudoFaction(banner: Banner, order: number): Faction {
     order,
     symbol: banner.symbol,
     description: "",
-    members: [],
   };
 }
 
