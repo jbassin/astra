@@ -1,6 +1,6 @@
 ---
 name: astra-migration-research
-description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–H decided; Phases 0 + 1 + 2 (0004 vellum-lang, 0003 gothic) COMPLETE + **Phase 3 (pipeline) COMPLETE** (0005 scribe, 0006 linguist, 0007 akasha-backend, 0008 mouthpiece-backend) + **Phase 5 0014 strider COMPLETE — the SSR frontend template, 7 slices, both toolchains green (NOT pushed)**; next = Phase 4 (services: 0009 weal, 0010 orator) + the remaining Phase-5 frontends (0011 akasha-fe long pole, 0012 mouthpiece-fe, 0013 vellum-fe) which copy strider's SSR template + parallelize
+description: discovery + phased plan for migrating faerrin → the new astra re-architecture repo; ledger A–I decided; **MIGRATION COMPLETE 2026-06-23 — Phases 0–6 all done.** Substrate + shared libs + the full pipeline (0005 scribe, 0006 linguist, 0007 akasha-backend, 0008 mouthpiece-backend, live + verified e2e) + Phase-4 services (0009 weal, 0010 orator) + all four Phase-5 SSR frontends (0014 strider template, 0011 akasha-fe, 0012 mouthpiece-fe, 0013 vellum-fe) + **Phase-6 cutover (0015)**: astra is the campaign's live stack — every public host serves, bots/pipeline live with SigNoz traces, roll-history/library/content migrated (ids intact), faerrin decommissioned. Leftovers are by-design (strider editor-auth, Nitro+bun) or nice-to-haves (webhook rotation)
 metadata:
   type: project
 ---

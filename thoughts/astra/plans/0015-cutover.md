@@ -1,6 +1,14 @@
 # Astra Sub-plan 0015 — Phase 6: Cutover (big-bang)
 
-**Status:** Plan (pre-implementation). **Phase:** 6 (cutover). **Parent:** [`0000-astra-migration-roadmap.md`](./0000-astra-migration-roadmap.md).
+**Status:** **COMPLETE (2026-06-23).** astra is the campaign's live stack: every public host serves astra
+(`strider`/`akasha`/`mouthpiece`/`orator`/`vellum`/`weal-overlay`/`dagster`.iridi.cc all 200, `otel` ingest
+reachable), the Dagster pipeline runs live (craig→scribe→linguist→akasha→mouthpiece, verified e2e), the
+bots/services are live Compose units, SigNoz shows traces for all, and the data migrations are done (roll
+history 8,932 dice + 10 funcs into weal-postgres + orator library + the akasha/mouthpiece content corpora —
+ids/player_ids intact). faerrin's `strider.iridi.cc` + `vellum.iridi.cc` blocks decommissioned in-repo.
+Phases 0–6 done — **the migration program (`0000`–`0015`) is finished.** Standing leftovers are by-design
+(strider editor-auth won't-fix, Nitro+bun preset migration) or acknowledged nice-to-haves (webhook
+rotation). **Phase:** 6 (cutover). **Parent:** [`0000-astra-migration-roadmap.md`](./0000-astra-migration-roadmap.md).
 **Date:** 2026-06-19. **Decisions in force:** A = **big-bang cutover** (no incremental prod parallel-run); URL parity is the hard gate; rotate the leaked webhook; audio stays external (F4).
 **Depends-on:** **ALL** of Phases 0–5 green. **The final step.**
 

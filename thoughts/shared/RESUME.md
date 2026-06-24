@@ -323,14 +323,23 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: Phase-6 cutover (ALL frontends 0011–0014 now COMPLETE)
+### 🎉 MIGRATION COMPLETE — Phases 0–6 all done (2026-06-23)
 
-1. **Phase-6 cutover — the last phase** (plan `thoughts/astra/plans/0015-cutover.md`). All four frontends are
-   built + deployed-local: strider (0014), akasha (0011), mouthpiece (0012), **vellum (0013)**. **The public
-   edge is now LIVE** — `just caddy-reload` applied + DNS set: strider/akasha/mouthpiece/orator/vellum/
-   weal-overlay/dagster `.iridi.cc` all serve HTTP 200, `otel.iridi.cc` reachable (browser-RUM OTLP ingest);
-   faerrin's `strider.iridi.cc` + `vellum.iridi.cc` blocks decommissioned in-repo (2026-06-23). The remaining
-   cutover work is the plan's content/data + final faerrin teardown, not edge wiring.
+**The faerrin → astra migration program (`0000`–`0015`) is finished. astra is the campaign's live stack.**
+Phase-6 cutover (`0015`) is **COMPLETE**: every public host serves astra
+(strider/akasha/mouthpiece/orator/vellum/weal-overlay/dagster `.iridi.cc` all 200, `otel` OTLP ingest
+reachable); the Dagster pipeline runs live + verified e2e; the bots/services are live Compose units with
+SigNoz traces; the data migrations are done (weal roll history 8,932+10, orator library, the akasha/mouthpiece
+content corpora — ids/player_ids intact); faerrin's `strider.iridi.cc` + `vellum.iridi.cc` blocks
+decommissioned in-repo.
+
+**No remaining migration work.** Standing leftovers are by-design or optional, NOT blockers:
+- strider editor write-endpoint auth — **accepted won't-fix** (`[[strider-editor-auth-accepted]]`).
+- Nitro+bun preset migration — deferred until TanStack Start is non-nightly.
+- weal webhook rotation — acknowledged nice-to-have (the user opted to skip it).
+
+Future work is now ordinary product/ops on the live stack, not the migration. (Historical per-subsystem build
+notes are retained below for reference.)
 2. **0013 vellum-frontend — COMPLETE** (all 7 slices built + pushed + deployed-local + verified live; the
    editor on 10367 + the render service on 10368; containerized Chromium renders PNGs; SigNoz spans for both;
    the VR gate is green in the pinned container). **NOW FULLY LIVE on `https://vellum.iridi.cc`** (DNS set +
