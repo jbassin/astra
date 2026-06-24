@@ -90,10 +90,14 @@
   --color-gold-leaf: #b4842f; /* illuminated drop-cap bronze */
   --color-redaction: #120f0b; /* [DATA EXPUNGED] bar */
 
-  /* Type families. */
+  /* Type families. The emoji fallbacks (matched only for emoji codepoints, so
+     they never hijack the serif/mono text) keep kaomoji / emoji in user-authored
+     content — e.g. the akasha chat-log pages — from dropping to tofu boxes. */
   --font-display: "ITC Serif Gothic", serif;
-  --font-body: "Caslon Antique", serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+  --font-body: "Caslon Antique", "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", serif;
+  --font-mono:
+    "IBM Plex Mono", ui-monospace, "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji",
+    monospace;
 
   /* Motion. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -121,8 +125,12 @@
      utilities can't reach cleanly, so the *skin* is a component class (@apply +
      minimal raw CSS). The card's INNER structure (header/name/traits) stays
      direct utilities on the authored elements. */
+  /* `bg-elevated` (not `bg-panel`): on a `--color-void` page the old panel fill
+     was only ~6 luminance points off the background, so cards read as floating
+     rules rather than contained objects (see the akasha handout/stat callouts).
+     elevated + the brighter rule lifts them clear of the page. */
   .gothic-card {
-    @apply rounded-[2px] border border-rule-bright bg-panel px-5 py-4;
+    @apply rounded-[2px] border border-rule-bright bg-elevated px-5 py-4;
     box-shadow:
       inset 0 0 0 1px var(--color-void),
       0 10px 28px color-mix(in srgb, var(--color-void) 80%, transparent);
@@ -226,6 +234,29 @@
     @apply mt-[0.5rem] border-t border-rule pt-[0.3rem] text-[0.82rem] text-ink-dim;
   }
 
+  /* ── Code, preformatted blocks, blockquotes ────────────────────────────
+     mdastToReact emits bare <pre><code>, inline <code>, and <blockquote> with
+     no classNames, so without these they fell back to unstyled browser defaults
+     (tiny monospace, no panel — see the akasha chat-log pages). Inline code is a
+     subtle phosphor chip; a fenced block is a recessed slate panel that wraps
+     long lines (the corpus uses fenced blocks for chat/log transcripts, not
+     source, so pre-wrap reads better than a horizontal scrollbar). */
+  .gothic-content code {
+    @apply rounded-[2px] bg-elevated px-[0.32em] py-[0.06em] font-mono text-[0.88em] text-accent;
+  }
+  .gothic-content pre {
+    @apply my-[0.7rem] overflow-x-auto rounded-[2px] border border-rule bg-elevated p-[0.9rem] font-mono text-[0.84rem] leading-[1.55] text-ink;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  /* a <code> inside a <pre> is the block itself — drop the inline chip skin. */
+  .gothic-content pre code {
+    @apply bg-transparent p-0 text-[length:inherit] text-ink;
+  }
+  .gothic-content blockquote {
+    @apply my-[0.7rem] border-l-2 border-accent-amber py-[0.1rem] pl-[1rem] text-ink-dim italic;
+  }
+
   /* ── Top-level prose: a real heading hierarchy (`#` largest → `######`) ── */
   .gothic-prose > :first-child {
     @apply mt-0;
@@ -287,6 +318,20 @@
   }
   [data-mode="diegetic"] .gothic-content li[data-task] input {
     @apply accent-[var(--color-wax)];
+  }
+  /* Code / blockquote on parchment — aged-ink instead of phosphor slate. */
+  [data-mode="diegetic"] .gothic-content :is(code, pre) {
+    color: var(--color-parchment-ink);
+    background-color: color-mix(in srgb, var(--color-parchment-shade) 50%, transparent);
+  }
+  [data-mode="diegetic"] .gothic-content pre {
+    border-color: color-mix(in srgb, var(--color-parchment-edge) 70%, transparent);
+  }
+  [data-mode="diegetic"] .gothic-content pre code {
+    color: var(--color-parchment-ink);
+  }
+  [data-mode="diegetic"] .gothic-content blockquote {
+    @apply border-wax text-parchment-ink-dim;
   }
 
   /* Illuminated gold-leaf drop-cap — first paragraph of a diegetic prose card. */

@@ -27,7 +27,7 @@ export function Frontmatter({
         </h1>
       ) : null}
       {tags.length ? (
-        <div className="mt-2 flex flex-wrap gap-[0.35rem]">
+        <div className="mt-[0.6rem] flex flex-wrap gap-x-2 gap-y-[0.4rem]">
           {tags.map((tag, i) => (
             <TraitPill key={i} name={tag} />
           ))}
