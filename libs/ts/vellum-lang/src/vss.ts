@@ -158,24 +158,33 @@ function tryConstruct(s: string, j: number, depth: number): Parsed | null {
   if (after !== undefined && /[A-Za-z0-9_]/.test(after)) return null;
 
   if (word === "columns") return parseColumns(s, j, depth);
+  // `fields`/`timeline` are structural constructs (not document kinds) with no
+  // title and no attributes — `@fields { … }` / `@timeline { … }` lower to the
+  // canonical `:::fields`/`:::timeline`, which parse.ts then handles.
+  if (word === "fields" || word === "timeline") return parseBlock(s, j, word, depth);
   if (isKind(word)) return parseBlock(s, j, word, depth);
   return null; // E7 — unknown kind passes through as literal text
 }
 
-/** Parse `@kind "Title" |attrs { body }`. The `@kind` is at `j`. */
+/**
+ * Parse `@kind "Title" |attrs { body }`. The `@kind` is at `j`. The title is
+ * OPTIONAL — `@handout { … }` (or `@fields`/`@timeline`, which never take one)
+ * lower to a bare `:::kind`; junk where the title would be still errors (E10 in
+ * the tail).
+ */
 function parseBlock(s: string, j: number, kind: string, depth: number): Parsed {
   let p = j + 1 + kind.length;
   while (p < s.length && (s[p] === " " || s[p] === "\t")) p++;
 
-  if (s[p] !== '"') {
-    // E1 — missing quoted title; skip to next line.
-    return { node: errNode(`@${kind}: expected "title"`), end: afterLine(s, j) };
+  if (s[p] === '"') {
+    const t = parseTitle(s, p);
+    if (!t) {
+      return { node: errNode(`@${kind}: malformed title`), end: afterLine(s, j) };
+    }
+    return parseBlockTail(s, t.end, kind, t.title, depth);
   }
-  const t = parseTitle(s, p);
-  if (!t) {
-    return { node: errNode(`@${kind}: expected "title"`), end: afterLine(s, j) };
-  }
-  return parseBlockTail(s, t.end, kind, t.title, depth);
+  // No title — the tail scans on from here for `|attrs` / the `{ body }`.
+  return parseBlockTail(s, p, kind, "", depth);
 }
 
 /** Read a `"…"` title from `p` (the opening quote). `\"` escapes a quote. */

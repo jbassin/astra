@@ -336,9 +336,13 @@ the inline sigils stay the language of **content** inside `{ … }` bodies. The
 }
 ```
 
-- **`@kind "Title"`** opens a block. `kind` is one of the six
-  (`statblock`/`hazard`/`item`/`spell`/`handout`/`edict`); the quoted title
-  becomes the `[label]` and may carry sigils (`@item "Look Out @reaction"`).
+- **`@kind "Title"`** opens a block. `kind` is one of the seven
+  (`statblock`/`hazard`/`item`/`spell`/`deity`/`handout`/`edict`); the quoted title
+  becomes the `[label]` and may carry sigils (`@item "Look Out @reaction"`). The
+  **title is optional** — `@handout { … }` lowers to a bare `:::handout`.
+- **`@fields { … }`** and **`@timeline { … }`** are the brace surface for the
+  field-list and timeline constructs (no title, no attributes) — they lower to
+  `:::fields` / `:::timeline`.
 - **`| key: value`** lines — one attribute per line, **between the title and the
   `{`**. The value is the rest of the line (so `level: Creature 2` works); split on
   the first `:`. `traits: a, b` → `traits="a,b"`. A `|` line *after* the `{` is

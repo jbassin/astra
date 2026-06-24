@@ -28,7 +28,9 @@ import type { Extension } from "@codemirror/state";
 import { Tag } from "@lezer/highlight";
 import type { BlockContext, LeafBlock, Line, MarkdownConfig } from "@lezer/markdown";
 
-const KINDS = DOCUMENT_KINDS.join("|");
+// The block-kind openers, plus the title-less structural openers fields/timeline
+// (which also have a VSS brace surface). @columns has its own bracket form below.
+const KINDS = [...DOCUMENT_KINDS, "fields", "timeline"].join("|");
 /** `@kind "Title…"` — title quote-run is part of the match when present. */
 const OPENER = new RegExp(`^@(${KINDS})\\b(\\s+"(?:[^"\\\\\\n]|\\\\.)*")?`);
 const COLUMNS = /^@columns\b/;

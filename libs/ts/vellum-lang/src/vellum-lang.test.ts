@@ -128,6 +128,29 @@ describe("deity (divine stat block)", () => {
   });
 });
 
+describe("VSS brace surface (compileVss)", () => {
+  test("an untitled `@handout { … }` lowers to a bare `:::handout`", () => {
+    expect(compileVss("@handout\n{\nA dream.\n}")).toBe(":::handout\nA dream.\n:::");
+    const doc = parseDocument("@handout\n{\nA dream.\n}");
+    expect(doc.nodes[0]?.type).toBe("block");
+  });
+
+  test("`@fields { … }` lowers to `:::fields` and parses as a field-list", () => {
+    const doc = parseDocument("@fields\n{\nTraditions :: Divine, Occult\n}");
+    const fields = doc.nodes[0] as VellumFields;
+    expect(fields.type).toBe("fields");
+    expect(fields.items[0]?.term).toBe("Traditions");
+  });
+
+  test("`@timeline { … }` lowers to `:::timeline` and parses as a timeline", () => {
+    const doc = parseDocument("@timeline\n{\n- {0ag} The crack appears.\n- Later.\n}");
+    const tl = doc.nodes[0] as VellumTimeline;
+    expect(tl.type).toBe("timeline");
+    expect(tl.entries[0]?.marker).toBe("0ag");
+    expect(tl.entries).toHaveLength(2);
+  });
+});
+
 describe("totality + preserved behavior", () => {
   test("never throws on malformed / unknown input", () => {
     for (const src of [

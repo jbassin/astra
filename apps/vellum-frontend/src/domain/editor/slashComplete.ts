@@ -62,17 +62,17 @@ const SNIPPETS: Snippet[] = [
     // depth, so multiple cards per column just work (MARKDOWN.md §5).
     insert: "@columns [\n  {\n  }\n  {\n  }\n]\n",
   },
-  // Full-vellum constructs (0013 D6). fields/timeline have no VSS sugar (VSS knows
-  // only the 6 block kinds), so these snippets emit canonical `:::` directly.
+  // Full-vellum constructs. fields/timeline now have a VSS brace surface too
+  // (@fields/@timeline { … }), so the snippets emit VSS like the block kinds.
   {
     label: "/fields",
     detail: "key–value field list (Term :: value)",
-    insert: ":::fields\nPrice :: 1 gp\nUsage :: held in 1 hand\nActivate :: @1 Interact\n:::\n",
+    insert: "@fields\n{\nPrice :: 1 gp\nUsage :: held in 1 hand\nActivate :: @1 Interact\n}\n",
   },
   {
     label: "/timeline",
     detail: "dated timeline (- {marker} event)",
-    insert: ":::timeline\n- {marker} What happened.\n- {marker} What happened next.\n:::\n",
+    insert: "@timeline\n{\n- {marker} What happened.\n- {marker} What happened next.\n}\n",
   },
   { label: "/action", detail: "action glyph (@2)", insert: "@2" },
   { label: "/trait", detail: "trait pill (#fire)", insert: "#fire" },
