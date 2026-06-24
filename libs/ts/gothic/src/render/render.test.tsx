@@ -60,6 +60,14 @@ Domains :: [air](https://2e.aonprd.com), decay, and the [[Firmament|firmament]]
 - {0ag} The [[Iridescent Host]] widens the crack.
 - An entry with no marker.
 :::
+
+:::deity[Eternal Pulse]{category="Outer God"}
+Edicts :: Heal wounds, pursue undeath
+Anathema :: Abandon the dying
+
+### Devotee Benefits
+Divine Skill :: [Medicine](https://2e.aonprd.com)
+:::
 `;
 
 describe("DocumentView renders every AST node", () => {
@@ -87,6 +95,10 @@ describe("DocumentView renders every AST node", () => {
       expect(html).toContain("data-crossref-target");
       expect(html).toContain("Outer God"); // fields term
       expect(html).toContain("Prehistory"); // timeline marker
+      // Deity card: corner tag, name, the brace category, + the section sub-label.
+      expect(html).toContain('data-kind="deity"');
+      expect(html).toContain("Eternal Pulse");
+      expect(html).toContain("Devotee Benefits");
       // GFM.
       expect(html).toContain("<table");
       expect(html).toContain('type="checkbox"');

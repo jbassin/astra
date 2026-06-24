@@ -63,10 +63,21 @@ function splitField(line: PhrasingContent[]): { term: string; value: PhrasingCon
   return { term: flattenInline(line).trim(), value: [] };
 }
 
-/** Parse a `:::fields` container directive into a `VellumFields` node. */
-export function parseFields(directive: ContainerDirective): VellumFields {
-  const items = toLines(directive.children)
+/**
+ * Parse a run of mdast body nodes into `Term :: value` field items. Shared by
+ * `:::fields` and the `:::deity` body (gothic's DeityCard segments its body on
+ * headings and parses each run through this) so both use the identical line/`::`
+ * rules. Pure; drops fully-empty lines.
+ */
+export function parseFieldItems(
+  children: readonly RootContent[],
+): { term: string; value: PhrasingContent[] }[] {
+  return toLines(children)
     .map(splitField)
     .filter((item) => item.term !== "" || item.value.length > 0);
-  return { type: "fields", items };
+}
+
+/** Parse a `:::fields` container directive into a `VellumFields` node. */
+export function parseFields(directive: ContainerDirective): VellumFields {
+  return { type: "fields", items: parseFieldItems(directive.children) };
 }

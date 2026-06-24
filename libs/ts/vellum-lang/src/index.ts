@@ -13,7 +13,7 @@ export {
   splitCrossRefs,
   transformCrossRefs,
 } from "./crossref";
-export { parseFields } from "./fields";
+export { parseFieldItems, parseFields } from "./fields";
 export { EMPTY_FRONTMATTER, parseFrontmatter, splitFrontmatter } from "./frontmatter";
 export {
   canonicalAstJson,

@@ -2,6 +2,7 @@ import type { VellumBlock, VellumDocument, VellumNode } from "@astra/vellum-lang
 import type { CSSProperties, ReactElement, ReactNode } from "react";
 import { type CrossRefResolver, CrossRefResolverContext } from "../crossrefResolver";
 import { renderNodes } from "../mdastToReact";
+import { DeityCard } from "./DeityCard";
 import { Fields } from "./Fields";
 import { Frontmatter } from "./Frontmatter";
 import { ProseCard } from "./ProseCard";
@@ -13,6 +14,8 @@ function Block({ block }: { block: VellumBlock }): ReactElement {
     case "handout":
     case "edict":
       return <ProseCard block={block} kind={block.kind} />;
+    case "deity":
+      return <DeityCard block={block} kind={block.kind} />;
     default:
       // statblock / hazard / item / spell
       return <StatCard block={block} kind={block.kind} />;

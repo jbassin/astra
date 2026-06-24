@@ -40,6 +40,12 @@ const SNIPPETS: Snippet[] = [
     insert: '@spell "Name"\n| level: 1\n| traits: \n{\n**Cast** @2\nThe effect.\n}\n',
   },
   {
+    label: "/deity",
+    detail: "deity (divine profile + devotee benefits)",
+    insert:
+      '@deity "Name"\n| category: Outer God\n{\nEdicts :: \nAnathema :: \nDivine Raiment :: \nCelestial Presence :: \n\n### Devotee Benefits\nDivine Ability :: \nDivine Font :: \nDivine Sanctification :: \nDivine Skill :: \nFavored Weapon :: \nDomains :: \nCleric Spells :: \n}\n',
+  },
+  {
     label: "/handout",
     detail: "in-world handout",
     insert: '@handout "Title"\n{\nBody text. Hide secrets with ||like this||.\n}\n',

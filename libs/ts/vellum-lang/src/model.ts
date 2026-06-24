@@ -6,8 +6,18 @@ import type { PhrasingContent, RootContent } from "mdast";
  */
 export type ThemeMode = "mechanical" | "diegetic";
 
-/** The fixed document "zoo". */
-export const DOCUMENT_KINDS = ["statblock", "hazard", "item", "spell", "handout", "edict"] as const;
+/** The fixed document "zoo". `deity` is the divine stat block (a PF2e-style deity
+ * profile + devotee benefits); its body is `Term :: value` field-lines, its
+ * `{category=…}` brace attribute is the corner tag (and `@deity "…" { … }` in VSS). */
+export const DOCUMENT_KINDS = [
+  "statblock",
+  "hazard",
+  "item",
+  "spell",
+  "deity",
+  "handout",
+  "edict",
+] as const;
 
 export type DocumentKind = (typeof DOCUMENT_KINDS)[number];
 
@@ -17,6 +27,7 @@ export const DEFAULT_MODE_BY_KIND: Record<DocumentKind, ThemeMode> = {
   hazard: "mechanical",
   item: "mechanical",
   spell: "mechanical",
+  deity: "mechanical",
   handout: "diegetic",
   edict: "diegetic",
 };

@@ -14,7 +14,7 @@ wiki, not just PF2e statblocks. It describes **exactly what the parser does** (`
 > plus four **full-vellum constructs** for the wiki (see §11): leading YAML **frontmatter**,
 > `[[cross-references]]`, `:::fields` field-lists, and `:::timeline` blocks.
 > **Ordinary CommonMark renders at the top level** (headings, lists, prose, …).
-> `:::kind … :::` blocks of six fixed kinds render as PF2e cards. `:::columns`
+> `:::kind … :::` blocks of seven fixed kinds render as PF2e cards. `:::columns`
 > lays its `:::column` children side by side under shared headers. Inside a block
 > you write CommonMark plus three inline directives (`:action`, `:trait`, `:redact`).
 
@@ -27,12 +27,12 @@ wiki, not just PF2e statblocks. It describes **exactly what the parser does** (`
    - a **prose run** — ordinary top-level CommonMark (headings, lists, prose,
      blockquotes, …), rendered as document text;
    - a **block** — a *container directive* `:::kind[Title]{attrs}` … `:::` whose
-     `kind` is one of the six below, rendered as a PF2e card;
+     `kind` is one of the seven below, rendered as a PF2e card;
    - a **columns layout** — a `:::columns` directive whose `:::column` children
      render **side by side** (see §4.1).
 2. **Top-level markdown is kept**, in document order. A heading or list written
    between or above blocks renders where you put it. Unknown directives (a
-   `:::kind` that isn't one of the six) degrade to prose rather than vanishing.
+   `:::kind` that isn't one of the seven) degrade to prose rather than vanishing.
 3. Inside a block you write normal CommonMark + the inline directives.
 4. The **theme** (mechanical/diegetic) is **not** part of the markdown — it's a
    viewer/export setting (the editor toggle, or the render request's `mode`).
@@ -46,7 +46,7 @@ The bridge is out.             ← CommonMark body
 
 ---
 
-## 2. The six block kinds
+## 2. The seven block kinds
 
 | Kind | Family | Default use |
 |------|--------|-------------|
@@ -54,6 +54,7 @@ The bridge is out.             ← CommonMark body
 | `hazard` | stat card | traps / hazards |
 | `item` | stat card | items |
 | `spell` | stat card | spells |
+| `deity` | deity card | gods (divine profile + devotee benefits) |
 | `handout` | prose card | in-world handouts |
 | `edict` | prose card | proclamations / notices |
 
@@ -85,6 +86,32 @@ A hollowed servitor wired to a vox-caster.
 Strike :action[1] — a rusted blade.
 Litany of Static :action[2] — a wave of grinding noise.
 Flinch :action[reaction] — when struck, the thrall recoils.
+:::
+```
+
+### Deity card — `deity`
+
+A stat card for gods. The body is `Term :: value` field-lines (the same syntax as
+`:::fields`, but you don't nest a `:::fields` — the deity owns its fields). A `##`
+or `###` heading splits the body into labelled sections, each its own field grid —
+use `### Devotee Benefits` to separate the divine profile from the PF2e mechanics.
+
+| Attribute | Effect |
+|-----------|--------|
+| `category=…` | the corner tag's qualifier — the divine rank, e.g. `Outer God` |
+| `name=…` | title fallback when there's no `[Title]` label |
+
+```
+:::deity[Iridescent Host]{category="Outer God"}
+Edicts :: Establish cultural superiority, create great works
+Anathema :: Forgo credit for your accomplishments
+Divine Raiment :: Pearlescent, shimmering
+Celestial Presence :: Aurora
+
+### Devotee Benefits
+Divine Ability :: Charisma or Wisdom
+Divine Font :: harm or heal
+Divine Skill :: Diplomacy
 :::
 ```
 

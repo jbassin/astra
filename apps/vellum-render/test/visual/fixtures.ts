@@ -57,6 +57,21 @@ Learn the position of every heat-source for 1 round.
 :::`,
   },
   {
+    name: "deity-mechanical",
+    mode: "mechanical",
+    source: `:::deity[Iridescent Host]{category="Outer God"}
+Edicts :: Establish cultural superiority, create great works
+Anathema :: Forgo credit for your accomplishments
+Divine Raiment :: Pearlescent, shimmering
+Celestial Presence :: Aurora
+
+### Devotee Benefits
+Divine Ability :: Charisma or Wisdom
+Divine Font :: harm or heal
+Divine Skill :: Diplomacy
+:::`,
+  },
+  {
     name: "gfm-mechanical",
     mode: "mechanical",
     source: `:::item[Targeting Auspex]{level="3"}

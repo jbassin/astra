@@ -1,9 +1,11 @@
 import { describe, expect, test } from "bun:test";
 import { splitCrossRefs } from "./crossref";
+import { parseFieldItems } from "./fields";
 import { parseFrontmatter, splitFrontmatter } from "./frontmatter";
 import { extractMetadata } from "./metadata";
 import type { VellumFields, VellumTimeline } from "./model";
-import { parseDocument } from "./parse";
+import { parseDocument, parseMarkdown } from "./parse";
+import { compileVss } from "./vss";
 
 describe("frontmatter (§3.1)", () => {
   test("parses + normalizes tags/aliases (string or list) and preserves extras", () => {
@@ -89,6 +91,43 @@ describe("timeline (§3.4)", () => {
   });
 });
 
+describe("deity (divine stat block)", () => {
+  test("`:::deity[Name]{category=…}` parses as a kind block with the category brace", () => {
+    const doc = parseDocument(
+      ':::deity[Iridescent Host]{category="Outer God"}\nEdicts :: Create great works\n:::',
+    );
+    const block = doc.nodes[0];
+    expect(block?.type).toBe("block");
+    if (block?.type === "block") {
+      expect(block.kind).toBe("deity");
+      expect(block.label).toBe("Iridescent Host");
+      expect(block.attributes.category).toBe("Outer God");
+    }
+  });
+
+  test('the VSS brace surface `@deity "…" { … }` lowers to a `:::deity` block', () => {
+    const lowered = compileVss(
+      '@deity "Eternal Pulse"\n| category: Outer God\n{\nEdicts :: Heal\n}',
+    );
+    expect(lowered).toContain(":::deity[Eternal Pulse]");
+    const doc = parseDocument(lowered);
+    const block = doc.nodes[0];
+    expect(block?.type).toBe("block");
+    if (block?.type === "block") {
+      expect(block.kind).toBe("deity");
+      expect(block.label).toBe("Eternal Pulse");
+      expect(block.attributes.category).toBe("Outer God");
+    }
+  });
+
+  test("parseFieldItems splits a deity body's Term :: value lines (the DeityCard seam)", () => {
+    const root = parseMarkdown("Edicts :: Create great works\nAnathema :: Forgo credit");
+    const items = parseFieldItems(root.children);
+    expect(items.map((i) => i.term)).toEqual(["Edicts", "Anathema"]);
+    expect(items[0]?.value).toEqual([{ type: "text", value: "Create great works" }]);
+  });
+});
+
 describe("totality + preserved behavior", () => {
   test("never throws on malformed / unknown input", () => {
     for (const src of [
@@ -103,7 +142,7 @@ describe("totality + preserved behavior", () => {
     }
   });
 
-  test("the six mechanical kinds + columns still parse", () => {
+  test("the kind zoo + columns still parse", () => {
     const doc = parseDocument(':::statblock[Goblin]{level="Creature 1"}\nA goblin.\n:::');
     const block = doc.nodes[0];
     expect(block?.type).toBe("block");

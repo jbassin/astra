@@ -7,6 +7,7 @@
  */
 
 export { CrossRef } from "./components/CrossRef";
+export { DeityCard } from "./components/DeityCard";
 export { DocumentView } from "./components/DocumentView";
 export { ErrorChip } from "./components/ErrorChip";
 export { Fields } from "./components/Fields";
