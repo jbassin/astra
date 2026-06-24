@@ -240,6 +240,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
       faction: string | null;
     }> = [];
     const bannerForms: Array<{ members: string[] }> = [];
+    let tithe = false;
     for (const change of justAppliedLayer.changes) {
       if (change.op === "add") regionAdds.push({ slug: change.slug });
       else if (change.op === "skein-connect")
@@ -247,6 +248,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
       else if (change.op === "claim")
         claimChanges.push({ hexes: change.hexes, faction: change.faction });
       else if (change.op === "banner-form") bannerForms.push({ members: change.members });
+      else if (change.op === "tithe") tithe = true;
     }
 
     // Only compute prev faction state if we actually have flips to animate —
@@ -312,7 +314,12 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
       }
     }
 
-    if (regionAdds.length === 0 && skeinConnects.length === 0 && factionFlips.length === 0) {
+    if (
+      regionAdds.length === 0 &&
+      skeinConnects.length === 0 &&
+      factionFlips.length === 0 &&
+      !tithe
+    ) {
       return null;
     }
 
@@ -322,6 +329,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
       regionAdds,
       skeinConnects,
       factionFlips,
+      tithe,
     };
   }, [layers, layerIndex, prevLayerIndex, factionSlugs, dwellMs]);
 

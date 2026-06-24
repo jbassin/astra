@@ -5,15 +5,26 @@ import {
   Container,
   type FederatedPointerEvent,
   Graphics,
+  Matrix,
   Polygon,
+  RenderTexture,
   Sprite,
   type Texture,
 } from "pixi.js";
 import { GlowFilter } from "pixi-filters/glow";
 import { useEffect, useRef } from "react";
+import { createBalatroFilter, TITHE_PALETTE } from "@/components/PixiHost/balatroBackground";
 import { usePixi } from "@/components/PixiHost/pixiContext";
 import type { Faction } from "@/domain/lib/factions";
-import { computeRegionBorders, type EdgeSegment, hexPixel } from "@/domain/lib/hexUtils";
+import {
+  computeRegionBorders,
+  type EdgeSegment,
+  GRID_RADIUS,
+  HEX_SIZE,
+  hexCornersAtPixel,
+  hexesInRadius,
+  hexPixel,
+} from "@/domain/lib/hexUtils";
 import type { LayerAnimation, Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
 import type { OverlayId } from "@/domain/lib/overlays";
 import { AnimationManager } from "./animationManager";
@@ -270,6 +281,64 @@ function buildScene(
   skeinLayer.label = "skein";
   skeinLayer.eventMode = "passive";
   world.addChild(skeinLayer);
+
+  // --- Tithe wave (topmost; transient, no persistent state) ---
+  // A purple/black copy of the page-background shader is BAKED to a RenderTexture
+  // (in pixi v8 a live filter can't be masked or flipped), then each grid hex is
+  // drawn as its own Graphics filled with that texture via a per-hex matrix so
+  // the field stays continuous across tiles. Tiles flip (vertical scale around
+  // their center) in a wave from the map center to the edges and back. No mask,
+  // no live filter on the rendered tiles — both fail to compose here. Tiles are
+  // created per-ring as the wave front arrives and destroyed once they flip back.
+  const titheLayer = new Container();
+  titheLayer.label = "tithe";
+  titheLayer.eventMode = "none";
+  world.addChild(titheLayer);
+
+  const { filter: titheFilter, setTime: setTitheTime } = createBalatroFilter(TITHE_PALETTE);
+  const TITHE_LOCAL_VERTS = hexCornersAtPixel(0, 0).flat(); // hex corners centered on origin
+  const titheTiles = hexesInRadius(GRID_RADIUS).map(([q, r]) => {
+    const [cx, cy] = hexPixel(q, r);
+    return { cx, cy, d: axialDistance([q, r], [0, 0]) };
+  });
+  const titheMaxRing = titheTiles.reduce((m, t) => Math.max(m, t.d), 0);
+  let titheHalfW = 0;
+  let titheHalfH = 0;
+  for (const t of titheTiles) {
+    titheHalfW = Math.max(titheHalfW, Math.abs(t.cx));
+    titheHalfH = Math.max(titheHalfH, Math.abs(t.cy));
+  }
+  titheHalfW += HEX_SIZE * 2;
+  titheHalfH += HEX_SIZE * 2;
+
+  // Off-screen shader rect baked to a RenderTexture at ~4× world resolution.
+  const TITHE_RT_SCALE = 4;
+  const titheRtW = Math.ceil(titheHalfW * 2 * TITHE_RT_SCALE);
+  const titheRtH = Math.ceil(titheHalfH * 2 * TITHE_RT_SCALE);
+  const titheShaderRect = new Graphics().rect(0, 0, titheRtW, titheRtH).fill(0x000000);
+  titheShaderRect.filters = [titheFilter];
+  const titheTexture = RenderTexture.create({ width: titheRtW, height: titheRtH });
+  const titheSx = titheRtW / (titheHalfW * 2);
+  const titheSy = titheRtH / (titheHalfH * 2);
+  // Per-hex fill matrix: maps a tile's local geometry → the texture region at the
+  // hex's world position, so adjacent tiles sample one continuous field.
+  const titheMatrices = titheTiles.map(
+    (t) =>
+      new Matrix(
+        titheSx,
+        0,
+        0,
+        titheSy,
+        (t.cx + titheHalfW) * titheSx,
+        (t.cy + titheHalfH) * titheSy,
+      ),
+  );
+  // Tile indices grouped by ring distance (all tiles in a ring share a flip phase).
+  const titheRings: number[][] = Array.from({ length: titheMaxRing + 1 }, () => []);
+  titheTiles.forEach((t, i) => {
+    titheRings[t.d]?.push(i);
+  });
+  const titheActiveTiles = new Map<number, Graphics>();
 
   const animMgr = new AnimationManager();
   // Indexed by "q,r" so flip animations can address the underlying snapshot
@@ -811,6 +880,9 @@ function buildScene(
   const SKEIN_LINK_MAX_MS = 600;
   const FLIP_WAVE_MAX_MS = 800;
   const PER_HEX_FLIP_MS = 280;
+  const TITHE_FLIP_MS = 220; // per-tile flip-in (and flip-out) duration
+  const TITHE_HOLD_MS = 160; // dwell at full purple before flipping back
+  const TITHE_MAX_MS = 2600; // total wall-clock budget for the whole wave
 
   function animateRegionBorder(slug: string, durationMs: number): void {
     const region = currentRegions.find((r) => r.slug === slug);
@@ -1007,8 +1079,82 @@ function buildScene(
     });
   }
 
+  // The tithe wave: each tile's vertical scale (flip) is staggered by its ring
+  // distance from center, so a band of flipping purple tiles travels out to the
+  // edges and back. The mask is rebuilt each frame from the active (s > 0) tiles
+  // — squished hex polygons — and the shader field shows through it.
+  function animateTithe(budgetMs: number): void {
+    const total = Math.min(TITHE_MAX_MS, Math.max(2000, budgetMs));
+    const span = TITHE_FLIP_MS * 2 + TITHE_HOLD_MS;
+    const travel = Math.max(0, total - span);
+    const waveStep = Math.max(14, travel / Math.max(1, titheMaxRing));
+    const startAt = performance.now();
+    const durationMs = titheMaxRing * waveStep + span + 40;
+
+    const scaleYAt = (d: number, now: number): number => {
+      const local = now - startAt - d * waveStep;
+      if (local <= 0) return 0;
+      if (local < TITHE_FLIP_MS) return easeOutCubic(local / TITHE_FLIP_MS);
+      if (local < TITHE_FLIP_MS + TITHE_HOLD_MS) return 1;
+      const out = local - TITHE_FLIP_MS - TITHE_HOLD_MS;
+      if (out < TITHE_FLIP_MS) return 1 - easeOutCubic(out / TITHE_FLIP_MS);
+      return 0;
+    };
+
+    const ensureTile = (i: number): Graphics => {
+      const existing = titheActiveTiles.get(i);
+      if (existing) return existing;
+      const t = titheTiles[i]!;
+      const g = new Graphics();
+      g.poly(TITHE_LOCAL_VERTS).fill({ texture: titheTexture, matrix: titheMatrices[i]! });
+      g.position.set(t.cx, t.cy);
+      g.scale.y = 0;
+      g.eventMode = "none";
+      titheLayer.addChild(g);
+      titheActiveTiles.set(i, g);
+      return g;
+    };
+
+    const destroyRing = (ring: number[]): void => {
+      for (const i of ring) {
+        const g = titheActiveTiles.get(i);
+        if (g) {
+          g.destroy();
+          titheActiveTiles.delete(i);
+        }
+      }
+    };
+
+    // Bake the purple field ONCE up front (a fixed, pleasant shader frame).
+    // Rendering to the RenderTexture from inside the ticker produces a blank
+    // target, so the field is static for the wave — the flip motion carries it.
+    setTitheTime(600);
+    app.renderer.render({ container: titheShaderRect, target: titheTexture });
+    animMgr.start({
+      startAt,
+      durationMs,
+      update: () => {
+        const now = performance.now();
+        for (let d = 0; d <= titheMaxRing; d++) {
+          const ring = titheRings[d]!;
+          const s = scaleYAt(d, now);
+          if (s <= 0.001) {
+            destroyRing(ring);
+            continue;
+          }
+          for (const i of ring) ensureTile(i).scale.y = s;
+        }
+      },
+      cleanup: () => {
+        for (const g of titheActiveTiles.values()) g.destroy();
+        titheActiveTiles.clear();
+      },
+    });
+  }
+
   function startAnimation(anim: LayerAnimation): void {
     if (reduced) return;
+    if (anim.tithe) animateTithe(anim.budgetMs);
     const regionDur = Math.min(REGION_BORDER_MAX_MS, anim.budgetMs);
     for (const { slug } of anim.regionAdds) {
       animateRegionBorder(slug, regionDur);
@@ -1026,6 +1172,10 @@ function buildScene(
   function destroy() {
     app.ticker.remove(tickerCb);
     animMgr.clear();
+    titheActiveTiles.clear();
+    titheShaderRect.destroy();
+    titheTexture.destroy(true);
+    titheFilter.destroy();
     regionEntries.clear();
     symbolSprites.clear();
     symbolTextureCache.clear();

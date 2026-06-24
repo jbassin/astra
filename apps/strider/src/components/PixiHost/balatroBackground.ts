@@ -19,12 +19,18 @@ uniform sampler2D uTexture;
 uniform vec4 uInputSize;
 uniform float uTime;
 
+// Palette is uniform-driven so one shader serves both the page background
+// (teal/amber) and the tithe wave (purple/black) — see BalatroPalette.
+uniform vec3 uColour1;
+uniform vec3 uColour2;
+uniform vec3 uColour3;
+
 #define SPIN_ROTATION -2.0
 #define SPIN_SPEED 4.0
 #define OFFSET vec2(0.0)
-#define COLOUR_1 vec4(0.27, 0.42, 0.40, 1.0)
-#define COLOUR_2 vec4(0.42, 0.32, 0.18, 1.0)
-#define COLOUR_3 vec4(0.035, 0.047, 0.063, 1.0)
+#define COLOUR_1 vec4(uColour1, 1.0)
+#define COLOUR_2 vec4(uColour2, 1.0)
+#define COLOUR_3 vec4(uColour3, 1.0)
 #define CONTRAST 2.5
 #define LIGTHING 0.25
 #define SPIN_AMOUNT 0.25
@@ -77,13 +83,35 @@ void main() {
 }
 `;
 
-export interface BalatroBackground {
-  mesh: Container;
-  update: (elapsedMs: number) => void;
-  destroy: () => void;
+// RGB triples (0–1) for the shader's three palette stops. The page background
+// uses the teal/amber default; the tithe wave uses the purple/black variant.
+export interface BalatroPalette {
+  colour1: readonly [number, number, number];
+  colour2: readonly [number, number, number];
+  colour3: readonly [number, number, number];
 }
 
-export function createBalatroBackground(app: Application): BalatroBackground {
+export const DEFAULT_PALETTE: BalatroPalette = {
+  colour1: [0.27, 0.42, 0.4],
+  colour2: [0.42, 0.32, 0.18],
+  colour3: [0.035, 0.047, 0.063],
+};
+
+export const TITHE_PALETTE: BalatroPalette = {
+  colour1: [0.3, 0.1, 0.45],
+  colour2: [0.55, 0.2, 0.65],
+  colour3: [0.02, 0.01, 0.04],
+};
+
+export interface BalatroFilter {
+  filter: Filter;
+  setTime: (elapsedMs: number) => void;
+}
+
+// The shader as a reusable Filter (palette-parameterized). Callers own the mesh
+// it's applied to — the page background scales a full-screen rect, the tithe wave
+// applies it to a world-space rect masked to flipping hexes.
+export function createBalatroFilter(palette: BalatroPalette = DEFAULT_PALETTE): BalatroFilter {
   const glProgram = GlProgram.from({
     vertex: defaultFilterVert,
     fragment: FRAGMENT_SHADER,
@@ -95,9 +123,29 @@ export function createBalatroBackground(app: Application): BalatroBackground {
     resources: {
       balatroUniforms: {
         uTime: { value: 0, type: "f32" },
+        uColour1: { value: Float32Array.from(palette.colour1), type: "vec3<f32>" },
+        uColour2: { value: Float32Array.from(palette.colour2), type: "vec3<f32>" },
+        uColour3: { value: Float32Array.from(palette.colour3), type: "vec3<f32>" },
       },
     },
   });
+
+  const setTime = (elapsedMs: number) => {
+    (filter.resources.balatroUniforms as { uniforms: { uTime: number } }).uniforms.uTime =
+      elapsedMs / 1000;
+  };
+
+  return { filter, setTime };
+}
+
+export interface BalatroBackground {
+  mesh: Container;
+  update: (elapsedMs: number) => void;
+  destroy: () => void;
+}
+
+export function createBalatroBackground(app: Application): BalatroBackground {
+  const { filter, setTime } = createBalatroFilter();
 
   const rect = new Graphics().rect(0, 0, 1, 1).fill(0x000000);
   rect.label = "balatroBackground";
@@ -111,12 +159,7 @@ export function createBalatroBackground(app: Application): BalatroBackground {
 
   const update = (elapsedMs: number) => {
     sync();
-    const uniforms = (
-      filter.resources.balatroUniforms as {
-        uniforms: { uTime: number };
-      }
-    ).uniforms;
-    uniforms.uTime = elapsedMs / 1000;
+    setTime(elapsedMs);
   };
 
   const destroy = () => {
