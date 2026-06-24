@@ -2,12 +2,17 @@
    imported in src/routes/__root.tsx. This file keeps only strider's reset
    and its canvas-coupled atmosphere (scanline overlay + vignette). */
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+/* In @layer base so it sits below gothic's @layer-components content styles —
+   unlayered, the bare reset zeroed the gothic-prose heading/paragraph margins in
+   the rendered faction bodies, cramming the personnel headings against the text. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 html,

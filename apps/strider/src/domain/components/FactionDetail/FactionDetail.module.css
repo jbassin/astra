@@ -68,9 +68,11 @@
 
 .description {
   font-family: var(--font-body), serif;
-  font-size: 1.35rem;
-  line-height: 1.5;
-  color: var(--color-ink-dim);
+  font-size: 1.3rem;
+  line-height: 1.55;
+  /* Brighter than ink-dim: the dossier body was a low-contrast gray on the dark
+     card and hard to read; soften ink only slightly. */
+  color: color-mix(in srgb, var(--color-ink) 82%, var(--color-ink-dim));
 }
 
 .description p {
@@ -81,43 +83,22 @@
   margin-bottom: 0;
 }
 
-.member {
-  margin-bottom: 1rem;
-  padding-left: 0.75rem;
-  border-left: 2px solid color-mix(in srgb, var(--color-accent-amber) 22%, transparent);
+/* The body is authored in vellum; personnel render as in-document headings
+   (## section, ### name). Tune gothic-prose's wiki-scale defaults for the narrow
+   dossier card: smaller headings, a faint amber section rule, and member names in
+   the faction's own color so personnel read as belonging to it. */
+.description :is(h2, h3, h4) {
+  letter-spacing: 0.05em;
 }
-
-.member:last-child {
-  margin-bottom: 0;
+.description h2 {
+  font-size: 1.05rem;
+  margin-top: 1.5rem;
+  padding-bottom: 0.3rem;
+  border-bottom-color: color-mix(in srgb, var(--color-accent-amber) 24%, transparent);
 }
-
-.memberName {
-  font-family: var(--font-display), serif;
-  font-size: 0.88rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  color: var(--color-ink);
-  margin-bottom: 0.4rem;
-}
-
-.memberGlyph {
-  color: color-mix(in srgb, var(--color-accent-amber) 70%, transparent);
-  font-family: var(--font-mono), monospace;
-  font-weight: 400;
-  margin-right: 0.1em;
-}
-
-.memberBio {
-  font-family: var(--font-body), serif;
-  font-size: 1.2rem;
-  line-height: 1.45;
-  color: var(--color-ink-dim);
-}
-
-.memberBio p {
-  margin-bottom: 0.5rem;
-}
-
-.memberBio p:last-child {
-  margin-bottom: 0;
+.description h3 {
+  font-size: 1rem;
+  margin-top: 1.1rem;
+  margin-bottom: 0.2rem;
+  color: var(--faction-color, var(--color-accent));
 }
