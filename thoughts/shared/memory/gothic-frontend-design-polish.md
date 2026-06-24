@@ -45,8 +45,12 @@ identical two-`:::fields` PF2e deity template. Made `deity` a `DOCUMENT_KIND`, s
 inherits BOTH brace forms free: canonical `:::deity[Name]{category="Outer God"}` and the
 VSS surface `@deity "Name" { … }` (VSS `KINDS` derives from `DOCUMENT_KINDS`). gothic
 `DeityCard` renders it (title + DEITY tag + `{category}` eyebrow; body `Term :: value`
-field-lines as a grid — the deity owns its fields, no nested `:::fields`; a `##`/`###`
-heading splits sections, e.g. `### Devotee Benefits`). Exported `parseFieldItems` as the
+field-lines run-in PF2e-style — a small-caps label inline with its value, NOT a
+two-column grid: the grid's per-section column-width mismatch + label↔value gap read
+badly; the deity owns its fields, no nested `:::fields`; a `##`/`###` heading splits
+sections, e.g. `### Devotee Benefits`). The 7 deity pages are authored in the VSS brace
+surface (`@deity "Name" { … }` + `| category:`), the heavily-preferred form; a
+`.gitattributes` maps `*.vellum`→Markdown for GitHub highlighting. Exported `parseFieldItems` as the
 DeityCard seam. Migrated the 7 deity pages + fixed Hierophant's Harrow Decks (same
 fence-spill bug as Tormeré). Added a `deity-mechanical` VR fixture (regen'd golden; the
 7 existing goldens stayed byte-identical). **Adding a new `:::kind` = add to
