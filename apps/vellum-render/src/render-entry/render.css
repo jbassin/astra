@@ -1,0 +1,28 @@
+/* Render-page surface. The screenshotted [data-vellum-export] element gets an
+   opaque void backdrop + padding so exported PNGs are non-transparent (R-15b) and
+   match the editor's preview surface. Colors via gothic `--color-*` vars. */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  background-color: var(--color-void);
+}
+
+#render-root {
+  display: inline-block;
+}
+
+[data-vellum-export] {
+  background-color: var(--color-void);
+  padding: 1.5rem;
+  width: 42rem;
+}
+
+/* Diegetic exports sit on aged parchment, not the teal void. */
+[data-vellum-export][data-mode="diegetic"] {
+  background-color: var(--color-parchment-edge);
+}
