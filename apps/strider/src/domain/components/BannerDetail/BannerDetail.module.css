@@ -1,0 +1,121 @@
+.root {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+.headerLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.orderId {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  color: color-mix(in srgb, var(--color-accent-amber) 75%, transparent);
+}
+
+.name {
+  font-family: var(--font-display), serif;
+  font-size: 1.55rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  color: var(--color-ink);
+  line-height: 1.1;
+  text-align: left;
+  margin: 0;
+  word-break: break-word;
+  text-shadow: 0 0 8px color-mix(in srgb, var(--color-accent-amber) 18%, transparent);
+}
+
+.symbol {
+  flex-shrink: 0;
+}
+
+.divider {
+  height: 1px;
+  background: var(--faction-color, color-mix(in srgb, var(--color-accent-amber) 22%, transparent));
+  margin-bottom: 1.25rem;
+  opacity: 0.6;
+}
+
+.section {
+  margin-bottom: 0;
+}
+
+.sectionLabel {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  color: color-mix(in srgb, var(--color-accent-amber) 78%, transparent);
+  margin-bottom: 0.6rem;
+  font-weight: 400;
+}
+
+.members {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.member {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-accent-amber) 18%, transparent);
+  border-left: 2px solid var(--faction-color, var(--color-accent-amber));
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color var(--duration-fast),
+    background var(--duration-fast);
+}
+
+.member:hover {
+  background: color-mix(in srgb, var(--color-accent-amber) 8%, transparent);
+  border-color: color-mix(in srgb, var(--color-accent-amber) 45%, transparent);
+}
+
+.member:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.swatch {
+  flex-shrink: 0;
+  width: 0.85rem;
+  height: 0.85rem;
+  border: 1px solid rgba(9, 12, 16, 0.6);
+}
+
+.memberName {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--font-display), serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--color-ink);
+}
+
+.chevron {
+  flex-shrink: 0;
+  font-family: var(--font-mono), monospace;
+  color: color-mix(in srgb, var(--color-accent-amber) 70%, transparent);
+}
