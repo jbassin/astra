@@ -36,8 +36,23 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `079c045`, 2026-06-23)
+## Current state — UPDATE THIS SECTION (as of commit `f1171fd`, 2026-06-23)
 
+- **✅ 0013 vellum-frontend COMPLETE — all 7 slices BUILT + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE**
+  (`3835dae`(s1)…`f1171fd`(s7)). The **final** 0011–0013 frontend: faerrin's `vellum` (CodeMirror editor +
+  Playwright PNG render service) → **two Compose units** — `vellum-frontend` (SSR editor, **10367**) +
+  `vellum-render` (Bun+Playwright, **10368**, the **first browser-in-a-container** in astra). Scope+spec
+  gates done (`ab04539`/`0dba4ef`/`5bf93b8`); D2/D4/D5 user-locked. Slices: (1) SSR scaffold + the
+  `vellum-frontend`/`vellum-render` config namespaces (both schemas); (2) editor port (`ssr:false` route,
+  faerrin `src/app/`→`src/domain/editor/` ~verbatim, gothic `--color-*` remap, ⇄ Syntax dropped per D5); (3)
+  full-vellum `:::fields`/`:::timeline`/`[[crossref]]` authoring + the R2 SIGIL-sync gate; (4) the render
+  service (warm Chromium, egress-block, Semaphore(2), caps, render span); (5) export wiring (same-origin
+  `/render` + dev Vite proxy — round-trip verified); (6) deploy (Chromium Dockerfile, sibling-manifest
+  ripple, two Compose units, Caddy `vellum.iridi.cc`, **faerrin's `vellum.iridi.cc` decommissioned**); (7)
+  the **visual-regression gate** (goldens regenerated against astra-gothic in the pinned `oven/bun:1.3.14`
+  container + a `ci.yml` job, 7 fixtures @ 0.000% drift). **Verified live:** both containers healthy,
+  containerized Chromium renders a real PNG, SigNoz has spans for both services. **DNS deferred.** Full
+  facts in `[[vellum-frontend-0013-gotchas]]`.
 - **🔴 LIVE PIPELINE IS RUNNING + VERIFIED END-TO-END (this session, `851c1c6`…`079c045`).** The Dagster
   pipeline (craig→scribe→linguist→akasha→mouthpiece) ran its **first real end-to-end run** on two Craig
   sessions (2026-6-18, 2026-6-22) → both produced complete `episode.mp3` + transcript; the 42 migrated-seed
@@ -306,15 +321,19 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   SSR spans now land in SigNoz (also fixes orator/weal/Dagster on redeploy). Live re-verified after both.
   **0016 is COMPLETE — no open items.** See `[[strider-0016-gotchas]]`.
 
-### Next: 0013 vellum-frontend + Phase-6 cutover (mouthpiece live-integration DONE this session)
+### Next: Phase-6 cutover (ALL frontends 0011–0014 now COMPLETE)
 
-1. **0013 vellum-frontend — the final frontend.** Stamp from the strider/akasha/**mouthpiece** template (three
-   worked examples now). **READ FIRST:** `apps/strider/README.md` + `apps/akasha-frontend` + `apps/mouthpiece-frontend`
-   (the simplest worked example — single committed snapshot → generated modules → routes, `createSsrServer`
-   `staticMounts` for media, no editor) + the migration guide + `[[strider-0016-gotchas]]`,
-   `[[akasha-frontend-0011-gotchas]]`, `[[mouthpiece-frontend-0012-gotchas]]`. Run the Scope → Spec → Implement
-   gates. After 0013: **Phase-6 cutover** (plan `0015-cutover.md`).
-2. **0012 mouthpiece-frontend — COMPLETE** (all 6 slices built + pushed + deployed-local + verified live on
+1. **Phase-6 cutover — the last phase** (plan `thoughts/astra/plans/0015-cutover.md`). All four frontends are
+   built + deployed-local: strider (0014), akasha (0011), mouthpiece (0012), **vellum (0013)**. The cutover
+   big-bangs the edge from faerrin to astra. **The standing deferral across every frontend is the same:** the
+   `*.iridi.cc` **DNS records** + `just caddy-reload` (outward-facing/manual) — strider, akasha, mouthpiece,
+   vellum, orator, weal-overlay all have authored+validated Caddy blocks awaiting their DNS record. (faerrin's
+   `strider.iridi.cc` + `vellum.iridi.cc` blocks are already decommissioned in-repo.)
+2. **0013 vellum-frontend — COMPLETE** (all 7 slices built + pushed + deployed-local + verified live; the
+   editor on 10367 + the render service on 10368; containerized Chromium renders PNGs; SigNoz spans for both;
+   the VR gate is green in the pinned container). Only open item = the `vellum.iridi.cc` DNS record. See
+   `[[vellum-frontend-0013-gotchas]]`.
+3. **0012 mouthpiece-frontend — COMPLETE** (all 6 slices built + pushed + deployed-local + verified live on
    10366; audio Range-serves, SigNoz SSR spans). Only open item = the manual `mouthpiece.iridi.cc` DNS edge
    (outward-facing; Caddy block authored + validated). See `[[mouthpiece-frontend-0012-gotchas]]`.
 3. **0011 akasha-frontend — COMPLETE (all 9 slices built + PUSHED).** Deployed locally + verified live (healthy
