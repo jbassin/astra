@@ -36,10 +36,37 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `7cf1c9a`, 2026-06-24)
+## Current state — UPDATE THIS SECTION (as of commit `bad00bb`, 2026-06-24)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
+
+### mouthpiece → TWO hosts + a calmer script (2026-06-24 session — COMPLETE + PUSHED + LIVE)
+
+Product change to the recap podcast (not migration): consolidated **3 hosts → 2** — **Pip rolled into
+Maeve** (she keeps her Juniper voice, absorbs his needling), and the script prompts rewritten for two
+voices with **far fewer interruptions**. Code `c2309df`, live snapshot `bad00bb`. Memory
+`[[mouthpiece-two-host-gotchas]]`.
+- **Back-compat = per-episode hosts.** `HostConfig.c`/`VoiceConfig.c` optional, `SpeakerId` keeps `"C"`;
+  `episodes_index` carries each episode's OWN host block (`_read_hosts` + `SessionInput.hosts` +
+  `build_index(s.hosts or hosts)`). Verified live: the 8 published episodes stay three-host (Pip intact),
+  only 2026-6-22 is two-host. `being.kdl` dropped `pip` + rewrote `maeve` → regenerated
+  `being.canonical.json`; faerrin prompt-fidelity tests **deleted** (deliberate divergence).
+- **2026-6-22 re-rendered LIVE as two-host** "The Sandwich Yoink Bonus" (real ElevenLabs v3, 26 min):
+  placed the approved script + materialized only `session_audio_clips`/`session_episode` (no Stage-3
+  re-gen); published snapshot + `just up` (whole stack now on two-host code → future episodes are
+  two-host); `linguist-commit.timer` re-enabled. **Two deploy traps recorded in the memory** (dagster
+  runs image-baked code → rebuild needed; plain `docker compose up -d <svc>` drops SOPS env → silent
+  MOCK-TTS). Backups of the old 3-host artifacts are in `episodes/2026-6-22/*.3host.bak`.
+
+### FOLLOW-UP SCOPED (not built): bring session audio into astra
+
+akasha's transcript audio still comes from **faerrin's `static-audio.iridi.cc`** (the one faerrin block
+not decommissioned); **new pipeline sessions 404 there**. Scope to serve it same-origin under the akasha
+host (mouthpiece `/audio` pattern) is written at
+`thoughts/shared/research/2026-06-24-akasha-session-audio-thoughts.md`. Open decisions before building:
+the **31 GB / 85-session** volume and the clean faerrin-caddyfile teardown. Memory
+`[[akasha-session-audio-dependency]]`.
 
 ### Gothic / frontend design polish (2026-06-24 session — COMPLETE + PUSHED + DEPLOYED LIVE)
 
