@@ -14,7 +14,13 @@ load-bearing, non-obvious facts (port of faerrin `mouth` + `eerie`):
   takes a `RollRng` **face-injection seam** so eval-given-faces is deterministic.
 - **Migration reality:** the live `pkg/mouth/mouth.db` is **~8,931 already-clean dice rows**, NOT 47M
   — the mega-roll was excluded at faerrin's own PG→SQLite cutover. Decision F is the **reverse**
-  (SQLite→PG); a tiny clean copy, deferred to **Phase 6** (`config.kdl` `weal.database-url` annotated).
+  (SQLite→PG). **DONE 2026-06-23** (the migrator `src/migrate/migrate.ts` is `6f18fd2`): ran from the host
+  against the published port (`10362`) → **8,932 dice + 10 funcs, players 1–6, ids preserved verbatim (max
+  19134), 0 junk skipped**; the migrator resets the `dice`/`funcs` id sequences past max(id) so the live
+  bot's next write can't collide. The bot had written 36 live rows into the fresh PG first (ids 1–36) — those
+  were **truncated (user-approved) before the run** so the historical ids land clean (else `on conflict do
+  nothing` would silently drop the 36 colliding historical rows). Stop the bot during the run to avoid a
+  write race.
   The plan's "exclude junk (player_id<>6/base≤100/pool≤30)" conflated 3 mechanisms: save-guards
   (new writes, in the bot), the read-time analytics filter (`player_id<>6`), and the migration filter.
 - **`host_says` is GSR-only** (faithful — faerrin's `Distribution<HostPicker>` was hardcoded to GSR).

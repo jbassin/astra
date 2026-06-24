@@ -39,6 +39,8 @@ faerrin `SYSTEM` prompt as candidate 0, so a compile can only match or beat it.
 
 **Result (first compile):** held-out confirm **P=0.915 / R=0.607**, **restraint 0.946** (2/37 negatives
 falsely confirmed); MIPROv2 metric **58.3 → 69.4**. Re-tune as real Groq sessions arrive (defs.yaml was tuned
-to whisperx). The G1 review-loop asset (write confirmed corrections back to defs.yaml) is the next deferred
-piece. See [[config-single-source]] and [[astra-migration-research]].
-</content>
+to whisperx). **G1 is DONE** (no longer deferred): the surfacer is a Dagster asset `correction_candidates`
+(`bd7f533`, in `assets.py`, SigNoz-instrumented `295a3fa`), the defs.yaml write-back landed (`c07a314`), and
+the live judge is compiled (`judge.compiled.json`). The apply step stays a CLI **by design** (human triage
+shouldn't auto-rewrite the lexicon) — that's not a deferral. See [[config-single-source]] and
+[[astra-migration-research]].

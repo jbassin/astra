@@ -263,8 +263,10 @@ everything else points at durable docs). Update it when you finish a slice/subsy
   pipeline tested dry via injected deps (acceptance D), I/O shell (gateway/speak/index) typechecked;
   (5) **weal-overlay** — eerie lifted (Bun.serve SPA+SSE, K7), v1-only schema, gothic v4 re-consume,
   client RUM; (6) **deploy** — both Dockerfiles + Compose units + overlay Caddy block (`flush_interval
-  -1`). **Deferred (spec-sanctioned):** the live Discord run (acceptance I — needs the SOPS token) +
-  the Phase-6 SQLite→PG data migration + webhook rotation. See `[[weal-0009-gotchas]]`.
+  -1`). **weal-bot is LIVE** (real SOPS token). **SQLite→PG data migration DONE** (2026-06-23): 8,932 dice +
+  10 funcs migrated from `mouth.db` into weal-postgres, ids/player_ids preserved, sequence reset (the 36 live
+  rows were truncated first, user-approved). Only remaining nicety: webhook rotation. See
+  `[[weal-0009-gotchas]]`.
 - **strider (0014) COMPLETE + PUSHED + DEPLOYED LIVE.** The first `apps/*` TS frontend and the canonical
   **SSR-Compose-behind-Caddy template** for 0011–0013. All on `origin/main`. The 7 build slices (`fedd4b8`
   …`a91a72b`): build-content+data-model, pixi hexmap, MapView+routes, editor, SSR Compose deploy
@@ -324,11 +326,11 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 ### Next: Phase-6 cutover (ALL frontends 0011–0014 now COMPLETE)
 
 1. **Phase-6 cutover — the last phase** (plan `thoughts/astra/plans/0015-cutover.md`). All four frontends are
-   built + deployed-local: strider (0014), akasha (0011), mouthpiece (0012), **vellum (0013)**. The cutover
-   big-bangs the edge from faerrin to astra. **The standing deferral across every frontend is the same:** the
-   `*.iridi.cc` **DNS records** + `just caddy-reload` (outward-facing/manual) — strider, akasha, mouthpiece,
-   vellum, orator, weal-overlay all have authored+validated Caddy blocks awaiting their DNS record. (faerrin's
-   `strider.iridi.cc` + `vellum.iridi.cc` blocks are already decommissioned in-repo.)
+   built + deployed-local: strider (0014), akasha (0011), mouthpiece (0012), **vellum (0013)**. **The public
+   edge is now LIVE** — `just caddy-reload` applied + DNS set: strider/akasha/mouthpiece/orator/vellum/
+   weal-overlay/dagster `.iridi.cc` all serve HTTP 200, `otel.iridi.cc` reachable (browser-RUM OTLP ingest);
+   faerrin's `strider.iridi.cc` + `vellum.iridi.cc` blocks decommissioned in-repo (2026-06-23). The remaining
+   cutover work is the plan's content/data + final faerrin teardown, not edge wiring.
 2. **0013 vellum-frontend — COMPLETE** (all 7 slices built + pushed + deployed-local + verified live; the
    editor on 10367 + the render service on 10368; containerized Chromium renders PNGs; SigNoz spans for both;
    the VR gate is green in the pinned container). **NOW FULLY LIVE on `https://vellum.iridi.cc`** (DNS set +
