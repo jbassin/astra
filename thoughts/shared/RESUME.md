@@ -36,12 +36,12 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `1c7e507`, 2026-06-24)
+## Current state — UPDATE THIS SECTION (as of commit `7cf1c9a`, 2026-06-24)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
 
-### Gothic / frontend design polish (2026-06-24 session — COMPLETE + PUSHED, NOT yet redeployed)
+### Gothic / frontend design polish (2026-06-24 session — COMPLETE + PUSHED + DEPLOYED LIVE)
 
 A critical design pass over how **gothic** renders content + the 4 public frontends (live-captured with
 Playwright, each fix screenshot-verified). Audit: `thoughts/shared/research/2026-06-24-gothic-frontend-design-audit-thoughts.md`;
@@ -58,12 +58,18 @@ memory `[[gothic-frontend-design-polish]]`. 15 findings, 6 CI-green slices (`0d3
 - **akasha content** (`1c7e507`): repaired the Tormeré Situation Room transcript (mis-fenced `:::fields`).
 - **Redeployed + live-verified** (`just up`, 2026-06-24): akasha/strider/orator/vellum all healthy on
   their public hosts; Tormeré transcript, faction dossier, orator sign-in confirmed live.
-- **`:::deity` construct added** (`14ed961` feat + `99573a6` content): a divine stat-block vellum kind,
-  from a survey of heavy `:::fields` usage. `deity` is a `DOCUMENT_KIND` so it gets both brace forms
-  (canonical `:::deity[Name]{category=…}` + VSS `@deity "…" { … }`); gothic `DeityCard` renders it;
-  the 7 Divinity deity pages migrated + Hierophant Harrow Decks fixed (same fence bug as Tormeré); a
-  `deity-mechanical` VR fixture/golden added. Memory `[[gothic-frontend-design-polish]]` has the
-  "how to add a `:::kind`" recipe. **Also needs `just up` to go live** (bundled with the polish redeploy).
+- **`:::deity` construct added** (`14ed961` feat + `99573a6` content + `facf263` render): a divine
+  stat-block vellum kind, from a survey of heavy `:::fields` usage. `deity` is a `DOCUMENT_KIND` so it
+  gets both brace forms; gothic `DeityCard` renders it **run-in (label inline with value), NOT a
+  two-column grid** (`facf263` — the grid mis-aligned between sections + gapped badly). 7 Divinity pages
+  migrated + Hierophant Harrow Decks fixed (same fence bug as Tormeré); `deity-mechanical` VR
+  fixture/golden. Memory `[[gothic-frontend-design-polish]]` has the "how to add a `:::kind`" recipe.
+- **WHOLE corpus → VSS braces** (`d1c6b73` engine + `1751aee` content; deities `76b472c`): closed two VSS
+  gaps so every construct has a brace form — **block title is optional** (`@handout { … }`) and
+  **`@fields`/`@timeline`** lower to `:::fields`/`:::timeline`. Swept all 21 handouts + fields + timeline
+  + 7 deities to `@…{ }`; **zero `:::` openers remain** in the content tree. compileVss lowers to identical
+  canonical, so renders are byte-identical (VR fixtures stay canonical → goldens untouched). `.gitattributes`
+  maps `*.vellum`→Markdown for GitHub (`76b472c`). All redeployed + live-verified (`just up`).
 - **Open/optional:** a first-class dialogue/transcript vellum construct (the Tormeré/Harrow pattern) —
   still surfaced, deliberately not invented ad-hoc.
 

@@ -234,3 +234,19 @@ grid gets tight at 390px. Low priority.
   vellum-frontend) or the built dist (orator) + the regenerated VR goldens (gothic);
   CI reproduced locally per lane; pushed in chunks (gothic+akasha green on CI incl.
   the vellum VR gate).
+
+### Follow-ons (same session, after the 15 findings)
+
+- **`:::deity` construct** (`14ed961`/`99573a6`/`facf263`): a survey of heavy `:::fields`
+  usage found ~7 Divinity pages hand-authoring the same PF2e deity template. Added a
+  `deity` DOCUMENT_KIND (both brace forms) + a gothic `DeityCard` rendered **run-in**
+  (label inline with value — the first attempt was a two-column grid that mis-aligned
+  between sections + gapped badly, so it was redone). Migrated the 7 pages + fixed
+  Hierophant's Harrow Decks (the Tormeré fence bug again). `deity-mechanical` VR golden.
+- **Whole corpus → VSS braces** (`d1c6b73`/`1751aee`, deities `76b472c`): to author
+  everything in the preferred brace surface, closed two VSS gaps — **optional block
+  title** (`@handout { … }`) and **`@fields`/`@timeline`** brace forms. Swept all 21
+  handouts + fields + timeline + 7 deities; **zero `:::` directive openers remain**.
+  Renders byte-identical (compileVss lowers to canonical; VR fixtures stay canonical).
+  `.gitattributes` maps `*.vellum`→Markdown on GitHub. All live (`just up`).
+- **Still open/optional:** the first-class dialogue/transcript construct (unchanged).
