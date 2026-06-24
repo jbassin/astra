@@ -5,23 +5,25 @@ import { grimeStyle } from "../grimeStyle";
 import { collectText, renderNodes } from "../mdastToReact";
 
 /**
- * One run of `Term :: value` lines, rendered as the deity field grid — the same
- * definition-list skin as `:::fields`, so a deity's profile reads consistently
- * with a standalone field-list.
+ * One run of `Term :: value` lines, rendered PF2e-style: a small-caps label
+ * followed inline by its value, each field its own line that wraps as prose.
+ * Run-in (not a two-column grid) keeps the label tight against its value, lets
+ * long values like Domains / Cleric Spells flow, and avoids the column-width
+ * mismatch you get from separate per-section grids.
  */
-function FieldGrid({ items }: { items: ReturnType<typeof parseFieldItems> }): ReactElement | null {
+function FieldRun({ items }: { items: ReturnType<typeof parseFieldItems> }): ReactElement | null {
   if (items.length === 0) return null;
   return (
-    <dl className="gothic-content my-[0.4rem] grid grid-cols-[max-content_1fr] gap-x-4 gap-y-1">
+    <div className="gothic-content my-[0.3rem] flex flex-col gap-[0.3rem]">
       {items.map((item, i) => (
-        <div key={i} className="contents">
-          <dt className="font-display text-[0.95rem] uppercase tracking-[0.04em] text-accent [[data-mode=diegetic]_&]:text-wax">
+        <p key={i} className="m-0 leading-[1.5]">
+          <span className="mr-[0.5em] font-display text-[0.82rem] uppercase tracking-[0.05em] text-accent [[data-mode=diegetic]_&]:text-wax">
             {item.term}
-          </dt>
-          <dd className="m-0">{renderNodes(item.value)}</dd>
-        </div>
+          </span>
+          {renderNodes(item.value)}
+        </p>
       ))}
-    </dl>
+    </div>
   );
 }
 
@@ -50,7 +52,7 @@ export function DeityCard({
   let run: RootContent[] = [];
   const flushRun = (key: string) => {
     if (run.length > 0) {
-      segments.push(<FieldGrid key={key} items={parseFieldItems(run)} />);
+      segments.push(<FieldRun key={key} items={parseFieldItems(run)} />);
       run = [];
     }
   };
