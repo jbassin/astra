@@ -27,17 +27,25 @@ the tithe uses `TITHE_PALETTE` (purples/blacks). Same shader, two palettes.
    **nothing** — the mask drops the filtered output entirely. Confirmed both ways.
 2. **Rendering to a RenderTexture from inside the ticker yields a BLANK target.**
    `app.renderer.render({ container, target })` called inside an `app.ticker` /
-   animation `update()` callback produces an empty texture. **Bake once up front**
-   (before starting the animation) — a static field is fine; the motion carries it.
-3. **The working recipe for "shader clipped to flipping tiles":** bake the
-   filtered shader rect to a `RenderTexture` ONCE (off-screen rect, not added to
-   the world), then draw **each hex as its own `Graphics`** filled with that
-   texture via a **per-hex fill matrix** (`new Matrix(sx,0,0,sy, (cx+halfW)*sx,
-   (cy+halfH)*sy)`) so adjacent tiles sample one continuous field. Flip each tile
-   with `scale.y` (drawn with origin-centered local verts; pivots at the hex
-   center). No mask, no live filter on the rendered tiles. Tiles are created
-   per-ring as the wave front arrives (staggered by axial ring distance) and
-   destroyed once they flip back — bounds the active count.
+   animation `update()` callback produces an empty texture. (A RenderTexture baked
+   ONCE up front works — but for the tithe a baked field is *frozen* and the
+   per-hex sampling *looks tiled*, so we abandoned RenderTextures entirely — see #3.)
+3. **THE working recipe — "a live, continuous, animated shader clipped to flipping
+   tiles" = a filter on a container of coverage tiles.** The balatro shader
+   computes its color in **screen space and ignores its input**, so make `main()`
+   multiply the result by the input's alpha (`texture(uTexture, vTextureCoord).a`)
+   — a full opaque rect (the page bg) is unchanged, but now the shader shows only
+   where the filtered content is opaque. Then: put plain **white** hex `Graphics`
+   (flipping via `scale.y`, origin-centered verts → pivots at the hex center) in a
+   container, and apply the filter to the **container** (NO mask — filters+masks
+   don't compose, #1). The field is continuous + animated (advance `uTime` each
+   frame) because the shader is one screen-space pass over the whole container,
+   masked by tile coverage. Add an invisible (`alpha:0`) full-grid rect to the
+   container so the filter bounds stay stable (else the field shifts as tiles
+   flip). Attach the filter only while playing (`titheLayer.filters = [f]` on
+   start, `= []` on cleanup) so there's no full-map shader pass at rest. Tiles are
+   created per-ring as the wave front arrives (staggered by axial ring distance),
+   held, then destroyed once they flip back.
 4. **Headless capture caveat (verification, not a runtime bug):** headless
    Chromium throttles `requestAnimationFrame`, so screenshotting a ~1–2 s pixi
    animation at wall-clock offsets almost always misses the frames (the wave's
