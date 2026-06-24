@@ -50,7 +50,17 @@ two-column grid: the grid's per-section column-width mismatch + label↔value ga
 badly; the deity owns its fields, no nested `:::fields`; a `##`/`###` heading splits
 sections, e.g. `### Devotee Benefits`). The 7 deity pages are authored in the VSS brace
 surface (`@deity "Name" { … }` + `| category:`), the heavily-preferred form; a
-`.gitattributes` maps `*.vellum`→Markdown for GitHub highlighting. Exported `parseFieldItems` as the
+`.gitattributes` maps `*.vellum`→Markdown for GitHub highlighting.
+
+**VSS now covers the whole corpus** (`d1c6b73`+`1751aee`): closed two VSS gaps so
+**every** construct has a brace form — the block **title is optional** (`@handout
+{ … }` → bare `:::handout`), and **`@fields`/`@timeline`** lower to `:::fields`/
+`:::timeline` (no title/attrs). Editor `/fields`+`/timeline` snippets + `@`-highlighting
+updated; MARKDOWN.md §5 documents them. **The entire akasha content tree is now VSS —
+zero `:::` directive openers remain.** compileVss lowers everything back to canonical
+so renders are byte-identical (the VR fixtures stay canonical `:::`, so goldens are
+untouched). When adding a construct, give it a VSS brace form too — the colon surface
+is no longer authored by hand. Exported `parseFieldItems` as the
 DeityCard seam. Migrated the 7 deity pages + fixed Hierophant's Harrow Decks (same
 fence-spill bug as Tormeré). Added a `deity-mechanical` VR fixture (regen'd golden; the
 7 existing goldens stayed byte-identical). **Adding a new `:::kind` = add to
