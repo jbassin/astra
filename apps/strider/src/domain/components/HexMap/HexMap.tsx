@@ -869,7 +869,7 @@ function buildScene(
   const FLIP_WAVE_MAX_MS = 800;
   const PER_HEX_FLIP_MS = 280;
   const TITHE_FLIP_MS = 220; // per-tile flip-in duration (the fill wave)
-  const TITHE_HOLD_MS = 280; // dwell at full purple once the whole board is filled
+  const TITHE_HOLD_MS = 160; // brief dwell at full purple before the board fades
   const TITHE_FADE_MS = 720; // uniform fade-out of the filled board
   const TITHE_MAX_MS = 2900; // total wall-clock budget for the whole wave
 
