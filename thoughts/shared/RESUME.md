@@ -56,10 +56,16 @@ memory `[[gothic-frontend-design-polish]]`. 15 findings, 6 CI-green slices (`0d3
 - **vellum-frontend** (`a9131dd`): reset fix (editor preview) + the cross-cutting gotcha documented in
   `apps/strider/README.md`.
 - **akasha content** (`1c7e507`): repaired the Tormeré Situation Room transcript (mis-fenced `:::fields`).
-- **NOT redeployed yet** — changes are pushed to `main` but the live containers still serve the old build.
-  Run `just up` (rebuild akasha/strider/orator/vellum-frontend) to deploy; `[[deploy-apply-with-just]]`.
-- **Open/optional:** a first-class dialogue/transcript vellum construct (vellum-lang + spec change) —
-  surfaced, deliberately not invented ad-hoc.
+- **Redeployed + live-verified** (`just up`, 2026-06-24): akasha/strider/orator/vellum all healthy on
+  their public hosts; Tormeré transcript, faction dossier, orator sign-in confirmed live.
+- **`:::deity` construct added** (`14ed961` feat + `99573a6` content): a divine stat-block vellum kind,
+  from a survey of heavy `:::fields` usage. `deity` is a `DOCUMENT_KIND` so it gets both brace forms
+  (canonical `:::deity[Name]{category=…}` + VSS `@deity "…" { … }`); gothic `DeityCard` renders it;
+  the 7 Divinity deity pages migrated + Hierophant Harrow Decks fixed (same fence bug as Tormeré); a
+  `deity-mechanical` VR fixture/golden added. Memory `[[gothic-frontend-design-polish]]` has the
+  "how to add a `:::kind`" recipe. **Also needs `just up` to go live** (bundled with the polish redeploy).
+- **Open/optional:** a first-class dialogue/transcript vellum construct (the Tormeré/Harrow pattern) —
+  still surfaced, deliberately not invented ad-hoc.
 
 ### Post-migration product work — strider (2026-06-24 session, all COMPLETE + PUSHED + DEPLOYED LIVE)
 

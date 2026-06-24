@@ -39,6 +39,21 @@ anything unlayered beats it.
 - **akasha content**: fixed the Tormeré Situation Room transcript (mis-fenced `:::fields`
   inside `:::handout` → one handout with `**Speaker:**` prose).
 
+**`:::deity` construct (follow-up, 2026-06-24, `14ed961`+`99573a6`):** added a divine
+stat-block kind to vellum-lang — the survey found ~7 Divinity pages hand-authoring an
+identical two-`:::fields` PF2e deity template. Made `deity` a `DOCUMENT_KIND`, so it
+inherits BOTH brace forms free: canonical `:::deity[Name]{category="Outer God"}` and the
+VSS surface `@deity "Name" { … }` (VSS `KINDS` derives from `DOCUMENT_KINDS`). gothic
+`DeityCard` renders it (title + DEITY tag + `{category}` eyebrow; body `Term :: value`
+field-lines as a grid — the deity owns its fields, no nested `:::fields`; a `##`/`###`
+heading splits sections, e.g. `### Devotee Benefits`). Exported `parseFieldItems` as the
+DeityCard seam. Migrated the 7 deity pages + fixed Hierophant's Harrow Decks (same
+fence-spill bug as Tormeré). Added a `deity-mechanical` VR fixture (regen'd golden; the
+7 existing goldens stayed byte-identical). **Adding a new `:::kind` = add to
+`DOCUMENT_KINDS` + `DEFAULT_MODE_BY_KIND`, a `case` in DocumentView's `Block` switch, a
+gothic card, a `/snippet`, a MARKDOWN.md row, and a VR fixture.** Pattern to copy for any
+future repeated-`:::fields` template.
+
 **Verify a frontend visually:** `bun run dev` (akasha/strider/vellum-frontend) or `vite build`
 + serve `dist/` (orator — its SPA falls to the anon view when `/api/v1/me` 404s), then
 Playwright-screenshot. **Open/optional:** a first-class dialogue/transcript vellum construct
