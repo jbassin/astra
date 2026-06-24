@@ -48,6 +48,7 @@ const labelMark = Decoration.mark({ class: "cm-vellum-label" });
 const attrMark = Decoration.mark({ class: "cm-vellum-attr" });
 const inlineMark = Decoration.mark({ class: "cm-vellum-inline" });
 const inlineUnknownMark = Decoration.mark({ class: "cm-vellum-inline-unknown" });
+const crossrefMark = Decoration.mark({ class: "cm-vellum-crossref" });
 
 /** `:::name`/`::::columns` opener — colons + directive name. */
 const OPEN_FENCE = /^(:{3,})([A-Za-z][\w-]*)/;
@@ -59,10 +60,16 @@ const ATTRS = /\{[^}\n]*\}/;
 /** Inline directive token, `:action[…]` / `:trait[…]` / `:foo[…]`. */
 const INLINE = /:([A-Za-z][\w-]*)\[[^\]\n]*\]/g;
 const KNOWN_INLINE = new Set(["action", "trait", "redact"]);
+/** Wiki cross-reference, `[[target]]` / `[[target#heading]]` / `[[target|alias]]`
+ * (full-vellum, 0013 D6). Parsed by vellum-lang's `transformCrossRefs`; here it's
+ * just decorated so it reads at a glance in the editor. */
+const CROSSREF = /\[\[[^\]\n]+\]\]/g;
 /** Authoring sigils (kept in sync with vellum-lang `surface.ts` `desugar`):
  * `@action`, `||redact||`, `#trait`. Highlighted like the directives they expand
- * to. (The R2 sync test in slice 3 guards this set against the lowerer.) */
-const SIGIL =
+ * to. (The R2 sync test guards this set against the lowerer — sigilSync.test.ts.)
+ * Exported so that test can assert the editor highlights exactly what parseDocument
+ * lowers. */
+export const SIGIL =
   /(?<![\w@])@(?:reaction|react|free|single|double|triple|one|two|three|[0-3rf])\b|\|\|[^|\n]+\|\||(?<![\w#])#[A-Za-z][\w-]*/gi;
 
 function buildDecorations(view: EditorView): DecorationSet {
@@ -109,6 +116,14 @@ function buildDecorations(view: EditorView): DecorationSet {
           out.push(inlineMark.range(start, start + s[0].length));
           s = SIGIL.exec(text);
         }
+        // Wiki cross-references `[[…]]`.
+        CROSSREF.lastIndex = 0;
+        let c = CROSSREF.exec(text);
+        while (c) {
+          const start = line.from + c.index;
+          out.push(crossrefMark.range(start, start + c[0].length));
+          c = CROSSREF.exec(text);
+        }
       }
 
       pos = line.to + 1;
@@ -144,6 +159,7 @@ const directiveTheme = EditorView.baseTheme({
     color: "var(--color-ink-dim)",
     textDecoration: "underline wavy var(--color-wax)",
   },
+  ".cm-vellum-crossref": { color: "var(--color-accent)", textDecoration: "underline dotted" },
 });
 
 /**

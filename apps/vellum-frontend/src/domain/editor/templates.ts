@@ -84,4 +84,35 @@ Failure is heresy.
 :::
 `,
   },
+  {
+    id: "fields",
+    title: "Field list (full-vellum)",
+    source: `:::fields
+Price :: 25 gp
+Usage :: held in 1 hand; Bulk L
+Activate :: :action[1] Interact, command the seal
+Traits :: magical, consumable
+:::
+`,
+  },
+  {
+    id: "timeline",
+    title: "Timeline (full-vellum)",
+    source: `:::timeline
+- {Age of Static} The vox-shrines first fall silent across the sub-sector.
+- {1 Calistril} Interrogator Vael logs the observatory blackout.
+- {Now} Three cogitator-shrines remain unaccounted for, last near [[Sub-Sector Coram]].
+:::
+`,
+  },
+  {
+    id: "crossref",
+    title: "Cross-references (full-vellum)",
+    source: `:::handout[+++ Field Notes +++]
+The trail leads from [[Sub-Sector Coram]] toward the
+[[Observatory#blackout|dark observatory]]. Cross-reference the
+[[Inquisitorial Dispatch]] before you commit anything to record.
+:::
+`,
+  },
 ];
