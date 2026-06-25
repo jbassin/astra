@@ -36,10 +36,33 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `bad00bb`, 2026-06-24)
+## Current state — UPDATE THIS SECTION (as of commit `e052694`, 2026-06-24)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
+
+### strider map: balatro hex tint + timeline UX overhaul (2026-06-24 session — COMPLETE + PUSHED + LIVE)
+
+Three strider product changes, each CI-green + `docker compose up -d --build strider` + live-verified on
+`strider.iridi.cc`. Memory `[[strider-balatro-timeline-gotchas]]`.
+
+- **Per-faction balatro field** (`82aa7e2`): the hex map shimmers with a faction-tinted balatro swirl —
+  **one** filter over `factionHexLayer`, not per-hex. New shader **`tintFromTexture`** mode derives its 3
+  palette stops per-pixel from each hex's own colour (saturation ~1.35×, low-contrast `base*0.72`…`base*1.03`,
+  `uLightScale` 0.08). **THE gotcha:** a filter round-trips the layer through an offscreen texture, so the
+  thin **horizontal** hex-grid strokes (flat-top hexes → horizontal top/bottom edges) drop out at certain
+  zooms — fix = `filter.resolution = app.renderer.resolution` + `antialias="on"`. Grid stays readable via
+  the deep-shadow stop + the unfiltered `factionBorderLayer` on top. Page background + tithe unchanged.
+- **Current-first timeline + bounded play-once** (`de13a02`): the home map no longer replays the whole
+  vox-log on every visit (was ~18s, grew unbounded). Now lands on the **current state**; a **play-once**
+  catch-up of only the layers added since last visit (tracked in `localStorage` key `strider:vox-log-seen`,
+  capped to last `MAX_PLAYBACK_LAYERS=10`, older snap in) auto-plays once; **constant dwell** (acceleration
+  removed); **`⟲ REPLAY`** plays the full log on demand, **`SKIP ⏭`** jumps to now, arrows unlocked
+  (stepping cancels playback).
+- **Scrubber + precomputed fold snapshots** (`e052694`): dot indicator → a draggable **range slider**
+  (+ `index/total`). New `domain/lib/timelineFrames.ts` `buildTimelineFrames()` derives every cursor's full
+  state once (memoized on the layer set) → MapView does an **O(1) `frames[layerIndex]` lookup** instead of
+  re-folding `layers.slice(0,index)` per step (was O(n²) over a replay). Flip animation reads the prev frame.
 
 ### mouthpiece → TWO hosts + a calmer script (2026-06-24 session — COMPLETE + PUSHED + LIVE)
 
