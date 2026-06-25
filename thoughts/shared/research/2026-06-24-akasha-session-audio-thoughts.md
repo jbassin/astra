@@ -1,7 +1,13 @@
 # Scope — bring the combined session audio into astra (akasha same-origin `/audio`)
 
 Date: 2026-06-24
-Status: SCOPE (pre-implementation) — not yet built
+Status: **BUILT + LIVE 2026-06-24** — all 4 slices shipped + verified through the public edge.
+See `[[akasha-session-audio-dependency]]` for the as-built facts. Two deltas from this scope:
+(1) the volume is **~14.4 GB** not 31 GB (the 31 GB figure included per-speaker `.aac` tracks;
+the combined `audio.mp3` files alone are ~14.4 GB); (2) **faerrin's nested `saved/saved/<date>/`
+quirk** (mislocated 4 recent sessions — why faerrin's own static-audio 404'd 2026-6-8) forced
+the seed to scan `audio.mp3` at any depth; astra now serving 2026-6-8 fixes a faerrin-broken
+gap. User chose **all 85 sessions** + **drop the whole faerrin import** (both options below).
 Related memory: [[akasha-frontend-0011-gotchas]], [[mouthpiece-frontend-0012-gotchas]],
 [[pipeline-live-run-gotchas]], [[deploy-apply-with-just]], [[config-single-source]]
 

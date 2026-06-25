@@ -59,14 +59,28 @@ voices with **far fewer interruptions**. Code `c2309df`, live snapshot `bad00bb`
   runs image-baked code → rebuild needed; plain `docker compose up -d <svc>` drops SOPS env → silent
   MOCK-TTS). Backups of the old 3-host artifacts are in `episodes/2026-6-22/*.3host.bak`.
 
-### FOLLOW-UP SCOPED (not built): bring session audio into astra
+### Session audio into astra (2026-06-24 session — COMPLETE + PUSHED + LIVE)
 
-akasha's transcript audio still comes from **faerrin's `static-audio.iridi.cc`** (the one faerrin block
-not decommissioned); **new pipeline sessions 404 there**. Scope to serve it same-origin under the akasha
-host (mouthpiece `/audio` pattern) is written at
-`thoughts/shared/research/2026-06-24-akasha-session-audio-thoughts.md`. Open decisions before building:
-the **31 GB / 85-session** volume and the clean faerrin-caddyfile teardown. Memory
-`[[akasha-session-audio-dependency]]`.
+akasha transcript audio is now served **same-origin by astra** at `akasha.iridi.cc/audio/<date>.mp3`,
+replacing the surviving faerrin `static-audio.iridi.cc` — and **the whole faerrin caddyfile import was
+removed** from the shared proxy (faerrin fully decommissioned at the edge). Memory
+`[[akasha-session-audio-dependency]]`; scope `thoughts/shared/research/2026-06-24-akasha-session-audio-thoughts.md`.
+Four CI-green slices (`9aea97d` serving seam → `976db90` build-time normalize (decision A) → `2fced17`
+`just akasha-seed` + timer wiring → recipe-fix for the nested-dir gotcha):
+- **D2 pattern:** `akashaFrontend.audio-dir` (3 schemas) + `createSsrServer` `staticMounts` + `akasha-audio:ro`
+  volume; no edge change for serving (catch-all proxy passes `/audio/*`). **Decision A:** `transcript.ts`
+  `loadTranscripts` normalizes `audio` → `/audio/<date>.mp3` (new `audioSrc`), so the 78 committed transcripts
+  need no re-gen; linguist `STATIC_AUDIO_BASE`→`AUDIO_BASE="/audio"`.
+- **`just akasha-seed`** (HIST faerrin incremental ∪ LIVE scribe overwrite; wired into the `linguist-commit`
+  timer akasha phase). **85 sessions / ~14.4 GB** seeded (the "31 GB" was the whole back-catalog incl. `.aac`
+  tracks). **Gotcha:** faerrin mislocated 4 recent sessions under nested `wretch/data/saved/saved/<date>/`
+  (why faerrin's own static-audio 404'd 2026-6-8) → seed scans `audio.mp3` at any depth; astra serving
+  2026-6-8 **fixes a faerrin-broken gap**.
+- **Teardown:** verified all 5 faerrin blocks dead/replaced (eerie 10174 + lark 10175 not listening;
+  heart/caster stale static) → removed `import …/faerrin/sites.caddyfile` from `/ruby/data/reverse-proxy/Caddyfile`
+  (backed up; `caddy-validate` clean → `caddy-reload`). **Live-verified through the public edge:** akasha
+  home/transcript 200, `/audio/{2025-9-11,2026-6-8}.mp3` 206 Range, `static-audio.iridi.cc` now dead. SigNoz
+  still shows `astra.akasha-frontend` SSR spans. faerrin's 31 GB `wretch/data/saved` kept as backup.
 
 ### Gothic / frontend design polish (2026-06-24 session — COMPLETE + PUSHED + DEPLOYED LIVE)
 
