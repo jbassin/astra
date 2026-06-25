@@ -10,6 +10,8 @@ interface TimelineStripProps {
   isPlaying: boolean;
   dwellMs: number;
   onIndexChange: (next: number) => void;
+  onSkipToEnd: () => void;
+  onReplay: () => void;
 }
 
 export default function TimelineStrip({
@@ -18,11 +20,15 @@ export default function TimelineStrip({
   isPlaying,
   dwellMs,
   onIndexChange,
+  onSkipToEnd,
+  onReplay,
 }: TimelineStripProps) {
   const total = layers.length;
   const atStart = index <= 0;
   const atEnd = index >= total;
-  const arrowsLocked = isPlaying;
+  // Offer "replay the full log" only when at rest on the current state; while
+  // playing or parked mid-log the action jumps straight to now.
+  const showReplay = !isPlaying && atEnd;
 
   const entries = useMemo(() => visibleEntries(layers, index), [layers, index]);
   const dots = useMemo(() => dotIndices(total + 1, index), [total, index]);
@@ -97,7 +103,7 @@ export default function TimelineStrip({
           type="button"
           className={styles.arrow}
           onClick={() => onIndexChange(index - 1)}
-          disabled={arrowsLocked || atStart}
+          disabled={atStart}
           aria-label="Previous layer"
         >
           ◀
@@ -133,10 +139,19 @@ export default function TimelineStrip({
           type="button"
           className={styles.arrow}
           onClick={() => onIndexChange(index + 1)}
-          disabled={arrowsLocked || atEnd}
+          disabled={atEnd}
           aria-label="Next layer"
         >
           ▶
+        </button>
+
+        <button
+          type="button"
+          className={styles.action}
+          onClick={showReplay ? onReplay : onSkipToEnd}
+          aria-label={showReplay ? "Replay the full vox-log" : "Skip to the current state"}
+        >
+          {showReplay ? "⟲ REPLAY" : "SKIP ⏭"}
         </button>
       </div>
     </div>

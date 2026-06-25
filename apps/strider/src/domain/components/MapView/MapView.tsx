@@ -23,13 +23,13 @@ import {
   type Layer,
   type LayerAnimation,
 } from "@/domain/lib/regions";
-import { stepDwellMs } from "@/domain/lib/timeline";
+import { LAYER_DWELL_MS } from "@/domain/lib/timeline";
 import { useIsMobile } from "@/lib/useIsMobile";
 import styles from "./MapView.module.css";
 import MemoriamPanel from "./MemoriamPanel";
 import OverlayStrip from "./OverlayStrip";
 import TimelineStrip from "./TimelineStrip";
-import { INITIAL_PAUSE_MS, useTimelinePlayback } from "./useTimelinePlayback";
+import { useTimelinePlayback } from "./useTimelinePlayback";
 
 // Lazy so PixiJS never evaluates during SSR. ClientOnly below guarantees
 // the lazy boundary only resolves in the browser.
@@ -77,11 +77,8 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
     });
     return s;
   }, [layers]);
-  const { layerIndex, prevLayerIndex, isPlaying, setIndex } = useTimelinePlayback(
-    layers.length,
-    seen,
-    titheSteps,
-  );
+  const { layerIndex, prevLayerIndex, isPlaying, setIndex, skipToEnd, replay } =
+    useTimelinePlayback(layers.length, seen, titheSteps);
   const isMobile = useIsMobile();
   const navigate = useNavigate();
 
@@ -227,8 +224,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
     ? (skein.regions.find((r) => r.slug === hoveredSkeinSlug) ?? null)
     : null;
 
-  const dwellMs =
-    isPlaying && layerIndex === 0 ? INITIAL_PAUSE_MS : stepDwellMs(Math.max(0, layerIndex - 1));
+  const dwellMs = LAYER_DWELL_MS;
 
   // Build a one-shot animation hint when the timeline takes a forward-by-one
   // step. Backward, multi-step, and initial-mount transitions snap (animation
@@ -334,13 +330,13 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
 
     return {
       layerIndex,
-      budgetMs: Math.round(dwellMs * 0.8),
+      budgetMs: Math.round(LAYER_DWELL_MS * 0.8),
       regionAdds,
       skeinConnects,
       factionFlips,
       tithe,
     };
-  }, [layers, layerIndex, prevLayerIndex, factionSlugs, dwellMs]);
+  }, [layers, layerIndex, prevLayerIndex, factionSlugs]);
 
   return (
     <div className={styles.root}>
@@ -396,6 +392,8 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
         isPlaying={isPlaying}
         dwellMs={dwellMs}
         onIndexChange={setIndex}
+        onSkipToEnd={skipToEnd}
+        onReplay={replay}
       />
       <MemoriamPanel entries={fallenEntries} onFactionClick={handleFactionClick} />
       <Modal content={modal} onClose={() => setModal(null)} />

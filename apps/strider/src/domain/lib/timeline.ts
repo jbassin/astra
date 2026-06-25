@@ -78,19 +78,16 @@ export function dotIndices(count: number, current: number): Dot[] {
   return out;
 }
 
-// Playback accelerates line by line: the first layer gets the most time to
-// read, each successive line is 15% shorter than the previous, floored so it
-// never gets unreadably fast. `step` is 0-based — step 0 is the dwell that
-// holds the first layer on screen, step 1 holds the second, and so on.
-const BASE_DWELL_MS = 900;
-const DWELL_ACCEL = 0.85;
-const MIN_DWELL_MS = 220;
+// Constant dwell per layer. Playback used to accelerate line-by-line to keep a
+// long full-history replay from dragging; now the auto catch-up only ever plays
+// the layers added since the last visit (bounded — see MAX_PLAYBACK_LAYERS) and
+// it only plays once, so every line gets the same readable hold.
+export const LAYER_DWELL_MS = 1100;
 
-export function stepDwellMs(step: number): number {
-  const safeStep = Math.max(0, step);
-  const t = BASE_DWELL_MS * DWELL_ACCEL ** safeStep;
-  return Math.max(MIN_DWELL_MS, Math.round(t));
-}
+// The auto catch-up is capped to at most this many trailing layers: anything
+// older than the window snaps in instantly, so the intro length never grows as
+// history accumulates. The opt-in "replay history" plays the full log instead.
+export const MAX_PLAYBACK_LAYERS = 10;
 
 // --- Tithe wave timing (shared by the HexMap animation and the playback dwell) ---
 // The wave fills the board center→edge (a FILL travel window plus a per-tile

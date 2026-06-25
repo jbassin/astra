@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import type { Layer } from "@/domain/lib/regions";
-import { imperialDate, stepDwellMs } from "@/domain/lib/timeline";
+import { imperialDate } from "@/domain/lib/timeline";
 import TimelineStrip from "./TimelineStrip";
 
 function makeLayer(overrides: Partial<Layer> = {}): Layer {
@@ -14,91 +14,54 @@ function makeLayer(overrides: Partial<Layer> = {}): Layer {
   };
 }
 
-describe("stepDwellMs", () => {
-  it("returns the base dwell at step 0", () => {
-    expect(stepDwellMs(0)).toBe(900);
-  });
+const twoLayers = [
+  makeLayer(),
+  makeLayer({
+    slug: "two",
+    timestamp: "863-07-14T09:00:00Z",
+    message: "Iconoclasm builds their fane.",
+  }),
+];
 
-  it("decreases monotonically as steps grow", () => {
-    expect(stepDwellMs(1)).toBeLessThan(stepDwellMs(0));
-    expect(stepDwellMs(2)).toBeLessThan(stepDwellMs(1));
-    expect(stepDwellMs(5)).toBeLessThan(stepDwellMs(4));
-  });
-
-  it("floors at the minimum dwell once decay would drop below it", () => {
-    expect(stepDwellMs(20)).toBe(220);
-    expect(stepDwellMs(100)).toBe(220);
-  });
-
-  it("clamps negative steps up to step 0", () => {
-    expect(stepDwellMs(-1)).toBe(stepDwellMs(0));
-  });
-});
+// Renders TimelineStrip with sane defaults so each test only states what it cares about.
+function renderStrip(props: Partial<React.ComponentProps<typeof TimelineStrip>> = {}) {
+  return render(
+    <TimelineStrip
+      layers={twoLayers}
+      index={1}
+      isPlaying={false}
+      dwellMs={500}
+      onIndexChange={() => {}}
+      onSkipToEnd={() => {}}
+      onReplay={() => {}}
+      {...props}
+    />,
+  );
+}
 
 describe("TimelineStrip", () => {
-  const twoLayers = [
-    makeLayer(),
-    makeLayer({
-      slug: "two",
-      timestamp: "863-07-14T09:00:00Z",
-      message: "Iconoclasm builds their fane.",
-    }),
-  ];
-
   it("renders only the VOX-INACTIVE entry at index 0", () => {
-    render(
-      <TimelineStrip
-        layers={twoLayers}
-        index={0}
-        isPlaying={false}
-        dwellMs={500}
-        onIndexChange={() => {}}
-      />,
-    );
+    renderStrip({ index: 0 });
     expect(screen.queryByText("++ VOX-INACTIVE ++")).not.toBeNull();
     expect(screen.queryByText("Hildebrandt arrives on the strider")).toBeNull();
     expect(screen.queryByText("Iconoclasm builds their fane.")).toBeNull();
   });
 
   it("stacks both layer messages plus VOX-INACTIVE at the full index, newest first", () => {
-    render(
-      <TimelineStrip
-        layers={twoLayers}
-        index={2}
-        isPlaying={false}
-        dwellMs={500}
-        onIndexChange={() => {}}
-      />,
-    );
+    renderStrip({ index: 2 });
     expect(screen.queryByText("Iconoclasm builds their fane.")).not.toBeNull();
     expect(screen.queryByText("Hildebrandt arrives on the strider")).not.toBeNull();
     expect(screen.queryByText("++ VOX-INACTIVE ++")).not.toBeNull();
   });
 
   it("formats layer timestamps in Imperial M.YYY.DDD +HHMMhrs form", () => {
-    render(
-      <TimelineStrip
-        layers={twoLayers}
-        index={2}
-        isPlaying={false}
-        dwellMs={500}
-        onIndexChange={() => {}}
-      />,
-    );
+    renderStrip({ index: 2 });
     expect(screen.queryByText("M.863.194 +1421hrs")).not.toBeNull();
     expect(screen.queryByText("M.863.195 +0900hrs")).not.toBeNull();
   });
 
   it("renders position count in the footer", () => {
-    render(
-      <TimelineStrip
-        layers={twoLayers}
-        index={1}
-        isPlaying={false}
-        dwellMs={500}
-        onIndexChange={() => {}}
-      />,
-    );
+    renderStrip({ index: 1 });
     expect(screen.queryByText("1/2")).not.toBeNull();
   });
 
@@ -110,15 +73,7 @@ describe("TimelineStrip", () => {
         message: `event-${i}`,
       }),
     );
-    render(
-      <TimelineStrip
-        layers={many}
-        index={8}
-        isPlaying={false}
-        dwellMs={500}
-        onIndexChange={() => {}}
-      />,
-    );
+    renderStrip({ layers: many, index: 8 });
     // 8 layers, index 8 (latest applied) — newest 5 events visible, older unmounted.
     expect(screen.queryByText("event-7")).not.toBeNull();
     expect(screen.queryByText("event-6")).not.toBeNull();
@@ -139,30 +94,14 @@ describe("TimelineStrip", () => {
     });
   });
 
-  it("disables both arrows while playing", () => {
-    render(
-      <TimelineStrip
-        layers={twoLayers}
-        index={1}
-        isPlaying={true}
-        dwellMs={500}
-        onIndexChange={() => {}}
-      />,
-    );
-    expect((screen.getByLabelText("Previous layer") as HTMLButtonElement).disabled).toBe(true);
-    expect((screen.getByLabelText("Next layer") as HTMLButtonElement).disabled).toBe(true);
+  it("keeps the arrows usable while playing (manual stepping interrupts playback)", () => {
+    renderStrip({ index: 1, isPlaying: true });
+    expect((screen.getByLabelText("Previous layer") as HTMLButtonElement).disabled).toBe(false);
+    expect((screen.getByLabelText("Next layer") as HTMLButtonElement).disabled).toBe(false);
   });
 
   it("disables prev at index 0 and next at index === layers.length", () => {
-    const { rerender } = render(
-      <TimelineStrip
-        layers={twoLayers}
-        index={0}
-        isPlaying={false}
-        dwellMs={500}
-        onIndexChange={() => {}}
-      />,
-    );
+    const { rerender } = renderStrip({ index: 0 });
     expect((screen.getByLabelText("Previous layer") as HTMLButtonElement).disabled).toBe(true);
     expect((screen.getByLabelText("Next layer") as HTMLButtonElement).disabled).toBe(false);
 
@@ -173,6 +112,8 @@ describe("TimelineStrip", () => {
         isPlaying={false}
         dwellMs={500}
         onIndexChange={() => {}}
+        onSkipToEnd={() => {}}
+        onReplay={() => {}}
       />,
     );
     expect((screen.getByLabelText("Previous layer") as HTMLButtonElement).disabled).toBe(false);
@@ -181,18 +122,26 @@ describe("TimelineStrip", () => {
 
   it("calls onIndexChange with neighboring index on arrow click", () => {
     const onChange = vi.fn();
-    render(
-      <TimelineStrip
-        layers={twoLayers}
-        index={1}
-        isPlaying={false}
-        dwellMs={500}
-        onIndexChange={onChange}
-      />,
-    );
+    renderStrip({ index: 1, onIndexChange: onChange });
     screen.getByLabelText("Previous layer").click();
     screen.getByLabelText("Next layer").click();
     expect(onChange).toHaveBeenNthCalledWith(1, 0);
     expect(onChange).toHaveBeenNthCalledWith(2, 2);
+  });
+
+  it("shows a skip-to-now action while playing and calls onSkipToEnd", () => {
+    const onSkip = vi.fn();
+    renderStrip({ index: 1, isPlaying: true, onSkipToEnd: onSkip });
+    const action = screen.getByLabelText("Skip to the current state");
+    action.click();
+    expect(onSkip).toHaveBeenCalledOnce();
+  });
+
+  it("offers replay only at rest on the current state and calls onReplay", () => {
+    const onReplay = vi.fn();
+    renderStrip({ index: 2, isPlaying: false, onReplay });
+    const action = screen.getByLabelText("Replay the full vox-log");
+    action.click();
+    expect(onReplay).toHaveBeenCalledOnce();
   });
 });
