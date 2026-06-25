@@ -11,7 +11,11 @@ import {
 } from "pixi.js";
 import { GlowFilter } from "pixi-filters/glow";
 import { useEffect, useRef } from "react";
-import { createBalatroFilter, TITHE_PALETTE } from "@/components/PixiHost/balatroBackground";
+import {
+  createBalatroFilter,
+  DEFAULT_PALETTE,
+  TITHE_PALETTE,
+} from "@/components/PixiHost/balatroBackground";
 import { usePixi } from "@/components/PixiHost/pixiContext";
 import type { Faction } from "@/domain/lib/factions";
 import {
@@ -329,6 +333,30 @@ function buildScene(
   });
   const titheActiveTiles = new Map<number, Graphics>();
 
+  // --- Faction-colour balatro field (always on) ---
+  // One balatro filter over the faction-hex layer, in tint-from-texture mode: the
+  // shader derives its palette per-pixel from each hex's own faction colour, so the
+  // whole map shimmers with a faction-tinted swirl in a single screen-space pass.
+  // The dark per-hex strokes stay near-black through the shader (deep-shadow stop)
+  // and the factionBorderLayer sits above unfiltered, so the hex grid still reads.
+  const { filter: factionTintFilter, setTime: setFactionTintTime } = createBalatroFilter(
+    DEFAULT_PALETTE,
+    { tintFromTexture: true },
+  );
+  // Render the filter's offscreen texture at the full device resolution, else the
+  // round-trip rasterizes the thin horizontal hex-grid strokes at a lower
+  // resolution and they drop out / flicker at certain zoom levels.
+  factionTintFilter.resolution = app.renderer.resolution;
+  factionTintFilter.antialias = "on";
+  // Invisible full-grid anchor (same trick as the tithe): keeps the filter's bounds
+  // stable so the screen-space swirl doesn't drift/rescale as territory changes.
+  const factionFieldAnchor = new Graphics()
+    .rect(-titheHalfW, -titheHalfH, titheHalfW * 2, titheHalfH * 2)
+    .fill({ color: 0x000000, alpha: 0 });
+  factionFieldAnchor.eventMode = "none";
+  factionHexLayer.addChild(factionFieldAnchor);
+  factionHexLayer.filters = [factionTintFilter];
+
   const animMgr = new AnimationManager();
   // Indexed by "q,r" so flip animations can address the underlying snapshot
   // hex directly. Rebuilt every setFactionState — animations always look up
@@ -375,7 +403,7 @@ function buildScene(
       const g = new Graphics();
       g.poly(LOCAL_HEX_VERTS);
       g.fill({ color: faction ? faction.color : "#787c80" });
-      g.stroke({ color: "#090c10", width: 0.2 });
+      g.stroke({ color: "#090c10", width: 0.3 });
       g.position.set(cx, cy);
       if (faction) {
         g.eventMode = "static";
@@ -444,6 +472,7 @@ function buildScene(
         factionBorderLayer.alpha = revealAlpha;
       }
     }
+    setFactionTintTime(now - mountTime);
     advancePulse();
     animMgr.tick(now);
   };
@@ -1168,6 +1197,8 @@ function buildScene(
     titheActiveTiles.clear();
     titheLayer.filters = [];
     titheFilter.destroy();
+    factionHexLayer.filters = [];
+    factionTintFilter.destroy();
     regionEntries.clear();
     symbolSprites.clear();
     symbolTextureCache.clear();

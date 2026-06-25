@@ -25,6 +25,16 @@ uniform vec3 uColour1;
 uniform vec3 uColour2;
 uniform vec3 uColour3;
 
+// When > 0.5 the three palette stops are derived per-pixel from the input
+// texture's own colour (the faction-coloured hexes) instead of the uniforms,
+// so one filter tints every hex by its faction's colour. See createBalatroFilter.
+uniform float uTintFromTexture;
+
+// Scales the additive "light" crest (the bright highlight the swirl adds on top).
+// 1.0 = full strength (page background / tithe); the faction-tint mode dials it
+// way down so the swirl stays subtle and the dark hex borders aren't washed out.
+uniform float uLightScale;
+
 #define SPIN_ROTATION -2.0
 #define SPIN_SPEED 4.0
 #define OFFSET vec2(0.0)
@@ -39,7 +49,7 @@ uniform vec3 uColour3;
 #define PI 3.14159265359
 #define IS_ROTATE false
 
-vec4 effect(vec2 screenSize, vec2 screen_coords) {
+vec4 effect(vec2 screenSize, vec2 screen_coords, vec4 c1, vec4 c2, vec4 c3) {
   float pixel_size = length(screenSize.xy) / PIXEL_FILTER;
   vec2 uv = (floor(screen_coords.xy * (1.0 / pixel_size)) * pixel_size - 0.5 * screenSize.xy) / length(screenSize.xy) - OFFSET;
   float uv_len = length(uv);
@@ -69,9 +79,9 @@ vec4 effect(vec2 screenSize, vec2 screen_coords) {
   float c2p = max(0.0, 1.0 - contrast_mod * abs(paint_res));
   float c3p = 1.0 - min(1.0, c1p + c2p);
   float light = (LIGTHING - 0.2) * max(c1p * 5.0 - 4.0, 0.0) + LIGTHING * max(c2p * 5.0 - 4.0, 0.0);
-  return (0.3 / CONTRAST) * COLOUR_1
-    + (1.0 - 0.3 / CONTRAST) * (COLOUR_1 * c1p + COLOUR_2 * c2p + vec4(c3p * COLOUR_3.rgb, c3p * COLOUR_1.a))
-    + light;
+  return (0.3 / CONTRAST) * c1
+    + (1.0 - 0.3 / CONTRAST) * (c1 * c1p + c2 * c2p + vec4(c3p * c3.rgb, c3p * c1.a))
+    + light * uLightScale;
 }
 
 void main() {
@@ -83,8 +93,26 @@ void main() {
   // is opaque: the page background is a full opaque rect (alpha 1 → unchanged),
   // while the tithe applies this filter to a container of flipping tiles so the
   // continuous, animated field shows through the tile shapes.
-  float coverage = texture(uTexture, vTextureCoord).a;
-  finalColor = effect(uInputSize.xy, vTextureCoord * uInputSize.xy) * coverage;
+  vec4 src = texture(uTexture, vTextureCoord);
+  float coverage = src.a;
+  vec4 c1 = COLOUR_1;
+  vec4 c2 = COLOUR_2;
+  vec4 c3 = COLOUR_3;
+  if (uTintFromTexture > 0.5) {
+    // Pixi filter input is premultiplied; recover the hex's true faction colour,
+    // then build a lit highlight + a deep shadow around it. The deep shadow keeps
+    // the dark per-hex strokes near-black so the grid still reads through the swirl.
+    vec3 base = coverage > 0.001 ? src.rgb / coverage : src.rgb;
+    // Push saturation up a touch (mix away from luminance grey).
+    float luma = dot(base, vec3(0.299, 0.587, 0.114));
+    base = clamp(mix(vec3(luma), base, 1.35), 0.0, 1.0);
+    c1 = vec4(base, 1.0);
+    // Keep the lightest and darkest stops close to the base colour so the swirl
+    // stays low-contrast (small spread between brightest and darkest patches).
+    c2 = vec4(clamp(base * 1.03, 0.0, 1.0), 1.0);
+    c3 = vec4(base * 0.72, 1.0);
+  }
+  finalColor = effect(uInputSize.xy, vTextureCoord * uInputSize.xy, c1, c2, c3) * coverage;
 }
 `;
 
@@ -113,10 +141,21 @@ export interface BalatroFilter {
   setTime: (elapsedMs: number) => void;
 }
 
+export interface BalatroFilterOptions {
+  // Derive the palette per-pixel from the filtered content's own colour instead
+  // of the `palette` argument — used to tint the faction hexes by faction colour
+  // (the `palette` arg is then ignored).
+  tintFromTexture?: boolean;
+}
+
 // The shader as a reusable Filter (palette-parameterized). Callers own the mesh
 // it's applied to — the page background scales a full-screen rect, the tithe wave
-// applies it to a world-space rect masked to flipping hexes.
-export function createBalatroFilter(palette: BalatroPalette = DEFAULT_PALETTE): BalatroFilter {
+// applies it to a world-space rect masked to flipping hexes, and the faction-tint
+// variant (tintFromTexture) applies it to the faction-hex layer.
+export function createBalatroFilter(
+  palette: BalatroPalette = DEFAULT_PALETTE,
+  opts: BalatroFilterOptions = {},
+): BalatroFilter {
   const glProgram = GlProgram.from({
     vertex: defaultFilterVert,
     fragment: FRAGMENT_SHADER,
@@ -128,6 +167,8 @@ export function createBalatroFilter(palette: BalatroPalette = DEFAULT_PALETTE): 
     resources: {
       balatroUniforms: {
         uTime: { value: 0, type: "f32" },
+        uTintFromTexture: { value: opts.tintFromTexture ? 1 : 0, type: "f32" },
+        uLightScale: { value: opts.tintFromTexture ? 0.08 : 1, type: "f32" },
         uColour1: { value: Float32Array.from(palette.colour1), type: "vec3<f32>" },
         uColour2: { value: Float32Array.from(palette.colour2), type: "vec3<f32>" },
         uColour3: { value: Float32Array.from(palette.colour3), type: "vec3<f32>" },
