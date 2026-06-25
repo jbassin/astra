@@ -516,13 +516,6 @@
       "heading": null,
       "resolved": null,
       "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
-      "target": "Fane"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": null,
-      "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
       "target": "Heart"
     },
     {
@@ -573,13 +566,6 @@
       "resolved": null,
       "source": "Geography/Calaria/Hallia/Sableclutch/index",
       "target": "Sableclutch Scrap"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": null,
-      "source": "Geography/Calaria/Hallia/Sableclutch/index",
-      "target": "Copperjaw"
     },
     {
       "alias": null,
@@ -1028,13 +1014,6 @@
       "resolved": "Org/Concordia",
       "source": "Org/Concordia",
       "target": "Concordia"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": null,
-      "source": "Org/Concordia",
-      "target": "Fane"
     },
     {
       "alias": "Hearts",
@@ -1700,13 +1679,6 @@
       "resolved": null,
       "source": "Org/RunGunners/index",
       "target": "RunGunners"
-    },
-    {
-      "alias": null,
-      "heading": null,
-      "resolved": null,
-      "source": "Org/RunGunners/index",
-      "target": "Fane"
     },
     {
       "alias": "Hearts",
@@ -2839,11 +2811,6 @@
         {
           "alias": null,
           "heading": null,
-          "target": "Fane"
-        },
-        {
-          "alias": null,
-          "heading": null,
           "target": "Heart"
         },
         {
@@ -2910,11 +2877,6 @@
           "alias": null,
           "heading": null,
           "target": "Sableclutch Scrap"
-        },
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Copperjaw"
         },
         {
           "alias": null,
@@ -3719,11 +3681,6 @@
           "alias": null,
           "heading": null,
           "target": "Concordia"
-        },
-        {
-          "alias": null,
-          "heading": null,
-          "target": "Fane"
         },
         {
           "alias": "Hearts",
@@ -4880,11 +4837,6 @@
           "target": "RunGunners"
         },
         {
-          "alias": null,
-          "heading": null,
-          "target": "Fane"
-        },
-        {
           "alias": "Hearts",
           "heading": null,
           "target": "Heart"
@@ -5672,10 +5624,6 @@
     },
     {
       "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
-      "target": "Fane"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
       "target": "Heart"
     },
     {
@@ -5685,10 +5633,6 @@
     {
       "source": "Geography/Calaria/Hallia/Sableclutch/index",
       "target": "Sableclutch Scrap"
-    },
-    {
-      "source": "Geography/Calaria/Hallia/Sableclutch/index",
-      "target": "Copperjaw"
     },
     {
       "source": "Geography/Calaria/Hallia/Sableclutch/index",
@@ -5725,10 +5669,6 @@
     {
       "source": "Org/Chorath Engineering",
       "target": "Hallia"
-    },
-    {
-      "source": "Org/Concordia",
-      "target": "Fane"
     },
     {
       "source": "Org/Concordia",
@@ -5781,10 +5721,6 @@
     {
       "source": "Org/RunGunners/index",
       "target": "RunGunners"
-    },
-    {
-      "source": "Org/RunGunners/index",
-      "target": "Fane"
     },
     {
       "source": "Org/RunGunners/index",
