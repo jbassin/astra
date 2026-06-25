@@ -1,7 +1,6 @@
 import type { Layer } from "@/domain/lib/regions";
 
 export const VISIBLE_SLOTS = 5;
-export const MAX_VISIBLE_DOTS = 15;
 
 // Match the shape of `M.YYY.DDD +HHMMhrs` so the null entry aligns vertically
 // with real layer dates above it in the log.
@@ -17,8 +16,6 @@ export type TimelineEntry =
       message: string;
     }
   | { key: "null"; kind: "null"; date: string; message: string };
-
-export type Dot = { kind: "dot"; idx: number } | { kind: "ellipsis" };
 
 export function visibleEntries(layers: Layer[], index: number): TimelineEntry[] {
   const out: TimelineEntry[] = [];
@@ -56,26 +53,6 @@ export function imperialDate(timestamp: string): string {
   const day = Number.parseInt(dd!, 10);
   const doy = (DAYS_BEFORE_MONTH[monthIdx] ?? 0) + day;
   return `M.${year}.${String(doy).padStart(3, "0")} +${hh}${mi}hrs`;
-}
-
-export function dotIndices(count: number, current: number): Dot[] {
-  if (count <= MAX_VISIBLE_DOTS) {
-    return Array.from({ length: count }, (_, i) => ({ kind: "dot", idx: i }));
-  }
-  const window = 2;
-  const keep = new Set<number>([0, count - 1, current]);
-  for (let i = current - window; i <= current + window; i++) {
-    if (i >= 0 && i < count) keep.add(i);
-  }
-  const sorted = [...keep].sort((a, b) => a - b);
-  const out: Dot[] = [];
-  let prev = -1;
-  for (const idx of sorted) {
-    if (prev !== -1 && idx > prev + 1) out.push({ kind: "ellipsis" });
-    out.push({ kind: "dot", idx });
-    prev = idx;
-  }
-  return out;
 }
 
 // Constant dwell per layer. Playback used to accelerate line-by-line to keep a

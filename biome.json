@@ -83,6 +83,7 @@
         "**/strider/src/domain/lib/memoriam.ts",
         "**/strider/src/domain/lib/memoriam.test.ts",
         "**/strider/src/domain/lib/timeline.ts",
+        "**/strider/src/domain/lib/timelineFrames.test.ts",
         "**/strider/src/lib/useFocusTrap.ts",
         "**/strider/src/domain/lib/editorHelpers.ts",
         "**/strider/src/domain/components/HexMap/**",

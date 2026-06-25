@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import type { Layer } from "@/domain/lib/regions";
-import { dotIndices, slotInk, slotOpacity, visibleEntries } from "@/domain/lib/timeline";
+import { slotInk, slotOpacity, visibleEntries } from "@/domain/lib/timeline";
 import styles from "./TimelineStrip.module.css";
 import { useTypewriter } from "./useTypewriter";
 
@@ -31,7 +31,6 @@ export default function TimelineStrip({
   const showReplay = !isPlaying && atEnd;
 
   const entries = useMemo(() => visibleEntries(layers, index), [layers, index]);
-  const dots = useMemo(() => dotIndices(total + 1, index), [total, index]);
 
   const topEntry = entries[0] ?? null;
   const topMessage = topEntry?.message ?? "";
@@ -109,27 +108,17 @@ export default function TimelineStrip({
           ◀
         </button>
 
-        <span className={styles.dots} aria-hidden="true">
-          {dots.map((d, i) =>
-            d.kind === "ellipsis" ? (
-              <span key={`e-${i}`} className={styles.ellipsis}>
-                …
-              </span>
-            ) : (
-              <span
-                key={d.idx}
-                className={
-                  d.idx === index
-                    ? styles.glyphActive
-                    : d.idx < index
-                      ? styles.glyphPast
-                      : styles.glyphFuture
-                }
-              >
-                {d.idx === index ? "◈" : d.idx < index ? "✠" : "·"}
-              </span>
-            ),
-          )}
+        <span className={styles.scrubRow}>
+          <input
+            type="range"
+            className={styles.scrubber}
+            min={0}
+            max={total}
+            step={1}
+            value={index}
+            onChange={(e) => onIndexChange(Number(e.target.value))}
+            aria-label="Scrub the vox-log timeline"
+          />
           <span className={styles.count}>
             {index}/{total}
           </span>

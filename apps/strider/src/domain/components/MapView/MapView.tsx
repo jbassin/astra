@@ -4,26 +4,11 @@ import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import { useSetEntitiesObserved } from "@/components/SiteHeader/entitiesObserved";
 import Modal, { type ModalContent } from "@/domain/components/Modal/Modal";
 import type { Faction } from "@/domain/lib/factions";
-import {
-  computeAssignmentBorders,
-  computeBannerAssignments,
-  computeEffectiveAssignments,
-  FACTION_HEXES,
-  UNOWNED_BASE_HEXES,
-} from "@/domain/lib/hexUtils";
 import { computeFallenStateByCursor, fallenAtCursor } from "@/domain/lib/memoriam";
 import { OVERLAYS, type OverlayId, serializeOverlaysParam } from "@/domain/lib/overlays";
-import {
-  type Banner,
-  type FactionFlipAnim,
-  foldBanners,
-  foldFactionOverrides,
-  foldRegions,
-  foldSkein,
-  type Layer,
-  type LayerAnimation,
-} from "@/domain/lib/regions";
+import type { FactionFlipAnim, Layer, LayerAnimation } from "@/domain/lib/regions";
 import { LAYER_DWELL_MS } from "@/domain/lib/timeline";
+import { buildTimelineFrames } from "@/domain/lib/timelineFrames";
 import { useIsMobile } from "@/lib/useIsMobile";
 import styles from "./MapView.module.css";
 import MemoriamPanel from "./MemoriamPanel";
@@ -46,20 +31,6 @@ interface MapViewProps {
   layers: Layer[];
   seen?: boolean;
   initialVisibleOverlays: Set<OverlayId>;
-}
-
-// A banner renders as a synthetic faction appended to the faction list: its
-// member hexes merge into one banner-colored group, so the existing fill /
-// border-dissolve / hover / click machinery applies unchanged.
-function bannerPseudoFaction(banner: Banner, order: number): Faction {
-  return {
-    name: banner.name,
-    slug: banner.slug,
-    color: banner.color,
-    order,
-    symbol: banner.symbol,
-    description: "",
-  };
 }
 
 export default function MapView({ factions, layers, seen, initialVisibleOverlays }: MapViewProps) {
@@ -103,11 +74,18 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
     [navigate],
   );
 
-  const regions = useMemo(() => foldRegions(layers.slice(0, layerIndex)), [layers, layerIndex]);
-
-  const skein = useMemo(() => foldSkein(layers.slice(0, layerIndex)), [layers, layerIndex]);
-
   const factionSlugs = useMemo(() => factions.map((f) => f.slug), [factions]);
+
+  // Precompute every cursor's fully-derived state once (memoized on the layer
+  // set), so stepping or scrubbing to any layer is an O(1) lookup instead of
+  // re-folding `layers.slice(0, index)` from scratch on every change.
+  const frames = useMemo(
+    () => buildTimelineFrames(layers, factions, factionSlugs),
+    [layers, factions, factionSlugs],
+  );
+  const frame = frames[layerIndex] ?? frames[frames.length - 1]!;
+  const regions = frame.regions;
+  const skein = frame.skein;
 
   const fallenStateByCursor = useMemo(
     () => computeFallenStateByCursor(factions, layers),
@@ -121,53 +99,9 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
 
   const setEntitiesObserved = useSetEntitiesObserved();
 
-  const effectiveFactionState = useMemo(() => {
-    const overrides = foldFactionOverrides(layers.slice(0, layerIndex));
-    const effective = computeEffectiveAssignments(
-      FACTION_HEXES,
-      UNOWNED_BASE_HEXES,
-      overrides,
-      factionSlugs,
-    );
-    const { allBorders, perFaction } = computeAssignmentBorders(effective.perFaction);
-    return {
-      factionHexes: effective.perFaction,
-      unownedHexes: effective.unowned,
-      factionBorders: allBorders,
-      territoryBorders: perFaction,
-    };
-  }, [layers, layerIndex, factionSlugs]);
-
-  // Fold active banners at the cursor and merge them into the painted state as
-  // pseudo-factions: member-faction hexes move into one banner-colored group
-  // (inner seams dissolve via the combined-border pass), while the constituent
-  // faction is retained per hex for the detail panel. Dissolving a banner just
-  // drops it from the active set, so members repaint themselves automatically.
-  const renderState = useMemo(() => {
-    const banners = foldBanners(layers.slice(0, layerIndex));
-    const { bannerGroups, remainingPerFaction } = computeBannerAssignments(
-      effectiveFactionState.factionHexes,
-      factionSlugs,
-      banners,
-    );
-    const pseudoFactions = banners.map((b, i) => bannerPseudoFaction(b, factions.length + i + 1));
-    const renderFactions = [...factions, ...pseudoFactions];
-    const renderFactionHexes = [...remainingPerFaction, ...bannerGroups.map((g) => g.hexes)];
-    const { allBorders, perFaction } = computeAssignmentBorders(renderFactionHexes);
-    const activeBanners = new Map(banners.map((b) => [b.slug, b]));
-    return {
-      renderFactions,
-      renderFactionHexes,
-      factionBorders: allBorders,
-      territoryBorders: perFaction,
-      activeBanners,
-    };
-  }, [effectiveFactionState.factionHexes, factionSlugs, factions, layers, layerIndex]);
-
   const entitiesObservedCount = useMemo(
-    () =>
-      renderState.renderFactionHexes.reduce((sum, hexes) => (hexes.length > 0 ? sum + 1 : sum), 0),
-    [renderState.renderFactionHexes],
+    () => frame.renderFactionHexes.reduce((sum, hexes) => (hexes.length > 0 ? sum + 1 : sum), 0),
+    [frame],
   );
 
   useEffect(() => {
@@ -178,7 +112,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
   function handleFactionClick(faction: Faction) {
     // A banner pseudo-faction opens the alliance panel (no /factions route
     // exists for it), listing its constituents — each opens its own dossier.
-    const banner = renderState.activeBanners.get(faction.slug);
+    const banner = frame.activeBanners.get(faction.slug);
     if (banner) {
       const members = banner.members
         .map((slug) => factions.find((f) => f.slug === slug))
@@ -216,7 +150,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
   const hoveredRegionSlug = hover.kind === "region" ? hover.slug : null;
   const hoveredSkeinSlug = hover.kind === "skein" ? hover.slug : null;
   const hoveredFaction =
-    hoveredFactionIdx !== null ? renderState.renderFactions[hoveredFactionIdx] : null;
+    hoveredFactionIdx !== null ? frame.renderFactions[hoveredFactionIdx] : null;
   const hoveredRegion = hoveredRegionSlug
     ? (regions.find((r) => r.slug === hoveredRegionSlug) ?? null)
     : null;
@@ -261,19 +195,14 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
     // member faction's hexes (their previous owners) to the banner color, so it
     // needs the same prev-state fold as a claim.
     let factionFlips: FactionFlipAnim[] = [];
-    if (claimChanges.length > 0 || bannerForms.length > 0) {
-      const prevOverrides = foldFactionOverrides(layers.slice(0, layerIndex - 1));
-      const prevEffective = computeEffectiveAssignments(
-        FACTION_HEXES,
-        UNOWNED_BASE_HEXES,
-        prevOverrides,
-        factionSlugs,
-      );
+    const prevFrame = frames[layerIndex - 1];
+    if ((claimChanges.length > 0 || bannerForms.length > 0) && prevFrame) {
+      const prevPerFaction = prevFrame.effectiveFactionHexes;
       const prevFactionIdxByHex = new Map<string, number | null>();
-      prevEffective.perFaction.forEach((hexes, idx) => {
+      prevPerFaction.forEach((hexes, idx) => {
         for (const [q, r] of hexes) prevFactionIdxByHex.set(`${q},${r}`, idx);
       });
-      for (const [q, r] of prevEffective.unowned) {
+      for (const [q, r] of prevFrame.unownedHexes) {
         prevFactionIdxByHex.set(`${q},${r}`, null);
       }
       factionFlips = claimChanges
@@ -307,7 +236,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
           for (const member of bf.members) {
             const idx = slugToIdx.get(member);
             if (idx === undefined) continue;
-            for (const [q, r] of prevEffective.perFaction[idx]!) {
+            for (const [q, r] of prevPerFaction[idx]!) {
               hexes.push([q, r]);
               lookups.push([`${q},${r}`, idx]);
             }
@@ -336,7 +265,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
       factionFlips,
       tithe,
     };
-  }, [layers, layerIndex, prevLayerIndex, factionSlugs]);
+  }, [frames, layers, layerIndex, prevLayerIndex, factionSlugs]);
 
   return (
     <div className={styles.root}>
@@ -366,13 +295,13 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
           </div>
           <ClientOnly>
             <HexMap
-              factions={renderState.renderFactions}
+              factions={frame.renderFactions}
               regions={regions}
               skein={skein}
-              factionHexes={renderState.renderFactionHexes}
-              unownedHexes={effectiveFactionState.unownedHexes}
-              factionBorders={renderState.factionBorders}
-              territoryBorders={renderState.territoryBorders}
+              factionHexes={frame.renderFactionHexes}
+              unownedHexes={frame.unownedHexes}
+              factionBorders={frame.factionBorders}
+              territoryBorders={frame.territoryBorders}
               hoveredFaction={hoveredFactionIdx}
               hoveredRegionSlug={hoveredRegionSlug}
               visibleOverlays={visibleOverlays}
