@@ -48,12 +48,12 @@ describe("staticEmit — endpoints (N2)", () => {
   it("contentIndex is the {title,links,tags} subset keyed by FullSlug", () => {
     const idx = buildContentIndex(site);
     expect(Object.keys(idx)).toHaveLength(site.docs.length);
-    const anzu = idx.Anzu;
-    expect(anzu).toBeDefined();
-    expect(anzu).toHaveProperty("title");
-    expect(anzu).toHaveProperty("links");
-    expect(anzu).toHaveProperty("tags");
+    const entry = idx.Timeline;
+    expect(entry).toBeDefined();
+    expect(entry).toHaveProperty("title");
+    expect(entry).toHaveProperty("links");
+    expect(entry).toHaveProperty("tags");
     // the slim contract — NOT the full-text blob
-    expect(Object.keys(anzu ?? {}).sort()).toEqual(["links", "tags", "title"]);
+    expect(Object.keys(entry ?? {}).sort()).toEqual(["links", "tags", "title"]);
   });
 });

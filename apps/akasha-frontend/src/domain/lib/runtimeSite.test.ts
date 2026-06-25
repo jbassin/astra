@@ -21,7 +21,7 @@ describe("resolvePath — URL → page kind (faerrin's catch-all)", () => {
   });
 
   it("maps a content slug to a content page", () => {
-    expect(resolvePath("Anzu")).toEqual({ kind: "content", slug: "Anzu" });
+    expect(resolvePath("Timeline")).toEqual({ kind: "content", slug: "Timeline" });
   });
 
   it("maps both Foo and Foo/index to the folder listing", () => {
@@ -50,8 +50,8 @@ describe("resolvePath — URL → page kind (faerrin's catch-all)", () => {
 
 describe("view builders", () => {
   it("contentView exposes title, tag links, breadcrumbs, sorted backlinks, rendered body", () => {
-    const v = contentView("Anzu" as FullSlug);
-    expect(v.title).toBe("Anzu");
+    const v = contentView("Timeline" as FullSlug);
+    expect(v.title).toBe("Timeline");
     expect(v.showBreadcrumbs).toBe(true);
     expect(v.crumbs[0]?.displayName).toBe("Home");
     const titles = v.backlinks.map((b) => b.label);

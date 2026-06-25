@@ -1,4 +1,3 @@
-import { readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
@@ -18,25 +17,13 @@ const HERE = path.dirname(fileURLToPath(import.meta.url));
 const SNAPSHOT = path.resolve(HERE, "../../../../akasha-backend/snapshot/akasha-snapshot.json");
 const site = buildSite(loadSnapshot(SNAPSHOT));
 
-// faerrin's authoritative shipped slugs (the 141 non-Script contentIndex keys).
-const faerrinSlugs = JSON.parse(
-  readFileSync(path.join(HERE, "__fixtures__/faerrin-slugs.json"), "utf8"),
-) as string[];
-
-describe("site index — URL slug parity (the cutover gate)", () => {
-  it("computes the EXACT faerrin non-Script wiki slug set (byte-for-byte)", () => {
-    // faerrin shipped 217 slugs = 141 non-Script wiki + 76 Script transcripts. The
-    // akasha snapshot holds exactly the 141 wiki pages (Script transcripts are a separate
-    // artifact reconstituted in a later slice), so akasha-fe's slug set must equal
-    // faerrin's 141 non-Script slugs verbatim. Any divergence breaks inbound links.
-    const computed = site.docs.map((d) => d.slug).sort();
-    const authoritative = [...(faerrinSlugs as string[])].sort();
-    expect(computed).toEqual(authoritative);
-  });
-
-  it("has 141 pages and unique slugs", () => {
-    expect(site.docs).toHaveLength(141);
-    expect(new Set(site.docs.map((d) => d.slug)).size).toBe(141);
+describe("site index — slug invariants", () => {
+  // The faerrin→astra cutover parity gates were retired once the migration finished;
+  // astra now owns its content and pages are added/removed editorially. What remains is
+  // the durable invariant: slugs are non-empty and unique.
+  it("derives a non-empty set of unique slugs", () => {
+    expect(site.docs.length).toBeGreaterThan(0);
+    expect(new Set(site.docs.map((d) => d.slug)).size).toBe(site.docs.length);
   });
 
   it("preserves Unicode/space/apostrophe filenames through sluggify", () => {
@@ -79,11 +66,4 @@ describe("site index — derived structure (lifted Quartz semantics)", () => {
     // alias slugs are unique (first-wins on collision)
     expect(new Set(aliases.map((a) => a.slug)).size).toBe(aliases.length);
   });
-});
-
-// Read the snapshot file directly to assert the fixture matches the live snapshot count
-// (guards against the snapshot regenerating with a different page set).
-it("the parity fixture count matches the live snapshot page count", () => {
-  const raw = JSON.parse(readFileSync(SNAPSHOT, "utf8")) as { pages: unknown[] };
-  expect(raw.pages.length).toBe((faerrinSlugs as string[]).length);
 });

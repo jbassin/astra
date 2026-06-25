@@ -31,7 +31,7 @@ def test_crossref_resolution_page_to_page() -> None:
         by_stem.setdefault(p.path.rsplit("/", 1)[-1], []).append(p.path)
 
     # A bare name resolves by stem.
-    assert resolve_target("Othello", by_path, by_stem) == "Othello"
+    assert resolve_target("Timeline", by_path, by_stem) == "Timeline"
     # A folder link resolves to its index page (Quartz convention).
     assert (
         resolve_target("Org/Iridescent Church", by_path, by_stem) == "Org/Iridescent Church/index"
