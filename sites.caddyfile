@@ -68,6 +68,13 @@ akasha.iridi.cc {
 	reverse_proxy localhost:10365
 }
 
+# heart.iridi.cc — alias host for akasha-frontend (same SSR service, port 10365).
+# (Needs a heart.iridi.cc DNS record — manual, like the other deferred hosts.)
+heart.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10365
+}
+
 # mouthpiece-frontend — the podcast read-surface (0012), the third SSR frontend on the
 # strider/akasha template. Read-only (no /editor → no local_only gate). Self-serves
 # gothic's fonts from dist/; /audio/<id>.mp3 is served by the SSR process off the
