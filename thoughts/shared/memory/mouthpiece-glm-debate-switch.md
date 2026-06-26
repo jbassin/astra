@@ -45,14 +45,33 @@ case without an Opus-debate comparison.
 `ensure_anthropic_env()` → resolves the Anthropic key, which **shells out to `sops` when the env override is
 absent**. CI has no `sops` binary → `FileNotFoundError`. Local `uv run pytest` PASSED because sops IS
 installed locally — it silently resolved via sops instead of failing. **To reproduce the substrate-smoke CI
-faithfully, mask `sops` off PATH** (`PATH=/shim:/usr/bin:/bin uv run pytest …`, /shim has no sops). The test
-must set `ANTHROPIC_API_KEY` (what ensure_anthropic_env reads) to stay offline — NOT `OPENROUTER_API_KEY`
-(the bug that red'd it). Reinforces [[no-ci-monitoring]]: reproduce locally, but know which tests have a
-host-tool dep CI lacks.
+faithfully, mask `sops` off PATH** — either `PATH=/shim:/usr/bin:/bin uv run pytest …` (/shim has no sops),
+or drop a **failing `sops` shim** first on PATH (exits non-zero, prints "SOPS WAS CALLED") so any shell-out
+fails loudly. The offline test must set **whatever key `run()` actually bridges**. **(UPDATE `0bbf3f0`:
+`run()` now bridges OpenRouter via `ensure_openrouter_env` — the GLM default model — so the test sets
+`OPENROUTER_API_KEY`, NOT `ANTHROPIC_API_KEY`. Earlier this was inverted (run bridged Anthropic).**
+Reinforces [[no-ci-monitoring]]: reproduce locally, but know which tests have a host-tool dep CI lacks.
 
 **Deploy:** `just up` (rebuilds the dagster IMAGE — prompt+config are baked, [[mouthpiece-two-host-gotchas]]
 — + injects the key from SOPS; must be `just up`, not plain `docker compose up`, or the SOPS env drops). GLM
-debate applies to the NEXT episode the pipeline generates. **Not yet proven in-cluster** (optional follow-up:
-materialize `session_digest`+`session_script` for a test partition — the local A/B proved the model, this
-would prove the deployed wiring). The harnesses + the approved debate transcript live in this session's
-scratchpad only. Builds on [[mouthpiece-two-host-gotchas]].
+debate applies to the NEXT episode the pipeline generates. Builds on [[mouthpiece-two-host-gotchas]].
+
+**FIRST REAL DEBATE EPISODE RENDERED LIVE (2026-06-26, `fd48ea4`) — proves the deployed wiring in-cluster.**
+End-to-end re-render of 2026-6-22 → **"The Jurisdiction of Vibes"** (59 turns, two-host, 15.6 min, real
+ElevenLabs `mode=dialogue`). LIVE-verified on mouthpiece-frontend (SSR title + `/episodes.json` + audio Range
+206). **The end-to-end re-render recipe for an EXISTING session** (forward-only didn't touch published eps, so
+this is how to apply debate to one):
+- **Materialize IN the dagster-code container** — `episodes/` is **root-owned by the container**, so host-side
+  writes get PermissionError. `docker compose exec -T dagster-code sh -c 'cd /opt/dagster/app && dagster asset
+  materialize --select <assets> --partition <date> -f definitions.py'`. The image already carries the GLM
+  debate code + `OPENROUTER_API_KEY`/ElevenLabs env (from `just up`).
+- **Spend gate:** split into `session_digest,session_script` (GLM, cents) → review `script.json` → then
+  `session_audio_clips,session_episode` (ElevenLabs, ~$ for ~15K chars). Back up current artifacts to
+  `*.2host.bak` IN the container first. (Supersedes the two-host memory's "place script.json + materialize
+  clips,episode" recipe, which only re-rendered audio from a hand-placed script.)
+- **Publish (HOST):** `just mouthpiece-publish` → commit+push the snapshot → `just mouthpiece-seed` →
+  `docker compose up -d --build mouthpiece-frontend`.
+- **⚠️ Snapshot-vs-render DRIFT:** a committed snapshot title can **lead** the real episode — here the snapshot
+  already said "The Jurisdiction of Vibes" (an earlier A/B `publish` ran without rendering audio) while the
+  live script+audio were still calm "Sandwich Yoink Bonus". A snapshot title ≠ proof of a render; verify
+  `durationMs`/`audioVersion` + the on-disk mp3 size.

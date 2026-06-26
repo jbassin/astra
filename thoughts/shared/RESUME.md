@@ -36,10 +36,31 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `0bbf3f0`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `fd48ea4`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
+
+### Re-rendered the most recent mouthpiece episode as a GLM debate (2026-06-26 session — DONE + LIVE)
+
+End-to-end redo of the most recent session (**2026-6-22**) on the now-deployed GLM 5.2 debate pipeline →
+**"The Jurisdiction of Vibes"** (59 sparring turns, two-host Bram/Maeve, **15.6 min**, real ElevenLabs v3
+`mode=dialogue`). Snapshot committed+pushed (`fd48ea4`), audio reseeded, mouthpiece-frontend redeployed.
+**Live-verified:** home + episode page SSR the new title, `/episodes.json[2026-6-22]`=new title, audio Range
+206 (14.9 MB new render). Memory `[[mouthpiece-glm-debate-switch]]` + `[[mouthpiece-two-host-gotchas]]`.
+- **HOW (load-bearing):** `episodes/` is **root-owned by the container** → the host can't write digest/script
+  (PermissionError); re-render by **materializing in the dagster-code container**:
+  `docker compose exec -T dagster-code sh -c 'cd /opt/dagster/app && dagster asset materialize --select <assets>
+  --partition <date> -f definitions.py'`. Split for a spend gate: first `session_digest,session_script` (GLM,
+  cents) → review the script → then `session_audio_clips,session_episode` (ElevenLabs, $). Back up the current
+  artifacts to `*.2host.bak` IN the container first (also can't from host). The dagster-code image already has
+  the GLM debate code (rebuilt via `just up` earlier this session) + `OPENROUTER_API_KEY`/ElevenLabs env.
+- **Publish (host-side):** `just mouthpiece-publish` (snapshot regen) → commit+push the snapshot → `just
+  mouthpiece-seed` (new mp3 overwrites in the volume) → `docker compose up -d --build mouthpiece-frontend`.
+- **⚠️ Drift gotcha caught:** the committed snapshot title can **lead** the live script/audio — the snapshot
+  already said "The Jurisdiction of Vibes" (from the earlier A/B publish) while the live script+audio were
+  still the calm "Sandwich Yoink Bonus" (a `publish` happened without a matching render). A snapshot title
+  is no proof the episode was actually rendered; check `durationMs`/`audioVersion` + the on-disk mp3.
 
 ### linguist dspy judge → GLM 5.2 (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN + DEPLOYED LIVE)
 
