@@ -36,10 +36,37 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `e052694`, 2026-06-24)
+## Current state — UPDATE THIS SECTION (as of commit `3d8b768`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
+
+### mouthpiece → GLM 5.2 + debate format (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN + DEPLOYED LIVE)
+
+Switched the recap podcast off Anthropic onto **GLM 5.2** (open-weight MoE, via OpenRouter) AND changed the
+format from the calmer two-host recap to a **two-co-host DEBATE**. Driver: Anthropic stopped offering Fable
+(US-gov restriction) + GLM 5.2 is cheaper than Haiku while benchmarking near Opus, and stakeholders wanted a
+debate format anyway. Validated by a local A/B (regenerated the 2026-6-22 episode three ways) — the
+debate-direction GLM output is what stakeholders approved. Five commits, both CI lanes green
+(`3d8b768` is green on GHA), deployed via `just up`. Memory `[[mouthpiece-glm-debate-switch]]`.
+- **`87d10dc`** config: `llm.default-model` → `openrouter/z-ai/glm-5.2` + `openrouter_api_key` secret ref
+  (mirrored in both schemas + `astra_llm.DEFAULT_MODEL`; config-lib tests). linguist judges stay on Anthropic.
+- **`f0a4599`** the debate prompt: rewrote Pass A (`build_improv_system_prompt`) from relaxed-tavern/deadpan-foil
+  to a two-position DEBATE (pushback is the rhythm, concede-then-counter); relaxed Pass B's overlap-tag rule.
+  One-shot `build_script_system_prompt` left as-is (asset always runs `two_pass=True`). **Forward-only** —
+  published episodes keep their scripts (per-episode hosts, `[[mouthpiece-two-host-gotchas]]`).
+- **`866aacd`** deploy: `openrouter_api_key` encrypted into `deploy/sops/secrets.enc.yaml` + `OPENROUTER_API_KEY`
+  added to the `*dagster-env` compose anchor (litellm reads it from env; `[[deploy-sops-injection]]`).
+- **`a92794f`** GLM pricing row in `astra_llm.pricing` (so SigNoz cost isn't 0) + smoke fixup.
+- **`3d8b768`** CI fix: the substrate smoke shells to `sops` when the key env-override is wrong, and **CI has
+  no `sops`** → it red after the first push even though local pytest passed (I HAVE sops, which masked it).
+  **THE gotcha: to reproduce the substrate-smoke CI faithfully, mask `sops` off PATH** (`[[mouthpiece-glm-debate-switch]]`).
+- **Deferred (optional):** a real in-cluster end-to-end proof (materialize `session_digest`+`session_script`
+  for a test partition) — the local A/B proved the model, this would prove the deployed wiring. Not done (real
+  API spend + writes an episode dir).
+- **NB the 3 akasha commits `7c5fa7b`/`625acd9`/`2367812`** (heart.iridi.cc → akasha-frontend; removed 20 root
+  entity pages + retired cutover-parity gates; de-linked dead crossrefs) landed in a prior session that didn't
+  `/save`; recorded here for completeness.
 
 ### strider map: balatro hex tint + timeline UX overhaul (2026-06-24 session — COMPLETE + PUSHED + LIVE)
 
