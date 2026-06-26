@@ -30,7 +30,7 @@ const SOPS = sopsAvailable();
 describe("@astra/config", () => {
   test("real config.kdl loads with correct types", () => {
     const cfg = loadConfig();
-    expect(cfg.llm.defaultModel).toBe("claude-opus-4-8");
+    expect(cfg.llm.defaultModel).toBe("openrouter/z-ai/glm-5.2");
     expect(cfg.llm.defaultMaxTokens).toBe(16000); // number, not string
     expect(cfg.linguist.reviewPort).toBe(10116);
     expect(cfg.telemetry.otlpEndpoint).toBe("http://signoz-otel-collector:4318");
@@ -57,6 +57,8 @@ describe("@astra/config", () => {
     expect(cfg.llm.anthropicApiKey).toBeInstanceOf(SecretRef);
     expect(cfg.llm.anthropicApiKey?.ref).toBe("sops:anthropic_api_key");
     expect(JSON.stringify(cfg.llm.anthropicApiKey)).toContain("SecretRef"); // never leaks the value
+    expect(cfg.llm.openrouterApiKey).toBeInstanceOf(SecretRef);
+    expect(cfg.llm.openrouterApiKey?.ref).toBe("sops:openrouter_api_key");
   });
 
   test.skipIf(!SOPS)("present secret resolves via sops", () => {

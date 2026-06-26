@@ -18,9 +18,10 @@ class _Base(BaseModel):
 
 
 class LlmConfig(_Base):
-    default_model: str = "claude-opus-4-8"
+    default_model: str = "openrouter/z-ai/glm-5.2"
     default_max_tokens: int = 16000
     anthropic_api_key: SecretRef | None = None
+    openrouter_api_key: SecretRef | None = None
 
 
 class TelemetryConfig(_Base):

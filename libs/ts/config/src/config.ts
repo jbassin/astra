@@ -16,9 +16,10 @@ const secret = () => z.instanceof(SecretRef).nullish();
 
 const Llm = z
   .object({
-    defaultModel: z.string().default("claude-opus-4-8"),
+    defaultModel: z.string().default("openrouter/z-ai/glm-5.2"),
     defaultMaxTokens: z.number().default(16000),
     anthropicApiKey: secret(),
+    openrouterApiKey: secret(),
   })
   .strict();
 

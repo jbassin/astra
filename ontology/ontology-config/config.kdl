@@ -7,9 +7,16 @@
 // env override (an env var named like the KEY, upper-cased) or by editing this file.
 
 llm {
-    default-model "claude-opus-4-8"
+    // mouthpiece runs on GLM 5.2 (open-weight MoE, routed via OpenRouter) — a
+    // debate-format recap podcast; cheaper than Opus and free of the Anthropic
+    // availability limits. `_litellm_model` passes any provider/id straight through.
+    // linguist's judges still call Anthropic (linguist.surface-model-*), so the
+    // anthropic key stays. litellm reads each provider key from its UPPER_CASED env
+    // var, injected from SOPS at `just up` (per-service compose `environment:`).
+    default-model "openrouter/z-ai/glm-5.2"
     default-max-tokens 16000
     anthropic-api-key ref="sops:anthropic_api_key"
+    openrouter-api-key ref="sops:openrouter_api_key"
 }
 
 telemetry {

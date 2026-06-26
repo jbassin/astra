@@ -27,7 +27,7 @@ sops_required = pytest.mark.skipif(
 
 def test_real_config_kdl_loads_and_types_are_right() -> None:
     cfg = load()
-    assert cfg.llm.default_model == "claude-opus-4-8"
+    assert cfg.llm.default_model == "openrouter/z-ai/glm-5.2"
     assert cfg.llm.default_max_tokens == 16000  # int, not str
     assert cfg.linguist.review_port == 10116
     assert cfg.telemetry.otlp_endpoint == "http://signoz-otel-collector:4318"
@@ -55,6 +55,8 @@ def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
     assert cfg.llm.anthropic_api_key.ref == "sops:anthropic_api_key"
     # repr never leaks a value.
     assert "sops:anthropic_api_key" in repr(cfg.llm.anthropic_api_key)
+    assert isinstance(cfg.llm.openrouter_api_key, SecretRef)
+    assert cfg.llm.openrouter_api_key.ref == "sops:openrouter_api_key"
 
 
 @sops_required
