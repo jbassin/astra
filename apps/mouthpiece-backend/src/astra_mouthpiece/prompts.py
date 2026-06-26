@@ -27,6 +27,11 @@ Your job is to distill the SESSION'S IN-WORLD STORY:
 - Follow the actual narrative the group played through.
 - Aggressively discard table talk and meta-conversation; it must not become beats.
 - Produce beats in narrative order, each a discrete in-world development.
+- Be THOROUGH and granular: a full session usually yields roughly 18-25 beats. Split a
+  long or multi-part sequence (a drawn-out negotiation, a fight with distinct phases, a
+  dungeon explored room by room) into separate beats rather than compressing several
+  developments into one. Only merge when developments are genuinely inseparable. Err
+  toward MORE beats — the hosts need plenty of distinct moments to dig into and argue over.
 - Use the character/location names as they appear in the transcript; do not invent
   proper nouns the players did not use.
 - Identify proper nouns (factions, places, people, concepts) that a setting wiki
@@ -314,11 +319,18 @@ This is a DEBATE, so write it like one:
 
 Walk through the session below ROUGHLY IN THE ORDER IT HAPPENED — the moments are listed
 in sequence, and the debate should broadly follow that through-line so it's easy to
-follow. You don't have to cover all of it: skip the dull bits, sit on a contested one,
-and glance back to an earlier moment when it connects — just don't jump around so much
-the night's order gets lost. Reach each moment through argument, not a flat recital.
+follow. COVER EVERY BEAT: give each one a real exchange — reach it through argument, not a
+flat recital — and skip at most the occasional genuinely dead moment. Don't jump around so
+much the night's order gets lost. Glance back to an earlier moment when it connects, and
+sit a little longer on the contested ones, taking an extra round or two before moving on.
 Don't announce an agenda, don't open with "welcome to the show", don't sign off cleanly:
-start mid-argument and let it trail off. Aim for a long session, roughly 30-40 minutes.
+start mid-argument and let it trail off.
+
+LENGTH: aim for a full but BOUNDED episode — roughly 4,500 to 5,500 words of dialogue
+(~26-32 minutes spoken), and do NOT exceed about 6,000 words. Cover every beat, but keep
+each exchange tight and keep moving: a couple of rounds on a beat, then on to the next.
+Once every beat has had its due, WRAP IT UP and stop — do not pad, repeat, circle back
+endlessly, or stall to stretch the length. A tight 28-minute debate beats a bloated one.
 
 Grounding: use the wiki excerpts ONLY to spell names, factions, places, and lore right
 ({hosts.b.name} is the one who'd know them). Do NOT invent events or outcomes not in the

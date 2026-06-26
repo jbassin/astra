@@ -222,6 +222,39 @@ def test_one_shot_uses_only_call_tool() -> None:
     assert script.turns[0].speaker == "B"
 
 
+def test_split_transcript_single_segment_under_limit() -> None:
+    from astra_mouthpiece.script import PASS_B_CHUNK_WORDS, _split_transcript
+
+    t = "Bram: hey\nMaeve: hi there"
+    assert _split_transcript(t, PASS_B_CHUNK_WORDS) == [t]  # short → one segment, verbatim
+
+
+def test_split_transcript_breaks_only_on_line_boundaries() -> None:
+    from astra_mouthpiece.script import _split_transcript
+
+    # 6 lines of 2 words each; cap 4 words/segment → 3 segments of 2 whole lines.
+    t = "\n".join(f"Bram: word{i}" for i in range(6))
+    segs = _split_transcript(t, 4)
+    assert len(segs) == 3
+    assert "\n".join(segs) == t  # no utterance split; rejoin reproduces the input
+    assert all(ln.startswith("Bram: word") for s in segs for ln in s.splitlines())
+
+
+def test_two_pass_chunks_long_transcript() -> None:
+    # A long Pass A transcript is typeset in multiple Pass B calls, turns concatenated.
+    long_text = "\n".join("Bram: word here" for _ in range(1500))  # 3 words × 1500 = 4500
+    client = StubClient(
+        text=long_text,
+        tool={"title": "The Title", "turns": [{"speaker": "A", "text": "hey"}]},
+    )
+    script = generate_two_pass(client, _digest(), [], HOSTS)
+    n_tool = client.calls.count("tool")
+    assert client.calls[0] == "text"  # Pass A once
+    assert n_tool >= 2  # Pass B ran per segment
+    assert len(script.turns) == n_tool  # one canned turn per chunk, concatenated
+    assert script.title == "The Title"  # title taken from the first chunk
+
+
 def test_parse_script_rejects_bad_speaker() -> None:
     from astra_mouthpiece.script import ScriptParseError
 

@@ -26,6 +26,14 @@ from .schemas import script_tool
 #: A 30-40 minute episode is a large output; give the model ample room (M12).
 DEFAULT_SCRIPT_MAX_TOKENS = 32_000
 
+#: Max words of Pass A transcript fed to a single Pass B typesetting call. Pass B emits a
+#: whole segment as one structured tool call; GLM's structured output is reliable up to a
+#: few thousand words but stalls typesetting a full long-episode transcript (6k+ words —
+#: it hung indefinitely). So a long Pass A is typeset in word-bounded SEGMENTS and the
+#: turns concatenated. A transcript at or below this size is a single segment — one Pass B
+#: call, behaviourally unchanged.
+PASS_B_CHUNK_WORDS = 2_200
+
 
 class ScriptParseError(ValueError):
     """Raised when the model's tool input doesn't match the expected script shape."""
@@ -90,6 +98,28 @@ def _tool_req(
     return ToolCallRequest(**kwargs)
 
 
+def _split_transcript(transcript: str, max_words: int) -> list[str]:
+    """Split a raw "Name: utterance" transcript into segments of <= max_words, breaking
+    only on line (turn) boundaries — never mid-utterance. Always returns >= 1 segment (a
+    single oversized turn becomes its own segment)."""
+    lines = [ln for ln in transcript.splitlines() if ln.strip()]
+    if not lines:
+        return [transcript]
+    segments: list[str] = []
+    cur: list[str] = []
+    cur_words = 0
+    for ln in lines:
+        w = len(ln.split())
+        if cur and cur_words + w > max_words:
+            segments.append("\n".join(cur))
+            cur, cur_words = [], 0
+        cur.append(ln)
+        cur_words += w
+    if cur:
+        segments.append("\n".join(cur))
+    return segments
+
+
 def generate_two_pass(
     client: LlmClient,
     digest: SessionDigest,
@@ -100,7 +130,13 @@ def generate_two_pass(
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     threads_block: str = "",
 ) -> Script:
-    """Pass A (free-text improv) → Pass B (structured dressing, no polishing)."""
+    """Pass A (free-text improv) → Pass B (structured dressing, no polishing).
+
+    A long Pass A transcript is dressed in word-bounded SEGMENTS (`PASS_B_CHUNK_WORDS`):
+    GLM's structured tool output stalls typesetting a full long-episode transcript at once,
+    so each segment gets its own Pass B call and the turns are concatenated (the title
+    comes from the first segment). A short transcript is one segment — a single Pass B call,
+    unchanged."""
     user_content = build_script_user_content(
         digest.synopsis, digest.session_id, digest.beats, grounding, threads_block
     )
@@ -108,16 +144,23 @@ def generate_two_pass(
     transcript = client.call_text(
         _text_req(build_improv_system_prompt(hosts), user_content, model, max_tokens)
     )
-    # Pass B — protective dressing into structured turns (no polishing).
-    raw = client.call_tool(
-        _tool_req(
-            build_dressing_system_prompt(hosts),
-            build_dressing_user_content(transcript),
-            model,
-            max_tokens,
+    # Pass B — protective dressing into structured turns (no polishing), per segment.
+    title = ""
+    turns: list[ScriptTurn] = []
+    for i, segment in enumerate(_split_transcript(transcript, PASS_B_CHUNK_WORDS)):
+        raw = client.call_tool(
+            _tool_req(
+                build_dressing_system_prompt(hosts),
+                build_dressing_user_content(segment),
+                model,
+                max_tokens,
+            )
         )
-    )
-    return parse_script(digest.session_id, raw, hosts)
+        part = parse_script(digest.session_id, raw, hosts)
+        if i == 0:
+            title = part.title
+        turns.extend(part.turns)
+    return Script(session_id=digest.session_id, title=title, hosts=hosts, turns=turns)
 
 
 def generate_one_shot(

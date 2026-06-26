@@ -32,6 +32,11 @@ from .pricing import TokenCounts, cost_usd
 # mouthpiece assets pass `llm.default-model`. Keep this in sync with config's default-model.
 DEFAULT_MODEL = "openrouter/z-ai/glm-5.2"
 DEFAULT_MAX_TOKENS = 16_000
+#: Per-attempt request timeout (seconds). Bounds a single provider call so a stalled or
+#: half-open connection can't hang a run forever — a runaway script generation once stalled
+#: ~46 min with no client-side timeout. Generous enough for a full ~5k-word episode Pass A;
+#: litellm applies it per attempt, so `num_retries` still rides transient blips.
+REQUEST_TIMEOUT_S = 300
 _ANTHROPIC_PREFIX = "anthropic/"
 
 T = TypeVar("T", bound=BaseModel)
@@ -309,4 +314,8 @@ def _default_completion(**kwargs: Any) -> Any:
     # exponential backoff instead of failing a whole mouthpiece run. Only the real path
     # retries; a stubbed `completion_fn` never reaches here. Callers can override.
     kwargs.setdefault("num_retries", 5)
+    # Bound each attempt so a stalled/half-open connection can't block a run indefinitely
+    # (litellm applies `timeout` per attempt as the HTTP read timeout; with num_retries it
+    # fails fast and retries instead of hanging on one socket). Callers can override.
+    kwargs.setdefault("timeout", REQUEST_TIMEOUT_S)
     return litellm.completion(**kwargs)
