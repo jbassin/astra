@@ -30,7 +30,10 @@ def _fake_completion(**_: Any) -> Any:
 
 
 def test_smoke_runs_offline(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test-offline")
+    # run() bridges the Anthropic substrate key via ensure_anthropic_env(); set THAT env
+    # override so the offline smoke resolves it directly and never shells out to `sops`
+    # (absent in CI). The default model is GLM, but the substrate bridge is still Anthropic.
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-offline")
     summary = run(LiteLLMClient(completion_fn=_fake_completion))
     assert summary["model"] == "openrouter/z-ai/glm-5.2"
     assert summary["players"] == 5  # ontology-being consolidation
