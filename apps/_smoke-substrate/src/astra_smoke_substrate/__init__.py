@@ -1,11 +1,11 @@
 """Phase-1 exit-gate smoke — proves the whole substrate works end-to-end.
 
-`main()` (the live gate): resolve the Anthropic key from KDL config + SOPS, init OTel,
-and inside one span: round-trip ontology-being, then make one litellm→Claude structured
-call with cost recorded. Run it against the live stack:
+`main()` (the live gate): resolve the OpenRouter key from KDL config + SOPS, init OTel,
+and inside one span: round-trip ontology-being, then make one litellm→GLM structured
+call (the `llm.default-model`) with cost recorded. Run it against the live stack:
 
     cd /ruby/data/experiments/astra
-    uv run astra-smoke-substrate          # needs deploy/ up + a real anthropic_api_key in SOPS
+    uv run astra-smoke-substrate          # needs deploy/ up + a real openrouter_api_key in SOPS
 
 `run()` is split out so CI exercises the offline wiring (config + being + a stub client)
 with no network — see tests/test_smoke.py.
@@ -15,7 +15,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from astra_llm import LiteLLMClient, ensure_anthropic_env
+from astra_llm import LiteLLMClient, ensure_openrouter_env
 from astra_observe import get_tracer, init_telemetry, shutdown
 from astra_ontology_being import CANONICAL_JSON_PATH
 from astra_ontology_being import load as load_being
@@ -26,7 +26,7 @@ SERVICE_NAME = "astra.smoke-substrate"
 
 
 class Heartbeat(BaseModel):
-    """The structured output the substrate asks Claude to fill (forced-tool path)."""
+    """The structured output the substrate asks the model to fill (forced-tool path)."""
 
     status: str
     note: str
@@ -35,14 +35,15 @@ class Heartbeat(BaseModel):
 def run(client: LiteLLMClient) -> dict[str, Any]:
     """The substrate exercise, parameterized on the LLM client (stub in tests).
 
-    Reads config (KDL) + the SOPS-decrypted Anthropic key, round-trips ontology-being,
-    and makes one structured Claude call. Returns a summary dict.
+    Reads config (KDL) + the SOPS-decrypted OpenRouter key, round-trips ontology-being,
+    and makes one structured GLM call (the `llm.default-model`). Returns a summary dict.
     """
     cfg = load_config()
 
-    # Resolve the Anthropic key through astra_config (config.kdl → SOPS) and expose it to
-    # litellm via the single sanctioned bridge — no ad-hoc env handling in app code.
-    ensure_anthropic_env()
+    # Resolve the OpenRouter key through astra_config (config.kdl → SOPS) and expose it to
+    # litellm via the single sanctioned bridge — no ad-hoc env handling in app code. The
+    # default model is GLM 5.2 (OpenRouter); the Anthropic key stays wired as a fallback.
+    ensure_openrouter_env()
 
     # ontology-being round-trips against the committed canonical snapshot.
     being = load_being()
@@ -50,7 +51,7 @@ def run(client: LiteLLMClient) -> dict[str, Any]:
 
     being_ok = canonical_json(being) == CANONICAL_JSON_PATH.read_text(encoding="utf-8")
 
-    # One structured litellm→Claude call (forced tool → Pydantic), cost recorded to OTel.
+    # One structured litellm→GLM call (forced tool → Pydantic), cost recorded to OTel.
     heartbeat = client.call_structured(
         Heartbeat,
         system="You are astra's substrate health check. Answer only through the record tool.",
