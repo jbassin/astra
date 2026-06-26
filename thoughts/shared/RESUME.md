@@ -36,10 +36,29 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `3d8b768`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `199e5ab`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
+
+### linguist dspy judge → GLM 5.2 (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN; NOT yet redeployed)
+
+Retuned the transcription-correction judge (gate J) off Anthropic haiku/sonnet onto **GLM 5.2**, matching
+mouthpiece's switch — and **recompiled the artifact live** (the compiled `judge.compiled.json` is
+model-specific). One commit `199e5ab`, both lanes green locally (84 py tests + 6 ts), CI in_progress at push.
+Memory `[[linguist-gate-j-dspy-judge]]` (full facts) + `[[mouthpiece-glm-debate-switch]]`.
+- **Models:** `surface-model-judge` + `surface-model-escalate` both `openrouter/z-ai/glm-5.2` (config.kdl +
+  py/ts schemas). Since judge == escalate, the **borderline-escalation tier is now INERT** (machinery kept,
+  dormant, zero runtime cost; `judge_session` only escalates when the two models differ). User chose KEEP-inert
+  over removing the tier. A new `test_judge_session_no_escalation_when_models_match` locks it in.
+- **Key bridge:** new `astra_llm.ensure_openrouter_env()` mirrors `ensure_anthropic_env` (resolves
+  `llm.openrouter-api-key` → `OPENROUTER_API_KEY`); `optimize.py` + `judge.py`'s production path call it.
+- **Retrain:** live MIPROv2-medium compile on GLM, **$7.32** spend. Held-out eval **beats the haiku baseline**
+  (gold set has grown to 580 train / 144 val): confirm **P 0.915→0.936, R 0.607→0.779**, restraint 0.946→0.935,
+  optimizer metric 69.4→**81.25**. Re-run any time: `uv run python -m astra_linguist.surface.optimize --live`.
+- **⚠️ NOT yet live in the pipeline:** the `correction_candidates` asset runs IMAGE-baked code in the dagster
+  container → needs `docker compose build dagster-code` (`just up`) to deploy the GLM judge.
+  `OPENROUTER_API_KEY` is already on the `*dagster-env` anchor (from the mouthpiece switch), so no env change.
 
 ### mouthpiece → GLM 5.2 + debate format (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN + DEPLOYED LIVE)
 
@@ -50,7 +69,8 @@ debate format anyway. Validated by a local A/B (regenerated the 2026-6-22 episod
 debate-direction GLM output is what stakeholders approved. Five commits, both CI lanes green
 (`3d8b768` is green on GHA), deployed via `just up`. Memory `[[mouthpiece-glm-debate-switch]]`.
 - **`87d10dc`** config: `llm.default-model` → `openrouter/z-ai/glm-5.2` + `openrouter_api_key` secret ref
-  (mirrored in both schemas + `astra_llm.DEFAULT_MODEL`; config-lib tests). linguist judges stay on Anthropic.
+  (mirrored in both schemas + `astra_llm.DEFAULT_MODEL`; config-lib tests). (linguist judges stayed Anthropic
+  at the time — **later moved to GLM 5.2 too**, see the 2026-06-26 linguist section below.)
 - **`f0a4599`** the debate prompt: rewrote Pass A (`build_improv_system_prompt`) from relaxed-tavern/deadpan-foil
   to a two-position DEBATE (pushback is the rhythm, concede-then-counter); relaxed Pass B's overlap-tag rule.
   One-shot `build_script_system_prompt` left as-is (asset always runs `two_pass=True`). **Forward-only** —

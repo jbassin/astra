@@ -37,9 +37,26 @@ transcription-correction surfacer. Live-compiled 2026-06-20.
 `surface/gold/mined_negatives.json` (the curated 111-record gold negatives). MIPROv2 always keeps the
 faerrin `SYSTEM` prompt as candidate 0, so a compile can only match or beat it.
 
-**Result (first compile):** held-out confirm **P=0.915 / R=0.607**, **restraint 0.946** (2/37 negatives
-falsely confirmed); MIPROv2 metric **58.3 → 69.4**. Re-tune as real Groq sessions arrive (defs.yaml was tuned
-to whisperx). **G1 is DONE** (no longer deferred): the surfacer is a Dagster asset `correction_candidates`
+**Result (first compile, haiku/sonnet):** held-out confirm **P=0.915 / R=0.607**, **restraint 0.946** (2/37
+negatives falsely confirmed); MIPROv2 metric **58.3 → 69.4**. Re-tune as real Groq sessions arrive (defs.yaml
+was tuned to whisperx).
+
+**RETUNED ONTO GLM 5.2 (2026-06-26, `199e5ab`).** Both `surface-model-judge` + `surface-model-escalate` now
+`openrouter/z-ai/glm-5.2` (config.kdl + both schemas), matching mouthpiece's [[mouthpiece-glm-debate-switch]]
+— reverses the prior "linguist judges stay Anthropic" stance. **Key bridge:** new
+`astra_llm.ensure_openrouter_env()` mirrors `ensure_anthropic_env` (resolves `llm.openrouter-api-key` →
+`OPENROUTER_API_KEY`); `optimize.py` + `judge.py`'s production path call it. The anthropic key stays only for
+the substrate smoke. **Escalation is now INERT** — `judge_session` only escalates when `escalate_model !=
+judge_model`, so with both GLM the borderline second-pass never fires (machinery kept, dormant, zero runtime
+cost; re-enable by pointing escalate at a distinct model). A `test_judge_session_no_escalation_when_models_match`
+locks that in; the existing escalation test now passes explicit distinct models. **GLM held-out eval beats
+haiku** (gold set has since grown to 580 train / 144 val): confirm **P=0.936 / R=0.779**, **restraint 0.935**
+(2/31); MIPROv2 metric **81.25**. Live MIPROv2-medium compile spent **$7.32**. GLM 5.2 is a reasoning model
+(emits `reasoning_content`) — judge max-tokens 4096 is sufficient (verified: candidates parse, natural stop).
+Re-run: `uv run python -m astra_linguist.surface.optimize --live` (needs `OPENROUTER_API_KEY` via SOPS + net).
+**Deploy:** the `correction_candidates` asset runs IMAGE-baked code in the dagster container → needs
+`docker compose build dagster-code` (a.k.a. `just up`) before the GLM judge is live in the pipeline;
+`OPENROUTER_API_KEY` is already on the `*dagster-env` anchor from the mouthpiece switch. **G1 is DONE** (no longer deferred): the surfacer is a Dagster asset `correction_candidates`
 (`bd7f533`, in `assets.py`, SigNoz-instrumented `295a3fa`), the defs.yaml write-back landed (`c07a314`), and
 the live judge is compiled (`judge.compiled.json`). The apply step stays a CLI **by design** (human triage
 shouldn't auto-rewrite the lexicon) — that's not a deferral. See [[config-single-source]] and

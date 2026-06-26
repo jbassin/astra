@@ -21,9 +21,10 @@ case without an Opus-debate comparison.
 - **Model is config-single-source.** `llm.default-model` in config.kdl drives mouthpiece (assets pass
   `_llm_model()` = `cfg.llm.default_model`). `_litellm_model` passes any `provider/id` (has `/`) straight
   through. Changed config.kdl + BOTH schemas (Pydantic `LlmConfig`, Zod `Llm`) + `astra_llm.DEFAULT_MODEL`
-  (the "keep in sync" fallback). **linguist judges stay Anthropic** (surface-model-judge/escalate) — its
-  compiled dspy `judge.compiled.json` is model-specific, so DON'T flip it without recompiling
-  ([[linguist-gate-j-dspy-judge]]). **scribe stays Groq Whisper** (ASR, not a chat model).
+  (the "keep in sync" fallback). **(UPDATE 2026-06-26: linguist judges also moved to GLM 5.2** —
+  surface-model-judge/escalate flipped AND `judge.compiled.json` recompiled on GLM, since the artifact is
+  model-specific; see [[linguist-gate-j-dspy-judge]]. The compiled judge was the reason NOT to flip blindly.)
+  **scribe stays Groq Whisper** (ASR, not a chat model).
 - **litellm reads provider keys from ENV only** (client.py passes no api_key). So the load-bearing deploy
   wiring is: secret in SOPS → `just up` exports it UPPER_CASED → the service's compose `environment:` passes
   it in. Added `openrouter_api_key` to `deploy/sops/secrets.enc.yaml` (`SOPS_AGE_KEY_FILE=deploy/sops/age.key
