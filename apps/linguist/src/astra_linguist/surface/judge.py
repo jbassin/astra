@@ -1,11 +1,11 @@
 """Phase-2 LLM judge (port of `judge.ts`, gate H).
 
-Takes Phase-1 candidate spans, windows the transcript, and asks Claude to classify
-each span confirm/new/reject (mapping confirms to a lexicon canonical).
-**Deterministic guardrails** then drop anything unsafe; borderline confirms are
-re-judged by a stronger model (haiku→sonnet escalation). The guardrails + windowing
-are pure (tested here); the LLM call is the injectable `CompleteFn` seam — the live
-dspy run + optimizer are deferred (H1).
+Takes Phase-1 candidate spans, windows the transcript, and asks the judge LLM (GLM 5.2)
+to classify each span confirm/new/reject (mapping confirms to a lexicon canonical).
+**Deterministic guardrails** then drop anything unsafe; borderline confirms can be
+re-judged by a distinct escalate model — but with judge == escalate (both GLM 5.2) that
+escalation tier is currently inert. The guardrails + windowing are pure (tested here);
+the LLM call is the injectable `CompleteFn` seam, backed live by the compiled dspy judge.
 """
 
 from __future__ import annotations
@@ -231,24 +231,24 @@ LmFactory = Callable[[str], object]
 def make_dspy_complete_fn(
     compiled_path: str | Path | None = None, *, lm_factory: LmFactory | None = None
 ) -> CompleteFn:
-    """A production `CompleteFn` backed by the dspy judge program → litellm → Claude (J).
+    """A production `CompleteFn` backed by the dspy judge program → litellm → GLM 5.2 (J).
 
-    Resolves the Anthropic key through `astra_config` (via `ensure_anthropic_env`), loads
+    Resolves the OpenRouter key through `astra_config` (via `ensure_openrouter_env`), loads
     the committed compiled program if present (else runs uncompiled), and adapts each
-    `CompleteArgs` to a `ScanResult`. The model varies per call (`judge` on haiku,
-    `judge-escalate` on sonnet) so the LM is swapped per call via `dspy.context`; the
-    same compiled program serves both (J4). `judge_session` is unchanged. Tests inject a
-    `lm_factory` (a `DummyLM`) instead of touching the network — it never runs live in CI.
+    `CompleteArgs` to a `ScanResult`. The model is per-call (`judge` + `judge-escalate` both
+    GLM 5.2 now) so the LM is swapped per call via `dspy.context`; the same compiled program
+    serves both (J4). `judge_session` is unchanged. Tests inject a `lm_factory` (a `DummyLM`)
+    instead of touching the network — it never runs live in CI.
     """
     import dspy
-    from astra_llm import ensure_anthropic_env, make_dspy_lm
+    from astra_llm import ensure_openrouter_env, make_dspy_lm
 
     from .dspy_judge import DEFAULT_COMPILED_PATH, build_judge_program, load_compiled
 
     # Only resolve the real key on the production path; an injected stub factory (tests)
     # stays fully key-free + hermetic (no SOPS/astra_config side effect).
     if lm_factory is None:
-        ensure_anthropic_env()
+        ensure_openrouter_env()
     make_lm: LmFactory = lm_factory or (
         lambda model: make_dspy_lm(model, max_tokens=config.JUDGE_MAX_TOKENS)
     )

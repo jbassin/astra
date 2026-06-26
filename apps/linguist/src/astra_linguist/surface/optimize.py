@@ -1,15 +1,16 @@
 """Offline MIPROv2 compile + eval for the dspy judge (NLSpec 0006 gate J).
 
-A **one-command local step — never a CI job** (it spends Claude tokens). It mines the
+A **one-command local step — never a CI job** (it spends LLM tokens). It mines the
 gold set, runs a cheap live structured-output smoke, compiles the judge with MIPROv2
-(prompt_model=sonnet proposes instructions, task_model=haiku executes — K6), evaluates
-on a held-out slice, and saves the committed `judge.compiled.json`.
+(prompt_model + task_model both GLM 5.2 — instruction-proposer and executor share the
+model now that judge == escalate, K6), evaluates on a held-out slice, and saves the
+committed `judge.compiled.json`.
 
     uv run python -m astra_linguist.surface.optimize            # dry run: gold + estimate, no spend
     uv run python -m astra_linguist.surface.optimize --mine-only  # (re)write the mined artifact
     uv run python -m astra_linguist.surface.optimize --live      # the real compile (spends tokens)
 
-The Anthropic key is resolved through `astra_config` (via `ensure_anthropic_env`); the
+The OpenRouter key is resolved through `astra_config` (via `ensure_openrouter_env`); the
 guardrails + escalation in `judge.py` are unchanged and wrap the compiled program.
 """
 
@@ -20,7 +21,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-from astra_llm import TokenCounts, cost_usd, ensure_anthropic_env, make_dspy_lm
+from astra_llm import TokenCounts, cost_usd, ensure_openrouter_env, make_dspy_lm
 from astra_observe import init_telemetry
 
 from . import config
@@ -81,20 +82,22 @@ def print_estimate(trainset: list[Any], valset: list[Any]) -> None:
     )
     demos = MAX_BOOTSTRAPPED_DEMOS + MAX_LABELED_DEMOS
     print(f"  est. input/call:   ~{avg_in} tok (incl. {demos} demos)")
-    print(f"  est. tokens:       ~{in_tokens / 1e6:.1f}M in / ~{out_tokens / 1e6:.2f}M out (haiku)")
-    print(f"  est. cost:         ~${cost:.2f}  (no-cache upper bound; sonnet proposal adds ~$1)")
+    print(
+        f"  est. tokens:       ~{in_tokens / 1e6:.1f}M in / ~{out_tokens / 1e6:.2f}M out (GLM 5.2)"
+    )
+    print(f"  est. cost:         ~${cost:.2f}  (no-cache upper bound; incl. GLM proposal calls)")
     print("  NOTE: ±2× band — real num_trials/caching/output verbosity dominate.")
 
 
 def live_smoke(program: Any, example: Any) -> None:
-    """One real haiku call to prove the typed structured-output path before the compile."""
+    """One real GLM-5.2 call to prove the typed structured-output path before the compile."""
     import dspy
 
     lm = make_dspy_lm(config.JUDGE_MODEL, max_tokens=config.JUDGE_MAX_TOKENS)
     with dspy.context(lm=lm):
         pred = program(lexicon=example.lexicon, window=example.window)
     cands = [Candidate.model_validate(c) for c in pred.candidates]
-    print(f"  live structured-output smoke OK — parsed {len(cands)} candidate(s) from haiku")
+    print(f"  live structured-output smoke OK — parsed {len(cands)} candidate(s) from GLM 5.2")
 
 
 def evaluate(program: Any, valset: list[Any], lex: Any, lm: Any) -> dict[str, Any]:
@@ -180,7 +183,7 @@ def print_eval(rows: dict[str, Any]) -> None:
 def _sum_cost(*lms: Any) -> float:
     """Best-effort total USD across the given LMs' call histories (litellm-computed).
 
-    The compile drives two models (sonnet prompt-model + haiku task-model), so summing a
+    The compile drives a prompt-model + a task-model (both GLM 5.2 now), so summing a
     single LM under-reports; pass every LM used.
     """
     total = 0.0
@@ -256,7 +259,7 @@ def main(argv: list[str] | None = None) -> int:
 
         from .dspy_judge import load_compiled
 
-        ensure_anthropic_env()
+        ensure_openrouter_env()
         lex, _, valset = build_split(
             data_dir=args.data_dir,
             defs_path=args.defs,
@@ -286,7 +289,7 @@ def main(argv: list[str] | None = None) -> int:
 
     import dspy
 
-    ensure_anthropic_env()
+    ensure_openrouter_env()
     program = build_judge_program()
     print("\nrunning live structured-output smoke…")
     live_smoke(program, trainset[0])
@@ -305,7 +308,7 @@ def main(argv: list[str] | None = None) -> int:
         max_labeled_demos=MAX_LABELED_DEMOS,
         num_threads=args.threads,
     )
-    print(f"\ncompiling (MIPROv2 auto={args.auto}, prompt=sonnet, task=haiku)…")
+    print(f"\ncompiling (MIPROv2 auto={args.auto}, prompt=glm-5.2, task=glm-5.2)…")
     compiled = optimizer.compile(
         program,
         trainset=trainset,

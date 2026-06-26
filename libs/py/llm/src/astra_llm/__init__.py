@@ -31,6 +31,8 @@ from .transcription import GROQ_WHISPER, Segment, TranscriptionFn, transcribe
 
 #: The env var litellm/anthropic read for the API key.
 ANTHROPIC_API_KEY_ENV = "ANTHROPIC_API_KEY"
+#: The env var litellm reads for OpenRouter-routed models (e.g. GLM 5.2).
+OPENROUTER_API_KEY_ENV = "OPENROUTER_API_KEY"
 
 __all__ = [
     "DEFAULT_MAX_TOKENS",
@@ -51,8 +53,10 @@ __all__ = [
     "Usage",
     "ANTHROPIC_API_KEY_ENV",
     "ANTHROPIC_API_KEY_REF",
+    "OPENROUTER_API_KEY_ENV",
     "cost_usd",
     "ensure_anthropic_env",
+    "ensure_openrouter_env",
     "make_dspy_lm",
     "transcribe",
 ]
@@ -75,6 +79,25 @@ def ensure_anthropic_env() -> str:
         raise LlmError("llm.anthropic-api-key is not set in config.kdl")
     key = ref.resolve()
     os.environ[ANTHROPIC_API_KEY_ENV] = key
+    return key
+
+
+def ensure_openrouter_env() -> str:
+    """Resolve the OpenRouter key via `astra_config` and expose it to litellm.
+
+    The GLM-5.2 mirror of `ensure_anthropic_env`: reads `cfg.llm.openrouter_api_key`
+    (a `SecretRef` in `config.kdl`, override→SOPS order owned by `astra_config`) and
+    places the resolved value in `OPENROUTER_API_KEY`, the env var litellm reads for any
+    `openrouter/...` model. Idempotent, lazy, never logs the value. The linguist dspy
+    judge + optimizer route through this since both judge + escalate run GLM 5.2.
+    """
+    from astra_config import load_config
+
+    ref = load_config().llm.openrouter_api_key
+    if ref is None:
+        raise LlmError("llm.openrouter-api-key is not set in config.kdl")
+    key = ref.resolve()
+    os.environ[OPENROUTER_API_KEY_ENV] = key
     return key
 
 

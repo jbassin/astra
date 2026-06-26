@@ -4,7 +4,8 @@ A `dspy.Signature` (lexicon + window → typed `list[Candidate]`) carrying the v
 `SYSTEM` prompt (judge.py) as its instruction, wrapped in `dspy.ChainOfThought`. This
 is what `make_dspy_complete_fn` runs and what the MIPROv2 optimizer tunes. The
 `SYSTEM` const stays the source of truth for the instruction (J2); the deterministic
-guardrails + haiku→sonnet escalation in `judge.py` are unchanged and wrap this program.
+guardrails + the (now-inert, judge == escalate on GLM 5.2) escalation in `judge.py` are
+unchanged and wrap this program.
 
 The signature inputs mirror the `CompleteFn` seam exactly: `lexicon` is
 `CompleteArgs.cached` (the lexicon block) and `window` is `CompleteArgs.user` (the

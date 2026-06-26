@@ -448,7 +448,7 @@ def test_make_dspy_complete_fn_loads_artifact(tmp_path: Path, monkeypatch) -> No
     result = complete(
         CompleteArgs(
             stage="judge",
-            model="claude-haiku-4-5-20251001",
+            model="openrouter/z-ai/glm-5.2",
             system=SYSTEM,
             cached="CANONICAL LEXICON (1 terms):\nCalaria",
             user="[0] (Player) to Galaria",

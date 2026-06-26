@@ -4,10 +4,10 @@
     uv run python -m astra_linguist.surface.surface --session <f> --out cands.json --mode full
 
 The Phase-1 phonetic filter (`find_known`, pure) pre-flags OOV spans; the compiled dspy
-judge (`make_dspy_complete_fn`) classifies each `confirm | new | reject` with the
-deterministic guardrails + haiku→sonnet escalation, and the surviving candidates are
-written enriched with their speaker + line text for review. This is a **live** run — it
-spends Claude tokens and needs the SOPS key + network (never CI). The filter→judge
+judge (`make_dspy_complete_fn`, GLM 5.2) classifies each `confirm | new | reject` with the
+deterministic guardrails + escalation (inert while judge == escalate), and the surviving
+candidates are written enriched with their speaker + line text for review. This is a
+**live** run — it spends LLM tokens and needs the SOPS key + network (never CI). The filter→judge
 orchestration + the I/O are unit-tested with a stub `CompleteFn`.
 """
 

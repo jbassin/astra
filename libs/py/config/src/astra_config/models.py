@@ -51,8 +51,8 @@ class LinguistConfig(_Base):
     review_port: int = 10116
     podcast_episodes_path: str = ""
     # Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
-    surface_model_judge: str = "claude-haiku-4-5-20251001"
-    surface_model_escalate: str = "claude-sonnet-4-6"
+    surface_model_judge: str = "openrouter/z-ai/glm-5.2"
+    surface_model_escalate: str = "openrouter/z-ai/glm-5.2"
     surface_max_ngram: int = 3
     surface_min_token_len: int = 3
     surface_known_floor_unigram: float = 0.78

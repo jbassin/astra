@@ -106,9 +106,10 @@ def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeRe
     --candidates`, then `apply.py` appends the accepted ones to `defs.yaml`).
 
     Runs automatically after `session_transcripts` (it reads that asset's `data/{date}.json`).
-    **Live** — spends Claude tokens per session (haiku judge + sonnet escalation); the judge
-    is skipped when nothing is flagged. *Discovery* is automatic; *applying* accepted
-    corrections to `defs.yaml` stays a human-gated CLI step (we never auto-edit the SSOT)."""
+    **Live** — spends LLM tokens per session (GLM 5.2 judge; the borderline-escalation
+    tier is inert while judge == escalate); the judge is skipped when nothing is flagged.
+    *Discovery* is automatic; *applying* accepted corrections to `defs.yaml` stays a
+    human-gated CLI step (we never auto-edit the SSOT)."""
     from .surface.judge import make_dspy_complete_fn  # lazy: pulls dspy + resolves the key
 
     date = context.partition_key

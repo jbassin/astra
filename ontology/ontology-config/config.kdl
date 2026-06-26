@@ -10,9 +10,11 @@ llm {
     // mouthpiece runs on GLM 5.2 (open-weight MoE, routed via OpenRouter) — a
     // debate-format recap podcast; cheaper than Opus and free of the Anthropic
     // availability limits. `_litellm_model` passes any provider/id straight through.
-    // linguist's judges still call Anthropic (linguist.surface-model-*), so the
-    // anthropic key stays. litellm reads each provider key from its UPPER_CASED env
-    // var, injected from SOPS at `just up` (per-service compose `environment:`).
+    // linguist's dspy judges (linguist.surface-model-*) now run on GLM 5.2 too, so
+    // the OpenRouter key carries the judge/optimizer; the anthropic key is retained
+    // only for the substrate smoke. litellm reads each provider key from its
+    // UPPER_CASED env var, injected from SOPS at `just up` (per-service compose
+    // `environment:`).
     default-model "openrouter/z-ai/glm-5.2"
     default-max-tokens 16000
     anthropic-api-key ref="sops:anthropic_api_key"
@@ -63,8 +65,10 @@ linguist {
     review-port 10116
     podcast-episodes-path ""
     // Phase-2 judge models + Phase-1 filter / windowing tuning (faerrin `config.ts` `surface`).
-    surface-model-judge "claude-haiku-4-5-20251001"
-    surface-model-escalate "claude-sonnet-4-6"
+    // Both run GLM 5.2 (via OpenRouter); judge == escalate makes the borderline-escalation
+    // tier inert (judge_session only escalates when the two models differ).
+    surface-model-judge "openrouter/z-ai/glm-5.2"
+    surface-model-escalate "openrouter/z-ai/glm-5.2"
     surface-max-ngram 3
     surface-min-token-len 3
     surface-known-floor-unigram 0.78

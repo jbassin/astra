@@ -162,9 +162,52 @@ def test_judge_session_escalates_on_borderline_confirm() -> None:
             ]
         )
 
+    # Exercise the mechanism with two distinct models (escalation only fires when they
+    # differ). In production both are GLM 5.2, so this tier is inert — see the next test.
     out = judge_session(
-        transcript, [Flagged(line_ref=0, span="Galaria")], lex, complete_fn=stub, mode="full"
+        transcript,
+        [Flagged(line_ref=0, span="Galaria")],
+        lex,
+        complete_fn=stub,
+        mode="full",
+        judge_model="judge-model",
+        escalate_model="escalate-model",
     )
     assert calls == ["judge", "judge-escalate"]  # borderline confirm escalated
     assert len(out) == 1
     assert out[0].confidence == 0.95 and out[0].reason == "judge-escalate"
+
+
+def test_judge_session_no_escalation_when_models_match() -> None:
+    """With judge == escalate (the GLM-5.2 production config) the tier is inert: a
+    borderline confirm is NOT re-judged, so only the `judge` stage is ever called."""
+    lex = build_lexicon_from(["Calaria"])
+    transcript = _transcript("a trip to Galaria")
+    calls: list[str] = []
+
+    def stub(args: CompleteArgs) -> ScanResult:
+        calls.append(args.stage)
+        return ScanResult(
+            candidates=[
+                Candidate(
+                    line_ref=0,
+                    span="Galaria",
+                    verdict="confirm",
+                    suggested_canonical="Calaria",
+                    confidence=0.5,  # borderline — would escalate if the models differed
+                    reason=args.stage,
+                )
+            ]
+        )
+
+    out = judge_session(
+        transcript,
+        [Flagged(line_ref=0, span="Galaria")],
+        lex,
+        complete_fn=stub,
+        mode="full",
+        judge_model="glm-5.2",
+        escalate_model="glm-5.2",
+    )
+    assert calls == ["judge"]  # no escalation
+    assert len(out) == 1 and out[0].reason == "judge"
