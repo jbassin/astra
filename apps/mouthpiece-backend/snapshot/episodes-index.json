@@ -15803,8 +15803,8 @@
       "isMain": true,
       "date": "2026-6-22",
       "dateSortKey": 20260622,
-      "title": "The Sandwich Yoink Bonus",
-      "episodeTitle": "The Sandwich Yoink Bonus",
+      "title": "The Jurisdiction of Vibes",
+      "episodeTitle": "The Jurisdiction of Vibes",
       "hosts": {
         "A": {
           "name": "Bram",
@@ -15815,7 +15815,7 @@
           "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
         }
       },
-      "synopsis": "After firming up alliances (Radiant Arms) and a failed plan to magically bind the whole group with the Gaius ritual, the party descends into the Undercroft of their Strider to recover a stolen ink ribbon for the library Curator. They meet the indentured mongrelfolk, follow a lead into a forsaken sector, slaughter a band of far-gone usurper-cultists, loot the ribbon and cult artifacts, and press on until they reach the threshold of a spider-infested Fane — ending on a cliffhanger.",
+      "synopsis": "The party manages their growing alliance — confirming Radiant Arms' membership, handing over captured Sable & Sons weapons for R&D, and obtaining the Oil Slicked Walls ritual — before descending into the Strider's Undercroft to retrieve a stolen ink ribbon for the library curator. They encounter debt-bound mongrelfolk workers mutated by unsafe slip travel, then fight deeply corrupted creatures speaking a dead language dialect near a forsaken sector. After a brutal battle turned by Argyle's Divine Wrath, they recover the ink ribbon, discover the Sinister Six's followers have been emulating Anzu's Voidsong, and push deeper through spider-webbed tunnels until they cross the threshold of a Fane.",
       "durationMs": 1581688,
       "hasAudio": true,
       "hasTranscript": true,
@@ -15824,1112 +15824,297 @@
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "— no, see, that's the thing, we didn't even get into the dungeon for like the first hour, because Benny pulls out his actual notebook, real paper, and he goes \"Session thirty-two. I think I may have lost count,\" which, you know your campaign's been going a while when the man with the notes isn't even sure—"
+          "text": "I'm telling you, the Benny recap thing is — it's a whole bit now, right, he's got his little notebook and he's reading from it like he's presenting a thesis defense, and I love it, but also he said Ternion was the one who was \"relatively kind\" and offered to help them, and that's — I mean it's not Ternion at all, it's Kurnian—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's because nobody else takes any."
+          "text": "It's Kurnian, yeah."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Well, that's fair, that's fair. But so we're recapping, right, and there's the whole alliance map situation, who's with us, who's against us, and Benny's reading off this list like it's a will reading—"
+          "text": "Kurnian! And Benny's sitting there with his notes and he's still getting it wrong, which — look, I respect the notes, I respect the process, but at some point you've got to wonder if the notes are helping or if they're just a security blanket, because the man is reading from a piece of paper and still misattributing who said what."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "We had seventy-three energy in the heart."
+          "text": "I think the notes are fine. The notes are good, actually. The issue is he's transcribing his own interpretation, not what actually happened. Kurnian offered to help. Benny wrote down that it was Ternion. That's not a memory problem, that's a listening problem."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Seventy-three! In the heart, yeah, and the house is just stuffed with guests now, all these absorbed people, it's like a hostel down there."
+          "text": "Okay, that's fair, that's a fair distinction — but either way, it sets the tone for the whole session, because the entire night flows from this debt, right, the bone curator wants his ink ribbon back, and the party needs library access, so everything — the Undercroft, the mongrelfolk, the Fane — all of it traces back to this one obligation. And I think that's great session design, by the way, the GM just — he threads this through-line and everything hangs on it."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "A hostel where you've eaten the guests."
+          "text": "I'll give him that. The connective tissue is strong. But can we talk about Argyle's Ritual of Gaius thing, because that's where I think the session almost stalls before it starts."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Spiritually eaten. They're fine. Mostly. Anyway the big one from the recap is Ætherion, right, Ætherion Limited, they called us naive—"
+          "text": "See, I loved that. I thought that was — Argyle's sitting there, he's been doing his Scale training, he learned this ritual from pact brokers, which by the way is such good flavor, the Scale's pact brokers are literally the people who enforce contracts across Færrin, so of course he'd pick up a magical binding ritual from them—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "They called us naive to think they wouldn't move against us. And then the line was, \"you were naive to think we wouldn't kill them.\""
+          "text": "Right, but the ritual takes a full day per person."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Right, which — wait, was that them or was that Josh narrating what happened to the ones who said it?"
+          "text": "A full day per person, yeah."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It was the GM. The people who called us naive got killed for it. That was the point of the line."
+          "text": "And they have seven new allies to cover. That's a week. A full week of Argyle doing nothing but standing in a circle casting the same ritual over and over while the party has plans for tomorrow. And they don't even — they can't do it. They literally can't. He proposes this thing and then they immediately shelve it because there's no time."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Got killed for it, that's so good, see I had that backwards. But the one I actually liked was the other faction, the cold one, Kurnian—"
+          "text": "But that's the point, Maeve! That's the tension! He's identifying a systemic problem — they've got strangers in their base, they don't know who to trust, there could be spies — and he's proposing a systemic solution. The Ritual of Gaius binds everyone so nobody can harm anyone else or their heart without a vote. That's not a distraction, that's—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Ternion."
+          "text": "It's a distraction if you can't cast it. You can't cast it. It's a distraction. It's Argyle going \"I have a great idea for next level\" and then the table moves on. And I'm not saying it's bad as a long-term plan — he takes the Ritualist dedication, great, good investment — but in the moment, in this session, it's a false start. It's five minutes of rules discussion that ends with \"we can't do this now.\""
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Ternion, yeah, who was \"cold but not rude,\" already in bed with Grayson, won't join us—"
+          "text": "Okay but the GM clarification alone was worth the time, because the question of whether the ritual can be circumvented — Argyle says only a wish could remove it from a willing target, and then the GM comes in and says, no, if a target becomes unwilling, it becomes a curse, and remove curse can handle it. That's a huge difference! That's the difference between an ironclad guarantee and a conditional binding that someone can wriggle out of if they turn hostile. That matters for later."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And Doug tried to read that as Ternion being reasonable, and the GM quibbled him on it."
+          "text": "It matters for later, sure. In this session, it's table talk. And I think the more interesting thing happening in that same block is the Radiant Arms deal, because that's where the party makes an actual decision with actual consequences."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "He did, he did the thing where he goes \"did they seem cold, or did they seem like they had a gun to their head and were being polite about it.\""
+          "text": "Oh, the Sable & Sons weapon handoff — yes, okay, this is where I think Argyle's playing four-D chess and the GM's just calling it like he sees it."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Which isn't the same as cold but not rude. I'd argue Ternion was just managing you. You don't refuse a room full of people who eat their guests by being warm about it."
+          "text": "The GM calls it corporate espionage."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "See, but I think they genuinely didn't care, which is colder, that's — anyway. And Johnny, of course, Johnny's doing his bit the whole recap, somebody mentions the church with the eyeball and he just goes \"who's the ace? You don't even have a brain!\""
+          "text": "And Argyle says — and I quote — \"it's just grand larceny.\""
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The eye in the hands. Four princes and the eye that woke them."
+          "text": "Because the weapons weren't given in confidence. They were captured. They took them off enemies, presumably, and now they're handing them to Y'shael at Radiant Arms for R & D purposes."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The four princes, yes — that's the motif, the four hands and the eye, and it comes back later, hold that thought, because there's a number thing—"
+          "text": "Right! So it's not espionage, it's — they didn't sign an N D A with Sable & Sons, they didn't steal trade secrets from a lab, they took a weapon off a dead guy and gave it to their ally. That's just — that's just how war works. You loot the enemy's gun and you give it to your friend who can figure out how it works."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It comes back. Get to Argyle's plan first."
+          "text": "Okay but here's the thing — Sable & Sons is a firearms manufacturer. Radiant Arms is also a firearms manufacturer. You're handing a competitor's proprietary weapon technology to another competitor. The GM is right. That is the textbook definition of corporate espionage. The fact that you acquired the prototype through violence instead of infiltration doesn't change what you're doing with it."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Argyle's plan! Okay so Argyle pulls the inner circle aside, very dramatic, gathers everyone, and pitches this — honestly genuinely clever idea, he wants to use a ritual, the Gaius ritual—"
+          "text": "It changes the legal framing!"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Gaius."
+          "text": "In what jurisdiction?"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "—to bind everybody in the group, all of us and the new dependents, into like a magical constitution. You can't harm each other, you can't touch the heart, without a vote. Anti-spy. It's brilliant."
+          "text": "In the — okay, fine, in no jurisdiction, but in the jurisdiction of vibes, Maeve, in the jurisdiction of vibes it's grand larceny and I will die on this hill."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's brilliant for about ninety seconds."
+          "text": "You can die on whatever hill you want. Sable & Sons is displeased. Their reputation drops. That's the GM telling you the same thing I'm telling you — you provoked a corporation and the world noticed."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Ninety seconds! Because then Josh goes — what was it — one day of casting. Per person."
+          "text": "And Radiant Arms loves them for it! Reputation goes up! The alliance gets stronger! Look, Y'shael formally joined the alliance — they pay the tithe collectively, hearts don't mix energy, and yeah, sure, that means if someone takes Radiant Arms' heart, they get all the latent energy inside it. That's a vulnerability. But it's also a commitment. You don't get alliance without vulnerability. You don't get trust without exposure. And I think Argyle understands that in his bones, even if he can't articulate it, which—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Per person. And we had seven new arrivals just sitting in the house."
+          "text": "He literally cannot articulate it, that's—"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Seven, the — the Solari trio, what's-his-name—"
+          "text": "—which is why he hands over the weapon. It's a gesture. It says \"we're in this together, here's our R & D contribution.\" And the GM rewarding that with reputation is the system saying \"yes, that's how alliances work.\""
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Salvado. Solari Sub-surface, three of them. And the Alkahest Freight four, including Kadou."
+          "text": "I think it's the system saying \"you've made an enemy and a friend in the same transaction,\" which is fine, that's gameplay, but don't pretend the friend is free. The Sable & Sons displeasure is a debt that'll come due. And the shared-heart vulnerability — if someone cracks Radiant Arms' heart, all that stored energy goes with it. That's not just exposure, that's a single point of failure for the whole alliance's energy infrastructure."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Right, so that's seven, that's a full week of Argyle just casting nonstop, not sleeping, just binding people one at a time—"
+          "text": "I'll give you the single point of failure thing. That's real. But I'd rather have a vulnerable ally than no ally at all."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "A week of nonstop casting to lock down a house you already control. And Benny's response was perfect. \"Well, we just kill all our allies then, Josh.\""
+          "text": "Debatable."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "\"You want us to just kill everyone in our house?\" Deadpan, completely flat. And Anzu just goes \"screw every single one of them,\" which—"
+          "text": "Everything's debatable, that's the show! Okay — the descent. The elevator. This is where the session really starts cooking, because they go down this — it's a metal box, right, with a manual lever, up and down, no buttons, you just pull the lever and stop where you want. Octangular column, floor numbers painted on girders. They can see down to floor fifteen before the dark eats everything. They stop at twelve."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Anzu's solution to a logistics problem is always murder."
+          "text": "Benny corrects the GM here, by the way. The GM says floor nine and Benny's got his notes — the same notes that got Kurnian wrong — but on this one he's right, it's twelve."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It's efficient! No, but here's the part that actually killed the plan, it wasn't even the time, it was the GM's gotcha, the — the curse thing. Argyle learned this off the pact brokers, right, from his Scale training—"
+          "text": "The notes redeem themselves! One for one on the Kurnian error. But the environment — Maeve, the Strider's underbelly is a completely different world. Every six seconds, boom. The legs. The legs are making landfall and the percussive pressure moves up through the entire body of the Strider and you feel it in your chest. It smells like burnt oil and rusting metal. And there's this great detail — the crafting check, what was it, twenty-seven, a crit—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "From the pactbrokers, during his time with the Scale. Yes."
+          "text": "Twenty-seven, crit, yeah."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And the catch is, if the target's willing, it takes a wish to undo it. A wish. But the second somebody turns unwilling, the second a spy decides they don't want to play, it stops being a binding and becomes a curse—"
+          "text": "—and it reveals rust on supposedly new construction. New construction! The Strider is supposed to be — this is a vehicle, right, it's a mobile caravan-city, it's supposed to be maintained, and there's rust on parts that should be fresh. Which raises the question: where did the Strider actually come from? How old is it really?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And a curse comes off with remove curse. So the loyalty pact only holds the loyal people. Anyone who actually betrays you walks right out of it."
+          "text": "That's a good thread. I think the rust detail is one of the more quietly important moments of the session, because the party doesn't dwell on it — they note it and move on — but the GM put it there for a reason. The Strider's provenance is in question. Everyone assumes these caravan-cities are built and maintained by their operators, but the rust suggests either shoddy maintenance or something the Strider was never new to begin with."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Which is the whole problem you were trying to solve! It's airtight against your friends and useless against your enemies. So it just — died. On the table. We all got excited and then we just kind of put it down."
+          "text": "Which connects to — okay, this is where I need you to bear with me — the numerology. Argyle's theory. He asks about a \"magic number\" on Færrin, rolls a thirty-four religion, thirty-six occultism, which are both enormous, and the GM gives him partial patterns: six outer gods, six other gods, four princes, fifteen active hearts. And Argyle — and I swear this man's brain is a conspiracy board with red string everywhere — Argyle says: four hands plus the eye equals five, times three equals fifteen. Fifteen active hearts. \"It's right in our faces, guys.\""
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That's most clever plans in this campaign."
+          "text": "I want to push back on this."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Ha — fair. So then it's pre-dawn, we do housekeeping, Argyle gets handed a new ritual, the — Oil-Slick something—"
+          "text": "Of course you do."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Oil-Slicked Walls. With Lance transcribing it for him."
+          "text": "Not on the numbers — the numbers are what the GM gave him. Six outer gods, six other gods, four princes, fifteen hearts, those came from the rolls. What I'm pushing back on is the theory. Four hands plus eye equals five, times three equals fifteen. Where does the three come from?"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Lance, right. And Radiant Arms is officially in the alliance now, they're paying the tithe collectively, although their hearts don't pool—"
+          "text": "It's — it's a multiplier, it's—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Their hearts don't pool energy with ours, no. They pay the tithe but the energy stays separate."
+          "text": "Where does it come from, Bram? What is the three? He never explains the three. He just says \"times three\" and everyone nods. Three what?"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And then we hand them a laser. One of the laser weapons we lifted off — off Sable and Sons, the ones who tried to shoot us, and Radiant Arms is gonna reverse-engineer it, and there was this whole argument about what that even is—"
+          "text": "I — okay, I don't think he explains the three in the moment, but—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Whether handing stolen weapons-tech to a partner is corporate espionage or just theft."
+          "text": "He doesn't. I went back and checked. He says \"four hands plus eye is five, times three is fifteen, it's right in our faces.\" The three is doing all the work and nobody knows what it represents. That's not a theory, that's numerology. That's seeing patterns in phone numbers."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And we landed on theft! Grand larceny, somebody said, but theft, because the weapons were used to try and kill us, so it's like — finders keepers but with a body count."
+          "text": "But that's what Argyle does! That's his character! He's a Scale-trained, conspiracy-minded, pattern-matching machine who looks at the eye-in-hands symbol — which, remember, represents four princes and the eye that awakened them — and he connects it to the active heart count. And the GM gave him those numbers from legitimate rolls! Thirty-four and thirty-six! Those aren't lucky dice, those are \"your character knows things\" rolls. The GM is seeding something."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I'm not sure the body count makes it less of a crime, but go off."
+          "text": "Or the GM is humoring a fun theory. Those aren't mutually exclusive. I think the GM gave him real lore — the six and six, the four princes, the fifteen hearts — and then Argyle's player ran with it past what the information supports. The \"times three\" is the tell. He's pattern-matching, and the GM let it ride because it's engaging, not because it's confirmed."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And the GM does the Skyrim voice, \"your reputation has increased with Radiant Arms,\" with — what's the name, the recipient—"
+          "text": "I think you're wrong and I think Argyle is onto something and I think we'll find out in like twelve sessions that the three represents something nobody at the table has even thought of yet."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Y'shael."
+          "text": "Maybe. I'll hold you to that."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Y'shael, yes. But Maeve, here's my thing, were we smart giving them a free laser, or did we just hand a guy the exact thing he needs to outgun us in six months—"
+          "text": "Please do. Okay — the mongrelfolk. The workers. This is where the session goes from \"cool dungeon crawl\" to \"oh, this is about something.\" They squeeze through these cramped hallways — seven feet wide, six feet tall, just tight — and they hear an off-key sea shanty, which is the most depressing detail, and they come out into this circular room where about fifteen people are working a lubricant platform for the Strider's legs. Like an oil rig crew. And every single one of them is mutated."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "You handed a firearms company a new firearm to study. That's not an investment, that's R&D you did for free. The GM even mentioned it — anyone who takes Radiant Arms' heart now gets all that latent energy too. You built somebody else's stockpile."
+          "text": "A man with a third arm growing from his neck. A dwarf with one big foot and one small foot. An elf with peeling scales."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But the reputation though—"
+          "text": "And the occultism check — thirty-five, Johnny aids with a twenty-three — reveals this is slip exposure. These people made large jumps on the slip without adequate protection, and it warped physical space and jumbled their bodies. It's irreversible. And it precludes reproduction with non-mongrelfolk, which means—"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Reputation doesn't shoot back."
+          "text": "Which means they're trapped. Down here, in the Undercroft, doing maintenance on the Strider's legs, because they can't leave and they can't integrate with the population above. They're a permanent underclass created by unsafe transit infrastructure. That's not a dungeon encounter, that's a labor rights violation."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "...okay. Okay. Oh, and Argyle, before we leave, he medicates this drunk NPC, just some drunkard, patches him up and then lectures him, \"don't be a drunkard, you know, we'll help out.\" Real bedside manner."
+          "text": "It's brutal. It's absolutely brutal. And I think the GM did a beautiful job of making it feel systemic and not just tragic for tragedy's sake — these people have been \"sliding from void to starward\" in their daily commute for hundreds of years without issue. It's the big multi-step jumps that cause the mutation. So it's not that slip travel is inherently dangerous, it's that these workers were doing something more extreme, probably for their employer, probably because they were told to, and nobody warned them about the risks. Or nobody cared."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Heal the man and shame him in the same breath. Very paladin."
+          "text": "And then Johnny walks up to Maranthorn."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Very paladin! So then — we descend. Finally. We take the freight elevator, the manual one, down from the garage, sub-level one, all the way down into the Undercroft, down to floor nine—"
+          "text": "Maranthorn! Oh, this guy — red and blue feathers growing from his head, the beginnings of a beak, bird-like mongrelfolk, and he's bound by contract. His debt started at two hundred gold and with interest it's up to eighteen thousand. Owed to a Harlequin. And gold is useless down here! He laughs when Johnny offers gold. He says \"we ain't got no use for gold down here.\" That's — Maeve, that's the economy in miniature. Debt denominated in a currency that's worthless in the place where the debtor lives. It's a trap. It's a mathematical trap. Two hundred to eighteen thousand is— that's not interest, that's captivity."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Twelve."
+          "text": "It's a predatory debt contract, and the Scale's pact brokers would have something to say about it if anyone bothered to ask them. But nobody's asking. And what does Johnny do? Johnny offers to get him topside and pledges six sandwiches every dawn. Six sandwiches. Daily. At dawn. On a fixed schedule."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Twelve, sorry—"
+          "text": "I thought that was beautiful! I thought that was Johnny at his most Johnny — this earnest, slightly hapless, deeply sincere guy who hears about a man trapped in debt slavery and says \"I'll bring you sandwiches and a note system to verify you're alive.\" That's— he's trying! He's actually trying!"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Don't apologize to me, apologize to Josh, he said nine four separate times and Benny had it written on paper."
+          "text": "He's trying to get the man killed. Argyle immediately predicts it — he says Maranthorn's going to get shanked because the schedule is so predictable that anyone who wants to rob him knows exactly when and where he'll be at dawn every single day with six sandwiches. That's not kindness, Bram, that's a death sentence with a B L T chaser."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "On paper! That's the bit, Benny's blind, right, minus-one perception, and yet he's the one with the level written down, and the GM keeps slipping and saying nine, and Benny goes — what was it—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "\"I SSH'd into your computer and changed the number. Unless you have it on paper.\""
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "\"Unless you have it on paper,\" because you can't hack paper, that's the joke, the paper is unhackable. And it was twelve. It was always twelve."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It was always twelve."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "So the elevator's this manual lever, two positions, groaning and creaking like it hasn't moved in years, and we drop down and it's — oh, it's a whole world down there, the legs of the strider going off every six seconds, this boom, boom, the smell of burnt oil and rust—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Which is the strange part. It's supposed to be new construction."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Right! That's the crafting check, somebody clocks rust on a brand-new vehicle, and the read is—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "They bought a used strider and dressed it up. Did some adjustments."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "A used strider! They sold us a — it's like a used car with the odometer rolled back. And Benny, blind man, rolls a sixteen and we still spot fifteen floors down the shaft before it just goes black, fifteen floors, and that ties into—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The magic number thing."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The magic number! From the recap, the four hands and the eye, four plus the eye is five—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Five, times three, fifteen. And the religion riff was \"fifteen active hearts now.\""
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Fifteen active hearts, fifteen floors, it all — does it mean anything? Probably not. But it felt like it meant something."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It felt like it. That's a religion check for you."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "So we get out at — twelve — and there's this circular work-room, and there's about fifteen of these — mongrelfolk, working a lubricant platform for one of the legs, and they're singing, they've got this ragged sea shanty going while they work—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "And Anzu rolls occultism to figure out what they are."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "A thirty-five! With Johnny aiding. And that's when we get the whole lore dump on slip exposure—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Warp exposure. Slip exposure. The mutation you get from jumping too many slips at once. It's irreversible. Anzu learned it back at Belvedere."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And it's permanent, and they can't — they can't have kids with non-mongrelfolk, it cuts them off completely, and the descriptions, Maeve, they were rough, there was one with a third arm growing out of its neck—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A peeling-scaled elf. A dwarf with mismatched feet. Tumor-lumps."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And that's why they're all down here, it's an underclass, they're stuck below because jumping slips wrecked them, and planar teleport, that's a — that's why it's such a high-level spell, right—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Sixth rank. It's sixth rank precisely because of the protection you need to survive a long jump. The people down there didn't have that protection. That's what slip exposure is."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And one thirty-five check just — Tanner opens the whole encyclopedia, just, here's the entire sociology of the Undercroft because you rolled well."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "That's the deal with a high occultism roll. You ask one question and you get a lecture."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "A lecture! But it landed, it made the room sad, it made the whole place feel — anyway. So then Johnny goes to talk to the foreman, the mongrelfolk in charge—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Marin."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Marin, right, the one with — feathers for hair, half a beak—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A half-formed beak, and a snort that came out shrill."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And Johnny, as Johnny Skyfall, goes up to ask about the ink ribbon, and offers gold, and Marin's just like — gold's useless down here. \"We ain't got no use for gold down here.\""
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A gallon of wine just gets you mugged. Shanked, even."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Shanked for wine! But — a sandwich. Now we're talking. And Johnny's got a BLT, and Marin just snatches it—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Athletics nineteen against a DC of seventeen. Grabbed it clean."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Grabbed the sandwich, and then Benny — Benny does a reflex save and yoinks it back—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "With a plus-three sandwich yoink bonus."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The sandwich yoink bonus! Which the GM just — granted, just made up on the spot, plus three to yoink a sandwich, and then Benny intimidates the guy, and the whole negotiation just goes completely off the rails, and Johnny ends up promising — what was it, six sandwiches a day?"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Six sandwiches a day. And he goes full mob boss about it."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Full Godfather, \"everyone in the Undercroft gets a sandwich, the people deserve sandwiches\"—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Somebody called him Bernie Sanders."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The people deserve sandwiches! And then there's this whole scheme, the note scheme, you send a note down every day with the sandwiches—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "And if the note doesn't come back, you assume Marin's been shanked and you stop sending."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "That's so dark. That's the saddest delivery contract I've ever heard. And we all agreed — everyone at the table agreed Marin's getting shanked within the week, the debt alone—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The debt. Two hundred gold to start. Now eighteen thousand, owed to a Harlequin."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Eighteen thousand! From two hundred! That's — what's the interest rate on that, that's predatory, that's—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "That's the Undercroft."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "So my question is, the six-sandwiches-and-a-note pact, for a guy we all think is dead in a week — is that Johnny being genuinely kind, or is it just doomed, is it a charity that fails on Tuesday?"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It's both. He meant it, and it's doomed. Marin can't even take you anywhere himself — all he does is point you past the acid vats to the forsaken sector. The kindness doesn't change his odds at all."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "But he meant it though."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "He meant it. That's the part that'll get him killed slower, maybe."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "...yeah. Okay so we go past the acid vats, Marin points us to this dead sector, no lights, and it's — oh, it's a nightmare down there, it's this twisted scaffold over a pit that just goes down forever, and the grating's all warped—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Frozen and twisted. Like some great twisting force went through it. Slip damage made physical."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Slip damage you can stand on, yeah. And there's writing all over the walls, all this crude art about — perfection, ascension, becoming—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Apotheosis. Becoming a god."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Apotheosis, and we hear voices way off, this — chittering language, and Anzu or somebody clocks it as a dialect of a dead language—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Urthram. But evolved. The GM described it as — if you learned modern English and then heard old English, that's the gap. Same root, drifted. With chittering underneath."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "With the chittering, yeah, which is just deeply unsettling. And so we sneak down toward them, badly—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Very badly."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Very badly. But first — okay, the sunglasses. We have to do the sunglasses."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "We have to do the sunglasses."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Johnny's been wearing his sunglasses this whole time, it's pitch black, we're sneaking through total darkness, and he keeps them on, in character, just refuses, and then halfway down he goes \"oh shit, I could see the whole time\"—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "He had darkvision. He'd had it the entire approach. He was sneaking through a dark dungeon in sunglasses he didn't need, and the darkvision he did have, he forgot he had."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Both wrong at once! Wearing sunglasses he doesn't need for darkvision he forgot about. That's so Johnny. And Argyle, meanwhile—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Argyle plugs his earplugs in because of the voices. Very sensible. Very boring."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "One guy's prepping for the language, the other guy's wearing shades in a cave. And these mongrelfolk are way worse off than the workers, these ones are — anglerfish heads, one with this atrophied face and a single swollen eye—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Porcupine quills for skin on one of them. These are far gone. Much further than the foreman."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And then the crit, somebody crits perception, a thirty-four—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A thirty-four. Spots a talisman one of them's wearing. Carved horn."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "A carved horn, and the religion check links it to — there was a mural, a stained-glass thing, at Tywelwyn's base—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A horned figure in stained glass at Tywelwyn's base. Which ties these cultists into the usurper-god plot. The Sinister Six."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The Sinister Six, the usurper gods, so now we know these aren't just sad mutated guys, these are cultists, unholy, the perfection thing is an ascension cult—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Which is the GM telling you it's okay to kill them. Confirm they're unholy, then it's a clean fight."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And it was so clean — no, it wasn't clean at all, it was a grind, but it started clean. Our stealth's botched, they win initiative—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "They get a fireball off first."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "They fireball us immediately, but — and this is the bit — we've all got fire-eating cantrips, so we just eat it. We stand there and eat the fireball."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Anzu came out of it with temp HP. Took a fireball to the face and ended up ahead."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Ended up healthier! And Johnny's the only one who got a spell off before the fireball even, everyone else just braced and ate it—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Johnny got his spell off. The rest of you ate fire to mitigate. Yes."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And then we open up, and it's the combo engine, this is where it all clicks, Argyle's flinging holy water—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "With the unholy vulnerability stacking. Holy water hits harder because they're unholy."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And it stacked — actually it stacked twice by accident—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It got applied twice by mistake. The GM had to refund health afterward and swore he'd fix the spellbook entry."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Right, the vulnerability got double-dipped, but in the moment it was just enormous numbers, and Benny's double-slicing, and Johnny hastes Benny—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Hastes Benny, then buffs with bardic performance. And these things teleport."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "They dimension-door all over the place! That's why it's a grind, there's the — the bearded clawed ones, the Manus—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The Manus. And the flying ones, the Oris."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The Oris, the flying ones, and one of them charges Benny and crits him for — forty-seven?"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Forty-seven. Off a charging Oris. Plus persistent infernal bleed, which made him roll DC twenty recovery checks over and over."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Bleeding the whole fight, and Johnny gets — Johnny gets a disease, he gets bitten or struck and it's infernal fever—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "He failed a fort save off the beard-strike. Infernal fever. Then a feat negated the ill effects for a day, so it basically didn't matter."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Which is so Johnny, gets a horrible infernal plague and then goes \"actually I have a feat for that.\" And then the little guys, Maeve, the little guys—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The \"little guys.\""
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The little guys! Johnny's got this — it's like a Sudden Bolt thing, and he combos it with the invented vulnerability for thirty extra weakness damage, and he's shouting \"the Wellerman's coming\"—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "\"The Wellerman's coming, give us your capital gains.\""
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Give us your capital gains! Off the back of the sea shanty from the work-room, it all ties together, the shanty becomes a battle cry. And Argyle, Divine Wrath—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Crit-fails two of them into instant death. Just gone. And then Death's Call triggers and he gets nine temp HP off it."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "He kills two guys and gets rewarded for it with health, that's — that's the cleric dream, that's the dream. And the whole fight, Maeve, the whole fight, we never moved."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Not one square. Anzu freezes the last Manus with Frostbite and the party hadn't moved an inch the entire combat."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "We charged in, planted our feet, and let them teleport to us. Kill-box. We built a kill-box and they just kept dimension-dooring into it."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Or — and I'd put this to you — you got lucky that teleporting enemies, who can appear anywhere, chose to appear next to the man with two swords."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "No, no, that's the genius of it—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It's only genius if they have to come to you. They could teleport. They had no reason to walk into Benny. They just did."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Okay but—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "If even one of them had dimension-doored behind Argyle and stayed there, your \"kill-box\" is just four people standing in a corner getting shot."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "...you're not wrong. But it worked, and a thing that works is a strategy."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A thing that works once is luck. You can call it a strategy next time it survives contact."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Harsh. Fair, but harsh. So we win, eventually, bloody but standing, and we loot the bodies, and the ink ribbon — the actual quest item — is there—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Deep red. In a film-reel container."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "A film reel, deep red, and it's sitting there next to — rags, a bar of lye, and this skull key—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A skull-emblazoned key. And two pamphlets."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The pamphlets! \"Perfection's First Step,\" two of them, and they're — they're incomplete spell scrolls—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Incomplete scrolls of Unbreaking Wave Advance. Last few pages blank. Anzu can finish them in about ten minutes. And the energy in them traces back to the cult's patron deity."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Right, so the scroll's literally powered by whatever god these guys worship, which is — that's a thread, that's gonna come back. And there's a parchment too, runic, in the Urthram-ish script—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Urthram-adjacent. Yes."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And then the tincture. The mongrelfolk tincture. Which—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Grows you an extra finger per hand."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Per hand! And it's a real item, it gives you — a bonus to reflex and a climb speed—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Plus two item bonus to reflex DC, twenty-foot climb speed, ten minutes. And it's described as gritty and spicy."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Gritty and spicy, and nobody — nobody touched it. Not one of us drank the extra-finger juice."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "You don't drink the extra-finger juice. That's just sound policy."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And the horn amulet, the one that linked to the mural — Argyle crits a religion check on it, a thirty-eight—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A thirty-eight. And gets nothing. It's a non-magical carving. Just a rough bit of horn."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "A thirty-eight for nothing! And the GM — the GM asks him, point blank, \"what were you hoping to hear?\""
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Which is the GM's polite way of saying you can roll as high as you want, the carving is still just a carving."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "But a thirty-eight, you feel entitled to a secret with a thirty-eight—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A high roll tells you the truth. Sometimes the truth is \"it's a carving.\" You already got the connection to the mural off the perception crit. The amulet had nothing left to give."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "That's — okay, yeah, we'd already squeezed it. Then Argyle does the healing engine, Sacred Ground—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Sacred Ground, then repeated treat wounds, the plus-fourteen healing. Patched everyone up out of combat."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Plus fourteen a pop, just topping everybody off, and then — here's where I think we got greedy. We had the ribbon. We had the quest item. The errand was done."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "And you went deeper."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "We went deeper! Argyle wanted to use a spell to find more, and there was this whole rules fight about — was it Show the Way—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Show the Way versus Wanderer's Guide. The problem was the spell doesn't actually point you in a direction."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "It doesn't tell you where, it just — confirms? And the GM let Argyle swap it out for Locate instead—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Swapped to Locate. And Locate pinged the ink ribbon to the north, which — you already had the ribbon. So it located the thing in your pocket."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "It found the thing we were holding! Great spell. But then he probes further with it and we press on, through this hallway absolutely covered in the cult art—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "And then the barracks."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The barracks, oh, the acid barracks, this rotted-out mongrelfolk sleeping quarters and the smell is — the GM said it'd be like breathing in pure acid—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Battery-acid stink. The beds were stacked and twisted, warped by oversized sleepers. Rotted mattresses. There was another magic pack in there."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Another pack, yeah, and the beds being all bent out of shape from whatever's sleeping in them, that's — you don't want to meet what bent those beds. And then the webs."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The spiderweb tunnel."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The web tunnel, which we ran like a heist, like a laser grid, Johnny's at the front threading through—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Johnny crit, a thirty-two, and it covered Anzu's failure. The GM narrated it as Anzu touching part of the web but Johnny backflipping in to cut the strand before it mattered."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Backflips and cuts the string, like — like in the movie when one guy saves the other from the laser, that exact energy, and the whole time Johnny's going \"there's bugs, I hear bugs\"—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "And then the running bit. \"These spiders know Morse code.\""
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The spiders know Morse code! Because of the web, like a Charlotte's Web — and then Argyle, oh, Argyle the nerd, has to interject that spiders aren't bugs—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Spiders aren't insects, technically, which is true—"
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "But it derailed everything, because then the GM actually looks up the definition of the word \"bug\"—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "And under the broad definition, \"bug\" does cover spiders. Colloquially. So Argyle was — well, half wrong."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Argyle was wrong! The nerd got nerded. And while all this is going on the sounds are getting worse, the skittering's all around us now, and we feel it—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The threshold. Passing through a Fane's edge. That tingle."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The Fane, the heart lair, and somebody's just going \"spider heart, spider heart\"—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "A spider heart. Which is exactly what the party wants — a Fane to destroy for the energy."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Energy! Seventy-three and climbing. But we're at the edge of it, the skittering's everywhere, and the GM just goes—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "\"I think that's where we'll end it.\""
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Right there. Cliffhanger. At the threshold of a spider nest, with our two big hitters half-drained from the cult fight—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Which is my whole concern. You pushed past a completed objective, into a Fane, on depleted resources, because there was energy in it."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "It's a heart! You can't leave a heart!"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "You can absolutely leave a heart and come back rested. The heart isn't going anywhere. The spiders, however, get the first move on a party that's already spent its holy water and its big crits."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "But the momentum—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Momentum is what the GM ends a session on right before he ambushes you. You walked to the edge of a nest, tired, and stopped. Next week is not going to open with you choosing the terms of that fight."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "...okay when you say it like that I want to go back up and send Marin his sandwich and sleep on it."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Marin's note might not even come back."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Don't — don't say that. The note's coming back. The note has to come back."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "We'll find out next session."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "We'll find out next session. With the spiders. Who know Morse code—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Allegedly."
+          "text": "Okay, first of all, it wasn't a B L T at that point, it was a B L T in the chaos, because — okay, let me set this up — Johnny pulls out a sandwich, Maranthorn lunges for it, and Benny yoinks it out of his hand. Just — right out of his"
         }
       ]
     }
