@@ -54,9 +54,10 @@ haiku** (gold set has since grown to 580 train / 144 val): confirm **P=0.936 / R
 (2/31); MIPROv2 metric **81.25**. Live MIPROv2-medium compile spent **$7.32**. GLM 5.2 is a reasoning model
 (emits `reasoning_content`) — judge max-tokens 4096 is sufficient (verified: candidates parse, natural stop).
 Re-run: `uv run python -m astra_linguist.surface.optimize --live` (needs `OPENROUTER_API_KEY` via SOPS + net).
-**Deploy:** the `correction_candidates` asset runs IMAGE-baked code in the dagster container → needs
-`docker compose build dagster-code` (a.k.a. `just up`) before the GLM judge is live in the pipeline;
-`OPENROUTER_API_KEY` is already on the `*dagster-env` anchor from the mouthpiece switch. **G1 is DONE** (no longer deferred): the surfacer is a Dagster asset `correction_candidates`
+**Deploy:** the `correction_candidates` asset runs IMAGE-baked code in the dagster container → `just up`
+(rebuilds dagster-code) deploys it. **DONE 2026-06-26** — rebuilt + recreated, code location loaded clean;
+`OPENROUTER_API_KEY` was already on the `*dagster-env` anchor from the mouthpiece switch (no env change).
+GLM judge is live; next `correction_candidates` materialization uses it. **G1 is DONE** (no longer deferred): the surfacer is a Dagster asset `correction_candidates`
 (`bd7f533`, in `assets.py`, SigNoz-instrumented `295a3fa`), the defs.yaml write-back landed (`c07a314`), and
 the live judge is compiled (`judge.compiled.json`). The apply step stays a CLI **by design** (human triage
 shouldn't auto-rewrite the lexicon) — that's not a deferral. See [[config-single-source]] and

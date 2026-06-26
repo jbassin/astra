@@ -41,7 +41,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
 
-### linguist dspy judge → GLM 5.2 (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN; NOT yet redeployed)
+### linguist dspy judge → GLM 5.2 (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN + DEPLOYED LIVE)
 
 Retuned the transcription-correction judge (gate J) off Anthropic haiku/sonnet onto **GLM 5.2**, matching
 mouthpiece's switch — and **recompiled the artifact live** (the compiled `judge.compiled.json` is
@@ -56,9 +56,10 @@ Memory `[[linguist-gate-j-dspy-judge]]` (full facts) + `[[mouthpiece-glm-debate-
 - **Retrain:** live MIPROv2-medium compile on GLM, **$7.32** spend. Held-out eval **beats the haiku baseline**
   (gold set has grown to 580 train / 144 val): confirm **P 0.915→0.936, R 0.607→0.779**, restraint 0.946→0.935,
   optimizer metric 69.4→**81.25**. Re-run any time: `uv run python -m astra_linguist.surface.optimize --live`.
-- **⚠️ NOT yet live in the pipeline:** the `correction_candidates` asset runs IMAGE-baked code in the dagster
-  container → needs `docker compose build dagster-code` (`just up`) to deploy the GLM judge.
-  `OPENROUTER_API_KEY` is already on the `*dagster-env` anchor (from the mouthpiece switch), so no env change.
+- **✅ DEPLOYED LIVE via `just up`** (2026-06-26): the dagster-code image rebuilt with the GLM-judge code
+  (un-cached `COPY apps/linguist` + `uv sync` rebuild of astra-linguist/llm/config), container recreated, code
+  location loaded cleanly (no import errors). `OPENROUTER_API_KEY` was already on the `*dagster-env` anchor
+  (mouthpiece switch), so no env change. The next `correction_candidates` materialization uses the GLM judge.
 
 ### mouthpiece → GLM 5.2 + debate format (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN + DEPLOYED LIVE)
 
