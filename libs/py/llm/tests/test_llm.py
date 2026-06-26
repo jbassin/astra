@@ -127,6 +127,10 @@ def test_cost_known_model_and_unknown_zero() -> None:
     # 1M uncached input on opus-4-8 = $5.00; unknown model = $0.
     assert cost_usd("claude-opus-4-8", TokenCounts(1_000_000, 0, 0, 0)) == pytest.approx(5.0)
     assert cost_usd("claude-opus-4-8", TokenCounts(0, 0, 0, 1_000_000)) == pytest.approx(25.0)
+    # GLM 5.2 via OpenRouter (mouthpiece default): $0.95/1M in, $3.00/1M out.
+    glm = "openrouter/z-ai/glm-5.2"
+    assert cost_usd(glm, TokenCounts(1_000_000, 0, 0, 0)) == pytest.approx(0.95)
+    assert cost_usd(glm, TokenCounts(0, 0, 0, 1_000_000)) == pytest.approx(3.0)
     assert cost_usd("no-such-model", TokenCounts(1_000_000, 0, 0, 0)) == 0.0
 
 

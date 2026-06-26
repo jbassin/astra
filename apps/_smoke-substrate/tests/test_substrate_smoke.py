@@ -30,9 +30,9 @@ def _fake_completion(**_: Any) -> Any:
 
 
 def test_smoke_runs_offline(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-test-offline")
+    monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test-offline")
     summary = run(LiteLLMClient(completion_fn=_fake_completion))
-    assert summary["model"] == "claude-opus-4-8"
+    assert summary["model"] == "openrouter/z-ai/glm-5.2"
     assert summary["players"] == 5  # ontology-being consolidation
     assert summary["being_parity"] is True  # canonical JSON round-trips
     assert summary["status"] == "online"  # forced-tool → Pydantic path

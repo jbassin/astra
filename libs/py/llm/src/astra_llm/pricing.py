@@ -23,6 +23,13 @@ PRICING_USD_PER_1M: dict[str, ModelPricing] = {
     "claude-haiku-4-5-20251001": ModelPricing(
         input=1.0, cache_read=0.1, cache_write=1.25, output=5.0
     ),
+    # GLM 5.2 (open-weight) routed via OpenRouter — mouthpiece's default model. Rate from
+    # OpenRouter's listing (~$0.95/$3.00 per 1M; can drift as OpenRouter routes to
+    # different upstream providers). OpenRouter doesn't surface Anthropic-style cache
+    # buckets, so cache_* tokens are ~always 0; kept at the usual 0.1x/1.25x ratios.
+    "openrouter/z-ai/glm-5.2": ModelPricing(
+        input=0.95, cache_read=0.095, cache_write=1.19, output=3.0
+    ),
 }
 
 
