@@ -57,7 +57,15 @@ Re-run: `uv run python -m astra_linguist.surface.optimize --live` (needs `OPENRO
 **Deploy:** the `correction_candidates` asset runs IMAGE-baked code in the dagster container → `just up`
 (rebuilds dagster-code) deploys it. **DONE 2026-06-26** — rebuilt + recreated, code location loaded clean;
 `OPENROUTER_API_KEY` was already on the `*dagster-env` anchor from the mouthpiece switch (no env change).
-GLM judge is live; next `correction_candidates` materialization uses it. **G1 is DONE** (no longer deferred): the surfacer is a Dagster asset `correction_candidates`
+GLM judge is live; next `correction_candidates` materialization uses it.
+
+**Whole-repo model inventory after this (sanity sweep 2026-06-26):** chat = **GLM 5.2 everywhere**
+(mouthpiece, this judge+escalate, substrate smoke, `astra_llm.DEFAULT_MODEL`); ASR = `groq/whisper-large-v3`
+(scribe); TTS = `eleven_v3` (mouthpiece). **Nothing calls a `claude-*` model anymore** — Anthropic is
+vestigial (key ref + `claude-*` pricing rows + `ensure_anthropic_env` kept **as a fallback by request**). The
+sweep also fixed `apps/_smoke-substrate`: it called the GLM default but still bridged the Anthropic key →
+swapped to `ensure_openrouter_env` (`0bbf3f0`); its offline test env-override moved `ANTHROPIC_API_KEY`→
+`OPENROUTER_API_KEY` (reproduce CI with a failing-`sops` shim, [[mouthpiece-glm-debate-switch]]). **G1 is DONE** (no longer deferred): the surfacer is a Dagster asset `correction_candidates`
 (`bd7f533`, in `assets.py`, SigNoz-instrumented `295a3fa`), the defs.yaml write-back landed (`c07a314`), and
 the live judge is compiled (`judge.compiled.json`). The apply step stays a CLI **by design** (human triage
 shouldn't auto-rewrite the lexicon) — that's not a deferral. See [[config-single-source]] and

@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `199e5ab`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `0bbf3f0`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
@@ -60,6 +60,15 @@ Memory `[[linguist-gate-j-dspy-judge]]` (full facts) + `[[mouthpiece-glm-debate-
   (un-cached `COPY apps/linguist` + `uv sync` rebuild of astra-linguist/llm/config), container recreated, code
   location loaded cleanly (no import errors). `OPENROUTER_API_KEY` was already on the `*dagster-env` anchor
   (mouthpiece switch), so no env change. The next `correction_candidates` materialization uses the GLM judge.
+- **Follow-up sanity sweep + substrate-smoke fix (`0bbf3f0`):** audited every model string in the repo.
+  **Final inventory — chat: GLM 5.2 (`openrouter/z-ai/glm-5.2`) everywhere** (mouthpiece digest/script/mega/
+  session, linguist judge+escalate, substrate smoke, `astra_llm.DEFAULT_MODEL`); **ASR: `groq/whisper-large-v3`**
+  (scribe); **TTS: `eleven_v3`** (mouthpiece ElevenLabs). **No claude-* / gpt / gemini call anywhere** — Anthropic
+  is now vestigial (key ref + 3 `claude-*` pricing rows + `ensure_anthropic_env` retained **as a fallback, by
+  request**). The sweep caught a real leftover: the substrate smoke called the GLM default model but still
+  bridged the Anthropic key (`ensure_anthropic_env`) — fixed to `ensure_openrouter_env`; its offline test's
+  env-override moved `ANTHROPIC_API_KEY`→`OPENROUTER_API_KEY` (verified faithfully with a failing-`sops` shim on
+  PATH, per `[[mouthpiece-glm-debate-switch]]`). Manual gate, no redeploy needed.
 
 ### mouthpiece → GLM 5.2 + debate format (2026-06-26 session — COMPLETE + PUSHED + CI-GREEN + DEPLOYED LIVE)
 
