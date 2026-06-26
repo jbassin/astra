@@ -109,12 +109,12 @@ def test_distill_session_uses_call_tool() -> None:
 
 
 # ── prompts (gate C — load-bearing lines + interpolation; two-host, calmer) ──
-def test_improv_prompt_is_the_raw_transcript_prompt() -> None:
+def test_improv_prompt_is_the_debate_transcript_prompt() -> None:
     p = build_improv_system_prompt(HOSTS)
-    assert "recording of two friends" in p
-    # Calmer-but-human: interruptions are the exception, not the rhythm.
-    assert "Real talk isn't airless" in p
-    assert "should be RARE" in p
+    assert "recorded podcast DEBATE between two co-hosts" in p
+    # Debate format: the two co-hosts genuinely disagree and pushback is the rhythm.
+    assert "they do NOT agree" in p
+    assert "Pushback is the rhythm" in p
     # Host names interpolate into the speaker-label example, two hosts only.
     assert "Bram: what they said" in p
     assert "Bram and Maeve" in p

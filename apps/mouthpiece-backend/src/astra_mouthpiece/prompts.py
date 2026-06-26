@@ -277,56 +277,52 @@ WIKI EXCERPTS (for grounding names/lore only; do not reveal undiscovered plot):
 
 
 def build_improv_system_prompt(hosts: HostConfig) -> str:
-    """Pass A — a free-text "raw table transcript" prompt (keeps out of the
-    clean-podcast attractor). STATIC per host config."""
-    return f"""You are writing down a relaxed, lightly-edited recording of two friends —
-{hosts.a.name} and {hosts.b.name} — talking at their usual tavern table about last
-night's Pathfinder 2e session. They did NOT prepare. This is a TRANSCRIPT of what was
-actually said — not a script, not a polished recap. Your job is to capture how the talk
-really went; they're two people who know each other well, so it's mostly an easy
-back-and-forth, not a pile-up of crosstalk.
+    """Pass A — a free-text "raw debate transcript" prompt (keeps out of the
+    clean-podcast attractor). The two co-hosts genuinely disagree and argue it out.
+    STATIC per host config."""
+    return f"""You are writing down a recorded podcast DEBATE between two co-hosts —
+{hosts.a.name} and {hosts.b.name} — hashing out last night's Pathfinder 2e session on
+their show. This is a TRANSCRIPT of what was actually said. They know the material cold
+and they do NOT agree: each has their own read on what happened, what it meant, and
+whether the party (and the GM) made the right calls — and they argue it out on mic.
 
-The two friends:
-- {hosts.a.name}: {hosts.a.persona}.
-- {hosts.b.name}: {hosts.b.persona}.
+The two co-hosts:
+- {hosts.a.name}: {hosts.a.persona}. In debate he leads with instinct and the big
+  emotional read of a scene, and defends it even when the details are fuzzy.
+- {hosts.b.name}: {hosts.b.persona}. In debate she leads with the precise facts and the
+  why, and she will not let a sloppy take stand — she challenges his framing directly.
 
 Format: plain text, one line per turn, as
 {hosts.a.name}: what they said
 {hosts.b.name}: what they said
 Use the hosts' names as the speaker labels. NOTHING else — no headings, no audio tags,
 no stage directions, no markdown. Ordinary spoken punctuation only: an ellipsis for
-trailing off, an em-dash for a thought that gets cut off.
+trailing off, an em-dash for a thought that gets cut off or a cut-in.
 
-Real talk isn't airless — write in a FEW rough edges, but keep them occasional:
-- A couple of false starts or self-corrections ("the green one — no, the blue one").
-- {hosts.a.name} fetches a name or detail wrong and {hosts.b.name} corrects it.
-- A tangent that goes nowhere and just deflates ("...anyway"); a joke that lands flat or
-  gets ignored; the odd one-word reaction or beat of quiet.
-- Now and then one of them genuinely can't help cutting in — but that should be RARE,
-  not the rhythm. Mostly they finish their thoughts and hand the floor over.
-If a line reads like a polished podcast quip, it's wrong — keep it plain. Keep the two
-voices DISTINCT: {hosts.a.name} fluent but imprecise; {hosts.b.name} precise, dry, and a
-little needling — she lands the detail he fumbles and pokes at WHY the characters did
-the thing. If you could swap their names on a line and it would still fit, it's too
-generic.
+This is a DEBATE, so write it like one:
+- They genuinely disagree on interpretation — what a faction's move meant, whether a
+  character was right, whether the GM's ruling was fair, what the smart play would have
+  been. Stake out two real positions and have them PUSH on each other.
+- Pushback is the rhythm, not the exception: "no, that's not why—", "I disagree—",
+  "okay but then explain—". Interruptions and cut-ins are common and welcome.
+- They escalate, they concede a point when the other lands one, and they circle back to
+  win an earlier round. Real argument, between people who respect each other — heated but
+  never hostile.
+- Keep the two voices DISTINCT: {hosts.a.name} the gut-read/instinct debater,
+  {hosts.b.name} the facts/precision debater who needles his logic. If you could swap
+  their names on a line and it would still fit, it's too generic.
 
-They are friends at a tavern table, not in a booth — that's the warm, informal feel of
-it. Keep the tavern in the background, though: no waiter or barkeep, no ordering, no
-fussing over food or drink. The room never pulls focus — they're lost in the story, not
-their dinner.
-
-Walk through the session below ROUGHLY IN THE ORDER IT HAPPENED — the moments are
-listed in sequence, and the talk should broadly follow that through-line so it's easy
-to follow. You don't have to cover all of it: skip the dull bits, sit on a good one,
+Walk through the session below ROUGHLY IN THE ORDER IT HAPPENED — the moments are listed
+in sequence, and the debate should broadly follow that through-line so it's easy to
+follow. You don't have to cover all of it: skip the dull bits, sit on a contested one,
 and glance back to an earlier moment when it connects — just don't jump around so much
-the night's order gets lost. Reach each moment through memory or an argument, not a
-flat recital. Don't announce an agenda, don't open with "welcome to the show", don't
-sign off cleanly: start mid-conversation and let it trail off. Aim for a long session,
-roughly 30-40 minutes of talk.
+the night's order gets lost. Reach each moment through argument, not a flat recital.
+Don't announce an agenda, don't open with "welcome to the show", don't sign off cleanly:
+start mid-argument and let it trail off. Aim for a long session, roughly 30-40 minutes.
 
 Grounding: use the wiki excerpts ONLY to spell names, factions, places, and lore right
-({hosts.b.name} is the one who'd know them). Do NOT invent events or outcomes not in
-the digest, and do NOT reveal lore the players haven't discovered in-session.
+({hosts.b.name} is the one who'd know them). Do NOT invent events or outcomes not in the
+digest, and do NOT reveal lore the players haven't discovered in-session.
 
 Write the transcript now, and nothing else."""
 
@@ -335,8 +331,9 @@ def build_dressing_system_prompt(hosts: HostConfig) -> str:
     """Pass B — the "protective dressing" prompt: record Pass A as structured turns
     with v3 tags, FORBIDDEN to improve the dialogue. STATIC per host config."""
     return f"""You are a careful transcript FORMATTER, not a writer. You are given a raw
-transcript of two friends ({hosts.a.name}, {hosts.b.name}) talking at a tavern table.
-Your only job is to record it as structured turns by calling the provided tool exactly
+transcript of two co-hosts ({hosts.a.name}, {hosts.b.name}) debating last night's
+session on their podcast. Your only job is to record it as structured turns by calling
+the provided tool exactly
 once: split it into turns, map each speaker, add inline delivery direction, and make it
 speakable. You are a typesetter.
 
@@ -355,9 +352,10 @@ What you MAY do (formatting only):
 - Add inline ElevenLabs v3 audio tags in square brackets where the delivery the words
   already imply shifts — direction ([happy], [excited], [annoyed], [thoughtful],
   [deadpan], [sarcastic]) and non-verbal ([laughing], [chuckles], [sighs], [exhales
-  sharply], [clears throat], [short pause], [long pause]). Only add an overlap tag
-  ([interrupts], [overlapping]) on the rare line where the raw transcript actually shows
-  one host cutting in. Use them sparingly, only where earned, and only tags that suit the
+  sharply], [clears throat], [short pause], [long pause]). Add an overlap tag
+  ([interrupts], [overlapping]) wherever the raw transcript shows one host cutting in —
+  in a debate that is frequent, so tag it where it actually occurs (never invent a cut-in
+  the raw text doesn't show). Use the tags where earned, and only tags that suit the
   speaker. Infer similar ones as needed.
 - Make text speakable for ElevenLabs v3: spell out numbers, dates, symbols, and
   abbreviations in words; keep the ellipses, em-dashes, and single-word CAPS that carry
