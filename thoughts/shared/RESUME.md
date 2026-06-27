@@ -36,10 +36,35 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `4e0000f`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `a2c9a5e`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
-> product/ops on the live stack**, not migration slices.
+> product/ops on the live stack** + bringing **net-new external apps** into astra via the frontend playbook,
+> not migration slices.
+
+### harrow (0017) — ported the external tarot reader into astra (2026-06-26 session — DONE + LIVE-LOCAL)
+
+Brought the standalone app at `/ruby/data/experiments/tarot` ("Harrow", a React 18 + Vite 5 SPA tarot deck
+reader) into astra as a **backend-less SSR frontend on the strider template** — a sibling of strider. **All 6
+slices built + pushed + deployed-local + verified live** (`1aa0c81`…`a2c9a5e`); healthy on **10369**,
+`service.name=astra.harrow` SSR spans in SigNoz (0 errors). Scope `thoughts/shared/research/2026-06-26-harrow-0017-thoughts.md`,
+spec `thoughts/astra/specs/0017-harrow-spec.md`, memory [[harrow-0017-gotchas]]. Decisions: full gothic
+re-skin; `harrow`/`harrow.iridi.cc`; build-time generated content; client-side draw/flip; views→routes; no
+backend/DB/volume; deck hues via gothic identityStyle; deck + 29-predicate-label parity gates.
+- **s1 scaffold** (`1aa0c81`): `apps/harrow` from the mouthpiece/strider shell; `harrow` config namespace in
+  kdl + Zod + Pydantic (port 10369); uv `exclude`; SSR smoke.
+- **s2 content pipeline** (`fdf2851`): 24 `.card` + 1 `.spread` copied byte-identical → `content/`; ported
+  `parseCard`/`parseSpread` into `build-content.ts` → generated `cards.ts`/`spreads.ts`; **deck parity gate**.
+- **s3 domain logic** (`aabb34f`): draw/fortune/tags/predicates/decks lifted verbatim; **predicate-selection +
+  fortune-template gates** (13 tests total).
+- **s4 gallery + nav** (`dc72a66`): `/gallery` + masthead nav; CardRow/CardFront/Icon/CardName re-skinned to
+  gothic; deck/flip/shimmer utilities into globals.css.
+- **s5 interactive** (`1cdd02e`): `/` client-only draw→flip→reveal behind `<ClientOnly>`; `/spreads` +
+  `/spreads/history`; FlipCard (native `<button>`), CardSpread, useCardReveal, predicate-named shimmer title.
+- **s6 deploy** (`a2c9a5e`): Dockerfile (simplest — no snapshot/volume) + the 8-sibling manifest ripple;
+  Compose `harrow`@10369; Caddy `harrow.iridi.cc`; `docker compose build/up` + live-verified + SigNoz spans.
+- **Deferred (sanctioned):** `harrow.iridi.cc` DNS + `just caddy-reload` (outward-facing); decommission of the
+  old standalone `tarot` deploy (`reg.iridi.cc/tarot` + saffron container + `upload.sh`) post-go-live.
 
 ### Longer debate episodes via chunked Pass B (2026-06-26 session — DONE + LIVE)
 

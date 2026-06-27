@@ -1,8 +1,14 @@
 # NLSpec 0017 — harrow (the tarot deck reader)
 
-**Status:** **SPEC — ready to implement.** Net-new post-cutover product work (the faerrin→astra migration is
-COMPLETE per [[astra-migration-research]]); this reuses the 0011–0013 frontend playbook to bring an external
-app into astra. Scope gate COMPLETE
+**Status:** **BUILT — all 6 slices DONE + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE** (`1aa0c81`(s1)…
+`a2c9a5e`(s6), 2026-06-26). Healthy on 10369; `/` (client-only draw), `/gallery`, `/spreads`,
+`/spreads/history` all SSR 200; `service.name=astra.harrow` SSR spans land in SigNoz (0 errors). Both
+parity gates green (deck golden + 29 predicate labels). Full gothic re-skin; deck hues via identityStyle.
+**Spec-sanctioned deferral:** the `harrow.iridi.cc` DNS record + `just caddy-reload` (outward-facing). Minor
+in-build regrouping: `/spreads` + `/spreads/history` landed in slice 5 (grouped by the FlipCard dependency),
+not slice 4 — no scope cut. Gotchas in [[harrow-0017-gotchas]]. Net-new post-cutover product work (the
+faerrin→astra migration is COMPLETE per [[astra-migration-research]]); this reused the 0011–0013 frontend
+playbook to bring an external app into astra. Scope gate COMPLETE
 ([`../../shared/research/2026-06-26-harrow-0017-thoughts.md`](../../shared/research/2026-06-26-harrow-0017-thoughts.md),
 commit `67439da`) — every load-bearing fact verified against the real repos. This spec carries the user-locked
 decisions **A–F** (2026-06-26) and **settles G–J** below.
