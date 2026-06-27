@@ -36,11 +36,31 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `ae8b27e`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `4232fc7`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack** + bringing **net-new external apps** into astra via the frontend playbook,
 > not migration slices.
+
+### Animated backgrounds as an astra signature style — @astra/backdrop (2026-06-26 session — DONE + LIVE)
+
+Made the animated abstract page background (harrow's starfield, strider's balatro) a **shared signature
+style** and added one to **mouthpiece, ledger** (pixi shaders) + **akasha** (CSS). 6 commits
+(`6858066`…`4232fc7`), all CI-green, deployed (targeted `docker compose build/up`), **live-verified by
+Playwright/swiftshader screenshots + SigNoz 0-error SSR spans**. Memory [[backdrop-signature-style]].
+- **New lib `@astra/backdrop`** (`6858066`): `ShaderBackground` (SSR-safe mounter — renders null until
+  mounted so the canvas is absent from SSR HTML; dynamic-imports pixi; **ONE Application per page**) +
+  `createShaderBackground` factory (the pixi-v8 full-screen-rect + Filter idiom, generalised) + a catalog
+  (`starfield` harrow-verbatim, `mouthpieceResonance`, `ledgerAurora`) with gothic-palette RGB + noise GLSL
+  in `shaders/common.ts` and a per-shader `uIntensity` knob. **harrow migrated onto it** (dogfood, dropped
+  its local component + direct pixi dep). **strider left as-is** (balatro entangled with its faction-tint).
+- **mouthpiece** (`9a07220`) + **ledger** (`01caa29`) mount `<ShaderBackground spec={…}>` in `__root`.
+- **THE constraint: two live pixi Applications on one page CONFLICT** (confirmed from strider). akasha
+  already runs a webgpu force-graph → it gets a **CSS-only animated nebula** (`c979545`) instead of a pixi
+  shader (no 2nd WebGL context; graph untouched).
+- **Tuning** (`4232fc7`): first pass rendered too faint (swiftshader under-renders + diffuse fbm) → bumped
+  ledgerAurora intensity 0.8→1.5 + akasha nebula alphas. Easy to dial further (one uIntensity / the alphas).
+- A **new TS lib needs NO Dockerfile ripple** (frontends `COPY libs/ts` wholesale, unlike a new app).
 
 ### ledger (0018): the astra landing page (2026-06-26 session — DONE + LIVE ON PUBLIC EDGE)
 
