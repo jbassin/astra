@@ -10,6 +10,7 @@
       "!**/fixtures/vellum/**",
       "!**/tests/fixtures/**",
       "!**/linguist/data/**",
+      "!**/linguist/timeline/**",
       "!**/routeTree.gen.ts",
       "!**/src/generated/**",
       "!**/public/**",

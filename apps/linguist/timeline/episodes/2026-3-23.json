@@ -1,0 +1,49 @@
+{
+  "date": "2026-3-23",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Cracks in the Firmament",
+    "synopsis": "Descending into the royal waterways beneath Hallia, the party engages in a grueling protracted battle against oozes — gray oozes, ochre jellies, and a deadly living tar — surviving multiple near-death moments through mythic intervention and creative spellcasting. After victory, they discover an ancient shrine to an unknown horned deity and a vast network of machinery pumping magical energy through the earth. Pushing deeper into an endless hallway where gravity fades and phantom water echoes, they find a hairline crack in reality itself — a fracture in the firmament radiating godlike magical energy, suggesting someone is attempting to crack open a second path to the Godhome.",
+    "key_beats": [
+      "Initiative is rolled against a group of oozes — gray oozes, ochre jellies, and a living tar — in the royal waterways beneath Hallia. Anzu recalls knowledge revealing extensive immunities (acid, bleed, bludgeoning, mental, precision, visual, unconscious, critical hits) and varied resistances per ooze type.",
+      "An ochre jelly casts 500 magical toads creating difficult terrain; the party struggles with failed Courageous Anthem rolls and oozes resistant to most damage types, forcing them to adapt tactics.",
+      "Benny shifts his chainsword into a polytool for bludgeoning damage; Johnny casts Horde of Underlings, summoning six miniature mascot versions of the party with knives to swarm enemies.",
+      "The living tar lands devastating blows: a critical hit knocks Benny unconscious (58 damage), and a natural-20 pseudopod against Johnny deals 60 damage — Johnny survives only by spending his last mythic point on 'Correct the Story' to force a reroll.",
+      "Anzu's melee peck attack gets his beak stuck in the living tar, restraining him; he narrowly escapes suffocation by using a mythic point to reroll his athletics escape.",
+      "Benny is hit with Curse of Lost Time, temporarily aging into a 15-year-old's body (enfeebled and clumsy); the ochre jelly splits when hit with slashing damage.",
+      "The party defeats all oozes; Argyle's sustained Spiritual Armament and Benny's double-slice finish off the remaining foes. Johnny teleports the party to safety with Rainbow's End.",
+      "Post-combat, the party discovers a shrine depicting an androgynous horned figure (one full horn, one cut stump) surrounded by thousands of tiny carved humanoids. Religion and identify-magic checks reveal it doesn't match any known deity or fiend.",
+      "Benny's resonance detects a discordant fourth ping from the statue — it resonates on a different frequency than the party's Voidsong attunement, similar but not matching the radar dishes and the Gryphonline tree.",
+      "Crafting checks reveal the blue machinery is pumps made of iron-lead alloy, circulating a glowing blue liquid that gathers magical energy from above and channels it below, shielded to prevent magical leakage.",
+      "The party explores the 60-foot-wide hallway of blue machinery, feeling progressively lighter and hearing phantom water sounds; after walking ~1 mile they turn back, then return again to investigate further.",
+      "At the northern edge of Teller's Run, the party discovers a hairline crack in the air itself — a fracture in reality radiating immeasurable magical energy, potentially a miniature version of the crack in the firmament through which the gods speak. Approaching it causes the world to visually splinter."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Anzu",
+      "Johnny",
+      "Benny",
+      "Othello (Anzu's familiar)"
+    ],
+    "locations": [
+      "Royal Waterways (ancient sewers beneath Hallia, pre-dating the Iridescent Church coup)",
+      "Shrine area (containing unknown horned statue and blue machinery)",
+      "Blue Machinery Hallway (60-foot-wide corridor extending ~1+ mile northward under Teller's Run)"
+    ],
+    "factions": [
+      "The Scale",
+      "The Sinister Six (unnamed foes)",
+      "Iridescent Church",
+      "Calarian Royal Family (deposed)"
+    ],
+    "items": [
+      "Blue glowing machinery (magic pumps with blue liquid flowing through iron-lead alloy pipes)",
+      "Unknown shrine/statue (androgynous horned figure surrounded by thousands of tiny humanoid figures)",
+      "Void paper",
+      "Horde of Underlings spell (summons miniature mascot versions of party members)",
+      "Spiritual Armament spell",
+      "Polytool (Benny's shapeshifting weapon)"
+    ],
+    "cliffhanger": "The party stands in the endless blue-lit machinery hallway, staring at a hairline crack in reality itself — a fracture in the firmament brimming with immeasurable magical energy, with machines pumping power into it. They must decide: report it to the Scale and risk being pulled off the case, investigate further now, or leave it and proceed to the pilgrimage as planned."
+  }
+}

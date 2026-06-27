@@ -14,18 +14,20 @@ dspy judge (wrong task; see the 0019 scope doc).
 
 from __future__ import annotations
 
+import json
 from collections import defaultdict
 from typing import Protocol, TypeVar
 
 from astra_llm import LiteLLMClient
-from pydantic import BaseModel
+from astra_llm.client import LlmError
+from pydantic import BaseModel, ValidationError
 
 from .chronicle import (
     Chronicle,
     EpisodeEntry,
     EpisodeSummary,
     Season,
-    SeasonStructure,
+    SeasonPlan,
     ShowChronicle,
     ShowInfo,
     date_key,
@@ -131,16 +133,21 @@ def build_episode_entry(
 
 
 # ── season grouping (the aggregate side) ────────────────────────────────────
-SEASON_MAX_TOKENS = 4000
+# Headroom for the boundary list (tiny: a few title/summary/start-date triples). The
+# old approach asked GLM to echo every episode date per season, whose output for the
+# 33-episode main show truncated mid-JSON — boundaries keep it small + robust.
+SEASON_MAX_TOKENS = 8000
+SEASON_ATTEMPTS = 3
 
 SEASON_SYSTEM = (
     "You are a chronicler organizing one tabletop RPG actual-play show into seasons. "
     "You are given the show's episodes in air-date order, each with a title, synopsis, "
-    "and key beats. Group consecutive episodes into seasons — narrative arcs. Seasons "
-    "MUST be contiguous (no interleaving), cover every episode exactly once, and stay in "
-    "the given order. Give each season a short evocative title and a 1-2 sentence arc "
-    "summary. Reference episodes by the exact `date=` values provided. A short show may be "
-    "a single season; only split when there is a clear arc shift."
+    "and key beats. Split the run into contiguous seasons (narrative arcs) and report, "
+    "for each season, its title, a 1-2 sentence arc summary, and the exact `date=` of its "
+    "FIRST episode (`start_date`). Seasons must be in order and non-overlapping; the first "
+    "season's start_date MUST be the first episode listed. A short show may be a single "
+    "season — only split at a clear arc shift. Do NOT list every episode, only the season "
+    "starts."
 )
 
 
@@ -163,57 +170,60 @@ def group_show_seasons(
     *,
     client: _StructuredClient | None = None,
     model: str | None = None,
-) -> SeasonStructure:
-    """One GLM call: assign a show's ordered episodes to contiguous seasons."""
+) -> SeasonPlan:
+    """One GLM call (retried): the show's season boundaries (title/summary/start_date).
+
+    GLM occasionally emits malformed/truncated tool JSON; we retry a few times before
+    giving up rather than failing the whole aggregate on a single bad generation.
+    """
     client = client if client is not None else _real_client()
     model = model if model is not None else _chronicle_model()
-    return client.call_structured(
-        SeasonStructure,
-        system=SEASON_SYSTEM,
-        user_content=season_user_content(info, episodes),
-        model=model,
-        max_tokens=SEASON_MAX_TOKENS,
-        tool_name="record_seasons",
-        tool_description="Record the season grouping for this show.",
-    )
+    last: Exception | None = None
+    for _ in range(SEASON_ATTEMPTS):
+        try:
+            return client.call_structured(
+                SeasonPlan,
+                system=SEASON_SYSTEM,
+                user_content=season_user_content(info, episodes),
+                model=model,
+                max_tokens=SEASON_MAX_TOKENS,
+                tool_name="record_seasons",
+                tool_description="Record the show's season boundaries.",
+            )
+        except (LlmError, ValidationError, json.JSONDecodeError, ValueError) as exc:
+            last = exc
+    raise RuntimeError(f"season grouping failed after {SEASON_ATTEMPTS} attempts: {last}")
 
 
-def _reconcile_seasons(structure: SeasonStructure, episodes: list[EpisodeEntry]) -> list[Season]:
-    """Force GLM's grouping into a clean, total, in-order partition of the episodes.
+def _seasons_from_plan(plan: SeasonPlan, episodes: list[EpisodeEntry]) -> list[Season]:
+    """Turn GLM's season boundaries into a clean, total, in-order episode partition.
 
-    GLM may drop, duplicate, or invent dates; we keep its season titles/summaries but
-    enforce that every real episode date lands in exactly one season, chronologically.
-    Any episodes GLM left unassigned are appended to the last season (or seed one).
+    Episodes are already chronological. Each boundary's `start_date` marks where a season
+    begins; invalid/duplicate starts are dropped, and the first season is forced to start
+    at episode 0 so coverage is total regardless of GLM drift.
     """
-    real = {e.date for e in episodes}
-    order = {e.date: i for i, e in enumerate(episodes)}
-    used: set[str] = set()
-    seasons: list[Season] = []
-    for proposed in structure.seasons:
-        kept = sorted(
-            (d for d in proposed.episode_dates if d in real and d not in used),
-            key=lambda d: order[d],
-        )
-        if not kept:
+    index_of = {e.date: i for i, e in enumerate(episodes)}
+    starts: list[tuple[int, str, str]] = []  # (episode index, title, arc_summary)
+    seen: set[int] = set()
+    for boundary in plan.seasons:
+        i = index_of.get(boundary.start_date)
+        if i is None or i in seen:
             continue
-        used.update(kept)
+        seen.add(i)
+        starts.append((i, boundary.title, boundary.arc_summary))
+    starts.sort(key=lambda s: s[0])
+    if not starts or starts[0][0] != 0:
+        starts.insert(0, (0, "Season 1", ""))
+
+    seasons: list[Season] = []
+    for k, (start_i, title, arc) in enumerate(starts):
+        end_i = starts[k + 1][0] if k + 1 < len(starts) else len(episodes)
+        dates = [episodes[j].date for j in range(start_i, end_i)]
+        if not dates:
+            continue
         seasons.append(
-            Season(
-                number=len(seasons) + 1,
-                title=proposed.title,
-                arc_summary=proposed.arc_summary,
-                episode_dates=kept,
-            )
+            Season(number=len(seasons) + 1, title=title, arc_summary=arc, episode_dates=dates)
         )
-    leftover = sorted((e.date for e in episodes if e.date not in used), key=lambda d: order[d])
-    if leftover:
-        if seasons:
-            last = seasons[-1]
-            last.episode_dates = sorted(last.episode_dates + leftover, key=lambda d: order[d])
-        else:
-            seasons.append(
-                Season(number=1, title="Season 1", arc_summary="", episode_dates=leftover)
-            )
     return seasons
 
 
@@ -237,8 +247,8 @@ def _seasons_for_show(
                 episode_dates=[only.date],
             )
         ]
-    structure = group_show_seasons(info, episodes, client=client, model=model)
-    return _reconcile_seasons(structure, episodes)
+    plan = group_show_seasons(info, episodes, client=client, model=model)
+    return _seasons_from_plan(plan, episodes)
 
 
 def build_chronicle(

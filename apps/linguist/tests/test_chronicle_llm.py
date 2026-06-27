@@ -9,11 +9,11 @@ from __future__ import annotations
 from astra_linguist.chronicle import (
     EpisodeEntry,
     EpisodeSummary,
-    Season,
-    SeasonStructure,
+    SeasonBoundary,
+    SeasonPlan,
 )
 from astra_linguist.chronicle_llm import (
-    _reconcile_seasons,
+    _seasons_from_plan,
     build_chronicle,
     build_episode_entry,
     episode_user_content,
@@ -110,15 +110,15 @@ def _entry(date: str, show: str, title: str = "T") -> EpisodeEntry:
 
 
 class _SeasonClient:
-    """Returns queued SeasonStructures, one per show grouped (counts the calls)."""
+    """Returns queued SeasonPlans, one per show grouped (counts the calls)."""
 
-    def __init__(self, *structures: SeasonStructure) -> None:
-        self.structures = list(structures)
+    def __init__(self, *plans: SeasonPlan) -> None:
+        self.plans = list(plans)
         self.calls = 0
 
     def call_structured(self, output_model, **kwargs):  # type: ignore[no-untyped-def]
-        assert output_model is SeasonStructure
-        out = self.structures[self.calls]
+        assert output_model is SeasonPlan
+        out = self.plans[self.calls]
         self.calls += 1
         return out
 
@@ -131,15 +131,13 @@ def test_build_chronicle_orders_shows_and_groups_seasons() -> None:
         _entry("2025-8-28", "through-a-song-darkly", "Two"),
         _entry("2026-2-10", "interred-in-iomenei", "Solo"),
     ]
-    main_structure = SeasonStructure(
+    main_plan = SeasonPlan(
         seasons=[
-            Season(
-                number=1, title="Origins", arc_summary="a", episode_dates=["2025-8-11", "2025-8-28"]
-            ),
-            Season(number=2, title="Descent", arc_summary="b", episode_dates=["2025-10-20"]),
+            SeasonBoundary(title="Origins", arc_summary="a", start_date="2025-8-11"),
+            SeasonBoundary(title="Descent", arc_summary="b", start_date="2025-10-20"),
         ]
     )
-    client = _SeasonClient(main_structure)
+    client = _SeasonClient(main_plan)
     chron = build_chronicle(entries, client=client, model="m")
 
     # main show first; one GLM call (the 1-episode show short-circuits, no call)
@@ -147,21 +145,25 @@ def test_build_chronicle_orders_shows_and_groups_seasons() -> None:
     assert client.calls == 1
     main = chron.shows[0]
     assert [s.title for s in main.seasons] == ["Origins", "Descent"]
-    assert main.seasons[0].episode_dates == ["2025-8-11", "2025-8-28"]  # date-ordered
+    assert main.seasons[0].episode_dates == ["2025-8-11", "2025-8-28"]  # split at boundary
+    assert main.seasons[1].episode_dates == ["2025-10-20"]
     solo = chron.shows[1]
     assert len(solo.seasons) == 1 and solo.seasons[0].episode_dates == ["2026-2-10"]
 
 
-def test_reconcile_seasons_forces_total_ordered_partition() -> None:
+def test_seasons_from_plan_forces_total_ordered_partition() -> None:
     episodes = [_entry("2025-8-11", "x"), _entry("2025-8-28", "x"), _entry("2025-10-20", "x")]
-    # GLM dropped 2025-10-20 and invented a bogus date.
-    structure = SeasonStructure(
+    # GLM's first boundary isn't episode 0, and one start_date is bogus.
+    plan = SeasonPlan(
         seasons=[
-            Season(number=1, title="A", arc_summary="", episode_dates=["2025-8-11", "9999-1-1"]),
-            Season(number=2, title="B", arc_summary="", episode_dates=["2025-8-28"]),
+            SeasonBoundary(title="A", arc_summary="", start_date="2025-8-28"),
+            SeasonBoundary(title="Bogus", arc_summary="", start_date="9999-1-1"),
         ]
     )
-    seasons = _reconcile_seasons(structure, episodes)
+    seasons = _seasons_from_plan(plan, episodes)
     assert [s.number for s in seasons] == [1, 2]
-    assert seasons[0].episode_dates == ["2025-8-11"]  # invented date dropped
-    assert seasons[1].episode_dates == ["2025-8-28", "2025-10-20"]  # leftover appended, ordered
+    # a leading season is forced from episode 0; the invalid boundary is dropped
+    assert seasons[0].title == "Season 1"
+    assert seasons[0].episode_dates == ["2025-8-11"]
+    assert seasons[1].title == "A"
+    assert seasons[1].episode_dates == ["2025-8-28", "2025-10-20"]

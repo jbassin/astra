@@ -1,0 +1,71 @@
+{
+  "date": "2025-10-20",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Myrrh, Myrrh, and More Myrrh: The Stakeout at Gryphonline",
+    "synopsis": "Fresh off killing two Oogathals posing as Blackline agents, the party delivers Copperjaw's briefcase to Crystal Hill and gets paid. Argyle contacts his Scale handler Dame Quay to report the Oogathal encounter and pass along the stolen Blackline badges for verification. After a shopping spree across the Diamond District and Smiler's pawn shop, the party returns to the Sin and Tonic where Anaïs reveals the stolen radar dish was made by Embercall Inc., whose headquarters is a P.O. Box at a Gryphonline Distribution Center — the same location the dish's signal originates from. The party pursues the Roundhat Gang lead first, with Johnny talking his way into a potential meeting with Tywelwyn Leatherhide at Pier 54, then stakes out the Embercall P.O. Box the next morning while unnatural perpetual rain falls over the city.",
+    "key_beats": [
+      "Standing over the Oogathal corpses in an alley, Argyle identifies the creatures via religion check as skinwalker monsters from folklore — intelligent, forest-dwelling, and unusual to find working in groups in a city; they must have killed the real Blackline agents whose badges the party now holds.",
+      "The party delivers the heavy briefcase to Crystal Hill, a Fane-maintained luxury apartment complex in the Diamond District. A lizardfolk bellhop unlocks the handcuffs, takes the briefcase, and pays Benny 1,000 silver pieces, plus an offer of more work for Copperjaw.",
+      "Argyle visits a Scale Pact Broker office and privately phones Dame Quay, reporting the Oogathal encounter, his party members' faction ties (Belvedere, Ghosts of Raelion), faxing the Blackline badges for verification, and sharing the 'starward song' theory as opposite to the Voidsong.",
+      "Shopping montage across the Diamond District: Johnny fails to buy custom gold sunglasses (60gp, too pricey); Argyle introduces Johnny to myrrh cigarettes; at Smiler's Undertable, Benny picks up his poly tool, buys an everlasting lollipop, and Argyle purchases a grappling gun, glass cutter, healer's kit, and medicine tools.",
+      "Back at the Sin and Tonic, Anaïs reports on the stolen radar dish: it was manufactured by Embercall Inc. (a company only months old, no listed owner), whose HQ is a P.O. Box at a nearby Gryphonline Distribution Center — the same location the dish's signal originates from. She also gives the party access to an Iconoclasm car.",
+      "The party debates four leads — the Roundhat Gang/Tywelwyn, the sewers, the Threshold Authority, and the Gryphonline P.O. Box. They decide to pursue the gang first (time-sensitive) and then the P.O. Box before an evening meeting.",
+      "Johnny uses Streetwise to locate the Crowded Flea, a Roundhat Gang-affiliated bar on the waterfront. After greasing the bouncer with silver, Johnny approaches a half-Giant holding court in the back corner, offering a shot of Raylish gin and implying mutual enemies — through two exceptional performance checks, he secures a potential meeting with Tywelwyn Leatherhide at Pier 54 at 6 PM the next evening.",
+      "The party returns home, crafts tinfoil hats, and rests. Overnight, Johnny relays everything to Red via a black chess pawn. The next morning, perpetual unnatural rain is reported by diviners who cannot predict when it will end.",
+      "The party drives (with Benny at the wheel, driving impeccably on a book with stick pedal extenders) to the Gryphonline Distribution Center — a griffin-based mail delivery hub built on a cliff above the river. They locate P.O. Box 9C (Embercall's registered HQ) and begin a stakeout with Othello hidden in the rafters. After three hours of waiting and sharing personal fun facts, nothing has happened."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Johnny Skyfall",
+      "Anzu",
+      "Benny",
+      "Dame Quay (phone)",
+      "Ginny",
+      "Anaïs",
+      "Smiler",
+      "Shannon Soul",
+      "The half-Giant at the Crowded Flea",
+      "The Crowded Flea bouncer",
+      "Luxottica elf clerk"
+    ],
+    "locations": [
+      "Alley in the Diamond District",
+      "Crystal Hill luxury apartments",
+      "Scale Pact Broker office",
+      "Diamond District (sunglass shop, streets)",
+      "The Undertable (Smiler's pawn shop)",
+      "Maple Tree Farms grocer",
+      "The Sin and Tonic (Iconoclasm HQ)",
+      "The Crowded Flea (Roundhat Gang bar)",
+      "Gryphonline Distribution Center",
+      "Pier 54 (mentioned)"
+    ],
+    "factions": [
+      "Iconoclasm",
+      "The Scale",
+      "Roundhat Gang",
+      "Blackline",
+      "Threshold Authority",
+      "Embercall Inc.",
+      "Gryphonline",
+      "Ghosts of Raelion",
+      "Belvedere"
+    ],
+    "items": [
+      "Blackline badges (possibly genuine)",
+      "Courier briefcase (delivered)",
+      "Myrrh and frankincense cigarettes",
+      "Grappling guns",
+      "Glass cutter",
+      "Healer's kit",
+      "Poly tool",
+      "Tinfoil hats",
+      "Radar dish (stolen, under analysis)",
+      "Everlasting lollipop",
+      "Dubious scrap machinery",
+      "Silver slide and license for the car"
+    ],
+    "cliffhanger": "The party is three hours into a six-hour stakeout of P.O. Box 9C at the Gryphonline Distribution Center, with Othello hidden in the rafters watching — nothing has happened yet, and the perpetual rain continues to fall across the city."
+  }
+}

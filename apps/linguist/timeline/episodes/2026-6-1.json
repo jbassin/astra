@@ -1,0 +1,70 @@
+{
+  "date": "2026-6-1",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Voidheart and the Hand",
+    "synopsis": "As the Strider begins its voidward journey and extracts its tithe of heart-energy, Mr. Letov of Garrick Textiles is wrung dry and a void portal erupts onto the gala dance floor, spewing barghests and corrupted Ki-Rin. The party fights alongside the Scale, the Protectorate, and others to survive the onslaught, then investigates the still-open portal—discovering a mirror-ballroom filled with hand-creatures and a floating chitinous orb called the Voidheart. After buffing Benny into a sprinting missile, the party follows him in to retrieve the orb, but the pocket dimension collapses around them, forcing a desperate escape with an eldritch Hand of the Void dragged through into real space.",
+    "key_beats": [
+      "The Strider's Harlequin announces the Strider demands a tithe of magical heart energy; Mr. Letov Obratz of Garrick Textiles and his secretary are wrung dry, killed, and a void portal opens spewing barghests and hostile Ki-Rin onto the dance floor.",
+      "Combat erupts across the ballroom in quadrants; the party fights barghests and a Ki-Rin near the bottom-right while other factions fight their own battles—the Protectorate (Tamara and Yao) berserk using mysterious ampoules, the Scale (Ralph and Lance) rain lightning spears, and Ichel pulps a barghest with a disposable hand cannon.",
+      "Grayson dominates a Ki-Rin with modified Dominate and walks off; Argyle notices and shouts a warning; Benny is struck by the Ki-Rin's Peaceful Aura and struggles to attack it before breaking free.",
+      "Anzu's Recall Knowledge reveals barghests are weak to holy, resistant to physical except cold iron, and cursed with Unhealing Wound; Argyle and Benny both get cursed with unhealing (can only heal via magic).",
+      "The party kills all enemies on the dance floor; Argyle shields Jethro Twill from death, Johnny skins a barghest for magical fur, and Argyle hacks off a Ki-Rin head trophy.",
+      "Anzu sends Othello through the portal into a mirror-ballroom: elastic walls with hands pressing through, humanoid hand-creatures that echolocate, and a floating two-foot chitinous purple orb (the Voidheart) above a giant stone hand.",
+      "Anzu's occultism/religion checks reveal the tithe damages the magical weave, causing fractures like this portal; it's wasteful collateral, not intentional, and more portals could open anywhere on the Strider while it moves.",
+      "The party buffs Benny (Godspeed, Silence, Guidance, Haste) and sends him sprinting 180 ft to grab the Voidheart orb; he seizes it with a critical athletics check but the mirror-space destabilizes, temperature drops, and walls begin tearing.",
+      "Benny shoves Johnny and Anzu back through the portal to safety; hand-creatures swarm and down both Argyle and Benny; Johnny and Anzu reach back through to drag their unconscious bodies out.",
+      "Anzu re-enters alone and uses Gravity Well to yank the Voidheart orb toward the portal; the orb, Anzu, and a Hand of the Void are all pulled through into real space as the portal collapses behind them."
+    ],
+    "characters_present": [
+      "Benny",
+      "Argyle",
+      "Anzu",
+      "Johnny",
+      "Silven Grayson",
+      "Manus (Pale Lantern Society)",
+      "Ralph/Bishop (The Scale)",
+      "Lance (The Scale)",
+      "Ichel (Radiant Arms)",
+      "Tamara (The Protectorate)",
+      "Yao (The Protectorate)",
+      "Tas Millet (Prime Meridian)",
+      "Paavo",
+      "Braxton Hall",
+      "Ceres (Run Gunner)",
+      "Jethro Twill (Ternion Heavy Industries)",
+      "Mr. Letov Obratz (Garrick Textiles)",
+      "Kadou Floch",
+      "The Harlequin",
+      "Othello (Anzu's familiar)"
+    ],
+    "locations": [
+      "The Strider (ballroom/dance floor)",
+      "The void mirror-ballroom (elastic-walled pocket dimension)",
+      "The portal between them"
+    ],
+    "factions": [
+      "The Scale",
+      "The Protectorate",
+      "Radiant Arms",
+      "Pale Lantern Society",
+      "Prime Meridian",
+      "RunGunners",
+      "Ternion Heavy Industries",
+      "Verdant Holdings",
+      "Garrick Textiles",
+      "Iridescent Church/Host",
+      "MoCuP (Ministry of Cultural Progress)",
+      "Hildebrandt",
+      "Crowe"
+    ],
+    "items": [
+      "Voidheart orb (chitinous, purple-light, floating)",
+      "Barghest fur (magical, unidentified)",
+      "Ki-Rin head trophy",
+      "Keystone/totem (heart energy indicator)",
+      "Tamara's berserker ampoule"
+    ],
+    "cliffhanger": "The party has retrieved the Voidheart orb and accidentally dragged a Hand of the Void through the collapsing portal into real space—right in front of Grayson, the Scale, and other powerful onlookers who may want the orb for themselves."
+  }
+}

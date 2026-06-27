@@ -1,0 +1,62 @@
+{
+  "date": "2026-1-20",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Poncho Boys Ride Out: Gas Station Ambush and Arrival at the Pilgrimage",
+    "synopsis": "With Anaïs rescued and lore about the cosmic narrative revealed, the party spends two days preparing for a mysterious 'Pilgrimage' at the abandoned mining town of Ragged Roost — forging invitations, dyeing Arctos's fur black, and shopping for disguises. On the drive out, they're ambushed at a remote gas station by armed robbers wielding techno-junk plasma weapons, which they dispatch with brutal efficiency before interrogating the survivors and looting the haul. They arrive at Ragged Roost to find a massive under-construction strider, hundreds of masked attendees, and a magical field that strips all divine raiments of their identity.",
+    "key_beats": [
+      "Party regroups at the Cinematonic garage; Anaïs reunites with Anouk. They debrief on the pilgrimage invitation and Anzu's lore dump about Aut, Renge, P'ter, Insuperlex, and the Menhir.",
+      "Anzu reads Hlarf's journal — a personal diary revealing Hlarf skimmed from the Roundhat Gang (the party's stolen money was his personal stash), wrote mediocre poetry, and once drove through the ring into Teller's Run to meet an unnamed contact, confirming the firewall border can be opened.",
+      "Party plans for the pilgrimage: Anzu forges three duplicate invitations (critical success, 29), they dye Arctos's polar bear fur black to disguise him (poor result — looks sickly), buy Benny a fitted suit, and purchase supplies including invisibility scrolls and borrowed half plate.",
+      "Arctos visits a local church of the Host in Sableclutch, schmoozing with the priest (diplomacy 21) to begin building a relationship as a potential guest preacher. Johnny spends time ingratiating himself with the Iconoclasm crew.",
+      "The party drives out toward Ragged Roost, an abandoned mining town. They miss an exit (survival 18), then run low on gas and stop at a sketchy, nearly-empty gas station.",
+      "Ambush at the gas station: four armed robbers with techno-junk plasma rifles and a railgun emerge from a white van. Johnny spots a sniper scope and casts an illusory one-way mirror around the van, sparking combat.",
+      "Combat: The party kills three robbers and knocks one unconscious. The cashier — in on the scheme — is incapacitated by Anzu's Phantom Pain and surrenders. The cashier is interrogated but knows little.",
+      "Looting and interrogation: the party finds three plasma rifles, a railgun, ~135 gold, and Sable & Sons manufacturer tokens on the bodies. A surviving robber reveals the guns were bought from someone named 'Lark' in Hallia. The party takes ~150 gallons of gasoline, slashes all tires, and leaves the survivors stranded.",
+      "The party arrives at Ragged Roost at night, spotting bright spotlights and a massive under-construction structure — a smaller Istrian-style strider on eight legs, cruise-ship sized, with buildings on its platform.",
+      "Entering town limits: all raiments lose their color, shape, and size — turning drab gray and indistinguishable. Arctos's religion check confirms it's a magical equalizer neutralizing divine identifiers, though powers still function.",
+      "The party sees hundreds of masked, elegantly-dressed attendees mingling on a festive main street with fairy lights, banners, champagne, and hors d'oeuvres — many accompanied by armed bodyguards. They park and join the entry line. Session ends; party levels up to 5.",
+      "Post-session: Tanner refunds the Staff of Water (spells not on his spell list). Jorge considers Crisis of Faith and Red Mantis feats. The party is reminded to send level 5 character sheets."
+    ],
+    "characters_present": [
+      "Arctos",
+      "Benny",
+      "Johnny Skyfall",
+      "Anzu",
+      "Anaïs",
+      "Anouk",
+      "the Cashier",
+      "Dominic Crosby (deceased)",
+      "Sophisticated Burglar (deceased)",
+      "Sophisticated Ambusher (deceased)",
+      "Sophisticated Heavies (deceased/unconscious)"
+    ],
+    "locations": [
+      "Cinematonic garage",
+      "Sableclutch (local church of the Host, Iconoclasm HQ)",
+      "Concordia department store",
+      "The open road (Calaria farmland)",
+      "Sketchy gas station (ambush site)",
+      "Ragged Roost (abandoned mining town / Pilgrimage site)"
+    ],
+    "factions": [
+      "Iconoclasm",
+      "Iridescent Church / Faith of the Host",
+      "Sable & Sons (firearms manufacturer)",
+      "Roundhat Gang",
+      "Sableclutch locals"
+    ],
+    "items": [
+      "Hlarf's personal journal",
+      "Techno-junk plasma rifles x3",
+      "Railgun (precision piercing)",
+      "Sable & Sons tokens",
+      "Forged pilgrimage invitations (3 copies)",
+      "Jerry cans of gasoline (~150 gallons)",
+      "Invisibility scrolls x2",
+      "Half plate armor (borrowed)",
+      "Kettle corn, corn nuts, jerky"
+    ],
+    "cliffhanger": "The party joins the line to enter the Pilgrimage at Ragged Roost, surrounded by hundreds of masked, well-dressed attendees and their armed bodyguards — under a half-finished strider looming over the dead town — with their raiments mysteriously neutralized."
+  }
+}

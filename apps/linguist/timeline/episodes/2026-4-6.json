@@ -1,0 +1,54 @@
+{
+  "date": "2026-4-6",
+  "show": "observatory-slipped",
+  "summary": {
+    "title": "The Everdawn Drift",
+    "synopsis": "Three Sedecium agents — the elderly wizard Old Man Scrazzy, the goblin gunslinger Lieutenant Foral, and the orcish guardian Ozzie — are dispatched to investigate an unpowered orbital station partially sunk into the slip, following a lead from the mysterious 'entity' that has long aided Sedecium. Aboard the derelict SDV Inevitable Everdawn, they free a tortured ship AI, jumpstart the reactor, rotate the station out of the slip, and fight off slip-fiends — all while uncovering that a Thessian named Gremory (now 'Esoterica') tortured the AI and accessed the observatory's records of a massive magical spike near the core of the Astra.",
+    "key_beats": [
+      "TuRiin (a cave intelligence) briefs the team via loudspeaker: they're going in dark to an unpowered orbital station partially sunken in the slip, with only 12 seconds of suit protection against slip radiation and possible occult interference. The capsule translates via FTL and docks.",
+      "The team enters the airlock, finds it pressurized with Third Sundom atmospheric composition, and proceeds toward the power core. They notice dust disturbed by trackless movement and strange glints of light with no light source.",
+      "In the power core, Scrazzy identifies silver-inked occult script scrawled across the terminal and around the central reactor — a torture device designed to extract information from the ship's AI. The team agrees to disable it; Scrazzy wipes key portions of the script (occultism success), freeing the AI.",
+      "Scrazzy (crit crafting) reverse-engineers the power conduits to allow a jumpstart. Foral fires an electrical bullet into the inert blue liquid pool, which kickstarts a feedback loop and brings the station's systems back online.",
+      "The team summons Everdawn, the ship's AI — a crystalline centaur-like Sundom projection. It has lost all on-site memory and cheerfully insists on following operating protocols (refusing to speak to non-crew). It asks the team to find its data backups.",
+      "The team explores the crew quarters, finding habitation pods and a slip-boundary where the southern pods are melting into the slip. They examine a pod belonging to Second Lieutenant Hartlestad but find no data.",
+      "Scrazzy identifies the slip boundary as analogous to the Pale/prime-material interface from Ushas's history; the ship must be rotated to pull sections back into material space. Both the engines and observatory are currently submerged in the slip.",
+      "Foral shoots the lock off the bridge door and the team forces it open. They find piloting systems and auxiliary ring-rotation motors. Foral pilots the station to rotate, bringing the bridge and observatory into real space while submerging the crew quarters and engines in the slip.",
+      "Slip-fiends round the corner: spiky Manus creatures, an anglerfish-headed Auris, and an eyeball-faced Oculum. Combat erupts. Scrazzy casts Wall of Thorns to control the battlefield; Bob reveals he has no body, casting Lightning Bolt. Foral lands devastating arquebus crits, killing the Auris and Oculum in two shots. Ozzie is swarmed by the Manus and infected with an infernal wound causing persistent bleed.",
+      "Ozzie nearly bleeds to death as repeated first-aid attempts by the team fail; he finally uses a mythic point to succeed on his own recovery check and stabilizes.",
+      "In the observatory, the team finds a giant crystal-ball telescope tuned to magical energy, not visible light. Logs show the last spike was ~850 years ago, pointing to a system near the Astra's core. Someone accessed those logs recently (within ~2 years).",
+      "Scrazzy identifies the silver-ink script as the MO of Gremory, a fourth-generation Thessian recently promoted to greater power now going by 'Esoterica.' The team resolves to report their findings to Sedecium HQ, having uncovered the entity's lead."
+    ],
+    "characters_present": [
+      "Old Man Scrazzy",
+      "Bob",
+      "Lieutenant Foral",
+      "Ozzie",
+      "TuRiin",
+      "Everdawn (ship AI)"
+    ],
+    "locations": [
+      "SDV Inevitable Everdawn (orbital station)",
+      "Power Core",
+      "Crew Quarters",
+      "Bridge",
+      "Observatory",
+      "The Astra (greater setting)",
+      "New Volcantum (referenced)",
+      "Ushas (referenced)"
+    ],
+    "factions": [
+      "Sedecium",
+      "The Sundom (historical)",
+      "The Thessians",
+      "The Entity"
+    ],
+    "items": [
+      "Silver-inked occult torture script (Gremory/Esoterica's MO)",
+      "Crystal ball telescope (magic-energy observatory)",
+      "Foral's encrypted hard drive (Lily's cure)",
+      "Second Lieutenant Hartlestad's nameplate",
+      "Foral's arquebus with elemental ammunition"
+    ],
+    "cliffhanger": "The station's logs point toward a massive magical energy spike near the core of the Astra from ~850 years ago, and the silver-ink script is identified as the handiwork of the Thessian Gremory — now promoted and going by 'Esoterica' — suggesting the entity led Sedecium to this station to uncover a dangerous lead pointing deep into Thessian territory."
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "date": "2025-6-16",
+  "show": "a-hunt-of-metal-and-vine",
+  "summary": {
+    "title": "The Quorum: Fiends, Riddles, and a Paddle",
+    "synopsis": "The Judges' Jocks dispatch a swarm of imps, discover Paladin Fry's abandoned camp and journal, and enter a strange black-metal structure called the Quorum. Inside, they solve a three-gear monolith puzzle, win crankshafts from a riddle game with a chained fiend named Flintlock Toboggan, and descend into a fiendish mess hall where they engage in a brutal combat against Sigzilheight's forces — only for a new demonic threat to arrive mid-fight.",
+    "key_beats": [
+      "The party finishes off the swarm of imps attacking them on the cliffside. Gregor lands a massive crit with his flail (originally miscalculated as 175 dmg) that wipes out nearly an entire imp swarm in one swing.",
+      "After healing, the group approaches the strange black-metal structure covered in reddish-purple vines. They find Paladin Fry's abandoned camp and journal — the previous expedition reached the structure but couldn't enter, and notably never sent a message requesting backup despite the garbled distress signal the party received.",
+      "A religion check reveals the Judge's divine influence is being squeezed out by two competing sources near the structure — possibly divine artifacts, a portal, or a powerful entity.",
+      "A telepathic message asks each party member 'Would you save a soul tormented by captors?' Upon all four answering yes, the massive doors open. Inside: a platform, three staircases descending into a magma-filled interior, and a monolith with three gears (one crankshaft present).",
+      "The party cranks the first gear, pulling up a metal stopper and draining some lava to reveal two side doors (both locked and hot). Cliff axe-strikes the left door's lock and the Reverend rips it off its hinges; inside is only a lava pool and vine-covered walls.",
+      "The right door reveals a runic prison room containing a chained goat-like fiend calling himself 'Flintlock Toboggan,' a servant of the demon prince Sigzilheight. He offers a riddle: three boxes (one tells truth, one lies, one holds the prize). The party guesses the blue box — wrong. They return for 'double or nothing,' correctly pick the blue box on the second riddle, and win two additional crankshafts.",
+      "All three crankshafts are used on the monolith gears, draining lava further and revealing a third door at the base of the front staircase. The party sneaks inside a mess hall filled with fiends — imp swarms, a Sigzilheight Mage, and a Sigzilheight Enforcer, with a blood waterfall at the far end.",
+      "Combat erupts. The Mage opens with Lightning Bolt. Gregor obliterates an imp swarm with another devastating crit flail swing. The Enforcer strikes with scimitar and a paddle, inflicting slowed and enfeebled conditions.",
+      "Zangrim delivers a colossal Spellstrike (Sure Strike + amped Imaginary Weapon) for ~140 damage plus critical effects, destroying the Mage in a single hit.",
+      "As the fight against the Enforcer and remaining imps continues, a new demonic figure — the Fixer — strides through the blood waterfall, demanding to know 'What's happening here?' The session ends mid-combat."
+    ],
+    "characters_present": [
+      "Sir Cliff Vandertrip",
+      "Reverend Warden Manuel de la Cruzada",
+      "Zangrim (Todd Bishop)",
+      "Gregor Tobin",
+      "Flintlock Toboggan",
+      "Sigzilheight's Mage",
+      "Sigzilheight's Enforcer",
+      "The Fixer",
+      "Paladin Fry (mentioned, journal found)"
+    ],
+    "locations": [
+      "The Quorum (black-metal alien structure)",
+      "Cliffside imp battlefield",
+      "Paladin Fry's abandoned camp",
+      "Monolith chamber (lava-filled interior)",
+      "Left lava-pool room",
+      "Flintlock Toboggan's runic prison room",
+      "Fiendish mess hall (with blood waterfall)"
+    ],
+    "factions": [
+      "The Scale",
+      "The Judge (Outer God)",
+      "Sigzilheight (demon prince)",
+      "The Tribunal (mentioned)"
+    ],
+    "items": [
+      "Paladin Fry's mission journal",
+      "Three crankshafts (two won from Flintlock's riddle, one originally in the monolith)",
+      "Potions of Quickness",
+      "Gregor's bloodseeker beak talisman",
+      "Gregor's decaying flail",
+      "Holy steam ball",
+      "Black metal chains/runes"
+    ],
+    "cliffhanger": "As the party battles the Enforcer and remaining imp swarms in the mess hall, a new demonic figure — 'the Fixer' — walks through the blood waterfall, asks 'What's happening here?', and joins the initiative order."
+  }
+}

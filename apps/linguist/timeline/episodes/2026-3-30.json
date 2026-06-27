@@ -1,0 +1,61 @@
+{
+  "date": "2026-3-30",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Firmament Fracture",
+    "synopsis": "Investigating the floating fracture at the end of Teller's Run's sewer hallway, the party discovers a parallel world where a two-mile-tall robed figure — possibly Giant — stands imprisoned behind a firmament-like barrier, with a small research compound monitoring it. After reporting to the Scale and procuring explosives from both Dame Quay and Red/Smiler, the party returns and hacks a terminal in the unexplored hallway, uncovering a vast conspiracy: an operation to engineer a 'harmony' that can shatter the firmament, funded by Grayson, involving the Prime Minister, and with plans to co-opt the upcoming Pilgrimage. The party bombs the mainframe across the fracture and flees, but is intercepted in the hallway by three fiery Embercall agents.",
+    "key_beats": [
+      "The party experiments with the floating fracture: Anzu's familiar Othello flies through and discovers a parallel world — a grassy meadow where Hallia should be, with shipping container buildings, a shimmering barrier (possibly the firmament), and a two-mile-tall humanoid figure in reddish robes standing in the river, matching the statue found earlier.",
+      "Argyle identifies the barrier as potentially the firmament that separates Faerrin from the gods; the group theorizes the figure is Giant or Pyre trapped on the other side, and that the fracture is a naturally occurring chute being exploited to bypass Hallia's guard network.",
+      "Benny is turned invisible and scouts the compound on the other side: he finds a bunkhouse (with singed fabrics smelling of burnt plastic), a machinery-filled building with workers monitoring the Giant, and a building housing a tape-machine mainframe — a heartless computing device.",
+      "The party retreats to the Sin and Tonic. Argyle contacts his supervisor Dame Quay, reporting the chute and the imprisoned deity; she promises an artillery shell and a cognitive beacon by morning. Johnny contacts Red via chess piece to procure a timed structural explosive, picking it up from Smiler the next afternoon.",
+      "Morning delivery: Argyle receives the 400-year-old Calarian artillery shell and the cognitive beacon from a Scale scribe. The party also learns that Ethervolt attempted (and failed) to oust Concordia from the council, and that Minister Fane has returned from the extended meeting.",
+      "The party returns through the sewers, stashes the bombs near the shrine room, and explores the previously unexplored hallway. They pass through a hazmat staging area (Argyle steals a suit) and enter a messy lab with a functioning terminal.",
+      "Anzu hacks the terminal, reading personal logs and experiment results revealing the full scope of the operation: project leads Camden Levine, Lark Crowe (Sable & Sons), Alastair Moss, and Damien Reese; Grayson as funder; Prime Minister Reese Lawson as 'Lawson' who scolded the team; and four projects — Synthesis (failed, created the Embercall harmony), Hybridization (ongoing, grafting new harmony onto Voidsong), Entrainment (planning, co-opting the pilgrimage to reach the Voidsong's source), and Dissonance (planning, redirecting the Voidsong to destroy the firmament).",
+      "The party decides to bomb the mainframe across the fracture. All four cross through (after Augury suggests it's slightly favorable), Argyle lights the cognitive beacon, and invisible Benny places and uncorks the structural gel explosive on the mainframe building before fleeing back through the fracture.",
+      "Racing back down the mile-long hallway, the party is intercepted two-thirds of the way back by three fiery figures emerging from the Teller's Run end — a being of pure flame, a combusting armored human, and a figure in clothes of fire, each with sizable raiments. The session ends before combat begins."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Anzu",
+      "Johnny",
+      "Benny",
+      "Dame Quay",
+      "Red",
+      "Smiler",
+      "Ginny",
+      "Othello (Anzu's familiar)"
+    ],
+    "locations": [
+      "The royal waterways / sewers beneath Hallia",
+      "The blue-liquid hallway with columns and fracture",
+      "The parallel world (meadow where Hallia would be, with shipping container compound)",
+      "Sin and Tonic bar",
+      "Smiler's Undertable",
+      "The Masque District (manhole exit)",
+      "The lab/staging area in the unexplored hallway off the shrine room"
+    ],
+    "factions": [
+      "The Scale",
+      "Teller's Run",
+      "Embercall",
+      "Grayson",
+      "Concordia",
+      "Ethervolt",
+      "Sable & Sons",
+      "Smiler's Undertable",
+      "The Inquisitors",
+      "Voidsong listeners",
+      "The Pilgrimage"
+    ],
+    "items": [
+      "Cognitive beacon (from the Scale)",
+      "Old artillery shell with Calarian royal crest (~400 years old, from a museum archive)",
+      "Timed explosive (silver gel in a 2-liter bottle, 'Coke-and-Mentos' bomb from Smiler/Red)",
+      "Stolen hazmat suit",
+      "Keys taken from the bunkhouse",
+      "Terminal connected to mainframe (skein viewer)"
+    ],
+    "cliffhanger": "As the party flees back through the fracture after bombing the mainframe, they are intercepted in the long hallway by three fiery, cloaked figures — one made entirely of flame, one a combusting human in armor, and one whose clothes are fire — each bearing sizable raiments. They approach from the Teller's Run side, and combat is about to begin."
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "date": "2025-9-11",
+  "show": "fae-and-forest",
+  "summary": {
+    "title": "Into the Verdant Expanse: The Husk Murders",
+    "synopsis": "Three Iridescent Church convox detectives — Cedric Corot (lizardfolk sorcerer), Mickey Ironroots (dwarf kineticist), and Krod Snodman (shoonie fighter) — travel to the logging town of Wrenford to investigate 48 husk-murders linked to a mysterious tunic-wearing visitor. They discover the commune of Green Father worshippers and learn a member named Lyric Burke disappeared into the Verdant Expanse six months prior. A rare starward 'Feyrock' necklace found in his home guides them deep into the mile-tall forest, where they battle giant mantises and eventually hear a child's cries for help in the darkening mid-boughs.",
+    "key_beats": [
+      "The convox (Cedric, Mickey, Krod) takes a day-and-a-half train ride to Wrenford. Cedric spreads propaganda (poorly); Mickey notices a train attendant's raiment has an unusual greenish shimmer.",
+      "Arriving in Wrenford — a Scranton-like overbuilt town of ~2,000 people at the edge of the towering Verdant Expanse — the party gathers information and learns of the 'Green Father' worshippers living on a commune outside town.",
+      "At a local bar, Cedric identifies a strange herbaceous/piney note in the house beer (confirmed by Krod's Super Taster). Mickey befriends a logger whose raiment is predominantly green with tiny vines growing on it.",
+      "The party visits the commune the next morning and learns that Lyric Burke, a commune member, went on a pilgrimage into the Verdant Expanse six months ago and never returned — the only person to have left recently.",
+      "Searching Lyric's one-room home, Mickey finds a hidden necklace with a green stone carved as a leaf. Using Plane of Earth lore, Mickey identifies it as 'Feyrock' — a rare stone from somewhere starward, not native to Færrin.",
+      "The necklace vibrates and pulls toward the forest when held; Mickey puts it on and it acts as a compass, guiding the party deeper into the Verdant Expanse.",
+      "Shortly after entering the forest, the party is ambushed by three camouflaged Deadly Mantises. Despite a rough start (Cedric is restrained), the party dispatches them efficiently — Krod's fighter debuffs and crits, Cedric's chaotic fireball-turned-sonic, and Mickey's drifting pollen stance.",
+      "The party rests in Cedric's Planar Palace (Mordenkainen's Magnificent Mansion), then continues deeper into the 'mid-boughs' where light dims to twilight and the forest grows unnaturally quiet.",
+      "Mickey surveys wildlife, learning about vine serpents, chorister birds (hypnotic singers that lure victims to predators), and ooze residue on trees.",
+      "A child's voice cries for help from a clearing ahead. After prolonged debate about whether it's a trap, Krod circles the clearing, confirms the boy has blood, and uses his extending rune to cut the branch gripping the boy's ankle from 60 feet away."
+    ],
+    "characters_present": [
+      "Cedric Corot",
+      "Mickey Ironroots",
+      "Krod Snodman",
+      "Vinny",
+      "Tony",
+      "Donnie",
+      "Eddie",
+      "Lyric Burke",
+      "Herald Vanderbloom"
+    ],
+    "locations": [
+      "Wrenford",
+      "Verdant Expanse",
+      "Mid-Boughs",
+      "Wrenford Commune",
+      "Lyric Burke's home",
+      "Planar Palace"
+    ],
+    "factions": [
+      "Iridescent Church",
+      "Wrenford Commune",
+      "Green Father worshippers",
+      "Prime Meridian"
+    ],
+    "items": [
+      "Feyrock leaf necklace",
+      "Major Staff of Fire",
+      "Obsidian Goggles",
+      "Extending rune Nodachi"
+    ],
+    "cliffhanger": "Krod's strike severs the branch from 60 feet away, freeing the boy's ankle. The boy looks surprised but doesn't immediately react menacingly — the party doesn't yet know what the child truly is."
+  }
+}

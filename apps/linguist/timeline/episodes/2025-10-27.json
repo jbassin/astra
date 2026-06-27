@@ -1,0 +1,55 @@
+{
+  "date": "2025-10-27",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Situation Room: Rain, Augury, and a Stakeout at Gryphonline",
+    "synopsis": "The party stakes out a Gryphonline mail office, watching a P.O. Box tied to Embercall Inc. and the Pyrelight gang. A radio news broadcast reveals the endless rain is caused by illegal augury, prompting debate about reporting it to the Magical Crimes Convox. With no one visiting the box all day and an evening meeting with the Roundhat Gang looming, the party decides to break in directly — sending Benny and Johnny inside to create a diversion and crack the box open.",
+    "key_beats": [
+      "The party wakes early and drives the City Tripper to Gryphonline to stake out a P.O. Box registered to Embercall Inc. (tied to Pyrelight), posting a magical bird on a rafter to watch the box while they wait in the car.",
+      "Hours pass with no visitors to the box. At 5 PM, Benny turns up the radio as 'The Situation Room' begins — hosts Bev Sirnow and Chuck Vessler introduce their sponsor Rainy Days Inc. (umbrellas/galoshes, stock up 13%).",
+      "Guest Major-Chaplain Ewan McFoster, deputy director of the Magical Crimes Convox (Iridescent Host), explains the ceaseless rain is a symptom of illegal augury — someone circumventing augury allotments established after the Incident of '24. He references the loss of Star 13 over Tor Strand as a past augury disaster.",
+      "Anzu rolls Lore Academia and recalls the Incident of 524: over a century ago, Calaria used it as a pretext to break a trade deal with Raelion, claiming Raelion was over-divining the future. This triggered the rift that led to war and Raelion's eventual destruction. Whether Raelion actually did it remains debated.",
+      "The party debates whether to report the illegal augury to the Magical Crimes Convox; Argyle notes the Scale might facilitate contact. They also half-seriously discuss shorting Rainy Days Inc. stock before pivoting to action.",
+      "Realizing nobody has come for the box all day and their Pier 54 meeting with Tywelwyn Leatherhide (Roundhat Gang) is about an hour away, they decide to break into the P.O. Box rather than keep waiting.",
+      "Argyle proposes a plan: he uses his performance feat to create a diversion while Benny sneaks over with thieves' tools to crack the box open. Johnny Skyfall accompanies Benny inside; Anzu and Argyle wait outside.",
+      "Benny and Johnny enter the crowded Gryphonline office (~6–7 civilians checking mail post-work, plus one employee). No one is directly in front of the target box, but witnesses are spread throughout the room as the two prepare to execute their plan."
+    ],
+    "characters_present": [
+      "Johnny Skyfall",
+      "Benny",
+      "Anzu",
+      "Argyle",
+      "Bev Sirnow (radio host)",
+      "Chuck Vessler (radio host)",
+      "Major-Chaplain Ewan McFoster (deputy director, Magical Crimes Convox)",
+      "Gryphonline employee",
+      "Tywelwyn Leatherhide (mentioned)",
+      "Illmari (mentioned)"
+    ],
+    "locations": [
+      "Gryphonline mail office (stakeout location)",
+      "The Fane (prior night)",
+      "Pier 54 (upcoming meeting, mentioned)",
+      "Hallia / the city"
+    ],
+    "factions": [
+      "Embercall Incorporated",
+      "Pyrelight",
+      "Roundhat Gang",
+      "Iridescent Host / Magical Crimes Convox",
+      "Threshold Authority (mentioned)",
+      "Blackline (mentioned)",
+      "Iconoclasm",
+      "Gryphonline",
+      "Rainy Days Incorporated"
+    ],
+    "items": [
+      "City Tripper (stakeout car)",
+      "Tinfoil hats (from bird friend)",
+      "Benny's thieves' tools",
+      "Magical bird (surveillance)",
+      "Illegal police IDs (from prior session, mentioned)"
+    ],
+    "cliffhanger": "Benny and Johnny Skyfall stand inside the crowded Gryphonline office, about to execute the diversion-and-break-in plan on the Embercall P.O. Box with half a dozen civilians and an employee nearby — while the party's meeting with the Roundhat Gang looms an hour away."
+  }
+}

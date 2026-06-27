@@ -1,0 +1,64 @@
+{
+  "date": "2025-11-4",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Consultants and Gift Cards: Dishing Out Justice at the Second Sun Diner",
+    "synopsis": "The party reports their findings to Dame Quay and arranges a meeting with Detective Ellis Brooks of the Magical Crimes Convox, sharing intelligence about Pyrelight's radar dishes and Tywelwyn's new simulacrum abilities. Brooks signs them on as consultants with a bounty on Tywelwyn. They then sabotage a radar dish atop the Roundhat Gang-connected Second Sun Diner, cutting its wires and denting it — an act that triggers a brief, unsettling sensation of a powerful entity paying attention to the area. A botched attempt to infiltrate the restaurant's manager's office yields only a gift card and a novelty mug.",
+    "key_beats": [
+      "Anzu studies the sentience distributor overnight (Occultism 19) — the runes are structured like sheet music, designed to harmonize with and distribute the incoming signal, raising questions about why music is layered on top of an already-musical signal.",
+      "Argyle reports to Dame Quay, who arranges a meeting with Detective Brooks at the Magical Crimes Convox in the Aurideon and sends a dossier on Ugathal mentioning cryptozoologist Alfie Gallagher in the Masque District. She cannot access Blackline internal records.",
+      "Johnny receives a fax from Hale ('Anchor and some interesting folks') and contacts Red via chess piece necklace — Red warns that Donovan has been making queries and Johnny has 'kicked a hornet's nest.' Johnny claims he has it handled, then privately admits he doesn't.",
+      "Argyle purchases a crowbar, matches, and poor manacles; the party learns the Scale can perform 'field trials' — executing guilty criminals on the spot.",
+      "The party drives through the Stepwell (massive central interchange) to the domed Aurideon district, passing security (Raymond DeBoot) with their guest passes; Benny slips through with a permission slip and a hard candy.",
+      "Meeting with Detective Ellis Brooks: the party shares intelligence about the augury, oggers, Pyrelight, radar dishes, and Tywelwyn's simulacrum abilities. Brooks confirms augers were also found in Widdershins (Opaline Reserve territory) and that the fires match Pyrelight. He signs them on as consultants (1 gold/day for the group, 500 gold for Tywelwyn's capture or death).",
+      "The party lunches at the Second Sun Diner (Roundhat Gang-connected family restaurant with a radar dish on its roof). Argyle spots a sentience distributor box painted into the ceiling.",
+      "Argyle grapples to the roof and cuts the radar dish wires (d100 roll of 12). Anzu follows and subtly sabotages the dish with a crafting check (denting it to reduce signal fidelity). A faint 'magic eye' vibration is visible in the rain in front of the dish.",
+      "Benny, posted in the back alley, feels a strange Fane-like tingling sensation — not from entering a Fane, but from some powerful entity briefly paying attention to the area after the wires were cut. The sensation fades over seconds. Benny deduces it may be an unknown demigod-level entity.",
+      "Johnny stages a distraction (Figment cantrip — fake hair in Aurora ice cream + screaming) while Benny attempts to infiltrate the manager's office through the kitchen. Benny is caught by a line cook; the distraction fails to clear the kitchen. Johnny intimidates the manager but only secures a refund, a gift card, and a novelty mug.",
+      "The party debates next steps: Argyle theorizes a demon prince (Sigzil) is involved with the Embercall. They agree to attend the Zorbon meeting in the sewers, then assault the Roundhat Gang headquarters while they're mid-relocation.",
+      "The party drives to the closed open-air market in Widdershins where the Zorbon meeting sewer entrance is located. Session ends as they park and prepare to investigate."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Anzu",
+      "Benny",
+      "Johnny Skyfall",
+      "Illmari",
+      "Dame Quay (via phone/fax)",
+      "Red (via chess piece necklace)",
+      "Detective Ellis Brooks",
+      "Raymond DeBoot",
+      "Othello (familiar)"
+    ],
+    "locations": [
+      "Sin and Tonic (tavern, Sableclutch)",
+      "The Aurideon (domed Iridescent Church district)",
+      "Stepwell (central transport hub/interchange)",
+      "33 Brooks Crossing / Magical Crimes Convox",
+      "Second Sun Diner (family restaurant, Sableclutch)",
+      "Open-air market, Widdershins"
+    ],
+    "factions": [
+      "Iconoclasm",
+      "The Scale (Arbiters)",
+      "Iridescent Church / Magical Crimes Convox",
+      "Roundhat Gang",
+      "Pyrelight",
+      "Opaline Reserve",
+      "Threshold Authority",
+      "Blackline"
+    ],
+    "items": [
+      "Sentience Distributor (relay paper)",
+      "Radar dish (Second Sun Diner, sabotaged)",
+      "Poor manacles",
+      "Crowbar",
+      "Matchsticks",
+      "Novelty color-changing mug",
+      "Two-gold gift card to Second Sun Diner",
+      "Detective Brooks' business card",
+      "Ugathal dossier (faxed)"
+    ],
+    "cliffhanger": "The party arrives at the closed open-air market in Widdershins at night, parking near the sewer entrance where the Zorbon meeting is supposed to take place — with flooded sewers potentially complicating the rendezvous."
+  }
+}

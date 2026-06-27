@@ -1,0 +1,81 @@
+{
+  "date": "2026-3-16",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Cunning Man's Circle & The Long Wait for the Strider",
+    "synopsis": "With Argyle's return still raising suspicions, the party visits Sharp the Cunning Man — a kobold thaumaturge in Deosil — who confirms none of them are possessed. The party then enters an extended six-month downtime period: Arctos launches his shiver-infused soda 'Polar Shiv' with Ternion Heavy Industries, Benny gathers Belvedere intelligence on the Embercall and Pyrelight gang, Anzu makes breakthroughs in understanding the Voidsong as a cognitohazard, and Johnny investigates routes into the quarantined Teller's Run. The session culminates in a sewer expedition toward Teller's Run that uncovers mysterious blue-glowing machinery and a shrine — guarded by living oozes.",
+    "key_beats": [
+      "The party searches a directory for an occultist to check Argyle for fiendish possession, choosing the grassroots Citizens Committee for Metaphysical Stability over the corporate PactLogic.",
+      "They visit Sharp the Cunning Man, an elderly kobold thaumaturge in a peat-bog hut in Deosil, who sells Anzu two 'cure ulcer' ampoules and carves a ritual circle — empowered by divine magic and sheer belief rather than orthodox arcane principles.",
+      "Sharp's fiend-detection ritual (fueled by goat's blood purchased from an overcharging butcher) confirms none of the party is possessed; Argyle and Johnny both register as 'tenuously connected' to their bodies, but no demons or devils are found.",
+      "Downtime begins: Argyle runs a free back-alley clinic (earning 360 gold), Arctos partners with Ternion Heavy Industries to manufacture his Polar Shiv shiver-soda, and Benny receives intelligence from his Belvedere father about Pyrelight/Embercall origins — flagging names Elara Vance and Camden Levine.",
+      "Anzu, aided by Johnny, researches the Voidsong by transcribing its abstract constituent harmonies onto sheet music; the pages begin resonating and pulling voidward, revealing the Voidsong is a cognitohazard that exerts power anywhere it is represented.",
+      "Johnny and Anzu investigate entry routes into the quarantined Teller's Run district, identifying three options: exclusive parties with 25,000-gold cover fees, an airdrop (previously failed by Lady mercenaries), or sewers/the Quiet Below.",
+      "Donovan Hale contacts Johnny with two leads on Sable and Sons firearms; Johnny chooses a Necrolog contact to pressure for information.",
+      "The party is yanked into a white void alongside Anouk and Anaïs to mediate a three-way armed standoff over a golden box; they tip the scales toward a ragtag adventurer group, but the Mad Max-style car people ultimately win.",
+      "Arctos unveils Polar Shiv (shiver-infused) and Polar Shiv Zero; Anzu samples it, experiences a pleasant cooling sedation, and Argyle immediately casts Cleanse Affliction on him. Arctos agrees to sell a lower-dose version.",
+      "Months 5-6: The party enters the sewers to find a route into Teller's Run, navigating old royal catacomb-like tunnels, getting sickened by the stench, and reaching a processing area with blue-glowing machinery, a shrine, and disguised living oozes.",
+      "Anzu spots a puddle behaving unnaturally; after Argyle casts See the Unseen (revealing nothing invisible), Anzu hits the puddle with Frostbite, provoking multiple oozes to reveal themselves as combat begins."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Arctos",
+      "Anzu",
+      "Johnny",
+      "Benny",
+      "Sharp the Cunning Man",
+      "Anouk",
+      "Anaïs",
+      "Dura",
+      "Elias",
+      "Ginny",
+      "Donovan Hale",
+      "Benny's Father (Belvedere)"
+    ],
+    "locations": [
+      "Hallia",
+      "Sableclutch",
+      "Deosil (Sharp's hut)",
+      "Widdershins",
+      "Teller's Run (approach)",
+      "Sin and Tonic",
+      "The Sewers",
+      "Royal Sewers (old section)",
+      "Sewer Processing Junction"
+    ],
+    "factions": [
+      "Iconoclasm",
+      "The Scale",
+      "Belvedere",
+      "Citizens Committee for Metaphysical Stability",
+      "PactLogic",
+      "Ternion Heavy Industries",
+      "Concordia",
+      "Pyrelight/Embercall",
+      "Pale Lantern Society",
+      "Necrolog",
+      "Children of the Heir Air",
+      "Laity",
+      "Chorath Engineering",
+      "Ministry of Cultural Progress",
+      "Prime Meridian",
+      "Garrick Textiles",
+      "General Thematics",
+      "Hildebrandt Corporation",
+      "Ethervolt",
+      "Alkahest Freight",
+      "Sable and Sons"
+    ],
+    "items": [
+      "Keystone Crystal",
+      "Cure Ulcer Ampoules",
+      "Polar Shiv / Polar Shiv Zero",
+      "Voidsong Resonating Sheet Music",
+      "Aventine (car)",
+      "Restful Tent",
+      "Gingerbread House (magic item)",
+      "Bottled Air (trunk upgrade)"
+    ],
+    "cliffhanger": "As the party explores a sewer junction near the Teller's Run border, they discover blue-glowing machinery and a shrine surrounded by disguised living ooze creatures. Anzu provokes them with a Frostbite cantrip, and the puddles rise to attack — combat is set to begin next session."
+  }
+}

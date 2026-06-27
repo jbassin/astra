@@ -1,0 +1,203 @@
+{
+  "shows": [
+    {
+      "show": "through-a-song-darkly",
+      "name": "Through a Song, Darkly",
+      "is_main": true,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "The Blue Remains",
+          "arc_summary": "The Foragers journey to the fort settlement of Palomar to consult a priest of Slumber about a mysterious blue knot phenomenon, battling gargoyles along the way and uncovering hints that the deity Slumber was trapped and drained by the Tynans centuries ago.",
+          "episode_dates": [
+            "2025-8-11"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "Delivery Boys",
+          "arc_summary": "A new party in the city of Hallia takes courier jobs and investigation work, encountering flesh-monster Ugathul disguised as police and uncovering a conspiracy involving radar dishes, the Pyrelight gang, and illegal augury — eventually becoming official consultants for the Magical Crimes Convox.",
+          "episode_dates": [
+            "2025-8-28",
+            "2025-10-20",
+            "2025-10-27",
+            "2025-11-4"
+          ]
+        },
+        {
+          "number": 3,
+          "title": "The Manor of the Pulse",
+          "arc_summary": "The party descends into Hallia's sewers to find a slaughtered resistance group, follows the trail underground to a necromantic Fane ruled by Master Grayson, and then attempts to ambush the Roundhat Gang at the Crowded Flea — resulting in a devastating total party kill that claims the lives of Argyle, Benny, and Johnny.",
+          "episode_dates": [
+            "2025-11-11",
+            "2025-11-18",
+            "2025-12-2"
+          ]
+        },
+        {
+          "number": 4,
+          "title": "The Black and White",
+          "arc_summary": "After the TPK, Johnny and Benny navigate the afterlife and return from death through the entity Aut; the reformed party kills Hlarf in revenge and assaults Tywelwyn Leatherhide's fiery Fane, uncovering a cosmic conspiracy of six gods attempting to crack the Firmament via a network of radar dishes spread across Hallia.",
+          "episode_dates": [
+            "2025-12-9",
+            "2025-12-16",
+            "2025-12-23",
+            "2025-12-30",
+            "2026-1-6"
+          ]
+        },
+        {
+          "number": 5,
+          "title": "The Pilgrimage",
+          "arc_summary": "The party rescues Anaïs and learns about the cosmic Narrative, then attends a mysterious Pilgrimage at Ragged Roost where they survive a gladiatorial trial, solve a scavenger hunt, assassinate a babaw demon, and trade a stolen painting to a transit Heart for a keystone securing passage aboard a colossal Strider.",
+          "episode_dates": [
+            "2026-1-13",
+            "2026-1-20",
+            "2026-1-27",
+            "2026-2-3",
+            "2026-2-17",
+            "2026-2-24",
+            "2026-3-3"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "The Firmament Fracture",
+          "arc_summary": "Argyle partially returns from death as the party enters extended downtime, then explores the sewers beneath Teller's Run — discovering a fracture in reality itself, an imprisoned two-mile-tall deity, and a vast conspiracy funded by Grayson and the Prime Minister to shatter the Firmament, which the party bombs before fleeing.",
+          "episode_dates": [
+            "2026-3-9",
+            "2026-3-16",
+            "2026-3-23",
+            "2026-3-30",
+            "2026-4-13"
+          ]
+        },
+        {
+          "number": 7,
+          "title": "Aboard the Strider",
+          "arc_summary": "The party embarks on the Strider pilgrimage, creates their own heart named Eerie, settles into life aboard the massive walking city, builds alliances with neighboring factions, survives the deadly weekly tithe of heart-energy, harvests weaker factions' hearts for defense, and begins exploring the Strider's dark Undercroft.",
+          "episode_dates": [
+            "2026-5-7",
+            "2026-5-11",
+            "2026-5-21",
+            "2026-5-25",
+            "2026-6-1",
+            "2026-6-8",
+            "2026-6-18",
+            "2026-6-22"
+          ]
+        }
+      ]
+    },
+    {
+      "show": "the-first-spark",
+      "name": "The First Spark",
+      "is_main": false,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "arc_summary": "In the first session of a new Færrin-set one-shot (now a two-shot), four members of the Velvet Mark — Archie, Salvatore, Branson, and Combo — are tasked by Father Marone to assassinate the Spark, leader of the upstart gang Pyrelight. En route to Teller's Run, they're pulled over by Threshold Authority officers, leading to a violent car chase that ends with the cops' car flipped and destroyed. After ditching their identifiable car at Feathers' shop for a disguise, they sneak into Teller's Run and discover the Spark presiding over a burning-stage spectacle with a cheering crowd.",
+          "episode_dates": [
+            "2025-5-21"
+          ]
+        }
+      ]
+    },
+    {
+      "show": "a-hunt-of-metal-and-vine",
+      "name": "A Hunt of Metal and Vine",
+      "is_main": false,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "The Descent into the Quorum",
+          "arc_summary": "A Scale-operative strike team arrives on a shattered Joker World to investigate a slip-shielded structure, pushing through fiend swarms and into the black-metal Quorum — a fiend-built installation hiding a bloodfall portal to a captured divine heart. They solve its puzzles, slaughter its defenders, descend through the bloodfall, and fight a desperate ten-round defense to free Voice of Many before teleporting to safety.",
+          "episode_dates": [
+            "2025-6-9",
+            "2025-6-16",
+            "2025-6-23"
+          ]
+        }
+      ]
+    },
+    {
+      "show": "fae-and-forest",
+      "name": "Fae and Forest",
+      "is_main": false,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "The Verdant Expanse",
+          "arc_summary": "The Convox detectives travel to the logging town of Wrenford to investigate husk-murders linked to a missing commune member, then plunge into the mile-tall Verdant Expanse following a feystone necklace—battling forest predators, rescuing a lost child, and destroying a fey court that admits the prime suspect is already dead.",
+          "episode_dates": [
+            "2025-9-11",
+            "2025-9-18"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "The Gloaming Codex",
+          "arc_summary": "Returning to the city, the Convox follows feystone supply-chain leads to a jeweler's conference and a suspect's apartment, where they discover a ritual transmuting flesh into feystone via a book called the Gloaming Codex—and are pulled into its pages.",
+          "episode_dates": [
+            "2025-9-25"
+          ]
+        }
+      ]
+    },
+    {
+      "show": "interred-in-iomenei",
+      "name": "Interred in Iomenei",
+      "is_main": false,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "arc_summary": "In a one-shot set months before the main campaign, three Undercroft workers — Barlow Crane, Grant FireEye, and Gage the Cunning — investigate sabotage aboard the massive moving Strider city of Iomenei. Tracking an elven suspect named Gerhardt into a long-abandoned forsaken sector, they discover an insectoid infestation centered on a dormant engine heart cathedral and must slay a massive Swarm Hive Mother. Though they halt the infestation, the true saboteur remains at large.",
+          "episode_dates": [
+            "2026-2-10"
+          ]
+        }
+      ]
+    },
+    {
+      "show": "observatory-slipped",
+      "name": "Observatory, Slipped",
+      "is_main": false,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "The Everdawn Drift",
+          "arc_summary": "Sedecium agents Scrazzy, Foral, and Ozzie are sent to investigate an unpowered orbital station half-sunken in the slip, where they free a tortured ship AI, fight off slip-fiends, and uncover that the Thessian Esoterica (formerly Gremory) recently accessed observatory records of a massive magical spike near the Astra's core.",
+          "episode_dates": [
+            "2026-4-6"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "One Last Job",
+          "arc_summary": "Pulled from retirement for a single high-stakes raid, the fire team descends through the Slip to the surface of the freshly-killed Thessian god Tithe, braving brood creatures, a time-acceleration slip puzzle, and a spider temple to plant a beacon and steal divine essence before the God Eater Harrow finishes devouring the planetoid.",
+          "episode_dates": [
+            "2026-4-27"
+          ]
+        }
+      ]
+    },
+    {
+      "show": "fey-in-the-mists",
+      "name": "Fey in the Mists",
+      "is_main": false,
+      "seasons": [
+        {
+          "number": 1,
+          "title": "Season 1",
+          "arc_summary": "A D&D 5e one-shot set on the Finnegan Ring caravan route. Three caravan members — Mango the elven ranger, Doug Donahue the gnome rogue, and Egan the orc druid — are transported along with flautist Erin Proudcloak to a fey swampland by a mysterious mist. There, the fey creature Larunan forces them to fight for his amusement in an arena battle full of chaotic magical effects. The party survives and is returned to the caravan.",
+          "episode_dates": [
+            "2026-4-20"
+          ]
+        }
+      ]
+    }
+  ],
+  "inputs_hash": "95544b44a59dbb6102fd6fde6cf2819370727641263fc1c13461e709648ba809"
+}

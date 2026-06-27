@@ -1,0 +1,63 @@
+{
+  "date": "2025-8-28",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Delivery Boys: The Briefcase, The Badge, and the Blood Nourishment",
+    "synopsis": "Fresh off their first mission, the party pools their meager funds to gear up — visiting fence Smiler for armor and a radio, and meeting Anzu's raven Othello along the way. They take a courier job from the dwarf Copperjaw at Sableclutch Scrap: deliver a heavy locked briefcase handcuffed to Benny's wrist to the Diamond District for 100 gold. En route, suspicious Blackline cops tail them before vanishing, and two ambushers reveal themselves as fleshy Ugathul monstrosities. The party dispatches them, finding genuine Blackline badges hidden inside their bodies.",
+    "key_beats": [
+      "Morning at the Sin and Tonic: Ginny serves a rough breakfast; the party plans their day — tinfoil/eggs for Ginny, healing potions, armor for Argyle, and finding Tywelwyn Leatherhide",
+      "Anouk offers a lead on paid work: Copperjaw at Sableclutch Scrap needs couriers; Anaïs and Anouk agree to examine the stolen radar dish",
+      "The party visits Smiler's pawn shop (The Undertable) in Star 12; Argyle sells his half plate and pools gold from Johnny and Anzu to buy full plate; Anzu buys a broken radio; Smiler gives Benny a tiny disposable cup pistol; Johnny asks Smiler to pass a message to Donnie",
+      "Anzu's raven Othello arrives, having followed him from Belvedere; the party shares backstories on the walk — Argyle is ~20, his parents (Aaron Cross and Joran Davinrock) are Scale operatives; Johnny ran a bar called The Last Stop on the Helmstier border before Austrene was destroyed",
+      "Benny reveals the Pulse spoke to him in a dream and his pick now glows with divine energy; Argyle produces new business cards marking him as a licensed doctor with Iconoclasm",
+      "At Sableclutch Scrap, the dwarf Copperjaw (copper prosthetic jaw) offers 100 gold to deliver a locked, extremely heavy briefcase handcuffed to Benny's wrist to an address in the Diamond District; he warns two people have been asking about it and will likely ambush them",
+      "On the walk to the tram, a goblin pickpocket fails to rob Johnny; two Blackline cops (Officer Smith and a mute partner) question the party, take down info, then mysteriously vanish around a corner",
+      "The party rides the tram toward the Diamond District; a goblin factory worker eyes the briefcase but does not follow; the group deliberately routes through alleys to bait an ambush",
+      "Two Ugathul — flesh creatures disguised as office workers — transform into hideous naked-mole-rat-like monstrosities and attack; combat features Argyle getting grabbed, Johnny casting Courageous Anthem and reciting a poem for Anzu, and Anzu using telekinetic rend",
+      "Benny's reactive strike critically interrupts the Ugathul's blood-nourishment ability twice, preventing its apex attack both times; the party slays both creatures and discovers two genuine-looking Blackline badges inside their flesh"
+    ],
+    "characters_present": [
+      "Johnny",
+      "Argyle",
+      "Anzu",
+      "Benny",
+      "Gin Soaked Rag (Ginny)",
+      "Anouk",
+      "Anaïs",
+      "Copperjaw",
+      "Smiler",
+      "Officer Smith",
+      "Mute",
+      "Othello"
+    ],
+    "locations": [
+      "Sin and Tonic",
+      "The Undertable (pawn shop, Star 12)",
+      "Sableclutch Scrap (scrapyard/junkyard)",
+      "Hallia (tram lines, alleys)",
+      "Diamond District (destination, not yet reached)"
+    ],
+    "factions": [
+      "Iconoclasm",
+      "Blackline",
+      "Scale",
+      "Belvedere",
+      "Pyrelight/Embercall Industries",
+      "Threshold Authority",
+      "RunGunners",
+      "Concordia"
+    ],
+    "items": [
+      "Locked metal briefcase (handcuffed to Benny, extremely heavy)",
+      "Full plate armor (purchased for Argyle)",
+      "Deconstructed radio (purchased for Anzu)",
+      "Disposable cup pistol (given to Benny by Smiler)",
+      "Glowing pick (empowered by the Pulse)",
+      "Two Blackline badges (recovered from Ugathul bodies)",
+      "Polytool (at Smiler's shop, Benny wants it)",
+      "Othello (Anzu's raven familiar)",
+      "Tinfoil hats (still needed for Zorbon meeting)"
+    ],
+    "cliffhanger": "The party has defeated the Ugathul ambushers and discovered two genuine-looking Blackline badges hidden inside their flesh — strongly implicating the Blackline cops (or whoever sent them) in the attempt to steal the briefcase. The delivery to the Diamond District is still incomplete."
+  }
+}

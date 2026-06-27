@@ -1,0 +1,57 @@
+{
+  "date": "2025-11-11",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Down the River, Into the Quiet Below",
+    "synopsis": "The party descends into the Widdershins sewers to meet Whiskers' anti-Zorbon resistance, only to find a massacre — something powerful ripped the resistance members apart and took their bodies. After slaying two cultist agents and their Morlock servants sent to search the aftermath, the party follows the trail by boat down an underground river, narrowly escaping a plunge into a bottomless abyss. They descend via elevator into the Quiet Below — Adan's Underdark — where two serpents demand identification and attack when Benny's permission slip fails to impress.",
+    "key_beats": [
+      "The party arrives at the Widdershins open-air market, finds the manhole cover near an orcish honey vendor named Cora Honeysap, buys honey, and learns she's sympathetic to the anti-Zorbon cause; she watches their backs as they descend.",
+      "In the sewers, the party discovers blood and viscera splattered across the walls — evidence someone was physically ripped apart. Medicine checks confirm it was recent and done by something strong enough to tear people in half.",
+      "Combat erupts against two cultist 'agents' in ceremonial battle-robes and their pale, bluish Morlock servants. The agents radiate dark void energy when bloodied.",
+      "The party kills both agents and most of the servants; one Morlock escapes via a massive leap. Investigation reveals the cultists carried lesser oil of unlife vials and mythotoxin capsules hidden in false teeth (poisons that can sap mythic energy).",
+      "Benny's high perception reveals the original massacre was NOT caused by the cultists — something even stronger and intelligent ripped apart ~10 people and took all the bodies (no corpses left behind). Scraps of tinfoil and belongings confirm Whiskers' group was the victims. Bodies were loaded onto a boat and taken downstream.",
+      "The party takes a boat down the underground river. Johnny's survival check warns of a downward slope, fast current, foam at the edges, and an approaching drop. Argyle slows the boat with raw strength; Benny steers toward the wall.",
+      "At the last moment, everyone leaps off the boat onto a narrow cave ledge. The boat sails over a massive abyss — no sound of it ever hitting bottom. They spot an elevator and a ladder on a constructed platform across the cavern.",
+      "Anzu scouts the ladder (200 feet up) which leads back to sewers elsewhere — not a secret base entrance. The party takes the old, juddering elevator down for ~15 minutes into the Quiet Below (the Underdark equivalent), where Argyle notices his connection to his deity is slightly weakened.",
+      "At the bottom, they find a glowing crystal cavern with purple crystals and water pools. Two large serpents confront them, demanding identification. Benny attempts to present his permission slip but critically fails his diplomacy check (net zero), enraging the serpents.",
+      "Combat with the serpents begins, but the Foundry server catastrophically crashes (triggered by uploading Benny's character portrait), ending the session prematurely."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Benny",
+      "Johnny Skyfall",
+      "Anzu",
+      "Othello (familiar)",
+      "Cora Honeysap (NPC, honey vendor)",
+      "Whiskers (mentioned, presumed dead/captured)",
+      "Two cultist agents (NPCs, killed)",
+      "Morlock servants (NPCs)",
+      "Two large serpents (NPCs)"
+    ],
+    "locations": [
+      "Widdershins open-air market",
+      "Sewers beneath the market (Zorbon resistance hideout)",
+      "Underground river",
+      "Waterfall/abyss cavern",
+      "Quiet Below staging area (with elevator and ladder)",
+      "Glowing crystal cavern (serpent encounter)"
+    ],
+    "factions": [
+      "The Zorbon resistance (anti-Zorbon task force)",
+      "Unknown cultist group (agents with Morlocks)",
+      "The Scale (mentioned, Argyle's organization)",
+      "Iridescent Church (mentioned, not confirmed connected)"
+    ],
+    "items": [
+      "Tinfoil hats (anti-Zorbon)",
+      "Raw lavender honey (purchased from Cora Honeysap)",
+      "Lesser Oil of Unlife vials (x2, recovered from cultists)",
+      "Mythotoxin capsules in false teeth (x2, recovered from cultists, 100 gp each)",
+      "Grappling gun",
+      "Hard hats with lights (looted from staging area)",
+      "Nutrition bars and supplies",
+      "Striking pick (Benny's blood-hungering weapon)"
+    ],
+    "cliffhanger": "Combat against the two serpents has just begun in the glowing crystal cavern deep within the Quiet Below, but the session was cut short by a catastrophic server crash before anyone could act."
+  }
+}

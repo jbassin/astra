@@ -1,0 +1,53 @@
+{
+  "date": "2025-5-21",
+  "show": "the-first-spark",
+  "summary": {
+    "title": "Pop His Ass: The Velvet Mark Hits the Streets of Hallia",
+    "synopsis": "In the first session of a new Færrin-set one-shot (now a two-shot), four members of the Velvet Mark — Archie, Salvatore, Branson, and Combo — are tasked by Father Marone to assassinate the Spark, leader of the upstart gang Pyrelight. En route to Teller's Run, they're pulled over by Threshold Authority officers, leading to a violent car chase that ends with the cops' car flipped and destroyed. After ditching their identifiable car at Feathers' shop for a disguise, they sneak into Teller's Run and discover the Spark presiding over a burning-stage spectacle with a cheering crowd.",
+    "key_beats": [
+      "Father Marone, the Velvet Mark's concierge, briefs the party in his penthouse about the upstart gang Pyrelight and its leader, the Spark, who has begun encroaching on Velvet Mark territory and burning shopkeepers at the stake. He demands the party kill the Spark and make an example of him.",
+      "The party — Archie (driver), Salvatore, Branson, and Combo — drives an Oracle Nimbus toward Teller's Run. Branson spots a white sedan with no plates tailing them.",
+      "Threshold Authority officers pull the party over using a undercover car with a green Syrin. Warning Bell, a 'heart' communicating via the car radio, claims the vehicle was flagged at a crime scene three weeks ago and requests a search.",
+      "The officers search the car but find nothing. Then Warning Bell urgently recalls the officers, who radio dispatch and tell the party to stay put. The party realizes they're being detained and decides to fight.",
+      "Combat erupts: Salvatore fires a gunsword, Archie throws a dagger into a tire, Branson raises his Fortress Shield. TA officers fire back, one net-launching Salvatore. The chase begins as Archie floors it.",
+      "During the chase, Salvatore fires a 'big rock bullet' that crits and obliterates a tire; Branson casts Dispel Magic to dispel a Warning Bell projection slowing their car. The cop car flips and crashes.",
+      "The party's car clips another vehicle avoiding the wreck. They locate Feathers, a Kenku auto shop owner in the Masque District, and pay 100 gold for a full repaint, new plates, tinted windows, and body repair.",
+      "The party drives into Teller's Run, finding the streets eerily empty and smelling of burning flesh and accelerant. Branson treats Salvatore's wounds via risky surgery.",
+      "The party stealths toward the source of the smoke and cheering, finding a pavilion with a burning stage. The Spark stands on stage with a fire-singer controlling living flame, while someone screams inside the burning structure and a crowd cheers.",
+      "Session ends on the reveal of the Spark and the burning spectacle, with the party hidden in the crowd."
+    ],
+    "characters_present": [
+      "Archie",
+      "Salvatore Barbieri",
+      "Branson Pluckwort (Mr. Pluckwort)",
+      "Combo",
+      "Father Marone",
+      "The Spark",
+      "Feathers",
+      "Warning Bell"
+    ],
+    "locations": [
+      "Hallia (capital of Calaria)",
+      "Masque District",
+      "Teller's Run",
+      "Father Marone's penthouse",
+      "Feathers' auto repair shop",
+      "The pavilion in Teller's Run"
+    ],
+    "factions": [
+      "Velvet Mark",
+      "Pyrelight",
+      "Threshold Authority",
+      "Iridescent Church"
+    ],
+    "items": [
+      "Oracle Nimbus (car)",
+      "Blood Gorger scythe",
+      "Fortress Shield",
+      "Big rock bullets",
+      "Net launcher",
+      "Warning Bell (heart projection)"
+    ],
+    "cliffhanger": "The party, hidden in the crowd, watches the Spark standing on a burning stage alongside a fire-singer, with screams coming from inside the stage and the crowd cheering. They have yet to make their move."
+  }
+}

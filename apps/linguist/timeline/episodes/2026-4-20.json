@@ -1,0 +1,51 @@
+{
+  "date": "2026-4-20",
+  "show": "fey-in-the-mists",
+  "summary": {
+    "title": "The Finnegan Ring: Mushrooms and Mayhem in the Fey Swamp",
+    "synopsis": "A D&D 5e one-shot set on the Finnegan Ring caravan route. Three caravan members — Mango the elven ranger, Doug Donahue the gnome rogue, and Egan the orc druid — are transported along with flautist Erin Proudcloak to a fey swampland by a mysterious mist. There, the fey creature Larunan forces them to fight for his amusement in an arena battle full of chaotic magical effects. The party survives and is returned to the caravan.",
+    "key_beats": [
+      "Morning at the caravan camp: Mango (elven ranger) shirks work and cloud-watches atop carts, Doug Donahue (gnome rogue) reads and writes in his Doug Cyclopedia, and Egan (orc druid) helps break down camp before being assigned by guard captain Peltino to escort gnome wizard Nullity Docket.",
+      "Mango eavesdrops on Chuck — an old man whose hair is made of vines — and flautist Erin Proudcloak. Chuck recounts being transported to the Fey Realm years ago by a mist and escaping by 'following the mushrooms.' Mango is thrilled at the prospect of adventure.",
+      "The caravan hits the road. Nullity spots a puffbush and drags Egan off to dig for tubers. Meanwhile, a blue mist rolls in from the north toward them.",
+      "Alarms sound. Egan and Nullity rush back; Nullity abandons Egan via Misty Step. Egan wild-shapes into a wolf to sprint back. The mist overtakes Mango, Doug, Egan, and Erin, transporting them to a dark fey swampland.",
+      "Egan senses ambient magic and warns the group. Shadows thicken around a panicking Erin; the party calms her with a nat-20 persuasion (aided by Guidance and Help), dispersing the shadow threat.",
+      "The party finds and stealthily trails five hopping red-cap mushrooms (with Pass Without Trace) toward a sunlit clearing.",
+      "In the clearing, the fey creature Larunan traps them in a vine-walled arena and demands entertainment, summoning a Redcap, three Darklings, and two Sprites for combat.",
+      "A chaotic battle unfolds. Larunan's random effects each round afflict the party — Doug gets crab claws, goat eyes, and is fully turned into a goat at one point; Egan's legs phase into the ethereal plane; spike growth, faerie fire, and confusion spores affect the field. Egan unleashes a Titan-form behemoth transformation and incandescent breath lasers.",
+      "The party defeats all enemies — Mango bonks the final sprite to death with his mango-tipped quarterstaff. Larunan slow-claps, restores Doug to gnome form (though he keeps goat eyes), and sends everyone back through the mist.",
+      "The party catches up to the caravan and is greeted by Rimson. They confront Chuck about his vague mushroom advice. Doug retains his goat eyes as a souvenir.",
+      "The one-shot concludes as a complete, self-contained adventure."
+    ],
+    "characters_present": [
+      "Mango",
+      "Doug Donahue",
+      "Egan Arathmatis",
+      "Erin Proudcloak",
+      "Chuck",
+      "Nullity Docket",
+      "Peltino",
+      "Millie",
+      "Liam",
+      "Rimson",
+      "Larunan"
+    ],
+    "locations": [
+      "The Finnegan Ring caravan camp",
+      "Road between Brightmoon and Reed",
+      "Fey Realm swampland arena",
+      "Larunan's clearing"
+    ],
+    "factions": [
+      "The Finnegan Ring"
+    ],
+    "items": [
+      "Doug Cyclopedia (5th Edition)",
+      "Puffbush Tubers",
+      "Mango's quarterstaff",
+      "Doug's wavy rapier",
+      "Stone of Good Luck"
+    ],
+    "cliffhanger": ""
+  }
+}

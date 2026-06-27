@@ -1,0 +1,66 @@
+{
+  "date": "2026-1-6",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Truth, Bell, and a Cleanup Crew",
+    "synopsis": "Fresh from killing Tywelwyn, the party sabotages his workshop, loots his documents, and reports their findings to both the Magical Crimes Convox and the Inquisition — handing over Grayson's book and the radar dish. But when they visit recently-'resigned' Detective Brooks at his apartment, they walk into an ambush by invisible undead, barely surviving a brutal fight and finding evidence Brooks was attacked and abducted by a separate cleanup crew. A fax from Smiler offering a lucrative car sale sets up their next move.",
+    "key_beats": [
+      "The party gathers loot from the Gas-n-Go basement — documents, suit, invitation, antlers, sketches — and Anzu telekinetically sabotages the pantograph used to inscribe amplifiers on radar dishes.",
+      "They drive both recovered/stolen cars back to Iconoclasm; Dura checks the City Tripper for trackers and finds none. They arrange to fence the stolen minivan through Smiler and keep the G-Wagon.",
+      "At the Magical Crimes Convox, they collect the 502-gold bounty on Tywelwyn and learn that Detective Brooks has 'resigned.' Johnny persuades the receptionist to hand over Brooks' home address in Prism Heights.",
+      "They visit the Inquisitor's office at 245 Bright Street and meet the towering Inquisitor Zeal (with a carved third eye) and Inquisitor Penitence (pearlescent tattoos on his arms). They're led to a questioning room with a Bell of Truth and recount the full story: the heart, the radar dishes pointing to Teller's Run, Grayson's underground Fane, and the Zorbon meeting. They hand over Grayson's book.",
+      "Penitence tells them to return the stolen radar dish, instructs them not to commit further crimes, and gives 125 gold for the information. The party realizes the Inquisitors will investigate the Gas-n-Go and Teller's Run — locking them out of the case.",
+      "Back at Iconoclasm, late-night moments: Anzu reaches out to the Voidsong vocalist and feels a pulse in response; Arctos prays to the Host in an existential crisis about his awakening; Benny secretly re-ups his permission slip via fax.",
+      "The next day, the party drives by the Gas-n-Go and spots three Inquisitors investigating inside, confirming the case is active. They then visit Smiler's pawn shop — he can fence the minivan but not the conspicuous G-Wagon, and will look for a VIN-swapper.",
+      "They drive to Brooks' apartment in Prism Heights, buzz in by pretending to be pizza delivery, pick the lock, and find a ransacked studio with blood splatter and scattered case files — but no body and no files related to Tywelwyn or Grayson.",
+      "Combat erupts: an invisible Karenwight (bound-sword skeleton) ambushes Benny, and Lovelorns and a Cairnwight emerge from hiding. Brutal fight — Benny goes down multiple times, Johnny is downed, Arctos is grabbed and mauled while desperately healing. The party barely survives and kills all three undead.",
+      "Investigating afterward, they determine the blood is 6–24 hours old and doesn't match the undead's attacks — a separate cleanup crew hit Brooks. They prestidigitate the scene and flee.",
+      "Back at Iconoclasm, Ginny hands them a fax from Smiler: a buyer will pay 3,200 gold for the minivan, drop-off tonight at a Widdershins parking lot. Arctos casts Augury about rescuing Brooks and receives a vision of the party as zombies — a clear negative omen. They decide not to pursue Brooks and begin planning next steps."
+    ],
+    "characters_present": [
+      "Benny",
+      "Arctos",
+      "Anzu (Mind Bird)",
+      "Johnny Skyfall",
+      "Dura",
+      "Inquisitor Penitence",
+      "Inquisitor Zeal",
+      "Ellis Brooks (absent/missing)",
+      "Smiler",
+      "Ginny",
+      "Othello (familiar)"
+    ],
+    "locations": [
+      "Gas-n-Go basement (Tywelwyn's Fane)",
+      "Iconoclasm (Sin and Tonic bar)",
+      "Magical Crimes Convox (Aurideon)",
+      "Inquisitor's office — 245 Bright Street, Aurideon",
+      "Smiler's pawn shop",
+      "Ellis Brooks' apartment — Prism Heights",
+      "Gas-n-Go (drive-by)"
+    ],
+    "factions": [
+      "The Host / Church of the Host",
+      "The Inquisition",
+      "Magical Crimes Convox",
+      "Pyrelight / The Spark",
+      "Grayson's network",
+      "The Ghosts",
+      "Iconoclasm"
+    ],
+    "items": [
+      "Grayson's book (given to Inquisitors)",
+      "Radar dish (collected by Inquisitors)",
+      "Invitation to the Pilgrimage",
+      "Tywelwyn's antlers",
+      "Sketches of the six evil-god doors and the orrery",
+      "City Tripper (recovered)",
+      "Stolen G-Wagon / Aventine",
+      "Stolen minivan",
+      "Bell of Truth (Inquisitor questioning room)",
+      "Credit chip — 502 gold (bounty)",
+      "125 gold (Inquisitor goodwill payment)"
+    ],
+    "cliffhanger": "Smiler sends a fax: he's found a buyer willing to pay 3,200 gold for the stolen minivan, with the drop-off tonight at a parking lot in Widdershins — possibly a trap. The party also has the Pilgrimage invitation in three days' time."
+  }
+}

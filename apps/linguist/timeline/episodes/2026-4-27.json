@@ -1,0 +1,47 @@
+{
+  "date": "2026-4-27",
+  "show": "observatory-slipped",
+  "summary": {
+    "title": "One Last Job: Stealing from a Dead God",
+    "synopsis": "A one-shot following the fire team of Lt. Foral (goblin gunslinger), Old Man Scrazzy (elderly human mage with his familiar Bob, a floating undead head), and Ozzie (heavily armored orc) as they are pulled from retirement for one last job. The Sedecium forward base is evacuated aboard the Heavy Hand of God, a Sundom planet-killer warship, to raid the divine essence of the freshly-killed Thessian 'Tithe' before the God Eater Harrow finishes devouring it. The team navigates debris and brood creatures during descent, solves a time-acceleration puzzle inside the Slip, and fights through a spider temple on the planet's surface to plant a beacon — becoming the first and only fire team to succeed.",
+    "key_beats": [
+      "The Sedecium forward operating base is suddenly evacuated when the SDV Heavy Hand of God — a massive Sundom warship capable of destroying planets — docks and orders all personnel aboard.",
+      "TuRiin (the cave construct) briefs everyone: the Thessian god 'Tithe' has been killed by the God Eater Harrow, which is actively devouring the planetoid. Sedecium wants to steal divine essence before Harrow consumes it all, but the planet's barrier requires fire teams to travel through the Slip to reach the surface.",
+      "Foral, Scrazzy, and Ozzie are selected as a fire team, given slip-protection wristbands (30 min of safety) and EVA suits, then launched at high velocity toward the planetary barrier.",
+      "During descent they dodge an asteroid (Foral shoots it apart) and narrowly evade a Harrow brood creature — a 40-ft tadpole-like beast with nested jaws — by coordinating a group trajectory shift.",
+      "The three coordinate a simultaneous slip-translated entry just before hitting the barrier, entering a white void where they stand on the interior of an invisible sphere with shifting gravity.",
+      "Scrazzy uses Arcana to track mana flow (attracted to momentum). They discover walking a direction accelerates their countdown timer, and strategically leave members behind to preserve individual timers while rotating laps, building up gossamer magic thread along their path.",
+      "They detect a 'wobble' in the thread path, investigate by pouring water, and Foral shoots the floor to reveal a portal. They jump through, getting spaghettified (taking bludgeoning damage) but rolling a critical d100 (minus 58 for time spent) and emerging with nearly zero time left on their timers.",
+      "They exit the slip into a spider temple on Tithe's surface, immediately fighting a giant spider, a spider evangelist, and a spider aberrant. Foral silences the big spider with a Golden Silencer talisman; Scrazzy fireballs the evangelist to death; Ozzie kills the big spider and the aberrant flees but dies from persistent fire damage.",
+      "They plant the cognitive beacon and are transported back to the ship, which fires a beam extracting a chunk of Tithe's divine essence. They were the first (and likely only) team to succeed, and the ship escapes into slipspace before Harrow can reach them."
+    ],
+    "characters_present": [
+      "Lt. Foral",
+      "Old Man Scrazzy",
+      "Bob (familiar)",
+      "Ozzie",
+      "TuRiin (cave/construct handler)"
+    ],
+    "locations": [
+      "Sedecium forward operating base",
+      "SDV Heavy Hand of God (Sundom warship)",
+      "Orbital approach to Tithe (planetoid corpse)",
+      "The Slip (interior of invisible sphere)",
+      "Spider temple on the surface of Tithe"
+    ],
+    "factions": [
+      "Sedecium",
+      "The Sundom (former)",
+      "The Harrow"
+    ],
+    "items": [
+      "SDV Heavy Hand of God (Sundom warship)",
+      "Slip-protection crystal wristbands (30 min)",
+      "EVA exosuits with jet thrusters",
+      "Cognitive beacon",
+      "Golden Silencer talisman (used on big spider)",
+      "Lifting belt"
+    ],
+    "cliffhanger": ""
+  }
+}

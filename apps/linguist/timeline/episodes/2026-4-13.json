@@ -1,0 +1,55 @@
+{
+  "date": "2026-4-13",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Ash Over Teller's Run",
+    "synopsis": "The party flees the fracture site through the underground hallway but is intercepted by three Ifrit servants of Pyrelight. A chaotic battle unfolds amid recurring zero-gravity waves from the destabilizing fracture; Johnny obliterates one Ifrit with a devastating Horde of Underlings combo, while Benny and Argyle finish the others. Fleeing back, the party bombs the research facility, triggering a catastrophic explosion that collapses Teller's Run underground and sends a tidal wave through the sewers. They escape to find a mushroom cloud of ash over Teller's Run and return to the Sin and Tonic, where Dame Quay debriefs Argyle and the Harlequin announces the pilgrimage departure in one week.",
+    "key_beats": [
+      "Gravitational waves from the fracture begin pulsing through the underground hallway—first knocking party members prone, then creating periodic zero-gravity conditions that make movement chaotic.",
+      "Three Ifrit figures—Mason Riley, Ashton Morgan, and Robin Olson—approach and initiate combat with a fireball from range. The party engages in a prolonged battle complicated by recurring zero-G waves.",
+      "Ashton Morgan uses its exploding red breath to kill Anzu's familiar Othello, devastating Anzu; Ashton also emits a 90-foot fear aura upon becoming bloodied.",
+      "Johnny uses Invented Vulnerability (deception crit) to impose weakness 6 to slashing on Robin Olson, then Flourish-casts Horde of Underlings—six underlings each exploiting the weakness—to obliterate Robin Olson in one devastating combo.",
+      "Benny kills Mason Riley; Argyle finishes Ashton Morgan with a mythic-boosted spiritual weapon crit, ending the combat.",
+      "The party flees back toward the sewers, noticing blue liquid pipes destabilizing and gravitational waves increasing in frequency; they hear scientists in a nearby room discussing fracture instability and plans to send another team.",
+      "The party decides to lure the remaining Ifrit scientists out and bomb the area; Benny plants the artillery shell but is spotted by an Ifrit who alerts the others.",
+      "Anzu detonates the bomb via telekinetic projectile; the explosion collapses the hallway, bursts the blue-liquid pipes, and a final massive shockwave sends a tidal wave of sewage and glowing liquid through the sewers, injuring the fleeing party.",
+      "The party emerges in the Masque District to find a mushroom cloud of ash over Teller's Run; the skyscraper remains shielded by an energy sheen. They collect a vial of the blue liquid and return to the Sin and Tonic.",
+      "Argyle calls Dame Quay, who reports the beacon registered them as 'very far starward'; she mentions possibly sending Sedecium agents to investigate but is cautioned about the Giant and the danger.",
+      "Anzu's keystone activates—the Harlequin announces all 19 keystones are secured and instructs pilgrims to gather in one week at 9am at the original departure point, warning of festivities on the road."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Benny",
+      "Johnny Skyfall",
+      "Anzu",
+      "Dame Quay",
+      "Harlequin",
+      "Ginny",
+      "Mason Riley",
+      "Ashton Morgan",
+      "Robin Olson",
+      "Othello"
+    ],
+    "locations": [
+      "Underground hallway near the fracture",
+      "Teller's Run",
+      "The sewers beneath Teller's Run",
+      "Masque District",
+      "Sin and Tonic tavern"
+    ],
+    "factions": [
+      "Pyrelight",
+      "Corrective",
+      "Sedecium",
+      "The Pilgrimage"
+    ],
+    "items": [
+      "Artillery shell bomb",
+      "Johnny's plastic explosive",
+      "Anzu's keystone",
+      "Vial of blue glowing liquid",
+      "Othello (destroyed)"
+    ],
+    "cliffhanger": "With Teller's Run destroyed and a Ifrit having spotted Benny, the party prepares to flee the city for the pilgrimage—gathering one week from departure—while Anzu mourns Othello and the blue liquid's significance remains unknown."
+  }
+}

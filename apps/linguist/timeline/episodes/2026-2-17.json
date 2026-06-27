@@ -1,0 +1,63 @@
+{
+  "date": "2026-2-17",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "A Painting for the Machine",
+    "synopsis": "The party spends a day researching in the Belvedere Library, uncovering critical lore about the Embercall, Teller's Run, Laity, and the nature of Arctos's awakening. They reconnect with Anouk and Anaïs at the Sin and Tonic to coordinate the lodestone hunt, learning the identities of three rival groups also targeting keystone #14. A midnight visit from Ghosts of Raelion leader Donovan Hale reunites Johnny with an old ally. The next morning, the party attempts to make contact with the Heart 'Rapid Connection' at a Prime Meridian transit nexus, but is rebuffed for arriving without the art they offered to trade.",
+    "key_beats": [
+      "In the Belvedere Library, the party splits up to research: Johnny combs periodicals for Embercall/cult references, Anzu looks up awakened animals and Thistle Monroe, and Benny searches for information on Prime Meridian hearts.",
+      "Research reveals: the Embercall first appeared ~2 years ago, 6 months after the first Voidsong reference, linked to Teller's Run being encircled in flame; a biweekly party is held by 'Pyre' in an unfinished skyscraper inside Teller's Run; fire cults surged worldwide around the same time. Anzu learns Arctos is a documented miracle and that Belvedere researchers (morbidly) want to dissect him. Thistle Monroe is revealed as a high-ranking member of Laity, a secular private army secretly serving the Iridescent Church.",
+      "Benny's research identifies three major Prime Meridian hearts coordinating Hallia's transit, one of which is likely in Sableclutch — the best candidate for the Rapid Connection heart tied to the lodestone hunt.",
+      "The party returns to Minister Vane's home; Crowley reports Vane is still in emergency meetings. They leave a note requesting an earlier audience and depart.",
+      "At the Sin and Tonic, the party reunites with Anouk and Anaïs, who share intel: four groups total are hunting keystone #14 in Sableclutch — Iconoclasm, the twins, Sbrtlby Jones and his hired henchmen, and Crawford Reeves & Louis Maller of Concordia. They agree to a two-pronged plan: the twins will preemptively eliminate the competing groups while Iconoclasm works on obtaining art to bargain with the Heart.",
+      "Ginny reports Illmari has been missing for a day or more, which is unusual. The party also asks Dura about Prime Meridian contacts; she says she may know someone and will ask around.",
+      "A shopping trip to Smiler's: Benny buys a falcata, Arctos upgrades to a sturdy shield (selling two old shields), and Johnny inquires about purchasing a spell to counteract the stupefied condition from Anzu's Unleash Psyche.",
+      "In the early morning hours, Donovan Hale — head of the Ghosts of Raelion — sneaks into Johnny's bedroom. They have a heartfelt reunion and a long catch-up: Donnie reveals the Ghosts may have a mole, agrees to ask around for an invite to the Teller's Run party, and agrees to look into Anouk and Anaïs. Johnny describes his companions (a super-soldier child, a famous church bear, and a nice bird-man) and the existential threats they face.",
+      "The next morning, the party faxes the Scale to report Argyle's death, then drives to the Prime Meridian sub-transit nexus in Sableclutch (which Johnny knows from his Ghosts days) to contact the Heart Rapid Connection.",
+      "At the gate, Johnny (as 'Salvado Van Warhol, art curator') talks past a metal-rod-embedded security guard. The car radio mysteriously retunes itself, directing them around back to a loading bay. There they meet a heavily modified intermediary with metal piping and rods throughout his body, who speaks for the Heart. Johnny mentions a Kellum Quinn painting — the intermediary's interest is piqued — but when the party admits they don't have the painting with them, they are dismissed and told to come back with one."
+    ],
+    "characters_present": [
+      "Johnny",
+      "Benny",
+      "Anzu",
+      "Arctos",
+      "Anouk",
+      "Anaïs",
+      "Donovan Hale",
+      "Ginny",
+      "Dura",
+      "Crowley",
+      "Smiler",
+      "Prime Meridian security guard",
+      "Heart Rapid Connection's intermediary"
+    ],
+    "locations": [
+      "Belvedere Library (Hallia)",
+      "Minister Vane's residence",
+      "Sin and Tonic (Sableclutch)",
+      "Smiler's Undertable shop",
+      "Prime Meridian sub-transit nexus (Sableclutch)"
+    ],
+    "factions": [
+      "Belvedere",
+      "Prime Meridian",
+      "Iconoclasm",
+      "Ghosts of Raelion",
+      "Laity",
+      "Iridescent Church",
+      "Velvet Mark",
+      "Concordia",
+      "Sable and Suns",
+      "Scale",
+      "Pale Lantern Society"
+    ],
+    "items": [
+      "Sturdy shield",
+      "Falcata",
+      "Energy pistol ( surrendered to Anouk for study)",
+      "Car radio (tuned by Rapid Connection)",
+      "Belvedere library passes"
+    ],
+    "cliffhanger": "The party has been rebuffed at Prime Meridian without a painting and now plans to visit a museum to find fine art — ideally a Kellum Quinn — to bring back and trade with the Heart for the lodestone."
+  }
+}

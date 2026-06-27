@@ -1,0 +1,54 @@
+{
+  "date": "2026-2-10",
+  "show": "interred-in-iomenei",
+  "summary": {
+    "title": "The Undercroft: Sabotage on the Strider Iomenei",
+    "synopsis": "In a one-shot set months before the main campaign, three Undercroft workers — Barlow Crane, Grant FireEye, and Gage the Cunning — investigate sabotage aboard the massive moving Strider city of Iomenei. Tracking an elven suspect named Gerhardt into a long-abandoned forsaken sector, they discover an insectoid infestation centered on a dormant engine heart cathedral and must slay a massive Swarm Hive Mother. Though they halt the infestation, the true saboteur remains at large.",
+    "key_beats": [
+      "The GM introduces Iomenei, a massive moving Strider city of 100,000 that walks across Istria collecting ancient treasures. The party lives in the Undercroft, the labyrinthian lower levels where workers maintain the city.",
+      "The Seneschal tasks Undercrofters with finding a saboteur after two of the Strider's six legs seized for six seconds; success earns a spot on the upper decks. The party rides a clunky elevator down to subdeck 15B, the site of the latest sabotage.",
+      "At the sabotage site, Barlow uses psychometric resonance on the lubricant tube and sees the face of an androgynous elf with mandibles and extra eye-slits, radiating religious exaltation. Barlow then critically intimidates the foreman Morgress, who panics and jumps out of the Strider on a rope.",
+      "The party learns the suspect is likely Gerhardt, an elven fluid master who hasn't been seen in two days. At the communal housing area, they find a symbol scratched into his bedpost — a horn in a circle (the Herald's symbol). Gage touches it and feels a supernatural cold shock.",
+      "They visit an illegal fighting pit near a forsaken sector, bribe the bookie with 30 ration slips, and learn Gerhardt was last seen heading into the Forsaken sector — a forbidden area abandoned ~200 years ago.",
+      "Entering the Forsaken sector, the party is ambushed by Swarmchildren — insectoid creatures with mandibles and chitinous carapaces. After a prolonged fight, they clear the creatures.",
+      "Investigating abandoned preparation rooms, they find ancient ration slips and ritual materials that don't match standard engine heart components, plus evidence of recent humanoid activity.",
+      "Tanner joins mid-session as Archie, a rogue, who follows the party's trail in. The group presses deeper through a sealed door into a cathedral-like chamber containing a dormant ornate engine heart and a player's organ.",
+      "They discover an 80-foot Swarm Hive Mother breeding insectoid creatures in the cathedral. A large combat erupts with the Hive Mother, swarm warriors, and swarm children.",
+      "Barlow lands the killing blow on the Hive Mother with a Fracture Mountains strike infused with divine power, causing all remaining insects to collapse. However, the elven saboteur is not found among the dead, suggesting the infestation has spread elsewhere in the city."
+    ],
+    "characters_present": [
+      "Barlow Crane",
+      "Grant FireEye",
+      "Gage the Cunning",
+      "Archie",
+      "Morgress (foreman)",
+      "Brayro (mongrelfolk worker)",
+      "Bookie",
+      "Swarm Hive Mother"
+    ],
+    "locations": [
+      "Iomenei (Strider City)",
+      "The Undercroft",
+      "Strider Leg Armature Containment Unit 14 (subdeck 15B)",
+      "Communal housing level",
+      "Fighting pit (near forsaken sector)",
+      "Forsaken Sector",
+      "Engine Heart Cathedral"
+    ],
+    "factions": [
+      "Undercrofters of Iomenei",
+      "The Pulse (religion)",
+      "Herald cult (implied)"
+    ],
+    "items": [
+      "Striking Leomano (Barlow's weapon)",
+      "Thaumaturge's Lantern (Grant's implement)",
+      "Healer's Gloves",
+      "Old ration slips (x30, ~200 years old)",
+      "Dashing Bracelet",
+      "Horn symbol of the Herald (scratched into bedpost)",
+      "Sacred unguents and ritual materials (in forsaken sector lockers)"
+    ],
+    "cliffhanger": "The elven insectoid saboteur was not found among the dead, implying more infestations have taken root elsewhere in Iomenei. The party has a trophy to show the upper decks but must keep hunting for the true traitor."
+  }
+}

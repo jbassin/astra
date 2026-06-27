@@ -1,0 +1,57 @@
+{
+  "date": "2026-2-24",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Art of the Steal and the Demon in the Dark",
+    "synopsis": "The party researches art at the Hallia Metropolitan Conservatory, learning about Kellan Quinn's valuable paintings and the museum's security. They return to Minister Vane's house only to find he has been absent for days amid concerns that Senator Grayson is using necromantic mind control on the council. Johnny convinces Arctos to claim Vane's Kellan Quinn painting as his own, and a fax from Anaïs and Anouk sends the party to a Deosil factory to assassinate a drug lord named Sbrtlby Jones — revealed to be a babaw demon.",
+    "key_beats": [
+      "The party visits the Hallia Metropolitan Conservatory (MetCon), an all-glass art museum spanning the river. Anzu uses his lore knowledge to identify all Heart exhibits; Johnny eavesdrops on tour groups; Arctos charms a tour guide; Benny infiltrates a fourth-grade field trip.",
+      "Research at the museum reveals Kellan Quinn's painting \"Joker World\" (priced at 64,000 gp), the imprisoned artist Paolo Barreto's exhibit depicting the six outer gods, art rescued from Raelion, and a 20-year-old unsolved heist where someone impersonated an artist to swap forgeries for real paintings.",
+      "Anzu critically recalls knowledge on the World Branch sculpture, finding it an interesting alternate theoretical representation, and identifies single-named artists Estañion (from Lorandris) and PaSuun (unknown origin).",
+      "The party debates how to acquire art for the Archmechanic: stealing from the museum, burgling a gated-community house, or asking Arctos's childhood friend Minister Vane for his Quinn painting. They decide to try Vane first.",
+      "At Vane's house, Majordomo Crowley Hart reports Vane has not returned from his meeting in days. The party connects this to Grayson's necromantic mind-control plot — replacing core motivation centers of personalities — and realizes Vane may already be compromised among the senators locked in the Aurideon.",
+      "Johnny persuades Arctos that as the Host's awakened chosen, everything in Vane's house is his to take. Arctos asks Crowley for the Quinn painting \"Second Meaning\" and, with Johnny's aid, successfully obtains it along with two paintings from his own room.",
+      "A fax arrives from Anaïs/Anouk: \"Sbrtlby, 414 Anchor Street, 6:30.\" The party deposits their three paintings with Elias the Quartermaster at Iconoclasm for safekeeping, then drives to the Deosil district.",
+      "The party scouts the address — a split-level factory with blacked-out windows, active steam vents, and a rooftop hotspot. Johnny receives a telepathic Message from Anaïs: \"Half hour, go in back entrance. Don't worry about explosions. We'll funnel towards you. Kill.\"",
+      "At 6:30, one of the twins breaches the factory wall with a rocket hammer, triggering chain explosions. The party enters the back to discover an illicit hydroponic grow house and intercepts fleeing drug operators.",
+      "Combat erupts against Sbrtlby Jones (identified via Recall Knowledge as a babaw demon — immune to acid, weak to cold iron and holy, lowest save Will) and his henchmen: three Pusks (rat-like fiends) and two Myokdans (centipede creatures). Sbrtlby casts Darkness (level 4), plunging the battlefield into magical blackness and forcing the party to fight blind.",
+      "Over several rounds of brutal combat in the darkness, Anzu's telekinetic rend kills Pusk 1 and Myokdan 2; Johnny's illusory Sbrtlby decoy and Bon Mot harass survivors; Arctos's Rouse Skeletons and Bone Shake chip away; Benny's falcata strikes are hampered by flat-check misses. All henchmen fall, leaving only Sbrtlby Jones wounded but alive in the darkness as the session ends."
+    ],
+    "characters_present": [
+      "Sir Arctos",
+      "Johnny",
+      "Benny",
+      "Anzu (with familiar Othello)",
+      "Majordomo Crowley Hart",
+      "Elias the Quartermaster",
+      "Dura",
+      "Anaïs (via Message spell)",
+      "Sbrtlby Jones (babaw demon)",
+      "Pusks",
+      "Myokdans (centipede creatures)"
+    ],
+    "locations": [
+      "Hallia Metropolitan Conservatory (MetCon)",
+      "Minister Vane's estate",
+      "Iconoclasm (party headquarters)",
+      "Deosil district factory/grow house (414 Anchor Street)"
+    ],
+    "factions": [
+      "Anouk & Anaïs's group (employers)",
+      "Minister Vane's household",
+      "Iconoclasm (party base)",
+      "Velvet Mark (mentioned, not contacted)",
+      "Ghosts of Raelion (mentioned)",
+      "Sbrtlby Jones's drug operation"
+    ],
+    "items": [
+      "\"Second Meaning\" by Kellan Quinn (painting, 36\"×72\", ~64,000 gp value)",
+      "Two additional paintings from Arctos's room",
+      "Radio frequency 980.2 kHz (Heart communication channel, noted by Arctos)",
+      "Barrow's Edge (Benny's weapon enchantment)",
+      "Falcata (Benny's new sword)",
+      "Palladium rod (Vane's life-sign alert system)"
+    ],
+    "cliffhanger": "The party is mid-combat against Sbrtlby Jones in the darkness-filled grow house; all henchmen are dead but the babaw demon remains. The table agrees to fast-forward to his eventual death, leaving the aftermath — and whatever the party finds in the wreckage — for next session."
+  }
+}

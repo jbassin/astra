@@ -1,0 +1,62 @@
+{
+  "date": "2026-6-22",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Descent into the Undercroft: Mongrels, Manuscripts, and the Spider's Fane",
+    "synopsis": "The party ventures deep into the Undercroft of the Strider to recover a stolen ink ribbon for the library curator, navigating past mutated mongrel folk workers, hostile corrupted worshippers of the Sinister Six, and increasingly disturbing tunnels covered in religious iconography. After a brutal combat and the recovery of the ribbon plus mysterious manuscripts, they press deeper into spider-infested passages and pass through the threshold of a Fane.",
+    "key_beats": [
+      "Argyle proposes a Pact of Gaius — a magical constitution preventing signers from harming each other or the heart — to root out spies. Discussion reveals it takes a full day of casting per person; the group defers but Argyle arranges to learn the Oil Slicked Walls ritual from the Scale.",
+      "The party gifts one of their captured Sable & Sons laser weapons to Radiant Arms for R&D, effectively committing corporate theft/espionage trade secrets in exchange for faction goodwill.",
+      "After resting, the party descends via a manually-operated elevator from the garage deep into the Undercroft of the Strider, heading to sub-level 12 to find the ink ribbon for the library curator.",
+      "They encounter mongrel folk — slip-affected humanoids mutated by unprotected long-distance slip travel — working on a lubricant platform for the Strider's legs. Argyle identifies them via occultism (slip exposure/mongrel folk phenomenon).",
+      "Johnny negotiates with Marin (Maranthorn), a bird-like mongrel folk worker bound by predatory debt contract to a Harlequin (18,000 gold and climbing). Marin directs them to an unlit 'forsaken sector' past acid vats where people hoard things that don't belong. Johnny promises daily sandwich deliveries.",
+      "In the forsaken sector, the party finds heavily mutated mongrel folk speaking a strange chittering dialect of Earthram. One wears a horn amulet connected to the Sinister Six's iconography. They are spotted, a fireball is launched, and combat begins.",
+      "Brutal combat against two Oculum (spellcasters), two Oris, and two Manus creatures — all unholy, with dimension door, fly speed, infernal wounds (bleed), and infernal fever (disease). Johnny is infected; multiple party members bleed heavily.",
+      "Argyle turns the tide with Holy Water + Divine Wrath, crit-killing both Oculums and an Orus. Anzu freezes the remaining Manus creatures. Johnny finishes the last Orus with an Invented Vulnerability + summon spell combo.",
+      "Looting the bodies: Anzu identifies two 'Perfection's First Step' manuscripts (completable into scrolls of Unbreaking Wave Advance, a focus spell sourced from a Sinister Six patron). They also find a mongrelfolk tincture, a skull key, and a parchment with Earthram-adjacent runes.",
+      "Argyle casts Locate (ink ribbon) — it points north. The party navigates hallways covered in disturbing art (horn iconography, perfection/ascension poems, stick figures dancing around orbs). They find a stinking barracks and recover the ink ribbon from a pack, along with the skull key and runic parchment.",
+      "Continuing deeper, the party carefully maneuvers through dense spider webs while skittering sounds intensify around them. After ~15 minutes of careful navigation, they feel themselves pass through an air curtain — they have entered a Fane. Session ends."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Benny",
+      "Johnny Skyfall",
+      "Anzu",
+      "Othello (familiar)",
+      "Marin/Maranthorn (mongrel folk NPC)",
+      "Chuck (mentioned)",
+      "Radiant Arms/Y'shael (mentioned)"
+    ],
+    "locations": [
+      "The Strider (party base/surface)",
+      "The Garage (sub-level 1)",
+      "The Undercroft (sub-levels 2–15+)",
+      "Mongrel folk lubricant platform (sub-level 12)",
+      "The Forsaken Sector (unlit area of the Undercroft)",
+      "Mutant mongrel folk encounter area (staircase landing)",
+      "Art-covered 'Heart hallway'",
+      "Abandoned barracks/dorm",
+      "Spider-webbed tunnels",
+      "The Fane (entrance)"
+    ],
+    "factions": [
+      "The Scale",
+      "Radiant Arms",
+      "Sable & Sons",
+      "Harlequins",
+      "The Sinister Six / Usurper worshippers",
+      "Prime Meridian (mentioned)"
+    ],
+    "items": [
+      "Ink Ribbon (deep red film reel container)",
+      "Two 'Perfection's First Step' manuscripts (incomplete scrolls of Unbreaking Wave Advance)",
+      "Mongrelfolk Tincture (grows extra fingers, +2 reflex DC, 20ft climb speed)",
+      "Skull key (small key with skull emblem)",
+      "Parchment with Earthram-adjacent runic markings",
+      "Horn amulet/pendant (non-magical, worn by mongrel folk)",
+      "Oil Slicked Walls ritual (transcribed by Argyle)",
+      "Sable & Sons laser weapon (given to Radiant Arms)"
+    ],
+    "cliffhanger": "The party passes through an invisible barrier — an air curtain — and realizes they have entered a Fane, deep in the Undercroft of the Strider, with skittering sounds all around them. A spider heart (and whatever lurks within) awaits next session."
+  }
+}

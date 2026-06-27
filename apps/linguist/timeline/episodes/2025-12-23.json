@@ -1,0 +1,64 @@
+{
+  "date": "2025-12-23",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Poncho Gang Goes Deer Hunting",
+    "synopsis": "Fresh off killing the half-giant Hlarf, the party loots his body and stolen Aventine, extracting 900 gold through their fence Smiler and gearing up for a direct assault on Tywelwyn. After reconnaissance reveals Tywelwyn is hiding in a Gas-n-Go auto body shop, the party infiltrates at closing time and descends into a fiery Fane beneath the shop, where they find Tywelwyn transformed into a burnt-out flaming husk. A brutal multi-round battle sees the party systematically eliminate his Roundhat guards and his living cape before Anzu's Agitate spell tears Tywelwyn apart from the inside.",
+    "key_beats": [
+      "The party loots Hlarf's body and his stolen Aventine car, finding a locked journal, an Iridite Mutual bank card, a keychain with Gas-n-Go keys, a thieves' toolkit infiltrator, a levered crowbar, and a go-bag of fake IDs for Roundhat Gang members",
+      "Arctos dumps Hlarf's body in the river; the party drives the stolen car back to the Sin and Tonic, waking Dura to safely garage it (avoiding booby traps)",
+      "The party visits Smiler the centaur fence, who extracts 900 gold from the bank card (keeping 50 as fee) and silvering weapons; they also shop at Ye Olde Apothecary for healing potions, Soldier's Syrup, and other gear",
+      "Benny and Johnny conduct reconnaissance on the Gas-n-Go address in Widdershins, spotting their stolen City Tripper on a hoist inside and noting four Roundhat Gang members arriving after the shop closes at 8 PM",
+      "The party returns the next evening at ~8:15 PM, sneaking in matching ponchos through the service door; they find the City Tripper keys and locate a door leading down into a Fane — a Heart",
+      "Descending a spiral staircase of stained glass and steel, the party enters Tywelwyn's ornate Fane and discovers Tywelwyn himself: a burnt-out, flaming husk with black antlers seated on a throne, flanked by a boar-like, tiger-like, and rat-like Roundhat, plus a living cape",
+      "Combat erupts across a bridge over a glass-floored chasm; the party systematically eliminates the boar (Benny's double-slice pick lobotomy), the rat (Anzu's telekinetic rend), and the tiger (Johnny's demoralize + Cutting Rebuke 'Meow!' dealing fatal mental damage)",
+      "Arctos dispels Tywelwyn's living cape mid-fight, collapsing it to the ground as a mundane item",
+      "Tywelwyn unleashes fireballs, flaming spheres, burning hands, and enfeebling rays, focusing hatred on Arctos and Benny, but is worn down by sustained buffs (Benediction, Courageous Anthem, Albatross Curse) and debuffs (Agitate, Intimidate)",
+      "Anzu's Agitate — forcing Tywelwyn to move or take mental damage — delivers the killing blow: unable to move from his throne, Tywelwyn's muscles rip himself apart, dealing 25 mental damage and finishing the burnt husk"
+    ],
+    "characters_present": [
+      "Sir Arctos",
+      "Johnny/Anzu",
+      "Benny",
+      "Mindbird",
+      "Smiler (NPC)",
+      "Dura (NPC)",
+      "Tywelwyn (NPC)",
+      "Hlarf (dead NPC)",
+      "Aut (mentioned NPC)"
+    ],
+    "locations": [
+      "Alley in Sableclutch (Hlarf's corpse)",
+      "The Sin and Tonic",
+      "The Undertable (Smiler's shop)",
+      "Ye Olde Apothecary",
+      "Gas-n-Go auto body shop, Widdershins (412 Anchor Boulevard)",
+      "Tywelwyn's Fane (beneath the Gas-n-Go)"
+    ],
+    "factions": [
+      "Roundhat Gang",
+      "The Host",
+      "Gas-n-Go",
+      "Iridite Mutual",
+      "RunGunners (mentioned)"
+    ],
+    "items": [
+      "Hlarf's locked journal",
+      "Iridite Mutual bank card (900 gold)",
+      "Aventine car with portable hole trunk",
+      "Thieves' Toolkit Infiltrator",
+      "Levered Crowbar",
+      "City Tripper (recovered car)",
+      "Go-bag with fake IDs",
+      "Silvered bastard sword and pick",
+      "Drum of War",
+      "Blazing Banner",
+      "Soldier's Syrup x3",
+      "Potions of Emergency Escape x4",
+      "Poly Tool with Crushing Rune",
+      "Fortifying Pebble",
+      "Silver ammunition for Needle Darts"
+    ],
+    "cliffhanger": "The party stands victorious in Tywelwyn's Fane beneath the Gas-n-Go, surrounded by the corpses of the Roundhat Gang's leadership — but they are still deep underground in a hostile Heart, and what comes next for the gang war remains unresolved."
+  }
+}

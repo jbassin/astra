@@ -1,0 +1,53 @@
+{
+  "date": "2025-8-11",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Blue Remains: Descent into the Crevice and Arrival at Palomar",
+    "synopsis": "The Foragers travel from Trilene to the fort settlement of Palomar to consult a priest of Slumber about the mysterious blue knot phenomenon. Along the way, Wise falls into a deep crevice and the party is ambushed by seven gargoyles in a sprawling multi-level battle. After reaching Palomar, they meet Warren Harble, a tiefling priest who theorizes that Slumber was trapped and drained by the Tynans at a distant location called 'the Scar.' The Karwinian historians suggest the party venture into the ruins of Karwin for better maps and to check the temple of Slumber. As night falls, the Palomar knot turns blue and stays blue — and screams erupt across the fort.",
+    "key_beats": [
+      "The Bastion sends the party off from Trilene toward Palomar, supplying them with a healing potion and four feather tokens (auto-activating Feather Fall) for the dangerous craggy terrain ahead. Strong pitches a hot air balloon idea.",
+      "The first day of travel is uneventful; the party camps with Leomund's Tiny Hut and a tangle (protective weave knot). Amada hears distant howls during his watch but nothing approaches.",
+      "On day two, the terrain becomes rocky and creviced. Wise stumbles on loose stone near a deep crevice, fails his save (even with Chronal Shift), casts Feather Fall, and descends 100 feet into the pit.",
+      "Seven gargoyles emerge from the crevices and attack. A sprawling battle ensues across the surface and inside the chasm, with Strong famously grappling a gargoyle and body-slamming it 100 feet down into the crevice.",
+      "The party dispatches all seven gargoyles through a mix of Fireballs, Eldritch Blasts, Spirit Guardians, Command (grovel), Guiding Bolt, Hideous Laughter, and brutal barbarian strikes. Strong chases down a fleeing gargoyle by climbing and teleporting (Cloud Jaunt).",
+      "The party arrives at Palomar, a repurposed fort settlement, and is greeted by Captain Yannick Ruda, who leads them to Warren Harble, an aging tiefling priest of Slumber.",
+      "Warren explains his theory: the Tynans trapped Slumber at a location called 'the Scar' on the far side of the world, sapping the deity's energy centuries ago. The blue knot phenomenon may be Slumber trying to reach out for the first time in centuries.",
+      "Warren and the party visit the Karwinians — historian scholars who study recovered artifacts from the ruins of Karwin. A gnome named Tobin shows them maps and suggests they venture into Karwin's ruins to find better maps and check the temple of Slumber there.",
+      "As the party plans their next move (heading to Karwin, about a day and a half west), night falls and the Palomar knot turns midnight blue — but this time it doesn't revert to gold. Warren grips his head in distress and screams ring out across the fort.",
+      "The session ends with the DM granting a retroactive short rest before the cliffhanger resolves."
+    ],
+    "characters_present": [
+      "Quinzenzius the Strong",
+      "Quinzenzius the Wise",
+      "Glint",
+      "Amada",
+      "The Bastion",
+      "Captain Yannick Ruda",
+      "Warren Harble",
+      "Tobin"
+    ],
+    "locations": [
+      "Trilene",
+      "The southern road",
+      "Rocky craggy terrain (crevice battlefield)",
+      "Palomar (fort settlement)",
+      "Warren Harble's hut",
+      "Karwinian longhouse/library"
+    ],
+    "factions": [
+      "The Foragers",
+      "Followers of Slumber",
+      "Karwinians",
+      "Tynans",
+      "Followers of Vigil"
+    ],
+    "items": [
+      "Healing Potion",
+      "Feather Tokens (x4)",
+      "Map of Karwin and surrounding region",
+      "Map of Karwin city streets",
+      "Warren's silver crescent moon amulet"
+    ],
+    "cliffhanger": "As night falls at Palomar, the knot turns midnight blue again — but this time it stays blue instead of reverting. Warren clutches his head in fear, saying 'something's happening,' and screams erupt from across the fort."
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "date": "2026-6-18",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Library Card and the Heart Harvest",
+    "synopsis": "Following their meeting of the minds, the group scours the Strider for a map to chart the voidward course, leading them through the Harlequin Fane's eerie library and a curator who trades knowledge for a stolen ink ribbon. Along the way they visit Verdant Holdings, Ternion Heavy Industries, and Ætherion Limited, learning of shifting alliances, Hildebrandt's shady reputation, and warnings that they may be too trusting. Under cover of night, they absorb two smaller factions' hearts — Alkahest Freight and the drunken Solari Sub-surface — bringing their energy to 183, which they immediately pour into moat and bulkhead defenses for their base.",
+    "key_beats": [
+      "The group summons Chuck via figurine; he is noticeably less servile than before and directs them to Curator Ocelith at the library for a map. He also reveals the former leader of Verdant Holdings was killed and a new election is underway.",
+      "They visit Verdant Holdings and meet Dr. Thrain (a half-giant botanist) who is acting as spokesman, alongside an unnamed gnome. They offer alliance and bring brigadeiros, but Verdant Holdings has friction with Hildebrandt and asks them to check back later. Sense motive reveals internal dissent and that Dr. Thrain may not hold unanimous support.",
+      "Chuck leads them to the library in the Harlequin Fane — the most developed area on the Strider with ~50 Harlequins. Anzu's occultism crit reveals Harlequins communicate non-verbally over distance, and a void-heart-like tinge suffuses the area. They spot chapel iconography of four hands and an eye (the four princes and the eye that awoke them).",
+      "Inside the library, they meet Curator Ocelith, a giant skeletal dragon-armadillo creature. A library card requires signing away rights to any knowledge gained. Ocelith offers a lesser deal: retrieve his stolen ink ribbon from an undercrofter on Subdeck 12, and they can have the map book outright — containing all known locations from Prime Faerin to the voidward wall.",
+      "They visit Ternion Heavy Industries and meet Jethro, who has built an airplane on a small airstrip. He reveals he has allied with Grayson/Amber Call for protection, and warns them that Hildebrandt is shady — suspected of shooting down Ternion planes and poaching engineers who then disappear.",
+      "They visit Ætherion Limited and meet Braxton Hall, a sylph allied with Tas/Prime Meridian. He reveals they've seeded a minefield around their territory and warns the group they're being too trusting by showing their heart to all allies. Perception reveals a coldness behind his friendliness — he's glad-handing without genuine investment.",
+      "The group deduces Tas is likely double-dipping between their alliance and another group (possibly Grayson's), and discusses which of their allies might be compromised.",
+      "Under cover of night, they absorb two hearts: first Alkahest Freight's (Chromatic Drift, 30 energy / 15 gained), whose heart pleads not to be killed; then Solari Sub-surface's (20 energy / 10 gained), a talking shipping-container sculpture whose drunk owner Salvado had been failing to pack. Both buildings collapse upon heart-death; all make their reflex saves.",
+      "Argyle casts Cleanse Affliction to sober up Salvado for the drive back. They return to base where Kadou has already arrived. With 183 total energy, they purchase reinforced bulkheads and a moat for defense, plus add a warehouse and a war room/den to their base layout — honeycombing rooms to create layered defense around the heart.",
+      "The group discusses new names (Chronicle, Heartbreakers, Choir, Topside Boys) but reaches no decision. They plan to descend to Subdeck 12 next to retrieve the ink ribbon, and Argyle gives Salvado a 'shiver' drug to help him sleep with a warning to stop drinking."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Anzu",
+      "Johnny",
+      "Benny",
+      "Chuck",
+      "Dr. Thrain",
+      "Curator Ocelith",
+      "Jethro",
+      "Braxton Hall",
+      "Kadou",
+      "Salvado",
+      "Anouk",
+      "Anaïs"
+    ],
+    "locations": [
+      "The Strider (real space)",
+      "Iconoclasm base (upgraded with bulkheads, moat, warehouse, war room)",
+      "Verdant Holdings fane",
+      "Harlequin Fane / Harlequin town",
+      "The Library (chapel exterior)",
+      "Ternion Heavy Industries (hangar and airstrip)",
+      "Ætherion Limited (office-house)",
+      "Alkahest Freight fane",
+      "Solari Sub-surface fane"
+    ],
+    "factions": [
+      "Harlequins / Harlequin Fane",
+      "Verdant Holdings",
+      "Ternion Heavy Industries",
+      "Amber Call",
+      "Ætherion Limited",
+      "Prime Meridian",
+      "Hildebrandt",
+      "Alkahest Freight",
+      "Solari Sub-surface",
+      "The Scale",
+      "The Protectorate",
+      "Pale Lantern Society",
+      "Radiant Arms",
+      "RunGunners"
+    ],
+    "items": [
+      "Map book (held by Curator Ocelith, on reserve)",
+      "Ink ribbon (stolen, located on Subdeck 12)",
+      "Chromatic Drift heart (Alkahest Freight's heart, absorbed)",
+      "Solari Sub-surface heart (shipping-container sculpture, absorbed)",
+      "Chuck's figurines",
+      "Brigadeiros",
+      "Strider exterior map (crude, from Chuck)",
+      "Reinforced bulkheads (purchased)",
+      "Moat (purchased)"
+    ],
+    "cliffhanger": "The group plans to descend to Subdeck 12 to retrieve Curator Ocelith's stolen ink ribbon in exchange for the map book, and must also decide on a new group name — with no resolution on either before session's end."
+  }
+}

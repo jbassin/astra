@@ -1,0 +1,64 @@
+{
+  "date": "2026-3-9",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Half a Man: The Return of Argyle",
+    "synopsis": "Fresh off their victory over Concordia's hit squad, the party secures the keystone in a lead-lined safe and settles into downtime — only for two bombshells to land: Benny's father Atum warns of a keystone theft at Belvedere, and Anzu's father Adal reveals his sister has vanished alongside a group called the Singers of the Herald's Star. Then a dead friend returns: Argyle walks back into the Sin and Tonic, but only the 'holy half' of him came back, and the party is deeply suspicious he may be a demon in disguise.",
+    "key_beats": [
+      "The party loots the bodies of Crawford Reeves and Lewis Maller in the Prime Meridian sub-nexus; Anzu examines the blue death-glow and connects it to Belvedere constructs. They recover a mysterious green translucent magic rock (does nothing identifiable) and a pair of clockwork heels granting +5 speed.",
+      "The Ark Mechanitor thanks them for defeating the Concordia intruders and hauls off the bodies; the party leaves on good terms with the Heart and free city transit secured.",
+      "The party returns to the Sin and Tonic and debates how to safeguard the keystone, ultimately deciding on a lead-lined safe encased in cement in Anouk and Anaïs's room. They also discuss pilgrimage logistics and reaching out to contacts like Donnie/Red.",
+      "Benny receives a dream-connection from his father Atum at Belvedere, who reports a break-in: someone stole a keystone-like artifact connected to the Voidsong. Atum asks Benny to investigate the thieves, and agrees to research 'Embercall' and pilgrimage organizers.",
+      "Anzu receives an urgent fax from his father Adal and calls back privately. Adal reveals Anzu's sister has gone missing after falling in with a reform-minded group called the Singers of the Herald's Star, her disappearance coinciding with the Belvedere break-in. He asks Anzu to keep an ear out.",
+      "Downtime activities: Arctos begins securing a shiver-growing license via a Vane-backed Grayson connection; Anzu crafts a mental-trait staff (message, soothe, phantom pain); Johnny teaches improv classes for income and investigates Scale & Sons' laser gun tech, learning about consultant Salo Murn and starward-expedition technology.",
+      "A perspective-shift scene shows Argyle being briefed by Dame Quay (an origami-paper yaoguai) and Flintlock (a fiendish goat-like creature). Only the 'holy part' of Argyle returned from death; his other half is lost somewhere voidward. He is sent to rejoin the party.",
+      "Argyle arrives at the Sin and Tonic, but the party is immediately suspicious: he's taller, speaks without contractions, references himself oddly, and claims classified knowledge. Benny and Johnny confer privately in the bathroom and conclude this may be a Trojan-horse infiltrator.",
+      "The party takes Argyle to an abandoned parking lot for interrogation. Argyle admits only part of him came back and his 'demon half' is still out there, but his rigid, narc-like demeanor keeps the party deeply wary. They visit the pactbroker station to verify his identity — the ID checks out, but the party finds this the least reassuring possible outcome.",
+      "Unable to resolve their suspicion, the party decides to seek out a diabolist in the city to check Argyle (and potentially everyone) for demonic presence, agreeing to settle the matter before Johnny's 5 p.m. improv class."
+    ],
+    "characters_present": [
+      "Benny",
+      "Johnny Skyfall",
+      "Anzu",
+      "Arctos",
+      "Argyle",
+      "Ark Mechanitor",
+      "Low-Mechanitor Exitum-ρ-15",
+      "Atum",
+      "Adal",
+      "Dame Quay",
+      "Flintlock",
+      "Ginny"
+    ],
+    "locations": [
+      "Prime Meridian sub-nexus lobby",
+      "Sin and Tonic (Iconoclasm HQ)",
+      "Abandoned parking lot (Widdershins)",
+      "Pactbroker station",
+      "Scale & Sons (Johnny's gun investigation)",
+      "Belvedere (Benny's dream / Argyle's briefing)",
+      "Bathroom of the Sin and Tonic"
+    ],
+    "factions": [
+      "Concordia",
+      "Prime Meridian / Rapid Connection",
+      "Belvedere",
+      "Iconoclasm",
+      "The Scale (Judge's organization)",
+      "Singers of the Herald's Star",
+      "Scale & Sons",
+      "The Host"
+    ],
+    "items": [
+      "Keystone",
+      "Green translucent magic rock (unidentified)",
+      "Clockwork heels",
+      "Lead-lined safe",
+      "Anzu's mental staff (message, soothe, phantom pain)",
+      "Twilight tattoo",
+      "Benny's permission slip from Atum",
+      "Lifting belt"
+    ],
+    "cliffhanger": "The party resolves to find a diabolist in the city to verify whether Argyle is a demon (and possibly check everyone), with Johnny's improv class looming at 5 p.m. as a hard deadline."
+  }
+}

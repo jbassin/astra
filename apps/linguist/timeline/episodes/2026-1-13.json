@@ -1,0 +1,62 @@
+{
+  "date": "2026-1-13",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Fickle Mistress and the Writer's Trap",
+    "synopsis": "The party successfully sells the stolen minivan to the Velvet Mark gang for 3,200 gold, then spends the proceeds legalizing their Aventine. Anouk recruits them to find her missing brother Anaïs, who followed a Voidsong lead to a bungalow at the far voidward edge of Hallia. There they find Anaïs chained and gagged in an Aut-branded trap. After a tense standoff, Anaïs reveals himself as a servant of Renge the Fickle Mistress — rival to Aut the Writer, the party's own patron — and drops major revelations about Aut's history of manipulating catastrophes across Færrin, as well as the existence of the Narrative, a family of five cosmological siblings.",
+    "key_beats": [
+      "The party completes prep — healing up, purchasing scrolls/potions/gear, and Arctos visits a local Host church to network with its priest.",
+      "At midnight, the party meets three members of the Velvet Mark gang at an abandoned parking lot in Widdershins. The dwarven buyer Cosimo inspects the stolen minivan, pays 3,200 gold, and hands Johnny a business card for the Crystal Globe casino in the Masque District.",
+      "The party checks for tails (none found) and returns to the Sin and Tonic with the money. They pay Smiler 3,000 gold to make the Aventine (G-Wagon) street legal, registered under Arctos, painted matte black.",
+      "Anouk approaches the party at breakfast: her brother Anaïs has been missing for two days. He followed a Voidsong lead to an address on the far voidward frontier of Sableclutch (Færrin 26). She asks them to investigate.",
+      "The party drives the newly legalized Aventine far voidward, experiencing vertigo from repeated sliding. They arrive at the edge of Hallia's expansion — log cabins and frontier wilderness — and find a one-room bungalow with blue flickering light inside and Aut's symbol (three blue dots in a triangle) hung over the door.",
+      "Inside, they find Anaïs chained to a bed and gagged with anti-magic restraints. He is terrified and hostile, believing the party are Aut's agents come to kill him. Benny's polytool strikes clang off his armored skin.",
+      "The party removes Anaïs's gag (the shackles open to the will of anyone bearing Aut's symbol — Arctos, Johnny, and Mindbird can open them; Anzu cannot). Anaïs accuses them of being Aut's servants.",
+      "After extensive diplomacy and sharing their own ignorance, Anaïs accepts they are well-meaning but naive. He reveals major lore: Aut is 'the Writer,' one of five siblings called the Narrative — Aut (order/determinism), Renge the Fickle Mistress (RNG/chaos), Petr the Threshold, Insuperlex the Mountain, and the Menhir the Heroes. Anaïs serves Renge.",
+      "Anaïs reveals Aut's historical crimes: the destruction of Raelion, the separation of Brithwyn from Calaria, the Orthalaxis plague ~200 years ago, and installing Hallia's current prime minister. He warns the party that Aut will eventually ask them to do something harmful and they should be on guard.",
+      "The party shares information about the six evil gods coming to destroy Færrin. Anaïs recognizes three names (Pyre, Herald, Giant) but not the other three (Boar, Regent, Esoterica). He also admits he knows about the world beyond Færrin (planets, the Out), having lied earlier. Anaïs and Anouk are confirmed as the same twins the party met on Syrin in Campaign 2.",
+      "The party and Anaïs agree to a tentative alliance against the common apocalyptic threat. Anaïs and Anouk plan to attend the Saturday pilgrimage separately from the party. They head home together."
+    ],
+    "characters_present": [
+      "Sir Arctos",
+      "Benny",
+      "Johnny",
+      "Mindbird (Anzu)",
+      "Othello",
+      "Anaïs",
+      "Anouk",
+      "Smiler",
+      "Dura",
+      "Cosimo"
+    ],
+    "locations": [
+      "Sin and Tonic",
+      "Abandoned parking lot in Widdershins",
+      "Masque District (mentioned)",
+      "Smiler's garage",
+      "Local Host church in Hallia",
+      "Sableclutch — far voidward frontier (Færrin 26)",
+      "Anaïs's trapped bungalow / log cabin"
+    ],
+    "factions": [
+      "Iconoclasm",
+      "The Velvet Mark",
+      "The Narrative (Aut, Renge, Petr, Insuperlex, Menhir)",
+      "The Host / Convocation",
+      "The Inquisitors"
+    ],
+    "items": [
+      "Aventine (G-Wagon, now legally registered, matte black, magical trunk)",
+      "Anti-magic shackle",
+      "Anti-magic gag",
+      "Pilgrimage invitation (card stock, non-magical)",
+      "Healer's Gloves",
+      "Heal scrolls (rank 2)",
+      "Healing potions",
+      "Rapier",
+      "Polytool",
+      "Briefcase with 3,200 gold"
+    ],
+    "cliffhanger": "The party is heading home with Anaïs, having agreed to attend the pilgrimage separately from the twins. They now must contend with the revelation that Aut — their patron — may be a dangerous manipulator, while also preparing to infiltrate the pilgrimage event on Saturday."
+  }
+}

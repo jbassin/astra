@@ -1,0 +1,81 @@
+{
+  "date": "2025-12-30",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Iron Gauntlet in a Glass Glove",
+    "synopsis": "Fresh off killing Tywelwyn Leatherhide, the party loots his Fane beneath a Gas-n-Go gas station and descends deeper, discovering a sentient 'heart' — a floating obsidian chunk with stained glass veins — that reveals six new Thessian-like gods (Pyre, Herald, Giant, War, Esoterica, and Regent) are attempting to reach Færrin via a network of radar dishes spreading a destructive resonance across Hallia. After exploring the Fane's rooms and recovering powerful magic items, they ambush shift-change reinforcements, slaying a werebear, a croc-Roundhat, and two bat-Roundhats, and claim a third vehicle.",
+    "key_beats": [
+      "Party loots Tywelwyn's body and throne room; Arctos finds and invests a Symbol of Conflict pendant (silver chain) that shifts to the Iridescent Church's three-wavy-lines symbol.",
+      "Party descends via spiral staircase into a heptagonal antechamber with seven doors — each depicting a different god (Pyre, Herald, Giant, War, Esoterica, Regent) — and a floating obsidian chunk with stained glass veins.",
+      "The floating rock reveals itself as a sentient 'heart' — 'the iron gauntlet in a glass glove' — created by Tywelwyn. Through deception (claiming self-defense), the party convinces the heart they are its new owners.",
+      "The heart reveals six new Thessian-like gods seek to visit Færrin; the radar dishes spread a harmony across Hallia to vibrate the city at the frequency of something far away, enabling it to travel there. Tywelwyn was preparing a 'pilgrimage.'",
+      "Party explores the armory (recovers stolen gear, finds a medic's armband, ring of observation, ring of discretion), the office (finds chalkboard maps of the radar dish network pointing to Teller's Run, resonance research linking to the Voidsong, notes that Grayson was investigating the radar dish supply).",
+      "Party ambushes shift-change reinforcements in the garage: a werebear, a croc-like Roundhat, and two bat-like Roundhats. Brutal combat ensues; one bat flees toward its car but Benny catches it with a reactive strike and kills it. Party claims a third vehicle (minivan) and 100 untraceable gold.",
+      "Party explores remaining rooms: bedroom (Sleeves of Storage robe), radar dish factory (pantograph, blue invitation to 'the pilgrimage' at an abandoned mining settlement a week out, elite disguise kit, fine clothing, 100 gold), haberdashery (bowler hat passion project, quicksilver), and orrery (an 80-ring model of the Infinite Horizon; Benny feels resonance from a Færrin beyond the Wall).",
+      "Thorough search of office papers reveals business ledgers for multiple Hallia businesses (three Gas-n-Go franchises, The Crowded Flea, laundromats, churro and fried chicken restaurants), plus two notebooks: one on radar dish installation logistics, one logging 30 failed augury attempts — the last on the party's first day looking for Flynn.",
+      "Party debates next steps: report to Magical Crimes Convox for the bounty, escalate to Inquisitors about the Thessian invasion, keep the heart as a secret base, or steal its power. They load up the cars and prepare to leave.",
+      "Out-of-character, the group theorizes that all twelve organizations in the campaign (Host, Judge, Pulse, Eternity, Archive, etc.) may correspond to Thessians — Thessian v. Thessian — and that the lighthouse cracking Færrin open may have allowed these gods entry."
+    ],
+    "characters_present": [
+      "Arctos",
+      "Johnny Skyfall",
+      "Anzu",
+      "Benny",
+      "Tywelwyn Leatherhide (dead)",
+      "The Heart / 'Iron Gauntlet in a Glass Glove'",
+      "Red (via chess piece)",
+      "Werebear Roundhat",
+      "Croc-like Roundhat",
+      "Two Bat-like Roundhats",
+      "Grayson (mentioned)",
+      "Detective Brooks (mentioned)",
+      "Argyle (dead, gear recovered)"
+    ],
+    "locations": [
+      "Tywelwyn's Fane (beneath Gas-n-Go gas station)",
+      "Heptagonal antechamber with seven god-doors",
+      "Throne room (Tywelwyn's burnt-out husk)",
+      "Armory (behind Herald door)",
+      "Tywelwyn's office (behind War door)",
+      "Bedroom (behind Pyre door)",
+      "Radar dish factory / pilgrimage prep (behind Giant door)",
+      "Haberdashery (behind Esoterica door)",
+      "Orrery (behind Regent door)",
+      "Gas-n-Go garage (combat with reinforcements)",
+      "Hallia (city)",
+      "Sableclutch",
+      "Teller's Run",
+      "Gryphon Line Distribution Center",
+      "Abandoned mining settlement (pilgrimage destination, mentioned)"
+    ],
+    "factions": [
+      "Roundhat Gang",
+      "Iridescent Church",
+      "Embercall Industries",
+      "Magical Crimes Convox",
+      "Inquisitors",
+      "The Scale",
+      "Ratatouille (were-creature members of Roundhats)"
+    ],
+    "items": [
+      "Symbol of Conflict (pendant)",
+      "Medic's Armband",
+      "Ring of Observation",
+      "Ring of Discretion",
+      "Sleeves of Storage (large black robe)",
+      "Elite Disguise Kit",
+      "Fine tailored suit/clothing",
+      "Invitation to the Pilgrimage (blue paper)",
+      "Vial of Quicksilver",
+      "Pantograph (autoscribe device)",
+      "Eight identical capes",
+      "Tywelwyn's antlers",
+      "Recovered party gear (Argyle's gold, shield, axe, grappling gun, etc.)",
+      "100 gold pieces (untraceable coins)",
+      "Three cars total (G-Wagon, minivan, original car)",
+      "Radar dish research notebooks",
+      "Business ledgers for multiple Hallia businesses"
+    ],
+    "cliffhanger": "The party loads three cars full of intelligence, loot, and Tywelwyn's papers, debating whether to report to the Magical Crimes Convox, the Inquisitors, or both — while holding a blue invitation to 'the pilgrimage' at an abandoned mining settlement a week from now, and contemplating whether to keep the heart as a secret base or destroy it."
+  }
+}

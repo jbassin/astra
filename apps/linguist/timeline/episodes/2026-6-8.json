@@ -1,0 +1,78 @@
+{
+  "date": "2026-6-8",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Hearts and Minds: The Tithe Summit",
+    "synopsis": "Emerging from the void portal with the Voidheart and a Hand of the Void abomination, the party and their Scale allies destroy the hand-monster before Silven Grayson can claim its corpse. They then raid the crumbling Garrick Textiles Fane, kill its heart 'Whirling in Rags,' and return home to invest heavily in base upgrades — purchasing a Siphon Array and donating a trove of magic items. After a tense night checking on the unresponsive Protectorate, the party hosts a major alliance summit the next morning, negotiating a faction-merger plan with three smaller groups and establishing a shared strategy for surviving the tithe cycle over the Strider's 4.5-month journey.",
+    "key_beats": [
+      "The party emerges from the void portal with the Voidheart and the Hand of the Void (an eldritch hand-abomination). Combat begins when Ralph of the Scale throws a spear at it, discovering it is vulnerable to holy damage.",
+      "Multi-party combat against the Hand of the Void: Lance snipes it, Ichel blasts it, Grayson casts Vampiric Exsanguination, Benny double-slices it, Johnny misses with his silver spell, and Ralph finishes it off. Grayson nearly uses a scroll on the corpse but Argyle uses Bone Shaker to hurl the body into the void first.",
+      "The party drives to Garrick Textiles' crumbling Fane to loot it. They find the heart 'Whirling in Rags' (a bolt of fabric with a face). After debating claiming vs. killing, Johnny distracts it while Benny plucks the core thread — gaining a small ball of yarn worth 10 energy. The Fane collapses and they escape with Garrick's fabric-laden truck.",
+      "Back at their Fane (Iconoclasm), they absorb Whirling in Rags' core (energy to 90). Anzu examines the Voidheart: it is out-of-tune magic that dampens magical energy around it. They feed half the Voidheart (gaining 20 energy, opening a path toward magic-negation upgrades).",
+      "They purchase the Siphon Array base upgrade (40 energy), granting +2 energy per item sacrificed going forward. A spire with gyroscopic rings appears atop their Fane. They then donate numerous magic items — pickled demon tongue, gingerbread house, crushing rune, choker of elocution, symbol of conflict, barghest fur, Ki-Rin blood, fortifying pebble — bringing total energy to ~154.",
+      "Protectorate doesn't respond to the alliance meeting invite. The party cancels the meeting and drives across the Strider to check on them. A guard confirms Yao and Tamara are fine but not accepting visitors. They drop off Bishop, Lance, and Ichel and rest for the night.",
+      "Morning debrief meeting: allies gather in person and via skein (Prime Meridian and Protectorate call in). Johnny delivers a shaky briefing (low diplomacy roll); several factions sense the party is withholding information. Mr. Flock of Alkahest Freight reveals the tithe is a shared ~400-point pool split among all factions — as factions fall, everyone's tithe increases. The Strider moves 1 voidward per 6 seconds; ~4.5 months / 15 tithe cycles to reach the wall.",
+      "Major alliance negotiation: Argyle proposes merging with smaller factions (Solari Sub-surface, Alkahest Freight, Radiant Arms) to pool energy and protect vulnerable groups. Salvado is desperate and agrees; Y'shael agrees for Radiant Arms. The party agrees to pay the tithe-offset increase for Prime Meridian and Hildebrandt to keep them on side. Protectorate declines to merge but wants the freed territory. Kadou of Outcast offers to build a magic-item detector if they find a map of Joker Worlds. Paavo of Hildebrandt volunteers to scout ahead of the Strider.",
+      "The party plans to harvest Solari Sub-surface's and Alkahest Freight's hearts for ~25 energy total, give the territory to Protectorate, and establish Radiant Arms' heart as a forward base — but no one volunteers a map."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Benny",
+      "Johnny",
+      "Anzu",
+      "Bishop (The Scale)",
+      "Lance (The Scale)",
+      "Ralph (The Scale)",
+      "Ichel (Radiant Arms)",
+      "Silven Grayson",
+      "Erie (party's heart)",
+      "Whirling in Rags (Garrick Textiles' heart)",
+      "Yao (Protectorate)",
+      "Tamara (Protectorate)",
+      "Salvado (Solari Sub-surface)",
+      "Tas (Prime Meridian)",
+      "Paavo (Hildebrandt)",
+      "Kadou (Outcast)",
+      "Mr. Flock (Alkahest Freight)",
+      "Y'shael (Radiant Arms)"
+    ],
+    "locations": [
+      "The gala ballroom (portal site)",
+      "Garrick Textiles' Fane",
+      "Iconoclasm (party's Fane on the Strider)",
+      "Protectorate's compound",
+      "The Strider (voidward territory)"
+    ],
+    "factions": [
+      "Iconoclasm (party)",
+      "The Scale",
+      "Amber Call",
+      "Garrick Textiles",
+      "Radiant Arms",
+      "Prime Meridian",
+      "The Protectorate",
+      "Solari Sub-surface",
+      "Alkahest Freight",
+      "Hildebrandt",
+      "Outcast"
+    ],
+    "items": [
+      "Voidheart",
+      "Hand of the Void (core)",
+      "Whirling in Rags (heart core, worth 10 energy)",
+      "Siphon Array (base upgrade)",
+      "Pickled Demon Tongue",
+      "Gingerbread House",
+      "Crushing Rune",
+      "Choker of Elocution",
+      "Symbol of Conflict",
+      "Barghest Fur",
+      "Ki-Rin Blood",
+      "Fortifying Pebble",
+      "Mythotoxin (x2)",
+      "Anti-magic shackles and gag",
+      "Garrick Textiles' truck of fabric"
+    ],
+    "cliffhanger": "The alliance has agreed to merge with Radiant Arms, Solari Sub-surface, and Alkahest Freight — harvesting the latter two hearts for ~25 energy and ceding their territory to the Protectorate — but no one has volunteered a map of known Joker Worlds, which Kadou needs to build the magic-item detector. The party also still holds two anti-magic shackles unidentified, and the Mythotoxin is being saved for Grayson."
+  }
+}

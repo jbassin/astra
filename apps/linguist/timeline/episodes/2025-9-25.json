@@ -1,0 +1,52 @@
+{
+  "date": "2025-9-25",
+  "show": "fae-and-forest",
+  "summary": {
+    "title": "The Gloaming Codex: Cops in the Book",
+    "synopsis": "The magical-crimes Convox follows fey stone leads to a jeweler's conference and then to the apartment of a mysterious black-raiment-wearing figure, where they discover a corpse being transmuted into fey stone via a ritual from a book called the Gloaming Codex. When a crime scene investigator places a fey stone sliver on the book, the entire party is pulled into the book's pages, where they must fight for their lives against carnivorous ink and cursed thoughts before stepping through a stairway into the void.",
+    "key_beats": [
+      "The Convox detectives (Cedric, Krod, Andros) attend the Crystal's Rock jeweler's conference in the Glasswater district of Hallia, seeking information about fey stone connected to the Lyric Burke curse case.",
+      "Cedric disguises himself as a wealthy buyer and schmoozes jewelers, while Andros interrogates vendors about their origins and Krod approaches a sketchy dealer who reveals rumors of a blood ritual to manufacture fey stone.",
+      "Cedric connects with Amos Guren of Guren and Guren, a high-end jeweler who has acquired a fey stone necklace for 45,000 gp; Amos reveals a mysterious gauze-wrapped figure in a black raiment approached him on the street and sold him the raw stone for 20,000 gp.",
+      "Following leads about black-raiment sightings, the detectives track the suspect to the Gullet, a poorer district, and find the apartment building where he lived.",
+      "They break into apartment 2B and discover a dead body wrapped in gauze, suspended mid-air in a ritual circle, with a leg transmuting into fey stone that continues growing even after removal.",
+      "The detectives confiscate the severed fey-stone leg (worth roughly half a million gold), the Gloaming Codex book, and a vial of red ritual liquid; they stake out the apartment for two days but the killer never returns.",
+      "Neighboring tenants confirm the victim 'Anthony' was a reclusive human who wore black raiments and brought home magical items.",
+      "The detectives call HQ to process the crime scene; an investigator places a fey stone sliver on the Gloaming Codex, activating the book and pulling the entire party — including the investigator — into its pages.",
+      "Inside the book, the party battles carnivorous ink creatures and cursed thoughts (bat-like torso entities); Krod is nearly killed multiple times but survives via mythic abilities and healing from Andros.",
+      "After defeating the creatures with Cedric's AoE spells (Disintegrate, Chain Lightning, Quickened Fireball), a stairway appears leading into the void, and the party chooses to step through."
+    ],
+    "characters_present": [
+      "Cedric",
+      "Krod Snodman",
+      "Andros Anthropos",
+      "Amos Guren",
+      "Mickey Iron Roots (absent but mentioned)"
+    ],
+    "locations": [
+      "Glasswater District, Hallia",
+      "Crystal's Rock Jeweler's Conference",
+      "Guren and Guren Jewelry Office",
+      "Crystal Random Jewelers",
+      "The Gullet District",
+      "Anthony's Apartment (2B)",
+      "The Gloaming Codex (inside the book)"
+    ],
+    "factions": [
+      "Iridescent Church Convox",
+      "Guren and Guren Jewelers",
+      "Crystal Random Jewelers",
+      "Black Raiment Cult"
+    ],
+    "items": [
+      "Fey Stone Necklace (evidence)",
+      "Fey stone leg (confiscated from crime scene, worth ~500,000 gp)",
+      "Gloaming Codex (ritual book)",
+      "Vial of red ritual liquid",
+      "Bedazzled non-functional gold shotgun",
+      "Faith Tattoo",
+      "Healer's Gloves"
+    ],
+    "cliffhanger": "The detectives, having survived the combat, choose to step through the stairway into the void beyond — leaving their home plane behind. Cedric's plan to use Banishment to escape is foiled by the spell's rules."
+  }
+}

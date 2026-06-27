@@ -1,0 +1,61 @@
+{
+  "date": "2025-11-18",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Manor of the Pulse: Whiskers, Grayson, and the Great Escape",
+    "synopsis": "The party slays two giant serpents deep beneath Hallia and presses onward into a Fane — an impossible underground plain of red lightning and grass centered on a Victorian manor. Mistaken for expected guests of 'Master Grayson,' they explore the undead-staffed house and uncover a hidden study containing the corpse of Mr. Whiskers, a lichdom ritual circle, and Grayson's journal detailing psyche-manipulation experiments and a falling-out with an unnamed 'deer' ally. They grab the evidence and narrowly escape before Grayson returns.",
+    "key_beats": [
+      "Mike recaps: party descended into sewers, found slaughtered priests, followed a blood trail by boat down a river, survived a waterfall and dumbwaiter descent, and encountered hostile serpents deep underground.",
+      "Combat with two giant serpents — Anzu casts Phantom Pain and amped Telekinetic Rend; Johnny buffs with Courageous Anthem and Soothe; Argyle uses Glimpse of Redemption and risky surgery; Benny delivers the killing blow with a crit pick strike (36 damage) and heals by drinking the serpent's blood via 'Drink of My Foes.'",
+      "Party loots the serpents for snakeskin and poisonous algae, Argyle treats wounds, and the party levels up to Level 3.",
+      "Following the path deeper, the party passes through a magical barrier into a Fane — an area controlled by a heart. They emerge onto an impossible underground grassy plain with red lightning storm clouds overhead.",
+      "They find a Victorian-style manor. A religion check reveals the red lightning is the divine presence of the Pulse, outer god of doctors and necromancers. Anzu uses Resonance to unlock the front door.",
+      "A skeleton majordomo named Asane invites them in, believing they are expected guests of 'Master Grayson.' The house is staffed by ghost maids, a ghost butler (Salo Murn), and a ghoul footman (Syrin). The party explores the smoking room, billiard room, parlor, dining room, kitchen (where humanoid meat is drying), and greenhouse.",
+      "A society check reveals the Grayson family founded and operates Amber Call, a premium health insurance company in Calaria known for retrieving injured clients from dangerous situations — implicating necromantic practices.",
+      "After extensive searching (poor perception rolls plague the party), a critical crafting check reveals a gap in the manor's floor plan. Anzu identifies the master bedroom wall as hollow; behind a painting of Grayson, they find a secret door.",
+      "Inside a hidden two-story private study: a runic circle gouged into the floor filled with dried blood, the bisected corpse of Mr. Whiskers (the catfolk resistance leader they sought), alchemical components including 200gp of Raise Dead gems, and Grayson's journal.",
+      "Anzu's occultism check identifies the ritual circle as a variant lichdom ritual that extracts residual life force from corpses rather than living creatures. The journal documents Grayson's experiments on replacing motivation centers in the psyche while preserving personality.",
+      "The journal's final entries: Grayson suspects 'that idiot deer' (possibly Tywelwyn) is two-timing by setting up radar dishes despite promises; and that inquisitors were sniffing around 'base B,' so Grayson planned to pack up and relocate. The party grabs all evidence and flees.",
+      "Through a series of remarkably lucky d100 rolls, the party escapes the manor, sprints through the cavern, rides the elevator back up, climbs the ladder, and emerges from the sewers into the rain of Widdershins without Grayson returning. They drive to the Aurideon to find Detective Brooks."
+    ],
+    "characters_present": [
+      "Benny",
+      "Argyle",
+      "Anzu",
+      "Johnny Skyfall",
+      "Asane (skeleton majordomo)",
+      "Syrin (ghoul footman)",
+      "Salo Murn (ghost butler)",
+      "Master Grayson (depicted/absent)",
+      "Mr. Whiskers (corpse)"
+    ],
+    "locations": [
+      "The Quiet Below (underground caverns beneath Hallia/Calia)",
+      "Serpent clearing (base of waterfall)",
+      "The Fane (underground grassy plain with artificial red-lightning storm)",
+      "Grayson's Manor (foyer, smoking room, billiard room, parlor, dining room, kitchen, greenhouse, master bedroom, office, hidden private study)",
+      "Widdershins, Hallia (surface)",
+      "The Aurideon / Rook's Crossing"
+    ],
+    "factions": [
+      "Amber Call",
+      "Embercall",
+      "The Zorbon / Resistance",
+      "Belvedere",
+      "The Iridescent Church (Inquisitors)",
+      "The Pulse (Outer God)"
+    ],
+    "items": [
+      "Mythotoxin",
+      "Oil of Unlife",
+      "Snakeskin (decorative shield + poncho material)",
+      "Grayson's Journal (Moleskine)",
+      "Necromantic theory books",
+      "Gems worth 200gp (Raise Dead components)",
+      "Strange red translucent greenhouse fruit",
+      "Decorative shield",
+      "Looted lute"
+    ],
+    "cliffhanger": "The party arrives at the Aurideon (Magical Crimes Convox) to deliver the journal and evidence to Detective Brooks — but with Grayson's note that 'inquisitors were sniffing around base B' and plans to relocate, it's unclear whether Brooks or the operation has already been compromised. The basement of Grayson's manor also remains unexplored."
+  }
+}

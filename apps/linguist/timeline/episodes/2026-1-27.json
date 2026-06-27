@@ -1,0 +1,56 @@
+{
+  "date": "2026-1-27",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Trial by Fire: The Pilgrimage Begins",
+    "synopsis": "The party arrives at a mysterious pilgrimage gathering hosted by a gangly, masked figure atop a massive strider called 'The Providence.' The host announces a game: 20 keystones hidden around Hallia, each granting passage aboard the strider to the Void Side Wall in six months. The party enters a gladiatorial trial in an abandoned train yard, facing fire-attuned Barbazu and a Brimorak devil in a brutal, near-total-party-wipe combat. After barely surviving, they earn three questions and learn that Keystone 14 is held by the Heart 'Rapid Connection,' and the person most likely to lead them to it is Archmechanic Hogan Voss Darkmoor.",
+    "key_beats": [
+      "The party arrives at a parking complex near a half-abandoned town where a pilgrimage event is being held. Arctos spots ~250 vehicles bearing logos of major Hallia organizations including Prime Meridian, Concordia, Hildebrandt Corporation, Hollowpact, Velvet Mark, and Mask Makers.",
+      "The party presents their forged invitations to two harlequin attendants and selects plain white masks — Arctos a dragon, Benny a gorilla, Johnny a Thenar theater mask (with sunglasses over it), Anzu a blank mask with eye dots.",
+      "The party enters the main street, which is filled with an eclectic mix of armed muscle, loners, and partygoers. Attractions include a fortune teller booth, a rainbow prism contraption, a painter with mannequins, a dice/poker area, and two paths marked with a fairy ring and crossed swords respectively.",
+      "A tall, gangly, non-humanoid figure appears atop the partially-constructed strider 'The Providence' and announces a pilgrimage to the Void Side Wall. He reveals 20 cerulean keystones have been hidden in and around Hallia; each keystone entitles its bearer to bring one vehicle and its contents aboard the strider in six months.",
+      "The party splits up: Arctos and Anzu wait in the fortune teller line (where Arctos offends a Host follower by awkwardly bringing up Raelion), while Johnny and Benny go to the crossed-swords path — a gladiatorial arena in an abandoned train yard.",
+      "Three mercenaries ahead of the party in the combat line are slaughtered by devil creatures (Barbazu and a Brimorak). The harlequin spins a color wheel landing on red, summoning two Barbazu (fire-attuned, glaive-wielding, bearded devils) and a Brimorak (fireball-casting devil) for the party's fight.",
+      "A grueling, near-party-wipe combat unfolds. The Barbazu's reach and Reactive Strike make healing extremely difficult; Infernal Wounds cause persistent bleed on multiple party members. Johnny, Benny, and Anzu all go down multiple times. Arctos is the only member who never falls unconscious, spending the fight juggling heals and positioning.",
+      "Benny turns the tide with devastating pick attacks — first killing the Brimorak with a 48-damage crit from prone, then finishing the final Barbazu with a 63-damage double slice, also from prone.",
+      "After narrowly surviving persistent bleed damage in the aftermath (with Anzu and Benny both at Wounded 2), the party is led to a room where a harlequin grants them three questions about the keystones.",
+      "The party learns: Keystone 14 is closest to the Sin and Tonic (Iconoclasm's HQ); it is held by the Heart 'Rapid Connection'; and the person most likely to lead them to it is Archmechanic Hogan Voss Darkmoor. The harlequin then vanishes through a trapdoor.",
+      "The party debates whether to return to the still-active party for more hints or pursue the Darkmoor lead. The session ends before a decision is made."
+    ],
+    "characters_present": [
+      "Arctos",
+      "Anzu",
+      "Johnny Skyfall",
+      "Benny",
+      "The Gangly Figure (Pilgrimage Host)",
+      "Harlequins",
+      "Archmechanic Hogan Voss Darkmoor (named only)"
+    ],
+    "locations": [
+      "The pilgrimage town (half-abandoned, revitalized)",
+      "The parking complex / entry area",
+      "The main street (party venue)",
+      "The train yard (gladiatorial combat arena)",
+      "The strider 'Providence' (under construction)",
+      "The foreman's office (question room)"
+    ],
+    "factions": [
+      "Prime Meridian",
+      "Concordia",
+      "Hildebrandt Corporation",
+      "Hollowpact",
+      "Velvet Mark",
+      "Mask Makers",
+      "Heart Rapid Connection",
+      "The Harlequins / The Pilgrimage Host"
+    ],
+    "items": [
+      "Keystones (20 total, cerulean gems)",
+      "Golden box (held by the Host)",
+      "Plain white animal masks",
+      "Healing potions",
+      "Portable hole trunk (carried over)"
+    ],
+    "cliffhanger": "The party debates whether to return to the still-active party to gather additional keystone hints before it ends, or to set off in pursuit of Archmechanic Hogan Voss Darkmoor and the Heart Rapid Connection's keystone."
+  }
+}

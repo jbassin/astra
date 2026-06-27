@@ -1,0 +1,61 @@
+{
+  "date": "2025-12-2",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Rainbow's End: The Fall at the Crowded Flea",
+    "synopsis": "The party reports their discovery of Grayson's necromantic activities to Detective Brooks, who refuses to investigate due to Grayson's political power, and learns about the fearsome Inquisition. They resupply and then stake out the Crowded Flea to pursue the bounty on Tywelwyn Leatherhide, ultimately ambushing the Roundhat Gang's were-creature members in a back room. Despite a strong opening, catastrophic dice luck leads to a near-total party kill — only Anzu Koreshi escapes alive.",
+    "key_beats": [
+      "The party reports to Detective Brooks at the Magical Crimes Convoy, presenting Grayson's journal. Brooks reveals Grayson heads Amber Call and sits on Calaria's ruling council — he refuses to investigate, telling them to stay focused on the Tywelwyn bounty and optionally drop the journal with the Inquisition.",
+      "The party learns about the Inquisition: the Iridescent Church's militant arm whose members are magically compelled to never abandon a lead and physically cannot break the law, operating under Church law rather than Calarian law.",
+      "The party converts stolen gems into 200 gold at Ledger, Ledger, and Light bank, then visits Smiler at the Undertable to purchase gear: a crushing rune for Benny, Pendant of the Occult for Anzu, a Fortress Shield and Battle Axe for Argyle, and Glasses of Sociability enchantment for Johnny.",
+      "Back at the Sin and Tonic, Anouk affixes the harvested snake skin to Argyle's Fortress Shield, granting it a minor reinforcing rune (hardness 9).",
+      "The party drives to the Crowded Flea, the Roundhat Gang's bar in Sableclutch, and stakes it out from the roof of a neighboring Bait-and-Tackle shop. They observe ~8 gang members entering and note all have bestial were-creature qualities.",
+      "After waiting until 3 AM for civilians to clear out, the party moves to the Crowded Flea's roof, lowers themselves to peer through the back room window, and spots Hlarf (a half-Giant) and several were-creature gang members.",
+      "Johnny casts the mythic spell Rainbow's End on three enemies, then the party teleports into the back room. Anzu insults Hlarf so viciously he bursts into flames (Blistering Invective), and Benny immediately caves in a boar-like Roundhat's skull.",
+      "Combat turns disastrously as the GM rolls an extraordinary number of natural 20s. The were-creatures' curse abilities (Curse of the Wereboar, Curse of the Werecrocodile) add to the danger. Benny goes down first, then Argyle, then Johnny.",
+      "Argyle stabilizes by spending mythic points but remains unconscious. Johnny uses his last mythic point to cast Rainbow's End out a window and tells Anzu to flee, placing his Glasses of Sociability on Anzu's head.",
+      "Anzu escapes through the window and flees down the pier. Johnny, Argyle, and Benny all fail their death saves and die — Argyle and Benny finished off by Hlarf's attacks. The session ends with Josh telling the players they don't need to roll new characters.",
+      "factions",
+      "items",
+      "cliffhanger"
+    ],
+    "characters_present": [
+      "Johnny Skyfall",
+      "Anzu Koreshi",
+      "Argyle",
+      "Benny",
+      "Detective Brooks",
+      "Hlarf",
+      "Anouk",
+      "Roundhat Gang members (boar-like, rat-like, crocodile-like)"
+    ],
+    "locations": [
+      "Rook's Crossing (Magical Crimes Convoy)",
+      "Ledger, Ledger, and Light (bank)",
+      "Sin and Tonic (clubhouse)",
+      "The Crowded Flea (Roundhat Gang bar, Sableclutch)",
+      "Sableclutch dockyard"
+    ],
+    "factions": [
+      "Roundhat Gang",
+      "Amber Call",
+      "Magical Crimes Convoy",
+      "Iridescent Church / The Inquisition",
+      "Calaria Council"
+    ],
+    "items": [
+      "Grayson's Journal",
+      "Stolen gems (converted to 200 gold)",
+      "Crushing Rune",
+      "Pendant of the Occult",
+      "Fortress Shield (with snake skin reinforcement)",
+      "Battle Axe",
+      "Glasses of Sociability",
+      "Spell Scroll of Soothe",
+      "Lesser Healing Potions",
+      "Mythotoxin",
+      "Oil of Unlife"
+    ],
+    "cliffhanger": "Three of the four party members are dead at the hands of the Roundhat Gang's were-creatures. Anzu Koreshi is the sole survivor, fleeing down a pier in the rain. Josh tells the players they don't need to roll new characters — implying the were-creature curse or some other force may have plans for the fallen heroes' bodies."
+  }
+}

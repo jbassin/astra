@@ -1,0 +1,62 @@
+{
+  "date": "2026-2-3",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Scavenger Hunt: Fairies, Fortunes, and a Vane in the Neck",
+    "synopsis": "The party continues the keystone scavenger hunt at the pilgrimage celebration, tackling a fairy ring Venn-diagram puzzle, a tarot fortune reading, a dice gambling game, and a seven-color prism potion challenge — gathering critical clues about Keystones 14 and 15 and retrieving a mysterious sulfur-scented key. They then drive back to Hallia and pursue two leads: visiting Minister Valerius Vane's estate (finding him absent at an emergency council meeting) and researching at the Belvedere library, where they learn about Archmechanics and discover one of Arctos' artists is patronized by the Vane family.",
+    "key_beats": [
+      "Anzu resonates passing the fighting pit line, noting bodyguards don't resonate; a gnome-elf pair lingers on his gaze when he mentions the Vocalist.",
+      "Party surveys remaining attractions: prism potion challenge, broken mannequins (closed), fortune teller tent, fairy ring alley, and dice table.",
+      "Fairy ring puzzle: three-circle Venn diagram requiring items placed in intersections connecting participants. Scroll of Invisibility (Johnny-Anzu), Belvedere notebook (Anzu-Benny), drawn Oth symbol (Johnny-Benny), and Argyle's business card (center) solve it; the poncho failed because it left the holder's possession. Clue: Keystone 14's holder is a collector of fine art — paintings (oil or acrylic on canvas).",
+      "Fortune teller reads a tarot spread about the end of the world: The Fool (past/unrealized potential), World Tree inverted (betrayal), The Hooded Man (death/unknown), The Forest (competition, one winner). Sulfur and copper scent emanates from the deck. Second clue confirms Keystone 14 holder wants paintings.",
+      "Encounter with Tamara McKay (elf) and a gnome companion — Protectorate members from Brithwyn. They share they're pursuing Keystone 8 and decline an alliance, citing their organization's needs.",
+      "Party splits: Johnny and Benny hit the dice table (50 gold buy-in gambling game). Johnny crits a distraction backflip (performance 35); Benny cheats to flip his d4 to a 4. Benny wins 16–13, netting 100 gold and a clue: Keystone 15's holder wants a relic of the Iridescent Church (reliquary or holy book).",
+      "Anzu and Arctos tackle the prism potion puzzle — a seven-color wall challenge requiring correct potion order. Using poem clues and two Arcana confirmations, Anzu drinks potions in the right sequence, passes through all seven walls unharmed, and retrieves a mysterious key. Clue: 'Second among equals Thistle Monroe' can knowingly lead them to Keystone 15.",
+      "Party drives 8 hours back to Sin and Tonic, arriving 8 AM. Anaïs and Anouk still haven't returned. Johnny contacts Red about Sable & Sons arms dealer Lark Crowe in Deosil, and mentions the laser guns from the street gang.",
+      "Party drives to Minister Valerius Vane's estate in the Aurideon. Arctos gets lost (crit fail), church police escort them to the estate. Majordomo Crowley Hart receives them; Vane is away at an emergency council meeting (possibly called by Grayson to get ahead of the compromising book).",
+      "In Vane's reading room, they spot a panorama of the Aurideon with the Pharos painted over — raised texture where the concrete edifice would be. The home notably has no Heart.",
+      "Party gets guest passes to the Belvedere library (Anzu and Bennix are members). Anzu researches Archmechanics — high-ranking Prime Meridian officials who coordinate Hearts for city transportation. Also discovers one of Arctos' bedroom artists is a Vane family-patronized artist, via a newspaper clipping."
+    ],
+    "characters_present": [
+      "Arctos",
+      "Anzu Koreshi",
+      "Johnny Skyfall",
+      "Benny (Bennix Plasmadio)",
+      "Crowley Hart (majordomo)",
+      "Tamara McKay",
+      "Tamara's gnome companion",
+      "Red (chess piece contact)",
+      "Harlequins (multiple)"
+    ],
+    "locations": [
+      "The Pilgrimage Party (near the Strider)",
+      "Fairy Ring Alley (reclaimed parking lot)",
+      "Fortune Teller Tent",
+      "Prism Potion Booth",
+      "Dice Gambling Table",
+      "Sin and Tonic",
+      "Aurideon (Vane Estate)",
+      "Belvedere Library (edge of Masque District)"
+    ],
+    "factions": [
+      "Prime Meridian",
+      "Belvedere",
+      "Iconoclasm",
+      "Protectorate",
+      "Iridescent Church",
+      "Sable & Suns",
+      "Vane Family",
+      "Amber Call"
+    ],
+    "items": [
+      "Mystery prism key (copper alloy, patinaed, smells of sulfur and copper)",
+      "Robot masks (party favors, kept)",
+      "Scroll of Invisibility",
+      "Argyle's business card",
+      "Sable & Sons member pin",
+      "Belvedere library guest passes",
+      "Oth's three-circle symbol (eaten by Arctos)"
+    ],
+    "cliffhanger": "The party is mid-research at the Belvedere library, having just discovered that one of Arctos' bedroom artists is patronized by the Vane family, while Vane himself is away at an emergency council meeting possibly called by Grayson to get ahead of the compromising book. They still need to learn about Thistle Monroe and how to acquire a suitable painting and a church relic."
+  }
+}

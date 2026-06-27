@@ -51,7 +51,7 @@ class EpisodeSummary(BaseModel):
 
 
 class Season(BaseModel):
-    """One GLM-derived narrative arc within a show."""
+    """One narrative arc within a show (the committed shape; episodes filled in)."""
 
     number: int
     title: str
@@ -59,10 +59,18 @@ class Season(BaseModel):
     episode_dates: list[str]
 
 
-class SeasonStructure(BaseModel):
-    """GLM's season assignment for a single show (the grouping-call output)."""
+class SeasonBoundary(BaseModel):
+    """A GLM-proposed season start — kept tiny so the grouping call never truncates."""
 
-    seasons: list[Season]
+    title: str = Field(description="A short evocative season title.")
+    arc_summary: str = Field(description="A 1-2 sentence summary of this season's arc.")
+    start_date: str = Field(description="The exact `date=` of the FIRST episode of this season.")
+
+
+class SeasonPlan(BaseModel):
+    """GLM's season assignment for one show, as ordered boundaries (the call output)."""
+
+    seasons: list[SeasonBoundary]
 
 
 # ── committed artifacts ────────────────────────────────────────────────────

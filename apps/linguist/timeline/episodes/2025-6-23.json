@@ -1,0 +1,60 @@
+{
+  "date": "2025-6-23",
+  "show": "a-hunt-of-metal-and-vine",
+  "summary": {
+    "title": "The Voice of Many",
+    "synopsis": "The party continues their assault on the fiend-held tower, killing Sigil's Enforcer and the Fixer in a brutal fight, then investigates the Quorum — discovering it's a fiend installation built atop a bloodfall portal. Sensing two divine auras (one of Sigzil, one eerily reminiscent of the Judge), they descend through the bloodfall into a surreal maze of cubicles and fiend scribes, ultimately finding Voice of Many — a trapped divine heart, child of Sigzil and grandchild of the Judge — and fighting a desperate ten-round defense to free it and escape back to the Scale's headquarters.",
+    "key_beats": [
+      "Session opens mid-combat against Sigil's Enforcer and fiend swarms in the Quorum; the party gangs up on the prone, enfeebled Enforcer",
+      "The Reverend crit-kills the Enforcer; the Fixer emerges from a blood pool and immediately Fireballs the party",
+      "Gregor is downed by hurled debris; Seer Cliff revives him with Doctor's Visitation Battle Medicine",
+      "The Fixer is killed mid-spell by a flurry of reactive strikes; his bloody-death explosion triggers another Fireball on his position",
+      "The party clears remaining imps and investigates the Quorum, discovering it's a fiend-built installation, not a Scale facility",
+      "The Reverend senses two divine auras emanating from beyond the bloodfall: Sigzil's and another reminiscent of the Judge",
+      "The Reverend pulls the lever stopping the bloodfall; a wrought-metal message asks if they would descend to save a lost soul; they agree and rest",
+      "Passing through the bloodfall portal, they navigate a maze-like hallway complex and sneak through a cubicle room where rancorous priests type alternate-history fan fiction about the Scale",
+      "They reach Voice of Many's chamber — a stone-and-vine tadpole entity floating in an amber egg; it reveals itself as a child of Sigzil (who is himself a child of the Judge) and begs for freedom",
+      "The party destroys the binding runes after deliberately breaking alarm stones to delay reinforcements, triggering a prolonged multi-wave defense battle",
+      "The Keeper of Chains, a skull-faced general, bursts in and nearly kills Voice of Many with Finger of Death, but the Reverend's reaction and Cliff's constant healing keep the entity alive",
+      "Voice of Many completes its minute-long teleportation, the energy burst kills remaining fiends and ejects the Keeper of Chains, and the party is teleported safely back to the Scale's training headquarters"
+    ],
+    "characters_present": [
+      "Seer Cliff Vant-or-Trip of the Order of the Ever-Chain",
+      "Gregor Tobon",
+      "The Reverend / Manuel de la Cruzada",
+      "Zangren",
+      "Sigil's Enforcer",
+      "The Fixer",
+      "Flintlock Toboggan",
+      "Voice of Many",
+      "Keeper of Chains",
+      "Farrow Cross (mentioned)"
+    ],
+    "locations": [
+      "The Quorum (fiend meeting hall)",
+      "The bloodfall portal",
+      "The maze-like hallway complex",
+      "The cubicle room (bureaucratic office of rancorous priests)",
+      "Voice of Many's chamber (rune circle with eight Protectorate statues)",
+      "The Scale's headquarters training area (Færrin Prime)"
+    ],
+    "factions": [
+      "The Scale",
+      "The Judge",
+      "Sigzil's fiend forces",
+      "The Host",
+      "The Protectorate"
+    ],
+    "items": [
+      "Alarm stones (river rocks with red runes)",
+      "Typewritten fan-fiction pages about the Scale",
+      "Flaming Greataxe (dropped by vitriolite)",
+      "Holy weapons (greataxe, warflail, guisarme)",
+      "Everlight Crystal",
+      "The egg-like cradle holding Voice of Many",
+      "Runes and Protectorate statues in Voice of Many's chamber",
+      "Potions of healing and holy steam balls"
+    ],
+    "cliffhanger": "Voice of Many teleports the party back to the Scale's training headquarters on Færrin Prime, but the Keeper of Chains survived the final energy burst and was only blown out of the room — and Sigzil the Shackled Prince himself never appeared. Flintlock Toboggan also remains imprisoned in the fiend structure, awaiting a Scale retrieval team."
+  }
+}
