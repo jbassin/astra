@@ -75,3 +75,31 @@ this is how to apply debate to one):
   already said "The Jurisdiction of Vibes" (an earlier A/B `publish` ran without rendering audio) while the
   live script+audio were still calm "Sandwich Yoink Bonus". A snapshot title ≠ proof of a render; verify
   `durationMs`/`audioVersion` + the on-disk mp3 size.
+
+**LONGER EPISODES = CHUNKED PASS B (2026-06-26, `867eee7`+`4e0000f`).** GLM debates were stuck ~15 min; pushing
+the prompt longer **hung for 46 min**. **Root cause: Pass B (structured typeset tool call) is the scaling
+bottleneck, NOT Pass A.** Pass A (`call_text`, free-text debate) is fast — **57s for ~6.7k words**, clean stop,
+negligible reasoning. Pass B (`call_tool`, the dressing typesetter) trying to emit a 6k+ word transcript as ONE
+structured tool call hangs/stalls. Fix in `script.py` `generate_two_pass`: split Pass A into word-bounded
+**SEGMENTS** (`_split_transcript`, `PASS_B_CHUNK_WORDS=2200`, break only on line/turn boundaries), one Pass B
+call per segment, concatenate turns, **title from the first segment**. A transcript ≤ chunk size stays a single
+call (behaviour + tests unchanged). Re-rendered 2026-6-22 → **"Rust, Numerology, and the Sea Shanty Below"**,
+266 turns / ~5.6k words / **34.1 min**. Supporting changes:
+- **`astra_llm.client REQUEST_TIMEOUT_S=300`** (per-attempt `litellm.completion(timeout=…)`): there was NO
+  client-side timeout, so a stalled provider socket hung indefinitely. Now a hang fails fast and `num_retries`
+  rides real blips. Generous enough for a full Pass A; **Python `signal.alarm` can't interrupt a blocked C
+  socket read — only the httpx/litellm `timeout=` works.**
+- Bounded length prompt (floor + hard ceiling + "wrap up and stop", `build_improv_system_prompt`) + raised
+  `DISTILL_SYSTEM_PROMPT` beat granularity (~18-25; produced 24). GLM overshoots word caps (asked ≤6k, got
+  6.7k) — chunking absorbs it.
+- **Orphan-kill:** a stuck in-container `dagster asset materialize` runs as **root** → unkillable from host as
+  uid 1000 (`kill` silently denied); **`docker compose restart dagster-code`** clears it and PRESERVES the
+  injected env (restart ≠ recreate, so no MOCK-TTS trap). The hung run cost only **~$0.15** (retry-sleep, not
+  token-runaway).
+- **⚠️ THE auto-publish timer RACE:** the host `linguist-commit` systemd timer (every 15 min) runs
+  `mouthpiece-publish` + commit + push + `mouthpiece-seed` + redeploy mouthpiece-frontend on ANY snapshot
+  change ([[pipeline-live-run-gotchas]]). It RACED the manual re-render: once `script.json` was placed it
+  published the new title+transcript with the **stale (pre-render) durationMs** + redeployed with old audio
+  (the mid-session `chore(mouthpiece): auto-publish` commits). Mitigation: finish the render, THEN
+  re-publish/seed/redeploy to correct duration+audio (or stop the timer during a manual re-render). A
+  `chore: auto-publish` commit you didn't make = the timer.

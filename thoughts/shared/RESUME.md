@@ -36,10 +36,34 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `fd48ea4`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `4e0000f`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack**, not migration slices.
+
+### Longer debate episodes via chunked Pass B (2026-06-26 session — DONE + LIVE)
+
+The GLM debate episodes were stuck ~15 min; making them longer first **hung for 46 min**. Root cause: **Pass B
+(structured typeset) is the scaling bottleneck, not Pass A.** Pass A (free-text debate) is fast (~57s for 6.7k
+words); Pass B trying to emit a 6k+ word transcript as ONE tool call hangs. Fixed + re-rendered 2026-6-22 as
+**"Rust, Numerology, and the Sea Shanty Below"** (266 turns / ~5.6k words, **34.1 min** real ElevenLabs
+`mode=dialogue`, was 15.6). Memory `[[mouthpiece-glm-debate-switch]]`. Two code commits + the render:
+- **`867eee7`** `feat: chunk Pass B typesetting`: `script.py` typesets Pass A in word-bounded SEGMENTS
+  (`_split_transcript` + `PASS_B_CHUNK_WORDS=2200`), concatenates turns (title from first segment); short
+  transcripts stay a single call (unchanged). Plus `astra_llm.client REQUEST_TIMEOUT_S=300` per-attempt (a hang
+  → fast fail; there was NO client timeout before) and a bounded length prompt + raised digest beats (~18-25 →
+  produced 24). 85 mouthpiece tests (+3 chunking).
+- **`4e0000f`** `feat: render the 34-min chunked debate`: snapshot durationMs/audioVersion + audio volume +
+  frontend all updated; live-verified (SSR title + 266 transcript rows + audio Range 206 @ 32.78 MB). debate-v1
+  preserved as `*.debate1.bak`.
+- **Gotchas (in the memory):** a stuck in-container `dagster asset materialize` is **root-owned → unkillable
+  from the host as uid 1000**; `docker compose restart dagster-code` clears the orphan (preserves env).
+  `signal.alarm` can't interrupt a blocked C socket read (litellm `timeout=`/httpx can). The 46-min hang cost
+  only **~$0.15** (hung in retry sleeps, not token-runaway). **THE auto-publish timer race:** the
+  `linguist-commit` timer (15 min) runs `mouthpiece-publish` + commit + seed + redeploy on any snapshot change,
+  and raced our manual re-render — it committed the new title+transcript with the STALE (pre-render) duration +
+  redeployed with old audio (the `chore(mouthpiece): auto-publish` commits `2269276`/`66ab7de`). Finish the
+  render, then re-publish/seed/redeploy to correct it (or disable the timer during a manual re-render).
 
 ### Re-rendered the most recent mouthpiece episode as a GLM debate (2026-06-26 session — DONE + LIVE)
 
