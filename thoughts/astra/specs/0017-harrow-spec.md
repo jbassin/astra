@@ -1,10 +1,11 @@
 # NLSpec 0017 — harrow (the tarot deck reader)
 
-**Status:** **BUILT — all 6 slices DONE + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE** (`1aa0c81`(s1)…
-`a2c9a5e`(s6), 2026-06-26). Healthy on 10369; `/` (client-only draw), `/gallery`, `/spreads`,
-`/spreads/history` all SSR 200; `service.name=astra.harrow` SSR spans land in SigNoz (0 errors). Both
-parity gates green (deck golden + 29 predicate labels). Full gothic re-skin; deck hues via identityStyle.
-**Spec-sanctioned deferral:** the `harrow.iridi.cc` DNS record + `just caddy-reload` (outward-facing). Minor
+**Status:** **DONE — all 6 slices BUILT + PUSHED + LIVE ON THE PUBLIC EDGE** (`1aa0c81`(s1)…`a2c9a5e`(s6)
++ edge cutover `4b3ad33`, 2026-06-26). Serving on **`https://harrow.iridi.cc`** (host takeover — DNS
+pre-existed from the old deploy); `/` (client-only draw), `/gallery`, `/spreads`, `/spreads/history` all
+SSR 200; `service.name=astra.harrow` SSR spans land in SigNoz (0 errors). Both parity gates green (deck
+golden + 29 predicate labels). Full gothic re-skin; deck hues via identityStyle. **Only open item:** the
+old standalone deploy's container still runs unrouted on `localhost:10204` (teardown awaiting go-ahead). Minor
 in-build regrouping: `/spreads` + `/spreads/history` landed in slice 5 (grouped by the FlipCard dependency),
 not slice 4 — no scope cut. Gotchas in [[harrow-0017-gotchas]]. Net-new post-cutover product work (the
 faerrin→astra migration is COMPLETE per [[astra-migration-research]]); this reused the 0011–0013 frontend

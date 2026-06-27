@@ -36,18 +36,18 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `a2c9a5e`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `4b3ad33`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack** + bringing **net-new external apps** into astra via the frontend playbook,
 > not migration slices.
 
-### harrow (0017) — ported the external tarot reader into astra (2026-06-26 session — DONE + LIVE-LOCAL)
+### harrow (0017) — ported the external tarot reader into astra (2026-06-26 session — DONE + LIVE ON PUBLIC EDGE)
 
 Brought the standalone app at `/ruby/data/experiments/tarot` ("Harrow", a React 18 + Vite 5 SPA tarot deck
 reader) into astra as a **backend-less SSR frontend on the strider template** — a sibling of strider. **All 6
-slices built + pushed + deployed-local + verified live** (`1aa0c81`…`a2c9a5e`); healthy on **10369**,
-`service.name=astra.harrow` SSR spans in SigNoz (0 errors). Scope `thoughts/shared/research/2026-06-26-harrow-0017-thoughts.md`,
+slices built + pushed + deployed + LIVE on `harrow.iridi.cc`** (`1aa0c81`…`a2c9a5e` + edge cutover
+`4b3ad33`); healthy on **10369**, `service.name=astra.harrow` SSR spans in SigNoz (0 errors). Scope `thoughts/shared/research/2026-06-26-harrow-0017-thoughts.md`,
 spec `thoughts/astra/specs/0017-harrow-spec.md`, memory [[harrow-0017-gotchas]]. Decisions: full gothic
 re-skin; `harrow`/`harrow.iridi.cc`; build-time generated content; client-side draw/flip; views→routes; no
 backend/DB/volume; deck hues via gothic identityStyle; deck + 29-predicate-label parity gates.
@@ -63,8 +63,13 @@ backend/DB/volume; deck hues via gothic identityStyle; deck + 29-predicate-label
   `/spreads/history`; FlipCard (native `<button>`), CardSpread, useCardReveal, predicate-named shimmer title.
 - **s6 deploy** (`a2c9a5e`): Dockerfile (simplest — no snapshot/volume) + the 8-sibling manifest ripple;
   Compose `harrow`@10369; Caddy `harrow.iridi.cc`; `docker compose build/up` + live-verified + SigNoz spans.
-- **Deferred (sanctioned):** `harrow.iridi.cc` DNS + `just caddy-reload` (outward-facing); decommission of the
-  old standalone `tarot` deploy (`reg.iridi.cc/tarot` + saffron container + `upload.sh`) post-go-live.
+- **Edge cutover** (`4b3ad33`): `harrow.iridi.cc` was a **host takeover** (the old deploy owned it → DNS
+  already existed). Removed the old stanza (→`localhost:10204`) from the shared `/ruby/data/reverse-proxy/Caddyfile`
+  (backed up), `just caddy-validate` + `caddy-reload`; **live-verified `https://harrow.iridi.cc`** serves the
+  migrated app (all routes 200). Duplicate-site conflict avoided (parent imports astra's sites.caddyfile).
+- **Leftover (open, not blocking):** the **old harrow container still runs unrouted on `localhost:10204`**
+  (saffron `/emerald/data/experiments`, image `reg.iridi.cc/tarot`) — the deferred old-deploy teardown
+  (stop/remove container + image + `upload.sh`). Awaiting user go-ahead.
 
 ### Longer debate episodes via chunked Pass B (2026-06-26 session — DONE + LIVE)
 

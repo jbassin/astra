@@ -5,14 +5,15 @@ metadata:
   type: project
 ---
 
-PROJECT 2026-06-26 — **0017 harrow COMPLETE: all 6 slices BUILT + PUSHED + DEPLOYED-LOCAL + VERIFIED LIVE**
-(`1aa0c81`(s1)…`a2c9a5e`(s6)). Ported the external app at `/ruby/data/experiments/tarot` (a React 18 +
-Vite 5 SPA tarot deck reader, page-title "Harrow") into astra as a **backend-less SSR frontend on the
-strider template** — a sibling of strider, NOT a read-surface. Net-new post-cutover product work (the
-faerrin migration is done; this reused the 0011–0013 playbook). Live on **port 10369**, `service.name=astra.harrow`
-in SigNoz (0 errors, SSR spans for `/`, `/gallery`, `/spreads`, `/spreads/history`). Scope/spec:
-`thoughts/shared/research/2026-06-26-harrow-0017-thoughts.md`, `thoughts/astra/specs/0017-harrow-spec.md`.
-Builds on [[migration-guide]] + [[strider-0016-gotchas]].
+PROJECT 2026-06-26 — **0017 harrow COMPLETE + LIVE ON THE PUBLIC EDGE** (`1aa0c81`(s1)…`a2c9a5e`(s6) +
+edge cutover `4b3ad33`). Ported the external app at `/ruby/data/experiments/tarot` (a React 18 + Vite 5 SPA
+tarot deck reader, page-title "Harrow") into astra as a **backend-less SSR frontend on the strider
+template** — a sibling of strider, NOT a read-surface. Net-new post-cutover product work (the faerrin
+migration is done; this reused the 0011–0013 playbook). Live on **port 10369** / **`harrow.iridi.cc`**,
+`service.name=astra.harrow` in SigNoz (0 errors, SSR spans for `/`, `/gallery`, `/spreads`,
+`/spreads/history`). Scope/spec: `thoughts/shared/research/2026-06-26-harrow-0017-thoughts.md`,
+`thoughts/astra/specs/0017-harrow-spec.md`. Builds on [[migration-guide]] + [[strider-0016-gotchas]] +
+[[akasha-session-audio-dependency]] (the edge-decommission pattern).
 
 **Decisions:** full gothic re-skin (A); app name `harrow` on `harrow.iridi.cc` (B — bare name like strider,
 no `-frontend` suffix since no backend); build-time generated content (C); client-side draw/flip (D);
@@ -74,3 +75,17 @@ deck + predicate parity gates (I); Safari flip fix applied (J).
 
 10. **Verifying the live SSR HTML: `grep -a`.** The SSR output has UTF-8 glyphs (✦, em-dash) → grep treats
     it as binary and silently prints nothing without `-a` (false "marker absent"). Cost me a confused minute.
+
+11. **Edge cutover = a host TAKEOVER, not a new host (`4b3ad33`).** The old standalone harrow already owned
+    `harrow.iridi.cc` (parent reverse-proxy → `localhost:10204`), so DNS already existed — the spec's
+    "deferred DNS" note was moot; the go-live was a pure proxy-config swap. **THE conflict:** the shared
+    `/ruby/data/reverse-proxy/Caddyfile` *imports* astra's `sites.caddyfile` (which already defines
+    `harrow.iridi.cc` → 10369), so the old parent stanza made it **defined twice** → a duplicate-site error.
+    Fix = remove the old parent block (backed up to `Caddyfile.bak-harrow-<date>` first), then `just
+    caddy-validate` (validates the MERGED edge so `import astra_site`/`local_only` snippets resolve — a
+    fragment-only validate fails) → confirm `harrow.iridi.cc` appears **once** in the cert-subjects list →
+    `just caddy-reload` (zero-downtime). Live-verified `https://harrow.iridi.cc` serves the migrated app
+    (SSR title + gothic gallery, all routes 200). The proxy + astra stack are co-located on saffron, so
+    `reverse_proxy localhost:10369` reaches the container. **LEFTOVER (not done):** the old harrow container
+    is still running unrouted on `localhost:10204` (saffron `/emerald/data/experiments`, image
+    `reg.iridi.cc/tarot`) — the deferred old-deploy teardown.
