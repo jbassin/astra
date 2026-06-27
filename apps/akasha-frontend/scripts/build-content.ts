@@ -34,6 +34,7 @@ import {
   type SiteData,
   type SiteDoc,
 } from "../src/domain/lib/site";
+import { simplifySlug } from "../src/domain/lib/slug";
 import { loadSnapshot, type Snapshot } from "../src/domain/lib/snapshot";
 import {
   buildContentIndex,
@@ -49,6 +50,7 @@ const PUBLIC_DIR = path.resolve(HERE, "../public");
 const SNAPSHOT = path.resolve(HERE, "../../akasha-backend/snapshot/akasha-snapshot.json");
 const CORPUS_DIR = path.resolve(HERE, "../../akasha-backend/content");
 const DATA_DIR = path.resolve(HERE, "../../linguist/data");
+const TIMELINE_DIR = path.resolve(HERE, "../../linguist/timeline");
 // Explicit being.kdl path: loadBeing()'s default uses Bun's import.meta.dir (undefined
 // under vitest, which runs build-content.test.ts); import.meta.url works in both.
 const BEING = path.resolve(HERE, "../../../ontology/ontology-being/being.kdl");
@@ -276,6 +278,141 @@ function emitStatic(site: SiteData, meta: SiteMeta): string {
   return `static: index.xml, sitemap.xml, static/contentIndex.json @ ${meta.baseUrl}`;
 }
 
+// ── chronicle (0019): the Show → Season → Episode campaign timeline ──────────
+// Reads linguist's committed timeline artifacts (the GLM-5.2 episode summaries +
+// season grouping) and emits a single typed module the /chronicle routes import.
+// Each episode links to its existing transcript page (by date). Degrades to an empty
+// SHOWS list when the artifacts aren't present yet (e.g. a fresh checkout pre-backfill).
+interface RawEpisodeSummary {
+  title: string;
+  synopsis: string;
+  key_beats: string[];
+  characters_present: string[];
+  locations: string[];
+  factions: string[];
+  items: string[];
+  cliffhanger: string;
+}
+interface RawEpisodeEntry {
+  date: string;
+  show: string;
+  summary: RawEpisodeSummary;
+}
+interface RawSeason {
+  number: number;
+  title: string;
+  arc_summary: string;
+  episode_dates: string[];
+}
+interface RawShowChronicle {
+  show: string;
+  name: string;
+  is_main: boolean;
+  seasons: RawSeason[];
+}
+interface RawChronicle {
+  shows: RawShowChronicle[];
+}
+
+const CHRONICLE_TYPES = [
+  "export interface ChronicleEpisode {",
+  "  date: string;",
+  "  episodeNumber: number;",
+  "  title: string;",
+  "  synopsis: string;",
+  "  keyBeats: string[];",
+  "  charactersPresent: string[];",
+  "  locations: string[];",
+  "  factions: string[];",
+  "  items: string[];",
+  "  cliffhanger: string;",
+  "  href: string | null;",
+  "}",
+  "",
+  "export interface ChronicleSeason {",
+  "  number: number;",
+  "  title: string;",
+  "  arcSummary: string;",
+  "  episodes: ChronicleEpisode[];",
+  "}",
+  "",
+  "export interface ChronicleShow {",
+  "  show: string;",
+  "  name: string;",
+  "  isMain: boolean;",
+  "  seasonCount: number;",
+  "  episodeCount: number;",
+  "  seasons: ChronicleSeason[];",
+  "}",
+];
+
+/** Build the /chronicle data module from linguist's timeline artifacts. */
+function emitChronicle(hrefByDate: Map<string, string>): string {
+  const seasonsPath = path.join(TIMELINE_DIR, "seasons.json");
+  const episodesDir = path.join(TIMELINE_DIR, "episodes");
+
+  const chronicle: RawChronicle = fs.existsSync(seasonsPath)
+    ? JSON.parse(fs.readFileSync(seasonsPath, "utf8"))
+    : { shows: [] };
+
+  const byDate = new Map<string, RawEpisodeEntry>();
+  if (fs.existsSync(episodesDir)) {
+    for (const f of fs.readdirSync(episodesDir)) {
+      if (!f.endsWith(".json")) continue;
+      const entry: RawEpisodeEntry = JSON.parse(fs.readFileSync(path.join(episodesDir, f), "utf8"));
+      byDate.set(entry.date, entry);
+    }
+  }
+
+  const shows = chronicle.shows.map((sh) => {
+    let episodeCount = 0;
+    const seasons = sh.seasons.map((se) => {
+      const episodes = se.episode_dates.map((date, i) => {
+        const s = byDate.get(date)?.summary;
+        episodeCount += 1;
+        return {
+          date,
+          episodeNumber: i + 1,
+          title: s?.title ?? date,
+          synopsis: s?.synopsis ?? "",
+          keyBeats: s?.key_beats ?? [],
+          charactersPresent: s?.characters_present ?? [],
+          locations: s?.locations ?? [],
+          factions: s?.factions ?? [],
+          items: s?.items ?? [],
+          cliffhanger: s?.cliffhanger ?? "",
+          href: hrefByDate.get(date) ?? null,
+        };
+      });
+      return { number: se.number, title: se.title, arcSummary: se.arc_summary, episodes };
+    });
+    return {
+      show: sh.show,
+      name: sh.name,
+      isMain: sh.is_main,
+      seasonCount: sh.seasons.length,
+      episodeCount,
+      seasons,
+    };
+  });
+
+  emitModule(
+    OUT_DIR,
+    "chronicle.ts",
+    [
+      "/** The campaign chronicle (0019): Show → Season → Episode, structured by GLM-5.2",
+      " *  in linguist and read here at build time. Episodes link to transcript pages. */",
+      "",
+      ...CHRONICLE_TYPES,
+      "",
+      `export const SHOWS: ChronicleShow[] = ${JSON.stringify(shows, null, 2)};`,
+      "",
+    ].join("\n"),
+  );
+  const eps = shows.reduce((n, s) => n + s.episodeCount, 0);
+  return `chronicle: ${shows.length} shows, ${eps} episodes`;
+}
+
 const siteSource = defineContentSource({
   name: "site",
   build() {
@@ -291,12 +428,18 @@ const siteSource = defineContentSource({
     // @astra/config's Bun-only default path resolution).
     const baseUrl = loadSiteConfig().akashaFrontend.publicOrigin.replace(/\/$/, "");
     const meta: SiteMeta = { title: SITE_TITLE, baseUrl };
+    // Episode → transcript-page href, keyed by session date (the transcript doc's
+    // title IS its date), formed the same way as the static endpoints (N2).
+    const hrefByDate = new Map(
+      transcripts.docs.map((d) => [d.title, `/${encodeURI(simplifySlug(d.slug))}`]),
+    );
     const moduleSummary = emitGeneratedModule(site);
     const bodiesSummary = emitBodies(site, snapshot, transcriptSlugs);
     const transcriptSummary = emitTranscriptBodies(transcripts.bodies);
     const speakersSummary = emitSpeakers(being);
     const staticSummary = emitStatic(site, meta);
-    return `${moduleSummary} (+${transcripts.docs.length} transcripts)\n  ${bodiesSummary}\n  ${transcriptSummary}\n  ${speakersSummary}\n  ${staticSummary}`;
+    const chronicleSummary = emitChronicle(hrefByDate);
+    return `${moduleSummary} (+${transcripts.docs.length} transcripts)\n  ${bodiesSummary}\n  ${transcriptSummary}\n  ${speakersSummary}\n  ${staticSummary}\n  ${chronicleSummary}`;
   },
 });
 

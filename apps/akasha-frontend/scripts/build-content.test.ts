@@ -35,6 +35,18 @@ describe("build-content", () => {
     expect(out).toContain("data-vellum-export");
   });
 
+  it("emits the chronicle module (Show → Season → Episode) with the main show first", () => {
+    const chronicle = path.resolve(HERE, "../src/generated/chronicle.ts");
+    expect(existsSync(chronicle)).toBe(true);
+    const out = readFileSync(chronicle, "utf8");
+    expect(out).toContain("export const SHOWS");
+    expect(out).toContain("export interface ChronicleEpisode");
+    // The backfilled timeline puts the main campaign first with its episodes linked.
+    expect(out).toContain('"show": "through-a-song-darkly"');
+    expect(out).toContain('"isMain": true');
+    expect(out).toContain('"href": "/Script/');
+  });
+
   it("emits the static endpoints into public/ at the faerrin paths (N2)", () => {
     expect(existsSync(path.join(PUBLIC, "index.xml"))).toBe(true);
     expect(existsSync(path.join(PUBLIC, "sitemap.xml"))).toBe(true);
