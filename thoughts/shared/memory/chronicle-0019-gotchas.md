@@ -58,4 +58,31 @@ in `thoughts/shared/research/2026-06-27-akasha-chronicle-0019-thoughts.md` +
   never commits/redeploys akasha ([[pipeline-live-run-gotchas]]). akasha rebuilds content at
   build time → `just up` akasha-frontend; no Caddy/edge change (in-app route, same host).
 
+**Post-launch review follow-ups (same day):**
+- **Mislabeled session exclusion:** 2025-8-11 ("The Blue Remains") is a *different
+  campaign with the same players* that `match_campaign` false-matched to TSD (the word
+  "Argyle" appears 96× — the substring heuristic can't tell). Fix = `EXCLUDED_DATES`
+  frozenset in `chronicle.py` (`show_for_date`→None), the episode asset skips
+  unmatched/excluded dates, and `build_chronicle` drops episodes whose show isn't a real
+  show. The GM curates this set by hand. *(Note: the dagster-code image bakes linguist
+  code, so the exclusion only reaches the live pipeline on a `docker compose build
+  dagster-code` — fine here since 2025-8-11's partition won't re-materialize.)*
+- **The linguist-commit timer auto-commits mid-dev:** while I was editing, the systemd
+  timer fired and committed+pushed my regenerated `timeline/` data (deletion + new
+  seasons.json) + auto-redeployed akasha with the NEW data but OLD frontend code. So
+  after a frontend change you MUST commit the code and redeploy yourself; don't assume
+  the timer's redeploy used your latest code. (Working great — it's the S7 wiring — just
+  be aware it races you.)
+- **Nested episode pages:** show page = compact cards (title + synopsis blurb) →
+  `/chronicle/$show/$episode` detail page (beats/entities/cliffhanger/transcript link).
+  Routes are a directory: `routes/chronicle/$show/{index,$episode}.tsx`.
+- **Graph opt-out:** `PageLayout` gained `graph?: boolean`; chronicle passes `false` and
+  the body collapses to two columns via `#quartz-body.no-right`.
+- **Explorer nesting:** inject a synthetic subtree into `EXPLORER_TREE` (build-content
+  `chronicleTree`); `TreeNode` gained an optional pre-resolved `href` (Explorer uses
+  `node.href ?? resolveRelative`) so absolute `/chronicle/...` links coexist with wiki
+  nodes. Episode tree slugs nest under their season (`…/s<N>/<date>`) and the episode
+  route's loader `slug` matches, so `computeOpen`'s prefix-match auto-opens the current
+  episode's folders and highlights the leaf active.
+
 Builds on [[akasha-frontend-0011-gotchas]] + [[config-single-source]] + [[telemetry-built-in]].
