@@ -87,6 +87,35 @@
         "vitest": "^3.0.0",
       },
     },
+    "apps/ledger": {
+      "name": "@astra/ledger",
+      "version": "0.0.0",
+      "dependencies": {
+        "@astra/config": "workspace:*",
+        "@astra/content-build": "workspace:*",
+        "@astra/gothic": "workspace:*",
+        "@astra/observe": "workspace:*",
+        "@astra/site-kit": "workspace:*",
+        "@fontsource/ibm-plex-mono": "^5.2.7",
+        "@opentelemetry/api": "^1.9.1",
+        "@tanstack/react-router": "^1.170.7",
+        "@tanstack/react-start": "^1.168.10",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+      },
+      "devDependencies": {
+        "@tailwindcss/vite": "^4.1.13",
+        "@testing-library/dom": "^10.4.0",
+        "@testing-library/react": "^16.3.2",
+        "@types/react": "^19.0.0",
+        "@types/react-dom": "^19.0.0",
+        "@vitejs/plugin-react": "^4.4.0",
+        "jsdom": "^26.0.0",
+        "tailwindcss": "^4.1.13",
+        "vite": "^6.3.6",
+        "vitest": "^3.0.0",
+      },
+    },
     "apps/mouthpiece-frontend": {
       "name": "@astra/mouthpiece-frontend",
       "version": "0.0.0",
@@ -415,6 +444,8 @@
     "@astra/gothic": ["@astra/gothic@workspace:libs/ts/gothic"],
 
     "@astra/harrow": ["@astra/harrow@workspace:apps/harrow"],
+
+    "@astra/ledger": ["@astra/ledger@workspace:apps/ledger"],
 
     "@astra/mouthpiece-frontend": ["@astra/mouthpiece-frontend@workspace:apps/mouthpiece-frontend"],
 
