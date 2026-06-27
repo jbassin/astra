@@ -69,6 +69,10 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body data-slug={slug} suppressHydrationWarning>
+        {/* The astra signature backdrop — a CSS-only animated nebula (NOT pixi:
+            akasha already runs a WebGL force-graph, and a second pixi Application
+            conflicts). Decorative, fixed behind all content. */}
+        <div className="site-backdrop" aria-hidden="true" />
         <Outlet />
         <Scripts />
       </body>
