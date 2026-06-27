@@ -1,6 +1,8 @@
 # 0019 — chronicle (akasha campaign timeline) — NLSpec
 
-- **Status:** draft (gate 2 of 3) — ready for `octo:embrace`
+- **Status:** COMPLETE (2026-06-27) — all 7 slices built, CI-green, pushed; backfilled
+  44 sessions (7 shows, 15 seasons) + LIVE on `akasha.iridi.cc/chronicle`. Gotchas captured
+  in `thoughts/shared/memory/chronicle-0019-gotchas.md`.
 - **Scope doc:** `thoughts/shared/research/2026-06-27-akasha-chronicle-0019-thoughts.md` (verified)
 - **Date:** 2026-06-27
 - **Subsystem slug:** `chronicle`
