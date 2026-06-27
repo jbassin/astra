@@ -86,6 +86,15 @@ mouthpiece.iridi.cc {
 	reverse_proxy localhost:10366
 }
 
+# harrow — the tarot deck reader (0017), a backend-less SSR frontend on the strider
+# template (Decision I). Read-only (no editor); self-serves gothic's fonts from the
+# container. Compose publishes host port 10369. (Needs a harrow.iridi.cc DNS record —
+# manual, deferred like strider/akasha/mouthpiece/orator/weal-overlay.)
+harrow.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10369
+}
+
 # vellum-frontend — the document-forge editor (0013), the fourth SSR frontend on the
 # strider/akasha template. Two upstreams (D2, mirroring faerrin's old vellum block):
 # /render + /health proxy to the vellum-render service (the PNG render sidecar), so the
