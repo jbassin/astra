@@ -7,38 +7,23 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Blue Remains",
-          "arc_summary": "The Foragers journey to the fort settlement of Palomar to consult a priest of Slumber about a mysterious blue knot phenomenon, battling gargoyles along the way and uncovering hints that the deity Slumber was trapped and drained by the Tynans centuries ago.",
-          "episode_dates": [
-            "2025-8-11"
-          ]
-        },
-        {
-          "number": 2,
-          "title": "Delivery Boys",
-          "arc_summary": "A new party in the city of Hallia takes courier jobs and investigation work, encountering flesh-monster Ugathul disguised as police and uncovering a conspiracy involving radar dishes, the Pyrelight gang, and illegal augury — eventually becoming official consultants for the Magical Crimes Convox.",
+          "title": "Odd Jobs and Hidden Badges",
+          "arc_summary": "The party takes mercenary courier work, uncovers an Oogathal conspiracy posing as Blackline cops, becomes Magical Crimes Convox consultants, and descends into the sewers to discover Grayson's necromantic manor beneath the city.",
           "episode_dates": [
             "2025-8-28",
             "2025-10-20",
             "2025-10-27",
-            "2025-11-4"
-          ]
-        },
-        {
-          "number": 3,
-          "title": "The Manor of the Pulse",
-          "arc_summary": "The party descends into Hallia's sewers to find a slaughtered resistance group, follows the trail underground to a necromantic Fane ruled by Master Grayson, and then attempts to ambush the Roundhat Gang at the Crowded Flea — resulting in a devastating total party kill that claims the lives of Argyle, Benny, and Johnny.",
-          "episode_dates": [
+            "2025-11-4",
             "2025-11-11",
-            "2025-11-18",
-            "2025-12-2"
+            "2025-11-18"
           ]
         },
         {
-          "number": 4,
-          "title": "The Black and White",
-          "arc_summary": "After the TPK, Johnny and Benny navigate the afterlife and return from death through the entity Aut; the reformed party kills Hlarf in revenge and assaults Tywelwyn Leatherhide's fiery Fane, uncovering a cosmic conspiracy of six gods attempting to crack the Firmament via a network of radar dishes spread across Hallia.",
+          "number": 2,
+          "title": "Through the Black and White",
+          "arc_summary": "A catastrophic TPK at the Crowded Flea sends three party members through death and back via the Black and White entity Aut; the reformed party hunts down Hlarf and Tywelwyn, uncovering a six-god conspiracy to crack the firmament via radar dishes.",
           "episode_dates": [
+            "2025-12-2",
             "2025-12-9",
             "2025-12-16",
             "2025-12-23",
@@ -47,9 +32,9 @@
           ]
         },
         {
-          "number": 5,
+          "number": 3,
           "title": "The Pilgrimage",
-          "arc_summary": "The party rescues Anaïs and learns about the cosmic Narrative, then attends a mysterious Pilgrimage at Ragged Roost where they survive a gladiatorial trial, solve a scavenger hunt, assassinate a babaw demon, and trade a stolen painting to a transit Heart for a keystone securing passage aboard a colossal Strider.",
+          "arc_summary": "The cosmic Narrative of Aut and Renge is revealed when Anaïs is rescued; the party attends a mysterious pilgrimage gathering at Ragged Roost, competes in a gladiatorial trial and keystone scavenger hunt, and claims their first lodestone through art theft, diplomacy, and blood.",
           "episode_dates": [
             "2026-1-13",
             "2026-1-20",
@@ -61,9 +46,9 @@
           ]
         },
         {
-          "number": 6,
-          "title": "The Firmament Fracture",
-          "arc_summary": "Argyle partially returns from death as the party enters extended downtime, then explores the sewers beneath Teller's Run — discovering a fracture in reality itself, an imprisoned two-mile-tall deity, and a vast conspiracy funded by Grayson and the Prime Minister to shatter the Firmament, which the party bombs before fleeing.",
+          "number": 4,
+          "title": "Cracks in the Firmament",
+          "arc_summary": "Argyle returns from the dead as only half a man; after six months of downtime the party investigates Teller's Run's sewers, discovers a hairline fracture in reality with an imprisoned deity behind it, and bombs the research compound exploiting it.",
           "episode_dates": [
             "2026-3-9",
             "2026-3-16",
@@ -73,9 +58,9 @@
           ]
         },
         {
-          "number": 7,
-          "title": "Aboard the Strider",
-          "arc_summary": "The party embarks on the Strider pilgrimage, creates their own heart named Eerie, settles into life aboard the massive walking city, builds alliances with neighboring factions, survives the deadly weekly tithe of heart-energy, harvests weaker factions' hearts for defense, and begins exploring the Strider's dark Undercroft.",
+          "number": 5,
+          "title": "The Voidward Road",
+          "arc_summary": "The party embarks aboard the colossal Strider on a voidward pilgrimage, births their heart Eerie, navigates cutthroat faction politics among nineteen organizations, survives the deadly weekly tithe, and explores the mutated depths of the Undercroft.",
           "episode_dates": [
             "2026-5-7",
             "2026-5-11",
@@ -111,8 +96,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Descent into the Quorum",
-          "arc_summary": "A Scale-operative strike team arrives on a shattered Joker World to investigate a slip-shielded structure, pushing through fiend swarms and into the black-metal Quorum — a fiend-built installation hiding a bloodfall portal to a captured divine heart. They solve its puzzles, slaughter its defenders, descend through the bloodfall, and fight a desperate ten-round defense to free Voice of Many before teleporting to safety.",
+          "title": "The Quorum and the Voice of Many",
+          "arc_summary": "A Scale strike team ventures to a shattered Joker World to investigate a mysterious slip-shielded structure, fighting through fiend-held installations and ultimately rescuing a trapped divine heart — the Voice of Many — from the demon prince Sigzil's domain.",
           "episode_dates": [
             "2025-6-9",
             "2025-6-16",
@@ -129,7 +114,7 @@
         {
           "number": 1,
           "title": "The Verdant Expanse",
-          "arc_summary": "The Convox detectives travel to the logging town of Wrenford to investigate husk-murders linked to a missing commune member, then plunge into the mile-tall Verdant Expanse following a feystone necklace—battling forest predators, rescuing a lost child, and destroying a fey court that admits the prime suspect is already dead.",
+          "arc_summary": "The convox detectives travel to the logging town of Wrenford to investigate husk-murders linked to a mysterious visitor, then venture deep into the mile-tall Verdant Expanse following a feystone compass, rescuing a lost boy and battling a court of fey creatures before learning their prime suspect is already dead.",
           "episode_dates": [
             "2025-9-11",
             "2025-9-18"
@@ -138,7 +123,7 @@
         {
           "number": 2,
           "title": "The Gloaming Codex",
-          "arc_summary": "Returning to the city, the Convox follows feystone supply-chain leads to a jeweler's conference and a suspect's apartment, where they discover a ritual transmuting flesh into feystone via a book called the Gloaming Codex—and are pulled into its pages.",
+          "arc_summary": "Returning to Hallia as the curse claims more victims, the detectives follow fey stone leads to a jeweler's conference and a ritual apartment, where they discover the Gloaming Codex and are pulled into its pages to fight for their lives against carnivorous ink and cursed thoughts.",
           "episode_dates": [
             "2025-9-25"
           ]
@@ -168,7 +153,7 @@
         {
           "number": 1,
           "title": "The Everdawn Drift",
-          "arc_summary": "Sedecium agents Scrazzy, Foral, and Ozzie are sent to investigate an unpowered orbital station half-sunken in the slip, where they free a tortured ship AI, fight off slip-fiends, and uncover that the Thessian Esoterica (formerly Gremory) recently accessed observatory records of a massive magical spike near the Astra's core.",
+          "arc_summary": "Three Sedecium agents investigate an unpowered orbital station half-sunk in the slip, freeing a tortured ship AI and uncovering that the Thessian Gremory (now 'Esoterica') recently accessed the observatory's records of a massive magical spike near the Astra's core.",
           "episode_dates": [
             "2026-4-6"
           ]
@@ -176,7 +161,7 @@
         {
           "number": 2,
           "title": "One Last Job",
-          "arc_summary": "Pulled from retirement for a single high-stakes raid, the fire team descends through the Slip to the surface of the freshly-killed Thessian god Tithe, braving brood creatures, a time-acceleration slip puzzle, and a spider temple to plant a beacon and steal divine essence before the God Eater Harrow finishes devouring the planetoid.",
+          "arc_summary": "Pulled from retirement, the fire team of Foral, Scrazzy, and Ozzie raids the divine essence of the freshly-killed Thessian god Tithe, navigating Slip puzzles and spider temples to become the first and only team to successfully plant a beacon before the God Eater Harrow devours the remains.",
           "episode_dates": [
             "2026-4-27"
           ]
@@ -199,5 +184,5 @@
       ]
     }
   ],
-  "inputs_hash": "95544b44a59dbb6102fd6fde6cf2819370727641263fc1c13461e709648ba809"
+  "inputs_hash": "99e7b7ecafbf342001321b514702a2a1faf5c3e7a9478d588f679682c6bdd3fc"
 }
