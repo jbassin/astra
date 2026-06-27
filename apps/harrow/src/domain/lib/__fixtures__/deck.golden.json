@@ -1,0 +1,369 @@
+[
+  {
+    "id": "the-hierophant",
+    "name": "The Hierophant",
+    "number": "I",
+    "path": "M11 6A5 5 0 1 0 1 6a5 5 0 0 0 10 0zm-5 5V1M1 6h10",
+    "deck": "hierophant",
+    "tags": ["deck:hierophant", "element:wood", "flower:lily", "gem:topaz", "season:winter"],
+    "uprightMeaning": "tradition, lineage, wisdom",
+    "reversedMeaning": "broken lineage, hollow rite",
+    "fortuneText": {
+      "upright": "That which is handed down is older than the hand. The kneeling figure is not made small by kneeling. The room has held many before; it will hold many after.",
+      "reversed": "The rite is performed and nothing answers. The form remains; the spirit has departed. What was once living has become its own monument."
+    },
+    "flavor": "He keeps the keys. The doors keep him."
+  },
+  {
+    "id": "the-host",
+    "name": "The Host",
+    "number": "II",
+    "path": "M1 7.75a1.77 1.77 0 0 1 2.5 0 1.767 1.767 0 0 0 2.5 0 1.77 1.77 0 0 1 2.5 0 1.767 1.767 0 0 0 2.5 0M1 4.25a1.77 1.77 0 0 1 2.5 0 1.767 1.767 0 0 0 2.5 0 1.77 1.77 0 0 1 2.5 0 1.767 1.767 0 0 0 2.5 0",
+    "deck": "divine",
+    "tags": ["deck:divine", "element:earth", "flower:lily", "gem:diamond", "season:winter"],
+    "uprightMeaning": "legacy, monument, weight",
+    "reversedMeaning": "vanity, hollow legacy, theft",
+    "fortuneText": {
+      "upright": "What you have built is already older than you know. The carving is finished. Whether it lasts is not your question to answer.",
+      "reversed": "The name on the monument belongs to one who never lifted a stone. The stone does not lie. The historian will."
+    },
+    "flavor": "Names cut deep into stone. The hand that cut them is dust."
+  },
+  {
+    "id": "the-twin-suns",
+    "name": "The Twin Suns",
+    "number": "III",
+    "path": "M6 11a3.376 3.376 0 1 1 .002-6.751A3.376 3.376 0 0 1 6 11zm1.25-3.375a1.25 1.25 0 1 0-2.5 0c0 .692.559 1.25 1.25 1.25s1.25-.558 1.25-1.25zM4.214 2.563h3.572M5.107 1l1.786 3.125m0-3.125L5.107 4.125",
+    "deck": "divine",
+    "tags": ["deck:divine", "element:fire", "flower:violet", "gem:topaz", "season:summer"],
+    "uprightMeaning": "vitality, clarity, ascent",
+    "reversedMeaning": "shadowed light, refused warmth",
+    "fortuneText": {
+      "upright": "Two suns are in the sky and the day is wide enough for both. Nothing here has been hidden. Nothing here has been earned.",
+      "reversed": "The light has not gone. The figure has turned away from it. The sky keeps its part of the bargain regardless."
+    },
+    "flavor": "The child rides past the field. The horse does not stumble."
+  },
+  {
+    "id": "the-author",
+    "name": "The Author",
+    "number": "IV",
+    "path": "M8.083 8.5a2.084 2.084 0 0 0-4.166 0c0 1.149.933 2.084 2.083 2.084S8.083 9.649 8.083 8.5zM6.687 3.809l1.503-.234-1.079-1.073L7.354 1 6 1.695 4.646 1l.243 1.502-1.08 1.073 1.504.234L6 5.167zM1 8.5S3.5 6 6 6s5 2.5 5 2.5S8.5 11 6 11 1 8.5 1 8.5",
+    "deck": "aetheric",
+    "tags": ["deck:aetheric", "element:metal", "flower:orchid", "gem:amethyst", "season:autumn"],
+    "uprightMeaning": "binding, chosen weight",
+    "reversedMeaning": "loosening, open hand, release",
+    "fortuneText": {
+      "upright": "The chain has the temperature of the skin it has rested against. It has been there long enough to be unnoticed. It is still a chain.",
+      "reversed": "The link is open. Whether the wrist follows is a separate matter. Most chains outlast their use."
+    },
+    "flavor": "The chains are warm where the wrist has rested against them."
+  },
+  {
+    "id": "the-horizon",
+    "name": "The Horizon",
+    "number": "V",
+    "path": "M6.7 53.602c7.402 0 13.402-6 13.402-13.403 0-7.398-6-13.398-13.403-13.398M33.5 40.199a6.7 6.7 0 1 0-13.4.002 6.7 6.7 0 0 0 13.4-.002zm13.398 0a6.7 6.7 0 1 0-13.4.002 6.7 6.7 0 0 0 13.4-.002zm13.403 0a6.7 6.7 0 0 0-6.7-6.699 6.7 6.7 0 0 0-6.703 6.7 6.7 6.7 0 0 0 6.704 6.698 6.7 6.7 0 0 0 6.699-6.699zm13.398-13.398c-7.398 0-13.398 6-13.398 13.398 0 7.403 6 13.403 13.398 13.403",
+    "viewBox": 80.4,
+    "deck": "aetheric",
+    "tags": ["deck:aetheric", "element:air", "flower:orchid", "gem:sapphire", "season:spring"],
+    "uprightMeaning": "first step, threshold, beginning",
+    "reversedMeaning": "ungrounded leap, willful blindness",
+    "fortuneText": {
+      "upright": "The step has already been taken. The body has not yet caught up to it. What waits past the edge does not announce itself.",
+      "reversed": "The horizon retreats as fast as you walk. There is nothing in the distance you did not bring with you."
+    },
+    "flavor": "The cliff falls away. The sky does not."
+  },
+  {
+    "id": "the-compelled",
+    "name": "The Compelled",
+    "number": "VI",
+    "path": "M56.95 6.7v16.75c0 9.25-7.5 16.75-16.75 16.75s-16.75 7.5-16.75 16.75S30.95 73.7 40.2 73.7m33.5-50.25H56.95c-9.25 0-16.75 7.5-16.75 16.75s-7.5 16.75-16.75 16.75S6.7 49.45 6.7 40.2",
+    "viewBox": 80.4,
+    "deck": "divine",
+    "tags": ["deck:divine", "element:air", "flower:tulip", "gem:emerald", "season:spring"],
+    "uprightMeaning": "calling, alignment, purpose",
+    "reversedMeaning": "drift, abandoned post, refusal",
+    "fortuneText": {
+      "upright": "The path is older than the one who walks it. The stones remember the foot that fits them. The walking is the work.",
+      "reversed": "The road continues without him. The road does not require him. The absence is recorded the way every absence is recorded."
+    },
+    "flavor": "The footprints arrive at his feet. Each one fits."
+  },
+  {
+    "id": "the-jurist",
+    "name": "The Jurist",
+    "number": "VII",
+    "path": "M17.867 29.031h44.664M40.2 6.7v67M29.031 51.367 40.2 73.7l11.168-22.332",
+    "viewBox": 80.4,
+    "deck": "hierophant",
+    "tags": ["deck:hierophant", "element:metal", "flower:violet", "gem:diamond", "season:autumn"],
+    "uprightMeaning": "truth, balance, consequence",
+    "reversedMeaning": "false weight, dishonest scale",
+    "fortuneText": {
+      "upright": "The scale knows what the tongue does not. The weight is placed and the truth is found on its own. The sword waits for the verdict.",
+      "reversed": "The pan is loaded. The hand is hidden. The verdict will come, but the scale has already been taught what to say."
+    },
+    "flavor": "The sword is sharp. The scale is level. Neither has spoken yet."
+  },
+  {
+    "id": "the-judge",
+    "name": "The Judge",
+    "number": "VIII",
+    "path": "M2.5 6 1 9.25h3L2.5 6V2.5M6 1v10m-1.5 0h3M1.75 2.5h8.5m-.75 0V6L11 9.25H8L9.486 6",
+    "deck": "divine",
+    "tags": ["deck:divine", "element:metal", "flower:violet", "gem:diamond", "season:autumn"],
+    "uprightMeaning": "reckoning, accountability, balance",
+    "reversedMeaning": "tilted scale, false weight",
+    "fortuneText": {
+      "upright": "The verdict is older than the trial. The scale was level long before the weight was placed. What will be true was true already.",
+      "reversed": "A finger rests on the scale. The verdict was decided before the hearing. Every name on the bench knows it."
+    },
+    "flavor": "The ring stretches horizon to horizon. No side falls outside it."
+  },
+  {
+    "id": "the-watcher",
+    "name": "The Watcher",
+    "number": "IX",
+    "path": "M40.199219 73.699219v-33.5m-16.75 33.5h33.5m-50.2500002 0 67.0000002-67",
+    "viewBox": 80.4,
+    "deck": "divine",
+    "tags": ["deck:divine", "element:air", "flower:lily", "gem:diamond", "season:winter"],
+    "uprightMeaning": "observation, record, witness",
+    "reversedMeaning": "blindness, lost record, unseeing",
+    "fortuneText": {
+      "upright": "What is seen is preserved. What is preserved becomes the foundation of what is seen later. The line is unbroken until it is broken.",
+      "reversed": "The records have burned before. They are burning now. What will be remembered is what someone chooses to remember."
+    },
+    "flavor": "A thousand eyes fixed on the sky. None of them blink."
+  },
+  {
+    "id": "the-pulse",
+    "name": "The Pulse",
+    "number": "X",
+    "path": "M1 6 H3 L4 2 L5 10 L6 6 H8 L9 4 L10 6 H11",
+    "deck": "divine",
+    "tags": ["deck:divine", "element:water", "flower:lily", "gem:topaz", "season:winter"],
+    "uprightMeaning": "endurance, mending, vigil",
+    "reversedMeaning": "hollow prolonging, refused rest",
+    "fortuneText": {
+      "upright": "The pulse continues past the point where it should have stopped. The reason is at the bedside. The reason has not slept in days.",
+      "reversed": "The pulse is sustained by hands that should have let go. The body is no longer in the breath. The vigil has become the only thing remaining."
+    },
+    "flavor": "She has not slept in three days. The pulse is steady because of it."
+  },
+  {
+    "id": "the-heir",
+    "name": "The Heir",
+    "number": "XI",
+    "path": "M6 4.333s.73-.561 0-1.666C5.27 1.56 6 1 6 1M4.25 5 6 7.725 7.75 5M1 6.725h2.25L6 11l2.75-4.275H11",
+    "deck": "divine",
+    "tags": ["deck:divine", "element:wood", "flower:rose", "gem:amethyst", "season:autumn"],
+    "uprightMeaning": "ending, cycle, succession",
+    "reversedMeaning": "unnatural prolonging, refused ending",
+    "fortuneText": {
+      "upright": "What is ending was always going to end. The cycle does not require permission. What follows has waited long enough.",
+      "reversed": "The body has ended. The hand on it has not. The refusal costs more than the ending it was meant to prevent."
+    },
+    "flavor": "The bleeding moon rises. Below it, two doors stand open."
+  },
+  {
+    "id": "the-loam",
+    "name": "The Loam",
+    "number": "XII",
+    "path": "M1 6h2.5a2.5 2.5 0 0 1 5 0H11M1 8.5h10",
+    "deck": "diabolic",
+    "tags": ["deck:diabolic", "element:earth", "flower:tulip", "gem:emerald", "season:autumn"],
+    "uprightMeaning": "fertile dark, slow harvest",
+    "reversedMeaning": "exhausted soil, fallow, hunger",
+    "fortuneText": {
+      "upright": "The roots go deeper than the frost. What was buried is still down there. What was planted is taking its time.",
+      "reversed": "The soil has given what it can. The next crop will pull from somewhere else. The hand that planted does not know yet."
+    },
+    "flavor": "The soil is dark. The hand that turns it is darker."
+  },
+  {
+    "id": "the-wheel",
+    "name": "The Wheel",
+    "number": "XIII",
+    "path": "M11 6a1.667 1.667 0 1 0-3.334 0A1.667 1.667 0 0 0 11 6zM1 6a1.667 1.667 0 1 0 3.334 0A1.667 1.667 0 0 0 1 6zm10 0a5 5 0 0 0-8.535-3.535M1 6a5 5 0 0 0 8.535 3.535",
+    "deck": "aetheric",
+    "tags": ["deck:aetheric", "element:wood", "flower:tulip", "gem:topaz", "season:autumn"],
+    "uprightMeaning": "turning, arrival, motion",
+    "reversedMeaning": "stalled cycle, held breath",
+    "fortuneText": {
+      "upright": "The wheel is at the angle now where the next thing arrives. What looked like luck was always the long arc of an earlier turn.",
+      "reversed": "The grip is yours. The turn is the wheel's. One of these will give first."
+    },
+    "flavor": "It turns. Hands have rested on it; none have moved it."
+  },
+  {
+    "id": "the-beacon",
+    "name": "The Beacon",
+    "number": "XIV",
+    "path": "M3.083 3.75h2.5m1.25 0H11m-4.357-.957 3.85-1.594m-3.85 3.508 3.85 1.594M5.583 3.75a1.25 1.25 0 1 1-2.5 0L4.333 1zM1 11V1h3.333",
+    "deck": "aetheric",
+    "tags": ["deck:aetheric", "element:fire", "flower:rose", "gem:ruby", "season:summer"],
+    "uprightMeaning": "will, channel, manifestation",
+    "reversedMeaning": "empty current, hollow gesture",
+    "fortuneText": {
+      "upright": "The current is already running. The vessel exists. The shape of what arrives is set the moment the circuit closes.",
+      "reversed": "The pose is correct. The current is absent. A remembered gesture has weight only as long as someone watches."
+    },
+    "flavor": "One arm at the sky. One arm at the ground. The line between is charged."
+  },
+  {
+    "id": "the-forest",
+    "name": "The Forest",
+    "number": "XV",
+    "path": "M9.5 3.5a1.25 1.25 0 1 0-2.5 0c0 .692.559 1.25 1.25 1.25S9.5 4.192 9.5 3.5zm-5 1.875c0-1.379-1.121-2.5-2.5-2.5M7 6a2.502 2.502 0 0 0-2.5 2.5m5-5C9.5 2.121 8.379 1 7 1a2.502 2.502 0 0 0-2.5 2.5V11M2 8.5h5",
+    "deck": "diabolic",
+    "tags": ["deck:diabolic", "element:earth", "flower:violet", "gem:emerald", "season:summer"],
+    "uprightMeaning": "quiet strength, patience, holding",
+    "reversedMeaning": "frayed nerve, scattered courage",
+    "fortuneText": {
+      "upright": "The lion does not require taming. The hand has only to remain. The strength was here before the test arrived.",
+      "reversed": "The hand has begun to shake. The lion has noticed. Strength remembered too late carries the same weight as strength absent."
+    },
+    "flavor": "Her hand on the great mane. The teeth are still close."
+  },
+  {
+    "id": "the-star",
+    "name": "The Star",
+    "number": "XVI",
+    "path": "m2.736 6.948 7.11-4.664-4.794 6.98m-1.384-2.6a1.667 1.667 0 1 0 0 3.335 1.667 1.667 0 1 0 0-3.335z",
+    "deck": "hierophant",
+    "tags": ["deck:hierophant", "element:water", "flower:violet", "gem:sapphire", "season:spring"],
+    "uprightMeaning": "renewal, faith, quiet light",
+    "reversedMeaning": "drought, withheld light",
+    "fortuneText": {
+      "upright": "She kneels at the water. The jar empties. The water continues. There is no end to what is poured here.",
+      "reversed": "The water has stopped where she cannot see it stopping. The jar is held in the same posture. The river beneath has gone dry."
+    },
+    "flavor": "She pours and pours. The water knows where to go."
+  },
+  {
+    "id": "the-world-tree",
+    "name": "The World Tree",
+    "number": "XVII",
+    "path": "M56.95 48.574c0-9.25-7.5-16.75-16.75-16.75s-16.75 7.5-16.75 16.75 7.5 16.75 16.75 16.75 16.75-7.5 16.75-16.75zM40.2 31.824v-16.75m-16.75 0h33.5M25.47 39.808a16.678 16.678 0 0 1-2.022-7.984c0-9.25-7.5-16.75-16.75-16.75m16.75 33.5c-9.25 0-16.75-7.5-16.75-16.75m48.228 7.984a16.678 16.678 0 0 0 2.022-7.984c0-9.25 7.5-16.75 16.75-16.75m-16.75 33.5c9.25 0 16.75-7.5 16.75-16.75",
+    "viewBox": 80.4,
+    "deck": "aetheric",
+    "tags": ["deck:aetheric", "element:wood", "flower:tulip", "gem:emerald", "season:spring"],
+    "uprightMeaning": "alignment, joining, decision",
+    "reversedMeaning": "misalignment, division, crossed currents",
+    "fortuneText": {
+      "upright": "What chooses one branch chooses every leaf on it. The wood remembers the cut for a thousand years.",
+      "reversed": "The branches do not agree. They have not for some time. The trunk is the last thing to know."
+    },
+    "flavor": "Roots below. Branches above. A figure where they cross."
+  },
+  {
+    "id": "the-harlequin",
+    "name": "The Harlequin",
+    "number": "XVIII",
+    "path": "M23.45 48.574h33.5v-33.5h-33.5zM40.2 6.7v67m-26.802 0L40.2 6.7l26.8 67",
+    "viewBox": 80.4,
+    "deck": "diabolic",
+    "tags": ["deck:diabolic", "element:water", "flower:orchid", "gem:sapphire", "season:winter"],
+    "uprightMeaning": "illusion, shadow, masked depth",
+    "reversedMeaning": "fog parting, named fear",
+    "fortuneText": {
+      "upright": "The shapes on the path were always stones. The moon hides this. By morning the stones remain stones, and someone has walked into the water.",
+      "reversed": "The mask falls in the firelight. The face beneath is smaller than the mask. The fear had been wearing the wrong shape."
+    },
+    "flavor": "The path across the water looks solid by moonlight. The wolves are not fooled."
+  },
+  {
+    "id": "the-shackle",
+    "name": "The Shackle",
+    "number": "XIX",
+    "path": "M31.824 42.445V6.7m16.75 35.746V6.7m8.375 50.25c0-9.25-7.5-16.75-16.75-16.75s-16.75 7.5-16.75 16.75S30.95 73.7 40.2 73.7s16.75-7.5 16.75-16.75z",
+    "viewBox": 80.4,
+    "deck": "diabolic",
+    "tags": ["deck:diabolic", "element:metal", "flower:rose", "gem:ruby", "season:summer"],
+    "uprightMeaning": "structure, weight, dominion",
+    "reversedMeaning": "rigid grip, choking order",
+    "fortuneText": {
+      "upright": "The chain holds the wall up. The wall holds the roof up. The roof keeps the rain off the work that matters.",
+      "reversed": "The chain has begun to shape the wrist. The wall has begun to shape the room. What was meant to support has become the only thing remaining."
+    },
+    "flavor": "The throne is iron. The iron came from the earth. The earth does not forget."
+  },
+  {
+    "id": "the-lamp",
+    "name": "The Lamp",
+    "number": "XX",
+    "path": "M3.5 2.022v7.956m5-7.956v7.956M11 1A9.995 9.995 0 0 1 1 1m10 10a10.001 10.001 0 0 0-10 0",
+    "deck": "hierophant",
+    "tags": ["deck:hierophant", "element:fire", "flower:orchid", "gem:amethyst", "season:winter"],
+    "uprightMeaning": "solitude, vigil, inward turn",
+    "reversedMeaning": "isolation, withdrawn light, severance",
+    "fortuneText": {
+      "upright": "He stands apart from the company. The lamp he carries was lit there. Those still on the path will see it before they see him.",
+      "reversed": "The lamp is shielded against weather that has already passed. The hand that holds it has forgotten the path it was meant for."
+    },
+    "flavor": "A small flame, carried at arm's length, by one who does not need it."
+  },
+  {
+    "id": "the-aeon",
+    "name": "The Æon",
+    "number": "XXI",
+    "path": "M7.668 1v8.332a1.666 1.666 0 1 0 1.664-1.664C6 7.668 6 11 2.668 11a1.667 1.667 0 1 1 0-3.332M4.332 1v5M1 6h10M1 3.5h10",
+    "deck": "hierophant",
+    "tags": ["deck:hierophant", "element:fire", "flower:rose", "gem:ruby", "season:spring"],
+    "uprightMeaning": "reckoning, awakening, summons",
+    "reversedMeaning": "refused call, closed grave",
+    "fortuneText": {
+      "upright": "The trumpet calls all. The rising is mandatory. The choice was made when the sound began, and the sound began long ago.",
+      "reversed": "The trumpet has sounded twice. The grave remains closed by the will of the one inside it. The sound does not stop for that."
+    },
+    "flavor": "The trumpet sounds. The dirt above the graves stirs."
+  },
+  {
+    "id": "the-tower",
+    "name": "The Tower",
+    "number": "XXII",
+    "path": "M7.25 2.25A1.249 1.249 0 1 0 6 3.5a1.25 1.25 0 0 0 1.25-1.25Zm0 5A1.249 1.249 0 1 0 6 8.5a1.25 1.25 0 0 0 1.25-1.25ZM1 4.75h10m-7.5 0C3.5 8.203 2.379 11 1 11m7.5-6.25C8.5 8.203 9.621 11 11 11",
+    "deck": "hierophant",
+    "tags": ["deck:hierophant", "element:earth", "flower:rose", "gem:ruby", "season:winter"],
+    "uprightMeaning": "collapse, revelation, false ground",
+    "reversedMeaning": "shored ruin, refused fall",
+    "fortuneText": {
+      "upright": "The tower was false before the lightning knew it. The ground it stood on remains. What stood on the ground was never the ground.",
+      "reversed": "The walls are buttressed against the inevitable. Each timber added is one more thing to fall when the rest does. The collapse is patient."
+    },
+    "flavor": "The lightning came for the foundation. The tower was incidental."
+  },
+  {
+    "id": "the-vessel",
+    "name": "The Vessel",
+    "number": "XXIII",
+    "path": "M1 6a2.887 2.887 0 0 1 5 0 2.887 2.887 0 0 0 5 0M3.5 1v7.5a2.5 2.5 0 0 0 5 0V1",
+    "deck": "diabolic",
+    "tags": ["deck:diabolic", "element:water", "flower:orchid", "gem:sapphire", "season:spring"],
+    "uprightMeaning": "measure, blending, slow level",
+    "reversedMeaning": "spilled measure, churn, excess",
+    "fortuneText": {
+      "upright": "The water passes between the jars. Each pour is the same weight. The one who pours has been doing so for longer than the work has taken.",
+      "reversed": "The pour overshoots the rim. The water finds the floor. What was meant to be measured is now distributed by accident."
+    },
+    "flavor": "Water between two jars. Neither holds it for long."
+  },
+  {
+    "id": "the-hooded",
+    "name": "The Hooded",
+    "number": "XXIV",
+    "path": "M2.25 3a3.751 3.751 0 0 0 7.5 0M6 11V6.75M3.5 8.875h5M8 3a1.999 1.999 0 1 0-4 0 1.999 1.999 0 1 0 4 0zm0 0",
+    "deck": "diabolic",
+    "tags": ["deck:diabolic", "element:air", "flower:lily", "gem:amethyst", "season:winter"],
+    "uprightMeaning": "suspension, inversion, vigil",
+    "reversedMeaning": "stalled, sour patience, frozen",
+    "fortuneText": {
+      "upright": "The world has been turned. The blood arrives at the head differently. What was familiar from above is unrecognizable from below.",
+      "reversed": "The hanging has continued past the lesson. The figure has begun to call the rope a virtue. The ground waits where it has always waited."
+    },
+    "flavor": "He hangs by one foot. His eyes are open. His hands are loose at his sides."
+  }
+]

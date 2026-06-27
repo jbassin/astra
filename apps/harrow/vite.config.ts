@@ -33,7 +33,7 @@ export default defineConfig({
       script: path.join(ROOT, "scripts", "build-content.ts"),
       contentDir: path.join(ROOT, "content"),
       generatedDir: path.join(ROOT, "src", "generated"),
-      invalidate: ["site.ts"],
+      invalidate: ["site.ts", "cards.ts", "spreads.ts"],
     }),
     gothicFontsPlugin({ clientOutDir: path.join(ROOT, "dist", "client") }),
     tailwindcss(),
