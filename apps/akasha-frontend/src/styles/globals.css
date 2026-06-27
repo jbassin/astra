@@ -150,6 +150,11 @@ main {
   margin: 0 auto;
   padding: 2rem 1.5rem;
 }
+/* Pages without a right sidebar (e.g. chronicle) collapse to two columns. */
+#quartz-body.no-right {
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+  max-width: 75rem;
+}
 .sidebar {
   position: sticky;
   top: 2rem;
@@ -899,18 +904,38 @@ h2:has(> .tag-link) {
   margin: 0 0 1rem;
 }
 
-/* episode card */
-.chronicle-episodes {
-  display: flex;
-  flex-direction: column;
+/* episode cards on the show page (compact: code + title + blurb → episode page) */
+.chronicle-ep-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
   gap: 1rem;
 }
-.chronicle-episode {
+.chronicle-ep-card {
+  display: block;
   border: 1px solid var(--color-rule);
   border-radius: 0.5rem;
   padding: 1rem 1.2rem;
   background: color-mix(in oklab, var(--color-ink) 3%, transparent);
+  text-decoration: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
 }
+.chronicle-ep-card:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in oklab, var(--color-accent) 8%, transparent);
+}
+.chronicle-ep-card-title {
+  font-family: var(--font-display), sans-serif;
+  color: var(--color-ink);
+  margin: 0.4rem 0 0.4rem;
+}
+.chronicle-ep-card-blurb {
+  color: var(--color-ink-dim);
+  font-size: 0.9rem;
+  margin: 0 0 0.5rem;
+}
+/* episode detail page header */
 .chronicle-episode-head {
   display: flex;
   align-items: baseline;
@@ -928,11 +953,6 @@ h2:has(> .tag-link) {
 .chronicle-episode-titles {
   display: flex;
   flex-direction: column;
-}
-.chronicle-episode-title {
-  font-family: var(--font-display), sans-serif;
-  color: var(--color-ink);
-  margin: 0;
 }
 .chronicle-date {
   color: var(--color-ink-dim);
@@ -989,4 +1009,7 @@ h2:has(> .tag-link) {
   letter-spacing: 0.06em;
   font-size: 0.68rem;
   margin-right: 0.4rem;
+}
+.chronicle-transcript-link {
+  margin-top: 1.5rem;
 }

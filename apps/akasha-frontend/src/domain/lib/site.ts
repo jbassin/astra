@@ -308,6 +308,10 @@ export interface TreeNode {
   displayName: string;
   isFolder: boolean;
   children: TreeNode[];
+  // Optional pre-resolved href (used by injected non-wiki nodes like the chronicle
+  // subtree, whose links are absolute /chronicle/... paths, not Quartz resolveRelative
+  // targets). Wiki nodes omit it and fall back to resolveRelative(currentSlug, slug).
+  href?: string;
 }
 
 /**

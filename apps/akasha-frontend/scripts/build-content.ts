@@ -33,6 +33,7 @@ import {
   indexDocs,
   type SiteData,
   type SiteDoc,
+  type TreeNode,
 } from "../src/domain/lib/site";
 import { simplifySlug } from "../src/domain/lib/slug";
 import { loadSnapshot, type Snapshot } from "../src/domain/lib/snapshot";
@@ -102,9 +103,9 @@ function bodyOf(doc: SiteDoc): string {
 }
 
 /** The generated runtime module (slugs/backlinks/folders/tags/Explorer/aliases). */
-function emitGeneratedModule(site: SiteData): string {
+function emitGeneratedModule(site: SiteData, extraTree: TreeNode[] = []): string {
   const pages = site.docs.map(toGenerated);
-  const tree = buildExplorerTree(site);
+  const tree = [...buildExplorerTree(site), ...extraTree];
   const tags = allTags(site);
   const folders = allFolders(site);
   const aliases = buildAliases(site).map(toGeneratedAlias);
@@ -131,6 +132,7 @@ function emitGeneratedModule(site: SiteData): string {
     "  displayName: string;",
     "  isFolder: boolean;",
     "  children: TreeNode[];",
+    "  href?: string;",
     "}",
     "",
     "export interface AliasRedirect {",
@@ -346,8 +348,8 @@ const CHRONICLE_TYPES = [
   "}",
 ];
 
-/** Build the /chronicle data module from linguist's timeline artifacts. */
-function emitChronicle(hrefByDate: Map<string, string>): string {
+/** Build the enriched chronicle data (shows → seasons → episodes) from the artifacts. */
+function buildChronicleShows(hrefByDate: Map<string, string>) {
   const seasonsPath = path.join(TIMELINE_DIR, "seasons.json");
   const episodesDir = path.join(TIMELINE_DIR, "episodes");
 
@@ -364,7 +366,7 @@ function emitChronicle(hrefByDate: Map<string, string>): string {
     }
   }
 
-  const shows = chronicle.shows.map((sh) => {
+  return chronicle.shows.map((sh) => {
     let episodeCount = 0;
     const seasons = sh.seasons.map((se) => {
       const episodes = se.episode_dates.map((date, i) => {
@@ -395,7 +397,12 @@ function emitChronicle(hrefByDate: Map<string, string>): string {
       seasons,
     };
   });
+}
 
+type ChronicleShowData = ReturnType<typeof buildChronicleShows>[number];
+
+/** Emit the /chronicle data module the routes import. */
+function emitChronicle(shows: ChronicleShowData[]): string {
   emitModule(
     OUT_DIR,
     "chronicle.ts",
@@ -411,6 +418,57 @@ function emitChronicle(hrefByDate: Map<string, string>): string {
   );
   const eps = shows.reduce((n, s) => n + s.episodeCount, 0);
   return `chronicle: ${shows.length} shows, ${eps} episodes`;
+}
+
+/**
+ * Build the Explorer subtree for the chronicle (Chronicle > Show > Season > Episode),
+ * injected into EXPLORER_TREE so it nests in the Looking Glass like wiki pages. Nodes
+ * carry an explicit `href` (absolute /chronicle/... paths). The episode node's slug nests
+ * under its season (`…/s<N>/<date>`) to match the episode route's loader slug, so the
+ * current episode's folders auto-open and the leaf highlights as active.
+ */
+function chronicleTree(shows: ChronicleShowData[]): TreeNode[] {
+  if (shows.length === 0) return [];
+  const node = (
+    slug: string,
+    displayName: string,
+    isFolder: boolean,
+    href: string,
+    children: TreeNode[] = [],
+  ): TreeNode => ({ slug: slug as TreeNode["slug"], displayName, isFolder, href, children });
+
+  return [
+    node(
+      "chronicle",
+      "Chronicle",
+      true,
+      "/chronicle",
+      shows.map((sh) =>
+        node(
+          `chronicle/${sh.show}`,
+          sh.name,
+          true,
+          `/chronicle/${sh.show}`,
+          sh.seasons.map((se) =>
+            node(
+              `chronicle/${sh.show}/s${se.number}`,
+              `Season ${se.number} — ${se.title}`,
+              true,
+              `/chronicle/${sh.show}`,
+              se.episodes.map((ep) =>
+                node(
+                  `chronicle/${sh.show}/s${se.number}/${ep.date}`,
+                  `S${se.number}E${ep.episodeNumber} ${ep.title}`,
+                  false,
+                  `/chronicle/${sh.show}/${ep.date}`,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    ),
+  ];
 }
 
 const siteSource = defineContentSource({
@@ -433,12 +491,13 @@ const siteSource = defineContentSource({
     const hrefByDate = new Map(
       transcripts.docs.map((d) => [d.title, `/${encodeURI(simplifySlug(d.slug))}`]),
     );
-    const moduleSummary = emitGeneratedModule(site);
+    const chronicleShows = buildChronicleShows(hrefByDate);
+    const moduleSummary = emitGeneratedModule(site, chronicleTree(chronicleShows));
     const bodiesSummary = emitBodies(site, snapshot, transcriptSlugs);
     const transcriptSummary = emitTranscriptBodies(transcripts.bodies);
     const speakersSummary = emitSpeakers(being);
     const staticSummary = emitStatic(site, meta);
-    const chronicleSummary = emitChronicle(hrefByDate);
+    const chronicleSummary = emitChronicle(chronicleShows);
     return `${moduleSummary} (+${transcripts.docs.length} transcripts)\n  ${bodiesSummary}\n  ${transcriptSummary}\n  ${speakersSummary}\n  ${staticSummary}\n  ${chronicleSummary}`;
   },
 });

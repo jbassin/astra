@@ -14,7 +14,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as TagsIndexRouteImport } from './routes/tags/index'
 import { Route as ChronicleIndexRouteImport } from './routes/chronicle/index'
 import { Route as TagsSplatRouteImport } from './routes/tags/$'
-import { Route as ChronicleShowRouteImport } from './routes/chronicle/$show'
+import { Route as ChronicleShowIndexRouteImport } from './routes/chronicle/$show/index'
+import { Route as ChronicleShowEpisodeRouteImport } from './routes/chronicle/$show/$episode'
 
 const SplatRoute = SplatRouteImport.update({
   id: '/$',
@@ -41,65 +42,83 @@ const TagsSplatRoute = TagsSplatRouteImport.update({
   path: '/tags/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChronicleShowRoute = ChronicleShowRouteImport.update({
-  id: '/chronicle/$show',
-  path: '/chronicle/$show',
+const ChronicleShowIndexRoute = ChronicleShowIndexRouteImport.update({
+  id: '/chronicle/$show/',
+  path: '/chronicle/$show/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChronicleShowEpisodeRoute = ChronicleShowEpisodeRouteImport.update({
+  id: '/chronicle/$show/$episode',
+  path: '/chronicle/$show/$episode',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
-  '/chronicle/$show': typeof ChronicleShowRoute
   '/tags/$': typeof TagsSplatRoute
   '/chronicle/': typeof ChronicleIndexRoute
   '/tags/': typeof TagsIndexRoute
+  '/chronicle/$show/$episode': typeof ChronicleShowEpisodeRoute
+  '/chronicle/$show/': typeof ChronicleShowIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
-  '/chronicle/$show': typeof ChronicleShowRoute
   '/tags/$': typeof TagsSplatRoute
   '/chronicle': typeof ChronicleIndexRoute
   '/tags': typeof TagsIndexRoute
+  '/chronicle/$show/$episode': typeof ChronicleShowEpisodeRoute
+  '/chronicle/$show': typeof ChronicleShowIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$': typeof SplatRoute
-  '/chronicle/$show': typeof ChronicleShowRoute
   '/tags/$': typeof TagsSplatRoute
   '/chronicle/': typeof ChronicleIndexRoute
   '/tags/': typeof TagsIndexRoute
+  '/chronicle/$show/$episode': typeof ChronicleShowEpisodeRoute
+  '/chronicle/$show/': typeof ChronicleShowIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/$'
-    | '/chronicle/$show'
     | '/tags/$'
     | '/chronicle/'
     | '/tags/'
+    | '/chronicle/$show/$episode'
+    | '/chronicle/$show/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$' | '/chronicle/$show' | '/tags/$' | '/chronicle' | '/tags'
+  to:
+    | '/'
+    | '/$'
+    | '/tags/$'
+    | '/chronicle'
+    | '/tags'
+    | '/chronicle/$show/$episode'
+    | '/chronicle/$show'
   id:
     | '__root__'
     | '/'
     | '/$'
-    | '/chronicle/$show'
     | '/tags/$'
     | '/chronicle/'
     | '/tags/'
+    | '/chronicle/$show/$episode'
+    | '/chronicle/$show/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   SplatRoute: typeof SplatRoute
-  ChronicleShowRoute: typeof ChronicleShowRoute
   TagsSplatRoute: typeof TagsSplatRoute
   ChronicleIndexRoute: typeof ChronicleIndexRoute
   TagsIndexRoute: typeof TagsIndexRoute
+  ChronicleShowEpisodeRoute: typeof ChronicleShowEpisodeRoute
+  ChronicleShowIndexRoute: typeof ChronicleShowIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -139,11 +158,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TagsSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chronicle/$show': {
-      id: '/chronicle/$show'
+    '/chronicle/$show/': {
+      id: '/chronicle/$show/'
       path: '/chronicle/$show'
-      fullPath: '/chronicle/$show'
-      preLoaderRoute: typeof ChronicleShowRouteImport
+      fullPath: '/chronicle/$show/'
+      preLoaderRoute: typeof ChronicleShowIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chronicle/$show/$episode': {
+      id: '/chronicle/$show/$episode'
+      path: '/chronicle/$show/$episode'
+      fullPath: '/chronicle/$show/$episode'
+      preLoaderRoute: typeof ChronicleShowEpisodeRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -152,10 +178,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   SplatRoute: SplatRoute,
-  ChronicleShowRoute: ChronicleShowRoute,
   TagsSplatRoute: TagsSplatRoute,
   ChronicleIndexRoute: ChronicleIndexRoute,
   TagsIndexRoute: TagsIndexRoute,
+  ChronicleShowEpisodeRoute: ChronicleShowEpisodeRoute,
+  ChronicleShowIndexRoute: ChronicleShowIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

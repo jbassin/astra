@@ -69,12 +69,15 @@ export function Explorer({ title = "Looking Glass" }: { title?: string }) {
     });
   };
 
+  const hrefFor = (node: TreeNode) =>
+    node.href ?? resolveRelative(currentSlug as FullSlug, node.slug as FullSlug);
+
   const renderNode = (node: TreeNode) => {
     if (!node.isFolder) {
       return (
         <li key={node.slug}>
           <a
-            href={resolveRelative(currentSlug as FullSlug, node.slug as FullSlug)}
+            href={hrefFor(node)}
             data-for={node.slug}
             className={node.slug === currentSlug ? "active" : undefined}
           >
@@ -113,11 +116,7 @@ export function Explorer({ title = "Looking Glass" }: { title?: string }) {
             </svg>
           </button>
           <div>
-            <a
-              href={resolveRelative(currentSlug as FullSlug, node.slug as FullSlug)}
-              data-for={node.slug}
-              className="folder-title"
-            >
+            <a href={hrefFor(node)} data-for={node.slug} className="folder-title">
               {node.displayName}
             </a>
           </div>

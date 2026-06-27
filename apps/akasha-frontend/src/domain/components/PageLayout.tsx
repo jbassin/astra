@@ -19,13 +19,18 @@ const Graph = lazy(() => import("@/domain/components/islands/Graph"));
 export function PageLayout({
   children,
   rightSidebar,
+  graph = true,
 }: {
   children: ReactNode;
   rightSidebar?: ReactNode;
+  // Wiki pages show the force-graph in the right sidebar; chronicle pages opt out
+  // (graph={false}) — with no right content the body collapses to two columns.
+  graph?: boolean;
 }) {
+  const hasRight = graph || rightSidebar != null;
   return (
     <div id="quartz-root" className="page">
-      <div id="quartz-body">
+      <div id="quartz-body" className={hasRight ? undefined : "no-right"}>
         <aside className="left sidebar">
           <PageTitle />
           <nav className="site-nav">
@@ -37,18 +42,22 @@ export function PageLayout({
           <Explorer />
         </aside>
         <div className="center">{children}</div>
-        <aside className="right sidebar">
-          {rightSidebar}
-          {/* graph-slot reserves height server-side so the client-only graph
-              doesn't shift the layout when it hydrates. */}
-          <div className="graph-slot">
-            <ClientOnly>
-              <Suspense fallback={null}>
-                <Graph />
-              </Suspense>
-            </ClientOnly>
-          </div>
-        </aside>
+        {hasRight && (
+          <aside className="right sidebar">
+            {rightSidebar}
+            {/* graph-slot reserves height server-side so the client-only graph
+                doesn't shift the layout when it hydrates. */}
+            {graph && (
+              <div className="graph-slot">
+                <ClientOnly>
+                  <Suspense fallback={null}>
+                    <Graph />
+                  </Suspense>
+                </ClientOnly>
+              </div>
+            )}
+          </aside>
+        )}
       </div>
       <Popover />
     </div>
