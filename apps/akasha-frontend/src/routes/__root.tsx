@@ -51,9 +51,9 @@ function RootComponent() {
   return (
     <html lang="en">
       <head>
-        {/* Dark-only void theme: force the dark palette before first paint (the
-            light branch is intentionally dead — see Darkmode island). Runs pre-
-            hydration so there's no flash. */}
+        {/* Dark-only void theme: force the dark palette before first paint (there
+            is no light branch and no theme toggle). Runs pre-hydration so there's
+            no flash. */}
         <script
           // biome-ignore lint/security/noDangerouslySetInnerHtml: tiny static pre-paint theme script
           dangerouslySetInnerHTML={{

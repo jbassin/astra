@@ -1,5 +1,5 @@
 // The Quartz page shell (faerrin PageLayout.astro): a 3-column grid — left sidebar
-// (site title + Darkmode/ReaderMode + Explorer), center content, right sidebar
+// (site title + Search + Explorer), center content, right sidebar
 // (page-specific: SidebarImage, Backlinks). The Popover island mounts once here.
 // `<body data-slug>` is set in __root (the Graph + TranscriptPlayer contract).
 //
@@ -7,10 +7,8 @@
 // reaches SSR. Search (slice 8) joins later.
 import { lazy, type ReactNode, Suspense } from "react";
 import ClientOnly from "@/components/ClientOnly/ClientOnly";
-import { Darkmode } from "@/domain/components/islands/Darkmode";
 import { Explorer } from "@/domain/components/islands/Explorer";
 import { Popover } from "@/domain/components/islands/Popover";
-import { ReaderMode } from "@/domain/components/islands/ReaderMode";
 import { Search } from "@/domain/components/islands/Search";
 import { PageTitle } from "@/domain/components/PageTitle";
 
@@ -30,10 +28,6 @@ export function PageLayout({
       <div id="quartz-body">
         <aside className="left sidebar">
           <PageTitle />
-          <div className="sidebar-tools">
-            <Darkmode />
-            <ReaderMode />
-          </div>
           <Search />
           <Explorer />
         </aside>

@@ -12,8 +12,9 @@
  * build-emitted by build-content); the current slug from `body[data-slug]` (set in
  * __root). Node/link/label colors read Quartz CSS vars via getComputedStyle — those
  * names are shimmed to the gothic void palette in globals.css. The `themechange`
- * event (dispatched by the Darkmode island) re-renders the local graph (N5: every
- * listener / pixi app is torn down on unmount).
+ * listener re-renders the local graph; it's now dormant (astra is dark-only and the
+ * theme toggle was removed) but kept harmless for the N5 teardown contract — every
+ * listener / pixi app is torn down on unmount.
  */
 import { Tween as Tweened, Group as TweenGroup } from "@tweenjs/tween.js";
 import { drag } from "d3-drag";
