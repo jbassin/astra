@@ -5,6 +5,7 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
 import "@/styles/globals.css";
+import { ledgerAurora, ShaderBackground } from "@astra/backdrop";
 import { SITE } from "@/generated/site";
 
 export const Route = createRootRoute({
@@ -43,6 +44,7 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
+        <ShaderBackground spec={ledgerAurora} />
         <header className="site-head">
           <Link to="/" className="site-brand">
             ✦ {SITE.title}

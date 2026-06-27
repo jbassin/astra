@@ -91,6 +91,7 @@
       "name": "@astra/ledger",
       "version": "0.0.0",
       "dependencies": {
+        "@astra/backdrop": "workspace:*",
         "@astra/config": "workspace:*",
         "@astra/content-build": "workspace:*",
         "@astra/gothic": "workspace:*",
@@ -120,6 +121,7 @@
       "name": "@astra/mouthpiece-frontend",
       "version": "0.0.0",
       "dependencies": {
+        "@astra/backdrop": "workspace:*",
         "@astra/config": "workspace:*",
         "@astra/content-build": "workspace:*",
         "@astra/gothic": "workspace:*",

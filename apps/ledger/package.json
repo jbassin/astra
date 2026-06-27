@@ -12,6 +12,7 @@
     "generate:content": "bun run scripts/build-content.ts"
   },
   "dependencies": {
+    "@astra/backdrop": "workspace:*",
     "@astra/config": "workspace:*",
     "@astra/content-build": "workspace:*",
     "@astra/gothic": "workspace:*",
