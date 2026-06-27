@@ -57,20 +57,20 @@ body {
   background:
     radial-gradient(
       38% 48% at 28% 30%,
-      color-mix(in oklab, var(--color-accent) 14%, transparent),
+      color-mix(in oklab, var(--color-accent) 26%, transparent),
       transparent 70%
     ),
     radial-gradient(
       44% 40% at 72% 58%,
-      color-mix(in oklab, var(--color-parchment) 9%, transparent),
+      color-mix(in oklab, var(--color-parchment) 17%, transparent),
       transparent 70%
     ),
     radial-gradient(
       34% 44% at 52% 82%,
-      color-mix(in oklab, var(--color-accent-amber) 8%, transparent),
+      color-mix(in oklab, var(--color-accent-amber) 15%, transparent),
       transparent 70%
     );
-  filter: blur(48px);
+  filter: blur(40px);
   animation: nebula-drift 48s ease-in-out infinite alternate;
 }
 .site-backdrop::after {

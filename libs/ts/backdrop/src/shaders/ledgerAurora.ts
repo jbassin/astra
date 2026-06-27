@@ -48,6 +48,6 @@ export const ledgerAurora: BackdropSpec = {
     uAuroraB: { value: vec3(PAL.amber), type: "vec3<f32>" },
     uAuroraC: { value: vec3(PAL.parchment), type: "vec3<f32>" },
     uSpace: { value: vec3(PAL.void), type: "vec3<f32>" },
-    uIntensity: { value: 0.8, type: "f32" },
+    uIntensity: { value: 1.5, type: "f32" },
   },
 };
