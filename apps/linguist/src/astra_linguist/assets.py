@@ -159,9 +159,15 @@ def session_episode_summary(context: dg.AssetExecutionContext) -> dg.Materialize
     `data/{date}.json`) and writes `timeline/episodes/{date}.json`. **Live** — spends
     GLM-5.2 tokens per session via `astra_llm` (`call_structured`); the cost is
     auto-traced (`astra.llm.cost_usd`)."""
+    from .chronicle import show_for_date
     from .chronicle_llm import build_episode_entry  # lazy: pulls astra_llm/litellm
 
     date = context.partition_key
+    if show_for_date(date) is None:
+        # Not one of the chronicle shows (unmatched/excluded) — no episode summary.
+        _log.info("chronicle skipping %s: not a chronicle show", date)
+        return dg.MaterializeResult(metadata={"status": "skipped (unmatched)"})
+
     transcript = load_session(DATA_DIR / f"{date}.json")
     entry = build_episode_entry(date, transcript)
     EPISODES_DIR.mkdir(parents=True, exist_ok=True)

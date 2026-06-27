@@ -151,6 +151,15 @@ def test_build_chronicle_orders_shows_and_groups_seasons() -> None:
     assert len(solo.seasons) == 1 and solo.seasons[0].episode_dates == ["2026-2-10"]
 
 
+def test_build_chronicle_drops_unknown_show_episodes() -> None:
+    entries = [
+        _entry("2026-2-10", "interred-in-iomenei", "Real"),
+        _entry("2025-8-11", "unmatched", "Bogus"),  # not a real show — must be dropped
+    ]
+    chron = build_chronicle(entries, client=_SeasonClient(), model="m")
+    assert [s.show for s in chron.shows] == ["interred-in-iomenei"]
+
+
 def test_seasons_from_plan_forces_total_ordered_partition() -> None:
     episodes = [_entry("2025-8-11", "x"), _entry("2025-8-28", "x"), _entry("2025-10-20", "x")]
     # GLM's first boundary isn't episode 0, and one start_date is bogus.

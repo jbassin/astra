@@ -31,6 +31,13 @@ TIMELINE_DIR = APP_ROOT / "timeline"
 EPISODES_DIR = TIMELINE_DIR / "episodes"
 SEASONS_PATH = TIMELINE_DIR / "seasons.json"
 
+# Sessions whose transcript filename prefix is WRONG — `match_campaign`'s substring
+# heuristic mis-assigned them (e.g. 2025-8-11 "The Blue Remains" is a different campaign
+# with the same players; it matched only because the word "Argyle" appears 96× as a
+# false positive). The GM knows ground truth, so these are excluded from the chronicle
+# by hand. Add a date here to drop a mislabeled session.
+EXCLUDED_DATES: frozenset[str] = frozenset({"2025-8-11"})
+
 
 # ── GLM outputs ────────────────────────────────────────────────────────────
 class EpisodeSummary(BaseModel):
@@ -169,6 +176,8 @@ def show_for_date(
     between the numeric prefix and the date. Returns ``None`` if no transcript for
     that date exists or its slug is unknown.
     """
+    if date in EXCLUDED_DATES:
+        return None
     shows = shows if shows is not None else show_index()
     matches = sorted(transcript_dir.glob(f"*.{date}.txt"))
     if not matches:

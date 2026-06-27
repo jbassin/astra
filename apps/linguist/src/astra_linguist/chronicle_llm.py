@@ -266,7 +266,10 @@ def build_chronicle(
     shows = shows if shows is not None else show_index()
     by_show: dict[str, list[EpisodeEntry]] = defaultdict(list)
     for entry in entries:
-        by_show[entry.show].append(entry)
+        # Drop episodes that don't belong to a real show (unmatched / excluded /
+        # stale files) so they never surface in the chronicle.
+        if entry.show in shows:
+            by_show[entry.show].append(entry)
 
     show_chronicles: list[ShowChronicle] = []
     for slug, eps in by_show.items():

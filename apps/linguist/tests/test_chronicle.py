@@ -60,6 +60,11 @@ def test_show_for_date_unknown_returns_none() -> None:
     assert show_for_date("1999-1-1") is None
 
 
+def test_show_for_date_excluded_returns_none() -> None:
+    # 2025-8-11 is a mislabeled session (different campaign) — excluded by hand.
+    assert show_for_date("2025-8-11") is None
+
+
 # ── artifact-model shapes round-trip ────────────────────────────────────────
 def test_episode_entry_round_trips() -> None:
     entry = EpisodeEntry(
