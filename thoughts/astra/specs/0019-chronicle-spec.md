@@ -1,8 +1,14 @@
 # 0019 — chronicle (akasha campaign timeline) — NLSpec
 
-- **Status:** COMPLETE (2026-06-27) — all 7 slices built, CI-green, pushed; backfilled
-  44 sessions (7 shows, 15 seasons) + LIVE on `akasha.iridi.cc/chronicle`. Gotchas captured
-  in `thoughts/shared/memory/chronicle-0019-gotchas.md`.
+- **Status:** COMPLETE + LIVE (2026-06-27) on `akasha.iridi.cc/chronicle`. All 7 slices
+  built, CI-green, pushed. Review follow-ups also shipped: excluded the mislabeled session
+  2025-8-11 (now **43 episodes / 13 seasons**, main show 32/5), removed the force-graph on
+  chronicle pages, condensed show cards → nested episode detail pages, nested Chronicle in
+  the Looking Glass Explorer, dropped the redundant standalone sidebar link. Gotchas in
+  `thoughts/shared/memory/chronicle-0019-gotchas.md`.
+  - **v2 follow-ups still deferred (by spec):** entity→wiki links; dspy-optimized season
+    boundaries; rebuild `dagster-code` so the EXCLUDED_DATES exclusion reaches the live
+    pipeline (low priority — 2025-8-11 won't re-materialize).
 - **Scope doc:** `thoughts/shared/research/2026-06-27-akasha-chronicle-0019-thoughts.md` (verified)
 - **Date:** 2026-06-27
 - **Subsystem slug:** `chronicle`

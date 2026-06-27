@@ -36,11 +36,42 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `4232fc7`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `b111f70`, 2026-06-27)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack** + bringing **net-new external apps** into astra via the frontend playbook,
 > not migration slices.
+
+### chronicle (0019): automatic Show → Season → Episode campaign timeline in akasha (2026-06-27 session — DONE + LIVE)
+
+A net-new akasha section at **`akasha.iridi.cc/chronicle`** — GLM-5.2 structures the actual-play
+transcripts into Show → Season → Episode. Scope→spec→implement gates:
+`thoughts/shared/research/2026-06-27-akasha-chronicle-0019-thoughts.md` +
+`thoughts/astra/specs/0019-chronicle-spec.md`. Memory: [[chronicle-0019-gotchas]]. **All 7 slices +
+review follow-ups built, CI-green, pushed, deployed, live-verified (Playwright).**
+- **Pipeline (linguist):** `session_episode_summary` (per-session asset, GLM `call_structured` →
+  Rich `EpisodeSummary`) + `campaign_timeline` (aggregate, hourly schedule, skip-when-unchanged
+  `inputs_hash`) → committed `apps/linguist/timeline/{episodes/<date>.json,seasons.json}`. Season
+  grouping outputs compact **boundaries** (not episode-lists) to avoid mid-JSON truncation on the
+  33-ep show. **NOT the dspy judge** — plain GLM-5.2. Slices S1–S3 (`a509cba`/`390298e`/`1548120`).
+- **Backfill** S4 (`85eeec0`): all **44** matched sessions summarized on the host (~$2–3, SigNoz);
+  `apps/linguist/scripts/backfill_chronicle.py` (resumable).
+- **Frontend** S5/S6 (`5f7c730`/`7b86c6e`): `build-content.ts` → `src/generated/chronicle.ts`;
+  routes `/chronicle` (shows index) + `/chronicle/$show/{index,$episode}`; gothic `Chronicle.tsx`.
+- **Deploy** S7 (`349c435`/`5e51d92`): linguist-commit timer + akasha Dockerfile both gained
+  `apps/linguist/timeline`.
+- **Review follow-ups (`f5ac5c9`…`b111f70`):** excluded the mislabeled session **2025-8-11** (a
+  different campaign false-matched via 96× "Argyle" → `EXCLUDED_DATES`; data is now **43 episodes / 13
+  seasons**, main show 32/5); **removed the force-graph** on chronicle pages (`PageLayout graph={false}`
+  + `#quartz-body.no-right` 2-col); **condensed show cards** (synopsis blurb) → **nested episode detail
+  page** with full beats/entities/cliffhanger/transcript link; **nested Chronicle in the Looking Glass
+  Explorer** (injected subtree, `TreeNode.href`, season-nested episode slugs for auto-open/active);
+  **dropped the now-redundant standalone Chronicle sidebar link**.
+- **Gotcha that bit:** the **linguist-commit systemd timer fires every ~15 min** and auto-committed my
+  regenerated `timeline/` data mid-session (+ auto-redeployed akasha with new data but OLD frontend) —
+  after a frontend change you must commit the code + redeploy yourself; don't trust the timer's redeploy
+  to have your latest code. The exclusion code reaches the live pipeline only on `docker compose build
+  dagster-code` (fine — 2025-8-11 won't re-materialize).
 
 ### Animated backgrounds as an astra signature style — @astra/backdrop (2026-06-26 session — DONE + LIVE)
 
