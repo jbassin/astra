@@ -296,7 +296,7 @@ main {
   align-items: center;
   gap: 0.25rem;
   font-size: 0.85rem;
-  color: var(--color-wax);
+  color: var(--color-ink-dim);
 }
 .breadcrumb-element {
   display: flex;
@@ -304,7 +304,7 @@ main {
   gap: 0.25rem;
 }
 .breadcrumb-container a {
-  color: var(--color-wax);
+  color: var(--color-ink-dim);
   text-decoration: none;
 }
 .breadcrumb-container a:hover {
@@ -319,7 +319,7 @@ main {
 .content-meta {
   display: flex;
   gap: 0.75rem;
-  color: var(--color-wax);
+  color: var(--color-ink-dim);
   font-size: 0.85rem;
 }
 ul.tags {
@@ -376,7 +376,7 @@ h2:has(> .tag-link) {
   gap: 0.6rem;
 }
 .section-li .meta {
-  color: var(--color-wax);
+  color: var(--color-ink-dim);
   font-size: 0.8rem;
 }
 .section-li h3 {
@@ -384,7 +384,7 @@ h2:has(> .tag-link) {
   margin: 0.1rem 0;
 }
 .page-listing > p {
-  color: var(--color-wax);
+  color: var(--color-ink-dim);
   font-size: 0.85rem;
   margin: 0.75rem 0;
 }
