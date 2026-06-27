@@ -88,8 +88,9 @@ mouthpiece.iridi.cc {
 
 # harrow — the tarot deck reader (0017), a backend-less SSR frontend on the strider
 # template (Decision I). Read-only (no editor); self-serves gothic's fonts from the
-# container. Compose publishes host port 10369. (Needs a harrow.iridi.cc DNS record —
-# manual, deferred like strider/akasha/mouthpiece/orator/weal-overlay.)
+# container. Compose publishes host port 10369. The harrow.iridi.cc DNS record already
+# exists (the old standalone deploy used it) — this block takes the host over; the old
+# stanza was removed from the parent reverse-proxy Caddyfile (was → localhost:10204).
 harrow.iridi.cc {
 	import astra_site
 	reverse_proxy localhost:10369
