@@ -811,15 +811,6 @@ h2:has(> .tag-link) {
 }
 
 /* ── chronicle (0019): Show → Season → Episode campaign timeline ──────────────────── */
-.site-nav {
-  margin: 0.25rem 0 0.75rem;
-  font-family: var(--font-display), sans-serif;
-  font-size: 0.95rem;
-}
-.site-nav a {
-  color: var(--color-accent);
-}
-
 .chronicle-title {
   font-family: var(--font-display), sans-serif;
   color: var(--color-ink);

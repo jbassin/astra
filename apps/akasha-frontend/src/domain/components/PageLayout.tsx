@@ -33,11 +33,6 @@ export function PageLayout({
       <div id="quartz-body" className={hasRight ? undefined : "no-right"}>
         <aside className="left sidebar">
           <PageTitle />
-          <nav className="site-nav">
-            <a href="/chronicle" className="internal">
-              Chronicle
-            </a>
-          </nav>
           <Search />
           <Explorer />
         </aside>
