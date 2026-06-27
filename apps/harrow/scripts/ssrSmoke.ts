@@ -21,5 +21,15 @@ if (typeof ssr?.fetch !== "function") {
 const res = await ssr.fetch(new Request("http://localhost/"));
 const html = await res.text();
 const marker = html.includes("Harrow");
-console.log(`SSR_SMOKE status=${res.status} hasFetch=true marker=${marker}`);
-process.exit(res.status === 200 && marker ? 0 : 1);
+
+// /gallery is fully static (SSRs the deck from the generated module) — assert a known
+// card name renders server-side, proving content + gothic render in the SSR pass.
+const galleryRes = await ssr.fetch(new Request("http://localhost/gallery"));
+const galleryHtml = await galleryRes.text();
+const galleryMarker = galleryHtml.includes("Hierophant");
+
+const ok = res.status === 200 && marker && galleryRes.status === 200 && galleryMarker;
+console.log(
+  `SSR_SMOKE status=${res.status} hasFetch=true marker=${marker} gallery=${galleryRes.status} galleryMarker=${galleryMarker}`,
+);
+process.exit(ok ? 0 : 1);

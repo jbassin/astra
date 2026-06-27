@@ -45,9 +45,21 @@ function RootComponent() {
       <body suppressHydrationWarning>
         <header className="site-head">
           <Link to="/" className="site-brand">
-            {SITE.title}
+            ✦ {SITE.title}
           </Link>
-          <span className="site-tagline">a custom tarot</span>
+          <nav className="site-nav">
+            <Link
+              to="/"
+              className="nav-link"
+              activeProps={{ className: "nav-link active" }}
+              activeOptions={{ exact: true }}
+            >
+              Draw
+            </Link>
+            <Link to="/gallery" className="nav-link" activeProps={{ className: "nav-link active" }}>
+              Cards
+            </Link>
+          </nav>
         </header>
         <Outlet />
         <footer className="site-foot">

@@ -18,9 +18,11 @@ describe("SSR smoke", () => {
     }
   }, 180_000);
 
-  it("renders / (200 + title) and exposes ssr.fetch", () => {
+  it("renders / + /gallery (200 + markers) and exposes ssr.fetch", () => {
     const out = execFileSync("bun", [RUNNER], { cwd: APP_ROOT, encoding: "utf8" });
     expect(out).toContain("status=200");
     expect(out).toContain("marker=true");
+    expect(out).toContain("gallery=200");
+    expect(out).toContain("galleryMarker=true");
   });
 });
