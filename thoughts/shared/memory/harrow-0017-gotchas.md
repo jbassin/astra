@@ -89,3 +89,31 @@ deck + predicate parity gates (I); Safari flip fix applied (J).
     `reverse_proxy localhost:10369` reaches the container. **LEFTOVER (not done):** the old harrow container
     is still running unrouted on `localhost:10204` (saffron `/emerald/data/experiments`, image
     `reg.iridi.cc/tarot`) — the deferred old-deploy teardown.
+
+**Post-0017 product — animated yellow/black starfield background (2026-06-26, `5f3865f`, DONE + LIVE).**
+A fixed full-viewport pixi shader background behind every harrow page (user: "a shader background like
+strider's, yellow and black like a starfield"). **Ported strider's balatro page-background mounting idiom,
+NOT reinvented** ([[strider-tithe-pixi-gotchas]] / [[strider-balatro-timeline-gotchas]] for the pixi-v8
+recipe): a reusable `Filter` (`GlProgram.from({vertex: defaultFilterVert, fragment})`) on a full-screen
+`Graphics().rect().fill()` scaled to `renderer.screen` each frame, `uTime` from `app.ticker`, uniform-driven
+palette, and the **high-DPR fix — derive screen coords from `vTextureCoord`, not `gl_FragCoord`** (else the
+pattern desyncs/corners on retina). The *shader* is new (drifting 3-layer parallax starfield: hashed
+star-grid + per-star twinkle + an fbm amber nebula on warm-black space; gold star `[1,0.86,0.45]`).
+- **Harrow ≪ strider → self-contained, no PixiContext.** Strider's `PixiHost` exposes `panel`/`world`
+  containers via context for the hex map; harrow has **no on-canvas content**, so `StarfieldBackground.tsx`
+  just owns one `Application` + the shader mesh (no context/children). Files:
+  `apps/harrow/src/components/StarfieldBackground/{StarfieldBackground.tsx,starfieldBackground.ts,*.module.css}`.
+  Canvas `position:fixed; inset:0; z-index:-1; pointer-events:none`.
+- **SSR-safety = dynamic import + `<ClientOnly>`.** pixi is `await import("pixi.js")` inside the effect and the
+  component is mounted inside `<ClientOnly>` in `__root.tsx` → nothing WebGL evaluates during SSR; the canvas
+  is correctly ABSENT from SSR HTML. Harrow's `body` is already transparent (only `html` paints
+  `--color-void`), so the field shows through with content readable; no globals.css change needed.
+- **Deps/biome:** add `pixi.js@^8.18.1` (match strider; NO `pixi-filters` — core `Filter`/`GlProgram` only).
+  The `(filter.resources.<group> as {uniforms:{uTime:number}}).uniforms.uTime` cast passes biome with **no
+  override** (strider's `balatroBackground.ts` has none either). Build code-splits the shader into its own
+  chunk; pixi stays out of the SSR bundle.
+- **Deploy:** harrow is backend-less (no SOPS) → a plain targeted `docker compose up -d --build harrow` (from
+  `deploy/`) is safe (the silent-MOCK/SOPS-env trap only bites secret-needing services, [[deploy-sops-injection]]);
+  no edge change (`harrow.iridi.cc` already routes to :10369). Verified visually in a real WebGL browser
+  (Playwright + `--use-gl=swiftshader`) BEFORE deploy — the established frontend-visual-verify path; the temp
+  playwright devDep + scripts were removed after (`bun.lock` net diff = just the `pixi.js` line).
