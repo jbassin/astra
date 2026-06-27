@@ -5,8 +5,8 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
 import "@/styles/globals.css";
+import { ShaderBackground, starfield } from "@astra/backdrop";
 import ClientOnly from "@/components/ClientOnly/ClientOnly";
-import StarfieldBackground from "@/components/StarfieldBackground/StarfieldBackground";
 import { SITE } from "@/generated/site";
 
 export const Route = createRootRoute({
@@ -46,7 +46,7 @@ function RootComponent() {
       </head>
       <body suppressHydrationWarning>
         <ClientOnly>
-          <StarfieldBackground />
+          <ShaderBackground spec={starfield} />
         </ClientOnly>
         <header className="site-head">
           <Link to="/" className="site-brand">
