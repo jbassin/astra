@@ -8,7 +8,12 @@ location is always non-empty/materializable.
 
 import dagster as dg
 from astra_akasha_backend.assets import akasha_corpus_snapshot
-from astra_linguist.assets import correction_candidates, scribe_output_sensor, session_transcripts
+from astra_linguist.assets import (
+    correction_candidates,
+    scribe_output_sensor,
+    session_episode_summary,
+    session_transcripts,
+)
 from astra_mouthpiece.assets import (
     episodes_index,
     linguist_output_sensor,
@@ -45,6 +50,7 @@ defs = dg.Definitions(
         session_outputs,
         session_transcripts,
         correction_candidates,
+        session_episode_summary,
         session_digest,
         session_script,
         session_audio_clips,

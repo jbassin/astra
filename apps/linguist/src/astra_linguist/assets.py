@@ -23,6 +23,7 @@ from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
 
 from .campaigns import campaign_filename, campaign_views, to_shibboleth
+from .chronicle import EPISODES_DIR
 from .corrections import load_corrections
 from .models import RawLine
 from .pipeline import process_session
@@ -38,6 +39,9 @@ _sessions_counter = _meter.create_counter(
 )
 _candidates_counter = _meter.create_counter(
     "astra.linguist.candidates", description="surfaced correction candidates"
+)
+_episodes_counter = _meter.create_counter(
+    "astra.chronicle.episodes", description="chronicle episode summaries generated"
 )
 
 APP_ROOT = Path(__file__).resolve().parents[2]
@@ -136,13 +140,49 @@ def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeRe
     )
 
 
+@dg.asset(
+    partitions_def=linguist_sessions,
+    deps=[session_transcripts],
+    group_name="chronicle",
+)
+def session_episode_summary(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """Summarize one session into a Rich chronicle `EpisodeEntry` (NLSpec 0019).
+
+    Runs automatically after `session_transcripts` (it reads that asset's
+    `data/{date}.json`) and writes `timeline/episodes/{date}.json`. **Live** — spends
+    GLM-5.2 tokens per session via `astra_llm` (`call_structured`); the cost is
+    auto-traced (`astra.llm.cost_usd`)."""
+    from .chronicle_llm import build_episode_entry  # lazy: pulls astra_llm/litellm
+
+    date = context.partition_key
+    transcript = load_session(DATA_DIR / f"{date}.json")
+    entry = build_episode_entry(date, transcript)
+    EPISODES_DIR.mkdir(parents=True, exist_ok=True)
+    _atomic_write(EPISODES_DIR / f"{date}.json", entry.model_dump_json(indent=2))
+    _episodes_counter.add(1, {"show": entry.show})
+    _log.info(
+        "chronicle summarized episode %s (show=%s): %r, %d beats",
+        date,
+        entry.show,
+        entry.summary.title,
+        len(entry.summary.key_beats),
+    )
+    return dg.MaterializeResult(
+        metadata={
+            "show": entry.show,
+            "title": entry.summary.title,
+            "beats": len(entry.summary.key_beats),
+        }
+    )
+
+
 # Safe to run by default: the scribe `saved/` dir it scans is seed-free by construction —
 # the migrated-at-rest history was loaded straight into linguist's transcript dir, never
 # through scribe, so `saved/` only ever holds craig-produced sessions. (A session appears
 # here only once scribe writes its `script.json`, so a mid-transcription session won't fire
 # prematurely.) The downstream linguist→mouthpiece sweep is what needed adoption, not this.
 @dg.sensor(
-    target=[session_transcripts, correction_candidates],
+    target=[session_transcripts, correction_candidates, session_episode_summary],
     minimum_interval_seconds=30,
     default_status=dg.DefaultSensorStatus.RUNNING,
 )
@@ -183,5 +223,6 @@ def _atomic_write(path: Path, text: str) -> None:
 
 
 defs = dg.Definitions(
-    assets=[session_transcripts, correction_candidates], sensors=[scribe_output_sensor]
+    assets=[session_transcripts, correction_candidates, session_episode_summary],
+    sensors=[scribe_output_sensor],
 )
