@@ -165,6 +165,17 @@ class VellumRenderConfig(_Base):
     port: int = 10368
 
 
+class HarrowConfig(_Base):
+    # The tarot deck reader (0017) — a standalone SSR frontend on the strider
+    # template (Decision I), a sibling of strider (interactive, backend-less).
+    # service_name + port are the single source for server.ts + vite's dev port;
+    # service_name also derives the browser RUM name. No backend/audio — every card
+    # glyph is inline SVG.
+    service_name: str = "astra.harrow"
+    port: int = 10369
+    public_origin: str = "https://harrow.iridi.cc"
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -184,4 +195,5 @@ class Config(_Base):
     mouthpiece_frontend: MouthpieceFrontendConfig = Field(default_factory=MouthpieceFrontendConfig)
     vellum_frontend: VellumFrontendConfig = Field(default_factory=VellumFrontendConfig)
     vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
+    harrow: HarrowConfig = Field(default_factory=HarrowConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

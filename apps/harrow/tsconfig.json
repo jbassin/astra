@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    // TanStack Start frontends override the base `verbatimModuleSyntax: true`:
+    // with it on, server-only imports can leak into the client bundle. Frontend-lane
+    // only — the base setting stays on for non-Start packages.
+    "verbatimModuleSyntax": false,
+    "types": ["vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "vite.config.ts"],
+  "exclude": ["node_modules", "dist", ".output", ".nitro"]
+}

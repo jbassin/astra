@@ -176,6 +176,18 @@ const VellumRender = z
   })
   .strict();
 
+// The tarot deck reader (0017) — a standalone SSR frontend on the strider template
+// (Decision I), a sibling of strider (interactive, backend-less). serviceName + port
+// are the single source for server.ts + vite's dev port; serviceName derives the
+// browser RUM name. No backend/audio — every card glyph is inline SVG.
+const Harrow = z
+  .object({
+    serviceName: z.string().default("astra.harrow"),
+    port: z.number().default(10369),
+    publicOrigin: z.string().default("https://harrow.iridi.cc"),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -206,6 +218,7 @@ export const ConfigSchema = z
     mouthpieceFrontend: MouthpieceFrontend.default(() => MouthpieceFrontend.parse({})),
     vellumFrontend: VellumFrontend.default(() => VellumFrontend.parse({})),
     vellumRender: VellumRender.default(() => VellumRender.parse({})),
+    harrow: Harrow.default(() => Harrow.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

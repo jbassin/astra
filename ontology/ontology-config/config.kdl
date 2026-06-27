@@ -208,6 +208,19 @@ vellum-render {
     port 10368
 }
 
+harrow {
+    // The tarot deck reader (0017) — a standalone SSR frontend on the strider
+    // template (Decision I), a sibling of strider (interactive, backend-less). Same
+    // config-single-source contract: server.ts binds this port + names telemetry; no
+    // PORT env. Behind Caddy at harrow.iridi.cc → host 10369. service-name derives
+    // the browser RUM name (`{service-name}-rum`). public-origin = the absolute base
+    // URL (canonical links / share origin). No backend, no DB, no audio volume — every
+    // card glyph is inline SVG.
+    service-name "astra.harrow"
+    port 10369
+    public-origin "https://harrow.iridi.cc"
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }
