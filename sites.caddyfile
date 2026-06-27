@@ -96,6 +96,16 @@ harrow.iridi.cc {
 	reverse_proxy localhost:10369
 }
 
+# ledger — the astra landing page (0018), the simplest SSR frontend, a sibling of
+# harrow. One homepage: a gothic card grid linking the player-facing sites (the links
+# are baked from each site's config public-origin at build time). Read-only (no
+# editor → no local_only gate); self-serves gothic's fonts from the container. Compose
+# publishes host port 10370. (Needs a ledger.iridi.cc DNS record — new subdomain.)
+ledger.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10370
+}
+
 # vellum-frontend — the document-forge editor (0013), the fourth SSR frontend on the
 # strider/akasha template. Two upstreams (D2, mirroring faerrin's old vellum block):
 # /render + /health proxy to the vellum-render service (the PNG render sidecar), so the

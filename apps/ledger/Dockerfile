@@ -1,24 +1,22 @@
-# Astra SSR frontend service (Decision I) — vellum-frontend, on the strider/akasha
-# template. `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR).
-# One knob: `ARG APP` selects which apps/<APP> is built; everything else is
-# workspace-generic. Unlike the read-surfaces there is NO content pipeline — vellum's
-# "content" is authored live in the browser, so there is no `content/` COPY and no
-# `src/generated/` (the editor route is `ssr: false`, client-only).
+# Astra SSR frontend service (Decision I) — ledger, on the strider/akasha template.
+# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR). One knob:
+# `ARG APP` selects which apps/<APP> is built; everything else is workspace-generic.
+# ledger has NO backend snapshot and NO asset volume (it's a single static landing
+# page whose links are baked from config at build), so this is the simplest frontend
+# Dockerfile — no content-input COPY beyond config.kdl.
 #
 # Build context is the REPO ROOT (a frontend is a bun workspace member depending on
-# @astra/site-kit/gothic/vellum-lang via workspace:*), so the whole bun workspace must
-# be present for `bun install` to resolve workspace links. Build from deploy/ via
-# compose. Port + service name come from config.kdl (config-single-source) — no PORT
-# env; compose maps the published host port.
-ARG APP=vellum-frontend
+# @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must be
+# present for `bun install`. Port + service name come from config.kdl (config-single-
+# source) — no PORT env; compose maps the published host port.
+ARG APP=ledger
 
 FROM oven/bun:1.3.14 AS build
 ARG APP
 WORKDIR /repo
 
 # Install against the full workspace manifest set (cached unless manifests change).
-# Every workspace member's manifest must be present so the shared bun.lock reconciles:
-# the root `apps/*`/`libs/ts/*` globs resolve the FULL workspace, so a partial app set
+# The root `apps/*`/`libs/ts/*` globs resolve the FULL workspace, so a partial app set
 # reads as "lockfile had changes" under --frozen-lockfile.
 COPY package.json bun.lock ./
 COPY apps/akasha-frontend/package.json apps/akasha-frontend/
@@ -40,10 +38,11 @@ RUN bun install --frozen-lockfile
 COPY tsconfig.base.json ./
 
 # config.kdl must be present at BUILD time: vite.config.ts reads serviceName/port from
-# it via @astra/config (config-single-source). Without it the config load throws.
+# it via @astra/config (config-single-source), AND build-content reads every linked
+# site's public-origin from it to bake the landing links.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-# Build the selected app.
+# Build the selected app (build-content emits src/generated in buildStart).
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 RUN bun run build
@@ -61,8 +60,10 @@ COPY --from=build /repo/apps/${APP}/node_modules ./node_modules
 COPY --from=build /repo/apps/${APP}/dist ./dist
 COPY --from=build /repo/apps/${APP}/server.ts ./server.ts
 COPY --from=build /repo/apps/${APP}/package.json ./package.json
-# config.kdl is the single source for serviceName/port + the OTLP endpoint (read via
-# @astra/config); it's located by walking up to <repo>/ontology/ontology-config.
+# The generated TS modules the runtime imports (the app imports @/generated/*, never
+# the filesystem — so the registry → links bake is build-only).
+COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
+# config.kdl is the single source for serviceName/port + the OTLP endpoint.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
 CMD ["bun", "run", "start"]

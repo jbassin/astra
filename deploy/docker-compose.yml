@@ -381,6 +381,31 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- ledger: the astra landing page (0018) — the simplest SSR frontend, a sibling
+  # of harrow. One homepage: a gothic card grid linking the player-facing sites. No
+  # backend, no DB, no volume — the linked URLs are baked from each site's config
+  # public-origin at build time. Port/service-name from config.kdl. ---
+  ledger:
+    build:
+      context: ..
+      dockerfile: apps/ledger/Dockerfile
+      args:
+        APP: ledger # the one knob in the templated frontend Dockerfile
+    image: astra-ledger:local
+    container_name: astra-ledger
+    command: ["bun", "run", "start"]
+    # No PORT env — serviceName/port come from config.kdl (config-single-source);
+    # compose only maps the published host port below.
+    ports:
+      - "10370:10370" # ledger SSR (astra range) — also reachable directly
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10370/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
 # (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
 # the substrate runs no Caddy of its own — services are reachable on their

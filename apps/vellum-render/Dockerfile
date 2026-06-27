@@ -18,6 +18,7 @@ WORKDIR /repo
 COPY package.json bun.lock ./
 COPY apps/akasha-frontend/package.json apps/akasha-frontend/
 COPY apps/harrow/package.json apps/harrow/
+COPY apps/ledger/package.json apps/ledger/
 COPY apps/mouthpiece-frontend/package.json apps/mouthpiece-frontend/
 COPY apps/orator-backend/package.json apps/orator-backend/
 COPY apps/orator-controller/package.json apps/orator-controller/
