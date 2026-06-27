@@ -47,6 +47,10 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.vellum_frontend.public_origin == "https://vellum.iridi.cc"
     assert cfg.vellum_render.service_name == "astra.vellum-render"
     assert cfg.vellum_render.port == 10368
+    assert cfg.strider.public_origin == "https://strider.iridi.cc"
+    assert cfg.ledger.service_name == "astra.ledger"
+    assert cfg.ledger.port == 10370
+    assert cfg.ledger.public_origin == "https://ledger.iridi.cc"
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:

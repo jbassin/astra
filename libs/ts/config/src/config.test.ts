@@ -50,6 +50,10 @@ describe("@astra/config", () => {
     expect(cfg.vellumFrontend.publicOrigin).toBe("https://vellum.iridi.cc");
     expect(cfg.vellumRender.serviceName).toBe("astra.vellum-render");
     expect(cfg.vellumRender.port).toBe(10368);
+    expect(cfg.strider.publicOrigin).toBe("https://strider.iridi.cc");
+    expect(cfg.ledger.serviceName).toBe("astra.ledger");
+    expect(cfg.ledger.port).toBe(10370);
+    expect(cfg.ledger.publicOrigin).toBe("https://ledger.iridi.cc");
   });
 
   test("secret fields are lazy refs, not plaintext", () => {

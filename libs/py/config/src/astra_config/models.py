@@ -117,6 +117,8 @@ class StriderConfig(_Base):
     # also derives the browser RUM name (``{service_name}-rum``).
     service_name: str = "astra.strider"
     port: int = 10360
+    # Absolute base URL — the canonical entry the ledger landing page links to.
+    public_origin: str = "https://strider.iridi.cc"
 
 
 class AkashaFrontendConfig(_Base):
@@ -176,6 +178,17 @@ class HarrowConfig(_Base):
     public_origin: str = "https://harrow.iridi.cc"
 
 
+class LedgerConfig(_Base):
+    # The astra landing page (0018) — a backend-less SSR frontend on the strider
+    # template (Decision I), a sibling of Harrow. service_name + port are the single
+    # source for server.ts + vite's dev port; service_name also derives the browser
+    # RUM name. It links to the other sites by reading their public_origin from this
+    # same config at build time — no hardcoded URLs.
+    service_name: str = "astra.ledger"
+    port: int = 10370
+    public_origin: str = "https://ledger.iridi.cc"
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -196,4 +209,5 @@ class Config(_Base):
     vellum_frontend: VellumFrontendConfig = Field(default_factory=VellumFrontendConfig)
     vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
     harrow: HarrowConfig = Field(default_factory=HarrowConfig)
+    ledger: LedgerConfig = Field(default_factory=LedgerConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

@@ -119,6 +119,8 @@ const Strider = z
   .object({
     serviceName: z.string().default("astra.strider"),
     port: z.number().default(10360),
+    // Absolute base URL — the canonical entry the ledger landing page links to.
+    publicOrigin: z.string().default("https://strider.iridi.cc"),
   })
   .strict();
 
@@ -188,6 +190,19 @@ const Harrow = z
   })
   .strict();
 
+// The astra landing page (0018) — a backend-less SSR frontend on the strider
+// template (Decision I), a sibling of Harrow. serviceName + port are the single
+// source for server.ts + vite's dev port; serviceName derives the browser RUM
+// name. It links to the other sites by reading their publicOrigin from this same
+// config at build time — no hardcoded URLs. (config-single-source)
+const Ledger = z
+  .object({
+    serviceName: z.string().default("astra.ledger"),
+    port: z.number().default(10370),
+    publicOrigin: z.string().default("https://ledger.iridi.cc"),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -219,6 +234,7 @@ export const ConfigSchema = z
     vellumFrontend: VellumFrontend.default(() => VellumFrontend.parse({})),
     vellumRender: VellumRender.default(() => VellumRender.parse({})),
     harrow: Harrow.default(() => Harrow.parse({})),
+    ledger: Ledger.default(() => Ledger.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

@@ -145,9 +145,11 @@ strider {
     // values are the single source (config-single-source): server.ts binds this
     // port + names telemetry with service-name; no PORT env. Behind Caddy at
     // strider.iridi.cc → host 10360. service-name also derives the browser RUM
-    // service name (`{service-name}-rum`).
+    // service name (`{service-name}-rum`). public-origin = the absolute base URL
+    // (also the canonical entry ledger links to — see the `ledger` namespace).
     service-name "astra.strider"
     port 10360
+    public-origin "https://strider.iridi.cc"
 }
 
 akasha-frontend {
@@ -219,6 +221,20 @@ harrow {
     service-name "astra.harrow"
     port 10369
     public-origin "https://harrow.iridi.cc"
+}
+
+ledger {
+    // The astra landing page (0018) — a backend-less SSR frontend on the strider
+    // template (Decision I), a sibling of harrow. One homepage: a gothic card grid
+    // linking to the player-facing sites (strider/akasha/mouthpiece/harrow/vellum).
+    // Same config-single-source contract: server.ts binds this port + names
+    // telemetry; no PORT env. Behind Caddy at ledger.iridi.cc → host 10370.
+    // service-name derives the browser RUM name (`{service-name}-rum`). The site
+    // links it renders are NOT hardcoded — build-content reads each target site's
+    // own `public-origin` from this same config (single source for every URL).
+    service-name "astra.ledger"
+    port 10370
+    public-origin "https://ledger.iridi.cc"
 }
 
 caddy {
