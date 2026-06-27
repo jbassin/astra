@@ -110,7 +110,7 @@ linguist-commit:
     #!/usr/bin/env bash
     set -euo pipefail
     cd /ruby/data/experiments/astra
-    git add apps/linguist/transcripts apps/linguist/data
+    git add apps/linguist/transcripts apps/linguist/data apps/linguist/timeline
     changed=""
     if ! git diff --cached --quiet; then
       changed=$(git diff --cached --name-only)
@@ -127,11 +127,11 @@ linguist-commit:
     else
       echo "linguist-commit: nothing to push"
     fi
-    # If this run committed akasha content (it reads apps/linguist/{transcripts,data} at build),
+    # If this run committed akasha content (it reads apps/linguist/{transcripts,data,timeline} at build),
     # rebuild + redeploy the wiki so the new sessions actually appear. akasha bakes content at
     # build time and needs no secrets, so a plain targeted compose up suffices; a failed build
     # leaves the running container untouched (no downtime).
-    if printf '%s\n' "$changed" | grep -qE '^apps/linguist/(transcripts|data)/'; then
+    if printf '%s\n' "$changed" | grep -qE '^apps/linguist/(transcripts|data|timeline)/'; then
       echo "linguist-commit: akasha content changed — seeding audio + rebuilding + redeploying akasha-frontend"
       # The new session's combined recording is already on disk (scribe wrote it before
       # linguist produced the transcript); land it in the audio volume before redeploy so

@@ -42,7 +42,8 @@ COPY tsconfig.base.json ./
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
 # akasha-frontend's build-time content sources read the akasha-backend snapshot/corpus
-# (slug.ts/site.ts lift + vellum render) + linguist transcripts (D4) — COPY them so
+# (slug.ts/site.ts lift + vellum render) + linguist transcripts (D4) + the chronicle
+# timeline (0019) — COPY them so
 # build-content (run in the vite buildStart hook) can read them. ontology-being carries
 # the campaign roster (matchCampaign) + speaker colors (loadBeing, slice 7); without it
 # the transcript build throws. (The Pagefind index step in `bun run build` uses the
@@ -50,6 +51,7 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 COPY apps/akasha-backend/snapshot /repo/apps/akasha-backend/snapshot
 COPY apps/akasha-backend/content /repo/apps/akasha-backend/content
 COPY apps/linguist/data /repo/apps/linguist/data
+COPY apps/linguist/timeline /repo/apps/linguist/timeline
 COPY ontology/ontology-being /repo/ontology/ontology-being
 
 # Build the selected app (build-content runs in the vite buildStart hook).
