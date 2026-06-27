@@ -36,11 +36,31 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `5f3865f`, 2026-06-26)
+## Current state — UPDATE THIS SECTION (as of commit `ae8b27e`, 2026-06-26)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Newest work is **ordinary
 > product/ops on the live stack** + bringing **net-new external apps** into astra via the frontend playbook,
 > not migration slices.
+
+### ledger (0018): the astra landing page (2026-06-26 session — DONE + LIVE ON PUBLIC EDGE)
+
+Built **ledger**, a net-new **landing page** at `ledger.iridi.cc` — one homepage with a gothic card grid
+linking the five player-facing sites (strider/akasha/mouthpiece/harrow/vellum). A **backend-less SSR frontend
+on the strider template** (port **10370**, `astra.ledger`), the **simplest frontend in the repo** (a sibling
+of harrow, no content files, one route). 3 CI-green slices pushed + deployed + edge-reloaded + **live-verified
+public** (HTTP/2 200 over TLS, all 5 cards, `astra.ledger` SSR spans in SigNoz, 0 errors). Spec
+`thoughts/astra/specs/0018-ledger-spec.md`, memory [[ledger-0018-gotchas]]. User decisions: new subdomain (not
+apex); player-facing links only; clean gothic grid (no pixi). Commits:
+- **s1 config** (`e6aeaea`): `ledger` namespace (10370) in kdl + both schemas + tests; added a `public-origin`
+  to strider's block so the link registry can read every site's URL from config.
+- **s2 app** (`cab6ebe`): the app on the harrow shell — `build-content` joins a ledger-owned registry
+  (title/blurb/order) to each linked site's config `public-origin` → generated `sites.ts` (**no hardcoded
+  URLs**, config-single-source); the grid route + SiteCard; `sites.test.ts` parity gate + SSR smoke; uv exclude.
+- **s3 deploy** (`ae8b27e`): Dockerfile + the **9-sibling manifest ripple**; Compose `ledger`@10370; Caddy
+  `ledger.iridi.cc`; targeted `docker compose up -d --build ledger` (backend-less → safe); `caddy-validate` +
+  `caddy-reload`. **THE edge surprise: the brand-new subdomain JUST WORKED — `*.iridi.cc` is a wildcard, so no
+  manual DNS record was needed** (prior frontends needlessly deferred DNS); Caddy ACME-DNS minted a real
+  Let's Encrypt cert. See [[ledger-0018-gotchas]].
 
 ### harrow: animated yellow/black starfield background (2026-06-26 session — DONE + LIVE)
 

@@ -1,6 +1,7 @@
 # 0018 — ledger (the astra landing page)
 
-**Status:** in progress (2026-06-26)
+**Status:** COMPLETE + LIVE on https://ledger.iridi.cc (2026-06-26) — all 3 slices
+built, pushed (`e6aeaea`/`cab6ebe`/`ae8b27e`), deployed, edge-reloaded, verified.
 **Kind:** net-new app (NOT a faerrin port — nothing to port; astra-specific).
 **Template:** strider SSR frontend (Decision I), modeled on harrow (backend-less sibling).
 
