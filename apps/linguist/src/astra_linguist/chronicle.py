@@ -16,6 +16,8 @@ linguist-commit timer) are:
 
 from __future__ import annotations
 
+import hashlib
+import json
 from pathlib import Path
 
 from astra_ontology import load_being
@@ -85,6 +87,46 @@ class Chronicle(BaseModel):
     """The whole timeline: every show, ordered main-first then by first session."""
 
     shows: list[ShowChronicle]
+    # Fingerprint of the episode inputs this was built from — lets the aggregate
+    # asset skip the GLM grouping calls when nothing has changed (C9). Not content;
+    # the frontend ignores it.
+    inputs_hash: str | None = None
+
+
+def date_key(date: str) -> tuple[int, int, int]:
+    """Sort key for the non-zero-padded `YYYY-M-D` session dates (string sort is wrong)."""
+    year, month, day = (int(part) for part in date.split("-"))
+    return (year, month, day)
+
+
+def load_episode_entries(episodes_dir: Path = EPISODES_DIR) -> list[EpisodeEntry]:
+    """Load every committed per-episode entry from `timeline/episodes/`."""
+    return [
+        EpisodeEntry.model_validate_json(path.read_text(encoding="utf-8"))
+        for path in sorted(episodes_dir.glob("*.json"))
+    ]
+
+
+def chronicle_inputs_hash(entries: list[EpisodeEntry]) -> str:
+    """A stable fingerprint of the episode inputs (changes iff a summary changes)."""
+    payload = json.dumps(
+        sorted(
+            (
+                {
+                    "date": e.date,
+                    "show": e.show,
+                    "title": e.summary.title,
+                    "synopsis": e.summary.synopsis,
+                    "beats": e.summary.key_beats,
+                }
+                for e in entries
+            ),
+            key=lambda row: (row["show"], date_key(row["date"])),
+        ),
+        sort_keys=True,
+        ensure_ascii=False,
+    )
+    return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
 
 # ── show resolution (date → show) ──────────────────────────────────────────

@@ -14,15 +14,21 @@ dspy judge (wrong task; see the 0019 scope doc).
 
 from __future__ import annotations
 
+from collections import defaultdict
 from typing import Protocol, TypeVar
 
 from astra_llm import LiteLLMClient
 from pydantic import BaseModel
 
 from .chronicle import (
+    Chronicle,
     EpisodeEntry,
     EpisodeSummary,
+    Season,
+    SeasonStructure,
+    ShowChronicle,
     ShowInfo,
+    date_key,
     show_for_date,
     show_index,
 )
@@ -122,3 +128,155 @@ def build_episode_entry(
         show=show.slug if show is not None else "unmatched",
         summary=summary,
     )
+
+
+# ── season grouping (the aggregate side) ────────────────────────────────────
+SEASON_MAX_TOKENS = 4000
+
+SEASON_SYSTEM = (
+    "You are a chronicler organizing one tabletop RPG actual-play show into seasons. "
+    "You are given the show's episodes in air-date order, each with a title, synopsis, "
+    "and key beats. Group consecutive episodes into seasons — narrative arcs. Seasons "
+    "MUST be contiguous (no interleaving), cover every episode exactly once, and stay in "
+    "the given order. Give each season a short evocative title and a 1-2 sentence arc "
+    "summary. Reference episodes by the exact `date=` values provided. A short show may be "
+    "a single season; only split when there is a clear arc shift."
+)
+
+
+def season_user_content(info: ShowInfo | None, episodes: list[EpisodeEntry]) -> str:
+    """Render a show's ordered episodes as a compact prompt for season grouping."""
+    name = info.name if info is not None else "(unknown show)"
+    lines = [f"Show: {name}", "", "Episodes (in air-date order):"]
+    for i, entry in enumerate(episodes, 1):
+        beats = "; ".join(entry.summary.key_beats)
+        lines.append(
+            f"{i}. date={entry.date} | {entry.summary.title} — "
+            f"{entry.summary.synopsis} Beats: {beats}"
+        )
+    return "\n".join(lines)
+
+
+def group_show_seasons(
+    info: ShowInfo | None,
+    episodes: list[EpisodeEntry],
+    *,
+    client: _StructuredClient | None = None,
+    model: str | None = None,
+) -> SeasonStructure:
+    """One GLM call: assign a show's ordered episodes to contiguous seasons."""
+    client = client if client is not None else _real_client()
+    model = model if model is not None else _chronicle_model()
+    return client.call_structured(
+        SeasonStructure,
+        system=SEASON_SYSTEM,
+        user_content=season_user_content(info, episodes),
+        model=model,
+        max_tokens=SEASON_MAX_TOKENS,
+        tool_name="record_seasons",
+        tool_description="Record the season grouping for this show.",
+    )
+
+
+def _reconcile_seasons(structure: SeasonStructure, episodes: list[EpisodeEntry]) -> list[Season]:
+    """Force GLM's grouping into a clean, total, in-order partition of the episodes.
+
+    GLM may drop, duplicate, or invent dates; we keep its season titles/summaries but
+    enforce that every real episode date lands in exactly one season, chronologically.
+    Any episodes GLM left unassigned are appended to the last season (or seed one).
+    """
+    real = {e.date for e in episodes}
+    order = {e.date: i for i, e in enumerate(episodes)}
+    used: set[str] = set()
+    seasons: list[Season] = []
+    for proposed in structure.seasons:
+        kept = sorted(
+            (d for d in proposed.episode_dates if d in real and d not in used),
+            key=lambda d: order[d],
+        )
+        if not kept:
+            continue
+        used.update(kept)
+        seasons.append(
+            Season(
+                number=len(seasons) + 1,
+                title=proposed.title,
+                arc_summary=proposed.arc_summary,
+                episode_dates=kept,
+            )
+        )
+    leftover = sorted((e.date for e in episodes if e.date not in used), key=lambda d: order[d])
+    if leftover:
+        if seasons:
+            last = seasons[-1]
+            last.episode_dates = sorted(last.episode_dates + leftover, key=lambda d: order[d])
+        else:
+            seasons.append(
+                Season(number=1, title="Season 1", arc_summary="", episode_dates=leftover)
+            )
+    return seasons
+
+
+def _seasons_for_show(
+    info: ShowInfo | None,
+    episodes: list[EpisodeEntry],
+    *,
+    client: _StructuredClient | None,
+    model: str | None,
+) -> list[Season]:
+    """Seasons for one show: a trivial single season for <=1 episode, else GLM-grouped."""
+    if not episodes:
+        return []
+    if len(episodes) == 1:
+        only = episodes[0]
+        return [
+            Season(
+                number=1,
+                title="Season 1",
+                arc_summary=only.summary.synopsis,
+                episode_dates=[only.date],
+            )
+        ]
+    structure = group_show_seasons(info, episodes, client=client, model=model)
+    return _reconcile_seasons(structure, episodes)
+
+
+def build_chronicle(
+    entries: list[EpisodeEntry],
+    *,
+    client: _StructuredClient | None = None,
+    model: str | None = None,
+    shows: dict[str, ShowInfo] | None = None,
+) -> Chronicle:
+    """Group every episode into shows → seasons (GLM per show), ordered main-first.
+
+    Episodes are ordered by date within a show; shows are ordered main-show-first then
+    by their first-session date. Unknown shows sort last under their slug.
+    """
+    shows = shows if shows is not None else show_index()
+    by_show: dict[str, list[EpisodeEntry]] = defaultdict(list)
+    for entry in entries:
+        by_show[entry.show].append(entry)
+
+    show_chronicles: list[ShowChronicle] = []
+    for slug, eps in by_show.items():
+        info = shows.get(slug)
+        ordered = sorted(eps, key=lambda e: date_key(e.date))
+        show_chronicles.append(
+            ShowChronicle(
+                show=slug,
+                name=info.name if info is not None else slug,
+                is_main=info.is_main if info is not None else False,
+                seasons=_seasons_for_show(info, ordered, client=client, model=model),
+            )
+        )
+
+    def _show_sort_key(sc: ShowChronicle) -> tuple[int, tuple[int, int, int]]:
+        first = min(
+            (date_key(d) for s in sc.seasons for d in s.episode_dates),
+            default=(9999, 99, 99),
+        )
+        return (0 if sc.is_main else 1, first)
+
+    show_chronicles.sort(key=_show_sort_key)
+    return Chronicle(shows=show_chronicles)

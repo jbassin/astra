@@ -9,6 +9,9 @@ location is always non-empty/materializable.
 import dagster as dg
 from astra_akasha_backend.assets import akasha_corpus_snapshot
 from astra_linguist.assets import (
+    campaign_timeline,
+    campaign_timeline_job,
+    campaign_timeline_schedule,
     correction_candidates,
     scribe_output_sensor,
     session_episode_summary,
@@ -51,6 +54,7 @@ defs = dg.Definitions(
         session_transcripts,
         correction_candidates,
         session_episode_summary,
+        campaign_timeline,
         session_digest,
         session_script,
         session_audio_clips,
@@ -59,4 +63,6 @@ defs = dg.Definitions(
         episodes_index,
     ],
     sensors=[craig_drop_sensor, scribe_output_sensor, linguist_output_sensor],
+    schedules=[campaign_timeline_schedule],
+    jobs=[campaign_timeline_job],
 )

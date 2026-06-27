@@ -23,7 +23,14 @@ from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
 
 from .campaigns import campaign_filename, campaign_views, to_shibboleth
-from .chronicle import EPISODES_DIR
+from .chronicle import (
+    EPISODES_DIR,
+    SEASONS_PATH,
+    TIMELINE_DIR,
+    Chronicle,
+    chronicle_inputs_hash,
+    load_episode_entries,
+)
 from .corrections import load_corrections
 from .models import RawLine
 from .pipeline import process_session
@@ -176,6 +183,70 @@ def session_episode_summary(context: dg.AssetExecutionContext) -> dg.Materialize
     )
 
 
+@dg.asset(deps=[session_episode_summary], group_name="chronicle")
+def campaign_timeline(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
+    """Group every episode summary into the Show → Season → Episode `Chronicle`.
+
+    Reads all `timeline/episodes/*.json`, groups by show, orders shows main-first then
+    by first-session date, and (per show) calls GLM-5.2 to assign contiguous seasons,
+    writing `timeline/seasons.json`. **Skips the GLM calls when the episode inputs are
+    unchanged** (C9) so the linguist-commit timer / schedule is a no-op until a new
+    summary lands."""
+    entries = load_episode_entries(EPISODES_DIR)
+    if not entries:
+        return dg.MaterializeResult(metadata={"shows": 0, "status": "no episodes yet"})
+
+    new_hash = chronicle_inputs_hash(entries)
+    if SEASONS_PATH.exists():
+        existing = Chronicle.model_validate_json(SEASONS_PATH.read_text(encoding="utf-8"))
+        if existing.inputs_hash == new_hash:
+            _log.info("chronicle seasons unchanged (%d episodes) — skipping", len(entries))
+            return dg.MaterializeResult(
+                metadata={"shows": len(existing.shows), "status": "unchanged"}
+            )
+
+    from .chronicle_llm import build_chronicle  # lazy: pulls astra_llm/litellm
+
+    chronicle = build_chronicle(entries)
+    chronicle.inputs_hash = new_hash
+    TIMELINE_DIR.mkdir(parents=True, exist_ok=True)
+    _atomic_write(SEASONS_PATH, chronicle.model_dump_json(indent=2))
+    total_seasons = sum(len(s.seasons) for s in chronicle.shows)
+    _log.info(
+        "chronicle grouped %d episodes into %d show(s), %d season(s)",
+        len(entries),
+        len(chronicle.shows),
+        total_seasons,
+    )
+    return dg.MaterializeResult(
+        metadata={
+            "shows": len(chronicle.shows),
+            "seasons": total_seasons,
+            "episodes": len(entries),
+            "status": "rebuilt",
+        }
+    )
+
+
+# The aggregate runs cheaply on a schedule (it skips the GLM calls when the episode
+# inputs are unchanged), so a new session's seasons get regenerated automatically within
+# the hour; the linguist-commit timer then commits + redeploys. Also materialized
+# directly during the backfill.
+campaign_timeline_job = dg.define_asset_job("campaign_timeline_job", selection=[campaign_timeline])
+
+
+@dg.schedule(
+    job=campaign_timeline_job,
+    cron_schedule="0 * * * *",
+    default_status=dg.DefaultScheduleStatus.RUNNING,
+)
+def campaign_timeline_schedule(
+    context: dg.ScheduleEvaluationContext,
+) -> dg.RunRequest:
+    """Hourly regen of the chronicle seasons (a no-op until a new episode summary lands)."""
+    return dg.RunRequest()
+
+
 # Safe to run by default: the scribe `saved/` dir it scans is seed-free by construction —
 # the migrated-at-rest history was loaded straight into linguist's transcript dir, never
 # through scribe, so `saved/` only ever holds craig-produced sessions. (A session appears
@@ -223,6 +294,13 @@ def _atomic_write(path: Path, text: str) -> None:
 
 
 defs = dg.Definitions(
-    assets=[session_transcripts, correction_candidates, session_episode_summary],
+    assets=[
+        session_transcripts,
+        correction_candidates,
+        session_episode_summary,
+        campaign_timeline,
+    ],
     sensors=[scribe_output_sensor],
+    schedules=[campaign_timeline_schedule],
+    jobs=[campaign_timeline_job],
 )

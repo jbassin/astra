@@ -12,9 +12,28 @@ from astra_linguist.chronicle import (
     EpisodeSummary,
     Season,
     ShowChronicle,
+    chronicle_inputs_hash,
+    date_key,
     show_for_date,
     show_index,
 )
+
+
+def _entry(date: str, title: str = "T") -> EpisodeEntry:
+    return EpisodeEntry(
+        date=date,
+        show="through-a-song-darkly",
+        summary=EpisodeSummary(
+            title=title,
+            synopsis="s",
+            key_beats=["b"],
+            characters_present=[],
+            locations=[],
+            factions=[],
+            items=[],
+            cliffhanger="",
+        ),
+    )
 
 
 # ── show taxonomy ───────────────────────────────────────────────────────────
@@ -58,6 +77,21 @@ def test_episode_entry_round_trips() -> None:
         ),
     )
     assert EpisodeEntry.model_validate_json(entry.model_dump_json()) == entry
+
+
+def test_date_key_orders_non_zero_padded_dates() -> None:
+    dates = ["2025-10-20", "2025-8-11", "2025-8-28", "2026-1-6"]
+    assert sorted(dates, key=date_key) == ["2025-8-11", "2025-8-28", "2025-10-20", "2026-1-6"]
+
+
+def test_chronicle_inputs_hash_stable_and_order_independent() -> None:
+    a = [_entry("2025-8-11", "One"), _entry("2025-8-28", "Two")]
+    b = [_entry("2025-8-28", "Two"), _entry("2025-8-11", "One")]  # reordered
+    assert chronicle_inputs_hash(a) == chronicle_inputs_hash(b)
+    # a content change flips the hash
+    assert chronicle_inputs_hash(a) != chronicle_inputs_hash(
+        [_entry("2025-8-11", "CHANGED"), _entry("2025-8-28", "Two")]
+    )
 
 
 def test_chronicle_round_trips() -> None:
