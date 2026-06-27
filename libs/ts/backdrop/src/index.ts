@@ -9,6 +9,7 @@
 export { ShaderBackground } from "./ShaderBackground";
 export { BACKDROPS, type BackdropName } from "./shaders";
 export { ledgerAurora } from "./shaders/ledgerAurora";
+export { mouthpieceInterference } from "./shaders/mouthpieceInterference";
 export { mouthpieceResonance } from "./shaders/mouthpieceResonance";
 export { starfield } from "./shaders/starfield";
 export type { BackdropSpec, UniformSpec } from "./types";

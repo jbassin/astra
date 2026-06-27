@@ -8,6 +8,7 @@ describe("backdrop catalog", () => {
   it("exposes the three pixi backdrops", () => {
     expect(Object.keys(BACKDROPS).sort()).toEqual([
       "ledgerAurora",
+      "mouthpieceInterference",
       "mouthpieceResonance",
       "starfield",
     ]);

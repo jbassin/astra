@@ -5,7 +5,7 @@ import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
 import "@/styles/globals.css";
-import { mouthpieceResonance, ShaderBackground } from "@astra/backdrop";
+import { mouthpieceInterference, ShaderBackground } from "@astra/backdrop";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -43,7 +43,7 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body suppressHydrationWarning>
-        <ShaderBackground spec={mouthpieceResonance} />
+        <ShaderBackground spec={mouthpieceInterference} />
         <header className="site-head">
           <Link to="/" className="site-brand">
             Mouthpiece
