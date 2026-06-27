@@ -59,6 +59,21 @@ function RootComponent() {
             <Link to="/gallery" className="nav-link" activeProps={{ className: "nav-link active" }}>
               Cards
             </Link>
+            <Link
+              to="/spreads"
+              className="nav-link"
+              activeProps={{ className: "nav-link active" }}
+              activeOptions={{ exact: true }}
+            >
+              Spread
+            </Link>
+            <Link
+              to="/spreads/history"
+              className="nav-link"
+              activeProps={{ className: "nav-link active" }}
+            >
+              History
+            </Link>
           </nav>
         </header>
         <Outlet />

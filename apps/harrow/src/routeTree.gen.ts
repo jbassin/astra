@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as GalleryRouteImport } from './routes/gallery'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SpreadsIndexRouteImport } from './routes/spreads.index'
+import { Route as SpreadsHistoryRouteImport } from './routes/spreads.history'
 
 const GalleryRoute = GalleryRouteImport.update({
   id: '/gallery',
@@ -22,31 +24,49 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SpreadsIndexRoute = SpreadsIndexRouteImport.update({
+  id: '/spreads/',
+  path: '/spreads/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SpreadsHistoryRoute = SpreadsHistoryRouteImport.update({
+  id: '/spreads/history',
+  path: '/spreads/history',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/gallery': typeof GalleryRoute
+  '/spreads/history': typeof SpreadsHistoryRoute
+  '/spreads/': typeof SpreadsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/gallery': typeof GalleryRoute
+  '/spreads/history': typeof SpreadsHistoryRoute
+  '/spreads': typeof SpreadsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/gallery': typeof GalleryRoute
+  '/spreads/history': typeof SpreadsHistoryRoute
+  '/spreads/': typeof SpreadsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/gallery'
+  fullPaths: '/' | '/gallery' | '/spreads/history' | '/spreads/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/gallery'
-  id: '__root__' | '/' | '/gallery'
+  to: '/' | '/gallery' | '/spreads/history' | '/spreads'
+  id: '__root__' | '/' | '/gallery' | '/spreads/history' | '/spreads/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   GalleryRoute: typeof GalleryRoute
+  SpreadsHistoryRoute: typeof SpreadsHistoryRoute
+  SpreadsIndexRoute: typeof SpreadsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -65,12 +85,28 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/spreads/': {
+      id: '/spreads/'
+      path: '/spreads'
+      fullPath: '/spreads/'
+      preLoaderRoute: typeof SpreadsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/spreads/history': {
+      id: '/spreads/history'
+      path: '/spreads/history'
+      fullPath: '/spreads/history'
+      preLoaderRoute: typeof SpreadsHistoryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GalleryRoute: GalleryRoute,
+  SpreadsHistoryRoute: SpreadsHistoryRoute,
+  SpreadsIndexRoute: SpreadsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

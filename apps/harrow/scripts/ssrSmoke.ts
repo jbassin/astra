@@ -22,14 +22,22 @@ const res = await ssr.fetch(new Request("http://localhost/"));
 const html = await res.text();
 const marker = html.includes("Harrow");
 
-// /gallery is fully static (SSRs the deck from the generated module) — assert a known
-// card name renders server-side, proving content + gothic render in the SSR pass.
-const galleryRes = await ssr.fetch(new Request("http://localhost/gallery"));
-const galleryHtml = await galleryRes.text();
-const galleryMarker = galleryHtml.includes("Hierophant");
+// The content routes SSR straight from the generated modules — assert each renders a
+// known marker server-side (gallery a card name; the spreads the curated spread name),
+// proving content + gothic render in the SSR pass. The `/` draw is client-only
+// (Decision D), so it SSRs the deterministic "Shuffling" fallback, not a reading.
+async function check(path: string, needle: string): Promise<boolean> {
+  const r = await ssr.fetch(new Request(`http://localhost${path}`));
+  const html = await r.text();
+  return r.status === 200 && html.includes(needle);
+}
+const gallery = await check("/gallery", "Hierophant");
+const spreads = await check("/spreads", "Pilgrimage");
+const history = await check("/spreads/history", "Pilgrimage");
+const home = await check("/", "Shuffling");
 
-const ok = res.status === 200 && marker && galleryRes.status === 200 && galleryMarker;
+const ok = res.status === 200 && marker && gallery && spreads && history && home;
 console.log(
-  `SSR_SMOKE status=${res.status} hasFetch=true marker=${marker} gallery=${galleryRes.status} galleryMarker=${galleryMarker}`,
+  `SSR_SMOKE status=${res.status} marker=${marker} gallery=${gallery} spreads=${spreads} history=${history} home=${home}`,
 );
 process.exit(ok ? 0 : 1);
