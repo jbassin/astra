@@ -5,16 +5,15 @@ description = "linguist — transcript processing (0006): scribe script.json →
 requires-python = ">=3.12"
 dependencies = [
     "astra-config",
+    "astra-lexicon",
     "astra-llm",
     "astra-observe",
     "astra-ontology",
     "astra-ontology-being",
     "dagster",
     "dspy[optuna]>=2.5",  # optuna powers the MIPROv2 judge optimizer (gate J)
-    "metaphone>=0.6",
     "pydantic>=2",
     "pyyaml>=6",
-    "rapidfuzz>=3",
     "wordfreq>=3",
 ]
 
@@ -30,6 +29,7 @@ packages = ["src/astra_linguist"]
 
 [tool.uv.sources]
 astra-config = { workspace = true }
+astra-lexicon = { workspace = true }
 astra-llm = { workspace = true }
 astra-observe = { workspace = true }
 astra-ontology = { workspace = true }

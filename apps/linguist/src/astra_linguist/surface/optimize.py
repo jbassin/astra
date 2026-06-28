@@ -21,6 +21,7 @@ import math
 from pathlib import Path
 from typing import Any
 
+from astra_lexicon import build_lexicon, fold_for_match
 from astra_llm import TokenCounts, cost_usd, ensure_openrouter_env, make_dspy_lm
 from astra_observe import init_telemetry
 
@@ -40,8 +41,6 @@ from .goldset import (
     write_mined_artifact,
 )
 from .judge import Candidate
-from .lexicon import build_lexicon
-from .normalize import fold_for_match
 
 # Few-shot demo caps — kept small to bound per-call prompt size (each demo carries the
 # full lexicon block as an input field).

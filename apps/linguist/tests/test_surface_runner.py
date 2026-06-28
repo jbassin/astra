@@ -9,9 +9,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from astra_lexicon import build_lexicon_from
 from astra_linguist.models import FormattedLine, Speaker, Transcript
 from astra_linguist.surface.judge import Candidate, CompleteArgs, ScanResult
-from astra_linguist.surface.lexicon import build_lexicon_from
 from astra_linguist.surface.surface import (
     candidates_payload,
     dedupe_candidate_rows,

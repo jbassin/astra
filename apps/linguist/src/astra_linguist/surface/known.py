@@ -11,12 +11,11 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 
+from astra_lexicon import Hypothesis, Lexicon, Tok, ensemble_sim, tokenize
+
 from ..models import Transcript
 from . import config
 from .english import is_oov
-from .lexicon import Hypothesis, Lexicon
-from .normalize import Tok, tokenize
-from .phonetics import ensemble_sim
 
 
 @dataclass(frozen=True)

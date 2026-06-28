@@ -32,6 +32,7 @@ from typing import Any, cast
 
 import dspy
 import yaml
+from astra_lexicon import Lexicon, build_lexicon, fold_for_match, tokenize
 
 from ..corrections import DEFS_PATH
 from ..models import FormattedLine, Speaker, Transcript
@@ -39,8 +40,6 @@ from . import config
 from .english import is_oov
 from .judge import Candidate, Flagged, Verdict, apply_guardrails, lexicon_block, render_window
 from .known import find_known
-from .lexicon import Lexicon, build_lexicon
-from .normalize import fold_for_match, tokenize
 
 #: Committed reviewable artifact of mined negatives (K5 — hand-correctable offline).
 DEFAULT_MINED_PATH = Path(__file__).resolve().parent / "gold" / "mined_negatives.json"

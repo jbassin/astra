@@ -6,6 +6,7 @@ The phonetic filter + guardrails are pure; the judge's LLM call is a stubbed
 
 from __future__ import annotations
 
+from astra_lexicon import build_lexicon_from
 from astra_linguist.models import FormattedLine, Speaker, Transcript
 from astra_linguist.surface.judge import (
     Candidate,
@@ -17,9 +18,6 @@ from astra_linguist.surface.judge import (
     windows,
 )
 from astra_linguist.surface.known import find_known
-from astra_linguist.surface.lexicon import build_lexicon_from
-from astra_linguist.surface.normalize import fold_for_match, ngrams, tokenize
-from astra_linguist.surface.phonetics import ensemble_sim
 
 
 def _line(text: str, name: str = "Josh") -> FormattedLine:
@@ -32,30 +30,9 @@ def _transcript(*texts: str) -> Transcript:
     return Transcript(date="2025-01-01", audio="a", script=[_line(t) for t in texts])
 
 
-# ── normalize + phonetics ──────────────────────────────────────────────────
-def test_fold_and_tokenize() -> None:
-    assert fold_for_match("Færrin") == "faerrin"  # ligature expanded
-    assert fold_for_match("Anaïs") == "anais"  # diacritic stripped
-    toks = tokenize("Ki-Rin met P'ter.")
-    assert [t.span for t in toks] == ["Ki-Rin", "met", "P'ter"]  # punctuation excluded
-    assert {t.span for t in ngrams(toks, 2)} >= {"Ki-Rin", "met P'ter", "Ki-Rin met"}
-
-
-def test_ensemble_sim_ranks_phonetic_near_misses() -> None:
-    assert ensemble_sim("calaria", "calaria") == 1.0
-    near = ensemble_sim("galaria", "calaria")  # one-letter phonetic garble
-    far = ensemble_sim("galaria", "anouk")
-    assert near > 0.78 > far
-
-
-# ── lexicon ────────────────────────────────────────────────────────────────
-def test_lexicon_membership_and_nearest() -> None:
-    lex = build_lexicon_from(["Calaria", "Hildebrandt Corporation", "Anouk"])
-    assert lex.has("calaria")
-    assert lex.is_token("hildebrandt")  # word within a multi-word canonical
-    assert not lex.has("hildebrandt")  # not a whole canonical on its own
-    top = lex.nearest("galaria", k=1, floor=0.5)
-    assert top and top[0].canonical == "Calaria"
+# NB the pure matcher/lexicon unit tests (fold, ensemble_sim, membership) now live
+# in `libs/py/lexicon/tests/test_lexicon.py` — this file keeps the linguist surface
+# (filter/guardrails/judge) tests, using `build_lexicon_from` as a fixture helper.
 
 
 # ── Mode-1 filter (gate G) ─────────────────────────────────────────────────

@@ -18,6 +18,7 @@ import json
 from pathlib import Path
 
 import dagster as dg
+from astra_lexicon import build_lexicon
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
@@ -31,12 +32,11 @@ from .chronicle import (
     chronicle_inputs_hash,
     load_episode_entries,
 )
-from .corrections import load_corrections
+from .corrections import DEFS_PATH, load_corrections
 from .models import RawLine
 from .pipeline import process_session
 from .roster import SpeakerResolver
 from .sensor import new_sessions
-from .surface.lexicon import build_lexicon
 from .surface.surface import load_session, surface_session_payload, write_candidates
 
 _log = get_logger("astra.linguist")
@@ -125,7 +125,7 @@ def correction_candidates(context: dg.AssetExecutionContext) -> dg.MaterializeRe
 
     date = context.partition_key
     transcript = load_session(DATA_DIR / f"{date}.json")
-    lex = build_lexicon()
+    lex = build_lexicon(DEFS_PATH)
     payload = surface_session_payload(
         transcript, lex, complete_fn=make_dspy_complete_fn(), date=date
     )

@@ -15,13 +15,12 @@ from collections.abc import Callable
 from pathlib import Path
 from typing import Literal, Protocol
 
+from astra_lexicon import Lexicon, fold_for_match
 from astra_observe import get_meter
 from pydantic import BaseModel
 
 from ..models import Transcript
 from . import config
-from .lexicon import Lexicon
-from .normalize import fold_for_match
 
 Verdict = Literal["confirm", "new", "reject"]
 

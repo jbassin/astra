@@ -18,12 +18,13 @@ import json
 from pathlib import Path
 from typing import Any, Literal, cast
 
+from astra_lexicon import Lexicon, build_lexicon
 from astra_observe import init_telemetry
 
+from ..corrections import DEFS_PATH
 from ..models import Transcript
 from .judge import Candidate, CompleteFn, Flagged, judge_session
 from .known import find_known
-from .lexicon import Lexicon, build_lexicon
 
 Mode = Literal["hybrid", "full"]
 
@@ -85,7 +86,7 @@ def dedupe_candidate_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
     regex), so the reviewer decides it once. Keeps the highest-confidence/richest-context
     occurrence + `count` + all `line_refs`; preserves any review `decision` (accept wins).
     """
-    from .normalize import fold_for_match
+    from astra_lexicon import fold_for_match
 
     groups: dict[tuple[str, str, Any], list[dict[str, Any]]] = {}
     for r in rows:
@@ -157,7 +158,7 @@ def main(argv: list[str] | None = None) -> int:
     init_telemetry("astra.linguist.surface")
 
     transcript = load_session(args.session)
-    lex = build_lexicon()
+    lex = build_lexicon(DEFS_PATH)
     flagged = find_flagged(transcript, lex)
     print(f"{args.session.name}: {len(transcript.script)} lines, {len(flagged)} pre-flagged spans")
     if not flagged:

@@ -10,6 +10,7 @@ resolution-markers = [
 members = [
     "astra-akasha-backend",
     "astra-config",
+    "astra-lexicon",
     "astra-linguist",
     "astra-llm",
     "astra-mouthpiece-backend",
@@ -243,37 +244,52 @@ requires-dist = [
 ]
 
 [[package]]
+name = "astra-lexicon"
+version = "0.0.0"
+source = { editable = "libs/py/lexicon" }
+dependencies = [
+    { name = "metaphone" },
+    { name = "pyyaml" },
+    { name = "rapidfuzz" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "metaphone", specifier = ">=0.6" },
+    { name = "pyyaml", specifier = ">=6" },
+    { name = "rapidfuzz", specifier = ">=3" },
+]
+
+[[package]]
 name = "astra-linguist"
 version = "0.0.0"
 source = { editable = "apps/linguist" }
 dependencies = [
     { name = "astra-config" },
+    { name = "astra-lexicon" },
     { name = "astra-llm" },
     { name = "astra-observe" },
     { name = "astra-ontology" },
     { name = "astra-ontology-being" },
     { name = "dagster" },
     { name = "dspy", extra = ["optuna"] },
-    { name = "metaphone" },
     { name = "pydantic" },
     { name = "pyyaml" },
-    { name = "rapidfuzz" },
     { name = "wordfreq" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "astra-config", editable = "libs/py/config" },
+    { name = "astra-lexicon", editable = "libs/py/lexicon" },
     { name = "astra-llm", editable = "libs/py/llm" },
     { name = "astra-observe", editable = "libs/py/observe" },
     { name = "astra-ontology", editable = "libs/py/ontology" },
     { name = "astra-ontology-being", editable = "ontology/ontology-being" },
     { name = "dagster" },
     { name = "dspy", extras = ["optuna"], specifier = ">=2.5" },
-    { name = "metaphone", specifier = ">=0.6" },
     { name = "pydantic", specifier = ">=2" },
     { name = "pyyaml", specifier = ">=6" },
-    { name = "rapidfuzz", specifier = ">=3" },
     { name = "wordfreq", specifier = ">=3" },
 ]
 

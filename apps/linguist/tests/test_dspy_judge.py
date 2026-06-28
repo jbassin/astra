@@ -11,6 +11,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import dspy
+from astra_lexicon import build_lexicon_from, fold_for_match
 from astra_linguist.models import FormattedLine, Speaker, Transcript
 from astra_linguist.surface.dspy_judge import (
     build_judge_program,
@@ -40,8 +41,6 @@ from astra_linguist.surface.judge import (
     ScanResult,
     make_dspy_complete_fn,
 )
-from astra_linguist.surface.lexicon import build_lexicon_from
-from astra_linguist.surface.normalize import fold_for_match
 from dspy.utils.dummies import DummyLM
 
 
