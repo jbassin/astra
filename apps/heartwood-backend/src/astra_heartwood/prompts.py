@@ -3,8 +3,9 @@
 ``FILTER_SYSTEM`` (Stage 1) ports faerrin caster ``distill``'s out-of-character discard
 instruction, **adds combat/play-by-play exclusion (D7)** and the keep-the-noun nuance, and
 recasts the task as a per-window keep/drop verdict. ``EXTRACT_SYSTEM`` (Stage 2) extracts
-atomic, grounded noun-facts from the kept context — plain facts, not house-voice prose
-(that is Phase 3).
+atomic, grounded noun-facts from the kept context. ``REFINE_SYSTEM`` (Stage 2.5) drops the
+event/play-by-play facts that leaked through window-level filtering and restates each kept
+fact under its canonical name. All three emit plain facts, not house-voice prose (Phase 3).
 """
 
 from __future__ import annotations
@@ -58,8 +59,48 @@ EXTRACT_SYSTEM = (
     "- claim: a plain, factual statement of the assertion. Do NOT write polished wiki prose "
     "or flavor; just state the fact, grounded in the transcript.\n"
     "- GROUNDING: assert ONLY what the transcript supports. Never invent events, outcomes, "
-    "names, or lore, and never resolve what the transcript leaves ambiguous. If the text "
+    "names, or lore, and never resolve what the transcript leaves ambiguous. Do not INFER "
+    "relationships or allegiances that are not explicitly stated, and do not combine "
+    "separate mentions into a claim the transcript does not actually make. If the text "
     "establishes nothing durable about any noun, record no facts.\n"
+    "- NOT WIKI MATERIAL — do NOT record: game mechanics (spells, abilities, feats, hit "
+    "points, AC, DCs, resistances), item ownership or inventory (who carries or owns what), "
+    "gold or currency values and prices, or one-time events. Capture durable world-lore only.\n"
     "- Player characters ARE setting nouns — extract facts about them like anyone else.\n\n"
     "Record every fact via the tool."
+)
+
+
+REFINE_SYSTEM = (
+    "You are the editor of a tabletop RPG (Pathfinder 2e) SETTING WIKI — a NARRATIVE "
+    "encyclopedia of the world's nouns (people, places, organizations, deities, phenomena, "
+    "creatures, items). You are given a numbered list of candidate facts extracted from one "
+    "session, each as `INDEX. [NAME | kind] claim`. NAME is the canonical wiki name for that "
+    "noun; use it exactly, and no other spelling or nickname.\n\n"
+    "For EACH index, record via the tool: keep (true/false), a category, a cleaned claim, "
+    "and a one-line reason.\n\n"
+    "KEEP a fact (category 'setting') ONLY if it states who or what a noun durably IS in the "
+    "world — its identity, nature, role, relationships, allegiances, origin, history, "
+    "appearance, location, purpose, or motivations. That is the narrative lore a reader "
+    "wants.\n\n"
+    "Otherwise set keep=false and give the reason it does not belong, as one of:\n"
+    "- 'event' — something that merely HAPPENED this session: an action, decision, or "
+    "occurrence ('X attacked Y', 'X agreed to the alliance', 'X was present at the gala', "
+    "'X witnessed Y', 'X was killed', 'X was tasked with…'). The chronicle records events; "
+    "the wiki does not.\n"
+    "- 'ability' — a character's or creature's game mechanics: spells known or cast, feats, "
+    "special abilities, actions. That a noun CAN cast a spell or has an ability is not lore.\n"
+    "- 'possession' — who owns or carries an item (inventory/loot). Document an item's own "
+    "nature on its entry, never as someone's belongings.\n"
+    "- 'mechanical' — game statistics and economic values: gold or currency values, prices, "
+    "item levels, bulk, hit points, AC, DCs, numeric resistances, crafting costs. The wiki "
+    "is narrative, not a rules reference.\n"
+    "- 'nonsensical' — the claim is garbled, internally contradictory, or not clearly "
+    "supported. If you cannot tell it is true and coherent, drop it here.\n\n"
+    "For a KEPT fact, REWRITE the claim into a clean, durable statement using the given NAME "
+    "and no other name. Change ONLY wording and names — preserve the real lore exactly and "
+    "never invent anything. If a fact mixes durable lore with an event or a stat, keep it "
+    "and rewrite it to state ONLY the durable part. Plain factual phrasing, not polished "
+    "prose. When unsure whether a GENUINE setting fact is durable enough, keep it — but do "
+    "NOT keep events, abilities, possessions, mechanical values, or anything unverifiable."
 )

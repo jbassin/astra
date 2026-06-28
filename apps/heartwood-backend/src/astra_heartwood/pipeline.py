@@ -21,6 +21,7 @@ from .extract import extract_facts
 from .filter import filter_session
 from .llm import StructuredClient, default_model, real_client
 from .models import SessionFacts
+from .refine import refine_facts
 from .resolve_facts import resolve_fact
 from .sessions import faerrin_session, load_corrected_transcript
 
@@ -34,6 +35,9 @@ _facts_extracted = _meter.create_counter(
 )
 _spans_dropped = _meter.create_counter(
     "astra.heartwood.spans_dropped", description="filter-dropped spans, by category"
+)
+_facts_refined_out = _meter.create_counter(
+    "astra.heartwood.facts_refined_out", description="facts dropped by the refinement pass (events)"
 )
 
 
@@ -62,19 +66,27 @@ def _session_facts(
     model = model if model is not None else default_model()
     with _tracer.start_as_current_span("astra.heartwood.extract") as span:
         filtered = filter_session(transcript, client=client, model=model)
-        facts = [
+        resolved = [
             resolve_fact(f) for f in extract_facts(filtered.kept_text, client=client, model=model)
         ]
+        facts, refined_out = refine_facts(resolved, client=client, model=model)
         span.set_attribute("facts", len(facts))
+        span.set_attribute("facts.refined_out", len(refined_out))
         span.set_attribute("windows.kept", filtered.windows_kept)
         span.set_attribute("windows.dropped", filtered.windows_dropped)
         for f in facts:
             _facts_extracted.add(1, {"status": f.status, "kind": f.kind_hint or ""})
         for d in filtered.dropped:
             _spans_dropped.add(1, {"category": d.category})
+        _facts_refined_out.add(len(refined_out))
     # world is "faerrin" by construction — faerrin_session only matches faerrin campaigns (P2.3).
     return SessionFacts(
-        date=date, show=show, world="faerrin", facts=facts, dropped=filtered.dropped
+        date=date,
+        show=show,
+        world="faerrin",
+        facts=facts,
+        refined_out=refined_out,
+        dropped=filtered.dropped,
     )
 
 

@@ -11,6 +11,7 @@
       "!**/tests/fixtures/**",
       "!**/linguist/data/**",
       "!**/linguist/timeline/**",
+      "!**/heartwood-backend/facts/**",
       "!**/routeTree.gen.ts",
       "!**/src/generated/**",
       "!**/public/**",

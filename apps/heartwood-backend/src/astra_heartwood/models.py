@@ -63,6 +63,26 @@ class ResolvedFact(_Base):
     candidates: list[tuple[str, float]] = []
 
 
+# Why a candidate fact is not durable setting-wiki material.
+DropCategory = Literal["event", "ability", "possession", "mechanical", "nonsensical"]
+# The refinement verdict's category — `setting` is the keep case; the rest are drops.
+RefineCategory = Literal["setting", "event", "ability", "possession", "mechanical", "nonsensical"]
+
+
+class RefinedOutFact(_Base):
+    """A draft fact the refinement pass dropped as non-wiki material (Stage 2.5 audit).
+
+    Parallel to ``DroppedSpan`` for the filter: events, game mechanics, item possession,
+    economic/stat values, and nonsensical/unsupported claims are removed here so only
+    standing narrative setting facts remain. ``category`` records which.
+    """
+
+    subject: str
+    claim: str
+    category: DropCategory
+    reason: str
+
+
 class SessionFacts(_Base):
     """The committed per-session artifact (one ``facts/<date>.json``)."""
 
@@ -70,4 +90,5 @@ class SessionFacts(_Base):
     show: str  # campaign slug
     world: str  # "faerrin" (the only world ingested in Phase 2, P2.3)
     facts: list[ResolvedFact] = []
-    dropped: list[DroppedSpan] = []
+    refined_out: list[RefinedOutFact] = []  # facts dropped as events (Stage 2.5 audit)
+    dropped: list[DroppedSpan] = []  # spans dropped by the filter (Stage 1 audit)

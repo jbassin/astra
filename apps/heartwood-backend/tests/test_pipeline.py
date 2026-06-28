@@ -15,6 +15,7 @@ from astra_heartwood.extract import _NounFacts
 from astra_heartwood.filter import WindowVerdict, _FilterVerdicts
 from astra_heartwood.models import NounFact, SessionFacts
 from astra_heartwood.pipeline import _session_facts, build_session_facts
+from astra_heartwood.refine import FactVerdict, _RefineVerdicts
 from astra_linguist.models import FormattedLine, Speaker, Transcript
 from pydantic import BaseModel
 
@@ -36,11 +37,19 @@ def _transcript(turns: list[tuple[str, str]]) -> Transcript:
 
 
 class _Stub:
-    """Dispatches by the requested output model: filter verdicts vs noun-facts."""
+    """Dispatches by the requested output model: filter verdicts, noun-facts, or refinements."""
 
-    def __init__(self, verdicts: list[WindowVerdict], facts: list[NounFact]) -> None:
-        self._verdicts = _FilterVerdicts(verdicts=verdicts).model_dump()
-        self._facts = _NounFacts(facts=facts).model_dump()
+    def __init__(
+        self,
+        verdicts: list[WindowVerdict],
+        facts: list[NounFact],
+        refinements: list[FactVerdict],
+    ) -> None:
+        self._payloads: dict[type, dict] = {
+            _FilterVerdicts: _FilterVerdicts(verdicts=verdicts).model_dump(),
+            _NounFacts: _NounFacts(facts=facts).model_dump(),
+            _RefineVerdicts: _RefineVerdicts(items=refinements).model_dump(),
+        }
 
     def call_structured(  # noqa: PLR0913
         self,
@@ -53,8 +62,7 @@ class _Stub:
         tool_name: str = "record",
         tool_description: str = "record",
     ) -> _M:
-        payload = self._verdicts if output_model is _FilterVerdicts else self._facts
-        return output_model.model_validate(payload)
+        return output_model.model_validate(self._payloads[output_model])
 
 
 def test_skips_non_faerrin_session_without_llm() -> None:
@@ -67,6 +75,15 @@ def test_end_to_end_assembles_resolved_session_facts() -> None:
     stub = _Stub(
         verdicts=[WindowVerdict(window_id=1, decision="keep", category="in_world", reason="lore")],
         facts=[NounFact(subject="Ichel", kind_hint="person", claim="Ichel leads the Scale.")],
+        refinements=[
+            FactVerdict(
+                index=0,
+                keep=True,
+                category="setting",
+                reason="standing role",
+                claim="Ichel leads the Scale.",
+            )
+        ],
     )
     sf = _session_facts("2099-1-1", "through-a-song-darkly", t, client=stub, model="stub")
     assert isinstance(sf, SessionFacts)
