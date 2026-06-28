@@ -1,6 +1,6 @@
 ---
 name: heartwood-0020-gotchas
-description: heartwood (0020) — LLM-maintained akasha setting wiki; Phase 1 DONE + Phase 2 (extraction engine) CODE BUILT, live acceptance re-run PAUSED; locked decisions + verified gotchas
+description: heartwood (0020) — LLM-maintained akasha setting wiki; Phase 1 + Phase 2 (extraction engine) DONE (acceptance CLOSED on first TSD session 2025-8-28); Phase 3 (prose proposer) next; locked decisions + verified gotchas
 metadata:
   type: project
 ---
@@ -13,15 +13,16 @@ play-by-play; chronicle + Script pages already cover narrative sequence), propos
 all resolved), `…-0020-phase1-registry-thoughts.md` (Phase-1 scope), `thoughts/astra/specs/0020-heartwood-phase1-registry-spec.md`.
 
 **Phase structure (5):** (1) ontology infra — `world` field + typed entity registry ✅ **DONE**;
-(2) **extraction engine** — **CODE BUILT, acceptance re-run PAUSED**; (3) **prose proposer** (the
-make-or-break house-voice gate — anti-AI-slop is THE bar); (4) review surface + write-back; (5)
+(2) **extraction engine** ✅ **DONE (acceptance CLOSED)**; (3) **prose proposer** (the make-or-break
+house-voice gate — anti-AI-slop is THE bar) **← NEXT**; (4) review surface + write-back; (5)
 backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 3.
 
-**▶ RESUME AT: re-run `astra-heartwood-extract 2026-6-8` (host, SOPS) with the S2.5 taxonomy, verify, have
-the stakeholder judge §11, then commit `facts/2026-6-8.json` + close Phase-2 acceptance.** See the Phase-2
-section below. Scope `…-phase2-extraction-thoughts.md`, spec `…/0020-heartwood-phase2-extraction-spec.md`.
+**▶ RESUME AT: Phase 3 — prose proposer** (scope → `octo:spec` → implement; scope/spec not yet started).
+The metric-less house-voice gate: turn the committed per-session noun-facts into wiki prose that does NOT
+read as AI slop (THE bar). Builds on the committed Phase-2 facts. Umbrella `…-0020-thoughts.md`,
+Phase-2 spec `…/0020-heartwood-phase2-extraction-spec.md`.
 
-## Phase 2 — extraction engine: CODE BUILT + PUSHED, live acceptance re-run PAUSED (2026-06-28)
+## Phase 2 — extraction engine: DONE + PUSHED, acceptance CLOSED on first TSD session `2025-8-28` (2026-06-28)
 
 New read-only app **`apps/heartwood-backend`** (pkg `astra-heartwood-backend`, module `astra_heartwood`):
 world-filter → **filter** (Stage 1) → **extract** (Stage 2) → **resolve()** → **refine** (Stage 2.5) →
@@ -37,12 +38,22 @@ S3 `c148c47` / S4 `9591ac9` / **S2.5 `a1225fb`**, + `fix(llm)` `98ef460` + `feat
 - **biome formats committed JSON → exclude the facts data dir.** The pre-commit gate's biome check scans
   UNTRACKED files too, so an unformatted `apps/heartwood-backend/facts/*.json` blocks every commit. Added
   `"!**/heartwood-backend/facts/**"` to `biome.json` `files.includes` (the `linguist/timeline/**` precedent).
-- **`astra_llm` crashed on malformed tool-call JSON (shared-lib gap, fixed `98ef460`).** A *successful*
-  completion can still carry truncated/garbled JSON in a forced tool call (GLM on large structured outputs);
-  `litellm.num_retries` only covers API errors, so `json.loads` raised a raw `JSONDecodeError` that killed
-  the whole run (bit the 2nd live run mid-refine). Fix: bounded retry of the completion+parse
-  (`_TOOL_JSON_ATTEMPTS=3`) → typed `LlmError`. Helps chronicle/mouthpiece too. To shrink risk, refine
-  batches are small (`REFINE_CHUNK_FACTS=20`).
+- **`astra_llm` forced-tool calls fail two flaky ways on GLM-via-OpenRouter; the client bounded-retries
+  both (`_TOOL_JSON_ATTEMPTS=3`).** (a) **Malformed/garbled tool JSON** in an otherwise-successful completion
+  (`98ef460`) — `litellm.num_retries` only covers API errors, so `json.loads` raised a raw `JSONDecodeError`
+  that killed the run; bounded completion+parse retry → typed `LlmError`. (b) **`finish_reason=stop` with NO
+  tool call at all** on a forced tool (`608fc63`, this session — bit the §11 refine stage). The code used to
+  fall straight through to a hard "did not call the forced tool" error; now it retries within the same loop.
+  Both helps chronicle/mouthpiece too. To shrink risk, refine batches are small (`REFINE_CHUNK_FACTS=20`).
+- **⚠️ GLM-5.2 reasoning tokens SHARE the `max_tokens` budget with the tool-call output** (fixed `a0e13ee`,
+  this session). The extractor is an *exhaustive* enumeration ("record every noun-fact"), so a dense chunk's
+  fact list + reasoning blew past the 8k cap → the client's truncation guard (`finish_reason=="length"`)
+  rightly rejected the partial result. **Shrinking the chunk alone did NOT fix it** (21 provider calls proved
+  chunking engaged; one chunk still overflowed) — reasoning is the dominant consumer. Fix: raise
+  `EXTRACT`/`REFINE_MAX_TOKENS` 8k→**16k** (the client `DEFAULT_MAX_TOKENS`; heartwood had deliberately
+  undercut it) + drop `EXTRACT_CHUNK_WORDS` 16k→**4k** for extra headroom. **NB the v4 (pre-guard) run's
+  "144 facts" was a SILENTLY TRUNCATED list** — the guard now surfaces what was hidden. For any GLM
+  `call_structured` over a large/open-ended output, budget 16k and chunk small.
 - **World filter = 40 ingested / 3 world-drop / 1 EXCLUDED_DATES** (NOT "41" — the scope/spec first said 41;
   `2025-8-11` sits inside the 33 `through-a-song-darkly` `.txt` and is excluded → 32 main + 8 side = 40).
   `faerrin_session(date)` = `show_for_date` (honors EXCLUDED_DATES) ∩ `faerrin_campaign_slugs`. **Verify
@@ -50,7 +61,8 @@ S3 `c148c47` / S4 `9591ac9` / **S2.5 `a1225fb`**, + `fix(llm)` `98ef460` + `feat
   its `Transcript` model + `show_for_date`; accepts its dspy/wordfreq transitive weight).
 - **P2.1 REVISED the umbrella: PCs ARE wiki-eligible** (umbrella §5 hard-problem #2 / §3a edited). No PC
   special-casing in extraction; the registry's 20 PCs resolve like any noun.
-- **Stakeholder forks (this session):** held-out gate = **2026-6-8**; **no citations** in Phase 2 (lean
+- **Stakeholder forks:** held-out gate was **2026-6-8**, later **relocated to the first TSD session
+  `2025-8-28`** (chronological order — see the acceptance bullet below); **no citations** in Phase 2 (lean
   facts); **PCs get pages** (P2.1). And the big one ↓.
 - **The refinement pass (Stage 2.5, `refine.py`) is feedback-driven + load-bearing.** The window filter
   (Stage 1) can't stop a *kept* window's durable facts from sitting beside event narration, so the extractor
@@ -70,10 +82,23 @@ S3 `c148c47` / S4 `9591ac9` / **S2.5 `a1225fb`**, + `fix(llm)` `98ef460` + `feat
   relationships) + the `nonsensical` drop category reduce these; the rest is what the human review (Phase 4)
   exists for. Resolve-threshold tuning could catch Voidheart but trades against real garbles at ~0.86
   (`Y'shael→Ichel`) — defer, tune carefully.
-- **Live run mechanics:** host-side `OTEL_SDK_DISABLED=true uv run astra-heartwood-extract <date>`; ~$0.5/run
-  over a ~246K transcript (~filter+extract+refine batches); prints on completion only (writes `facts/<date>`
-  atomically at the end). `facts/2026-6-8.json` is currently UNtracked + STALE (v4, pre-taxonomy) → the
-  re-run regenerates it; commit it then.
+- **Live run mechanics:** host-side `OTEL_SDK_DISABLED=true uv run astra-heartwood-extract <date>`; ~$0.5/run;
+  litellm "Provider List" lines + the final result print **only flush at process exit** (buffered through the
+  pipe — a mid-run log looks empty even while healthy; rely on the bg-task completion signal, not a log tail).
+  Writes `facts/<date>.json` atomically at the very end, so a mid-pipeline crash leaves NO new artifact.
+- **Acceptance was RELOCATED off the held-out 2026-6-8 → the FIRST `through-a-song-darkly` session
+  `2025-8-28`** (stakeholder call, this session). Rationale: **process the campaign in chronological order**
+  so later sessions key off the world built up earlier. Closed §11 = GOOD PASS: `facts/2025-8-28.json`
+  (`e0508ad`), **149 facts / 38 refined-out / 95 dropped**, page-aware (47 existing-page / 72 known-no-page /
+  25 new / 5 ambiguous), taxonomy clean, no raw mislabels. The stale `facts/2026-6-8.json` (v4) was discarded.
+- **Page-awareness (answers "does it see existing pages?"): YES, at RESOLUTION, not extraction.** The
+  registry (`entity.kdl`) is seeded from the **akasha wiki snapshot** ∪ `defs.kdl` ∪ faerrin PCs
+  (`ontology-entity/seed.py`); each `EntityRef` carries a `page`. So a fact resolves to: **resolved + page**
+  = update an existing page; **resolved + no page** = known entity, new-page candidate; **unknown** = net-new
+  noun. The extractor itself reads only the transcript (page-blind). **The "world builds on itself" loop does
+  NOT yet close across heartwood's own sessions** — a session's discovered facts live only in `facts/*.json`
+  (drafts); they reach the registry only after **Phase-4 write-back + re-seed**. So **full backfill is
+  Phase 5**, gated behind 3–4 (backfilling extraction-only now would just be reprocessed later).
 
 ## Phase 1 — BUILT + PUSHED (all 5 slices CI-green, `139db9f`…`e0458f9`, 2026-06-27)
 
