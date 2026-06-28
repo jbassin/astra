@@ -240,6 +240,10 @@ entity "Benny Boy" {
     alias "Benny boy"
     source "defs"
 }
+entity "Berth Four" {
+    alias "Bertha\\s*Ford"
+    source "defs"
+}
 entity "Bev Sirnow" {
     alias "Bev Cerno"
     source "defs"

@@ -1023,3 +1023,6 @@ entry "Iomenei" {
     variant "Iominae"
     variant "Iomine"
 }
+entry "Berth Four" {
+    variant "Bertha\\s*Ford"
+}
