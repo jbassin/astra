@@ -1,0 +1,299 @@
+proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
+    page "Bestiary/Augers" op="create" canonical="Augers" kind="creature" status="unknown" page-type="lore" body="bestiary-augers.vellum" {
+        fact "Augers are creatures created through a divination ritual; feeding them improves the divination."
+    }
+    page "Bestiary/Tywelwyn" op="create" canonical="Tywelwyn" kind="creature" status="resolved" page-type="lore" body="bestiary-tywelwyn.vellum" {
+        fact "Tywelwyn is a male sprite."
+        fact "Tywelwyn operates a roller rink and has been driven mad, likely by sounds transmitted into his head."
+    }
+    page "Bestiary/Ugathal" op="create" canonical="Ugathal" kind="creature" status="resolved" page-type="lore" body="bestiary-ugathal.vellum" {
+        fact "Ugathal are pink, fleshy creatures resembling naked mole rats with featureless faces whose eyes sink into sockets and other facial features melt off into the skin."
+        fact "When transforming, Ugathal grow about a foot and a half in size and their clothes melt into their body."
+        fact "A proboscis grows from an Ugathal's featureless face to drain blood from victims."
+        fact "Ugathals do not feel pain and their bodies lose form when damaged; their flesh is stringy with no blood inside, just more flesh."
+    }
+    page "Bestiary/goblinoid" op="create" canonical="goblinoid" kind="creature" status="unknown" page-type="lore" body="bestiary-goblinoid.vellum" {
+        fact "Goblinoids in this area of the city work in factories and wear workman's attire."
+    }
+    page "Geography/Black and White/index" op="rewrite" canonical="Black and White" kind="place" status="resolved" page-type="lore" body="geography-black-and-white-index.vellum" {
+        fact "Black and White is an organization that issues badges."
+        conflict "The cited fact identifies Black and White as an organization, while the existing page describes it as a world."
+    }
+    page "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic" op="rewrite" canonical="Sin and Tonic" kind="place" status="resolved" page-type="lore" body="geography-calaria-hallia-sableclutch-sin-and-tonic.vellum" {
+        fact "Sin and Tonic is a pub that is a Fane sustained by the heart Gin Soaked Rag."
+        fact "Sin and Tonic is a single-floor building with no second floor."
+        fact "Sin and Tonic has a garage."
+        fact "The beds at Sin and Tonic are not particularly comfortable, roughly two-star hotel quality."
+        fact "Sin and Tonic is located in a not-particularly-well-to-do commercialized area of Hallia, one of the poorer parts of the city."
+    }
+    page "Geography/Calaria/Hallia/Sableclutch/index" op="rewrite" canonical="Sableclutch" kind="place" status="resolved" page-type="lore" body="geography-calaria-hallia-sableclutch-index.vellum" {
+        fact "Sableclutch is a district in Hallia that contains a scrapyard."
+        fact "Sableclutch is a scrapyard located in the Sableclutch neighborhood of Hallia."
+        fact "Sableclutch is located voidward and downward from Hallia's city center, in an undeveloped factory area."
+        fact "Sableclutch is a neighborhood in Hallia."
+        fact "Sableclutch has many churches, mostly dedicated to the Host and a smattering of other gods."
+        fact "Sableclutch is a junkyard that gives jobs to anyone willing to do them."
+        fact "Sableclutch contains a giant crusher."
+    }
+    page "Geography/Fifth Ave/index" op="create" canonical="Fifth Ave" kind="place" status="unknown" page-type="lore" body="geography-fifth-ave-index.vellum" {
+        fact "Fifth Ave is a street with upscale jewelry shops and high-end residential areas on the east side of a city."
+    }
+    page "Geography/Færrin" op="rewrite" canonical="Færrin" kind="place" status="resolved" page-type="lore" body="geography-frrin.vellum" {
+        fact "Færrin is a place associated with pug people."
+        lint "broken_wikilink" message="Wikilink target not found: pug people. Check the page exists (or create it)." hit="pug people"
+    }
+    page "Geography/Masque District/index" op="create" canonical="Masque District" kind="place" status="resolved" page-type="lore" body="geography-masque-district-index.vellum" {
+        fact "The Masque District is a district in the city where tourists stay and where hotels are located."
+    }
+    page "Geography/The Undertable/index" op="create" canonical="The Undertable" kind="place" status="unknown" page-type="lore" body="geography-the-undertable-index.vellum" {
+        fact "The Undertable is a pawn shop located in Star 12, down the horizon in Hallia."
+        fact "The Undertable is a narrow building squeezed between two former homes, with a handwritten sign and no display windows."
+        fact "The Undertable sells appliances, jewelry, radios in various states of deconstruction, and firearms."
+    }
+    page "Geography/starward/index" op="create" canonical="starward" kind="place" status="resolved" page-type="lore" body="geography-starward-index.vellum" {
+        fact "Starward is an area down the horizon in Hallia that is seedier and less well-maintained than the central areas."
+        fact "Starward was built up with buildings expecting a boom from the tram line that never materialized, and has not been maintained over the past few decades."
+    }
+    page "Org/Belvedere" op="rewrite" canonical="Belvedere" kind="org" status="resolved" page-type="lore" body="org-belvedere.vellum" {
+        fact "Belvedere has more Fanes than most places, and hearts exist more frequently there as part of the hierarchy."
+        fact "Most Fanes in Belvedere are not combined areas."
+        fact "Belvedere is a faction that includes academic fellows and archivists."
+        fact "Anzu's family is involved in different areas of the Belvedere faction."
+        fact "Belvedere is, among other things, a school where children receive education."
+        fact "Belvedere is located in Austrene."
+    }
+    page "Org/Blackline/index" op="create" canonical="Blackline" kind="org" status="unknown" page-type="lore" body="org-blackline-index.vellum" {
+        fact "Blackline is a private law enforcement company that polices the nicer parts of the city."
+        fact "Blackline requires a paid subscription for their law enforcement services."
+        fact "Blackline officers wear full uniforms and carry batons."
+    }
+    page "Org/Chorath/index" op="create" canonical="Chorath" kind="org" status="resolved" page-type="lore" body="org-chorath-index.vellum" {
+        fact "Chorath is a large tire company."
+        fact "The Chorath is a restaurant and city-rating guide similar to the Michelin Guide, produced by Chorath."
+        fact "Cities must pay the Chorath to come and evaluate them."
+    }
+    page "Org/Church of Riostad/index" op="create" canonical="Church of Riostad" kind="org" status="unknown" page-type="lore" body="org-church-of-riostad-index.vellum" {
+        fact "The Church of Riostad is a religious organization."
+    }
+    page "Org/Iconoclasm/index" op="rewrite" canonical="Iconoclasm" kind="org" status="resolved" page-type="lore" body="org-iconoclasm-index.vellum" {
+        fact "Iconoclasm is a religious organization that functions as an orphanage."
+        fact "Iconoclasm was founded by Illmari Vaino."
+        fact "Iconoclasm is subject to rumors that it employs children."
+        fact "Iconoclasm is an organization with which Johnny is affiliated."
+    }
+    page "Org/Prime Meridian/index" op="rewrite" canonical="Prime Meridian" kind="org" status="resolved" page-type="lore" body="org-prime-meridian-index.vellum" {
+        fact "Prime Meridian Meridian, also called Zero, is a wealthy area of the city where residents can afford cars and public transit does not reach."
+    }
+    page "Org/Pyrelight/index" op="rewrite" canonical="Pyrelight" kind="org" status="resolved" page-type="lore" body="org-pyrelight-index.vellum" {
+        fact "Pyrelight is associated with Embercall Industries, which is the commercial name used on bills of materials."
+    }
+    page "Org/Roundhat Gang/People/Tywelwyn Leatherhide" op="rewrite" canonical="Tywelwyn Leatherhide" kind="person" status="resolved" page-type="lore" body="org-roundhat-gang-people-tywelwyn-leatherhide.vellum" {
+        fact "Tywelwyn Leatherhide is associated with the Roundhat Gang and was opening a roller rink."
+    }
+    page "Org/Roundhat Gang/index" op="rewrite" canonical="Roundhat Gang" kind="org" status="resolved" page-type="lore" body="org-roundhat-gang-index.vellum" {
+        fact "The Roundhat Gang runs a roller rink."
+    }
+    page "Org/Scale/index" op="create" canonical="Scale" kind="org" status="resolved" page-type="lore" body="org-scale-index.vellum" {
+        fact "Scale is an organization that empowers arbiters to perform bounty hunting."
+        fact "Scale does not hire random people for bounty work; it only trusts empowered arbiters."
+    }
+    page "Org/The Scale/index" op="rewrite" canonical="The Scale" kind="org" status="resolved" page-type="lore" body="org-the-scale-index.vellum" {
+        fact "The Scale is a law body described as non-transparent."
+        fact "Aaron Cross and Joran Davinrock are operatives of the Scale."
+    }
+    page "Org/Threshold Authority/index" op="create" canonical="Threshold Authority" kind="org" status="unknown" page-type="lore" body="org-threshold-authority-index.vellum" {
+        fact "The Threshold Authority is the law enforcement organization in the region, also known as 'the TA.'"
+        fact "Threshold Authority is a law enforcement entity whose officers wear greenish uniforms bearing the letters TA."
+    }
+    page "Org/Unsorted/People/Anaïs" op="create" canonical="Anaïs" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-anais.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Anaïs is an adventurer, referred to as one of 'the twins.'"
+        fact "Anaïs knows Copperjaw."
+        lint "broken_wikilink" message="Wikilink target not found: adventurer. Check the page exists (or create it)." hit="adventurer"
+    }
+    page "Org/Unsorted/People/Anouk" op="create" canonical="Anouk" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-anouk.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Anouk is an adventurer, referred to as one of 'the twins.'"
+        fact "Anouk knows an old friend who runs a scrapyard in Sableclutch that is always looking for couriers."
+    }
+    page "Org/Unsorted/People/Anzu" op="create" canonical="Anzu" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-anzu.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Anzu is an academic fellow involved with Belvedere."
+        fact "Anzu is from Belvedere."
+        fact "Anzu's family is relatively well-off and involved in different areas of Belvedere."
+        fact "Anzu's father is an archivist in Belvedere."
+        fact "Anzu's mother is not technically a member of Belvedere and handles the family affairs."
+        fact "Anzu was born in a nest."
+        fact "Anzu has a bird companion."
+        fact "Anzu keeps a creature named Othello on their shoulder."
+    }
+    page "Org/Unsorted/People/Arctos" op="create" canonical="Arctos" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-arctos.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Arctos are people empowered by the Scale to perform bounty hunting."
+    }
+    page "Org/Unsorted/People/Argyle" op="create" canonical="Argyle" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-argyle.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Argyle is a licensed doctor."
+        fact "Argyle is approximately 20 years old in human years."
+        fact "Argyle came from a farm."
+        fact "Argyle's eyes are changing from gold to a bright white, almost bluish color."
+        fact "Argyle's parents are Aaron Cross and Joran Davinrock, who are operatives of the Scale."
+        fact "Argyle knows all members of the Scale."
+    }
+    page "Org/Unsorted/People/Atum" op="create" canonical="Atum" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-atum.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Atum is Benny's father and is located in Belvedere."
+        fact "Atum is Benny's father."
+    }
+    page "Org/Unsorted/People/Benny" op="create" canonical="Benny" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-benny.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Benny is a child, approximately nine years old, who wears a name tag."
+        fact "Benny is nine years old."
+        fact "Benny was called by the Voidsong."
+        fact "Benny is from Belvedere."
+        fact "Benny does not have a mother present in his life."
+        fact "Benny's father is Atum."
+        fact "Benny is a nine-year-old child."
+        fact "Benny's father is named Atum."
+        fact "Benny likes comics."
+    }
+    page "Org/Unsorted/People/Copperjaw" op="create" canonical="Copperjaw" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-copperjaw.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Copperjaw is a dwarven man."
+        fact "Copperjaw has a crude copper prosthetic replacing his missing bottom jaw."
+        fact "Copperjaw bears signs of many past fights, including a mashed-up nose, and continues to get into fights."
+        fact "Copperjaw is approximately 120–130 years old, placing him at the end of middle age by dwarven standards."
+        fact "Copperjaw works at the Sableclutch Scrap scrapyard."
+        fact "Copperjaw runs a junkyard called Sableclutch Scrap."
+        fact "Copperjaw waddles when he walks."
+        fact "Copperjaw uses a giant crusher in his scrapyard to deter unwanted visitors."
+        fact "Copperjaw has an office set up in a converted storage container near the front of his scrapyard."
+        fact "Copperjaw crafted the contents of the metal suitcase."
+        lint "broken_wikilink" message="Wikilink target not found: metal suitcase. Check the page exists (or create it)." hit="metal suitcase"
+    }
+    page "Org/Unsorted/People/Elias" op="create" canonical="Elias" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-elias.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Elias is a dwarf who serves as quartermaster."
+    }
+    page "Org/Unsorted/People/Johnny" op="create" canonical="Johnny" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-johnny.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Smiler at the Undertable serves as Johnny's trusted supplier for weapons and armor."
+        lint "broken_wikilink" message="Wikilink target not found: Smiler at the Undertable. Check the page exists (or create it)." hit="Smiler at the Undertable"
+    }
+    page "Org/Unsorted/People/Mutagen" op="create" canonical="Mutagen" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-mutagen.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Mutagen is a Blackline officer who cannot speak, having lost his voice in an accident during a scuffle."
+        fact "Mutagen is the partner of Officer Smith."
+    }
+    page "Org/Unsorted/People/Officer Smith" op="create" canonical="Officer Smith" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-officer-smith.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Officer Smith is a human Blackline officer in his late forties."
+    }
+    page "Org/Unsorted/People/Patchwork Prince" op="create" canonical="Patchwork Prince" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-patchwork-prince.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "The Patchwork Prince is a major antagonist, described as an old, defenseless man."
+    }
+    page "Org/Unsorted/People/Smiler" op="create" canonical="Smiler" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-smiler.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Smiler is a centaur, about nine feet tall."
+        fact "Smiler is the proprietor of the Undertable pawn shop and also a fence."
+        fact "Smiler wears a stained white tee, multiple yellowish metal bands on his arms, flare gauges with gems in his ears, and has a braided tail and beard with gems throughout."
+        fact "Smiler is acquainted with Johnny, who has dealt with him before."
+        fact "Smiler works at a pawn shop."
+        lint "broken_wikilink" message="Wikilink target not found: Undertable. Check the page exists (or create it)." hit="Undertable"
+    }
+    page "Org/Unsorted/People/Tanner" op="create" canonical="Tanner" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-tanner.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Tanner is incredibly light in weight."
+        fact "Tanner has a bird companion named Othello whose eyes he can see through."
+        lint "encyclopedia_opener" message="Encyclopedia opener (\"X is a/the …\"). Lead with a point of view or tension, not the dictionary-entry cadence."
+    }
+    page "Org/Unsorted/People/Tywelwyn's" op="create" canonical="Tywelwyn's" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-tywelwyns.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+        fact "Tywelwyn's are two people who are particularly good at crafting but do not run a store."
+        fact "One of Tywelwyn's twins is male."
+    }
+    page "Phenomena/Embercall" op="create" canonical="Embercall" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-embercall.vellum" {
+        fact "Embercall is a signal or song that a radar dish may receive; the dish could potentially be tuned away from Embercall to receive the Voidsong instead."
+        lint "broken_wikilink" message="Wikilink target not found: radar dishes. Check the page exists (or create it)." hit="radar dishes"
+    }
+    page "Phenomena/Fane" op="create" canonical="Fane" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-fane.vellum" {
+        fact "A Fane is a magical construct whose presence is dictated by a heart."
+        fact "The size of a Fane is directly related to the amount of magical energy available to its sustaining heart."
+        fact "Multiple hearts can maintain the same Fane to cover larger areas; this approach is used by large organizational headquarters."
+        fact "When hearts with different personalities are combined in one Fane, the result has a patchwork appearance."
+    }
+    page "Phenomena/Harmony/Voidsong" op="rewrite" canonical="Voidsong" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-harmony-voidsong.vellum" {
+        fact "The Voidsong is a signal that a radar dish could be tuned to receive."
+    }
+    page "Phenomena/Zorbon" op="create" canonical="Zorbon" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-zorbon.vellum" {
+        fact "Zorbon is a phenomenon involving mushrooms believed to be present in radio broadcasts and food; tinfoil hats are thought to protect against it."
+    }
+    page "Phenomena/slides" op="create" canonical="slides" kind="phenomenon" status="unknown" page-type="lore" body="phenomena-slides.vellum" {
+        fact "Slides are a travel technology that allows movement to locations outside city limits; their use is restricted within city limits for security reasons."
+        lint "broken_wikilink" message="Wikilink target not found: slide. Check the page exists (or create it)." hit="slide"
+    }
+    page "needs-placement/Aaron Cross" op="create" canonical="Aaron Cross" status="unknown" page-type="lore" body="needs-placement-aaron-cross.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+        fact "Aaron Cross is Argyle's parent and an operative of the Scale."
+    }
+    page "needs-placement/Helmstier" op="create" canonical="Helmstier" status="unknown" page-type="lore" body="needs-placement-helmstier.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+        fact "Helmstier is a small town in the mountains on the border between two countries."
+    }
+    page "needs-placement/Joran Davinrock" op="create" canonical="Joran Davinrock" status="unknown" page-type="lore" body="needs-placement-joran-davinrock.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+        fact "Joran Davinrock is Argyle's parent and an operative of the Scale."
+    }
+    page "needs-placement/Sentience Distributor" op="create" canonical="Sentience Distributor" kind="item" status="unknown" page-type="lore" body="needs-placement-sentience-distributor.vellum" placement-note="kind=item has no corpus folder; human to place (§6)" {
+        fact "The Sentience Distributor is an arcane enchanted item that spreads a signal."
+        fact "The Sentience Distributor is very fragile."
+    }
+    page "needs-placement/The Last Stop" op="create" canonical="The Last Stop" status="unknown" page-type="lore" body="needs-placement-the-last-stop.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+        fact "The Last Stop is a bar in Helmstier run by a half-elven barkeep."
+        fact "The Last Stop's name is a multifaceted joke: it is the last stop of the night, and the last stop on the border before entering or leaving the country."
+    }
+    page "needs-placement/the Heart" op="create" canonical="the Heart" status="resolved" page-type="lore" body="needs-placement-the-heart.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+        fact "The Heart is a deity or group of deities with many churches in Sableclutch."
+    }
+    unplaced subject="Embercall Industries" claim="Embercall Industries is the business name associated with Pyrelight, used on bills of materials." {
+        candidate "Embercall's" score="0.619717868338558"
+        candidate "Embercall" score="0.6112592592592593"
+        candidate "Ternion Heavy Industries" score="0.569047619047619"
+        candidate "Amber Call" score="0.5257407407407407"
+        candidate "Verdant Expanse" score="0.5138888888888888"
+    }
+    unplaced subject="Othello" claim="Othello is a bird capable of flying and scouting overhead." {
+        candidate "Ichel" score="0.6497835497835498"
+        candidate "of Hallia" score="0.6211428571428572"
+        candidate "Ugathal" score="0.5583333333333332"
+        candidate "Aut" score="0.5571428571428572"
+        candidate "Hallia" score="0.506926406926407"
+    }
+    unplaced subject="Othello" claim="Othello is a creature that perches on Anzu's shoulder." {
+        candidate "Ichel" score="0.6497835497835498"
+        candidate "of Hallia" score="0.6211428571428572"
+        candidate "Ugathal" score="0.5583333333333332"
+        candidate "Aut" score="0.5571428571428572"
+        candidate "Hallia" score="0.506926406926407"
+    }
+    unplaced subject="Othello" claim="Othello is a normal-sized raven that belongs to Anzu." {
+        candidate "Ichel" score="0.6497835497835498"
+        candidate "of Hallia" score="0.6211428571428572"
+        candidate "Ugathal" score="0.5583333333333332"
+        candidate "Aut" score="0.5571428571428572"
+        candidate "Hallia" score="0.506926406926407"
+    }
+    unplaced subject="Void 2" claim="Void 2 is a station or zone in the city's transit system, one stop away from the central hub on its line." {
+        candidate "Voidsong" score="0.6802597402597402"
+        candidate "voidward" score="0.675"
+        candidate "Verdant" score="0.42761904761904757"
+        candidate "Fort DC" score="0.4252380952380952"
+        candidate "Yeenut" score="0.4083333333333333"
+    }
+    skipped target-path="Geography/Austrene/index" reason="already-known"
+    skipped target-path="Geography/Calaria/Hallia/index" reason="already-known"
+    skipped target-path="Org/Concordia" reason="already-known"
+    skipped target-path="Org/Iconoclasm/People/Dura Oil-Drinker" reason="already-known"
+    skipped target-path="Org/Iconoclasm/People/Gin Soaked Rag" reason="already-known"
+    skipped target-path="Org/Iconoclasm/People/Illmari Vaino" reason="already-known"
+    skipped target-path="Org/RunGunners/index" reason="already-known"
+    registry-add canonical="Aaron Cross" suggested-path="needs-placement/Aaron Cross"
+    registry-add canonical="Augers" kind="creature" suggested-path="Bestiary/Augers"
+    registry-add canonical="Blackline" kind="org" suggested-path="Org/Blackline/index"
+    registry-add canonical="Church of Riostad" kind="org" suggested-path="Org/Church of Riostad/index"
+    registry-add canonical="Elias" kind="person" suggested-path="Org/Unsorted/People/Elias"
+    registry-add canonical="Fifth Ave" kind="place" suggested-path="Geography/Fifth Ave/index"
+    registry-add canonical="Helmstier" suggested-path="needs-placement/Helmstier"
+    registry-add canonical="Joran Davinrock" suggested-path="needs-placement/Joran Davinrock"
+    registry-add canonical="Officer Smith" kind="person" suggested-path="Org/Unsorted/People/Officer Smith"
+    registry-add canonical="Patchwork Prince" kind="person" suggested-path="Org/Unsorted/People/Patchwork Prince"
+    registry-add canonical="Sentience Distributor" kind="item" suggested-path="needs-placement/Sentience Distributor"
+    registry-add canonical="Tanner" kind="person" suggested-path="Org/Unsorted/People/Tanner"
+    registry-add canonical="The Last Stop" suggested-path="needs-placement/The Last Stop"
+    registry-add canonical="The Undertable" kind="place" suggested-path="Geography/The Undertable/index"
+    registry-add canonical="Threshold Authority" kind="org" suggested-path="Org/Threshold Authority/index"
+    registry-add canonical="goblinoid" kind="creature" suggested-path="Bestiary/goblinoid"
+    registry-add canonical="slides" kind="phenomenon" suggested-path="Phenomena/slides"
+}
