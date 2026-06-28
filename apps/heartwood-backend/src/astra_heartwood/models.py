@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Literal
 
-from astra_ontology import EntityKind
+from astra_ontology import EntityKind, EntityRef, ResolveStatus
 from pydantic import BaseModel, ConfigDict
 
 
@@ -42,3 +42,32 @@ class NounFact(_Base):
     subject: str
     kind_hint: EntityKind | None = None
     claim: str
+
+
+class ResolvedFact(_Base):
+    """A NounFact plus its registry resolution (spec §5/§8).
+
+    ``status="resolved"`` ⇒ ``entity`` is set (its ``page`` ⇒ update-candidate; ``page``
+    None ⇒ new-page candidate; ``being`` set ⇒ a PC — still a valid target, P2.1).
+    ``ambiguous``/``unknown`` ⇒ ``entity`` is None and ``candidates`` carries the top-K
+    (canonical, score) for the human. A genuinely new entity surfaces as ``unknown`` —
+    Phase 2 only flags it (discovery/registry-add is Phase 3/4).
+    """
+
+    subject: str
+    kind_hint: EntityKind | None = None
+    claim: str
+    status: ResolveStatus
+    entity: EntityRef | None = None
+    confidence: float
+    candidates: list[tuple[str, float]] = []
+
+
+class SessionFacts(_Base):
+    """The committed per-session artifact (one ``facts/<date>.json``)."""
+
+    date: str
+    show: str  # campaign slug
+    world: str  # "faerrin" (the only world ingested in Phase 2, P2.3)
+    facts: list[ResolvedFact] = []
+    dropped: list[DroppedSpan] = []

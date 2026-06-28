@@ -16,6 +16,9 @@ dependencies = [
     "pydantic>=2",
 ]
 
+[project.scripts]
+astra-heartwood-extract = "astra_heartwood.pipeline:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
