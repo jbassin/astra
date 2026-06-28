@@ -25,6 +25,9 @@ NON_PROSE_TYPES: frozenset[PageType] = frozenset({"deity-statblock", "timeline",
 #: Page types that face the literary prose bar (a stub graduates to prose on its first paragraph).
 PROSE_PAGE_TYPES: frozenset[PageType] = frozenset({"lore", "stub"})
 
+#: The prose-cadence tells (vs broken_wikilink/empty) — only these trigger the bounded revise (§8).
+PROSE_TELL_TYPES = frozenset({"encyclopedia_opener", "it_is_template", "intensifier"})
+
 #: "{Name} is a/an/the {type}…" — the dictionary-entry cadence the house voice avoids (§8).
 _OPENER_RE = re.compile(r"^\s*(?:\[\[)?[A-Z][\w'’ -]*?(?:\]\])?\s+is\s+(?:a|an|the)\s+\w+")
 #: A second sentence opening "It is …" — the slop archetype's templated cadence.

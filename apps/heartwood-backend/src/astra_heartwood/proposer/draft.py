@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from astra_llm import TextRequest
 
 from ..llm import TextClient, default_model, real_text_client
-from .models import PageProposal
+from .models import PageProposal, VoiceWarning
 from .voice import ALREADY_KNOWN_MARKER, CONFLICTS_MARKER, DRAFT_SYSTEM
 
 #: Free-text budget per draft. The body is tiny (1–3 sentences) but GLM-5.2 reasoning tokens share
@@ -93,3 +93,29 @@ def draft_page(
         )
     )
     return _parse_draft(raw, is_rewrite=proposal.op == "rewrite")
+
+
+def revise_draft(
+    body: str,
+    lints: list[VoiceWarning],
+    *,
+    client: TextClient,
+    model: str,
+) -> str:
+    """One de-slopping pass (P3.6): clear the named tells, same facts/crossrefs/length."""
+    issues = "\n".join(f"- {w.message}" for w in lints)
+    user = (
+        "Here is a draft passage:\n\n"
+        f"{body.strip()}\n\n"
+        "It has these voice problems:\n"
+        f"{issues}\n\n"
+        "Rewrite it to remove these specific tells. Keep EXACTLY the same facts and the same "
+        "[[crossrefs]], the same length, and the same point of view and tense. "
+        "Output only the rewritten passage."
+    )
+    revised = client.call_text(
+        TextRequest(
+            system=DRAFT_SYSTEM, user_content=user, model=model, max_tokens=DRAFT_MAX_TOKENS
+        )
+    )
+    return revised.strip()
