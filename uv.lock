@@ -10,6 +10,7 @@ resolution-markers = [
 members = [
     "astra-akasha-backend",
     "astra-config",
+    "astra-heartwood-backend",
     "astra-lexicon",
     "astra-linguist",
     "astra-llm",
@@ -242,6 +243,35 @@ requires-dist = [
     { name = "ckdl", specifier = ">=1.0" },
     { name = "pydantic", specifier = ">=2" },
     { name = "pyyaml", specifier = ">=6" },
+]
+
+[[package]]
+name = "astra-heartwood-backend"
+version = "0.0.0"
+source = { editable = "apps/heartwood-backend" }
+dependencies = [
+    { name = "astra-config" },
+    { name = "astra-linguist" },
+    { name = "astra-llm" },
+    { name = "astra-observe" },
+    { name = "astra-ontology" },
+    { name = "astra-ontology-being" },
+    { name = "astra-ontology-entity" },
+    { name = "dagster" },
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "astra-config", editable = "libs/py/config" },
+    { name = "astra-linguist", editable = "apps/linguist" },
+    { name = "astra-llm", editable = "libs/py/llm" },
+    { name = "astra-observe", editable = "libs/py/observe" },
+    { name = "astra-ontology", editable = "libs/py/ontology" },
+    { name = "astra-ontology-being", editable = "ontology/ontology-being" },
+    { name = "astra-ontology-entity", editable = "ontology/ontology-entity" },
+    { name = "dagster" },
+    { name = "pydantic", specifier = ">=2" },
 ]
 
 [[package]]

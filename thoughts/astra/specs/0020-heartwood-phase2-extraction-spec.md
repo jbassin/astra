@@ -87,10 +87,13 @@ def load_corrected_transcript(date: str) -> Transcript:
 ```
 - `show_for_date`, `EXCLUDED_DATES`, `Transcript` import from `astra_linguist` (chronicle.py / models.py).
 - `faerrin_campaign_slugs`, `load_being`/`BEING_KDL_PATH` from `astra_ontology` / `astra_ontology_being`.
-- **Verified split (the unit-test fixture):** 41 faerrin sessions kept (33 `through-a-song-darkly` + 8 side:
-  3 `a-hunt-of-metal-and-vine`, 3 `fae-and-forest`, 1 `the-first-spark`, 1 `interred-in-iomenei`); **3
-  dropped by world** (2 `observatory-slipped`/sedecium, 1 `fey-in-the-mists`/finnegan's-ring); `2025-8-11`
-  dropped by `EXCLUDED_DATES`. An unmatched/unknown slug returns None — **never crashes** (Phase-1 §3.3 note).
+- **Verified split (the unit-test fixture; 44 committed `.txt` total):** **40 faerrin sessions ingested** —
+  32 `through-a-song-darkly` (the 33rd, `2025-8-11`, is dropped by `EXCLUDED_DATES`) + 8 side (3
+  `a-hunt-of-metal-and-vine`, 3 `fae-and-forest`, 1 `the-first-spark`, 1 `interred-in-iomenei`); **3 dropped
+  by world** (2 `observatory-slipped`/sedecium, 1 `fey-in-the-mists`/finnegan's-ring); **1 dropped by
+  `EXCLUDED_DATES`** (`2025-8-11`, the "Argyle" false-match). An unmatched/unknown slug returns None —
+  **never crashes** (Phase-1 §3.3 note). *(The test asserts known dates + the keep-invariant, not absolute
+  counts — committed transcripts grow.)*
 
 ## 5. The artifact schemas (`models.py`)
 
@@ -239,7 +242,7 @@ pipeline host-side on it and have the stakeholder judge:
 3. **Attribution** — each fact resolves to the **right** entity; **`Y'shael → Ichel` resolves correctly**;
    ambiguous/unknown are sensibly flagged (carrying candidates), not silently mis-linked.
 4. **World filter** — a non-faerrin date (e.g. an `observatory-slipped` session) is correctly **skipped**
-   (asset reports `skipped`, writes nothing); the 41/3 split unit test is green.
+   (asset reports `skipped`, writes nothing); the 40-keep / 3-world-drop / 1-excluded split unit test is green.
 5. **Mechanics** — `apps/heartwood-backend` is a clean uv member; `session_noun_facts` is wired into the
    Dagster code location without breaking the existing graph; **both CI lanes green locally before push**
    (Python lane: `ruff check && ruff format --check && ty check && pytest`; scope to the touched lane).
