@@ -1,6 +1,6 @@
 ---
 name: heartwood-0020-gotchas
-description: heartwood (0020) — LLM-maintained akasha setting wiki; Phase 1 (ontology infra) BUILT+PUSHED, next is Phase-2 scope; locked decisions + verified gotchas
+description: heartwood (0020) — LLM-maintained akasha setting wiki; Phase 1 DONE + Phase 2 (extraction engine) CODE BUILT, live acceptance re-run PAUSED; locked decisions + verified gotchas
 metadata:
   type: project
 ---
@@ -13,16 +13,67 @@ play-by-play; chronicle + Script pages already cover narrative sequence), propos
 all resolved), `…-0020-phase1-registry-thoughts.md` (Phase-1 scope), `thoughts/astra/specs/0020-heartwood-phase1-registry-spec.md`.
 
 **Phase structure (5):** (1) ontology infra — `world` field + typed entity registry ✅ **DONE**;
-(2) **extraction engine** ← NEXT; (3) **prose proposer** (the make-or-break house-voice gate —
-anti-AI-slop is THE bar); (4) review surface + write-back; (5) backfill/automation. **Human-gated through
-Phase 4**; steady-state automation deferred until Phase 3 proves the prose.
+(2) **extraction engine** — **CODE BUILT, acceptance re-run PAUSED**; (3) **prose proposer** (the
+make-or-break house-voice gate — anti-AI-slop is THE bar); (4) review surface + write-back; (5)
+backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 3.
 
-**▶ RESUME AT: Phase-2 SCOPE.** Phase 2 = first **`heartwood-backend`** app, read-only: filter (drop
-OOC/combat/play-by-play via a dedicated keep-when-in-doubt LLM pass → inspectable dropped-span artifact) →
-`call_structured` noun-facts → `resolve()` each against the registry → emit structured per-session facts.
-NO prose/writes/surface. Resolved open-Qs (umbrella §7): new `heartwood` app (not extend linguist; imports
-linguist `surface/` + astra_llm as libs); proposal store = committed **KDL manifest + sibling `.vellum`**;
-filter = dedicated LLM pass; extraction = two-stage (structured facts → grounded prose in Phase 3).
+**▶ RESUME AT: re-run `astra-heartwood-extract 2026-6-8` (host, SOPS) with the S2.5 taxonomy, verify, have
+the stakeholder judge §11, then commit `facts/2026-6-8.json` + close Phase-2 acceptance.** See the Phase-2
+section below. Scope `…-phase2-extraction-thoughts.md`, spec `…/0020-heartwood-phase2-extraction-spec.md`.
+
+## Phase 2 — extraction engine: CODE BUILT + PUSHED, live acceptance re-run PAUSED (2026-06-28)
+
+New read-only app **`apps/heartwood-backend`** (pkg `astra-heartwood-backend`, module `astra_heartwood`):
+world-filter → **filter** (Stage 1) → **extract** (Stage 2) → **resolve()** → **refine** (Stage 2.5) →
+committed `facts/<date>.json`. Mirrors chronicle's per-session asset. Slices S1 `a908184` / S2 `ee8ea04` /
+S3 `c148c47` / S4 `9591ac9` / **S2.5 `a1225fb`**, + `fix(llm)` `98ef460` + `feat(lexicon)` `8f25f60`.
+
+**THE Phase-2 gotchas (verified by building + running it live):**
+
+- **A Dagster `@dg.asset` module must NOT `from __future__ import annotations`.** It stringifies the
+  `context: dg.AssetExecutionContext` hint, and dagster's `_validate_context_type_hint` rejects the string
+  `"dg.AssetExecutionContext"` (wants the bare runtime type). linguist's `assets.py` omits the future import
+  for exactly this reason — mirror it (`assets.py` only; the rest of the package keeps the future import).
+- **biome formats committed JSON → exclude the facts data dir.** The pre-commit gate's biome check scans
+  UNTRACKED files too, so an unformatted `apps/heartwood-backend/facts/*.json` blocks every commit. Added
+  `"!**/heartwood-backend/facts/**"` to `biome.json` `files.includes` (the `linguist/timeline/**` precedent).
+- **`astra_llm` crashed on malformed tool-call JSON (shared-lib gap, fixed `98ef460`).** A *successful*
+  completion can still carry truncated/garbled JSON in a forced tool call (GLM on large structured outputs);
+  `litellm.num_retries` only covers API errors, so `json.loads` raised a raw `JSONDecodeError` that killed
+  the whole run (bit the 2nd live run mid-refine). Fix: bounded retry of the completion+parse
+  (`_TOOL_JSON_ATTEMPTS=3`) → typed `LlmError`. Helps chronicle/mouthpiece too. To shrink risk, refine
+  batches are small (`REFINE_CHUNK_FACTS=20`).
+- **World filter = 40 ingested / 3 world-drop / 1 EXCLUDED_DATES** (NOT "41" — the scope/spec first said 41;
+  `2025-8-11` sits inside the 33 `through-a-song-darkly` `.txt` and is excluded → 32 main + 8 side = 40).
+  `faerrin_session(date)` = `show_for_date` (honors EXCLUDED_DATES) ∩ `faerrin_campaign_slugs`. **Verify
+  counts against the live modules, don't trust the doc.** heartwood depends on **`astra-linguist`** (reuse
+  its `Transcript` model + `show_for_date`; accepts its dspy/wordfreq transitive weight).
+- **P2.1 REVISED the umbrella: PCs ARE wiki-eligible** (umbrella §5 hard-problem #2 / §3a edited). No PC
+  special-casing in extraction; the registry's 20 PCs resolve like any noun.
+- **Stakeholder forks (this session):** held-out gate = **2026-6-8**; **no citations** in Phase 2 (lean
+  facts); **PCs get pages** (P2.1). And the big one ↓.
+- **The refinement pass (Stage 2.5, `refine.py`) is feedback-driven + load-bearing.** The window filter
+  (Stage 1) can't stop a *kept* window's durable facts from sitting beside event narration, so the extractor
+  still emits play-by-play ("Mindbird sniped several people"). Stage 2.5 is an LLM pass over the extracted
+  facts that (a) **drops non-wiki facts by typed category** — `event / ability / possession / mechanical
+  (gold/levels/stats/HP/DCs) / nonsensical` (stakeholder: abilities, known spells, possessed items, and gold
+  values are NOT setting-wiki material) — into a `refined_out[]` audit (`RefinedOutFact.category`), and
+  (b) **canonicalizes resolved names**. **THE dealbreaker it solves:** a resolved ASR mislabel (e.g.
+  `Y'shael`, which is just a mis-transcription of `Ichel` — there is NO character "Y'shael") must NEVER
+  surface anywhere in output. So the kept fact's subject is set to the canonical AND its claim is rewritten
+  to the canonical name; a **deterministic `re.sub` safety-net** backstops the LLM (applied to kept facts
+  AND `refined_out` claims — the first fix missed the audit and `Y'shael` survived there). Keep-when-in-doubt
+  on durability (don't drop genuine lore); a `keep=false`+`category=setting` contradiction falls back to keep.
+- **Accuracy is inherently imperfect (Phase-4 review territory, not a Phase-2 blocker):** factual
+  hallucinations ("Outcast is a faction") + the **`Voidheart→voidward` confident false-link** (new item
+  phonetically near an existing entity, 0.82 > floor). Tightened EXTRACT grounding (no inferred
+  relationships) + the `nonsensical` drop category reduce these; the rest is what the human review (Phase 4)
+  exists for. Resolve-threshold tuning could catch Voidheart but trades against real garbles at ~0.86
+  (`Y'shael→Ichel`) — defer, tune carefully.
+- **Live run mechanics:** host-side `OTEL_SDK_DISABLED=true uv run astra-heartwood-extract <date>`; ~$0.5/run
+  over a ~246K transcript (~filter+extract+refine batches); prints on completion only (writes `facts/<date>`
+  atomically at the end). `facts/2026-6-8.json` is currently UNtracked + STALE (v4, pre-taxonomy) → the
+  re-run regenerates it; commit it then.
 
 ## Phase 1 — BUILT + PUSHED (all 5 slices CI-green, `139db9f`…`e0458f9`, 2026-06-27)
 

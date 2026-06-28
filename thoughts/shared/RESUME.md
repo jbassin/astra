@@ -36,52 +36,57 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `e0458f9`, 2026-06-27)
+## Current state — UPDATE THIS SECTION (as of commit `a1225fb`, 2026-06-28)
 
-> **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Recent work was product/ops on
-> the live stack + net-new apps. **As of 2026-06-27 a new multi-phase subsystem — `heartwood` (0020) — is
-> IN FLIGHT.** **Phase 1 (ontology infra) is COMPLETE + PUSHED; next is the Phase-2 SCOPE doc.**
+> **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** **A new multi-phase subsystem —
+> `heartwood` (0020) — is IN FLIGHT.** **Phase 1 (ontology infra) DONE + pushed. Phase 2 (extraction engine)
+> — all code BUILT + pushed (incl. a feedback-driven refinement pass); the live acceptance re-run on the
+> held-out 2026-6-8 session is PAUSED by request and Phase-2 acceptance is NOT yet closed.**
 
-### heartwood (0020): LLM-maintained akasha setting wiki — Phase 1 COMPLETE + PUSHED (2026-06-27 session)
+### heartwood (0020): LLM-maintained akasha setting wiki — Phase 2 BUILT, acceptance re-run PENDING (2026-06-28)
 
-A net-new **multi-phase** subsystem: an LLM (GLM-5.2) reads play-session transcripts and maintains the
-akasha **setting wiki** (the "nouns" — people/places/things, NOT play-by-play), proposing changes for
-**human-gated PR-style review** at a bespoke **`heartwood.iridi.cc`** built on the vellum-editor base.
-- **Umbrella scope** `thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md` (`223856d`): vision,
-  decisions **D1–D10**, the **5-phase breakdown**, verified research, the 8 hard problems.
-- **The 5 phases:** (1) **ontology infra** ✅ DONE; (2) **extraction engine** (filter + facts + resolution)
-  ← NEXT; (3) **prose proposer** (the make-or-break house-voice gate); (4) review surface + write-back;
-  (5) backfill/automation. Human-gated through Phase 4; steady-state automation deferred until Phase 3
-  proves the prose.
+A net-new **multi-phase** subsystem: GLM-5.2 reads play-session transcripts and maintains the akasha
+**setting wiki** (the "nouns"), proposing changes for **human-gated PR-style review** at a bespoke
+**`heartwood.iridi.cc`** (vellum-editor base). Umbrella `…/2026-06-27-heartwood-0020-thoughts.md` (D1–D10,
+5 phases, §7 open-Qs resolved). **Phases:** (1) ontology infra ✅; (2) **extraction engine** ← IN FLIGHT;
+(3) prose proposer (make-or-break house-voice); (4) review surface + write-back; (5) backfill/automation.
 
-**Phase 1 — DONE, all 5 slices CI-green + pushed** (`139db9f`…`e0458f9`); spec
-`thoughts/astra/specs/0020-heartwood-phase1-registry-spec.md` (BUILT), scope `…-phase1-registry-thoughts.md`:
-- **S1** (`139db9f`) — `world: str` (required) on `Campaign` (both schemas + `being.canonical.json` regen);
-  **5 of 7** campaigns `faerrin`, `fey-in-the-mists`→`finnegan's ring`, `observatory-slipped`→`sedecium`;
-  `faerrin_campaign_slugs()` helper.
-- **S2a** (`7776091`) — new shared lib **`astra-lexicon`** (`libs/py/lexicon`): lifted `phonetics`+`normalize`+
-  `Lexicon`; **linguist refactored onto it, no behavior change** (its suites are the regression gate).
-- **S2b** (`c82e194`) — `corrections` moved into the lib + **`defs.yaml`→`defs.kdl`** (235 entries,
-  round-trip verified); idempotent KDL `add_correction`.
-- **S3** (`5bbcb9f`) — new **`ontology-entity`** member: `Entity` model + pure `seed_entities` +
-  `entity.kdl` (311 seeded: 117 akasha pages ∪ 174 defs-only ∪ 20 PCs), non-clobbering `merge_seed`,
-  pytest drift gate, host-run `astra_ontology_entity.seed` (telemetry `astra.heartwood`).
-- **S4** (`62d346d`) — `Resolver(entities).resolve()` (engine + thresholds in `astra_ontology`) + the
-  telemetry-wired `astra_ontology_entity.resolve()` seam. **Acceptance green: `resolve("Y'shael")→Ichel`.**
-- Plus ripple fixes: `0a51719` (pre-existing 0019 chronicle ty regression), `e0458f9` (akasha-frontend
-  Campaign fixtures needed `world`).
-- **CI reproduced locally both lanes before push:** Python 252 passed (ruff/ty/pytest); TS typecheck/biome/
-  262 tests/build all green (had to `docker run … rm -rf` a root-owned `apps/vellum-render/dist` left by a
-  past VR-golden container run — gitignored, never affected CI).
+**Phase 1 — DONE** (`139db9f`…`e0458f9`): `world` field on `Campaign` + `faerrin_campaign_slugs()`; new
+**`astra-lexicon`** lib (`defs.yaml→defs.kdl`, linguist refactored no-behavior-change); **`ontology-entity`**
+typed registry (311 seeded) + `resolve()` (`Y'shael→Ichel`). Spec `…-phase1-registry-spec.md` BUILT.
 
-- **▶ RESUME AT: Phase-2 SCOPE** — author `thoughts/shared/research/<date>-heartwood-0020-phase2-extraction-thoughts.md`
-  (verify faerrin's extraction approach; pin the noun-fact schema, the held-out test session, the ingest
-  entry-point against real transcripts), then `octo:spec`, then `octo:embrace`. Phase 2 = the first
-  **`heartwood-backend`** app: read-only — filter (OOC/combat/play-by-play, dedicated keep-when-in-doubt
-  LLM pass → dropped-span artifact) → `call_structured` noun-facts → `resolve()` each against the registry
-  → emit structured per-session facts. NO prose/writes/surface. (Open Qs already resolved in the umbrella §7.)
-- **Gotchas memory:** `[[heartwood-0020-gotchas]]` (now incl. the Phase-1 facts + the linguist-commit-timer
-  mid-session push gotcha).
+**Phase 2 — extraction engine: scope + spec + all code BUILT + pushed; acceptance re-run PAUSED.**
+- Scope `…/2026-06-27-heartwood-0020-phase2-extraction-thoughts.md` (`dae7561`), spec
+  `thoughts/astra/specs/0020-heartwood-phase2-extraction-spec.md` (`9d768d0`). Decisions **P2.1–P2.11**
+  question-free; **P2.1 REVISED the umbrella: PCs ARE wiki-eligible** (no PC special-casing).
+- New app **`apps/heartwood-backend`** (pkg `astra-heartwood-backend`, module `astra_heartwood`), read-only:
+  world-filter → **filter** (drop OOC/combat/play-by-play) → **extract** noun-facts → **resolve()** →
+  **refine** (Stage 2.5) → committed `facts/<date>.json`. Mirrors chronicle's asset shape.
+  - **S1** (`a908184`) scaffold + world filter (verified **40 ingested / 3 world-drop / 1 EXCLUDED_DATES**).
+  - **S2** (`ee8ea04`) Stage-1 filter pass (windowed keep/drop, keep-when-in-doubt, dropped-span audit).
+  - **S3** (`c148c47`) Stage-2 `call_structured` noun-fact extractor (grounding contract, atomic claims).
+  - **S4** (`9591ac9`) resolution + emit + `session_noun_facts` Dagster asset + code-location wiring.
+  - **S2.5** (`a1225fb`) **fact-refinement pass + wiki-worthiness taxonomy** (added after the first live
+    run + stakeholder feedback): drops non-wiki facts by typed category (event / ability / possession /
+    mechanical (gold/levels/stats) / nonsensical) and **canonicalizes resolved names** (a mislabel like
+    `Y'shael` never surfaces — kept facts OR audit; deterministic safety-net backstop). `RefinedOutFact`
+    records the category. EXTRACT grounding tightened (no mechanics/abilities/inventory/gold/events; no
+    inferred relationships). Plus `fix(llm)` (`98ef460`, malformed tool-JSON retry — a shared-lib gap that
+    crashed run 2) and `feat(lexicon)` (`8f25f60`, `Bertha Ford → Berth Four`).
+- **Live acceptance status (host runs on 2026-6-8, ~$0.5/run):** run v4 (pre-taxonomy) produced 144 facts /
+  16 refined-out / 74 dropped — clean (no `Y'shael`), events removed, durable facts kept. Stakeholder then
+  flagged categories to also drop (abilities/spells/possessions/gold/mechanical) + remaining events +
+  factual inaccuracies → drove the S2.5 taxonomy expansion. **The re-run WITH the new taxonomy is NOT yet
+  done (paused).** The committed-artifact-pending: `apps/heartwood-backend/facts/2026-6-8.json` is UNtracked
+  + STALE (v4, pre-taxonomy) — it gets regenerated by the re-run (biome now ignores the facts dir).
+
+- **▶ RESUME AT: re-run the extraction on 2026-6-8 with the S2.5 taxonomy** (`OTEL_SDK_DISABLED=true uv run
+  astra-heartwood-extract 2026-6-8`, host, SOPS resolves key), verify (a) `Y'shael` absent, (b) abilities/
+  possessions/gold/mechanical now in `refined_out`, (c) fewer events/inaccuracies; have the stakeholder
+  judge §11; then commit `facts/2026-6-8.json` + close Phase-2 acceptance. **Known residual (Phase-4 review
+  territory, not a Phase-2 blocker):** the `Voidheart→voidward` confident false-link (needs resolve-threshold
+  tuning, which trades against catching real garbles at ~0.86) + residual factual hallucinations.
+- **Gotchas memory:** `[[heartwood-0020-gotchas]]`.
 
 ### chronicle (0019): automatic Show → Season → Episode campaign timeline in akasha (2026-06-27 session — DONE + LIVE)
 

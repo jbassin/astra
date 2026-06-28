@@ -1,7 +1,13 @@
 # 0020 — heartwood Phase 2 (extraction engine, read-only) — NLSpec
 
-- **Status:** **READY TO BUILD** — question-free (built on a question-free scope; forks P2.1/P2.6/P2.7
-  resolved with the stakeholder 2026-06-27). Not yet started.
+- **Status:** **CODE BUILT — acceptance re-run PENDING** (2026-06-28). All slices implemented + pushed:
+  S1 scaffold+world-filter (`a908184`), S2 filter (`ee8ea04`), S3 extractor (`c148c47`), S4 resolution+
+  asset (`9591ac9`), **+ a feedback-driven S2.5 fact-refinement pass / wiki-worthiness taxonomy**
+  (`a1225fb`; drops event/ability/possession/mechanical/nonsensical, canonicalizes resolved names) — plus
+  `fix(llm)` malformed-tool-JSON retry (`98ef460`) and `feat(lexicon)` Bertha Ford→Berth Four (`8f25f60`).
+  First live run (v4, pre-taxonomy) on held-out **2026-6-8** was clean (144 facts/16 refined-out/74 dropped,
+  no `Y'shael`); stakeholder feedback drove S2.5. **The acceptance §11 re-run WITH the taxonomy is PAUSED by
+  request — not yet judged/closed.** Residual (Phase-4 review): the `Voidheart→voidward` false-link.
 - **Scope doc:** `thoughts/shared/research/2026-06-27-heartwood-0020-phase2-extraction-thoughts.md` (verified)
 - **Umbrella scope:** `thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md`
 - **Phase-1 spec (built):** `thoughts/astra/specs/0020-heartwood-phase1-registry-spec.md`
