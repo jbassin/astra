@@ -1,6 +1,7 @@
 # 0020 — heartwood Phase 1 (ontology infra: `world` field + entity registry) — NLSpec
 
-- **Status:** SPEC — ready to implement. Question-free (built on a question-free scope).
+- **Status:** SPEC (pre-implementation) — **0 of 5 slices built**; ready to implement **S1** (the `world`
+  field). Question-free (built on a question-free scope).
 - **Scope doc:** `thoughts/shared/research/2026-06-27-heartwood-0020-phase1-registry-thoughts.md` (verified)
 - **Umbrella scope:** `thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md`
 - **Date:** 2026-06-27
