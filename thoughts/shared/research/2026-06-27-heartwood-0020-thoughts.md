@@ -105,8 +105,11 @@ file paths are inline so the per-phase specs can go straight to them.
 - **ontology-being boundary:** `ontology/ontology-being/being.kdl` is **META** (real players, PCs,
   campaigns, podcast personas) — explicitly *not* in-world setting nouns. The **PCs** (Argyle, Benny,
   Anzu…) live there with prose `desc`s, **not** in akasha, and the crossref resolver deliberately won't
-  cross the boundary. heartwood will read it to identify speakers/PCs but **must not write PCs into the
-  akasha wiki** (or vice-versa) without a deliberate decision.
+  cross the boundary. heartwood will read it to identify speakers/PCs.
+  **⤷ REVISED by Phase-2 decision P2.1 (2026-06-27): PCs ARE wiki-eligible** — the deliberate decision
+  this paragraph deferred has been made: the akasha wiki documents the setting's people *including* the
+  player characters. (being.kdl stays the META/podcast source; the being↔akasha overlap is a Phase-3/4
+  merge concern.) See `…-phase2-extraction-thoughts.md` §P2.1.
 
 ### 3b. chronicle (0019) — the architectural template
 
@@ -213,8 +216,9 @@ heartwood's pipeline half closely mirrors chronicle (`apps/linguist/src/astra_li
    a **voice guide** distilled from the best existing pages — an explicit early artifact (it's the spec
    for this risk).
 2. **Entity linking** — net-new. Resolve a (possibly still-misspelled) transcript name to: an existing
-   page (update), a new page (create), a PC in ontology-being (skip — boundary), or "uncertain" (flag
-   for the human). False links are *more* damaging than clumsy prose → gate them too.
+   page (update), a new page (create), ~~a PC in ontology-being (skip — boundary)~~ **a PC (now also a
+   valid wiki target — REVISED by P2.1)**, or "uncertain" (flag for the human). False links are *more*
+   damaging than clumsy prose → gate them too.
 3. **Durable-fact vs. narrative filter (D7)** — distinguish a lasting setting fact about a noun from
    play-by-play / OOC / combat narration. Edge case: combat/scenes that *reveal* a noun (keep the noun,
    drop the sequence).
