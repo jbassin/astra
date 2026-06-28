@@ -17,7 +17,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     }
     page "Geography/Black and White/index" op="rewrite" canonical="Black and White" kind="place" status="resolved" page-type="lore" body="geography-black-and-white-index.vellum" {
         fact "Black and White is an organization that issues badges."
-        conflict "The cited fact identifies Black and White as an organization, while the existing page describes it as a world."
     }
     page "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic" op="rewrite" canonical="Sin and Tonic" kind="place" status="resolved" page-type="lore" body="geography-calaria-hallia-sableclutch-sin-and-tonic.vellum" {
         fact "Sin and Tonic is a pub that is a Fane sustained by the heart Gin Soaked Rag."
@@ -40,7 +39,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     }
     page "Geography/Færrin" op="rewrite" canonical="Færrin" kind="place" status="resolved" page-type="lore" body="geography-frrin.vellum" {
         fact "Færrin is a place associated with pug people."
-        lint "broken_wikilink" message="Wikilink target not found: pug people. Check the page exists (or create it)." hit="pug people"
     }
     page "Geography/Masque District/index" op="create" canonical="Masque District" kind="place" status="resolved" page-type="lore" body="geography-masque-district-index.vellum" {
         fact "The Masque District is a district in the city where tourists stay and where hotels are located."
@@ -53,6 +51,7 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     page "Geography/starward/index" op="create" canonical="starward" kind="place" status="resolved" page-type="lore" body="geography-starward-index.vellum" {
         fact "Starward is an area down the horizon in Hallia that is seedier and less well-maintained than the central areas."
         fact "Starward was built up with buildings expecting a boom from the tram line that never materialized, and has not been maintained over the past few decades."
+        lint "broken_wikilink" message="Wikilink target not found: tram. Check the page exists (or create it)." hit="tram"
     }
     page "Org/Belvedere" op="rewrite" canonical="Belvedere" kind="org" status="resolved" page-type="lore" body="org-belvedere.vellum" {
         fact "Belvedere has more Fanes than most places, and hearts exist more frequently there as part of the hierarchy."
@@ -81,9 +80,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "Iconoclasm is subject to rumors that it employs children."
         fact "Iconoclasm is an organization with which Johnny is affiliated."
     }
-    page "Org/Prime Meridian/index" op="rewrite" canonical="Prime Meridian" kind="org" status="resolved" page-type="lore" body="org-prime-meridian-index.vellum" {
-        fact "Prime Meridian Meridian, also called Zero, is a wealthy area of the city where residents can afford cars and public transit does not reach."
-    }
     page "Org/Pyrelight/index" op="rewrite" canonical="Pyrelight" kind="org" status="resolved" page-type="lore" body="org-pyrelight-index.vellum" {
         fact "Pyrelight is associated with Embercall Industries, which is the commercial name used on bills of materials."
     }
@@ -108,7 +104,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     page "Org/Unsorted/People/Anaïs" op="create" canonical="Anaïs" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-anais.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Anaïs is an adventurer, referred to as one of 'the twins.'"
         fact "Anaïs knows Copperjaw."
-        lint "broken_wikilink" message="Wikilink target not found: adventurer. Check the page exists (or create it)." hit="adventurer"
     }
     page "Org/Unsorted/People/Anouk" op="create" canonical="Anouk" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-anouk.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Anouk is an adventurer, referred to as one of 'the twins.'"
@@ -161,7 +156,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "Copperjaw uses a giant crusher in his scrapyard to deter unwanted visitors."
         fact "Copperjaw has an office set up in a converted storage container near the front of his scrapyard."
         fact "Copperjaw crafted the contents of the metal suitcase."
-        lint "broken_wikilink" message="Wikilink target not found: metal suitcase. Check the page exists (or create it)." hit="metal suitcase"
     }
     page "Org/Unsorted/People/Elias" op="create" canonical="Elias" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-elias.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Elias is a dwarf who serves as quartermaster."
@@ -191,7 +185,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     page "Org/Unsorted/People/Tanner" op="create" canonical="Tanner" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-tanner.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Tanner is incredibly light in weight."
         fact "Tanner has a bird companion named Othello whose eyes he can see through."
-        lint "encyclopedia_opener" message="Encyclopedia opener (\"X is a/the …\"). Lead with a point of view or tension, not the dictionary-entry cadence."
     }
     page "Org/Unsorted/People/Tywelwyn's" op="create" canonical="Tywelwyn's" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-tywelwyns.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Tywelwyn's are two people who are particularly good at crafting but do not run a store."
@@ -199,7 +192,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     }
     page "Phenomena/Embercall" op="create" canonical="Embercall" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-embercall.vellum" {
         fact "Embercall is a signal or song that a radar dish may receive; the dish could potentially be tuned away from Embercall to receive the Voidsong instead."
-        lint "broken_wikilink" message="Wikilink target not found: radar dishes. Check the page exists (or create it)." hit="radar dishes"
     }
     page "Phenomena/Fane" op="create" canonical="Fane" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-fane.vellum" {
         fact "A Fane is a magical construct whose presence is dictated by a heart."
@@ -215,7 +207,7 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     }
     page "Phenomena/slides" op="create" canonical="slides" kind="phenomenon" status="unknown" page-type="lore" body="phenomena-slides.vellum" {
         fact "Slides are a travel technology that allows movement to locations outside city limits; their use is restricted within city limits for security reasons."
-        lint "broken_wikilink" message="Wikilink target not found: slide. Check the page exists (or create it)." hit="slide"
+        lint "broken_wikilink" message="Wikilink target not found: city walls. Check the page exists (or create it)." hit="city walls"
     }
     page "needs-placement/Aaron Cross" op="create" canonical="Aaron Cross" status="unknown" page-type="lore" body="needs-placement-aaron-cross.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
         fact "Aaron Cross is Argyle's parent and an operative of the Scale."
@@ -278,6 +270,7 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     skipped target-path="Org/Iconoclasm/People/Dura Oil-Drinker" reason="already-known"
     skipped target-path="Org/Iconoclasm/People/Gin Soaked Rag" reason="already-known"
     skipped target-path="Org/Iconoclasm/People/Illmari Vaino" reason="already-known"
+    skipped target-path="Org/Prime Meridian/index" reason="already-known"
     skipped target-path="Org/RunGunners/index" reason="already-known"
     registry-add canonical="Aaron Cross" suggested-path="needs-placement/Aaron Cross"
     registry-add canonical="Augers" kind="creature" suggested-path="Bestiary/Augers"
