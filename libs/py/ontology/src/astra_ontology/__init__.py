@@ -25,15 +25,31 @@ from .entity import (
     serialize_entities,
 )
 from .models import Being, Campaign, HostLines, Player, PodcastPersona, Role, WealHost
+from .resolve import (
+    RESOLVE_FLOOR,
+    RESOLVE_GAP,
+    RESOLVE_K,
+    EntityRef,
+    Resolution,
+    Resolver,
+    ResolveStatus,
+)
 
 __all__ = [
+    "RESOLVE_FLOOR",
+    "RESOLVE_GAP",
+    "RESOLVE_K",
     "Being",
     "Campaign",
     "Entity",
     "EntityKind",
+    "EntityRef",
     "HostLines",
     "Player",
     "PodcastPersona",
+    "Resolution",
+    "ResolveStatus",
+    "Resolver",
     "Role",
     "WealHost",
     "canonical_json",

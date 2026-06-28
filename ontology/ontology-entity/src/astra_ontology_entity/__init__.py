@@ -28,3 +28,15 @@ SNAPSHOT_PATH = (
 def load_entities() -> list[Entity]:
     """Parse this package's `entity.kdl` into the typed entity list."""
     return parse_entities(ENTITY_KDL_PATH)
+
+
+# Imported last: resolve.py does `from . import load_entities`, so this must follow it.
+from .resolve import reload_registry, resolve  # noqa: E402
+
+__all__ = [
+    "ENTITY_KDL_PATH",
+    "SNAPSHOT_PATH",
+    "load_entities",
+    "reload_registry",
+    "resolve",
+]
