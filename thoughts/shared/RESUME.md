@@ -36,15 +36,18 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `7ec629b`, 2026-06-28)
+## Current state — UPDATE THIS SECTION (as of commit `8624ff7`, 2026-06-28)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** **A new multi-phase subsystem —
-> `heartwood` (0020) — is IN FLIGHT.** **Phase 1 (ontology infra) DONE + pushed. Phase 2 (extraction engine)
-> — DONE + pushed: acceptance CLOSED on the first `through-a-song-darkly` session (`2025-8-28`).** **Phase 3
-> (prose proposer — the make-or-break house-voice / anti-slop gate): SCOPE + SPEC done + pushed
-> (`cb86823`/`7ec629b`), adversarially hardened.** **▶ NEXT: Phase 3 IMPLEMENT — slice S1 (no code yet).**
+> `heartwood` (0020) — is IN FLIGHT.** **Phase 1 (ontology infra) DONE. Phase 2 (extraction engine) DONE —
+> acceptance CLOSED on `2025-8-28`.** **Phase 3 (prose proposer — the make-or-break house-voice / anti-slop
+> gate): DONE — all 5 slices built + pushed (`f9e3ce0`…`e3a57f8`); the live acceptance run on `2025-8-28`
+> produced a committed change-set; the stakeholder §11 read was "pass creates, harden rewrites" → the
+> merged-rewrite path was hardened from full-body-replace to PRESERVE-AND-APPEND (`9c1bbd8`, a recorded P3.9
+> revision) and the change-set regenerated (`8624ff7`).** **▶ NEXT: Phase 4 — the `heartwood.iridi.cc`
+> human-review surface + corpus write-back (scope it first; see the umbrella + the gotchas memory).**
 
-### heartwood (0020): LLM-maintained akasha setting wiki — Phase 2 DONE; Phase 3 scope+spec DONE, IMPLEMENT next (2026-06-28)
+### heartwood (0020): LLM-maintained akasha setting wiki — Phase 3 DONE (prose proposer); Phase 4 (review+write-back) next (2026-06-28)
 
 A net-new **multi-phase** subsystem: GLM-5.2 reads play-session transcripts and maintains the akasha
 **setting wiki** (the "nouns"), proposing changes for **human-gated PR-style review** at a bespoke
@@ -96,29 +99,33 @@ typed registry (311 seeded) + `resolve()` (`Y'shael→Ichel`). Spec `…-phase1-
   false-link (resolve-threshold tuning, trades against catching real garbles at ~0.86) + residual factual
   hallucinations + ~28% of facts with no `kind_hint`.
 
-**Phase 3 — prose proposer: SCOPE + SPEC DONE + pushed; IMPLEMENT not started (2026-06-28, this session).**
+**Phase 3 — prose proposer: DONE + pushed (all 5 slices + a stakeholder-directed rewrite hardening; 2026-06-28).**
 - Scope `…/2026-06-28-heartwood-0020-phase3-proposer-thoughts.md` (`cb86823`), spec
-  `thoughts/astra/specs/0020-heartwood-phase3-proposer-spec.md` (`7ec629b`). Extensive verified research:
-  the house voice (real akasha pages), mouthpiece's anti-slop two-pass + `call_text`, page-identity/snapshot/
-  render/KDL mechanics, and **the faerrin prior art — this feature FAILED TWICE there** ("voice may be
-  partially unlearnable by LLMs"). Phase 2 already absorbed their #1 failure (extraction); Phase 3 ports their
-  hard-won assets: `DRAFT_SYSTEM` prompt spine, the **GOOD/BAD voice calibration**, a **machine tell-lint**
-  (encyclopedia-opener regex / intensifier vocab / page-type-aware), full-body-replace merge.
-- **Stakeholder decisions:** **P3.1 aim for publishable pages** (pursue the make-or-break bar, eyes open) +
-  **P3.2 new pages + merged rewrites** (full D3). Output = committed **KDL manifest + sibling `.vellum`** under
-  `proposals/<date>/`; `call_text` draft → tell-lint → bounded revise; read-only (no writes/surface — Phase 4).
-- **An independent adversarial pass hardened the spec** (verified vs the real repo + the `2025-8-28` facts):
-  **P3.15 novelty gate** (skip rewrites of already-stated facts — avoids faerrin's review-burden death);
-  **P3.16 match-the-target voice** (2nd-person corpus pages + spelling, not a rigid 3rd-person rule);
-  **P3.17 conflict-flagging** (contradictions surfaced, not overwritten); non-prose page skip (preserve
-  `@deity`/`@timeline`); item/folder-less placement flagged (no invented folder); pinned id-slug +
-  broken-wikilink parsing. 5 slices (§13): S1 models/grouping/placement → S2 tell-lint → S3 draft → S4
-  revise/assemble/emit/asset → S5 telemetry + acceptance on `2025-8-28`.
-- **▶ RESUME AT: Phase 3 — prose proposer — IMPLEMENT (S1).** Scope + spec DONE (`cb86823` scope; spec
-  `0020-heartwood-phase3-proposer-spec.md`, adversarially hardened). The make-or-break house-voice gate
-  (anti-AI-slop is THE bar). Locked: P3.1 aim-for-publishable; P3.2 new pages + merged rewrites; novelty gate
-  + conflict-flag + non-prose-skip + match-the-target voice (P3.15–P3.17). Drive the 5 slices (§13) with
-  `octo:embrace`; acceptance on the committed `2025-8-28` facts. Builds on the committed Phase-2 facts.
+  `thoughts/astra/specs/0020-heartwood-phase3-proposer-spec.md` (`7ec629b`). **The faerrin prior art FAILED
+  TWICE** ("voice may be partially unlearnable by LLMs"); Phase 3 ports its anti-slop assets (`DRAFT_SYSTEM`
+  spine, GOOD/BAD calibration, the machine tell-lint, page-type suppression). Read-only — no corpus writes /
+  no review surface / no deploy (those are Phase 4).
+- **New sub-package `apps/heartwood-backend/src/astra_heartwood/proposer/`** (committed `proposals/<date>/`):
+  group facts → target pages → `call_text` draft → tell-lint → bounded revise → assemble `.vellum` → emit
+  `{manifest.kdl, <id>.vellum}`. Slices: **S1** (`f9e3ce0`) models/grouping/placement/KDL manifest; **S2**
+  (`7f8dd89`) tell-lint (ported faerrin `voice-warnings.ts`); **S3** (`49c20e1`) draft stage + `voice.py`;
+  **S4** (`c51cffe`) revise + assemble + emit + the `session_page_proposals` Dagster asset; **S5** (`e3a57f8`)
+  telemetry + dagster wiring + **the Dockerfile fix** (a latent Phase-2 gap: `dagster/Dockerfile` never
+  COPY'd `apps/heartwood-backend`, so `uv sync --frozen` would break — Phase 2 only ran host-side).
+- **Live acceptance on `2025-8-28` + stakeholder §11 read + rewrite hardening:** first run (`0dfb6e0`) =
+  51 pages, near-zero residual prose tells on CREATES (genuine house voice) but the **merged REWRITES
+  flattened** — 3 of 12 converted 2nd-person→3rd, 9 of 12 shrank the human's prose (the full-body-replace
+  P3.9). Stakeholder §11 = **"pass creates, harden rewrites"** (the spec §12 fallback). Fixed by revising
+  P3.9 to **PRESERVE-AND-APPEND** (`9c1bbd8`): keep the existing frontmatter + body verbatim, append a short
+  passage in the page's named POV; a deterministic `pov_shift` warning + the bounded revise re-draft in the
+  right POV. Re-run verified (`8624ff7`): all 3 formerly-flattened 2nd-person pages preserve POV, every
+  rewrite is additive (ratio >1.0), residual = 4 broken-wikilink warnings only. A full run costs **~$0.10**
+  (GLM-5.2, ~58–65 short `call_text` calls; measured live).
+- **▶ NEXT: Phase 4 — scope it.** The `heartwood.iridi.cc` human-review surface (vellum-editor base) +
+  approve/edit/reject + **write-back** (corpus writes, akasha snapshot regen, commit, redeploy) + applying
+  the proposed registry additions. Phase 4 also owns: a render-for-review tool (P3.12), a `heartwood` config
+  namespace, and the residual review-territory items (resolve-threshold false-links, hallucination spot-check).
+  **Phase 5** = cross-session accumulation + backfill over all ~40 sessions (~$4) + sensor/schedule automation.
 - **Gotchas memory:** `[[heartwood-0020-gotchas]]`.
 
 ### chronicle (0019): automatic Show → Season → Episode campaign timeline in akasha (2026-06-27 session — DONE + LIVE)

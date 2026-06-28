@@ -1,6 +1,6 @@
 ---
 name: heartwood-0020-gotchas
-description: heartwood (0020) — LLM-maintained akasha setting wiki; Phase 1 + Phase 2 (extraction) DONE (acceptance CLOSED on first TSD session 2025-8-28); Phase 3 (prose proposer) SCOPE+SPEC done (IMPLEMENT next); locked decisions + verified gotchas + the faerrin-failed-twice lesson
+description: heartwood (0020) — LLM-maintained akasha setting wiki; Phases 1+2 (extraction) + 3 (prose proposer) DONE; Phase 3 acceptance on 2025-8-28 → rewrites hardened to preserve-and-append (P3.9 revised); Phase 4 (review surface + write-back) next; locked decisions + verified gotchas + the faerrin-failed-twice lesson
 metadata:
   type: project
 ---
@@ -14,12 +14,15 @@ all resolved), `…-0020-phase1-registry-thoughts.md` (Phase-1 scope), `thoughts
 
 **Phase structure (5):** (1) ontology infra — `world` field + typed entity registry ✅ **DONE**;
 (2) **extraction engine** ✅ **DONE (acceptance CLOSED)**; (3) **prose proposer** (the make-or-break
-house-voice gate — anti-AI-slop is THE bar) **— SCOPE+SPEC DONE, IMPLEMENT next**; (4) review surface +
-write-back; (5) backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 3.
+house-voice gate — anti-AI-slop is THE bar) ✅ **DONE (5 slices + rewrite hardening)**; (4) review surface +
+write-back; (5) backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 5.
 
-**▶ RESUME AT: Phase 3 — prose proposer — IMPLEMENT (slice S1).** Scope+spec DONE + pushed (see the Phase-3
-section below). Drive the 5 slices (spec §13) with `octo:embrace`; acceptance on the committed `2025-8-28`
-facts. Spec `…/0020-heartwood-phase3-proposer-spec.md`, scope `…/2026-06-28-heartwood-0020-phase3-proposer-thoughts.md`.
+**▶ RESUME AT: Phase 4 — the `heartwood.iridi.cc` human-review surface + corpus write-back — SCOPE it first.**
+Phases 1–3 are read-only + done. Phase 4 = vellum-editor-base review UI (approve/edit/reject) + write-back
+(corpus writes, akasha snapshot regen, commit, redeploy) + applying the proposed registry additions; it also
+owns the render-for-review tool (P3.12), a `heartwood` config namespace, and the residual review-territory
+items. **Phase 5** = cross-session accumulation + backfill over ~40 sessions (~$4) + sensor/schedule automation.
+Umbrella `…/2026-06-27-heartwood-0020-thoughts.md`; Phase-3 spec/scope below.
 
 ## Phase 2 — extraction engine: DONE + PUSHED, acceptance CLOSED on first TSD session `2025-8-28` (2026-06-28)
 
@@ -99,47 +102,73 @@ S3 `c148c47` / S4 `9591ac9` / **S2.5 `a1225fb`**, + `fix(llm)` `98ef460` + `feat
   (drafts); they reach the registry only after **Phase-4 write-back + re-seed**. So **full backfill is
   Phase 5**, gated behind 3–4 (backfilling extraction-only now would just be reprocessed later).
 
-## Phase 3 — prose proposer: SCOPE + SPEC DONE + PUSHED, IMPLEMENT not started (2026-06-28)
+## Phase 3 — prose proposer: DONE + PUSHED (5 slices + rewrite hardening; 2026-06-28)
 
 Scope `…/2026-06-28-heartwood-0020-phase3-proposer-thoughts.md` (`cb86823`), spec
-`thoughts/astra/specs/0020-heartwood-phase3-proposer-spec.md` (`7ec629b`). Facts (Phase 2) → group by page →
-`call_text` draft → tell-lint → bounded revise → committed **KDL manifest + sibling `.vellum`** under
-`apps/heartwood-backend/proposals/<date>/`. Read-only (no writes/surface — Phase 4). Stakeholder decisions:
-**P3.1 aim for publishable pages** (pursue the make-or-break bar) + **P3.2 new pages + merged rewrites** (D3).
+`…/0020-heartwood-phase3-proposer-spec.md` (`7ec629b`). New sub-package
+**`apps/heartwood-backend/src/astra_heartwood/proposer/`**: facts (Phase 2) → `group.py` (facts→target pages)
+→ `draft.py`/`voice.py` (`call_text` draft) → `lint.py` (tell-lint) → bounded revise → `assemble.py` →
+`manifest.py`/`pipeline.py` emit committed **KDL manifest + sibling `.vellum`** under `proposals/<date>/`.
+Read-only — no corpus writes / no review surface / no deploy (Phase 4). Slices **S1** `f9e3ce0` (models/group/
+placement/manifest) → **S2** `7f8dd89` (tell-lint) → **S3** `49c20e1` (draft) → **S4** `c51cffe` (revise/
+assemble/emit/`session_page_proposals` asset) → **S5** `e3a57f8` (telemetry + dagster wiring + Dockerfile).
+CLI `astra-heartwood-propose <date>`; a full run is **~$0.10** (GLM-5.2, ~58–65 short `call_text` calls, the
+`DRAFT_SYSTEM` prefix prompt-caches → ~$0.0016/call; measured live).
 
 **THE load-bearing lesson — this feature FAILED TWICE in faerrin** (`git show e2cb11e^` in `/ruby/data/experiments/faerrin`):
 a 7-stage PR tool AND a careful human-on-the-pen rewrite, both deleted ("voice may be partially unlearnable by
-LLMs"). **Phase 2 already absorbed their #1 failure** (extraction over-generating events/mechanics — our refine
-taxonomy IS their hard-won DROP-TEST; see `wiki-is-setting-not-session-log.md` in faerrin). Their other failures
-(wrong surface = GitHub PR diffs; review burden) are pre-addressed by our D2/D3. **Port their hard-won assets
-(don't re-derive):** `pkg/heartwood/src/pipeline/draft.ts` `DRAFT_SYSTEM` (prompt spine), the **GOOD/BAD voice
-calibration pair** (GOOD=Sableclutch, BAD="X is a large scrapyard… It is an expansive site…"),
-`voice-warnings.ts` (the **machine tell-lint**), `page-type.ts` (page-type-aware lint suppression),
-`rejection-reasons.ts`, the full-body-replace merge (`page-body.ts`).
+LLMs"). Phase 2 absorbed their #1 failure (extraction). **Ported their hard-won assets verbatim** (recover via
+`git show e2cb11e^:pkg/heartwood-review/src/lib/voice-warnings.ts` etc. — the heartwood pkgs are GONE from
+faerrin's tree): `DRAFT_SYSTEM` spine, the **GOOD/BAD calibration** (GOOD=Sableclutch, BAD="X is a large
+scrapyard… It is an expansive site…"), `voice-warnings.ts` tell-lint, `page-type.ts` suppression.
 
-**Spec gotchas + the adversarial-pass hardening (verified vs the real repo + the `2025-8-28` facts):**
-- **`call_text` is the prose path** (NOT `call_structured` — prose must not be tool-JSON). `TextRequest(user_content,
-  system?, model?, max_tokens?)` → str; truncation + empty guards; **one shot, no auto-retry** (unlike forced tools).
-- **The akasha page BODY is separate from the snapshot** — `apps/akasha-backend/content/<path>.vellum` (snapshot
-  JSON has `pages[].path`/frontmatter/crossrefs but NO body). Read bodies from content files; use the snapshot
-  path-list for crossref validation.
-- **Page placement** = `astra_ontology/entity.py` `_FOLDER_KIND` (deity→Divinity, place→Geography, phenomenon→
-  Phenomena, creature→Bestiary, org→Org/<N>/index, person→Org/<Org>/People/<N>). **`item` has NO corpus folder**
-  → flag for human placement, do NOT invent one (scope's first example wrongly used Bestiary). person→org can't be
-  reliably inferred (facts are independent rows, no relationship field) → best-effort + flag.
-- **P3.15 novelty gate** — only weave in facts the page does NOT already state; a page whose facts are all known
-  → `SkippedPage(reason="already-known")`. Without this, ~47 of the 2025-8-28 update-candidates would be redundant
-  rewrites (faerrin's review-burden death).
-- **P3.16 match-the-target voice** — the corpus has **second-person** pages (`Org/Iconoclasm/index`) + idiosyncratic
-  spelling (`Ilmari` vs registry `Illmari`); a rewrite MUST match the page's POV/spelling, NOT a rigid 3rd-person
-  rule. New pages default to 3rd-person wry-gazetteer. Carry multiple calibration exemplars, not one.
-- **P3.17 conflict-flagging** — a cited fact contradicting the body (Iconoclasm "orphanage" vs the page's mercenary
-  framing) is flagged under `conflicts`, NOT silently overwritten.
-- **P3.10 non-prose skip** — only REWRITE `lore`/`stub` pages; a full-body `call_text` on a deity/timeline/flavor
-  page would destroy its `@deity`/`@timeline` block → `SkippedPage(reason="non-prose-page")`, defer to Phase 4.
+**THE Phase-3 verdict — creates PASS, the full-body-replace rewrite FAILED → P3.9 REVISED to PRESERVE-AND-APPEND
+(`9c1bbd8`, this session).** The live acceptance run (`0dfb6e0`, 51 pages) showed CREATES read as genuine house
+voice (near-zero residual prose tells) but **merged REWRITES systematically flattened the human's prose**: 3 of
+12 converted a 2nd-person page → 3rd person, and **9 of 12 SHRANK the body** (ratios 0.11–0.94 — the model
+*summarizes* the existing page instead of weaving). Stakeholder §11 = "pass creates, harden rewrites" (the spec
+§12 fallback). **Fix: a rewrite no longer regenerates the whole body — it PRESERVES the existing frontmatter +
+body verbatim and APPENDS a short passage** in the page's voice (`assemble.py`; the draft's user-message says
+"write a NEW passage to append, do not rewrite"). POV/content loss is now impossible *by construction*; the diff
+is purely additive (the human keeps the pen). Re-run (`8624ff7`): all 3 formerly-flattened 2nd-person pages keep
+POV, every rewrite ratio >1.0, residual = 4 broken-wikilink warnings. **Lesson: do NOT trust an LLM to faithfully
+"rewrite/merge into" hand-authored prose — it summarizes + drifts POV. Generate only the NEW material and append.**
+
+**The other load-bearing gotchas (verified by building + running it):**
+- **`call_text` is the prose path** (NOT `call_structured` — prose must not be tool-JSON). `TextRequest` → str;
+  truncation + empty guards; **one shot, no auto-retry**. New `TextClient` protocol + `real_text_client()` seam in
+  `llm.py` (mirrors `StructuredClient`) so the draft stage unit-tests with a stub, no key/network. `DRAFT_MAX_TOKENS=8k`
+  (GLM reasoning shares the budget — the Phase-2 lesson). Long prompt strings use **implicit string concatenation**
+  (≤100-col lines), the repo convention (`prompts.py`) — NOT triple-quoted (ruff E501 / no per-line noqa in a string).
+- **`pov_shift` mechanical warning** (rewrite-hardening) — deterministic: existing body is 2nd-person (`is_second_person`
+  regex on you/your) but the appended passage isn't → a warning that ALSO triggers the bounded revise (`REVISABLE_TYPES
+  = prose-tells ∪ pov_shift`) to re-draft in the right POV. Only 2nd→non-2nd is flagged (adding "you" to a 3rd-person
+  page is rarely the error). `ALREADY-KNOWN` sentinel (novelty, P3.15) + a trailing `CONFLICTS:` section (P3.17) are
+  parsed off the `call_text` output by convention (`draft.py`).
+- **The akasha page BODY is separate from the snapshot** — `apps/akasha-backend/content/<path>.vellum` (snapshot JSON
+  has `pages[].path`/frontmatter/crossrefs but NO body). `proposer/corpus.py` is the read-only seam (content body,
+  snapshot path-set for crossref validation, `facts/<date>.json`). akasha-backend ships in the dagster image already
+  (whole-dir COPY) so the proposer reads the corpus in-container.
+- **⚠️ `dagster/Dockerfile` was MISSING `COPY apps/heartwood-backend`** — a latent Phase-2 gap (`definitions.py`
+  imports `astra_heartwood` + it's an editable `uv.lock` member, so `uv sync --frozen` needs the dir; Phase 2 only
+  ran host-side so the image was never rebuilt). Fixed in S5 (`e3a57f8`) — added the COPY + registered
+  `session_page_proposals` in the root code location. **When adding a pipeline app, the dagster Dockerfile COPY list +
+  the root `definitions.py` assets list BOTH need it** (the heartwood-backend `assets.py` `defs` is NOT auto-loaded).
+- **Page placement** (`proposer/group.py`) — deity→Divinity, place→Geography/<N>/index, phenomenon→Phenomena,
+  creature→Bestiary, org→Org/<N>/index, person→Org/<Org>/People/<N>. **`item` has NO corpus folder** + person→org has
+  no structured link (facts are independent rows) → both flagged `needs-placement/` + a `placement_note`, NEVER an
+  invented folder. id-slug = `slugify(target_path)` (NFKD→ASCII, never crashes on `Færrin`→`frrin`) + collision suffix.
+- **P3.15 novelty gate** (skip already-stated rewrites → `SkippedPage(already-known)`; 7–8 of the 2025-8-28 rewrites
+  skip) and **P3.10 non-prose skip** (deity/timeline/flavor-`<pre>` pages NOT rewritten — would destroy `@deity`/
+  `@timeline`; none triggered on 2025-8-28 since no fact resolved to such a page) both fire as designed.
 - **biome:** `.kdl`/`.vellum` are NOT biome targets (unlike the Phase-2 facts JSON which needed an exclude) → the
-  `proposals/` dir needs NO biome exclude (verify after first commit). **No drift gate on `proposals/`** (LLM
-  non-determinism, like `facts/`). Acceptance judged on **`2025-8-28`** (the committed Phase-2 artifact), no metric.
+  `proposals/` dir needs NO biome exclude (confirmed — pre-commit gate clean). **No drift gate on `proposals/`** (LLM
+  non-determinism, like `facts/`); structural/round-trip tests only. **Acceptance is stakeholder-judged, no metric** —
+  and it's a per-page judgment (creates passed, rewrites needed the hardening); don't self-certify the voice bar.
+- **Live run mechanics** (same as Phase 2): host-side `OTEL_SDK_DISABLED=true uv run astra-heartwood-propose <date>`;
+  litellm "Provider List" noise + the summary print **flush only at process exit** (a mid-run log tail looks empty —
+  rely on the bg-task completion signal). `write_change_set` is atomic + idempotent (clears stale `*.vellum` so a
+  vanished proposal leaves no orphan).
 
 ## Phase 1 — BUILT + PUSHED (all 5 slices CI-green, `139db9f`…`e0458f9`, 2026-06-27)
 

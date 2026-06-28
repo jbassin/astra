@@ -1,9 +1,11 @@
 # 0020 — heartwood Phase 3 (prose proposer, read-only) — NLSpec
 
-- **Status:** **PLAN (pre-implementation)** (2026-06-28). Built on the verified Phase-3 scope doc; locked
-  decisions **P3.1–P3.17** (scope §1 + §4 below) with the scope-§10 spec-level decisions settled. An
-  independent adversarial-completeness pass (verified vs the real repo + the `2025-8-28` facts) hardened it —
-  novelty gate, conflict-flagging, non-prose-skip, match-the-target voice, placement/slug rules (§16). Not started.
+- **Status:** **DONE** (2026-06-28). All 5 slices built + pushed (`f9e3ce0` S1 … `e3a57f8` S5); live acceptance
+  on `2025-8-28` (`0dfb6e0`). Stakeholder §11 read = "pass creates, harden rewrites" → **P3.9 revised from
+  full-body-replace to PRESERVE-AND-APPEND** (`9c1bbd8`, + a deterministic `pov_shift` warning) and the
+  change-set regenerated (`8624ff7`). Acceptance gate (§12) met: voice passes on creates + the hardened
+  additive rewrites; manifest round-trips; no corpus writes; CI green. **Phase 4 = the review surface +
+  write-back.** See `[[heartwood-0020-gotchas]]` for the load-bearing details + the P3.9 revision.
 - **Scope doc:** `thoughts/shared/research/2026-06-28-heartwood-0020-phase3-proposer-thoughts.md` (verified)
 - **Umbrella scope:** `thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md`
 - **Phase-2 spec (done):** `thoughts/astra/specs/0020-heartwood-phase2-extraction-spec.md`
