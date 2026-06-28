@@ -110,8 +110,8 @@ def test_revise_keeps_cleaner_draft() -> None:
         batch_names=frozenset(),
     )
     assert result is not None
-    vellum, lints = result
-    assert len(client.calls) == 2  # one draft + one revise
+    vellum, lints, revised = result
+    assert revised and len(client.calls) == 2  # one draft + one revise
     assert "discarded automatons" in vellum  # the clean revision was kept
     assert not [w for w in lints if w.type in {"encyclopedia_opener", "intensifier"}]
 
@@ -130,7 +130,8 @@ def test_revise_keeps_original_when_no_cleaner() -> None:
         batch_names=frozenset(),
     )
     assert result is not None
-    vellum, lints = result
+    vellum, lints, revised = result
+    assert revised  # a revise was attempted
     assert "vast expansive" not in vellum  # the worse revision was rejected
     assert [w for w in lints if w.type == "encyclopedia_opener"]  # residual tells recorded
 
