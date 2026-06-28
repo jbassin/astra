@@ -18,10 +18,9 @@ import json
 from pathlib import Path
 from typing import Any, Literal, cast
 
-from astra_lexicon import Lexicon, build_lexicon
+from astra_lexicon import DEFS_PATH, Lexicon, build_lexicon
 from astra_observe import init_telemetry
 
-from ..corrections import DEFS_PATH
 from ..models import Transcript
 from .judge import Candidate, CompleteFn, Flagged, judge_session
 from .known import find_known

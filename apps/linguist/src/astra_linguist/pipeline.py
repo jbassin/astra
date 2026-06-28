@@ -10,12 +10,12 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from astra_lexicon import Replacer
 from astra_observe import get_tracer
 
 from .campaigns import MATCH_THRESHOLD, CampaignView, MatchedCampaign, match_campaign
 from .canonical import to_canonical
 from .context import build_context
-from .corrections import Replacer
 from .ingest import format_transcript
 from .models import RawLine, Transcript
 from .roster import SpeakerResolver

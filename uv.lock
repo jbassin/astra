@@ -248,15 +248,15 @@ name = "astra-lexicon"
 version = "0.0.0"
 source = { editable = "libs/py/lexicon" }
 dependencies = [
+    { name = "astra-config" },
     { name = "metaphone" },
-    { name = "pyyaml" },
     { name = "rapidfuzz" },
 ]
 
 [package.metadata]
 requires-dist = [
+    { name = "astra-config", editable = "libs/py/config" },
     { name = "metaphone", specifier = ">=0.6" },
-    { name = "pyyaml", specifier = ">=6" },
     { name = "rapidfuzz", specifier = ">=3" },
 ]
 
@@ -274,7 +274,6 @@ dependencies = [
     { name = "dagster" },
     { name = "dspy", extra = ["optuna"] },
     { name = "pydantic" },
-    { name = "pyyaml" },
     { name = "wordfreq" },
 ]
 
@@ -289,7 +288,6 @@ requires-dist = [
     { name = "dagster" },
     { name = "dspy", extras = ["optuna"], specifier = ">=2.5" },
     { name = "pydantic", specifier = ">=2" },
-    { name = "pyyaml", specifier = ">=6" },
     { name = "wordfreq", specifier = ">=3" },
 ]
 

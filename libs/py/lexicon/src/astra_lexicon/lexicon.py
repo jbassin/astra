@@ -13,8 +13,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 
-import yaml
-
+from .corrections import DEFS_PATH, load_defs
 from .normalize import fold_for_match
 from .phonetics import ensemble_sim, phonetic_codes
 
@@ -72,12 +71,13 @@ def build_lexicon_from(forms: Iterable[str]) -> Lexicon:
     return Lexicon(entries)
 
 
-def load_canonical_forms(defs_path: Path | str, extra_names: Iterable[str] = ()) -> list[str]:
-    """Canonical forms: `defs` keys ∪ any extra (e.g. akasha page names)."""
-    doc = yaml.safe_load(Path(defs_path).read_text(encoding="utf-8")) or {}
-    keys = list(doc.keys())
+def load_canonical_forms(
+    defs_path: Path | str = DEFS_PATH, extra_names: Iterable[str] = ()
+) -> list[str]:
+    """Canonical forms: `defs.kdl` entry names ∪ any extra (e.g. akasha page names)."""
+    keys = list(load_defs(defs_path).keys())
     return list(dict.fromkeys([*keys, *extra_names]))  # de-dup, order-stable
 
 
-def build_lexicon(defs_path: Path | str, extra_names: Iterable[str] = ()) -> Lexicon:
+def build_lexicon(defs_path: Path | str = DEFS_PATH, extra_names: Iterable[str] = ()) -> Lexicon:
     return build_lexicon_from(load_canonical_forms(defs_path, extra_names))

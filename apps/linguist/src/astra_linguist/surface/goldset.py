@@ -31,10 +31,8 @@ from pathlib import Path
 from typing import Any, cast
 
 import dspy
-import yaml
-from astra_lexicon import Lexicon, build_lexicon, fold_for_match, tokenize
+from astra_lexicon import DEFS_PATH, Lexicon, build_lexicon, fold_for_match, load_defs, tokenize
 
-from ..corrections import DEFS_PATH
 from ..models import FormattedLine, Speaker, Transcript
 from . import config
 from .english import is_oov
@@ -59,12 +57,8 @@ def _normalize_ws(s: str) -> str:
 
 
 def is_literal_fragment(fragment: str) -> bool:
-    """True if a `defs.yaml` mistranscription fragment is a plain literal (no regex)."""
+    """True if a `defs.kdl` mistranscription fragment is a plain literal (no regex)."""
     return bool(fragment) and not _REGEX_META.search(fragment)
-
-
-def load_defs(defs_path: Path | str = DEFS_PATH) -> dict[str, list[str]]:
-    return yaml.safe_load(Path(defs_path).read_text(encoding="utf-8")) or {}
 
 
 def _one_line_transcript(text: str, speaker: str = "Player") -> Transcript:

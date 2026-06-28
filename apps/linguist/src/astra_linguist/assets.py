@@ -18,7 +18,7 @@ import json
 from pathlib import Path
 
 import dagster as dg
-from astra_lexicon import build_lexicon
+from astra_lexicon import DEFS_PATH, build_lexicon, load_corrections
 from astra_observe import get_logger, get_meter
 from astra_ontology import load_being
 from astra_ontology_being import BEING_KDL_PATH
@@ -32,7 +32,6 @@ from .chronicle import (
     chronicle_inputs_hash,
     load_episode_entries,
 )
-from .corrections import DEFS_PATH, load_corrections
 from .models import RawLine
 from .pipeline import process_session
 from .roster import SpeakerResolver

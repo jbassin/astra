@@ -12,7 +12,8 @@ from __future__ import annotations
 import json
 from datetime import UTC, datetime
 
-from .corrections import Replacer
+from astra_lexicon import Replacer
+
 from .models import FormattedLine, RawLine, Transcript
 from .roster import SpeakerResolver
 

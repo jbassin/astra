@@ -18,7 +18,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from ..corrections import DEFS_PATH, add_correction
+from astra_lexicon import DEFS_PATH, add_correction
+
 from .surface import load_candidates
 
 

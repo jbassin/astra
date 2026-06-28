@@ -10,7 +10,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from astra_linguist.corrections import build_replacer, load_corrections
+from astra_lexicon import build_replacer, load_corrections
 from astra_linguist.ingest import format_transcript, to_json
 from astra_linguist.models import RawLine
 from astra_linguist.roster import SpeakerResolver
@@ -51,7 +51,7 @@ def test_speaker_resolution() -> None:
     assert resolver.resolve("craigbot").model_dump() == {"name": "craigbot", "color": "--textGuest"}
 
 
-# ── defs.yaml correction replacer (gate C) ─────────────────────────────────
+# ── defs.kdl correction replacer (gate C) ─────────────────────────────────
 def test_correction_replacer_basics() -> None:
     replace = build_replacer({"Anouk": ["Anak", "Anuk", "Onyx"], "Calaria": ["Galaria"]})
     assert replace("the Anak met Galaria") == "the Anouk met Calaria"
@@ -62,7 +62,7 @@ def test_correction_replacer_basics() -> None:
 
 def test_real_defs_loads_and_corrects() -> None:
     replace = load_corrections()
-    # "Anak" is a real defs.yaml mistranscription of "Anouk".
+    # "Anak" is a real defs.kdl mistranscription of "Anouk".
     assert replace("and then Anak spoke") == "and then Anouk spoke"
 
 
@@ -167,7 +167,7 @@ def test_to_shibboleth_shape() -> None:
 
 # ── pipeline orchestration end-to-end (pure) ───────────────────────────────
 def test_process_session_end_to_end() -> None:
-    from astra_linguist.corrections import build_replacer
+    from astra_lexicon import build_replacer
     from astra_linguist.pipeline import process_session
 
     raw = [RawLine(start=4.25, end=7.695, user="jbassin", text=" Gandolf casts a spell.")]

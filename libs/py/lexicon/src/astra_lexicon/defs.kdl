@@ -1,0 +1,1025 @@
+// Canonical-names correction vocabulary (was defs.yaml; 0020 S2b).
+// Each `entry` is a correct proper noun; `variant`s are ASR mistranscriptions
+// authored as regex fragments (intentionally unescaped) — stored verbatim.
+
+entry "\\\\\\\\$" {
+    variant "\\$"
+}
+entry "Anouk" {
+    variant "Anak"
+    variant "Anuk"
+    variant "Anik"
+    variant "Onyx"
+    variant "Anok"
+}
+entry "Anaïs" {
+    variant "Anai"
+    variant "Danai"
+    variant "An eye"
+}
+entry "Anouk and Anaïs" {
+    variant "Anakin-Denai"
+    variant "Anakin and I"
+    variant "Annika and I"
+}
+entry "Anouk's" {
+    variant "Onyx's"
+}
+entry "Jorge" {
+    variant "George"
+    variant "Georgie"
+}
+entry "Immix" {
+    variant "[IE]mix"
+}
+entry "Althane" {
+    variant "Ulthane"
+    variant "Ossine"
+    variant "Althin"
+}
+entry "Feep" {
+    variant "Feeb"
+    variant "feep"
+    variant "Fiep"
+}
+entry "Sundom" {
+    variant "Sundump"
+    variant "Sun Doom"
+    variant "Sundum"
+    variant "Sendum"
+    variant "Sundub"
+    variant "Sundome"
+}
+entry "cadre" {
+    variant "Khadra"
+}
+entry "SeRaan" {
+    variant "Saron"
+}
+entry "Orbits-Upon-Light" {
+    variant "Orpitz upon light"
+    variant "orbits upon light"
+}
+entry "Kaathe" {
+    variant "cade"
+}
+entry "Zugg" {
+    variant "Sugg"
+    variant "ZUG"
+    variant "Zuck"
+}
+entry "Voidsong" {
+    variant "Void Song"
+    variant "voidsaw"
+    variant "Vojtang"
+    variant "Void Sog"
+}
+entry "Pyrelight" {
+    variant "pyro\\s*light"
+    variant "pyro\\s*lite"
+}
+entry "Hallia" {
+    variant "Halia"
+    variant "Haleah"
+    variant "Helya"
+    variant "Halley"
+    variant "Hylia"
+    variant "Hallyu"
+    variant "Hellia"
+}
+entry "in Hallia" {
+    variant "Inhalia"
+    variant "in\\s*Alia"
+    variant "in\\s*Talia"
+    variant "in\\s*Hellia"
+}
+entry "of Hallia" {
+    variant "of Hellion"
+    variant "of\\s*Alia"
+}
+entry "Dame Quay" {
+    variant "Dame Key"
+    variant "Dan Key"
+    variant "Dame Keeney"
+    variant "damn\\s*Quay"
+}
+entry "Masque District" {
+    variant "Mask District"
+}
+entry "Alfie Gallagher" {
+    variant "Elfie Gallagher"
+}
+entry "Ugathal" {
+    variant "Ugothal"
+    variant "Oogathal"
+    variant "Ugathol"
+    variant "Ugithul"
+    variant "Ukathal"
+    variant "Ukathals"
+}
+entry "Tywelwyn" {
+    variant "Twelwyn"
+    variant "12\\s*wins?"
+    variant "12 and"
+    variant "Toland"
+    variant "Dwellwyn"
+    variant "12-1"
+    variant "Twelvin"
+    variant "Twelwynn"
+    variant "Twelwin"
+}
+entry "Tywelwyn's" {
+    variant "Quelwyn's"
+    variant "Twelwins"
+}
+entry "Illmari" {
+    variant "Omari"
+    variant "Old Mari"
+    variant "Elamari"
+    variant "Ilmari"
+    variant "Lomari"
+    variant "Elmari"
+    variant "Illumari"
+    variant "Ilmar"
+}
+entry "Vaino" {
+    variant "Vino"
+}
+entry "Vilksnake" {
+    variant "vilk snake"
+}
+entry "Færrin" {
+    variant "Farron"
+    variant "Ferrum"
+    variant "Ferry"
+    variant "Faerun"
+    variant "Feiren"
+    variant "Farinar"
+    variant "Faerin"
+    variant "Faeran"
+}
+entry "Joker World" {
+    variant "Jokerworld"
+}
+entry "starward" {
+    variant "star\\s*w[ao]rd"
+    variant "Star Wars"
+}
+entry "voidward" {
+    variant "void\\s*w[ao]rd"
+}
+entry "Convox" {
+    variant "cot box"
+}
+entry "Widdershins" {
+    variant "Wittershins"
+    variant "Wintershins"
+    variant "Wootershins"
+}
+entry "Aurideon" {
+    variant "Iridiu[mn]"
+    variant "Oridia[mn]"
+    variant "Iridion"
+    variant "Iridian"
+    variant "Orinion"
+    variant "Eridian"
+}
+entry "Embercall" {
+    variant "Emperor Call"
+    variant "Embracol"
+    variant "Ember Call"
+    variant "Ember\\s*Cull"
+    variant "Emberfall"
+    variant "Emberco"
+    variant "EmberCole"
+}
+entry "Gryphonline" {
+    variant "Griffin\\s*line"
+}
+entry "Gryphon" {
+    variant "Griffin"
+}
+entry "Bev Sirnow" {
+    variant "Bev Cerno"
+}
+entry "Raelion" {
+    variant "Raelian"
+    variant "Raylian"
+    variant "Raylene"
+    variant "Rayleon"
+    variant "Raelio"
+}
+entry "Rhaedon" {
+    variant "Raiden"
+}
+entry "Zorbon" {
+    variant "Zorbot"
+    variant "Zorban"
+    variant "Zoroban"
+    variant "Zorbont"
+    variant "Sorbonne"
+    variant "Zorbom"
+    variant "Zorbog"
+}
+entry "Sigzil Haight" {
+    variant "Sigilheit"
+    variant "Sigilhite"
+}
+entry "Second Sun Diner" {
+    variant "Second Son Diner"
+}
+entry "Anzu" {
+    variant "Anzi"
+    variant "Hanzo"
+    variant "Ronzo"
+    variant "Antu"
+    variant "Anju"
+    variant "Onzu"
+    variant "Ansu"
+    variant "Anzo"
+}
+entry "Master Grayson" {
+    variant "Mr. Grayson"
+}
+entry "majordomo" {
+    variant "major\\s*domo"
+    variant "majordome"
+    variant "Mayordomo"
+}
+entry "majordomo Ossain" {
+    variant "Major Domo a saint"
+}
+entry "nosh on" {
+    variant "Noshpaw"
+}
+entry "Amber Call" {
+    variant "Abracol"
+    variant "Ambercall"
+    variant "Amber\\s*Collar"
+    variant "Amber\\s*Cole"
+}
+entry "Austrene" {
+    variant "Austrian"
+    variant "Ostrand"
+    variant "Austrine"
+    variant "Ostren"
+    variant "Austren"
+    variant "Ostreen"
+    variant "Austria"
+}
+entry "two-timing" {
+    variant "too timing"
+}
+entry "Flintlock Toboggan" {
+    variant "flintlock toboggan"
+    variant "Flip lock toboggan"
+    variant "Flint\\s*toboggan"
+}
+entry "Flintlock" {
+    variant "Locke"
+    variant "Footlock"
+}
+entry "Sin and Tonic" {
+    variant "Synth and Tonic"
+    variant "Syntonic"
+    variant "synatomic"
+    variant "synatonic"
+    variant "Sinitonic"
+    variant "Antonica"
+    variant "Simtonic"
+    variant "Synan\\s*Tonic"
+    variant "Isin\\s*and\\s*Tonic"
+    variant "Sim\\s*and\\s*Tonic"
+}
+entry "Bait-and-Tackle Shop" {
+    variant "Bain Tackle Shop"
+    variant "Bait and tackle shop"
+}
+entry "Argyle's" {
+    variant "Artie Kyle's"
+}
+entry "Hlarf" {
+    variant "Flarf"
+    variant "Hoth"
+    variant "Larf"
+    variant "Plarf"
+    variant "Hilarfs"
+    variant "Flurf"
+    variant "Flarv"
+    variant "Clarke"
+    variant "Harf"
+    variant "Clark"
+    variant "Hulf"
+    variant "Blarf"
+    variant "Clarf"
+    variant "Hlarif"
+}
+entry "Argyle" {
+    variant "Arka"
+    variant "Gargoyle"
+    variant "Orgyle"
+    variant "Arkyle"
+}
+entry "Benny" {
+    variant "Bennett"
+    variant "Banny"
+}
+entry "Aut" {
+    variant "Ott"
+    variant "Auk"
+    variant "Ot"
+}
+entry "I'm Aut" {
+    variant "I'm odd"
+}
+entry "meeting you, Aut" {
+    variant "meeting you, Art"
+}
+entry "Hey, Aut" {
+    variant "Hey, Art"
+}
+entry "Black and White" {
+    variant "black and white"
+}
+entry "Pharos" {
+    variant "Ferris"
+    variant "Firas"
+}
+entry "Godhome" {
+    variant "god\\s*home"
+}
+entry "Renge" {
+    variant "Renga"
+    variant "Rengo"
+}
+entry "P'ter" {
+    variant "Pterr"
+    variant "Petter"
+    variant "Pter"
+}
+entry "Insuperlex" {
+    variant "Insuperlix"
+    variant "Superlex"
+}
+entry "Menhir" {
+    variant "Menhirs"
+    variant "Menyr"
+    variant "Menir"
+    variant "Menyir"
+}
+entry "Syrin" {
+    variant "Siren"
+}
+entry "Elara Vance" {
+    variant "Lara Vance"
+    variant "Alara Vance"
+}
+entry "our door" {
+    variant "Ardor"
+}
+entry "Major-Chaplain" {
+    variant "major chaplain"
+}
+entry "Chorath" {
+    variant "Coreth"
+    variant "Korath"
+}
+entry "P.O. Box" {
+    variant "Geobox"
+    variant "PO\\s*box"
+    variant "P\\s*O\\s*Box"
+}
+entry "Firmament" {
+    variant "Furman"
+}
+entry "Noire" {
+    variant "Noir"
+}
+entry "https://btl.iridi.cc" {
+    variant "btl.ready.cc"
+    variant "BTL"
+    variant "btl.aridi.cc"
+}
+entry "Fane" {
+    variant "vein"
+    variant "fane"
+}
+entry "Gas-n-Go℠" {
+    variant "Gas & Go"
+    variant "Gas and go"
+    variant "Gas-n-Go"
+}
+entry "Iridite Mutual" {
+    variant "Erudite Mutual"
+    variant "Irodite\\s*Mutual's"
+    variant "Iridite\\s*Neutral"
+}
+entry "Arctos" {
+    variant "Arctis"
+    variant "Arctus"
+    variant "Arcturus"
+    variant "Arcto"
+    variant "Arthas"
+}
+entry "Arctos'" {
+    variant "Arctis'"
+    variant "Arctus'"
+    variant "Arcturus'"
+    variant "Arctosis"
+}
+entry "Smiler" {
+    variant "Smila"
+    variant "Milo"
+    variant "Soiler"
+}
+entry "Roundhats" {
+    variant "round\\s*hats"
+}
+entry "8:15" {
+    variant "May 15"
+}
+entry "Pyre" {
+    variant "pyre"
+}
+entry "Herald" {
+    variant "herald"
+    variant "Harold"
+}
+entry "Esoterica" {
+    variant "esoterica"
+}
+entry "Giant" {
+    variant "giant"
+}
+entry "War" {
+    variant "war"
+}
+entry "Regent" {
+    variant "regent"
+}
+entry "orreries" {
+    variant "oraries"
+}
+entry "Yeenut" {
+    variant "Enot"
+    variant "e-nut"
+    variant "Yee Nut"
+    variant "Yeena"
+    variant "Enid"
+    variant "yeanut"
+    variant "yee-nut"
+}
+entry "Archmechanic" {
+    variant "arc mechanic"
+    variant "art mechanic"
+    variant "Arch Mechanicus"
+}
+entry "Archmechanics" {
+    variant "Arc Mechanics"
+}
+entry "Archmechanic's" {
+    variant "Arc Mechanics'"
+    variant "Archmechanics'"
+}
+entry "Calaria" {
+    variant "Galeria"
+    variant "Caleria"
+    variant "Galarian"
+    variant "Galaria"
+    variant "Kolaria"
+    variant "Calera"
+    variant "Calario"
+    variant "Claria"
+}
+entry "Calarians" {
+    variant "Calerians"
+    variant "Galarians"
+}
+entry "Thistle Monroe" {
+    variant "Fissel Monroe"
+}
+entry "Sableclutch" {
+    variant "sable clutch"
+}
+entry "Hildebrandt" {
+    variant "Hildebrand"
+    variant "Hildebrant"
+    variant "Hildemarant"
+    variant "Hiltabrand"
+}
+entry "or Edan" {
+    variant "on a Don"
+    variant "of\\s*Edan"
+}
+entry "Iridescent Host" {
+    variant "iridescent hoax"
+}
+entry "Teller's Run" {
+    variant "Teller's rod"
+    variant "Teller's run"
+    variant "Taylor's\\s*run"
+    variant "Tellur's\\s*Run"
+    variant "Tellers\\s*Run"
+}
+entry "Vane" {
+    variant "Vayne"
+}
+entry "Fae" {
+    variant "Fae"
+}
+entry "Sbrtlby" {
+    variant "Spartleby"
+    variant "Spurdleby"
+    variant "Spartle B."
+    variant "Sparrowbeats"
+    variant "Sparrowby"
+    variant "Spartalby"
+    variant "Spurtleby"
+    variant "Sartleby"
+}
+entry "of Iconoclasm" {
+    variant "A vicanoclasm"
+}
+entry "Iconoclasm" {
+    variant "Ilkaniklasm"
+    variant "iconoclism"
+}
+entry "the Heart" {
+    variant "Seahart"
+    variant "The\\s*Art"
+    variant "the\\s*art\\s*I"
+    variant "the\\s*Hart"
+}
+entry "Dura" {
+    variant "Jura"
+    variant "Duro"
+    variant "Dur"
+}
+entry "autobody" {
+    variant "Autobot"
+}
+entry "Sable and Suns" {
+    variant "Sable and Sons"
+    variant "Sabel and Sons"
+    variant "Sables\\s*and\\s*Sons"
+    variant "Sable\\s*and\\s*Son"
+}
+entry "Obie and Parmann" {
+    variant "Obian Parmen"
+}
+entry "Fūlwinter" {
+    variant "Full Winter"
+    variant "Fulwinter"
+}
+entry "Lorandris" {
+    variant "Laurentius"
+    variant "Lorandrus"
+    variant "Larandrus"
+}
+entry "Estañion" {
+    variant "a Stanion"
+    variant "a stanion"
+    variant "Estanian"
+}
+entry "PaSuun" {
+    variant "Hasun"
+}
+entry "Beats in Time" {
+    variant "Beats and Time"
+}
+entry "Tormeré" {
+    variant "Tormere"
+    variant "Tourmarais"
+    variant "Pomeroy"
+    variant "Tormore"
+    variant "Tormoray"
+    variant "Tormari"
+    variant "Tormure"
+    variant "Dormeray"
+}
+entry "Divex" {
+    variant "Dybeck"
+    variant "Dive-X"
+}
+entry "MetCon" {
+    variant "METCOP"
+}
+entry "Meridian" {
+    variant "Herdian"
+    variant "in Haleo"
+}
+entry "maître d'" {
+    variant "Mater D"
+    variant "Major D"
+}
+entry "Deosil" {
+    variant "Diesel"
+}
+entry "Roll an arcana check" {
+    variant "Roland or Krochek"
+}
+entry "Submechanitor" {
+    variant "submacanators"
+    variant "submechanators"
+    variant "Submecanators"
+    variant "Submechanic"
+}
+entry "Low-Mechanitor Exitum-ρ-15" {
+    variant "Lowe McCandler, exit of row 15"
+    variant "Loma Canator Exitum Row 15"
+}
+entry "Low-Mechanitor" {
+    variant "Loma Canada"
+}
+entry "Exitum-ρ-15" {
+    variant "Exitum Roe"
+}
+entry "a Will save" {
+    variant "it Wilson"
+    variant "Uh\\s*We'll\\s*save"
+}
+entry "Benny Boy" {
+    variant "Benny boy"
+}
+entry "ice floes" {
+    variant "ice flows"
+}
+entry "Atum" {
+    variant "Adam"
+}
+entry "pactbroker" {
+    variant "PAC broker"
+}
+entry "TuRiin" {
+    variant "Turin"
+}
+entry "Scrazzy" {
+    variant "Skrazi"
+    variant "Scrazy"
+    variant "Scrazzia"
+    variant "Scrazi"
+    variant "Scrazz"
+}
+entry "Foral" {
+    variant "Forell"
+    variant "Forl"
+}
+entry "Ozzie" {
+    variant "Ozzy"
+}
+entry "Sedecium" {
+    variant "sedicium"
+    variant "Sedesium"
+}
+entry "Mutagen" {
+    variant "Mutant Jinn"
+}
+entry "orts" {
+    variant "orcs"
+}
+entry "Dorcan" {
+    variant "Dorkin"
+}
+entry "Tithe" {
+    variant "Aibh"
+}
+entry "mental" {
+    variant "Dementhal"
+}
+entry "keystone" {
+    variant "Aggie Stone"
+}
+entry "Crowe" {
+    variant "Crow"
+}
+entry "RunGunners" {
+    variant "Run Gunners"
+    variant "run gunners"
+}
+entry "Ternion Heavy Industries" {
+    variant "Tourney and Heavy Industries"
+    variant "Tourney and Heavy Industry"
+    variant "Ternian\\s*Heavy\\s*Industries"
+    variant "Turnian\\s*Heavy\\s*Industries"
+}
+entry "MoCuP" {
+    variant "MOCUP"
+}
+entry "Giannos" {
+    variant "Janus"
+    variant "Giannis"
+}
+entry "Ichel" {
+    variant "Eshell"
+    variant "Michelle"
+    variant "Ixchel"
+    variant "Y'shell"
+    variant "Ischel"
+}
+entry "Tas" {
+    variant "Taz"
+    variant "Taz"
+}
+entry "Garrick" {
+    variant "Garret"
+    variant "Garak"
+    variant "Garrix"
+}
+entry "Letov" {
+    variant "Ledov"
+    variant "Latav"
+}
+entry "barghests" {
+    variant "barguests"
+    variant "bar guests"
+    variant "Barkists"
+}
+entry "occultism" {
+    variant "Occultistborn"
+    variant "Heraclitism"
+}
+entry "Paavo" {
+    variant "Pavo"
+}
+entry "Kadou" {
+    variant "Caddo"
+    variant "Kato"
+}
+entry "Floch" {
+    variant "Floak"
+}
+entry "Paavo's" {
+    variant "Pavo's"
+}
+entry "Trevils" {
+    variant "Trebills"
+    variant "Trevilles"
+}
+entry "oread" {
+    variant "Aurea"
+}
+entry "Silven" {
+    variant "Sylvan"
+}
+entry "dhampir" {
+    variant "Dompierre"
+    variant "Dompir"
+}
+entry "NecroLog" {
+    variant "Necrologue"
+    variant "Necrolug"
+    variant "Necrologues"
+    variant "Nekrolag"
+}
+entry "Manus Sudrenus" {
+    variant "Manas Adrenas"
+}
+entry "Ki-Rin" {
+    variant "Chiron"
+    variant "kyren"
+    variant "Chyren"
+    variant "Kyren"
+    variant "Chiron"
+    variant "Kyrim"
+    variant "Kairin"
+    variant "Kirin"
+}
+entry "barghest" {
+    variant "Barguest"
+    variant "Barghest"
+    variant "Barghas"
+    variant "Varghest"
+    variant "Barkas"
+    variant "Bargis"
+    variant "Bargust"
+    variant "Bargus"
+    variant "Vargas"
+    variant "Bargas"
+    variant "Barghast"
+}
+entry "Falcata" {
+    variant "Alcada"
+    variant "Falkata"
+    variant "Felicata"
+    variant "Felcata"
+}
+entry "Ki-Rin's" {
+    variant "Chiron's"
+}
+entry "benediction" {
+    variant "Benedict"
+}
+entry "Ætherion" {
+    variant "Ethereum"
+    variant "Aetherion"
+}
+entry "ampoule" {
+    variant "ampule"
+}
+entry "Iridescent Church" {
+    variant "iridescent church"
+}
+entry "Protectorate" {
+    variant "protectorate"
+    variant "Protector"
+    variant "Protectored"
+}
+entry "Scale" {
+    variant "scale"
+    variant "Scal"
+}
+entry "firearm manufacturer" {
+    variant "fire manufacturer"
+}
+entry "Jethro" {
+    variant "Jeffro"
+}
+entry "gale" {
+    variant "gaol"
+}
+entry "parries" {
+    variant "Perry's"
+}
+entry "Psiburst" {
+    variant "Cyburst"
+    variant "Psyburst"
+}
+entry "skein" {
+    variant "Skeen"
+    variant "Skain"
+}
+entry "Bennix" {
+    variant "Benix"
+    variant "Bennex"
+}
+entry "Bennix's" {
+    variant "Benix's"
+}
+entry "6d6" {
+    variant "66"
+}
+entry "Protectorates" {
+    variant "protectorates"
+}
+entry "Manus" {
+    variant "Manas"
+}
+entry "Verdant" {
+    variant "Vernon"
+}
+entry "Ternion" {
+    variant "tourney"
+    variant "Ternian"
+    variant "Turnian"
+}
+entry "Anzu said he's" {
+    variant "Aunt Suzette is"
+}
+entry "Fort DC" {
+    variant "fork, DC"
+    variant "fort\\s*TC"
+}
+entry "Copperjaw" {
+    variant "Cobblejaw"
+    variant "Coppajaw"
+}
+entry "Solari Sub-surface" {
+    variant "Solari\\s*Subsurface"
+    variant "Solari\\s*subspace"
+    variant "Solari\\s*Subservice"
+    variant "Solaria\\s*Subservice"
+}
+entry "the Scale's" {
+    variant "the\\s*Scales"
+}
+entry "Salvado" {
+    variant "Silvado"
+    variant "Solvado"
+    variant "Silvano"
+    variant "Salvador"
+    variant "Salvato"
+}
+entry "Salvado Tarragona" {
+    variant "Solvado\\s*Targona"
+}
+entry "Brithwyn" {
+    variant "Brithwin"
+    variant "Brithwen"
+}
+entry "The Harlequins" {
+    variant "the\\s*Harley\\s*Quinn's"
+}
+entry "Gaspar Caetano" {
+    variant "Gasper\\s*Caetano"
+}
+entry "Garrick Textiles" {
+    variant "Gary\\s*Textiles"
+    variant "Garrett\\s*Textiles"
+}
+entry "Joker Worlds" {
+    variant "Joker\\s*worlds"
+}
+entry "Alkahest Freight" {
+    variant "Alka-Heist\\s*Freight"
+    variant "Alkahast\\s*Freight"
+    variant "Alkahaz\\s*Freight"
+    variant "Alkahazprate"
+}
+entry "The Scale" {
+    variant "the\\s*Sable"
+    variant "the\\s*Scaled"
+}
+entry "Lark Crowe" {
+    variant "Larkrow"
+    variant "Lark\\s*Rowe"
+}
+entry "Pale Lantern Society" {
+    variant "Pell\\s*Lantern\\s*Society"
+}
+entry "Children of the Heir" {
+    variant "Children\\s*of\\s*the"
+}
+entry "Velthara" {
+    variant "Valthara"
+    variant "Althara"
+}
+entry "Prime Meridian" {
+    variant "Primerudian"
+    variant "Prime\\s*Marudine"
+}
+entry "Embercall's" {
+    variant "Ember\\s*Calls"
+}
+entry "Prime Meridian's" {
+    variant "Prime\\s*Meridians"
+}
+entry "Grayson" {
+    variant "Graystone"
+}
+entry "Sbrtlby and" {
+    variant "Sbrtlbyand"
+}
+entry "Sbrtlby will" {
+    variant "Sbrtlbywill"
+}
+entry "Yeenut Guy" {
+    variant "YeenutGuy"
+}
+entry "Calarian" {
+    variant "Calerian"
+}
+entry "Hollowpact" {
+    variant "Holopact"
+}
+entry "Roundhat Gang" {
+    variant "Roundhat\\s*Kings"
+    variant "Roundhead\\s*gang"
+    variant "Round\\s*Hat\\s*gang"
+    variant "Runtat\\s*gang"
+    variant "Roundhack\\s*gang"
+}
+entry "game" {
+    variant "Kate"
+}
+entry "The Crowded Flea" {
+    variant "the\\s*Crowded\\s*Fleet"
+}
+entry "Tywelwyn Leatherhide" {
+    variant "Twelwynn\\s*Leatherhide's"
+}
+entry "Org" {
+    variant "Borg"
+}
+entry "Mr. Whiskers" {
+    variant "Mr\\s*Whisker"
+    variant "Mr\\s*Whiskas"
+}
+entry "Whiskers" {
+    variant "Whiskas"
+}
+entry "The Zorbon" {
+    variant "the\\s*Sorbonne"
+    variant "the\\s*Zorbom"
+    variant "the\\s*Zorba"
+    variant "the\\s*Zorbog"
+}
+entry "sewer" {
+    variant "Syria"
+}
+entry "Ghosts of Raelion" {
+    variant "ghosts\\s*of\\s*Raelio"
+}
+entry "Wrenford" {
+    variant "renford"
+}
+entry "Verdant Expanse" {
+    variant "Virgent\\s*Expanse"
+}
+entry "Gin Soaked Rag" {
+    variant "Gin-Soaked\\s*Rag"
+}
+entry "Iomenei" {
+    variant "Iomene"
+    variant "Iominae"
+    variant "Iomine"
+}
