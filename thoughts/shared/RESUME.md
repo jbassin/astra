@@ -36,15 +36,15 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `e0508ad`, 2026-06-28)
+## Current state — UPDATE THIS SECTION (as of commit `7ec629b`, 2026-06-28)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** **A new multi-phase subsystem —
 > `heartwood` (0020) — is IN FLIGHT.** **Phase 1 (ontology infra) DONE + pushed. Phase 2 (extraction engine)
-> — DONE + pushed: acceptance CLOSED on the first `through-a-song-darkly` session (`2025-8-28`), artifact
-> committed (`e0508ad`).** **▶ NEXT: Phase 3 (prose proposer — the make-or-break house-voice / anti-slop
-> gate) — scoping not yet started.**
+> — DONE + pushed: acceptance CLOSED on the first `through-a-song-darkly` session (`2025-8-28`).** **Phase 3
+> (prose proposer — the make-or-break house-voice / anti-slop gate): SCOPE + SPEC done + pushed
+> (`cb86823`/`7ec629b`), adversarially hardened.** **▶ NEXT: Phase 3 IMPLEMENT — slice S1 (no code yet).**
 
-### heartwood (0020): LLM-maintained akasha setting wiki — Phase 2 DONE (acceptance CLOSED); Phase 3 next (2026-06-28)
+### heartwood (0020): LLM-maintained akasha setting wiki — Phase 2 DONE; Phase 3 scope+spec DONE, IMPLEMENT next (2026-06-28)
 
 A net-new **multi-phase** subsystem: GLM-5.2 reads play-session transcripts and maintains the akasha
 **setting wiki** (the "nouns"), proposing changes for **human-gated PR-style review** at a bespoke
@@ -95,6 +95,25 @@ typed registry (311 seeded) + `resolve()` (`Y'shael→Ichel`). Spec `…-phase1-
 - **Known residual (Phase-4 review territory, not a Phase-2 blocker):** the `Voidheart→voidward` confident
   false-link (resolve-threshold tuning, trades against catching real garbles at ~0.86) + residual factual
   hallucinations + ~28% of facts with no `kind_hint`.
+
+**Phase 3 — prose proposer: SCOPE + SPEC DONE + pushed; IMPLEMENT not started (2026-06-28, this session).**
+- Scope `…/2026-06-28-heartwood-0020-phase3-proposer-thoughts.md` (`cb86823`), spec
+  `thoughts/astra/specs/0020-heartwood-phase3-proposer-spec.md` (`7ec629b`). Extensive verified research:
+  the house voice (real akasha pages), mouthpiece's anti-slop two-pass + `call_text`, page-identity/snapshot/
+  render/KDL mechanics, and **the faerrin prior art — this feature FAILED TWICE there** ("voice may be
+  partially unlearnable by LLMs"). Phase 2 already absorbed their #1 failure (extraction); Phase 3 ports their
+  hard-won assets: `DRAFT_SYSTEM` prompt spine, the **GOOD/BAD voice calibration**, a **machine tell-lint**
+  (encyclopedia-opener regex / intensifier vocab / page-type-aware), full-body-replace merge.
+- **Stakeholder decisions:** **P3.1 aim for publishable pages** (pursue the make-or-break bar, eyes open) +
+  **P3.2 new pages + merged rewrites** (full D3). Output = committed **KDL manifest + sibling `.vellum`** under
+  `proposals/<date>/`; `call_text` draft → tell-lint → bounded revise; read-only (no writes/surface — Phase 4).
+- **An independent adversarial pass hardened the spec** (verified vs the real repo + the `2025-8-28` facts):
+  **P3.15 novelty gate** (skip rewrites of already-stated facts — avoids faerrin's review-burden death);
+  **P3.16 match-the-target voice** (2nd-person corpus pages + spelling, not a rigid 3rd-person rule);
+  **P3.17 conflict-flagging** (contradictions surfaced, not overwritten); non-prose page skip (preserve
+  `@deity`/`@timeline`); item/folder-less placement flagged (no invented folder); pinned id-slug +
+  broken-wikilink parsing. 5 slices (§13): S1 models/grouping/placement → S2 tell-lint → S3 draft → S4
+  revise/assemble/emit/asset → S5 telemetry + acceptance on `2025-8-28`.
 - **▶ RESUME AT: Phase 3 — prose proposer — IMPLEMENT (S1).** Scope + spec DONE (`cb86823` scope; spec
   `0020-heartwood-phase3-proposer-spec.md`, adversarially hardened). The make-or-break house-voice gate
   (anti-AI-slop is THE bar). Locked: P3.1 aim-for-publishable; P3.2 new pages + merged rewrites; novelty gate
