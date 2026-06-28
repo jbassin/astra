@@ -1,0 +1,30 @@
+"""The heartwood per-session facts artifact schemas (spec §5).
+
+Grown slice-by-slice in Phase 2: ``DroppedSpan`` (the filter audit trail, S2);
+``NounFact`` / ``ResolvedFact`` / ``SessionFacts`` follow (extraction + resolution).
+``EntityKind`` / ``ResolveStatus`` / ``EntityRef`` are imported from ``astra_ontology``
+(single source — never redeclared here).
+"""
+
+from __future__ import annotations
+
+from typing import Literal
+
+from pydantic import BaseModel, ConfigDict
+
+
+class _Base(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+
+class DroppedSpan(_Base):
+    """One span the filter excluded — the human-reviewable audit trail.
+
+    Carries a short verbatim ``sample`` (not a transcript line-range citation — Phase 2
+    has no provenance, P2.6) so a reviewer can sanity-check that nothing setting-relevant
+    was wrongly dropped.
+    """
+
+    category: Literal["ooc", "combat", "play_by_play"]
+    sample: str
+    reason: str

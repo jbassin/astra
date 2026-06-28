@@ -10,6 +10,7 @@ dependencies = [
     "astra-observe",
     "astra-ontology",
     "astra-ontology-being",
+    "astra-ontology-config",
     "astra-ontology-entity",
     "dagster",
     "pydantic>=2",
@@ -29,4 +30,5 @@ astra-llm = { workspace = true }
 astra-observe = { workspace = true }
 astra-ontology = { workspace = true }
 astra-ontology-being = { workspace = true }
+astra-ontology-config = { workspace = true }
 astra-ontology-entity = { workspace = true }
