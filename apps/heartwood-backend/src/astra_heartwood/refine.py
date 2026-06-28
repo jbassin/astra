@@ -22,7 +22,9 @@ from .llm import StructuredClient, default_model, real_client
 from .models import DropCategory, RefineCategory, RefinedOutFact, ResolvedFact, _Base
 from .prompts import REFINE_SYSTEM
 
-REFINE_MAX_TOKENS = 8_000
+# Headroom for GLM-5.2 reasoning tokens (which share the budget) on top of the per-chunk
+# verdict list — 8k risks truncation even on modest output (see extract.py).
+REFINE_MAX_TOKENS = 16_000
 REFINE_CHUNK_FACTS = 20  # small batches → smaller per-call outputs, less malformed-JSON risk
 
 

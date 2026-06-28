@@ -12,8 +12,13 @@ from .llm import StructuredClient, default_model, real_client
 from .models import NounFact, _Base
 from .prompts import EXTRACT_SYSTEM
 
-EXTRACT_MAX_TOKENS = 8_000
-EXTRACT_CHUNK_WORDS = 16_000
+# Extraction is an exhaustive enumeration ("record every noun-fact"), so a dense chunk
+# yields a large fact list — and GLM-5.2's reasoning tokens count against the same budget.
+# 8k truncated even per 4k-word chunk; use the client default (16k) for headroom.
+EXTRACT_MAX_TOKENS = 16_000
+# The model emits roughly one fact per sentence, so cap the per-call input too: a smaller
+# chunk keeps each fact list modest, leaving ample room for reasoning under EXTRACT_MAX_TOKENS.
+EXTRACT_CHUNK_WORDS = 4_000
 
 
 class _NounFacts(_Base):
