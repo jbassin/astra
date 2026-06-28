@@ -27,6 +27,7 @@ __all__ = [
     "Role",
     "WealHost",
     "canonical_json",
+    "faerrin_campaign_slugs",
     "load_being",
 ]
 
@@ -77,6 +78,7 @@ def _campaign(node: Any) -> Campaign:
         name=str(_scalar(node, "name")),
         edition=str(_scalar(node, "edition")),
         main=bool(_scalar(node, "main", False)),
+        world=str(_scalar(node, "world")),
         roles=[_role(r) for r in _children(node, "role")],
     )
 
@@ -152,3 +154,12 @@ def load_being(path: str | Path) -> Being:
 def canonical_json(being: Being) -> str:
     """Stable JSON (sorted keys, 2-space indent) — the cross-language parity artifact."""
     return json.dumps(being.model_dump(), sort_keys=True, ensure_ascii=False, indent=2) + "\n"
+
+
+def faerrin_campaign_slugs(being: Being) -> set[str]:
+    """The campaign slugs set in the `faerrin` world — heartwood ingests only these.
+
+    Phase-2 note: session→campaign matching must *skip* session slugs absent from
+    being.kdl (an unmapped slug is not faerrin, never a crash).
+    """
+    return {c.slug for c in being.campaigns if c.world == "faerrin"}

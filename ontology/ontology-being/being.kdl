@@ -71,6 +71,7 @@ campaign "through-a-song-darkly" {
     name "Through a Song, Darkly"
     edition "pathfinder_2e"
     main #true
+    world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Argyle" class="champion" {
         desc "Formerly a failed celestial and repentant devil both inhabiting an elven body."
@@ -99,6 +100,7 @@ campaign "interred-in-iomenei" {
     name "Interred in Iomenei"
     edition "pathfinder_2e"
     main #false
+    world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Grant" { desc "a worker from the Undercroft; a dwarf" }
     role player="mike" character="Gage" { desc "a worker from the Undercroft; a human" }
@@ -110,6 +112,7 @@ campaign "fae-and-forest" {
     name "Fae and Forest"
     edition "pathfinder_2e"
     main #false
+    world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Cedric" { desc "an investigator with the magical crimes convox; an elf" }
     role player="mike" character="Krod" { desc "an investigator with the magical crimes convox; a dog-person" }
@@ -121,6 +124,7 @@ campaign "a-hunt-of-metal-and-vine" {
     name "A Hunt of Metal and Vine"
     edition "pathfinder_2e"
     main #false
+    world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Cliff" { desc "a special operative of the Scale; a human" }
     role player="mike" character="Zangron" { desc "a special operative of the Scale; a human" }
@@ -132,6 +136,7 @@ campaign "the-first-spark" {
     name "The First Spark"
     edition "pathfinder_2e"
     main #false
+    world "faerrin"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Pluckwort" { desc "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a lizardfolk" }
     role player="mike" character="Combo" { desc "a henchman in the Velvet Mark, a gang in Hallia's Masque District; a robot" }
@@ -143,6 +148,7 @@ campaign "observatory-slipped" {
     name "Observatory, Slipped"
     edition "pathfinder_2e"
     main #false
+    world "sedecium"
     role player="josh" character="Gamemaster" class="gm"
     role player="jorge" character="Foral" { desc "a field agent of Sedecium; a goblin gunslinger/rogue" }
     role player="mike" character="Scrazzy" { desc "a field agent of Sedecium; a human wizard" }
@@ -153,6 +159,7 @@ campaign "fey-in-the-mists" {
     name "Fey in the Mists"
     edition "pathfinder_2e"
     main #false
+    world "finnegan's ring"
     role player="tanner" character="Gamemaster" class="gm"
     role player="josh" character="Mango" { desc "an elven ranger, following the caravan on Finnegan's Ring." }
     role player="noah" character="Egan" { desc "an orc druid, following the caravan on Finnegan's Ring." }

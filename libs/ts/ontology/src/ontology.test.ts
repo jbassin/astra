@@ -37,6 +37,15 @@ describe("@astra/ontology", () => {
     expect(being.weal_hosts.find((h) => h.slug === "gsr")?.color).toBe("#276C4C");
   });
 
+  test("each campaign declares its world", () => {
+    const being = loadBeing();
+    const bySlug = new Map(being.campaigns.map((c) => [c.slug, c]));
+    expect(bySlug.get("through-a-song-darkly")?.world).toBe("faerrin");
+    expect(bySlug.get("fey-in-the-mists")?.world).toBe("finnegan's ring");
+    expect(bySlug.get("observatory-slipped")?.world).toBe("sedecium");
+    expect(being.campaigns.filter((c) => c.world === "faerrin").length).toBe(5);
+  });
+
   test("canonicalJson matches the committed snapshot (py↔ts parity gate)", () => {
     const being = loadBeing();
     expect(canonicalJson(being)).toBe(readFileSync(CANONICAL, "utf8"));

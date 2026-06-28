@@ -36,6 +36,7 @@ class Campaign(_Base):
     name: str
     edition: str
     main: bool
+    world: str  # the setting played in (free-form; "faerrin" scopes heartwood ingestion)
     roles: list[Role]
 
 

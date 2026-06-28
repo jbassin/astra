@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from astra_ontology import canonical_json
+from astra_ontology import canonical_json, faerrin_campaign_slugs
 from astra_ontology_being import CANONICAL_JSON_PATH, load
 
 
@@ -28,9 +28,25 @@ def test_main_campaign_and_double_pc() -> None:
     assert main.edition == "pathfinder_2e"
     jorge_pcs = [r.character for r in main.roles if r.player == "jorge"]
     assert jorge_pcs == ["Argyle", "Arctos"]  # Jorge plays two PCs in the main arc
+    assert main.world == "faerrin"
     argyle = next(r for r in main.roles if r.character == "Argyle")
     assert argyle.character_class == "champion"
     assert len(argyle.descriptions) == 3
+
+
+def test_world_field_and_faerrin_filter() -> None:
+    being = load()
+    by_slug = {c.slug: c for c in being.campaigns}
+    # Each campaign declares its world; the two off-world arcs are not faerrin.
+    assert by_slug["fey-in-the-mists"].world == "finnegan's ring"
+    assert by_slug["observatory-slipped"].world == "sedecium"
+    assert faerrin_campaign_slugs(being) == {
+        "through-a-song-darkly",
+        "a-hunt-of-metal-and-vine",
+        "the-first-spark",
+        "interred-in-iomenei",
+        "fae-and-forest",
+    }
 
 
 def test_gm_is_per_campaign_not_always_josh() -> None:

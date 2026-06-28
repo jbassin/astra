@@ -83,6 +83,7 @@ function toCampaign(node: Node): Campaign {
     name: String(scalar(node, "name")),
     edition: String(scalar(node, "edition")),
     main: Boolean(scalar(node, "main")),
+    world: String(scalar(node, "world")),
     roles: childrenNamed(node, "role").map(toRole),
   };
 }
