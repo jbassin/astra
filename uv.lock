@@ -18,6 +18,7 @@ members = [
     "astra-ontology",
     "astra-ontology-being",
     "astra-ontology-config",
+    "astra-ontology-entity",
     "astra-scribe",
     "astra-smoke",
     "astra-smoke-substrate",
@@ -370,12 +371,14 @@ version = "0.0.0"
 source = { editable = "libs/py/ontology" }
 dependencies = [
     { name = "astra-config" },
+    { name = "astra-lexicon" },
     { name = "pydantic" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "astra-config", editable = "libs/py/config" },
+    { name = "astra-lexicon", editable = "libs/py/lexicon" },
     { name = "pydantic", specifier = ">=2" },
 ]
 
@@ -400,6 +403,25 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [{ name = "astra-config", editable = "libs/py/config" }]
+
+[[package]]
+name = "astra-ontology-entity"
+version = "0.0.0"
+source = { editable = "ontology/ontology-entity" }
+dependencies = [
+    { name = "astra-lexicon" },
+    { name = "astra-observe" },
+    { name = "astra-ontology" },
+    { name = "astra-ontology-being" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "astra-lexicon", editable = "libs/py/lexicon" },
+    { name = "astra-observe", editable = "libs/py/observe" },
+    { name = "astra-ontology", editable = "libs/py/ontology" },
+    { name = "astra-ontology-being", editable = "ontology/ontology-being" },
+]
 
 [[package]]
 name = "astra-scribe"

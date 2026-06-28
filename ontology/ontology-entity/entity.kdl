@@ -1,0 +1,1579 @@
+entity "6d6" {
+    alias "66"
+    source "defs"
+}
+entity "8:15" {
+    alias "May 15"
+    source "defs"
+}
+entity "\\\\\\\\$" {
+    alias "\\$"
+    source "defs"
+}
+entity "a Will save" {
+    alias "it Wilson"
+    alias "Uh\\s*We'll\\s*save"
+    source "defs"
+}
+entity "Alfie Gallagher" {
+    alias "Elfie Gallagher"
+    source "defs"
+}
+entity "Alkahest Freight" kind="org" page="Org/Alkahest Freight/index" {
+    alias "Alka-Heist\\s*Freight"
+    alias "Alkahast\\s*Freight"
+    alias "Alkahaz\\s*Freight"
+    alias "Alkahazprate"
+    source "akasha"
+    source "defs"
+}
+entity "Althane" {
+    alias "Ulthane"
+    alias "Ossine"
+    alias "Althin"
+    source "defs"
+}
+entity "Amber Call" kind="org" page="Org/Amber Call/index" {
+    alias "Abracol"
+    alias "Ambercall"
+    alias "Amber\\s*Collar"
+    alias "Amber\\s*Cole"
+    source "akasha"
+    source "defs"
+}
+entity "ampoule" {
+    alias "ampule"
+    source "defs"
+}
+entity "Anaïs" {
+    alias "Anai"
+    alias "Danai"
+    alias "An eye"
+    source "defs"
+}
+entity "Anaïs Marchal" kind="person" page="Org/Iconoclasm/People/Anaïs Marchal" {
+    alias "Anaïs"
+    source "akasha"
+}
+entity "Andros" kind="person" being="noah" {
+    source "being"
+}
+entity "Anouk" {
+    alias "Anak"
+    alias "Anuk"
+    alias "Anik"
+    alias "Onyx"
+    alias "Anok"
+    source "defs"
+}
+entity "Anouk and Anaïs" {
+    alias "Anakin-Denai"
+    alias "Anakin and I"
+    alias "Annika and I"
+    source "defs"
+}
+entity "Anouk Marchal" kind="person" page="Org/Iconoclasm/People/Anouk Marchal" {
+    alias "Anouk"
+    source "akasha"
+}
+entity "Anouk's" {
+    alias "Onyx's"
+    source "defs"
+}
+entity "Anzu" kind="person" being="tanner" {
+    alias "Anzi"
+    alias "Hanzo"
+    alias "Ronzo"
+    alias "Antu"
+    alias "Anju"
+    alias "Onzu"
+    alias "Ansu"
+    alias "Anzo"
+    source "defs"
+    source "being"
+}
+entity "Anzu said he's" {
+    alias "Aunt Suzette is"
+    source "defs"
+}
+entity "Archie" kind="person" being="tanner" {
+    source "being"
+}
+entity "Archmechanic" {
+    alias "arc mechanic"
+    alias "art mechanic"
+    alias "Arch Mechanicus"
+    source "defs"
+}
+entity "Archmechanic's" {
+    alias "Arc Mechanics'"
+    alias "Archmechanics'"
+    source "defs"
+}
+entity "Archmechanics" {
+    alias "Arc Mechanics"
+    source "defs"
+}
+entity "Arctos" kind="person" being="jorge" {
+    alias "Arctis"
+    alias "Arctus"
+    alias "Arcturus"
+    alias "Arcto"
+    alias "Arthas"
+    source "defs"
+    source "being"
+}
+entity "Arctos'" {
+    alias "Arctis'"
+    alias "Arctus'"
+    alias "Arcturus'"
+    alias "Arctosis"
+    source "defs"
+}
+entity "Argyle" kind="person" being="jorge" {
+    alias "Arka"
+    alias "Gargoyle"
+    alias "Orgyle"
+    alias "Arkyle"
+    source "defs"
+    source "being"
+}
+entity "Argyle's" {
+    alias "Artie Kyle's"
+    source "defs"
+}
+entity "Atum" {
+    alias "Adam"
+    source "defs"
+}
+entity "Aurideon" kind="place" page="Geography/Calaria/Hallia/Aurideon/index" {
+    alias "Iridiu[mn]"
+    alias "Oridia[mn]"
+    alias "Iridion"
+    alias "Iridian"
+    alias "Orinion"
+    alias "Eridian"
+    source "akasha"
+    source "defs"
+}
+entity "Austrene" kind="place" page="Geography/Austrene/index" {
+    alias "Austrian"
+    alias "Ostrand"
+    alias "Austrine"
+    alias "Ostren"
+    alias "Austren"
+    alias "Ostreen"
+    alias "Austria"
+    source "akasha"
+    source "defs"
+}
+entity "Aut" kind="deity" page="Divinity/The Narrative/Aut" {
+    alias "Ott"
+    alias "Auk"
+    alias "Ot"
+    source "akasha"
+    source "defs"
+}
+entity "autobody" {
+    alias "Autobot"
+    source "defs"
+}
+entity "Bait-and-Tackle Shop" {
+    alias "Bain Tackle Shop"
+    alias "Bait and tackle shop"
+    source "defs"
+}
+entity "barghest" {
+    alias "Barguest"
+    alias "Barghest"
+    alias "Barghas"
+    alias "Varghest"
+    alias "Barkas"
+    alias "Bargis"
+    alias "Bargust"
+    alias "Bargus"
+    alias "Vargas"
+    alias "Bargas"
+    alias "Barghast"
+    source "defs"
+}
+entity "barghests" {
+    alias "barguests"
+    alias "bar guests"
+    alias "Barkists"
+    source "defs"
+}
+entity "Barlow" kind="person" being="noah" {
+    source "being"
+}
+entity "Beats in Time" {
+    alias "Beats and Time"
+    source "defs"
+}
+entity "Belvedere" kind="org" page="Org/Belvedere" {
+    source "akasha"
+}
+entity "benediction" {
+    alias "Benedict"
+    source "defs"
+}
+entity "Benjamin Grayson" kind="person" page="Org/Amber Call/People/Benjamin Grayson" {
+    alias "Grayson"
+    source "akasha"
+}
+entity "Bennix" {
+    alias "Benix"
+    alias "Bennex"
+    source "defs"
+}
+entity "Bennix's" {
+    alias "Benix's"
+    source "defs"
+}
+entity "Benny" kind="person" being="mike" {
+    alias "Bennett"
+    alias "Banny"
+    source "defs"
+    source "being"
+}
+entity "Benny Boy" {
+    alias "Benny boy"
+    source "defs"
+}
+entity "Bev Sirnow" {
+    alias "Bev Cerno"
+    source "defs"
+}
+entity "Black and White" kind="place" page="Geography/Black and White/index" {
+    alias "black and white"
+    source "akasha"
+    source "defs"
+}
+entity "Braxton Hall" kind="person" page="Org/Ætherion Limited/People/Braxton Hall" {
+    alias "Braxton"
+    source "akasha"
+}
+entity "Brithwyn" kind="place" page="Geography/Brithwyn/index" {
+    alias "Brithwin"
+    alias "Brithwen"
+    source "akasha"
+    source "defs"
+}
+entity "cadre" {
+    alias "Khadra"
+    source "defs"
+}
+entity "Calaria" kind="place" page="Geography/Calaria/index" {
+    alias "Galeria"
+    alias "Caleria"
+    alias "Galarian"
+    alias "Galaria"
+    alias "Kolaria"
+    alias "Calera"
+    alias "Calario"
+    alias "Claria"
+    source "akasha"
+    source "defs"
+}
+entity "Calarian" {
+    alias "Calerian"
+    source "defs"
+}
+entity "Calarians" {
+    alias "Calerians"
+    alias "Galarians"
+    source "defs"
+}
+entity "Candescent Legion" kind="org" page="Org/Candescent Legion" {
+    source "akasha"
+}
+entity "Cassian Drake" kind="person" page="Org/The Scale/People/Cassian Drake" {
+    alias "Cassian"
+    source "akasha"
+}
+entity "Cedric" kind="person" being="jorge" {
+    source "being"
+}
+entity "Celestial Prescence" kind="deity" page="Divinity/Celestial Prescence" {
+    source "akasha"
+}
+entity "Ceres" kind="person" page="Org/RunGunners/People/Ceres" {
+    source "akasha"
+}
+entity "Children of the Heir" kind="org" page="Org/Children of the Heir" {
+    alias "Children\\s*of\\s*the"
+    source "akasha"
+    source "defs"
+}
+entity "Chorath" {
+    alias "Coreth"
+    alias "Korath"
+    source "defs"
+}
+entity "Chorath Engineering" kind="org" page="Org/Chorath Engineering" {
+    source "akasha"
+}
+entity "Cliff" kind="person" being="jorge" {
+    source "being"
+}
+entity "Combo" kind="person" being="mike" {
+    source "being"
+}
+entity "Concordia" kind="org" page="Org/Concordia" {
+    source "akasha"
+}
+entity "Convox" {
+    alias "cot box"
+    source "defs"
+}
+entity "Copperjaw" {
+    alias "Cobblejaw"
+    alias "Coppajaw"
+    source "defs"
+}
+entity "Cross Trevils" kind="person" page="Org/Verdant Holdings/People/Cross Trevils" {
+    source "akasha"
+}
+entity "Crowe" {
+    alias "Crow"
+    source "defs"
+}
+entity "Dame Quay" {
+    alias "Dame Key"
+    alias "Dan Key"
+    alias "Dame Keeney"
+    alias "damn\\s*Quay"
+    source "defs"
+}
+entity "Deosil" {
+    alias "Diesel"
+    source "defs"
+}
+entity "Detective Ellis Brooks" kind="person" page="Org/Iridescent Church/Convox/Magical Crimes/People/Detective Ellis Brooks" {
+    alias "Brooks"
+    source "akasha"
+}
+entity "dhampir" {
+    alias "Dompierre"
+    alias "Dompir"
+    source "defs"
+}
+entity "Divex" {
+    alias "Dybeck"
+    alias "Dive-X"
+    source "defs"
+}
+entity "Divine Raiment" kind="deity" page="Divinity/Divine Raiment" {
+    source "akasha"
+}
+entity "Divinity" kind="deity" page="Divinity/index" {
+    source "akasha"
+}
+entity "Dorcan" {
+    alias "Dorkin"
+    source "defs"
+}
+entity "Dura" {
+    alias "Jura"
+    alias "Duro"
+    alias "Dur"
+    source "defs"
+}
+entity "Dura Oil-Drinker" kind="person" page="Org/Iconoclasm/People/Dura Oil-Drinker" {
+    alias "Dura"
+    source "akasha"
+}
+entity "Elara Vance" {
+    alias "Lara Vance"
+    alias "Alara Vance"
+    source "defs"
+}
+entity "Elias Ramsey" kind="person" page="Org/Iconoclasm/People/Elias Ramsey" {
+    source "akasha"
+}
+entity "Embercall" {
+    alias "Emperor Call"
+    alias "Embracol"
+    alias "Ember Call"
+    alias "Ember\\s*Cull"
+    alias "Emberfall"
+    alias "Emberco"
+    alias "EmberCole"
+    source "defs"
+}
+entity "Embercall's" {
+    alias "Ember\\s*Calls"
+    source "defs"
+}
+entity "Esoterica" {
+    alias "esoterica"
+    source "defs"
+}
+entity "Estañion" {
+    alias "a Stanion"
+    alias "a stanion"
+    alias "Estanian"
+    source "defs"
+}
+entity "Eternal Pulse" kind="deity" page="Divinity/Outer Gods/Eternal Pulse" {
+    alias "Pulse"
+    source "akasha"
+}
+entity "Exitum-ρ-15" {
+    alias "Exitum Roe"
+    source "defs"
+}
+entity "Fae" {
+    alias "Fae"
+    source "defs"
+}
+entity "Falcata" {
+    alias "Alcada"
+    alias "Falkata"
+    alias "Felicata"
+    alias "Felcata"
+    source "defs"
+}
+entity "Fane" {
+    alias "vein"
+    alias "fane"
+    source "defs"
+}
+entity "Feep" {
+    alias "Feeb"
+    alias "feep"
+    alias "Fiep"
+    source "defs"
+}
+entity "Fenrith" kind="place" page="Geography/Fenrith/index" {
+    source "akasha"
+}
+entity "firearm manufacturer" {
+    alias "fire manufacturer"
+    source "defs"
+}
+entity "Firmament" kind="phenomenon" page="Phenomena/Firmament" {
+    alias "Furman"
+    source "akasha"
+    source "defs"
+}
+entity "Flintlock" {
+    alias "Locke"
+    alias "Footlock"
+    source "defs"
+}
+entity "Flintlock Toboggan" kind="deity" page="Divinity/Fiends/Flintlock Toboggan" {
+    alias "flintlock toboggan"
+    alias "Flip lock toboggan"
+    alias "Flint\\s*toboggan"
+    source "akasha"
+    source "defs"
+}
+entity "Floch" {
+    alias "Floak"
+    source "defs"
+}
+entity "Foral" {
+    alias "Forell"
+    alias "Forl"
+    source "defs"
+}
+entity "Fort DC" {
+    alias "fork, DC"
+    alias "fort\\s*TC"
+    source "defs"
+}
+entity "Færrin" kind="place" page="Geography/Færrin" {
+    alias "Farron"
+    alias "Ferrum"
+    alias "Ferry"
+    alias "Faerun"
+    alias "Feiren"
+    alias "Farinar"
+    alias "Faerin"
+    alias "Faeran"
+    source "akasha"
+    source "defs"
+}
+entity "Fūlwinter" {
+    alias "Full Winter"
+    alias "Fulwinter"
+    source "defs"
+}
+entity "Gage" kind="person" being="mike" {
+    source "being"
+}
+entity "gale" {
+    alias "gaol"
+    source "defs"
+}
+entity "game" {
+    alias "Kate"
+    source "defs"
+}
+entity "Garrick" {
+    alias "Garret"
+    alias "Garak"
+    alias "Garrix"
+    source "defs"
+}
+entity "Garrick Textiles" kind="org" page="Org/Garrick Textiles/index" {
+    alias "Gary\\s*Textiles"
+    alias "Garrett\\s*Textiles"
+    source "akasha"
+    source "defs"
+}
+entity "Gas-n-Go℠" {
+    alias "Gas & Go"
+    alias "Gas and go"
+    alias "Gas-n-Go"
+    source "defs"
+}
+entity "Gaspar Caetano" kind="person" page="Org/NecroLog/People/Gaspar Caetano" {
+    alias "Gaspar"
+    alias "Gasper\\s*Caetano"
+    source "akasha"
+    source "defs"
+}
+entity "Geography" kind="place" page="Geography/index" {
+    source "akasha"
+}
+entity "Ghosts of Raelion" kind="org" page="Org/Ghosts of Raelion" {
+    alias "ghosts\\s*of\\s*Raelio"
+    source "akasha"
+    source "defs"
+}
+entity "Giannos" {
+    alias "Janus"
+    alias "Giannis"
+    source "defs"
+}
+entity "Giannos Hasikos" kind="person" page="Org/Ministry of Cultural Progress/People/Giannos Hasikos" {
+    alias "Giannos"
+    source "akasha"
+}
+entity "Giant" {
+    alias "giant"
+    source "defs"
+}
+entity "Gin Soaked Rag" kind="person" page="Org/Iconoclasm/People/Gin Soaked Rag" {
+    alias "Ginny"
+    alias "Gin-Soaked\\s*Rag"
+    source "akasha"
+    source "defs"
+}
+entity "Godhome" kind="place" page="Geography/Godhome" {
+    alias "god\\s*home"
+    source "akasha"
+    source "defs"
+}
+entity "Godly Interplay" kind="deity" page="Divinity/Godly Interplay" {
+    source "akasha"
+}
+entity "Grant" kind="person" being="jorge" {
+    source "being"
+}
+entity "Grayson" {
+    alias "Graystone"
+    source "defs"
+}
+entity "Green Father" kind="deity" page="Divinity/Unknown Entities/Green Father" {
+    source "akasha"
+}
+entity "Gregor" kind="person" being="tanner" {
+    source "being"
+}
+entity "Gryphon" {
+    alias "Griffin"
+    source "defs"
+}
+entity "Gryphonline" {
+    alias "Griffin\\s*line"
+    source "defs"
+}
+entity "Hallia" kind="place" page="Geography/Calaria/Hallia/index" {
+    alias "Halia"
+    alias "Haleah"
+    alias "Helya"
+    alias "Halley"
+    alias "Hylia"
+    alias "Hallyu"
+    alias "Hellia"
+    source "akasha"
+    source "defs"
+}
+entity "Harmony" kind="phenomenon" page="Phenomena/Harmony/index" {
+    source "akasha"
+}
+entity "Hearts" kind="phenomenon" page="Phenomena/Hearts" {
+    source "akasha"
+}
+entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the Plague" {
+    alias "Heir"
+    source "akasha"
+}
+entity "Herald" {
+    alias "herald"
+    alias "Harold"
+    source "defs"
+}
+entity "Hey, Aut" {
+    alias "Hey, Art"
+    source "defs"
+}
+entity "Hierophant" kind="deity" page="Divinity/Hierophant" {
+    source "akasha"
+}
+entity "Hildebrandt" {
+    alias "Hildebrand"
+    alias "Hildebrant"
+    alias "Hildemarant"
+    alias "Hiltabrand"
+    source "defs"
+}
+entity "Hildebrandt Corporation" kind="org" page="Org/Hildebrandt Corporation/index" {
+    source "akasha"
+}
+entity "Hlarf" {
+    alias "Flarf"
+    alias "Hoth"
+    alias "Larf"
+    alias "Plarf"
+    alias "Hilarfs"
+    alias "Flurf"
+    alias "Flarv"
+    alias "Clarke"
+    alias "Harf"
+    alias "Clark"
+    alias "Hulf"
+    alias "Blarf"
+    alias "Clarf"
+    alias "Hlarif"
+    source "defs"
+}
+entity "Hollowpact" kind="org" page="Org/Hollowpact" {
+    alias "Holopact"
+    source "akasha"
+    source "defs"
+}
+entity "https://btl.iridi.cc" {
+    alias "btl.ready.cc"
+    alias "BTL"
+    alias "btl.aridi.cc"
+    source "defs"
+}
+entity "I'm Aut" {
+    alias "I'm odd"
+    source "defs"
+}
+entity "ice floes" {
+    alias "ice flows"
+    source "defs"
+}
+entity "Ichel" kind="person" page="Org/Radiant Arms/People/Ichel" {
+    alias "Eshell"
+    alias "Michelle"
+    alias "Ixchel"
+    alias "Y'shell"
+    alias "Ischel"
+    source "akasha"
+    source "defs"
+}
+entity "Iconoclasm" kind="org" page="Org/Iconoclasm/index" {
+    alias "Ilkaniklasm"
+    alias "iconoclism"
+    source "akasha"
+    source "defs"
+}
+entity "Illmari" {
+    alias "Omari"
+    alias "Old Mari"
+    alias "Elamari"
+    alias "Ilmari"
+    alias "Lomari"
+    alias "Elmari"
+    alias "Illumari"
+    alias "Ilmar"
+    source "defs"
+}
+entity "Illmari Vaino" kind="person" page="Org/Iconoclasm/People/Illmari Vaino" {
+    alias "Illmari"
+    source "akasha"
+}
+entity "Immix" {
+    alias "[IE]mix"
+    source "defs"
+}
+entity "in Hallia" {
+    alias "Inhalia"
+    alias "in\\s*Alia"
+    alias "in\\s*Talia"
+    alias "in\\s*Hellia"
+    source "defs"
+}
+entity "Infinite Horizon" kind="phenomenon" page="Phenomena/Infinite Horizon" {
+    alias "Horizon"
+    source "akasha"
+}
+entity "Inner Gods" kind="deity" page="Divinity/Inner Gods" {
+    source "akasha"
+}
+entity "Insuperlex" {
+    alias "Insuperlix"
+    alias "Superlex"
+    source "defs"
+}
+entity "Iomenei" {
+    alias "Iomene"
+    alias "Iominae"
+    alias "Iomine"
+    source "defs"
+}
+entity "Iridescent Church" kind="org" page="Org/Iridescent Church/index" {
+    alias "iridescent church"
+    source "akasha"
+    source "defs"
+}
+entity "Iridescent Host" kind="deity" page="Divinity/Outer Gods/Iridescent Host" {
+    alias "Host"
+    alias "iridescent hoax"
+    source "akasha"
+    source "defs"
+}
+entity "Iridite Mutual" {
+    alias "Erudite Mutual"
+    alias "Irodite\\s*Mutual's"
+    alias "Iridite\\s*Neutral"
+    source "defs"
+}
+entity "Istria" kind="place" page="Geography/Istria/index" {
+    source "akasha"
+}
+entity "Jasper Glover" kind="person" page="Org/Roundhat Gang/People/Jasper Glover" {
+    source "akasha"
+}
+entity "Jethro" {
+    alias "Jeffro"
+    source "defs"
+}
+entity "Jethro Twill" kind="person" page="Org/Ternion Heavy Industries/People/Jethro Twill" {
+    alias "Jethro"
+    source "akasha"
+}
+entity "Johnny" kind="person" being="noah" {
+    source "being"
+}
+entity "Joker World" {
+    alias "Jokerworld"
+    source "defs"
+}
+entity "Joker Worlds" {
+    alias "Joker\\s*worlds"
+    source "defs"
+}
+entity "Jorge" {
+    alias "George"
+    alias "Georgie"
+    source "defs"
+}
+entity "Judge of Ages" kind="deity" page="Divinity/Outer Gods/Judge of Ages" {
+    alias "Judge"
+    source "akasha"
+}
+entity "Kaathe" {
+    alias "cade"
+    source "defs"
+}
+entity "Kadou" {
+    alias "Caddo"
+    alias "Kato"
+    source "defs"
+}
+entity "Kadou Floch" kind="person" page="Org/Alkahest Freight/People/Kadou Floch" {
+    alias "Kadou"
+    source "akasha"
+}
+entity "keystone" {
+    alias "Aggie Stone"
+    source "defs"
+}
+entity "Ki-Rin" {
+    alias "Chiron"
+    alias "kyren"
+    alias "Chyren"
+    alias "Kyren"
+    alias "Chiron"
+    alias "Kyrim"
+    alias "Kairin"
+    alias "Kirin"
+    source "defs"
+}
+entity "Ki-Rin's" {
+    alias "Chiron's"
+    source "defs"
+}
+entity "Krod" kind="person" being="mike" {
+    source "being"
+}
+entity "Laity" kind="org" page="Org/Laity" {
+    source "akasha"
+}
+entity "Lance Vesper" kind="person" page="Org/The Scale/People/Lance Vesper" {
+    source "akasha"
+}
+entity "Lark Crowe" kind="person" page="Org/Sable and Suns/People/Lark Crowe" {
+    alias "Larkrow"
+    alias "Lark\\s*Rowe"
+    source "akasha"
+    source "defs"
+}
+entity "Letov" {
+    alias "Ledov"
+    alias "Latav"
+    source "defs"
+}
+entity "Letov Obratz" kind="person" page="Org/Garrick Textiles/People/Letov Obratz" {
+    alias "Letov"
+    source "akasha"
+}
+entity "Lorandris" kind="place" page="Geography/Lorandris/index" {
+    alias "Laurentius"
+    alias "Lorandrus"
+    alias "Larandrus"
+    source "akasha"
+    source "defs"
+}
+entity "Low-Mechanitor" {
+    alias "Loma Canada"
+    source "defs"
+}
+entity "Low-Mechanitor Exitum-ρ-15" {
+    alias "Lowe McCandler, exit of row 15"
+    alias "Loma Canator Exitum Row 15"
+    source "defs"
+}
+entity "Magical Crimes" kind="org" page="Org/Iridescent Church/Convox/Magical Crimes/index" {
+    source "akasha"
+}
+entity "Major-Chaplain" {
+    alias "major chaplain"
+    source "defs"
+}
+entity "majordomo" {
+    alias "major\\s*domo"
+    alias "majordome"
+    alias "Mayordomo"
+    source "defs"
+}
+entity "majordomo Ossain" {
+    alias "Major Domo a saint"
+    source "defs"
+}
+entity "Manus" {
+    alias "Manas"
+    source "defs"
+}
+entity "Manus Sudrenus" kind="person" page="Org/Pale Lantern Society/People/Manus Sudrenus" {
+    alias "Manus"
+    alias "Manas Adrenas"
+    source "akasha"
+    source "defs"
+}
+entity "Masque District" {
+    alias "Mask District"
+    source "defs"
+}
+entity "Master Grayson" {
+    alias "Mr. Grayson"
+    source "defs"
+}
+entity "maître d'" {
+    alias "Mater D"
+    alias "Major D"
+    source "defs"
+}
+entity "meeting you, Aut" {
+    alias "meeting you, Art"
+    source "defs"
+}
+entity "Menhir" {
+    alias "Menhirs"
+    alias "Menyr"
+    alias "Menir"
+    alias "Menyir"
+    source "defs"
+}
+entity "mental" {
+    alias "Dementhal"
+    source "defs"
+}
+entity "Meridian" {
+    alias "Herdian"
+    alias "in Haleo"
+    source "defs"
+}
+entity "MetCon" {
+    alias "METCOP"
+    source "defs"
+}
+entity "Mickey" kind="person" being="tanner" {
+    source "being"
+}
+entity "Ministry of Cultural Progress" kind="org" page="Org/Ministry of Cultural Progress/index" {
+    source "akasha"
+}
+entity "MoCuP" {
+    alias "MOCUP"
+    source "defs"
+}
+entity "Mr. Whiskers" kind="person" page="Org/Amber Call/People/Mr. Whiskers" {
+    alias "Whiskers"
+    alias "Mr\\s*Whisker"
+    alias "Mr\\s*Whiskas"
+    source "akasha"
+    source "defs"
+}
+entity "Mutagen" {
+    alias "Mutant Jinn"
+    source "defs"
+}
+entity "NecroLog" kind="org" page="Org/NecroLog/index" {
+    alias "Necrologue"
+    alias "Necrolug"
+    alias "Necrologues"
+    alias "Nekrolag"
+    source "akasha"
+    source "defs"
+}
+entity "Noire" {
+    alias "Noir"
+    source "defs"
+}
+entity "Nos Mortem" kind="place" page="Geography/Quiet Below/Nos Mortem" {
+    source "akasha"
+}
+entity "nosh on" {
+    alias "Noshpaw"
+    source "defs"
+}
+entity "Obie and Parmann" {
+    alias "Obian Parmen"
+    source "defs"
+}
+entity "occultism" {
+    alias "Occultistborn"
+    alias "Heraclitism"
+    source "defs"
+}
+entity "of Hallia" {
+    alias "of Hellion"
+    alias "of\\s*Alia"
+    source "defs"
+}
+entity "of Iconoclasm" {
+    alias "A vicanoclasm"
+    source "defs"
+}
+entity "Opaline Reserve" kind="org" page="Org/Opaline Reserve" {
+    source "akasha"
+}
+entity "or Edan" {
+    alias "on a Don"
+    alias "of\\s*Edan"
+    source "defs"
+}
+entity "Orbits-Upon-Light" {
+    alias "Orpitz upon light"
+    alias "orbits upon light"
+    source "defs"
+}
+entity "oread" {
+    alias "Aurea"
+    source "defs"
+}
+entity "Org" kind="org" page="Org/index" {
+    alias "Borg"
+    source "akasha"
+    source "defs"
+}
+entity "orreries" {
+    alias "oraries"
+    source "defs"
+}
+entity "orts" {
+    alias "orcs"
+    source "defs"
+}
+entity "Ossain Madrun" kind="person" page="Org/Amber Call/People/Ossain Madrun" {
+    alias "Ossain"
+    source "akasha"
+}
+entity "our door" {
+    alias "Ardor"
+    source "defs"
+}
+entity "Ozzie" {
+    alias "Ozzy"
+    source "defs"
+}
+entity "P'ter" {
+    alias "Pterr"
+    alias "Petter"
+    alias "Pter"
+    source "defs"
+}
+entity "P.O. Box" {
+    alias "Geobox"
+    alias "PO\\s*box"
+    alias "P\\s*O\\s*Box"
+    source "defs"
+}
+entity "Paavo" {
+    alias "Pavo"
+    source "defs"
+}
+entity "Paavo Karhu" kind="person" page="Org/Hildebrandt Corporation/People/Paavo Karhu" {
+    alias "Paavo"
+    source "akasha"
+}
+entity "Paavo's" {
+    alias "Pavo's"
+    source "defs"
+}
+entity "pactbroker" {
+    alias "PAC broker"
+    source "defs"
+}
+entity "Pale Lantern Society" kind="org" page="Org/Pale Lantern Society/index" {
+    alias "Pell\\s*Lantern\\s*Society"
+    source "akasha"
+    source "defs"
+}
+entity "parries" {
+    alias "Perry's"
+    source "defs"
+}
+entity "PaSuun" {
+    alias "Hasun"
+    source "defs"
+}
+entity "Pharos" kind="place" page="Geography/Black and White/Pharos" {
+    alias "Ferris"
+    alias "Firas"
+    source "akasha"
+    source "defs"
+}
+entity "Pluckwort" kind="person" being="jorge" {
+    source "being"
+}
+entity "Prime Meridian" kind="org" page="Org/Prime Meridian/index" {
+    alias "Primerudian"
+    alias "Prime\\s*Marudine"
+    source "akasha"
+    source "defs"
+}
+entity "Prime Meridian's" {
+    alias "Prime\\s*Meridians"
+    source "defs"
+}
+entity "Protectorate" kind="org" page="Org/Protectorate/index" {
+    alias "protectorate"
+    alias "Protector"
+    alias "Protectored"
+    source "akasha"
+    source "defs"
+}
+entity "Protectorates" {
+    alias "protectorates"
+    source "defs"
+}
+entity "Psiburst" {
+    alias "Cyburst"
+    alias "Psyburst"
+    source "defs"
+}
+entity "Pyre" {
+    alias "pyre"
+    source "defs"
+}
+entity "Pyrelight" kind="org" page="Org/Pyrelight/index" {
+    alias "pyro\\s*light"
+    alias "pyro\\s*lite"
+    source "akasha"
+    source "defs"
+}
+entity "Quiet Below" kind="place" page="Geography/Quiet Below/index" {
+    source "akasha"
+}
+entity "Radiant Arms" kind="org" page="Org/Radiant Arms/index" {
+    source "akasha"
+}
+entity "Raelion" kind="place" page="Geography/Raelion/index" {
+    alias "Raelian"
+    alias "Raylian"
+    alias "Raylene"
+    alias "Rayleon"
+    alias "Raelio"
+    source "akasha"
+    source "defs"
+}
+entity "Ralph Bishop" kind="person" page="Org/The Scale/People/Ralph Bishop" {
+    source "akasha"
+}
+entity "Regent" {
+    alias "regent"
+    source "defs"
+}
+entity "Renge" {
+    alias "Renga"
+    alias "Rengo"
+    source "defs"
+}
+entity "Reverend" kind="person" being="noah" {
+    source "being"
+}
+entity "Rhædon" kind="place" page="Geography/Rhædon/index" {
+    alias "Raiden"
+    source "akasha"
+    source "defs"
+}
+entity "Roll an arcana check" {
+    alias "Roland or Krochek"
+    source "defs"
+}
+entity "Roundhat Gang" kind="org" page="Org/Roundhat Gang/index" {
+    alias "Roundhat\\s*Kings"
+    alias "Roundhead\\s*gang"
+    alias "Round\\s*Hat\\s*gang"
+    alias "Runtat\\s*gang"
+    alias "Roundhack\\s*gang"
+    source "akasha"
+    source "defs"
+}
+entity "Roundhats" {
+    alias "round\\s*hats"
+    source "defs"
+}
+entity "RunGunners" kind="org" page="Org/RunGunners/index" {
+    alias "Run Gunners"
+    alias "run gunners"
+    source "akasha"
+    source "defs"
+}
+entity "Sable and Suns" kind="org" page="Org/Sable and Suns/index" {
+    alias "Sable and Sons"
+    alias "Sabel and Sons"
+    alias "Sables\\s*and\\s*Sons"
+    alias "Sable\\s*and\\s*Son"
+    source "akasha"
+    source "defs"
+}
+entity "Sableclutch" kind="place" page="Geography/Calaria/Hallia/Sableclutch/index" {
+    alias "sable clutch"
+    source "akasha"
+    source "defs"
+}
+entity "Salvado" {
+    alias "Silvado"
+    alias "Solvado"
+    alias "Silvano"
+    alias "Salvador"
+    alias "Salvato"
+    source "defs"
+}
+entity "Salvado Tarragona" kind="person" page="Org/Solari Sub-surface/People/Salvado Tarragona" {
+    alias "Salvado"
+    alias "Solvado\\s*Targona"
+    source "akasha"
+    source "defs"
+}
+entity "Salvatore" kind="person" being="noah" {
+    source "being"
+}
+entity "Sbrtlby" {
+    alias "Spartleby"
+    alias "Spurdleby"
+    alias "Spartle B."
+    alias "Sparrowbeats"
+    alias "Sparrowby"
+    alias "Spartalby"
+    alias "Spurtleby"
+    alias "Sartleby"
+    source "defs"
+}
+entity "Sbrtlby and" {
+    alias "Sbrtlbyand"
+    source "defs"
+}
+entity "Sbrtlby will" {
+    alias "Sbrtlbywill"
+    source "defs"
+}
+entity "Scale" {
+    alias "scale"
+    alias "Scal"
+    source "defs"
+}
+entity "Scrazzy" {
+    alias "Skrazi"
+    alias "Scrazy"
+    alias "Scrazzia"
+    alias "Scrazi"
+    alias "Scrazz"
+    source "defs"
+}
+entity "Second Sun Diner" {
+    alias "Second Son Diner"
+    source "defs"
+}
+entity "Sedecium" {
+    alias "sedicium"
+    alias "Sedesium"
+    source "defs"
+}
+entity "Sentinel Dynamics" kind="org" page="Org/Sentinel Dynamics" {
+    source "akasha"
+}
+entity "SeRaan" {
+    alias "Saron"
+    source "defs"
+}
+entity "sewer" {
+    alias "Syria"
+    source "defs"
+}
+entity "Sigzil Haight" kind="deity" page="Divinity/Fiends/Sigzil Haight" {
+    alias "Shackled Prince"
+    alias "Sigilheit"
+    alias "Sigilhite"
+    source "akasha"
+    source "defs"
+}
+entity "Silven" {
+    alias "Sylvan"
+    source "defs"
+}
+entity "Silven Grayson" kind="person" page="Org/Amber Call/People/Silven Grayson" {
+    alias "Silven"
+    source "akasha"
+}
+entity "Sin and Tonic" kind="place" page="Geography/Calaria/Hallia/Sableclutch/Sin and Tonic" {
+    alias "Synth and Tonic"
+    alias "Syntonic"
+    alias "synatomic"
+    alias "synatonic"
+    alias "Sinitonic"
+    alias "Antonica"
+    alias "Simtonic"
+    alias "Synan\\s*Tonic"
+    alias "Isin\\s*and\\s*Tonic"
+    alias "Sim\\s*and\\s*Tonic"
+    source "akasha"
+    source "defs"
+}
+entity "skein" {
+    alias "Skeen"
+    alias "Skain"
+    source "defs"
+}
+entity "Smiler" {
+    alias "Smila"
+    alias "Milo"
+    alias "Soiler"
+    source "defs"
+}
+entity "Solari Sub-surface" kind="org" page="Org/Solari Sub-surface/index" {
+    alias "Solari\\s*Subsurface"
+    alias "Solari\\s*subspace"
+    alias "Solari\\s*Subservice"
+    alias "Solaria\\s*Subservice"
+    source "akasha"
+    source "defs"
+}
+entity "starward" {
+    alias "star\\s*w[ao]rd"
+    alias "Star Wars"
+    source "defs"
+}
+entity "Stillness" kind="phenomenon" page="Phenomena/Stillness" {
+    source "akasha"
+}
+entity "Submechanitor" {
+    alias "submacanators"
+    alias "submechanators"
+    alias "Submecanators"
+    alias "Submechanic"
+    source "defs"
+}
+entity "Sundom" {
+    alias "Sundump"
+    alias "Sun Doom"
+    alias "Sundum"
+    alias "Sendum"
+    alias "Sundub"
+    alias "Sundome"
+    source "defs"
+}
+entity "Syrin" {
+    alias "Siren"
+    source "defs"
+}
+entity "Tamara McKay" kind="person" page="Org/Protectorate/People/Tamara McKay" {
+    alias "Tamara"
+    source "akasha"
+}
+entity "Tas" {
+    alias "Taz"
+    alias "Taz"
+    source "defs"
+}
+entity "Tas Millett" kind="person" page="Org/Prime Meridian/People/Tas Millett" {
+    source "akasha"
+}
+entity "Teller's Run" kind="place" page="Geography/Calaria/Hallia/Teller's Run/index" {
+    alias "Teller's rod"
+    alias "Teller's run"
+    alias "Taylor's\\s*run"
+    alias "Tellur's\\s*Run"
+    alias "Tellers\\s*Run"
+    source "akasha"
+    source "defs"
+}
+entity "Ternion" {
+    alias "tourney"
+    alias "Ternian"
+    alias "Turnian"
+    source "defs"
+}
+entity "Ternion Heavy Industries" kind="org" page="Org/Ternion Heavy Industries/index" {
+    alias "Tourney and Heavy Industries"
+    alias "Tourney and Heavy Industry"
+    alias "Ternian\\s*Heavy\\s*Industries"
+    alias "Turnian\\s*Heavy\\s*Industries"
+    source "akasha"
+    source "defs"
+}
+entity "The Compelled" kind="deity" page="Divinity/Outer Gods/The Compelled" {
+    source "akasha"
+}
+entity "The Crowded Flea" kind="place" page="Geography/Calaria/Hallia/Sableclutch/The Crowded Flea" {
+    alias "the\\s*Crowded\\s*Fleet"
+    source "akasha"
+    source "defs"
+}
+entity "The Harlequins" kind="org" page="Org/The Harlequins/index" {
+    alias "the\\s*Harley\\s*Quinn's"
+    source "akasha"
+    source "defs"
+}
+entity "the Heart" {
+    alias "Seahart"
+    alias "The\\s*Art"
+    alias "the\\s*art\\s*I"
+    alias "the\\s*Hart"
+    source "defs"
+}
+entity "The Master of Ceremonies" kind="person" page="Org/The Harlequins/People/The Master of Ceremonies" {
+    source "akasha"
+}
+entity "The Scale" kind="org" page="Org/The Scale/index" {
+    alias "the\\s*Sable"
+    alias "the\\s*Scaled"
+    source "akasha"
+    source "defs"
+}
+entity "the Scale's" {
+    alias "the\\s*Scales"
+    source "defs"
+}
+entity "The Zorbon" kind="deity" page="Divinity/Unknown Entities/The Zorbon" {
+    alias "Zorbon"
+    alias "the\\s*Sorbonne"
+    alias "the\\s*Zorbom"
+    alias "the\\s*Zorba"
+    alias "the\\s*Zorbog"
+    source "akasha"
+    source "defs"
+}
+entity "Thistle Monroe" {
+    alias "Fissel Monroe"
+    source "defs"
+}
+entity "Tithe" {
+    alias "Aibh"
+    source "defs"
+}
+entity "Tormeré" kind="place" page="Geography/Tormeré/index" {
+    alias "Tormere"
+    alias "Tourmarais"
+    alias "Pomeroy"
+    alias "Tormore"
+    alias "Tormoray"
+    alias "Tormari"
+    alias "Tormure"
+    alias "Dormeray"
+    source "akasha"
+    source "defs"
+}
+entity "Trevils" {
+    alias "Trebills"
+    alias "Trevilles"
+    source "defs"
+}
+entity "TuRiin" {
+    alias "Turin"
+    source "defs"
+}
+entity "two-timing" {
+    alias "too timing"
+    source "defs"
+}
+entity "Tywelwyn" {
+    alias "Twelwyn"
+    alias "12\\s*wins?"
+    alias "12 and"
+    alias "Toland"
+    alias "Dwellwyn"
+    alias "12-1"
+    alias "Twelvin"
+    alias "Twelwynn"
+    alias "Twelwin"
+    source "defs"
+}
+entity "Tywelwyn Leatherhide" kind="person" page="Org/Roundhat Gang/People/Tywelwyn Leatherhide" {
+    alias "Tywelwyn"
+    alias "Twelwynn\\s*Leatherhide's"
+    source "akasha"
+    source "defs"
+}
+entity "Tywelwyn's" {
+    alias "Quelwyn's"
+    alias "Twelwins"
+    source "defs"
+}
+entity "Ugathal" {
+    alias "Ugothal"
+    alias "Oogathal"
+    alias "Ugathol"
+    alias "Ugithul"
+    alias "Ukathal"
+    alias "Ukathals"
+    source "defs"
+}
+entity "Vaino" {
+    alias "Vino"
+    source "defs"
+}
+entity "Vane" {
+    alias "Vayne"
+    source "defs"
+}
+entity "Velthara" kind="place" page="Geography/Velthara/index" {
+    alias "Valthara"
+    alias "Althara"
+    source "akasha"
+    source "defs"
+}
+entity "Verdant" {
+    alias "Vernon"
+    source "defs"
+}
+entity "Verdant Expanse" kind="place" page="Geography/Calaria/Verdant Expanse" {
+    alias "Green Sea"
+    alias "Emerald Deep"
+    alias "Virgent\\s*Expanse"
+    source "akasha"
+    source "defs"
+}
+entity "Verdant Holdings" kind="org" page="Org/Verdant Holdings/index" {
+    source "akasha"
+}
+entity "Vilksnake" {
+    alias "vilk snake"
+    source "defs"
+}
+entity "Voidsong" kind="phenomenon" page="Phenomena/Harmony/Voidsong" {
+    alias "Void Song"
+    alias "voidsaw"
+    alias "Vojtang"
+    alias "Void Sog"
+    source "akasha"
+    source "defs"
+}
+entity "voidward" {
+    alias "void\\s*w[ao]rd"
+    source "defs"
+}
+entity "Walter Stoke" kind="person" page="Org/Iridescent Church/People/Walter Stoke" {
+    alias "Walter"
+    source "akasha"
+}
+entity "War" {
+    alias "war"
+    source "defs"
+}
+entity "Watcher With 1,000 Eyes" kind="deity" page="Divinity/Outer Gods/Watcher With 1,000 Eyes" {
+    alias "Watcher"
+    source "akasha"
+}
+entity "Whiskers" {
+    alias "Whiskas"
+    source "defs"
+}
+entity "Widdershins" kind="place" page="Geography/Calaria/Hallia/Widdershins/index" {
+    alias "Wittershins"
+    alias "Wintershins"
+    alias "Wootershins"
+    source "akasha"
+    source "defs"
+}
+entity "Wrenford" kind="place" page="Geography/Calaria/Wrenford" {
+    alias "renford"
+    source "akasha"
+    source "defs"
+}
+entity "Yao Addington" kind="person" page="Org/Protectorate/People/Yao Addington" {
+    alias "Yao"
+    source "akasha"
+}
+entity "Yeenut" {
+    alias "Enot"
+    alias "e-nut"
+    alias "Yee Nut"
+    alias "Yeena"
+    alias "Enid"
+    alias "yeanut"
+    alias "yee-nut"
+    source "defs"
+}
+entity "Yeenut Guy" {
+    alias "YeenutGuy"
+    source "defs"
+}
+entity "Zangron" kind="person" being="mike" {
+    source "being"
+}
+entity "Zorbon" {
+    alias "Zorbot"
+    alias "Zorban"
+    alias "Zoroban"
+    alias "Zorbont"
+    alias "Sorbonne"
+    alias "Zorbom"
+    alias "Zorbog"
+    source "defs"
+}
+entity "Zugg" {
+    alias "Sugg"
+    alias "ZUG"
+    alias "Zuck"
+    source "defs"
+}
+entity "Ætherion" {
+    alias "Ethereum"
+    alias "Aetherion"
+    source "defs"
+}
+entity "Ætherion Limited" kind="org" page="Org/Ætherion Limited/index" {
+    source "akasha"
+}

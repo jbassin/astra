@@ -5,6 +5,7 @@ description = "Typed accessor over ontology-being's KDL — players→PCs, campa
 requires-python = ">=3.12"
 dependencies = [
     "astra-config",
+    "astra-lexicon",
     "pydantic>=2",
 ]
 
@@ -17,3 +18,4 @@ packages = ["src/astra_ontology"]
 
 [tool.uv.sources]
 astra-config = { workspace = true }
+astra-lexicon = { workspace = true }

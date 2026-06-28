@@ -16,11 +16,21 @@ from typing import Any
 
 from astra_config.kdl import load_document
 
+from .entity import (
+    Entity,
+    EntityKind,
+    merge_seed,
+    parse_entities,
+    seed_entities,
+    serialize_entities,
+)
 from .models import Being, Campaign, HostLines, Player, PodcastPersona, Role, WealHost
 
 __all__ = [
     "Being",
     "Campaign",
+    "Entity",
+    "EntityKind",
     "HostLines",
     "Player",
     "PodcastPersona",
@@ -29,6 +39,10 @@ __all__ = [
     "canonical_json",
     "faerrin_campaign_slugs",
     "load_being",
+    "merge_seed",
+    "parse_entities",
+    "seed_entities",
+    "serialize_entities",
 ]
 
 
