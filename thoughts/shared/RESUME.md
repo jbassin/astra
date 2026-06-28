@@ -95,8 +95,11 @@ typed registry (311 seeded) + `resolve()` (`Y'shael→Ichel`). Spec `…-phase1-
 - **Known residual (Phase-4 review territory, not a Phase-2 blocker):** the `Voidheart→voidward` confident
   false-link (resolve-threshold tuning, trades against catching real garbles at ~0.86) + residual factual
   hallucinations + ~28% of facts with no `kind_hint`.
-- **▶ RESUME AT: Phase 3 — prose proposer.** The make-or-break house-voice gate (anti-AI-slop is THE bar):
-  scope → spec (`octo:spec`) → implement. Scope/spec not yet started. Builds on the committed Phase-2 facts.
+- **▶ RESUME AT: Phase 3 — prose proposer — IMPLEMENT (S1).** Scope + spec DONE (`cb86823` scope; spec
+  `0020-heartwood-phase3-proposer-spec.md`, adversarially hardened). The make-or-break house-voice gate
+  (anti-AI-slop is THE bar). Locked: P3.1 aim-for-publishable; P3.2 new pages + merged rewrites; novelty gate
+  + conflict-flag + non-prose-skip + match-the-target voice (P3.15–P3.17). Drive the 5 slices (§13) with
+  `octo:embrace`; acceptance on the committed `2025-8-28` facts. Builds on the committed Phase-2 facts.
 - **Gotchas memory:** `[[heartwood-0020-gotchas]]`.
 
 ### chronicle (0019): automatic Show → Season → Episode campaign timeline in akasha (2026-06-27 session — DONE + LIVE)
