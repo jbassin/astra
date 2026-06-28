@@ -2,8 +2,9 @@
 
 ``FILTER_SYSTEM`` (Stage 1) ports faerrin caster ``distill``'s out-of-character discard
 instruction, **adds combat/play-by-play exclusion (D7)** and the keep-the-noun nuance, and
-recasts the task as a per-window keep/drop verdict. The extraction prompt (Stage 2) is
-added in the next slice.
+recasts the task as a per-window keep/drop verdict. ``EXTRACT_SYSTEM`` (Stage 2) extracts
+atomic, grounded noun-facts from the kept context — plain facts, not house-voice prose
+(that is Phase 3).
 """
 
 from __future__ import annotations
@@ -35,4 +36,30 @@ FILTER_SYSTEM = (
     "Record, via the tool, a verdict for EVERY window exactly once: its window_id, a "
     "decision (keep|drop), a category (in_world for a kept window; ooc|combat|"
     "play_by_play for a dropped one), and a one-line reason."
+)
+
+
+EXTRACT_SYSTEM = (
+    "You are a lore archivist for a long-running tabletop RPG (Pathfinder 2e) campaign, "
+    "maintaining a SETTING WIKI — the durable encyclopedia of the world's NOUNS (people, "
+    "places, organizations, deities, phenomena, creatures, items).\n\n"
+    "You are given the in-world portions of one session's transcript (out-of-character "
+    "talk and combat blow-by-blow have already been removed). Extract the durable FACTS it "
+    "establishes about nouns — the sort of thing a wiki entry records.\n\n"
+    "Rules:\n"
+    "- One fact = ONE durable assertion about ONE subject noun. Keep facts atomic.\n"
+    "- DURABLE means who or what someone/something IS — standing traits, roles, "
+    "relationships, origins, properties, allegiances — NOT the play-by-play sequence of "
+    "what happened this session (the chronicle covers events).\n"
+    "- subject: the noun as it appears in the transcript. Do NOT correct its spelling — "
+    "name resolution happens downstream.\n"
+    "- kind_hint: your best guess at the noun's type (person, place, org, deity, "
+    "phenomenon, creature, item); omit it if genuinely unclear.\n"
+    "- claim: a plain, factual statement of the assertion. Do NOT write polished wiki prose "
+    "or flavor; just state the fact, grounded in the transcript.\n"
+    "- GROUNDING: assert ONLY what the transcript supports. Never invent events, outcomes, "
+    "names, or lore, and never resolve what the transcript leaves ambiguous. If the text "
+    "establishes nothing durable about any noun, record no facts.\n"
+    "- Player characters ARE setting nouns — extract facts about them like anyone else.\n\n"
+    "Record every fact via the tool."
 )

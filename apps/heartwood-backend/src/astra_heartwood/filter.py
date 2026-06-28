@@ -10,15 +10,13 @@ no key, no network — mirroring chronicle's ``chronicle_llm``.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal, Protocol, TypeVar
+from typing import Literal
 
 from astra_linguist.models import FormattedLine, Transcript
-from pydantic import BaseModel
 
+from .llm import StructuredClient, default_model, real_client
 from .models import DroppedSpan, _Base
 from .prompts import FILTER_SYSTEM
-
-_T = TypeVar("_T", bound=BaseModel)
 
 # Scene-sized windows; classify calls batched under a word budget; small verdict output.
 FILTER_WINDOW_TURNS = 20
@@ -26,22 +24,6 @@ FILTER_CHUNK_WORDS = 12_000
 FILTER_MAX_TOKENS = 8_000
 
 _SAMPLE_CHARS = 240
-
-
-class _StructuredClient(Protocol):
-    """The slice of ``LiteLLMClient`` the filter uses (lets tests inject a stub)."""
-
-    def call_structured(
-        self,
-        output_model: type[_T],
-        *,
-        system: str,
-        user_content: str,
-        model: str,
-        max_tokens: int = ...,
-        tool_name: str = ...,
-        tool_description: str = ...,
-    ) -> _T: ...
 
 
 class WindowVerdict(_Base):
@@ -112,9 +94,7 @@ def _render_windows(batch: list[Window]) -> str:
     return "\n\n".join(f"[W{w.window_id}]\n{_render(w.lines)}" for w in batch)
 
 
-def classify(
-    windows: list[Window], *, client: _StructuredClient, model: str
-) -> list[WindowVerdict]:
+def classify(windows: list[Window], *, client: StructuredClient, model: str) -> list[WindowVerdict]:
     """Classify every window keep/drop, chunking the input under the word budget."""
     verdicts: list[WindowVerdict] = []
     for batch in _batch(windows):
@@ -145,14 +125,14 @@ def _to_dropped(v: WindowVerdict, sample: str) -> DroppedSpan | None:
 def filter_session(
     transcript: Transcript,
     *,
-    client: _StructuredClient | None = None,
+    client: StructuredClient | None = None,
     model: str | None = None,
     window_turns: int = FILTER_WINDOW_TURNS,
 ) -> FilterResult:
     """Run the Stage-1 filter: kept context + the dropped-span audit trail."""
     windows = segment(transcript, size=window_turns)
-    client = client if client is not None else _real_client()
-    model = model if model is not None else _model()
+    client = client if client is not None else real_client()
+    model = model if model is not None else default_model()
     by_id = {v.window_id: v for v in classify(windows, client=client, model=model)}
 
     kept_lines: list[FormattedLine] = []
@@ -178,16 +158,3 @@ def filter_session(
 def _sample(window: Window) -> str:
     text = _render(window.lines)
     return text if len(text) <= _SAMPLE_CHARS else text[:_SAMPLE_CHARS].rstrip() + "…"
-
-
-def _real_client() -> _StructuredClient:
-    from astra_llm import LiteLLMClient, ensure_openrouter_env
-
-    ensure_openrouter_env()
-    return LiteLLMClient()
-
-
-def _model() -> str:
-    from astra_ontology_config import load as load_config
-
-    return load_config().llm.default_model

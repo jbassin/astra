@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from typing import Literal
 
+from astra_ontology import EntityKind
 from pydantic import BaseModel, ConfigDict
 
 
@@ -28,3 +29,16 @@ class DroppedSpan(_Base):
     category: Literal["ooc", "combat", "play_by_play"]
     sample: str
     reason: str
+
+
+class NounFact(_Base):
+    """One durable, atomic assertion about one setting noun (Stage-2 LLM output, P2.8).
+
+    ``claim`` is a plain factual statement, NOT polished wiki prose — house-voice writing
+    is Phase 3. ``subject`` is the noun as it appears (pre-resolution; resolution attaches
+    the registry entity downstream).
+    """
+
+    subject: str
+    kind_hint: EntityKind | None = None
+    claim: str
