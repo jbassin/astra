@@ -50,10 +50,14 @@ def test_show_index_has_all_campaigns() -> None:
 
 # ── date → show resolution (real transcript filenames) ──────────────────────
 def test_show_for_date_resolves_known_sessions() -> None:
-    assert show_for_date("2025-10-20").slug == "through-a-song-darkly"
-    assert show_for_date("2026-2-10").slug == "interred-in-iomenei"
-    assert show_for_date("2025-6-9").slug == "a-hunt-of-metal-and-vine"
-    assert show_for_date("2025-9-11").slug == "fae-and-forest"
+    def slug_for(date: str) -> str | None:
+        show = show_for_date(date)
+        return show.slug if show is not None else None
+
+    assert slug_for("2025-10-20") == "through-a-song-darkly"
+    assert slug_for("2026-2-10") == "interred-in-iomenei"
+    assert slug_for("2025-6-9") == "a-hunt-of-metal-and-vine"
+    assert slug_for("2025-9-11") == "fae-and-forest"
 
 
 def test_show_for_date_unknown_returns_none() -> None:
