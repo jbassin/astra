@@ -1,0 +1,4243 @@
+{
+  "date": "2025-8-28",
+  "show": "through-a-song-darkly",
+  "world": "faerrin",
+  "facts": [
+    {
+      "subject": "Illmari Vaino",
+      "kind_hint": "person",
+      "claim": "Illmari Vaino is the founder of Iconoclasm.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Illmari Vaino",
+        "kind": "person",
+        "page": "Org/Iconoclasm/People/Illmari Vaino",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Illmari Vaino",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Iconoclasm",
+      "kind_hint": "org",
+      "claim": "Iconoclasm is a religious organization that functions as an orphanage.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Iconoclasm",
+        "kind": "org",
+        "page": "Org/Iconoclasm/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Iconoclasm",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Iconoclasm",
+      "kind_hint": "org",
+      "claim": "Iconoclasm was founded by Illmari Vaino.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Iconoclasm",
+        "kind": "org",
+        "page": "Org/Iconoclasm/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Iconoclasm",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Iconoclasm",
+      "kind_hint": "org",
+      "claim": "Iconoclasm is subject to rumors that it employs children.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Iconoclasm",
+        "kind": "org",
+        "page": "Org/Iconoclasm/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Iconoclasm",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Gin Soaked Rag",
+      "kind_hint": "creature",
+      "claim": "Gin Soaked Rag is the heart of the Sin and Tonic.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Gin Soaked Rag",
+        "kind": "person",
+        "page": "Org/Iconoclasm/People/Gin Soaked Rag",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Gin Soaked Rag",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Gin Soaked Rag",
+      "kind_hint": "creature",
+      "claim": "Gin Soaked Rag appears as a suit vest and dress pants with a twisted-up dish rag for a head.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Gin Soaked Rag",
+        "kind": "person",
+        "page": "Org/Iconoclasm/People/Gin Soaked Rag",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Gin Soaked Rag",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Gin Soaked Rag",
+      "kind_hint": "creature",
+      "claim": "Gin Soaked Rag works the bar and cooks at the Sin and Tonic, though it has not mastered cooking human food as well as Illmari Vaino has.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Gin Soaked Rag",
+        "kind": "person",
+        "page": "Org/Iconoclasm/People/Gin Soaked Rag",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Gin Soaked Rag",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sin and Tonic",
+      "kind_hint": "place",
+      "claim": "Sin and Tonic is a pub that is a Fane sustained by the heart Gin Soaked Rag.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sin and Tonic",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sin and Tonic",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sin and Tonic",
+      "kind_hint": "place",
+      "claim": "Sin and Tonic is a single-floor building with no second floor.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sin and Tonic",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sin and Tonic",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sin and Tonic",
+      "kind_hint": "place",
+      "claim": "Sin and Tonic has a garage.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sin and Tonic",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sin and Tonic",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sin and Tonic",
+      "kind_hint": "place",
+      "claim": "The beds at Sin and Tonic are not particularly comfortable, roughly two-star hotel quality.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sin and Tonic",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sin and Tonic",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anaïs",
+      "kind_hint": "person",
+      "claim": "Anaïs is an adventurer, referred to as one of 'the twins.'",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anaïs",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anaïs",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anouk",
+      "kind_hint": "person",
+      "claim": "Anouk is an adventurer, referred to as one of 'the twins.'",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anouk",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anouk",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Dura Oil-Drinker",
+      "kind_hint": "person",
+      "claim": "Dura Oil-Drinker is a mechanic.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Dura Oil-Drinker",
+        "kind": "person",
+        "page": "Org/Iconoclasm/People/Dura Oil-Drinker",
+        "being": null
+      },
+      "confidence": 0.9270833333333333,
+      "candidates": [
+        [
+          "Dura Oil-Drinker",
+          0.9270833333333333
+        ],
+        [
+          "TuRiin",
+          0.4508333333333333
+        ],
+        [
+          "Cassian Drake",
+          0.44116809116809114
+        ],
+        [
+          "Dura",
+          0.43833333333333335
+        ],
+        [
+          "Fūlwinter",
+          0.43227922077922076
+        ]
+      ]
+    },
+    {
+      "subject": "Elias",
+      "kind_hint": "person",
+      "claim": "Elias is a dwarf who serves as quartermaster.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5933333333333334,
+      "candidates": [
+        [
+          "Elias Ramsey",
+          0.5933333333333334
+        ],
+        [
+          "Hallia",
+          0.5633333333333334
+        ],
+        [
+          "Illmari",
+          0.5502222222222223
+        ],
+        [
+          "Tywelwyn's",
+          0.5481818181818182
+        ],
+        [
+          "Raelion",
+          0.5185714285714285
+        ]
+      ]
+    },
+    {
+      "subject": "Tywelwyn",
+      "kind_hint": "creature",
+      "claim": "Tywelwyn is a male sprite.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Tywelwyn",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.6163636363636364,
+      "candidates": [
+        [
+          "Tywelwyn",
+          0.6163636363636364
+        ],
+        [
+          "Floch",
+          0.525
+        ],
+        [
+          "Vane",
+          0.525
+        ],
+        [
+          "Fane",
+          0.51
+        ],
+        [
+          "Hlarf",
+          0.475
+        ]
+      ]
+    },
+    {
+      "subject": "Tywelwyn Leatherhide",
+      "kind_hint": "person",
+      "claim": "Tywelwyn Leatherhide is associated with the Roundhat Gang and was opening a roller rink.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Tywelwyn Leatherhide",
+        "kind": "person",
+        "page": "Org/Roundhat Gang/People/Tywelwyn Leatherhide",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Tywelwyn Leatherhide",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Roundhat Gang",
+      "kind_hint": "org",
+      "claim": "The Roundhat Gang runs a roller rink.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Roundhat Gang",
+        "kind": "org",
+        "page": "Org/Roundhat Gang/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Roundhat Gang",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Pyrelight",
+      "kind_hint": "org",
+      "claim": "Pyrelight is associated with Embercall Industries, which is the commercial name used on bills of materials.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Pyrelight",
+        "kind": "org",
+        "page": "Org/Pyrelight/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Pyrelight",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Embercall Industries",
+      "kind_hint": "org",
+      "claim": "Embercall Industries is the business name associated with Pyrelight, used on bills of materials.",
+      "status": "ambiguous",
+      "entity": null,
+      "confidence": 0.619717868338558,
+      "candidates": [
+        [
+          "Embercall's",
+          0.619717868338558
+        ],
+        [
+          "Embercall",
+          0.6112592592592593
+        ],
+        [
+          "Ternion Heavy Industries",
+          0.569047619047619
+        ],
+        [
+          "Amber Call",
+          0.5257407407407407
+        ],
+        [
+          "Verdant Expanse",
+          0.5138888888888888
+        ]
+      ]
+    },
+    {
+      "subject": "Threshold Authority",
+      "kind_hint": "org",
+      "claim": "The Threshold Authority is the law enforcement organization in the region, also known as 'the TA.'",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.4609423897581792,
+      "candidates": [
+        [
+          "Tywelwyn Leatherhide",
+          0.4609423897581792
+        ],
+        [
+          "the Heart",
+          0.436712775528565
+        ],
+        [
+          "Protectorate",
+          0.42955737043758824
+        ],
+        [
+          "Ternion Heavy Industries",
+          0.4179331684227645
+        ],
+        [
+          "The Harlequins",
+          0.41774860538442876
+        ]
+      ]
+    },
+    {
+      "subject": "Augers",
+      "kind_hint": "creature",
+      "claim": "Augers are creatures created through a divination ritual; feeding them improves the divination.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.56325,
+      "candidates": [
+        [
+          "Argyle's",
+          0.56325
+        ],
+        [
+          "oread",
+          0.5595555555555556
+        ],
+        [
+          "Whiskers",
+          0.5399999999999999
+        ],
+        [
+          "RunGunners",
+          0.5219047619047619
+        ],
+        [
+          "orreries",
+          0.5095238095238095
+        ]
+      ]
+    },
+    {
+      "subject": "Zorbon",
+      "kind_hint": "phenomenon",
+      "claim": "Zorbon is a phenomenon involving mushrooms believed to be present in radio broadcasts and food; tinfoil hats are thought to protect against it.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Zorbon",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Zorbon",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Fane",
+      "kind_hint": "phenomenon",
+      "claim": "A Fane is a magical construct whose presence is dictated by a heart.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Fane",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Fane",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Fane",
+      "kind_hint": "phenomenon",
+      "claim": "The size of a Fane is directly related to the amount of magical energy available to its sustaining heart.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Fane",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Fane",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Fane",
+      "kind_hint": "phenomenon",
+      "claim": "Multiple hearts can maintain the same Fane to cover larger areas; this approach is used by large organizational headquarters.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Fane",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Fane",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Fane",
+      "kind_hint": "phenomenon",
+      "claim": "When hearts with different personalities are combined in one Fane, the result has a patchwork appearance.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Fane",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Fane",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Belvedere",
+      "kind_hint": "place",
+      "claim": "Belvedere has more Fanes than most places, and hearts exist more frequently there as part of the hierarchy.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Belvedere",
+        "kind": "org",
+        "page": "Org/Belvedere",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Belvedere",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Belvedere",
+      "kind_hint": "place",
+      "claim": "Most Fanes in Belvedere are not combined areas.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Belvedere",
+        "kind": "org",
+        "page": "Org/Belvedere",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Belvedere",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Concordia",
+      "kind_hint": "org",
+      "claim": "Concordia is a major conglomerate comparable to LG, GE, or Samsung that manufactures appliances and home-facing products.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Concordia",
+        "kind": "org",
+        "page": "Org/Concordia",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Concordia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Concordia",
+      "kind_hint": "org",
+      "claim": "Concordia works to ensure all consumer-facing hearts have consistent branding.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Concordia",
+        "kind": "org",
+        "page": "Org/Concordia",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Concordia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "RunGunners",
+      "kind_hint": "org",
+      "claim": "The RunGunners are a famous group of mercenaries and guns for hire.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "RunGunners",
+        "kind": "org",
+        "page": "Org/RunGunners/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "RunGunners",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "RunGunners",
+      "kind_hint": "org",
+      "claim": "The RunGunners possess a city in the middle of a desert sustained as one large Fane maintained by many hearts with different personalities that clash constantly.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "RunGunners",
+        "kind": "org",
+        "page": "Org/RunGunners/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "RunGunners",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Patchwork Prince",
+      "kind_hint": "person",
+      "claim": "The Patchwork Prince is a major antagonist, described as an old, defenseless man.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5561899164054337,
+      "candidates": [
+        [
+          "Sigzil Haight",
+          0.5561899164054337
+        ],
+        [
+          "pactbroker",
+          0.5100555555555555
+        ],
+        [
+          "Lark Crowe",
+          0.4545833333333333
+        ],
+        [
+          "Pluckwort",
+          0.43088336783988956
+        ],
+        [
+          "Major-Chaplain",
+          0.4259920634920635
+        ]
+      ]
+    },
+    {
+      "subject": "Church of Riostad",
+      "kind_hint": "org",
+      "claim": "The Church of Riostad is a religious organization.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.40989130434782617,
+      "candidates": [
+        [
+          "Arctos",
+          0.40989130434782617
+        ],
+        [
+          "Children of the Heir",
+          0.4043812070282659
+        ],
+        [
+          "Arctos'",
+          0.4022222222222222
+        ],
+        [
+          "Ki-Rin's",
+          0.40134271099744245
+        ],
+        [
+          "Berth Four",
+          0.3993403361344538
+        ]
+      ]
+    },
+    {
+      "subject": "Tywelwyn",
+      "kind_hint": "person",
+      "claim": "Tywelwyn operates a roller rink and has been driven mad, likely by sounds transmitted into his head.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Tywelwyn",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Tywelwyn",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": "person",
+      "claim": "Benny is a child, approximately nine years old, who wears a name tag.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": "person",
+      "claim": "Anzu is an academic fellow involved with Belvedere.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": "person",
+      "claim": "Anzu is from Belvedere.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": "person",
+      "claim": "Anzu's family is relatively well-off and involved in different areas of Belvedere.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": "person",
+      "claim": "Anzu's father is an archivist in Belvedere.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": "person",
+      "claim": "Anzu's mother is not technically a member of Belvedere and handles the family affairs.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Othello",
+      "kind_hint": "creature",
+      "claim": "Othello is a normal-sized raven that belongs to Anzu.",
+      "status": "ambiguous",
+      "entity": null,
+      "confidence": 0.6497835497835498,
+      "candidates": [
+        [
+          "Ichel",
+          0.6497835497835498
+        ],
+        [
+          "of Hallia",
+          0.6211428571428572
+        ],
+        [
+          "Ugathal",
+          0.5583333333333332
+        ],
+        [
+          "Aut",
+          0.5571428571428572
+        ],
+        [
+          "Hallia",
+          0.506926406926407
+        ]
+      ]
+    },
+    {
+      "subject": "Tywelwyn's",
+      "kind_hint": "person",
+      "claim": "Tywelwyn's are two people who are particularly good at crafting but do not run a store.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Tywelwyn's",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.7258333333333333,
+      "candidates": [
+        [
+          "Tywelwyn's",
+          0.7258333333333333
+        ],
+        [
+          "The Harlequins",
+          0.6042857142857143
+        ],
+        [
+          "Tywelwyn",
+          0.5938095238095238
+        ],
+        [
+          "two-timing",
+          0.5590849673202615
+        ],
+        [
+          "Widdershins",
+          0.5075757575757576
+        ]
+      ]
+    },
+    {
+      "subject": "Tywelwyn's",
+      "kind_hint": "person",
+      "claim": "One of Tywelwyn's twins is male.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Tywelwyn's",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.7258333333333333,
+      "candidates": [
+        [
+          "Tywelwyn's",
+          0.7258333333333333
+        ],
+        [
+          "The Harlequins",
+          0.6042857142857143
+        ],
+        [
+          "Tywelwyn",
+          0.5938095238095238
+        ],
+        [
+          "two-timing",
+          0.5590849673202615
+        ],
+        [
+          "Widdershins",
+          0.5075757575757576
+        ]
+      ]
+    },
+    {
+      "subject": "Sentience Distributor",
+      "kind_hint": "item",
+      "claim": "The Sentience Distributor is an arcane enchanted item that spreads a signal.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.48409854851031325,
+      "candidates": [
+        [
+          "Masque District",
+          0.48409854851031325
+        ],
+        [
+          "Sentinel Dynamics",
+          0.48408029878618114
+        ],
+        [
+          "Iridescent Host",
+          0.4282579185520362
+        ],
+        [
+          "Second Sun Diner",
+          0.4183333333333333
+        ],
+        [
+          "Sin and Tonic",
+          0.41747899159663865
+        ]
+      ]
+    },
+    {
+      "subject": "Sentience Distributor",
+      "kind_hint": "item",
+      "claim": "The Sentience Distributor is very fragile.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.48409854851031325,
+      "candidates": [
+        [
+          "Masque District",
+          0.48409854851031325
+        ],
+        [
+          "Sentinel Dynamics",
+          0.48408029878618114
+        ],
+        [
+          "Iridescent Host",
+          0.4282579185520362
+        ],
+        [
+          "Second Sun Diner",
+          0.4183333333333333
+        ],
+        [
+          "Sin and Tonic",
+          0.41747899159663865
+        ]
+      ]
+    },
+    {
+      "subject": "Anouk",
+      "kind_hint": "person",
+      "claim": "Anouk knows an old friend who runs a scrapyard in Sableclutch that is always looking for couriers.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anouk",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anouk",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sin and Tonic",
+      "kind_hint": "place",
+      "claim": "Sin and Tonic is located in a not-particularly-well-to-do commercialized area of Hallia, one of the poorer parts of the city.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sin and Tonic",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/Sin and Tonic",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sin and Tonic",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "The Undertable",
+      "kind_hint": "place",
+      "claim": "The Undertable is a pawn shop located in Star 12, down the horizon in Hallia.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5553571428571429,
+      "candidates": [
+        [
+          "the Heart",
+          0.5553571428571429
+        ],
+        [
+          "The Crowded Flea",
+          0.5423214285714285
+        ],
+        [
+          "The Scale",
+          0.5219047619047619
+        ],
+        [
+          "The Zorbon",
+          0.49012987012987014
+        ],
+        [
+          "mental",
+          0.45436507936507936
+        ]
+      ]
+    },
+    {
+      "subject": "The Undertable",
+      "kind_hint": "place",
+      "claim": "The Undertable is a narrow building squeezed between two former homes, with a handwritten sign and no display windows.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5553571428571429,
+      "candidates": [
+        [
+          "the Heart",
+          0.5553571428571429
+        ],
+        [
+          "The Crowded Flea",
+          0.5423214285714285
+        ],
+        [
+          "The Scale",
+          0.5219047619047619
+        ],
+        [
+          "The Zorbon",
+          0.49012987012987014
+        ],
+        [
+          "mental",
+          0.45436507936507936
+        ]
+      ]
+    },
+    {
+      "subject": "The Undertable",
+      "kind_hint": "place",
+      "claim": "The Undertable sells appliances, jewelry, radios in various states of deconstruction, and firearms.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5553571428571429,
+      "candidates": [
+        [
+          "the Heart",
+          0.5553571428571429
+        ],
+        [
+          "The Crowded Flea",
+          0.5423214285714285
+        ],
+        [
+          "The Scale",
+          0.5219047619047619
+        ],
+        [
+          "The Zorbon",
+          0.49012987012987014
+        ],
+        [
+          "mental",
+          0.45436507936507936
+        ]
+      ]
+    },
+    {
+      "subject": "Smiler",
+      "kind_hint": "person",
+      "claim": "Smiler is a centaur, about nine feet tall.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Smiler",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Smiler",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Smiler",
+      "kind_hint": "person",
+      "claim": "Smiler is the proprietor of the Undertable pawn shop and also a fence.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Smiler",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Smiler",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Smiler",
+      "kind_hint": "person",
+      "claim": "Smiler wears a stained white tee, multiple yellowish metal bands on his arms, flare gauges with gems in his ears, and has a braided tail and beard with gems throughout.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Smiler",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Smiler",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Smiler",
+      "kind_hint": "person",
+      "claim": "Smiler is acquainted with Johnny, who has dealt with him before.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Smiler",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Smiler",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Johnny",
+      "kind_hint": "person",
+      "claim": "Smiler at the Undertable serves as Johnny's trusted supplier for weapons and armor.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Johnny",
+        "kind": "person",
+        "page": null,
+        "being": "noah"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Johnny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Iconoclasm",
+      "kind_hint": "org",
+      "claim": "Iconoclasm is an organization with which Johnny is affiliated.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Iconoclasm",
+        "kind": "org",
+        "page": "Org/Iconoclasm/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Iconoclasm",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Belvedere",
+      "kind_hint": "org",
+      "claim": "Belvedere is a faction that includes academic fellows and archivists.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Belvedere",
+        "kind": "org",
+        "page": "Org/Belvedere",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Belvedere",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Belvedere",
+      "kind_hint": "org",
+      "claim": "Anzu's family is involved in different areas of the Belvedere faction.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Belvedere",
+        "kind": "org",
+        "page": "Org/Belvedere",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Belvedere",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Scale",
+      "kind_hint": "org",
+      "claim": "Scale is an organization that empowers arbiters to perform bounty hunting.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Scale",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Scale",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Scale",
+      "kind_hint": "org",
+      "claim": "Scale does not hire random people for bounty work; it only trusts empowered arbiters.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Scale",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Scale",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Arctos",
+      "kind_hint": "org",
+      "claim": "Arctos are people empowered by the Scale to perform bounty hunting.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Arctos",
+        "kind": "person",
+        "page": null,
+        "being": "jorge"
+      },
+      "confidence": 0.6542857142857142,
+      "candidates": [
+        [
+          "Arctos",
+          0.6542857142857142
+        ],
+        [
+          "Arctos'",
+          0.5953968253968254
+        ],
+        [
+          "parries",
+          0.5594322344322344
+        ],
+        [
+          "orreries",
+          0.5552655677655678
+        ],
+        [
+          "our door",
+          0.5281818181818182
+        ]
+      ]
+    },
+    {
+      "subject": "Hallia",
+      "kind_hint": "place",
+      "claim": "Hallia is a city with multiple districts and a tram/trolley public transit system.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Hallia",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Hallia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Hallia",
+      "kind_hint": "place",
+      "claim": "Strong magic in Hallia prevents travel between districts without using the public transit system.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Hallia",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Hallia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Hallia",
+      "kind_hint": "place",
+      "claim": "Hallia has three police organizations that offer bounties for outstanding warrants.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Hallia",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Hallia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sableclutch",
+      "kind_hint": "place",
+      "claim": "Sableclutch is a district in Hallia that contains a scrapyard.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sableclutch",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sableclutch",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "starward",
+      "kind_hint": "place",
+      "claim": "Starward is an area down the horizon in Hallia that is seedier and less well-maintained than the central areas.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "starward",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.72,
+      "candidates": [
+        [
+          "starward",
+          0.72
+        ],
+        [
+          "SeRaan",
+          0.4714285714285714
+        ],
+        [
+          "Master Grayson",
+          0.4439097744360902
+        ],
+        [
+          "Austrene",
+          0.4416666666666666
+        ],
+        [
+          "Tamara McKay",
+          0.43493506493506495
+        ]
+      ]
+    },
+    {
+      "subject": "starward",
+      "kind_hint": "place",
+      "claim": "Starward was built up with buildings expecting a boom from the tram line that never materialized, and has not been maintained over the past few decades.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "starward",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.72,
+      "candidates": [
+        [
+          "starward",
+          0.72
+        ],
+        [
+          "SeRaan",
+          0.4714285714285714
+        ],
+        [
+          "Master Grayson",
+          0.4439097744360902
+        ],
+        [
+          "Austrene",
+          0.4416666666666666
+        ],
+        [
+          "Tamara McKay",
+          0.43493506493506495
+        ]
+      ]
+    },
+    {
+      "subject": "Voidsong",
+      "kind_hint": "phenomenon",
+      "claim": "The Voidsong is a signal that a radar dish could be tuned to receive.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Voidsong",
+        "kind": "phenomenon",
+        "page": "Phenomena/Harmony/Voidsong",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Voidsong",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Embercall",
+      "kind_hint": "phenomenon",
+      "claim": "Embercall is a signal or song that a radar dish may receive; the dish could potentially be tuned away from Embercall to receive the Voidsong instead.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Embercall",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.715047619047619,
+      "candidates": [
+        [
+          "Embercall",
+          0.715047619047619
+        ],
+        [
+          "Embercall's",
+          0.5986247436773753
+        ],
+        [
+          "Amber Call",
+          0.5733333333333334
+        ],
+        [
+          "Voidsong",
+          0.5311858076563958
+        ],
+        [
+          "Walter Stoke",
+          0.518095238095238
+        ]
+      ]
+    },
+    {
+      "subject": "Argyle",
+      "kind_hint": null,
+      "claim": "Argyle is a licensed doctor.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Argyle",
+        "kind": "person",
+        "page": null,
+        "being": "jorge"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Argyle",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Argyle",
+      "kind_hint": null,
+      "claim": "Argyle is approximately 20 years old in human years.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Argyle",
+        "kind": "person",
+        "page": null,
+        "being": "jorge"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Argyle",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Argyle",
+      "kind_hint": null,
+      "claim": "Argyle came from a farm.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Argyle",
+        "kind": "person",
+        "page": null,
+        "being": "jorge"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Argyle",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Argyle",
+      "kind_hint": null,
+      "claim": "Argyle's eyes are changing from gold to a bright white, almost bluish color.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Argyle",
+        "kind": "person",
+        "page": null,
+        "being": "jorge"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Argyle",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Argyle",
+      "kind_hint": null,
+      "claim": "Argyle's parents are Aaron Cross and Joran Davinrock, who are operatives of the Scale.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Argyle",
+        "kind": "person",
+        "page": null,
+        "being": "jorge"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Argyle",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Argyle",
+      "kind_hint": null,
+      "claim": "Argyle knows all members of the Scale.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Argyle",
+        "kind": "person",
+        "page": null,
+        "being": "jorge"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Argyle",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": null,
+      "claim": "Benny is nine years old.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": null,
+      "claim": "Benny was called by the Voidsong.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": null,
+      "claim": "Benny is from Belvedere.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": null,
+      "claim": "Benny does not have a mother present in his life.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": null,
+      "claim": "Benny's father is Atum.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": null,
+      "claim": "Anzu is from Belvedere.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": null,
+      "claim": "Anzu was born in a nest.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": null,
+      "claim": "Anzu has a bird companion.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "The Scale",
+      "kind_hint": null,
+      "claim": "The Scale is a law body described as non-transparent.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "The Scale",
+        "kind": "org",
+        "page": "Org/The Scale/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "The Scale",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "The Scale",
+      "kind_hint": null,
+      "claim": "Aaron Cross and Joran Davinrock are operatives of the Scale.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "The Scale",
+        "kind": "org",
+        "page": "Org/The Scale/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "The Scale",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Aaron Cross",
+      "kind_hint": null,
+      "claim": "Aaron Cross is Argyle's parent and an operative of the Scale.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5718181818181818,
+      "candidates": [
+        [
+          "Andros",
+          0.5718181818181818
+        ],
+        [
+          "Arctos",
+          0.5718181818181818
+        ],
+        [
+          "Lorandris",
+          0.5520202020202021
+        ],
+        [
+          "Lark Crowe",
+          0.5369537480063796
+        ],
+        [
+          "Arctos'",
+          0.5314839572192515
+        ]
+      ]
+    },
+    {
+      "subject": "Joran Davinrock",
+      "kind_hint": null,
+      "claim": "Joran Davinrock is Argyle's parent and an operative of the Scale.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5074314574314573,
+      "candidates": [
+        [
+          "Lorandris",
+          0.5074314574314573
+        ],
+        [
+          "Roll an arcana check",
+          0.48666666666666664
+        ],
+        [
+          "Chorath Engineering",
+          0.47888157894736844
+        ],
+        [
+          "Aurideon",
+          0.4747619047619047
+        ],
+        [
+          "or Edan",
+          0.4746428571428572
+        ]
+      ]
+    },
+    {
+      "subject": "Atum",
+      "kind_hint": null,
+      "claim": "Atum is Benny's father and is located in Belvedere.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Atum",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Atum",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": null,
+      "claim": "Copperjaw is a dwarven man.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": null,
+      "claim": "Copperjaw has a crude copper prosthetic replacing his missing bottom jaw.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": null,
+      "claim": "Copperjaw bears signs of many past fights, including a mashed-up nose, and continues to get into fights.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": null,
+      "claim": "Copperjaw is approximately 120–130 years old, placing him at the end of middle age by dwarven standards.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": null,
+      "claim": "Copperjaw works at the Sableclutch Scrap scrapyard.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sableclutch",
+      "kind_hint": null,
+      "claim": "Sableclutch is a scrapyard located in the Sableclutch neighborhood of Hallia.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sableclutch",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/index",
+        "being": null
+      },
+      "confidence": 0.749864253393665,
+      "candidates": [
+        [
+          "Sableclutch",
+          0.749864253393665
+        ],
+        [
+          "Sable and Suns",
+          0.48304718439099775
+        ],
+        [
+          "Submechanitor",
+          0.4317393390922803
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.3981483238456673
+        ],
+        [
+          "Sbrtlby",
+          0.3911652661064426
+        ]
+      ]
+    },
+    {
+      "subject": "Sableclutch",
+      "kind_hint": null,
+      "claim": "Sableclutch is located voidward and downward from Hallia's city center, in an undeveloped factory area.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sableclutch",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/index",
+        "being": null
+      },
+      "confidence": 0.749864253393665,
+      "candidates": [
+        [
+          "Sableclutch",
+          0.749864253393665
+        ],
+        [
+          "Sable and Suns",
+          0.48304718439099775
+        ],
+        [
+          "Submechanitor",
+          0.4317393390922803
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.3981483238456673
+        ],
+        [
+          "Sbrtlby",
+          0.3911652661064426
+        ]
+      ]
+    },
+    {
+      "subject": "Sableclutch",
+      "kind_hint": null,
+      "claim": "Sableclutch is a neighborhood in Hallia.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sableclutch",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sableclutch",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sableclutch",
+      "kind_hint": null,
+      "claim": "Sableclutch has many churches, mostly dedicated to the Host and a smattering of other gods.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sableclutch",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Sableclutch",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Hallia",
+      "kind_hint": null,
+      "claim": "Hallia is a city with a river running through it.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Hallia",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Hallia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Hallia",
+      "kind_hint": null,
+      "claim": "Hallia has public transportation including trams.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Hallia",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Hallia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Hallia",
+      "kind_hint": null,
+      "claim": "Hallia is built across different strata or levels along a horizon.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Hallia",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Hallia",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Belvedere",
+      "kind_hint": null,
+      "claim": "Belvedere is, among other things, a school where children receive education.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Belvedere",
+        "kind": "org",
+        "page": "Org/Belvedere",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Belvedere",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Belvedere",
+      "kind_hint": null,
+      "claim": "Belvedere is located in Austrene.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Belvedere",
+        "kind": "org",
+        "page": "Org/Belvedere",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Belvedere",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "the Heart",
+      "kind_hint": null,
+      "claim": "The Heart is a deity or group of deities with many churches in Sableclutch.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "the Heart",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.7183333333333334,
+      "candidates": [
+        [
+          "the Heart",
+          0.7183333333333334
+        ],
+        [
+          "The Scale",
+          0.5741666666666667
+        ],
+        [
+          "The Zorbon",
+          0.5549999999999999
+        ],
+        [
+          "Iridescent Host",
+          0.535
+        ],
+        [
+          "Tithe",
+          0.5088636363636363
+        ]
+      ]
+    },
+    {
+      "subject": "Helmstier",
+      "kind_hint": null,
+      "claim": "Helmstier is a small town in the mountains on the border between two countries.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5252136752136752,
+      "candidates": [
+        [
+          "Illmari",
+          0.5252136752136752
+        ],
+        [
+          "Hallia",
+          0.5218803418803419
+        ],
+        [
+          "Iridescent Host",
+          0.5065151515151515
+        ],
+        [
+          "Walter Stoke",
+          0.4848290598290598
+        ],
+        [
+          "Belvedere",
+          0.4638888888888889
+        ]
+      ]
+    },
+    {
+      "subject": "The Last Stop",
+      "kind_hint": null,
+      "claim": "The Last Stop is a bar in Helmstier run by a half-elven barkeep.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.49150183150183147,
+      "candidates": [
+        [
+          "The Scale",
+          0.49150183150183147
+        ],
+        [
+          "the Scale's",
+          0.490521978021978
+        ],
+        [
+          "the Heart",
+          0.47879120879120873
+        ],
+        [
+          "The Zorbon",
+          0.4659507159507159
+        ],
+        [
+          "The Master of Ceremonies",
+          0.45689310689310686
+        ]
+      ]
+    },
+    {
+      "subject": "The Last Stop",
+      "kind_hint": null,
+      "claim": "The Last Stop's name is a multifaceted joke: it is the last stop of the night, and the last stop on the border before entering or leaving the country.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.49150183150183147,
+      "candidates": [
+        [
+          "The Scale",
+          0.49150183150183147
+        ],
+        [
+          "the Scale's",
+          0.490521978021978
+        ],
+        [
+          "the Heart",
+          0.47879120879120873
+        ],
+        [
+          "The Zorbon",
+          0.4659507159507159
+        ],
+        [
+          "The Master of Ceremonies",
+          0.45689310689310686
+        ]
+      ]
+    },
+    {
+      "subject": "Austrene",
+      "kind_hint": null,
+      "claim": "Austrene is a country where Belvedere is located.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Austrene",
+        "kind": "place",
+        "page": "Geography/Austrene/index",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Austrene",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Færrin",
+      "kind_hint": null,
+      "claim": "Færrin is a place associated with pug people.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Færrin",
+        "kind": "place",
+        "page": "Geography/Færrin",
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Færrin",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Smiler",
+      "kind_hint": null,
+      "claim": "Smiler works at a pawn shop.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Smiler",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Smiler",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Anaïs",
+      "kind_hint": null,
+      "claim": "Anaïs knows Copperjaw.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anaïs",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anaïs",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": "person",
+      "claim": "Copperjaw runs a junkyard called Sableclutch Scrap.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": "person",
+      "claim": "Copperjaw waddles when he walks.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": "person",
+      "claim": "Copperjaw uses a giant crusher in his scrapyard to deter unwanted visitors.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": "person",
+      "claim": "Copperjaw has an office set up in a converted storage container near the front of his scrapyard.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Copperjaw",
+      "kind_hint": "person",
+      "claim": "Copperjaw crafted the contents of the metal suitcase.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Copperjaw",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Copperjaw",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Sableclutch",
+      "kind_hint": "place",
+      "claim": "Sableclutch is a junkyard that gives jobs to anyone willing to do them.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sableclutch",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/index",
+        "being": null
+      },
+      "confidence": 0.749864253393665,
+      "candidates": [
+        [
+          "Sableclutch",
+          0.749864253393665
+        ],
+        [
+          "Sable and Suns",
+          0.48304718439099775
+        ],
+        [
+          "Submechanitor",
+          0.4317393390922803
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.3981483238456673
+        ],
+        [
+          "Sbrtlby",
+          0.3911652661064426
+        ]
+      ]
+    },
+    {
+      "subject": "Sableclutch",
+      "kind_hint": "place",
+      "claim": "Sableclutch contains a giant crusher.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Sableclutch",
+        "kind": "place",
+        "page": "Geography/Calaria/Hallia/Sableclutch/index",
+        "being": null
+      },
+      "confidence": 0.749864253393665,
+      "candidates": [
+        [
+          "Sableclutch",
+          0.749864253393665
+        ],
+        [
+          "Sable and Suns",
+          0.48304718439099775
+        ],
+        [
+          "Submechanitor",
+          0.4317393390922803
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.3981483238456673
+        ],
+        [
+          "Sbrtlby",
+          0.3911652661064426
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": "person",
+      "claim": "Benny is a nine-year-old child.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": "person",
+      "claim": "Benny's father is named Atum.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Benny",
+      "kind_hint": "person",
+      "claim": "Benny likes comics.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Benny",
+        "kind": "person",
+        "page": null,
+        "being": "mike"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Benny",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Atum",
+      "kind_hint": "person",
+      "claim": "Atum is Benny's father.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Atum",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Atum",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Blackline",
+      "kind_hint": "org",
+      "claim": "Blackline is a private law enforcement company that polices the nicer parts of the city.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5841969696969697,
+      "candidates": [
+        [
+          "Black and White",
+          0.5841969696969697
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.4796040372670808
+        ],
+        [
+          "Sableclutch",
+          0.46414141414141413
+        ],
+        [
+          "Flintlock",
+          0.4633333333333333
+        ],
+        [
+          "Pluckwort",
+          0.4591666666666666
+        ]
+      ]
+    },
+    {
+      "subject": "Blackline",
+      "kind_hint": "org",
+      "claim": "Blackline requires a paid subscription for their law enforcement services.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5841969696969697,
+      "candidates": [
+        [
+          "Black and White",
+          0.5841969696969697
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.4796040372670808
+        ],
+        [
+          "Sableclutch",
+          0.46414141414141413
+        ],
+        [
+          "Flintlock",
+          0.4633333333333333
+        ],
+        [
+          "Pluckwort",
+          0.4591666666666666
+        ]
+      ]
+    },
+    {
+      "subject": "Blackline",
+      "kind_hint": "org",
+      "claim": "Blackline officers wear full uniforms and carry batons.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5841969696969697,
+      "candidates": [
+        [
+          "Black and White",
+          0.5841969696969697
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.4796040372670808
+        ],
+        [
+          "Sableclutch",
+          0.46414141414141413
+        ],
+        [
+          "Flintlock",
+          0.4633333333333333
+        ],
+        [
+          "Pluckwort",
+          0.4591666666666666
+        ]
+      ]
+    },
+    {
+      "subject": "Threshold Authority",
+      "kind_hint": "org",
+      "claim": "Threshold Authority is a law enforcement entity whose officers wear greenish uniforms bearing the letters TA.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.4609423897581792,
+      "candidates": [
+        [
+          "Tywelwyn Leatherhide",
+          0.4609423897581792
+        ],
+        [
+          "the Heart",
+          0.436712775528565
+        ],
+        [
+          "Protectorate",
+          0.42955737043758824
+        ],
+        [
+          "Ternion Heavy Industries",
+          0.4179331684227645
+        ],
+        [
+          "The Harlequins",
+          0.41774860538442876
+        ]
+      ]
+    },
+    {
+      "subject": "Officer Smith",
+      "kind_hint": "person",
+      "claim": "Officer Smith is a human Blackline officer in his late forties.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.4566483516483517,
+      "candidates": [
+        [
+          "Ceres",
+          0.4566483516483517
+        ],
+        [
+          "Pharos",
+          0.4441483516483517
+        ],
+        [
+          "Færrin",
+          0.4300797241973712
+        ],
+        [
+          "Fenrith",
+          0.42909035409035406
+        ],
+        [
+          "Walter Stoke",
+          0.4270942825290652
+        ]
+      ]
+    },
+    {
+      "subject": "Mutagen",
+      "kind_hint": "person",
+      "claim": "Mutagen is a Blackline officer who cannot speak, having lost his voice in an accident during a scuffle.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Mutagen",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.6358730158730158,
+      "candidates": [
+        [
+          "Mutagen",
+          0.6358730158730158
+        ],
+        [
+          "Aut",
+          0.5566666666666666
+        ],
+        [
+          "game",
+          0.5333333333333333
+        ],
+        [
+          "maître d'",
+          0.5268650793650794
+        ],
+        [
+          "Tithe",
+          0.45999999999999996
+        ]
+      ]
+    },
+    {
+      "subject": "Mutagen",
+      "kind_hint": "person",
+      "claim": "Mutagen is the partner of Officer Smith.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Mutagen",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.6358730158730158,
+      "candidates": [
+        [
+          "Mutagen",
+          0.6358730158730158
+        ],
+        [
+          "Aut",
+          0.5566666666666666
+        ],
+        [
+          "game",
+          0.5333333333333333
+        ],
+        [
+          "maître d'",
+          0.5268650793650794
+        ],
+        [
+          "Tithe",
+          0.45999999999999996
+        ]
+      ]
+    },
+    {
+      "subject": "Othello",
+      "kind_hint": "creature",
+      "claim": "Othello is a bird capable of flying and scouting overhead.",
+      "status": "ambiguous",
+      "entity": null,
+      "confidence": 0.6497835497835498,
+      "candidates": [
+        [
+          "Ichel",
+          0.6497835497835498
+        ],
+        [
+          "of Hallia",
+          0.6211428571428572
+        ],
+        [
+          "Ugathal",
+          0.5583333333333332
+        ],
+        [
+          "Aut",
+          0.5571428571428572
+        ],
+        [
+          "Hallia",
+          0.506926406926407
+        ]
+      ]
+    },
+    {
+      "subject": "Tanner",
+      "kind_hint": "person",
+      "claim": "Tanner is incredibly light in weight.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5455627705627706,
+      "candidates": [
+        [
+          "Ternion",
+          0.5455627705627706
+        ],
+        [
+          "Dame Quay",
+          0.5396103896103897
+        ],
+        [
+          "Fane",
+          0.525
+        ],
+        [
+          "Vane",
+          0.525
+        ],
+        [
+          "Tamara McKay",
+          0.52
+        ]
+      ]
+    },
+    {
+      "subject": "Tanner",
+      "kind_hint": "person",
+      "claim": "Tanner has a bird companion named Othello whose eyes he can see through.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5455627705627706,
+      "candidates": [
+        [
+          "Ternion",
+          0.5455627705627706
+        ],
+        [
+          "Dame Quay",
+          0.5396103896103897
+        ],
+        [
+          "Fane",
+          0.525
+        ],
+        [
+          "Vane",
+          0.525
+        ],
+        [
+          "Tamara McKay",
+          0.52
+        ]
+      ]
+    },
+    {
+      "subject": "Chorath",
+      "kind_hint": "org",
+      "claim": "Chorath is a large tire company.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Chorath",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Chorath",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Chorath",
+      "kind_hint": "org",
+      "claim": "The Chorath is a restaurant and city-rating guide similar to the Michelin Guide, produced by Chorath.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Chorath",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.6805128205128205,
+      "candidates": [
+        [
+          "Chorath",
+          0.6805128205128205
+        ],
+        [
+          "Chorath Engineering",
+          0.5979462642620537
+        ],
+        [
+          "Fort DC",
+          0.4944078144078144
+        ],
+        [
+          "Jorge",
+          0.4944078144078144
+        ],
+        [
+          "Argyle",
+          0.43019230769230765
+        ]
+      ]
+    },
+    {
+      "subject": "Chorath",
+      "kind_hint": "org",
+      "claim": "Cities must pay the Chorath to come and evaluate them.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Chorath",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.6805128205128205,
+      "candidates": [
+        [
+          "Chorath",
+          0.6805128205128205
+        ],
+        [
+          "Chorath Engineering",
+          0.5979462642620537
+        ],
+        [
+          "Fort DC",
+          0.4944078144078144
+        ],
+        [
+          "Jorge",
+          0.4944078144078144
+        ],
+        [
+          "Argyle",
+          0.43019230769230765
+        ]
+      ]
+    },
+    {
+      "subject": "Fifth Ave",
+      "kind_hint": "place",
+      "claim": "Fifth Ave is a street with upscale jewelry shops and high-end residential areas on the east side of a city.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.46,
+      "candidates": [
+        [
+          "Letov",
+          0.46
+        ],
+        [
+          "Velthara",
+          0.44749999999999995
+        ],
+        [
+          "Althane",
+          0.42420634920634925
+        ],
+        [
+          "Fort DC",
+          0.3961904761904762
+        ],
+        [
+          "a Will save",
+          0.38732323232323235
+        ]
+      ]
+    },
+    {
+      "subject": "Masque District",
+      "kind_hint": "place",
+      "claim": "The Masque District is a district in the city where tourists stay and where hotels are located.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Masque District",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Masque District",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Void 2",
+      "kind_hint": "place",
+      "claim": "Void 2 is a station or zone in the city's transit system, one stop away from the central hub on its line.",
+      "status": "ambiguous",
+      "entity": null,
+      "confidence": 0.6802597402597402,
+      "candidates": [
+        [
+          "Voidsong",
+          0.6802597402597402
+        ],
+        [
+          "voidward",
+          0.675
+        ],
+        [
+          "Verdant",
+          0.42761904761904757
+        ],
+        [
+          "Fort DC",
+          0.4252380952380952
+        ],
+        [
+          "Yeenut",
+          0.4083333333333333
+        ]
+      ]
+    },
+    {
+      "subject": "Prime Meridian",
+      "kind_hint": "place",
+      "claim": "Prime Meridian Meridian, also called Zero, is a wealthy area of the city where residents can afford cars and public transit does not reach.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Prime Meridian",
+        "kind": "org",
+        "page": "Org/Prime Meridian/index",
+        "being": null
+      },
+      "confidence": 0.6107792207792209,
+      "candidates": [
+        [
+          "Prime Meridian",
+          0.6107792207792209
+        ],
+        [
+          "parries",
+          0.5920000000000001
+        ],
+        [
+          "Ki-Rin",
+          0.5900000000000001
+        ],
+        [
+          "Pyre",
+          0.5614999999999999
+        ],
+        [
+          "Tormeré",
+          0.5085714285714286
+        ]
+      ]
+    },
+    {
+      "subject": "Ugathal",
+      "kind_hint": "creature",
+      "claim": "Ugathal are pink, fleshy creatures resembling naked mole rats with featureless faces whose eyes sink into sockets and other facial features melt off into the skin.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Ugathal",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.9189285714285713,
+      "candidates": [
+        [
+          "Ugathal",
+          0.9189285714285713
+        ],
+        [
+          "Kaathe",
+          0.4833333333333333
+        ],
+        [
+          "Chorath",
+          0.475
+        ],
+        [
+          "Ichel",
+          0.46499999999999997
+        ],
+        [
+          "gale",
+          0.46166666666666667
+        ]
+      ]
+    },
+    {
+      "subject": "Ugathal",
+      "kind_hint": "creature",
+      "claim": "When transforming, Ugathal grow about a foot and a half in size and their clothes melt into their body.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Ugathal",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.9189285714285713,
+      "candidates": [
+        [
+          "Ugathal",
+          0.9189285714285713
+        ],
+        [
+          "Kaathe",
+          0.4833333333333333
+        ],
+        [
+          "Chorath",
+          0.475
+        ],
+        [
+          "Ichel",
+          0.46499999999999997
+        ],
+        [
+          "gale",
+          0.46166666666666667
+        ]
+      ]
+    },
+    {
+      "subject": "Ugathal",
+      "kind_hint": "creature",
+      "claim": "A proboscis grows from an Ugathal's featureless face to drain blood from victims.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Ugathal",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.9189285714285713,
+      "candidates": [
+        [
+          "Ugathal",
+          0.9189285714285713
+        ],
+        [
+          "Kaathe",
+          0.4833333333333333
+        ],
+        [
+          "Chorath",
+          0.475
+        ],
+        [
+          "Ichel",
+          0.46499999999999997
+        ],
+        [
+          "gale",
+          0.46166666666666667
+        ]
+      ]
+    },
+    {
+      "subject": "Ugathal",
+      "kind_hint": "creature",
+      "claim": "Ugathals do not feel pain and their bodies lose form when damaged; their flesh is stringy with no blood inside, just more flesh.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Ugathal",
+        "kind": null,
+        "page": null,
+        "being": null
+      },
+      "confidence": 0.9189285714285713,
+      "candidates": [
+        [
+          "Ugathal",
+          0.9189285714285713
+        ],
+        [
+          "Kaathe",
+          0.4833333333333333
+        ],
+        [
+          "Chorath",
+          0.475
+        ],
+        [
+          "Ichel",
+          0.46499999999999997
+        ],
+        [
+          "gale",
+          0.46166666666666667
+        ]
+      ]
+    },
+    {
+      "subject": "Othello",
+      "kind_hint": "creature",
+      "claim": "Othello is a creature that perches on Anzu's shoulder.",
+      "status": "ambiguous",
+      "entity": null,
+      "confidence": 0.6497835497835498,
+      "candidates": [
+        [
+          "Ichel",
+          0.6497835497835498
+        ],
+        [
+          "of Hallia",
+          0.6211428571428572
+        ],
+        [
+          "Ugathal",
+          0.5583333333333332
+        ],
+        [
+          "Aut",
+          0.5571428571428572
+        ],
+        [
+          "Hallia",
+          0.506926406926407
+        ]
+      ]
+    },
+    {
+      "subject": "Anzu",
+      "kind_hint": "person",
+      "claim": "Anzu keeps a creature named Othello on their shoulder.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Anzu",
+        "kind": "person",
+        "page": null,
+        "being": "tanner"
+      },
+      "confidence": 1.0,
+      "candidates": [
+        [
+          "Anzu",
+          1.0
+        ]
+      ]
+    },
+    {
+      "subject": "Black and White",
+      "kind_hint": "org",
+      "claim": "Black and White is an organization that issues badges.",
+      "status": "resolved",
+      "entity": {
+        "canonical": "Black and White",
+        "kind": "place",
+        "page": "Geography/Black and White/index",
+        "being": null
+      },
+      "confidence": 0.6168115942028985,
+      "candidates": [
+        [
+          "Black and White",
+          0.6168115942028985
+        ],
+        [
+          "Bait-and-Tackle Shop",
+          0.47894642857142855
+        ],
+        [
+          "Sableclutch",
+          0.44547619047619047
+        ],
+        [
+          "Flintlock",
+          0.4453846153846153
+        ],
+        [
+          "Pluckwort",
+          0.44509803921568625
+        ]
+      ]
+    },
+    {
+      "subject": "goblinoid",
+      "kind_hint": "creature",
+      "claim": "Goblinoids in this area of the city work in factories and wear workman's attire.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5244444444444445,
+      "candidates": [
+        [
+          "Tywelwyn",
+          0.5244444444444445
+        ],
+        [
+          "P.O. Box",
+          0.4553846153846154
+        ],
+        [
+          "Godly Interplay",
+          0.4415151515151515
+        ],
+        [
+          "Giant",
+          0.44
+        ],
+        [
+          "Copperjaw",
+          0.4383333333333333
+        ]
+      ]
+    },
+    {
+      "subject": "slides",
+      "kind_hint": "phenomenon",
+      "claim": "Slides are a travel technology that allows movement to locations outside city limits; their use is restricted within city limits for security reasons.",
+      "status": "unknown",
+      "entity": null,
+      "confidence": 0.5557179487179487,
+      "candidates": [
+        [
+          "Stillness",
+          0.5557179487179487
+        ],
+        [
+          "Sedecium",
+          0.5290833333333333
+        ],
+        [
+          "Silven",
+          0.5083333333333333
+        ],
+        [
+          "Smiler",
+          0.5083333333333333
+        ],
+        [
+          "Salvado",
+          0.48
+        ]
+      ]
+    }
+  ],
+  "refined_out": [
+    {
+      "subject": "Illmari Vaino",
+      "claim": "Provides free food and housing to the party at the Sin and Tonic.",
+      "category": "event",
+      "reason": "Describes a specific arrangement with the party this session, not a durable world fact."
+    },
+    {
+      "subject": "Illmari Vaino",
+      "claim": "Does not pay the party money and does not dictate what they can do.",
+      "category": "event",
+      "reason": "Describes the terms of the party's relationship with Illmari, a session-specific arrangement."
+    },
+    {
+      "subject": "Elias",
+      "claim": "Is not friendly toward the party.",
+      "category": "event",
+      "reason": "Describes the character's attitude toward the party specifically, a session interaction."
+    },
+    {
+      "subject": "Tywelwyn Leatherhide",
+      "claim": "Ordered material from Pyrelight, listed as Embercall Industries on the bill of materials.",
+      "category": "event",
+      "reason": "Ordering material is an action that happened this session, not durable lore about who Tywelwyn is."
+    },
+    {
+      "subject": "Threshold Authority",
+      "claim": "Was suspiciously ineffective at investigating a murder scene at the roller rink.",
+      "category": "event",
+      "reason": "Being ineffective at a specific investigation is an occurrence this session, not durable lore."
+    },
+    {
+      "subject": "Friday's Court",
+      "claim": "A faction documented in the campaign one Notion.",
+      "category": "nonsensical",
+      "reason": "The claim contains no actual lore about what Friday's Court is; it only references where it is documented."
+    },
+    {
+      "subject": "Whiskers",
+      "claim": "A member of the party.",
+      "category": "nonsensical",
+      "reason": "Being a party member is meta-game information, not in-world lore."
+    },
+    {
+      "subject": "Anzu",
+      "claim": "A member of the party.",
+      "category": "nonsensical",
+      "reason": "Being a party member is meta-game information, not in-world lore."
+    },
+    {
+      "subject": "Johnny",
+      "claim": "A member of the party.",
+      "category": "nonsensical",
+      "reason": "Being a party member is meta-game information, not in-world lore."
+    },
+    {
+      "subject": "Argyle",
+      "claim": "A member of the party.",
+      "category": "nonsensical",
+      "reason": "Being a party member is meta-game information, not in-world lore."
+    },
+    {
+      "subject": "Tywelwyn",
+      "claim": "Was not present at the scene of the crime the previous day.",
+      "category": "event",
+      "reason": "An alibi for a specific day is a session event, not durable lore."
+    },
+    {
+      "subject": "Anzu",
+      "claim": "Heard the Voidsong, which compelled him to leave Belvedere.",
+      "category": "event",
+      "reason": "Hearing the Voidsong and being compelled to leave are events that happened this session."
+    },
+    {
+      "subject": "Othello",
+      "claim": "Followed Anzu from Belvedere.",
+      "category": "event",
+      "reason": "Following Anzu from Belvedere is an event, not a durable trait."
+    },
+    {
+      "subject": "Tywelwyn's",
+      "claim": "Can make healing potions if the components are purchased.",
+      "category": "ability",
+      "reason": "The ability to craft healing potions is a mechanical capability, not lore."
+    },
+    {
+      "subject": "Tywelwyn's",
+      "claim": "Stole a radar dish at the party's suggestion.",
+      "category": "event",
+      "reason": "Stealing a radar dish is a session action/event."
+    },
+    {
+      "subject": "Anouk",
+      "claim": "Has a Rolodex of contacts and job leads.",
+      "category": "possession",
+      "reason": "Describes Anouk's personal belongings, not lore."
+    },
+    {
+      "subject": "Johnny",
+      "claim": "Is currently with Iconoclasm, lent over to them.",
+      "category": "event",
+      "reason": "Describes a temporary current arrangement, not a durable identity fact."
+    },
+    {
+      "subject": "Voidsong",
+      "claim": "Is something Anzu heard, which compelled him to leave Belvedere.",
+      "category": "event",
+      "reason": "Describes Anzu hearing the Voidsong and acting on it — a session event, not durable lore about the phenomenon itself."
+    },
+    {
+      "subject": "Gin Soaked Rag",
+      "claim": "Is someone who needs chicken eggs and tinfoil.",
+      "category": "nonsensical",
+      "reason": "'Gin Soaked Rag' appears to be a nickname or alias, and the claim is about needing mundane supplies — not durable identity lore."
+    },
+    {
+      "subject": "Argyle",
+      "claim": "Is a member of the party who wears half plate armor.",
+      "category": "possession",
+      "reason": "States Argyle's party membership and armor — party membership is transient, and armor is a possession."
+    },
+    {
+      "subject": "Zorbon",
+      "claim": "Is something the party wants to learn about.",
+      "category": "nonsensical",
+      "reason": "Too vague — 'something the party wants to learn about' is not durable lore about what Zorbon is."
+    },
+    {
+      "subject": "rocket hammers",
+      "claim": "Are crafted by the male twin in his workshop room.",
+      "category": "event",
+      "reason": "Describes a crafting action performed this session, not durable lore about what rocket hammers are."
+    },
+    {
+      "subject": "radar dish",
+      "claim": "Is a device for receiving a signal, stolen by the twins at the party's suggestion.",
+      "category": "event",
+      "reason": "Describes theft and usage during the session, not durable lore about the radar dish's nature."
+    },
+    {
+      "subject": "Anaïs",
+      "claim": "Is someone Johnny knows who may have spoken to Smiler previously.",
+      "category": "event",
+      "reason": "Describes a social connection and speculation from the session, not durable lore."
+    },
+    {
+      "subject": "Benny",
+      "claim": "Has a permission slip from Belvedere allowing him to travel far from home.",
+      "category": "possession",
+      "reason": "Describes an item Benny carries, not durable lore about who he is."
+    },
+    {
+      "subject": "Benny",
+      "claim": "The Pulse spoke to him at night, told him to be more careful, said it is dangerous, and expressed wanting to keep him alive.",
+      "category": "event",
+      "reason": "Describes something that happened this session — the Pulse speaking to Benny at night."
+    },
+    {
+      "subject": "Benny",
+      "claim": "The Pulse empowered his pick, which now glows.",
+      "category": "event",
+      "reason": "Describes an event — the Pulse empowering Benny's pick — not durable identity lore."
+    },
+    {
+      "subject": "Voidsong",
+      "claim": "Called Benny and others to assemble the party.",
+      "category": "event",
+      "reason": "An action that happened this session, not durable identity lore."
+    },
+    {
+      "subject": "the Scale's",
+      "claim": "Spoke to Benny at night, telling him to be careful, that it is dangerous, and expressing a desire to keep him alive.",
+      "category": "event",
+      "reason": "A specific nighttime conversation that occurred this session."
+    },
+    {
+      "subject": "the Scale's",
+      "claim": "Empowered Benny's pick, causing it to glow.",
+      "category": "event",
+      "reason": "A specific empowerment action that occurred this session."
+    },
+    {
+      "subject": "Anaïs",
+      "claim": "Sent the party to Copperjaw for work.",
+      "category": "event",
+      "reason": "An action that happened this session — Anaïs directing the party somewhere."
+    },
+    {
+      "subject": "Copperjaw",
+      "claim": "Copperjaw owns at least three guns.",
+      "category": "possession",
+      "reason": "Inventory of weapons Copperjaw owns."
+    },
+    {
+      "subject": "Benny",
+      "claim": "Benny is at least as strong as a fully grown man.",
+      "category": "ability",
+      "reason": "Describes Benny's physical capability rather than who he is."
+    },
+    {
+      "subject": "Othello",
+      "claim": "Tanner can look through Othello's eyes for up to one minute every ten minutes.",
+      "category": "ability",
+      "reason": "Describes a mechanical ability with specific timing rules, not durable lore."
+    },
+    {
+      "subject": "The Crowded Flea",
+      "claim": "The Crowded Flea is a city with good food but no Chorath Guide presence because the city does not pay for them to come.",
+      "category": "nonsensical",
+      "reason": "The claim describes 'The Citadel,' not 'The Crowded Flea'; the wiki name does not match the claim's subject."
+    },
+    {
+      "subject": "Hlarf",
+      "claim": "Hlarf is a comic character with a gun for an arm that exists across multiple spheres via convergent evolution.",
+      "category": "nonsensical",
+      "reason": "The claim describes 'Tarv,' not 'Hlarf'; the wiki name does not match the claim's subject."
+    },
+    {
+      "subject": "Noah",
+      "claim": "Noah can use prestidigitation to clean people up.",
+      "category": "ability",
+      "reason": "Describes a spell ability, not durable lore about Noah's identity."
+    },
+    {
+      "subject": "Argyle",
+      "claim": "A party member who guards a child.",
+      "category": "event",
+      "reason": "Being a party member and guarding a child are session events, not durable identity lore."
+    }
+  ],
+  "dropped": [
+    {
+      "category": "ooc",
+      "sample": "Josh: How are we?\nJosh: Is it me or is it you?\nJosh: I don't hear nothing.\nJosh: May it please me.\nJosh: hello hello\nJosh: I can't hear or see Jorge if you're doing stuff.\nJorge: Can you hear me now?\nJosh: I can hear you now.\nJosh: I can se…",
+      "reason": "Technical issues with Discord/Windows, pure OOC table talk."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: It showed you logged on.\nJorge: And I'm like, I feel like my computer is the broken one.\nJorge: But then I found out I can Windows R to find the app data and then delete the cache Discord, which was corrupted.\nJorge: And then it work…",
+      "reason": "Continuing Windows/Discord tech troubleshooting, OOC chatter."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: We should get those in the States.\nJorge: Okay.\nJosh: I just feel like a window you can open more than one direction is objectively better than a window you can only open in one direction.\nNoah: That's a multifunctional window.\nJosh:…",
+      "reason": "OOC discussion about literal windows and Windows OS updates."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: Yeah.\nJosh: Does that work?\nJosh: Because I remember in the past I've tried doing stuff like that and just eventually after a few months it reverts on its own.\nJorge: What kind of bullshit is this?\nJorge: You don't even let me turn of…",
+      "reason": "Windows update/Cortana discussion, OOC tech talk."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: God, if Mariano wasn't such a nice person, I would say some horrible, sweeping things about all Windows employees.\nJorge: Microsoft.\nNoah: I mean, she's only still there because they're supporting her visa, so I think you're okay to…",
+      "reason": "Real-life chatter about a friend's job, visa, health insurance, travel plans."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Just to say hi.\nNoah: Yeah, just fly out, gather around, go, hey, guys.\nNoah: Out.\nJosh: That sounds worth it.\nJosh: It's not that bad a plane ride, having done it now.\nJosh: I don't understand how that works, because it took me five…",
+      "reason": "Plane rides, Denver airport complaints, OOC real-life stories."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: Honestly, the employees are better than the passengers, but so many.\nJorge: Everything.\nJorge: On the way there and the way back, I've never dealt with just so many incompetent people.\nJorge: I didn't experience that all of Denver.\nJ…",
+      "reason": "Denver airport complaints and a mic technical issue, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: No, I could... If I was listening, I could have heard you, but I wasn't listening.\nJosh: Okay, because you muted your mic, and then we still heard everything you were saying.\nJorge: Oh, okay.\nJosh: So you're not using that mic.\nJosh:…",
+      "reason": "Denver airport bus door story, OOC real-life anecdote."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: How else would you have given them your ticket that you totally needed to use that bus?\nJorge: There was...\nJorge: it that was they they made like 300 people etc they made so many people use one door at a time instead of just opening…",
+      "reason": "Airport boarding group anecdote, OOC real-life story."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: My favorite part of the story is that you got on the plane and like, where the fuck is this woman?\nJorge: It was... Because she was behind me.\nJorge: I was in the middle at 17.\nJorge: I was like, why is she... Whatever.\nJorge: No, no.…",
+      "reason": "Continuing airport anecdote, OOC real-life story."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: I assume they had stuff.\nJosh: Exactly.\nJorge: getting up and going a seat over and then putting some stuff down.\nJorge: I assumed they were saving this for a horde of people.\nJorge: No, just them.\nJorge: Then this is when I almost sh…",
+      "reason": "Delta flight water/iced coffee anecdote, OOC real-life story."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: And she's just like, no, no, no, this is water.\nJorge: She's just like, iced coffee?\nJorge: Literally, this is how the interaction went.\nJorge: And then she's like, no, no, I don't have iced coffee with me.\nJosh: Yeah.\nJorge: I can g…",
+      "reason": "Coffee story and workplace coffee machine joke, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: And normally, I get loose leaf tea that we have.\nJorge: But this time, I got one of the pouches, tried it,\nJorge: Didn't really like it.\nJorge: I was trying to drink it.\nJorge: So I walk back and then I pour it out.\nJorge: And then o…",
+      "reason": "Retelling a 'not my cup of tea' pun, OOC joke."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: Yeah, when this happened, I was like, I'm so happy D&D's today.\nJosh: That's the real issue, isn't it?\nTanner: Because it was a triumph.\nJorge: Yeah.\nJosh: You could spread the joy.\nJorge: Yeah.\nJosh: It does look like...\nJosh: direc…",
+      "reason": "Camera/sun lighting issue and ISS discussion, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: What's up with you?\nTanner: There's some lag time getting from space to down here.\nJorge: That's what happens with Wi-Fi.\nTanner: Even though Noah is a little higher up than the rest of us, it still takes time.\nJorge: Yeah.\nNoah: I do…",
+      "reason": "ISS trivia and lag jokes, OOC table talk."
+    },
+    {
+      "category": "ooc",
+      "sample": "Mike: Is there a non-international space station?\nMike: They just keep it over one... The marketing gimmicks.\nJosh: there might have been at the time the big thing was that it was international because before and also after the space progra…",
+      "reason": "International Space Station and physics reference frames debate, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Like, relative to you, it is moving.\nMike: Okay.\nMike: All of the movements are relative.\nJosh: No.\nJosh: I exclusively look at movement with the absolute center of the universe as my zero-zero.\nMike: You measure relative from the cen…",
+      "reason": "Physics reference frames and Reddit, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Mike: It's a video of a guy holding onto a wooden pole, and he has friends on either side of the wooden pole pulling it up and down, and he is just moving his arms, but his head is staying in the same spot relative to Earth.\nMike: So he's s…",
+      "reason": "Reddit video about pull-ups and physics PhD, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Mike: No, no, no.\nJorge: Reverse pull-ups?\nMike: This was a guy holding on to a wooden stick that was moving up and down.\nNoah: you\nMike: And he was suspending himself over the ground and keeping himself at the same height above the ground.…",
+      "reason": "Continuing pull-up/treadmill physics debate, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Mike: The forces are different.\nMike: Sorry, the forces are the same.\nMike: You are putting your body through the same forces if you're running up an incline treadmill as running up a hill.\nMike: On the pull-up, it's not.\nMike: Do a pull-up…",
+      "reason": "Continuing physics/reddit rant, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: They got rid of Apollo.\nJorge: That was it.\nJorge: They, uh...\nTanner: Now I gotta use the Reddit app?\nTanner: Disgusting.\nJosh: I think there are still third-party apps.\nJosh: You just have to pay money for them.\nTanner: Well, yeah.…",
+      "reason": "Reddit third-party apps, Apollo, NYT mini crossword, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: I'm so mad.\nJosh: Yeah.\nNoah: I'm so mad.\nJosh: Oh.\nTanner: I complained to their help chatbot, and it told me that it was going to pass my feedback along, but I don't know if I believe it.\nMike: I heard about that.\nJorge: Yeah, it re…",
+      "reason": "NYT crossword paywall complaint, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: He's playing D&D in a waiting room.\nJorge: I'll probably change it this is the first background I saved with underscore one because I was like I'm not I'm not yeah yeah\nJosh: It's not the permanent background?\nMike: It's actually a go…",
+      "reason": "Virtual tabletop background changes and Notion setup, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: Yeah, there's just some chickens loose in our neighborhood.\nNoah: Okay.\nJorge: If she has any photos, you should send it.\nJosh: My grandmother used to keep chickens, and then whenever they were getting hungry, she would take one into…",
+      "reason": "Loose chickens in neighborhood and grandmother chicken stories, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: That's fine.\nJosh: That was a good recap.\nJosh: So... You get a mythic point.\nJosh: Or a hero point.\nJosh: I'll let you use it for either.\nJosh: Whichever you prefer.\nJosh: No, it's fine.\nJosh: If he wants to use it as a hero point, h…",
+      "reason": "Hero point/mythic point reward discussion, OOC rules talk."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Yeah, exactly.\nJorge: Yeah.\nJosh: Keep that in your head for three years.\nJorge: Can you write that down?\nJorge: Notetaker.\nJorge: Tanner.\nTanner: You want me to make a page for questions after the campaign?\nJorge: Yeah.\nTanner: All r…",
+      "reason": "Post-campaign questions list and mattress trivia, OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Oh, only three gold?\nTanner: No, I forgot about doing all that stuff.\nJorge: No, to get rid of my debt.\nTanner: Probably I should retcon an explorer's pack in there.\nJosh: Oh, right.\nMike: He's... This bird...\nMike: It's not an illusi…",
+      "reason": "Equipment pack and money bookkeeping, OOC rules discussion."
+    },
+    {
+      "category": "ooc",
+      "sample": "Tanner: Alright, I'm going to buy one of these.\nJosh: Or 15 bucks.\nTanner: So now I have 13 gold, 5 silver.\nJosh: Because the... That's 135 bucks you're carrying around in your pocket.\nJosh: That's not bad.\nTanner: Well, I've got a lot of t…",
+      "reason": "Buying adventurer's pack, money management, OOC rules."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: If I'm harder to kit.\nJorge: 30.\nTanner: Indeed.\nNoah: How much money is the plate armor?\nJorge: I need 22.\nJorge: Oh, 30% off.\nJorge: Then I only need 18.\nJorge: 10% off.\nTanner: 10% off?\nMike: It's 10% off.\nJosh: Yeah, where did yo…",
+      "reason": "Armor haggling and discount math, OOC rules/money."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: I have half plate.\nJorge: Can I just buy the other half?\nNoah: Clear plate.\nMike: You could probably trade it in.\nJosh: No.\nMike: You want to trade in quarter plate?\nJorge: This seems ridiculous, but I feel like it kind of makes sens…",
+      "reason": "Half plate trade-in mechanics and money jokes, OOC rules."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: Gotcha, gotcha.\nMike: How much gold did you come up with?\nMike: I don't like poke at your pocket.\nJosh: It's up to you.\nJorge: That makes a lot more sense.\nNoah: I just have some bacon from that morning.\nJorge: I only need eight gold…",
+      "reason": "Money discussion and feeding Othello bacon, OOC chatter."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Jorge: Yeah.\nJorge: Yeah.\nJosh: How much is the... Do you want full plate?\nJorge: 30.\nJorge: Yeah.\nJosh: Oh, it's 30.\nJosh: So your 30 drops down to 27, minus the 12 as you need 15.\nTanner: Hmm.\nJorge: Yes.\nTanner: I'm happy to give nine.\nT…",
+      "reason": "Continued gold math and armor price calculations, no durable lore."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Tanner: What I would like to do is take a look at them and try to strike a balance between which one might look beat up and therefore cheap, but is also the closest to being functional.\nJosh: Yeah, I'll levelcraft and check.\nTanner: You und…",
+      "reason": "Crafting check mechanics to evaluate radios; no new durable facts."
+    },
+    {
+      "category": "ooc",
+      "sample": "Tanner: Yeah, you know I'm rolling a society check.\nNoah: Smiler, my guy, it's not even operational.\nNoah: What are you doing?\nNoah: Come on, he's a gentleman.\nNoah: This is going to be a returning customer, and I would like to aid.\nNoah: A…",
+      "reason": "Foundry loading, feat discussion, and versatile performance mechanics; mostly OOC."
+    },
+    {
+      "category": "ooc",
+      "sample": "Mike: He'll wave it around.\nMike: Free.\nMike: Free.\nMike: How much was the bird?\nJorge: Yeah, mine's a friend too.\nMike: He'll turn to the two birds.\nMike: How much was the bird?\nJosh: Yeah.\nTanner: I didn't buy the bird.\nTanner: I don't kn…",
+      "reason": "Mostly banter about birds and fans; no durable world facts revealed."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: The city of Denver paid a lot of money to get Michelin stars, and there's a whole big hullabaloo because there's a really popular restaurant that's like five feet outside the city line.\nNoah: And so even though it was probably deservi…",
+      "reason": "Real-world Denver/Michelin star discussion; Diamond District detail is light and already captured."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Tanner: I don't know, like 100 feet up, I guess.\nJosh: Yep.\nTanner: Just keeping a lookout for things.\nTanner: He can communicate with me empathically, so he can't say words, but I assume he could warn me of potential danger.\nTanner: And he…",
+      "reason": "Othello's perception modifier mechanics; no durable lore."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: Terrifying.\nNoah: Ayy.\nNoah: It's the guy from Jorge's Space One-Shot.\nJosh: He's a human pretending to be a robot pretending to be a human?\nJosh: Or something like that?\nJorge: My favorite was how you immediately were annoyed at him.…",
+      "reason": "References to past one-shot characters; mostly OOC banter before perception checks."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Noah: He offered to do it.\nNoah: He offered to do this one first.\nJosh: With a 21, I think you...\nJosh: would also note that of the people that are kind of just being like, huh, that's strange.\nJosh: As you walk by an alley, you do note som…",
+      "reason": "Perception checks and someone following the party; combat setup, no durable lore."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: I think I'm next to Benny because I'm just asking him questions, trying to decipher if this boy has any childhood.\nMike: Oh, we can have the two scouts go first then.\nNoah: Two and two.\nJosh: Okay.\nMike: The fake surgeon and the bird.…",
+      "reason": "Marching order and OOC banter about Argyle being 'fake'; no durable facts."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Noah: He's an elf in the mic.\nNoah: Why didn't you say elf then?\nJorge: Yeah, he could be an elf.\nNoah: But then why didn't you just say he was an elf?\nJorge: I'm just saying he's elven-like.\nJorge: You don't know his race.\nMike: Anyways, t…",
+      "reason": "Pickpocket attempt mechanics; no new durable noun revealed."
+    },
+    {
+      "category": "combat",
+      "sample": "Noah: I will wink and try to demoralize him.\nJosh: Yeah, roll a performance check.\nJorge: Did he get anything with it?\nNoah: Nah, I keep my money in my pockets.\nJosh: Yes, Tanner.\nTanner: As soon as, like, I guess we all kind of hear this s…",
+      "reason": "Demoralize and athletics check mechanics; no durable lore."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: They got a 23 against your... What is this even against?\nJosh: This is against your 4th DC.\nJosh: Yeah, it's 10 plus your 4th modifier.\nNoah: Uh, so it's not a crate.\nJorge: Can I trip him?\nNoah: It's not a crate, but it does exceed m…",
+      "reason": "Combat resolution mechanics; goblin escapes; no durable lore."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: Absolutely.\nTanner: That's it.\nJosh: Roll an attack roll.\nNoah: Plus eight.\nJorge: Hopefully it's not a reverse pickpocket and put a grenade in your pocket.\nNoah: Ah, I'm rolling terribly.\nNoah: I got a ten.\nJosh: You hear a ticking s…",
+      "reason": "Telekinetic projectile attack and miss; goblin escapes; pure combat."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Noah: Keep watch on.\nJorge: Do you have anything in your pocket?\nJosh: Okay, absolutely.\nNoah: In that one, no.\nNoah: I only have... I'll keep on my goal.\nJorge: I meant, do you want to check to see if you put something in there?\nJosh: Roll…",
+      "reason": "Checking pockets for planted items; perception checks; no durable lore."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Josh: And then I'd also like Anzu to roll a perception check.\nTanner: As Anzu.\nJosh: Yes, as Anzu.\nJosh: Or I guess as Othello.\nJosh: In other words, Othello's in the sky.\nJosh: There are two cops, yes.\nJorge: Yeah.\nTanner: Othello got a 24…",
+      "reason": "Perception checks and positioning around cops; no durable lore."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Josh: I think he would notice you doing that if you're trying to maneuver your way around.\nJosh: Like, cop is talking to somebody and somebody else is circling around them is not like, yeah.\nJosh: With Othello's role, though...\nJosh: Argyle…",
+      "reason": "Cops box party in, show badge; mostly positioning and check mechanics."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Jorge: I'm going to start moving to be behind the guy behind Benny.\nJosh: You're playing this game a little bit of like, you know, ha-ha, ha-ha, ha-ha, ha-ha.\nJosh: Just like...\nJosh: Weirdly defensive.\nJosh: Nothing overtly aggressive abou…",
+      "reason": "Positioning game with cops; no durable lore beyond what's already captured."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Josh: One second.\nJorge: Should we have struck?\nNoah: Attacking the cops first is never a good call.\nMike: In a public area?\nJosh: You don't want to attack cops in a public area?\nJorge: Hey guys, you want to go talk about this like gentleme…",
+      "reason": "More cop interaction and positioning; references already-captured Copperjaw job details."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: But at some point, you know, eventually with you, the two pairs of people, that third, like, person off in the corner, all waiting, a new tram does...\nJosh: materialize in front of you as it appears in the spot on the horizon.\nJosh: A…",
+      "reason": "Tram boarding formation; Josh kicked his cat—OOC distraction."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: It was on my foot, and I didn't notice.\nTanner: I guess I know who I'm calling.\nJosh: Don't do that.\nJosh: He seems fine.\nJosh: He's okay with it.\nJosh: Your setup, it doesn't look like there was anybody on the trolley when it showed…",
+      "reason": "More cat OOC and tram seating arrangement; no durable lore."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Mike: Skin.\nJorge: No, I'll do a society check.\nJosh: I'll let you do that.\nJosh: The DC will be way higher to look at somebody and be like, oh, Skinwalker?\nJosh: It would be to talk to somebody and see if they're mute.\nJosh: But you can tr…",
+      "reason": "Medicine/society checks to identify skinwalkers; pure mechanics."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Noah: Pass it along.\nNoah: Spread the message.\nNoah: Keep Anaïs on him.\nMike: Josh, the trams here are private as well.\nJosh: There's another soft ding.\nJosh: And you're now at void one.\nJosh: Four people get on.\nJosh: You can't tell if the…",
+      "reason": "Tram travel mechanics; no new durable facts."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Tanner: Not yet.\nJosh: Okay.\nMike: three silver pieces a person.\nJosh: Absolutely.\nJorge: Are those goblins following us?\nMike: It's three silver pieces a person.\nJosh: Sorry you spoke over each other.\nMike: Jorge asks if there's goblins fo…",
+      "reason": "Taxi price confirmed (3 silver/person) and perception checks; no new durable lore."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Josh: It looks like they headed in a different direction than you.\nTanner: I feel good.\nJosh: Okay, great.\nJosh: So you guys start heading...\nJorge: Guys, I haven't really been in the field before.\nJorge: Should we just go into an alley and…",
+      "reason": "Tactical planning to ambush pursuers in alleys; no durable lore."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Josh: You don't need a perception check.\nJosh: That's fine.\nJorge: We're going to ambush them.\nJosh: Yeah, I don't know how that happened, but absolutely.\nJosh: You're completely different people.\nMike: You know, it never leaves the soul of…",
+      "reason": "More tactical ambush planning; no durable lore."
+    },
+    {
+      "category": "play_by_play",
+      "sample": "Josh: Okay, so no perception check necessary.\nJosh: You can find a route on the direction that you're going.\nJosh: that does have like, you know, an alley or two where nobody would be around to witness anything particularly untoward.\nNoah:…",
+      "reason": "Route through alleys found; two figures follow them in; combat setup."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: Oh, he did?\nJorge: I thought that was at five.\nNoah: Well, thanks, Nand.\nJosh: One moment.\nMike: I wasn't... I...\nJosh: Uh, yes.\nJosh: So, automatic rune progression.\nJorge: Oh.\nJosh: At level 2, you have weapon potency plus 1.\nJosh:…",
+      "reason": "Rules discussion about automatic rune progression and Foundry setup."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Um...\nJorge: Yeah, OK.\nNoah: Thank you.\nMike: That's why I asked, because I was looking at runes, and I was like, oh, we might have to buy these or whatever, but it's level two.\nMike: Maybe we can find them.\nMike: And then I opened it…",
+      "reason": "Rules discussion about rune progression levels and initiative rolling."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: One second.\nJorge: Oh, maybe I do.\nJorge: Yes, I do.\nJosh: One second.\nJosh: Yeah.\nNoah: Oh, that was a terrible roll.\nJorge: Thank you.\nNoah: Oh, my gosh.\nJorge: I was like... I was like, I'm really, really happy about it, Josh, but,…",
+      "reason": "Mechanics confusion about mythic role selection and Foundry settings."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: And we're going to start with Argyle.\nJorge: Are we running up, Betty?\nMike: Oh, yeah.\nJorge: All right.\nJorge: So I will.\nMike: If you can get behind them.\nMike: Actually, maybe you should be on the side with the squishies.\nMike: But…",
+      "reason": "Combat setup — initiative order, positioning, deferring turn rules."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Yeah.\nJosh: So ready, the action specifically, is a two-action activity that lets you... Yeah, I think there might be a rule that you can just do that.\nJorge: Oh yeah, I was just going to drop.\nJorge: Yeah.\nJosh: So if you guys at any…",
+      "reason": "Rules clarification about deferring initiative, stepping vs striding."
+    },
+    {
+      "category": "combat",
+      "sample": "Mike: Oh.\nJosh: Yeah, that one unfortunately does miss.\nTanner: That's...\nJorge: I'll take that.\nJorge: I'll take that.\nJosh: We get a mythic point.\nJosh: Okay, so that means it's to Betty.\nJorge: All right.\nJosh: I'm just so used to Jorge…",
+      "reason": "Combat round-by-round: miss, mythic points, champion range discussion."
+    },
+    {
+      "category": "combat",
+      "sample": "Mike: Is this Ugathal?\nMike: Is he flanked?\nJosh: Um, yes, he's fine.\nMike: Perfect.\nMike: Benny is going to intimidating strike.\nMike: And Benny is going to say, you may be gross, but I'm scary.\nJosh: Good.\nMike: And he won't roll to attac…",
+      "reason": "Combat blow-by-blow: intimidating strike, frightened condition mechanics."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: Is that intimidating strict?\nJosh: Okay.\nJorge: So his AC is higher than 19.\nJorge: But you can hit him with at least a 19, but a 16, it's higher than a 16.\nJorge: That's right now.\nMike: Then that will do seven damage, one of which i…",
+      "reason": "Combat blow-by-blow: damage, AC, flanking, creature movement and claw attack."
+    },
+    {
+      "category": "combat",
+      "sample": "Tanner: Argyle, can you hit him or no?\nJorge: I'm not a fighter.\nTanner: Oh, you don't do that.\nTanner: I thought you were asking about that last time.\nJorge: No, that was him.\nJorge: That was the guy.\nTanner: Right.\nJosh: A 23.\nJorge: It's…",
+      "reason": "Combat blow-by-blow: claw attack, sneak attack damage, grab attempt."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: I think it's against Fort.\nJosh: Yeah.\nJorge: So it'll hit either way.\nJosh: I will look it up just to grab.\nJosh: It is Fort DC.\nJosh: It is Fort DC.\nJosh: Okay, uh, so his, like, weird extended hand goes out, slashes you, and then g…",
+      "reason": "Combat blow-by-blow: grab mechanics, blood nourishment action setup."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: So pick goes right into its head to the point that you see the pick goes in the back of the head where you hit it out the front so that Argyle sees a pick just show up.\nNoah: Yeah, geez.\nJosh: You pull the pick back out and now there'…",
+      "reason": "Combat blow-by-blow: pick through head, interrupted action, bard composition buffs."
+    },
+    {
+      "category": "combat",
+      "sample": "Noah: Everyone's inspired by that one, I guess.\nNoah: That's one.\nNoah: Second action.\nNoah: I will cast Soothe.\nNoah: Flourish cast it.\nNoah: On Argyle.\nJorge: Thank you.\nNoah: That's pretty good.\nJorge: Oh, thank you.\nNoah: Make sure you…",
+      "reason": "Combat blow-by-blow: Soothe spell, demoralize action, status bonuses."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: Okay, scary poem, this guy.\nMike: Oh.\nNoah: Is that a crit?\nJosh: Just barely known.\nTanner: All right.\nJosh: I'm sorry.\nNoah: Bummer.\nJosh: But that is at least a regular success, so he is afeard.\nNoah: Well, he is... All right.\nNoah…",
+      "reason": "Combat blow-by-blow: demoralize result, recall knowledge check initiation."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: One of them critically succeeded.\nJosh: The other one failed because it's frightened.\nTanner: Okay.\nTanner: Well, then I'll roll damage.\nTanner: He'll be the only one that takes it.\nJosh: Absolutely.\nTanner: The slashing was higher th…",
+      "reason": "Combat blow-by-blow: telekinetic rend damage, bludgeoning resistance interaction."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: You are grabbed.\nJosh: You are immobilized.\nJorge: I just can't move.\nJosh: Yes, you can still strike.\nJosh: You have to do a flat check if you want to do a manipulate thing.\nJosh: But yeah, no, that's it.\nJorge: And strikes aren't ma…",
+      "reason": "Combat blow-by-blow: grabbed/immobilized condition rules, striking while grabbed."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: Unfortunately, that's a pretty bad roll.\nJosh: Okay, the man's mythic.\nJorge: Oh.\nJosh: It's still a poor roll, unfortunately.\nJosh: Oh, if you wanted to manipulate, it's a 5, DC 5 flat check.\nJorge: All right.\nJorge: So what's the fl…",
+      "reason": "Combat blow-by-blow: flat checks, mythic points, treat wounds attempt."
+    },
+    {
+      "category": "combat",
+      "sample": "Jorge: Then I got to go all the way to where?\nJorge: Street Wounds, DC 15, yes.\nMike: Holy shit, you got full damage on the riskies.\nJorge: Great.\nJorge: And because of my mythic feat, I get another mythic point back, because I'm a caretake…",
+      "reason": "Combat blow-by-blow: treat wounds roll, risky medicine, mythic point recovery."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: It does hit.\nNoah: That's cool with intimidating strike that it doesn't, it's not like demoralized where it doesn't come immune to it.\nJorge: Yeah.\nMike: And let's just kill this man.\nJosh: I don't believe 10 is enough to just kill hi…",
+      "reason": "Combat blow-by-blow: intimidating strike, damage, HP thresholds."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: So it's not frightened.\nJosh: You lay into it with a pick.\nJosh: There is a flash of divine energy out of the pick, and the mound of flesh, now disanimate, just collapses down onto the ground.\nMike: Perfect.\nMike: And with Benny's fin…",
+      "reason": "Combat blow-by-blow: creature kill, divine energy flash, second creature's turn."
+    },
+    {
+      "category": "combat",
+      "sample": "Noah: Wow.\nJosh: I don't get to nourish mint.\nMike: Just wait until level four, Josh.\nNoah: Happens then.\nNoah: Oh, God.\nMike: Oh, I have defeat picked out for level four.\nJosh: I don't know if this is relevant to you, but he's bloodied now…",
+      "reason": "Combat blow-by-blow: interrupted blood nourishment, bloodied status."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: That's happened twice this fight now.\nTanner: Crazy.\nJorge: Yeah, he looks over and he realizes that the little kid is running up to him with that super heavy football case.\nJorge: And Argyle strangely looks healthier.\nJorge: As healt…",
+      "reason": "Combat blow-by-blow: grabbed condition duration, grapple mechanics."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: Sorry for reading the things you said.\nJosh: You're still grabbed.\nNoah: How dare you?\nJorge: Sorry.\nJosh: I didn't even realize I sent that.\nJosh: You're still grabbed.\nJorge: All right.\nJorge: Well, now I know to try to escape.\nJos…",
+      "reason": "Rules discussion about grabbed condition and Foundry create-a-diversion mechanics."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: So I'll just do a, yeah.\nJosh: Just roll a performance check, I guess.\nJosh: What is it not letting you do?\nJosh: Like, it's giving you the wrong modifier?\nJosh: Oh, I see it.\nNoah: No, I'm clicking on it and it gives me a yellow arro…",
+      "reason": "Foundry mechanics discussion about create-a-diversion variants, performance check."
+    },
+    {
+      "category": "combat",
+      "sample": "Noah: So Anzu is now hidden for his next turn, which means if he doesn't attack, this fella is off guard to him.\nTanner: Alright.\nJosh: Okay.\nNoah: So Anzu, you are hidden to this man.\nNoah: That's one action.\nNoah: Second action, I will...…",
+      "reason": "Combat blow-by-blow: hidden condition, biting words attack, frightened condition."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Sorry, he was, but it wore off at the end of his turn.\nNoah: Well, that's what I got.\nNoah: That's my turn.\nNoah: But I can do that a little few more times.\nJosh: It was Anzu's turn.\nTanner: Okay, um... My psyche...\nNoah: Oh, wait, ac…",
+      "reason": "Rules discussion about ready vs aid action, flourish mechanics."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: Yeah, okay, so you spent one action, and then you can attempt to aid on his turn.\nJosh: That's fine.\nTanner: All right.\nTanner: My psyche unleashes.\nJosh: His psyche.\nJosh: It's unleashed.\nTanner: And then... I think I'm just going to…",
+      "reason": "Combat blow-by-blow: telekinetic projectile, aid attempt, psyche unleash."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: I have made the man off guard.\nMike: Ooh.\nNoah: Even if he's off guard, bummer.\nTanner: I've hit.\nTanner: A little damage.\nJosh: That is unfortunately not a crit, but it is hit.\nJosh: Even if he's off guard.\nTanner: That's pretty good…",
+      "reason": "Combat blow-by-blow: off guard, hit, damage, Psiburst."
+    },
+    {
+      "category": "combat",
+      "sample": "Josh: 19.\nNoah: Oh, a Psiburst.\nNoah: Oh no.\nTanner: I guess that's a success, so it's going to do half damage.\nTanner: All right.\nJorge: Ooh, backstandage.\nJosh: I'm so sorry.\nMike: It is bludgeoning, isn't it?\nJosh: It is bludgeoning, and…",
+      "reason": "Combat blow-by-blow: bludgeoning resistance, damage calculation, missed attack."
+    },
+    {
+      "category": "combat",
+      "sample": "Jorge: I'm going to make a swing at this guy.\nJosh: Sure.\nMike: I mean, I think he's very dead.\nJorge: Hit.\nJosh: Seven points of damage.\nJosh: That's how many hit points this guy has.\nJorge: Yes!\nJosh: So same as the other one.\nJosh: Great…",
+      "reason": "Combat blow-by-blow: final kill with great axe, creature collapses."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: Anyone here... Before I forget, though, anyone here good with a pen in-game?\nJorge: Alright, I need you to add Agent of the... on one of my business cards.\nMike: I do like how the cocksuredness was completely warranted.\nJosh: Absolut…",
+      "reason": "Mostly OOC table talk about the fight, creature stats, and party performance."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Ridiculous.\nMike: I have a build centered around variety of crits, like crits that do different things depending on which weapon I hit with.\nMike: So when you were like, you're only going to have one weapon, I'm like, I only need one…",
+      "reason": "OOC table talk about character builds, crit mechanics, weapon choices."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: Lev is hovering over his shoulder, being like, don't let him, don't let Josh do anything.\nJosh: Just any time he tries to do anything, tell him no, and then he has to listen, legally.\nTanner: Thank you.\nMike: It's almost like the wors…",
+      "reason": "OOC discussion about reactive strikes, creature abilities, and weapon potency rules."
+    },
+    {
+      "category": "ooc",
+      "sample": "Tanner: Okay.\nJosh: If you wield a weapon, you get the weapon potency as well.\nJosh: It's just, that's not, I don't know, that's like not a psychic's thing, right?\nTanner: Would that... No, I don't really have much use for weapons.\nTanner:…",
+      "reason": "Rules discussion about weapon potency for unarmed attacks, hand wraps, armor potency."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: So this might be our last time playing for a month, right?\nNoah: Yes, I go to Japan on Monday.\nJosh: Yeah.\nTanner: Yeah.\nNoah: And then Tanner, when do you get back from Italy?\nTanner: So I will be back from Italy on Thursday the 25t…",
+      "reason": "Scheduling discussion about trips to Japan, Italy, and wedding dates."
+    },
+    {
+      "category": "ooc",
+      "sample": "Josh: And then maybe on the 29th, if Jorge, you have the time leading up to your wedding on that, we could maybe do a session.\nJorge: sounds good\nJosh: Otherwise, you know.\nMike: Okay.\nTanner: All right.\nJosh: So we'll come back to Færrin i…",
+      "reason": "Scheduling and OOC book publication discussion."
+    },
+    {
+      "category": "ooc",
+      "sample": "Jorge: You could do both.\nJorge: You guys could be beta readers if Noah wants it.\nJosh: Yeah.\nJosh: You don't even need beta readers now, right?\nJorge: It might be too late.\nJosh: If you're looking to publish.\nJosh: Absolutely.\nNoah: So I d…",
+      "reason": "OOC discussion about Noah's book, beta readers, and advanced copies."
+    },
+    {
+      "category": "ooc",
+      "sample": "Noah: That sounds, that is not like.\nJosh: And the way you do that is to call, I assume, everybody who reads the book an idiot who's doing it on purpose to insult him.\nNoah: Yeah, I did.\nNoah: I didn't want to insult the reader specifically…",
+      "reason": "OOC farewells and travel plans discussion."
+    },
+    {
+      "category": "ooc",
+      "sample": "Tanner: Peace out.",
+      "reason": "OOC sign-off, no in-world content."
+    }
+  ]
+}
