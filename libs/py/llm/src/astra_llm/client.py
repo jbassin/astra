@@ -37,6 +37,11 @@ DEFAULT_MAX_TOKENS = 16_000
 #: ~46 min with no client-side timeout. Generous enough for a full ~5k-word episode Pass A;
 #: litellm applies it per attempt, so `num_retries` still rides transient blips.
 REQUEST_TIMEOUT_S = 300
+
+#: A *successful* response can still carry malformed JSON in a forced tool call (a transient
+#: model glitch on large structured outputs). litellm's `num_retries` only covers API errors,
+#: so we retry the whole completion this many times before giving up with a typed LlmError.
+_TOOL_JSON_ATTEMPTS = 3
 _ANTHROPIC_PREFIX = "anthropic/"
 
 T = TypeVar("T", bound=BaseModel)
@@ -203,35 +208,46 @@ class LiteLLMClient:
             ]
             kwargs["tool_choice"] = {"type": "function", "function": {"name": tool.name}}
 
-        response = self._completion(**kwargs)
-        choice = response.choices[0]
-        finish_reason = getattr(choice, "finish_reason", None)
-        message = choice.message
+        last_json_err: json.JSONDecodeError | None = None
+        for _attempt in range(_TOOL_JSON_ATTEMPTS):
+            response = self._completion(**kwargs)
+            choice = response.choices[0]
+            finish_reason = getattr(choice, "finish_reason", None)
+            message = choice.message
 
-        # Truncation guard: a forced tool truncated mid-JSON is unrecoverable.
-        if tool is not None and finish_reason == "length":
-            raise LlmError(
-                f"Tool-call output hit max_tokens ({max_tokens}); the result is truncated. "
-                "Re-run with a higher max_tokens."
+            # Truncation guard: a forced tool truncated mid-JSON is unrecoverable.
+            if tool is not None and finish_reason == "length":
+                raise LlmError(
+                    f"Tool-call output hit max_tokens ({max_tokens}); the result is truncated. "
+                    "Re-run with a higher max_tokens."
+                )
+
+            text = message.content or ""
+            if isinstance(text, list):  # some providers return content blocks
+                text = "".join(b.get("text", "") for b in text if isinstance(b, dict))
+
+            tool_input: Any = None
+            tool_calls = getattr(message, "tool_calls", None)
+            if tool is not None and tool_calls:
+                try:
+                    tool_input = json.loads(tool_calls[0].function.arguments)
+                except json.JSONDecodeError as err:
+                    last_json_err = err
+                    continue  # transient malformed tool JSON — retry the whole completion
+
+            usage = _extract_usage(getattr(response, "usage", None))
+            cost = self._price(model, usage)
+            return Result(
+                text=text,
+                tool_input=tool_input,
+                usage=usage,
+                finish_reason=finish_reason,
+                cost_usd=cost,
             )
 
-        text = message.content or ""
-        if isinstance(text, list):  # some providers return content blocks
-            text = "".join(b.get("text", "") for b in text if isinstance(b, dict))
-
-        tool_input: Any = None
-        tool_calls = getattr(message, "tool_calls", None)
-        if tool is not None and tool_calls:
-            tool_input = json.loads(tool_calls[0].function.arguments)
-
-        usage = _extract_usage(getattr(response, "usage", None))
-        cost = self._price(model, usage)
-        return Result(
-            text=text,
-            tool_input=tool_input,
-            usage=usage,
-            finish_reason=finish_reason,
-            cost_usd=cost,
+        raise LlmError(
+            f"Tool-call arguments were not valid JSON after {_TOOL_JSON_ATTEMPTS} attempts: "
+            f"{last_json_err}"
         )
 
     # --- public API (mirrors @faerrin/llm) -----------------------------------------
