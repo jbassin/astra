@@ -1,7 +1,9 @@
 # 0020 — heartwood Phase 1 (ontology infra: `world` field + entity registry) — NLSpec
 
-- **Status:** SPEC (pre-implementation) — **0 of 5 slices built**; ready to implement **S1** (the `world`
-  field). Question-free (built on a question-free scope).
+- **Status:** **BUILT — all 5 slices CI-green + pushed** (`139db9f`…`e0458f9`, 2026-06-27). Acceptance
+  gate met: `world` on all 7 campaigns + `faerrin_campaign_slugs()`=5; `astra-lexicon` extracted +
+  linguist refactored (no behavior change); `ontology-entity` seeded (311 entities) with a drift gate;
+  `resolve("Y'shael")→Ichel`. Question-free (built on a question-free scope).
 - **Scope doc:** `thoughts/shared/research/2026-06-27-heartwood-0020-phase1-registry-thoughts.md` (verified)
 - **Umbrella scope:** `thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md`
 - **Date:** 2026-06-27
@@ -237,25 +239,24 @@ higher constant — query recall vs seed precision are different jobs.
 - No LLM telemetry (Phase 1 makes no LLM calls). Host-run telemetry depends on OTLP collector
   reachability from the host (note, not a blocker).
 
-## 8. Acceptance criteria (Phase-1 gate)
+## 8. Acceptance criteria (Phase-1 gate) — ✅ ALL MET
 
-1. **`world`** is on all 7 campaigns (both schemas + `being.canonical.json` regenerated; **both parity
-   tests green**); `faerrin_campaign_slugs(load())` returns exactly the 5 faerrin slugs.
-2. **`astra-lexicon`** exists (matchers + `Lexicon` + `corrections` + `defs.kdl`) with its own tests;
-   **linguist refactored onto it with NO behavior change** — the full linguist suite
-   (surface/judge/`correction_candidates`/goldset) is green; `defs.yaml` is gone; `add_correction` writes
-   `defs.kdl` round-trip-stably.
-3. **`ontology-entity`** seeds from the three committed sources (121 pages minus Rules ∪ 232 `defs.kdl`
-   canonicals ∪ faerrin PCs), strict-deduped; `entity.kdl` committed; round-trip + seed tests green;
-   regen entry-point runs on host and is idempotent (re-run = no diff, modulo curation); **hand
-   spot-check** of counts + a handful of entries against the corpus.
-4. **`resolve("Y'shael")` → `resolved`, entity `Ichel`** (the canonical fuzzy case — note `Y'shael` is
-   *not* a listed alias, so this exercises phonetic `nearest()`, not exact match); an exact name →
-   confidence 1.0; an invented name → `unknown`; a PC name → resolves with `being` set (boundary).
-   Resolve telemetry visible in SigNoz.
-5. **CI green both lanes locally before push** (`uv run ruff check && ruff format --check && ty check &&
-   pytest`; `bun --filter '*' typecheck && bunx biome ci . && bun --filter '*' test && build`); commit per
-   CI-green slice; push on Phase-1 completion (no GHA-watching).
+1. ✅ **`world`** on all 7 campaigns (both schemas + `being.canonical.json` regen; both parity tests
+   green); `faerrin_campaign_slugs(load())` returns exactly the 5 faerrin slugs.
+2. ✅ **`astra-lexicon`** exists (matchers + `Lexicon` + `corrections` + `defs.kdl`) with its own tests;
+   **linguist refactored onto it, NO behavior change** — full linguist suite green; `defs.yaml` gone;
+   `add_correction` writes `defs.kdl` round-trip-stably.
+3. ✅ **`ontology-entity`** seeds from the three committed sources, strict-deduped — **311 entities**
+   (117 akasha noun pages ∪ 174 defs-only ∪ 20 faerrin PCs); `entity.kdl` committed; round-trip + seed
+   tests green; `astra_ontology_entity.seed` runs on host + idempotent (`--check` clean); counts
+   spot-checked. *(NB the original "121−Rules / 232 defs" estimates were close; the real seed yields 117
+   linked pages + 235 defs canonicals; deltas are `.../index` display-folding + the exact defs count.)*
+4. ✅ **`resolve("Y'shael")` → `resolved` `Ichel`** (phonetic `nearest()` via the `Y'shell` alias, not
+   exact); exact name → 1.0; invented name → `unknown`; PC → `being` set. Resolve span/metric wired at
+   the `astra_ontology_entity.resolve` seam (SigNoz visibility needs the Phase-2 runtime — host run can't
+   reach the in-cluster collector, per §7).
+5. ✅ **CI green both lanes locally before push**; committed per CI-green slice; pushed on Phase-1
+   completion (no GHA-watching).
 
 ## 9. Slice plan (each independently CI-green)
 

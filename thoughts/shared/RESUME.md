@@ -36,41 +36,52 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `b9a1eeb`, 2026-06-27)
+## Current state — UPDATE THIS SECTION (as of commit `e0458f9`, 2026-06-27)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** Recent work was product/ops on
 > the live stack + net-new apps. **As of 2026-06-27 a new multi-phase subsystem — `heartwood` (0020) — is
-> IN FLIGHT** (back to the Scope → Spec → Implement cadence). See the top section for the resume pointer.
+> IN FLIGHT.** **Phase 1 (ontology infra) is COMPLETE + PUSHED; next is the Phase-2 SCOPE doc.**
 
-### heartwood (0020): LLM-maintained akasha setting wiki — SCOPE + Phase-1 SPEC done, NO code yet (2026-06-27 session)
+### heartwood (0020): LLM-maintained akasha setting wiki — Phase 1 COMPLETE + PUSHED (2026-06-27 session)
 
 A net-new **multi-phase** subsystem: an LLM (GLM-5.2) reads play-session transcripts and maintains the
 akasha **setting wiki** (the "nouns" — people/places/things, NOT play-by-play), proposing changes for
 **human-gated PR-style review** at a bespoke **`heartwood.iridi.cc`** built on the vellum-editor base.
-**Paper trail only this session — no implementation started.**
 - **Umbrella scope** `thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md` (`223856d`): vision,
   decisions **D1–D10**, the **5-phase breakdown**, verified research, the 8 hard problems.
-- **Phase-1 scope** `…-0020-phase1-registry-thoughts.md` (`223856d`) + **Phase-1 spec**
-  `thoughts/astra/specs/0020-heartwood-phase1-registry-spec.md` (`b9a1eeb`) — both **question-free**.
-- **The 5 phases:** (1) **ontology infra** — `world` field + the typed entity registry; (2) extraction
-  engine (filter + facts + resolution); (3) **prose proposer** (the make-or-break house-voice gate);
-  (4) review surface + write-back; (5) backfill/automation. Human-gated through Phase 4; steady-state
-  automation deferred until Phase 3 proves the prose.
-- **Phase 1 = 4 deliverables / 5 CI-green slices**, all decisions locked (**P1.1–P1.8**):
-  **A.** `world: str` (required, free-form) on `Campaign` (6-file ripple, both schemas) — faerrin filter:
-  **5 of 7** campaigns are `faerrin`; `fey-in-the-mists`→`finnegan's ring`, `observatory-slipped`→`sedecium`.
-  **B.** new shared lib **`astra-lexicon`** (`libs/py/lexicon`) = lifted phonetics + `Lexicon` +
-  `corrections` + **`defs.yaml→defs.kdl`**; **linguist refactored onto it** (the ONLY working-code change —
-  its tests are the regression gate). **C.** new **`ontology-entity`** typed KDL registry (kind ∈
-  person|place|org|deity|phenomenon|creature|item; **seed-not-fork** from akasha-snapshot ∪ defs.kdl ∪
-  faerrin PCs; **Python-only**). **D.** `resolve()` → rich `{status,entity,candidates,confidence}`
-  (**`Y'shael→Ichel`** is the acceptance case).
-- **▶ RESUME AT: Phase-1 slice S1** — the `world` field (6-file ripple + tag the 7 campaigns per §3.2 +
-  `faerrin_campaign_slugs()` helper + regen `being.canonical.json`). Slice order: **S1** world / **S2a**
-  lexicon-lift / **S2b** defs→kdl / **S3** registry / **S4** resolve. Build with `octo:embrace` against the spec.
-- **New dev rule this session** (`[[resolve-open-questions-before-next-stage]]`): never advance a stage
-  (scope→spec→implement) with open questions; ask up to 4 per `AskUserQuestion` call, resolve, then proceed.
-- **Gotchas memory:** `[[heartwood-0020-gotchas]]`.
+- **The 5 phases:** (1) **ontology infra** ✅ DONE; (2) **extraction engine** (filter + facts + resolution)
+  ← NEXT; (3) **prose proposer** (the make-or-break house-voice gate); (4) review surface + write-back;
+  (5) backfill/automation. Human-gated through Phase 4; steady-state automation deferred until Phase 3
+  proves the prose.
+
+**Phase 1 — DONE, all 5 slices CI-green + pushed** (`139db9f`…`e0458f9`); spec
+`thoughts/astra/specs/0020-heartwood-phase1-registry-spec.md` (BUILT), scope `…-phase1-registry-thoughts.md`:
+- **S1** (`139db9f`) — `world: str` (required) on `Campaign` (both schemas + `being.canonical.json` regen);
+  **5 of 7** campaigns `faerrin`, `fey-in-the-mists`→`finnegan's ring`, `observatory-slipped`→`sedecium`;
+  `faerrin_campaign_slugs()` helper.
+- **S2a** (`7776091`) — new shared lib **`astra-lexicon`** (`libs/py/lexicon`): lifted `phonetics`+`normalize`+
+  `Lexicon`; **linguist refactored onto it, no behavior change** (its suites are the regression gate).
+- **S2b** (`c82e194`) — `corrections` moved into the lib + **`defs.yaml`→`defs.kdl`** (235 entries,
+  round-trip verified); idempotent KDL `add_correction`.
+- **S3** (`5bbcb9f`) — new **`ontology-entity`** member: `Entity` model + pure `seed_entities` +
+  `entity.kdl` (311 seeded: 117 akasha pages ∪ 174 defs-only ∪ 20 PCs), non-clobbering `merge_seed`,
+  pytest drift gate, host-run `astra_ontology_entity.seed` (telemetry `astra.heartwood`).
+- **S4** (`62d346d`) — `Resolver(entities).resolve()` (engine + thresholds in `astra_ontology`) + the
+  telemetry-wired `astra_ontology_entity.resolve()` seam. **Acceptance green: `resolve("Y'shael")→Ichel`.**
+- Plus ripple fixes: `0a51719` (pre-existing 0019 chronicle ty regression), `e0458f9` (akasha-frontend
+  Campaign fixtures needed `world`).
+- **CI reproduced locally both lanes before push:** Python 252 passed (ruff/ty/pytest); TS typecheck/biome/
+  262 tests/build all green (had to `docker run … rm -rf` a root-owned `apps/vellum-render/dist` left by a
+  past VR-golden container run — gitignored, never affected CI).
+
+- **▶ RESUME AT: Phase-2 SCOPE** — author `thoughts/shared/research/<date>-heartwood-0020-phase2-extraction-thoughts.md`
+  (verify faerrin's extraction approach; pin the noun-fact schema, the held-out test session, the ingest
+  entry-point against real transcripts), then `octo:spec`, then `octo:embrace`. Phase 2 = the first
+  **`heartwood-backend`** app: read-only — filter (OOC/combat/play-by-play, dedicated keep-when-in-doubt
+  LLM pass → dropped-span artifact) → `call_structured` noun-facts → `resolve()` each against the registry
+  → emit structured per-session facts. NO prose/writes/surface. (Open Qs already resolved in the umbrella §7.)
+- **Gotchas memory:** `[[heartwood-0020-gotchas]]` (now incl. the Phase-1 facts + the linguist-commit-timer
+  mid-session push gotcha).
 
 ### chronicle (0019): automatic Show → Season → Episode campaign timeline in akasha (2026-06-27 session — DONE + LIVE)
 
