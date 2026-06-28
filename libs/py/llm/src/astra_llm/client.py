@@ -208,7 +208,7 @@ class LiteLLMClient:
             ]
             kwargs["tool_choice"] = {"type": "function", "function": {"name": tool.name}}
 
-        last_json_err: json.JSONDecodeError | None = None
+        last_tool_err: str | None = None
         for _attempt in range(_TOOL_JSON_ATTEMPTS):
             response = self._completion(**kwargs)
             choice = response.choices[0]
@@ -228,11 +228,16 @@ class LiteLLMClient:
 
             tool_input: Any = None
             tool_calls = getattr(message, "tool_calls", None)
-            if tool is not None and tool_calls:
+            if tool is not None:
+                if not tool_calls:
+                    # GLM/OpenRouter occasionally returns finish_reason=stop with no tool
+                    # call at all on a forced tool — a transient; retry the completion.
+                    last_tool_err = f"did not call the forced tool (finish_reason: {finish_reason})"
+                    continue
                 try:
                     tool_input = json.loads(tool_calls[0].function.arguments)
                 except json.JSONDecodeError as err:
-                    last_json_err = err
+                    last_tool_err = f"tool-call arguments were not valid JSON: {err}"
                     continue  # transient malformed tool JSON — retry the whole completion
 
             usage = _extract_usage(getattr(response, "usage", None))
@@ -246,8 +251,7 @@ class LiteLLMClient:
             )
 
         raise LlmError(
-            f"Tool-call arguments were not valid JSON after {_TOOL_JSON_ATTEMPTS} attempts: "
-            f"{last_json_err}"
+            f"Forced tool call failed after {_TOOL_JSON_ATTEMPTS} attempts: {last_tool_err}"
         )
 
     # --- public API (mirrors @faerrin/llm) -----------------------------------------
