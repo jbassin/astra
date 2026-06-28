@@ -136,6 +136,44 @@ def test_revise_keeps_original_when_no_cleaner() -> None:
     assert [w for w in lints if w.type == "encyclopedia_opener"]  # residual tells recorded
 
 
+# ── rewrite hardening: preserve-and-append + POV (P3.9-revised) ───────────────
+def _rewrite_iconoclasm() -> PageProposal:
+    return PageProposal(
+        id="org-iconoclasm-index",
+        op="rewrite",
+        target_path="Org/Iconoclasm/index",  # a REAL second-person corpus page
+        canonical="Iconoclasm",
+        kind="org",
+        status="resolved",
+        page_type="lore",
+        body_file="org-iconoclasm-index.vellum",
+        fact_claims=["Iconoclasm now runs a free kitchen for members."],
+    )
+
+
+def test_rewrite_preserves_existing_body_and_revises_pov() -> None:
+    third = (
+        "Iconoclasm now operates a free kitchen for its members."  # wrong POV (page is 2nd-person)
+    )
+    second = "You can now claim a free meal at the kitchen Iconoclasm keeps for its own."
+    client = _Scripted(third, second)
+    result = _draft_lint_assemble(
+        _rewrite_iconoclasm(),
+        date=DATE,
+        client=client,
+        model="m",
+        known_pages=frozenset(),
+        batch_pages=frozenset(),
+        batch_names=frozenset(),
+    )
+    assert result is not None
+    vellum, lints, revised = result
+    assert revised and len(client.calls) == 2  # pov_shift on the 3rd-person draft → one revise
+    assert "You weren't the only one" in vellum  # the existing 2nd-person body is PRESERVED
+    assert "free meal" in vellum  # the 2nd-person revision was appended
+    assert not [w for w in lints if w.type == "pov_shift"]  # POV drift cleared
+
+
 # ── write_change_set ──────────────────────────────────────────────────────────
 def test_write_change_set_emits_manifest_and_bodies(tmp_path: Path) -> None:
     cs = build_session_proposals(DATE, client=_Stub(CLEAN), model="stub")

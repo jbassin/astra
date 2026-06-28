@@ -8,7 +8,7 @@ in-batch sibling crossrefs not falsely flagged).
 
 from __future__ import annotations
 
-from astra_heartwood.proposer.lint import voice_warnings
+from astra_heartwood.proposer.lint import is_second_person, pov_shift_warning, voice_warnings
 
 # The §2/§8 calibration exemplars.
 BAD = "X is a large scrapyard located within the neighborhood. It is an expansive site of trash."
@@ -77,6 +77,23 @@ def test_nameform_crossref_resolved_via_registry() -> None:
     assert "broken_wikilink" not in _types(ok)
     broken = voice_warnings("Tied to [[Zxqwvbnm Madeupname]].", page_type="lore")
     assert "broken_wikilink" in _types(broken)
+
+
+# ── POV preservation on rewrites (the hardening pass, P3.9-revised / P3.16) ────
+def test_is_second_person() -> None:
+    assert is_second_person("You weren't the only one who heard the song.")
+    assert is_second_person("Their base is yours to use.")
+    assert not is_second_person("Iconoclasm operates as a mercenary group on the river.")
+
+
+def test_pov_shift_flagged_only_when_2nd_person_page_gets_3rd_person_passage() -> None:
+    second = "You weren't the only one who heard the Voidsong in your dreams."
+    # a 3rd-person passage appended to a 2nd-person page → flagged
+    assert pov_shift_warning(second, "Iconoclasm now runs a free kitchen.") is not None
+    # a 2nd-person passage → no warning
+    assert pov_shift_warning(second, "You can now claim a free meal there.") is None
+    # a 3rd-person page → no warning (we don't force 2nd person onto 3rd-person pages)
+    assert pov_shift_warning("Iconoclasm is a mercenary group.", "It runs a kitchen.") is None
 
 
 def test_in_batch_sibling_crossrefs_not_flagged() -> None:

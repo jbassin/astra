@@ -52,13 +52,14 @@ def test_create_user_message_has_subject_and_facts() -> None:
     assert "Existing page prose" not in user  # no existing body on a create
 
 
-def test_rewrite_user_message_includes_existing_body() -> None:
+def test_rewrite_user_message_appends_and_names_pov() -> None:
     p = _create(
         op="rewrite", target_path="Org/Iconoclasm/index", canonical="Iconoclasm", kind="org"
     )
     user = build_user(p, "You weren't the only one who heard the Voidsong.")
     assert "amending an existing page" in user
-    assert "match its voice, POV, tense, and spelling" in user
+    assert "write a NEW passage to append" in user  # preserve-and-append framing
+    assert "SECOND person" in user  # the existing body's POV is detected + stated
     assert "You weren't the only one" in user
 
 

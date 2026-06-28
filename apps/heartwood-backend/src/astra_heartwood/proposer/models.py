@@ -17,9 +17,11 @@ from pydantic import BaseModel, ConfigDict
 #: pages may be rewritten (only ``lore``/``stub``; the rest are non-prose, P3.10).
 PageType = Literal["lore", "stub", "deity-statblock", "timeline", "flavor-pre"]
 
-#: The machine tell-lint warning kinds (ported from faerrin ``voice-warnings.ts``, §8).
+#: The machine tell-lint warning kinds (ported from faerrin ``voice-warnings.ts``, §8;
+#: ``pov_shift`` added in the rewrite-hardening pass — an appended passage whose point of view
+#: drifts from the page it amends, P3.9-revised).
 WarningType = Literal[
-    "encyclopedia_opener", "it_is_template", "intensifier", "broken_wikilink", "empty"
+    "encyclopedia_opener", "it_is_template", "intensifier", "broken_wikilink", "empty", "pov_shift"
 ]
 
 #: A new page vs a merged rewrite of an existing one.

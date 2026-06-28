@@ -1,8 +1,9 @@
 """Stage A — draft house-voice prose per page (spec §7, P3.5).
 
 One ``call_text`` per ``PageProposal`` (GLM-5.2; free-text, not tool-JSON). The user message carries
-the subject, the cited facts (the only thing the draft may assert), and — for a rewrite — the
-existing body to weave the NEW facts into (P3.15) while flagging contradictions (P3.17). The draft's
+the subject and the cited facts (the only thing the draft may assert). For a rewrite (P3.9-revised)
+the existing body is shown as context to PRESERVE — the model writes only a short passage to APPEND,
+in the page's voice/POV, weaving the NEW facts (P3.15) and flagging contradictions (P3.17). The
 trailing ``CONFLICTS:`` section and the ``ALREADY-KNOWN`` sentinel are parsed back off here; the
 revise loop + assembly consume ``Draft`` in S4. Pure aside from the injected client; writes nothing.
 """
@@ -15,6 +16,7 @@ from dataclasses import dataclass, field
 from astra_llm import TextRequest
 
 from ..llm import TextClient, default_model, real_text_client
+from .lint import is_second_person
 from .models import PageProposal, VoiceWarning
 from .voice import ALREADY_KNOWN_MARKER, CONFLICTS_MARKER, DRAFT_SYSTEM
 
@@ -36,7 +38,11 @@ class Draft:
 
 
 def build_user(proposal: PageProposal, existing_body: str | None) -> str:
-    """The draft user message (ported from faerrin ``buildUser`` + P3.15/P3.16/P3.17)."""
+    """The draft user message (ported from faerrin ``buildUser`` + P3.15/P3.16/P3.17).
+
+    On a rewrite (P3.9-revised), the existing prose is shown as context to PRESERVE, not replace:
+    the model writes only a short passage to append, in the page's voice/POV (explicitly named).
+    """
     is_rewrite = proposal.op == "rewrite"
     facts = "\n".join(f"- {c}" for c in proposal.fact_claims) or "- (none)"
     parts = [
@@ -47,13 +53,20 @@ def build_user(proposal: PageProposal, existing_body: str | None) -> str:
         facts,
     ]
     if is_rewrite and existing_body and existing_body.strip():
+        pov = (
+            "the SECOND person (it addresses the reader as 'you')"
+            if is_second_person(existing_body)
+            else "the THIRD person"
+        )
         parts += [
             "",
-            "Existing page prose (match its voice, POV, tense, and spelling; weave in only what is "
-            "NEW; do not repeat it; do not contradict it — flag conflicts instead):",
+            f"This page is written in {pov} — your appended passage MUST match it.",
+            "",
+            "Existing page (it stays exactly as-is; write a NEW passage to append after it — do "
+            "not rewrite, repeat, summarise, or contradict it):",
             existing_body.strip(),
         ]
-    parts += ["", "Draft the passage now."]
+    parts += ["", "Write the passage now."]
     return "\n".join(parts)
 
 

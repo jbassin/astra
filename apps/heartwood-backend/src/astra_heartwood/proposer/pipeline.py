@@ -22,7 +22,7 @@ from .assemble import assemble_vellum
 from .corpus import PROPOSALS_DIR, load_page_paths, read_page_body, read_page_text
 from .draft import Draft, draft_page, revise_draft
 from .group import build_proposals, load_facts
-from .lint import PROSE_TELL_TYPES, detect_page_type, voice_warnings
+from .lint import REVISABLE_TYPES, detect_page_type, pov_shift_warning, voice_warnings
 from .models import PageProposal, ProposalManifest, SkippedPage, VoiceWarning
 
 _tracer = get_tracer("astra.heartwood")
@@ -65,39 +65,46 @@ def _draft_lint_assemble(
     Returns ``(vellum_text, residual_lints, revised)``, or None when a rewrite is ``already-known``
     (P3.15 — the caller records the skip). ``revised`` is True iff a bounded revise pass ran.
     """
-    existing_text = read_page_text(proposal.target_path) if proposal.op == "rewrite" else None
-    existing_body = read_page_body(proposal.target_path) if proposal.op == "rewrite" else None
+    is_rewrite = proposal.op == "rewrite"
+    existing_text = read_page_text(proposal.target_path) if is_rewrite else None
+    existing_body = read_page_body(proposal.target_path) if is_rewrite else None
+    # On a rewrite (P3.9-revised) ``draft.body`` is the passage to APPEND, not a replacement body.
     draft: Draft = draft_page(proposal, existing_body, client=client, model=model)
-    if proposal.op == "rewrite" and draft.already_known:
+    if is_rewrite and draft.already_known:
         return None
 
     # A create's type is the drafted body's; a rewrite keeps the existing page's type (lore/stub —
     # non-prose pages were already skipped at grouping).
     page_type = (
         proposal.page_type
-        if proposal.op == "rewrite"
+        if is_rewrite
         else detect_page_type(draft.body, path=proposal.target_path)
     )
 
-    def lint(text: str) -> list[VoiceWarning]:
-        return voice_warnings(
-            text,
+    def lint(passage: str) -> list[VoiceWarning]:
+        warnings = voice_warnings(
+            passage,
             page_type=page_type,
             known_pages=known_pages,
             batch_pages=batch_pages,
             batch_names=batch_names,
         )
+        if is_rewrite and existing_body:  # the appended passage must keep the page's POV (P3.16)
+            pov = pov_shift_warning(existing_body, passage)
+            if pov is not None:
+                warnings = [*warnings, pov]
+        return warnings
 
     body = draft.body
     warnings = lint(body)
     revised = False
-    prose_tells = [w for w in warnings if w.type in PROSE_TELL_TYPES]
-    if prose_tells:  # one bounded revise (P3.6) — keep whichever draft is cleaner
+    revisable = [w for w in warnings if w.type in REVISABLE_TYPES]
+    if revisable:  # one bounded revise (P3.6) — keep whichever draft is cleaner
         revised = True
-        revision = revise_draft(body, prose_tells, client=client, model=model)
+        revision = revise_draft(body, revisable, client=client, model=model)
         revision_warnings = lint(revision)
-        revision_tells = [w for w in revision_warnings if w.type in PROSE_TELL_TYPES]
-        if len(revision_tells) < len(prose_tells):
+        revision_revisable = [w for w in revision_warnings if w.type in REVISABLE_TYPES]
+        if len(revision_revisable) < len(revisable):
             body, warnings = revision, revision_warnings
 
     proposal.page_type = page_type

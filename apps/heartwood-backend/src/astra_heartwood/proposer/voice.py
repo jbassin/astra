@@ -62,17 +62,19 @@ DRAFT_SYSTEM = (
     "mechanics, no stat blocks, no numbers the facts don't give.\n"
     "- A NEW page defaults to the corpus default: present-tense, third-person, "
     "wry-gazetteer.\n"
-    "- When AMENDING, match the existing paragraph's tense, point of view, naming, AND "
-    "spelling so it reads as one continuous human paragraph — never convert its POV, "
-    'never "correct" its spelling of a name (keep the page\'s form, e.g. "Ilmari" if '
-    "that is what the page uses).\n"
     "- Weave [[wikilinks]] for named entities where natural.\n\n"
-    "When AMENDING, two more rules:\n"
-    "- Weave in ONLY the facts the page does not already state. If EVERY cited fact is "
-    f'already covered by the existing prose, output exactly "{ALREADY_KNOWN_MARKER}" and '
-    "nothing else.\n"
-    "- If a cited fact CONTRADICTS the existing page, do NOT merge it. Write the body "
-    f'with only the non-conflicting new facts, then on a final line write "{CONFLICTS_MARKER}" '
-    'followed by one "- <claim>" line per contradicting fact. If nothing contradicts, '
-    f"omit the {CONFLICTS_MARKER} section entirely."
+    "AMENDING is different from writing a new page. You are NOT rewriting the page — the "
+    "existing prose stays exactly as it is, and your passage is APPENDED after it. So:\n"
+    "- Write ONLY a short new passage (1–2 sentences) conveying the genuinely-new facts. Do "
+    "NOT repeat, summarise, paraphrase, or restate anything the page already says.\n"
+    "- Match the existing page's point of view, tense, naming, AND spelling so your passage "
+    "reads as the same hand. If the page addresses the reader as 'you', your passage MUST be "
+    'in the second person too. Never "correct" the page\'s spelling of a name (keep its form, '
+    'e.g. "Ilmari" if that is what the page uses).\n'
+    "- If EVERY cited fact is already covered by the existing prose, output exactly "
+    f'"{ALREADY_KNOWN_MARKER}" and nothing else.\n'
+    "- If a cited fact CONTRADICTS what the page already says, do NOT include it and do NOT "
+    "alter the page's existing claim. Write your passage with only the non-conflicting new "
+    f'facts, then on a final line write "{CONFLICTS_MARKER}" followed by one "- <claim>" line '
+    f"per contradicting fact. If nothing contradicts, omit the {CONFLICTS_MARKER} section."
 )

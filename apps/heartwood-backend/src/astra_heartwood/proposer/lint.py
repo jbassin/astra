@@ -28,6 +28,33 @@ PROSE_PAGE_TYPES: frozenset[PageType] = frozenset({"lore", "stub"})
 #: The prose-cadence tells (vs broken_wikilink/empty) — only these trigger the bounded revise (§8).
 PROSE_TELL_TYPES = frozenset({"encyclopedia_opener", "it_is_template", "intensifier"})
 
+#: Warnings a bounded revise can plausibly fix (cadence tells + a drifted POV on an amendment).
+REVISABLE_TYPES = PROSE_TELL_TYPES | frozenset({"pov_shift"})
+
+#: Second-person address (the corpus uses it on several pages — a rewrite must preserve it, P3.16).
+_SECOND_PERSON_RE = re.compile(r"\b(you|your|you're|yourself|yours)\b", re.IGNORECASE)
+
+
+def is_second_person(text: str) -> bool:
+    """True if the prose addresses the reader directly (a load-bearing POV signal, P3.16)."""
+    return bool(_SECOND_PERSON_RE.search(text))
+
+
+def pov_shift_warning(existing_body: str, passage: str) -> VoiceWarning | None:
+    """Flag an appended passage whose POV drifts from the page it amends (rewrite-hardening).
+
+    Only the clear, deterministic case: the existing page is second-person but the new passage is
+    not. (3rd→2nd is not flagged — adding direct address to a 3rd-person page is rarely the error.)
+    """
+    if is_second_person(existing_body) and passage.strip() and not is_second_person(passage):
+        return VoiceWarning(
+            type="pov_shift",
+            message="The existing page addresses the reader as 'you'; this added passage must too "
+            "— rewrite it in the second person.",
+        )
+    return None
+
+
 #: "{Name} is a/an/the {type}…" — the dictionary-entry cadence the house voice avoids (§8).
 _OPENER_RE = re.compile(r"^\s*(?:\[\[)?[A-Z][\w'’ -]*?(?:\]\])?\s+is\s+(?:a|an|the)\s+\w+")
 #: A second sentence opening "It is …" — the slop archetype's templated cadence.
