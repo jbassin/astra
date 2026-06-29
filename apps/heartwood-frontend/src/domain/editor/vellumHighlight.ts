@@ -1,0 +1,206 @@
+import { foldService, HighlightStyle, syntaxHighlighting } from "@codemirror/language";
+import { type Extension, Prec, type Range } from "@codemirror/state";
+import {
+  Decoration,
+  type DecorationSet,
+  EditorView,
+  ViewPlugin,
+  type ViewUpdate,
+} from "@codemirror/view";
+import { tags as t } from "@lezer/highlight";
+
+/**
+ * Editor syntax highlighting in the gothic palette (NFR-3: colors via CSS vars,
+ * no hex). Two layers:
+ *   1. a HighlightStyle re-theming the markdown tokens lezer-markdown emits
+ *      (headings, emphasis, code, links, …) to the void skin, and
+ *   2. a regex ViewPlugin that decorates vellum's own directive syntax — which
+ *      the markdown grammar doesn't know about — so `:::kind` fences, inline
+ *      `:action`/`:trait`/`:redact`, labels, and attributes read at a glance.
+ *
+ * The VSS structural surface (`@kind "Title"`, `| key:`, braces) is NOT
+ * decorated here — it's parsed into real grammar nodes by `vssLanguage.ts` and
+ * styled through its own HighlightStyle. Ported verbatim from faerrin
+ * pkg/vellum (gothic `--color-*` token remap).
+ */
+
+// ── 1. Markdown tokens, re-themed ──────────────────────────────────────────
+const gothicMarkdown = HighlightStyle.define([
+  {
+    tag: [t.heading1, t.heading2, t.heading3, t.heading4, t.heading5, t.heading6, t.heading],
+    color: "var(--color-accent)",
+    fontWeight: "600",
+  },
+  // Markdown punctuation: `#`, `*`, `-`, `>`, ``` ``` ```, list bullets, etc.
+  { tag: t.processingInstruction, color: "var(--color-ink-faint)" },
+  { tag: t.strong, color: "var(--color-ink)", fontWeight: "700" },
+  { tag: t.emphasis, color: "var(--color-ink)", fontStyle: "italic" },
+  { tag: t.strikethrough, textDecoration: "line-through" },
+  { tag: [t.link, t.url], color: "var(--color-accent)", textDecoration: "underline" },
+  { tag: t.monospace, color: "var(--color-accent-amber)" }, // inline code + fences
+  { tag: t.contentSeparator, color: "var(--color-rule-bright)" }, // `---`
+  { tag: t.quote, color: "var(--color-ink-dim)" },
+]);
+
+// ── 2. Vellum directive syntax ─────────────────────────────────────────────
+const fenceMark = Decoration.mark({ class: "cm-vellum-fence" });
+const labelMark = Decoration.mark({ class: "cm-vellum-label" });
+const attrMark = Decoration.mark({ class: "cm-vellum-attr" });
+const inlineMark = Decoration.mark({ class: "cm-vellum-inline" });
+const inlineUnknownMark = Decoration.mark({ class: "cm-vellum-inline-unknown" });
+const crossrefMark = Decoration.mark({ class: "cm-vellum-crossref" });
+
+/** `:::name`/`::::columns` opener — colons + directive name. */
+const OPEN_FENCE = /^(:{3,})([A-Za-z][\w-]*)/;
+/** A bare closing fence line, `:::` (any colon count). */
+const CLOSE_FENCE = /^:{3,}\s*$/;
+/** `[label]` and `{attributes}` trailing a directive opener. */
+const LABEL = /\[[^\]\n]*\]/;
+const ATTRS = /\{[^}\n]*\}/;
+/** Inline directive token, `:action[…]` / `:trait[…]` / `:foo[…]`. */
+const INLINE = /:([A-Za-z][\w-]*)\[[^\]\n]*\]/g;
+const KNOWN_INLINE = new Set(["action", "trait", "redact"]);
+/** Wiki cross-reference, `[[target]]` / `[[target#heading]]` / `[[target|alias]]`
+ * (full-vellum, 0013 D6). Parsed by vellum-lang's `transformCrossRefs`; here it's
+ * just decorated so it reads at a glance in the editor. */
+const CROSSREF = /\[\[[^\]\n]+\]\]/g;
+/** Authoring sigils (kept in sync with vellum-lang `surface.ts` `desugar`):
+ * `@action`, `||redact||`, `#trait`. Highlighted like the directives they expand
+ * to. (The R2 sync test guards this set against the lowerer — sigilSync.test.ts.)
+ * Exported so that test can assert the editor highlights exactly what parseDocument
+ * lowers. */
+export const SIGIL =
+  /(?<![\w@])@(?:reaction|react|free|single|double|triple|one|two|three|[0-3rf])\b|\|\|[^|\n]+\|\||(?<![\w#])#[A-Za-z][\w-]*/gi;
+
+function buildDecorations(view: EditorView): DecorationSet {
+  const out: Range<Decoration>[] = [];
+
+  for (const { from, to } of view.visibleRanges) {
+    let pos = from;
+    while (pos <= to) {
+      const line = view.state.doc.lineAt(pos);
+      const text = line.text;
+      const open = OPEN_FENCE.exec(text);
+
+      if (open) {
+        // `:::name` (+ optional `[label]` and `{attrs}` after the name).
+        out.push(fenceMark.range(line.from, line.from + open[0].length));
+        const rest = text.slice(open[0].length);
+        const lab = LABEL.exec(rest);
+        if (lab) {
+          const start = line.from + open[0].length + lab.index;
+          out.push(labelMark.range(start, start + lab[0].length));
+        }
+        const at = ATTRS.exec(rest);
+        if (at) {
+          const start = line.from + open[0].length + at.index;
+          out.push(attrMark.range(start, start + at[0].length));
+        }
+      } else if (CLOSE_FENCE.test(text)) {
+        out.push(fenceMark.range(line.from, line.from + text.trimEnd().length));
+      } else {
+        // Inline directives anywhere in a body line.
+        INLINE.lastIndex = 0;
+        let m = INLINE.exec(text);
+        while (m) {
+          const known = KNOWN_INLINE.has(m[1]!.toLowerCase());
+          const start = line.from + m.index;
+          out.push((known ? inlineMark : inlineUnknownMark).range(start, start + m[0].length));
+          m = INLINE.exec(text);
+        }
+        // Authoring sigils (the terse forms that desugar to those directives).
+        SIGIL.lastIndex = 0;
+        let s = SIGIL.exec(text);
+        while (s) {
+          const start = line.from + s.index;
+          out.push(inlineMark.range(start, start + s[0].length));
+          s = SIGIL.exec(text);
+        }
+        // Wiki cross-references `[[…]]`.
+        CROSSREF.lastIndex = 0;
+        let c = CROSSREF.exec(text);
+        while (c) {
+          const start = line.from + c.index;
+          out.push(crossrefMark.range(start, start + c[0].length));
+          c = CROSSREF.exec(text);
+        }
+      }
+
+      pos = line.to + 1;
+    }
+  }
+
+  // `true` → let RangeSet sort; marks never overlap so order is unambiguous.
+  return Decoration.set(out, true);
+}
+
+const directivePlugin = ViewPlugin.fromClass(
+  class {
+    decorations: DecorationSet;
+    constructor(view: EditorView) {
+      this.decorations = buildDecorations(view);
+    }
+    update(update: ViewUpdate) {
+      if (update.docChanged || update.viewportChanged) {
+        this.decorations = buildDecorations(update.view);
+      }
+    }
+  },
+  { decorations: (plugin) => plugin.decorations },
+);
+
+const directiveTheme = EditorView.baseTheme({
+  ".cm-vellum-fence": { color: "var(--color-accent)", fontWeight: "600" },
+  ".cm-vellum-label": { color: "var(--color-accent-amber)" },
+  ".cm-vellum-attr": { color: "var(--color-ink-dim)" },
+  ".cm-vellum-inline": { color: "var(--color-accent-amber)", fontWeight: "600" },
+  // Unknown inline directive: still tinted, but flagged as "this will error".
+  ".cm-vellum-inline-unknown": {
+    color: "var(--color-ink-dim)",
+    textDecoration: "underline wavy var(--color-wax)",
+  },
+  ".cm-vellum-crossref": { color: "var(--color-accent)", textDecoration: "underline dotted" },
+});
+
+/**
+ * Fold VSS structure: a `{ … }` body or a `@columns [ … ]` list whose opener is
+ * on the given line folds to its matching close. Complements basicSetup's
+ * markdown-section folding (both fold services are tried). The match scan is a
+ * plain depth counter — good enough for the gutter affordance; the authoritative
+ * lexical-state matcher lives in vellum-lang `vss.ts`.
+ */
+const vssFold = foldService.of((state, lineStart, lineEnd) => {
+  const line = state.doc.sliceString(lineStart, lineEnd);
+  let openPos = -1;
+  let openCh = "";
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i]!;
+    if (c === "{" || c === "[") {
+      openPos = lineStart + i;
+      openCh = c;
+    }
+  }
+  if (openPos === -1) return null;
+  const closeCh = openCh === "{" ? "}" : "]";
+  const doc = state.doc.toString();
+  let depth = 0;
+  for (let i = openPos; i < doc.length; i++) {
+    const c = doc[i];
+    if (c === openCh) depth++;
+    else if (c === closeCh && --depth === 0) {
+      return i > lineEnd ? { from: openPos + 1, to: i } : null;
+    }
+  }
+  return null;
+});
+
+/**
+ * Full editor highlighting extension. `Prec.high` lets the gothic markdown
+ * style win over basicSetup's default highlight style for the tags we define.
+ */
+export const vellumHighlighting: Extension = [
+  Prec.high(syntaxHighlighting(gothicMarkdown)),
+  directivePlugin,
+  directiveTheme,
+  vssFold,
+];

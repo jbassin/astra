@@ -14,7 +14,7 @@ export const Route = createFileRoute("/review/$date")({
 });
 
 function ReviewComponent() {
-  const { manifest, bodies } = Route.useLoaderData();
+  const { manifest, bodies, corpusBodies, knownPages } = Route.useLoaderData();
   return (
     <main className="wrap review">
       <nav className="review-nav">
@@ -29,7 +29,14 @@ function ReviewComponent() {
 
       <section className="proposal-list">
         {manifest.proposals.map((p: PageProposal) => (
-          <ProposalCard key={p.id} proposal={p} body={bodies[p.id] ?? ""} />
+          <ProposalCard
+            key={p.id}
+            proposal={p}
+            body={bodies[p.id] ?? ""}
+            corpusBody={corpusBodies[p.id] ?? null}
+            date={manifest.date}
+            knownPages={knownPages}
+          />
         ))}
       </section>
 

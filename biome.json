@@ -79,6 +79,19 @@
     },
     {
       "includes": [
+        "**/heartwood-frontend/src/domain/editor/**",
+        "**/heartwood-frontend/src/domain/review/diff.ts"
+      ],
+      "linter": {
+        "rules": {
+          "style": { "noNonNullAssertion": "off" },
+          "suspicious": { "noAssignInExpressions": "off" },
+          "a11y": { "useSemanticElements": "off" }
+        }
+      }
+    },
+    {
+      "includes": [
         "**/strider/src/domain/lib/hexUtils.ts",
         "**/strider/src/domain/lib/hexUtils.test.ts",
         "**/strider/src/domain/lib/layers.test.ts",

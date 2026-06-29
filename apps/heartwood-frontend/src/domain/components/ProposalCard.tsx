@@ -1,13 +1,34 @@
 import { DocumentView } from "@astra/gothic";
 import { parseDocument } from "@astra/vellum-lang";
+import { useState } from "react";
+import ClientOnly from "@/components/ClientOnly/ClientOnly";
+import { EditorIsland } from "@/domain/editor/EditorIsland";
+import { diffLines, diffStat } from "@/domain/review/diff";
 import type { PageProposal } from "@/domain/review/manifest";
 
-// One proposed page, rendered for review. S2 is read-only — the Reading tab (the
-// proposal's `.vellum` body through gothic's DocumentView, exactly as it'll look live)
-// plus the cited facts, residual lints, and any flagged conflicts. S3 adds the Edit
-// (CodeMirror) + Diff tabs; S4 adds the approve/reject/defer footer.
-export function ProposalCard({ proposal, body }: { proposal: PageProposal; body: string }) {
-  const doc = parseDocument(body, { mode: "mechanical" });
+type Tab = "reading" | "edit" | "diff";
+
+// One proposed page, rendered for review. Reading (gothic DocumentView, SSR) | Edit
+// (a client-only CodeMirror island that overwrites the staged .vellum live, P4.5) |
+// Diff (the proposed body vs the current corpus body — additive for a preserve-and-
+// append rewrite). The live edit buffer (`source`) drives Reading + Diff too, so they
+// update as the human types. S4 adds the approve/reject/defer footer.
+export function ProposalCard({
+  proposal,
+  body,
+  corpusBody,
+  date,
+  knownPages,
+}: {
+  proposal: PageProposal;
+  body: string;
+  corpusBody: string | null;
+  date: string;
+  knownPages: string[];
+}) {
+  const [tab, setTab] = useState<Tab>("reading");
+  const [source, setSource] = useState(body);
+
   return (
     <article className="proposal-card" id={proposal.id}>
       <header className="pc-head">
@@ -54,9 +75,62 @@ export function ProposalCard({ proposal, body }: { proposal: PageProposal; body:
         </section>
       ) : null}
 
-      <section className="pc-reading">
-        <DocumentView document={doc} />
-      </section>
+      <nav className="pc-tabs">
+        {(["reading", "edit", "diff"] as const).map((t) => (
+          <button
+            key={t}
+            type="button"
+            className={`pc-tab ${tab === t ? "pc-tab-active" : ""}`}
+            onClick={() => setTab(t)}
+          >
+            {t === "diff" && proposal.op === "create" ? "diff (new)" : t}
+          </button>
+        ))}
+      </nav>
+
+      {tab === "reading" ? (
+        <section className="pc-reading">
+          <DocumentView document={parseDocument(source, { mode: "mechanical" })} />
+        </section>
+      ) : null}
+
+      {tab === "edit" ? (
+        <section className="pc-edit">
+          <ClientOnly fallback={<p className="pc-loading">Loading editor…</p>}>
+            <EditorIsland
+              date={date}
+              id={proposal.id}
+              initialSource={body}
+              knownPages={knownPages}
+              onChange={setSource}
+            />
+          </ClientOnly>
+        </section>
+      ) : null}
+
+      {tab === "diff" ? <DiffView before={corpusBody ?? ""} after={source} /> : null}
     </article>
+  );
+}
+
+function DiffView({ before, after }: { before: string; after: string }) {
+  const rows = diffLines(before, after);
+  const { added, removed } = diffStat(rows);
+  return (
+    <section className="pc-diff">
+      <p className="pc-diff-stat">
+        +{added} −{removed}
+      </p>
+      <pre className="pc-diff-body">
+        {rows.map((r, i) => (
+          // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are a stable, never-reordered sequence
+          <span key={`${i}:${r.type}:${r.text}`} className={`diff-${r.type}`}>
+            {r.type === "add" ? "+ " : r.type === "del" ? "- " : "  "}
+            {r.text}
+            {"\n"}
+          </span>
+        ))}
+      </pre>
+    </section>
   );
 }

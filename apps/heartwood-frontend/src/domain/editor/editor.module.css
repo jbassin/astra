@@ -1,0 +1,253 @@
+/* Editor shell (mechanical chrome). Colors via gothic `--color-*` vars (NFR-3).
+ * A CSS module (the one place vellum-frontend uses one) so the editor chrome's
+ * generic class names (toolbar/brand/pane/…) can't collide with the global page
+ * shell. Lives entirely under the `ssr: false` /editor route, so no hydration
+ * concern. Ported from faerrin pkg/vellum App.module.css (var remap). */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  /* Direct flex-child of <body> (the /editor route renders this under the
+   * Outlet); flex:1 fills the viewport below the masthead. */
+  flex: 1;
+  min-height: 0;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-void);
+  border-bottom: 1px solid var(--color-rule-bright);
+}
+
+.brand {
+  font-family: var(--font-display), serif;
+  color: var(--color-accent);
+  letter-spacing: 0.08em;
+  font-size: 1.05rem;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.docbar {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.iconButton {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 0.2rem 0.4rem;
+  background-color: transparent;
+  color: var(--color-ink-dim);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.modeToggle {
+  display: flex;
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.modeOn,
+.modeOff {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.25rem 0.6rem;
+  border: none;
+  cursor: pointer;
+}
+
+.modeOn {
+  background-color: var(--color-accent);
+  color: var(--color-void);
+}
+
+.modeOff {
+  background-color: transparent;
+  color: var(--color-ink-dim);
+}
+
+.exportButton {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.7rem;
+  background-color: transparent;
+  color: var(--color-accent);
+  border: 1px solid var(--color-accent);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.exportButton:disabled {
+  color: var(--color-ink-faint);
+  border-color: var(--color-rule-bright);
+  cursor: not-allowed;
+}
+
+.exportError {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  color: var(--color-accent-amber);
+  max-width: 22rem;
+  text-align: right;
+}
+
+.note {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.65rem;
+  color: var(--color-ink-dim);
+  max-width: 20rem;
+  text-align: right;
+}
+
+.select {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.4rem;
+  background-color: var(--color-panel);
+  color: var(--color-ink-dim);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.ghostButton {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.3rem 0.7rem;
+  background-color: transparent;
+  color: var(--color-ink-dim);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.ghostButton:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+.panes {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 0;
+}
+
+.pane {
+  min-width: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.pane:first-child {
+  border-right: 1px solid var(--color-rule-bright);
+}
+
+.editor {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.previewPane {
+  overflow: auto;
+  background-color: var(--color-void);
+}
+
+.previewSurface {
+  padding: 1.5rem;
+  max-width: 46rem;
+  margin: 0 auto;
+}
+
+/* Match the export backdrop: diegetic previews sit on aged parchment. */
+.previewSurface[data-mode="diegetic"] {
+  background-color: var(--color-parchment-edge);
+}
+
+.previewEmpty {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  color: var(--color-ink-dim);
+}
+
+@media (max-width: 720px) {
+  .panes {
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr 1fr;
+  }
+
+  .pane:first-child {
+    border-right: none;
+    border-bottom: 1px solid var(--color-rule-bright);
+  }
+}
+
+/* --- heartwood review editor island (added for Phase 4) --- */
+.editorIsland {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.editorPanes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  min-height: 22rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.4rem;
+  overflow: hidden;
+}
+.editorPanes > :first-child {
+  border-right: 1px solid var(--color-rule);
+  min-height: 22rem;
+  overflow: auto;
+}
+.editorStatus {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.78rem;
+  font-family: var(--font-mono), monospace;
+}
+.saveDot {
+  color: var(--color-ink-faint);
+}
+.save-saving {
+  color: var(--color-accent-amber);
+}
+.save-saved {
+  color: var(--color-accent);
+}
+.save-error {
+  color: var(--color-danger, #d9534f);
+}
+.lintCount {
+  color: var(--color-accent-amber);
+}
+.lintClean {
+  color: var(--color-ink-faint);
+}

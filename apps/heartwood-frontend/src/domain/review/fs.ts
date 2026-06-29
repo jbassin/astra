@@ -56,3 +56,25 @@ export function readCorpusBody(targetPath: string): string | null {
   const file = within(CONTENT_DIR, `${targetPath}.vellum`);
   return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
 }
+
+/** The akasha page-path set from the committed snapshot (for live broken_wikilink checks). */
+export function readKnownPages(): string[] {
+  if (!fs.existsSync(SNAPSHOT_PATH)) return [];
+  const snap = JSON.parse(fs.readFileSync(SNAPSHOT_PATH, "utf8")) as {
+    pages?: { path: string }[];
+  };
+  return (snap.pages ?? []).map((p) => p.path);
+}
+
+/**
+ * Overwrite a proposal's staged `.vellum` body with the human's edit (P4.5 — the
+ * proposal IS the draft buffer). Atomic temp+rename; the `proposals/` mount is rw
+ * and host-owned (user 1000:1000), so the rename lands a host-owned file the apply
+ * recipe can later git-commit.
+ */
+export function writeProposalBody(date: string, bodyFile: string, source: string): void {
+  const file = within(within(PROPOSALS_DIR, date), bodyFile);
+  const tmp = `${file}.tmp-${process.pid}`;
+  fs.writeFileSync(tmp, source, "utf8");
+  fs.renameSync(tmp, file);
+}

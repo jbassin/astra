@@ -7,6 +7,7 @@ import { createServerFn } from "@tanstack/react-start";
 import {
   listSessionDates,
   readCorpusBody,
+  readKnownPages,
   readManifestText,
   readProposalBody,
 } from "@/domain/review/fs";
@@ -30,6 +31,8 @@ export interface ReviewData {
   bodies: Record<string, string>;
   /** Proposal id → the CURRENT akasha corpus body (rewrites only; null otherwise) — for the diff. */
   corpusBodies: Record<string, string | null>;
+  /** The akasha page-path set ∪ this change-set's create paths — for live broken_wikilink checks. */
+  knownPages: string[];
 }
 
 /** Every staged change-set (newest first) with its headline counts, for the index. */
@@ -61,5 +64,8 @@ export const loadReview = createServerFn({ method: "GET" })
       bodies[p.id] = readProposalBody(date, p.bodyFile);
       corpusBodies[p.id] = p.op === "rewrite" ? readCorpusBody(p.targetPath) : null;
     }
-    return { manifest, bodies, corpusBodies };
+    // The known-page set for live broken_wikilink checks: the committed snapshot's
+    // pages ∪ the paths this change-set itself creates (sibling crossrefs aren't broken).
+    const knownPages = [...readKnownPages(), ...manifest.proposals.map((p) => p.targetPath)];
+    return { manifest, bodies, corpusBodies, knownPages };
   });
