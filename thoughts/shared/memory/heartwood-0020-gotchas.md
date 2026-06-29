@@ -1,6 +1,6 @@
 ---
 name: heartwood-0020-gotchas
-description: heartwood (0020) — LLM-maintained akasha setting wiki; Phases 1+2 (extraction) + 3 (prose proposer) DONE; Phase 3 acceptance on 2025-8-28 → rewrites hardened to preserve-and-append (P3.9 revised); Phase 4 (review surface + write-back) next; locked decisions + verified gotchas + the faerrin-failed-twice lesson
+description: heartwood (0020) — LLM-maintained akasha setting wiki; Phases 1+2 (extraction) + 3 (prose proposer) DONE; Phase 4 (review surface + write-back) BUILT + the surface LIVE on heartwood.iridi.cc — only the human-gated content acceptance (approve pages → live wiki) remains; locked decisions + verified gotchas + the faerrin-failed-twice lesson
 metadata:
   type: project
 ---
@@ -14,15 +14,81 @@ all resolved), `…-0020-phase1-registry-thoughts.md` (Phase-1 scope), `thoughts
 
 **Phase structure (5):** (1) ontology infra — `world` field + typed entity registry ✅ **DONE**;
 (2) **extraction engine** ✅ **DONE (acceptance CLOSED)**; (3) **prose proposer** (the make-or-break
-house-voice gate — anti-AI-slop is THE bar) ✅ **DONE (5 slices + rewrite hardening)**; (4) review surface +
-write-back; (5) backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 5.
+house-voice gate — anti-AI-slop is THE bar) ✅ **DONE (5 slices + rewrite hardening)**; (4) **review surface +
+write-back** ✅ **BUILT + SURFACE LIVE** (6 slices, scope+spec at `…-phase4-review-writeback-{thoughts,spec}.md`);
+(5) backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 5.
 
-**▶ RESUME AT: Phase 4 — the `heartwood.iridi.cc` human-review surface + corpus write-back — SCOPE it first.**
-Phases 1–3 are read-only + done. Phase 4 = vellum-editor-base review UI (approve/edit/reject) + write-back
-(corpus writes, akasha snapshot regen, commit, redeploy) + applying the proposed registry additions; it also
-owns the render-for-review tool (P3.12), a `heartwood` config namespace, and the residual review-territory
-items. **Phase 5** = cross-session accumulation + backfill over ~40 sessions (~$4) + sensor/schedule automation.
-Umbrella `…/2026-06-27-heartwood-0020-thoughts.md`; Phase-3 spec/scope below.
+**▶ RESUME AT: Phase 4 — the ONLY thing left is the human-gated CONTENT ACCEPTANCE** (approve ≥1 create + ≥1
+rewrite from `2025-8-28` in the LIVE surface → `just heartwood-apply 2025-8-28` → verify live on akasha). That
+is Josh's call by design (D1 — a human approves before anything touches the curated wiki); the machine is done.
+The surface is LIVE: `https://heartwood.iridi.cc` (200, 50 cards, SigNoz `astra.heartwood` 0-error SSR spans).
+**Phase 5** = cross-session accumulation + backfill over ~40 sessions (~$4) + sensor/schedule automation.
+Umbrella `…/2026-06-27-heartwood-0020-thoughts.md`; Phase-4 + Phase-3 specs/scopes below.
+
+## Phase 4 — review surface + write-back: BUILT + SURFACE LIVE (6 slices, 2026-06-28)
+
+`apps/heartwood-frontend` (the public PR-style review surface, port **10371**, `heartwood.iridi.cc`) + the
+host-side write-back in `apps/heartwood-backend` (`apply.py`/`review.py`). Scope+spec
+`thoughts/{shared/research/2026-06-28-heartwood-0020-phase4-review-writeback-thoughts.md, astra/specs/0020-heartwood-phase4-review-writeback-spec.md}`.
+Decisions **P4.1–P4.18** (the 4 forks settled with Josh): browser-decides/host-applies; full in-browser
+editor; per-session `review.kdl`; end-to-end-live acceptance. Slices **S1** config+scaffold+deploy →
+**S2** manifest reader+read-only review → **S3** editor+diff → **S4** decisions/placement/conflicts →
+**S5** host write-back → **S6** deploy+live. **The machine is built, tested, pushed; only the content
+acceptance (a human approving pages into the live wiki) is left — that's the D1 gate, not an autonomous step.**
+
+**THE load-bearing Phase-4 gotchas (verified by building + deploying it):**
+
+- **⚠️ `user: "1000:1000"` on the heartwood compose unit is THE write-back fix (B1).** Every bun/dagster
+  container runs as **root** by default (NO `USER` directive in any frontend Dockerfile; proof: a
+  container-written `apps/linguist/data/<date>.json` is `0:0`). The heartwood surface writes `review.kdl` +
+  edited `.vellum` to a narrow **rw bind-mount** of `apps/heartwood-backend/proposals/` — without
+  `user: "1000:1000"` (= the host repo owner) those land `0:0` and the host can't `git`-commit them or let
+  `just heartwood-apply` stamp `review.kdl` in place (the `apps/vellum-render/dist` EACCES class). No `user:`
+  precedent existed in compose — added deliberately. **Verified:** a `--user 1000:1000` container writing the
+  mount produces `1000:1000` host files. The corpus + snapshot are mounted **ro** (only `just heartwood-apply`
+  writes the corpus).
+- **The browser-decides / host-applies split (P4.1):** the public no-auth surface ONLY stages decisions to
+  `review.kdl` (the rw mount); the one host-privileged step — write corpus `.vellum` + `entity.kdl` + regen
+  snapshot + commit + push + redeploy akasha — is the human-run `just heartwood-apply <date>`, never a public
+  endpoint. **strider's editor proves the containerized-write is otherwise ephemeral** (it writes the
+  container fs, gated `local_only`); heartwood writes the *host repo* via the mount instead.
+- **The cross-language `review.kdl` contract (B3):** written by TS (`reviewState.ts`), read+rewritten by
+  Python (`review.py` apply). **`@bgotink/kdl` is parse-only repo-wide** → the writer is HAND-ROLLED on both
+  ends (the strider `kdlString` / Python `_kdl_str` idiom), and a **shared fixture
+  `apps/heartwood-backend/tests/fixtures/review-sample.kdl` round-trips byte-identical in BOTH lanes** (the TS
+  test reads the same file via `../heartwood-backend/...`). If either serializer drifts, one test fails.
+- **`just heartwood-apply` step order (S5):** apply (write approved pages + registry-adds) → **validate the
+  corpus** (`bun libs/ts/vellum-lang/scripts/validate-corpus.ts --dir …` — catches a malformed write BEFORE
+  commit, B2) → **`uv run akasha-snapshot`** (the real entry — `main()` is pure-Python `write_snapshot()`,
+  and it **SKIPS** the TS validator, hence the explicit validate first) → path-scoped `git add` + `fetch` +
+  **rebase** (the linguist-commit timer moves origin) + push → `docker compose up -d --build akasha-frontend`.
+  `apply.py`: create writes (refusing to clobber an existing page + **normalizing the bare `date:` to ISO**,
+  E4), rewrite overwrites with the full preserve-and-append body (P4.6), registry-add → `entity.kdl` via a
+  non-clobbering in-place update (`merge_seed` precedent), `committed-at` stamp → **idempotent re-runs**.
+- **⚠️ The `linguist-commit` timer pushed my ORIGINAL S5 before I amended it** (the Phase-1 gotcha, hit
+  again — the timer runs `git add/commit/PUSH` on THIS repo every ~15 min). After amending S5 locally, origin
+  already had the original → couldn't fast-forward + a force-push to shared `main` is wrong. **Fix: `git reset
+  --soft origin/main` + re-commit the delta as a FOLLOW-UP fix** (here the test rename), never force-push.
+  During a long multi-commit session expect origin to move under you.
+- **`test_apply.py` basename COLLISION** — `apps/heartwood-backend/tests/test_apply.py` collided with the
+  pre-existing `apps/linguist/tests/test_apply.py` (no `__init__.py` in the test dirs → pytest's `prepend`
+  import mode rejects two same-named modules) → the **full `uv run pytest` collection FAILS even though every
+  per-app run is green**. Renamed to `test_apply_writeback.py`. **Reproduce CI with the FULL `uv run pytest`,
+  not per-app** (and CI red-flagged exactly this).
+- **The vellum editor port (S3):** copied `apps/vellum-frontend/src/domain/editor/{Editor,Preview,vssLanguage,
+  vellumHighlight,slashComplete}.tsx + editor.module.css` VERBATIM (self-contained — only `@codemirror/*` +
+  `@lezer/*` + `@astra/vellum-lang`) + `ClientOnly` (harrow). CodeMirror is client-only → the `EditorIsland`
+  mounts behind `<ClientOnly>` (the SSR HTML correctly has NO `cm-editor`); the card is otherwise SSR. Needs
+  the **biome editor path-override** (mirror vellum's, E1) + the CM deps. `voiceLint.ts` is a TS mirror of
+  `proposer/lint.py` (live, advisory — index pages key broken-wikilink by **parent-folder** name).
+- **TanStack `Route.useLoaderData()` types loosely** → annotate `.map`/`.filter` callbacks with the explicit
+  domain types (`SessionSummary`/`PageProposal`/`Decision`/`ConflictResolution`) or `tsc` reds implicit-any.
+- **`grep -a` to verify SSR HTML** (UTF-8 glyphs like `❦` read as binary — the harrow gotcha, hit on the
+  index). **gothic `theme.css` already ships `@source "./"`** → `DocumentView` consumers get the utilities
+  free (no per-app `@source`). Deploy: backend-less → plain `docker compose up -d --build heartwood` (no
+  SOPS); the **`*.iridi.cc` wildcard + ACME minted the cert on first request (~20 s)** — `caddy-validate` then
+  `caddy-reload`, the ledger pattern. The new app needs the **11-sibling Dockerfile manifest ripple** +
+  config namespace in BOTH schemas + uv exclude.
 
 ## Phase 2 — extraction engine: DONE + PUSHED, acceptance CLOSED on first TSD session `2025-8-28` (2026-06-28)
 

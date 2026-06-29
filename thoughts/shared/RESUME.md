@@ -36,16 +36,19 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `8624ff7`, 2026-06-28)
+## Current state — UPDATE THIS SECTION (as of commit `db42c1a`, 2026-06-28)
 
-> **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** **A new multi-phase subsystem —
-> `heartwood` (0020) — is IN FLIGHT.** **Phase 1 (ontology infra) DONE. Phase 2 (extraction engine) DONE —
-> acceptance CLOSED on `2025-8-28`.** **Phase 3 (prose proposer — the make-or-break house-voice / anti-slop
-> gate): DONE — all 5 slices built + pushed (`f9e3ce0`…`e3a57f8`); the live acceptance run on `2025-8-28`
-> produced a committed change-set; the stakeholder §11 read was "pass creates, harden rewrites" → the
-> merged-rewrite path was hardened from full-body-replace to PRESERVE-AND-APPEND (`9c1bbd8`, a recorded P3.9
-> revision) and the change-set regenerated (`8624ff7`).** **▶ NEXT: Phase 4 — the `heartwood.iridi.cc`
-> human-review surface + corpus write-back (scope it first; see the umbrella + the gotchas memory).**
+> **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** **`heartwood` (0020) — Phases 1–3
+> DONE; Phase 4 (review surface + write-back) BUILT + the SURFACE LIVE.** Phase 4 = 6 CI-green slices
+> (`7484900` S1 … `142af2e`/`db42c1a` S5): a public PR-style review app `apps/heartwood-frontend` at
+> **`heartwood.iridi.cc`** (port 10371) + the host-side write-back `apply.py`/`review.py` + `just
+> heartwood-apply`. **LIVE-VERIFIED** (`https://heartwood.iridi.cc/review/2025-8-28` → 200, 50 cards, SigNoz
+> `astra.heartwood` 0-error SSR spans). All build work committed + pushed. **▶ NEXT — the ONLY remaining
+> step: the human-gated CONTENT ACCEPTANCE** (Josh approves ≥1 create + ≥1 rewrite in the live surface →
+> `just heartwood-apply 2025-8-28` → verify live on akasha). That is the **D1 gate by design — a human
+> approves before anything touches the curated wiki — not an autonomous step.** Scope+spec at
+> `thoughts/{shared/research/2026-06-28-heartwood-0020-phase4-review-writeback-thoughts.md, astra/specs/0020-heartwood-phase4-review-writeback-spec.md}`;
+> gotchas `[[heartwood-0020-gotchas]]`.
 
 ### heartwood (0020): LLM-maintained akasha setting wiki — Phase 3 DONE (prose proposer); Phase 4 (review+write-back) next (2026-06-28)
 

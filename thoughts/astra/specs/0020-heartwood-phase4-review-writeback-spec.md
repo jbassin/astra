@@ -1,9 +1,13 @@
 # 0020 — heartwood Phase 4 (review surface + write-back) — NLSpec
 
-- **Status:** **READY** (2026-06-28) — built on the verified Phase-4 scope doc; decisions P4.1–P4.18 settled
-  + question-free; **adversarial completeness pass run** (§15 — 3 blockers + 4 edge-cases folded in, incl. the
-  `user: "1000:1000"` bind-mount fix, the `akasha-snapshot` regen entry, and the hand-rolled TS KDL writer).
-  Ready to implement with `octo:embrace`.
+- **Status:** **BUILT + SURFACE LIVE** (2026-06-28) — all 6 slices implemented, CI-green, committed + pushed
+  (`7484900` S1 … `142af2e`/`db42c1a` S5); the review surface is live on `https://heartwood.iridi.cc`
+  (`astra.heartwood` 0-error SSR spans in SigNoz). The adversarial pass's 3 blockers + 4 edge-cases (§15) were
+  all folded into the build (the `user: "1000:1000"` bind-mount fix verified, `uv run akasha-snapshot`, the
+  hand-rolled cross-language KDL writer round-tripping byte-identical both lanes). **The ONLY remaining step
+  is the human-gated content acceptance** (§11 — Josh approves pages in the live surface → `just
+  heartwood-apply 2025-8-28` → live on akasha); that is the D1 gate, not an autonomous step. See
+  `[[heartwood-0020-gotchas]]`.
 - **Scope doc:** `thoughts/shared/research/2026-06-28-heartwood-0020-phase4-review-writeback-thoughts.md` (verified)
 - **Umbrella scope:** `thoughts/shared/research/2026-06-27-heartwood-0020-thoughts.md` (D1–D10)
 - **Consumes:** the Phase-3 change-set contract — `thoughts/astra/specs/0020-heartwood-phase3-proposer-spec.md` §5/§9
