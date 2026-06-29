@@ -106,6 +106,17 @@ ledger.iridi.cc {
 	reverse_proxy localhost:10370
 }
 
+# heartwood — the setting-wiki review surface (0020 Phase 4), a PR-style review app on
+# the strider/vellum-editor template where a human approves/edits/rejects the LLM-
+# proposed akasha pages. No editor-only gate: the WHOLE surface is public (D5, no auth)
+# — the dangerous write-back is a host-run `just heartwood-apply`, not a public route.
+# Compose publishes host port 10371. (*.iridi.cc is a wildcard — the subdomain should
+# resolve without a manual DNS record; the ledger surprise.)
+heartwood.iridi.cc {
+	import astra_site
+	reverse_proxy localhost:10371
+}
+
 # vellum-frontend — the document-forge editor (0013), the fourth SSR frontend on the
 # strider/akasha template. Two upstreams (D2, mirroring faerrin's old vellum block):
 # /render + /health proxy to the vellum-render service (the PNG render sidecar), so the

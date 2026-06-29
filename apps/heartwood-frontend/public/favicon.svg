@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Heartwood">
+  <rect x="4" y="4" width="24" height="24" rx="3" fill="#0f1318" stroke="#b4842f" stroke-width="1.5"/>
+  <path d="M16 24 C9 18 9 11 13 11 C15 11 16 13 16 13 C16 13 17 11 19 11 C23 11 23 18 16 24 Z" fill="none" stroke="#6dd5c0" stroke-width="1.5" stroke-linejoin="round"/>
+  <line x1="16" y1="16" x2="16" y2="22" stroke="#b4842f" stroke-width="1.1" stroke-linecap="round"/>
+</svg>

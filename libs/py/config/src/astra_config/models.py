@@ -189,6 +189,17 @@ class LedgerConfig(_Base):
     public_origin: str = "https://ledger.iridi.cc"
 
 
+class HeartwoodConfig(_Base):
+    # The heartwood review surface (0020 Phase 4) — a PR-style review app on the
+    # strider/vellum-editor template (Decision I). service_name + port are the single
+    # source for server.ts + vite's dev port; service_name derives the browser RUM
+    # name. Reads its content at runtime from narrow bind-mounts (no baked content);
+    # the write-back is a host-run `just heartwood-apply`, not a public endpoint.
+    service_name: str = "astra.heartwood"
+    port: int = 10371
+    public_origin: str = "https://heartwood.iridi.cc"
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -210,4 +221,5 @@ class Config(_Base):
     vellum_render: VellumRenderConfig = Field(default_factory=VellumRenderConfig)
     harrow: HarrowConfig = Field(default_factory=HarrowConfig)
     ledger: LedgerConfig = Field(default_factory=LedgerConfig)
+    heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

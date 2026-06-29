@@ -51,6 +51,9 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.ledger.service_name == "astra.ledger"
     assert cfg.ledger.port == 10370
     assert cfg.ledger.public_origin == "https://ledger.iridi.cc"
+    assert cfg.heartwood.service_name == "astra.heartwood"
+    assert cfg.heartwood.port == 10371
+    assert cfg.heartwood.public_origin == "https://heartwood.iridi.cc"
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:

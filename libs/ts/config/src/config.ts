@@ -203,6 +203,19 @@ const Ledger = z
   })
   .strict();
 
+// The heartwood review surface (0020 Phase 4) — a PR-style review app on the
+// strider/vellum-editor template (Decision I). serviceName + port are the single
+// source for server.ts + vite's dev port; serviceName derives the browser RUM name.
+// Reads its content at runtime from narrow bind-mounts (no baked content). (config-
+// single-source)
+const Heartwood = z
+  .object({
+    serviceName: z.string().default("astra.heartwood"),
+    port: z.number().default(10371),
+    publicOrigin: z.string().default("https://heartwood.iridi.cc"),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -235,6 +248,7 @@ export const ConfigSchema = z
     vellumRender: VellumRender.default(() => VellumRender.parse({})),
     harrow: Harrow.default(() => Harrow.parse({})),
     ledger: Ledger.default(() => Ledger.parse({})),
+    heartwood: Heartwood.default(() => Heartwood.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

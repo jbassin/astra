@@ -54,6 +54,9 @@ describe("@astra/config", () => {
     expect(cfg.ledger.serviceName).toBe("astra.ledger");
     expect(cfg.ledger.port).toBe(10370);
     expect(cfg.ledger.publicOrigin).toBe("https://ledger.iridi.cc");
+    expect(cfg.heartwood.serviceName).toBe("astra.heartwood");
+    expect(cfg.heartwood.port).toBe(10371);
+    expect(cfg.heartwood.publicOrigin).toBe("https://heartwood.iridi.cc");
   });
 
   test("secret fields are lazy refs, not plaintext", () => {

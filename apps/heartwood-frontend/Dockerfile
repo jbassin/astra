@@ -1,15 +1,17 @@
-# Astra SSR frontend service (Decision I) — harrow, on the strider/akasha template.
-# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR). One knob:
-# `ARG APP` selects which apps/<APP> is built; everything else is workspace-generic.
-# harrow has NO backend snapshot and NO audio/asset volume (every card glyph is inline
-# SVG), so this is the simplest frontend Dockerfile — no content-input COPY beyond
-# config.kdl.
+# Astra SSR frontend service (Decision I) — heartwood review surface (0020 Phase 4),
+# on the strider/ledger template. `bun run start` runs the TanStack Start SSR server.
+# One knob: `ARG APP` selects which apps/<APP> is built; everything else is workspace-
+# generic. Heartwood has NO backend snapshot baked in — unlike the other frontends it
+# reads its content (the staged proposals + the akasha corpus) at RUNTIME via server
+# fns over narrow bind-mounts (deploy/docker-compose.yml). So this is a minimal
+# frontend Dockerfile — no content-input COPY beyond config.kdl.
 #
 # Build context is the REPO ROOT (a frontend is a bun workspace member depending on
 # @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must be
 # present for `bun install`. Port + service name come from config.kdl (config-single-
-# source) — no PORT env; compose maps the published host port.
-ARG APP=harrow
+# source) — no PORT env; compose maps the published host port + runs as user 1000:1000
+# so the bind-mount writes land host-owned.
+ARG APP=heartwood-frontend
 
 FROM oven/bun:1.3.14 AS build
 ARG APP
@@ -39,11 +41,10 @@ RUN bun install --frozen-lockfile
 COPY tsconfig.base.json ./
 
 # config.kdl must be present at BUILD time: vite.config.ts reads serviceName/port from
-# it via @astra/config (config-single-source). The .card/.spread content lives in
-# apps/harrow itself (COPYed next).
+# it via @astra/config (config-single-source).
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-# Build the selected app (build-content parses content/ → src/generated in buildStart).
+# Build the selected app.
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 RUN bun run build
@@ -61,9 +62,6 @@ COPY --from=build /repo/apps/${APP}/node_modules ./node_modules
 COPY --from=build /repo/apps/${APP}/dist ./dist
 COPY --from=build /repo/apps/${APP}/server.ts ./server.ts
 COPY --from=build /repo/apps/${APP}/package.json ./package.json
-# The generated TS modules the runtime imports (the app imports @/generated/*, never
-# the filesystem — so the deck/spreads parsing is build-only).
-COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
 # config.kdl is the single source for serviceName/port + the OTLP endpoint.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 

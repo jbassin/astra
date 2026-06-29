@@ -237,6 +237,21 @@ ledger {
     public-origin "https://ledger.iridi.cc"
 }
 
+heartwood {
+    // The heartwood review surface (0020 Phase 4) — a bespoke PR-style review app on
+    // the strider/vellum-editor template (Decision I), where a human approves/edits/
+    // rejects the LLM-proposed akasha wiki pages heartwood-backend stages. Same
+    // config-single-source contract: server.ts binds this port + names telemetry; no
+    // PORT env. Behind Caddy at heartwood.iridi.cc → host 10371. service-name derives
+    // the browser RUM name (`{service-name}-rum`). Unlike the other frontends it reads
+    // its content at RUNTIME from narrow bind-mounts (proposals/ rw, akasha content/
+    // snapshot ro) — nothing is baked into the image. No auth (D5); the dangerous
+    // write-back is a host-run `just heartwood-apply`, never a public endpoint.
+    service-name "astra.heartwood"
+    port 10371
+    public-origin "https://heartwood.iridi.cc"
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }
