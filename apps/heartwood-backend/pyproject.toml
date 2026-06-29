@@ -19,6 +19,7 @@ dependencies = [
 [project.scripts]
 astra-heartwood-extract = "astra_heartwood.pipeline:main"
 astra-heartwood-propose = "astra_heartwood.proposer.pipeline:main"
+astra-heartwood-apply = "astra_heartwood.apply:main"
 
 [build-system]
 requires = ["hatchling"]

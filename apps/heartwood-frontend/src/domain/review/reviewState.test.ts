@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   emptyReviewState,
@@ -8,6 +10,14 @@ import {
   upsertDecision,
   upsertRegistryDecision,
 } from "./reviewState";
+
+// The cross-language contract gate (B3): the SAME committed fixture must round-trip
+// byte-identical here (TS) AND in apps/heartwood-backend (Python review.py). If either
+// hand-rolled serializer drifts, this fails. vitest cwd = the app dir.
+const SHARED_FIXTURE = path.resolve(
+  process.cwd(),
+  "../heartwood-backend/tests/fixtures/review-sample.kdl",
+);
 
 const SAMPLE: ReviewState = {
   date: "2025-8-28",
@@ -41,6 +51,11 @@ const SAMPLE: ReviewState = {
 };
 
 describe("review.kdl round-trip (the cross-language contract gate)", () => {
+  it("round-trips the shared fixture byte-identical (must match Python review.py)", () => {
+    const fixture = readFileSync(SHARED_FIXTURE, "utf8");
+    expect(serializeReviewState(parseReviewState(fixture))).toBe(fixture);
+  });
+
   it("serialize → parse is identity", () => {
     const text = serializeReviewState(SAMPLE);
     expect(parseReviewState(text)).toEqual(SAMPLE);

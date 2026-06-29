@@ -1,0 +1,6 @@
+review "2025-8-28" updated-at="2026-06-28T14:02:11-04:00" {
+    decision id="org-iconoclasm-index" state="approved" target-path="Org/Iconoclasm/index" decided-at="2026-06-28T13:58:02-04:00"
+    decision id="bestiary-goblinoid" state="rejected" rejection-reason="not-canon" decided-at="2026-06-28T13:59:40-04:00"
+    conflict-res page-id="org-iconoclasm-index" claim="Iconoclasm functions as an \"orphanage\"." resolution="accepted"
+    registry-decision canonical="Threshold Authority" state="approved"
+}
