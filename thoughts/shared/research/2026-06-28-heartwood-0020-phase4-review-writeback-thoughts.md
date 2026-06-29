@@ -123,9 +123,11 @@ layers — `[[strider-layers-kdl]]`).
 ### 3c. The akasha write-back target (verified machinery)
 
 - **Corpus:** `apps/akasha-backend/content/` — folders `Divinity/ Geography/ Org/ Phenomena/ Rules/` +
-  root `index.vellum`/`Timeline.vellum`. **No `Bestiary/` yet** — the `2025-8-28` set proposes 5 `Bestiary/*`
-  creates, so write-back **creates the folder** (umbrella: a new section is just a new folder; opportunistic
-  Bestiary, §7). **Filename = page title = crossref target**; `index.vellum` = a container page.
+  root `index.vellum`/`Timeline.vellum`. **No `Bestiary/` yet** — the `2025-8-28` set proposes **4**
+  `Bestiary/*` creates (Augers, Tywelwyn, Ugathal, goblinoid), so write-back **creates the folder** (umbrella:
+  a new section is just a new folder; opportunistic Bestiary, §7 — verified: index-less folders like
+  `Phenomena/`/`Rules/` already render, so a `Bestiary/` with no `index.vellum` is fine). **Filename = page
+  title = crossref target**; `index.vellum` = a container page.
 - **Snapshot asset:** `akasha_corpus_snapshot` (`apps/akasha-backend/src/astra_akasha_backend/assets.py`)
   → `validate_corpus()` + `write_snapshot()` → `snapshot/akasha-snapshot.json` (pages' frontmatter +
   crossref edges + unresolved; **no bodies**). Invoked via `dagster asset materialize` or a host CLI.
