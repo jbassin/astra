@@ -5,29 +5,44 @@ import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import { EditorIsland } from "@/domain/editor/EditorIsland";
 import { diffLines, diffStat } from "@/domain/review/diff";
 import type { PageProposal } from "@/domain/review/manifest";
+import type { ConflictResolution, Decision } from "@/domain/review/reviewState";
+import { ConflictCard } from "./ConflictCard";
+import { DecisionFooter } from "./DecisionFooter";
 
 type Tab = "reading" | "edit" | "diff";
+type Res = "accepted" | "rejected" | null;
 
 // One proposed page, rendered for review. Reading (gothic DocumentView, SSR) | Edit
 // (a client-only CodeMirror island that overwrites the staged .vellum live, P4.5) |
 // Diff (the proposed body vs the current corpus body — additive for a preserve-and-
-// append rewrite). The live edit buffer (`source`) drives Reading + Diff too, so they
-// update as the human types. S4 adds the approve/reject/defer footer.
+// append rewrite). The live edit buffer (`source`) drives Reading + Diff too. The
+// footer (S4) carries approve/reject/defer + placement; conflicts are adjudicated
+// inline and block approve until resolved.
 export function ProposalCard({
   proposal,
   body,
   corpusBody,
   date,
   knownPages,
+  decision,
+  conflictRes,
 }: {
   proposal: PageProposal;
   body: string;
   corpusBody: string | null;
   date: string;
   knownPages: string[];
+  decision: Decision | undefined;
+  conflictRes: ConflictResolution[];
 }) {
   const [tab, setTab] = useState<Tab>("reading");
   const [source, setSource] = useState(body);
+  const [resolved, setResolved] = useState<Record<string, Res>>(() => {
+    const m: Record<string, Res> = {};
+    for (const c of conflictRes) m[c.claim] = c.resolution;
+    return m;
+  });
+  const conflictsResolved = proposal.conflicts.every((c) => resolved[c] != null);
 
   return (
     <article className="proposal-card" id={proposal.id}>
@@ -57,11 +72,16 @@ export function ProposalCard({
       {proposal.conflicts.length > 0 ? (
         <section className="pc-conflicts">
           <h3>Conflicts with the existing page</h3>
-          <ul>
-            {proposal.conflicts.map((c) => (
-              <li key={c}>{c}</li>
-            ))}
-          </ul>
+          {proposal.conflicts.map((c) => (
+            <ConflictCard
+              key={c}
+              date={date}
+              pageId={proposal.id}
+              claim={c}
+              initial={resolved[c] ?? null}
+              onResolve={(r) => setResolved((prev) => ({ ...prev, [c]: r }))}
+            />
+          ))}
         </section>
       ) : null}
 
@@ -109,6 +129,13 @@ export function ProposalCard({
       ) : null}
 
       {tab === "diff" ? <DiffView before={corpusBody ?? ""} after={source} /> : null}
+
+      <DecisionFooter
+        proposal={proposal}
+        date={date}
+        initial={decision}
+        conflictsResolved={conflictsResolved}
+      />
     </article>
   );
 }

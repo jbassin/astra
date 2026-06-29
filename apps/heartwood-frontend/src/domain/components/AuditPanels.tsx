@@ -1,9 +1,11 @@
+import { useState } from "react";
 import type { RegistryAddition, SkippedPage, UnplacedFact } from "@/domain/review/manifest";
+import type { RegistryDecision } from "@/domain/review/reviewState";
+import { setRegistryDecision } from "@/serverFns/writeDecision";
 
-// Read-only audit panels (P4: unplaced/skipped/registry-add are audit, not actionable
-// in S2). The human acts on `page`/`registry-add`/`conflict` (registry approval lands
-// in S4); these surface what the proposer refused to place or rewrite so nothing is
-// silently dropped.
+// Audit + registry panels. Unplaced/Skipped are read-only audit (not actionable —
+// surfaced so nothing is silently dropped). Registry additions ARE actionable (P4.8):
+// each approved one is applied to entity.kdl by `just heartwood-apply`.
 
 export function UnplacedPanel({ unplaced }: { unplaced: UnplacedFact[] }) {
   if (unplaced.length === 0) return null;
@@ -46,23 +48,75 @@ export function SkippedPanel({ skipped }: { skipped: SkippedPage[] }) {
   );
 }
 
-export function RegistryPanel({ additions }: { additions: RegistryAddition[] }) {
+export function RegistryPanel({
+  additions,
+  date,
+  decisions,
+}: {
+  additions: RegistryAddition[];
+  date: string;
+  decisions: RegistryDecision[];
+}) {
   if (additions.length === 0) return null;
+  const byCanonical = new Map(decisions.map((d) => [d.canonical, d.state]));
   return (
     <section className="audit-panel">
       <h2>Registry additions ({additions.length})</h2>
       <p className="audit-note">
-        Proposed new entities — applied to the registry on approval (S4).
+        Proposed new entities — applied to entity.kdl by <code>just heartwood-apply</code> when
+        approved.
       </p>
       <ul className="audit-list">
         {additions.map((r) => (
-          <li key={r.canonical}>
-            <strong>{r.canonical}</strong>{" "}
-            {r.kind ? <span className="pc-kind">{r.kind}</span> : null} →{" "}
-            <code>{r.suggestedPath}</code>
-          </li>
+          <RegistryRow
+            key={r.canonical}
+            date={date}
+            addition={r}
+            initial={byCanonical.get(r.canonical)}
+          />
         ))}
       </ul>
     </section>
+  );
+}
+
+function RegistryRow({
+  date,
+  addition,
+  initial,
+}: {
+  date: string;
+  addition: RegistryAddition;
+  initial: "approved" | "rejected" | undefined;
+}) {
+  const [state, setState] = useState<"pending" | "approved" | "rejected">(initial ?? "pending");
+  async function decide(next: "approved" | "rejected") {
+    setState(next);
+    await setRegistryDecision({ data: { date, canonical: addition.canonical, state: next } });
+  }
+  return (
+    <li className={`registry-row registry-${state}`}>
+      <span>
+        <strong>{addition.canonical}</strong>{" "}
+        {addition.kind ? <span className="pc-kind">{addition.kind}</span> : null} →{" "}
+        <code>{addition.suggestedPath}</code>
+      </span>
+      <span className="registry-actions">
+        <button
+          type="button"
+          className={state === "approved" ? "active" : ""}
+          onClick={() => decide("approved")}
+        >
+          approve
+        </button>
+        <button
+          type="button"
+          className={state === "rejected" ? "active" : ""}
+          onClick={() => decide("rejected")}
+        >
+          reject
+        </button>
+      </span>
+    </li>
   );
 }

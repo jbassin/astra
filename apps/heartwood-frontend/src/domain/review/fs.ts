@@ -78,3 +78,17 @@ export function writeProposalBody(date: string, bodyFile: string, source: string
   fs.writeFileSync(tmp, source, "utf8");
   fs.renameSync(tmp, file);
 }
+
+/** The committed review.kdl for a session (the decision store); null if not started. */
+export function readReviewStateText(date: string): string | null {
+  const file = within(within(PROPOSALS_DIR, date), "review.kdl");
+  return fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
+}
+
+/** Atomically write the session's review.kdl (host-owned via user 1000:1000). */
+export function writeReviewStateText(date: string, text: string): void {
+  const file = within(within(PROPOSALS_DIR, date), "review.kdl");
+  const tmp = `${file}.tmp-${process.pid}`;
+  fs.writeFileSync(tmp, text, "utf8");
+  fs.renameSync(tmp, file);
+}

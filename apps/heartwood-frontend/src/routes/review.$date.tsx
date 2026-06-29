@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { RegistryPanel, SkippedPanel, UnplacedPanel } from "@/domain/components/AuditPanels";
 import { ProposalCard } from "@/domain/components/ProposalCard";
 import type { PageProposal } from "@/domain/review/manifest";
+import type { ConflictResolution, Decision } from "@/domain/review/reviewState";
 import { loadReview } from "@/serverFns/loadReview";
 
 // One session's change-set as PR-style cards. S2 is read-only — render every proposed
@@ -14,7 +15,8 @@ export const Route = createFileRoute("/review/$date")({
 });
 
 function ReviewComponent() {
-  const { manifest, bodies, corpusBodies, knownPages } = Route.useLoaderData();
+  const { manifest, bodies, corpusBodies, knownPages, review } = Route.useLoaderData();
+  const decisionById = new Map<string, Decision>(review.decisions.map((d: Decision) => [d.id, d]));
   return (
     <main className="wrap review">
       <nav className="review-nav">
@@ -36,13 +38,21 @@ function ReviewComponent() {
             corpusBody={corpusBodies[p.id] ?? null}
             date={manifest.date}
             knownPages={knownPages}
+            decision={decisionById.get(p.id)}
+            conflictRes={review.conflictResolutions.filter(
+              (c: ConflictResolution) => c.pageId === p.id,
+            )}
           />
         ))}
       </section>
 
       <UnplacedPanel unplaced={manifest.unplaced} />
       <SkippedPanel skipped={manifest.skipped} />
-      <RegistryPanel additions={manifest.registryAdditions} />
+      <RegistryPanel
+        additions={manifest.registryAdditions}
+        date={manifest.date}
+        decisions={review.registryDecisions}
+      />
     </main>
   );
 }

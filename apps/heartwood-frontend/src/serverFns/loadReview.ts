@@ -10,8 +10,10 @@ import {
   readKnownPages,
   readManifestText,
   readProposalBody,
+  readReviewStateText,
 } from "@/domain/review/fs";
 import { type ProposalManifest, parseManifest } from "@/domain/review/manifest";
+import { emptyReviewState, parseReviewState, type ReviewState } from "@/domain/review/reviewState";
 
 export interface SessionSummary {
   date: string;
@@ -33,6 +35,8 @@ export interface ReviewData {
   corpusBodies: Record<string, string | null>;
   /** The akasha page-path set ∪ this change-set's create paths — for live broken_wikilink checks. */
   knownPages: string[];
+  /** The committed review decisions so the surface resumes where the human left off (P4.3). */
+  review: ReviewState;
 }
 
 /** Every staged change-set (newest first) with its headline counts, for the index. */
@@ -67,5 +71,7 @@ export const loadReview = createServerFn({ method: "GET" })
     // The known-page set for live broken_wikilink checks: the committed snapshot's
     // pages ∪ the paths this change-set itself creates (sibling crossrefs aren't broken).
     const knownPages = [...readKnownPages(), ...manifest.proposals.map((p) => p.targetPath)];
-    return { manifest, bodies, corpusBodies, knownPages };
+    const reviewText = readReviewStateText(date);
+    const review = reviewText ? parseReviewState(reviewText) : emptyReviewState(date);
+    return { manifest, bodies, corpusBodies, knownPages, review };
   });

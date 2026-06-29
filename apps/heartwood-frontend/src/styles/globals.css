@@ -379,6 +379,144 @@ a:hover {
   color: var(--color-ink-faint);
 }
 
+/* --- decision footer --- */
+.pc-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-rule);
+}
+.pc-decided-approved {
+  border-top-color: var(--color-accent);
+}
+.pc-decided-rejected {
+  border-top-color: var(--color-danger, #d9534f);
+}
+.pc-place {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-ink-dim);
+}
+.pc-place input {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.78rem;
+  padding: 0.25rem 0.5rem;
+  min-width: 22rem;
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.3rem;
+}
+.pc-place input.pc-place-flag {
+  border-color: var(--color-accent-amber);
+}
+.pc-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-left: auto;
+}
+.pc-actions button,
+.pc-actions select,
+.conflict-actions button,
+.registry-actions button {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.75rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.3rem;
+  background-color: transparent;
+  color: var(--color-ink-dim);
+  cursor: pointer;
+}
+.pc-approve:not(:disabled):hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.pc-reject:hover {
+  border-color: var(--color-danger, #d9534f);
+  color: var(--color-danger, #d9534f);
+}
+.pc-actions button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.pc-decision {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-ink-faint);
+}
+.pc-decision-approved {
+  color: var(--color-accent);
+}
+.pc-decision-rejected {
+  color: var(--color-danger, #d9534f);
+}
+.pc-decision-deferred {
+  color: var(--color-accent-amber);
+}
+
+/* --- conflict cards --- */
+.conflict-card {
+  border: 1px solid var(--color-accent-amber);
+  border-radius: 0.4rem;
+  padding: 0.6rem 0.8rem;
+  margin-bottom: 0.5rem;
+  background-color: color-mix(in oklab, var(--color-accent-amber) 6%, transparent);
+}
+.conflict-claim {
+  font-size: 0.85rem;
+  margin-bottom: 0.4rem;
+}
+.conflict-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.conflict-actions button.active {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.conflict-open {
+  color: var(--color-accent-amber);
+  font-size: 0.72rem;
+}
+.conflict-state {
+  color: var(--color-ink-faint);
+  font-size: 0.72rem;
+}
+.conflict-accepted {
+  border-color: var(--color-accent);
+}
+
+/* --- registry rows --- */
+.registry-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.registry-actions {
+  display: flex;
+  gap: 0.3rem;
+}
+.registry-actions button.active {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.registry-approved {
+  color: var(--color-ink);
+}
+.registry-rejected {
+  opacity: 0.5;
+}
+
 /* --- router boundaries (from router.tsx) --- */
 .route-boundary,
 .center {
