@@ -107,6 +107,212 @@ a:hover {
   color: var(--color-ink-faint);
 }
 
+/* --- session index grid --- */
+.session-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: 1.25rem;
+  margin-top: clamp(2rem, 5vw, 3rem);
+}
+.session-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  padding: 1.4rem 1.5rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.6rem;
+  background-color: var(--color-elevated);
+  color: var(--color-ink);
+  transition:
+    border-color 0.15s ease,
+    transform 0.15s ease;
+}
+.session-card:hover {
+  border-color: var(--color-accent-amber);
+  transform: translateY(-2px);
+  text-decoration: none;
+}
+.sc-mark {
+  color: var(--color-accent-amber);
+}
+.sc-title {
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-parchment);
+}
+.sc-show {
+  color: var(--color-ink-dim);
+  font-size: 0.9rem;
+}
+.sc-counts {
+  margin-top: 0.4rem;
+  color: var(--color-ink-faint);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+/* --- review surface --- */
+.review-nav {
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+.review-head {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+.review-head h1 {
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: clamp(2rem, 6vw, 3rem);
+}
+.review-sub {
+  color: var(--color-ink-dim);
+  font-size: 0.9rem;
+}
+.proposal-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* --- proposal card --- */
+.proposal-card {
+  border: 1px solid var(--color-rule);
+  border-radius: 0.6rem;
+  background-color: var(--color-panel);
+  padding: 1.5rem;
+}
+.pc-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin-bottom: 0.75rem;
+}
+.pc-op {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.5rem;
+  border-radius: 0.3rem;
+}
+.pc-op-create {
+  color: var(--color-void);
+  background-color: var(--color-accent);
+}
+.pc-op-rewrite {
+  color: var(--color-void);
+  background-color: var(--color-accent-amber);
+}
+.pc-title {
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-parchment);
+}
+.pc-path {
+  color: var(--color-ink-faint);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.78rem;
+}
+.pc-tags {
+  margin-left: auto;
+  display: flex;
+  gap: 0.4rem;
+}
+.pc-status,
+.pc-kind {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: 0.3rem;
+  border: 1px solid var(--color-rule);
+  color: var(--color-ink-dim);
+}
+.pc-status-unknown {
+  border-color: var(--color-accent-amber);
+  color: var(--color-accent-amber);
+}
+.pc-placement {
+  color: var(--color-accent-amber);
+  font-size: 0.85rem;
+  margin-bottom: 0.75rem;
+}
+.pc-facts,
+.pc-conflicts,
+.pc-lints {
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+}
+.pc-facts h3,
+.pc-conflicts h3 {
+  color: var(--color-ink-dim);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.35rem;
+}
+.pc-facts ul,
+.pc-conflicts ul {
+  padding-left: 1.1rem;
+  list-style: disc;
+  color: var(--color-ink-dim);
+}
+.pc-conflicts {
+  color: var(--color-accent-amber);
+}
+.pc-lint {
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
+}
+.pc-lint-type {
+  font-family: var(--font-mono), monospace;
+  color: var(--color-accent-amber);
+}
+.pc-reading {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--color-rule);
+}
+
+/* --- audit panels --- */
+.audit-panel {
+  margin-top: 2rem;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.6rem;
+  background-color: var(--color-elevated);
+}
+.audit-panel h2 {
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: 1.1rem;
+}
+.audit-note {
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
+  margin-bottom: 0.6rem;
+}
+.audit-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--color-ink-dim);
+}
+.audit-cands {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-left: 0.5rem;
+}
+.audit-cands code,
+.audit-reason {
+  font-size: 0.72rem;
+  color: var(--color-ink-faint);
+}
+
 /* --- router boundaries (from router.tsx) --- */
 .route-boundary,
 .center {
