@@ -210,7 +210,7 @@ const Ledger = z
 // single-source)
 const Heartwood = z
   .object({
-    serviceName: z.string().default("astra.heartwood"),
+    serviceName: z.string().default("astra.heartwood-frontend"),
     port: z.number().default(10371),
     publicOrigin: z.string().default("https://heartwood.iridi.cc"),
   })

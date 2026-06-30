@@ -186,25 +186,28 @@ def write_change_set(out_dir: Path, change_set: DraftedChangeSet) -> None:
 
 def main() -> None:
     """Host entry-point (``astra-heartwood-propose <date>``) for the acceptance run."""
-    from astra_observe import init_telemetry
+    from astra_observe import init_telemetry, shutdown
 
     init_telemetry("astra.heartwood")
-    if len(sys.argv) != 2:
-        print("usage: astra-heartwood-propose <date>", file=sys.stderr)
-        raise SystemExit(2)
-    date = sys.argv[1]
-    change_set = build_session_proposals(date)
-    if change_set is None:
-        print(f"{date}: skipped (no facts/{date}.json)")
-        return
-    write_change_set(PROPOSALS_DIR / date, change_set)
-    m = change_set.manifest
-    creates = sum(1 for p in m.proposals if p.op == "create")
-    rewrites = sum(1 for p in m.proposals if p.op == "rewrite")
-    print(
-        f"{date} [{m.show}]: {len(m.proposals)} pages ({creates} create / {rewrites} rewrite), "
-        f"{len(m.unplaced)} unplaced, {len(m.skipped)} skipped → proposals/{date}/"
-    )
+    try:
+        if len(sys.argv) != 2:
+            print("usage: astra-heartwood-propose <date>", file=sys.stderr)
+            raise SystemExit(2)
+        date = sys.argv[1]
+        change_set = build_session_proposals(date)
+        if change_set is None:
+            print(f"{date}: skipped (no facts/{date}.json)")
+            return
+        write_change_set(PROPOSALS_DIR / date, change_set)
+        m = change_set.manifest
+        creates = sum(1 for p in m.proposals if p.op == "create")
+        rewrites = sum(1 for p in m.proposals if p.op == "rewrite")
+        print(
+            f"{date} [{m.show}]: {len(m.proposals)} pages ({creates} create / {rewrites} rewrite), "
+            f"{len(m.unplaced)} unplaced, {len(m.skipped)} skipped → proposals/{date}/"
+        )
+    finally:
+        shutdown()  # console_script exit → flush the run's spans/metrics/logs
 
 
 if __name__ == "__main__":

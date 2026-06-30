@@ -17,7 +17,7 @@ import sys
 from collections import Counter
 
 from astra_lexicon import load_defs
-from astra_observe import get_logger, get_meter, init_telemetry
+from astra_observe import get_logger, get_meter, init_telemetry, shutdown
 from astra_ontology import (
     Entity,
     merge_seed,
@@ -48,45 +48,54 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     init_telemetry("astra.heartwood")
-    log = get_logger("astra.heartwood")
-    meter = get_meter("astra.heartwood")
+    try:
+        log = get_logger("astra.heartwood")
+        meter = get_meter("astra.heartwood")
 
-    entities, text = build_registry()
-    by_kind = Counter(e.kind for e in entities)
-    linked = sum(1 for e in entities if e.page is not None)
-    unlinked = len(entities) - linked
+        entities, text = build_registry()
+        by_kind = Counter(e.kind for e in entities)
+        linked = sum(1 for e in entities if e.page is not None)
+        unlinked = len(entities) - linked
 
-    seeded = meter.create_counter("astra.heartwood.entities_seeded", description="entities seeded")
-    for kind, n in by_kind.items():
-        seeded.add(n, {"kind": str(kind)})
-    meter.create_counter("astra.heartwood.pages_linked").add(linked)
-    meter.create_counter("astra.heartwood.pages_unlinked").add(unlinked)
+        seeded = meter.create_counter(
+            "astra.heartwood.entities_seeded", description="entities seeded"
+        )
+        for kind, n in by_kind.items():
+            seeded.add(n, {"kind": str(kind)})
+        meter.create_counter("astra.heartwood.pages_linked").add(linked)
+        meter.create_counter("astra.heartwood.pages_unlinked").add(unlinked)
 
-    summary = ", ".join(f"{k or 'unclassified'}={n}" for k, n in sorted(by_kind.items(), key=str))
-    log.info(
-        "entity registry: %d entities (%s); %d linked / %d unlinked",
-        len(entities),
-        summary,
-        linked,
-        unlinked,
-    )
-    print(f"entity.kdl: {len(entities)} entities — {summary}")
-    print(f"  pages: {linked} linked, {unlinked} unlinked")
+        summary = ", ".join(
+            f"{k or 'unclassified'}={n}" for k, n in sorted(by_kind.items(), key=str)
+        )
+        log.info(
+            "entity registry: %d entities (%s); %d linked / %d unlinked",
+            len(entities),
+            summary,
+            linked,
+            unlinked,
+        )
+        print(f"entity.kdl: {len(entities)} entities — {summary}")
+        print(f"  pages: {linked} linked, {unlinked} unlinked")
 
-    if args.check:
-        current = ENTITY_KDL_PATH.read_text(encoding="utf-8") if ENTITY_KDL_PATH.exists() else ""
-        if current != text:
-            print(
-                "DRIFT: entity.kdl is stale vs a fresh seed — run the seed + commit.",
-                file=sys.stderr,
+        if args.check:
+            current = (
+                ENTITY_KDL_PATH.read_text(encoding="utf-8") if ENTITY_KDL_PATH.exists() else ""
             )
-            return 1
-        print("entity.kdl is up to date.")
-        return 0
+            if current != text:
+                print(
+                    "DRIFT: entity.kdl is stale vs a fresh seed — run the seed + commit.",
+                    file=sys.stderr,
+                )
+                return 1
+            print("entity.kdl is up to date.")
+            return 0
 
-    ENTITY_KDL_PATH.write_text(text, encoding="utf-8")
-    print(f"wrote {ENTITY_KDL_PATH}")
-    return 0
+        ENTITY_KDL_PATH.write_text(text, encoding="utf-8")
+        print(f"wrote {ENTITY_KDL_PATH}")
+        return 0
+    finally:
+        shutdown()  # console_script exit → flush the run's spans/metrics/logs
 
 
 if __name__ == "__main__":

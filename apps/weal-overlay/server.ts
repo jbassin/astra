@@ -4,7 +4,7 @@ import { initTelemetry } from "@astra/observe";
 import { startServer } from "./src/server";
 
 // Telemetry first (server-side traces/metrics/logs → SigNoz).
-initTelemetry("astra.weal-overlay");
+const telemetry = initTelemetry("astra.weal-overlay");
 
 // Entry: serve the built overlay + the v1 ingest + the SSE feed. Config (port, the
 // shared ingest token, the browser RUM endpoint) comes from config.kdl via @astra/config.
@@ -29,3 +29,14 @@ if (!token) {
 
 const { server } = startServer({ port, token, distDir, rumEndpoint });
 console.log(`weal-overlay listening on http://localhost:${server.port}`);
+
+// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
+// Installing our own handler overrides Bun's default terminate, so we exit once flushed.
+for (const sig of ["SIGINT", "SIGTERM"] as const) {
+  process.once(sig, () => {
+    void telemetry.shutdown().finally(() => {
+      server.stop(true);
+      process.exit(0);
+    });
+  });
+}

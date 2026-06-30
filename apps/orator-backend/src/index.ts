@@ -11,7 +11,7 @@
 import { getLogger, initTelemetry } from "@astra/observe";
 
 // Telemetry before anything that emits — traces/metrics/logs → SigNoz.
-initTelemetry("astra.orator-backend");
+const telemetry = initTelemetry("astra.orator-backend");
 const log = getLogger("astra.orator-backend");
 
 import { mkdirSync } from "node:fs";
@@ -134,3 +134,11 @@ main().catch((e) => {
   log.emit({ severityText: "FATAL", body: `orator-backend failed to start: ${e}` });
   process.exit(1);
 });
+
+// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
+// Installing our own handler overrides Bun's default terminate, so we exit once flushed.
+for (const sig of ["SIGINT", "SIGTERM"] as const) {
+  process.once(sig, () => {
+    void telemetry.shutdown().finally(() => process.exit(0));
+  });
+}

@@ -13,7 +13,7 @@ import { writeLayer } from "../../../../scripts/writeLayer";
 // doubles as the editor's audit trail — telemetry-from-day-one (principle #1).
 const tracer = getTracer("astra.strider");
 const logger = getLogger("astra.strider");
-const writeCounter = getMeter("astra.strider").createCounter("strider.editor.writes", {
+const writeCounter = getMeter("astra.strider").createCounter("astra.strider.editor.writes", {
   description: "Editor layer-write attempts by outcome",
 });
 

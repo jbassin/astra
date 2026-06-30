@@ -107,22 +107,25 @@ def build_session_facts(
 
 def main() -> None:
     """Host entry-point (``astra-heartwood-extract <date>``) for the acceptance run."""
-    from astra_observe import init_telemetry
+    from astra_observe import init_telemetry, shutdown
 
     init_telemetry("astra.heartwood")
-    if len(sys.argv) != 2:
-        print("usage: astra-heartwood-extract <date>", file=sys.stderr)
-        raise SystemExit(2)
-    date = sys.argv[1]
-    facts = build_session_facts(date)
-    if facts is None:
-        print(f"{date}: skipped (non-faerrin / unmatched / excluded)")
-        return
-    _atomic_write(FACTS_DIR / f"{date}.json", facts.model_dump_json(indent=2))
-    print(
-        f"{date} [{facts.show}]: {len(facts.facts)} facts, "
-        f"{len(facts.dropped)} dropped spans → facts/{date}.json"
-    )
+    try:
+        if len(sys.argv) != 2:
+            print("usage: astra-heartwood-extract <date>", file=sys.stderr)
+            raise SystemExit(2)
+        date = sys.argv[1]
+        facts = build_session_facts(date)
+        if facts is None:
+            print(f"{date}: skipped (non-faerrin / unmatched / excluded)")
+            return
+        _atomic_write(FACTS_DIR / f"{date}.json", facts.model_dump_json(indent=2))
+        print(
+            f"{date} [{facts.show}]: {len(facts.facts)} facts, "
+            f"{len(facts.dropped)} dropped spans → facts/{date}.json"
+        )
+    finally:
+        shutdown()  # console_script exit → flush the run's spans/metrics/logs
 
 
 if __name__ == "__main__":

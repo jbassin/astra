@@ -23,7 +23,7 @@ from typing import Any
 
 from astra_lexicon import build_lexicon, fold_for_match
 from astra_llm import TokenCounts, cost_usd, ensure_openrouter_env, make_dspy_lm
-from astra_observe import init_telemetry
+from astra_observe import init_telemetry, shutdown
 
 from . import config
 from .dspy_judge import DEFAULT_COMPILED_PATH, build_judge_program, save_compiled
@@ -325,4 +325,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    finally:
+        shutdown()  # flush buffered spans/metrics/logs before the short-lived run exits

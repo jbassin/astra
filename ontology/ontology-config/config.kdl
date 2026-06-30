@@ -247,7 +247,7 @@ heartwood {
     // its content at RUNTIME from narrow bind-mounts (proposals/ rw, akasha content/
     // snapshot ro) — nothing is baked into the image. No auth (D5); the dangerous
     // write-back is a host-run `just heartwood-apply`, never a public endpoint.
-    service-name "astra.heartwood"
+    service-name "astra.heartwood-frontend"
     port 10371
     public-origin "https://heartwood.iridi.cc"
 }

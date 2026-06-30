@@ -19,7 +19,7 @@ from pathlib import Path
 from typing import Any, Literal, cast
 
 from astra_lexicon import DEFS_PATH, Lexicon, build_lexicon
-from astra_observe import init_telemetry
+from astra_observe import init_telemetry, shutdown
 
 from ..models import Transcript
 from .judge import Candidate, CompleteFn, Flagged, judge_session
@@ -182,4 +182,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    try:
+        raise SystemExit(main())
+    finally:
+        shutdown()  # flush buffered spans/metrics/logs before the short-lived run exits

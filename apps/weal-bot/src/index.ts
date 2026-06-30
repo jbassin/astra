@@ -7,7 +7,7 @@
 import { getLogger, initTelemetry } from "@astra/observe";
 
 // Telemetry before anything that emits — traces/metrics/logs → SigNoz.
-initTelemetry("astra.weal-bot");
+const telemetry = initTelemetry("astra.weal-bot");
 const log = getLogger("astra.weal-bot");
 
 import { loadConfig } from "@astra/config";
@@ -58,3 +58,11 @@ main().catch((e) => {
   log.emit({ severityText: "FATAL", body: `weal-bot failed to start: ${e}` });
   process.exit(1);
 });
+
+// Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
+// Installing our own handler overrides Bun's default terminate, so we exit once flushed.
+for (const sig of ["SIGINT", "SIGTERM"] as const) {
+  process.once(sig, () => {
+    void telemetry.shutdown().finally(() => process.exit(0));
+  });
+}

@@ -195,7 +195,7 @@ class HeartwoodConfig(_Base):
     # source for server.ts + vite's dev port; service_name derives the browser RUM
     # name. Reads its content at runtime from narrow bind-mounts (no baked content);
     # the write-back is a host-run `just heartwood-apply`, not a public endpoint.
-    service_name: str = "astra.heartwood"
+    service_name: str = "astra.heartwood-frontend"
     port: int = 10371
     public_origin: str = "https://heartwood.iridi.cc"
 
