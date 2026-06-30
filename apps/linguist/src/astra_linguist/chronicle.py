@@ -122,6 +122,58 @@ def load_episode_entries(episodes_dir: Path = EPISODES_DIR) -> list[EpisodeEntry
     ]
 
 
+def load_episode_summary(date: str, episodes_dir: Path = EPISODES_DIR) -> EpisodeEntry | None:
+    """Load one committed episode entry by date — `None` if its file is absent.
+
+    The recap context + the mouthpiece ordering gate (0021 Change B) both tolerate a
+    missing episode, so absence is a clean `None`, not an error.
+    """
+    path = Path(episodes_dir) / f"{date}.json"
+    if not path.is_file():
+        return None
+    return EpisodeEntry.model_validate_json(path.read_text(encoding="utf-8"))
+
+
+def recent_prior_entries(
+    date: str, show: str, *, limit: int = 3, episodes_dir: Path = EPISODES_DIR
+) -> list[EpisodeEntry]:
+    """The ≤`limit` most-recent committed episodes of `show` strictly before `date`.
+
+    Same-show only (`EpisodeEntry.show`), ordered ascending by `date_key` (oldest→newest)
+    so the caller renders them in chronological "previously, on…" order. Tolerates a
+    missing dir (→ `[]`). Used to build mouthpiece's recap continuity (0021 Change B).
+    """
+    here = date_key(date)
+    prior = [
+        entry
+        for entry in load_episode_entries(episodes_dir)
+        if entry.show == show and date_key(entry.date) < here
+    ]
+    prior.sort(key=lambda entry: date_key(entry.date))
+    return prior[-limit:] if limit >= 0 else prior
+
+
+def season_for(date: str, show: str, *, seasons_path: Path = SEASONS_PATH) -> Season | None:
+    """Best-effort: the season of `show` whose `episode_dates` contains `date`.
+
+    Reads the committed `seasons.json` (`Chronicle`). Returns `None` when the file is
+    absent, the show isn't present, or `date` isn't placed in a season yet — the
+    `campaign_timeline` aggregate is hourly, so it lags a freshly-added episode. Never
+    raises: callers treat season framing as optional and never gate on it (0021 Change B).
+    """
+    path = Path(seasons_path)
+    if not path.is_file():
+        return None
+    chronicle = Chronicle.model_validate_json(path.read_text(encoding="utf-8"))
+    for show_chronicle in chronicle.shows:
+        if show_chronicle.show == show:
+            return next(
+                (s for s in show_chronicle.seasons if date in s.episode_dates),
+                None,
+            )
+    return None
+
+
 def chronicle_inputs_hash(entries: list[EpisodeEntry]) -> str:
     """A stable fingerprint of the episode inputs (changes iff a summary changes)."""
     payload = json.dumps(
