@@ -36,7 +36,20 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `db42c1a`, 2026-06-28)
+## Current state — UPDATE THIS SECTION (as of commit `30929b5`, 2026-06-29)
+
+> **⚠️ OPS SIDE-QUEST IN FLIGHT (not heartwood) — pipeline alerting, half-built.** On 2026-06-29 the
+> craig-sync front door (the Drive FUSE mount) **hard-wedged and silently stalled the whole pipeline for
+> ~6h** — nothing alerted because the stack had **zero alerting**. Fixed the wedge + shipped a
+> **craig-sync watchdog** (`cd60af6` + memory `30929b5`; see [[pipeline-live-run-gotchas]]). Then started
+> **stack-wide Discord alerting** — **half-built**: webhook created + test-verified + stored in SOPS
+> (`alert_discord_webhook_url`); **still to build** the SigNoz Discord channel + alert rules, the host
+> `OnFailure=` handlers, and a liveness watchdog. **▶ Full resume plan in [[astra-alerting-setup]].**
+> (heartwood Phase-4 content acceptance below is unchanged + still the main-track next step.)
+
+---
+
+### heartwood / migration state (unchanged this session, as of `db42c1a`, 2026-06-28)
 
 > **The faerrin→astra migration is COMPLETE (see the 🎉 section below).** **`heartwood` (0020) — Phases 1–3
 > DONE; Phase 4 (review surface + write-back) BUILT + the SURFACE LIVE.** Phase 4 = 6 CI-green slices
