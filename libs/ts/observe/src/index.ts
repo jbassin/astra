@@ -14,7 +14,16 @@
  */
 
 import { loadConfig } from "@astra/config";
-import { type Meter, metrics, type Tracer, trace } from "@opentelemetry/api";
+import {
+  type Attributes,
+  type Counter,
+  type Histogram,
+  type Meter,
+  type MetricOptions,
+  metrics,
+  type Tracer,
+  trace,
+} from "@opentelemetry/api";
 import { type Logger, logs } from "@opentelemetry/api-logs";
 import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
@@ -99,4 +108,49 @@ export function getMeter(name: string): Meter {
  * should be `astra.<subsystem>`. Records export to SigNoz once initTelemetry has run. */
 export function getLogger(name: string): Logger {
   return logs.getLogger(name);
+}
+
+// --- lazy metric instruments -------------------------------------------------------------
+//
+// LOAD-BEARING: unlike traces (ProxyTracer) and logs (ProxyLogger), the JS metrics API has
+// NO deferred proxy provider. A counter/histogram obtained from `getMeter().create*()`
+// BEFORE `initTelemetry` installs the real MeterProvider is a PERMANENT no-op — it never
+// connects retroactively. Module-scope instruments hit this every time, because ES import
+// hoisting runs the imported module's top-level code before the entry's `initTelemetry()`
+// call. (This silently no-op'd every TS metric until 2026-06-30.) These helpers defer the
+// instrument creation to first use — by which point init has run — mirroring the lazy bind
+// in libs/py/llm. Always prefer these over `getMeter().createCounter()` at module scope.
+
+export interface LazyCounter {
+  add(value: number, attributes?: Attributes): void;
+}
+
+/** A counter that binds to the real meter on first `add()` (after initTelemetry). */
+export function lazyCounter(meterName: string, name: string, options?: MetricOptions): LazyCounter {
+  let inst: Counter | undefined;
+  return {
+    add(value, attributes) {
+      if (!inst) inst = metrics.getMeter(meterName).createCounter(name, options);
+      inst.add(value, attributes);
+    },
+  };
+}
+
+export interface LazyHistogram {
+  record(value: number, attributes?: Attributes): void;
+}
+
+/** A histogram that binds to the real meter on first `record()` (after initTelemetry). */
+export function lazyHistogram(
+  meterName: string,
+  name: string,
+  options?: MetricOptions,
+): LazyHistogram {
+  let inst: Histogram | undefined;
+  return {
+    record(value, attributes) {
+      if (!inst) inst = metrics.getMeter(meterName).createHistogram(name, options);
+      inst.record(value, attributes);
+    },
+  };
 }

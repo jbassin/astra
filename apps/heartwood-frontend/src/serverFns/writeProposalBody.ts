@@ -5,7 +5,7 @@
 // write-BACK is host-gated; this only touches the staged proposals/ mount, traversal-
 // guarded both by the id-slug shape and fs.ts's `within`.
 
-import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { createServerFn } from "@tanstack/react-start";
 import { writeProposalBody as writeBodyFile } from "@/domain/review/fs";
@@ -16,10 +16,9 @@ const MAX_BODY_BYTES = 256 * 1024;
 
 const tracer = getTracer("astra.heartwood-frontend");
 const log = getLogger("astra.heartwood-frontend");
-const bodyCounter = getMeter("astra.heartwood-frontend").createCounter(
-  "astra.heartwood.review.body_edits",
-  { description: "In-browser proposal body edits, by outcome" },
-);
+const bodyCounter = lazyCounter("astra.heartwood-frontend", "astra.heartwood.review.body_edits", {
+  description: "In-browser proposal body edits, by outcome",
+});
 
 export interface WriteBodyInput {
   date: string;

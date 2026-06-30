@@ -7,7 +7,7 @@
  * `to_roll_lazy` are computed by the roller but ignored here (as `handler.rs` does).
  */
 
-import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import type { WealHost } from "@astra/ontology";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { saveDie, type WealStore } from "./db";
@@ -69,7 +69,7 @@ function choose<T>(rng: RollRng, xs: readonly T[]): T {
 // unit tests). One span per non-empty message wraps the whole roll/save/reseed pipeline.
 const tracer = getTracer("astra.weal-bot");
 const log = getLogger("astra.weal-bot");
-const rollsCounter = getMeter("astra.weal-bot").createCounter("astra.weal.rolls", {
+const rollsCounter = lazyCounter("astra.weal-bot", "astra.weal.rolls", {
   description: "Dice rolls evaluated, by goodness",
 });
 

@@ -11,13 +11,13 @@
  * `PlaybackStore` (`getTrack` + `markTrackError`) — the only DB surface the engine
  * touches. Everything else is a verbatim lift.
  */
-import { getMeter } from "@astra/observe";
+import { lazyCounter } from "@astra/observe";
 import type { PlaybackStore } from "../db/store";
 import { buildAudioFilter, computeGainDb } from "./gain";
 import type { TrackEndReason, VoiceAdapter, VoiceStateResolver } from "./voice";
 
-// No-op until initTelemetry runs in index.ts (safe in the fake-adapter unit tests).
-const tracksPlayed = getMeter("astra.orator-backend").createCounter("astra.orator.tracks.played", {
+// Lazy-bound: a counter grabbed at module scope before initTelemetry never connects.
+const tracksPlayed = lazyCounter("astra.orator-backend", "astra.orator.tracks.played", {
   description: "Tracks started by the playback engine",
 });
 

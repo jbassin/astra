@@ -11,7 +11,7 @@
  */
 import { mkdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
-import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter, lazyHistogram } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import type { DownloadJob, DownloadJobItem, LibraryStore } from "../db/store";
 import { runPool } from "../lib/pool";
@@ -23,11 +23,10 @@ import type { JobHub } from "./jobhub";
 // dominant multi-minute unit of work. Traced + timed + counted by outcome.
 const tracer = getTracer("astra.orator-backend");
 const log = getLogger("astra.orator-backend");
-const meter = getMeter("astra.orator-backend");
-const ingestCounter = meter.createCounter("astra.orator.ingest.items", {
+const ingestCounter = lazyCounter("astra.orator-backend", "astra.orator.ingest.items", {
   description: "Ingest items processed, by outcome",
 });
-const ingestDuration = meter.createHistogram("astra.orator.ingest.duration_ms", {
+const ingestDuration = lazyHistogram("astra.orator-backend", "astra.orator.ingest.duration_ms", {
   description: "Per-item ingest wall-clock (yt-dlp download + loudness probe)",
   unit: "ms",
 });

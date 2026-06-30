@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import type { Server } from "bun";
 import { RollHub } from "./hub";
 import { parseRollEvent } from "./schema";
@@ -8,10 +8,9 @@ import { parseRollEvent } from "./schema";
 // unit tests). The overlay's only write path is ingest — count it by outcome + trace it.
 const log = getLogger("astra.weal-overlay");
 const tracer = getTracer("astra.weal-overlay");
-const rollsCounter = getMeter("astra.weal-overlay").createCounter(
-  "astra.weal.overlay.rolls_ingested",
-  { description: "Roll events POSTed to the overlay ingest, by outcome" },
-);
+const rollsCounter = lazyCounter("astra.weal-overlay", "astra.weal.overlay.rolls_ingested", {
+  description: "Roll events POSTed to the overlay ingest, by outcome",
+});
 
 const SSE_HEADERS = {
   "content-type": "text/event-stream",

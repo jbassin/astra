@@ -13,7 +13,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "@astra/config";
-import { getLogger, getMeter, getTracer, initTelemetry } from "@astra/observe";
+import { getLogger, getTracer, initTelemetry, lazyCounter, lazyHistogram } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { validateRenderRequest } from "./caps";
 import { RenderCapError, RenderService } from "./renderService";
@@ -35,13 +35,13 @@ try {
 }
 const tracer = getTracer(serviceName);
 const log = getLogger(serviceName);
-const meter = getMeter(serviceName);
 // One render = one PNG; outcome distinguishes ok / cap-rejected / rate-limited / error,
-// and the histogram makes render latency alertable without parsing spans.
-const renderCounter = meter.createCounter("astra.vellum.render.requests", {
+// and the histogram makes render latency alertable without parsing spans. Lazy-bound so the
+// instruments connect to the real meter even if grabbed before initTelemetry.
+const renderCounter = lazyCounter(serviceName, "astra.vellum.render.requests", {
   description: "PNG render requests by outcome",
 });
-const renderDuration = meter.createHistogram("astra.vellum.render.duration_ms", {
+const renderDuration = lazyHistogram(serviceName, "astra.vellum.render.duration_ms", {
   description: "PNG render wall-clock",
   unit: "ms",
 });

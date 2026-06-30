@@ -16,7 +16,7 @@
  */
 import { randomBytes } from "node:crypto";
 import { resolve } from "node:path";
-import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import type { Server } from "bun";
 import type { LibraryStore } from "../db/store";
@@ -39,7 +39,7 @@ import { clearCookie, parseCookies, sessionCookie, signSession, verifySession } 
 // API observability: one span per authenticated API call + a request counter by outcome.
 const tracer = getTracer("astra.orator-backend");
 const log = getLogger("astra.orator-backend");
-const apiCounter = getMeter("astra.orator-backend").createCounter("astra.orator.api.requests", {
+const apiCounter = lazyCounter("astra.orator-backend", "astra.orator.api.requests", {
   description: "Authenticated API requests, by outcome",
 });
 

@@ -3,7 +3,7 @@
 // write). Server-side only. NEVER sets committed-at (that's `just heartwood-apply`'s
 // alone, the idempotence stamp). No auth (D5) — the dangerous write-BACK is host-gated.
 
-import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { createServerFn } from "@tanstack/react-start";
 import { readReviewStateText, writeReviewStateText } from "@/domain/review/fs";
@@ -24,9 +24,12 @@ import {
 // each one (by type + state) so they're visible in SigNoz (they were previously silent).
 const tracer = getTracer("astra.heartwood-frontend");
 const log = getLogger("astra.heartwood-frontend");
-const decisionCounter = getMeter("astra.heartwood-frontend").createCounter(
+const decisionCounter = lazyCounter(
+  "astra.heartwood-frontend",
   "astra.heartwood.review.decisions",
-  { description: "Human review decisions written to review.kdl, by type + state" },
+  {
+    description: "Human review decisions written to review.kdl, by type + state",
+  },
 );
 
 function load(date: string): ReviewState {
