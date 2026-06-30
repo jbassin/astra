@@ -1,4 +1,5 @@
 import { normalizeOrigin } from "../settings";
+import { emitSpan } from "../telemetry";
 import type { Collection, NowPlaying, Tag, Track, TrackQuery } from "./types";
 
 export interface OratorConfig {
@@ -45,6 +46,11 @@ export class OratorClient {
   }
 
   private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
+    // Every key-press + the 2.5s poll funnels through here. A span per request makes the
+    // operator-desktop control loop observable in SigNoz (latency + the errors the
+    // controller deliberately swallows for UX) via the public OTLP endpoint. Best-effort.
+    const startMs = Date.now();
+    const attrs = { "http.method": method, "url.path": path };
     let res: Response;
     try {
       res = await fetch(`${this.origin}${path}`, {
@@ -56,14 +62,35 @@ export class OratorClient {
         body: body !== undefined ? JSON.stringify(body) : undefined,
       });
     } catch (cause) {
-      throw new OratorError(0, `network error contacting orator: ${(cause as Error).message}`);
+      const message = `network error contacting orator: ${(cause as Error).message}`;
+      emitSpan({
+        name: `orator ${method}`,
+        startMs,
+        endMs: Date.now(),
+        attributes: attrs,
+        error: message,
+      });
+      throw new OratorError(0, message);
     }
     if (!res.ok) {
+      emitSpan({
+        name: `orator ${method}`,
+        startMs,
+        endMs: Date.now(),
+        attributes: { ...attrs, "http.status_code": res.status },
+        error: `orator ${method} ${path} → ${res.status}`,
+      });
       throw new OratorError(res.status, `orator ${method} ${path} → ${res.status}`);
     }
     // Some endpoints (204) have no body; callers that expect T won't use those.
-    if (res.status === 204) return undefined as T;
-    return (await res.json()) as T;
+    const result = res.status === 204 ? (undefined as T) : ((await res.json()) as T);
+    emitSpan({
+      name: `orator ${method}`,
+      startMs,
+      endMs: Date.now(),
+      attributes: { ...attrs, "http.status_code": res.status },
+    });
+    return result;
   }
 
   // ---- library ----
