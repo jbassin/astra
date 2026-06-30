@@ -354,15 +354,34 @@ def linguist_output_sensor(context: dg.SensorEvaluationContext) -> dg.SensorResu
     only transcripts that appear after adoption are "new" and trigger the (paid) chain — so
     re-enabling the sensor never reprocesses seed data. Reset the cursor (Dagit / the CLI)
     to re-adopt; deliberately reprocessing history is a manual backfill, not a sensor sweep.
+
+    CHRONICLE GATE (0021 Change B): in the normal branch a "new" session only runs once
+    `chronicle_gate_open(date)` — its `episodes/<date>.json` exists, or its show is
+    excluded/unmatched (carve-out). A gate-closed session is deliberately left
+    un-partitioned so it stays re-discoverable and fires the eval its episode lands.
     """
     existing = set(context.instance.get_dynamic_partitions(SESSIONS_NAME))
     found = linguist_io.new_sessions(existing)
-    adds = [mouthpiece_sessions.build_add_request(list(found))] if found else []
     if context.cursor is None:
-        # One-time adoption: register the backlog as known partitions, no runs.
+        # One-time adoption: register the ENTIRE transcript backlog as known, NO runs
+        # (the 2026-06-23 paid-replay guard). The chronicle gate only filters the normal
+        # branch below — adoption must still cover every transcript at rest.
+        adds = [mouthpiece_sessions.build_add_request(list(found))] if found else []
         return dg.SensorResult(dynamic_partitions_requests=adds, cursor="adopted")
+    # Normal eval: a session is registered + run ONLY once chronicle is ready for it
+    # (0021 Change B gate). A gate-closed session is left UN-partitioned so it stays
+    # "found" and is re-checked next eval — registering it would hide it from
+    # new_sessions forever, so it could never run once its episode lands. It fires
+    # exactly once, in the eval it becomes ready.
+    ready = {date: path for date, path in found.items() if linguist_io.chronicle_gate_open(date)}
+    deferred = sorted(found.keys() - ready.keys())
+    if deferred:
+        _log.info(
+            "mouthpiece deferring %d session(s) awaiting chronicle: %s", len(deferred), deferred
+        )
+    adds = [mouthpiece_sessions.build_add_request(list(ready))] if ready else []
     return dg.SensorResult(
-        run_requests=[dg.RunRequest(partition_key=key) for key in found],
+        run_requests=[dg.RunRequest(partition_key=key) for key in ready],
         dynamic_partitions_requests=adds,
     )
 

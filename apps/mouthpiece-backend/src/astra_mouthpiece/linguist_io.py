@@ -14,6 +14,7 @@ from collections.abc import Iterable
 from pathlib import Path
 
 import astra_linguist
+from astra_linguist.chronicle import load_episode_summary, show_for_date
 
 # linguist's assets.py writes under its app root: APP_ROOT/{transcripts,script}.
 _LINGUIST_ROOT = Path(astra_linguist.__file__).resolve().parents[2]
@@ -85,3 +86,15 @@ def new_sessions(
         if date not in seen and date not in found:
             found[date] = str(path)
     return found
+
+
+def chronicle_gate_open(date: str) -> bool:
+    """May this session run yet? (0021 Change B ordering gate.)
+
+    `True` once chronicle has written this session's `episodes/<date>.json` (the hard
+    gate) OR will never write one — `show_for_date(date) is None` carves out excluded
+    (`EXCLUDED_DATES`) / unmatched sessions, which must proceed ungated or mouthpiece
+    stalls on them forever. The caller only asks this for transcript-present sessions, so
+    `None` here means excluded/unknown-slug, not "no transcript".
+    """
+    return load_episode_summary(date) is not None or show_for_date(date) is None
