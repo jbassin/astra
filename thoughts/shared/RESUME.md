@@ -36,9 +36,23 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `95735d4`, 2026-06-30)
+## Current state — UPDATE THIS SECTION (as of commit `88e6057`, 2026-06-30)
 
-> **✅ OPS SIDE-QUEST DONE (2026-06-30) — stack-wide Discord alerting BUILT + LIVE + verified.** The
+> **✅ TELEMETRY COVERAGE PASS DONE + DEPLOYED + verified live (2026-06-30).** A repo-wide
+> "add spans/logs/metrics across all services" once-over: a 3-agent audit (cross-checked vs live SigNoz)
+> → 5 phases + a fix, each a CI-green commit (`a7a6a25` P1 correctness/identity · `1673a45` P2 TS services
+> · `24b2111` P3 Python depth · `cda5814` P4 heartwood-frontend · `262f5e0` P5 orator-controller→public
+> OTLP · **`88e6057` the metrics fix**), then **`just up`** (whole stack) + a SigNoz spot-check confirming
+> **all three signals flowing live**. **⭐ The spot-check caught a latent bug: TS metric instruments created
+> at module scope before `initTelemetry` are PERMANENT no-ops** (JS metrics has no deferred proxy provider;
+> traces+logs do) → fixed with **`lazyCounter`/`lazyHistogram` in `@astra/observe`**; this had silently
+> zeroed every TS metric for the repo's life. Verified live: `astra.orator.api.requests{unauthenticated}=5`
+> exact match. Full detail + the load-bearing gotchas in **[[telemetry-coverage-pass]]** (+ the warning is
+> now in [[telemetry-built-in]]). No open follow-ups that block; nice-to-haves noted in the memory (broaden
+> Class-A alerting to frontends; scribe Groq ASR cost still invisible). **▶ Main-track next step is unchanged:
+> heartwood Phase-4 content acceptance** (below).
+>
+> _(Prior side-quest, still true:)_ **✅ Stack-wide Discord alerting BUILT + LIVE + verified (`95735d4`/`f6e452e`).** The
 > craig-sync FUSE wedge (2026-06-29) silently stalled the pipeline ~6h with zero alerts; the wedge fix +
 > watchdog shipped earlier (`cd60af6`/`30929b5`). Now alerting is complete (`95735d4`): three failure
 > classes — **Class A** SigNoz `discord-ops` channel + `astra error/fatal logs` rule (in SigNoz's DB, not

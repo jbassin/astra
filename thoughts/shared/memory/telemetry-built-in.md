@@ -26,6 +26,11 @@ runtime**.
 - Wire **all three signals**: spans (`get_tracer`), metrics (`get_meter` counters/histograms
   at meaningful boundaries — per-session, per-item, cost), and logs (`get_logger("astra.<sub>")`,
   which the py+ts `observe` libs now route to SigNoz via a LoggerProvider).
+- **TS metrics: use `lazyCounter`/`lazyHistogram` from `@astra/observe`, NEVER `getMeter().createCounter()`
+  at module scope.** The JS metrics API has no deferred proxy (unlike `getTracer`/`getLogger`, which DO
+  defer), so a counter created before `initTelemetry` — which ES import hoisting guarantees for module-scope
+  instruments — is a **permanent no-op**. This silently zeroed every TS metric until 2026-06-30; full
+  detail in [[telemetry-coverage-pass]].
 - Instrument **cost/spend** wherever LLM/paid calls happen (incl. the dspy/litellm path, not
   just `LiteLLMClient`).
 - Keep the `libs/py/observe` and `libs/ts/observe` mirrors in lock-step (both wire
