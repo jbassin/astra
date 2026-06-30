@@ -11,9 +11,15 @@
  * `PlaybackStore` (`getTrack` + `markTrackError`) — the only DB surface the engine
  * touches. Everything else is a verbatim lift.
  */
+import { getMeter } from "@astra/observe";
 import type { PlaybackStore } from "../db/store";
 import { buildAudioFilter, computeGainDb } from "./gain";
 import type { TrackEndReason, VoiceAdapter, VoiceStateResolver } from "./voice";
+
+// No-op until initTelemetry runs in index.ts (safe in the fake-adapter unit tests).
+const tracksPlayed = getMeter("astra.orator-backend").createCounter("astra.orator.tracks.played", {
+  description: "Tracks started by the playback engine",
+});
 
 export type LoopMode = "none" | "track" | "playlist";
 export type PlaybackStatus = "idle" | "playing" | "paused";
@@ -264,6 +270,7 @@ export class PlaybackEngine {
       this.status = "playing";
       this.currentTitle = track.title;
       this.currentDurationMs = track.duration_ms;
+      tracksPlayed.add(1);
     } catch {
       await this.deps.store.markTrackError(track.id);
       return this.skipBroken(skipBudget);

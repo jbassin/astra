@@ -16,6 +16,8 @@
  */
 import { randomBytes } from "node:crypto";
 import { resolve } from "node:path";
+import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { SpanStatusCode } from "@opentelemetry/api";
 import type { Server } from "bun";
 import type { LibraryStore } from "../db/store";
 import { extractApiKey, hashKey } from "./apikeys";
@@ -33,6 +35,13 @@ import { keyRoutes } from "./routes/keys";
 import { libraryRoutes } from "./routes/library";
 import { playbackRoutes } from "./routes/playback";
 import { clearCookie, parseCookies, sessionCookie, signSession, verifySession } from "./sessions";
+
+// API observability: one span per authenticated API call + a request counter by outcome.
+const tracer = getTracer("astra.orator-backend");
+const log = getLogger("astra.orator-backend");
+const apiCounter = getMeter("astra.orator-backend").createCounter("astra.orator.api.requests", {
+  description: "Authenticated API requests, by outcome",
+});
 
 const SESSION_COOKIE = "orator_session";
 
@@ -165,30 +174,59 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
   }
 
   async function dispatchApi(req: Request, url: URL): Promise<Response> {
-    const auth = await authenticate(req);
-    if (!auth) return json({ error: "unauthenticated" }, 401);
-    const matched = matchRoute(API_ROUTES, req.method, url.pathname);
-    if (!matched) return json({ error: "not_found" }, 404);
-    try {
-      return await matched.route.handler({
-        req,
-        url,
-        params: matched.params,
-        session: auth.session,
-        authMethod: auth.method,
-        store,
-        config: { guildId: config.guildId, dataDir: config.dataDir },
-        services,
-      });
-    } catch (err) {
-      if (err instanceof HttpError) return json({ error: err.message }, err.status);
-      // PlaybackError and similar carry a numeric `status`.
-      const status = (err as { status?: unknown }).status;
-      if (typeof status === "number")
-        return json({ error: (err as Error).message ?? "error" }, status);
-      console.error("[orator] api error", err);
-      return json({ error: "internal" }, 500);
-    }
+    return tracer.startActiveSpan(
+      "orator.api",
+      { attributes: { "http.method": req.method, "url.path": url.pathname } },
+      async (span) => {
+        try {
+          const auth = await authenticate(req);
+          if (!auth) {
+            apiCounter.add(1, { outcome: "unauthenticated" });
+            return json({ error: "unauthenticated" }, 401);
+          }
+          const matched = matchRoute(API_ROUTES, req.method, url.pathname);
+          if (!matched) {
+            apiCounter.add(1, { outcome: "not_found" });
+            return json({ error: "not_found" }, 404);
+          }
+          try {
+            const res = await matched.route.handler({
+              req,
+              url,
+              params: matched.params,
+              session: auth.session,
+              authMethod: auth.method,
+              store,
+              config: { guildId: config.guildId, dataDir: config.dataDir },
+              services,
+            });
+            span.setAttribute("http.status_code", res.status);
+            apiCounter.add(1, { outcome: "ok" });
+            return res;
+          } catch (err) {
+            if (err instanceof HttpError) {
+              apiCounter.add(1, { outcome: "client_error" });
+              return json({ error: err.message }, err.status);
+            }
+            // PlaybackError and similar carry a numeric `status`.
+            const status = (err as { status?: unknown }).status;
+            if (typeof status === "number") {
+              apiCounter.add(1, { outcome: "client_error" });
+              return json({ error: (err as Error).message ?? "error" }, status);
+            }
+            apiCounter.add(1, { outcome: "error" });
+            span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
+            log.emit({
+              severityText: "ERROR",
+              body: `api error on ${req.method} ${url.pathname}: ${err instanceof Error ? err.message : String(err)}`,
+            });
+            return json({ error: "internal" }, 500);
+          }
+        } finally {
+          span.end();
+        }
+      },
+    );
   }
 
   async function serveStatic(req: Request): Promise<Response> {

@@ -13,7 +13,7 @@
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "@astra/config";
-import { getTracer, initTelemetry } from "@astra/observe";
+import { getLogger, getMeter, getTracer, initTelemetry } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { validateRenderRequest } from "./caps";
 import { RenderCapError, RenderService } from "./renderService";
@@ -34,6 +34,17 @@ try {
   );
 }
 const tracer = getTracer(serviceName);
+const log = getLogger(serviceName);
+const meter = getMeter(serviceName);
+// One render = one PNG; outcome distinguishes ok / cap-rejected / rate-limited / error,
+// and the histogram makes render latency alertable without parsing spans.
+const renderCounter = meter.createCounter("astra.vellum.render.requests", {
+  description: "PNG render requests by outcome",
+});
+const renderDuration = meter.createHistogram("astra.vellum.render.duration_ms", {
+  description: "PNG render wall-clock",
+  unit: "ms",
+});
 
 // SEC-5: coarse per-IP fixed-window rate limit in front of the browser pool.
 const RATE = { windowMs: 60_000, max: 60 };
@@ -104,6 +115,7 @@ const server = Bun.serve({
     if (url.pathname === "/render" && req.method === "POST") {
       const ip = srv.requestIP(req)?.address ?? "unknown";
       if (rateLimited(ip)) {
+        renderCounter.add(1, { outcome: "rate_limited" });
         return new Response("rate limited", { status: 429, headers: cors });
       }
       let body: unknown;
@@ -128,19 +140,30 @@ const server = Bun.serve({
           },
         },
         async (span) => {
+          const startedAt = Date.now();
+          const mode = validation.value.mode;
           try {
             const png = await service.render(validation.value);
             span.setAttribute("vellum.png_bytes", png.length);
+            renderCounter.add(1, { outcome: "ok", mode });
+            renderDuration.record(Date.now() - startedAt, { outcome: "ok", mode });
             return new Response(new Uint8Array(png), {
               headers: { ...cors, "content-type": "image/png" },
             });
           } catch (err) {
+            const outcome = err instanceof RenderCapError ? "capped" : "error";
+            renderCounter.add(1, { outcome, mode });
+            renderDuration.record(Date.now() - startedAt, { outcome, mode });
             if (err instanceof RenderCapError) {
               span.setStatus({ code: SpanStatusCode.ERROR, message: err.message });
               return new Response(err.message, { status: err.status, headers: cors });
             }
             span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
-            console.error(`[${serviceName}] render failed:`, err);
+            log.emit({
+              severityText: "ERROR",
+              body: `render failed: ${err instanceof Error ? err.message : String(err)}`,
+              attributes: { "vellum.mode": mode },
+            });
             return new Response("render failed", { status: 500, headers: cors });
           } finally {
             span.end();

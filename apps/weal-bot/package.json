@@ -13,6 +13,7 @@
     "@astra/config": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/ontology": "workspace:*",
+    "@opentelemetry/api": "^1.9.1",
     "discord.js": "^14"
   }
 }

@@ -11,11 +11,26 @@
  */
 import { mkdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
+import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { SpanStatusCode } from "@opentelemetry/api";
 import type { DownloadJob, DownloadJobItem, LibraryStore } from "../db/store";
 import { runPool } from "../lib/pool";
 import type { AudioProbe, AudioProber } from "../media/probe";
 import { extractVideoId, isPlaylistUrl, type YtDlp } from "../media/ytdlp";
 import type { JobHub } from "./jobhub";
+
+// One ingest item = one yt-dlp download (+ optional loudness probe), the service's
+// dominant multi-minute unit of work. Traced + timed + counted by outcome.
+const tracer = getTracer("astra.orator-backend");
+const log = getLogger("astra.orator-backend");
+const meter = getMeter("astra.orator-backend");
+const ingestCounter = meter.createCounter("astra.orator.ingest.items", {
+  description: "Ingest items processed, by outcome",
+});
+const ingestDuration = meter.createHistogram("astra.orator.ingest.duration_ms", {
+  description: "Per-item ingest wall-clock (yt-dlp download + loudness probe)",
+  unit: "ms",
+});
 
 export interface IngestDeps {
   store: LibraryStore;
@@ -170,7 +185,10 @@ export class IngestService {
         target: job.type === "single" ? { url: job.source_url } : { videoId: item.video_id },
       }));
       void this.runItems(job.id, work).catch((err) =>
-        console.error(`[orator] resume of job ${job.id} failed`, err),
+        log.emit({
+          severityText: "ERROR",
+          body: `resume of job ${job.id} failed: ${err instanceof Error ? err.message : String(err)}`,
+        }),
       );
     }
     return jobs.length;
@@ -181,6 +199,37 @@ export class IngestService {
     item: DownloadJobItem,
     target: { url?: string; videoId?: string },
   ): Promise<void> {
+    await tracer.startActiveSpan(
+      "orator.ingest.item",
+      { attributes: { "orator.job_id": jobId, "orator.video_id": item.video_id ?? "" } },
+      async (span) => {
+        const startedAt = Date.now();
+        try {
+          const outcome = await this._ingestItem(jobId, item, target);
+          span.setAttribute("orator.outcome", outcome);
+          ingestCounter.add(1, { outcome });
+          ingestDuration.record(Date.now() - startedAt, { outcome });
+        } catch (err) {
+          span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
+          ingestCounter.add(1, { outcome: "error" });
+          ingestDuration.record(Date.now() - startedAt, { outcome: "error" });
+          log.emit({
+            severityText: "ERROR",
+            body: `ingest item failed (job ${jobId}, item ${item.id}): ${err instanceof Error ? err.message : String(err)}`,
+          });
+          throw err;
+        } finally {
+          span.end();
+        }
+      },
+    );
+  }
+
+  private async _ingestItem(
+    jobId: number,
+    item: DownloadJobItem,
+    target: { url?: string; videoId?: string },
+  ): Promise<"ok" | "duplicate"> {
     const { store } = this.deps;
     const job = await store.getDownloadJob(jobId);
     await store.updateJobItem(item.id, { status: "downloading", progressPct: 0 });
@@ -196,7 +245,7 @@ export class IngestService {
           trackId: existing.id,
           error: "duplicate",
         });
-        return;
+        return "duplicate";
       }
     }
 
@@ -235,5 +284,6 @@ export class IngestService {
       status: "ready",
     });
     await store.updateJobItem(item.id, { status: "done", progressPct: 100, trackId: track.id });
+    return "ok";
   }
 }

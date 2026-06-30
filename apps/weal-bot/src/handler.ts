@@ -7,7 +7,9 @@
  * `to_roll_lazy` are computed by the roller but ignored here (as `handler.rs` does).
  */
 
+import { getLogger, getMeter, getTracer } from "@astra/observe";
 import type { WealHost } from "@astra/ontology";
+import { SpanStatusCode } from "@opentelemetry/api";
 import { saveDie, type WealStore } from "./db";
 import { hostSays, rollGoodness } from "./hosts";
 import {
@@ -63,6 +65,14 @@ function choose<T>(rng: RollRng, xs: readonly T[]): T {
   return rng.choose([...xs]);
 }
 
+// Module-scope instruments (no-ops until initTelemetry runs in index.ts; safe in the dry
+// unit tests). One span per non-empty message wraps the whole roll/save/reseed pipeline.
+const tracer = getTracer("astra.weal-bot");
+const log = getLogger("astra.weal-bot");
+const rollsCounter = getMeter("astra.weal-bot").createCounter("astra.weal.rolls", {
+  description: "Dice rolls evaluated, by goodness",
+});
+
 /** Entry: classify a raw Discord message and run the matching flow. */
 export async function handleMessage(
   raw: string,
@@ -70,14 +80,22 @@ export async function handleMessage(
   deps: HandlerDeps,
 ): Promise<void> {
   const action = classify(raw);
-  switch (action.kind) {
-    case "empty":
-      return;
-    case "reseed":
-      return reseed(profile, deps);
-    case "roll":
-      return doRoll(action.text, profile, deps);
-  }
+  if (action.kind === "empty") return;
+  await tracer.startActiveSpan(
+    "weal.handleMessage",
+    { attributes: { "weal.action": action.kind, "weal.player": profile.playerName } },
+    async (span) => {
+      try {
+        if (action.kind === "reseed") await reseed(profile, deps);
+        else await doRoll(action.text, profile, deps);
+      } catch (err) {
+        span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
+        throw err;
+      } finally {
+        span.end();
+      }
+    },
+  );
 }
 
 async function reseed(profile: Profile, deps: HandlerDeps): Promise<void> {
@@ -104,6 +122,11 @@ async function doRoll(text: string, profile: Profile, deps: HandlerDeps): Promis
 async function handleDie(roll: RollDie, profile: Profile, deps: HandlerDeps): Promise<void> {
   await saveDie(deps.store, roll, profile.playerId, deps.getSeed().blameId);
   const goodness = rollGoodness(roll);
+  rollsCounter.add(1, { goodness: String(goodness) });
+  log.emit({
+    severityText: "INFO",
+    body: `roll: ${profile.playerName} → ${rollValue(roll)} (${String(goodness)})`,
+  });
   const { host, line } = hostSays(deps.host("gsr"), roll, deps.rng);
   await deps.send({
     host,

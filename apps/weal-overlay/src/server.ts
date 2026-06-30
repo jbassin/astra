@@ -1,7 +1,17 @@
 import { resolve } from "node:path";
+import { getLogger, getMeter, getTracer } from "@astra/observe";
 import type { Server } from "bun";
 import { RollHub } from "./hub";
 import { parseRollEvent } from "./schema";
+
+// Module-scope instruments (no-ops until initTelemetry runs in the entrypoint; safe in
+// unit tests). The overlay's only write path is ingest — count it by outcome + trace it.
+const log = getLogger("astra.weal-overlay");
+const tracer = getTracer("astra.weal-overlay");
+const rollsCounter = getMeter("astra.weal-overlay").createCounter(
+  "astra.weal.overlay.rolls_ingested",
+  { description: "Roll events POSTed to the overlay ingest, by outcome" },
+);
 
 const SSE_HEADERS = {
   "content-type": "text/event-stream",
@@ -35,19 +45,32 @@ export function createApp(opts: AppOptions): {
   const { token, distDir, rumEndpoint = "" } = opts;
 
   async function ingest(req: Request): Promise<Response> {
-    if (token !== null && req.headers.get("x-eerie-token") !== token) {
-      return new Response("unauthorized\n", { status: 401 });
-    }
-    let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return new Response("invalid json\n", { status: 400 });
-    }
-    const event = parseRollEvent(body);
-    if (!event) return new Response("invalid roll payload\n", { status: 400 });
-    hub.publish(event);
-    return new Response(null, { status: 204 });
+    return tracer.startActiveSpan("overlay.ingest", async (span) => {
+      try {
+        if (token !== null && req.headers.get("x-eerie-token") !== token) {
+          rollsCounter.add(1, { outcome: "unauthorized" });
+          return new Response("unauthorized\n", { status: 401 });
+        }
+        let body: unknown;
+        try {
+          body = await req.json();
+        } catch {
+          rollsCounter.add(1, { outcome: "invalid_json" });
+          return new Response("invalid json\n", { status: 400 });
+        }
+        const event = parseRollEvent(body);
+        if (!event) {
+          rollsCounter.add(1, { outcome: "invalid_payload" });
+          return new Response("invalid roll payload\n", { status: 400 });
+        }
+        hub.publish(event);
+        rollsCounter.add(1, { outcome: "ok" });
+        log.emit({ severityText: "INFO", body: "roll ingested → broadcast to feed" });
+        return new Response(null, { status: 204 });
+      } finally {
+        span.end();
+      }
+    });
   }
 
   function feed(): Response {

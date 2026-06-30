@@ -6,6 +6,8 @@
  * through ffmpeg (prism-media) with the loudness/limiter filter into a Raw Opus
  * resource.
  */
+
+import { getLogger, getTracer } from "@astra/observe";
 import {
   AudioPlayerStatus,
   type AudioResource,
@@ -17,9 +19,13 @@ import {
   type VoiceConnection,
   VoiceConnectionStatus,
 } from "@discordjs/voice";
+import { SpanStatusCode } from "@opentelemetry/api";
 import type { Client } from "discord.js";
 import prism from "prism-media";
 import type { TrackEndReason, VoiceAdapter } from "./voice";
+
+const tracer = getTracer("astra.orator-backend");
+const log = getLogger("astra.orator-backend");
 
 export class DiscordVoiceAdapter implements VoiceAdapter {
   private connection: VoiceConnection | null = null;
@@ -42,7 +48,7 @@ export class DiscordVoiceAdapter implements VoiceAdapter {
       if (o.status !== n.status) console.log(`[orator] audio player ${o.status} → ${n.status}`);
     });
     this.player.on("error", (err) => {
-      console.error("[orator] audio player error:", err?.message ?? err);
+      log.emit({ severityText: "ERROR", body: `audio player error: ${err?.message ?? err}` });
       this.fireEnd("error");
     });
   }
@@ -59,35 +65,51 @@ export class DiscordVoiceAdapter implements VoiceAdapter {
   }
 
   async join(channelId: string): Promise<void> {
-    // Gateway-cached guild — its voiceAdapterCreator is wired to the live shard.
-    const guild = this.client.guilds.cache.get(this.guildId);
-    if (!guild) throw new Error(`guild ${this.guildId} not in gateway cache`);
-    console.log(`[orator] joining voice channel ${channelId}…`);
-    const conn = joinVoiceChannel({
-      channelId,
-      guildId: this.guildId,
-      adapterCreator: guild.voiceAdapterCreator,
-    });
-    if (conn !== this.connection) {
-      conn.on("stateChange", (o, n) =>
-        console.log(`[orator] voice connection ${o.status} → ${n.status}`),
-      );
-      conn.on("error", (err) =>
-        console.error("[orator] voice connection error:", err?.message ?? err),
-      );
-    }
-    this.connection = conn;
-    conn.subscribe(this.player);
-    try {
-      await entersState(conn, VoiceConnectionStatus.Ready, 20_000);
-    } catch (err) {
-      conn.destroy();
-      this.connection = null;
-      this.channelId = null;
-      throw new Error(`voice_connect_timeout: ${(err as Error).message}`);
-    }
-    this.channelId = channelId;
-    console.log(`[orator] voice connection READY in ${channelId}`);
+    await tracer.startActiveSpan(
+      "orator.voice.join",
+      { attributes: { "orator.channel_id": channelId } },
+      async (span) => {
+        try {
+          // Gateway-cached guild — its voiceAdapterCreator is wired to the live shard.
+          const guild = this.client.guilds.cache.get(this.guildId);
+          if (!guild) throw new Error(`guild ${this.guildId} not in gateway cache`);
+          log.emit({ severityText: "INFO", body: `joining voice channel ${channelId}…` });
+          const conn = joinVoiceChannel({
+            channelId,
+            guildId: this.guildId,
+            adapterCreator: guild.voiceAdapterCreator,
+          });
+          if (conn !== this.connection) {
+            conn.on("stateChange", (o, n) =>
+              console.log(`[orator] voice connection ${o.status} → ${n.status}`),
+            );
+            conn.on("error", (err) =>
+              log.emit({
+                severityText: "ERROR",
+                body: `voice connection error: ${err?.message ?? err}`,
+              }),
+            );
+          }
+          this.connection = conn;
+          conn.subscribe(this.player);
+          try {
+            await entersState(conn, VoiceConnectionStatus.Ready, 20_000);
+          } catch (err) {
+            conn.destroy();
+            this.connection = null;
+            this.channelId = null;
+            throw new Error(`voice_connect_timeout: ${(err as Error).message}`);
+          }
+          this.channelId = channelId;
+          log.emit({ severityText: "INFO", body: `voice connection READY in ${channelId}` });
+        } catch (err) {
+          span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
+          throw err;
+        } finally {
+          span.end();
+        }
+      },
+    );
   }
 
   leave(): void {
