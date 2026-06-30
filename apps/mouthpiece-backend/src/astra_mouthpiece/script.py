@@ -129,6 +129,7 @@ def generate_two_pass(
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     threads_block: str = "",
+    continuity_block: str = "",
 ) -> Script:
     """Pass A (free-text improv) → Pass B (structured dressing, no polishing).
 
@@ -138,7 +139,7 @@ def generate_two_pass(
     comes from the first segment). A short transcript is one segment — a single Pass B call,
     unchanged."""
     user_content = build_script_user_content(
-        digest.synopsis, digest.session_id, digest.beats, grounding, threads_block
+        digest.synopsis, digest.session_id, digest.beats, grounding, threads_block, continuity_block
     )
     # Pass A — raw, imperfect plaintext transcript.
     transcript = client.call_text(
@@ -172,13 +173,19 @@ def generate_one_shot(
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     threads_block: str = "",
+    continuity_block: str = "",
 ) -> Script:
     """Legacy one-shot path (the A/B `two_pass=False` arm) — forced tool only."""
     raw = client.call_tool(
         _tool_req(
             build_script_system_prompt(hosts),
             build_script_user_content(
-                digest.synopsis, digest.session_id, digest.beats, grounding, threads_block
+                digest.synopsis,
+                digest.session_id,
+                digest.beats,
+                grounding,
+                threads_block,
+                continuity_block,
             ),
             model,
             max_tokens,
@@ -197,6 +204,7 @@ def generate_script(
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     threads_block: str = "",
+    continuity_block: str = "",
     sharpen: bool = False,
 ) -> Script:
     """Generate a two-host script from a digest. Two-pass by default (the crux);
@@ -211,6 +219,7 @@ def generate_script(
         model=model,
         max_tokens=max_tokens,
         threads_block=threads_block,
+        continuity_block=continuity_block,
     )
     if sharpen:
         from .sharpen import sharpen_voices  # lazy: sharpen imports parse_script from here

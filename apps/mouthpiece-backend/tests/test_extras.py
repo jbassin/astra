@@ -6,7 +6,9 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+from astra_linguist.chronicle import EpisodeEntry, EpisodeSummary, Season
 from astra_llm import ToolCallRequest
+from astra_mouthpiece.continuity import CONTINUITY_BUDGET, build_continuity_block
 from astra_mouthpiece.linguist_io import (
     new_sessions,
     parse_canonical_transcript,
@@ -23,6 +25,7 @@ from astra_mouthpiece.mega import (
 )
 from astra_mouthpiece.models import (
     Beat,
+    GroundingEntry,
     HostConfig,
     HostPersona,
     Script,
@@ -30,6 +33,7 @@ from astra_mouthpiece.models import (
     SessionDigest,
     Thread,
 )
+from astra_mouthpiece.prompts import build_script_user_content
 from astra_mouthpiece.script import ScriptParseError
 from astra_mouthpiece.sharpen import sharpen_voices
 from astra_mouthpiece.threads import format_threads, load_threads, merge_threads, save_threads
@@ -153,6 +157,77 @@ def test_threads_format_and_roundtrip(tmp_path: Path) -> None:
     save_threads(p, threads)
     assert load_threads(p) == threads
     assert load_threads(tmp_path / "missing.json") == []
+
+
+# ── 0021 Change B: recap continuity block + script-stage injection ───────────
+def _ep(
+    date: str,
+    title: str,
+    *,
+    synopsis: str = "syn",
+    cliff: str = "",
+    beats: list[str] | None = None,
+) -> EpisodeEntry:
+    return EpisodeEntry(
+        date=date,
+        show="through-a-song-darkly",
+        summary=EpisodeSummary(
+            title=title,
+            synopsis=synopsis,
+            key_beats=beats or [],
+            characters_present=[],
+            locations=[],
+            factions=[],
+            items=[],
+            cliffhanger=cliff,
+        ),
+    )
+
+
+def test_continuity_block_renders_season_and_priors() -> None:
+    prior = [
+        _ep("2025-10-20", "E1"),
+        _ep("2025-10-27", "E2"),
+        _ep("2025-11-4", "E3", cliff="A door opens.", beats=["b1", "b2"]),  # most-recent
+    ]
+    season = Season(number=1, title="The Descent", arc_summary="They go under.", episode_dates=[])
+    block = build_continuity_block(prior, season)
+    assert 'SEASON — "The Descent": They go under.' in block
+    assert "PREVIOUSLY, on this show" in block
+    assert "- E1 — syn" in block and "- E2 — syn" in block  # older: title + synopsis only
+    # the most-recent episode gets its cliffhanger + a few beats
+    assert "Cliffhanger: A door opens." in block
+    assert "Beats: b1; b2" in block
+    # older episodes do NOT carry beats/cliffhanger detail
+    assert block.index("- E1 — syn") < block.index("Cliffhanger:")
+
+
+def test_continuity_block_empty_when_nothing() -> None:
+    assert build_continuity_block([], None) == ""
+
+
+def test_continuity_block_budget_trims_least_recent_first() -> None:
+    big = "x" * 400
+    prior = [_ep(f"2025-1-{i}", f"E{i}", synopsis=big) for i in range(1, 9)]  # 8 fat episodes
+    block = build_continuity_block(prior, None, budget=600)
+    assert len(block) <= 600
+    assert "E8" in block  # most-recent kept
+    assert "E1" not in block  # least-recent trimmed first
+
+
+def test_script_user_content_byte_identical_when_no_continuity() -> None:
+    beats = [Beat(order=1, summary="they fought")]
+    grounding = [GroundingEntry(refs=["r"], title="Page", path="page", text="lore")]
+    base = build_script_user_content("syn", "000.x.2025-1-1", beats, grounding)
+    assert build_script_user_content("syn", "000.x.2025-1-1", beats, grounding, "") == base
+    assert build_script_user_content("syn", "000.x.2025-1-1", beats, grounding, "", "") == base
+    # with continuity, the block lands ABOVE the session beats
+    withc = build_script_user_content(
+        "syn", "000.x.2025-1-1", beats, grounding, "", "PREVIOUSLY: stuff"
+    )
+    assert "PREVIOUSLY: stuff" in withc
+    assert withc.index("PREVIOUSLY: stuff") < withc.index("Things that happened this session")
+    assert CONTINUITY_BUDGET == 6_000
 
 
 # ── linguist I/O ─────────────────────────────────────────────────────────────

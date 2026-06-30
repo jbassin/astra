@@ -23,11 +23,13 @@ from pathlib import Path
 
 import dagster as dg
 from astra_akasha_backend.corpus import load_corpus
+from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_date
 from astra_llm import LiteLLMClient
 from astra_observe import get_logger, get_meter, get_tracer
 
 from . import linguist_io
 from .assemble import assemble_episode
+from .continuity import build_continuity_block
 from .digest import distill_session
 from .episodes_index import (
     INDEX_FILENAME,
@@ -162,6 +164,13 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         pages = pages_from_corpus(load_corpus())
         hosts = load_hosts()
         threads_block = format_threads(load_threads(_out_root() / "threads.json"))
+        # Recap continuity (0021 Change B): prior episodes + best-effort season arc of THIS
+        # show. The ordering gate guarantees this session's episode (and so 1..N-1) exists;
+        # a carve-out (excluded/unmatched → show is None) simply yields no continuity.
+        show = show_for_date(key)
+        prior = recent_prior_entries(key, show.slug) if show else []
+        season = season_for(key, show.slug) if show else None
+        continuity_block = build_continuity_block(prior, season)
         script = build_episode_script(
             LiteLLMClient(),
             digest,
@@ -169,8 +178,11 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
             hosts,
             two_pass=True,
             threads_block=threads_block,
+            continuity_block=continuity_block,
             model=_llm_model(),
         )
+        span.set_attribute("mouthpiece.continuity_episodes", len(prior))
+        span.set_attribute("mouthpiece.continuity_chars", len(continuity_block))
         _atomic_write(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
         span.set_attribute("mouthpiece.turns", len(script.turns))
         _log.info("mouthpiece scripted %s → %d turns (%s)", key, len(script.turns), script.title)

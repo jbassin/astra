@@ -240,8 +240,9 @@ def build_script_user_content(
     beats: list[Beat],
     grounding: list[GroundingEntry],
     threads_block: str = "",
+    continuity_block: str = "",
 ) -> str:
-    """Per-session user content: digest beats + matched wiki excerpts + threads."""
+    """Per-session user content: prior-episode continuity + digest beats + wiki + threads."""
     rendered_beats = "\n\n".join(render_beat(b) for b in beats)
 
     wiki_parts: list[str] = []
@@ -261,12 +262,15 @@ def build_script_user_content(
     )
 
     threads = "" if threads_block.strip() == "" else f"\n\n---\n\n{threads_block.strip()}"
+    # Continuity frames "what came before" BEFORE this session's beats. Empty → the prompt
+    # is byte-identical to the no-context form (forward-only).
+    continuity = "" if continuity_block.strip() == "" else f"{continuity_block.strip()}\n\n---\n\n"
 
     return f"""SESSION DIGEST — {session_id}
 
 Synopsis: {digest_synopsis}
 
-Things that happened this session, in the order they happened — walk through them
+{continuity}Things that happened this session, in the order they happened — walk through them
 roughly in this order so the recap is easy to follow, but talk ABOUT each moment as
 you reach it; don't just read the list out:
 {rendered_beats}
