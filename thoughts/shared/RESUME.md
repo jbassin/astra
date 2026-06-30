@@ -61,13 +61,21 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > accepted it (tree identical). Code is correct + live. (Pause the timer next time:
 > `systemctl --user stop linguist-commit.timer`.) Full gotchas in [[pipeline-reorder-0021]].
 >
-> **▶ NEXT: write the Change B spec** (`octo:spec` → `thoughts/astra/specs/0021-pipeline-chronicle-context-spec.md`).
-> Decisions LOCKED (in the scope doc + the memory): B1 = mouthpiece context = **prior episodes + this
-> session's arc/season placement** (not its own summary); B2 = inject at the **script stage**
-> (`build_script_user_content`, faerrin `threads_block` precedent); B3 = **hard gate + carve-out**
-> (mouthpiece waits for `timeline/episodes/<date>.json` EXCEPT chronicle-skipped shows; preserve the
-> backlog-adoption invariant). Change B ports faerrin caster's `running-threads` continuity pattern.
-> Scope doc: `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`.
+> **✅ Change B — SPECCED** (`thoughts/astra/specs/0021-pipeline-chronicle-context-spec.md`, 2026-06-30;
+> seams re-verified file:line). Stakeholder decisions resolved: context = the **3 most-recent prior
+> episodes, same show only** (`EpisodeEntry.show`) **+ best-effort season/arc** from `seasons.json`
+> (omitted when the hourly aggregate lags — never gated on); inject at the **script stage** (mirror
+> `threads_block`); **keep the package-path convention** (import `astra_linguist.chronicle` directly —
+> no new config). The gate = hard gate on `episodes/<date>.json` + carve-out (`show_for_date None` →
+> excluded/unmatched run ungated). **THE load-bearing gate design:** move partition-registration to
+> `ready` sessions only in the sensor's normal branch (a gate-closed session must stay un-partitioned so
+> it's re-discoverable and runs the eval its episode lands; first-eval adoption still adopts the whole
+> backlog → no paid replay). 4 slices (S1 linguist selectors / S2 continuity block + script plumbing +
+> asset wiring / S3 gated sensor + carve-out / S4 deploy + re-render verify). Forward-only.
+>
+> **▶ NEXT: implement Change B** (`octo:embrace` against the spec, start S1 = the linguist chronicle
+> selectors `load_episode_summary`/`recent_prior_entries`/`season_for`). Scope doc:
+> `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`; memory [[pipeline-reorder-0021]].
 >
 > _(Below: prior sessions — the heartwood Phase-4 content acceptance gate remains the other open
 > main-track item; nothing changed there this session.)_

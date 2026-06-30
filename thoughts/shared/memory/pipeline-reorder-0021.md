@@ -52,8 +52,29 @@ transcript). Teardown = rm the fixture zip + `saved/<date>` + `apps/linguist/dat
 both runs (via `dagster-daemon python`). **Also noted:** the `2026-6-27` incoming zip is a degenerate
 recording (`info.txt`+`raw.dat`, NO `.aac`) → would fail `session_audio` on zero tracks if reprocessed.
 
-**▶ NEXT for 0021: write the Change B spec** (`0021-pipeline-chronicle-context-spec.md`) — decisions
-B1/B2/B3 below are locked. The planning facts for both changes follow.
+## CHANGE B (chronicle → mouthpiece context + ordering gate) — SPECCED (`0021-pipeline-chronicle-context-spec.md`)
+Spec written 2026-06-30; seams re-verified against live code (file:line). **Stakeholder decisions
+(2026-06-30):** N = **3 most-recent prior episodes**, **same show only** (`EpisodeEntry.show`), **+
+best-effort season/arc** from `seasons.json` (omitted when the hourly aggregate hasn't placed the date —
+never gated on); inject at the **script stage**; **keep the package-path convention** (import
+`astra_linguist.chronicle` directly — no new config field). **THE load-bearing gate design (the subtle
+part):** the gate moves **partition-registration to `ready` sessions only** in the sensor's normal
+branch (NOT all `found`) — if a gate-closed session were adopted as a partition, `new_sessions` would
+never surface it again so it could never run after its episode lands. Leaving it un-partitioned keeps it
+"found"/re-checked each eval → it partitions+runs in the SAME eval it becomes ready (discovery==partition
+==run preserved for ready sessions). **First-eval `cursor is None` adoption still adopts the WHOLE
+transcript backlog with no runs** (the 2026-06-23 paid-replay guard). Carve-out = `show_for_date(date) is
+None` (excluded/unmatched) runs ungated. New linguist selectors `load_episode_summary`/
+`recent_prior_entries`/`season_for` (chronicle.py); new mouthpiece `continuity.py` (mirror `threads.py`)
++ `continuity_block: str = ""` threaded through `build_episode_script`→`generate_script`→
+`build_script_user_content` (byte-identical prompt when `""`); own `CONTINUITY_BUDGET` separate from
+`GROUNDING_BUDGET=24_000`. Chronicle's `session_episode_summary` is `deps=session_transcripts` → episode
+N lands in the SAME linguist run as N's transcript, so the gate usually only absorbs an in-run write-order
+race (~30s worst case). Forward-only. 4 slices (S1 linguist selectors / S2 continuity block + script
+plumbing + asset wiring / S3 gated sensor + carve-out / S4 deploy + re-render verify). **▶ implement.**
+
+**▶ NEXT for 0021: implement Change B** (`octo:embrace` against the spec, start S1). The planning facts
+for both changes follow.
 
 ---
 
@@ -105,9 +126,9 @@ sequentially, zero concurrency) — net-new refinement, not a regression. Change
 the portable continuity-injection shape; the Show→Season→Episode chronicle itself is net-new.
 
 **Change A spec = `thoughts/astra/specs/0021-pipeline-scribe-parallel-spec.md` — BUILT (all 4 slices,
-`6dc4a63`); Status = BUILT.** Scope doc = `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`.
-**Change B spec NOT yet written** (decisions B1/B2/B3 + verified seams above are ready to spec).
+`6dc4a63`).** **Change B spec = `thoughts/astra/specs/0021-pipeline-chronicle-context-spec.md` — WRITTEN
+(ready to implement).** Scope doc = `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`.
 
-**▶ NEXT:** write the Change B spec (`octo:spec` → `0021-pipeline-chronicle-context-spec.md`), then implement it.
+**▶ NEXT:** implement Change B (`octo:embrace` against the spec, start S1 = linguist selectors).
 Builds on [[chronicle-0019-gotchas]] + [[mouthpiece-glm-debate-switch]] + [[pipeline-live-run-gotchas]]
 + [[config-single-source]] + [[telemetry-built-in]] + [[heartwood-0020-gotchas]] (the never-force-push rule).
