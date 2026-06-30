@@ -85,4 +85,20 @@ in `thoughts/shared/research/2026-06-27-akasha-chronicle-0019-thoughts.md` +
   route's loader `slug` matches, so `computeOpen`'s prefix-match auto-opens the current
   episode's folders and highlights the leaf active.
 
+**2026-06-30 — the live sensor MISSED the first post-launch session (2026-6-29):** no
+`timeline/episodes/2026-6-29.json` was generated despite the transcript landing. Root cause = the deployed
+`dagster-code` image was **stale** — it predated `390298e` (chronicle S2), which added
+`session_episode_summary` to `scribe_output_sensor`'s `target=[...]`. The live sensor run for the partition
+(`6bdf5c56`) therefore planned **only** `session_transcripts` + `correction_candidates` (proven via the
+`event_logs` table: no `session_episode_summary` `ASSET_MATERIALIZATION_PLANNED`). **It won't self-heal** —
+`session_episode_summary` is one-shot per partition (sensor cursor advanced) and the hourly schedule only
+runs the **aggregate** `campaign_timeline`, which reads existing episode files. **Lesson: a new linguist
+asset wired into the live sensor is NOT live until `docker compose build dagster-code` / `just up`** (the
+same image-staleness class as the `EXCLUDED_DATES` note above and [[mouthpiece-two-host-gotchas]]). Today's
+`just up`s rebuilt the image (current container HAS the 3-asset target), so future sessions are covered;
+**2026-6-29 is the lone orphan** — backfill by materializing `session_episode_summary` for it (then
+`campaign_timeline`). Related: the `linguist/timeline` dir was also **unmounted** from the Dagster services
+(container output never reached the host) — now fixed by the [[deploy-artifacts-run-as-user]] change, so a
+backfill lands host-owned.
+
 Builds on [[akasha-frontend-0011-gotchas]] + [[config-single-source]] + [[telemetry-built-in]].

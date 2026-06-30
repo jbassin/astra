@@ -36,8 +36,31 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `88e6057`, 2026-06-30)
+## Current state — UPDATE THIS SECTION (as of commit `6cd6c45`, 2026-06-30)
 
+> **✅ DEPLOY: volumes externalized to a gitignored `artifacts/` + containers run as 1000:1000 — DONE +
+> DEPLOYED + verified live + pushed (`6cd6c45`, 2026-06-30).** One commit (5 files: `.gitignore`,
+> `deploy/docker-compose.yml`, `dagster/Dockerfile`, `apps/vellum-render/Dockerfile`, `justfile`). The 6
+> astra named volumes (3 audio + 3 Postgres) are now **bind mounts under `/artifacts/`** (gitignored), and
+> all 13 astra app/Dagster containers run as **`user: "1000:1000"`** so pipeline writes land host-owned
+> (the heartwood `user:1000` precedent, applied stack-wide). **SigNoz kept its own named volumes** (vendored,
+> disposable telemetry — by decision). Container paths unchanged → **no config.kdl edit**. Migration ran
+> live (copy volume→bind via root throwaway containers; chowned 334 pre-existing root-owned files to 1000),
+> verified: all containers healthy as 1000 (incl. vellum-render Chromium), Postgres data intact on the bind
+> mounts, container writes now land `1000:1000`, audio serves 206, edge 200, SigNoz 7 services 0-error.
+> **Bonus fix folded in:** `linguist/timeline` is now in the Dagster mount anchor (was package-relative but
+> unmounted → container-written chronicle output never reached the host). **The 6 old named volumes are
+> RETAINED as backup (~25G)** — reclaim when comfortable: `docker volume rm astra-{akasha,mouthpiece,orator}-audio
+> astra-{dagster,weal,orator}-pg`. Full gotchas in **[[deploy-artifacts-run-as-user]]**.
+>
+> _(Diagnostic this session, no code change:)_ **Chronicle didn't run for 2026-6-29** — root cause = the
+> deployed `dagster-code` image was **stale** (predated chronicle `390298e` which added `session_episode_summary`
+> to `scribe_output_sensor`'s target), so the live sensor run materialized only `session_transcripts` +
+> `correction_candidates`. It won't self-heal (sensor is one-shot per partition; the hourly schedule only runs
+> the aggregate). Today's rebuilds fixed the image; **2026-6-29 is the lone orphaned session** — backfill by
+> materializing `session_episode_summary` for it (now lands host-owned via the new timeline mount). Noted in
+> [[chronicle-0019-gotchas]].
+>
 > **✅ TELEMETRY COVERAGE PASS DONE + DEPLOYED + verified live (2026-06-30).** A repo-wide
 > "add spans/logs/metrics across all services" once-over: a 3-agent audit (cross-checked vs live SigNoz)
 > → 5 phases + a fix, each a CI-green commit (`a7a6a25` P1 correctness/identity · `1673a45` P2 TS services
