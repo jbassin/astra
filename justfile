@@ -266,6 +266,30 @@ linguist-commit-timer-install:
     systemctl --user enable --now linguist-commit.timer
     echo "installed. timer schedule:"; systemctl --user list-timers linguist-commit.timer --no-pager
 
+# Install the stack-wide Discord alerting (idempotent; re-run after editing any unit).
+# Three pieces: (1) the templated OnFailure handler astra-alert@.service — Class C, pages
+# when a monitored unit FAILS; (2) the astra-watchdog.{service,timer} — Class B liveness
+# (Drive FUSE mount + pipeline timers armed), every 15 min, debounced; (3) RE-copies the
+# craig-sync + linguist-commit services that now carry `OnFailure=astra-alert@%n.service`.
+# alert-notify.sh stays in the repo — the units ExecStart its absolute path (no copy). The
+# webhook is decrypted from SOPS at runtime (Class A — SigNoz's own Discord channel/rules —
+# lives in SigNoz, not here). Needs lingering for the user (already on for this deploy).
+alert-install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    chmod +x deploy/systemd/alert-notify.sh
+    unit_dir="$HOME/.config/systemd/user"
+    mkdir -p "$unit_dir"
+    # New alerting units + the two edited monitored services (install copies verbatim).
+    cp deploy/systemd/astra-alert@.service \
+       deploy/systemd/astra-watchdog.service deploy/systemd/astra-watchdog.timer \
+       deploy/systemd/craig-sync.service deploy/systemd/linguist-commit.service "$unit_dir/"
+    systemctl --user daemon-reload
+    systemctl --user enable --now astra-watchdog.timer
+    echo "installed. watchdog schedule:"; systemctl --user list-timers astra-watchdog.timer --no-pager
+    echo "smoke-test a Discord page with: deploy/systemd/alert-notify.sh test"
+
 # Migrate faerrin's historical episode CATALOG (script + digest) into astra's
 # episodes corpus (step 2 — catalog union), so episodes_index + the snapshot include
 # the back-catalog alongside live pipeline renders. Idempotent; live renders win for

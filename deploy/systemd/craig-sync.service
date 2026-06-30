@@ -1,6 +1,9 @@
 [Unit]
 Description=Sync new Craig recordings (Drive fuse mount -> scribe incoming) for the astra pipeline
 Documentation=https://github.com/jbassin/astra
+# Class C alerting: the recipe's bounded FUSE probe makes this unit FAIL (not hang) on a
+# wedged mount, so OnFailure can fire and curl Discord directly. %n = craig-sync.service.
+OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot

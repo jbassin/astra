@@ -1,0 +1,13 @@
+[Unit]
+Description=Run the astra liveness watchdog every 15 minutes
+
+[Timer]
+# Wall-clock every 15 minutes (:00, :15, …) — always has a valid next trigger no matter
+# when enabled (unlike OnUnitActiveSec). Persistent catches up a missed run if the host was
+# off. The watchdog is debounced (pages only on ok<->bad transitions), so quiet ticks cost
+# nothing.
+OnCalendar=*:0/15
+Persistent=true
+
+[Install]
+WantedBy=timers.target

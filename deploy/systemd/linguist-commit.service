@@ -1,6 +1,9 @@
 [Unit]
 Description=Auto-commit + push new linguist transcripts/data (pipeline source-of-record) for astra
 Documentation=https://github.com/jbassin/astra
+# Class C alerting: page Discord directly on failure (e.g. a push that keeps failing). The
+# handler decrypts the webhook from SOPS at runtime. %n = linguist-commit.service.
+OnFailure=astra-alert@%n.service
 
 [Service]
 Type=oneshot

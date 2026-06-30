@@ -1,0 +1,15 @@
+[Unit]
+Description=astra liveness watchdog — Drive FUSE mount responsive + pipeline timers armed (Class B)
+Documentation=https://github.com/jbassin/astra
+# If the watchdog itself errors, page (it can't detect its own death, but it can its own
+# failure). The handler's failure path is independent of the watchdog logic, so no loop.
+# (OnFailure is a [Unit] key — systemd silently ignores it under [Service].)
+OnFailure=astra-alert@%n.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/experiments/astra
+# Probes the Drive FUSE front door (bounded — never wedges) and checks craig-sync.timer +
+# linguist-commit.timer are active AND armed; debounced so it pages only on state changes.
+ExecStart=/ruby/data/experiments/astra/deploy/systemd/alert-notify.sh watchdog
+TimeoutStartSec=120

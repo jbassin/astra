@@ -1,0 +1,11 @@
+[Unit]
+Description=astra alerting — page Discord when %i fails (Class C OnFailure handler)
+Documentation=https://github.com/jbassin/astra
+
+[Service]
+Type=oneshot
+WorkingDirectory=/ruby/data/experiments/astra
+# %i is the failed unit's full name (e.g. craig-sync.service), supplied by the monitored
+# unit's `OnFailure=astra-alert@%n.service`. The script decrypts the Discord webhook from
+# SOPS at runtime and posts the failed unit's journal tail. No OnFailure here (no loops).
+ExecStart=/ruby/data/experiments/astra/deploy/systemd/alert-notify.sh failure %i
