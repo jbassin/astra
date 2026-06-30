@@ -17,7 +17,7 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
-from astra_observe import get_tracer
+from astra_observe import get_tracer, init_telemetry, shutdown
 
 from .corpus import CONTENT_DIR, Page, load_corpus
 from .crossref import Edge, resolve_corpus
@@ -60,10 +60,14 @@ def canonical_json(snapshot: dict[str, Any]) -> str:
 
 def build_from_corpus(content_dir: Path | str = CONTENT_DIR) -> dict[str, Any]:
     """Load the corpus, resolve crossrefs, and build the snapshot dict."""
-    with _tracer.start_as_current_span("akasha.build_snapshot"):
+    with _tracer.start_as_current_span("akasha.build_snapshot") as span:
         pages = load_corpus(content_dir)
         edges = resolve_corpus(pages)
-        return build_snapshot(pages, edges)
+        snapshot = build_snapshot(pages, edges)
+        span.set_attribute("akasha.pages", len(snapshot["pages"]))
+        span.set_attribute("akasha.edges", len(snapshot["edges"]))
+        span.set_attribute("akasha.unresolved", len(snapshot["unresolved"]))
+        return snapshot
 
 
 def validate_corpus(content_dir: Path | str = CONTENT_DIR) -> None:
@@ -86,11 +90,15 @@ def write_snapshot(
 
 def main() -> None:
     """``akasha-snapshot`` entry point — regenerate the committed snapshot."""
-    snapshot = write_snapshot()
-    pages = snapshot["pages"]
-    edges = snapshot["edges"]
-    unresolved = snapshot["unresolved"]
-    print(
-        f"snapshot: {len(pages)} pages, {len(edges)} crossref edges, "
-        f"{len(unresolved)} unresolved → {SNAPSHOT_PATH.relative_to(REPO_ROOT)}"
-    )
+    init_telemetry("astra.akasha-backend")
+    try:
+        snapshot = write_snapshot()
+        pages = snapshot["pages"]
+        edges = snapshot["edges"]
+        unresolved = snapshot["unresolved"]
+        print(
+            f"snapshot: {len(pages)} pages, {len(edges)} crossref edges, "
+            f"{len(unresolved)} unresolved → {SNAPSHOT_PATH.relative_to(REPO_ROOT)}"
+        )
+    finally:
+        shutdown()  # console_script exit → flush the run's spans/metrics/logs

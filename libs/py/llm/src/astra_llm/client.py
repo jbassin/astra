@@ -17,6 +17,7 @@ no network in unit tests.
 from __future__ import annotations
 
 import json
+import time
 from collections.abc import Callable
 from dataclasses import dataclass
 from typing import Any, Protocol, TypeVar
@@ -140,6 +141,9 @@ class _Instruments:
     cost: Any
     input: Any
     output: Any
+    cache_read: Any
+    cache_write: Any
+    duration: Any
 
 
 class LiteLLMClient:
@@ -150,7 +154,7 @@ class LiteLLMClient:
         self._instruments: _Instruments | None = None
 
     # --- cost → OTel ---------------------------------------------------------------
-    def _record_cost(self, model: str, usage: Usage, cost: float) -> None:
+    def _ensure_instruments(self) -> _Instruments:
         # Lazily bind instruments so they attach to the provider installed by
         # init_telemetry() at first call (a meter grabbed at import is a permanent no-op).
         if self._instruments is None:
@@ -159,11 +163,20 @@ class LiteLLMClient:
                 cost=meter.create_counter("astra.llm.cost_usd", unit="USD"),
                 input=meter.create_counter("astra.llm.input_tokens"),
                 output=meter.create_counter("astra.llm.output_tokens"),
+                cache_read=meter.create_counter("astra.llm.cache_read_tokens"),
+                cache_write=meter.create_counter("astra.llm.cache_write_tokens"),
+                duration=meter.create_histogram("astra.llm.request_duration_ms", unit="ms"),
             )
+        return self._instruments
+
+    def _record_cost(self, model: str, usage: Usage, cost: float) -> None:
+        inst = self._ensure_instruments()
         attrs = {"model": model}
-        self._instruments.cost.add(cost, attrs)
-        self._instruments.input.add(usage.input_tokens, attrs)
-        self._instruments.output.add(usage.output_tokens, attrs)
+        inst.cost.add(cost, attrs)
+        inst.input.add(usage.input_tokens, attrs)
+        inst.output.add(usage.output_tokens, attrs)
+        inst.cache_read.add(usage.cache_read_tokens, attrs)
+        inst.cache_write.add(usage.cache_write_tokens, attrs)
         span = trace.get_current_span()
         span.set_attribute("astra.llm.model", model)
         span.set_attribute("astra.llm.cost_usd", cost)
@@ -210,7 +223,11 @@ class LiteLLMClient:
 
         last_tool_err: str | None = None
         for _attempt in range(_TOOL_JSON_ATTEMPTS):
+            started = time.perf_counter()
             response = self._completion(**kwargs)
+            self._ensure_instruments().duration.record(
+                (time.perf_counter() - started) * 1000.0, {"model": model}
+            )
             choice = response.choices[0]
             finish_reason = getattr(choice, "finish_reason", None)
             message = choice.message

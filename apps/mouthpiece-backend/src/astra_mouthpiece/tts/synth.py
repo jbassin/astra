@@ -9,6 +9,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import cast
 
+from astra_observe import get_meter
+
 from ..models import AudioManifest, Script, ScriptTurn, TtsClip, VoiceConfig
 from .dialogue import DEFAULT_DIALOGUE_BUDGET, chunk_turns
 from .mock import MockTTSProvider
@@ -25,6 +27,11 @@ from .tags import render_delivery
 
 #: Placeholder voice ids for the mock provider; real providers override these.
 DEFAULT_VOICES = VoiceConfig(a="mock-voice-a", b="mock-voice-b")
+
+# Clips emitted, by render mode (dialogue chunks vs per-turn). No-op until init_telemetry.
+_tts_clips = get_meter("astra.mouthpiece").create_counter(
+    "astra.mouthpiece.tts.clips", description="TTS clips synthesized"
+)
 
 
 def _clip_name(index: int, fmt: str) -> str:
@@ -78,6 +85,7 @@ def _synthesize_per_turn(
                 index=index, speaker=turn.speaker, path=str(path), duration_ms=result.duration_ms
             )
         )
+        _tts_clips.add(1, {"mode": "turns"})
     return clips
 
 
@@ -106,4 +114,5 @@ def _synthesize_dialogue_chunks(
                 duration_ms=result.duration_ms,
             )
         )
+        _tts_clips.add(1, {"mode": "dialogue"})
     return clips

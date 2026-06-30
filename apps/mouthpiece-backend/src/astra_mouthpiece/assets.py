@@ -24,7 +24,7 @@ from pathlib import Path
 import dagster as dg
 from astra_akasha_backend.corpus import load_corpus
 from astra_llm import LiteLLMClient
-from astra_observe import get_logger, get_meter
+from astra_observe import get_logger, get_meter, get_tracer
 
 from . import linguist_io
 from .assemble import assemble_episode
@@ -52,6 +52,10 @@ mouthpiece_sessions = dg.DynamicPartitionsDefinition(name=SESSIONS_NAME)
 
 _log = get_logger("astra.mouthpiece")
 _meter = get_meter("astra.mouthpiece")
+# Each asset body runs inside a span so the per-call astra.llm.* cost attributes
+# (set on trace.get_current_span()) have a real span to land on, and so the LLM/TTS
+# stages are timed in SigNoz. Without this they were attached to a no-op span.
+_tracer = get_tracer("astra.mouthpiece")
 _episodes_counter = _meter.create_counter(
     "astra.mouthpiece.episodes", description="episodes produced"
 )
@@ -127,16 +131,20 @@ _EXTERNAL_RETRY = dg.RetryPolicy(max_retries=3, delay=120, backoff=dg.Backoff.EX
 def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """linguist canonical transcript → distilled `SessionDigest` (Stage 2)."""
     date = context.partition_key
-    tpath = linguist_io.transcript_for(date)
-    if tpath is None:
-        raise FileNotFoundError(f"no linguist transcript for session {date}")
-    session_id, arc, _ = linguist_io.parse_filename(tpath)
-    turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
-    digest = distill_session(
-        LiteLLMClient(), session_id, date, turns, arc_title=arc, model=_llm_model()
-    )
-    _atomic_write(_session_dir(date) / "digest.json", digest.model_dump_json(indent=2))
-    return dg.MaterializeResult(metadata={"beats": len(digest.beats), "session_id": session_id})
+    with _tracer.start_as_current_span("mouthpiece.session_digest") as span:
+        span.set_attribute("mouthpiece.date", date)
+        tpath = linguist_io.transcript_for(date)
+        if tpath is None:
+            raise FileNotFoundError(f"no linguist transcript for session {date}")
+        session_id, arc, _ = linguist_io.parse_filename(tpath)
+        turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
+        digest = distill_session(
+            LiteLLMClient(), session_id, date, turns, arc_title=arc, model=_llm_model()
+        )
+        _atomic_write(_session_dir(date) / "digest.json", digest.model_dump_json(indent=2))
+        span.set_attribute("mouthpiece.beats", len(digest.beats))
+        _log.info("mouthpiece distilled %s → %d beats", date, len(digest.beats))
+        return dg.MaterializeResult(metadata={"beats": len(digest.beats), "session_id": session_id})
 
 
 @dg.asset(
@@ -148,21 +156,25 @@ def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """digest + akasha grounding → the two-pass tavern-tone `Script` (Stage 3)."""
     key = context.partition_key
-    digest = _read_digest(key)
-    pages = pages_from_corpus(load_corpus())
-    hosts = load_hosts()
-    threads_block = format_threads(load_threads(_out_root() / "threads.json"))
-    script = build_episode_script(
-        LiteLLMClient(),
-        digest,
-        pages,
-        hosts,
-        two_pass=True,
-        threads_block=threads_block,
-        model=_llm_model(),
-    )
-    _atomic_write(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
-    return dg.MaterializeResult(metadata={"turns": len(script.turns), "title": script.title})
+    with _tracer.start_as_current_span("mouthpiece.session_script") as span:
+        span.set_attribute("mouthpiece.key", key)
+        digest = _read_digest(key)
+        pages = pages_from_corpus(load_corpus())
+        hosts = load_hosts()
+        threads_block = format_threads(load_threads(_out_root() / "threads.json"))
+        script = build_episode_script(
+            LiteLLMClient(),
+            digest,
+            pages,
+            hosts,
+            two_pass=True,
+            threads_block=threads_block,
+            model=_llm_model(),
+        )
+        _atomic_write(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
+        span.set_attribute("mouthpiece.turns", len(script.turns))
+        _log.info("mouthpiece scripted %s → %d turns (%s)", key, len(script.turns), script.title)
+        return dg.MaterializeResult(metadata={"turns": len(script.turns), "title": script.title})
 
 
 @dg.asset(
@@ -174,25 +186,38 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 def session_audio_clips(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Script → TTS clips + manifest (Stage 4; ElevenLabs v3 / mock)."""
     key = context.partition_key
-    script = _read_script(key)
-    hosts = load_hosts()
-    manifest = synthesize_script(
-        script, provider=_provider(), voices=_voices(hosts), out_dir=_session_dir(key)
-    )
-    _atomic_write(_session_dir(key) / "manifest.json", manifest.model_dump_json(indent=2))
-    return dg.MaterializeResult(metadata={"clips": len(manifest.clips), "mode": manifest.mode})
+    with _tracer.start_as_current_span("mouthpiece.session_audio_clips") as span:
+        span.set_attribute("mouthpiece.key", key)
+        script = _read_script(key)
+        hosts = load_hosts()
+        manifest = synthesize_script(
+            script, provider=_provider(), voices=_voices(hosts), out_dir=_session_dir(key)
+        )
+        _atomic_write(_session_dir(key) / "manifest.json", manifest.model_dump_json(indent=2))
+        span.set_attribute("mouthpiece.clips", len(manifest.clips))
+        span.set_attribute("mouthpiece.mode", manifest.mode)
+        _log.info(
+            "mouthpiece synthesized %s → %d clips (%s)", key, len(manifest.clips), manifest.mode
+        )
+        return dg.MaterializeResult(metadata={"clips": len(manifest.clips), "mode": manifest.mode})
 
 
 @dg.asset(partitions_def=mouthpiece_sessions, deps=[session_audio_clips], group_name="mouthpiece")
 def session_episode(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     """Clips → `episode.mp3` + `transcript.md` (Stage 5; ffmpeg concat + loudnorm)."""
     key = context.partition_key
-    script = _read_script(key)
-    manifest = AudioManifest.model_validate_json((_session_dir(key) / "manifest.json").read_text())
-    episode, transcript = assemble_episode(manifest, script, out_dir=_session_dir(key))
-    _episodes_counter.add(1)
-    _log.info("mouthpiece produced episode %s: %s", key, episode.name)
-    return dg.MaterializeResult(metadata={"episode": str(episode), "transcript": str(transcript)})
+    with _tracer.start_as_current_span("mouthpiece.session_episode") as span:
+        span.set_attribute("mouthpiece.key", key)
+        script = _read_script(key)
+        manifest = AudioManifest.model_validate_json(
+            (_session_dir(key) / "manifest.json").read_text()
+        )
+        episode, transcript = assemble_episode(manifest, script, out_dir=_session_dir(key))
+        _episodes_counter.add(1)
+        _log.info("mouthpiece produced episode %s: %s", key, episode.name)
+        return dg.MaterializeResult(
+            metadata={"episode": str(episode), "transcript": str(transcript)}
+        )
 
 
 # ── mega (date-range fuse → a synthetic-id partition) ────────────────────────
@@ -212,24 +237,34 @@ def mega_digest(context: dg.AssetExecutionContext, config: MegaConfig) -> dg.Mat
     """Fuse the member digests in [start, end] into one month-in-review digest under a
     synthetic mega id, and register that id as a session partition so the
     script/clips/episode assets run on it (reusing Stages 3-5)."""
-    members: list[MegaMember] = []
-    for digest_file in sorted(_out_root().glob("*/digest.json")):
-        digest = SessionDigest.model_validate_json(digest_file.read_text())
-        parts = digest.session_id.split(".")
-        date = parts[-1]
-        arc = ".".join(parts[1:-1]) if len(parts) > 2 else digest.session_id
-        members.append(MegaMember(session_id=digest.session_id, date=date, arc=arc, digest=digest))
+    with _tracer.start_as_current_span("mouthpiece.mega_digest") as span:
+        members: list[MegaMember] = []
+        for digest_file in sorted(_out_root().glob("*/digest.json")):
+            digest = SessionDigest.model_validate_json(digest_file.read_text())
+            parts = digest.session_id.split(".")
+            date = parts[-1]
+            arc = ".".join(parts[1:-1]) if len(parts) > 2 else digest.session_id
+            members.append(
+                MegaMember(session_id=digest.session_id, date=date, arc=arc, digest=digest)
+            )
 
-    selected = select_members(members, config.start, config.end, config.arc)
-    fused_id = mega_id(selected)
-    fused = fuse_digests(
-        LiteLLMClient(), fused_id, selected, target_beats=config.target_beats, model=_llm_model()
-    )
-    _atomic_write(_session_dir(fused_id) / "digest.json", fused.model_dump_json(indent=2))
-    context.instance.add_dynamic_partitions(SESSIONS_NAME, [fused_id])
-    return dg.MaterializeResult(
-        metadata={"mega_id": fused_id, "members": len(selected), "beats": len(fused.beats)}
-    )
+        selected = select_members(members, config.start, config.end, config.arc)
+        fused_id = mega_id(selected)
+        fused = fuse_digests(
+            LiteLLMClient(),
+            fused_id,
+            selected,
+            target_beats=config.target_beats,
+            model=_llm_model(),
+        )
+        _atomic_write(_session_dir(fused_id) / "digest.json", fused.model_dump_json(indent=2))
+        context.instance.add_dynamic_partitions(SESSIONS_NAME, [fused_id])
+        span.set_attribute("mouthpiece.mega_id", fused_id)
+        span.set_attribute("mouthpiece.members", len(selected))
+        _log.info("mouthpiece fused mega %s ← %d members", fused_id, len(selected))
+        return dg.MaterializeResult(
+            metadata={"mega_id": fused_id, "members": len(selected), "beats": len(fused.beats)}
+        )
 
 
 # ── the cross-episode catalog (D1, plan 0012) ────────────────────────────────

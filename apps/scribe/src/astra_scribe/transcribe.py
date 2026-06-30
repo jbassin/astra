@@ -17,9 +17,17 @@ from pathlib import Path
 from typing import Any
 
 from astra_llm import GROQ_WHISPER, TranscriptionFn, transcribe
+from astra_observe import get_meter, get_tracer
 
 from . import audio
 from .vad import chunk_spans, voiced_spans
+
+_tracer = get_tracer("astra.scribe")
+# Per-chunk outcome counter — surfaces the Groq ASR call rate (each "transcribed" chunk is
+# one Groq call) and the skip rate, which the session/track totals alone don't show.
+_chunks = get_meter("astra.scribe").create_counter(
+    "astra.scribe.chunks", description="Audio chunks processed per track, by outcome"
+)
 
 #: Seam: run an ffmpeg/ffprobe argv (defaults to the real subprocess runner).
 FfmpegRunner = Callable[[list[str]], "subprocess.CompletedProcess[str]"]
@@ -68,50 +76,56 @@ class TrackTranscriber:
 
     def transcribe_track(self, aac_path: Path | str, work_dir: Path | str) -> list[dict[str, Any]]:
         """Voiced spans → chunks → Groq → segments re-offset to the session timeline."""
-        path = str(aac_path)
-        work = Path(work_dir)
-        work.mkdir(parents=True, exist_ok=True)
-        duration = self._duration(path)
-        chunks = [
-            (start, end)
-            for start, end in chunk_spans(self._voiced(path, duration), self.max_chunk_sec)
-            if end - start >= self.min_chunk_sec
-        ]
+        with _tracer.start_as_current_span("scribe.transcribe_track") as span:
+            span.set_attribute("scribe.track", Path(aac_path).stem)
+            path = str(aac_path)
+            work = Path(work_dir)
+            work.mkdir(parents=True, exist_ok=True)
+            duration = self._duration(path)
+            chunks = [
+                (start, end)
+                for start, end in chunk_spans(self._voiced(path, duration), self.max_chunk_sec)
+                if end - start >= self.min_chunk_sec
+            ]
+            span.set_attribute("scribe.chunks", len(chunks))
 
-        segments: list[dict[str, Any]] = []
-        for i, (start, end) in enumerate(chunks):
-            flac = work / f"chunk-{i:04d}.flac"
-            self.run(audio.chunk_args(path, start, end, str(flac)))
-            # The cut flac can be far shorter than its span — `chunk_args` uses `-ss`
-            # input-seek (snaps to a keyframe, overshoots near EOF) and ffprobe's container
-            # duration can overstate the real audio stream — so re-check the ACTUAL flac,
-            # not the span. Groq 400s on audio < 0.01s; skip a too-short (speechless) cut.
-            if self._duration(str(flac)) < self.min_chunk_sec:
-                continue
-            try:
-                chunk_segments = list(
-                    transcribe(
-                        flac,
-                        model=self.model,
-                        api_key=self.api_key,
-                        transcription_fn=self.transcription_fn,
-                    )
-                )
-            except Exception as exc:  # noqa: BLE001 — backstop on Groq's own length floor
-                # Belt-and-suspenders beyond the duration probe: if Groq still rejects the
-                # clip as too short (a silence-padded AAC whose probed duration overstates
-                # the decodable audio), skip it rather than fail the whole session. Any
-                # other error is real — re-raise it.
-                if "too short" in str(exc).lower():
+            segments: list[dict[str, Any]] = []
+            for i, (start, end) in enumerate(chunks):
+                flac = work / f"chunk-{i:04d}.flac"
+                self.run(audio.chunk_args(path, start, end, str(flac)))
+                # The cut flac can be far shorter than its span — `chunk_args` uses `-ss`
+                # input-seek (snaps to a keyframe, overshoots near EOF) and ffprobe's container
+                # duration can overstate the real audio stream — so re-check the ACTUAL flac,
+                # not the span. Groq 400s on audio < 0.01s; skip a too-short (speechless) cut.
+                if self._duration(str(flac)) < self.min_chunk_sec:
+                    _chunks.add(1, {"outcome": "skipped_short"})
                     continue
-                raise
-            for seg in chunk_segments:
-                # Each chunk is a contiguous session slice → offset is just `start`.
-                segments.append(
-                    {
-                        "start": round(seg.start + start, 3),
-                        "end": round(seg.end + start, 3),
-                        "text": seg.text,
-                    }
-                )
-        return segments
+                try:
+                    chunk_segments = list(
+                        transcribe(
+                            flac,
+                            model=self.model,
+                            api_key=self.api_key,
+                            transcription_fn=self.transcription_fn,
+                        )
+                    )
+                except Exception as exc:  # noqa: BLE001 — backstop on Groq's own length floor
+                    # Belt-and-suspenders beyond the duration probe: if Groq still rejects the
+                    # clip as too short (a silence-padded AAC whose probed duration overstates
+                    # the decodable audio), skip it rather than fail the whole session. Any
+                    # other error is real — re-raise it.
+                    if "too short" in str(exc).lower():
+                        _chunks.add(1, {"outcome": "skipped_groq"})
+                        continue
+                    raise
+                _chunks.add(1, {"outcome": "transcribed"})
+                for seg in chunk_segments:
+                    # Each chunk is a contiguous session slice → offset is just `start`.
+                    segments.append(
+                        {
+                            "start": round(seg.start + start, 3),
+                            "end": round(seg.end + start, 3),
+                            "text": seg.text,
+                        }
+                    )
+            return segments

@@ -8,12 +8,22 @@ network; the default `post` uses httpx. Edge/mock are the offline fallbacks.
 
 from __future__ import annotations
 
+import time
 from collections.abc import Callable
 from typing import Any
+
+from astra_observe import get_meter
 
 from .mock import estimate_duration_ms
 from .provider import DialogueRequest, SynthesisRequest, SynthesisResult
 from .tags import strip_audio_tags
+
+# The TTS HTTP round-trip is the dominant cost of the audio stage; time it (success or
+# failure). No-op until init_telemetry runs; in unit tests the `post` seam is stubbed so
+# this never fires.
+_tts_duration = get_meter("astra.mouthpiece").create_histogram(
+    "astra.mouthpiece.tts.duration_ms", unit="ms", description="ElevenLabs TTS HTTP round-trip"
+)
 
 #: Default ElevenLabs voice ids (overridden by ontology-being voice ids).
 DEFAULT_ELEVENLABS_VOICES = {"a": "", "b": "", "c": ""}
@@ -28,9 +38,13 @@ PostFn = Callable[[str, dict[str, str], dict[str, Any]], bytes]
 def _httpx_post(url: str, headers: dict[str, str], json: dict[str, Any]) -> bytes:
     import httpx
 
-    resp = httpx.post(url, headers=headers, json=json, timeout=120.0)
-    resp.raise_for_status()
-    return resp.content
+    started = time.perf_counter()
+    try:
+        resp = httpx.post(url, headers=headers, json=json, timeout=120.0)
+        resp.raise_for_status()
+        return resp.content
+    finally:
+        _tts_duration.record((time.perf_counter() - started) * 1000.0)
 
 
 class ElevenLabsTTSProvider:

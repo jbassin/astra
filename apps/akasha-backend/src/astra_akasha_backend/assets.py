@@ -9,8 +9,14 @@ location by ``dagster/definitions.py``; the heavy lifting lives in ``snapshot.py
 from __future__ import annotations
 
 import dagster as dg
+from astra_observe import get_logger, get_meter
 
 from .snapshot import validate_corpus, write_snapshot
+
+_log = get_logger("astra.akasha-backend")
+_pages_counter = get_meter("astra.akasha-backend").create_counter(
+    "astra.akasha.pages", description="pages in the published akasha snapshot"
+)
 
 
 @dg.asset(
@@ -21,13 +27,12 @@ def akasha_corpus_snapshot() -> dg.MaterializeResult:
     """Validate the corpus, then (re)build the committed metadata snapshot."""
     validate_corpus()
     snapshot = write_snapshot()
-    return dg.MaterializeResult(
-        metadata={
-            "pages": len(snapshot["pages"]),
-            "edges": len(snapshot["edges"]),
-            "unresolved": len(snapshot["unresolved"]),
-        }
-    )
+    pages = len(snapshot["pages"])
+    edges = len(snapshot["edges"])
+    unresolved = len(snapshot["unresolved"])
+    _pages_counter.add(pages)
+    _log.info("akasha snapshot: %d pages, %d edges, %d unresolved", pages, edges, unresolved)
+    return dg.MaterializeResult(metadata={"pages": pages, "edges": edges, "unresolved": unresolved})
 
 
 #: Importable by ``dagster/definitions.py`` to compose the code location.
