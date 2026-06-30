@@ -59,3 +59,12 @@ COPY dagster/definitions.py ./
 ENV DAGSTER_HOME=/opt/dagster/home
 RUN mkdir -p "$DAGSTER_HOME"
 COPY dagster/dagster.yaml dagster/workspace.yaml "$DAGSTER_HOME"/
+
+# The compose services run this image as user 1000:1000 (host repo owner) so pipeline
+# writes into the bind-mounted data dirs land host-owned (matching the other astra
+# containers). The run worker writes compute logs / local artifact storage under
+# /opt/dagster/home/storage and needs a writable HOME — chown the whole /opt/dagster tree
+# (home + the app cwd) to 1000 and point HOME there. /opt/venv + the editable /repo
+# sources stay root-owned/world-readable (runtime is read-only there).
+ENV HOME=/opt/dagster/home
+RUN mkdir -p "$DAGSTER_HOME/storage" && chown -R 1000:1000 /opt/dagster

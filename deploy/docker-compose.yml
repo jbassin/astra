@@ -40,6 +40,10 @@ x-dagster-volumes: &dagster-pipeline-volumes
   - /ruby/data/experiments/astra/apps/linguist/transcripts:/repo/apps/linguist/transcripts
   - /ruby/data/experiments/astra/apps/linguist/script:/repo/apps/linguist/script
   - /ruby/data/experiments/astra/apps/linguist/data:/repo/apps/linguist/data
+  # linguist/timeline is package-relative (chronicle.py) but was NOT mounted — so the
+  # container-written chronicle output (campaign_timeline / session_episode_summary) landed
+  # in the container layer, never reaching the host. Mount it so it persists host-owned.
+  - /ruby/data/experiments/astra/apps/linguist/timeline:/repo/apps/linguist/timeline
   - /ruby/data/experiments/astra/apps/mouthpiece-backend/episodes:/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes
 
 services:
@@ -51,8 +55,11 @@ services:
       POSTGRES_USER: ${DAGSTER_PG_USERNAME:-dagster}
       POSTGRES_PASSWORD: ${DAGSTER_PG_PASSWORD:-dagster}
       POSTGRES_DB: ${DAGSTER_PG_DB:-dagster}
+    # PGDATA bind-mounted under the gitignored artifacts/ dir (was the named volume
+    # astra-dagster-pg). No `user:` — the postgres entrypoint owns PGDATA as uid 70; the
+    # one-time `just pg-migrate dagster` copy preserves 70:70/0700 so it's accepted.
     volumes:
-      - dagster-pg:/var/lib/postgresql/data
+      - /ruby/data/experiments/astra/artifacts/postgres/dagster:/var/lib/postgresql/data
     networks: [signoz-net]
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DAGSTER_PG_USERNAME:-dagster} -d ${DAGSTER_PG_DB:-dagster}"]
@@ -70,6 +77,11 @@ services:
     image: astra-dagster:local
     container_name: astra-dagster-code
     command: ["dagster", "api", "grpc", "-h", "0.0.0.0", "-p", "4000", "-f", "definitions.py"]
+    # Run as the host repo owner (uid 1000) so the run worker's writes into the bind-mounted
+    # pipeline dirs (linguist/data, transcripts, timeline, mouthpiece episodes, scribe data)
+    # land host-owned instead of root:root — the same fix as heartwood below. The image
+    # chowns /opt/dagster to 1000 (compute logs / DAGSTER_HOME) so this works.
+    user: "1000:1000"
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
     networks: [signoz-net]
@@ -79,6 +91,7 @@ services:
     image: astra-dagster:local
     container_name: astra-dagster-webserver
     command: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000", "-w", "/opt/dagster/home/workspace.yaml"]
+    user: "1000:1000" # see dagster-code
     ports:
       - "10350:3000" # Dagster UI (astra range)
     environment: *dagster-env
@@ -95,6 +108,7 @@ services:
     image: astra-dagster:local
     container_name: astra-dagster-daemon
     command: ["dagster-daemon", "run", "-w", "/opt/dagster/home/workspace.yaml"]
+    user: "1000:1000" # see dagster-code
     environment: *dagster-env
     volumes: *dagster-pipeline-volumes
     depends_on:
@@ -118,8 +132,9 @@ services:
       POSTGRES_USER: ${WEAL_PG_USERNAME:-weal}
       POSTGRES_PASSWORD: ${WEAL_PG_PASSWORD:-weal}
       POSTGRES_DB: ${WEAL_PG_DB:-weal}
+    # PGDATA bind-mounted under artifacts/ (was named volume astra-weal-pg); see dagster-postgres.
     volumes:
-      - weal-pg:/var/lib/postgresql/data
+      - /ruby/data/experiments/astra/artifacts/postgres/weal:/var/lib/postgresql/data
     ports:
       - "10362:5432" # weal dice/funcs store (astra range) — for the P6 SQLite→PG migration
     networks: [signoz-net]
@@ -139,6 +154,10 @@ services:
       dockerfile: apps/weal-bot/Dockerfile
     image: astra-weal-bot:local
     container_name: astra-weal-bot
+    # All astra app containers run as the host owner (uid 1000) — the oven/bun image ships
+    # `bun`=uid 1000 and the app files are world-readable, so the SSR/bot processes read +
+    # serve them fine; writes (where any) land host-owned. Postgres/SigNoz keep their own uid.
+    user: "1000:1000"
     depends_on:
       weal-postgres:
         condition: service_healthy
@@ -164,6 +183,7 @@ services:
     image: astra-weal-overlay:local
     container_name: astra-weal-overlay
     command: ["bun", "run", "start"]
+    user: "1000:1000" # see weal-bot
     # Shared weal↔overlay token (Decision E env injection via `just up`).
     environment:
       WEAL_TOKEN: ${WEAL_TOKEN:-}
@@ -186,6 +206,7 @@ services:
     image: astra-strider:local
     container_name: astra-strider
     command: ["bun", "run", "start"]
+    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
@@ -213,12 +234,15 @@ services:
     image: astra-akasha-frontend:local
     container_name: astra-akasha-frontend
     command: ["bun", "run", "start"]
+    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10365:10365" # akasha-frontend SSR (astra range) — also reachable directly
+    # Session audio bind-mounted from artifacts/ (was named volume astra-akasha-audio);
+    # container path /audio unchanged → no config.kdl change. Seed with `just akasha-seed`.
     volumes:
-      - akasha-audio:/audio:ro # matches kdl akasha-frontend.audio-dir; served at /audio/<date>.mp3
+      - /ruby/data/experiments/astra/artifacts/audio/akasha:/audio:ro # kdl akasha-frontend.audio-dir; served at /audio/<date>.mp3
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "bun", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
@@ -241,12 +265,15 @@ services:
     image: astra-mouthpiece-frontend:local
     container_name: astra-mouthpiece-frontend
     command: ["bun", "run", "start"]
+    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
       - "10366:10366" # mouthpiece-frontend SSR (astra range) — also reachable directly
+    # Episode audio bind-mounted from artifacts/ (was named volume astra-mouthpiece-audio);
+    # container path /audio unchanged → no config.kdl change. Seed with `just mouthpiece-seed`.
     volumes:
-      - mouthpiece-audio:/audio:ro # matches kdl mouthpiece-frontend.audio-dir; served at /audio/<id>.mp3
+      - /ruby/data/experiments/astra/artifacts/audio/mouthpiece:/audio:ro # kdl mouthpiece-frontend.audio-dir; served at /audio/<id>.mp3
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "bun", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
@@ -267,6 +294,7 @@ services:
     image: astra-vellum-frontend:local
     container_name: astra-vellum-frontend
     command: ["bun", "run", "start"]
+    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
@@ -291,6 +319,9 @@ services:
     image: astra-vellum-render:local
     container_name: astra-vellum-render
     command: ["bun", "run", "start"]
+    # Runs as 1000 like the others; the Dockerfile chowns /ms-playwright so the (non-root)
+    # Chromium can read its browser bundle. Profile is an ephemeral /tmp dir; --no-sandbox.
+    user: "1000:1000"
     # No PORT env — serviceName/port come from config.kdl (config-single-source).
     ports:
       - "10368:10368" # vellum-render (astra range) — reached same-origin via Caddy /render
@@ -312,8 +343,9 @@ services:
       POSTGRES_USER: ${ORATOR_PG_USERNAME:-orator}
       POSTGRES_PASSWORD: ${ORATOR_PG_PASSWORD:-orator}
       POSTGRES_DB: ${ORATOR_PG_DB:-orator}
+    # PGDATA bind-mounted under artifacts/ (was named volume astra-orator-pg); see dagster-postgres.
     volumes:
-      - orator-pg:/var/lib/postgresql/data
+      - /ruby/data/experiments/astra/artifacts/postgres/orator:/var/lib/postgresql/data
     ports:
       - "10364:5432" # orator music-library store (astra range)
     networks: [signoz-net]
@@ -335,6 +367,9 @@ services:
       dockerfile: apps/orator-backend/Dockerfile
     image: astra-orator-backend:local
     container_name: astra-orator-backend
+    # Runs as 1000 so its ingest writes into the bind-mounted /data audio dir land
+    # host-owned (it mounts rw, unlike the read-only frontends). See weal-bot.
+    user: "1000:1000"
     depends_on:
       orator-postgres:
         condition: service_healthy
@@ -345,8 +380,11 @@ services:
       ORATOR_DISCORD_CLIENT_ID: ${ORATOR_DISCORD_CLIENT_ID:-}
       ORATOR_DISCORD_CLIENT_SECRET: ${ORATOR_DISCORD_CLIENT_SECRET:-}
       ORATOR_SESSION_SECRET: ${ORATOR_SESSION_SECRET:-}
+    # Audio/data dir bind-mounted from artifacts/ (was named volume astra-orator-audio);
+    # container path /data unchanged → no config.kdl change. One-time copy of the existing
+    # library via `just orator-audio-migrate`.
     volumes:
-      - orator-audio:/data # matches kdl orator.data-dir; audio under /data/audio
+      - /ruby/data/experiments/astra/artifacts/audio/orator:/data # kdl orator.data-dir; audio under /data/audio
     ports:
       - "10363:10363" # orator-backend (astra range) — also reachable directly
     networks: [signoz-net]
@@ -369,6 +407,7 @@ services:
     image: astra-harrow:local
     container_name: astra-harrow
     command: ["bun", "run", "start"]
+    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
@@ -394,6 +433,7 @@ services:
     image: astra-ledger:local
     container_name: astra-ledger
     command: ["bun", "run", "start"]
+    user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
     ports:
@@ -452,19 +492,10 @@ services:
 # the substrate runs no Caddy of its own — services are reachable on their
 # published host ports (Dagster 10350, SigNoz 10351, strider 10360).
 
-volumes:
-  dagster-pg:
-    name: astra-dagster-pg
-  weal-pg:
-    name: astra-weal-pg
-  orator-pg:
-    name: astra-orator-pg
-  orator-audio:
-    name: astra-orator-audio
-  mouthpiece-audio:
-    name: astra-mouthpiece-audio
-  akasha-audio:
-    name: astra-akasha-audio
+# The astra Postgres + audio state that used to live in named volumes now lives in the
+# gitignored artifacts/ dir, bind-mounted into each service (see above). The host owns it
+# (uid 1000; Postgres PGDATA is uid 70 via its entrypoint). SigNoz keeps its own named
+# volumes (declared in the vendored signoz include — clickhouse/sqlite/zookeeper).
 
 networks:
   signoz-net:

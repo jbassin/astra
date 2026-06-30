@@ -9,6 +9,12 @@ reverse_proxy_dir := "/ruby/data/reverse-proxy"
 sops_age_key := "deploy/sops/age.key"
 sops_file := "deploy/sops/secrets.enc.yaml"
 
+# Single bind-mount root for runtime state that used to live in named Docker volumes
+# (audio + Postgres). Gitignored (/artifacts/). The containers run as 1000:1000, so the
+# source dirs must exist + be host-owned BEFORE `up` (Docker auto-creates a missing bind
+# source as root). `artifacts-init` (run from `up`) creates the tree; override with ARTIFACTS.
+artifacts := env_var_or_default("ARTIFACTS", "/ruby/data/experiments/astra/artifacts")
+
 # Source of the HISTORICAL podcast episodes for the mouthpiece-frontend audio seed
 # (faerrin's caster out/ — the pre-astra back-catalog). Override with MOUTHPIECE_AUDIO_SRC.
 mouthpiece_audio_src := env_var_or_default("MOUTHPIECE_AUDIO_SRC", "/ruby/data/experiments/faerrin/pkg/caster/out")
@@ -50,7 +56,19 @@ up:
       [ -n "$k" ] || continue
       export "${k^^}=$v"
     done <<< "$secrets"
+    just artifacts-init
     cd deploy && docker compose up -d --build
+
+# Create the gitignored bind-mount source tree as the host user (uid 1000) BEFORE `up`.
+# Docker would otherwise create a missing bind source as root — re-introducing the exact
+# root-owned-writes problem this whole setup fixes. The audio dirs are host-owned (the
+# frontends read them ro / orator writes them as 1000); the Postgres PGDATA subdirs are
+# left to the one-time migration / the postgres entrypoint to own as uid 70 (0700), so we
+# only create the `postgres/` parent here, not the per-DB dirs.
+artifacts-init:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{artifacts}}"/audio/{akasha,mouthpiece,orator} "{{artifacts}}"/postgres
 
 # Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).
 down:
@@ -321,16 +339,16 @@ mouthpiece-publish:
 mouthpiece-seed:
     #!/usr/bin/env bash
     set -euo pipefail
-    docker volume create astra-mouthpiece-audio >/dev/null
+    mkdir -p "{{artifacts}}"/audio/mouthpiece
     docker run --rm \
-      -v astra-mouthpiece-audio:/audio \
+      -v "{{artifacts}}"/audio/mouthpiece:/audio \
       -v "{{mouthpiece_audio_src}}":/hist:ro \
       -v "{{mouthpiece_episodes}}":/live:ro \
       alpine sh -c '
         set -e
         for f in /hist/*.episode.mp3; do [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$f" .episode.mp3).mp3"; done
         find /live -name "*.episode.mp3" -exec sh -c "cp \"\$1\" \"/audio/\$(basename \"\$1\" .episode.mp3).mp3\"" _ {} \;
-        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n episode(s) into astra-mouthpiece-audio"; ls -1 /audio'
+        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n episode(s) into {{artifacts}}/audio/mouthpiece"; ls -1 /audio'
 
 # Seed the akasha-frontend session-audio volume (the combined Craig recordings the
 # transcript pages play, served same-origin at /audio/<date>.mp3 — replaces faerrin's
@@ -345,9 +363,9 @@ mouthpiece-seed:
 akasha-seed:
     #!/usr/bin/env bash
     set -euo pipefail
-    docker volume create astra-akasha-audio >/dev/null
+    mkdir -p "{{artifacts}}"/audio/akasha
     docker run --rm \
-      -v astra-akasha-audio:/audio \
+      -v "{{artifacts}}"/audio/akasha:/audio \
       -v "{{akasha_audio_hist}}":/hist:ro \
       -v "{{akasha_audio_live}}":/live:ro \
       alpine sh -c '
@@ -358,7 +376,37 @@ akasha-seed:
           dest="/audio/${date}.mp3"; [ -e "$dest" ] || cp "$f" "$dest"
         done
         for d in /live/*/; do f="${d}audio.mp3"; [ -e "$f" ] || continue; cp "$f" "/audio/$(basename "$d").mp3"; done
-        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n session(s) into astra-akasha-audio"'
+        n=$(ls -1 /audio/*.mp3 2>/dev/null | wc -l); echo "seeded $n session(s) into {{artifacts}}/audio/akasha"'
+
+# One-time: copy the orator music library out of the old named volume into the new
+# artifacts/ bind dir (orator-audio is runtime-ingested, NOT re-seedable). Run with the
+# orator-backend container stopped. chowns to 1000 so the now-1000 orator-backend writes
+# there. Safe to drop the old volume once verified.
+orator-audio-migrate:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{artifacts}}"/audio/orator
+    docker run --rm \
+      -v astra-orator-audio:/from:ro \
+      -v "{{artifacts}}"/audio/orator:/to \
+      alpine sh -c 'cp -a /from/. /to/ && chown -R 1000:1000 /to && echo "migrated orator audio -> {{artifacts}}/audio/orator"'
+
+# One-time: copy a Postgres data dir out of its old named volume into the new artifacts/
+# bind dir, preserving uid-70/0700 so the postgres entrypoint accepts PGDATA. Run with the
+# DB container STOPPED. Usage: `just pg-migrate dagster` (or weal / orator).
+pg-migrate name:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    mkdir -p "{{artifacts}}"/postgres
+    docker run --rm \
+      -v astra-{{name}}-pg:/from:ro \
+      -v "{{artifacts}}"/postgres:/parent \
+      alpine sh -c '
+        set -e
+        rm -rf /parent/{{name}}; mkdir /parent/{{name}}
+        cp -a /from/. /parent/{{name}}/
+        chown -R 70:70 /parent/{{name}}; chmod 700 /parent/{{name}}
+        echo "migrated astra-{{name}}-pg -> {{artifacts}}/postgres/{{name}}"'
 
 # --- Host edge (shared reverse proxy) ---
 

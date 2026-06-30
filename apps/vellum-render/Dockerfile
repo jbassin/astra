@@ -69,4 +69,10 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 RUN bunx playwright install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/*
 
+# The compose service runs this image as user 1000:1000 (like the other astra containers).
+# Chromium installs to PLAYWRIGHT_BROWSERS_PATH as root above; chown it so the non-root
+# runtime user can read/execute the browser bundle. (The browser's user-data-dir is an
+# ephemeral /tmp profile, so nothing else needs to be writable.)
+RUN chown -R 1000:1000 /ms-playwright
+
 CMD ["bun", "run", "start"]

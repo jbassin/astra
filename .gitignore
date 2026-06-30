@@ -1,6 +1,12 @@
 # Build output (all site-gen lands here; served by Caddy)
 dist/
 
+# Runtime artifacts — the single bind-mount root for state that used to live in named
+# Docker volumes (audio + Postgres data). Created/owned by the host (uid 1000) so the
+# containers (now run as 1000:1000) write host-owned files; never committed. See the
+# `artifacts-init` justfile recipe and deploy/docker-compose.yml.
+/artifacts/
+
 # Storybook static build (gothic's dev/preview surface; regenerated, not source)
 storybook-static/
 
