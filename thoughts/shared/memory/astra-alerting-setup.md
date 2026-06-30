@@ -1,9 +1,56 @@
 ---
 name: astra-alerting-setup
-description: Stack-wide alerting (Discord) — IN PROGRESS. Baseline had ZERO SigNoz alerts/channels; webhook provisioned in SOPS; SigNoz channel + alert rules + host OnFailure handlers + liveness watchdog still to build. Has the resume plan.
+description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
 metadata:
   type: project
 ---
+
+**UPDATE 2026-06-30 — DONE + LIVE + verified end-to-end.** All three classes built, `git
+push`ed (`95735d4`), and live-tested. Discord got real test pages during verification
+(expected noise). The webhook **transited the chat again** during SigNoz channel creation →
+**still worth rotating** (delete+recreate in Discord, `sops set alert_discord_webhook_url`,
+re-run the SigNoz channel + `just alert-install` is unaffected). What shipped + the gotchas:
+
+- **Class A (SigNoz):** `signoz_create_notification_channel` type=`slack` name=**`discord-ops`**
+  (`slack_api_url=<webhook>/slack` — Discord is Slack-compatible) + a **threshold LOGS_BASED_ALERT**
+  `astra error/fatal logs` (`severity_text IN ['ERROR','FATAL']`, `count()`, groupBy `service.name`,
+  target 0 / above / at_least_once, evalWindow 5m, channel `discord-ops`, `disabled:false`). Both
+  live in SigNoz's bundled-alertmanager **DB — nothing committed to git** (manage via `signoz_*` MCP).
+  Verified `severity_text` is populated (only `INFO` now = healthy) so the field name is right. The
+  channel-create call auto-sends a test (it posted OK). NB only `astra.{pipeline,orator-backend,weal-bot,test}`
+  emit *logs* today (frontends emit traces) — broaden later (exceptions-based alert, trace error-rate).
+- **Class C (host):** `deploy/systemd/alert-notify.sh` (subcommands `failure <unit>`/`watchdog`/`test`;
+  `set -uo pipefail` **no -e**; decrypts the webhook from SOPS at runtime; jq-builds the Discord payload,
+  ≤1900 chars; `ALERT_DRY_RUN=1` prints instead of paging — keep for testing) + templated
+  **`astra-alert@.service`** (`ExecStart=…/alert-notify.sh failure %i`); **`OnFailure=astra-alert@%n.service`**
+  added to `craig-sync.service` + `linguist-commit.service`.
+- **Class B (host):** `astra-watchdog.{service,timer}` (`OnCalendar=*:0/15`) → `alert-notify.sh watchdog`:
+  bounded Drive-mount probe (the **`kill -0` poll, never `wait`** — lifted from `just craig-sync`) +
+  each pipeline timer `is-active` AND armed (`NextElapseUSecRealtime` non-empty; the `Trigger: n/a` wedge
+  symptom) + **transition debounce** (per-check state file under `$XDG_STATE_HOME/astra-watchdog`, pages
+  only ok↔bad; first-run-bad pages, first-run-ok silent).
+- **Install:** **`just alert-install`** (copies the new units + RE-copies the two edited services,
+  `daemon-reload`, `enable --now astra-watchdog.timer`; `chmod +x` the script which stays in-repo).
+
+### THE gotchas (learned building it)
+1. **`OnFailure=` is a `[Unit]` key, NOT `[Service]`.** systemd silently logs `Unknown key name
+   'OnFailure' in section 'Service', ignoring` and the handler never fires. Caught only because the real
+   install surfaced the warning — `bash -n`/dry-run won't. Verify with `systemctl --user show <unit> -p OnFailure`.
+2. **You can't fail craig-sync by pointing `CRAIG_DROP_DIR` at a missing path** — the recipe's
+   `shopt -s nullglob` makes a missing dir an empty glob → **exit 0**, no page. It only fails on a real
+   *timeout/wedge*. To test the OnFailure chain use **`systemd-run --user -p OnFailure=astra-alert@craig-sync.service.service /bin/false`** (a real failure → auto-triggers the handler) or start the handler instance directly. (The watchdog's own `check_mount` uses `ls`, which *does* fail on a missing path — so it's fine.)
+3. **`local a="$1" b="$DIR/$a"` is an unbound-var trap under `set -u`** — `local` expands ALL its RHS
+   args before any assignment lands, so `$a` is still unset when `b` is expanded → `a: unbound variable`.
+   Split the dependent assignment onto its own `local` line.
+4. **Discord webhook is Slack-compatible:** append **`/slack`** for SigNoz's `slack` channel type; for the
+   host curl POST Discord-native JSON `{"username","content"}` (content hard-cap 2000 → truncate <1900).
+5. **`systemctl --user` is reachable from the automation shell here** (the user session has lingering on),
+   so the watchdog/handler are testable in-place. Foreground `sleep` is blocked in this harness → poll with
+   `read -t 1` for async OnFailure handlers.
+
+---
+
+<details><summary>Original half-built plan (2026-06-29) — superseded by the 2026-06-30 build above</summary>
 
 PROJECT 2026-06-29 — **IN PROGRESS (half-built).** Triggered by the craig-sync FUSE-wedge incident
 ([[pipeline-live-run-gotchas]]): the pipeline silently stalled for ~6h and **nothing alerted** because
@@ -76,3 +123,7 @@ or POST Slack/Discord-native JSON directly for host curls (`{"username":..,"cont
   and no py/ts schema change (deliberate — keep it out of app config).
 
 Builds on [[pipeline-live-run-gotchas]] + [[deploy-sops-injection]] + [[signoz-mcp]] + [[no-ci-monitoring]].
+
+</details>
+
+Builds on [[pipeline-live-run-gotchas]] + [[deploy-sops-injection]] + [[signoz-mcp]] + [[no-ci-monitoring]] + [[config-single-source]].

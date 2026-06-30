@@ -36,16 +36,20 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `30929b5`, 2026-06-29)
+## Current state — UPDATE THIS SECTION (as of commit `95735d4`, 2026-06-30)
 
-> **⚠️ OPS SIDE-QUEST IN FLIGHT (not heartwood) — pipeline alerting, half-built.** On 2026-06-29 the
-> craig-sync front door (the Drive FUSE mount) **hard-wedged and silently stalled the whole pipeline for
-> ~6h** — nothing alerted because the stack had **zero alerting**. Fixed the wedge + shipped a
-> **craig-sync watchdog** (`cd60af6` + memory `30929b5`; see [[pipeline-live-run-gotchas]]). Then started
-> **stack-wide Discord alerting** — **half-built**: webhook created + test-verified + stored in SOPS
-> (`alert_discord_webhook_url`); **still to build** the SigNoz Discord channel + alert rules, the host
-> `OnFailure=` handlers, and a liveness watchdog. **▶ Full resume plan in [[astra-alerting-setup]].**
-> (heartwood Phase-4 content acceptance below is unchanged + still the main-track next step.)
+> **✅ OPS SIDE-QUEST DONE (2026-06-30) — stack-wide Discord alerting BUILT + LIVE + verified.** The
+> craig-sync FUSE wedge (2026-06-29) silently stalled the pipeline ~6h with zero alerts; the wedge fix +
+> watchdog shipped earlier (`cd60af6`/`30929b5`). Now alerting is complete (`95735d4`): three failure
+> classes — **Class A** SigNoz `discord-ops` channel + `astra error/fatal logs` rule (in SigNoz's DB, not
+> git); **Class C** `deploy/systemd/alert-notify.sh` + `astra-alert@.service` `OnFailure=` on craig-sync +
+> linguist-commit (curls Discord direct, survives SigNoz down); **Class B** `astra-watchdog.{service,timer}`
+> (15m, mount probe + timers-armed, debounced). Install = **`just alert-install`** (already run live).
+> All three live-tested end-to-end. **Two open follow-ups:** (1) the **webhook transited chat again** →
+> Josh may want to **rotate** it (delete+recreate in Discord, `sops set alert_discord_webhook_url`, re-make
+> the SigNoz channel); (2) broaden Class A later (only `astra.{pipeline,orator-backend,weal-bot}` emit logs
+> today — add an exceptions/trace-error-rate alert for the frontends). Full detail + gotchas in
+> [[astra-alerting-setup]]. **▶ Main-track next step is unchanged: heartwood Phase-4 content acceptance** (below).
 
 ---
 
