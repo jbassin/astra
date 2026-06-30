@@ -36,31 +36,38 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `6cd6c45` code / docs this session, 2026-06-30)
+## Current state — UPDATE THIS SECTION (as of commit `6dc4a63` code / docs this session, 2026-06-30)
 
-> **🆕 PIPELINE REORDER (0021) — SCOPED (both changes) + Change A SPECCED. Planning only this
-> session; no code landed.** The stakeholder wants the pipeline reordered to: craig zip lands →
-> **transcribe ∥ merge audio (parallel)** → chronicle → mouthpiece (with chronicle output as
-> context). Compared against the real Dagster graph (verified by sub-agents, file:line) → two
-> independent changes. **Scope doc:** `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`
-> (verified; decisions resolved). **Locked decisions:** A1 = **shared `session_tracks` extract asset**
-> (one unzip, persist tracks to `cfg.tmp_path/<date>/tracks/`); cleanup = a **fan-in `session_cleanup`
-> asset** (`deps=[session_audio, session_transcript]`, rm-rf only after both tails succeed — the
-> stakeholder's explicit ask); B1 = mouthpiece context = **prior episodes + this session's arc/season
-> placement** (not its own summary); B2 = inject at the **script stage** (faerrin `threads_block`
-> precedent); B3 = **hard gate + carve-out** (mouthpiece waits for `episodes/<date>.json` EXCEPT
-> chronicle-skipped shows; preserve the backlog-adoption invariant). Linguist correction **stays** in
-> the chain (stakeholder-confirmed).
-> **Change A spec:** `thoughts/astra/specs/0021-pipeline-scribe-parallel-spec.md` — split scribe's
-> `session_outputs` → `session_tracks → (session_audio ∥ session_transcript) → session_cleanup`; output
-> paths `saved/<date>/{audio.mp3,script.json}` FROZEN (linguist + akasha-seed untouched); no config/
-> schema change (`tmp_path` already configured-but-unused). 4 slices (S1 helper refactor → S2 four
-> assets + sensor/definitions rewire → S3 telemetry spans + cleanup/tmp hygiene → S4 deploy + live
-> verify the audio∥transcript overlap in SigNoz). **▶ NEXT: implement Change A** (`octo:embrace`
-> against the spec, start S1) — OR write the Change B spec
-> (`0021-pipeline-chronicle-context-spec.md`) first. No faerrin prior art for the scribe split
-> (faerrin coupled merge→transcribe too); Change B's continuity pattern ports faerrin caster's
-> `running-threads`. Memory: [[pipeline-reorder-0021]].
+> **🆕 PIPELINE REORDER (0021) — Change A (parallelize scribe) BUILT + DEPLOYED + LIVE-VERIFIED;
+> Change B (chronicle→mouthpiece context) scoped, spec not yet written.** The stakeholder wants the
+> pipeline reordered to: craig zip lands → **transcribe ∥ merge audio (parallel)** → chronicle →
+> mouthpiece (with chronicle output as context) → two independent changes.
+>
+> **✅ Change A — DONE (commit `6dc4a63`, all 4 slices, live).** Split scribe's sequential
+> `session_outputs` → four assets: `session_tracks` (verify+extract+roster-filter → persist tracks to
+> `cfg.tmp_path/<date>/tracks/`) → `session_audio` ∥ `session_transcript` (both `deps=session_tracks`)
+> → `session_cleanup` (fan-in `deps=[audio,transcript]`, rm-rf after both succeed). New pure
+> `extract_session_tracks` (atomic `.partial`→`os.replace`); `process_session` removed; spans
+> `scribe.{extract,merge,transcribe,cleanup}`; counter +1 on transcript only. Output paths
+> `saved/<date>/{audio.mp3,script.json}` FROZEN (linguist + akasha-seed untouched); **no schema/config
+> change** (`tmp_path` was configured-but-unused). 19 scribe tests green; py CI reproduced locally.
+> **Deployed via `just up`; live-verified** by a synthetic Craig fixture run (the `2026-6-27` incoming
+> zip is degenerate — no `.aac`): SigNoz shows the four spans and `scribe.merge` ∥ `scribe.transcribe`
+> overlap (transcribe started before merge ended), outputs at frozen paths host-owned, `tmp/<date>`
+> cleaned, linguist's `scribe_output_sensor` fired on `script.json`, counter once. Fixture + downstream
+> debris torn down. Spec status → BUILT. **⚠️ The commit is MISLABELED** as
+> `chore(linguist): auto-commit…` — the linguist-commit `--user` timer raced my `git commit`, swept my
+> staged files into its own commit, and **pushed it** before I could amend; per never-force-push I
+> accepted it (tree identical). Code is correct + live. (Pause the timer next time:
+> `systemctl --user stop linguist-commit.timer`.) Full gotchas in [[pipeline-reorder-0021]].
+>
+> **▶ NEXT: write the Change B spec** (`octo:spec` → `thoughts/astra/specs/0021-pipeline-chronicle-context-spec.md`).
+> Decisions LOCKED (in the scope doc + the memory): B1 = mouthpiece context = **prior episodes + this
+> session's arc/season placement** (not its own summary); B2 = inject at the **script stage**
+> (`build_script_user_content`, faerrin `threads_block` precedent); B3 = **hard gate + carve-out**
+> (mouthpiece waits for `timeline/episodes/<date>.json` EXCEPT chronicle-skipped shows; preserve the
+> backlog-adoption invariant). Change B ports faerrin caster's `running-threads` continuity pattern.
+> Scope doc: `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`.
 >
 > _(Below: prior sessions — the heartwood Phase-4 content acceptance gate remains the other open
 > main-track item; nothing changed there this session.)_

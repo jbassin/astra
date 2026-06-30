@@ -1,6 +1,13 @@
 # 0021 — pipeline reorder, Change A: parallelize scribe — NLSpec
 
-- **Status:** SPEC — ready to implement. Decisions resolved (scope doc + this spec); **no open questions**.
+- **Status:** ✅ **BUILT + DEPLOYED + LIVE-VERIFIED** (2026-06-30, commit `6dc4a63`). All 4 slices landed;
+  acceptance §10 met — the four assets materialize through `session_tracks → session_audio ∥
+  session_transcript → session_cleanup`, `scribe.merge` ∥ `scribe.transcribe` overlap confirmed in SigNoz
+  (transcribe started before merge ended; `service.name=astra.pipeline`), outputs at frozen paths
+  host-owned, `tmp/<date>` cleaned by the fan-in, linguist's sensor fired on `script.json`, counter +1
+  once, py CI green. Verified via a synthetic Craig fixture (since `2026-6-27` is a degenerate zip with no
+  tracks). Load-bearing gotchas + the commit-message-mishap caveat in [[pipeline-reorder-0021]].
+  _(Originally:)_ SPEC — ready to implement. Decisions resolved (scope doc + this spec); **no open questions**.
 - **Scope doc:** `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md` (verified)
 - **Date:** 2026-06-30
 - **Subsystem slug:** `pipeline-reorder` (Change A of two; Change B = `0021-pipeline-chronicle-context-spec.md`)
