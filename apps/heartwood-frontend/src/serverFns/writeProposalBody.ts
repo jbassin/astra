@@ -5,12 +5,21 @@
 // write-BACK is host-gated; this only touches the staged proposals/ mount, traversal-
 // guarded both by the id-slug shape and fs.ts's `within`.
 
+import { getLogger, getMeter, getTracer } from "@astra/observe";
+import { SpanStatusCode } from "@opentelemetry/api";
 import { createServerFn } from "@tanstack/react-start";
 import { writeProposalBody as writeBodyFile } from "@/domain/review/fs";
 
 /** Proposal ids are slugs (slugify(target_path)) — no slash/dot, so no path traversal. */
 const ID_RE = /^[a-z0-9-]+$/;
 const MAX_BODY_BYTES = 256 * 1024;
+
+const tracer = getTracer("astra.heartwood-frontend");
+const log = getLogger("astra.heartwood-frontend");
+const bodyCounter = getMeter("astra.heartwood-frontend").createCounter(
+  "astra.heartwood.review.body_edits",
+  { description: "In-browser proposal body edits, by outcome" },
+);
 
 export interface WriteBodyInput {
   date: string;
@@ -32,9 +41,31 @@ export function validateWrite(input: WriteBodyInput): WriteResult {
 
 export const writeProposalBody = createServerFn({ method: "POST" })
   .validator((input: WriteBodyInput) => input)
-  .handler(({ data }): WriteResult => {
-    const v = validateWrite(data);
-    if (!v.ok) return v;
-    writeBodyFile(data.date, `${data.id}.vellum`, data.source);
-    return { ok: true };
-  });
+  .handler(
+    ({ data }): WriteResult =>
+      tracer.startActiveSpan(
+        "heartwood.writeProposalBody",
+        { attributes: { "heartwood.date": data.date, "heartwood.proposal_id": data.id } },
+        (span): WriteResult => {
+          try {
+            const v = validateWrite(data);
+            if (!v.ok) {
+              bodyCounter.add(1, { outcome: "rejected" });
+              return v;
+            }
+            writeBodyFile(data.date, `${data.id}.vellum`, data.source);
+            bodyCounter.add(1, { outcome: "ok" });
+            log.emit({
+              severityText: "INFO",
+              body: `review ${data.date}: edited proposal body ${data.id} (${Buffer.byteLength(data.source, "utf8")}B)`,
+            });
+            return { ok: true };
+          } catch (err) {
+            span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
+            throw err;
+          } finally {
+            span.end();
+          }
+        },
+      ),
+  );
