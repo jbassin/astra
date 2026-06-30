@@ -28,7 +28,13 @@ from astra_mouthpiece.assets import (
     session_script,
 )
 from astra_observe import init_telemetry
-from astra_scribe.assets import craig_drop_sensor, session_outputs
+from astra_scribe.assets import (
+    craig_drop_sensor,
+    session_audio,
+    session_cleanup,
+    session_tracks,
+    session_transcript,
+)
 
 # Telemetry from day one (CLAUDE.md): every process that loads this code location — the
 # Dagster daemon and each run worker — installs the OTel providers here, so the pipeline's
@@ -51,7 +57,10 @@ defs = dg.Definitions(
     assets=[
         hello_astra,
         akasha_corpus_snapshot,
-        session_outputs,
+        session_tracks,
+        session_audio,
+        session_transcript,
+        session_cleanup,
         session_transcripts,
         correction_candidates,
         session_episode_summary,

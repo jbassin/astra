@@ -1,19 +1,20 @@
-"""Per-session orchestration — the pieces a Dagster partition materializes.
+"""Per-session pieces a Dagster partition materializes — pure, injectable helpers.
 
-Kept free of Dagster + config so it unit-tests with injected deps: merge the
-player tracks to `audio.mp3` (ffmpeg amix) and transcribe + time-merge them to
-`script.json` (`[{start,end,text,user}]`, no word timestamps). The asset layer
-(assets.py) just supplies real paths, the roster, and a `TrackTranscriber`.
+Kept free of Dagster + config so they unit-test with injected deps: extract the
+player tracks from a Craig zip (`extract_session_tracks`), merge them to
+`audio.mp3` (ffmpeg amix), and transcribe + time-merge them to `script.json`
+(`[{start,end,text,user}]`, no word timestamps). The asset layer (assets.py)
+supplies real paths, the roster, and a `TrackTranscriber`, and owns the
+fan-out/fan-in orchestration + telemetry spans.
 """
 
 from __future__ import annotations
 
-import json
 import os
+import shutil
+from collections.abc import Callable
 from pathlib import Path
 from typing import Any
-
-from astra_observe import get_tracer
 
 from . import audio
 from .ingest import extract_tracks, player_tracks, verify_zip
@@ -21,7 +22,42 @@ from .roster import Roster
 from .sound_stack import SoundStack
 from .transcribe import FfmpegRunner, TrackTranscriber
 
-_tracer = get_tracer("astra.scribe")
+#: Injectable seams (default to the real implementations); tests stub them.
+type Verifier = Callable[[Path | str], None]
+type Extractor = Callable[[Path | str, Path | str], list[Path]]
+
+
+def extract_session_tracks(
+    zip_path: Path | str,
+    dest: Path | str,
+    roster: Roster,
+    *,
+    verify: Verifier = verify_zip,
+    extract: Extractor = extract_tracks,
+) -> list[Path]:
+    """Verify → extract → roster-filter → atomically publish player tracks to `dest`.
+
+    One-time ingest shared by the audio + transcript tails: the surviving player
+    tracks are persisted (flat, stems preserved — the stem encodes the discord
+    user-id `build_transcript` needs) into `dest`. `dest` is published atomically
+    — populated under a `.partial` sibling then `os.replace`d into place — so a
+    downstream asset reading `dest` never sees a half-populated tracks dir.
+    Returns the persisted track paths (in `dest`, sorted).
+    """
+    dest = Path(dest)
+    verify(zip_path)
+    partial = dest.with_name(dest.name + ".partial")
+    if partial.exists():
+        shutil.rmtree(partial)
+    scratch = partial / "_extract"
+    extracted = extract(zip_path, scratch)
+    for track in player_tracks(extracted, roster):
+        os.replace(track, partial / track.name)  # move up out of the scratch tree
+    shutil.rmtree(scratch, ignore_errors=True)
+    if dest.exists():
+        shutil.rmtree(dest)
+    os.replace(partial, dest)  # atomic publish (dest does not exist → plain rename)
+    return sorted(dest.glob("*.aac"))
 
 
 def merge_audio(
@@ -54,33 +90,3 @@ def build_transcript(
         segments = transcriber.transcribe_track(track, Path(work_dir) / track.stem)
         stack.add(roster.user_of(track.stem), segments)
     return stack.drain()
-
-
-def process_session(
-    zip_path: Path | str,
-    *,
-    out_dir: Path | str,
-    work_dir: Path | str,
-    roster: Roster,
-    transcriber: TrackTranscriber,
-    run: FfmpegRunner = audio.run_ffmpeg,
-) -> dict[str, int]:
-    """Full session: verify → extract → filter → audio.mp3 + script.json."""
-    with _tracer.start_as_current_span("scribe.process_session") as span:
-        out = Path(out_dir)
-        out.mkdir(parents=True, exist_ok=True)
-        verify_zip(zip_path)
-        tracks = player_tracks(extract_tracks(zip_path, Path(work_dir) / "tracks"), roster)
-
-        merge_audio(tracks, out / "audio.mp3", run=run)
-        script = build_transcript(tracks, roster, transcriber, Path(work_dir) / "chunks")
-
-        # Atomic appearance for the transcript too (N7).
-        script_path = out / "script.json"
-        tmp = script_path.with_suffix(".json.tmp")
-        tmp.write_text(json.dumps(script), encoding="utf-8")
-        os.replace(tmp, script_path)
-
-        span.set_attribute("scribe.tracks", len(tracks))
-        span.set_attribute("scribe.segments", len(script))
-        return {"tracks": len(tracks), "segments": len(script)}

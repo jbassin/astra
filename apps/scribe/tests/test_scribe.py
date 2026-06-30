@@ -11,12 +11,14 @@ import json
 from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
+from zipfile import ZipFile
 
 import pytest
 from astra_scribe.audio import chunk_args, merge_args, parse_silences, silencedetect_args
 from astra_scribe.naming import session_date, track_index, track_user
 from astra_scribe.roster import Roster
 from astra_scribe.sensor import new_sessions
+from astra_scribe.session import extract_session_tracks
 from astra_scribe.sound_stack import SoundStack
 from astra_scribe.transcribe import TrackTranscriber
 from astra_scribe.vad import chunk_spans, voiced_spans
@@ -41,6 +43,25 @@ def test_roster_filter() -> None:
     assert roster.is_player("5-tanner_kn")
     assert not roster.is_player("2-craigbot")  # not a player → dropped
     assert roster.user_of("1-miked6187") == "miked6187"
+
+
+# ── session_tracks ingest: verify → extract → filter → atomic persist ──────
+def test_extract_session_tracks_persists_players_only(tmp_path: Path) -> None:
+    """One-time ingest keeps only player tracks, flat with stems preserved, atomically."""
+    zip_path = tmp_path / "guild_chan_2025-4-17_xyz.zip"
+    with ZipFile(zip_path, "w") as archive:
+        archive.writestr("1-miked6187.aac", b"player-audio")
+        archive.writestr("2-craigbot.aac", b"bot-audio")  # not a player → dropped
+
+    dest = tmp_path / "tmp" / "2025-4-17" / "tracks"
+    # Inject a no-op verify (the real one shells to `unzip -t`, absent in CI).
+    tracks = extract_session_tracks(zip_path, dest, Roster({"miked6187"}), verify=lambda _p: None)
+
+    assert [t.name for t in tracks] == ["1-miked6187.aac"]  # only the player track persisted
+    assert (dest / "1-miked6187.aac").read_bytes() == b"player-audio"  # stem + bytes preserved
+    assert sorted(p.name for p in dest.iterdir()) == ["1-miked6187.aac"]  # scratch dropped
+    # Atomic publish leaves no `.partial` sibling behind.
+    assert not dest.with_name(dest.name + ".partial").exists()
 
 
 # ── SoundStack time-merge (gate B) ─────────────────────────────────────────
@@ -263,3 +284,101 @@ def test_new_sessions_skips_known_and_unparseable() -> None:
     zips = ["g_c_2025-1-1_a.zip", "g_c_2025-2-2_b.zip", "bad.zip"]
     found = new_sessions(zips, existing_keys={"2025-1-1"})
     assert found == {"2025-2-2": "g_c_2025-2-2_b.zip"}
+
+
+# ── 0021 fan-out: asset wiring + cleanup fan-in ────────────────────────────
+def test_scribe_asset_graph_wires_audio_and_transcript_parallel() -> None:
+    """audio ∥ transcript both depend only on tracks; cleanup fans in on both tails."""
+    import dagster as dg
+    from astra_scribe import assets
+
+    tracks, audio, transcript, cleanup = (
+        assets.session_tracks,
+        assets.session_audio,
+        assets.session_transcript,
+        assets.session_cleanup,
+    )
+    assert tracks.dependency_keys == set()  # root
+    assert audio.dependency_keys == {dg.AssetKey("session_tracks")}  # tail off tracks
+    assert transcript.dependency_keys == {dg.AssetKey("session_tracks")}  # parallel tail
+    assert cleanup.dependency_keys == {
+        dg.AssetKey("session_audio"),
+        dg.AssetKey("session_transcript"),
+    }  # fan-in on both tails
+    # The sensor + the Definitions register exactly the four assets.
+    assert [tracks, audio, transcript, cleanup] == assets.SCRIBE_ASSETS
+
+
+def _stub_scribe(monkeypatch: Any, tmp_path: Path, *, transcript_raises: bool = False) -> list[int]:
+    """Wire the scribe assets to in-test stubs (no zip/ffmpeg/Groq); return a counter spy."""
+    from astra_scribe import assets
+
+    cfg = SimpleNamespace(
+        tmp_path=str(tmp_path / "tmp"),
+        data_path=str(tmp_path / "data"),
+        incoming_path=str(tmp_path / "incoming"),
+        groq_api_key=None,
+        model="groq/whisper-large-v3",
+    )
+    monkeypatch.setattr(assets, "load_config", lambda: SimpleNamespace(scribe=cfg))
+    monkeypatch.setattr(assets.Roster, "from_being", classmethod(lambda cls, _p: cls(set())))
+    monkeypatch.setattr(assets, "_find_zip", lambda _inc, _key: Path("fake.zip"))
+
+    def fake_extract(_zip: Any, dest: Path | str, _roster: Any, **_kw: Any) -> list[Path]:
+        dest = Path(dest)
+        dest.mkdir(parents=True, exist_ok=True)
+        track = dest / "1-miked6187.aac"
+        track.write_bytes(b"aac")
+        return [track]
+
+    monkeypatch.setattr(assets, "extract_session_tracks", fake_extract)
+    monkeypatch.setattr(
+        assets, "merge_audio", lambda tracks, out, **_kw: Path(out).write_bytes(b"mp3")
+    )
+
+    def fake_transcript(*_a: Any, **_kw: Any) -> list[dict[str, Any]]:
+        if transcript_raises:
+            raise RuntimeError("boom in transcription")
+        return [{"start": 0.0, "end": 1.0, "text": "hi", "user": "miked6187"}]
+
+    monkeypatch.setattr(assets, "build_transcript", fake_transcript)
+
+    calls: list[int] = []
+    monkeypatch.setattr(assets, "_sessions_counter", SimpleNamespace(add=calls.append))
+    return calls
+
+
+def test_scribe_run_produces_outputs_cleans_up_counts_once(
+    monkeypatch: Any, tmp_path: Path
+) -> None:
+    """A full fan-out run: outputs at frozen paths, tracks cleaned, counter +1 once."""
+    import dagster as dg
+    from astra_scribe import assets
+
+    calls = _stub_scribe(monkeypatch, tmp_path)
+    date = "2025-4-17"
+    instance = dg.DagsterInstance.ephemeral()
+    instance.add_dynamic_partitions(assets.SESSIONS_NAME, [date])
+    result = dg.materialize(assets.SCRIBE_ASSETS, partition_key=date, instance=instance)
+    assert result.success
+    saved = tmp_path / "data" / "saved" / date
+    assert (saved / "audio.mp3").exists()  # frozen output path
+    assert (saved / "script.json").exists()  # frozen output path (linguist's trigger)
+    assert not (tmp_path / "tmp" / date).exists()  # cleanup fan-in removed the tracks
+    assert calls == [1]  # session counter incremented exactly once
+
+
+def test_scribe_failed_tail_retains_tracks_dir(monkeypatch: Any, tmp_path: Path) -> None:
+    """If transcription fails, the run fails and the persisted tracks are retained (B4)."""
+    import dagster as dg
+    from astra_scribe import assets
+
+    _stub_scribe(monkeypatch, tmp_path, transcript_raises=True)
+    date = "2025-4-17"
+    instance = dg.DagsterInstance.ephemeral()
+    instance.add_dynamic_partitions(assets.SESSIONS_NAME, [date])
+    result = dg.materialize(
+        assets.SCRIBE_ASSETS, partition_key=date, instance=instance, raise_on_error=False
+    )
+    assert not result.success  # the transcript tail raised → run failed
+    assert (tmp_path / "tmp" / date / "tracks").is_dir()  # cleanup never ran → retained
