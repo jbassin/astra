@@ -17152,6 +17152,1755 @@
           "text": "It certainly is."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-6-29",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 9,
+      "isMain": true,
+      "date": "2026-6-29",
+      "dateSortKey": 20260629,
+      "title": "The Canary in the Coal Mine",
+      "episodeTitle": "The Canary in the Coal Mine",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "The party delves deeper into the Strider's Undercroft, navigating warped hallways thick with spider silk, crossing a chamber of active hydraulic pistons, stealthing past a curtain of silk swarming with spiders, and discovering an ancient worship site bearing statues of Aurelia the First's original party—before massive arachnids and a pair of nightmarish Apothecary Bugs ambush them in a brutal, resource-draining fight that leaves the party depleted at the foot of the heart's stairway.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—and look, I'm sorry, but if you're telling me that Johnny stood up there and called the mongrel folk \"weirdos\" like three separate times during the recap, that's a choice, that's a deliberate choice, and I think it's the funniest thing he's done in weeks, because those things are WEIRD, they are weird little creatures living in the basement of a giant mechanical spider god—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They're mongrel folk, Bram, they're a known type of creature in the setting, they're not \"weird\" any more than a goblin is weird, they're just—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A goblin IS weird, Maeve! A goblin is deeply weird! That's the whole point of goblins!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Okay, but you're missing the actual interesting thing about that recap, which is that one of them was carrying a Herald horn symbol of the Sinister Six. That's the plot thread. Not whether Johnny was being rude to imaginary people."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No, I agree, the Sinister Six connection is huge, that's the thread that's going to come back and bite them, but I'm just saying—okay, so here's the party, right, they're in the Undercroft, they paid Maranthorn in sandwiches for directions—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "In sandwiches."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In sandwiches! Which I think is a masterstroke, by the way, because what is a guy living in the basement of a Strider going to do with gold? There's no shops down there! There's no—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "There are entire civilizations that operate underground in this setting, Bram, Maranthorn could absolutely spend gold, he could go up to Hildebrandt's slice, he could—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He could, but would he? I think the sandwich thing tells you everything about who Maranthorn is, he's a guy who wants a sandwich, he doesn't want coins, he wants lunch, and the party read that correctly and I think that's good play."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or they just didn't want to spend money and sandwiches were convenient. I like Johnny but that man will haggle with a rat."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, fine, but the loot, though—the loot from that fight was actually really good for where they are, they got the ink ribbon, the mongrel folk tincture which is that gritty spicy finger-growing potion, which is disgusting by the way—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It grows fingers, Bram."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It grows fingers and it's gritty and spicy, those are two words that should never appear together in a potion description, and they got a skeleton key, and Perfection pamphlets, Perfection's First Step, which—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which ties back to the Perfection faction, yes, that's another thread."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Another thread! So you've got the Sinister Six symbol and the Perfection pamphlets in the same basement, that's two different organizations with footholds in this Undercroft, and nobody's talking about that?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm talking about it, I'm just not yelling about it. Let's move forward—the warped hallway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, so the party proceeds down this bug-infested, webbed hallway, and I love this sequence because it's pure tension, it's the dungeon crawl at its best, you've got these walls scrawled with reddish and brownish paint, webbing everywhere, and the hallway is only about seven feet across so they're forced into single file, and they're hearing—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Skittering. Many small legs on the other side of the walls."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Many small legs! And they rolled well collectively to avoid touching the webs, which I think was the right call, just move carefully, don't provoke whatever's in the walls—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But here's my question, and I think this is a real tactical question: were those skittering sounds ambient flavor or a real threat they should have engaged? Because if you know spiders are in the walls and you sneak past them, all you've done is ensure those spiders are behind you. Between you and the exit."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's a fair point, but you don't know how many there are, you don't know what kind, you're in a seven-foot hallway where you can't spread out—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is exactly why you might want to fight them NOW when you know where they are, rather than later when they drop behind you in a bigger room."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Or you avoid the fight entirely and save resources, which is what they did, and given how the rest of the session went I think that was—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We'll see about that. Let's talk about the marching order, because that's where I start to have questions."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay so Benny goes to the front, they put Argyle's Obsidian Goggles on him—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The cleric's Obsidian Goggles. The plus-one perception, once-daily darkvision goggles. They took those off Argyle, who has a plus-sixteen perception, and put them on Benny."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because Benny's the point person! He's the canary in the coal mine, Johnny literally calls him that, they're painting him yellow—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Benny is a fighter, Bram. He is a martial character whose job is to hit things with a pickaxe. Argyle is the cleric with the sky-high perception. You are taking the best perception character in the party and making him WORSE so that the fighter can see slightly better."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But Argyle's still right behind him, and Argyle's perception is still going to catch things, which it DID, by the way, Argyle caught the glinting metallic movement ahead with a thirty-three—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "While Benny's secret perception check was a twenty-two. A twenty-two! If they'd left the goggles on Argyle, Argyle would have been even better and Benny would have been relying on his own flat perception, which is what he should be doing as a front-liner anyway. You put the perception item on the scout, yes, but Argyle IS the scout, or he should be."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I see your point but I think the logic is that the front person needs to see what's immediately in front of them, and Benny with the goggles at least gets a fighting chance—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A twenty-two is barely a fighting chance at this level."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fair, fair. But here's the thing, they also had Benny activate the darkvision on the goggles even though they had a flashlight, which I thought was redundant but—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Redundant but not harmful. Darkvision doesn't require a hand to hold a flashlight, and if the flashlight breaks or gets dropped, you still have darkvision. That's just sensible."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Agreed. Okay so the survival check—Johnny rolls a thirty, places them below Hildebrandt's slice, about halfway toward the center of the Strider, roughly an hour of walking in, and this is where the compass penalty thing comes up."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Jorge had a minus-two compass penalty."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A minus-two compass penalty! Which the GM retroactively waived for all survival checks—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which I think was wrong."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Wrong?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "If you're going to waive the penalty retroactively, you waive it going forward. You don't go back and fix old checks, because those old checks were made with the information available at the time. The party made decisions based on those results. You can't just rewrite history because you decided the penalty was silly."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But if the penalty itself was an error—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Then you correct the error for future checks and you live with the past. That's how retroactive rulings should work. Otherwise you're just picking whatever result feels best, and that undermines the whole point of rolling."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think you're being too rigid about this, I think Josh realized the penalty was dumb and fixed it, and that's fine, GMs make mistakes—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "GMs make mistakes all the time. You fix them forward. Not backward."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We'll agree to disagree. But the bigger thing from that survival check—Argyle notes that the Undercroft is below every slice, which—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which tells you the scale of the Strider. It's not a building, it's a layered structure, and the Undercroft runs underneath all of it. They're deep in."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Deep in, and a quarter-mile of hostile hallway behind them, which becomes very relevant later. Okay, now THIS is the big one— the party confirms, without any roll needed, that the Strider's state in the Undercroft is NOT consistent with new construction within the past six months."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The GM says without any roll necessary, the party is positive this is not new construction. Cannot get to this state in under six months."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They were told this thing was NEW. They were sold the Strider as a new construction, and it's not, it's ancient, it's decaying, the warping and the webbing—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So who lied to them?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's the question!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And does this change their relationship with whoever commissioned or sold them on the Strider? Because if someone told you \"here's a shiny new mech\" and you walk inside and it's seven hundred years old and full of spiders, that's not a misunderstanding, that's a deception."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it raises the question of what else they were lied to about, right? If the age is wrong, what about the purpose? What about who built it and why? This changes the entire framing of the campaign from \"we're exploring our new acquisition\" to \"we're exploring something we don't understand at all.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Agreed, that's the most important revelation of the session, and I want to see them follow up on it. Let's move to the machinery—Argyle's perception of thirty-three catches a glinting metallic movement ahead, and they hear heavy machinery, gas compression, regular mechanical motion."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Anzu does a crafting check, gets a twenty-eight, and determines the machinery is operating regularly—no grinding, no clanking, no malfunction, it's running as intended."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is more ominous than if it were broken."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "See, I said that! Something running perfectly in an abandoned hulk is CREEPY—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Because it means either someone is maintaining it, or it's been running autonomously for centuries, and neither of those is comforting. But I want to credit Anzu here—the crafting check was the right instinct. You hear machinery, you want to know if it's malfunctioning, because malfunctioning machinery might explode or stop, and that changes how you approach it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the answer is \"it's fine,\" which—okay, so now we're at the piston room, and this is where the session goes from \"creepy dungeon crawl\" to \"oh no, Benny.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The piston room. Fifty feet across, a hundred feet wide, cylindrical chamber, near the top of a multi-story cavity—floors twelve through fifteen—eight actively moving pistons arranged crisscross in a V pattern, each ten feet long, pumping gas."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Benny steps forward and the floor isn't there. His foot pushes through where floor should be and he plunges through the gap—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The canary goes first."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "THE CANARY GOES FIRST! That's the whole point of the canary metaphor, right, the canary dies so the miners know there's gas—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The canary doesn't die, the canary grabs the edge."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "On a critical success! A critical success on the grab-an-edge check, earns a hero point, the fall is treated as thirty feet shorter for damage so he takes NO damage, and he scrambles back up spooked like a cat!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is a great image, and I think the hero point was earned. A crit on a save when you're about to fall into the depths of the Strider—that's clutch, that's exactly what hero points are for."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I agree, although I will say—some tables don't give hero points for saves, they only give them for roleplay or dramatic moments—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A fighter falling through the floor of an ancient mech into a pit of active machinery is pretty dramatic, Bram."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fair enough. And then Argyle follows up with a perception check of twenty-seven, looks down through the gap, and sees—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Massive linkages hooked to cogs, cams, gears spreading throughout, some gummed up by webbing but many still moving."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The scale of the Strider's internal machinery is staggering, and this is the first time you really see it—not just a hallway, not just a room, but the actual guts of this thing, still turning, still pumping, and in some places literally pushing through the webbing like it's trying to keep working despite the infestation."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the GM confirms nothing directly saw Benny fall, but they've \"definitely hit the webbing,\" meaning whatever's in this zone now knows something is here, even if it doesn't know exactly what or where."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the clock is ticking. And this is where the party has the Fane discussion, which I think is—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "This is where it gets interesting, yes. The party confirms they haven't felt themselves leave the Fane they entered. Argyle notes that Fanes collapse when the heart dies, and he's worried about the quarter-mile retreat distance. If the heart collapses while they're deep in, they have to get out through a quarter mile of hostile hallway that might come down around them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Anzu makes this observation that the Fane \"looks like how the Strider should look,\" which I think is a really sharp read—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a very sharp read. It means the Fane isn't overlaying something alien onto the Strider, it's reflecting the Strider's own character. Which raises the question: is the heart of this Fane being coerced by something bigger?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Big Bug."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anzu calls it \"Big Bug,\" yes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And look, I know that's a flip nickname but the environmental evidence is right there—webs everywhere, machinery gummed up, spiders in the walls and ceiling—something arachnid is in control of this zone, and if the heart reflects the Strider but the Strider is full of spiders, then either the heart is okay with that or something is making the heart okay with that."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But I think the party is jumping to conclusions slightly. The evidence says \"spiders,\" yes. It doesn't necessarily say \"a single big spider coercing the heart.\" It could be a colony, it could be an infestation that the heart can't control, it could be—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But then Johnny asks if a Fane can be corrupted by a stronger creature, and Anzu rolls an occultism check—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A thirty-eight. With Johnny's aid, a forty-one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A critical, and the lore dump is massive. Hearts can be co-opted by something with more force, but they cannot be forced against their will—mind control doesn't work on hearts."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "However, hearts can be gifted the equivalent of pain receptors, so they can be coerced through the, quote, \"correct levers to push.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is horrifying!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It is horrifying. You can't mind-control a heart but you can hurt it until it does what you want. That's a very specific ethical distinction and I don't think it's a comforting one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the Sin and Tonic precedent—the GM says if a heart dies in an existing structure, not one the heart created, the Fane's qualities go away but the structure remains. And he cites Ginny and the Sin and Tonic, where Illmari bought the tavern and had Ginny installed inside it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So the tavern exists separately from Ginny but is now Ginny's Fane. The structure predates the heart."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which has massive implications for what they're doing here, because if this worship site is seven hundred years old and the heart was grafted onto it later, killing the heart doesn't collapse the room—it just removes the Fane qualities."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That changes the tactical calculus. If the structure is permanent, you don't have to worry about it falling on you when the heart dies. You can fight the heart, kill it, and the building stays up."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Unless the heart isn't grafted, unless the heart MADE this structure, in which case—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "In which case killing it might bring everything down. They don't know yet which one it is."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the ethics of coercing hearts through pain—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Is that something the party would do?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No! I should hope not!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But it's something they're now aware exists as a mechanic. The GM told them this for a reason. Either they're going to encounter it being done to this heart, or someone in the party is going to be tempted to do it themselves."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's dark, Maeve."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a dark campaign."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fair. Okay, the piston room crossing. The party needs to get across a hundred feet of active pistons, and they discuss options—Dimension Door, Fly, Levitate, grappling gun, running the center—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The GM compares running the center to American Ninja Warrior and Wipeout."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is perfect, because that's exactly what it looks like in your head, right, you've got these pistons crisscrossing in a V pattern and you'd have to time your runs between them like quad steps on a Wipeout course—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And climbing the walls would touch webs, which could summon spiders. So that's out."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And they decide to fly. Anzu casts Fly on Argyle, Levitate on Benny—two third-rank spells—and Johnny Dimension Doors across, which costs both his fourth-rank slots."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Both of them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Both fourth-rank Dimension Doors, gone, to cross one room."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then Johnny gets to the other side, perception check of thirty-one, and finds—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Nothing! No button, no mechanism, no off-switch, just a doorway extending further into the Strider. He rolls a d-two coin flip, gets a one, confirms there's no visible mechanism. And he Messages back: \"it's good, we're clear, we're clear, we're clear.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's not clear. He's out of fourth-level spells and he's alone on the other side of a piston room. That's not clear."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He had to say that though, what's he going to say, \"it's bad, I'm stranded, come save me\"? They were already committed to the crossing plan—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He could have scouted and come back. Dimension Door is a two-way spell, he could have gone across, looked, and come back, and then they could have made an informed decision about whether to commit the Fly and Levitate—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But that would have cost two MORE Dimension Doors to go and come back, and he only has two total! He can't make four trips!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No, you're right, he can't. So the question is whether Dimension Dooring across first was the right move at all. If he'd just flown across with everyone else, he'd still have both fourth-rank slots."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But then nobody scouts the other side first, and you're flying blind—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He scouted the other side and found nothing useful! The scouting didn't help! So the net result is: two fourth-rank slots spent for zero information gained."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's—okay, that's a harsh way to put it but I can't argue with the math. The crossing itself, though—Argyle flies carrying Anzu on his back, Benny levitates with a rope leash, Johnny piggybacks on levitating Benny, and the GM requires zero checks."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Zero checks. No acrobatics, no athletics, nothing. The GM says, and I quote, \"I'm just not going to make you make any checks.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which I think is fine! They're flying and levitating, they're not touching anything, the pistons are below them—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They're piggybacking on a levitating child over active machinery that could kill them, and the GM's justification is that Anzu has \"hollow bones\" because it's \"part of your backstory.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's great GMing! He's using the character's established lore to justify a lenient ruling!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's using flavor text to skip mechanics. I love Josh, but that's a soft table. Any other GM would have at least asked for an acrobatics check when you're carrying someone on your back while flying over pistons."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the pistons aren't in their path! They're flying above the walkway, the pistons are below—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And if something had gone wrong? If a piston had extended higher than expected? If the webbing on the ceiling had something in it? There's no check to fail, which means there's no risk, which means the scene has no tension."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think the tension was already spent on Benny falling through the floor. You don't need to milk the piston room twice. They paid for the crossing in spell slots, that's the cost, the cost isn't also a skill check."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I disagree but I see your argument. Let's move to the silk curtain shaft."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, this room. So they resume marching order on the far side—Benny in front, then Argyle, Johnny, Anzu—and they enter a new room, and Benny's perception check of thirty-three, with the goggles, reveals this massive cylindrical shaft, like a commandeered elevator shaft, three stories tall, floor nine down to fifteen—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "With rafters crossing at various angles, forty-five-degree rotations, stacked across multiple stories. Thousands of silk strands hanging from the ceiling to the floor forming a curtain. And black and blue figures climbing among them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And silk-wrapped nodules, five-by-five spherical shapes, suspended throughout the room. And crucially, Benny sees them before they see him."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That perception check is the reason they survived this section. If Benny had rolled poorly, they'd have walked into a room full of spiders with no surprise advantage."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And this is where I have to concede your earlier point about the goggles, because that thirty-three is the check that gave them the edge—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Thank you."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "—but I still think Argyle would have gotten a thirty-three or higher with the goggles and Benny would have been fine without them!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We'll never know. What I do know is the party chose stealth, and that's the interesting decision."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny casts Illusory Creature, second rank, sustained, at a hundred and twenty feet above them—a large undead-looking creature that trips in the web and starts screaming."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And he rolls a performance check of thirty-five for Distracting Performance, which is a critical success, giving the party a plus-two untyped bonus to stealth."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is huge, because without that plus-two, Benny's raw roll of sixteen would have been a failure, and—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Let's talk about the placement, though. A hundred and twenty feet up. The distraction is above them. Argyle was worried about things below coming up toward the party."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it worked! The black and blue blobs converged on the illusion a hundred and twenty feet up—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It worked, but was it optimal? If things below had been alerted, the party would have been caught between the lower spiders and the distraction above. Johnny placed the distraction to pull things UP, away from the party's path, but the party's path was along the walkway, which is at their level, not above. Things on the walkway level wouldn't necessarily be drawn upward."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But there weren't things on the walkway level! The blobs were in the silk curtain, which spanned the whole shaft—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They didn't know that at the time. They placed the distraction and hoped."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it worked. The stealth checks—Argyle thirty-one, crit success, Anzu twenty-three, Johnny used a mythic point to save a poor roll, Benny twenty-seven. The crit and the near-failure cancel out, giving four regular successes."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is the crit-cancel mechanic, and I want to talk about whether Johnny's mythic point was worth spending here."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He was failing! He had to spend it!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He was failing a stealth check, yes. But mythic points are precious, and they had a whole combat ahead of them. Did he need that mythic point later? Because later, when he's trying to kill the Apothecary Bug with a dagger, he spends another mythic point on a reroll—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And that reroll crits and kills the bug! So he had enough! He had enough for both!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He had enough for both because the fight ended when it did. If there had been a third encounter, or if the heart fight had happened this session, he'd have been dry."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's speculative. You can't judge a resource decision by hypothetical future encounters—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's exactly how you judge resource decisions! You spend resources knowing more encounters are coming!"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, point taken, but the stealth bypass worked. They glided above the walkway, didn't touch any silk strands, the illusion drew the blobs upward, and the illusion was destroyed shortly after the party reached the other side—not much longer than they needed, which tells you the margin was thin."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Very thin. The illusion lasted just barely long enough. Another round and they'd have been visible."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But they weren't. They made it. And now they're in the worship site."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And this is where the session goes from \"good dungeon crawl\" to \"holy crap.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle's religion check of thirty-seven reveals a large stairway with granite or marble stone, statues, iconography—six statues depicting Aurelia the First's original party from the first crusade against Dark Ages civilizations."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "One in older Scale armor, one in Church of the Compelled vestments—which Johnny would recognize from Raelion—two in Belvedere academic robes, one in vine and leaf clothing, and one in Iridescent Church vestments, clearly Aurelia the First herself, the original Pontifex."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A face all the party members would recognize from being in Hallia. And this is massive, because what this means is that Aurelia's original party—six people, each sworn to a different outer god—came here, to this place, before they split to form the modern religions. This is a pre-separation site. This is before the Church broke away from the other organizations."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "This is a site of worship for the six outer gods collectively. It predates the current religious structure of the entire setting."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In the Strider! In the basement of the Strider! Why is this here?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's the question. What is the Strider's relationship to these ancient religions? Was the Strider built by Aurelia's party? Was it built before them? Was it built around this site?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Anzu's Academia check, aided by Johnny, a twenty-nine—dates the statues to before the time of Aurelia the Second, who was born one-oh-one AG, meaning they're from the first century after the Firmament broke."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Roughly seven hundred years old. Current year is eight-sixty-three AG."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Seven hundred years old. These statues have been sitting here for seven centuries."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the check also reveals creatures moving in this room—large blue and black spider webs throughout, creatures among them. The party is still stealthy and hasn't been noticed. Yet."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the ancient holy site is infested. And then the GM shows the visualization—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Oh, the map."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The map! Massive blue and black arachnids, larger than Large, filling more than a five-by-five square, with their front two arms being scythe-like blades and their back six legs being normal spider legs."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And they're eating what appears to be a winged animal, possibly a pegasus."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the GM keeps saying \"there are no boats\" and \"ignore the trees\" because the map image has all this irrelevant stuff on it—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"There are no boats\" is the funniest thing Josh said all night. He's showing you a map of giant scythe-spiders eating a pegasus in an ancient worship site and he's apologizing for the boats."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"Ignore the trees, there are no boats\"—it's the GM gaslighting his own map and I love it. But the scythe arms, Maeve—these are apex predators, these aren't just vermin, they're occupying the Strider's ancient worship site as their hunting ground."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And there are silk-wrapped nodules suspended in the room, same five-by-five spherical shapes as before. We still don't know what's in those."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I bet it's food. I bet it's cached prey."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or eggs."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Thanks for that. Thanks for making it worse."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You're welcome. Let's talk about the combat starting, because this is where I have a real problem with the ruling."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, so each party member gets one preparatory action before a group stealth check. Argyle casts Benediction, Johnny casts Dirge of Doom, Anzu and Benny do nothing, saving for better opportunities. Stealth checks—Argyle thirty-one, crit, but Benny rolls a sixteen, failure."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The crit and the failure cancel mathematically, giving four regular successes. Same mechanic as the silk curtain room."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But the GM rules that the sound of overlapping spell preparation—Benediction, Dirge of Doom—alerts the creatures anyway. The party is discovered."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I think that's bull."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You think it's bull?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think it's bull! The crit cancelled the failure! That's the mechanic! You roll well, you cancel the bad roll, you succeed. The GM overrode his own mechanic to force combat!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I actually think the ruling was defensible, and here's why—the crit-cancel mechanic means the party avoids the consequence of failure, which is being detected by the spiders. But the GM is saying there's a separate, non-rolling reason for detection: the audible components of spellcasting. Benediction and Dirge of Doom have verbal components. The spiders can hear chanting. The stealth check covers your movement, not your spellcasting noise."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But if that's true, then casting spells during stealth is ALWAYS going to break stealth, which means the preparatory action system is a trap—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It might be! That might be the point! If you cast spells with verbal components while trying to be stealthy, you're taking a risk. The system gave you a free preparatory action, but if you use that action to make noise, you're accepting the risk of detection."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's a harsh read."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a consistent read. The GM didn't say the stealth check failed. He said the spell sounds gave them away. Those are different failure modes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I see the distinction but I still think the party got robbed. They rolled well enough to succeed and the GM found a reason to take it away."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We'll agree to disagree on that one. But either way, combat starts, and the party rolls perception for initiative—Argyle rolls a thirty-one but ends up, quote, \"behind everyone\" in initiative, which—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is rough for the cleric who just set up all the auras."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Let's go through the opening round. Johnny casts Bless, then Distracting Performance, rolls a thirty-eight, success, hides Benny from the spiders. Argyle has Benediction and Bane running as auras, raises his shield. Benny delays his initiative to after Anzu."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the left spider swarm shoots a web at Argyle, he barely makes the reflex save, slaps it away. The right swarm moves up."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Argyle accidentally flat-checks to target his own hidden ally, which the GM has to correct—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"Successfully rolls the flat check\" to find Benny, who Johnny just hid! He's trying to find his own guy! And he misunderstood Bane as a ten-foot emanation instead of an aura—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Because it has the aura tag, not the emanation tag. Bane is an aura that emanates from Argyle, it's not a targeted emanation. That's a rules confusion that matters because the area of effect is different."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Johnny's joking that Argyle's cheating—\"he's cheating, he's using an item\"—about the goggles—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's just table banter, that's fine."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right. Okay, Anzu's turn, and this is where the fight turns. Anzu does a Recall Knowledge, occultism thirty-two, success, learns the spiders are weak to area damage and splash damage."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And then immediately exploits it with Animated Assault—places whirling debris in front of Benny. Three spiders in the area make reflex saves, one failure, one success. Twenty damage kills the right swarm outright. Thirteen damage injures another spider."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "First blood! And this validates the Recall Knowledge investment, because without knowing the weakness, Anzu might have picked a single-target spell and wasted it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I want to talk about Animated Assault, though, because Anzu himself says he \"hasn't found the right situation\" for it yet. This is a spell that creates a hazardous area on the ground that damages on activation next round. It requires enemies to stay in or near the area, and it costs an action to sustain or activate."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it worked here! It killed a swarm!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It killed a swarm because the swarm was in the area and failed its save. The question is whether it was the optimal spell choice or just a functional one. Against enemies weak to area damage, yes, it's good. But against enemies that can move out of the area, it's less effective."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu strides to reposition and a spider \"clicks\" at him but has no reactive strike, so he's safe—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The clicking is flavor. It's the spider being mad. It doesn't have a reaction."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu's line about \"nothing ever remains in the area of my animated assault\" is both a complaint and a tactical observation—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a self-aware admission that the spell has a weakness."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, Benny's turn, and this is where the fighter goes OFF. Standard strike, twenty-four damage, spider bloodied. Then he \"solves the puzzle\"—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"Solve the puzzle\" is the weapon ability name."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I know, and it's either the dumbest or the greatest name for a weapon ability. He \"solves the puzzle\" for another twenty-four damage and kills both adjacent spiders outright. Then he parries to remove his off-guard condition."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And later in the round, when a spider moves adjacent to him, he gets a reactive strike—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A CRIT. For sixty-two points of damage."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Sixty-two."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Sixty-two damage on a reactive strike. The GM says \"that's enough to tear through these two guys.\" And Benny just says \"kill kill kill kill kill.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The GM says \"hot damn.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "HOT DAMN is right! That's a level seven fighter doing sixty-two damage on a reaction! That's more than some spells!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And this is the martial-caster gap at this level. Benny, who has been the butt of jokes all session—canary in the coal mine, spooked like a cat, falling through floors—is casually doing sixty-two damage on a reaction while the casters are spending their highest-rank slots to cross rooms."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "To be fair, the casters are depleted because of the piston room crossing—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's my point. The casters spent their resources on mobility and utility, and the fighter is carrying the combat. That's the trade-off, but it's a stark one at this level."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But is it balanced? Sixty-two damage on a reactive crit at level seven—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a crit, Bram. Crits inflate damage. The question is what the average reactive strike looks like, and I bet it's more like twenty-five to thirty."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Still a lot for a reaction."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fighters are supposed to do damage. That's their job. I don't think it's broken."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, well, let me tell you what IS broken—the Apothecary Bug."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Oh, here we go."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A small spider with potion sight and multiple poisons jumps onto Johnny and bites down. The GM rolls a d-eight to determine which poison—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a random poison table. The Apothecary Bug has multiple poisons and rolls randomly each time it bites."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's incredible design. It's a little guy with a d-eight poison table. And it rolls a seven, which is Sloughing Toxin, and Johnny makes a fortitude save of twenty-seven, which is a success, but he still gets stage one."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Stage one Sloughing Toxin: every action with the attack or move trait deals one d-six poison damage. And the flavor is \"your muscles start to separate themselves from your bones.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Your muscles are separating from your bones and you take damage every time you move or attack! Johnny, who is already out of fourth-rank spells, is now losing HP on every action!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The bug also tries to sting Anzu but misses."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny's arch-nemesis is just a little guy. A little bug. That's his villain origin story."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's not just a little guy, Bram. It has potion sight, which is a real ability—it can sense potions and it's going to use them. This is a creature designed to punish resource-rich parties by stealing their resources."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And speaking of which—Argyle's turn. First he escapes the grabbed condition from webs with an unarmed strike, success. Then he casts Treat Wounds on Johnny, critical success for healing. Then he targets the Apothecary Bug with Holy Light—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fourteen fire plus twenty holy spirit, thirty-four damage."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But here's the thing—the GM retroactively grants the bug the unholy trait so the holy spirit damage counts."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Mid-combat. The GM changes the enemy's traits mid-combat to make Argyle's spell more effective."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "What do you think about that?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I think it's a fair ruling. Apothecary Bugs are clearly unnatural, corrupt creatures—they inject poisons that make your muscles separate from your bones, they steal potions, they're associated with whatever has corrupted this Strider. Giving them the unholy trait is consistent with their flavor."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it's changing enemy stats on the fly. The bug didn't have the unholy trait when it was introduced. Argyle cast Holy Light assuming it might work, and the GM made it work by adding the trait."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I think the alternative is worse. If the GM says \"no, the bug isn't unholy, your holy spirit damage doesn't apply,\" then Argyle has wasted a spell on a creature he has no way of knowing is or isn't unholy. The knowledge check didn't reveal the trait. How would Argyle know?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "By rolling Recall Knowledge."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They didn't. So the GM is stuck—either he tells Argyle \"sorry, your spell is partially wasted\" or he grants the trait. I think granting the trait is the player-friendly call."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I can see that. I still think it sets a precedent—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It sets a precedent that GMs should make rulings that favor players when the information gap is the GM's fault. I'm fine with that precedent."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay. Argyle also has the Bane aura confusion still ongoing, the GM didn't see the aura tag, had to reapply—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's a rules confusion that should have been sorted before combat. The aura tag means it emanates from Argyle continuously, it's not a one-shot emanation. Enemies entering the aura have to save. The GM not seeing that tag means enemies weren't saving when they should have been."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which actually hurts the party, because the Bane wasn't being applied—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Right. So the confusion disadvantaged the players, not the enemies. Another reason to sort your tags before combat starts."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu's turn now. He unleashes his psyche, casts Amped Frostbite on the Apothecary Bug—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fortitude save, bug rolls badly, thirty-one cold damage. Bug bloodied but alive."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Then Amped Telekinetic Projectile, thirty-five bludgeoning damage."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"Bludgeoning goose squash bugs,\" yes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the bug is STILL alive. Injured, but alive. After thirty-four from Argyle, thirty-one from Frostbite, thirty-five from TK Projectile—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's a hundred damage to a small spider and it's still standing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "What IS this thing?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a surprisingly resilient creature for something described as \"small.\" And I think Anzu made a tactical error here."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "How so?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He split damage between Frostbite and Telekinetic Projectile. Two different spells, two different saves. If he'd dumped both actions into a single amped spell—say, a two-action amped Frostbite with three actions—he might have killed it in one turn. Instead he split, and the bug survived both."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But we don't know the bug's exact HP. Maybe even a doubled Frostbite wouldn't have killed it—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We don't know, but splitting damage between two spells when you're trying to kill one creature is generally worse than focusing. Especially when the creature is weak to area damage and neither Frostbite nor TK Projectile is area damage."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Wait—that's a great point. The Recall Knowledge said the spiders are weak to area and splash damage, and Anzu goes after the bug with two single-target spells?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Apothecary Bug might be a different creature type than the spiders. The Recall Knowledge was about the spiders, not the bug."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But if it's in the same family—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We don't know that. It's a fair question, though."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Anzu also uses Calculate Threats with his final action to offset his sickened condition, and makes a fortitude save against Spider Venom, success, drops to stage one, but still takes five poison damage. So he's poisoned too now."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "When it rains it pours."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And THEN. The Apothecary Bug's turn. It climbs into Johnny's bag."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It climbs into Johnny's bag and slurps up his minor healing potion."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny's reflex save to prevent this—a CRITICAL FAILURE. A natural one, presumably, or close to it. The bug drinks the potion, rolls its own healing, recovers."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Johnny says \"it couldn't have taken the potion of emergency escape.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He's devastated! He's watching a bug drink his potion! That's—that's degradation! That's humiliation!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's also strategically devastating. The bug healed itself, undoing some of the damage the party just dealt, and it consumed a party resource to do it. The Apothecary Bug is designed to turn your resources against you."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then it bites Johnny AGAIN. Another d-eight roll—gets a six, which is Clown Monarch."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Clown Monarch."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The poison is called CLOWN MONARCH. Johnny's fortitude save of twenty-eight is only enough for stage one: he falls prone and must make a DC five flat check to stand up, \"as your legs fall out from underneath you.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "So Johnny is now prone, poisoned with Sloughing Toxin AND Clown Monarch, has lost a healing potion to a bug, and is out of fourth-rank spells."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "This is the lowest point of the session for any single character."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And a second Apothecary Bug appears and crits Anzu, injecting Spider Venom stage two: sickened two, clumsy one, seven poison damage."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "WHEN IT RAINS IT POURS. Two Apothecary Bugs! And Anzu is now sickened two and clumsy one, which means his spells are harder to cast and his movement is impaired—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Sickened reduces his spell DC and his checks. Clumsy reduces his AC and reflex. He's debuffed on both offense and defense."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "This fight went from \"spiders in a room\" to \"the party is being eaten alive by pharmacy bugs\" real fast."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "\"Pharmacy bugs\" is a good name for them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I hate them. Johnny hates them. Johnny says \"I hate this bug\" like four times. He says \"this bug is my enemy.\" He says \"this book is my enemy\" at one point, which I think is just stress."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's having a bad time."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But HERE. Here is the moment. Johnny's desperate turn. He casts Horde of Underlings—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Summons six tiny copies that swarm the bug on Anzu, dealing fourteen slashing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Then casts Fear on the bug, frightened one. Then tries Inventive Vulnerability to trick the bug into revealing a slashing weakness—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the bug \"doesn't fall for it.\" The bug \"knows he's not weak to slashing.\" This bug has intellectual discernment about its own weaknesses. This bug is smarter than half the party."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It KNOWS. It's self-aware! And then Johnny strikes with his dagger, misses, uses a mythic point to reroll—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And crits."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "CRITS. The dagger's two d-four damage is enough because the bug has only seven HP remaining. The bug EXPLODES, spreading its poisons across the floor."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny makes a fortitude save against Clown Monarch, success, no longer affected. He's freed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The catharsis! Johnny, prone and poisoned and out of spells and robbed of his potion, kills his nemesis with a mythic dagger crit! That's the most satisfying moment of the session!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a great moment. I'll give you that. A character at their lowest ebb, spending their last resource—a mythic point—to kill the thing that's been torturing them. That's good drama."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the fact that the bug was smart enough to resist Inventive Vulnerability but couldn't dodge a dagger crit from a prone man on the floor—there's something beautiful about that. The bug outsmarted the psychic and then got stabbed."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Poetry."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then Benny handles the second bug. The second bug tries to drink Anzu's potions first, but Anzu makes the reflex save with a mythic point—success, prevented. \"The bug does not get to drink any of your potions.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Good. Anzu has four potions—a healing potion, holy water, and others. Losing any of those would have been rough."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Benny just Double Slices it. First attack crits for forty-seven damage—boosted because the target is frightened and Benny is blessed—then the second attack hits for twelve more. Bug destroyed."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that clears all remaining arachnid threats in the hallway."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Argyle finishes the last remaining spider with a natural twenty crit for thirty-two damage, and the party stands at the foot of the ancient stairway, surrounded by spider corpses."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Surrounded by corpses, and depleted."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Let's talk about the resource situation, because it's grim. Argyle: zero fourths, zero thirds, two seconds, two firsts."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny is nearly out. Anzu has only first through third rank slots. And Benny—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Benny says he has \"no resources to exhaust\" and is \"as fit to fight at the beginning as at the end.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is technically true—fighters don't have daily resources to manage in the same way casters do. But it also means Benny has been contributing at full capacity the entire time while the casters have been bleeding out."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the party debates whether to long rest here. No one has safe resting spells—no Rope Trick, no Leomund's Hut, nothing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No safe rest spells at level seven. That's a party-building oversight. Someone should have prepared a safe resting option for a dungeon crawl this deep."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "In fairness, they didn't know they'd be this deep. The Strider was sold to them as new construction, remember? They thought this would be a quick exploration."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it turned out to be a seven-hundred-year-old death trap full of ancient worship sites and pharmacy bugs. Plan for the unexpected."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The GM drops this line: \"That would be terrible if there was a big spider in this area with spiders in it. That would be crazy.\""
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's not even being subtle. He's practically telling them Big Bug is real and it's ahead."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Or he's bluffing to make them paranoid!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Why would he bluff? The GM doesn't gain anything by making players afraid of something that isn't there. If he's saying it, it's either a warning or a hint."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "GMs absolutely bluff to heighten tension—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Not like this. This is too specific. \"A big spider in this area with spiders in it.\" He's describing Big Bug. He's telling them Anzu was right."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Or he's telling them Anzu was right so they'll rest, and resting is when the random encounter happens—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's paranoid even for you."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I've been trained by this campaign! Every time something seems safe, it's not!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Argyle's counter-argument is that \"if it was doing something critical, it would not have that many webs blocking other pistons,\" meaning the machinery isn't essential, so the webs and by extension the spiders aren't serving a critical function. That's a reasonable inference."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it's an inference about the machinery, not about the spiders. The spiders could be using the machinery area as a nest without the machinery itself being important to them."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "True."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The real question is: can they afford to rest here? They're in a room full of spider corpses. More spiders could come. They have no safe rest spells. They're a quarter-mile from the exit. And the heart is up those stairs."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the GM says \"we find out next time\" when Argyle asks if the heart is in this room or further up the stairs."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So they don't even know if they're at the heart's doorstep or if there's another whole section to go."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "If I were them, I'd rest. They have to. They can't fight a heart—potentially a coerced heart with Big Bug standing next to it—with zero third-rank spells and no fourth-rank spells. That's a death sentence."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But resting in a hostile zone with no safe rest magic is ALSO potentially a death sentence."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Pick your death sentence. At least if they rest, they get spells back. If they push forward depleted, they have nothing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I think they should push forward. The fighter is fresh, Benny is at full capacity, and every hour they rest is an hour for more spiders to find the corpses and come investigating."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Benny is fresh. The casters are not. And a heart fight without caster support is a Benny solo, and Benny solo is not a strategy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He did sixty-two damage on a reaction!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the Apothecary Bug took a hundred damage to kill and it was a \"small\" creature. Imagine what Big Bug's stat block looks like."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...you're probably right."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm definitely right. Rest, recover spells, then push forward. The risk of resting is lower than the risk of fighting depleted."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Unless the GM's \"big spider\" comment was a hint that resting triggers the encounter—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Bram, you need to let that go."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'll never let it go. This campaign has taught me to trust nothing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "On that note, I think we're done."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Are we? I feel like we didn't talk enough about the sandwiches."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We talked about the sandwiches."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We didn't talk enough about Maranthorn and the sandwiches. That guy—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Bram, we're done."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fine. But next week, if they rest and get ambushed by Big Bug, I told you so."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Noted."
+        }
+      ]
     }
   ]
 }
