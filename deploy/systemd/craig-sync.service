@@ -9,3 +9,8 @@ WorkingDirectory=/ruby/data/experiments/astra
 # fuse mount into apps/scribe/incoming, where the containerised craig_drop_sensor sees
 # them (Docker can't bind-mount the FUSE mount, so the host bridges it).
 ExecStart=/home/jbassin/.cargo/bin/just craig-sync
+# Backstop watchdog: the recipe self-bounds every FUSE access (see `just craig-sync`),
+# so this should never fire — but if anything still wedges in `activating`, cap it so the
+# unit goes `failed` (visible/alertable) and the timer can re-arm, instead of hanging
+# forever. Generous: > the recipe's own copy_timeout so it never kills a legit large sync.
+TimeoutStartSec=1800

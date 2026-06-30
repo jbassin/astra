@@ -72,17 +72,59 @@ craig-sync:
     set -euo pipefail
     src="{{craig_drop_dir}}"
     dest="/ruby/data/experiments/astra/apps/scribe/incoming"
-    mkdir -p "$dest"
-    shopt -s nullglob
+    probe_timeout="${CRAIG_SYNC_PROBE_TIMEOUT:-20}"   # listing the mount is near-instant
+    copy_timeout="${CRAIG_SYNC_COPY_TIMEOUT:-900}"    # a real ~1 GB recording: minutes over Drive
+
+    # Watchdog: bound EVERY access to the google-drive-ocamlfuse mount WITHOUT ever
+    # `wait`-ing on it. A process blocked on a wedged FUSE mount sits in uninterruptible
+    # D state, so `timeout`/SIGTERM/SIGKILL can't reap it and would hang us too (proven:
+    # a hung mount once stalled this oneshot in `activating` for hours, so the timer never
+    # re-armed and the whole pipeline silently stalled at the front door). Instead we run
+    # the access in the background and poll with `kill -0` (which never touches the mount);
+    # on timeout we abandon the child (it clears harmlessly once the mount recovers) and
+    # return non-zero, so the oneshot FAILS — a `failed` unit is visible/alertable and lets
+    # craig-sync.timer compute its next trigger, whereas a hung `activating` unit can't.
+    run_bounded() {
+      local limit="$1"; shift
+      "$@" & local pid=$! waited=0
+      while kill -0 "$pid" 2>/dev/null; do
+        if [ "$waited" -ge "$limit" ]; then
+          kill -KILL "$pid" 2>/dev/null || true   # best-effort; D-state ignores it, fine
+          return 124
+        fi
+        sleep 1; waited=$((waited + 1))
+      done
+      wait "$pid"   # child already exited on its own — surface its real status
+    }
+
+    mkdir -p "$dest"   # local disk — safe, never the FUSE mount
+
+    # Enumerate the mount through the watchdog (the bare glob readdir is itself a mount
+    # access that can wedge), capturing the listing to a local temp file.
+    listing="$(mktemp)"
+    trap 'rm -f "$listing"' EXIT
+    if ! run_bounded "$probe_timeout" \
+        bash -c 'shopt -s nullglob; for f in "$1"/*.zip; do printf "%s\n" "$f"; done' _ "$src" \
+        >"$listing"; then
+      echo "craig-sync: ERROR — Drive mount '$src' unresponsive (>${probe_timeout}s); failing so the unit is visible/alertable." >&2
+      exit 1
+    fi
+
     synced=0
-    for f in "$src"/*.zip; do
-      base=$(basename "$f")
+    while IFS= read -r f; do
+      [ -n "$f" ] || continue
+      base="$(basename "$f")"
       final="$dest/$base"
       [ -e "$final" ] && continue            # already synced — skip (no re-download)
-      cp "$f" "$final.partial" && mv "$final.partial" "$final"  # atomic: sensor sees only complete .zip
+      if ! run_bounded "$copy_timeout" cp "$f" "$final.partial"; then
+        rm -f "$final.partial" 2>/dev/null || true   # drop the partial so a later run retries cleanly
+        echo "craig-sync: ERROR — copy of $base timed out (>${copy_timeout}s, mount stalled); failing." >&2
+        exit 1
+      fi
+      mv "$final.partial" "$final"           # atomic: sensor sees only complete .zip
       echo "craig-sync: synced $base"
       synced=$((synced + 1))
-    done
+    done <"$listing"
     echo "craig-sync: $synced new, $(ls "$dest"/*.zip 2>/dev/null | wc -l) total in incoming"
 
 # Install + start the systemd USER timer that runs `craig-sync` every 5 min. One-time
