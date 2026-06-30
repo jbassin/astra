@@ -1,14 +1,14 @@
 ---
 name: pipeline-reorder-0021
-description: PROJECT 2026-06-30 — the 0021 pipeline-reorder work; Change A (scribe parallel-split) BUILT + DEPLOYED + LIVE-VERIFIED; Change B (chronicle→mouthpiece context) scoped, spec not yet written
+description: PROJECT 2026-06-30 — the 0021 pipeline-reorder work; BOTH changes DONE + LIVE — Change A (scribe parallel-split) + Change B (chronicle→mouthpiece context + ordering gate), all built/deployed/verified
 metadata:
   type: project
 ---
 
 PROJECT (2026-06-30): reorder the data pipeline to **craig → (transcribe ∥ merge audio) → chronicle →
 mouthpiece**, with chronicle output feeding mouthpiece. Compared against the real Dagster graph
-(sub-agent-verified, file:line) → **two independent changes**. **Change A = BUILT + DEPLOYED +
-LIVE-VERIFIED. Change B = scoped + locked decisions; spec NOT yet written.**
+(sub-agent-verified, file:line) → **two independent changes**. **BOTH DONE + DEPLOYED + LIVE-VERIFIED:
+Change A (parallelize scribe) + Change B (chronicle→mouthpiece context + ordering gate).**
 
 ## ⭐ CHANGE A (parallelize scribe) — BUILT + DEPLOYED + LIVE-VERIFIED (commit `6dc4a63`)
 Split scribe's sequential `session_outputs` → four assets: `session_tracks` (root: verify+extract+
@@ -70,11 +70,32 @@ None` (excluded/unmatched) runs ungated. New linguist selectors `load_episode_su
 `build_script_user_content` (byte-identical prompt when `""`); own `CONTINUITY_BUDGET` separate from
 `GROUNDING_BUDGET=24_000`. Chronicle's `session_episode_summary` is `deps=session_transcripts` → episode
 N lands in the SAME linguist run as N's transcript, so the gate usually only absorbs an in-run write-order
-race (~30s worst case). Forward-only. 4 slices (S1 linguist selectors / S2 continuity block + script
-plumbing + asset wiring / S3 gated sensor + carve-out / S4 deploy + re-render verify). **▶ implement.**
+race (~30s worst case). Forward-only.
 
-**▶ NEXT for 0021: implement Change B** (`octo:embrace` against the spec, start S1). The planning facts
-for both changes follow.
+### Change B — BUILT + DEPLOYED + LIVE-VERIFIED (S1 `f66f48e` / S2 `0d52198` / S3 `454d55a`; S4 deploy)
+All four slices shipped exactly as specced. **Live-verify of the context (S4):** re-rendered
+`session_script` for the most-recent session **2026-6-29** in the dagster-code container
+(`dagster asset materialize --select session_script --partition 2026-6-29`) — GLM two-pass, **~19 min**
+(Pass B chunking over a full session), ~cents. **THE SigNoz gotcha: raw trace search does NOT return
+custom span attributes** — to confirm `mouthpiece.continuity_episodes`, you must **filter on it**
+(`name = 'mouthpiece.session_script' AND mouthpiece.continuity_episodes = 3` → returns the span ⇒ the
+attr is 3). Verified = 3 prior episodes injected (2026-6-8/6-18/6-22), new title rendered. **Prove-and-
+revert:** backed up `script.json`, re-rendered, verified, **restored** (forward-only — leaving a new
+script with stale audio would drift + the auto-publish timer would publish the new title over old audio).
+**episodes/ is now host-owned (run-as-1000 deploy) so the host backs up/restores `script.json` directly**
+(the old "episodes root-owned, must edit in-container" gotcha is GONE). The cross-app
+`from astra_linguist.chronicle import …` in mouthpiece `assets.py` loads clean in the deployed image (no
+Dockerfile change — both apps already COPY'd, `astra-linguist` already a workspace dep). **2026-6-29 is
+unchronicled** (orphaned by the stale-image chronicle miss) so its block has the 3 PREVIOUSLY episodes but
+NO season line (best-effort omits it); a **manual materialize bypasses the gate** (gate only filters the
+sensor). Gate live-proof is the **unit tests** (no naturally-deferred session exists — all backlog is
+chronicled). **THE timer-race REFINEMENT:** the linguist-commit `--user` timer's `git commit` only sweeps
+files that are **STAGED** when it fires (Change A got caught because I'd just `git add`ed; with a clean
+index it commits nothing) — so the real rule is **don't leave files staged across the timer window**;
+pausing it (`systemctl --user stop linguist-commit.timer`) during manual git/deploy is still cleanest.
+
+**▶ NEXT for 0021: both changes DONE + live.** No remaining 0021 work. The planning facts for both
+changes follow.
 
 ---
 

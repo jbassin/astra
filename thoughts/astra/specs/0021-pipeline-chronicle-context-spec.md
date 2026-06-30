@@ -1,7 +1,13 @@
 # 0021 — pipeline reorder, Change B: chronicle feeds mouthpiece — NLSpec
 
-- **Status:** SPEC — ready to implement. Decisions resolved (scope doc + this spec + 2026-06-30
-  stakeholder answers); **no open questions**.
+- **Status:** ✅ **BUILT + DEPLOYED + LIVE-VERIFIED** (2026-06-30; S1 `f66f48e` / S2 `0d52198` /
+  S3 `454d55a`; S4 deploy). Acceptance §11 met — the linguist selectors + continuity block + script-stage
+  injection + the gated sensor all shipped; deployed via `just up` (cross-app import loads clean); a live
+  re-render of `session_script` for 2026-6-29 confirmed `mouthpiece.continuity_episodes = 3` in SigNoz
+  (3 prior episodes injected; prove-and-revert, forward-only). Gate logic unit-proven (no naturally-
+  deferred session exists to demo live — all backlog is chronicled). Load-bearing gotchas in
+  [[pipeline-reorder-0021]].
+  _(Originally:)_ SPEC — ready to implement. Decisions resolved; no open questions.
 - **Scope doc:** `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md` (verified)
 - **Date:** 2026-06-30
 - **Subsystem slug:** `pipeline-reorder` (Change B of two; Change A = `0021-pipeline-scribe-parallel-spec.md`,

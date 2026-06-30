@@ -36,10 +36,30 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `6dc4a63` code / docs this session, 2026-06-30)
+## Current state — UPDATE THIS SECTION (as of commit `454d55a` code / docs this session, 2026-06-30)
 
-> **🆕 PIPELINE REORDER (0021) — Change A (parallelize scribe) BUILT + DEPLOYED + LIVE-VERIFIED;
-> Change B (chronicle→mouthpiece context) scoped, spec not yet written.** The stakeholder wants the
+> **🆕 PIPELINE REORDER (0021) — BOTH CHANGES DONE + DEPLOYED + LIVE-VERIFIED.** The pipeline is now
+> reordered to: craig zip lands → **transcribe ∥ merge audio (parallel)** → chronicle → mouthpiece
+> (with chronicle output as recap context + an ordering gate). Two independent changes, both live.
+>
+> **✅ Change B — DONE (S1 `f66f48e` / S2 `0d52198` / S3 `454d55a` + `just up` deploy).** Mouthpiece now
+> opens each recap with "previously, on this show" continuity (3 most-recent same-show prior episodes +
+> best-effort season arc) injected at the **script stage** (new `continuity.py`, mirrors `threads_block`,
+> byte-identical prompt when empty, own `CONTINUITY_BUDGET`), built from new linguist selectors
+> (`load_episode_summary`/`recent_prior_entries`/`season_for`) via the **package-path convention** (no new
+> config). The `linguist_output_sensor` now **gates** a session's paid run on chronicle readiness
+> (`episodes/<date>.json` exists OR carve-out `show_for_date None`), with the load-bearing invariant:
+> **partition-registration moves to `ready` sessions only** (a gate-closed session stays un-partitioned so
+> it's re-discoverable; first-eval adoption still adopts the whole backlog → no paid replay). **Live-
+> verified:** deployed clean (cross-app `astra_linguist.chronicle` import loads), re-rendered 2026-6-29's
+> `session_script` (GLM, ~19 min) → SigNoz `mouthpiece.continuity_episodes = 3` (filter on the attr —
+> raw trace search omits custom attrs), then prove-and-reverted the script (forward-only). Gate logic is
+> unit-proven (no naturally-deferred session exists — all backlog is chronicled). Spec status → BUILT.
+> **Timer gotcha refined:** the linguist-commit `--user` timer's `git commit` only sweeps STAGED files
+> (Change A's race was a just-`git add`ed index); keep a clean index across the timer window. Full
+> gotchas in [[pipeline-reorder-0021]].
+>
+> **✅ Change A — DONE (commit `6dc4a63`, all 4 slices, live).** The stakeholder wants the
 > pipeline reordered to: craig zip lands → **transcribe ∥ merge audio (parallel)** → chronicle →
 > mouthpiece (with chronicle output as context) → two independent changes.
 >
@@ -61,21 +81,12 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > accepted it (tree identical). Code is correct + live. (Pause the timer next time:
 > `systemctl --user stop linguist-commit.timer`.) Full gotchas in [[pipeline-reorder-0021]].
 >
-> **✅ Change B — SPECCED** (`thoughts/astra/specs/0021-pipeline-chronicle-context-spec.md`, 2026-06-30;
-> seams re-verified file:line). Stakeholder decisions resolved: context = the **3 most-recent prior
-> episodes, same show only** (`EpisodeEntry.show`) **+ best-effort season/arc** from `seasons.json`
-> (omitted when the hourly aggregate lags — never gated on); inject at the **script stage** (mirror
-> `threads_block`); **keep the package-path convention** (import `astra_linguist.chronicle` directly —
-> no new config). The gate = hard gate on `episodes/<date>.json` + carve-out (`show_for_date None` →
-> excluded/unmatched run ungated). **THE load-bearing gate design:** move partition-registration to
-> `ready` sessions only in the sensor's normal branch (a gate-closed session must stay un-partitioned so
-> it's re-discoverable and runs the eval its episode lands; first-eval adoption still adopts the whole
-> backlog → no paid replay). 4 slices (S1 linguist selectors / S2 continuity block + script plumbing +
-> asset wiring / S3 gated sensor + carve-out / S4 deploy + re-render verify). Forward-only.
->
-> **▶ NEXT: implement Change B** (`octo:embrace` against the spec, start S1 = the linguist chronicle
-> selectors `load_episode_summary`/`recent_prior_entries`/`season_for`). Scope doc:
-> `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`; memory [[pipeline-reorder-0021]].
+> **▶ NEXT: 0021 is COMPLETE** — both changes built, deployed, and live-verified; no remaining pipeline-
+> reorder work. The other open main-track item is unchanged: **heartwood Phase-4 content acceptance**
+> (the human-gated D1 gate — below). Scope/spec/memory for 0021:
+> `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md`,
+> `thoughts/astra/specs/0021-pipeline-{scribe-parallel,chronicle-context}-spec.md` (both BUILT),
+> [[pipeline-reorder-0021]].
 >
 > _(Below: prior sessions — the heartwood Phase-4 content acceptance gate remains the other open
 > main-track item; nothing changed there this session.)_
