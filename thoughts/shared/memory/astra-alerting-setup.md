@@ -1,6 +1,6 @@
 ---
 name: astra-alerting-setup
-description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
+description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30); watchdog FLAP fixed same day (13ef941, confirmation/hysteresis). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
 metadata:
   type: project
 ---
@@ -47,6 +47,20 @@ re-run the SigNoz channel + `just alert-install` is unaffected). What shipped + 
 5. **`systemctl --user` is reachable from the automation shell here** (the user session has lingering on),
    so the watchdog/handler are testable in-place. Foreground `sleep` is blocked in this harness → poll with
    `read -t 1` for async OnFailure handlers.
+6. **The watchdog FLAPPED false pages for ~3h post-deploy → fixed `13ef941`.** The watchdog runs on
+   `*:0/15` — the **same wall-clock ticks the watched timers fire on** (craig-sync `*:0/5`, linguist-commit
+   hourly `:00`). A single instantaneous sample routinely caught a timer **mid-fire**: systemd reports
+   `NextElapseUSecRealtime` as empty/`n/a` (the exact "not armed / Trigger: n/a" symptom) *until the
+   triggered oneshot finishes*, and the timer briefly re-arms → false 🔴 that self-recovered 🟢 15 min
+   later. **The transition-debounce does NOT help** — it only suppresses *repeat* pages of the same state,
+   not a transient bad→ok→bad flap (each blip is a genuine state change). Fix = **confirmation/hysteresis**:
+   `confirm()` re-probes a bad reading (default 3 tries × 5s gap, `WATCHDOG_CONFIRM_TRIES`/`_GAP_S`) and
+   pages only if it stays bad across the whole window — a real wedge/disarm persists, a mid-run blip clears
+   in ~1s. Plus `check_timer` now treats a timer whose **own service is active/activating** as healthy (no
+   next-elapse is normal mid-run). Bumped watchdog `TimeoutStartSec` 120→240 for the confirm window
+   (worst case ≈90s: wedged mount = 3×20s bound + gaps). **Lesson: never page on a single instantaneous
+   sample of an inherently racy state — confirm persistence first, especially when the probe cadence
+   aligns with the thing being probed.** Verified: post-fix, back-to-back manual runs post ZERO messages.
 
 ---
 
