@@ -7,6 +7,11 @@
   (3 prior episodes injected; prove-and-revert, forward-only). Gate logic unit-proven (no naturally-
   deferred session exists to demo live — all backlog is chronicled). Load-bearing gotchas in
   [[pipeline-reorder-0021]].
+  - **Post-ship tuning (`01216e1`, 2026-06-30):** the B1 context window was widened **3 → 6** prior
+    episodes and every episode now carries full detail (all beats + cliffhanger), `CONTINUITY_BUDGET`
+    6k→26k. 2026-6-29 was re-rendered and its **live episode REPLACED** (new audio, *"The Canary in the
+    Piston Room"*) — not prove-and-revert this time. The N=3/most-recent-detailed-only design below is
+    the original spec decision; the shipped code is now N=6/all-detailed.
   _(Originally:)_ SPEC — ready to implement. Decisions resolved; no open questions.
 - **Scope doc:** `thoughts/shared/research/2026-06-30-pipeline-reorder-0021-thoughts.md` (verified)
 - **Date:** 2026-06-30

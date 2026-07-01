@@ -94,6 +94,47 @@ files that are **STAGED** when it fires (Change A got caught because I'd just `g
 index it commits nothing) — so the real rule is **don't leave files staged across the timer window**;
 pausing it (`systemctl --user stop linguist-commit.timer`) during manual git/deploy is still cleanest.
 
+### Change B continuity TUNED wider — 3 → 6 flat-full episodes + LIVE re-render (commit `01216e1`, 2026-06-30)
+Post-ship tuning (stakeholder drove it interactively). **The window widened 3 → 6 prior same-show
+episodes, and EVERY episode now carries full detail** (synopsis + all beats + cliffhanger) — the original
+`_episode_line(detailed=)` gave beats/cliffhanger to the most-recent episode ONLY, capped at 3 beats
+(`_MAX_RECENT_BEATS`). Now: `detailed=True` for all, no beat cap, `_MAX_RECENT_BEATS` deleted,
+`CONTINUITY_BUDGET` **6_000 → 26_000**, and `recent_prior_entries(key, show.slug, limit=6)` at the
+`session_script` call site (`assets.py`). **Sizing (measured on real chronicle, `through-a-song-darkly`):**
+one full episode ≈ 3.1–4.5k chars; **6 full = ~22.9k chars / ~5.7k tokens** — a rounding error vs
+**GLM-5.2's 1,048,576-token context** (OpenRouter `z-ai/glm-5.2`, 32,768 max output). Context window is
+NEVER the constraint here; the binding limit is *output* (`llm.default-max-tokens 16000`, shared with GLM
+reasoning tokens), unaffected by input size. **Effect proven in the render:** the hosts pulled a handful of
+deep threads (Obratz's death from *The Tithe* ~4 eps back, tithe-as-system, the ink-ribbon quest from
+*Library Card*, the Harlequin's origin from the OLDEST episode in the window) as **selective callbacks —
+not a 6-episode recitation** (the signal-to-noise worry didn't materialize).
+
+**THE re-render-and-REPLACE recipe (differs from the prove-and-revert above — this one goes live):**
+1. Render the script host-side (`uv run`, SOPS auto-resolves via `resolve_sops_ref` default age-key path;
+   `ensure_openrouter_env()` for the LLM) → GLM two-pass was **~5.4 min** this time (not the ~19 min the
+   first live-verify saw — varies with session length / provider load), 164 turns, *"The Canary in the
+   Piston Room"*.
+2. Back up live artifacts to scratchpad, copy the new `script.json` into `episodes/2026-6-29/`.
+3. **Materialize ONLY the audio stages in-container** (they read `script.json`/`manifest.json` from disk
+   via `_read_script`, so the swapped script drives them; no image rebuild needed for audio):
+   `docker compose exec -T dagster-code sh -c 'cd /opt/dagster/app && /opt/venv/bin/dagster asset
+   materialize -f definitions.py --select "session_audio_clips,session_episode" --partition 2026-6-29'`.
+   **⚠️ Two gotchas:** (a) `sh -lc` (login shell) WIPES PATH → `dagster: not found`; use `sh -c` or the
+   full `/opt/venv/bin/dagster`. (b) real ElevenLabs v3 = manifest `mode="dialogue"` (164 turns → 22
+   batched clips); `mode="turns"` is the MOCK fallback — the container already had `ELEVENLABS_API_KEY`
+   from `just up`, so it was real (36.3 min / 34.8 MB episode).
+4. **Push it live:** `just mouthpiece-publish` (regenerate the committed snapshot — the title changed →
+   diff scoped to 2026-6-29's title + inlined transcript) + `just mouthpiece-seed` (copy new
+   `episode.mp3` → serving volume, live-wins) + `docker compose up -d --build mouthpiece-frontend`.
+   Verify: new title in SSR HTML (`curl | grep -a`), `/audio/…2026-6-29.mp3` 206 with total = new byte
+   size.
+5. **Deploy the code for FUTURE episodes:** `just up` (rebuilds the image-baked `dagster-code` WITH SOPS
+   env — plain `docker compose up -d dagster-code` would drop the env → mock-TTS). Verified baked:
+   `CONTINUITY_BUDGET = 26000` + `ELEVENLABS`/`OPENROUTER` set in-container. Forward-only.
+6. **Timer discipline:** `systemctl --user stop linguist-commit.timer` for the whole manual op (else it
+   sweeps the regenerated snapshot into a mislabeled `chore(mouthpiece): auto-publish` commit and leaves
+   the code edits behind); commit code + snapshot yourself, THEN `start` the timer.
+
 **▶ NEXT for 0021: both changes DONE + live.** No remaining 0021 work. The planning facts for both
 changes follow.
 

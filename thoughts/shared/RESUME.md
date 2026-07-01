@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `454d55a` code / docs this session, 2026-06-30)
+## Current state — UPDATE THIS SECTION (as of commit `01216e1` code / docs this session, 2026-06-30)
 
 > **🆕 PIPELINE REORDER (0021) — BOTH CHANGES DONE + DEPLOYED + LIVE-VERIFIED.** The pipeline is now
 > reordered to: craig zip lands → **transcribe ∥ merge audio (parallel)** → chronicle → mouthpiece
@@ -58,6 +58,21 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > **Timer gotcha refined:** the linguist-commit `--user` timer's `git commit` only sweeps STAGED files
 > (Change A's race was a just-`git add`ed index); keep a clean index across the timer window. Full
 > gotchas in [[pipeline-reorder-0021]].
+>
+> **🔧 Change B continuity TUNED wider — DONE + DEPLOYED + LIVE (commit `01216e1`, 2026-06-30).**
+> Recap "previously on" window widened **3 → 6** prior same-show episodes, and **every** episode now
+> carries FULL detail (synopsis + all beats + cliffhanger) — previously only the most-recent episode had
+> beats/cliffhanger, capped at 3 beats. `CONTINUITY_BUDGET` 6k→26k (6 full episodes measure ~23k chars /
+> ~5.7k tokens — trivial vs GLM-5.2's **1,048,576-token** window; output stays the binding limit at
+> `default-max-tokens 16000`). `recent_prior_entries(..., limit=6)` at the `session_script` call site.
+> **2026-6-29 re-rendered + REPLACED live** (not prove-and-revert this time): new script *"The Canary in
+> the Piston Room"* (164 turns, GLM ~5.4 min) → real ElevenLabs v3 audio (`dialogue` mode, 36.3 min /
+> 34.8 MB) via the in-container re-render recipe (`dagster asset materialize --select
+> session_audio_clips,session_episode --partition 2026-6-29`) → `just mouthpiece-publish` + `-seed` +
+> frontend redeploy; verified live (new title in SSR HTML, /audio 206 = new size). Deeper threads
+> (Obratz's death, tithe-as-system, ink-ribbon quest, Harlequin's origin) surface as **selective
+> callbacks, not recitation**. `dagster-code` rebuilt so future episodes use the 6-window (forward-only).
+> Full gotchas in [[pipeline-reorder-0021]].
 >
 > **✅ Change A — DONE (commit `6dc4a63`, all 4 slices, live).** The stakeholder wants the
 > pipeline reordered to: craig zip lands → **transcribe ∥ merge audio (parallel)** → chronicle →
