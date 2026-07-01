@@ -168,7 +168,7 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         # show. The ordering gate guarantees this session's episode (and so 1..N-1) exists;
         # a carve-out (excluded/unmatched → show is None) simply yields no continuity.
         show = show_for_date(key)
-        prior = recent_prior_entries(key, show.slug) if show else []
+        prior = recent_prior_entries(key, show.slug, limit=6) if show else []
         season = season_for(key, show.slug) if show else None
         continuity_block = build_continuity_block(prior, season)
         script = build_episode_script(
