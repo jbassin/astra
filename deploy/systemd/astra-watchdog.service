@@ -11,5 +11,8 @@ Type=oneshot
 WorkingDirectory=/ruby/data/experiments/astra
 # Probes the Drive FUSE front door (bounded — never wedges) and checks craig-sync.timer +
 # linguist-commit.timer are active AND armed; debounced so it pages only on state changes.
+# A bad reading is re-confirmed over a short window before paging (the watchdog runs on the
+# same wall-clock ticks the watched timers fire on, so a single sample flaps) — worst case
+# (wedged mount) is ~90s of bounded probing, so the timeout leaves comfortable margin.
 ExecStart=/ruby/data/experiments/astra/deploy/systemd/alert-notify.sh watchdog
-TimeoutStartSec=120
+TimeoutStartSec=240

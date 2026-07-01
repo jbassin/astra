@@ -25,6 +25,15 @@ DRIVE_MOUNT="${CRAIG_DROP_DIR:-/ruby/data/home/drive/Craig}"
 # its OWN timer — if that died, this script wouldn't be running.)
 WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer)
 
+# Confirmation window. The watchdog runs on *:0/15 — the SAME wall-clock ticks the watched
+# timers fire on (craig-sync *:0/5, linguist-commit hourly). So a naive single sample
+# routinely catches a timer mid-fire, when systemd legitimately reports no next-elapse
+# ('Trigger: n/a') until the triggered run finishes, or momentarily re-arming. Those blips
+# clear in ~1s; a genuine wedge/disarm persists for minutes. We re-probe a bad reading a
+# few times over a short window and only page if it stays bad across ALL of them.
+CONFIRM_TRIES="${WATCHDOG_CONFIRM_TRIES:-3}"
+CONFIRM_GAP_S="${WATCHDOG_CONFIRM_GAP_S:-5}"
+
 log() { echo "alert-notify: $*" >&2; }
 
 # Decrypt the Discord webhook URL. Never echoed — only piped into curl.
@@ -96,19 +105,38 @@ check_timer() {
   # or 'n/a' (the 'Trigger: n/a' symptom from the craig-sync FUSE-wedge incident).
   local next; next="$(systemctl --user show "$t" -p NextElapseUSecRealtime --value 2>/dev/null)"
   if [ -z "$next" ] || [ "$next" = "n/a" ]; then
+    # But a timer whose OWN service is mid-run legitimately shows no next-elapse until that
+    # run finishes — that's normal, not a wedge. Only flag it when the service is idle.
+    local svc svcstate
+    svc="$(systemctl --user show "$t" -p Unit --value 2>/dev/null)"
+    svcstate="$(systemctl --user is-active "$svc" 2>/dev/null)"
+    if [ "$svcstate" = "active" ] || [ "$svcstate" = "activating" ]; then return 0; fi
     echo "timer $t is active but not armed (no scheduled next run — 'Trigger: n/a')"; return 1
   fi
   return 0
 }
 
+# Re-probe a check until it passes or the confirmation window is exhausted. Returns 0 as
+# soon as ANY probe is healthy (a transient blip); returns 1 echoing the last reason only
+# if EVERY probe stayed bad (a persistent fault worth paging). $@ = check fn + its args.
+confirm() {
+  local reason i=0
+  while :; do
+    if reason="$("$@")"; then return 0; fi
+    i=$((i + 1))
+    if [ "$i" -ge "$CONFIRM_TRIES" ]; then printf '%s' "$reason"; return 1; fi
+    sleep "$CONFIRM_GAP_S"
+  done
+}
+
 run_watchdog() {
   local reason
-  if reason="$(check_mount)"; then transition mount ok   "Drive mount '$DRIVE_MOUNT' responsive again"
-  else                              transition mount bad  "$reason"; fi
+  if reason="$(confirm check_mount)"; then transition mount ok   "Drive mount '$DRIVE_MOUNT' responsive again"
+  else                                     transition mount bad  "$reason"; fi
   local t
   for t in "${WATCHED_TIMERS[@]}"; do
-    if reason="$(check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"
-    else                                  transition "timer-$t" bad "$reason"; fi
+    if reason="$(confirm check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"
+    else                                          transition "timer-$t" bad "$reason"; fi
   done
 }
 
