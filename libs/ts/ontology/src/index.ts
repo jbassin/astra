@@ -100,7 +100,7 @@ function findRepoRoot(startDir: string): string {
 
 /** `<repo-root>/ontology/ontology-being/being.kdl`. */
 export function defaultBeingFile(): string {
-  return join(findRepoRoot(import.meta.dir), "ontology", "ontology-being", "being.kdl");
+  return join(findRepoRoot(import.meta.dirname), "ontology", "ontology-being", "being.kdl");
 }
 
 /** Parse `being.kdl` → the validated `Being` truth store. */

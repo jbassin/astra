@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { getLogger, getMeter, getTracer, initTelemetry, lazyCounter, lazyHistogram } from "./index";
 
 // Offline wiring checks — the end-to-end "a span lands in SigNoz" check is the

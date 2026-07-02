@@ -267,7 +267,7 @@ function findRepoRoot(startDir: string): string {
 
 /** `<repo-root>/ontology/ontology-config/config.kdl`. */
 export function defaultConfigFile(): string {
-  return join(findRepoRoot(import.meta.dir), "ontology", "ontology-config", "config.kdl");
+  return join(findRepoRoot(import.meta.dirname), "ontology", "ontology-config", "config.kdl");
 }
 
 /** Parse `config.kdl` → validated `Config` (secrets stay lazy). */

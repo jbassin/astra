@@ -1,10 +1,10 @@
-import { describe, expect, test } from "bun:test";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { describe, expect, test } from "vitest";
 import { canonicalJson, loadBeing } from "./index";
 
 function repoRoot(): string {
-  let dir = resolve(import.meta.dir);
+  let dir = resolve(import.meta.dirname);
   for (;;) {
     if (existsSync(join(dir, "ontology", "ontology-being"))) return dir;
     const parent = dirname(dir);

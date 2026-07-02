@@ -11,7 +11,7 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "vitest run",
     "build": "echo '@astra/observe: no build step'"
   },
   "dependencies": {
@@ -28,5 +28,8 @@
     "@opentelemetry/sdk-trace-node": "^2.8.0",
     "@opentelemetry/sdk-trace-web": "^2.8.0",
     "@opentelemetry/semantic-conventions": "^1.41.1"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9"
   }
 }

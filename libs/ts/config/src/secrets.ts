@@ -26,7 +26,7 @@ function findRepoRoot(startDir: string): string {
 export function defaultSecretsFile(): string {
   const override = process.env.ASTRA_SOPS_FILE;
   if (override) return override;
-  return join(findRepoRoot(import.meta.dir), "deploy", "sops", "secrets.enc.yaml");
+  return join(findRepoRoot(import.meta.dirname), "deploy", "sops", "secrets.enc.yaml");
 }
 
 const decryptCache = new Map<string, Record<string, string>>();

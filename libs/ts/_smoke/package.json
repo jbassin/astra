@@ -6,7 +6,10 @@
   "module": "src/index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "vitest run",
     "build": "echo '@astra/smoke: no build step'"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9"
   }
 }

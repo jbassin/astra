@@ -9,11 +9,14 @@
   },
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "vitest run",
     "build": "echo '@astra/ontology: no build step'"
   },
   "dependencies": {
     "@bgotink/kdl": "^0.4.0",
     "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9"
   }
 }

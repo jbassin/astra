@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { splitCrossRefs } from "./crossref";
 import { parseFieldItems } from "./fields";
 import { parseFrontmatter, splitFrontmatter } from "./frontmatter";

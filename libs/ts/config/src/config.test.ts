@@ -1,14 +1,15 @@
-import { describe, expect, test } from "bun:test";
 import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
+import { describe, expect, test } from "vitest";
 import { loadConfig, resolveSopsRef, SecretRef } from "./index";
 
 // Actually decrypting needs the `sops` binary + the gitignored age key — host only.
 // CI has neither, so the decrypt-backed check skips there (the env-override test still
 // exercises resolution everywhere), mirroring libs/py/config's `sops_required`.
 function sopsAvailable(): boolean {
-  let dir = resolve(import.meta.dir);
+  let dir = resolve(import.meta.dirname);
   for (;;) {
     if (existsSync(join(dir, "deploy", "sops"))) break;
     const parent = dirname(dir);
@@ -91,7 +92,7 @@ describe("@astra/config", () => {
 
   test("unknown KDL key is rejected", async () => {
     const tmp = `${process.env.TMPDIR ?? "/tmp"}/astra-config-bad-${Date.now()}.kdl`;
-    await Bun.write(tmp, 'llm {\n  default-model "x"\n  bogus-field "nope"\n}\n');
+    await writeFile(tmp, 'llm {\n  default-model "x"\n  bogus-field "nope"\n}\n');
     expect(() => loadConfig(tmp)).toThrow();
   });
 });

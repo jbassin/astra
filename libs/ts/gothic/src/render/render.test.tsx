@@ -1,6 +1,6 @@
-import { describe, expect, test } from "bun:test";
 import { parseDocument } from "@astra/vellum-lang";
 import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, test } from "vitest";
 import { DocumentView } from "./components/DocumentView";
 
 /**
