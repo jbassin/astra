@@ -4,7 +4,7 @@
  * numbers/arrays for comparison; errors compared by message.
  */
 
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { dieRepr } from "./die";
 import { interpret } from "./eval";
 import type { Display } from "./types";

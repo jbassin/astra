@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect, test } from "vitest";
 import { parseRollEvent } from "../src/schema";
 
 test("parses the v1 (rich) payload in full", () => {

@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 
 import type { Role } from "../grid";
 import { navTagSvg, renderRole, trackSvg, wrapLines } from "./svg";

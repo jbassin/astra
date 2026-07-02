@@ -4,8 +4,8 @@
  * from the correct bank, reading the real GSR lines from the ontology (K8).
  */
 
-import { describe, expect, test } from "bun:test";
 import { loadBeing, type WealHost } from "@astra/ontology";
+import { describe, expect, test } from "vitest";
 import { goodnessOf, hostSays, invertGoodness, type RollGoodness, rollGoodness } from "./hosts";
 import type { Roll, RollRng } from "./roller";
 

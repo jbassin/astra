@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect, test } from "vitest";
 import { pushRoll, type TickerRoll } from "../src/ticker";
 
 function row(id: string, total: number): TickerRoll {

@@ -6,7 +6,7 @@
   "module": "src/index.ts",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "vitest run",
     "build": "echo '@astra/weal-bot: no build step (bun runs TS directly)'"
   },
   "dependencies": {
@@ -15,5 +15,8 @@
     "@astra/ontology": "workspace:*",
     "@opentelemetry/api": "^1.9.1",
     "discord.js": "^14"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9"
   }
 }

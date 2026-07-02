@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { applyRename, previewBulkRename, RenameError } from "./rename";
 
 describe("applyRename", () => {

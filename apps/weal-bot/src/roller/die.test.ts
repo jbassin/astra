@@ -6,7 +6,7 @@
  * RNG output itself is never compared (Rust StdRng ≠ TS RNG, spec Risk 2).
  */
 
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import {
   dieConst,
   dieFromBase,

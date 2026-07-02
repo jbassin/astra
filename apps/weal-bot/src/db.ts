@@ -8,7 +8,7 @@
  * `10000d10000` is still rolled & shown, just not persisted.
  */
 
-import { SQL } from "bun";
+import type { SQL } from "bun";
 import type { RollDie } from "./roller";
 
 /** Skip pools larger than this many dice (each die is one row). */
@@ -75,7 +75,12 @@ export class PostgresStore implements WealStore {
   readonly #sql: SQL;
 
   constructor(databaseUrl: string) {
-    this.#sql = new SQL(databaseUrl);
+    // Type-only import above (a static value import from "bun" fails vitest's
+    // module resolution at import time, even under `bun run vitest`); the
+    // runtime constructor is only ever touched here, behind the global — so
+    // tests that never construct PostgresStore never hit it. Superseded by
+    // postgres.js at R3 (S5).
+    this.#sql = new Bun.SQL(databaseUrl);
   }
 
   async ensureSchema(): Promise<void> {

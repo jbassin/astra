@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { extractVideoId, isPlaylistUrl } from "./ytdlp";
 
 describe("isPlaylistUrl (B20/B21)", () => {

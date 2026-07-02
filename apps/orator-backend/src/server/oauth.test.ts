@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { buildAuthorizeUrl, exchangeCodeForUser } from "./oauth";
 
 const CFG = {

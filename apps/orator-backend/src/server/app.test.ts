@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { FakeStore } from "../db/fake-store";
 import { type AppConfig, createApp } from "./app";
 import { signSession, verifySession } from "./sessions";

@@ -1,4 +1,4 @@
-import { expect, test } from "bun:test";
+import { expect, test } from "vitest";
 import { RollHub } from "../src/hub";
 import type { RollEvent } from "../src/schema";
 
@@ -26,8 +26,8 @@ test("fans a published event out to every subscriber as a data frame", () => {
   expect(hub.clientCount).toBe(2);
   expect(a).toHaveLength(1);
   expect(b).toHaveLength(1);
-  expect(a[0]).toStartWith("data: ");
-  expect(a[0]).toEndWith("\n\n");
+  expect(a[0]).toMatch(/^data: /);
+  expect(a[0]).toMatch(/\n\n$/);
   expect(JSON.parse(a[0]!.slice("data: ".length))).toMatchObject({
     user: "Kethra",
     total: 27,

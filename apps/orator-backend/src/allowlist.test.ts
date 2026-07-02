@@ -1,5 +1,5 @@
-import { describe, expect, test } from "bun:test";
 import type { Being } from "@astra/ontology";
+import { describe, expect, test } from "vitest";
 import { adminSnowflakes, buildAllowlist, isAllowed, parseOverride } from "./allowlist";
 
 function being(players: Partial<Being["players"][number]>[]): Being {

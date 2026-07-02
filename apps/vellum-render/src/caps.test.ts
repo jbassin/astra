@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { RENDER_LIMITS, validateRenderRequest } from "./caps";
 
 describe("validateRenderRequest", () => {

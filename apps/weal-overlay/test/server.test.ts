@@ -1,7 +1,7 @@
-import { afterAll, beforeAll, expect, test } from "bun:test";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { afterAll, beforeAll, expect, test } from "vitest";
 import { type RunningServer, startServer } from "../src/server";
 
 let running: RunningServer;

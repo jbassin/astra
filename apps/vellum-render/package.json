@@ -9,7 +9,7 @@
     "build": "vite build --configLoader runner",
     "start": "bun run src/server.ts",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "vitest run",
     "visual-regression": "bun run scripts/visual-regression.ts",
     "visual-regression:update": "bun run scripts/visual-regression.ts --update"
   },
@@ -36,6 +36,7 @@
     "pixelmatch": "^6.0.0",
     "pngjs": "^7.0.0",
     "tailwindcss": "^4.3.2",
-    "vite": "8.1.3"
+    "vite": "8.1.3",
+    "vitest": "^4.1.9"
   }
 }

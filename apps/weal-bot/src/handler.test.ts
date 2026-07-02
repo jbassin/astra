@@ -3,8 +3,8 @@
  * save → overlay flow, exercised dry with fakes (no Discord/Postgres/network).
  */
 
-import { describe, expect, test } from "bun:test";
 import type { WealHost } from "@astra/ontology";
+import { describe, expect, test } from "vitest";
 import type { Func, WealStore } from "./db";
 import { type HandlerDeps, handleMessage, type OutgoingMessage } from "./handler";
 import type { OverlayPayload, SeedInfo } from "./message";

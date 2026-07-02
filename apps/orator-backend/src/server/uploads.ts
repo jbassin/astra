@@ -5,7 +5,7 @@
  *
  * astra port: `createTrack(db, …)` → `await store.createTrack(…)` (async store).
  */
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
 import type { LibraryStore, Track } from "../db/store";
 import type { AudioProbe, AudioProber } from "../media/probe";
@@ -43,7 +43,10 @@ export async function handleUpload(opts: {
       }
       const id = crypto.randomUUID();
       const dest = resolve(audioDir, `${id}${ext}`);
-      await Bun.write(dest, file);
+      // node:fs, not Bun.write (vitest workers are Node — no `Bun` global; the
+      // production write-target is unchanged, R3/S8 does the rest of this file's
+      // Bun-runtime exit — Bun.serve, ytdlp Bun.spawn).
+      await writeFile(dest, Buffer.from(await file.arrayBuffer()));
       const probe: AudioProbe = opts.prober
         ? await opts.prober(dest).catch((): AudioProbe => ({}))
         : {};

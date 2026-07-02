@@ -14,7 +14,7 @@
  * `ON CONFLICT DO NOTHING`; `COLLATE NOCASE` → `lower(...)`; `db.transaction(fn)()` →
  * `sql.begin(async tx => …)`; timestamps cast `::text` so row shapes stay strings.
  */
-import { SQL } from "bun";
+import type { SQL } from "bun";
 import { normalizeTag, slugify, uniqueSlug } from "../lib/text";
 import { SCHEMA } from "./schema";
 
@@ -263,7 +263,12 @@ export class PostgresStore implements LibraryStore {
   readonly #sql: SQL;
 
   constructor(databaseUrl: string) {
-    this.#sql = new SQL(databaseUrl);
+    // Type-only import above (a static value import from "bun" fails vitest's
+    // module resolution at import time, even under `bun run vitest`); the
+    // runtime constructor is only ever touched here, behind the global — so
+    // tests that never construct PostgresStore never hit it. Superseded by
+    // postgres.js at R3 (S8).
+    this.#sql = new Bun.SQL(databaseUrl);
   }
 
   async ensureSchema(): Promise<void> {

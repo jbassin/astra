@@ -5,7 +5,7 @@
  * vectors appear under `{"Atom":…}`.
  */
 
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { parse } from "./parser";
 import { exprToJson } from "./serde";
 

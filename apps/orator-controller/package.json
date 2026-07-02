@@ -6,7 +6,7 @@
   "description": "Elgato Stream Deck plugin that remote-controls orator-backend (collection→tag navigation, live now-playing) over its HTTP REST API. Node runtime (Elgato SDK); in the bun workspace for typecheck/test only — rollup builds the .streamDeckPlugin.",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "vitest run",
     "bundle": "rollup -c",
     "package": "rollup -c && streamdeck pack com.astra.orator.sdPlugin --output dist --force --no-update-check --ignore-validation"
   },
@@ -21,6 +21,7 @@
     "@tsconfig/node20": "^20.1.4",
     "@types/node": "^22.13.0",
     "rollup": "^4.32.1",
-    "tslib": "^2.8.1"
+    "tslib": "^2.8.1",
+    "vitest": "^4.1.9"
   }
 }

@@ -6,7 +6,7 @@
  * not a DB read — the test stays hermetic (spec W12).
  */
 
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test } from "vitest";
 import { resFromJson, resToJson } from "./serde";
 
 // Captured verbatim from `select name, payload from funcs` on the live mouth.db.
