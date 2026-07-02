@@ -83,7 +83,7 @@ export function backSvg(): string {
   const inner =
     `<path d="M72 44 L72 100" fill="none" stroke="${FG}" stroke-width="12" stroke-linecap="round"/>` +
     `<path d="M50 62 L72 40 L94 62" fill="none" stroke="${FG}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>` +
-    textBlock(["Up"], "#9aa0aa", 128, 0, 20);
+    `${textBlock(["Up"], "#9aa0aa", 128, 0, 20)}`;
   return frame(inner);
 }
 
@@ -92,7 +92,7 @@ export function pagerSvg(dir: "prev" | "next"): string {
     dir === "next"
       ? `<path d="M44 54 L72 86 L100 54" fill="none" stroke="${ACCENT}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`
       : `<path d="M44 90 L72 58 L100 90" fill="none" stroke="${ACCENT}" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>`;
-  return frame(arrow + textBlock([dir === "next" ? "Next" : "Prev"], "#9aa0aa", 128, 0, 20));
+  return frame(`${arrow}${textBlock([dir === "next" ? "Next" : "Prev"], "#9aa0aa", 128, 0, 20)}`);
 }
 
 export function pageInfoSvg(page: number, total: number): string {
@@ -103,8 +103,7 @@ export function pageInfoSvg(page: number, total: number): string {
 
 export function stopSvg(): string {
   return frame(
-    `<rect x="48" y="40" width="48" height="48" rx="6" fill="#c8504a"/>` +
-      textBlock(["Stop"], "#9aa0aa", 124, 0, 20),
+    `<rect x="48" y="40" width="48" height="48" rx="6" fill="#c8504a"/>${textBlock(["Stop"], "#9aa0aa", 124, 0, 20)}`,
   );
 }
 

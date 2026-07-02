@@ -146,6 +146,7 @@ export default function Player({ id, src, title, artist, runtimeMs, iconVersion 
 
   // OS-level media session + audio events, attached once at mount (mirrors face's
   // onMount/onCleanup). Browser-only; never runs during SSR.
+  // oxlint-disable react-hooks/exhaustive-deps -- mount-once setup; listeners read live refs, props are stable per episode page (full-page nav remounts)
   // biome-ignore lint/correctness/useExhaustiveDependencies: mount-once setup (face's onMount); listeners read live refs, props are stable per episode page (full-page nav remounts)
   useEffect(() => {
     const audio = audioRef.current;
@@ -254,11 +255,14 @@ export default function Player({ id, src, title, artist, runtimeMs, iconVersion 
       }
     };
   }, []);
+  // oxlint-enable react-hooks/exhaustive-deps
 
   return (
     <div className="player" role="group" aria-label={`Audio player: ${title}`}>
+      {/* oxlint-disable media-has-caption -- the transcript on the page is the caption */}
       {/* biome-ignore lint/a11y/useMediaCaption: the transcript on the page is the caption */}
       <audio ref={audioRef} src={src} preload="metadata" />
+      {/* oxlint-enable media-has-caption */}
 
       <button
         type="button"

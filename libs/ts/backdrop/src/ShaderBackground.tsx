@@ -37,7 +37,7 @@ export function ShaderBackground({ spec }: { spec: BackdropSpec }) {
     let destroy: (() => void) | null = null;
     let tick: (() => void) | null = null;
 
-    (async () => {
+    void (async () => {
       const [{ Application: PixiApp }, { createShaderBackground }] = await Promise.all([
         import("pixi.js"),
         import("./createShaderBackground"),
@@ -67,7 +67,9 @@ export function ShaderBackground({ spec }: { spec: BackdropSpec }) {
       tick = () => bg.update(performance.now() - start);
       a.ticker.add(tick);
       destroy = bg.destroy;
-    })();
+    })().catch((err: unknown) => {
+      console.error("ShaderBackground: init failed", err);
+    });
 
     return () => {
       cancelled = true;

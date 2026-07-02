@@ -419,9 +419,11 @@ async function renderGraph(
           stage.position.set(transform.x, transform.y);
           const zscale = transform.k * opacityScale;
           const scaleOpacity = Math.max((zscale - 1) / 3.75, 0);
-          const activeNodes = nodeRenderData.filter((n) => n.active).flatMap((n) => n.label);
+          const activeNodes = new Set(
+            nodeRenderData.filter((n) => n.active).flatMap((n) => n.label),
+          );
           for (const label of labelsContainer.children) {
-            if (!activeNodes.includes(label)) (label as any).alpha = scaleOpacity;
+            if (!activeNodes.has(label)) (label as any).alpha = scaleOpacity;
           }
         }) as any,
     );

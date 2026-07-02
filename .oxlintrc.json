@@ -1,0 +1,280 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  // S12 (0022 R5): oxlint config lands; biome stays the enforced gate until S13.
+  // Categories: correctness+suspicious+perf ON (D-per-spec). Plugins: react/jsx-a11y/import/promise
+  // added on top of the typescript/unicorn/oxc default trio.
+  "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "import", "promise"],
+  "categories": {
+    "correctness": "error",
+    "suspicious": "error",
+    "perf": "error"
+  },
+  "rules": {
+    // Automatic JSX runtime (React 19 / all frontends) — this rule assumes the classic
+    // runtime and false-positives on every JSX file (1,355 hits in the Phase-0 audit).
+    "react/react-in-jsx-scope": "off",
+
+    // --- 11 biome-override rules ported explicit-on (biome's recommended preset enables
+    // these repo-wide; oxlint's correctness/suspicious/perf categories don't all cover them,
+    // so they're force-enabled here to match biome's default-on posture). Path-level
+    // exemptions are ported 1:1 from biome.json's overrides, below. ---
+    "no-non-null-assertion": "error", // biome style/noNonNullAssertion
+    "prefer-template": "error", // biome style/useTemplate
+    "no-explicit-any": "error", // biome suspicious/noExplicitAny
+    "array-callback-return": "error", // biome suspicious/useIterableCallbackReturn (closest match)
+    "no-cond-assign": "error", // biome suspicious/noAssignInExpressions (NARROWER substitute — no oxlint rule covers assignment-in-any-expression, only in conditions; 0 hits either way)
+    "no-danger": "error", // biome security/noDangerouslySetInnerHtml
+    "role-supports-aria-props": "error", // biome a11y/useAriaPropsSupportedByRole
+    "no-array-index-key": "error", // biome suspicious/noArrayIndexKey (also default-on via `react` + correctness)
+    "prefer-tag-over-role": "error", // biome a11y/useSemanticElements (closest match)
+    "no-static-element-interactions": "error", // biome a11y/noStaticElementInteractions
+    "click-events-have-key-events": "error", // biome a11y/useKeyWithClickEvents
+
+    // --- promise/always-return rule option: astra's idiom is a fire-and-forget terminal
+    // `.then()` (`void x.then((y) => { sideEffect(); })`) at 14 sites (7 frontend __root.tsx
+    // client-RUM bootstraps + 4 srvx `.ready().then()` listen-logs + 3 others) — none of these
+    // chain further, so the eslint-plugin-promise `ignoreLastCallback` escape hatch is the
+    // correct, targeted fix (not a rewrite of a working, reviewed pattern). ---
+    "promise/always-return": ["error", { "ignoreLastCallback": true }],
+
+    // --- Rule-level overrides (repo-wide), each individually verified against real
+    // call sites during the S12 residual triage — not a category blanket-disable. ---
+
+    // Array#sort()/reverse() mutate; oxlint wants toSorted()/toReversed(). Spot-checked the
+    // riskiest call sites (React render paths in Library.tsx, TranscriptPlayer.tsx, HexMap.tsx):
+    // every hit sorts/reverses a freshly-created local array (spread/map/filter output), never
+    // a shared/prop/exported array. 56 call sites repo-wide; biome doesn't flag this pattern and
+    // a mechanical toSorted() migration is a follow-up, not a correctness fix.
+    "no-array-sort": "off",
+    "no-array-reverse": "off",
+
+    // 11/12 hits are Pixi.js `Graphics#fill(options)` calls — the rule pattern-matches any
+    // `.fill(objectLiteral)` call by method name with no type info to distinguish Pixi's API
+    // from Array#fill. The 1 real Array#fill (orator-controller/src/grid.ts) fills with an
+    // immutable `EMPTY` sentinel object that's never mutated in place — verified safe.
+    "no-array-fill-with-reference-type": "off",
+
+    // Perf micro-optimization (hoist a closure that doesn't capture anything). astra's
+    // convention favors locality — small pure helpers live next to their single call site.
+    // 24 hits repo-wide, no measured perf impact, not enforced by biome.
+    "consistent-function-scoping": "off",
+
+    // Every hit is an intentional side-effect import (global CSS / fonts / RUM bootstrap) at a
+    // frontend entrypoint (`__root.tsx`, `main.tsx`) — the standard, idiomatic pattern. 40 hits,
+    // all entrypoints.
+    "no-unassigned-import": "off",
+
+    // Sequential awaits are frequently intentional here: ordered DB writes/migrations,
+    // rate-limited external APIs (Discord/ElevenLabs/OpenRouter), voice-connection handshakes.
+    // Blanket Promise.all-ifying 33 call sites risks real ordering/rate-limit regressions;
+    // biome doesn't enforce this.
+    "no-await-in-loop": "off",
+
+    // Underscore-prefixed identifiers (`_exhaustive`, `_hexFactionMap`) are astra's
+    // private/internal-marker naming convention, not a dangling-underscore mistake. 10 hits,
+    // not enforced by biome.
+    "no-underscore-dangle": "off",
+
+    // --- Type-aware rules (S12 R5 D-per-spec: `--type-aware` in `pnpm run lint`). Phase 0
+    // called out `no-floating-promises` as the real bug class (biome can't catch it); that's
+    // ON and repo-wide-clean (5 sites fixed this slice: backdrop/ShaderBackground.tsx,
+    // orator-controller/plugin.ts, strider PixiHost.tsx/EditorHexMap.tsx/MapView.tsx — 2 of
+    // Phase 0's original 4 named files, weal-overlay/server.ts + weal-bot/speak.ts, are now
+    // clean post-R3 rewrite). The REST of the type-aware surface (`no-unsafe-type-assertion`
+    // 264 hits, `consistent-return` 40, `no-unnecessary-type-assertion` 32, `no-base-to-string`
+    // 9, `no-unnecessary-type-conversion` 7, `restrict-template-expressions` 5,
+    // `no-unnecessary-template-expression` 2, `no-unnecessary-boolean-literal-compare` 2,
+    // `unbound-method` 1, `no-unnecessary-type-parameters` 1 = 363 diagnostics) is a large
+    // pre-existing-pattern audit unrelated to floating promises — deferred to a dedicated
+    // follow-up slice, each individually below rather than a blanket type-aware disable.
+    "no-floating-promises": "error",
+    "no-unsafe-type-assertion": "off",
+    "consistent-return": "off",
+    "no-unnecessary-type-assertion": "off",
+    "no-base-to-string": "off",
+    "no-unnecessary-type-conversion": "off",
+    "restrict-template-expressions": "off",
+    "no-unnecessary-template-expression": "off",
+    "no-unnecessary-boolean-literal-compare": "off",
+    "unbound-method": "off",
+    "no-unnecessary-type-parameters": "off"
+  },
+  "ignorePatterns": [
+    "**/being.canonical.json",
+    "**/akasha-snapshot.json",
+    "**/fixtures/vellum/**",
+    "**/tests/fixtures/**",
+    "**/linguist/data/**",
+    "**/linguist/timeline/**",
+    "**/heartwood-backend/facts/**",
+    "**/routeTree.gen.ts",
+    "**/src/generated/**",
+    "**/public/**",
+    "**/*.sdPlugin/**"
+  ],
+  "overrides": [
+    // --- 13 blocks ported 1:1 from biome.json's `overrides` (same file globs) ---
+    {
+      "files": ["**/vellum-lang/src/vss.ts"],
+      "rules": { "no-non-null-assertion": "off", "prefer-template": "off" }
+    },
+    {
+      "files": ["**/gothic/src/render/**"],
+      "rules": { "no-array-index-key": "off" }
+    },
+    {
+      "files": ["**/akasha-frontend/src/domain/lib/slug.ts"],
+      "rules": { "prefer-template": "off" }
+    },
+    {
+      "files": [
+        "**/akasha-frontend/src/domain/components/islands/Graph.tsx",
+        "**/akasha-frontend/src/domain/components/islands/graphData.ts"
+      ],
+      "rules": {
+        "no-non-null-assertion": "off",
+        "no-explicit-any": "off",
+        "array-callback-return": "off"
+      }
+    },
+    {
+      "files": ["**/akasha-frontend/src/domain/components/islands/TranscriptPlayer.tsx"],
+      "rules": { "no-non-null-assertion": "off" }
+    },
+    {
+      "files": ["**/mouthpiece-frontend/src/domain/components/Player.tsx"],
+      "rules": { "prefer-tag-over-role": "off" }
+    },
+    {
+      "files": ["**/vellum-frontend/src/domain/editor/**"],
+      "rules": {
+        "no-non-null-assertion": "off",
+        "no-cond-assign": "off",
+        "prefer-tag-over-role": "off"
+      }
+    },
+    {
+      "files": [
+        "**/heartwood-frontend/src/domain/editor/**",
+        "**/heartwood-frontend/src/domain/review/diff.ts"
+      ],
+      "rules": {
+        "no-non-null-assertion": "off",
+        "no-cond-assign": "off",
+        "prefer-tag-over-role": "off"
+      }
+    },
+    {
+      "files": [
+        "**/strider/src/domain/lib/hexUtils.ts",
+        "**/strider/src/domain/lib/hexUtils.test.ts",
+        "**/strider/src/domain/lib/layers.test.ts",
+        "**/strider/src/domain/lib/memoriam.ts",
+        "**/strider/src/domain/lib/memoriam.test.ts",
+        "**/strider/src/domain/lib/timeline.ts",
+        "**/strider/src/domain/lib/timelineFrames.test.ts",
+        "**/strider/src/lib/useFocusTrap.ts",
+        "**/strider/src/domain/lib/editorHelpers.ts",
+        "**/strider/src/domain/components/HexMap/**",
+        "**/strider/src/domain/components/MapView/MapView.tsx",
+        "**/strider/src/domain/components/Editor/**"
+      ],
+      "rules": { "no-non-null-assertion": "off" }
+    },
+    {
+      "files": ["**/strider/src/domain/components/FactionDetail/FactionDetail.tsx"],
+      "rules": { "no-danger": "off" }
+    },
+    {
+      "files": [
+        "**/strider/src/domain/components/Modal/Modal.tsx",
+        "**/strider/src/domain/components/FactionSymbol/FactionSymbol.tsx",
+        "**/strider/src/domain/components/MapView/OverlayStrip.tsx",
+        "**/strider/src/domain/components/MapView/TimelineStrip.tsx"
+      ],
+      "rules": {
+        "prefer-tag-over-role": "off",
+        "role-supports-aria-props": "off",
+        "no-static-element-interactions": "off",
+        "no-noninteractive-element-interactions": "off",
+        "click-events-have-key-events": "off",
+        "no-array-index-key": "off"
+      }
+    },
+    {
+      "files": ["**/weal-overlay/test/hub.test.ts", "**/weal-overlay/test/server.test.ts"],
+      "rules": { "no-non-null-assertion": "off" }
+    },
+    {
+      // prefer-tag-over-role is a NEW oxlint-only finding here (biome's useSemanticElements
+      // doesn't flag `role="dialog"`) — same custom-modal pattern (own Escape/backdrop
+      // handling) already exempted for strider's Modal.tsx et al above; a native <dialog>
+      // rewrite (showModal/close/::backdrop) is a real behavior change, out of scope here.
+      "files": [
+        "**/orator-backend/src/web/ui/Dialog.tsx",
+        "**/orator-backend/src/web/ui/TagEditModal.tsx"
+      ],
+      "rules": {
+        "click-events-have-key-events": "off",
+        "no-static-element-interactions": "off",
+        "no-noninteractive-element-interactions": "off",
+        "prefer-tag-over-role": "off"
+      }
+    },
+
+    // --- New overrides (S12 residual triage): files biome exempted with a per-line inline
+    // suppression comment (biome's own directive, not reproduced verbatim here on purpose —
+    // it self-triggers biome's suppression-comment scanner even inside a JSON comment) rather
+    // than a biome.json path override. Ported to oxlint's path-override grain (no oxlint
+    // line-level equivalent) since each file's hit(s) are exactly the same audited,
+    // rationale-backed instance(s) biome already tolerates. ---
+    {
+      // static/stable-order lists (noArrayIndexKey exempted per-line in the source)
+      "files": [
+        "**/akasha-frontend/src/domain/components/Chronicle.tsx",
+        "**/heartwood-frontend/src/domain/components/ProposalCard.tsx",
+        "**/harrow/src/domain/components/CardSpread.tsx",
+        "**/mouthpiece-frontend/src/routes/episode/$id.tsx"
+      ],
+      "rules": { "no-array-index-key": "off" }
+    },
+    {
+      // build-rendered/trusted-static HTML (noDangerouslySetInnerHtml exempted per-line: the
+      // pre-paint theme scripts in every SSR frontend's __root.tsx, plus build-rendered vellum
+      // bodies and a trusted pagefind excerpt)
+      "files": [
+        "**/vellum-frontend/src/routes/__root.tsx",
+        "**/akasha-frontend/src/routes/__root.tsx",
+        "**/akasha-frontend/src/domain/components/ContentArticle.tsx",
+        "**/akasha-frontend/src/domain/components/FolderListing.tsx",
+        "**/akasha-frontend/src/domain/components/islands/Search.tsx",
+        "**/ledger/src/routes/__root.tsx",
+        "**/harrow/src/routes/__root.tsx",
+        "**/mouthpiece-frontend/src/routes/__root.tsx",
+        "**/heartwood-frontend/src/routes/__root.tsx"
+      ],
+      "rules": { "no-danger": "off" }
+    },
+    {
+      // Search.tsx modal backdrop click-to-close; keyboard close is the document Escape
+      // handler (noStaticElementInteractions/useKeyWithClickEvents exempted per-line)
+      "files": ["**/akasha-frontend/src/domain/components/islands/Search.tsx"],
+      "rules": { "no-static-element-interactions": "off", "click-events-have-key-events": "off" }
+    },
+    {
+      // noNonNullAssertion exempted per-line throughout — every assertion is a
+      // length-checked/arity-guaranteed access (Res[] arg arrays, dice-roll results)
+      "files": [
+        "**/weal-bot/src/roller/context.ts",
+        "**/weal-bot/src/roller/index.ts",
+        "**/weal-bot/src/roller/die.test.ts"
+      ],
+      "rules": { "no-non-null-assertion": "off" }
+    },
+    {
+      // noExplicitAny exempted per-line (2 sites, "see above") — narrow Range-parsing helper
+      "files": ["**/site-kit/src/sendFile.ts"],
+      "rules": { "no-explicit-any": "off" }
+    }
+  ]
+}

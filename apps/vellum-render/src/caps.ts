@@ -29,7 +29,7 @@ export type Validation =
   | { ok: true; value: RenderRequest }
   | { ok: false; status: number; error: string };
 
-const MODES: readonly ThemeMode[] = ["mechanical", "diegetic"];
+const MODES: ReadonlySet<ThemeMode> = new Set(["mechanical", "diegetic"]);
 
 /** Validate + normalize an untrusted render request body. Pure. */
 export function validateRenderRequest(body: unknown): Validation {
@@ -52,7 +52,7 @@ export function validateRenderRequest(body: unknown): Validation {
 
   let mode: ThemeMode = "mechanical";
   if (record.mode !== undefined) {
-    if (typeof record.mode !== "string" || !MODES.includes(record.mode as ThemeMode)) {
+    if (typeof record.mode !== "string" || !MODES.has(record.mode as ThemeMode)) {
       return { ok: false, status: 400, error: "mode must be mechanical|diegetic" };
     }
     mode = record.mode as ThemeMode;

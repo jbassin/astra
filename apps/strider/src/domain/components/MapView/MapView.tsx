@@ -126,7 +126,7 @@ export default function MapView({ factions, layers, seen, initialVisibleOverlays
       return;
     }
     if (isMobile) {
-      navigate({ to: "/factions/$slug", params: { slug: faction.slug } });
+      void navigate({ to: "/factions/$slug", params: { slug: faction.slug } });
     } else {
       setModal({ kind: "faction", faction });
     }

@@ -26,10 +26,10 @@ const marker = html.includes("Harrow");
 // known marker server-side (gallery a card name; the spreads the curated spread name),
 // proving content + gothic render in the SSR pass. The `/` draw is client-only
 // (Decision D), so it SSRs the deterministic "Shuffling" fallback, not a reading.
-async function check(path: string, needle: string): Promise<boolean> {
-  const r = await ssr.fetch(new Request(`http://localhost${path}`));
-  const html = await r.text();
-  return r.status === 200 && html.includes(needle);
+async function check(routePath: string, needle: string): Promise<boolean> {
+  const r = await ssr.fetch(new Request(`http://localhost${routePath}`));
+  const body = await r.text();
+  return r.status === 200 && body.includes(needle);
 }
 const gallery = await check("/gallery", "Hierophant");
 const spreads = await check("/spreads", "Pilgrimage");

@@ -13,7 +13,7 @@ import { useToast } from "./ui/Toast";
 function rowStyle(color: string | null, selected: boolean): CSSProperties | undefined {
   const tint = rowTintStyle(color);
   if (!selected) return tint;
-  return { ...(tint ?? {}), background: "var(--row-sel)" };
+  return { ...tint, background: "var(--row-sel)" };
 }
 
 /** The library browser: filter by collection/tag/search, multi-select, rename, bulk tag, upload. */
@@ -503,6 +503,7 @@ export function Library() {
                 <input
                   type="checkbox"
                   title="Select all (filtered)"
+                  aria-label="Select all (filtered)"
                   checked={allSelected}
                   ref={(el) => {
                     if (el) el.indeterminate = !allSelected && someSelected;
@@ -546,6 +547,7 @@ export function Library() {
                     <td>
                       <input
                         type="checkbox"
+                        aria-label={`Select ${t.title}`}
                         checked={selected.has(t.id)}
                         onChange={() => toggle(t.id)}
                       />

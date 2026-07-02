@@ -88,7 +88,7 @@ export default function EditorHexMap(props: EditorHexMapProps) {
     let resizeObs: ResizeObserver | null = null;
     let initialized = false;
 
-    (async () => {
+    void (async () => {
       const host = hostRef.current;
       if (!host) return;
 
@@ -129,7 +129,9 @@ export default function EditorHexMap(props: EditorHexMapProps) {
       scene.fit(host.clientWidth, host.clientHeight);
 
       host.dataset.mapReady = "true";
-    })();
+    })().catch((err: unknown) => {
+      console.error("EditorHexMap: init failed", err);
+    });
 
     return () => {
       cancelled = true;

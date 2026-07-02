@@ -54,6 +54,7 @@ export function loadTranscripts(dir: string): Transcript[] {
     .sort()
     .map((f) => {
       const t = JSON.parse(fs.readFileSync(path.join(dir, f), "utf8")) as Transcript;
-      return { ...t, audio: audioSrc(t.date) };
+      t.audio = audioSrc(t.date);
+      return t;
     });
 }

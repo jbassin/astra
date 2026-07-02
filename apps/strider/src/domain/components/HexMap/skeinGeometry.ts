@@ -124,7 +124,9 @@ export function computeSkeinCurve(
   const cx = mx + nx * offset;
   const cy = my + ny * offset;
 
-  const samples: Array<readonly [number, number]> = new Array(CURVE_SAMPLE_STEPS + 1);
+  const samples: Array<readonly [number, number]> = Array.from({
+    length: CURVE_SAMPLE_STEPS + 1,
+  });
   for (let i = 0; i <= CURVE_SAMPLE_STEPS; i++) {
     const t = i / CURVE_SAMPLE_STEPS;
     const u = 1 - t;
@@ -133,7 +135,7 @@ export function computeSkeinCurve(
     const py = u * u * y1 + 2 * u * t * cy + t * t * y2;
     samples[i] = [px, py];
   }
-  const cumLen: number[] = new Array(samples.length);
+  const cumLen: number[] = Array.from({ length: samples.length });
   cumLen[0] = 0;
   for (let i = 1; i < samples.length; i++) {
     const [ax, ay] = samples[i - 1]!;

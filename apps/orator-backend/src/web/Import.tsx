@@ -46,7 +46,7 @@ export function Import({ onImported }: { onImported: () => void }) {
       esRef.current?.close();
       const es = new EventSource(`/api/v1/ingest/jobs/${jobId}/events`);
       esRef.current = es;
-      es.onmessage = (ev) => {
+      es.addEventListener("message", (ev) => {
         const data = JSON.parse(ev.data) as Snapshot;
         setSnap(data);
         if (data.job && TERMINAL.has(data.job.status)) {
@@ -54,11 +54,11 @@ export function Import({ onImported }: { onImported: () => void }) {
           setBusy(false);
           onImported();
         }
-      };
-      es.onerror = () => {
+      });
+      es.addEventListener("error", () => {
         es.close();
         setBusy(false);
-      };
+      });
     },
     [onImported],
   );

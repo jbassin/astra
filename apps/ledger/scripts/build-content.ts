@@ -91,6 +91,7 @@ const sitesSource = defineContentSource({
   name: "sites",
   build() {
     const cfg = loadConfig();
+    // oxlint-disable-next-line no-map-spread -- avoids an unsafe cast; not a hot path.
     const sites: SiteLink[] = REGISTRY.map((s) => ({ ...s, href: originFor(cfg, s.key) }));
     const body = [
       "/** The linked sites, in registry order. Each href is the target site's own",

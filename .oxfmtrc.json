@@ -1,0 +1,28 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "useTabs": false,
+  "tabWidth": 2,
+  "printWidth": 100,
+  "singleQuote": false,
+  "jsxSingleQuote": false,
+  "quoteProps": "as-needed",
+  "trailingComma": "all",
+  "semi": true,
+  "arrowParens": "always",
+  "bracketSameLine": false,
+  "bracketSpacing": true,
+  "sortImports": true,
+  "ignorePatterns": [
+    "**/being.canonical.json",
+    "**/akasha-snapshot.json",
+    "**/fixtures/vellum/**",
+    "**/tests/fixtures/**",
+    "**/linguist/data/**",
+    "**/linguist/timeline/**",
+    "**/heartwood-backend/facts/**",
+    "**/routeTree.gen.ts",
+    "**/src/generated/**",
+    "**/public/**",
+    "**/*.sdPlugin/**"
+  ]
+}

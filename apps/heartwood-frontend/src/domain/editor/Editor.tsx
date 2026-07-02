@@ -63,6 +63,7 @@ export function Editor({
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
+  // oxlint-disable react-hooks/exhaustive-deps -- mount once; initialValue is the seed, onChange is via ref.
   // biome-ignore lint/correctness/useExhaustiveDependencies: mount once; initialValue is the seed, onChange is via ref.
   useEffect(() => {
     const parent = host.current;
@@ -94,6 +95,7 @@ export function Editor({
 
     return () => view.destroy();
   }, []);
+  // oxlint-enable react-hooks/exhaustive-deps
 
   return <div className={styles.editor} ref={host} />;
 }

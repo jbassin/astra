@@ -4,7 +4,15 @@
  * Commands update the state from their response for snappy feedback. Ported from
  * faerrin lark `src/web/playbackState.tsx`.
  */
-import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  type ReactNode,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { ApiError, apiGet, apiSend } from "./api";
 
 export interface NowPlaying {
@@ -69,9 +77,10 @@ export function PlaybackProvider({ children }: { children: ReactNode }) {
     setNp(await apiSend<NowPlaying>("POST", "/api/v1/playback/play", { trackIds }));
   }, []);
 
-  return (
-    <PlaybackCtx.Provider value={{ np, unavailable, cmd, playTracks }}>
-      {children}
-    </PlaybackCtx.Provider>
+  const value = useMemo(
+    () => ({ np, unavailable, cmd, playTracks }),
+    [np, unavailable, cmd, playTracks],
   );
+
+  return <PlaybackCtx.Provider value={value}>{children}</PlaybackCtx.Provider>;
 }

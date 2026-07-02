@@ -104,7 +104,7 @@ export class DiscordVoiceAdapter implements VoiceAdapter {
             conn.destroy();
             this.connection = null;
             this.channelId = null;
-            throw new Error(`voice_connect_timeout: ${(err as Error).message}`);
+            throw new Error(`voice_connect_timeout: ${(err as Error).message}`, { cause: err });
           }
           this.channelId = channelId;
           log.emit({ severityText: "INFO", body: `voice connection READY in ${channelId}` });

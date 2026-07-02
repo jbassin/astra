@@ -26,24 +26,24 @@ export function connectFeed(opts: FeedOptions): () => void {
     if (stopped) return;
     source = new EventSource(url);
 
-    source.onopen = () => onStatus?.("open");
+    source.addEventListener("open", () => onStatus?.("open"));
 
-    source.onmessage = (ev: MessageEvent<string>) => {
+    source.addEventListener("message", (ev: MessageEvent<string>) => {
       try {
         onRoll(JSON.parse(ev.data) as RollEvent);
       } catch {
         // Ignore a malformed frame rather than tearing down the feed.
       }
-    };
+    });
 
-    source.onerror = () => {
+    source.addEventListener("error", () => {
       onStatus?.("closed");
       if (source && source.readyState === EventSource.CLOSED) {
         source.close();
         source = null;
         timer = setTimeout(open, reconnectMs);
       }
-    };
+    });
   };
 
   open();

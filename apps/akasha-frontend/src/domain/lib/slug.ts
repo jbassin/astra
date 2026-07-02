@@ -207,8 +207,8 @@ export function transformLink(src: FullSlug, target: string, opts: TransformOpti
 
       // only match, just use it (length===1 guarantees [0]; assert for strict index access)
       if (matchingFileNames.length === 1) {
-        const targetSlug = matchingFileNames[0] as FullSlug;
-        return (resolveRelative(src, targetSlug) + targetAnchor) as RelativeURL;
+        const uniqueSlug = matchingFileNames[0] as FullSlug;
+        return (resolveRelative(src, uniqueSlug) + targetAnchor) as RelativeURL;
       }
     }
 

@@ -137,7 +137,7 @@ function collectionRole(c: Collection): Role {
 /** Compute the full key grid for the current navigation level. */
 export function layout(nav: NavState, device: DeviceShape, data: GridData): Role[] {
   const { columns: C, rows: R } = device;
-  const cells: Role[] = new Array(C * R).fill(EMPTY);
+  const cells: Role[] = Array.from<Role>({ length: C * R }).fill(EMPTY);
 
   if (nav.level === "root") {
     // (0,0) is reserved/blank in every view; collections start at key 1.

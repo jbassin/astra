@@ -73,7 +73,9 @@ export function DecisionFooter({
           />
           <datalist id={`folders-${proposal.id}`}>
             {TOP_FOLDERS.map((f) => (
-              <option key={f} value={`${f}/`} />
+              <option key={f} value={`${f}/`}>
+                {f}/
+              </option>
             ))}
           </datalist>
         </label>

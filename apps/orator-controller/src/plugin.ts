@@ -9,4 +9,9 @@ const controller = new OratorController();
 
 streamDeck.actions.registerAction(new Slot(controller));
 
-streamDeck.connect().then(() => controller.init());
+streamDeck
+  .connect()
+  .then(() => controller.init())
+  .catch((err: unknown) => {
+    streamDeck.logger.error(`plugin startup failed: ${String(err)}`);
+  });

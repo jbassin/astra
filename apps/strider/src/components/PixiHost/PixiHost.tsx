@@ -26,7 +26,7 @@ export default function PixiHost({ children }: Props) {
     let bgDestroy: (() => void) | null = null;
     let bgTick: (() => void) | null = null;
 
-    (async () => {
+    void (async () => {
       const [{ Application: PixiApp, Container: PixiContainer }, balatroMod] = await Promise.all([
         import("pixi.js"),
         import("./balatroBackground"),
@@ -70,7 +70,9 @@ export default function PixiHost({ children }: Props) {
       a.stage.addChild(world);
 
       setCtx({ app: a, panel, world });
-    })();
+    })().catch((err: unknown) => {
+      console.error("PixiHost: init failed", err);
+    });
 
     return () => {
       cancelled = true;

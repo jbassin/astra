@@ -179,14 +179,15 @@ export function computeAssignmentBorders(
   return { allBorders, perFaction };
 }
 
-const { allBorders, perFaction } = computeAssignmentBorders(factionHexes);
+const { allBorders, perFaction: borderPerFaction } = computeAssignmentBorders(factionHexes);
 
 // All unique faction-boundary edge segments (for the always-visible dark base border layer).
 export const FACTION_BORDERS: ReadonlyArray<EdgeSegment> = allBorders;
 
 // Per-faction boundary edges (index = faction index). Used for the hover glow overlay.
 // Edges shared between two factions appear in both factions' arrays.
-export const FACTION_TERRITORY_BORDERS: ReadonlyArray<ReadonlyArray<EdgeSegment>> = perFaction;
+export const FACTION_TERRITORY_BORDERS: ReadonlyArray<ReadonlyArray<EdgeSegment>> =
+  borderPerFaction;
 
 // Perimeter edges for an arbitrary hex set (e.g. a region). Same edge-walk as
 // computeBorders, but standalone so it can be called per-region at render time.

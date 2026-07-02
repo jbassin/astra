@@ -10,8 +10,11 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "build": "pnpm -r build",
-    "lint": "biome ci .",
+    "lint": "oxlint --type-aware apps libs/ts",
+    "lint:biome": "biome ci .",
     "format": "biome format --write .",
+    "format:check": "oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'",
+    "format:oxfmt": "echo 'format:oxfmt (oxfmt --write) is config-only until S13 (0022 R5) — biome still owns tree formatting until the gate swap. Use `pnpm run format` (biome) to fix pre-commit/CI failures now.' >&2 && exit 1",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
@@ -19,6 +22,9 @@
     "@commitlint/cli": "^19",
     "@commitlint/config-conventional": "^19",
     "@types/node": "^24.13.2",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
+    "oxlint-tsgolint": "^0.24.0",
     "typescript": "^5"
   },
   "pnpm": {
