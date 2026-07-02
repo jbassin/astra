@@ -3,7 +3,11 @@
 // spine lives in the lib; mouthpiece-frontend supplies only what's app-specific — its
 // built SSR handler, the client-assets dir, and serviceName/port from config.kdl.
 //
-// Run after `bun run build`:  bun run server.ts
+// Runs on Node 24 (R3, 0022 S6 — the audio-mounts Range/206 pilot). `--import
+// .../nodeTsResolve.mjs` is a resolve hook that lets Node walk the workspace's
+// extensionless relative imports the same way Vite/Bun already do — see that file.
+//
+// Run after `bun run build`:  bun run start
 
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "@astra/config";

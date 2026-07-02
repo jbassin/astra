@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite dev --configLoader runner",
     "build": "vite build --configLoader runner && bun run scripts/build-search.ts",
-    "start": "bun run server.ts",
+    "start": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
     "typecheck": "bun run scripts/build-content.ts && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
     "generate:content": "bun run scripts/build-content.ts"

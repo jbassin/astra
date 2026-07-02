@@ -237,7 +237,9 @@ services:
         APP: akasha-frontend # the one knob in the templated frontend Dockerfile
     image: astra-akasha-frontend:local
     container_name: astra-akasha-frontend
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -249,7 +251,7 @@ services:
       - /ruby/data/experiments/astra/artifacts/audio/akasha:/audio:ro # kdl akasha-frontend.audio-dir; served at /audio/<date>.mp3
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10365/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -268,7 +270,9 @@ services:
         APP: mouthpiece-frontend # the one knob in the templated frontend Dockerfile
     image: astra-mouthpiece-frontend:local
     container_name: astra-mouthpiece-frontend
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S6 — the audio-mounts Range/206 pilot; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -280,7 +284,7 @@ services:
       - /ruby/data/experiments/astra/artifacts/audio/mouthpiece:/audio:ro # kdl mouthpiece-frontend.audio-dir; served at /audio/<id>.mp3
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10366/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5
