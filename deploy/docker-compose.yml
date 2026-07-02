@@ -209,7 +209,9 @@ services:
         APP: strider # the one knob in the templated frontend Dockerfile
     image: astra-strider:local
     container_name: astra-strider
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -217,7 +219,7 @@ services:
       - "10360:10360" # strider SSR (astra range) — also reachable directly
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -301,7 +303,9 @@ services:
         APP: vellum-frontend # the one knob in the templated frontend Dockerfile
     image: astra-vellum-frontend:local
     container_name: astra-vellum-frontend
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -309,7 +313,7 @@ services:
       - "10367:10367" # vellum-frontend SSR (astra range) — also reachable directly
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10367/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10367/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -414,7 +418,9 @@ services:
         APP: harrow # the one knob in the templated frontend Dockerfile
     image: astra-harrow:local
     container_name: astra-harrow
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -422,7 +428,7 @@ services:
       - "10369:10369" # harrow SSR (astra range) — also reachable directly
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10369/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10369/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -469,7 +475,9 @@ services:
         APP: heartwood-frontend # the one knob in the templated frontend Dockerfile
     image: astra-heartwood:local
     container_name: astra-heartwood
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     # B1 (the load-bearing bind-mount fix): every bun/dagster container runs as ROOT by
     # default (no USER directive in any frontend Dockerfile). Without this, container
     # writes to proposals/ land 0:0 and the host (uid 1000, the repo owner) can't
@@ -491,7 +499,7 @@ services:
       - /ruby/data/experiments/astra/apps/akasha-backend/snapshot:/repo/apps/akasha-backend/snapshot:ro
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10371/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10371/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5

@@ -1,8 +1,10 @@
 # Astra SSR frontend service (Decision I) — the template Dockerfile for 0011-0013.
-# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR + any
-# editor write server fn). One knob: `ARG APP` selects which apps/<APP> is built;
-# everything else is workspace-generic except the two content-pipeline COPYs in the
-# runtime stage (noted inline) — replace those per app's content layout.
+# `node --import .../nodeTsResolve.mjs server.ts` runs the TanStack Start SSR server
+# (serves dist/ + SSR + any editor write server fn) on Node 24 — the R3 runtime-exit
+# (0022 S7); the build stage stays bun (D12). One knob: `ARG APP` selects which
+# apps/<APP> is built; everything else is workspace-generic except the two
+# content-pipeline COPYs in the runtime stage (noted inline) — replace those per
+# app's content layout.
 #
 # Build context is the REPO ROOT (a frontend is a bun workspace member depending on
 # @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must
@@ -51,8 +53,10 @@ COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 RUN bun run build
 
-# --- Runtime: slim image carrying the built app + its content + workspace deps ---
-FROM oven/bun:1.3.14-slim AS runtime
+# --- Runtime: Node 24 (R3, 0022 S7 — the runtime-exit recipe; build stays bun, D12).
+# node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's
+# `user: "1000:1000"` (deploy-artifacts-run-as-user) carries over unchanged. ---
+FROM node:24-slim AS runtime
 ARG APP
 WORKDIR /repo/apps/${APP}
 ENV NODE_ENV=production
@@ -72,4 +76,6 @@ COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
 # @astra/config); @astra/config locates it by walking up to <repo>/ontology/ontology-config.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-CMD ["bun", "run", "start"]
+# Invoke node directly (not `npm run start`) — one less process layer, and the
+# runtime image needs no package-manager story at all (D13).
+CMD ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]

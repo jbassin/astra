@@ -1,10 +1,11 @@
 # Astra SSR frontend service (Decision I) — heartwood review surface (0020 Phase 4),
-# on the strider/ledger template. `bun run start` runs the TanStack Start SSR server.
-# One knob: `ARG APP` selects which apps/<APP> is built; everything else is workspace-
-# generic. Heartwood has NO backend snapshot baked in — unlike the other frontends it
-# reads its content (the staged proposals + the akasha corpus) at RUNTIME via server
-# fns over narrow bind-mounts (deploy/docker-compose.yml). So this is a minimal
-# frontend Dockerfile — no content-input COPY beyond config.kdl.
+# on the strider/ledger template. `node --import .../nodeTsResolve.mjs server.ts` runs
+# the TanStack Start SSR server on Node 24 — the R3 runtime-exit (0022 S7); the build
+# stage stays bun (D12). One knob: `ARG APP` selects which apps/<APP> is built;
+# everything else is workspace-generic. Heartwood has NO backend snapshot baked in —
+# unlike the other frontends it reads its content (the staged proposals + the akasha
+# corpus) at RUNTIME via server fns over narrow bind-mounts (deploy/docker-compose.yml).
+# So this is a minimal frontend Dockerfile — no content-input COPY beyond config.kdl.
 #
 # Build context is the REPO ROOT (a frontend is a bun workspace member depending on
 # @astra/site-kit/gothic/observe via workspace:*), so the whole bun workspace must be
@@ -49,8 +50,10 @@ COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 RUN bun run build
 
-# --- Runtime: slim image carrying the built app + workspace deps ---
-FROM oven/bun:1.3.14-slim AS runtime
+# --- Runtime: Node 24 (R3, 0022 S7 — the runtime-exit recipe; build stays bun, D12).
+# node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's
+# `user: "1000:1000"` (deploy-artifacts-run-as-user) carries over unchanged. ---
+FROM node:24-slim AS runtime
 ARG APP
 WORKDIR /repo/apps/${APP}
 ENV NODE_ENV=production
@@ -65,4 +68,6 @@ COPY --from=build /repo/apps/${APP}/package.json ./package.json
 # config.kdl is the single source for serviceName/port + the OTLP endpoint.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-CMD ["bun", "run", "start"]
+# Invoke node directly (not `npm run start`) — one less process layer, and the
+# runtime image needs no package-manager story at all (D13).
+CMD ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]

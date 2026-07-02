@@ -6,7 +6,11 @@
 // No staticMounts: vellum has no runtime asset volume (the editor is client-only; the
 // PNG export goes to the separate vellum-render service same-origin via Caddy, D2).
 //
-// Run after `bun run build`:  bun run server.ts
+// Runs on Node 24 (R3, 0022 S7 — the runtime-exit recipe). `--import
+// .../nodeTsResolve.mjs` is a resolve hook that lets Node walk the workspace's
+// extensionless relative imports the same way Vite/Bun already do — see that file.
+//
+// Run after `bun run build`:  bun run start
 
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "@astra/config";
