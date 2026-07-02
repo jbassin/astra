@@ -1,13 +1,15 @@
-# Astra render service (0013, D2/D3) — vellum-render. A warm Bun + Playwright sidecar
-# that screenshots gothic-rendered vellum documents to PNG. The FIRST
+# Astra render service (0013, D2/D3) — vellum-render. A warm Node + Playwright
+# sidecar that screenshots gothic-rendered vellum documents to PNG. The FIRST
 # browser-in-a-container in astra: the runtime stage installs Chromium + its system
-# libraries on the bun-slim base (the pin is the `playwright` version in bun.lock, so
-# the render image and the CI visual-regression container share the exact same
-# Chromium — D3/D4). `--no-sandbox` is set at launch (renderService.ts) since the
-# container has no user-namespace sandbox.
+# libraries on the node-slim base (the pin is the `playwright` version in bun.lock,
+# so the render image and the CI visual-regression container — still oven/bun:1.3.14
+# until S11 — share the exact same Chromium — D3/D4). `--no-sandbox` is set at
+# launch (renderService.ts) since the container has no user-namespace sandbox.
 #
 # Build context is the REPO ROOT (a bun workspace member). Port + service name come
 # from config.kdl (config-single-source) — no PORT env; compose maps the host port.
+# Build stage STAYS bun (D12 mixed-stage, R3 0022 S9 — S11 swaps it); runtime is
+# Node 24 (R3, 0022 S9 — the runtime-exit recipe; D13).
 ARG APP=vellum-render
 
 FROM oven/bun:1.3.14 AS build
@@ -41,8 +43,10 @@ COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 RUN bun run build
 
-# --- Runtime: slim bun image + Chromium (the browser-in-container) ---
-FROM oven/bun:1.3.14-slim AS runtime
+# --- Runtime: Node 24 (R3, 0022 S9) + Chromium (the browser-in-container) ---
+# node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's
+# `user: "1000:1000"` (deploy-artifacts-run-as-user) carries over unchanged.
+FROM node:24-slim AS runtime
 ARG APP
 ENV NODE_ENV=production
 # Browsers land here (shared with the CI VR container). renderService launches with
@@ -66,7 +70,7 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 # Install Chromium + its system libraries. The version is pinned by the `playwright`
 # package already in node_modules (copied above), so this is deterministic against
 # the lockfile.
-RUN bunx playwright install --with-deps chromium \
+RUN npx playwright install --with-deps chromium \
     && rm -rf /var/lib/apt/lists/*
 
 # The compose service runs this image as user 1000:1000 (like the other astra containers).
@@ -75,4 +79,4 @@ RUN bunx playwright install --with-deps chromium \
 # ephemeral /tmp profile, so nothing else needs to be writable.)
 RUN chown -R 1000:1000 /ms-playwright
 
-CMD ["bun", "run", "start"]
+CMD ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "src/server.ts"]

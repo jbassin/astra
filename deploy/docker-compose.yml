@@ -332,7 +332,9 @@ services:
         APP: vellum-render
     image: astra-vellum-render:local
     container_name: astra-vellum-render
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S9 — the runtime-exit recipe; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "src/server.ts"]
     # Runs as 1000 like the others; the Dockerfile chowns /ms-playwright so the (non-root)
     # Chromium can read its browser bundle. Profile is an ephemeral /tmp dir; --no-sandbox.
     user: "1000:1000"
@@ -342,7 +344,7 @@ services:
     networks: [signoz-net]
     healthcheck:
       # /health reports the warm-Chromium readiness; start_period covers the launch.
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10368/health').then(r=>r.json()).then(j=>process.exit(j.ready?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10368/health').then(r=>r.json()).then(j=>process.exit(j.ready?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5

@@ -1,20 +1,23 @@
-#!/usr/bin/env bun
 /**
- * Vellum render service (0013, D2) — a warm Bun + Playwright sidecar that turns a
+ * Vellum render service (0013, D2) — a warm Node + Playwright sidecar that turns a
  * posted document into a PNG of its [data-vellum-export] card. Serves the built
  * render assets from dist/ on the same origin so the render page + fonts load
  * locally (and the SEC-3 egress block can allow only same-origin). A SEPARATE
  * Compose unit from vellum-frontend; the editor reaches it same-origin via Caddy
  * (vellum.iridi.cc/render → this service). Lifted ~verbatim from faerrin
- * pkg/vellum scripts/render-server.ts, with config-single-source + telemetry added.
+ * pkg/vellum scripts/render-server.ts, with config-single-source + telemetry added;
+ * off Bun onto srvx (R3, 0022 S9).
  *
- *   bun run start        # after `bun run build`
+ *   node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs src/server.ts   # after `bun run build`
  */
+import { stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "@astra/config";
 import { getLogger, getTracer, initTelemetry, lazyCounter, lazyHistogram } from "@astra/observe";
+import { serveFile } from "@astra/site-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
+import { serve } from "srvx";
 import { validateRenderRequest } from "./caps";
 import { RenderCapError, RenderService } from "./renderService";
 
@@ -78,25 +81,38 @@ function corsHeaders(origin: string | null): Record<string, string> {
     : {};
 }
 
-async function serveStatic(pathname: string): Promise<Response> {
+async function isFile(p: string): Promise<boolean> {
+  try {
+    return (await stat(p)).isFile();
+  } catch {
+    return false;
+  }
+}
+
+// The old Bun static-file call is now @astra/site-kit's `serveFile` (the
+// `send`-backed Range/206 bridge S4 built; R3, 0022 S9) — reuse the same tested
+// static-serving seam the SSR frontends and weal-overlay already use, instead of
+// a fresh node:fs path.
+async function serveStatic(req: Request, pathname: string): Promise<Response> {
   const rel = pathname === "/" ? "/index.html" : pathname;
   // Resolve inside DIST only — no path traversal.
   const full = resolve(DIST, `.${rel}`);
   if (!full.startsWith(DIST)) return new Response("forbidden", { status: 403 });
-  const file = Bun.file(full);
-  if (await file.exists()) return new Response(file);
-  return new Response("not found", { status: 404 });
+  if (!(await isFile(full))) return new Response("not found", { status: 404 });
+  return serveFile(req, full);
 }
 
 const service = new RenderService(BASE_URL);
 console.log(`[${serviceName}] warming Chromium…`);
 await service.start();
 
-const server = Bun.serve({
+const server = serve({
   port: PORT,
   hostname: "0.0.0.0",
-  idleTimeout: 30,
-  async fetch(req, srv) {
+  // No srvx `idleTimeout` equivalent (R3, 0022 S8 — B3); the closest analog for
+  // the Node runtime is `node.keepAliveTimeout` (mirrors ssrServer.ts / weal-overlay).
+  node: { keepAliveTimeout: 30_000 },
+  async fetch(req) {
     const url = new URL(req.url);
     const origin = req.headers.get("origin");
     const cors = corsHeaders(origin);
@@ -113,7 +129,7 @@ const server = Bun.serve({
     }
 
     if (url.pathname === "/render" && req.method === "POST") {
-      const ip = srv.requestIP(req)?.address ?? "unknown";
+      const ip = req.ip ?? "unknown";
       if (rateLimited(ip)) {
         renderCounter.add(1, { outcome: "rate_limited" });
         return new Response("rate limited", { status: 429, headers: cors });
@@ -173,11 +189,15 @@ const server = Bun.serve({
     }
 
     // Same-origin render assets (render.html, /assets/*, /fonts/*).
-    return serveStatic(url.pathname);
+    return serveStatic(req, url.pathname);
   },
 });
 
-console.log(`[${serviceName}] render service on ${BASE_URL} (ready=${service.isReady()})`);
+// srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
+// listening completes (async on the Node runtime), so log from `.ready()`.
+void server.ready().then(() => {
+  console.log(`[${serviceName}] render service on ${BASE_URL} (ready=${service.isReady()})`);
+});
 
 for (const sig of ["SIGINT", "SIGTERM"] as const) {
   process.on(sig, () => {
@@ -185,7 +205,7 @@ for (const sig of ["SIGINT", "SIGTERM"] as const) {
       .close()
       .then(() => telemetry?.shutdown())
       .finally(() => {
-        server.stop(true);
+        void server.close(true);
         process.exit(0);
       });
   });

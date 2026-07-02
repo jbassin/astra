@@ -7,11 +7,11 @@
   "scripts": {
     "dev": "vite --configLoader runner",
     "build": "vite build --configLoader runner",
-    "start": "bun run src/server.ts",
+    "start": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs src/server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "visual-regression": "bun run scripts/visual-regression.ts",
-    "visual-regression:update": "bun run scripts/visual-regression.ts --update"
+    "visual-regression": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts",
+    "visual-regression:update": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts --update"
   },
   "dependencies": {
     "@astra/config": "workspace:*",
@@ -23,7 +23,8 @@
     "@opentelemetry/api": "^1.9.1",
     "playwright": "^1.60.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "srvx": "0.11.20"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",

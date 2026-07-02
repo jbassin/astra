@@ -1,4 +1,3 @@
-#!/usr/bin/env bun
 /**
  * Golden-image visual regression (D4). Renders each fixture through the real
  * RenderService and compares the PNG to a committed golden with a perceptual
@@ -8,15 +7,23 @@
  * there with `--update`. This is a NEW-BASELINE regression gate against astra's
  * own gothic render, NOT a byte-match to faerrin's (the void palette differs).
  *
- *   bun run scripts/visual-regression.ts            # compare (exit 1 on drift)
- *   bun run scripts/visual-regression.ts --update   # (re)write goldens
+ * Runtime-agnostic (node:fs + srvx only — R3, 0022 S9): runs under both host
+ * Node 24 and the pinned `oven/bun:1.3.14` CI container (until S11 moves the CI
+ * job to Node/pnpm too).
+ *
+ *   node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts            # compare (exit 1 on drift)
+ *   node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts --update   # (re)write goldens
  *
  * Requires a prior `vite build` (the render service serves dist/).
  */
+import { existsSync } from "node:fs";
+import { readFile, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { serveFile } from "@astra/site-kit";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
+import { serve } from "srvx";
 import { RenderService } from "../src/renderService";
 import { FIXTURES } from "../test/visual/fixtures";
 
@@ -29,20 +36,34 @@ const UPDATE = process.argv.includes("--update");
 /** Allow up to 0.5% of pixels to differ (cross-render AA/hinting slack). */
 const MAX_DIFF_RATIO = 0.005;
 
-if (!(await Bun.file(resolve(DIST, "render.html")).exists())) {
+if (!existsSync(resolve(DIST, "render.html"))) {
   throw new Error(`${DIST}/render.html not found — run \`bun run build\` first`);
 }
 
-const server = Bun.serve({
+async function isFile(p: string): Promise<boolean> {
+  try {
+    return (await stat(p)).isFile();
+  } catch {
+    return false;
+  }
+}
+
+// Minimal static server (this Chromium only ever fetches dist/ assets) — srvx +
+// @astra/site-kit's `serveFile` (runtime-agnostic, R3, 0022 S9). Reuses the same
+// `send`-backed bridge server.ts does so JS/CSS assets get the right content-type
+// (a bare node:fs read left `/assets/*.js` untyped and Chromium refused to
+// execute the module script — found only by RUNNING this).
+const server = serve({
   port: PORT,
   async fetch(req) {
     const { pathname } = new URL(req.url);
     const full = resolve(DIST, `.${pathname === "/" ? "/index.html" : pathname}`);
     if (!full.startsWith(DIST)) return new Response("forbidden", { status: 403 });
-    const file = Bun.file(full);
-    return (await file.exists()) ? new Response(file) : new Response("not found", { status: 404 });
+    if (!(await isFile(full))) return new Response("not found", { status: 404 });
+    return serveFile(req, full);
   },
 });
+await server.ready();
 
 const service = new RenderService(BASE);
 await service.start();
@@ -56,19 +77,19 @@ try {
     const goldenPath = resolve(GOLDEN, `${fx.name}.png`);
 
     if (UPDATE) {
-      await Bun.write(goldenPath, png);
+      await writeFile(goldenPath, png);
       console.log(`updated  ${fx.name}`);
       continue;
     }
 
-    if (!(await Bun.file(goldenPath).exists())) {
+    if (!(await isFile(goldenPath))) {
       console.error(`MISSING  ${fx.name} (run --update in the CI container)`);
       failures += 1;
       continue;
     }
 
     const actual = PNG.sync.read(png);
-    const golden = PNG.sync.read(Buffer.from(await Bun.file(goldenPath).arrayBuffer()));
+    const golden = PNG.sync.read(await readFile(goldenPath));
     if (actual.width !== golden.width || actual.height !== golden.height) {
       console.error(
         `DIM      ${fx.name}: ${actual.width}x${actual.height} vs golden ${golden.width}x${golden.height}`,
@@ -91,7 +112,7 @@ try {
   }
 } finally {
   await service.close();
-  server.stop(true);
+  await server.close(true);
 }
 
 if (!UPDATE && failures > 0) {

@@ -150,7 +150,12 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bunx playwright install --with-deps chromium
       - run: bun --filter @astra/vellum-render build
-      - run: bun --filter @astra/vellum-render visual-regression
+      # `visual-regression`'s package.json script now reads `node …` (0022 S9), and
+      # this pinned oven/bun container has no `node` binary — invoke the file
+      # directly with bun instead of running the script through `bun --filter`
+      # (which would exec the node-shaped command). S11 swaps this whole job to
+      # the pinned Node container + pnpm.
+      - run: cd apps/vellum-render && bun scripts/visual-regression.ts
 
   commitlint:
     if: github.event_name == 'pull_request'

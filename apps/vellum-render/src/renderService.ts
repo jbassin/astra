@@ -24,11 +24,15 @@ export class RenderCapError extends Error {
 export class RenderService {
   private browser: Browser | null = null;
   private readonly gate: Semaphore;
+  // Not a TS parameter property (`constructor(private readonly x, …)`) — Node's
+  // `--experimental-strip-types` (R3, 0022 S9) only erases types, it doesn't emit
+  // code, so a parameter property (which needs a real `this.x = x` assignment
+  // generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` when Node runs this file
+  // directly (see [[weal-bot gateway.ts]], S5; discord-voice.ts, S8).
+  private readonly baseUrl: string;
 
-  constructor(
-    private readonly baseUrl: string,
-    concurrency = 2,
-  ) {
+  constructor(baseUrl: string, concurrency = 2) {
+    this.baseUrl = baseUrl;
     this.gate = new Semaphore(concurrency);
   }
 

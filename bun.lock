@@ -328,6 +328,7 @@
         "playwright": "^1.60.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "srvx": "0.11.20",
       },
       "devDependencies": {
         "@tailwindcss/vite": "^4.3.2",
