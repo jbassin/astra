@@ -36,36 +36,33 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `7e06cff` docs, 2026-07-02)
+## Current state — UPDATE THIS SECTION (spec authored, 2026-07-02 second session)
 
-> **🆕 VITE+ CUTOVER (0022) — SCOPED + Phase-0 spikes DONE + all decisions RESOLVED; ▶ NEXT: author the
-> spec.** Stakeholders want the whole TS lane on **Vite+** (VoidZero `vp`, beta v0.2.2 — fully MIT/free
-> since March 2026; Cloudflare acquired VoidZero). Scoping ran as three parallel research streams + three
-> Phase-0 spikes (Vite 8 canary in a worktree, oxc tools actually run against the repo, bun-runtime exit
-> study); everything is in
-> `thoughts/shared/research/2026-07-02-viteplus-migration-0022-thoughts.md` (**the addendum's R1–R7
-> roadmap supersedes the doc's original plan**) + memory [[viteplus-cutover-0022]]. Two docs commits this
-> session (`2980952` scoping, `7e06cff` Phase-0 addendum + memory); **no production code changed**.
+> **🆕 VITE+ CUTOVER (0022) — SPEC'D; ▶ NEXT: implement via `octo:embrace` from S1.** The NLSpec is at
+> **`thoughts/astra/specs/0022-viteplus-cutover-spec.md`** — 14 decisions (D1–D14), 15 slices (S1–S15)
+> up the R-ladder (R1 vite-8 lockstep → R2 bun:test→vitest → R3 runtime exit per the pilot ladder →
+> R4 pnpm → R5 oxlint+oxfmt → R6 vp+tsdown; R7 = TS 7 at GA rides independently), a **verified-footprint
+> table** that corrects the scope doc (7 Start apps not 8; **50** bun:test files not 48; **5 of 7**
+> frontends run globalSetup content builds; only 6 real `Bun.serve` call sites; all 11 compose
+> healthchecks are `bun -e`), and an **adversarial completeness pass** whose 4 verified blockers are
+> folded in: the S9→S11 VR-CI-container sequencing, the bare-`bun` `snapshot.py:76` subprocess (Python
+> lane! the naive grep misses it), srvx's real API deltas on the 4 hand-rolled servers, and the CI
+> path-filter globs (`bun.lock`/`biome.json`) that would silently stop triggering jobs after R4/R5.
 >
-> **RESOLVED stakeholder decisions:** (1) **FULL cutover** — explicitly OK to migrate off the bun
-> runtime; (2) package manager → **pnpm** (bun exits entirely); (3) lint/format → **full switch to
-> oxlint + oxfmt** (biome retires).
+> **Late stakeholder decisions (this session):** oxfmt **`sortImports` keeps the import-sort
+> convention** (the Phase-0 "auto-sorting is lost" claim was WRONG — stakeholder-corrected, spec D4);
+> **tsdown included** (orator-controller rollup exits, S14); **gates unified strict** (CI gets
+> `--deny-warnings` too — today's CI/hook asymmetry was accidental, D6); **vp-in-CI is a HARD
+> requirement** for R6 — no silent pnpm-CI fallback (D7).
 >
-> **Phase-0 headlines:** Vite 8 canary **PASSED on strider** (upstream TanStack/router#7614 did NOT
-> reproduce; needs `@vitejs/plugin-react` ^5.2 + a **lockstep** bump of every vite member in one slice —
-> a partial bump silently duplicates vite, the #7614 trigger; `--configLoader runner` survives; **vitest
-> 3 green is a FALSE vite-8 signal** — need vitest ^4.1). Runtime exit is **~2–3 days shallow** (Node 24
-> runs `.ts` natively; `Bun.serve`→srvx; **THE risk = Range/206 static audio serving in site-kit's
-> `ssrServer.ts`** — prove on the real mouthpiece/akasha mounts; Bun SQL→postgres.js ~1:1; 48-file
-> bun:test→vitest codemod). oxc audit: type-aware lint works + found real bugs but **tsgolint rejects
-> `baseUrl`** (fix 7 frontend tsconfigs in R1); **⚠️ oxfmt bare-root runs would rewrite markdown +
-> pyproject.toml + the SOPS `secrets.enc.yaml` — always glob-scope**; import auto-sort is lost.
+> **▶ RESUME AT: `octo:embrace` against the 0022 spec, slice S1 (the vite-8 lockstep).** Sequencing is
+> load-bearing (spec Hand-off): S6's Range/206 proof gates the SSR fan-out; S11 (pnpm) only after the
+> runtime exit completes; S13's reformat + gate-swap is one slice, never split. NB: the CI-reproduction
+> commands in this file's "How to work" section change under R4/R5/R6 — the slice that changes a command
+> updates the docs in the same commit.
 >
-> **▶ RESUME AT: `octo:spec` → `thoughts/astra/specs/0022-viteplus-cutover-spec.md` covering R1–R6**
-> (R1 vite-8 lockstep + baseUrl fix → R2 bun:test→vitest codemod → R3 runtime exit per the pilot ladder
-> → R4 pnpm → R5 oxlint+oxfmt → R6 vp adoption; R7 = TS 7 at GA, independent — still RC as of
-> 2026-07-02). NB: the CI-reproduction commands in this file's "How to work" section change under
-> R4/R5 — update them when those slices land.
+> _(Also this session: removed the stray untracked `apps/heartwood-backend/proposals/2025-8-28/review.kdl`;
+> heartwood Phase-4 content acceptance is ON HOLD by stakeholder decision.)_
 >
 > _(Prior main-track item unchanged: heartwood Phase-4 content acceptance — below.)_
 

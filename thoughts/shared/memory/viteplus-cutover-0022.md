@@ -1,6 +1,6 @@
 ---
 name: viteplus-cutover-0022
-description: "PROJECT 2026-07-02: full cutover of the TS lane to Vite+ / VoidZero — SCOPED + Phase 0 spikes DONE + decisions RESOLVED (full cutover incl. bun-runtime exit to Node 24, pnpm, biome→oxlint+oxfmt); ▶ NEXT: spec R1–R6"
+description: "PROJECT 2026-07-02: full cutover of the TS lane to Vite+ / VoidZero — SCOPED + Phase 0 DONE + SPEC'D (0022-viteplus-cutover-spec.md, S1–S15, adversarially verified); ▶ NEXT: implement via octo:embrace from S1"
 metadata:
   type: project
 ---
@@ -8,10 +8,16 @@ metadata:
 **Vite+ cutover (0022)** — stakeholders want the whole TS lane on Vite+ (VoidZero `vp`, beta v0.2.2,
 **fully MIT/free** since the March-2026 reversal; Cloudflare acquired VoidZero 2026-06-04).
 Scoping doc + Phase-0 addendum + revised R1–R7 roadmap:
-`thoughts/shared/research/2026-07-02-viteplus-migration-0022-thoughts.md`. **▶ RESUME: author
-`octo:spec` → `thoughts/astra/specs/0022-viteplus-cutover-spec.md` covering R1–R6, then implement
-up the R-ladder** (R1 vite-8 lockstep → R2 bun:test→vitest codemod → R3 runtime exit to Node 24
-per-service → R4 pnpm → R5 oxlint+oxfmt → R6 vp; R7 = TS7 at GA, independent).
+`thoughts/shared/research/2026-07-02-viteplus-migration-0022-thoughts.md`. **SPEC'D 2026-07-02:
+`thoughts/astra/specs/0022-viteplus-cutover-spec.md` — 14 decisions (D1–D14), 15 slices S1–S15 up
+the R-ladder (R1 vite-8 lockstep → R2 bun:test→vitest → R3 runtime exit → R4 pnpm → R5
+oxlint+oxfmt → R6 vp+tsdown; R7 = TS7 at GA, independent), verified-footprint table (corrects the
+scope doc: 7 Start apps not 8, 50 bun:test files not 48, 5-of-7 globalSetup) + an adversarial pass
+(4 blockers folded in: the S9/S11 VR-CI sequencing, the `snapshot.py:76` bare-`bun` subprocess, the
+srvx API deltas on the 4 hand-rolled servers, the stale CI path-filter globs). Late stakeholder
+decisions: oxfmt `sortImports` KEEPS import sorting (the audit's 'lost' claim was WRONG — stakeholder
+caught it); tsdown included (S14); gates unified strict (`--deny-warnings` in CI too); **vp-in-CI is
+a HARD requirement for R6**. ▶ RESUME: implement via `octo:embrace` from S1.**
 
 **RESOLVED stakeholder decisions (2026-07-02):** (1) FULL cutover — explicitly OK to migrate off
 the bun runtime; (2) package manager → **pnpm** (bun exits entirely); (3) lint/format → **full
@@ -44,8 +50,9 @@ switch to oxlint+oxfmt**, biome retires.
   + package.json key-reorder + the SOPS `secrets.enc.yaml`** — ALWAYS glob-scope to JS/TS/JSON/CSS
   (config has ignorePatterns only, no language allowlist). Disable `react/react-in-jsx-scope`
   (1,355 FPs on automatic JSX); oxlint's `style` category ≈ ESLint-strict, NOT biome style (17k
-  diagnostics); tuned config leaves 252 residual disagreements to triage; import auto-sort is
-  LOST (oxlint detects, cannot fix). 11/13 biome overrides map 1:1 (table in the doc);
+  diagnostics); tuned config leaves 252 residual disagreements to triage; ~~import auto-sort is
+  LOST~~ **CORRECTED at spec time: oxfmt has a stable fix-capable `sortImports` (perfectionist-based,
+  opt-in) — the convention survives (spec D4)**. 11/13 biome overrides map 1:1 (table in the doc);
   `bunx biome` outside the repo hits a namesquatted `biome` package.
 - `vp` facts: `vp migrate` requires already-Vite-8 + Vitest 4.1; `vp env` is Node-only (never bun);
   `vp check`'s tsgolint is lint-grade — **`tsc --noEmit` stays the typecheck gate**; TS 7 still RC
