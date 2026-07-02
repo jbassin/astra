@@ -20,5 +20,8 @@
     "@commitlint/config-conventional": "^19",
     "@types/bun": "^1.3.14",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@types/node": "^24.13.2"
   }
 }

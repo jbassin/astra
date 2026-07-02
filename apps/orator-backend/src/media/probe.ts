@@ -1,8 +1,13 @@
 /**
  * Audio probing via ffprobe/ffmpeg (plan B19/B25). Shells out to host binaries,
  * so it is **injected** into routes (the default real prober vs a test stub) and
- * never imported by unit tests — keeping the CI bun lane binary-free (§11.2).
+ * never imported by unit tests — keeping the CI lane binary-free (§11.2).
+ *
+ * Bun.spawn → node:child_process (R3, 0022 S8 — off Bun; Node's child
+ * stdout/stderr are async-iterable too, so the streaming/tail logic is unchanged).
  */
+import { type ChildProcess, spawn } from "node:child_process";
+
 export interface AudioProbe {
   durationMs?: number;
   format?: string;
@@ -12,12 +17,34 @@ export interface AudioProbe {
 
 export type AudioProber = (path: string) => Promise<AudioProbe>;
 
+/** Resolves with the child's exit code once it closes (Bun's `proc.exited` analog). */
+function exited(proc: ChildProcess): Promise<number> {
+  return new Promise((resolve, reject) => {
+    proc.once("error", reject);
+    proc.once("close", (code) => resolve(code ?? 1));
+  });
+}
+
+/** Buffers an async-iterable stdout/stderr stream to a string (Bun's `new Response(stream).text()` analog). */
+async function readAll(stream: NodeJS.ReadableStream): Promise<string> {
+  const decoder = new TextDecoder();
+  let out = "";
+  for await (const chunk of stream as unknown as AsyncIterable<Uint8Array>) {
+    out += decoder.decode(chunk, { stream: true });
+  }
+  return out + decoder.decode();
+}
+
 async function run(cmd: string[]): Promise<{ code: number; stdout: string; stderr: string }> {
-  const proc = Bun.spawn(cmd, { stdout: "pipe", stderr: "pipe" });
+  const [bin, ...args] = cmd;
+  if (!bin) throw new Error("run: empty command");
+  // `as const` narrows to the exact spawn() overload with non-null stdout/stderr
+  // (ChildProcessByStdio), so no non-null assertion is needed below.
+  const proc = spawn(bin, args, { stdio: ["ignore", "pipe", "pipe"] as const });
   const [stdout, stderr, code] = await Promise.all([
-    new Response(proc.stdout).text(),
-    new Response(proc.stderr).text(),
-    proc.exited,
+    readAll(proc.stdout),
+    readAll(proc.stderr),
+    exited(proc),
   ]);
   return { code, stdout, stderr };
 }
@@ -62,16 +89,15 @@ export async function probeDurationFormat(
  * final "Integrated loudness  I: -14.2 LUFS" summary lives at the very end.
  */
 export async function measureLoudness(path: string): Promise<number | undefined> {
-  const proc = Bun.spawn(["ffmpeg", "-nostats", "-i", path, "-af", "ebur128", "-f", "null", "-"], {
-    stdout: "ignore",
-    stderr: "pipe",
+  const proc = spawn("ffmpeg", ["-nostats", "-i", path, "-af", "ebur128", "-f", "null", "-"], {
+    stdio: ["ignore", "ignore", "pipe"],
   });
   const decoder = new TextDecoder();
   let tail = "";
   for await (const chunk of proc.stderr as unknown as AsyncIterable<Uint8Array>) {
     tail = (tail + decoder.decode(chunk)).slice(-8192); // last 8 KB is plenty for the summary
   }
-  if ((await proc.exited) !== 0) return undefined;
+  if ((await exited(proc)) !== 0) return undefined;
   // Take the LAST "I: … LUFS" — the end-of-run integrated value, not a mid-stream sample.
   const matches = [...tail.matchAll(/I:\s*(-?\d+(?:\.\d+)?)\s*LUFS/g)];
   const last = matches.at(-1);

@@ -1,7 +1,8 @@
 /**
  * The orator HTTP app (lark §7). `createApp()` returns a pure `handle(req)` that
  * can be unit-tested without binding a port, opening a Discord connection, or
- * hitting the network. `startServer()` binds it on `Bun.serve`.
+ * hitting the network. `startServer()` binds it on srvx (R3, 0022 S8 — off
+ * `Bun.serve`).
  *
  * Layering: auth routes (login/callback/logout) + an open health check are
  * special-cased; everything under `/api/` is dispatched through the router, which
@@ -11,14 +12,17 @@
  *
  * astra port: the sync `bun:sqlite` `db` → the async `LibraryStore`; cookie
  * `lark_session`→`orator_session`; logs `[lark]`→`[orator]`. The HMAC OAuth
- * `state` (stateless CSRF), the "Add to Server" callback branch, and
- * `idleTimeout:60` are preserved verbatim.
+ * `state` (stateless CSRF) and the "Add to Server" callback branch are preserved
+ * verbatim; `idleTimeout:60` has no srvx equivalent — see `startServer()`'s note.
  */
 import { randomBytes } from "node:crypto";
+import { stat } from "node:fs/promises";
+import type * as NodeHttp from "node:http";
 import { resolve } from "node:path";
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
+import { serveFile } from "@astra/site-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
-import type { Server } from "bun";
+import { type Server, serve } from "srvx";
 import type { LibraryStore } from "../db/store";
 import { extractApiKey, hashKey } from "./apikeys";
 import { buildAuthorizeUrl, exchangeCodeForUser, type OAuthConfig } from "./oauth";
@@ -44,6 +48,14 @@ const apiCounter = lazyCounter("astra.orator-backend", "astra.orator.api.request
 });
 
 const SESSION_COOKIE = "orator_session";
+
+async function isFile(p: string): Promise<boolean> {
+  try {
+    return (await stat(p)).isFile();
+  } catch {
+    return false;
+  }
+}
 
 /** API routes that require a valid session or API key. Extended per slice. */
 const API_ROUTES: ApiRoute[] = [...libraryRoutes, ...playbackRoutes, ...ingestRoutes, ...keyRoutes];
@@ -229,6 +241,8 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     );
   }
 
+  // Bun.file(...) → @astra/site-kit's `serveFile` (the `send`-backed Range/206
+  // bridge S4 built; R3, 0022 S8) — same fallback-to-index.html shape as before.
   async function serveStatic(req: Request): Promise<Response> {
     const pathname = decodeURIComponent(new URL(req.url).pathname);
     const target = resolve(config.distDir, `.${pathname}`);
@@ -237,12 +251,10 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
     }
     const candidate =
       pathname === "/" || pathname.endsWith("/") ? resolve(target, "index.html") : target;
-    let file = Bun.file(candidate);
-    if (!(await file.exists())) {
-      file = Bun.file(resolve(config.distDir, "index.html"));
-      if (!(await file.exists())) return new Response("not found\n", { status: 404 });
-    }
-    return new Response(file);
+    if (await isFile(candidate)) return serveFile(req, candidate);
+    const indexPath = resolve(config.distDir, "index.html");
+    if (await isFile(indexPath)) return serveFile(req, indexPath);
+    return new Response("not found\n", { status: 404 });
   }
 
   async function handle(req: Request): Promise<Response> {
@@ -267,7 +279,7 @@ export function createApp(config: AppConfig, store: LibraryStore, deps: AppDeps 
 }
 
 export interface RunningServer {
-  server: Server<undefined>;
+  server: Server;
   app: App;
   stop(): void;
 }
@@ -278,8 +290,26 @@ export function startServer(
   deps: AppDeps = {},
 ): RunningServer {
   const app = createApp(config, store, deps);
-  // Voice join can take a few seconds; the default 10s idle timeout would cut a
-  // /playback/play request off mid-join. Give it room.
-  const server = Bun.serve({ port: config.port, fetch: app.handle, idleTimeout: 60 });
-  return { server, app, stop: () => server.stop(true) };
+  // Bun.serve → srvx (R3, 0022 S8 — B3). Voice join can take a few seconds; Bun's
+  // `idleTimeout: 60` (seconds) would cut a /playback/play request off mid-join at
+  // the default 10s — srvx has NO idleTimeout option, so this is not dropped
+  // silently: once the server is listening, reach the underlying Node
+  // `http.Server` via the `.node.server` escape hatch and set the closest Node
+  // analogs — `keepAliveTimeout` (idle time on an already-served keep-alive
+  // connection) and `headersTimeout` (which Node requires to exceed it).
+  const server = serve({ port: config.port, hostname: "0.0.0.0", fetch: app.handle });
+  void server.ready().then((s) => {
+    const nodeServer = s.node?.server as NodeHttp.Server | undefined;
+    if (nodeServer) {
+      nodeServer.keepAliveTimeout = 60_000; // the idleTimeout: 60 mapping
+      nodeServer.headersTimeout = 61_000; // must exceed keepAliveTimeout (Node requirement)
+    }
+  });
+  return {
+    server,
+    app,
+    stop: () => {
+      void server.close(true);
+    },
+  };
 }

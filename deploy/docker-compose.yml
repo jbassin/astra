@@ -186,7 +186,9 @@ services:
       dockerfile: apps/weal-overlay/Dockerfile
     image: astra-weal-overlay:local
     container_name: astra-weal-overlay
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S8 — the runtime-exit recipe; D13). node:24-slim
+    # has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # Shared weal↔overlay token (Decision E env injection via `just up`).
     environment:
@@ -195,7 +197,7 @@ services:
       - "10361:10360" # weal-overlay (astra range); strider holds 10360
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10360/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5
@@ -368,11 +370,12 @@ services:
       retries: 5
     restart: unless-stopped
 
-  # orator-backend: the Discord music service — Bun.serve REST + voice + ingest +
-  # the served operator SPA. Behind Caddy at orator.iridi.cc. ALL runtime config is
-  # read from config.kdl via @astra/config (no config env — config-single-source);
-  # the only mount is the audio/data volume (kdl `orator.data-dir = /data`). The bot
-  # is optional: without resolved SOPS secrets it runs web+library, playback → 503.
+  # orator-backend: the Discord music service — srvx REST + voice + ingest + the
+  # served operator SPA (Node 24 runtime, R3, 0022 S8 — off Bun.serve/Bun.SQL/
+  # Bun.spawn). Behind Caddy at orator.iridi.cc. ALL runtime config is read from
+  # config.kdl via @astra/config (no config env — config-single-source); the only
+  # mount is the audio/data volume (kdl `orator.data-dir = /data`). The bot is
+  # optional: without resolved SOPS secrets it runs web+library, playback → 503.
   orator-backend:
     build:
       context: ..
@@ -401,7 +404,7 @@ services:
       - "10363:10363" # orator-backend (astra range) — also reachable directly
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10363/api/v1/health').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10363/api/v1/health').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5

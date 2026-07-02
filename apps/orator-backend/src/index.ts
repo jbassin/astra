@@ -48,7 +48,9 @@ async function main(): Promise<void> {
   // — no env overrides. The data dir is the Compose audio-volume mount; the dist dir
   // is a fixed structural path (the SPA Vite-built next to the app), not config.
   const dataDir = resolve(cfg.orator.dataDir);
-  const distDir = resolve(import.meta.dir, "../dist");
+  // `import.meta.dir` is a Bun-only extension — `import.meta.dirname` is the
+  // standard (Node 20.11+/24, and Bun too) equivalent (R3, 0022 S8).
+  const distDir = resolve(import.meta.dirname, "../dist");
   mkdirSync(dataDir, { recursive: true });
 
   const store = new PostgresStore(cfg.orator.databaseUrl);
@@ -120,9 +122,10 @@ async function main(): Promise<void> {
   const { server } = startServer(config, store, {
     services: { playback, ingest, hub, prober: ffmpegProber },
   });
-  log.emit({
-    severityText: "INFO",
-    body: `orator-backend listening on http://localhost:${server.port}`,
+  // srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
+  // listening completes (async on the Node runtime), so log from `.ready()`.
+  void server.ready().then((s) => {
+    log.emit({ severityText: "INFO", body: `orator-backend listening on ${s.url}` });
   });
   log.emit({
     severityText: "INFO",

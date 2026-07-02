@@ -105,11 +105,16 @@ export function json(body: unknown, status = 200, headers: Record<string, string
 }
 
 export class HttpError extends Error {
-  constructor(
-    public readonly status: number,
-    message: string,
-  ) {
+  readonly status: number;
+
+  // Not a TS parameter property (`constructor(public readonly x, …)`) — Node's
+  // `--experimental-strip-types` (R3, 0022 S8) only erases types, it doesn't emit
+  // code, so a parameter property (which needs a real `this.x = x` assignment
+  // generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` when Node runs this file
+  // directly (see [[weal-bot gateway.ts]], S5).
+  constructor(status: number, message: string) {
     super(message);
+    this.status = status;
   }
 }
 

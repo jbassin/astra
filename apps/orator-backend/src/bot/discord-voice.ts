@@ -34,11 +34,17 @@ export class DiscordVoiceAdapter implements VoiceAdapter {
   private endCb: ((reason: TrackEndReason) => void) | null = null;
   private suppressEnd = false;
   private readonly player = createAudioPlayer();
+  // Not TS parameter properties (`constructor(private readonly x, …)`) — Node's
+  // `--experimental-strip-types` (R3, 0022 S8) only erases types, it doesn't emit
+  // code, so a parameter property (which needs a real `this.x = x` assignment
+  // generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` when Node runs this file
+  // directly (see [[weal-bot gateway.ts]], S5).
+  private readonly client: Client;
+  private readonly guildId: string;
 
-  constructor(
-    private readonly client: Client,
-    private readonly guildId: string,
-  ) {
+  constructor(client: Client, guildId: string) {
+    this.client = client;
+    this.guildId = guildId;
     this.player.on(AudioPlayerStatus.Idle, () => this.fireEnd("finished"));
     // Diagnostic: surface player buffering/underruns the same way the voice
     // connection already logs its state. A `playing → buffering → playing`

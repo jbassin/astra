@@ -6,10 +6,10 @@
   "description": "Live dice-roll OBS overlay — ingests weal-bot's v1 roll broadcast, fans it out over SSE, renders an animated ticker OBS captures as a Browser Source.",
   "scripts": {
     "dev": "vite",
-    "dev:server": "bun run --hot server.ts",
+    "dev:server": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs --watch server.ts",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "bun run server.ts",
+    "start": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run"
   },
@@ -17,10 +17,12 @@
     "@astra/config": "workspace:*",
     "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
+    "@astra/site-kit": "workspace:*",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "pixi.js": "^8.18.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "srvx": "0.11.20"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",

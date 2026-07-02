@@ -5,16 +5,17 @@
  * Two layers:
  *  - `LibraryStore` — the async surface the routes / playback / ingest code against;
  *    injectable so their logic unit-tests with a fake (weal-bot's precedent).
- *  - `PostgresStore` — the Bun-`SQL` wire implementation. Per weal-bot, the live-PG
- *    wire layer is exercised at slice-6 integration (the data migration) + deploy,
- *    not against a live Postgres in CI (CI has no PG).
+ *  - `PostgresStore` — the postgres.js (porsager) wire implementation (R3, 0022 S8
+ *    — off Bun's built-in `SQL`, which required a live Bun runtime; D11). Per
+ *    weal-bot, the live-PG wire layer is exercised at slice-6 integration (the
+ *    data migration) + deploy, not against a live Postgres in CI (CI has no PG).
  *
  * Port notes: every `bun:sqlite` call became `async`; `lastInsertRowid` → `RETURNING`;
  * `changes > 0` → `RETURNING id` then `rows.length > 0`; `INSERT OR IGNORE` →
  * `ON CONFLICT DO NOTHING`; `COLLATE NOCASE` → `lower(...)`; `db.transaction(fn)()` →
  * `sql.begin(async tx => …)`; timestamps cast `::text` so row shapes stay strings.
  */
-import type { SQL } from "bun";
+import postgres from "postgres";
 import { normalizeTag, slugify, uniqueSlug } from "../lib/text";
 import { SCHEMA } from "./schema";
 
@@ -258,17 +259,33 @@ const JI = "id, job_id, video_id, title, position, status, progress_pct, error, 
 const KEY =
   "id, user_id, name, key_hash, key_prefix, created_at::text, last_used_at::text, revoked_at::text";
 
-/** Bun-`SQL`-backed Postgres implementation of {@link LibraryStore}. */
+/**
+ * Pure query-builder for {@link PostgresStore.listJobsByStatus} — extracted so its
+ * SQL shape is unit-testable without a live PG connection (store.test.ts).
+ *
+ * D11 (0022 S8): postgres.js serializes an array param as a real Postgres array,
+ * so the natural `status = any($1)` form works directly — restoring it and
+ * DELETING the `in ($1, $2, …)` scalar-expansion this used to need. That
+ * expansion was a Bun `SQL.unsafe`-only workaround (2c2fd10): Bun's `SQL.unsafe`
+ * stringified a JS array param into a bad comma-joined literal ("queued,running"),
+ * which Postgres rejected as a malformed array — postgres.js doesn't have that bug.
+ */
+export function listJobsByStatusQuery(statuses: DownloadJob["status"][]): {
+  query: string;
+  params: [DownloadJob["status"][]];
+} {
+  return {
+    query: `select ${JOB} from download_jobs where status = any($1) order by id`,
+    params: [statuses],
+  };
+}
+
+/** postgres.js-backed Postgres implementation of {@link LibraryStore} (R3, 0022 S8 — off Bun.SQL onto the Node-runtime-portable postgres.js; tagged-template/`.unsafe` call sites are unchanged). */
 export class PostgresStore implements LibraryStore {
-  readonly #sql: SQL;
+  readonly #sql: postgres.Sql;
 
   constructor(databaseUrl: string) {
-    // Type-only import above (a static value import from "bun" fails vitest's
-    // module resolution at import time, even under `bun run vitest`); the
-    // runtime constructor is only ever touched here, behind the global — so
-    // tests that never construct PostgresStore never hit it. Superseded by
-    // postgres.js at R3 (S8).
-    this.#sql = new Bun.SQL(databaseUrl);
+    this.#sql = postgres(databaseUrl);
   }
 
   async ensureSchema(): Promise<void> {
@@ -280,7 +297,10 @@ export class PostgresStore implements LibraryStore {
   }
 
   #all<R>(query: string, params: unknown[] = []): Promise<R[]> {
-    return this.#sql.unsafe(query, params) as Promise<R[]>;
+    // postgres.js's `.unsafe` types params as `ParameterOrJSON<never>[]` (no plain
+    // `unknown`); this store passes genuinely heterogeneous SQL params (numbers,
+    // strings, nulls, and now — D11, R3 0022 S8 — arrays for `= any($1)`).
+    return this.#sql.unsafe(query, params as never[]) as Promise<R[]>;
   }
 
   async #one<R>(query: string, params: unknown[] = []): Promise<R | null> {
@@ -410,7 +430,7 @@ export class PostgresStore implements LibraryStore {
 
   async bulkUpdateTitles(updates: { id: number; title: string }[]): Promise<number> {
     let n = 0;
-    await this.#sql.begin(async (tx: SQL) => {
+    await this.#sql.begin(async (tx) => {
       for (const u of updates) {
         const rows = (await tx.unsafe(
           "update tracks set title = $1, updated_at = now() where id = $2 returning id",
@@ -481,7 +501,7 @@ export class PostgresStore implements LibraryStore {
 
   async addTagsToTracks(trackIds: number[], tagIds: number[]): Promise<number> {
     let n = 0;
-    await this.#sql.begin(async (tx: SQL) => {
+    await this.#sql.begin(async (tx) => {
       for (const trackId of trackIds)
         for (const tagId of tagIds) {
           const rows = (await tx.unsafe(
@@ -496,7 +516,7 @@ export class PostgresStore implements LibraryStore {
 
   async removeTagsFromTracks(trackIds: number[], tagIds: number[]): Promise<number> {
     let n = 0;
-    await this.#sql.begin(async (tx: SQL) => {
+    await this.#sql.begin(async (tx) => {
       for (const trackId of trackIds)
         for (const tagId of tagIds) {
           const rows = (await tx.unsafe(
@@ -585,12 +605,12 @@ export class PostgresStore implements LibraryStore {
   }
 
   async setPlaylistItems(playlistId: number, trackIds: number[]): Promise<void> {
-    await this.#sql.begin(async (tx: SQL) => {
+    await this.#sql.begin(async (tx) => {
       await tx.unsafe("delete from playlist_items where playlist_id = $1", [playlistId]);
-      for (let i = 0; i < trackIds.length; i++) {
+      for (const [i, trackId] of trackIds.entries()) {
         await tx.unsafe(
           "insert into playlist_items (playlist_id, track_id, position) values ($1, $2, $3)",
-          [playlistId, trackIds[i], i],
+          [playlistId, trackId, i],
         );
       }
       await tx.unsafe("update playlists set updated_at = now() where id = $1", [playlistId]);
@@ -627,14 +647,8 @@ export class PostgresStore implements LibraryStore {
 
   listJobsByStatus(statuses: DownloadJob["status"][]): Promise<DownloadJob[]> {
     if (statuses.length === 0) return Promise.resolve([]);
-    // Expand to `in ($1, $2, …)` with one scalar param per status. Bun `SQL.unsafe`
-    // serializes a JS array param as a comma-joined string, so `= any($1)` fails with
-    // "malformed array literal" — pass scalars instead (mirrors the migrator's insert).
-    const placeholders = statuses.map((_, i) => `$${i + 1}`).join(", ");
-    return this.#all<DownloadJob>(
-      `select ${JOB} from download_jobs where status in (${placeholders}) order by id`,
-      statuses,
-    );
+    const { query, params } = listJobsByStatusQuery(statuses);
+    return this.#all<DownloadJob>(query, params);
   }
 
   async updateDownloadJob(

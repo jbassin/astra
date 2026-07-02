@@ -46,7 +46,16 @@ export interface StartResult {
 }
 
 export class IngestService {
-  constructor(private readonly deps: IngestDeps) {}
+  // Not a TS parameter property (`constructor(private readonly x, …)`) — Node's
+  // `--experimental-strip-types` (R3, 0022 S8) only erases types, it doesn't emit
+  // code, so a parameter property (which needs a real `this.x = x` assignment
+  // generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX` when Node runs this file
+  // directly (see [[weal-bot gateway.ts]], S5).
+  private readonly deps: IngestDeps;
+
+  constructor(deps: IngestDeps) {
+    this.deps = deps;
+  }
 
   /**
    * Detect URL type and kick off ingest. If `collectionId` is given, tracks land

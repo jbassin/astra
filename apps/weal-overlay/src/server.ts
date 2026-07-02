@@ -1,6 +1,8 @@
+import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
-import type { Server } from "bun";
+import { serveFile } from "@astra/site-kit";
+import { type Server, serve } from "srvx";
 import { RollHub } from "./hub";
 import { parseRollEvent } from "./schema";
 
@@ -30,9 +32,17 @@ export interface AppOptions {
 }
 
 export interface RunningServer {
-  server: Server<undefined>;
+  server: Server;
   hub: RollHub;
   stop(): void;
+}
+
+async function isFile(p: string): Promise<boolean> {
+  try {
+    return (await stat(p)).isFile();
+  } catch {
+    return false;
+  }
 }
 
 /** Build the request handler + its hub without binding a port (unit-testable). */
@@ -96,9 +106,12 @@ export function createApp(opts: AppOptions): {
 
   /** Serve index.html with the RUM endpoint injected (the SPA's config seam). */
   async function serveIndex(): Promise<Response> {
-    const file = Bun.file(resolve(distDir, "index.html"));
-    if (!(await file.exists())) return new Response("not found\n", { status: 404 });
-    let html = await file.text();
+    let html: string;
+    try {
+      html = await readFile(resolve(distDir, "index.html"), "utf8");
+    } catch {
+      return new Response("not found\n", { status: 404 });
+    }
     if (rumEndpoint !== "") {
       const inject = `<script>window.__RUM_ENDPOINT__=${JSON.stringify(rumEndpoint)}</script>`;
       html = html.replace("</head>", `${inject}</head>`);
@@ -108,6 +121,9 @@ export function createApp(opts: AppOptions): {
     });
   }
 
+  // Bun.file(...) → @astra/site-kit's `serveFile` (the `send`-backed Range/206
+  // bridge S4 built; R3, 0022 S8). index.html is served separately above (it needs
+  // the RUM-endpoint injection), so this only ever hits built hashed assets.
   async function serveStatic(req: Request): Promise<Response> {
     const pathname = decodeURIComponent(new URL(req.url).pathname);
     if (pathname === "/" || pathname.endsWith("/")) return serveIndex();
@@ -117,9 +133,8 @@ export function createApp(opts: AppOptions): {
     if (target !== distDir && !target.startsWith(`${distDir}/`)) {
       return new Response("forbidden\n", { status: 403 });
     }
-    const file = Bun.file(target);
-    if (!(await file.exists())) return serveIndex(); // SPA fallback
-    return new Response(file);
+    if (!(await isFile(target))) return serveIndex(); // SPA fallback
+    return serveFile(req, target);
   }
 
   async function handle(req: Request): Promise<Response> {
@@ -136,7 +151,9 @@ export function createApp(opts: AppOptions): {
 /** Bind the app to a port and start the heartbeat. Returns a stop() for teardown. */
 export function startServer(opts: AppOptions & { port: number }): RunningServer {
   const { hub, handle } = createApp(opts);
-  const server = Bun.serve({ port: opts.port, fetch: handle });
+  // Bun.serve → srvx (R3, 0022 S8 — B3): `server.port` doesn't exist on srvx's
+  // Server, callers read `server.url` instead; `.stop(true)` → `.close(true)`.
+  const server = serve({ port: opts.port, hostname: "0.0.0.0", fetch: handle });
   const heartbeat = setInterval(() => hub.heartbeat(), 15_000);
   // Don't keep the event loop alive on the heartbeat alone (matters in tests).
   (heartbeat as { unref?: () => void }).unref?.();
@@ -145,7 +162,7 @@ export function startServer(opts: AppOptions & { port: number }): RunningServer 
     hub,
     stop() {
       clearInterval(heartbeat);
-      server.stop(true);
+      void server.close(true);
     },
   };
 }

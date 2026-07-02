@@ -18,7 +18,9 @@ const token = (() => {
   }
 })();
 const rumEndpoint = cfg.telemetry.rumEndpoint;
-const distDir = resolve(import.meta.dir, "dist");
+// `import.meta.dir` is a Bun-only extension — `import.meta.dirname` is the
+// standard (Node 20.11+/24, and Bun too) equivalent (R3, 0022 S8).
+const distDir = resolve(import.meta.dirname, "dist");
 
 if (!token) {
   console.warn(
@@ -28,14 +30,18 @@ if (!token) {
 }
 
 const { server } = startServer({ port, token, distDir, rumEndpoint });
-console.log(`weal-overlay listening on http://localhost:${server.port}`);
+// srvx's Server has no `.port` (R3, 0022 S8 — B3); `.url` is only populated once
+// listening completes (async on the Node runtime), so log from `.ready()`.
+void server.ready().then((s) => {
+  console.log(`weal-overlay listening on ${s.url}`);
+});
 
 // Flush buffered spans/metrics/logs before the container stops (compose SIGTERM).
 // Installing our own handler overrides Bun's default terminate, so we exit once flushed.
 for (const sig of ["SIGINT", "SIGTERM"] as const) {
   process.once(sig, () => {
     void telemetry.shutdown().finally(() => {
-      server.stop(true);
+      void server.close(true);
       process.exit(0);
     });
   });

@@ -1,8 +1,9 @@
 # Astra weal-overlay — the dice-roll OBS overlay (0009 K7). `vite build` → dist/,
-# then `bun run start` serves dist/ + the v1 ingest + the SSE feed.
+# then the Node server (R3, 0022 S8 — off Bun; srvx + @astra/site-kit's `serveFile`)
+# serves dist/ + the v1 ingest + the SSE feed.
 #
 # Build context is the REPO ROOT (workspace member depending on @astra/{gothic,
-# observe,config}). Build from deploy/ via compose.
+# observe,config,site-kit}). Build from deploy/ via compose.
 FROM oven/bun:1.3.14 AS build
 WORKDIR /repo
 
@@ -31,10 +32,14 @@ COPY apps/weal-overlay ./apps/weal-overlay
 WORKDIR /repo/apps/weal-overlay
 RUN bun run build
 
-# --- Runtime: slim image carrying the built overlay + the Bun server ---
-FROM oven/bun:1.3.14-slim AS runtime
+# --- Runtime: Node 24 (R3, 0022 S8) carrying the built overlay + the Node server ---
+# node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's
+# `user: "1000:1000"` (deploy-artifacts-run-as-user) carries over unchanged.
+FROM node:24-slim AS runtime
 WORKDIR /repo/apps/weal-overlay
 ENV NODE_ENV=production
+# node_modules + libs/ts together preserve the @astra/* workspace symlinks that
+# src/server.ts resolves at runtime (incl. @astra/site-kit's `serveFile`).
 COPY --from=build /repo/node_modules /repo/node_modules
 COPY --from=build /repo/libs/ts /repo/libs/ts
 COPY --from=build /repo/apps/weal-overlay/node_modules ./node_modules
@@ -46,4 +51,4 @@ COPY --from=build /repo/apps/weal-overlay/package.json ./package.json
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
 EXPOSE 10360
-CMD ["bun", "run", "start"]
+CMD ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]

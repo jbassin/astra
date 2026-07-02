@@ -1,11 +1,13 @@
-# Astra orator-backend — the Discord music service (0010): Bun.serve REST + voice
-# + ingest + the served operator SPA. Bun runs the TS directly; the operator SPA
-# is Vite-built to dist/ in the build stage and served by serveStatic.
+# Astra orator-backend — the Discord music service (0010): srvx REST + voice +
+# ingest + the served operator SPA (Node 24 runtime, R3, 0022 S8 — off Bun.serve/
+# Bun.SQL/Bun.spawn; `node --import .../nodeTsResolve.mjs` runs the TS entry
+# directly). The operator SPA is Vite-built to dist/ in the build stage (which
+# stays bun, D12) and served by serveStatic.
 #
 # Build context is the REPO ROOT (orator-backend is a bun workspace member
-# depending on @astra/{config,observe,ontology,gothic} via workspace:*), so the
-# whole bun workspace must be present for `bun install` to resolve links. Build
-# from deploy/ via compose.
+# depending on @astra/{config,observe,ontology,gothic,site-kit} via workspace:*),
+# so the whole bun workspace must be present for `bun install` to resolve links.
+# Build from deploy/ via compose.
 #
 # Native DAVE/E2EE (M5 / L3): @snazzah/davey is a napi-rs module that ships PREBUILT
 # platform binaries (bun installs a `*-linux-x64-gnu` optional package) — without it
@@ -46,8 +48,11 @@ COPY apps/orator-backend ./apps/orator-backend
 WORKDIR /repo/apps/orator-backend
 RUN bun run build
 
-# --- Runtime: slim image + ffmpeg/yt-dlp on PATH + the built app + workspace deps ---
-FROM oven/bun:1.3.14-slim AS runtime
+# --- Runtime: Node 24 (R3, 0022 S8) + ffmpeg/yt-dlp on PATH + the built app +
+# workspace deps --- node:24-slim ships a built-in `node` user at uid/gid 1000,
+# so compose's `user: "1000:1000"` (deploy-artifacts-run-as-user) carries over
+# unchanged.
+FROM node:24-slim AS runtime
 WORKDIR /repo/apps/orator-backend
 ENV NODE_ENV=production
 
@@ -74,4 +79,4 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 COPY ontology/ontology-being /repo/ontology/ontology-being
 
 EXPOSE 10363
-CMD ["bun", "run", "src/index.ts"]
+CMD ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "src/index.ts"]

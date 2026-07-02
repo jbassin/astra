@@ -2,7 +2,12 @@
  * yt-dlp wrappers (plan B20/B21). The `YtDlp` interface is injected so the
  * ingest service can be unit-tested with a stub — the real impl shells out to
  * the `yt-dlp` binary and is never imported by tests (CI-safe, §11.2/§11.3).
+ *
+ * Bun.spawn → node:child_process (R3, 0022 S8 — off Bun; Node's child stdout is
+ * async-iterable too, so the streaming/parse logic below is unchanged).
  */
+import { type ChildProcess, spawn } from "node:child_process";
+
 export interface PlaylistEntry {
   videoId: string;
   title: string;
@@ -64,9 +69,31 @@ export function extractVideoId(url: string): string | null {
   }
 }
 
+/** Resolves with the child's exit code once it closes (Bun's `proc.exited` analog). */
+function exited(proc: ChildProcess): Promise<number> {
+  return new Promise((resolve, reject) => {
+    proc.once("error", reject);
+    proc.once("close", (code) => resolve(code ?? 1));
+  });
+}
+
+/** Buffers an async-iterable stdout/stderr stream to a string (Bun's `new Response(stream).text()` analog). */
+async function readAll(stream: NodeJS.ReadableStream): Promise<string> {
+  const decoder = new TextDecoder();
+  let out = "";
+  for await (const chunk of stream as unknown as AsyncIterable<Uint8Array>) {
+    out += decoder.decode(chunk, { stream: true });
+  }
+  return out + decoder.decode();
+}
+
 async function runJson(cmd: string[]): Promise<unknown> {
-  const proc = Bun.spawn(cmd, { stdout: "pipe", stderr: "pipe" });
-  const [out, code] = await Promise.all([new Response(proc.stdout).text(), proc.exited]);
+  const [bin, ...args] = cmd;
+  if (!bin) throw new Error("runJson: empty command");
+  // `as const` narrows to the exact spawn() overload with non-null stdout, so no
+  // non-null assertion is needed below.
+  const proc = spawn(bin, args, { stdio: ["ignore", "pipe", "pipe"] as const });
+  const [out, code] = await Promise.all([readAll(proc.stdout), exited(proc)]);
   if (code !== 0) throw new Error(`yt-dlp failed (exit ${code})`);
   return JSON.parse(out);
 }
@@ -92,9 +119,9 @@ export const realYtDlp: YtDlp = {
   async download(target, destDir, onProgress) {
     const url = target.url ?? `https://www.youtube.com/watch?v=${target.videoId}`;
     const outTmpl = `${destDir}/%(id)s.%(ext)s`;
-    const proc = Bun.spawn(
+    const proc = spawn(
+      "yt-dlp",
       [
-        "yt-dlp",
         "-f",
         "bestaudio/best",
         "--no-playlist",
@@ -106,12 +133,12 @@ export const realYtDlp: YtDlp = {
         outTmpl,
         url,
       ],
-      { stdout: "pipe", stderr: "pipe" },
+      { stdio: ["ignore", "pipe", "pipe"] },
     );
 
     let meta: DownloadResult | null = null;
     const decoder = new TextDecoder();
-    // Bun's stdout ReadableStream is async-iterable at runtime; the DOM lib type omits it.
+    // Node's child stdout is async-iterable too (Buffer chunks — a Uint8Array subtype).
     for await (const chunk of proc.stdout as unknown as AsyncIterable<Uint8Array>) {
       for (const line of decoder.decode(chunk).split("\n")) {
         const prog = line.match(/\[download\]\s+(\d+(?:\.\d+)?)%/);
@@ -131,7 +158,7 @@ export const realYtDlp: YtDlp = {
         }
       }
     }
-    if ((await proc.exited) !== 0 || !meta) throw new Error("yt-dlp download failed");
+    if ((await exited(proc)) !== 0 || !meta) throw new Error("yt-dlp download failed");
     onProgress?.(100);
     return meta;
   },
