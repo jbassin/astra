@@ -1,12 +1,17 @@
 # NLSpec 0022 — Vite+ toolchain cutover (Vite 8 · Node 24 · pnpm · oxlint+oxfmt · vp)
 
-**Status:** IN PROGRESS — S1–S8 built, CI-green, pushed (`09bfc42` S1 · `c04aaca` S2 · `cbdd568` S3 ·
-  `df853b4` S4 · `e9581bd` S5 · `e648ad2` S6 · `c6adf06` S7 · `70c6ee1` S8). R1+R2 done; R3 done through
-  S8 — resume at **S9** (vellum-render), then S10 cleanup, then R4–R6. ⚠ **Deploys parked** (permission-
-  gated `just up`): every slice's live-verification step is batched for one deploy window — the S6 gate
-  was satisfied locally (sha256-exact Range/206 on the real corpus via local node servers); criteria C/D/E
-  (live halves)/J (live half)/M re-verify at that window. Acceptance A ✓ B ✓ (grep-proven); D14's
-  storybook check escalated to a required ^10 bump (transitive vite-6 pin = duplicate-vite).
+**Status:** COMPLETE — all 15 slices built, CI-green (S1 `09bfc42` · S2 `c04aaca` · S3 `cbdd568` ·
+  S4 `df853b4` · S5 `e9581bd` · S6 `e648ad2` · S7 `c6adf06` · S8 `70c6ee1` · S9 `ae8093c` · S10
+  `1093ba0` · S11 `0e708b1` · S12 `3855676` · S13 `4b7bde8` · S14 `c04d8f5` · S15 pending commit).
+  R1–R6 all done. **Deploys unparked mid-session** (stakeholder granted `just up`): full-stack
+  rebuild + the batched live verifications ran at S9 and again at the S11 exit gate — Range/206
+  through the public edge on both audio hosts, the 8-page real-WebGL visual spot-check, `/render`
+  PNG via the edge, overlay SSE, weal-bot Discord reconnect, SigNoz three-signals 0-error — all
+  PASSED (criteria C, D live half, E read-side, J live half, M ✓). Acceptance A ✓ B ✓ (grep-proven);
+  D14's storybook check escalated to a required ^10 bump (transitive vite-6 pin = duplicate-vite);
+  L = vp runs the TS CI jobs (S15 — verified on the S15 GHA run; see [[viteplus-cutover-0022]] for
+  the install story + the gotchas found only by running). Human-only residue: interactive Discord
+  roll round-trip, orator voice-join, in-player seek.
 **Scope doc:** `thoughts/shared/research/2026-07-02-viteplus-migration-0022-thoughts.md` (verified; the
   addendum's R1–R7 roadmap supersedes the doc's original plan — this spec covers **R1–R6**; R7 = TS 7 at
   GA rides independently). Phase-0 spikes DONE: Vite 8 canary PASSED on strider; oxc tools run against

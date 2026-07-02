@@ -36,7 +36,35 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of the S1–S8 push + the `fix(mouthpiece)` test pin, 2026-07-02 third session)
+## Current state — UPDATE THIS SECTION (as of S15, the FINAL vite+ cutover slice, 2026-07-02 fourth session)
+
+> **✅ VITE+ CUTOVER (0022) — ALL 15 SLICES BUILT, R1–R6 COMPLETE.** S9–S14 landed in the session
+> between the S1–S8 checkpoint and this one (vellum-render on Node 24, bun type-surface fully out,
+> pnpm cutover, oxlint+oxfmt landed + gate-swapped biome out, orator-controller on tsdown). **S15 (vp
+> adoption, D7) this session:** `vite-plus@0.2.2` exact-pinned as a root devDependency (the REAL npm
+> package from `voidzero-dev/vite-plus` — `vp` on npm alone is an unrelated namesquat); `pnpm install
+> --frozen-lockfile` is the entire CI install story, no new action/curl step. `vp run -r <task>`
+> orchestrates `ts-typecheck`/`ts-test`/`ts-build` in CI; `ts-lint` stays direct oxlint/oxfmt;
+> `tsc --noEmit` is unchanged as the actual typecheck gate (D8). `vp migrate` was run, reviewed, and
+> **fully reverted** — it aliased `vite`→`@voidzero-dev/vite-plus-core` via a pnpm catalog (undermining
+> the D9 exact-pin) and its own format step crashed on this repo's workspace-TS config-import pattern.
+> Found-only-by-running gotcha: a root `package.json` script sharing a task's name self-collides with
+> `vp run -r <task>` (raced itself into an `ENOTEMPTY` crash) — fixed by removing the root
+> `typecheck`/`test`/`build` scripts entirely. Full detail in [[viteplus-cutover-0022]]; spec status →
+> COMPLETE, all acceptance criteria A–N met.
+>
+> **✅ DEPLOYS UNPARKED + LIVE-VERIFIED (this session — stakeholder granted `just up`).** Full-stack
+> rebuild + live batch ran at S9 and again at the S11 exit gate: 17 containers healthy, the 8-page
+> real-WebGL visual spot-check (pixi shaders painting, zero console errors), Range/206
+> head/mid/suffix + 416 + HEAD through the public edge on both audio hosts (criterion D live half),
+> vellum-render `/render` real PNG via the edge, weal-overlay `/feed` SSE, weal-bot Discord reconnect
+> + 10 macros read via postgres.js, SigNoz traces+logs+metrics 0-error (criterion M). A final
+> `just up` after S15 brings the images to HEAD (S12–S15 were behavior-neutral for the runtime).
+> Still human-only: an interactive Discord roll round-trip, orator voice-join, in-player seek.
+> With the S15 GHA run green (criterion L), **0022 is fully closed**; the next main-track item is
+> the (long-standing, stakeholder-paused) heartwood Phase-4 content acceptance — below.
+>
+> _(Prior checkpoint, superseded but kept for the session-by-session trail:)_
 
 > **🆕 VITE+ CUTOVER (0022) — S1–S8 BUILT + CI-GREEN + PUSHED; ▶ RESUME AT S9 (vellum-render).**
 > Spec: **`thoughts/astra/specs/0022-viteplus-cutover-spec.md`** (its status header carries the

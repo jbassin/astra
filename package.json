@@ -3,9 +3,6 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "typecheck": "pnpm -r typecheck",
-    "test": "pnpm -r test",
-    "build": "pnpm -r build",
     "lint": "oxlint --type-aware --deny-warnings apps libs/ts",
     "format": "oxfmt --write 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'",
     "format:check": "oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'",
@@ -18,7 +15,8 @@
     "oxfmt": "^0.57.0",
     "oxlint": "^1.72.0",
     "oxlint-tsgolint": "^0.24.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-plus": "0.2.2"
   },
   "engines": {
     "node": ">=24"

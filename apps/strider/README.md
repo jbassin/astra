@@ -8,7 +8,7 @@ and replacing its domain — not by reinventing the wiring.
 
 The reusable spine lives in two shared libs so it is **not** re-copied per app:
 
-- **`@astra/site-kit`** — `createSsrServer` (the Bun SSR entry), `startRum` (`/web`),
+- **`@astra/site-kit`** — `createSsrServer` (the srvx + `send` SSR entry on Node 24), `startRum` (`/web`),
   the vite plugins `contentWatchPlugin`/`gothicFontsPlugin`, `generateRouteTree`, and
   `loadSiteConfig` (a node-safe config read for `vite.config`).
 - **`@astra/content-build`** — the generic markdown→generated-modules pipeline

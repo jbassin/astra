@@ -62,8 +62,13 @@ log's per-slice rhythm; don't accumulate a large uncommitted/unpushed working tr
 - **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml` (`apps/*`, `libs/ts/*`); root `package.json`
   pins the exact version via `packageManager` + corepack. Lint = **oxlint** (`--type-aware
   --deny-warnings`), format = **oxfmt** (`sortImports` on) — deliberately two tools (both VoidZero/oxc,
-  biome retired at 0022 S13). Type-check = `tsc --noEmit` against `tsconfig.base.json` (strict). Run
-  `pnpm install`, `pnpm -r {typecheck,test,build}` / `pnpm run lint` / `pnpm run format:check`.
+  biome retired at 0022 S13). Type-check = `tsc --noEmit` against `tsconfig.base.json` (strict), stays
+  the gate even under vp (D8). **`vp` (`vite-plus`, exact-pinned root devDependency) orchestrates
+  typecheck/test/build** (0022 S15) — `vp run -r <task>` fans a task out across all 21 members with a
+  local task-graph cache; lint/format stay **direct** oxlint/oxfmt (vp's `lint`/`fmt` are thin
+  pass-throughs with no scoping of their own — the explicit globs are what keeps oxfmt off
+  markdown/toml/the SOPS file). Run `pnpm install`, `pnpm exec vp run -r {typecheck,test,build}` /
+  `pnpm run lint` / `pnpm run format:check`.
 - **Disjoint globs, manifest-decided membership.** Both lanes glob `apps/*`; a directory belongs to
   whichever lane its manifest declares (`pyproject.toml` → uv; `package.json` → pnpm). They never
   cross-claim.
@@ -113,12 +118,15 @@ thoughts/    # research + per-subsystem plans (carried from faerrin)
 dist/        # all site-gen output (gitignored), served by Caddy
 ```
 
-## Pins (set in Phase 0; TS toolchain updated 0022 S11)
+## Pins (set in Phase 0; TS toolchain finalized 0022 S15)
 
 - Python ≥ 3.12; **ty** pinned (`==0.0.51`, preview — bump deliberately).
 - Node **24** (`.node-version` + root `engines.node`); pnpm **10.34.4** (root `packageManager` +
   corepack); oxlint **^1.72.0** + oxfmt **^0.57.0** (+ oxlint-tsgolint **^0.24.0** for type-aware
-  lint); typescript **5.x**.
+  lint); typescript **5.x**; **vite-plus (`vp`) `0.2.2`** exact-pinned root devDependency — the
+  orchestrator for typecheck/test/build (task graph + local caching; `tsc --noEmit` stays the
+  actual typecheck gate underneath it, D8).
 - Reproduce CI locally:
   `uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest` and
-  `pnpm -r typecheck && pnpm run lint && pnpm run format:check && pnpm -r test && pnpm -r build`.
+  `pnpm exec vp run -r typecheck && pnpm run lint && pnpm run format:check && pnpm exec vp run -r
+  test && pnpm exec vp run -r build`.

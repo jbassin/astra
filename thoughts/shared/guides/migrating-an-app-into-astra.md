@@ -33,7 +33,7 @@ own — read them too:
 - ✅ **Reproduce both CI lanes locally before pushing** (see §7); commit each CI-green slice, push on chunk completion.
 - ✅ **For frontends: copy strider.** Consume `@astra/site-kit` + `@astra/content-build`; keep the shell, replace `src/domain/` + `content/`.
 - ✅ **Add a new TS app to `pyproject.toml` `[tool.uv.workspace] exclude`** and to every service Dockerfile's manifest-COPY list.
-- ✅ **Give every new TS package ≥1 test** (`bun test` exits 1 on zero test files → reds CI).
+- ✅ **Give every new TS package ≥1 test** (`vitest run` exits 1 on zero test files → reds CI, unless the script opts into `--passWithNoTests`).
 - ✅ **Apply deploy/edge changes** with `just up` + `just caddy-reload`, then verify (curl + a SigNoz span).
 
 **Never do**
@@ -70,8 +70,9 @@ real definition of "done":
 - **CI** → GitHub Actions.
 
 **Two toolchains, disjoint workspaces** — a dir belongs to whichever lane its manifest
-declares: `pyproject.toml` → uv (Python: ruff/ty/pytest), `package.json` → bun
-(TypeScript: biome/tsc/bun test). They never cross-claim. Pick one; don't introduce a third language.
+declares: `pyproject.toml` → uv (Python: ruff/ty/pytest), `package.json` → pnpm
+(TypeScript: oxlint+oxfmt/tsc/vitest, orchestrated by `vp`). They never cross-claim. Pick one; don't
+introduce a third language.
 
 ---
 
@@ -162,19 +163,20 @@ pipeline step becomes a Dagster asset; a long-running service becomes a Compose 
 - **DO** keep `config.kdl` the single source; read via `astra_config`/`@astra/config`; mirror new namespaces in both schemas.
 - **DO** use `.strict()` / `extra="forbid"` defaults; a mistyped KDL key should throw, not be silently dropped.
 - **DON'T** read env vars (the only env override is secret resolution — `KEY.upper()`); **DON'T** hardcode a port/endpoint/name anywhere but `config.kdl` (beyond the one Dockerfile `ARG APP`).
-- **Gotcha:** `vite.config.ts` can't call no-arg `loadConfig()` (it resolves the repo root via Bun-only `import.meta.dir`); use `@astra/site-kit`'s `loadSiteConfig()` (walks from `process.cwd()`).
+- **Gotcha:** `vite.config.ts` can't call no-arg `loadConfig()` (`@astra/config`'s repo-root resolution is anchored to its OWN module directory, not the calling app's); use `@astra/site-kit`'s `loadSiteConfig()` (walks up from `process.cwd()`, which is the app dir during `vite dev`/`vite build`).
 
 ### Telemetry (`telemetry-built-in`)
 - **DO** call `init*Telemetry` in the actual runtime entrypoint; **DO** name the service `astra.<subsystem>`.
 - **DON'T** set a containerized service's `otlp-endpoint` to `localhost:NNNN` — inside a container localhost is the container. Use the in-cluster collector name (`http://signoz-otel-collector:4318`). The browser `rum-endpoint` is the *public* Caddy URL (browsers can't reach the in-cluster name).
 - **Verify** with the `signoz_*` MCP (not curl/clickhouse), and check `signoz_list_services` shows your `service.name`.
 
-### TypeScript / bun / frontend
+### TypeScript / pnpm / frontend
 - **DO** set `--configLoader runner` on vite `dev`/`build` if `vite.config.ts` imports a workspace TS package (`@astra/site-kit`) — vite's default loader Node-externalizes workspace packages and the vite bin runs under Node, which can't execute their raw `.ts`.
-- **DO** keep `createServerFn` in app source; commit `src/routeTree.gen.ts` (biome-ignored); wire `@tailwindcss/vite`; ship `public/`.
+- **DO** keep `createServerFn` in app source; commit `src/routeTree.gen.ts` (oxlint/oxfmt-ignored); wire `@tailwindcss/vite`; ship `public/`.
 - **DO** override `verbatimModuleSyntax: false` in the *frontend* tsconfig only (server bundles otherwise leak typing into the client); leave the base setting for non-Start packages.
-- **DON'T** prerender; **DON'T** vendor fonts; **DON'T** ship a TS lib with zero tests.
-- **Gotcha:** a path-scoped `biome.json` override is keyed on exact paths — **update its globs when you move files**, or relocated files re-expose suppressed lints. Run `bunx biome ci .` on the **whole repo** (a scoped run misses violations the full run flags).
+- **DON'T** prerender; **DON'T** vendor fonts; **DON'T** ship a TS lib with zero tests; **DON'T** set `baseUrl` in a frontend tsconfig (tsgolint rejects it — use relative `paths` for the `@/*` alias instead).
+- **Gotcha:** a path-scoped `.oxlintrc.json`/`.oxfmtrc.json` override is keyed on exact paths — **update its globs when you move files**, or relocated files re-expose suppressed lints. Run `pnpm exec oxlint --type-aware --deny-warnings apps libs/ts` on the **whole repo** (a scoped run misses violations the full run flags); `oxfmt` is glob-scoped too — never invoke it bare over `.` (it would rewrite markdown/toml/the SOPS secrets file), always through the root `pnpm run format`/`format:check` scripts.
+- **Gotcha (orchestration):** don't add a root `package.json` script with the same name as a per-member task (`typecheck`/`test`/`build`) — `vp run -r <task>` matches root's own script too and runs it as a second, racing, nested copy of the whole recursive command. This repo has no root-level `typecheck`/`test`/`build` scripts for exactly this reason; call `pnpm exec vp run -r <task>` directly (see CONTRIBUTING.md §5).
 
 ### Python / uv
 - **DO** add a new TS app to `[tool.uv.workspace] exclude`; create a member dir only when it has a manifest (uv rejects empty glob-matched dirs).
@@ -195,12 +197,13 @@ pipeline step becomes a Dagster asset; a long-running service becomes a Compose 
 ## 6. Frontend-specific load-bearing gotchas (the ones that cost time)
 
 1. **`--configLoader runner`** is mandatory to import `@astra/site-kit` from `vite.config.ts` (see §5). This is the real mechanism behind "vite.config can't import @astra/config."
-2. **Adding a workspace member re-runs `bun install`**, which regenerates `bun.lock` *and can bump tools within semver* (biome `2.x`→`2.5.0` once happened, and it's stricter). Reproduce CI exactly: `bunx biome ci .` over the whole repo.
+2. **Adding a workspace member re-runs `pnpm install`**, which regenerates `pnpm-lock.yaml` *and can bump tools within semver* — reproduce CI exactly: `pnpm exec oxlint --type-aware --deny-warnings apps libs/ts && pnpm exec oxfmt --check …` (via the root `lint`/`format:check` scripts) over the whole repo.
 3. **A new workspace member breaks `--frozen-lockfile`** in any Dockerfile that copies a partial manifest set — the root `apps/*`/`libs/ts/*` globs resolve the *full* workspace, so a partial set reads as "lockfile changed." COPY all app manifests.
 4. **Fonts self-serve**: `gothicFontsPlugin({ clientOutDir })` copies gothic fonts into `dist/client/fonts` at build; the SSR server static-serves them; the Caddy block has no `gothic_fonts` import and nothing is vendored in git.
 5. **Pixi/WebGL** behind `lazy()` + `<ClientOnly>`; editor/admin routes `ssr: false`. Canvas has no unit test — eyeball the dev app after any renderer change.
 6. **Coupled content sources** (one source needs another's output) run in declaration order via a shared closure — not the clean independent-source model; document it.
-7. **The build stage needs `config.kdl`** (vite.config reads it at build) — COPY `ontology/ontology-config` before `bun run build`.
+7. **The build stage needs `config.kdl`** (vite.config reads it at build) — COPY `ontology/ontology-config` before `pnpm run build`.
+8. **A root `package.json` script named the same as a per-member task self-collides with `vp run -r <task>`** (it gets fanned out to as if it were a member, then races its own nested recursive call) — don't add root-level `typecheck`/`test`/`build` scripts; use `pnpm exec vp run -r <task>` directly (§5, §7).
 
 (See `strider-0016-gotchas` and CONTRIBUTING §8 for the full catalog, incl. Python/Dagster/SigNoz items.)
 
@@ -212,12 +215,15 @@ pipeline step becomes a Dagster asset; a long-running service becomes a Compose 
 # Python lane
 uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest
 # TypeScript lane
-bun --filter '*' typecheck && bunx biome ci . && bun --filter '*' test && bun --filter '*' build
+pnpm exec vp run -r typecheck && pnpm run lint && pnpm run format:check && pnpm exec vp run -r test && pnpm exec vp run -r build
 ```
-Scope to the lane/app you touched, but run `biome ci` over the **whole repo**. The
-pre-commit gate (`.githooks/pre-commit`) runs the fast format/lint subset (biome
-`--error-on-warnings` + ruff) on commit; typecheck + tests stay CI-only. Watch the
-**aggregate exit code**, not just the per-package "Exited with code 0" lines.
+Scope to the lane/app you touched, but run `oxlint`/`oxfmt` over the **whole repo** via the root
+`pnpm run lint`/`format:check` scripts (a scoped run misses violations the full run flags). `vp`
+(`vite-plus`, exact-pinned root devDependency) orchestrates the recursive typecheck/test/build
+fan-out — lint/format stay direct oxlint/oxfmt (see the orchestration gotcha above). The
+pre-commit gate (`.githooks/pre-commit`) runs the fast format/lint subset (oxlint
+`--type-aware --deny-warnings` + oxfmt `--check` + ruff) on commit; typecheck + tests stay
+CI-only. Watch the **aggregate exit code**, not just the per-package "✓"/"Failed" lines.
 
 ---
 
@@ -226,7 +232,7 @@ pre-commit gate (`.githooks/pre-commit`) runs the fast format/lint subset (biome
 - [ ] Behaviour ported from the source (identity keys verbatim); no silent scope cuts.
 - [ ] All config in `config.kdl`, read via `astra_config`/`@astra/config`, mirrored in both schemas; secrets are `ref="sops:…"`.
 - [ ] Telemetry wired in the runtime; `service.name=astra.<app>` spans land in SigNoz (verified via MCP); browser RUM posts to the public endpoint.
-- [ ] Both CI lanes green locally; every new TS package has ≥1 test; biome clean on the whole repo.
+- [ ] Both CI lanes green locally; every new TS package has ≥1 test; oxlint + oxfmt clean on the whole repo.
 - [ ] (Frontend) SSR — no prerender; `routeTree.gen.ts` committed; `@tailwindcss/vite` wired; `public/` shipped; fonts self-serve; pixi behind `lazy()`+`<ClientOnly>`; consumes `@astra/site-kit` + `@astra/content-build`; thin `server.ts`/`vite.config.ts`.
 - [ ] Deploy wired: templated Dockerfile (all manifests + `ontology/`), Compose unit (no PORT env), Caddy block; app added to uv `exclude`.
 - [ ] Live-verified after deploy (`just up` + `just caddy-reload` + curl + a SigNoz span); outward-facing DNS deferred unless told otherwise.

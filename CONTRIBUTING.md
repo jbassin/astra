@@ -80,8 +80,11 @@ declares** (`pyproject.toml` → uv; `package.json` → pnpm). They never cross-
 - **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml`; members `apps/*`, `libs/ts/*`. Lint
   **oxlint** (`--type-aware --deny-warnings`), format **oxfmt** (`sortImports` on) — deliberately two
   tools, both VoidZero/oxc (biome retired 0022 S13). Type-check `tsc --noEmit` against
-  `tsconfig.base.json` (strict). Pins: Node **24**, pnpm **10.34.4** (root `packageManager` + corepack),
-  oxlint **^1.72.0**, oxfmt **^0.57.0**, typescript **5.x**, Python **≥3.12**.
+  `tsconfig.base.json` (strict) — stays the gate even orchestrated through vp (D8). Root
+  typecheck/test/build fan-out is orchestrated by **`vp` (`vite-plus`, exact-pinned root
+  devDependency)** — `vp run -r <task>` (0022 S15). Pins: Node **24**, pnpm **10.34.4** (root
+  `packageManager` + corepack), oxlint **^1.72.0**, oxfmt **^0.57.0**, oxlint-tsgolint **^0.24.0**,
+  typescript **5.x**, vite-plus **0.2.2**, Python **≥3.12**.
 
 **uv rejects empty members** (a glob-matched dir without a `pyproject.toml` is a hard error) → don't
 pre-create placeholder member dirs; keep glob roots in git with a `.gitkeep` *file*. pnpm ignores
@@ -98,7 +101,7 @@ uv run ruff check && uv run ruff format --check && uv run ty check && uv run pyt
 
 # TypeScript lane
 pnpm install
-pnpm -r typecheck && pnpm run lint && pnpm run format:check && pnpm -r test && pnpm -r build
+pnpm exec vp run -r typecheck && pnpm run lint && pnpm run format:check && pnpm exec vp run -r test && pnpm exec vp run -r build
 ```
 
 CI (GitHub Actions, `.github/workflows/ci.yml`) is parallel + path-filtered, so scope your local run to
@@ -110,6 +113,29 @@ It's auto-installed by the root `prepare` script on `pnpm install`
 edits files) — fix with `pnpm run format` / `uv run ruff format .`, or bypass in an emergency with
 `git commit --no-verify`. **Typecheck + tests are NOT in the hook** (too slow) — run them locally + in CI.
 Conventional-commit messages are linted by commitlint.
+
+**`vp` (vite-plus) orchestration (0022 S15):** `vite-plus` is a root devDependency, exact-pinned
+(`0.2.2`) in `package.json`/`pnpm-lock.yaml` — `pnpm install` (or CI's frozen install) is the entire
+install story, no curl script or separate action needed; `pnpm exec vp` always resolves the
+lockfile-pinned binary. `vp run -r <task>` fans a `package.json` script out across every workspace
+member that defines it (task-graph + a local, content-addressed cache — `vp run --cache -r
+<task>`; `vp cache clean` to reset). Two load-bearing gotchas found by running it against this repo:
+(1) a root `package.json` script with the **same name** as the fanned-out task (e.g. a root
+`"typecheck": "pnpm -r typecheck"`) gets matched by `-r <task>` too, so it runs a SECOND, nested,
+racing copy of the whole recursive command — the fix is to not have root-level `typecheck`/`test`/
+`build` scripts at all (this repo has none; call `vp run -r <task>` directly). (2) local caching is
+close to useless for `test` here — vitest writes its own results cache under each package's
+`node_modules/.vite/vitest/**`, and vp's input-tracking treats that self-write as "modified its
+input", so `vp run -r test` cache-misses on **every** run (0% hit, every member, confirmed on repeat
+runs) — `typecheck` (`tsc --noEmit`) has none of this and hit 96% on a warm rerun. `vp env` is not a
+real subcommand in `0.2.2` (the scope doc's assumption was stale) — Node-version pinning is automatic
+instead: every `vp`-spawned child process uses vp's own managed Node runtime matching `.node-version`,
+verified by shadowing a decoy `node` first on `$PATH` and confirming the spawned `tsc` still ran (the
+decoy was never invoked). `vp migrate` was run and reviewed, then **fully reverted** — see
+[[viteplus-cutover-0022]] for why (it silently aliases the real `vite` package to
+`@voidzero-dev/vite-plus-core` via a pnpm `catalog:`/`overrides` pair, which undermines the D9
+exact-pin decision without re-verification, and its own auto-format step failed outright on this
+repo's `--configLoader runner` + extensionless-workspace-import pattern).
 
 ---
 
