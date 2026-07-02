@@ -1,6 +1,7 @@
 /**
  * The weal roll-history + macro store — TS port of faerrin's `discord/src/db/*` and
- * `migrations/0001_init.sql`, on **Postgres** (Decision F) via Bun's built-in SQL.
+ * `migrations/0001_init.sql`, on **Postgres** (Decision F) via postgres.js (R3, 0022
+ * S5 — off Bun's built-in SQL, which required a live Bun runtime).
  *
  * Two tables: `dice` (one row per die, keyed by the load-bearing `player_id`) and
  * `funcs` (saved macros — serde-JSON payloads, see [[serde.ts]]). The pathological-pool
@@ -8,7 +9,7 @@
  * `10000d10000` is still rolled & shown, just not persisted.
  */
 
-import type { SQL } from "bun";
+import postgres from "postgres";
 import type { RollDie } from "./roller";
 
 /** Skip pools larger than this many dice (each die is one row). */
@@ -70,17 +71,12 @@ export async function saveDie(
   }
 }
 
-/** Bun-SQL-backed Postgres implementation of {@link WealStore}. */
+/** postgres.js-backed Postgres implementation of {@link WealStore} (R3, 0022 S5 — off Bun.SQL onto the Node-runtime-portable postgres.js; tagged-template call sites are unchanged). */
 export class PostgresStore implements WealStore {
-  readonly #sql: SQL;
+  readonly #sql: postgres.Sql;
 
   constructor(databaseUrl: string) {
-    // Type-only import above (a static value import from "bun" fails vitest's
-    // module resolution at import time, even under `bun run vitest`); the
-    // runtime constructor is only ever touched here, behind the global — so
-    // tests that never construct PostgresStore never hit it. Superseded by
-    // postgres.js at R3 (S5).
-    this.#sql = new Bun.SQL(databaseUrl);
+    this.#sql = postgres(databaseUrl);
   }
 
   async ensureSchema(): Promise<void> {

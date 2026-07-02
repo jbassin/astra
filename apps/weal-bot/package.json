@@ -5,16 +5,19 @@
   "type": "module",
   "module": "src/index.ts",
   "scripts": {
+    "start": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs src/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "echo '@astra/weal-bot: no build step (bun runs TS directly)'"
+    "build": "echo '@astra/weal-bot: no build step (node runs TS directly via the nodeTsResolve hook)'"
   },
   "dependencies": {
     "@astra/config": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/ontology": "workspace:*",
     "@opentelemetry/api": "^1.9.1",
-    "discord.js": "^14"
+    "discord.js": "^14",
+    "postgres": "^3.4.9",
+    "srvx": "0.11.20"
   },
   "devDependencies": {
     "vitest": "^4.1.9"

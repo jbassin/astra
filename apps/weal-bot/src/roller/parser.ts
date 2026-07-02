@@ -18,7 +18,15 @@ const FAIL = Symbol("parse-fail");
 
 class Cursor {
   pos = 0;
-  constructor(readonly s: string) {}
+  readonly s: string;
+
+  // Not a TS parameter property — Node's `--experimental-strip-types` (R3, 0022 S5)
+  // only erases types, it doesn't emit code, so a parameter property (which needs a
+  // real `this.x = x` assignment generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`
+  // when Node runs this file directly. See [[secrets.ts]]'s SecretRef (S4).
+  constructor(s: string) {
+    this.s = s;
+  }
 
   skipWs(): void {
     while (this.pos < this.s.length && /\s/.test(this.s[this.pos] as string)) this.pos++;

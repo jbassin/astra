@@ -54,14 +54,26 @@ export class Gateway {
   private readonly funcs: [string, string][];
   private readonly rng = new EntropyRng();
   private seed: SeedInfo = { seed: randomSeed(), blameId: 1, blame: "Josh" };
+  private readonly cfg: GatewayConfig;
+  private readonly roster: Roster;
+  private readonly hosts: Map<string, WealHost>;
+  private readonly store: WealStore;
 
+  // Not TS parameter properties — Node's `--experimental-strip-types` (R3, 0022 S5)
+  // only erases types, it doesn't emit code, so a parameter property (which needs a
+  // real `this.x = x` assignment generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`
+  // when Node runs this file directly. See [[secrets.ts]]'s SecretRef (S4).
   constructor(
-    private readonly cfg: GatewayConfig,
-    private readonly roster: Roster,
-    private readonly hosts: Map<string, WealHost>,
-    private readonly store: WealStore,
+    cfg: GatewayConfig,
+    roster: Roster,
+    hosts: Map<string, WealHost>,
+    store: WealStore,
     initFuncs: [string, string][],
   ) {
+    this.cfg = cfg;
+    this.roster = roster;
+    this.hosts = hosts;
+    this.store = store;
     this.funcs = [...initFuncs];
     this.client = new Client({
       intents: [

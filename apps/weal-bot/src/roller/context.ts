@@ -43,7 +43,15 @@ const BUILTINS = [
 ] as const;
 
 export class Context {
-  private constructor(private readonly env: Map<string, Res>) {}
+  private readonly env: Map<string, Res>;
+
+  // Not a TS parameter property — Node's `--experimental-strip-types` (R3, 0022 S5)
+  // only erases types, it doesn't emit code, so a parameter property (which needs a
+  // real `this.x = x` assignment generated) throws `ERR_UNSUPPORTED_TYPESCRIPT_SYNTAX`
+  // when Node runs this file directly. See [[secrets.ts]]'s SecretRef (S4).
+  private constructor(env: Map<string, Res>) {
+    this.env = env;
+  }
 
   /** `Context::new` — seed from saved `funcs` (name → serde-JSON payload) + builtins. */
   static create(init: [string, string][]): Context {

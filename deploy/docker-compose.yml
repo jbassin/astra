@@ -154,9 +154,11 @@ services:
       dockerfile: apps/weal-bot/Dockerfile
     image: astra-weal-bot:local
     container_name: astra-weal-bot
-    # All astra app containers run as the host owner (uid 1000) — the oven/bun image ships
-    # `bun`=uid 1000 and the app files are world-readable, so the SSR/bot processes read +
-    # serve them fine; writes (where any) land host-owned. Postgres/SigNoz keep their own uid.
+    # All astra app containers run as the host owner (uid 1000) — both the oven/bun
+    # image (`bun`=uid 1000) and node:24-slim (built-in `node`=uid 1000, R3 0022 — the
+    # runtime weal-bot itself runs on) ship a uid-1000 user, and the app files are
+    # world-readable, so the SSR/bot processes read + serve them fine; writes (where
+    # any) land host-owned. Postgres/SigNoz keep their own uid.
     user: "1000:1000"
     depends_on:
       weal-postgres:
@@ -168,8 +170,10 @@ services:
       WEAL_DISCORD_KEY: ${WEAL_DISCORD_KEY:-}
       WEAL_TOKEN: ${WEAL_TOKEN:-}
     networks: [signoz-net]
+    # Node 24 runtime (R3, 0022 S5; D13) — node:24-slim has global fetch, so the
+    # healthcheck below needs no extra deps either.
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://127.0.0.1:10203/health').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://127.0.0.1:10203/health').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5

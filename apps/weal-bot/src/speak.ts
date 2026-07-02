@@ -1,17 +1,19 @@
 /**
- * The internal speak API — TS port of `http.rs` (`POST /api/v1/speak`) on a `Bun.serve`
- * bound to the internal address (config `weal.bindAddr`, default 127.0.0.1:10203). A
- * local control plane: other services dial it to post as a host.
+ * The internal speak API — TS port of `http.rs` (`POST /api/v1/speak`) on an srvx
+ * server (R3, 0022 S5 — off `Bun.serve`) bound to the internal address (config
+ * `weal.bindAddr`, default 127.0.0.1:10203). A local control plane: other services
+ * dial it to post as a host.
  */
 
 import { getLogger } from "@astra/observe";
+import { serve } from "srvx";
 import type { Gateway, SpeakArgs } from "./gateway";
 
 const log = getLogger("astra.weal-bot");
 
 export function startSpeakServer(bindAddr: string, gateway: Gateway): { stop: () => void } {
   const [hostname, portStr] = bindAddr.split(":");
-  const server = Bun.serve({
+  const server = serve({
     hostname: hostname || "127.0.0.1",
     port: Number(portStr ?? "10203"),
     async fetch(req): Promise<Response> {
@@ -39,7 +41,7 @@ export function startSpeakServer(bindAddr: string, gateway: Gateway): { stop: ()
   log.emit({ severityText: "INFO", body: `speak API listening on ${bindAddr}` });
   return {
     stop: () => {
-      server.stop(true);
+      void server.close(true);
     },
   };
 }

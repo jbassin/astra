@@ -1,5 +1,7 @@
-# Astra weal-bot — the dice/host Discord bot (0009). Bun runs the TS directly (no
-# build step). Long-running service: discord.js gateway + the internal speak API.
+# Astra weal-bot — the dice/host Discord bot (0009). Long-running service: discord.js
+# gateway + the internal speak API. Runs on Node 24 at runtime (R3, 0022 S5 — off Bun;
+# `node --import .../nodeTsResolve.mjs` runs the TS entry directly, same hook as
+# ledger's S4 pilot); the build stage stays bun (D12 — install only, no bundling).
 #
 # Build context is the REPO ROOT (weal-bot is a bun workspace member depending on
 # @astra/{config,observe,ontology} via workspace:*), so the whole bun workspace must
@@ -27,8 +29,10 @@ COPY apps/weal-overlay/package.json apps/weal-overlay/
 COPY libs/ts ./libs/ts
 RUN bun install --frozen-lockfile
 
-# --- Runtime: slim image carrying the app + workspace deps + the ontology data ---
-FROM oven/bun:1.3.14-slim AS runtime
+# --- Runtime: Node 24 (R3, 0022 S5) carrying the app + workspace deps + ontology data ---
+# node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's
+# `user: "1000:1000"` (deploy-artifacts-run-as-user) carries over unchanged.
+FROM node:24-slim AS runtime
 WORKDIR /repo/apps/weal-bot
 ENV NODE_ENV=production
 # node_modules + libs/ts together preserve the @astra/* workspace symlinks that
@@ -44,4 +48,5 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 COPY ontology/ontology-being /repo/ontology/ontology-being
 
 EXPOSE 10203
-CMD ["bun", "run", "src/index.ts"]
+# Invoke node directly (not `npm run start`) — one less process layer (D13).
+CMD ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "src/index.ts"]
