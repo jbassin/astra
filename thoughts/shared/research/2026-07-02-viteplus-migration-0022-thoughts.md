@@ -1,7 +1,7 @@
 # Vite+ migration scoping — what moving astra's TS lane to the VoidZero toolchain entails
 
 - Date: 2026-07-02
-- Status: scoping (pre-spec). No code changed.
+- Status: scoping **COMPLETE — Phase 0 spikes run + all decisions RESOLVED (see the addendum at the bottom; the roadmap there supersedes "The plan" below)**. No production code changed.
 - Ask: stakeholders want "all of the TypeScript in this repository moved to the new Vite+ tooling, instead of whatever equivalent tooling is currently being used."
 - Method: three parallel research streams (repo tooling inventory; Vite+ product/licensing/docs; per-tool migration paths), cross-checked against live npm dist-tags on 2026-07-02.
 
@@ -121,3 +121,160 @@ Pin/ripple sites any toolchain change must touch together: root `package.json` s
 - Oxfmt beta: oxc.rs/blog/2026-02-24-oxfmt-beta; biome→oxc gap writeup: charpeni.com/blog/migrating-from-eslint-biome-prettier-to-oxlint-oxfmt
 - TS 7 RC: devblogs.microsoft.com/typescript/announcing-typescript-7-0-beta/; live dist-tags checked 2026-07-02 (`latest` 6.0.3, `rc` 7.0.1-rc)
 - Vite Task vs Turborepo limits: github.com/voidzero-dev/vite-plus/discussions/1216
+
+---
+
+# ADDENDUM (2026-07-02, same day): Phase 0 results + resolved decisions + revised roadmap
+
+Phase 0 ran as three parallel spikes (Vite 8 canary in a worktree; biome→oxc audit in a worktree,
+tools actually executed against the repo; bun-runtime exit study, read-only + ecosystem research).
+Stakeholders then resolved all three open decisions. **This addendum supersedes "The plan" above.**
+
+## Phase 0 findings
+
+### Spike 1 — Vite 8 canary (strider): NOT blocked. Upstream #7614 did not reproduce.
+
+- strider on vite **8.1.3**: dev server SSR'd full real HTML, build succeeded (**1.44s vs 4.7s
+  baseline — ~3.3x faster**), `bun run start` served correct SSR output (`grep -a` verified), no
+  tailwind/lightningcss conflict (no `optimize:false` needed at `@tailwindcss/vite` 4.3.2).
+- **`--configLoader runner` survives unchanged** on vite 8 (still listed, still experimental).
+- **`@vitejs/plugin-react` must bump 4.x → ^5.2.0** — hard requirement; 4.x's vite peer range
+  stops at ^7.
+- **Lockstep is mandatory**: bumping one member creates a silent duplicate-vite install (bun
+  neither dedupes nor warns across non-overlapping ranges) — the exact trigger condition for
+  upstream #7614. All vite-using members (8 Start apps + vellum-render + orator-backend +
+  weal-overlay + gothic + site-kit devDeps) bump together.
+- **vitest 3's green run is a FALSE SIGNAL for vite-8 compat**: its `vite-node` dep hard-pins
+  vite ^5||^6||^7 as a real dependency, so bun installs vitest a private vite 6 and tests never
+  touch vite 8. **vitest ^4.1 required** (peer range covers ^8). The repo's `ssrSmoke.test.ts`
+  (real `ssr.fetch` against built output) is the trustworthy smoke, and it passed on vite 8.
+- Pre-existing latent issue found: react-start 1.168.26 declares `peerDependencies.vite >=7.0.0`
+  — our **current vite 6 baseline is the out-of-range config**; bun tolerates it silently.
+
+### Spike 2 — biome → oxlint+oxfmt audit (versions: oxfmt 0.57.0, oxlint 1.72.0, tsgolint 0.24.0)
+
+- **Type-aware linting WORKS on our repo** (`oxlint --type-aware`, 0.6s repo-wide) and found real
+  bugs biome can't: `no-floating-promises` in weal-overlay/server.ts, orator-controller/plugin.ts,
+  weal-bot/speak.ts, backdrop/ShaderBackground.tsx; plus `restrict-template-expressions`,
+  `await-thenable`, `unbound-method`.
+- **Blocker for frontends**: tsgolint rejects `baseUrl` (`Option 'baseUrl' has been removed`,
+  oxc-project/tsgolint#351) → all 7 strider-template frontends silently get zero type-aware
+  coverage until their tsconfigs move to baseUrl-less relative `paths` (`"@/*": ["./src/*"]`
+  works without baseUrl since TS 5).
+- **oxfmt scope-creep is THE operational footgun**: default repo-wide run wants to reformat 140
+  files — 111 markdown (`*em*`→`_em_` across thoughts/), 16 TOML (pyproject.toml — ruff's lane!),
+  8 package.json (reorders keys), **and `deploy/sops/secrets.enc.yaml`** (would rewrite an
+  encrypted file). Must be glob-scoped to JS/TS/JSON/CSS on every invocation — config has only
+  `ignorePatterns`, no language allowlist. `--migrate=biome` ports the ignore list but not
+  overrides.
+- **Import auto-sorting is lost**: oxfmt doesn't sort; oxlint's `sort-imports` detects but cannot
+  fix (verified `--fix` no-ops). Biome's organizeImports detect+fix has no oxc replacement.
+- Config port is manual tuning, not one-shot: oxlint's `style` category ≈ ESLint-strict
+  (17,313 diagnostics — not biome's style), `react/react-in-jsx-scope` false-positives on the
+  automatic JSX runtime (1,355 hits — disable it), and a tuned
+  correctness+suspicious+perf + react/jsx-a11y/import/promise config leaves **252 residual
+  disagreements** (mostly on paths biome already relaxes; a handful of new files —
+  ProposalCard.tsx, Chronicle.tsx, episode/$id.tsx, CardSpread.tsx, Search.tsx — need new
+  overrides or fixes).
+- 11/13 biome override rules have direct oxlint equivalents (mapping table in the audit);
+  `noAssignInExpressions` only has a narrower substitute (`no-cond-assign`); the folklore
+  "no-equivalent" rules (`noLeakedRender`, `noUndeclaredEnvVars`) are **dormant in astra anyway**
+  (opt-in / turborepo-domain-gated) — losing them costs nothing.
+- Timing is a wash at our size (~200ms biome vs ~230-270ms oxc tools; type-aware +600ms).
+- Gotcha: `bunx biome` outside the repo resolves to a namesquatted `biome` 0.3.3 package.
+
+### Spike 3 — bun-runtime → Node exit study: shallow, ~2–3 focused days
+
+- **Node 24 LTS** (support to 2028) runs `.ts` directly — native type stripping stable since
+  24.12 → `bun run server.ts` becomes `node server.ts`, no build step. (Only erasable syntax; no
+  enums found in directly-executed files — final grep before cutover.)
+- **`Bun.serve` → `srvx`** (`srvx.serve({fetch})`, Bun.serve-compatible signature) — and TanStack
+  Start's Node output **already uses srvx internally** (Nitro), so it's the same abstraction the
+  framework ships. `createSsrServer` body is nearly untouched.
+- **The one real behavioral risk**: `Bun.file` static mounts got Range/206 for free; on Node use
+  `send` (or hand-rolled `createReadStream` ranges) — must be proven against the real ~14GB
+  mouthpiece//akasha audio mounts (seeking = 206 correctness). Isolated to
+  `libs/ts/site-kit/src/ssrServer.ts`, inherited by all 7 SSR apps.
+- **Bun SQL → postgres.js (porsager) is ~1:1**: `sql.unsafe(query, params)`, tagged templates,
+  and `sql.begin(async tx => …)` all exist identically. orator store.ts (~750 lines, all
+  `sql.unsafe` positional) + weal-bot db.ts (tagged templates) both port mechanically. The
+  `IN (…)`-instead-of-`= any($1)` workaround becomes deletable (postgres.js handles arrays).
+- **`bun:sqlite`**: only the two already-run one-shot migrate.ts scripts → **delete, don't port**.
+- `Bun.file/write/spawn` elsewhere: 8 call sites, all trivial `node:fs`/`node:child_process`
+  swaps (spawn stdout is already async-iterable on Node).
+- **bun:test → vitest: all 48 files are a mechanical codemod** — usage is plain
+  describe/it/expect + lifecycle hooks; near-zero mock()/spyOn in the repo.
+- Moving to Node **removes** two known risk classes: `@discordjs/voice` NAPI prebuilds
+  (documented bun incompatibility class, oven-sh/bun#11313) and Playwright (officially
+  Node-first; bun unsupported).
+- Docker: `oven/bun:1.3.14(-slim)` → `node:24-slim` both stages ×11 Dockerfiles; CMD
+  `["node","server.ts"]`; `bunx playwright` → `npx playwright`; CI `setup-bun` composite +
+  the pinned VR container image change accordingly.
+- No Bun-only perf primitives found anywhere (`Bun.\w` grep exhaustive).
+
+## RESOLVED decisions (stakeholders, 2026-07-02)
+
+1. **Scope: FULL CUTOVER.** Vite 8 lockstep → Node 24 runtime exit → vitest everywhere → vp
+   adoption. Stakeholders explicitly accept migrating off the bun runtime to enable it.
+2. **Package manager: pnpm.** All-in on the VoidZero pairing; bun exits entirely (runtime AND
+   package manager). (Recommendation had been keep-bun-install; stakeholders chose pnpm —
+   accept the extra lockfile/CI/Dockerfile churn and sequence it deliberately.)
+3. **Lint lane: FULL SWITCH to oxlint + oxfmt.** Biome retires. Mitigations required by the
+   audit: glob-scope oxfmt hard (never bare `oxfmt .`; SOPS file + markdown/TOML/YAML must be
+   excluded — pyproject.toml stays ruff's), disable `react/react-in-jsx-scope`, port the 13
+   overrides via the mapping table, budget the one-time reformat commit, accept losing import
+   auto-fix (oxlint `sort-imports` as warn-only detection, or drop the convention), and do the
+   baseUrl→relative-paths tsconfig fix to unlock type-aware for the frontends.
+
+## Revised roadmap (supersedes "The plan" above)
+
+Order chosen to keep every slice CI-green and independently shippable, and to touch each ripple
+surface (Dockerfiles, CI, hooks) as few times as possible:
+
+- **R1 — Vite 8 lockstep (frontend lane).** All vite-using members to vite ^8.1.3 +
+  `@vitejs/plugin-react` ^5.2 + `@tailwindcss/vite`/`tailwindcss` ^4.3 + vitest ^4.1 in ONE
+  slice (no partial bumps — duplicate-vite is the #7614 trigger). Include the
+  baseUrl→relative-`paths` tsconfig fix across the 7 frontends (unlocks tsgolint; keep the
+  `@/*` alias, mirrored in vite/vitest configs). Verify per-app: build + ssrSmoke + VR goldens
+  (regenerate in the pinned container if bytes shift) + live visual spot-check. Update
+  apps/strider/README.md (template).
+- **R2 — bun:test → vitest codemod (48 files).** Do it while still ON the bun runtime (vitest
+  runs on Node regardless of what services run on) — decouples test-runner risk from runtime
+  risk. Libs first, then apps. Root `test` script: `bun --filter '*' test` still works; each
+  member's script becomes `vitest run`. The 5 test files touching Bun APIs (e.g. config.test.ts
+  Bun.write) get their fs swaps here, ahead of R3.
+- **R3 — Runtime exit to Node 24, per-service (the pilot ladder).** site-kit `ssrServer.ts`
+  (srvx + `send` Range path) first, then: weal-bot (postgres.js pattern) → ledger (simplest SSR,
+  no audio) → mouthpiece-frontend + akasha-frontend (**prove Range/206 on the real audio
+  mounts before fanning out**) → remaining 4 SSR frontends → weal-overlay → orator-backend
+  (SQL port + discord-voice live smoke: join channel, play audio) → vellum-render (Playwright
+  under Node + VR container swap). Delete the two migrate.ts scripts. Per-service Dockerfile →
+  `node:24-slim` + `just up` + live verify as each lands (deploy-apply-with-just memory).
+- **R4 — pnpm cutover (one slice).** `pnpm-workspace.yaml`, regenerate lockfile, root scripts
+  `bun --filter '*'` → `pnpm -r`, all 11 Dockerfiles' install stanzas (corepack/pnpm
+  fetch-frozen-lockfile pattern), CI composite `setup-bun` → node+pnpm (or `vp` in R6),
+  CONTRIBUTING.md + pre-commit hook invocations (`bunx` → `pnpm exec`). bun fully exits the
+  repo here (grep `bunx|bun run|oven/bun` to zero).
+- **R5 — biome → oxlint + oxfmt.** Port the audited tuned config (`.oxlintrc.json`:
+  correctness+suspicious+perf + react/jsx-a11y/import/promise plugins, react-in-jsx-scope off,
+  13 overrides ported, ignore list carried; `.oxfmtrc.json` from `--migrate=biome` + hard
+  glob-scoping wrapper scripts so bare-root runs are impossible). Triage the 252 residual
+  diagnostics (new overrides vs fixes). Enable `--type-aware` (fix the real floating-promises
+  bugs it already found). One-time reformat commit (JS/TS/JSON/CSS only). Swap pre-commit
+  (`oxlint --deny-warnings` + `oxfmt --check`), CI ts-lint job, root scripts; retire
+  @biomejs/biome; update CLAUDE.md's "one fast tool" note (now two, deliberately).
+- **R6 — vp adoption.** Install vp (curl installer; verify the npm/CI story — `setup-vp` action
+  unverified), `vp migrate` for the vitest/config consolidation into vite.config.ts task
+  blocks, root orchestration `pnpm -r` → `vp run` (task graph + caching), `vp env` pins Node 24
+  (`.node-version`), CI lanes re-expressed via vp where it pays. **`tsc --noEmit` STAYS the
+  typecheck gate** (tsgolint is lint-grade, not a tsc replacement).
+- **R7 — TypeScript 7 at GA** (independent): when `dist-tags.latest` is 7.x, pilot one lib →
+  flip root devDependency → full-workspace typecheck + editor DX check (typescript-go#2175).
+
+Watch items still open: TanStack Start official vite-8 statement (we pass empirically; an
+upstream regression could still land — pin exact versions), vitest 4 against our
+globalSetup/content-build pattern (untested in the canary), oxfmt pre-1.0 churn, vp beta →
+1.0 (remote caching, GitLab), Node enum-free grep before R3.
+
+Next step: author the NLSpec (`octo:spec`) → `thoughts/astra/specs/0022-viteplus-cutover-spec.md`
+covering R1–R6 (R7 rides independently), then implement per the R-ladder.
