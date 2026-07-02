@@ -1,6 +1,8 @@
 # Astra SSR frontend service (Decision I) — ledger, on the strider/akasha template.
-# `bun run start` runs the TanStack Start SSR server (serves dist/ + SSR). One knob:
-# `ARG APP` selects which apps/<APP> is built; everything else is workspace-generic.
+# `node --import .../nodeTsResolve.mjs server.ts` runs the TanStack Start SSR server
+# (serves dist/ + SSR) on Node 24 — the R3 runtime-exit pilot (0022 S4); the build
+# stage stays bun (D12). One knob: `ARG APP` selects which apps/<APP> is built;
+# everything else is workspace-generic.
 # ledger has NO backend snapshot and NO asset volume (it's a single static landing
 # page whose links are baked from config at build), so this is the simplest frontend
 # Dockerfile — no content-input COPY beyond config.kdl.
@@ -48,8 +50,10 @@ COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
 RUN bun run build
 
-# --- Runtime: slim image carrying the built app + workspace deps ---
-FROM oven/bun:1.3.14-slim AS runtime
+# --- Runtime: Node 24 (R3, 0022 S4 — the pilot; build stays bun, D12) ---
+# node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's
+# `user: "1000:1000"` (deploy-artifacts-run-as-user) carries over unchanged.
+FROM node:24-slim AS runtime
 ARG APP
 WORKDIR /repo/apps/${APP}
 ENV NODE_ENV=production
@@ -67,4 +71,6 @@ COPY --from=build /repo/apps/${APP}/src/generated ./src/generated
 # config.kdl is the single source for serviceName/port + the OTLP endpoint.
 COPY ontology/ontology-config /repo/ontology/ontology-config
 
-CMD ["bun", "run", "start"]
+# Invoke node directly (not `npm run start`) — one less process layer, and the
+# runtime image needs no package-manager story at all (D13).
+CMD ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]

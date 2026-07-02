@@ -13,6 +13,8 @@
 import { stat } from "node:fs/promises";
 import { getTracer, initTelemetry } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
+import { type Server, serve } from "srvx";
+import { serveFile } from "./sendFile";
 
 /** The shape of the built `dist/server/server.js` default export (asserted by the SSR smoke). */
 export interface SsrHandler {
@@ -66,13 +68,14 @@ async function isFile(p: string): Promise<boolean> {
 }
 
 /**
- * Start the Bun SSR server: wire server-side OTel into the runtime (principle #1;
- * the OTLP endpoint comes from config.kdl via @astra/config — no env reads),
- * static-serve built client assets, SSR everything else under one span per
- * request, and force-flush buffered spans on SIGTERM/SIGINT. Returns the Bun
- * server handle.
+ * Start the SSR server (srvx — runs on Node; R3, Decision-per-spec 0022): wire
+ * server-side OTel into the runtime (principle #1; the OTLP endpoint comes from
+ * config.kdl via @astra/config — no env reads), static-serve built client assets
+ * (Range/206-capable via `send`, `./sendFile.ts` — THE property the audio mounts
+ * depend on, S6), SSR everything else under one span per request, and force-flush
+ * buffered spans on SIGTERM/SIGINT. Returns the srvx server handle.
  */
-export function createSsrServer(opts: SsrServerOptions): ReturnType<typeof Bun.serve> {
+export function createSsrServer(opts: SsrServerOptions): Server {
   const { serviceName, port, ssr, clientDir, staticMounts = [] } = opts;
 
   // Guarded so a telemetry misconfig never takes the site down.
@@ -86,19 +89,28 @@ export function createSsrServer(opts: SsrServerOptions): ReturnType<typeof Bun.s
   }
   const tracer = getTracer(serviceName);
 
-  const server = Bun.serve({
+  const server = serve({
     port,
     hostname: "0.0.0.0",
-    idleTimeout: 30,
+    // We own SIGTERM/SIGINT ourselves below (telemetry flush before exit); srvx's
+    // built-in graceful-shutdown plugin would install a second pair of handlers
+    // that race ours (its own stderr progress log + polling close loop) for no
+    // benefit here, so it's off. No srvx `idleTimeout` equivalent exists (B3);
+    // the closest analog for the Node runtime is `node.keepAliveTimeout` (srvx
+    // spreads `node` straight into `http.createServer()` — ignored on non-Node
+    // adapters), which isn't semantically identical to Bun's idle-connection
+    // timeout but is the nearest available knob.
+    gracefulShutdown: false,
+    node: { keepAliveTimeout: 30_000 },
     async fetch(req) {
       const url = new URL(req.url);
       // Static mounts (e.g. the audio volume at /audio/) win ahead of SSR: a path
-      // under a mount prefix is served from disk or 404s — never SSR'd. Bun.file
-      // responses honour Range requests, so audio seeking works.
+      // under a mount prefix is served from disk or 404s — never SSR'd. `send`
+      // honours Range requests (206 + Content-Range), so audio seeking works.
       for (const mount of staticMounts) {
         if (!url.pathname.startsWith(mount.urlPrefix)) continue;
         const filePath = staticMountPath(mount, url.pathname);
-        if (filePath && (await isFile(filePath))) return new Response(Bun.file(filePath));
+        if (filePath && (await isFile(filePath))) return serveFile(req, filePath);
         return new Response("Not found", { status: 404 });
       }
       // Serve built client assets (hashed bundles, fonts, favicon) directly. The
@@ -106,7 +118,7 @@ export function createSsrServer(opts: SsrServerOptions): ReturnType<typeof Bun.s
       if (url.pathname !== "/") {
         const filePath = `${clientDir}${url.pathname}`;
         if (filePath.startsWith(clientDir) && (await isFile(filePath))) {
-          return new Response(Bun.file(filePath));
+          return serveFile(req, filePath);
         }
       }
       // One SSR span per rendered request (assets above short-circuit).
@@ -130,7 +142,11 @@ export function createSsrServer(opts: SsrServerOptions): ReturnType<typeof Bun.s
     },
   });
 
-  console.log(`[${serviceName}] SSR listening on http://${server.hostname}:${server.port}`);
+  // srvx prints its own untagged "Listening on" line from `serve()`; ours adds
+  // the serviceName tag once the (possibly async, on Node) listen completes.
+  void server.ready().then((s) => {
+    console.log(`[${serviceName}] SSR listening on ${s.url}`);
+  });
 
   // Force-flush buffered spans before the container stops (BatchSpanProcessor).
   for (const sig of ["SIGTERM", "SIGINT"] as const) {

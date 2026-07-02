@@ -432,7 +432,9 @@ services:
         APP: ledger # the one knob in the templated frontend Dockerfile
     image: astra-ledger:local
     container_name: astra-ledger
-    command: ["bun", "run", "start"]
+    # Node 24 runtime (R3, 0022 S4 — the pilot; D13). node:24-slim has global
+    # fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
     user: "1000:1000" # see weal-bot
     # No PORT env — serviceName/port come from config.kdl (config-single-source);
     # compose only maps the published host port below.
@@ -440,7 +442,7 @@ services:
       - "10370:10370" # ledger SSR (astra range) — also reachable directly
     networks: [signoz-net]
     healthcheck:
-      test: ["CMD", "bun", "-e", "await fetch('http://localhost:10370/').then(r=>process.exit(r.ok?0:1))"]
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10370/').then(r=>process.exit(r.ok?0:1))"]
       interval: 15s
       timeout: 5s
       retries: 5
