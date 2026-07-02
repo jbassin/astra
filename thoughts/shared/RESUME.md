@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (spec authored, 2026-07-02 second session)
+## Current state — UPDATE THIS SECTION (as of commit `5263ab3` docs/spec, 2026-07-02 second session)
 
 > **🆕 VITE+ CUTOVER (0022) — SPEC'D; ▶ NEXT: implement via `octo:embrace` from S1.** The NLSpec is at
 > **`thoughts/astra/specs/0022-viteplus-cutover-spec.md`** — 14 decisions (D1–D14), 15 slices (S1–S15)
