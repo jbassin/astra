@@ -1,6 +1,12 @@
 # NLSpec 0022 — Vite+ toolchain cutover (Vite 8 · Node 24 · pnpm · oxlint+oxfmt · vp)
 
-**Status:** SPEC — ready to implement. All decisions resolved; no open questions.
+**Status:** IN PROGRESS — S1–S8 built, CI-green, pushed (`09bfc42` S1 · `c04aaca` S2 · `cbdd568` S3 ·
+  `df853b4` S4 · `e9581bd` S5 · `e648ad2` S6 · `c6adf06` S7 · `70c6ee1` S8). R1+R2 done; R3 done through
+  S8 — resume at **S9** (vellum-render), then S10 cleanup, then R4–R6. ⚠ **Deploys parked** (permission-
+  gated `just up`): every slice's live-verification step is batched for one deploy window — the S6 gate
+  was satisfied locally (sha256-exact Range/206 on the real corpus via local node servers); criteria C/D/E
+  (live halves)/J (live half)/M re-verify at that window. Acceptance A ✓ B ✓ (grep-proven); D14's
+  storybook check escalated to a required ^10 bump (transitive vite-6 pin = duplicate-vite).
 **Scope doc:** `thoughts/shared/research/2026-07-02-viteplus-migration-0022-thoughts.md` (verified; the
   addendum's R1–R7 roadmap supersedes the doc's original plan — this spec covers **R1–R6**; R7 = TS 7 at
   GA rides independently). Phase-0 spikes DONE: Vite 8 canary PASSED on strider; oxc tools run against

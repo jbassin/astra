@@ -36,35 +36,51 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `5263ab3` docs/spec, 2026-07-02 second session)
+## Current state — UPDATE THIS SECTION (as of the S1–S8 push + the `fix(mouthpiece)` test pin, 2026-07-02 third session)
 
-> **🆕 VITE+ CUTOVER (0022) — SPEC'D; ▶ NEXT: implement via `octo:embrace` from S1.** The NLSpec is at
-> **`thoughts/astra/specs/0022-viteplus-cutover-spec.md`** — 14 decisions (D1–D14), 15 slices (S1–S15)
-> up the R-ladder (R1 vite-8 lockstep → R2 bun:test→vitest → R3 runtime exit per the pilot ladder →
-> R4 pnpm → R5 oxlint+oxfmt → R6 vp+tsdown; R7 = TS 7 at GA rides independently), a **verified-footprint
-> table** that corrects the scope doc (7 Start apps not 8; **50** bun:test files not 48; **5 of 7**
-> frontends run globalSetup content builds; only 6 real `Bun.serve` call sites; all 11 compose
-> healthchecks are `bun -e`), and an **adversarial completeness pass** whose 4 verified blockers are
-> folded in: the S9→S11 VR-CI-container sequencing, the bare-`bun` `snapshot.py:76` subprocess (Python
-> lane! the naive grep misses it), srvx's real API deltas on the 4 hand-rolled servers, and the CI
-> path-filter globs (`bun.lock`/`biome.json`) that would silently stop triggering jobs after R4/R5.
+> **🆕 VITE+ CUTOVER (0022) — S1–S8 BUILT + CI-GREEN + PUSHED; ▶ RESUME AT S9 (vellum-render).**
+> Spec: **`thoughts/astra/specs/0022-viteplus-cutover-spec.md`** (its status header carries the
+> commit-per-slice map `09bfc42`…`70c6ee1`). Landed this session (staff-orchestrator + sonnet
+> implementation agents, one reviewed commit per slice):
+> - **R1/S1** — vite exact-pin `8.1.3` ×12 members + plugin-react ^5.2 (NOT 6.x — extra rolldown/babel
+>   peers) + tailwind ^4.3.2 + vitest ^4.1.9 + jsdom ^29 + the 7-tsconfig baseUrl fix. ⚠ **Storybook 8.6
+>   transitively PINNED vite@6.4.3** (duplicate-vite = the #7614 trigger) → D14's "verify" escalated to
+>   a **required** ^10.4.6 bump (zero config changes). VR fixtures 0.000% drift; strider README updated.
+> - **R2/S2–S3** — zero `bun:test` repo-wide (all 50 files → vitest). 3 production root-locators moved
+>   `import.meta.dir`→`.dirname` (vitest's module runner has no `.dir`; bun supports `.dirname`). The 3
+>   parked test files were ALL resolved later (migrate ×2 deleted at S5/S8; weal-overlay server.test.ts
+>   unparked green at S8 incl. the SSE round-trip).
+> - **R3 S4–S8** — site-kit `createSsrServer` on **srvx + `send`** (new `sendFile.ts` bridge, three
+>   documented traps; 16-assertion integration test) + **`nodeTsResolve.mjs`** `--import` hook
+>   (extensionless AND directory imports — load-bearing for EVERY node-runs-TS entry); ledger pilot;
+>   weal-bot + orator-backend on **postgres.js** (D11 `= any($1)` restored + a new shape test; both dead
+>   migrate.ts deleted); **THE S6 Range/206 gate PASSED locally against the real corpus** (sha256-exact
+>   head/mid/suffix slices on 250 MB + 45 MB mp3s, 416/HEAD/200 all correct); all 7 SSR frontends +
+>   weal-overlay + orator-backend on Node 24 (D12 mixed-stage Dockerfiles: bun build / node:24-slim
+>   runtime; D13 `node -e` healthchecks — top-level await works); ytdlp/probe on node:child_process;
+>   napi voice prebuilds load clean; 9 TS parameter-property files fixed (found by RUNNING — grep missed
+>   one). Root `overrides` pins `@types/node ^24` (bun-types transitively pulled a broken 26 pre-release).
+> - **Also fixed:** py-test was red on main BEFORE this work — the 0021 tuning (`01216e1`) left a stale
+>   `CONTINUITY_BUDGET == 6_000` test pin; fixed to 26_000 in its own commit after the S1–S3 push
+>   surfaced it (the TS lane was fully green).
 >
-> **Late stakeholder decisions (this session):** oxfmt **`sortImports` keeps the import-sort
-> convention** (the Phase-0 "auto-sorting is lost" claim was WRONG — stakeholder-corrected, spec D4);
-> **tsdown included** (orator-controller rollup exits, S14); **gates unified strict** (CI gets
-> `--deny-warnings` too — today's CI/hook asymmetry was accidental, D6); **vp-in-CI is a HARD
-> requirement** for R6 — no silent pnpm-CI fallback (D7).
+> **⚠ DEPLOYS PARKED (the whole session):** the permission classifier denies `just up` (production
+> stack). All code is safely in git; **the live stack still runs bun-era images** (nothing live changed).
+> Needs ONE deploy window: `just up` (full rebuild), then the batched live verifications — per-frontend
+> visual spot-check (pixi/shader pages in a real WebGL browser), **Range/206 + player seek through the
+> public edge** (mouthpiece + akasha — criterion D's live half), weal-bot Discord roll round-trip +
+> history read, orator voice-join + 87-track read, vellum-render `/render` PNG via the edge, and a
+> SigNoz three-signals spot-check (criterion M).
 >
-> **▶ RESUME AT: `octo:embrace` against the 0022 spec, slice S1 (the vite-8 lockstep).** Sequencing is
-> load-bearing (spec Hand-off): S6's Range/206 proof gates the SSR fan-out; S11 (pnpm) only after the
-> runtime exit completes; S13's reformat + gate-swap is one slice, never split. NB: the CI-reproduction
-> commands in this file's "How to work" section change under R4/R5/R6 — the slice that changes a command
-> updates the docs in the same commit.
+> **▶ RESUME AT: S9 (vellum-render on Node; its CI-VR container/steps swap stays parked until S11), then
+> S10 (bun-runtime cleanup: `types:["bun"]` out, `@types/bun` out — re-evaluate the @types/node override
+> there — `.node-version`, grep-zero), then R4/S11 (pnpm, one slice), R5/S12–S13 (oxlint+oxfmt; the
+> reformat + gate-swap is ONE slice, never split), R6/S14–S15 (tsdown + vp; vp-in-CI is HARD, D7).**
+> The linguist-commit timer was STOPPED during the session and restarted at this checkpoint.
+> Full gotchas: [[viteplus-cutover-0022]].
 >
-> _(Also this session: removed the stray untracked `apps/heartwood-backend/proposals/2025-8-28/review.kdl`;
-> heartwood Phase-4 content acceptance is ON HOLD by stakeholder decision.)_
->
-> _(Prior main-track item unchanged: heartwood Phase-4 content acceptance — below.)_
+> _(Prior main-track item unchanged: heartwood Phase-4 content acceptance is ON HOLD by stakeholder
+> decision — below.)_
 
 > **PIPELINE REORDER (0021) — BOTH CHANGES DONE + DEPLOYED + LIVE-VERIFIED.** The pipeline is now
 > reordered to: craig zip lands → **transcribe ∥ merge audio (parallel)** → chronicle → mouthpiece
