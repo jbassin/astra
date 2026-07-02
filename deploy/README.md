@@ -39,9 +39,11 @@ ClickHouse, zookeeper, Dagster Postgres, and the query-service are **internal** 
 `0011`–`0013` (akasha-fe / mouthpiece-fe / vellum-fe) copy. It is **not** prerendered static `dist/`
 served by `file_server` (the old Decision D model); it is a long-running SSR service:
 
-- **Image** (`apps/strider/Dockerfile`, build context = repo root): a Bun image that `bun install`s the
-  workspace, `bun run build`s the TanStack Start app, and ships `dist/` + `content/` + `server.ts`. `bun
-  run start` is the only command — one SSR process.
+- **Image** (`apps/strider/Dockerfile`, build context = repo root): the build stage `pnpm install`s the
+  workspace and `pnpm run build`s the TanStack Start app on Node 24 + pnpm (0022 S11 — was a Bun build
+  stage through S10); the runtime stage ships `dist/` + `content/` + `server.ts` on Node 24 and invokes
+  `node --import .../nodeTsResolve.mjs server.ts` directly — one SSR process, no package-manager story
+  at runtime (D13).
 - **`server.ts`**: `dist/server/server.js` is a bare Web-`fetch` handler, so this entry serves the hashed
   client bundle from `dist/client/`, handles the editor save API (`POST /write-layer` → `content/layers`),
   and falls through to SSR for everything else — a self-contained unit.

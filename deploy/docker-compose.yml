@@ -154,11 +154,11 @@ services:
       dockerfile: apps/weal-bot/Dockerfile
     image: astra-weal-bot:local
     container_name: astra-weal-bot
-    # All astra app containers run as the host owner (uid 1000) — both the oven/bun
-    # image (`bun`=uid 1000) and node:24-slim (built-in `node`=uid 1000, R3 0022 — the
-    # runtime weal-bot itself runs on) ship a uid-1000 user, and the app files are
-    # world-readable, so the SSR/bot processes read + serve them fine; writes (where
-    # any) land host-owned. Postgres/SigNoz keep their own uid.
+    # All astra app containers run as the host owner (uid 1000) — node:24-slim (the
+    # build AND runtime base for every app since 0022 S11; built-in `node`=uid 1000)
+    # ships a uid-1000 user, and the app files are world-readable, so the SSR/bot
+    # processes read + serve them fine; writes (where any) land host-owned.
+    # Postgres/SigNoz keep their own uid.
     user: "1000:1000"
     depends_on:
       weal-postgres:
@@ -483,8 +483,8 @@ services:
     # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; D13). node:24-slim
     # has global fetch, so the healthcheck below needs no extra deps either.
     command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
-    # B1 (the load-bearing bind-mount fix): every bun/dagster container runs as ROOT by
-    # default (no USER directive in any frontend Dockerfile). Without this, container
+    # B1 (the load-bearing bind-mount fix): every frontend/dagster container runs as
+    # ROOT by default (no USER directive in any frontend Dockerfile). Without this, container
     # writes to proposals/ land 0:0 and the host (uid 1000, the repo owner) can't
     # git-commit them or let `just heartwood-apply` stamp review.kdl in place (the
     # vellum-render/dist EACCES class). 1000:1000 = the host repo owner → host-owned

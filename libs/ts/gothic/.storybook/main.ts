@@ -6,7 +6,7 @@ import tailwindcss from "@tailwindcss/vite";
  * 0004's deferred exit gate H ("gothic renders that AST"). Fonts are served at
  * `/fonts/` (the absolute-URL gotcha); Tailwind v4 is wired via its Vite plugin.
  * No browser runs in CI — this is the local visual surface; the machine-checked
- * gate is the `react-dom/server` render smoke in `bun test`.
+ * gate is the `react-dom/server` render smoke in `vitest`.
  */
 const config: StorybookConfig = {
   stories: ["../stories/**/*.stories.@(ts|tsx)"],

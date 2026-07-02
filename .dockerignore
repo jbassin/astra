@@ -1,7 +1,7 @@
 # Repo-root build context excludes (all services build with context `..`). Keeps the
-# context small + fast: these are either rebuilt in-image (node_modules via bun install,
+# context small + fast: these are either rebuilt in-image (node_modules via pnpm install,
 # the uv venv via uv sync, dist via the app build) or irrelevant to any build.
-# NB: do NOT exclude bun.lock / uv.lock / src/generated — builds need them.
+# NB: do NOT exclude pnpm-lock.yaml / uv.lock / src/generated — builds need them.
 .git
 **/node_modules
 **/.venv

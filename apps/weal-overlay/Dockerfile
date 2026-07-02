@@ -4,13 +4,13 @@
 #
 # Build context is the REPO ROOT (workspace member depending on @astra/{gothic,
 # observe,config,site-kit}). Build from deploy/ via compose.
-FROM oven/bun:1.3.14 AS build
+FROM node:24-slim AS build
 WORKDIR /repo
 
 # Install against the FULL workspace manifest set: the root `apps/*`/`libs/ts/*` globs
 # resolve the whole workspace, so a partial set reads as "lockfile had changes" under
 # --frozen-lockfile. Add a new app's manifest here too (libs/ts is copied wholesale).
-COPY package.json bun.lock ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/akasha-frontend/package.json apps/akasha-frontend/
 COPY apps/harrow/package.json apps/harrow/
 COPY apps/heartwood-frontend/package.json apps/heartwood-frontend/
@@ -24,13 +24,14 @@ COPY apps/vellum-render/package.json apps/vellum-render/
 COPY apps/weal-bot/package.json apps/weal-bot/
 COPY apps/weal-overlay/package.json apps/weal-overlay/
 COPY libs/ts ./libs/ts
-RUN bun install --frozen-lockfile
+RUN corepack enable && corepack prepare pnpm@10.34.4 --activate \
+    && pnpm install --frozen-lockfile
 
 # Shared base tsconfig (vite's esbuild follows `extends` at build time).
 COPY tsconfig.base.json ./
 COPY apps/weal-overlay ./apps/weal-overlay
 WORKDIR /repo/apps/weal-overlay
-RUN bun run build
+RUN pnpm run build
 
 # --- Runtime: Node 24 (R3, 0022 S8) carrying the built overlay + the Node server ---
 # node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's

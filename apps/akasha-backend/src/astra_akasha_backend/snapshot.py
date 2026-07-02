@@ -30,6 +30,10 @@ REPO_ROOT = APP_ROOT.parents[1]  # apps/ → repo root
 SNAPSHOT_PATH = APP_ROOT / "snapshot" / "akasha-snapshot.json"
 #: The TS structural validator (F3) — the Dagster asset shells out to it.
 VALIDATOR = REPO_ROOT / "libs/ts/vellum-lang/scripts/validate-corpus.ts"
+#: Node ESM resolve hook (0022 S11 — off bun): lets Node walk the workspace's
+#: extensionless relative imports the same way Vite/bun did (see the hook's own
+#: header comment for the two failure shapes it patches over).
+NODE_TS_RESOLVE_HOOK = REPO_ROOT / "libs/ts/site-kit/src/nodeTsResolve.mjs"
 
 
 def build_snapshot(pages: list[Page], edges: list[Edge]) -> dict[str, Any]:
@@ -71,9 +75,21 @@ def build_from_corpus(content_dir: Path | str = CONTENT_DIR) -> dict[str, Any]:
 
 
 def validate_corpus(content_dir: Path | str = CONTENT_DIR) -> None:
-    """Run the TS structural validator (F3); raise on any error chip/collision."""
+    """Run the TS structural validator (F3); raise on any error chip/collision.
+
+    Runs host-side via ``node`` (0022 S11 — off bun; the dagster image ships
+    neither bun nor node, so this only runs on the host, matching the pipeline
+    live-run gotchas). Node 24 must be on the host's PATH.
+    """
     subprocess.run(
-        ["bun", str(VALIDATOR), "--dir", str(content_dir)],
+        [
+            "node",
+            "--import",
+            str(NODE_TS_RESOLVE_HOOK),
+            str(VALIDATOR),
+            "--dir",
+            str(content_dir),
+        ],
         check=True,
     )
 

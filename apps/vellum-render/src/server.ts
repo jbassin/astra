@@ -8,7 +8,7 @@
  * pkg/vellum scripts/render-server.ts, with config-single-source + telemetry added;
  * off Bun onto srvx (R3, 0022 S9).
  *
- *   node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs src/server.ts   # after `bun run build`
+ *   node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs src/server.ts   # after `pnpm run build`
  */
 import { stat } from "node:fs/promises";
 import { resolve } from "node:path";

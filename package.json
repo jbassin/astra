@@ -2,17 +2,14 @@
   "name": "astra",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.34.4",
   "engines": {
     "node": ">=24"
   },
-  "workspaces": [
-    "apps/*",
-    "libs/ts/*"
-  ],
   "scripts": {
-    "typecheck": "bun --filter '*' typecheck",
-    "test": "bun --filter '*' test",
-    "build": "bun --filter '*' build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "build": "pnpm -r build",
     "lint": "biome ci .",
     "format": "biome format --write .",
     "prepare": "git config core.hooksPath .githooks || true"
@@ -24,7 +21,12 @@
     "@types/node": "^24.13.2",
     "typescript": "^5"
   },
-  "overrides": {
-    "@types/node": "^24.13.2"
+  "pnpm": {
+    "overrides": {
+      "@types/node": "^24.13.2"
+    },
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

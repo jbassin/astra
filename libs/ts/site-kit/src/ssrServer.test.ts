@@ -4,9 +4,9 @@
 // traffic takes. THE load-bearing assertion is the Range/206 case: the audio mounts
 // (S6) depend on `send` producing byte-exact partial responses through this server.
 //
-// Note: vitest's worker runs Node even when launched via `bun run vitest` (no `Bun`
-// global — see apps/weal-overlay/vitest.config.ts), so this exercises the real Node
-// srvx adapter today, not a Bun stand-in.
+// Note: vitest's worker always runs Node (no `Bun` global — see
+// apps/weal-overlay/vitest.config.ts, unchanged pre-/post-0022 S11), so this
+// exercises the real Node srvx adapter, not a Bun stand-in.
 
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";

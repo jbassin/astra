@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "Elgato Stream Deck plugin that remote-controls orator-backend (collection→tag navigation, live now-playing) over its HTTP REST API. Node runtime (Elgato SDK); in the bun workspace for typecheck/test only — rollup builds the .streamDeckPlugin.",
+  "description": "Elgato Stream Deck plugin that remote-controls orator-backend (collection→tag navigation, live now-playing) over its HTTP REST API. Node runtime (Elgato SDK); in the pnpm workspace for typecheck/test only — rollup builds the .streamDeckPlugin.",
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

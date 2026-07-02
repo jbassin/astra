@@ -107,7 +107,7 @@ the Caddy edge.
 Just run the dev server:
 
 ```bash
-bun dev
+pnpm --filter @astra/strider dev
 ```
 
 Then open <http://localhost:10360/editor>. Saving a layer calls the server

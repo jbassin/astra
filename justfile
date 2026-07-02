@@ -175,7 +175,8 @@ heartwood-apply date:
     echo "heartwood-apply {{date}}: writing approved pages + registry adds…"
     OTEL_SDK_DISABLED=true uv run astra-heartwood-apply {{date}}
     echo "heartwood-apply: validating the corpus…"
-    bun libs/ts/vellum-lang/scripts/validate-corpus.ts --dir apps/akasha-backend/content
+    node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+      libs/ts/vellum-lang/scripts/validate-corpus.ts --dir apps/akasha-backend/content
     echo "heartwood-apply: regenerating the akasha snapshot…"
     OTEL_SDK_DISABLED=true uv run akasha-snapshot
     git add apps/akasha-backend/content apps/akasha-backend/snapshot/akasha-snapshot.json \
@@ -207,7 +208,7 @@ heartwood-apply date:
 # already excludes *.candidates.json and the large scribe/mouthpiece binaries, so a plain
 # `add` of those two dirs stages exactly the right files. No-ops cleanly when nothing's new.
 # Uses --no-verify: the commit is data-only (the biome/ruff pre-commit gate is irrelevant and
-# needs bunx/uv on PATH, which the systemd user service lacks); CI still lints on push.
+# needs pnpm/uv on PATH, which the systemd user service lacks); CI still lints on push.
 linguist-commit:
     #!/usr/bin/env bash
     set -euo pipefail

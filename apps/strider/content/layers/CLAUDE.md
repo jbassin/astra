@@ -67,4 +67,4 @@ Notes:
 
 ## Writing layers via `/editor`
 
-`bun dev` exposes a client-only `/editor` UI (`ssr: false`) whose save calls the `writeLayerFn` **server function** (TanStack Start, same origin — no sidecar), which writes the `.kdl` file into this directory via `scripts/writeLayer.ts` (filename regex, 64 KB cap, no overwrite). The editor serializes via `serializeLayer` in `src/domain/lib/editorHelpers.ts` — the exact inverse of the build's parser. After the file lands, `contentWatchPlugin` re-runs `build-content` and Vite full-reloads.
+`pnpm --filter @astra/strider dev` exposes a client-only `/editor` UI (`ssr: false`) whose save calls the `writeLayerFn` **server function** (TanStack Start, same origin — no sidecar), which writes the `.kdl` file into this directory via `scripts/writeLayer.ts` (filename regex, 64 KB cap, no overwrite). The editor serializes via `serializeLayer` in `src/domain/lib/editorHelpers.ts` — the exact inverse of the build's parser. After the file lands, `contentWatchPlugin` re-runs `build-content` and Vite full-reloads.

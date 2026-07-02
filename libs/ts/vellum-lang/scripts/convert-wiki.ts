@@ -1,8 +1,9 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
  * One-shot faerrin-wiki → full-vellum converter (astra 0007, decision E3/F2).
  *
- *   bun libs/ts/vellum-lang/scripts/convert-wiki.ts [--src <wiki>] [--dest <corpus>]
+ *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+ *     libs/ts/vellum-lang/scripts/convert-wiki.ts [--src <wiki>] [--dest <corpus>]
  *
  * Reads faerrin's Obsidian wiki and writes the akasha SSOT corpus (full-vellum)
  * under apps/akasha-backend/content/. Idempotent. Emits a per-page conversion
@@ -24,7 +25,7 @@ import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSy
 import { dirname, join, relative, resolve } from "node:path";
 import { parse as parseYaml, stringify as stringifyYaml } from "yaml";
 
-const REPO = resolve(import.meta.dir, "../../../..");
+const REPO = resolve(import.meta.dirname, "../../../..");
 const SRC = argValue("--src") ?? "/ruby/data/experiments/faerrin/pkg/content/wiki";
 const DEST = argValue("--dest") ?? join(REPO, "apps/akasha-backend/content");
 

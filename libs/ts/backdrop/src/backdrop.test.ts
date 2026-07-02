@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { BACKDROPS } from "./shaders";
 
 // Pure-data checks on the catalog — no pixi/WebGL (can't run a real GL context under
-// bun test). The load-bearing invariant: every uniform a spec declares must actually
+// vitest). The load-bearing invariant: every uniform a spec declares must actually
 // be referenced in its fragment, and the fragment must follow the Pixi-v8 convention.
 describe("backdrop catalog", () => {
   it("exposes the three pixi backdrops", () => {

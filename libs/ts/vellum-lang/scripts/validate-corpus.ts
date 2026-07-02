@@ -1,9 +1,10 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 /**
  * Corpus structural validator (astra 0007, decision F3 — the TS Node step that
  * makes TS the structural authority, D2).
  *
- *   bun libs/ts/vellum-lang/scripts/validate-corpus.ts [--dir <corpus>]
+ *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+ *     libs/ts/vellum-lang/scripts/validate-corpus.ts [--dir <corpus>]
  *
  * Parses every `.vellum` page with the reference parser and reports two things,
  * failing on either (NLSpec 0007 exit gate B + the §1 collision scan):
@@ -25,7 +26,7 @@ import type { Nodes } from "mdast";
 import { parseDocument } from "../src/index";
 import type { VellumNode } from "../src/model";
 
-const REPO = resolve(import.meta.dir, "../../../..");
+const REPO = resolve(import.meta.dirname, "../../../..");
 const DIR = argValue("--dir") ?? join(REPO, "apps/akasha-backend/content");
 
 function argValue(flag: string): string | undefined {

@@ -5,12 +5,12 @@
  * end-to-end (this de-risks Phase 1's libs/ts/observe). Deps are ephemeral, so
  * nothing leaks into the workspace lockfile:
  *
- *   mkdir -p /tmp/astra-ts-span && cd /tmp/astra-ts-span && bun init -y >/dev/null
- *   bun add @opentelemetry/api @opentelemetry/sdk-trace-base \
+ *   mkdir -p /tmp/astra-ts-span && cd /tmp/astra-ts-span && npm init -y >/dev/null
+ *   npm add @opentelemetry/api @opentelemetry/sdk-trace-base \
  *           @opentelemetry/exporter-trace-otlp-http @opentelemetry/resources \
  *           @opentelemetry/semantic-conventions
  *   OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:10353 \
- *     bun /ruby/data/experiments/astra/deploy/telemetry-smoke/ts_span.ts
+ *     node /ruby/data/experiments/astra/deploy/telemetry-smoke/ts_span.ts
  */
 import { trace } from "@opentelemetry/api";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";

@@ -10,16 +10,23 @@ import { beforeAll, describe, expect, it } from "vitest";
 const APP_ROOT = path.resolve(import.meta.dirname, "..");
 const SERVER_BUNDLE = path.join(APP_ROOT, "dist/server/server.js");
 const RUNNER = path.join(APP_ROOT, "scripts/ssrSmoke.ts");
+// 0022 S11 — off bun: `pnpm run build` for the workspace script, `node --import
+// nodeTsResolve.mjs` for the raw-TS runner subprocess (same hook every server.ts
+// entry uses).
+const NODE_TS_RESOLVE_HOOK = path.join(APP_ROOT, "../../libs/ts/site-kit/src/nodeTsResolve.mjs");
 
 describe("SSR smoke", () => {
   beforeAll(() => {
     if (!existsSync(SERVER_BUNDLE)) {
-      execFileSync("bun", ["run", "build"], { cwd: APP_ROOT, stdio: "inherit" });
+      execFileSync("pnpm", ["run", "build"], { cwd: APP_ROOT, stdio: "inherit" });
     }
   }, 180_000);
 
   it("SSRs the landing page (brand + every site + resolved origins)", () => {
-    const out = execFileSync("bun", [RUNNER], { cwd: APP_ROOT, encoding: "utf8" });
+    const out = execFileSync("node", ["--import", NODE_TS_RESOLVE_HOOK, RUNNER], {
+      cwd: APP_ROOT,
+      encoding: "utf8",
+    });
     expect(out).toContain("status=200");
     expect(out).toContain("marker=true");
     expect(out).toContain("sites=true");

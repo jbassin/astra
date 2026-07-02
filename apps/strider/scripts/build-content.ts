@@ -448,8 +448,9 @@ async function main(): Promise<void> {
   console.log(`[build-content] ${summaries.join(", ")}`);
 }
 
-// Only run the generator when invoked directly (`bun run build-content.ts` — via
-// the build/typecheck scripts and contentWatchPlugin's subprocess). Importing
+// Only run the generator when invoked directly (`node --import
+// nodeTsResolve.mjs build-content.ts` — via the build/typecheck scripts and
+// contentWatchPlugin's subprocess). Importing
 // this module (e.g. from build-content.test.ts) must NOT regenerate content.
 if (import.meta.main) {
   main().catch((err: unknown) => {

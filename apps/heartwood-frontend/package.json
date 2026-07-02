@@ -7,9 +7,9 @@
     "dev": "vite dev --configLoader runner",
     "build": "vite build --configLoader runner",
     "start": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
-    "typecheck": "bun run scripts/generate-routes.ts && tsc --noEmit",
+    "typecheck": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/generate-routes.ts && tsc --noEmit",
     "test": "vitest run --passWithNoTests",
-    "generate:routes": "bun run scripts/generate-routes.ts"
+    "generate:routes": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/generate-routes.ts"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

@@ -1,4 +1,4 @@
-// SSR smoke runner — exercises the BUILT server bundle in real bun (production
+// SSR smoke runner — exercises the BUILT server bundle in real Node (production
 // parity). Invoked by src/ssrSmoke.test.ts via a subprocess so vitest's module
 // runner never re-bundles dist/server/server.js. Prints one result line and
 // exits non-zero on any failure.

@@ -1,23 +1,24 @@
 # Astra render service (0013, D2/D3) — vellum-render. A warm Node + Playwright
 # sidecar that screenshots gothic-rendered vellum documents to PNG. The FIRST
 # browser-in-a-container in astra: the runtime stage installs Chromium + its system
-# libraries on the node-slim base (the pin is the `playwright` version in bun.lock,
-# so the render image and the CI visual-regression container — still oven/bun:1.3.14
-# until S11 — share the exact same Chromium — D3/D4). `--no-sandbox` is set at
-# launch (renderService.ts) since the container has no user-namespace sandbox.
+# libraries on the node-slim base (the pin is the `playwright` version in
+# pnpm-lock.yaml, so the render image and the CI visual-regression container — both
+# node:24-slim as of 0022 S11 — share the exact same Chromium — D3/D4). `--no-sandbox`
+# is set at launch (renderService.ts) since the container has no user-namespace sandbox.
 #
-# Build context is the REPO ROOT (a bun workspace member). Port + service name come
+# Build context is the REPO ROOT (a pnpm workspace member). Port + service name come
 # from config.kdl (config-single-source) — no PORT env; compose maps the host port.
-# Build stage STAYS bun (D12 mixed-stage, R3 0022 S9 — S11 swaps it); runtime is
-# Node 24 (R3, 0022 S9 — the runtime-exit recipe; D13).
+# Build stage now also runs Node 24 + pnpm (0022 S11 — D12's mixed bun-build/
+# node-runtime retired); runtime is Node 24 (R3, 0022 S9 — the runtime-exit recipe;
+# D13).
 ARG APP=vellum-render
 
-FROM oven/bun:1.3.14 AS build
+FROM node:24-slim AS build
 ARG APP
 WORKDIR /repo
 
 # Install against the full workspace manifest set (cached unless manifests change).
-COPY package.json bun.lock ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/akasha-frontend/package.json apps/akasha-frontend/
 COPY apps/harrow/package.json apps/harrow/
 COPY apps/heartwood-frontend/package.json apps/heartwood-frontend/
@@ -31,7 +32,8 @@ COPY apps/vellum-render/package.json apps/vellum-render/
 COPY apps/weal-bot/package.json apps/weal-bot/
 COPY apps/weal-overlay/package.json apps/weal-overlay/
 COPY libs/ts ./libs/ts
-RUN bun install --frozen-lockfile
+RUN corepack enable && corepack prepare pnpm@10.34.4 --activate \
+    && pnpm install --frozen-lockfile
 
 # The shared base tsconfig + config.kdl must be present at build time (vite + the
 # render-entry build read them via the workspace / @astra/config).
@@ -41,7 +43,7 @@ COPY ontology/ontology-config /repo/ontology/ontology-config
 # Build the render-entry page (plain Vite → dist/render.html + assets + fonts).
 COPY apps/${APP} ./apps/${APP}
 WORKDIR /repo/apps/${APP}
-RUN bun run build
+RUN pnpm run build
 
 # --- Runtime: Node 24 (R3, 0022 S9) + Chromium (the browser-in-container) ---
 # node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's

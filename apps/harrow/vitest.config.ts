@@ -4,7 +4,7 @@ import { defineConfig } from "vitest/config";
 
 // Standalone vitest config: jsdom + the `@` alias, separate from vite.config so the
 // TanStack Start server plugin doesn't load under the test runner. ESM —
-// `import.meta.dirname`, not `__dirname` (the bun lane is `"type": "module"`).
+// `import.meta.dirname`, not `__dirname` (the workspace is `"type": "module"`).
 export default defineConfig({
   plugins: [react()],
   resolve: {

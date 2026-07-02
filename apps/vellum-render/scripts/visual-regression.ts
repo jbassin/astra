@@ -2,19 +2,20 @@
  * Golden-image visual regression (D4). Renders each fixture through the real
  * RenderService and compares the PNG to a committed golden with a perceptual
  * tolerance. Goldens are authoritative ONLY in the pinned CI container
- * (oven/bun:1.3.14 + the Chromium the `playwright` lock pins) — cross-render
- * AA/hinting drift exceeds the tolerance otherwise — so they are (re)generated
- * there with `--update`. This is a NEW-BASELINE regression gate against astra's
- * own gothic render, NOT a byte-match to faerrin's (the void palette differs).
+ * (`node:24-slim` + the Chromium the `playwright` lock pins, 0022 S11 — was
+ * `oven/bun:1.3.14` through S9/S10) — cross-render AA/hinting drift exceeds the
+ * tolerance otherwise — so they are (re)generated there with `--update`. This is a
+ * NEW-BASELINE regression gate against astra's own gothic render, NOT a byte-match
+ * to faerrin's (the void palette differs).
  *
- * Runtime-agnostic (node:fs + srvx only — R3, 0022 S9): runs under both host
- * Node 24 and the pinned `oven/bun:1.3.14` CI container (until S11 moves the CI
- * job to Node/pnpm too).
+ * Runtime-agnostic (node:fs + srvx only — R3, 0022 S9): runs under host Node 24 and
+ * the pinned `node:24-slim` CI container (0022 S11 — the bun-container CI job is
+ * gone; the golden contract is pinned to this Node image now).
  *
  *   node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts            # compare (exit 1 on drift)
  *   node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts --update   # (re)write goldens
  *
- * Requires a prior `vite build` (the render service serves dist/).
+ * Requires a prior `pnpm run build` (the render service serves dist/).
  */
 import { existsSync } from "node:fs";
 import { readFile, stat, writeFile } from "node:fs/promises";
@@ -37,7 +38,7 @@ const UPDATE = process.argv.includes("--update");
 const MAX_DIFF_RATIO = 0.005;
 
 if (!existsSync(resolve(DIST, "render.html"))) {
-  throw new Error(`${DIST}/render.html not found — run \`bun run build\` first`);
+  throw new Error(`${DIST}/render.html not found — run \`pnpm run build\` first`);
 }
 
 async function isFile(p: string): Promise<boolean> {

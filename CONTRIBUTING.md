@@ -10,7 +10,7 @@ and ship work here" companion.** Read both.
 ## 1. What astra is (orient first)
 
 astra is a **re-architecture of [faerrin](/ruby/data/experiments/faerrin)** — a **polyglot monorepo**:
-Python (data + LLM, managed by **uv**) and TypeScript (web, managed by **bun**), two toolchains, no third
+Python (data + LLM, managed by **uv**) and TypeScript (web, managed by **pnpm**), two toolchains, no third
 language. It is a **port, not a greenfield**: most subsystems have an existing faerrin implementation that
 should be lifted/ported, not reinvented.
 
@@ -73,16 +73,16 @@ feedback memories ([[verify-before-acting]], [[no-silent-scope-cuts]]).
 ## 4. Toolchains & workspaces
 
 Two **disjoint** workspaces over the same tree; **a directory belongs to whichever lane its manifest
-declares** (`pyproject.toml` → uv; `package.json` → bun). They never cross-claim.
+declares** (`pyproject.toml` → uv; `package.json` → pnpm). They never cross-claim.
 
 - **Python (uv):** virtual workspace at root `pyproject.toml`; members `apps/*`, `libs/py/*`, `ontology/*`.
   Lint+format **ruff**, type-check **ty** (Astral, preview, pinned `==0.0.51`), tests **pytest**.
-- **TypeScript (bun):** workspace at root `package.json`; members `apps/*`, `libs/ts/*`. Lint+format
-  **biome** (one tool). Type-check `tsc --noEmit` against `tsconfig.base.json` (strict). Pins: bun
-  **1.3.14**, biome **2.x**, typescript **5.x**, Python **≥3.12**.
+- **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml`; members `apps/*`, `libs/ts/*`. Lint+format
+  **biome** (one tool). Type-check `tsc --noEmit` against `tsconfig.base.json` (strict). Pins: Node **24**,
+  pnpm **10.34.4** (root `packageManager` + corepack), biome **2.x**, typescript **5.x**, Python **≥3.12**.
 
 **uv rejects empty members** (a glob-matched dir without a `pyproject.toml` is a hard error) → don't
-pre-create placeholder member dirs; keep glob roots in git with a `.gitkeep` *file*. bun ignores
+pre-create placeholder member dirs; keep glob roots in git with a `.gitkeep` *file*. pnpm ignores
 manifest-less dirs, so this is uv-only.
 
 ---
@@ -95,16 +95,16 @@ uv sync
 uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest
 
 # TypeScript lane
-bun install
-bun --filter '*' typecheck && bunx biome ci . && bun --filter '*' test && bun --filter '*' build
+pnpm install
+pnpm -r typecheck && pnpm exec biome ci . && pnpm -r test && pnpm -r build
 ```
 
 CI (GitHub Actions, `.github/workflows/ci.yml`) is parallel + path-filtered, so scope your local run to
 the lane/app you touched. A **pre-commit gate** (`.githooks/pre-commit`) blocks a commit on any
 **format/lint** issue across both lanes — `biome ci --error-on-warnings .` (TS) + `ruff check` /
-`ruff format --check` (Python). It's auto-installed by the root `prepare` script on `bun install`
+`ruff format --check` (Python). It's auto-installed by the root `prepare` script on `pnpm install`
 (`git config core.hooksPath .githooks`); to install manually run that command. It's **check-only** (never
-edits files) — fix with `bun run format` / `uv run ruff format .`, or bypass in an emergency with
+edits files) — fix with `pnpm run format` / `uv run ruff format .`, or bypass in an emergency with
 `git commit --no-verify`. **Typecheck + tests are NOT in the hook** (too slow) — run them locally + in CI.
 Conventional-commit messages are linted by commitlint.
 
@@ -159,13 +159,20 @@ Four non-overlapping concerns; **SigNoz/OTel is the single pane across all of th
   duck-typed attribute ty can't see.
 - **pytest** collides on same-basename test files across packages → use unique basenames.
 
-**TypeScript / bun / biome**
+**TypeScript / pnpm / biome**
 - **biome ignores** generated + fixture files via `files.includes` negations (`!**/routeTree.gen.ts`,
   `!**/src/generated/**`, `!**/tests/fixtures/**`, the canonical/snapshot JSONs). Add new generated paths
   there or biome will fight the generator.
 - **`biome ci` prints "errors emitted" but exits 0 on warnings/infos** — trust the exit code.
-- **bun workspace deps resolve only for the package that declares them** (no global `node_modules/@astra`
-  symlink) — run a script from inside the declaring package.
+- **pnpm workspace deps resolve only for the package that declares them** (strict, non-hoisting layout —
+  no global `node_modules/@astra` symlink) — run a script from inside the declaring package, and declare
+  every import explicitly in that package's `package.json` (a phantom dep that happened to resolve via
+  hoisting under bun/npm will hard-fail under pnpm).
+- **pnpm blocks dependency lifecycle (install/postinstall) scripts by default** — a dep that needs one
+  (e.g. `esbuild`'s platform-binary postinstall) silently no-ops until approved via
+  `pnpm.onlyBuiltDependencies` in root `package.json` (never `pnpm approve-builds`'s interactive picker
+  in an automated context — it can silently write to `ignoredBuiltDependencies` instead if nothing's
+  selected).
 - **TanStack Start frontends:** SSR is the default (drop any `prerender` block for Decision I — the build
   emits `dist/server/server.js`). The generated `src/routeTree.gen.ts` is committed (biome-ignored) so
   CI `tsc` passes without a generate step; it's regenerated on build. `vite.config.ts` is ESM — use

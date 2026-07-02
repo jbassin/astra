@@ -1,19 +1,19 @@
 # Astra weal-bot — the dice/host Discord bot (0009). Long-running service: discord.js
 # gateway + the internal speak API. Runs on Node 24 at runtime (R3, 0022 S5 — off Bun;
 # `node --import .../nodeTsResolve.mjs` runs the TS entry directly, same hook as
-# ledger's S4 pilot); the build stage stays bun (D12 — install only, no bundling).
+# ledger's S4 pilot); the build stage now also runs Node 24 + pnpm (0022 S11 — D12's bun build stage retired; install only, no bundling).
 #
-# Build context is the REPO ROOT (weal-bot is a bun workspace member depending on
-# @astra/{config,observe,ontology} via workspace:*), so the whole bun workspace must
-# be present for `bun install` to resolve workspace links. Build from deploy/ via compose.
-FROM oven/bun:1.3.14 AS build
+# Build context is the REPO ROOT (weal-bot is a pnpm workspace member depending on
+# @astra/{config,observe,ontology} via workspace:*), so the whole pnpm workspace must
+# be present for `pnpm install` to resolve workspace links. Build from deploy/ via compose.
+FROM node:24-slim AS build
 WORKDIR /repo
 
 # Install against the FULL workspace manifest set (cached unless manifests change).
 # Every app manifest must be present: the root `apps/*`/`libs/ts/*` globs resolve the
 # whole workspace, so a partial set reads as "lockfile had changes" under
 # --frozen-lockfile. Add a new app's manifest here too (libs/ts is copied wholesale).
-COPY package.json bun.lock ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/akasha-frontend/package.json apps/akasha-frontend/
 COPY apps/harrow/package.json apps/harrow/
 COPY apps/heartwood-frontend/package.json apps/heartwood-frontend/
@@ -27,7 +27,8 @@ COPY apps/vellum-render/package.json apps/vellum-render/
 COPY apps/weal-bot/package.json apps/weal-bot/
 COPY apps/weal-overlay/package.json apps/weal-overlay/
 COPY libs/ts ./libs/ts
-RUN bun install --frozen-lockfile
+RUN corepack enable && corepack prepare pnpm@10.34.4 --activate \
+    && pnpm install --frozen-lockfile
 
 # --- Runtime: Node 24 (R3, 0022 S5) carrying the app + workspace deps + ontology data ---
 # node:24-slim ships a built-in `node` user at uid/gid 1000, so compose's

@@ -7,8 +7,9 @@
 import fs from "node:fs";
 import path from "node:path";
 
-// At runtime `bun run server.ts` runs with cwd = the app dir
-// (/repo/apps/heartwood-frontend in the container; the app dir on the host dev box),
+// At runtime `node --import .../nodeTsResolve.mjs server.ts` runs with cwd = the
+// app dir (/repo/apps/heartwood-frontend in the container; the app dir on the host
+// dev box),
 // so the repo root — where the bind-mounts land (/repo/apps/...) — is two levels up.
 const REPO_ROOT = path.resolve(process.cwd(), "../..");
 export const PROPOSALS_DIR = path.join(REPO_ROOT, "apps/heartwood-backend/proposals");

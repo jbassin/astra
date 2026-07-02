@@ -8,7 +8,7 @@
 // resolve hook that lets Node walk the workspace's extensionless relative imports
 // (`from "./config"`) the same way Vite/Bun already do — see that file for why.
 //
-// Run after `bun run build`:  bun run start
+// Run after `pnpm run build`:  pnpm run start
 
 import { fileURLToPath } from "node:url";
 import { loadConfig } from "@astra/config";

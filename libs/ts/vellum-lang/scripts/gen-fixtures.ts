@@ -2,7 +2,8 @@
  * Regenerate the conformance corpus artifacts from the TS reference parser:
  *   fixtures/vellum/<name>.vellum  →  <name>.ast.json (full AST) + <name>.meta.json (parity).
  *
- *   bun libs/ts/vellum-lang/scripts/gen-fixtures.ts
+ *   node --import ./libs/ts/site-kit/src/nodeTsResolve.mjs \
+ *     libs/ts/vellum-lang/scripts/gen-fixtures.ts
  *
  * The TS test asserts both; the Python test asserts the `.meta.json` (the parity gate).
  * Run this after an intentional grammar/AST change, then review the diff.
@@ -12,7 +13,7 @@ import { dirname, join, resolve } from "node:path";
 import { canonicalAstJson, canonicalMetaJson, parseDocument } from "../src/index";
 
 function repoRoot(): string {
-  let dir = resolve(import.meta.dir);
+  let dir = resolve(import.meta.dirname);
   for (;;) {
     if (existsSync(join(dir, "fixtures", "vellum"))) return dir;
     const parent = dirname(dir);

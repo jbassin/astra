@@ -2,7 +2,7 @@
 
 Root guidance for **astra** — the next-generation rebuild of [faerrin](/ruby/data/experiments/faerrin).
 astra is a **polyglot monorepo**: Python (data + LLM, managed by **uv**) and TypeScript (web servers +
-frontends, managed by **bun**) — two toolchains, no third language. Read [`ASTRA.md`](./ASTRA.md) for the
+frontends, managed by **pnpm**) — two toolchains, no third language. Read [`ASTRA.md`](./ASTRA.md) for the
 product vision and [`thoughts/astra/plans/`](./thoughts/astra/plans/) for the migration roadmap (`0000`)
 and per-subsystem sub-plans. **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** is the practical onboarding guide —
 the dev process, exact CI commands, working-style expectations, and the load-bearing gotchas catalog.
@@ -14,7 +14,7 @@ messages follow **Conventional Commits** (`type(scope): subject`); CI lints them
 **pre-commit gate** (`.githooks/pre-commit`, auto-installed via the root `package.json` `prepare` script →
 `git config core.hooksPath .githooks`) blocks a commit on any **format/lint** issue across both lanes —
 **biome** (`--error-on-warnings`, so warnings block too) for TS and **ruff** (check + format) for Python.
-It's a check-only gate (never modifies files); fix with `bun run format` / `uv run ruff format .`, or bypass
+It's a check-only gate (never modifies files); fix with `pnpm run format` / `uv run ruff format .`, or bypass
 in a genuine emergency with `git commit --no-verify`. **Typecheck + tests stay CI-only** (too slow for every
 commit); the hook is the fast format/lint subset of CI.
 
@@ -58,16 +58,18 @@ log's per-slice rhythm; don't accumulate a large uncommitted/unpushed working tr
 - **Python (uv):** virtual workspace at the root `pyproject.toml`; members `apps/*`, `libs/py/*`,
   `ontology/*`. Lint+format = **ruff**, type-check = **ty** (Astral; preview, pinned), tests = **pytest**.
   Run `uv sync`, `uv run pytest`, `uv run ruff check`, `uv run ty check`.
-- **TypeScript (bun):** workspace at the root `package.json`; members `apps/*`, `libs/ts/*`. Lint+format
-  = **biome** (one fast tool, chosen over eslint+prettier). Type-check = `tsc --noEmit` against
-  `tsconfig.base.json` (strict). Run `bun install`, `bun --filter '*' {typecheck,test,build,lint}`.
+- **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml` (`apps/*`, `libs/ts/*`); root `package.json`
+  pins the exact version via `packageManager` + corepack. Lint+format = **biome** (one fast tool, chosen
+  over eslint+prettier; retiring to oxlint+oxfmt — see the 0022 plan). Type-check = `tsc --noEmit` against
+  `tsconfig.base.json` (strict). Run `pnpm install`, `pnpm -r {typecheck,test,build}` / `pnpm exec biome
+  ci .`.
 - **Disjoint globs, manifest-decided membership.** Both lanes glob `apps/*`; a directory belongs to
-  whichever lane its manifest declares (`pyproject.toml` → uv; `package.json` → bun). They never
+  whichever lane its manifest declares (`pyproject.toml` → uv; `package.json` → pnpm). They never
   cross-claim.
 - **uv rejects empty members (gotcha).** A glob-matched *directory* lacking a `pyproject.toml` is a hard
   `uv` error — so **do not pre-create empty placeholder member dirs**; create a member dir only when you
   give it a manifest. Glob roots (`apps/`, `libs/py/`, `ontology/`) are kept in git via a `.gitkeep`
-  *file* (a dotfile isn't matched by `*`). bun silently ignores manifest-less dirs, so this is uv-only.
+  *file* (a dotfile isn't matched by `*`). pnpm silently ignores manifest-less dirs, so this is uv-only.
 
 ## Runtime split (roadmap Decision H) vs CI
 
@@ -105,15 +107,16 @@ ontology/    # ontology-being, ontology-config (py truth + config stores)
 dagster/     # Dagster definitions (loads each pipeline app's assets; schedules/sensors)
 deploy/      # docker-compose.yml (Dagster + SigNoz + services), otel-collector.yaml, SOPS
 sites.caddyfile  # host-edge config for the shared reverse proxy; `just caddy-reload`
-.github/     # CI workflow + composite setup-{uv,bun} actions
+.github/     # CI workflow + composite setup-{uv,pnpm} actions
 thoughts/    # research + per-subsystem plans (carried from faerrin)
 dist/        # all site-gen output (gitignored), served by Caddy
 ```
 
-## Pins (set in Phase 0)
+## Pins (set in Phase 0; TS toolchain updated 0022 S11)
 
 - Python ≥ 3.12; **ty** pinned (`==0.0.51`, preview — bump deliberately).
-- bun **1.3.14**; biome **2.x**; typescript **5.x**.
+- Node **24** (`.node-version` + root `engines.node`); pnpm **10.34.4** (root `packageManager` +
+  corepack); biome **2.x**; typescript **5.x**.
 - Reproduce CI locally:
   `uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest` and
-  `bun --filter '*' typecheck && bunx biome ci . && bun --filter '*' test && bun --filter '*' build`.
+  `pnpm -r typecheck && pnpm exec biome ci . && pnpm -r test && pnpm -r build`.

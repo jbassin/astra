@@ -4,7 +4,7 @@
 # the whole repo (both linters are fast), so it catches the same things CI does.
 #
 # Installed by the root package.json "prepare" script:
-#   git config core.hooksPath .githooks   (runs on `bun install`)
+#   git config core.hooksPath .githooks   (runs on `pnpm install`)
 # Bypass in a genuine emergency with:  git commit --no-verify
 set -u
 fail=0
@@ -22,10 +22,10 @@ echo "pre-commit: biome (TS) + ruff (Python) …" >&2
 
 # TypeScript lane: format + lint + import-sort, with warnings escalated to errors
 # (this is what scoped local runs missed — see strider-0016-gotchas).
-if command -v bunx >/dev/null 2>&1; then
-  run "biome" bunx biome ci --error-on-warnings .
+if command -v pnpm >/dev/null 2>&1; then
+  run "biome" pnpm exec biome ci --error-on-warnings .
 else
-  echo "✖ pre-commit: bun not found (needed for the TS lane)" >&2
+  echo "✖ pre-commit: pnpm not found (needed for the TS lane)" >&2
   fail=1
 fi
 
@@ -40,7 +40,7 @@ fi
 
 if [ "$fail" -ne 0 ]; then
   echo "" >&2
-  echo "commit blocked. fix with:  bun run format  &&  uv run ruff format ." >&2
+  echo "commit blocked. fix with:  pnpm run format  &&  uv run ruff format ." >&2
   echo "(emergency bypass:          git commit --no-verify)" >&2
   exit 1
 fi

@@ -2,11 +2,11 @@
  * OTel init shim for astra TypeScript apps — traces + metrics + logs → the SigNoz collector.
  *
  * Standing principle (CLAUDE.md): *telemetry from day one*. Every app installs this
- * once at startup, either programmatically (`initTelemetry`) or — preferred for
- * servers/bots — via `bun --preload @astra/observe/preload` (see `./telemetry.ts`).
+ * once at startup — every current entry calls `initTelemetry` directly (the historical
+ * `bun --preload @astra/observe/preload` path is superseded, see `./telemetry.ts`).
  * The collector endpoint comes from `config.kdl` (`telemetry.otlpEndpoint`); the
- * preload reads only `OTEL_SERVICE_NAME` (process identity, not config) so a span
- * lands in SigNoz with no per-app wiring.
+ * preload variant reads only `OTEL_SERVICE_NAME` (process identity, not config) so a
+ * span lands in SigNoz with no per-app wiring.
  *
  * Mirrors `libs/py/observe`: same default endpoint, same `astra.<subsystem>` service
  * naming, same idempotency + explicit `shutdown()` (force-flush before a short-lived
