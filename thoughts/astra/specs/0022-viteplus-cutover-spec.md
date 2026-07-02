@@ -2,7 +2,8 @@
 
 **Status:** COMPLETE — all 15 slices built, CI-green (S1 `09bfc42` · S2 `c04aaca` · S3 `cbdd568` ·
   S4 `df853b4` · S5 `e9581bd` · S6 `e648ad2` · S7 `c6adf06` · S8 `70c6ee1` · S9 `ae8093c` · S10
-  `1093ba0` · S11 `0e708b1` · S12 `3855676` · S13 `4b7bde8` · S14 `c04d8f5` · S15 pending commit).
+  `1093ba0` · S11 `0e708b1` · S12 `3855676` · S13 `4b7bde8` · S14 `c04d8f5` · S15 `40483c3`; the
+  S15 GHA run 28628654215 GREEN with ts-typecheck/test/build under `vp run -r`).
   R1–R6 all done. **Deploys unparked mid-session** (stakeholder granted `just up`): full-stack
   rebuild + the batched live verifications ran at S9 and again at the S11 exit gate — Range/206
   through the public edge on both audio hosts, the 8-page real-WebGL visual spot-check, `/render`

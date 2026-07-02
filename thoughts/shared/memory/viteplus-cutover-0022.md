@@ -102,12 +102,54 @@ HTTP layer).
 - **py-test was red on main before this work** — the 0021 tuning (`01216e1`) left a stale
   `CONTINUITY_BUDGET == 6_000` pin; fixed (`assert 26_000`) after the S1–S3 push surfaced it.
 
-**S9–S14 (prior session, landed but not detailed here): vellum-render on Node 24** (`ae8093c` S9) —
-**bun type-surface fully out** (`1093ba0` S10 — `types:["bun"]`/`@types/bun` removed, `.node-version`
-+ `engines.node` added, grep-zero on `Bun.\w`) — **pnpm cutover** (`0e708b1` S11 — bun exits as
-package manager, all 11 Dockerfiles + CI composite + pre-commit swapped) — **oxlint+oxfmt configs
-land** (`3855676` S12, gates still biome) — **the reformat + gate swap, biome retires** (`4b7bde8`
-S13, one slice) — **orator-controller rollup→tsdown** (`c04d8f5` S14, D5). R1–R5 complete after S14.
+**S9–S14 (same 2026-07-02 session, staff-orchestrator + sonnet agents, one reviewed commit each):
+vellum-render on Node 24** (`ae8093c` S9) — **bun type-surface fully out** (`1093ba0` S10 —
+`types:["bun"]`→`["node"]`, `@types/bun` removed, `@types/node ^24.13.2` had to become an explicit
+root devDep (NOTHING else declared it — the types swap had no reachable @types/node), `.node-version`
++ `engines.node` added, grep-zero on `Bun.\w`) — **pnpm cutover** (`0e708b1` S11) — **oxlint+oxfmt
+configs land** (`3855676` S12, gates still biome) — **the reformat + gate swap, biome retires**
+(`4b7bde8` S13, one slice) — **orator-controller rollup→tsdown** (`c04d8f5` S14, D5). R1–R5 complete
+after S14.
+
+**THE S9–S14 load-bearing gotchas (each found only by RUNNING):**
+- **S9:** yet another TS parameter property (`renderService.ts` constructor) that grep missed —
+  running is the only reliable detector. And a bare node:fs static read (no content-type) makes
+  Chromium REFUSE module scripts (`window.vellumRender is not a function`) — always reuse site-kit's
+  `serveFile` (send-backed) for static serving, never hand-roll. The CI VR job kept its bun container
+  by invoking the script file directly with bun (`bun scripts/visual-regression.ts` — the package.json
+  script says `node …` and oven/bun has no node binary).
+- **S11 (beyond the spec's "three bare-bun call sites" — three more CLASSES existed):** site-kit
+  `contentWatchPlugin`'s `spawnSync("bun")`; 5× `vitest.global-setup.ts` guarded `execSync("bun run
+  …")` (fires only on a FRESH checkout with no `src/generated/*` — masked in every normal test run;
+  delete the generated dirs to expose); 5–6× `ssrSmoke.test.ts` hardcoded `execFileSync("bun")`; plus
+  3× `import.meta.dir` in vellum-lang scripts (S10's `Bun\.\w` grep can't see it). Verify with **bun
+  removed from PATH**, not just grep. **`nodeTsResolve.mjs` grew two load-bearing behaviors:** a
+  lazy-esbuild JSX `load` hook (Node type-stripping does NOT do JSX; every content-pipeline
+  `build-content.ts` renders gothic `.tsx`; `jsx:"automatic"` to match react-jsx) and sibling-file-
+  BEFORE-`/index.*` retry order (akasha has `transcripts.ts` AND `transcripts/` side by side — the
+  index-first order silently resolved the WRONG module). pnpm 10 blocks lifecycle scripts →
+  `onlyBuiltDependencies: ["esbuild"]` only; `esbuild` declared in site-kit (the one phantom dep).
+  **VR goldens stayed byte-identical across BOTH container swaps** (oven/bun→node:24-slim, 8/8 at
+  0.000% — the Chromium pin, not the base image, is what matters). Playwright isn't hoisted under
+  pnpm — `npx playwright install` must run FROM `apps/vellum-render`.
+- **S12/S13:** type-aware oxlint enforces `no-floating-promises` only — the other 10 type-aware rules
+  (363 hits, 264 = `no-unsafe-type-assertion`) are config-disabled with rationale, a DELIBERATE
+  deferral surfaced at commit time. tsgolint can transiently die (`terminated abnormally (possibly
+  out of memory)`, exit 254) under load — retry before calling a red lint real (documented in
+  CONTRIBUTING §8). Deleting comment lines changes oxfmt's wrap decisions → a reformat after a
+  comment sweep needs a SECOND `--write` pass. `pnpm remove` reorders package.json keys by itself
+  (diff noise beyond oxfmt).
+- **S14:** **rolldown/tsdown does NOT lower TC39 class decorators** — the Elgato `@action` decorator
+  passed through unlowered and V8 has zero native decorator support (`node --check` SyntaxError); the
+  old build worked only because `@rollup/plugin-typescript` shelled to real tsc. Fix: `bundle` runs
+  `tsc --outDir .tsbuild` first (identical `__esDecorate` lowering), tsdown bundles the decorator-free
+  JS. Also: tsdown entries need an explicit `./` prefix; ESM+node output defaults to `.mjs`
+  (`outExtensions` forces `.js`); target is **node20** = the Stream Deck EMBEDDED runtime pin
+  (manifest.json `Nodejs.Version`), deliberately NOT the repo's Node 24.
+- **Cross-slice:** `apps/heartwood-frontend/src/routeTree.gen.ts`'s trailing `declare module
+  '@tanstack/react-start'` block FLAPS — the full vite build adds it (siblings all have it), some
+  lighter regeneration path strips it. Committed state = the vite-build state (with the block);
+  `git checkout` the file if a test/typecheck run strips it, don't commit the flap.
 
 **S15 (this session) — vp adoption, CI is the bar (D7): BUILT.**
 - **Install story resolved: `vite-plus` is a real, official npm package** (not the curl script) —
