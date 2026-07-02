@@ -1,5 +1,5 @@
 // Production SSR entry for the heartwood review surface (0020 Phase 4, Decision I).
-// Thin caller over @astra/site-kit's createSsrServer: the Bun.serve + OTel +
+// Thin caller over @astra/site-kit's createSsrServer: the srvx + OTel +
 // signal-flush spine lives in the lib; heartwood supplies only what's app-specific —
 // its built SSR handler, the client-assets dir, and serviceName/port from config.kdl.
 // No staticMounts: heartwood reads proposals/corpus at request time via server fns

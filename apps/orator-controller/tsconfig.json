@@ -6,7 +6,7 @@
     "noUncheckedIndexedAccess": true,
     "module": "ES2022",
     "moduleResolution": "Bundler",
-    "types": ["node", "bun"]
+    "types": ["node"]
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "com.astra.orator.sdPlugin/bin"]

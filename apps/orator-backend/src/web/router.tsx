@@ -1,6 +1,6 @@
 /**
  * The operator UI router (M3): a `@tanstack/react-router` CLIENT SPA — NOT
- * react-start/SSR (orator-backend must keep its hand-rolled Bun.serve REST
+ * react-start/SSR (orator-backend must keep its hand-rolled srvx REST
  * surface for the Stream Deck controller, and the pinned react-start has no file
  * server routes; see the orator spec M3 + [[tanstack-start-skill]]). Code-based
  * routing keeps a single console page without a generated routeTree. Built by

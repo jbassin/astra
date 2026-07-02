@@ -168,7 +168,7 @@ const VellumFrontend = z
   })
   .strict();
 
-// The PNG render service (0013) — a Bun.serve + Playwright sidecar, a SEPARATE Compose
+// The PNG render service (0013) — a Node + Playwright sidecar, a SEPARATE Compose
 // unit from vellum-frontend (D2). serviceName names its telemetry; port is the bind
 // port (the editor reaches it same-origin via Caddy). (config-single-source)
 const VellumRender = z

@@ -1,5 +1,5 @@
 // Production SSR entry for the akasha-frontend Compose service (Decision I). Thin
-// caller over @astra/site-kit's createSsrServer: the Bun.serve + OTel + signal-flush
+// caller over @astra/site-kit's createSsrServer: the srvx + OTel + signal-flush
 // spine lives in the lib; akasha-frontend supplies only what's app-specific — its
 // built SSR handler, the client-assets dir, and serviceName/port from config.kdl.
 //

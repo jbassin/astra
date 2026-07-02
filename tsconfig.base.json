@@ -13,6 +13,6 @@
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["bun"]
+    "types": ["node"]
   }
 }

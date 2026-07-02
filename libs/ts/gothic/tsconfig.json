@@ -2,7 +2,7 @@
   "extends": "../../../tsconfig.base.json",
   "compilerOptions": {
     "jsx": "react-jsx",
-    "types": ["bun", "react", "react-dom"]
+    "types": ["node", "react", "react-dom"]
   },
   "include": ["src", "stories", ".storybook"]
 }
