@@ -58,11 +58,12 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > real-WebGL visual spot-check (pixi shaders painting, zero console errors), Range/206
 > head/mid/suffix + 416 + HEAD through the public edge on both audio hosts (criterion D live half),
 > vellum-render `/render` real PNG via the edge, weal-overlay `/feed` SSE, weal-bot Discord reconnect
-> + 10 macros read via postgres.js, SigNoz traces+logs+metrics 0-error (criterion M). A final
-> `just up` after S15 brings the images to HEAD (S12–S15 were behavior-neutral for the runtime).
-> Still human-only: an interactive Discord roll round-trip, orator voice-join, in-player seek.
-> With the S15 GHA run green (criterion L), **0022 is fully closed**; the next main-track item is
-> the (long-standing, stakeholder-paused) heartwood Phase-4 content acceptance — below.
+> + 10 macros read via postgres.js, SigNoz traces+logs+metrics 0-error (criterion M). The final
+> `just up` after S15 ran too — live images == HEAD, all services healthy, edges 200. The S15 GHA
+> run (28628654215) is GREEN with ts-typecheck/test/build executing under `vp run -r` (criterion L).
+> **0022 is CLOSED — all acceptance criteria A–N met.** Still human-only (non-blocking): an
+> interactive Discord roll round-trip, orator voice-join, in-player seek. The next main-track item
+> is the (long-standing, stakeholder-paused) heartwood Phase-4 content acceptance — below.
 >
 > _(Prior checkpoint, superseded but kept for the session-by-session trail:)_
 
