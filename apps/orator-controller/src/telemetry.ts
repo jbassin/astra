@@ -11,7 +11,7 @@
  *
  * Fire-and-forget by design: telemetry must NEVER break the plugin, so every failure
  * (offline, DNS, a bad response) is swallowed. The full OTel SDK is deliberately avoided —
- * bundling it into a Rollup'd Stream Deck plugin is heavy and brittle; one hand-built OTLP
+ * bundling it into a tsdown'd Stream Deck plugin is heavy and brittle; one hand-built OTLP
  * JSON POST per request is enough to see latency + errors in SigNoz.
  */
 import { randomBytes } from "node:crypto";
