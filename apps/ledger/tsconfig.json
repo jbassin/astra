@@ -9,7 +9,6 @@
     // only — the base setting stays on for non-Start packages.
     "verbatimModuleSyntax": false,
     "types": ["vite/client"],
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

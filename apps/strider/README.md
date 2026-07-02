@@ -71,6 +71,16 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
   workspace TS package (`@astra/site-kit`) from `vite.config.ts` fails under vite's
   default Node-externalizing loader; `runner` loads the config through vite's own TS
   pipeline. This is the real shape of "vite.config can't import @astra/config".
+  Verified again on Rolldown-vite 8.
+- **`vite` is exact-pinned (no caret), currently `8.1.3`.** Every vite-using member in
+  the workspace moves in lockstep — a partial bump silently installs a duplicate
+  `vite` (two resolved versions in the lockfile), which is the actual trigger behind
+  the once-presumed TanStack/router#7614 blocker. Bump `vite` only as one atomic
+  change across all 12 vite-using members, re-verify the lockfile has exactly ONE
+  `vite@` line, and don't caret it until TanStack officially certifies the major.
+  `vitest` tracks the matching major (`^4.1` alongside vite 8) — `vitest` staying
+  green on an older major is a false signal, since its `vite-node` dep can pin a
+  private vite internally.
 - **`createServerFn` stays in app source** (`src/observe/rumConfig.ts`) — the
   tanstackStart vite plugin only transforms server fns it finds in the app, not in a
   lib. `@astra/site-kit/web`'s `startRum` consumes the app's tiny server fn.
