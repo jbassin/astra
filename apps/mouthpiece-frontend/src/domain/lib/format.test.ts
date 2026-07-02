@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { formatRuntime, sumRuntimeMs } from "./format";
 
 describe("formatRuntime", () => {

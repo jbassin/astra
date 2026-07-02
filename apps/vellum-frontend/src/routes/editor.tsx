@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+
 import { VellumEditor } from "@/domain/editor/VellumEditor";
 
 // ssr: false — the editor is a client-only authoring surface (CodeMirror + a

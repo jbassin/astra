@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { validateWrite } from "./writeProposalBody";
 
 // The write fn's pure guard: the id-slug shape is the traversal defense (no slash/dot →

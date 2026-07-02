@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
+
 import MapView from "@/domain/components/MapView/MapView";
 import { parseOverlaysParam } from "@/domain/lib/overlays";
 import { FACTIONS } from "@/generated/factions";

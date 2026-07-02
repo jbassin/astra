@@ -98,7 +98,7 @@ domain modules — routes are the wiring seam, so they're edited, not deleted.)
 - **Fonts self-serve**: `gothicFontsPlugin({ clientOutDir })` copies gothic fonts into
   `dist/client/fonts` at build; the SSR server static-serves them. No Caddy
   `gothic_fonts` import, no vendored copy in git.
-- **SSR only** — no `prerender` block. Commit `src/routeTree.gen.ts` (biome-ignored).
+- **SSR only** — no `prerender` block. Commit `src/routeTree.gen.ts` (oxlint/oxfmt-ignored).
   Pixi behind `lazy()` + `<ClientOnly>`. `/editor`-style routes use `ssr: false`.
 - **Telemetry** lands only from in-cluster: config `telemetry.otlp-endpoint` is the
   collector's signoz-net name (`http://signoz-otel-collector:4318`), not `localhost`.

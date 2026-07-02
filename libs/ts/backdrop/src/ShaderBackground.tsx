@@ -1,5 +1,6 @@
 import type { Application } from "pixi.js";
 import { type CSSProperties, useEffect, useRef, useState } from "react";
+
 import type { BackdropSpec } from "./types";
 
 // A fixed, full-viewport animated shader background (z-index: -1, behind all page
@@ -82,8 +83,5 @@ export function ShaderBackground({ spec }: { spec: BackdropSpec }) {
   }, [mounted, spec]);
 
   if (!mounted) return null;
-  return (
-    // biome-ignore lint/a11y/noAriaHiddenOnFocusable: decorative pixi render target, not focusable (no tabindex)
-    <canvas ref={canvasRef} style={CANVAS_STYLE} aria-hidden="true" />
-  );
+  return <canvas ref={canvasRef} style={CANVAS_STYLE} aria-hidden="true" />;
 }

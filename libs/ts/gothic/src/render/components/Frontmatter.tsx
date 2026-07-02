@@ -1,5 +1,6 @@
 import type { Frontmatter as FrontmatterData } from "@astra/vellum-lang";
 import type { ReactElement } from "react";
+
 import { TraitPill } from "./TraitPill";
 
 /** True when the frontmatter has anything worth rendering as a page header. */

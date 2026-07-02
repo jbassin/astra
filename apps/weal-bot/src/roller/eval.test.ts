@@ -5,6 +5,7 @@
  */
 
 import { describe, expect, test } from "vitest";
+
 import { dieRepr } from "./die";
 import { interpret } from "./eval";
 import type { Display } from "./types";

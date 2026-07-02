@@ -8,6 +8,7 @@
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { createServerFn } from "@tanstack/react-start";
+
 import { writeProposalBody as writeBodyFile } from "@/domain/review/fs";
 
 /** Proposal ids are slugs (slugify(target_path)) — no slash/dot, so no path traversal. */

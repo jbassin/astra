@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { hexFactionMap, layerFilename, serializeLayer, slugify } from "./editorHelpers";
 
 describe("slugify", () => {

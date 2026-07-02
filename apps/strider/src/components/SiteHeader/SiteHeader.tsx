@@ -1,4 +1,5 @@
 import { useEntitiesObserved } from "./entitiesObserved";
+
 import styles from "./SiteHeader.module.css";
 
 const FALLBACK_COUNT = 19;

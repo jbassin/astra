@@ -1,8 +1,10 @@
 import { useRouterState } from "@tanstack/react-router";
 import type { Application } from "pixi.js";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import styles from "./PixiHost.module.css";
+
 import { PixiContext, type PixiCtx } from "./pixiContext";
+
+import styles from "./PixiHost.module.css";
 
 interface Props {
   children: ReactNode;
@@ -87,7 +89,6 @@ export default function PixiHost({ children }: Props) {
 
   return (
     <PixiContext.Provider value={ctx}>
-      {/* biome-ignore lint/a11y/noAriaHiddenOnFocusable: decorative pixi render target, not focusable (no tabindex) */}
       {!isEditor && <canvas ref={canvasRef} className={styles.canvas} aria-hidden="true" />}
       {children}
     </PixiContext.Provider>

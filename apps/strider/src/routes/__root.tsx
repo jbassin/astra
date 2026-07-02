@@ -1,9 +1,11 @@
 /// <reference types="vite/client" />
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
+
 import PixiHost from "@/components/PixiHost/PixiHost";
 import { EntitiesObservedProvider } from "@/components/SiteHeader/entitiesObserved";
 import SiteHeader from "@/components/SiteHeader/SiteHeader";
+
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";

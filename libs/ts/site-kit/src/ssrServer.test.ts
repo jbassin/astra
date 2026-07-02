@@ -11,7 +11,9 @@
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
+
 import { createSsrServer, type SsrHandler } from "./ssrServer";
 
 const CLIENT_ASSET = "html,body{margin:0}/* client asset */";

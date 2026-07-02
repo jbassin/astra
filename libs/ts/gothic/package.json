@@ -3,10 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "module": "src/index.ts",
   "sideEffects": [
     "*.css"
   ],
+  "module": "src/index.ts",
   "exports": {
     ".": "./src/index.ts",
     "./theme.css": "./src/theme.css",
@@ -24,10 +24,6 @@
     "@astra/vellum-lang": "workspace:*",
     "@fontsource/ibm-plex-mono": "^5.2.7"
   },
-  "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
-  },
   "devDependencies": {
     "@storybook/react": "^10.4.6",
     "@storybook/react-vite": "^10.4.6",
@@ -42,5 +38,9 @@
     "tailwindcss": "^4.3.2",
     "vite": "8.1.3",
     "vitest": "^4.1.9"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
   }
 }

@@ -6,6 +6,7 @@
 import { spawnSync } from "node:child_process";
 import { copyFileSync, createReadStream, existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
+
 import { fontsDir } from "@astra/gothic/fontsDir";
 import type { Plugin, ViteDevServer } from "vite";
 

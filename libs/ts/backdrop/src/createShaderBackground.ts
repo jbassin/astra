@@ -6,6 +6,7 @@ import {
   GlProgram,
   Graphics,
 } from "pixi.js";
+
 import type { BackdropSpec } from "./types";
 
 // Builds a backdrop from a spec: a full-screen rect carrying the spec's shader as a

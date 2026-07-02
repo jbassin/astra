@@ -35,7 +35,6 @@ export function ContentArticle({ view }: { view: ContentView }) {
       <article
         className="popover-hint"
         data-pagefind-body
-        // biome-ignore lint/security/noDangerouslySetInnerHtml: build-rendered trusted vellum
         dangerouslySetInnerHTML={{ __html: view.bodyHtml }}
       />
       {/* Progressive-enhancement: attaches to the SSR-emitted transcript markup on

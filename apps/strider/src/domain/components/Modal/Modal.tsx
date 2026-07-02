@@ -1,9 +1,11 @@
 import { useRef } from "react";
+
 import BannerDetail from "@/domain/components/BannerDetail/BannerDetail";
 import FactionDetail from "@/domain/components/FactionDetail/FactionDetail";
 import type { Faction } from "@/domain/lib/factions";
 import type { Banner } from "@/domain/lib/layers";
 import { useFocusTrap } from "@/lib/useFocusTrap";
+
 import styles from "./Modal.module.css";
 
 // The modal shows either a faction dossier or a banner (alliance) detail — both

@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { isConfigured, normalizeOrigin, type OratorGlobalSettings } from "./settings";
 
 describe("isConfigured", () => {

@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+
 import Player from "@/domain/components/Player";
 import { formatRuntime } from "@/domain/lib/format";
 import { EPISODES } from "@/generated/episodes";
@@ -77,7 +78,6 @@ function EpisodeComponent() {
         </summary>
         <div className="transcript-root">
           {transcript.map((line, i) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: static, never-reordered transcript
             <p key={i} className={`transcript-line ${line.speaker}`}>
               <span className="transcript-name">{line.name}</span>{" "}
               <span className="transcript-text">{line.text}</span>

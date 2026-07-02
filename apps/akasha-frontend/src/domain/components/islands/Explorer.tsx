@@ -13,6 +13,7 @@
 
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+
 import { computeOpen } from "@/domain/lib/explorerState";
 import { type FullSlug, resolveRelative } from "@/domain/lib/slug";
 import { EXPLORER_TREE, type TreeNode } from "@/generated/site";
@@ -137,7 +138,6 @@ export function Explorer({ title = "Looking Glass" }: { title?: string }) {
         onClick={() => setPanelCollapsed((c) => !c)}
       >
         <h2>{title}</h2>
-        {/* biome-ignore lint/a11y/noSvgWithoutTitle: decorative fold chevron on the labelled toggle */}
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="14"

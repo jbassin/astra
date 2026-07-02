@@ -9,7 +9,9 @@
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import * as pagefind from "pagefind";
+
 import { searchDoc, searchUrl } from "../src/domain/lib/searchDoc";
 import { BODIES } from "../src/generated/bodies";
 import { PAGES } from "../src/generated/site";

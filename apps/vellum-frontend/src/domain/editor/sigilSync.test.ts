@@ -1,5 +1,6 @@
 import { parseMarkdown } from "@astra/vellum-lang";
 import { describe, expect, test } from "vitest";
+
 import { SIGIL } from "./vellumHighlight";
 
 // R2 (slice 3): the editor's SIGIL regex (vellumHighlight.ts) duplicates vellum-lang's

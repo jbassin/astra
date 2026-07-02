@@ -10,6 +10,7 @@
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+
 import { canonicalAstJson, canonicalMetaJson, parseDocument } from "../src/index";
 
 function repoRoot(): string {

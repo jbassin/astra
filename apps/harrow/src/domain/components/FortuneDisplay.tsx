@@ -1,4 +1,5 @@
 import type { DrawnCard, Spread } from "@/domain/lib/types";
+
 import { CardName } from "./CardName";
 
 // Ported from harrow's src/components/FortuneDisplay.tsx, re-skinned onto gothic

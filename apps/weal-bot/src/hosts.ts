@@ -11,6 +11,7 @@
  */
 
 import type { WealHost } from "@astra/ontology";
+
 import { type Roll, type RollRng, rollMax, rollMin, rollValue } from "./roller";
 
 export type RollGoodness = "crit" | "good" | "okay" | "bad" | "fumble";

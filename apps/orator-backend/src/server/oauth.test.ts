@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { buildAuthorizeUrl, exchangeCodeForUser } from "./oauth";
 
 const CFG = {

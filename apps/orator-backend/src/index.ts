@@ -16,8 +16,10 @@ const log = getLogger("astra.orator-backend");
 
 import { mkdirSync } from "node:fs";
 import { resolve } from "node:path";
+
 import { loadConfig } from "@astra/config";
 import { loadBeing } from "@astra/ontology";
+
 import { buildAllowlist } from "./allowlist";
 import { startBot } from "./bot/index";
 import type { PlaybackEngine } from "./bot/playback";

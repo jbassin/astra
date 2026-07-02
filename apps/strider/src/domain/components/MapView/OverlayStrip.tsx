@@ -1,5 +1,7 @@
 import type { CSSProperties } from "react";
+
 import type { OverlayId, OverlaySpec } from "@/domain/lib/overlays";
+
 import styles from "./OverlayStrip.module.css";
 
 interface OverlayStripProps {

@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+
 import { ContentArticle } from "@/domain/components/ContentArticle";
 import { contentView } from "@/domain/lib/runtimeSite";
 import type { FullSlug } from "@/domain/lib/slug";

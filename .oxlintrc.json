@@ -1,8 +1,9 @@
 {
   "$schema": "./node_modules/oxlint/configuration_schema.json",
-  // S12 (0022 R5): oxlint config lands; biome stays the enforced gate until S13.
-  // Categories: correctness+suspicious+perf ON (D-per-spec). Plugins: react/jsx-a11y/import/promise
-  // added on top of the typescript/unicorn/oxc default trio.
+  // 0022 R5: oxlint is the enforced TS lint gate (pre-commit + CI, --deny-warnings —
+  // biome retired at S13). Categories: correctness+suspicious+perf ON (D-per-spec).
+  // Plugins: react/jsx-a11y/import/promise added on top of the typescript/unicorn/oxc
+  // default trio.
   "plugins": ["typescript", "unicorn", "oxc", "react", "jsx-a11y", "import", "promise"],
   "categories": {
     "correctness": "error",

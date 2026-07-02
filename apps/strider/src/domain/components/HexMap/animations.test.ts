@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+
 import { computeRegionBorders, type EdgeSegment } from "@/domain/lib/hexUtils";
+
 import {
   axialDistance,
   easeOutCubic,

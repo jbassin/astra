@@ -6,6 +6,7 @@
 // variant instead (orator is a static SPA — see rumConfig.ts).
 
 import { initRum } from "@astra/observe/web";
+
 import { getRumEndpoint } from "./rumConfig";
 
 export async function startRum(): Promise<void> {

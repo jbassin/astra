@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+
 import { CardRow } from "@/domain/components/CardRow";
 import { DECK } from "@/generated/cards";
 

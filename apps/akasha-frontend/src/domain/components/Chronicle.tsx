@@ -152,7 +152,6 @@ export function EpisodeDetail({
         <ol className="chronicle-beats">
           {episode.keyBeats.map((beat, i) => (
             // beats are ordered prose with no stable id; index key is correct here
-            // biome-ignore lint/suspicious/noArrayIndexKey: ordered static beat list
             <li key={i}>{beat}</li>
           ))}
         </ol>

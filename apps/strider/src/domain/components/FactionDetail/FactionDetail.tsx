@@ -1,5 +1,6 @@
 import FactionSymbol from "@/domain/components/FactionSymbol/FactionSymbol";
 import type { Faction } from "@/domain/lib/factions";
+
 import styles from "./FactionDetail.module.css";
 
 interface FactionDetailProps {

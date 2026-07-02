@@ -11,6 +11,7 @@
 // Node stream when the Web stream's queue is full; resume on `pull()`).
 
 import { PassThrough, type Readable } from "node:stream";
+
 import send from "send";
 
 type NodeReqShape = { headers: Record<string, string>; method: string };
@@ -80,13 +81,11 @@ class CapturingRes extends PassThrough {
   // single override can forward whichever overload `send` calls at runtime — it
   // only ever uses the (chunk) and (chunk, callback) shapes, but Writable's own
   // overloads don't collapse into one spreadable signature.
-  // biome-ignore lint/suspicious/noExplicitAny: see above
   override write(...args: any[]): boolean {
     this.#head();
     return super.write(...(args as [string]));
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: see above
   override end(...args: any[]): this {
     this.#head();
     return super.end(...(args as []));

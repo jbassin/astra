@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { detectPageType, voiceLint } from "./voiceLint";
 
 // Mirrors the backend proposer/lint.py calibration: the BAD slop archetype trips the

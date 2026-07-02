@@ -1,5 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { lazy, useCallback, useEffect, useMemo, useState } from "react";
+
 import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import { useSetEntitiesObserved } from "@/components/SiteHeader/entitiesObserved";
 import Modal, { type ModalContent } from "@/domain/components/Modal/Modal";
@@ -10,11 +11,13 @@ import type { FactionFlipAnim, Layer, LayerAnimation } from "@/domain/lib/region
 import { LAYER_DWELL_MS } from "@/domain/lib/timeline";
 import { buildTimelineFrames } from "@/domain/lib/timelineFrames";
 import { useIsMobile } from "@/lib/useIsMobile";
-import styles from "./MapView.module.css";
+
 import MemoriamPanel from "./MemoriamPanel";
 import OverlayStrip from "./OverlayStrip";
 import TimelineStrip from "./TimelineStrip";
 import { useTimelinePlayback } from "./useTimelinePlayback";
+
+import styles from "./MapView.module.css";
 
 // Lazy so PixiJS never evaluates during SSR. ClientOnly below guarantees
 // the lazy boundary only resolves in the browser.

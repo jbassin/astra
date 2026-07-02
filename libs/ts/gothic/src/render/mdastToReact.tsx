@@ -1,6 +1,7 @@
 import type { CrossRef as CrossRefNode } from "@astra/vellum-lang";
 import type { Nodes } from "mdast";
 import type { ReactNode } from "react";
+
 import { CrossRef } from "./components/CrossRef";
 import { ErrorChip } from "./components/ErrorChip";
 import { Redaction } from "./components/Redaction";

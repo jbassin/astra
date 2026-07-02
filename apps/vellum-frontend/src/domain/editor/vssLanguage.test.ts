@@ -1,5 +1,6 @@
 import { parser as commonmark } from "@lezer/markdown";
 import { describe, expect, test } from "vitest";
+
 import { vssMarkdown } from "./vssLanguage";
 
 const parser = commonmark.configure([vssMarkdown]);

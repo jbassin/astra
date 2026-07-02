@@ -7,6 +7,7 @@
  * Vite to a static `dist/`, served by orator-backend's `serveStatic`.
  */
 import { createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
+
 import { Console } from "./App";
 import { RootLayout } from "./RootLayout";
 

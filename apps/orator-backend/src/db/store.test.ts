@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { listJobsByStatusQuery } from "./store";
 
 // No live PG in CI (store.ts's own doc comment) — this proves the D11 SQL shape

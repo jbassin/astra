@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { BACKDROPS } from "./shaders";
 
 // Pure-data checks on the catalog — no pixi/WebGL (can't run a real GL context under

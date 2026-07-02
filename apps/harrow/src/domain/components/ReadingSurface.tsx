@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+
 import { PREDICATES } from "@/domain/data/predicates";
 import { createReading } from "@/domain/lib/draw";
 import { matchedPredicate } from "@/domain/lib/predicates";
 import type { Reading } from "@/domain/lib/types";
 import { useCardReveal } from "@/domain/lib/useCardReveal";
+
 import { CardSpread } from "./CardSpread";
 import { DrawButton } from "./DrawButton";
 import { FortuneDisplay } from "./FortuneDisplay";

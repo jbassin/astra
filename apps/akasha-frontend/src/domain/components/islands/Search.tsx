@@ -118,8 +118,6 @@ export function Search() {
         </svg>
       </button>
 
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: backdrop click-to-close (Escape also closes) */}
-      {/* biome-ignore lint/a11y/useKeyWithClickEvents: keyboard close is the document Escape handler */}
       <div
         className={open ? "search-container active" : "search-container"}
         onClick={(e) => {
@@ -141,7 +139,6 @@ export function Search() {
               {results.map((r) => (
                 <a className="result-card" key={r.url} href={r.url.replace(/\.html$/, "")}>
                   <h3>{r.meta.title ?? r.url}</h3>
-                  {/* biome-ignore lint/security/noDangerouslySetInnerHtml: pagefind excerpt is trusted build output */}
                   <p dangerouslySetInnerHTML={{ __html: r.excerpt }} />
                 </a>
               ))}

@@ -2,23 +2,16 @@
   "name": "astra",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.34.4",
-  "engines": {
-    "node": ">=24"
-  },
   "scripts": {
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "build": "pnpm -r build",
-    "lint": "oxlint --type-aware apps libs/ts",
-    "lint:biome": "biome ci .",
-    "format": "biome format --write .",
+    "lint": "oxlint --type-aware --deny-warnings apps libs/ts",
+    "format": "oxfmt --write 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'",
     "format:check": "oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'",
-    "format:oxfmt": "echo 'format:oxfmt (oxfmt --write) is config-only until S13 (0022 R5) — biome still owns tree formatting until the gate swap. Use `pnpm run format` (biome) to fix pre-commit/CI failures now.' >&2 && exit 1",
     "prepare": "git config core.hooksPath .githooks || true"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2",
     "@commitlint/cli": "^19",
     "@commitlint/config-conventional": "^19",
     "@types/node": "^24.13.2",
@@ -27,6 +20,10 @@
     "oxlint-tsgolint": "^0.24.0",
     "typescript": "^5"
   },
+  "engines": {
+    "node": ">=24"
+  },
+  "packageManager": "pnpm@10.34.4",
   "pnpm": {
     "overrides": {
       "@types/node": "^24.13.2"

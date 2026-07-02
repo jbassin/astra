@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import type { RegistryAddition, SkippedPage, UnplacedFact } from "@/domain/review/manifest";
 import type { RegistryDecision } from "@/domain/review/reviewState";
 import { setRegistryDecision } from "@/serverFns/writeDecision";

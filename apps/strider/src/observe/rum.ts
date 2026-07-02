@@ -5,6 +5,7 @@
 // the fetch-then-init dance.
 
 import { startRum as startRumKit } from "@astra/site-kit/web";
+
 import { getRumConfig } from "./rumConfig";
 
 export function startRum(): Promise<void> {

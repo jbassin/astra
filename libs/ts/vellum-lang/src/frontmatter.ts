@@ -5,6 +5,7 @@
  * YAML yields empty frontmatter, never throws.
  */
 import { parse as parseYaml } from "yaml";
+
 import type { Frontmatter } from "./model";
 
 const FRONTMATTER_RE = /^---\r?\n([\s\S]*?)\r?\n---[ \t]*\r?\n?/;

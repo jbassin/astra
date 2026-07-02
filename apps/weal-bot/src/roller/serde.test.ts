@@ -7,6 +7,7 @@
  */
 
 import { describe, expect, test } from "vitest";
+
 import { resFromJson, resToJson } from "./serde";
 
 // Captured verbatim from `select name, payload from funcs` on the live mouth.db.

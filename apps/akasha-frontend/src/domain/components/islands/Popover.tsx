@@ -147,7 +147,6 @@ export function Popover() {
   // Re-bind on every navigation: the new page's DOM (links) is committed before this
   // effect runs, and the cleanup tears down the previous page's listeners + cards.
   const pathname = useRouterState({ select: (s) => s.location.pathname });
-  // biome-ignore lint/correctness/useExhaustiveDependencies: pathname is the re-bind trigger (the new page's links); the effect body intentionally doesn't read it
   useEffect(() => initPopovers(), [pathname]);
   return null;
 }

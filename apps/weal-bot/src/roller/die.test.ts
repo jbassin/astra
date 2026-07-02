@@ -7,6 +7,7 @@
  */
 
 import { describe, expect, test } from "vitest";
+
 import {
   dieConst,
   dieFromBase,
@@ -40,7 +41,6 @@ class FaceRng implements RollRng {
   choose<T>(xs: T[]): T {
     const idx = this.picks[this.ci++];
     if (idx === undefined) throw new Error("FaceRng: ran out of picks");
-    // biome-ignore lint/style/noNonNullAssertion: scripted index is valid.
     return xs[idx]!;
   }
 }

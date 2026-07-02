@@ -7,6 +7,7 @@
 // proxy over the real deck) matching predicate — the title shown on a reading.
 
 import { DECK } from "@/generated/cards";
+
 import { expandTag } from "./tags";
 import type { Predicate, TarotCard } from "./types";
 

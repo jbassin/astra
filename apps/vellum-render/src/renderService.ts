@@ -1,5 +1,6 @@
 import type { Browser } from "playwright";
 import { chromium } from "playwright";
+
 import { RENDER_LIMITS, type RenderRequest } from "./caps";
 import { Semaphore } from "./semaphore";
 

@@ -11,8 +11,10 @@
  */
 import { mkdir, stat } from "node:fs/promises";
 import { resolve } from "node:path";
+
 import { getLogger, getTracer, lazyCounter, lazyHistogram } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
+
 import type { DownloadJob, DownloadJobItem, LibraryStore } from "../db/store";
 import { runPool } from "../lib/pool";
 import type { AudioProbe, AudioProber } from "../media/probe";

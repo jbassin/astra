@@ -1,7 +1,9 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import { beforeAll, describe, expect, it } from "vitest";
+
 import { main } from "./build-content";
 
 // Proves the content pipeline is wired: running build-content emits the generated

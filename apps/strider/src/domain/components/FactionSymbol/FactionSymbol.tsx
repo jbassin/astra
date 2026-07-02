@@ -1,4 +1,5 @@
 import type { Faction } from "@/domain/lib/factions";
+
 import styles from "./FactionSymbol.module.css";
 
 function initials(name: string): string {

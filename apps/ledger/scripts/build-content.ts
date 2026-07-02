@@ -15,8 +15,10 @@
 
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import { type Config, loadConfig } from "@astra/config";
 import { buildContent, defineContentSource, emitModule } from "@astra/content-build";
+
 import type { SiteLink } from "../src/domain/lib/types";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));

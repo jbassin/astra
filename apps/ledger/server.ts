@@ -11,8 +11,10 @@
 // Run after `pnpm run build`:  pnpm run start
 
 import { fileURLToPath } from "node:url";
+
 import { loadConfig } from "@astra/config";
 import { createSsrServer } from "@astra/site-kit";
+
 import ssr from "./dist/server/server.js";
 
 const HERE = fileURLToPath(new URL(".", import.meta.url));

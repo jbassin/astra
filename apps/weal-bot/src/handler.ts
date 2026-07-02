@@ -10,6 +10,7 @@
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import type { WealHost } from "@astra/ontology";
 import { SpanStatusCode } from "@opentelemetry/api";
+
 import { saveDie, type WealStore } from "./db";
 import { hostSays, rollGoodness } from "./hosts";
 import {

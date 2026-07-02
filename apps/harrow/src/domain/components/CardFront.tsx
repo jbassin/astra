@@ -1,6 +1,8 @@
 import { identityStyle } from "@astra/gothic";
+
 import { getDeck } from "@/domain/lib/decks";
 import type { CardOrientation, TarotCard } from "@/domain/lib/types";
+
 import { CardName } from "./CardName";
 import { Icon } from "./Icon";
 

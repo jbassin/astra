@@ -1,5 +1,6 @@
 import type { CrossRef } from "@astra/vellum-lang";
 import { describe, expect, it } from "vitest";
+
 import { buildResolvers } from "./crossref";
 import { readingMinutes, renderBody } from "./renderBody";
 import type { Snapshot } from "./snapshot";

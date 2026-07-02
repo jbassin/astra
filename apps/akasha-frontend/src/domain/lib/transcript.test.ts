@@ -6,7 +6,9 @@
  */
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import { describe, expect, it } from "vitest";
+
 import { audioSrc, loadTranscripts } from "./transcript";
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));

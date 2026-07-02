@@ -13,6 +13,7 @@
  * a wrong match misfiles the session's page. Guarded by the slug-parity fixture.
  */
 import type { Campaign, Role } from "@astra/ontology";
+
 import type { Transcript } from "./transcript";
 
 // faerrin `pkg/content/scripts/config.ts` campaign.matchThreshold. A content-heuristic

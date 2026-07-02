@@ -5,6 +5,7 @@
  * faerrin lark `src/web/ui/TagEditModal.tsx`.
  */
 import { useEffect, useRef, useState } from "react";
+
 import { TAG_PALETTE } from "../grouping";
 import type { Tag } from "../types";
 

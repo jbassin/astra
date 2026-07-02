@@ -20,6 +20,7 @@ import {
   type Webhook,
   WebhookClient,
 } from "discord.js";
+
 import type { WealStore } from "./db";
 import { type HandlerDeps, handleMessage, type OutgoingMessage } from "./handler";
 import { type OverlayPayload, randomSeed, type SeedInfo } from "./message";

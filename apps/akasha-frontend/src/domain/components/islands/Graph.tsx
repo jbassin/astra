@@ -30,7 +30,9 @@ import { select } from "d3-selection";
 import { zoom, zoomIdentity } from "d3-zoom";
 import { Application, Circle, Container, Graphics, Text } from "pixi.js";
 import { useEffect, useRef } from "react";
+
 import { type FullSlug, resolveRelative, simplifySlug } from "@/domain/lib/slug";
+
 import { buildGraphData, type ContentDetails, type D3Config } from "./graphData";
 
 // quartz.layout.ts: Graph({ localGraph: { scale: 50.0 } }); rest are Graph.tsx defaults.

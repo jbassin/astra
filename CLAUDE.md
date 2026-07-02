@@ -13,10 +13,11 @@ astra uses **plain git** on GitHub — no jujutsu. (faerrin used jj; astra delib
 messages follow **Conventional Commits** (`type(scope): subject`); CI lints them with commitlint. A
 **pre-commit gate** (`.githooks/pre-commit`, auto-installed via the root `package.json` `prepare` script →
 `git config core.hooksPath .githooks`) blocks a commit on any **format/lint** issue across both lanes —
-**biome** (`--error-on-warnings`, so warnings block too) for TS and **ruff** (check + format) for Python.
-It's a check-only gate (never modifies files); fix with `pnpm run format` / `uv run ruff format .`, or bypass
-in a genuine emergency with `git commit --no-verify`. **Typecheck + tests stay CI-only** (too slow for every
-commit); the hook is the fast format/lint subset of CI.
+**oxlint** (`--type-aware --deny-warnings`, so warnings block too) + **oxfmt** (`--check`) for TS and
+**ruff** (check + format) for Python. It's a check-only gate (never modifies files); fix with
+`pnpm run format` / `uv run ruff format .`, or bypass in a genuine emergency with `git commit --no-verify`.
+**Typecheck + tests stay CI-only** (too slow for every commit); the hook is the fast format/lint subset of
+CI.
 
 ## Memory + thoughts (project-local — astra owns its own)
 
@@ -59,10 +60,10 @@ log's per-slice rhythm; don't accumulate a large uncommitted/unpushed working tr
   `ontology/*`. Lint+format = **ruff**, type-check = **ty** (Astral; preview, pinned), tests = **pytest**.
   Run `uv sync`, `uv run pytest`, `uv run ruff check`, `uv run ty check`.
 - **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml` (`apps/*`, `libs/ts/*`); root `package.json`
-  pins the exact version via `packageManager` + corepack. Lint+format = **biome** (one fast tool, chosen
-  over eslint+prettier; retiring to oxlint+oxfmt — see the 0022 plan). Type-check = `tsc --noEmit` against
-  `tsconfig.base.json` (strict). Run `pnpm install`, `pnpm -r {typecheck,test,build}` / `pnpm exec biome
-  ci .`.
+  pins the exact version via `packageManager` + corepack. Lint = **oxlint** (`--type-aware
+  --deny-warnings`), format = **oxfmt** (`sortImports` on) — deliberately two tools (both VoidZero/oxc,
+  biome retired at 0022 S13). Type-check = `tsc --noEmit` against `tsconfig.base.json` (strict). Run
+  `pnpm install`, `pnpm -r {typecheck,test,build}` / `pnpm run lint` / `pnpm run format:check`.
 - **Disjoint globs, manifest-decided membership.** Both lanes glob `apps/*`; a directory belongs to
   whichever lane its manifest declares (`pyproject.toml` → uv; `package.json` → pnpm). They never
   cross-claim.
@@ -116,7 +117,8 @@ dist/        # all site-gen output (gitignored), served by Caddy
 
 - Python ≥ 3.12; **ty** pinned (`==0.0.51`, preview — bump deliberately).
 - Node **24** (`.node-version` + root `engines.node`); pnpm **10.34.4** (root `packageManager` +
-  corepack); biome **2.x**; typescript **5.x**.
+  corepack); oxlint **^1.72.0** + oxfmt **^0.57.0** (+ oxlint-tsgolint **^0.24.0** for type-aware
+  lint); typescript **5.x**.
 - Reproduce CI locally:
   `uv run ruff check && uv run ruff format --check && uv run ty check && uv run pytest` and
-  `pnpm -r typecheck && pnpm exec biome ci . && pnpm -r test && pnpm -r build`.
+  `pnpm -r typecheck && pnpm run lint && pnpm run format:check && pnpm -r test && pnpm -r build`.

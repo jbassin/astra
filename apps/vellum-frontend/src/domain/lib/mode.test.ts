@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { normalizeMode } from "./mode";
 
 describe("normalizeMode", () => {

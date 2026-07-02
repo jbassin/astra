@@ -2,7 +2,9 @@ import { execFileSync } from "node:child_process";
 import { existsSync } from "node:fs";
 import { writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
+
 import { describe, expect, test } from "vitest";
+
 import { loadConfig, resolveSopsRef, SecretRef } from "./index";
 
 // Actually decrypting needs the `sops` binary + the gitignored age key — host only.

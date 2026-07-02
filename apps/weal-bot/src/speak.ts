@@ -7,6 +7,7 @@
 
 import { getLogger } from "@astra/observe";
 import { serve } from "srvx";
+
 import type { Gateway, SpeakArgs } from "./gateway";
 
 const log = getLogger("astra.weal-bot");

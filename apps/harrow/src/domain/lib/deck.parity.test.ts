@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+
 import { DECK } from "@/generated/cards";
+
 import goldenDeck from "./__fixtures__/deck.golden.json";
 import type { TarotCard } from "./types";
 

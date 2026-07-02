@@ -9,6 +9,7 @@
 
 import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+
 import { loadConfig } from "@astra/config";
 
 function findRepoRoot(startDir: string): string {

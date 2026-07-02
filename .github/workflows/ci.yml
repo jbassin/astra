@@ -41,7 +41,8 @@ jobs:
               - 'package.json'
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
-              - 'biome.json'
+              - '.oxlintrc.json'
+              - '.oxfmtrc.json'
               - 'tsconfig.base.json'
               - '.github/**'
             corpus:
@@ -101,7 +102,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup-pnpm
-      - run: pnpm exec biome ci .
+      - run: pnpm exec oxlint --type-aware --deny-warnings apps libs/ts
+      - run: pnpm exec oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'
 
   ts-test:
     needs: changes

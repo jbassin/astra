@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { buildLinker, escapeHtml, type LinkEntry } from "./linker";
 import type { FullSlug, SimpleSlug } from "./slug";
 

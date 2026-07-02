@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+
 import { RegistryPanel, SkippedPanel, UnplacedPanel } from "@/domain/components/AuditPanels";
 import { ProposalCard } from "@/domain/components/ProposalCard";
 import type { PageProposal } from "@/domain/review/manifest";

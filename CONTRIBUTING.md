@@ -77,9 +77,11 @@ declares** (`pyproject.toml` → uv; `package.json` → pnpm). They never cross-
 
 - **Python (uv):** virtual workspace at root `pyproject.toml`; members `apps/*`, `libs/py/*`, `ontology/*`.
   Lint+format **ruff**, type-check **ty** (Astral, preview, pinned `==0.0.51`), tests **pytest**.
-- **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml`; members `apps/*`, `libs/ts/*`. Lint+format
-  **biome** (one tool). Type-check `tsc --noEmit` against `tsconfig.base.json` (strict). Pins: Node **24**,
-  pnpm **10.34.4** (root `packageManager` + corepack), biome **2.x**, typescript **5.x**, Python **≥3.12**.
+- **TypeScript (pnpm):** workspace at `pnpm-workspace.yaml`; members `apps/*`, `libs/ts/*`. Lint
+  **oxlint** (`--type-aware --deny-warnings`), format **oxfmt** (`sortImports` on) — deliberately two
+  tools, both VoidZero/oxc (biome retired 0022 S13). Type-check `tsc --noEmit` against
+  `tsconfig.base.json` (strict). Pins: Node **24**, pnpm **10.34.4** (root `packageManager` + corepack),
+  oxlint **^1.72.0**, oxfmt **^0.57.0**, typescript **5.x**, Python **≥3.12**.
 
 **uv rejects empty members** (a glob-matched dir without a `pyproject.toml` is a hard error) → don't
 pre-create placeholder member dirs; keep glob roots in git with a `.gitkeep` *file*. pnpm ignores
@@ -96,13 +98,14 @@ uv run ruff check && uv run ruff format --check && uv run ty check && uv run pyt
 
 # TypeScript lane
 pnpm install
-pnpm -r typecheck && pnpm exec biome ci . && pnpm -r test && pnpm -r build
+pnpm -r typecheck && pnpm run lint && pnpm run format:check && pnpm -r test && pnpm -r build
 ```
 
 CI (GitHub Actions, `.github/workflows/ci.yml`) is parallel + path-filtered, so scope your local run to
 the lane/app you touched. A **pre-commit gate** (`.githooks/pre-commit`) blocks a commit on any
-**format/lint** issue across both lanes — `biome ci --error-on-warnings .` (TS) + `ruff check` /
-`ruff format --check` (Python). It's auto-installed by the root `prepare` script on `pnpm install`
+**format/lint** issue across both lanes — `oxlint --type-aware --deny-warnings apps libs/ts` + `oxfmt
+--check` (TS, the SAME strict commands CI runs — D6) + `ruff check` / `ruff format --check` (Python).
+It's auto-installed by the root `prepare` script on `pnpm install`
 (`git config core.hooksPath .githooks`); to install manually run that command. It's **check-only** (never
 edits files) — fix with `pnpm run format` / `uv run ruff format .`, or bypass in an emergency with
 `git commit --no-verify`. **Typecheck + tests are NOT in the hook** (too slow) — run them locally + in CI.
@@ -159,11 +162,23 @@ Four non-overlapping concerns; **SigNoz/OTel is the single pane across all of th
   duck-typed attribute ty can't see.
 - **pytest** collides on same-basename test files across packages → use unique basenames.
 
-**TypeScript / pnpm / biome**
-- **biome ignores** generated + fixture files via `files.includes` negations (`!**/routeTree.gen.ts`,
-  `!**/src/generated/**`, `!**/tests/fixtures/**`, the canonical/snapshot JSONs). Add new generated paths
-  there or biome will fight the generator.
-- **`biome ci` prints "errors emitted" but exits 0 on warnings/infos** — trust the exit code.
+**TypeScript / pnpm / oxlint+oxfmt**
+- **oxlint/oxfmt ignore** generated + fixture files via `.oxlintrc.json`'s `ignorePatterns` /
+  `.oxfmtrc.json`'s `ignorePatterns` (`**/routeTree.gen.ts`, `**/src/generated/**`,
+  `**/tests/fixtures/**`, the canonical/snapshot JSONs — mirrors biome's old `files.includes`
+  negations 1:1). Add new generated paths there or oxlint/oxfmt will fight the generator.
+- **plain `oxlint` exits 0 on warnings** — `--deny-warnings` is required to fail the exit code on a
+  warning-level rule, and both pre-commit and CI pass it (D6, unified strict — biome's old asymmetry,
+  where CI ran plain `biome ci .` but pre-commit ran `--error-on-warnings`, is gone). Similarly
+  `oxfmt --check` (not a bare `oxfmt`) is what fails on unformatted files.
+- **`--type-aware` can flake under memory pressure** — the tsgolint child occasionally dies with
+  `[warn] Linter process terminated abnormally (possibly out of memory)` (exit 254, seen while docker
+  builds ran alongside). It is transient: retry before treating a red lint as a regression; a clean run
+  prints no warn line.
+- **oxfmt is glob-scoped, never bare** — `pnpm run format` / `format:check` wrap oxfmt with explicit
+  `apps/**` / `libs/ts/**` / root JS-family globs; a bare `oxfmt .` would rewrite ~110 markdown files,
+  every `pyproject.toml`, and the SOPS `secrets.enc.yaml` (confirmed on disk, 0022 R5). Always invoke
+  oxfmt through the root scripts, never directly over `.`.
 - **pnpm workspace deps resolve only for the package that declares them** (strict, non-hoisting layout —
   no global `node_modules/@astra` symlink) — run a script from inside the declaring package, and declare
   every import explicitly in that package's `package.json` (a phantom dep that happened to resolve via
@@ -174,8 +189,8 @@ Four non-overlapping concerns; **SigNoz/OTel is the single pane across all of th
   in an automated context — it can silently write to `ignoredBuiltDependencies` instead if nothing's
   selected).
 - **TanStack Start frontends:** SSR is the default (drop any `prerender` block for Decision I — the build
-  emits `dist/server/server.js`). The generated `src/routeTree.gen.ts` is committed (biome-ignored) so
-  CI `tsc` passes without a generate step; it's regenerated on build. `vite.config.ts` is ESM — use
+  emits `dist/server/server.js`). The generated `src/routeTree.gen.ts` is committed (oxlint/oxfmt-ignored)
+  so CI `tsc` passes without a generate step; it's regenerated on build. `vite.config.ts` is ESM — use
   `import.meta.dirname`, not `__dirname`.
 
 **Deploy / infra**

@@ -2,6 +2,7 @@ import FactionSymbol from "@/domain/components/FactionSymbol/FactionSymbol";
 import type { Faction } from "@/domain/lib/factions";
 import type { FallenEntry } from "@/domain/lib/memoriam";
 import { imperialDate } from "@/domain/lib/timeline";
+
 import styles from "./MemoriamPanel.module.css";
 
 interface MemoriamPanelProps {

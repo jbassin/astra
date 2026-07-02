@@ -1,4 +1,5 @@
 import type { InputHTMLAttributes, ReactElement } from "react";
+
 import { cx } from "../cx";
 
 /** A void-palette text input — body face, teal focus ring. */

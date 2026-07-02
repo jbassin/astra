@@ -22,6 +22,7 @@ import {
 import { SpanStatusCode } from "@opentelemetry/api";
 import type { Client } from "discord.js";
 import prism from "prism-media";
+
 import type { TrackEndReason, VoiceAdapter } from "./voice";
 
 const tracer = getTracer("astra.orator-backend");

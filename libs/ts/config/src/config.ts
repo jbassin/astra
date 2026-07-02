@@ -6,7 +6,9 @@
  */
 import { existsSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+
 import { z } from "zod";
+
 import { loadDocument, topLevelNamespaces } from "./kdl";
 import { SecretRef } from "./secrets";
 

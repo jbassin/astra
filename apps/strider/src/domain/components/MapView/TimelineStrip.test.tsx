@@ -1,7 +1,9 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
+
 import type { Layer } from "@/domain/lib/regions";
 import { imperialDate } from "@/domain/lib/timeline";
+
 import TimelineStrip from "./TimelineStrip";
 
 function makeLayer(overrides: Partial<Layer> = {}): Layer {

@@ -122,7 +122,6 @@ export class Context {
 
   private id(args: Res[]): Res {
     if (args.length > 0) {
-      // biome-ignore lint/style/noNonNullAssertion: length checked.
       return args[0]!;
     }
     throw new RollError("Expected at least 1 argument");
@@ -130,16 +129,13 @@ export class Context {
 
   private d(args: Res[]): Res {
     if (args.length === 1) {
-      // biome-ignore lint/style/noNonNullAssertion: length checked.
       const a = args[0]!;
       if (a.k === "Number") return { k: "Die", die: dieFromBase(1, a.n) };
       if (a.k === "List") return { k: "Die", die: dieFromSequence(1, numList(a.items)) };
       throw new RollError("Can only make die from number or list of numbers");
     }
     if (args.length === 2) {
-      // biome-ignore lint/style/noNonNullAssertion: length checked.
       const count = args[0]!;
-      // biome-ignore lint/style/noNonNullAssertion: length checked.
       const second = args[1]!;
       if (count.k !== "Number") {
         throw new RollError("Can only make die from number or list of numbers");
@@ -172,10 +168,8 @@ export class Context {
 
   private save(args: Res[], cmd: Cmd): Res {
     if (args.length !== 2) throw new RollError("Expected exactly 2 arguments!");
-    // biome-ignore lint/style/noNonNullAssertion: length checked.
     const sigil = args[0]!;
     if (sigil.k !== "Sigil") throw new RollError("First argument must be a sigil!");
-    // biome-ignore lint/style/noNonNullAssertion: length checked.
     const payload = args[1]!;
     cmd.save.push([sigil.s, resToJson(payload)]);
     return { k: "Unit" };
@@ -191,11 +185,9 @@ export class Context {
 
   private take(args: Res[], build: (collect: number, die: Die) => Die): Res {
     if (args.length !== 2) throw new RollError("Expected exactly 2 arguments");
-    // biome-ignore lint/style/noNonNullAssertion: length checked.
     const collect = args[0]!;
     if (collect.k !== "Number") throw new RollError("First argument must be a number");
     if (collect.n < 1) throw new RollError("Collection count must be greater than 0");
-    // biome-ignore lint/style/noNonNullAssertion: length checked.
     const die = args[1]!;
     if (die.k !== "Die") throw new RollError("Second argument must be a die");
     return { k: "Die", die: build(collect.n, die.die) };

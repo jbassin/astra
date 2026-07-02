@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { buildAudioFilter, computeGainDb, dbToLinear } from "./gain";
 
 describe("computeGainDb (D5/B25)", () => {

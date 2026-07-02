@@ -22,7 +22,9 @@
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
+
 import type { Nodes } from "mdast";
+
 import { parseDocument } from "../src/index";
 import type { VellumNode } from "../src/model";
 

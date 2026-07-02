@@ -1,4 +1,5 @@
 import path from "node:path";
+
 import { contentWatchPlugin, gothicFontsPlugin, loadSiteConfig } from "@astra/site-kit";
 import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";

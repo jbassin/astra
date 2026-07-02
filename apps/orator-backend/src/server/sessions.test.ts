@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { clearCookie, parseCookies, sessionCookie, signSession, verifySession } from "./sessions";
 
 const SECRET = "test-secret";

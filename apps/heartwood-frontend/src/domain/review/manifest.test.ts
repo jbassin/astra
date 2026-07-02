@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import path from "node:path";
+
 import { describe, expect, it } from "vitest";
+
 import { parseManifest } from "./manifest";
 
 // The schema-conformance gate: parse the real committed Phase-3 change-set and assert

@@ -7,7 +7,9 @@
  * astra port: takes the async `PlaybackStore` (was a sync `bun:sqlite` handle).
  */
 import dns from "node:dns";
+
 import { Client, GatewayIntentBits } from "discord.js";
+
 import type { PlaybackStore } from "../db/store";
 import { DiscordVoiceAdapter } from "./discord-voice";
 import { PlaybackEngine } from "./playback";

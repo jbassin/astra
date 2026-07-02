@@ -10,6 +10,7 @@
  */
 
 import postgres from "postgres";
+
 import type { RollDie } from "./roller";
 
 /** Skip pools larger than this many dice (each die is one row). */
@@ -84,8 +85,7 @@ export class PostgresStore implements WealStore {
   }
 
   async insertDie(base: number, value: number, playerId: number, blameId: number): Promise<void> {
-    await this
-      .#sql`insert into dice (base, value, source, player_id, blame_id) values (${base}, ${value}, 'discord', ${playerId}, ${blameId})`;
+    await this.#sql`insert into dice (base, value, source, player_id, blame_id) values (${base}, ${value}, 'discord', ${playerId}, ${blameId})`;
   }
 
   async getAllFuncs(): Promise<Func[]> {

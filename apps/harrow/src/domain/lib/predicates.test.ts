@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+
 import { DECK } from "@/generated/cards";
+
 import { PREDICATES } from "../data/predicates";
 import { evaluatePredicate, matchedPredicate } from "./predicates";
 import type { TarotCard } from "./types";

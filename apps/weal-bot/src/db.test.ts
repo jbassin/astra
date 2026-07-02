@@ -5,6 +5,7 @@
  */
 
 import { describe, expect, test } from "vitest";
+
 import { diceToPersist, type Func, MAX_POOL, SCHEMA, saveDie, type WealStore } from "./db";
 import type { RollDie } from "./roller";
 

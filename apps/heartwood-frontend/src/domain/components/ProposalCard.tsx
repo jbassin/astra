@@ -1,11 +1,13 @@
 import { DocumentView } from "@astra/gothic";
 import { parseDocument } from "@astra/vellum-lang";
 import { useState } from "react";
+
 import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import { EditorIsland } from "@/domain/editor/EditorIsland";
 import { diffLines, diffStat } from "@/domain/review/diff";
 import type { PageProposal } from "@/domain/review/manifest";
 import type { ConflictResolution, Decision } from "@/domain/review/reviewState";
+
 import { ConflictCard } from "./ConflictCard";
 import { DecisionFooter } from "./DecisionFooter";
 
@@ -150,7 +152,6 @@ function DiffView({ before, after }: { before: string; after: string }) {
       </p>
       <pre className="pc-diff-body">
         {rows.map((r, i) => (
-          // biome-ignore lint/suspicious/noArrayIndexKey: diff rows are a stable, never-reordered sequence
           <span key={`${i}:${r.type}:${r.text}`} className={`diff-${r.type}`}>
             {r.type === "add" ? "+ " : r.type === "del" ? "- " : "  "}
             {r.text}

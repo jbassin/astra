@@ -1,11 +1,13 @@
+import { ShaderBackground, starfield } from "@astra/backdrop";
 /// <reference types="vite/client" />
 import { createRootRoute, HeadContent, Link, Outlet, Scripts } from "@tanstack/react-router";
-import { useEffect } from "react";
+
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
 import "@/styles/globals.css";
-import { ShaderBackground, starfield } from "@astra/backdrop";
+import { useEffect } from "react";
+
 import ClientOnly from "@/components/ClientOnly/ClientOnly";
 import { SITE } from "@/generated/site";
 
@@ -37,7 +39,6 @@ function RootComponent() {
         {/* Dark-only void theme: force the dark palette before first paint, pre-
             hydration so there's no flash (gothic ships dark unconditionally). */}
         <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: tiny static pre-paint theme script
           dangerouslySetInnerHTML={{
             __html: `document.documentElement.setAttribute("saved-theme","dark")`,
           }}

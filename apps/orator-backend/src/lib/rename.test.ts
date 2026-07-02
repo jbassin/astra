@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { applyRename, previewBulkRename, RenameError } from "./rename";
 
 describe("applyRename", () => {

@@ -7,6 +7,7 @@
  */
 import type { Nodes, PhrasingContent, Root, Text } from "mdast";
 import { visit } from "unist-util-visit";
+
 import type { CrossRef, VellumDocument, VellumNode } from "./model";
 
 /** `[[target]]`, `[[target#heading]]`, `[[target|alias]]`, `[[target#heading|alias]]`. */

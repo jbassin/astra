@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+
 import { ChronicleIndex } from "@/domain/components/Chronicle";
 import { SHOWS } from "@/generated/chronicle";
 

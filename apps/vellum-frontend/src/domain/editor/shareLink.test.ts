@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { decodeDoc, docToHash, hashToDoc, isShareable } from "./shareLink";
 
 describe("share link", () => {

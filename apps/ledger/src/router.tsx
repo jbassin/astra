@@ -1,4 +1,5 @@
 import { createRouter, type ErrorComponentProps, Link, useRouter } from "@tanstack/react-router";
+
 import { routeTree } from "./routeTree.gen";
 
 // Router-wide error + not-found boundaries (template defaults). Without these a

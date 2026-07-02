@@ -1,4 +1,5 @@
 import type { Application } from "pixi.js";
+
 import { emitBurst } from "./particles";
 
 // Seal-wax red and ash — a heavier, faster-falling shatter than a crit.

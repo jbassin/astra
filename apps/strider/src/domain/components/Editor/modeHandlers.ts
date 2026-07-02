@@ -1,5 +1,6 @@
 import type { Faction } from "@/domain/lib/factions";
 import type { Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
+
 import type { EditorAction, EditorState } from "./editorReducer";
 
 export interface HexClickContext {

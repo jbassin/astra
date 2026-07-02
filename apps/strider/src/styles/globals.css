@@ -125,9 +125,7 @@ body::after {
   *,
   *::before,
   *::after {
-    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override must defeat component animation declarations */
     animation-duration: 1ms !important;
-    /* biome-ignore lint/complexity/noImportantStyles: reduced-motion override must defeat component transition declarations */
     transition-duration: 1ms !important;
   }
 }

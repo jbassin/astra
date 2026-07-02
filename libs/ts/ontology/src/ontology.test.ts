@@ -1,6 +1,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+
 import { describe, expect, test } from "vitest";
+
 import { canonicalJson, loadBeing } from "./index";
 
 function repoRoot(): string {

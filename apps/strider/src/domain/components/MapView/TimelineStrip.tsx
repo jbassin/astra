@@ -1,8 +1,11 @@
 import { useMemo } from "react";
+
 import type { Layer } from "@/domain/lib/regions";
 import { slotInk, slotOpacity, visibleEntries } from "@/domain/lib/timeline";
-import styles from "./TimelineStrip.module.css";
+
 import { useTypewriter } from "./useTypewriter";
+
+import styles from "./TimelineStrip.module.css";
 
 interface TimelineStripProps {
   layers: Layer[];

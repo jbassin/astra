@@ -1,4 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+
 import { ContentArticle } from "@/domain/components/ContentArticle";
 import { FolderListing } from "@/domain/components/FolderListing";
 import { contentView, folderView, resolvePath } from "@/domain/lib/runtimeSite";

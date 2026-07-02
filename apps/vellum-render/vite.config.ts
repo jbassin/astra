@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+
 import { gothicFontsPlugin } from "@astra/site-kit";
 import tailwindcss from "@tailwindcss/vite";
 import viteReact from "@vitejs/plugin-react";

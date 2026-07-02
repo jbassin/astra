@@ -11,6 +11,7 @@
  * the client/SSR bundle.
  */
 import type { Being } from "@astra/ontology";
+
 import { characterFor, type MatchedCampaign, matchCampaign } from "./campaigns";
 import { buildLinker, escapeHtml, type LinkEntry } from "./linker";
 import { readingMinutes } from "./renderBody";

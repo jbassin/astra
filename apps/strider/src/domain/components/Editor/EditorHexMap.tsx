@@ -1,6 +1,7 @@
-import { Application, Assets, Container, Graphics, Polygon, Sprite, type Texture } from "pixi.js";
 import { GlowFilter } from "pixi-filters/glow";
+import { Application, Assets, Container, Graphics, Polygon, Sprite, type Texture } from "pixi.js";
 import { useEffect, useRef } from "react";
+
 import type { Faction } from "@/domain/lib/factions";
 import { computeRegionBorders, hexPixel } from "@/domain/lib/hexUtils";
 import type { Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
@@ -9,6 +10,7 @@ import {
   CURRENT_FACTION_HEXES,
   CURRENT_UNOWNED_HEXES,
 } from "@/domain/lib/layers";
+
 import { paintRegionBorder, paintRegionFill } from "../HexMap/mapPaint";
 import { attachWorld, drawEdgesPath, hexVertsAtPixel, strokePolyline } from "../HexMap/pixiScene";
 import {
@@ -18,6 +20,7 @@ import {
   type SkeinCurve,
   skeinSignature,
 } from "../HexMap/skeinGeometry";
+
 import styles from "./EditorView.module.css";
 
 // Walk a polyline and emit dash/gap segments preserving rhythm across vertices

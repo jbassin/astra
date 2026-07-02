@@ -13,11 +13,13 @@
 import { stat } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
 import { loadConfig } from "@astra/config";
 import { getLogger, getTracer, initTelemetry, lazyCounter, lazyHistogram } from "@astra/observe";
 import { serveFile } from "@astra/site-kit";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { serve } from "srvx";
+
 import { validateRenderRequest } from "./caps";
 import { RenderCapError, RenderService } from "./renderService";
 

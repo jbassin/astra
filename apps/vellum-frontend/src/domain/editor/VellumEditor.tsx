@@ -1,5 +1,6 @@
 import type { ThemeMode } from "@astra/vellum-lang";
 import { useCallback, useDeferredValue, useEffect, useState } from "react";
+
 import {
   activeDoc,
   addDoc,
@@ -12,12 +13,13 @@ import {
   updateActiveSource,
 } from "./docStore";
 import { Editor } from "./Editor";
-import styles from "./editor.module.css";
 import { Preview } from "./Preview";
 import { docToHash, hashToDoc, isShareable } from "./shareLink";
 import { TEMPLATES } from "./templates";
 import { useExport } from "./useExport";
 import { WELCOME_DOC } from "./welcomeDoc";
+
+import styles from "./editor.module.css";
 
 /** Initial store: migrate/load, then a #doc= share link opens as a new doc. */
 function initialStore(): DocStore {

@@ -1,5 +1,6 @@
 import type { Campaign } from "@astra/ontology";
 import { describe, expect, it } from "vitest";
+
 import { characterFor, matchCampaign } from "./campaigns";
 import type { Transcript } from "./transcript";
 

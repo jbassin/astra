@@ -1,6 +1,7 @@
 import FactionSymbol from "@/domain/components/FactionSymbol/FactionSymbol";
 import type { Faction } from "@/domain/lib/factions";
 import type { Banner } from "@/domain/lib/layers";
+
 import styles from "./BannerDetail.module.css";
 
 interface BannerDetailProps {

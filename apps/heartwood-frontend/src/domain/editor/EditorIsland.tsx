@@ -1,10 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import type { VoiceWarning } from "@/domain/review/manifest";
 import { voiceLint } from "@/domain/review/voiceLint";
 import { writeProposalBody } from "@/serverFns/writeProposalBody";
+
 import { Editor } from "./Editor";
-import styles from "./editor.module.css";
 import { Preview } from "./Preview";
+
+import styles from "./editor.module.css";
 
 type SaveState = "idle" | "saving" | "saved" | "error";
 

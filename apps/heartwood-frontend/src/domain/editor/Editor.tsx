@@ -5,10 +5,12 @@ import { EditorState, Prec } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
 import { basicSetup } from "codemirror";
 import { useEffect, useRef } from "react";
-import styles from "./editor.module.css";
+
 import { slashComplete } from "./slashComplete";
 import { vellumHighlighting } from "./vellumHighlight";
 import { vssHighlighting, vssMarkdown } from "./vssLanguage";
+
+import styles from "./editor.module.css";
 
 /**
  * Tab inserts 2 spaces (and indents/dedents a multi-line selection) instead of
@@ -64,7 +66,6 @@ export function Editor({
   onChangeRef.current = onChange;
 
   // oxlint-disable react-hooks/exhaustive-deps -- mount once; initialValue is the seed, onChange is via ref.
-  // biome-ignore lint/correctness/useExhaustiveDependencies: mount once; initialValue is the seed, onChange is via ref.
   useEffect(() => {
     const parent = host.current;
     if (!parent) return;

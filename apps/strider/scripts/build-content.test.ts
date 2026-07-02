@@ -1,7 +1,9 @@
 import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
+
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+
 import { serializeLayer } from "../src/domain/lib/editorHelpers";
 import type { Change } from "../src/domain/lib/regions";
 import { parseChange, parseFaction, parseLayer } from "./build-content";

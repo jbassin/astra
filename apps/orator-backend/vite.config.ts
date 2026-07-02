@@ -1,7 +1,9 @@
 import { resolve } from "node:path";
+
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+
 import { gothicFontsPlugin } from "./scripts/gothicFontsPlugin";
 
 // The operator UI is a @tanstack/react-router CLIENT SPA (M3 — not react-start/

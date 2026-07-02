@@ -1,9 +1,10 @@
 import { lazy, useCallback, useMemo, useReducer, useState } from "react";
+
 import type { EditableChange } from "@/domain/lib/editorHelpers";
 import { hexFactionMap, hexRegionMap } from "@/domain/lib/editorHelpers";
 import type { Faction } from "@/domain/lib/factions";
 import type { Banner, Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
-import styles from "./EditorView.module.css";
+
 import { DEFAULT_BANNER_COLOR, initialState, type Mode, reducer } from "./editorReducer";
 import {
   type HexClickContext,
@@ -17,6 +18,8 @@ import {
   handleUpdateClick,
 } from "./modeHandlers";
 import { saveLayer } from "./saveLayer";
+
+import styles from "./EditorView.module.css";
 
 const EditorHexMap = lazy(() => import("./EditorHexMap"));
 

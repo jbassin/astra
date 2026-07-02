@@ -1,5 +1,6 @@
 import type { VellumBlock, VellumDocument, VellumNode } from "@astra/vellum-lang";
 import type { CSSProperties, ReactElement, ReactNode } from "react";
+
 import { type CrossRefResolver, CrossRefResolverContext } from "../crossrefResolver";
 import { renderNodes } from "../mdastToReact";
 import { DeityCard } from "./DeityCard";

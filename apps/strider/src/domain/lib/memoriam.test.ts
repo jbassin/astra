@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
+
 import type { Faction } from "@/domain/lib/factions";
 import { FACTION_HEXES } from "@/domain/lib/hexUtils";
 import type { Layer } from "@/domain/lib/regions";
+
 import { computeFallenStateByCursor, fallenAtCursor } from "./memoriam";
 
 function fakeFactions(): Faction[] {

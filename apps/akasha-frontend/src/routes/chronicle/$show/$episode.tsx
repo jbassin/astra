@@ -1,4 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
+
 import { EpisodeDetail } from "@/domain/components/Chronicle";
 import { SHOWS } from "@/generated/chronicle";
 

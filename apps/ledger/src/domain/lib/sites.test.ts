@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { SITES } from "@/generated/sites";
 
 // The generated registry is the heart of ledger: every linked site must resolve to a

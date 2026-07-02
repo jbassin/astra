@@ -1,3 +1,4 @@
+import { GlowFilter } from "pixi-filters/glow";
 import {
   type Application,
   Assets,
@@ -9,8 +10,8 @@ import {
   Sprite,
   type Texture,
 } from "pixi.js";
-import { GlowFilter } from "pixi-filters/glow";
 import { useEffect, useRef } from "react";
+
 import {
   createBalatroFilter,
   DEFAULT_PALETTE,
@@ -30,6 +31,7 @@ import {
 import type { LayerAnimation, Region, SkeinRegion, SkeinState } from "@/domain/lib/layers";
 import type { OverlayId } from "@/domain/lib/overlays";
 import { TITHE_FADE_MS, TITHE_FILL_MS, TITHE_FLIP_MS, TITHE_HOLD_MS } from "@/domain/lib/timeline";
+
 import { AnimationManager } from "./animationManager";
 import {
   axialDistance,
@@ -38,7 +40,6 @@ import {
   partialEdgePath,
   totalEdgeLength,
 } from "./animations";
-import styles from "./HexMap.module.css";
 import { paintRegionBorder, paintRegionFill } from "./mapPaint";
 import {
   drawEdgesPath,
@@ -57,6 +58,8 @@ import {
   samplePoint,
   skeinSignature,
 } from "./skeinGeometry";
+
+import styles from "./HexMap.module.css";
 
 interface HexMapProps {
   factions: Faction[];

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { getAllFactions, getFactionBySlug } from "./factions";
 
 describe("getAllFactions", () => {

@@ -1,5 +1,6 @@
 /** Shared inline-node helpers for the field-list / timeline parsers. */
 import type { PhrasingContent } from "mdast";
+
 import type { CrossRef } from "./model";
 
 /** Flatten phrasing nodes to plain text (a `[[crossref]]` reads as its alias/target). */

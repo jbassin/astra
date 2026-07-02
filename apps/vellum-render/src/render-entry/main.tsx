@@ -1,6 +1,7 @@
 import { DocumentView } from "@astra/gothic";
 import { parseDocument, type ThemeMode } from "@astra/vellum-lang";
 import { createRoot } from "react-dom/client";
+
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";

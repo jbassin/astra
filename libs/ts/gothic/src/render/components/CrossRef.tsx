@@ -1,5 +1,6 @@
 import type { CrossRef as CrossRefNode } from "@astra/vellum-lang";
 import { type ReactElement, useContext } from "react";
+
 import { CrossRefResolverContext } from "../crossrefResolver";
 
 /** Shared link/placeholder styling — amber accent, dotted underline, wax in diegetic. */

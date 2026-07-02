@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+
 import { LAYER_DWELL_MS, MAX_PLAYBACK_LAYERS, TITHE_DWELL_MS } from "@/domain/lib/timeline";
 
 // Lets the map frame finish its fade-in (and the dynamically-mounted HexMap

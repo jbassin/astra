@@ -8,6 +8,7 @@
 
 import type { PhrasingContent, RootContent } from "mdast";
 import type { ContainerDirective } from "mdast-util-directive";
+
 import { flattenInline, trimInline } from "./inline";
 import type { VellumFields } from "./model";
 

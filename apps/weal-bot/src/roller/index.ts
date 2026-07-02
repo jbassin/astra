@@ -96,7 +96,6 @@ function displayToRoll(x: Display, rng: RollRng): Roll[] {
           min: dieMin(die),
           max: dieMax(die),
           dice,
-          // biome-ignore lint/style/noNonNullAssertion: a Die always yields one roll.
           reroll: () => displayToRoll({ k: "Die", die }, rng)[0]!,
         },
       ];
@@ -138,7 +137,6 @@ export function roll(text: string, init: [string, string][], rng: RollRng): Roll
       toPlot: cmd.plot.map(dieToPlot),
       toRollLazy: cmd.lazy.map(([name, die]) => ({
         name,
-        // biome-ignore lint/style/noNonNullAssertion: a Die always yields one roll.
         roll: displayToRoll({ k: "Die", die }, rng)[0]!,
       })),
       toSave: cmd.save.map(([name, payload]) => ({ name, payload })),
@@ -152,7 +150,6 @@ export class EntropyRng implements RollRng {
     return loInclusive + Math.floor(Math.random() * (hiInclusive - loInclusive + 1));
   }
   choose<T>(xs: T[]): T {
-    // biome-ignore lint/style/noNonNullAssertion: callers pass non-empty arrays.
     return xs[Math.floor(Math.random() * xs.length)]!;
   }
 }

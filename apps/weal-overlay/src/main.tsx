@@ -3,7 +3,9 @@ import "@fontsource/ibm-plex-mono";
 import { initRum } from "@astra/observe/web";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+
 import { Overlay } from "./Overlay";
+
 import "./overlay.css";
 
 // Client RUM: the endpoint is injected into index.html by the server (config seam),

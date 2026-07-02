@@ -1,6 +1,8 @@
 import { resolve } from "node:path";
+
 import { loadConfig } from "@astra/config";
 import { initTelemetry } from "@astra/observe";
+
 import { startServer } from "./src/server";
 
 // Telemetry first (server-side traces/metrics/logs → SigNoz).

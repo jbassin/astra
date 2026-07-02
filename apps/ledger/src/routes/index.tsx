@@ -1,4 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
+
 import { SiteCard } from "@/domain/components/SiteCard";
 import { SITE } from "@/generated/site";
 import { SITES } from "@/generated/sites";

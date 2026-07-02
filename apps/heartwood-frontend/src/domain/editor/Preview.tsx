@@ -1,6 +1,7 @@
 import { DocumentView } from "@astra/gothic";
 import { parseDocument, type ThemeMode } from "@astra/vellum-lang";
 import { useMemo } from "react";
+
 import styles from "./editor.module.css";
 
 /**

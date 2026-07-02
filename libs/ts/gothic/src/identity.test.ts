@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import {
   FALLBACK_IDENTITY_COLOR,
   IDENTITY_COLOR_VAR,

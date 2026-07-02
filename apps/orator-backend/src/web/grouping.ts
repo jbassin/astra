@@ -5,6 +5,7 @@
  * faerrin lark `src/web/grouping.ts`.
  */
 import type { CSSProperties } from "react";
+
 import type { Tag, Track } from "./types";
 
 /** Curated, dark-theme-safe swatches offered in the tag-color picker. */

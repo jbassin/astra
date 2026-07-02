@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { normalizeTag, slugify, uniqueSlug } from "./text";
 
 describe("normalizeTag", () => {

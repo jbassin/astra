@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { extractApiKey, generateKey, hashKey, verifyKey } from "./apikeys";
 
 describe("api keys", () => {

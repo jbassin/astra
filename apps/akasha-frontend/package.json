@@ -13,13 +13,13 @@
   },
   "dependencies": {
     "@astra/config": "workspace:*",
-    "@floating-ui/dom": "^1.7.6",
     "@astra/content-build": "workspace:*",
     "@astra/gothic": "workspace:*",
     "@astra/observe": "workspace:*",
     "@astra/ontology": "workspace:*",
     "@astra/site-kit": "workspace:*",
     "@astra/vellum-lang": "workspace:*",
+    "@floating-ui/dom": "^1.7.6",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "@opentelemetry/api": "^1.9.1",
     "@tanstack/react-router": "^1.170.7",
@@ -29,10 +29,10 @@
     "d3-force": "^3.0.0",
     "d3-selection": "^3.0.0",
     "d3-zoom": "^3.0.0",
+    "github-slugger": "^2.0.0",
     "pixi.js": "^8.18.1",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "github-slugger": "^2.0.0"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.2",

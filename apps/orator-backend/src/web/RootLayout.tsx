@@ -8,6 +8,7 @@
 import { Title } from "@astra/gothic";
 import { Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
+
 import { DialogProvider } from "./ui/Dialog";
 import { ToastProvider } from "./ui/Toast";
 

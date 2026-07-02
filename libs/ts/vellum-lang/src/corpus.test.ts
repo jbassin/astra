@@ -1,6 +1,8 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+
 import { describe, expect, test } from "vitest";
+
 import { canonicalAstJson, canonicalMetaJson, parseDocument } from "./index";
 
 function repoRoot(): string {

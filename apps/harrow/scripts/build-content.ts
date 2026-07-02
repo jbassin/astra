@@ -19,12 +19,14 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import {
   buildContent,
   defineContentSource,
   emitModule,
   listFilesWithExtension,
 } from "@astra/content-build";
+
 import { parseCard } from "../src/domain/lib/parseCard";
 import { parseSpread } from "../src/domain/lib/parseSpread";
 import type { CustomSpreadReading, TarotCard } from "../src/domain/lib/types";

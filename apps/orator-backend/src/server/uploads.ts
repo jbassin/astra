@@ -7,6 +7,7 @@
  */
 import { mkdir, writeFile } from "node:fs/promises";
 import { extname, resolve } from "node:path";
+
 import type { LibraryStore, Track } from "../db/store";
 import type { AudioProbe, AudioProber } from "../media/probe";
 

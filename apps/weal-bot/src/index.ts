@@ -12,6 +12,7 @@ const log = getLogger("astra.weal-bot");
 
 import { loadConfig } from "@astra/config";
 import { loadBeing } from "@astra/ontology";
+
 import { PostgresStore } from "./db";
 import { Gateway } from "./gateway";
 import { Roster } from "./roster";

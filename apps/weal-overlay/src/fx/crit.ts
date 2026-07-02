@@ -1,4 +1,5 @@
 import type { Application } from "pixi.js";
+
 import { emitBurst } from "./particles";
 
 // Phosphor-teal celebration with an amber spark — the gothic accent palette.

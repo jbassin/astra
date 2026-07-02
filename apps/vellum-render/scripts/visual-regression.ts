@@ -21,10 +21,12 @@ import { existsSync } from "node:fs";
 import { readFile, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
 import { serveFile } from "@astra/site-kit";
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import { serve } from "srvx";
+
 import { RenderService } from "../src/renderService";
 import { FIXTURES } from "../test/visual/fixtures";
 

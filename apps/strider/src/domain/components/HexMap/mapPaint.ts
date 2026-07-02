@@ -1,10 +1,12 @@
+import type { GlowFilter } from "pixi-filters/glow";
 // Shared region fill/border painting + the map theme tokens, so HexMap and
 // EditorHexMap render regions identically (the two used to inline byte-identical
 // blocks). `active` = hovered (map) or picked (editor) — same visual treatment.
 import type { Graphics } from "pixi.js";
-import type { GlowFilter } from "pixi-filters/glow";
+
 import { computeRegionBorders, hexPixel } from "@/domain/lib/hexUtils";
 import type { Region } from "@/domain/lib/layers";
+
 import { drawEdgesPath, hexVertsAtPixel } from "./pixiScene";
 
 export const mapTheme = {

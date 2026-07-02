@@ -6,6 +6,7 @@
 
 import { loadBeing, type WealHost } from "@astra/ontology";
 import { describe, expect, test } from "vitest";
+
 import { goodnessOf, hostSays, invertGoodness, type RollGoodness, rollGoodness } from "./hosts";
 import type { Roll, RollRng } from "./roller";
 

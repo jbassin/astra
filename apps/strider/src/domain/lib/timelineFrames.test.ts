@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import {
   computeEffectiveAssignments,
   FACTION_HEXES,
@@ -7,6 +8,7 @@ import {
 import { foldFactionOverrides, foldRegions, foldSkein } from "@/domain/lib/regions";
 import { FACTIONS } from "@/generated/factions";
 import { LAYERS } from "@/generated/layers";
+
 import { buildTimelineFrames } from "./timelineFrames";
 
 const factions = [...FACTIONS];

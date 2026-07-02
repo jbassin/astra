@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { computeOpen, folderSlugs, isPrefixOfCurrent, type TreeNode } from "./explorerState";
 
 const tree: TreeNode[] = [

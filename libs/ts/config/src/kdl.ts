@@ -5,7 +5,9 @@
  */
 
 import { readFileSync } from "node:fs";
+
 import { type Document, type Node, parse } from "@bgotink/kdl";
+
 import { SecretRef } from "./secrets";
 
 export type LeafValue = string | number | boolean | bigint | null | SecretRef | unknown[];

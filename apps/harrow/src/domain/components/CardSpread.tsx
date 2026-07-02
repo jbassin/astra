@@ -1,5 +1,6 @@
 import type { DrawnCard, Spread } from "@/domain/lib/types";
 import { useIsMobile } from "@/lib/useIsMobile";
+
 import { FlipCard } from "./FlipCard";
 
 // Ported from harrow's src/components/CardSpread.tsx. Two changes: the local
@@ -117,7 +118,6 @@ export function CardSpread({ drawnCards, spread }: CardSpreadProps) {
           const len = Math.sqrt((to.x - from.x) ** 2 + (to.y - from.y) ** 2);
           return (
             <line
-              // biome-ignore lint/suspicious/noArrayIndexKey: fixed-length geometry, stable order
               key={i}
               x1={from.x}
               y1={from.y}

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { escapeHtml, searchDoc, searchUrl } from "./searchDoc";
 
 describe("searchDoc (Pagefind index doc, N1)", () => {

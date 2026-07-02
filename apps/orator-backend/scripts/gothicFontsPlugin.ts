@@ -1,6 +1,7 @@
 import { copyFileSync, createReadStream, existsSync, mkdirSync, readdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import type { Plugin } from "vite";
 
 // gothic owns the webfonts (theme.css references absolute /fonts/*). The strider

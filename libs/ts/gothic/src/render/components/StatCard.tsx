@@ -1,5 +1,6 @@
 import type { DocumentKind, VellumBlock } from "@astra/vellum-lang";
 import type { ReactElement } from "react";
+
 import { grimeStyle } from "../grimeStyle";
 import { collectText, renderNodes } from "../mdastToReact";
 import { TraitPill } from "./TraitPill";

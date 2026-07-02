@@ -7,6 +7,7 @@ import {
   useRouterState,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
+
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
@@ -55,17 +56,13 @@ function RootComponent() {
             is no light branch and no theme toggle). Runs pre-hydration so there's
             no flash. */}
         <script
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: tiny static pre-paint theme script
           dangerouslySetInnerHTML={{
             __html: `document.documentElement.setAttribute("saved-theme","dark")`,
           }}
         />
         {/* Speaker colors (I5) — `--text<Name>` vars + per-speaker transcript rules,
             generated from ontology-being at build (see scripts/build-content.ts). */}
-        <style
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: build-generated trusted CSS
-          dangerouslySetInnerHTML={{ __html: SPEAKER_CSS }}
-        />
+        <style dangerouslySetInnerHTML={{ __html: SPEAKER_CSS }} />
         <HeadContent />
       </head>
       <body data-slug={slug} suppressHydrationWarning>

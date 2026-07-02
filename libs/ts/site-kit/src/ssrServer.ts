@@ -11,9 +11,11 @@
 // whole service (it does not static-serve the site — Decision I).
 
 import { stat } from "node:fs/promises";
+
 import { getTracer, initTelemetry } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
 import { type Server, serve } from "srvx";
+
 import { serveFile } from "./sendFile";
 
 /** The shape of the built `dist/server/server.js` default export (asserted by the SSR smoke). */

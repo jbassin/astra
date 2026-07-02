@@ -7,6 +7,7 @@
 
 import type { List, RootContent } from "mdast";
 import type { ContainerDirective } from "mdast-util-directive";
+
 import type { VellumTimeline } from "./model";
 
 const MARKER_RE = /^\s*\{([^}]*)\}\s*/;

@@ -1,4 +1,5 @@
 import { describe, expect, test } from "vitest";
+
 import { SCHEMA, TABLES } from "./schema";
 
 describe("SCHEMA", () => {

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
+
 import type { SimpleSlug } from "@/domain/lib/slug";
+
 import { buildGraphData, type ContentDetails, type D3Config } from "./graphData";
 
 const cfg = (over: Partial<D3Config> = {}): D3Config => ({

@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+
 import { grimeFor } from "./seed";
 
 /**

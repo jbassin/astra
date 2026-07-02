@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+
 import { generateCombinedFortune } from "./fortune";
 import { CROSS_SPREAD } from "./spreads";
 import type { DrawnCard, TarotCard } from "./types";

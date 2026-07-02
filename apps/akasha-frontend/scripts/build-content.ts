@@ -17,10 +17,12 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+
 import { buildContent, defineContentSource, emitModule } from "@astra/content-build";
 import type { CrossRefResolver } from "@astra/gothic";
 import { type Being, loadBeing } from "@astra/ontology";
 import { loadSiteConfig } from "@astra/site-kit";
+
 import { buildResolvers } from "../src/domain/lib/crossref";
 import { readingMinutes, renderBody } from "../src/domain/lib/renderBody";
 import {

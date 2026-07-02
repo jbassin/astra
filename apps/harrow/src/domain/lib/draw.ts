@@ -4,6 +4,7 @@
 // Date.now run after hydration (the draw never executes during SSR — Decision D).
 
 import { DECK } from "@/generated/cards";
+
 import { generateCombinedFortune } from "./fortune";
 import { CROSS_SPREAD } from "./spreads";
 import type { DrawnCard, Reading, Spread, TarotCard } from "./types";

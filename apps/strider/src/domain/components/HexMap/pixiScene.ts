@@ -1,5 +1,6 @@
 import type { Application } from "pixi.js";
 import { Container, type Graphics } from "pixi.js";
+
 import { hexCornersAtPixel } from "@/domain/lib/hexUtils";
 
 export const WORLD_VIEWBOX = { width: 224, height: 256 };

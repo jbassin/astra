@@ -6,6 +6,7 @@
  * whole session. Ported verbatim from faerrin `pkg/lark/src/server/sessions.ts`.
  */
 import { createHmac, timingSafeEqual } from "node:crypto";
+
 import type { Session } from "./router";
 
 const DEFAULT_TTL_SECONDS = 60 * 60 * 24 * 30; // 30 days

@@ -1,7 +1,8 @@
 #!/bin/sh
-# astra pre-commit gate — mirrors CI (format + lint, warnings treated as errors).
-# Blocks the commit if anything is unclean; never modifies your files. Runs over
-# the whole repo (both linters are fast), so it catches the same things CI does.
+# astra pre-commit gate — mirrors CI (lint + format-check + ruff, warnings treated
+# as errors). Blocks the commit if anything is unclean; never modifies your files.
+# Runs over the whole repo (both linters are fast), so it catches the same things
+# CI does.
 #
 # Installed by the root package.json "prepare" script:
 #   git config core.hooksPath .githooks   (runs on `pnpm install`)
@@ -18,12 +19,15 @@ run() {
   fi
 }
 
-echo "pre-commit: biome (TS) + ruff (Python) …" >&2
+echo "pre-commit: oxlint + oxfmt (TS) + ruff (Python) …" >&2
 
-# TypeScript lane: format + lint + import-sort, with warnings escalated to errors
-# (this is what scoped local runs missed — see strider-0016-gotchas).
+# TypeScript lane: oxlint (type-aware, deny-warnings) + oxfmt --check (import-sort
+# included, sortImports: true), scoped to the same globs as `pnpm run format`/
+# `format:check` — a bare oxfmt over the whole tree would rewrite markdown/toml/
+# the SOPS secrets file (0022 D3/R5). D6: this is the SAME strict command CI runs.
 if command -v pnpm >/dev/null 2>&1; then
-  run "biome" pnpm exec biome ci --error-on-warnings .
+  run "oxlint" pnpm exec oxlint --type-aware --deny-warnings apps libs/ts
+  run "oxfmt" pnpm exec oxfmt --check 'apps/**/*.{js,jsx,ts,tsx,json,css}' 'libs/ts/**/*.{js,jsx,ts,tsx,json,css}' '*.{js,mjs,cjs,json}'
 else
   echo "✖ pre-commit: pnpm not found (needed for the TS lane)" >&2
   fail=1

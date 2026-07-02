@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+
 import FactionDetail from "@/domain/components/FactionDetail/FactionDetail";
 import { factionBySlug } from "@/generated/factions";
+
 import styles from "./factions.$slug.module.css";
 
 export const Route = createFileRoute("/factions/$slug")({
