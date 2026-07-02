@@ -36,9 +36,40 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `01216e1` code / docs this session, 2026-06-30)
+## Current state — UPDATE THIS SECTION (as of commit `7e06cff` docs, 2026-07-02)
 
-> **🆕 PIPELINE REORDER (0021) — BOTH CHANGES DONE + DEPLOYED + LIVE-VERIFIED.** The pipeline is now
+> **🆕 VITE+ CUTOVER (0022) — SCOPED + Phase-0 spikes DONE + all decisions RESOLVED; ▶ NEXT: author the
+> spec.** Stakeholders want the whole TS lane on **Vite+** (VoidZero `vp`, beta v0.2.2 — fully MIT/free
+> since March 2026; Cloudflare acquired VoidZero). Scoping ran as three parallel research streams + three
+> Phase-0 spikes (Vite 8 canary in a worktree, oxc tools actually run against the repo, bun-runtime exit
+> study); everything is in
+> `thoughts/shared/research/2026-07-02-viteplus-migration-0022-thoughts.md` (**the addendum's R1–R7
+> roadmap supersedes the doc's original plan**) + memory [[viteplus-cutover-0022]]. Two docs commits this
+> session (`2980952` scoping, `7e06cff` Phase-0 addendum + memory); **no production code changed**.
+>
+> **RESOLVED stakeholder decisions:** (1) **FULL cutover** — explicitly OK to migrate off the bun
+> runtime; (2) package manager → **pnpm** (bun exits entirely); (3) lint/format → **full switch to
+> oxlint + oxfmt** (biome retires).
+>
+> **Phase-0 headlines:** Vite 8 canary **PASSED on strider** (upstream TanStack/router#7614 did NOT
+> reproduce; needs `@vitejs/plugin-react` ^5.2 + a **lockstep** bump of every vite member in one slice —
+> a partial bump silently duplicates vite, the #7614 trigger; `--configLoader runner` survives; **vitest
+> 3 green is a FALSE vite-8 signal** — need vitest ^4.1). Runtime exit is **~2–3 days shallow** (Node 24
+> runs `.ts` natively; `Bun.serve`→srvx; **THE risk = Range/206 static audio serving in site-kit's
+> `ssrServer.ts`** — prove on the real mouthpiece/akasha mounts; Bun SQL→postgres.js ~1:1; 48-file
+> bun:test→vitest codemod). oxc audit: type-aware lint works + found real bugs but **tsgolint rejects
+> `baseUrl`** (fix 7 frontend tsconfigs in R1); **⚠️ oxfmt bare-root runs would rewrite markdown +
+> pyproject.toml + the SOPS `secrets.enc.yaml` — always glob-scope**; import auto-sort is lost.
+>
+> **▶ RESUME AT: `octo:spec` → `thoughts/astra/specs/0022-viteplus-cutover-spec.md` covering R1–R6**
+> (R1 vite-8 lockstep + baseUrl fix → R2 bun:test→vitest codemod → R3 runtime exit per the pilot ladder
+> → R4 pnpm → R5 oxlint+oxfmt → R6 vp adoption; R7 = TS 7 at GA, independent — still RC as of
+> 2026-07-02). NB: the CI-reproduction commands in this file's "How to work" section change under
+> R4/R5 — update them when those slices land.
+>
+> _(Prior main-track item unchanged: heartwood Phase-4 content acceptance — below.)_
+
+> **PIPELINE REORDER (0021) — BOTH CHANGES DONE + DEPLOYED + LIVE-VERIFIED.** The pipeline is now
 > reordered to: craig zip lands → **transcribe ∥ merge audio (parallel)** → chronicle → mouthpiece
 > (with chronicle output as recap context + an ordering gate). Two independent changes, both live.
 >
