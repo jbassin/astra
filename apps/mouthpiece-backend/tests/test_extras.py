@@ -227,7 +227,7 @@ def test_script_user_content_byte_identical_when_no_continuity() -> None:
     )
     assert "PREVIOUSLY: stuff" in withc
     assert withc.index("PREVIOUSLY: stuff") < withc.index("Things that happened this session")
-    assert CONTINUITY_BUDGET == 6_000
+    assert CONTINUITY_BUDGET == 26_000
 
 
 # ── linguist I/O ─────────────────────────────────────────────────────────────
