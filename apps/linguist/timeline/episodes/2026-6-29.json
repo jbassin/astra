@@ -1,0 +1,52 @@
+{
+  "date": "2026-6-29",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Heart of the Spider: Pistons, Poisons, and the Old Gods",
+    "synopsis": "Team Anzu ventures deeper into the Strider's Undercroft, crossing a perilous piston chamber and sneaking past spider-creatures in a silk-filled shaft. They discover an ancient religious site with statues of Aurelia the First's original party, then fight a grueling battle against massive sword-armed spiders and a notorious apothecary bug that steals potions and injects deadly poisons.",
+    "key_beats": [
+      "The party navigates a web-lined hallway in the Undercroft of the Strider, hearing skittering sounds through the walls and approaching heavy machinery.",
+      "Benny steps through a gap in the floor at the threshold of a piston room; he catches himself (earning a hero point) and the party surveys a massive cylindrical chamber with eight actively pumping pistons arranged in a V pattern.",
+      "Anzu and Argyle critically succeed on an occultism/religion check, confirming that a Heart's Fane can be co-opted by a stronger creature — meaning the Strider-themed Fane may be corrupted by 'Big Bug.'",
+      "The party flies and levitates across the 100-foot piston room (Anzu casts Fly on Argyle, Levitate on Benny; Johnny Dimension Doors), arriving safely on the far ledge.",
+      "Johnny creates an illusory undead distraction high above in a silk-curtain shaft room; the party sneaks past blue-black spider creatures suspended among thousands of silk strands.",
+      "Argyle identifies six ancient statues (~700 years old, pre-Aurelia II) depicting the original party of Aurelia the First, each sworn to one of the six outer gods — Scale, Church of the Compelled, two Belvedere academics, a vine-wrapped figure, and Aurelia I of the Iridescent Church.",
+      "Combat erupts against massive sword-armed spiders and a dreaded apothecary bug that drinks Johnny's healing potion and injects multiple poisons (Sloughing Toxin, Clown Monarch, Spider Venom).",
+      "The party defeats all spiders and apothecary bugs after a grueling fight, with Benny landing killing blows on the big spiders and Johnny finally stabbing the apothecary bug to death.",
+      "The session ends with the party battered and low on spell slots at the foot of the statue stairs, debating whether to rest and wondering what awaits further up."
+    ],
+    "characters_present": [
+      "Benny (fighter/exemplar)",
+      "Argyle (cleric/healer)",
+      "Johnny (occult spellcaster)",
+      "Anzu (occultist/psychic)"
+    ],
+    "locations": [
+      "The Undercroft of the Strider (below Hildebrandt's slice, roughly floors 12-15)",
+      "Web-lined twisting hallway",
+      "Piston room (large cylindrical chamber with eight pumping pistons)",
+      "Silk curtain shaft (converted elevator shaft with curtains of spider silk)",
+      "Religious statue room (ancient worship site with six statues of Aurelia I's party)"
+    ],
+    "factions": [
+      "The Sinister Six (Herald/Scorpion symbol found earlier)",
+      "The original party of Aurelia the First (depicted in statues — Scale, Church of the Compelled, Belvedere, Iridescent Church, and others)",
+      "Belvedere",
+      "Iridescent Church",
+      "Church of the Compelled",
+      "NecroLog (Johnny's organization, referenced)"
+    ],
+    "items": [
+      "Obsidian Goggles (darkvision item, passed to Benny)",
+      "Mongrel folk tincture (grants Dex bonus / extra fingers for climbing)",
+      "Skeleton key",
+      "Ink ribbon",
+      "Pamphlets — Perfection's First Step",
+      "Horn symbol of the Herald (found on a mongrel folk last session)",
+      "Holy water",
+      "Potion of Emergency Escape",
+      "Addiction Suppressant (Greater)"
+    ],
+    "cliffhanger": "The party stands at the foot of the statue-lined stairs, surrounded by spider corpses, low on spell slots and resources, wondering whether a Heart lies in this room or further up the stairs — and whether something even bigger guards it."
+  }
+}
