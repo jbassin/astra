@@ -101,4 +101,16 @@ same image-staleness class as the `EXCLUDED_DATES` note above and [[mouthpiece-t
 (container output never reached the host) — now fixed by the [[deploy-artifacts-run-as-user]] change, so a
 backfill lands host-owned.
 
+**2026-07-02 — orphan backfilled + THE regroup surprise (accepted):** materialized
+`session_episode_summary` for `2026-6-29` in-container (`sh -c`, `/opt/venv/bin/dagster asset materialize
+-f /opt/dagster/app/definitions.py --select … --partition …`) then `campaign_timeline`; live on
+`/chronicle`. **Gotcha: any change to the episode set makes `campaign_timeline` regroup the WHOLE show from
+scratch** — `group_show_seasons` gets only the episode list (no prior-seasons anchor in `SEASON_SYSTEM` /
+`season_user_content`), so the published 5-season structure ("The Voidward Road" era) was replaced by a
+fresh 6-season partition ("The Strider" etc.), renumbering season-nested episode URLs (`…/s<N>/<date>`).
+It had looked stable since launch only because the sensor bug meant the input set never changed.
+**Stakeholder decision: reshuffling is ACCEPTED as designed behavior** — each new session may re-partition
+seasons + break old chronicle deep links; do NOT "fix" this without a new decision. (Pause
+`linguist-commit.timer` first if a regroup ever needs review before publish.)
+
 Builds on [[akasha-frontend-0011-gotchas]] + [[config-single-source]] + [[telemetry-built-in]].
