@@ -36,7 +36,56 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of S15, the FINAL vite+ cutover slice, 2026-07-02 fourth session)
+## Current state — UPDATE THIS SECTION (as of commit `5cff55f`, 2026-07-07 — portal 0023 SPEC session)
+
+> **▶ NEW SUBSYSTEM: portal (0023) — an MCP for the FoundryVTT campaign instance. SCOPE + SPEC DONE;
+> NO CODE YET. Resume at implementation S1.**
+>
+> **What it is:** a TypeScript **MCP server** (Streamable-HTTP, a Compose unit behind Caddy at
+> `portal.iridi.cc:10372`) + a **custom astra-owned FoundryVTT module** that dials out to it, so an LLM
+> client (Claude Code + Claude Desktop) can **search** the pf2e compendium + world entities and
+> **create** (import statblocks, drop tokens on the active scene, items, journals) against the live
+> **pf2e "Faerrin"** world. Feasibility = **GREEN** (reference impl `adambdooley/foundry-vtt-mcp`, MIT,
+> verified v13–14, proves the pattern).
+>
+> **Docs produced this session (both committed):**
+> - Scope: `thoughts/shared/research/2026-07-06-portal-0023-thoughts.md` (verified vs the live host).
+> - Spec: `thoughts/astra/specs/0023-portal-spec.md` — **6 slices S1–S6**, decisions **D1–D14**,
+>   verified footprint, acceptance A–H, risks, adversarial pass.
+>
+> **Verified against reality this session (don't re-derive):**
+> - Live instance: `felddy/foundryvtt:13.351`, **pf2e 7.12.2**, world `faerrin`, public `btl.iridi.cc`,
+>   on Compose project `apps` / network `apps-network` (**separate stack, same host** as astra's
+>   `signoz-net`). World currently `null` (idle at /setup) — **liveness is the headline constraint.**
+> - **Nested-member fix EMPIRICALLY PROVEN** (the one gating structural risk): `apps/portal/{server,
+>   module,shared}` needs **two** one-line edits — add `- "apps/portal/*"` to `pnpm-workspace.yaml`
+>   (pnpm `apps/*` is single-level → else undiscovered) **AND** add `"apps/portal"` to the uv
+>   `exclude` in `pyproject.toml` (uv hard-errors on the manifest-less parent, even `--dry-run`). With
+>   both, `pnpm -r ls` finds all three + `uv sync` exits 0. (See [[portal-0023-gotchas]].)
+> - Next free port **10372**; the Dockerfile manifest-COPY ripple hits every sibling TS Dockerfile.
+>
+> **Locked decisions (stakeholder-chosen — see the spec + [[portal-0023-gotchas]]):** custom module
+> bridge (not the ThreeHats relay); **clone-from-compendium ONLY, zero hand-authored pf2e schemas**
+> (D5, the crux); Streamable-HTTP MCP + a WS the module dials; two-hop API-key auth; **creates ON by
+> default** (D8, gated by isGM ∧ bridge-key ∧ per-request cap + full audit); nested `apps/portal/*`
+> layout; **install by Manifest URL** (`portal.iridi.cc/module/module.json`; Caddy `/module/*` route;
+> Foundry fetches server-side, no CORS).
+>
+> **▶ NEXT — implement via `octo:embrace` against the spec, slice by slice:**
+> - **S1 (skeleton, Foundry-free):** create the 3 members + apply the two proven config edits; confirm
+>   `pnpm -r ls` + `uv sync` green; add the `portal {}` config block + mirrored Pydantic/Zod schema +
+>   two SOPS keys. **S2 (bridge + MCP skeleton, Foundry-free):** telemetry-first, WS server w/ two-hop
+>   auth, Streamable-HTTP `/mcp`, `bridge-status` tool. **S1–S2 need no live Foundry — start here.**
+> - **S3–S6 need the GM to launch "Faerrin" on `btl.iridi.cc` + install the module** (manual step;
+>   coordinate with the stakeholder). S3 = module + end-to-end bridge proof; S4 = read tools; S5 =
+>   write tools; S6 = deploy + install-by-manifest-URL + live loop + memory.
+> - **Watch the linguist-commit timer** — it touched the tree mid-session this session (`M
+>   dagster/Dockerfile` + today's linguist files → the `da8152f`/`5cff55f` background commits). Keep a
+>   clean index during portal commits; `systemctl --user stop linguist-commit.timer` if doing manual git.
+
+---
+
+### Previous session (archive) — 0022 vite+ cutover (COMPLETE, all 15 slices built + deployed + live)
 
 > **✅ VITE+ CUTOVER (0022) — ALL 15 SLICES BUILT, R1–R6 COMPLETE.** S9–S14 landed in the session
 > between the S1–S8 checkpoint and this one (vellum-render on Node 24, bun type-surface fully out,
