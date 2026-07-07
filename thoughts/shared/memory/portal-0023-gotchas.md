@@ -1,6 +1,6 @@
 ---
 name: portal-0023-gotchas
-description: portal (0023) — an MCP for the FoundryVTT campaign; scope+spec done, no code yet; the load-bearing decisions + the empirically-verified nested-member fix
+description: portal (0023) — the FoundryVTT MCP; ALL 6 SLICES BUILT + DEPLOYED LIVE on portal.iridi.cc; only the GM install + live acceptance remain; the load-bearing decisions + build gotchas
 metadata:
   type: project
 ---
@@ -8,9 +8,42 @@ metadata:
 **portal (0023)** — a net-new astra subsystem: a **TypeScript MCP server** + a **custom astra-owned
 FoundryVTT module** so an LLM (Claude Code + Claude Desktop) can **search** the pf2e compendium + world
 entities and **create** (import statblocks, drop tokens on the active scene, items, journals) against
-the live **pf2e "Faerrin"** world. **State 2026-07-07: SCOPE + SPEC DONE, NO CODE.** Scope
+the live **pf2e "Faerrin"** world. **State 2026-07-07: ALL 6 SLICES BUILT + PUSHED (`87f633f`…`18cecff`)
++ DEPLOYED LIVE** — `astra-portal` healthy @10372 behind `portal.iridi.cc` (health/module-package/
+mcp-auth/SigNoz all edge-verified; `bridge-status` correctly reports the typed offline). **The ONLY
+remaining step is the GM install + live acceptance** (launch "Faerrin" on `btl.iridi.cc` → Install
+Module → Manifest URL `https://portal.iridi.cc/module/module.json` → enable → set WS URL
+`wss://portal.iridi.cc/ws` + the `portal_bridge_api_key` SOPS value in module settings), then verify
+reads/writes live (acceptance E/F/G). Scope
 `thoughts/shared/research/2026-07-06-portal-0023-thoughts.md`; spec `thoughts/astra/specs/0023-portal-spec.md`
-(6 slices S1–S6, decisions D1–D14). Resume at implementation S1 (Foundry-free).
+(6 slices S1–S6, decisions D1–D14; status header carries the commit map).
+
+**⭐ Build-session gotchas (2026-07-07, found by review/running — not in the spec):**
+
+- **Bridge replace-adopt must clear the prior heartbeat interval** — `#adopt` → `#startHeartbeat()`
+  without a `clearInterval` leaks one interval per GM tab reload, and two offset intervals share
+  `#awaitingPong`, so a healthy socket gets terminated on ordinary pong latency (`bridge.ts`).
+- **Module reconnect backoff resets only after a ≥10s "healthy hold", never on `open`** — the bridge
+  sends no auth ack, so open-reset would let a WRONG key hammer the server at ~1/s forever (open →
+  reset → instant 1008 policy close → 1s retry). Hold-time reset keeps portal-restart recovery at 1s
+  AND lets a bad key climb to the 30s cap (`bridgeClient.ts`, `HEALTHY_HOLD_MS`).
+- **The MCP SDK's `registerTool` callback type can't be reduced inside a generic wrapper** — one
+  documented `as never` at the single `registerBridgeTool` seam (covered by a real-MCP-client
+  round-trip test); SDK `@modelcontextprotocol/sdk@1.29` resolves zod 4.4.3, matching the workspace.
+- **`fflate` zips the module package in-process** (no system `zip` in node:24-slim); the zip is built
+  lazily at first request + cached, and the zipped `module.json` carries the SAME absolute
+  manifest/download URLs as the served one (else Foundry update checks break). `moduleDir` resolves
+  `new URL("../../module", import.meta.url)` — identical layout locally and in-image.
+- **Repo-wide `pnpm run lint` OOM-flakes on this host** ("Linter process terminated abnormally") —
+  `pnpm exec oxlint --type-aware --deny-warnings --threads=4 apps libs/ts` is the reliable form.
+- **`apps/heartwood-frontend/src/routeTree.gen.ts` regen-flaps** when the TS lanes run (drops the
+  trailing `declare module` block non-deterministically) — `git checkout --` it before committing;
+  pre-existing, not portal's.
+- **The manifest ripple was 11 sibling Dockerfiles** (all TS services with a Dockerfile;
+  orator-controller has none, dagster is py). A new nested member = 3 COPY lines in EVERY one.
+- **`vitest run` with zero test files exits 1** → every new member ships ≥1 real test from birth.
+- **New-subdomain TLS takes ~60s** after `caddy-reload` (wildcard DNS + ACME mint) — curl exit 35 /
+  000 in that window is normal, not a routing bug (same as [[ledger-0018-gotchas]]).
 
 **Feasibility = GREEN.** Foundry ships NO native external API; every integration needs code running
 *inside a live world*. Reference impl `adambdooley/foundry-vtt-mcp` (MIT, verified Foundry v13–14,

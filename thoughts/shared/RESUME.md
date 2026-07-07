@@ -36,9 +36,46 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `5cff55f`, 2026-07-07 — portal 0023 SPEC session)
+## Current state — UPDATE THIS SECTION (as of commit `18cecff`, 2026-07-07 — portal 0023 BUILD+DEPLOY session)
 
-> **▶ NEW SUBSYSTEM: portal (0023) — an MCP for the FoundryVTT campaign instance. SCOPE + SPEC DONE;
+> **▶ portal (0023) — ALL 6 SLICES BUILT + PUSHED + DEPLOYED LIVE (`87f633f` S1 · `f015063` S2 ·
+> `a498a35` S3 · `1023381` S4 · `d554527` S5 · `18cecff` S6). The server is LIVE at
+> `portal.iridi.cc` (container `astra-portal` healthy @10372, edge-verified). THE ONLY REMAINING
+> STEP: the GM install + live acceptance (E/F/G's live halves) — a human step, handed to Josh.**
+>
+> **Verified live this session (post `just up` + `just caddy-reload`):** all 18 astra containers
+> healthy after the 12-image rebuild (the manifest ripple touched 11 siblings — all 9 public edges
+> still 200); `portal.iridi.cc/health` 200; `/module/module.json` renders absolute manifest/download
+> URLs from config public-origin; `/module/portal.zip` 200 (37.9 KB, fflate-packaged in-process);
+> `/mcp` = 401 unauth, full 10-tool list + `bridge-status` → typed `{"connected":false}` with the
+> bearer; SigNoz `astra.portal` spans flowing 0-error. Cert minted itself off the `*.iridi.cc`
+> wildcard (~60s of TLS handshake failures before it settled — normal, same as ledger).
+>
+> **▶ NEXT — the GM step (Josh), then live acceptance:**
+> 1. Launch the "Faerrin" world at `btl.iridi.cc` (GM login).
+> 2. *Setup → Add-on Modules → Install Module → Manifest URL =*
+>    `https://portal.iridi.cc/module/module.json` → install, then enable "Astra Portal Bridge" in
+>    the world (Manage Modules).
+> 3. In the module's settings: WS URL = `wss://portal.iridi.cc/ws`; API key = the value of
+>    `sops -d --extract '["portal_bridge_api_key"]' deploy/sops/secrets.enc.yaml`
+>    (with `SOPS_AGE_KEY_FILE=deploy/sops/age.key`).
+> 4. Then any session verifies: `bridge-status` → connected + world meta, the S4 reads (search
+>    "goblin" etc.), the S5 writes (import → token on the active scene → journal), = acceptance
+>    E/F/G live halves. MCP client config: `https://portal.iridi.cc/mcp` + Bearer
+>    `portal_mcp_api_key` (Claude Code: `claude mcp add --transport http portal … --header
+>    "Authorization: Bearer <key>"`).
+>
+> **Orchestrator review fixes this session (recorded in [[portal-0023-gotchas]]):** the bridge
+> replace-adopt leaked the prior heartbeat interval (double-ping could kill a healthy socket);
+> module reconnect backoff resets only after a ≥10s healthy hold (open-reset would let a wrong key
+> hammer at ~1/s). Known flakes hit: repo-wide `pnpm run lint` OOM (use `--threads=4`), the
+> heartwood `routeTree.gen.ts` regen flap (checkout it back), both pre-existing.
+
+---
+
+### Previous session (archive) — portal 0023 scope + spec (superseded by the build above)
+
+> **▶ portal (0023) — an MCP for the FoundryVTT campaign instance. SCOPE + SPEC DONE;
 > NO CODE YET. Resume at implementation S1.**
 >
 > **What it is:** a TypeScript **MCP server** (Streamable-HTTP, a Compose unit behind Caddy at

@@ -1,8 +1,12 @@
 # NLSpec 0023 — portal: an MCP for the FoundryVTT campaign instance
 
-**Status:** SPEC — not yet built. Defines 6 CI-green slices (S1–S6) for a net-new subsystem. The one
-  gating structural risk (nested pnpm/uv members) was **verified empirically before speccing** and is
-  resolved (see Verified footprint). No code exists yet under `apps/portal/`.
+**Status:** BUILT + DEPLOYED LIVE (2026-07-07) — all 6 slices CI-green + pushed (`87f633f` S1 ·
+  `f015063` S2 · `a498a35` S3 · `1023381` S4 · `d554527` S5 · `18cecff` S6); deployed via `just up` +
+  `just caddy-reload`, live-verified at `portal.iridi.cc` (health/module.json/zip/mcp-auth/
+  bridge-status-offline + SigNoz spans). Acceptance: **A–D met; E/F's live halves + G's full-loop and
+  H await the GM step** (install the module in a launched "Faerrin" world — see RESUME). Two
+  orchestrator-review hardenings beyond the spec text: heartbeat-interval cleanup on replace-adopt;
+  healthy-hold (≥10s) backoff reset in the module reconnect.
 **Scope doc:** `thoughts/shared/research/2026-07-06-portal-0023-thoughts.md` (verified against the live
   `foundry_faerrin` container + the astra orator-backend template). This spec resolves scope §9 open
   items (§9.1 empirically; §9.6 + write posture via stakeholder decision; the rest by default below).
