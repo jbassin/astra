@@ -30,6 +30,9 @@ class DigestStats(BaseModel):
     kept_lines: int
     windows: int
     dropped_windows: int
+    #: Whisper silence-hallucination lines dropped deterministically pre-windowing
+    #: (default 0 so pre-existing new-schema digests still parse).
+    hallucination_lines: int = 0
 
 
 class SessionDigest(BaseModel):

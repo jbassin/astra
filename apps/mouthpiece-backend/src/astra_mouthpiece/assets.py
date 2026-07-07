@@ -142,6 +142,7 @@ def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         span.set_attribute("mouthpiece.kept_lines", stats.kept_lines)
         span.set_attribute("mouthpiece.windows", stats.windows)
         span.set_attribute("mouthpiece.dropped_windows", stats.dropped_windows)
+        span.set_attribute("mouthpiece.hallucination_lines", stats.hallucination_lines)
         span.set_attribute("mouthpiece.wiki_refs", len(digest.wiki_refs))
         _log.info(
             "mouthpiece cleaned %s → %d/%d lines kept (%d/%d windows dropped)",
@@ -181,7 +182,10 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
             raise FileNotFoundError(f"no linguist transcript for session {key}")
         turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
         clean.assert_no_drift(turns, digest)
-        cleaned_turns = clean.apply_kept_ranges(turns, digest.kept_ranges)
+        # Symmetric with Stage 2: hallucination lines were dropped BEFORE windowing there,
+        # so drop them here too before applying the ranges (deterministic — always agrees).
+        speech, _ = clean.drop_hallucinations(turns)
+        cleaned_turns = clean.apply_kept_ranges(speech, digest.kept_ranges)
         pages = pages_from_corpus(load_corpus())
         hosts = load_hosts()
         # Recap continuity (0021 Change B): prior episodes + best-effort season arc of THIS

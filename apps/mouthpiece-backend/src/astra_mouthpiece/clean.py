@@ -17,6 +17,7 @@ re-execution) — never apply stale `kept_ranges` to a different transcript.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Any, Literal
 
@@ -242,6 +243,26 @@ def _collapse_ranges(
     return kept, dropped, dropped_windows
 
 
+#: A line whose ENTIRE content is repetitions of "you" / "thank you" — the canonical
+#: Whisper silence-hallucination family (quiet per-speaker Craig tracks transcribe as
+#: these; 2026-7-6 had 576 bare-"you" lines scattered between real dialogue, which
+#: window-granularity filtering can't touch). Deliberately narrow: "Okay."/"Yeah."/
+#: "Yes." are real speech and stay.
+HALLUCINATION_LINE_RE = re.compile(r"^(?:(?:thank\s+)?you\b[\s.,!?]*)+$", re.IGNORECASE)
+
+
+def drop_hallucinations(turns: list[Turn]) -> tuple[list[Turn], int]:
+    """Deterministic line-level drop of Whisper silence-hallucination lines.
+
+    Applied SYMMETRICALLY at both stages — Stage 2 before windowing (so windows judge
+    real content) and Stage 3 before `apply_kept_ranges` on the re-read transcript —
+    so the two stages always agree without persisting anything. `assert_no_drift`
+    runs on the RAW parse count, before this drop.
+    """
+    kept = [t for t in turns if not HALLUCINATION_LINE_RE.match(t[2].strip())]
+    return kept, len(turns) - len(kept)
+
+
 def apply_kept_ranges(turns: list[Turn], ranges: list[tuple[int, int]]) -> list[Turn]:
     """Deterministic reassembly: every turn whose line id falls inside any inclusive
     range in `ranges`. THE single assembly function for both Stage 2 (the enrich
@@ -311,12 +332,13 @@ def enrich_session(
 def clean_session(
     client: LlmClient, session_id: str, turns: list[Turn], *, model: str | None = None
 ) -> SessionDigest:
-    """Filter -> sanity floor -> assemble -> enrich -> `SessionDigest` (§3 end to end)."""
-    windows = segment_turns(turns)
+    """Hallucination drop -> filter -> sanity floor -> assemble -> enrich -> `SessionDigest`."""
+    speech, hallucination_lines = drop_hallucinations(turns)
+    windows = segment_turns(speech)
     verdicts = classify_windows(windows, client=client, model=model)
     resolved = resolve_verdicts(verdicts)
     kept_ranges, dropped, dropped_windows = _collapse_ranges(windows, resolved)
-    cleaned_turns = apply_kept_ranges(turns, kept_ranges)
+    cleaned_turns = apply_kept_ranges(speech, kept_ranges)
 
     if len(cleaned_turns) < KEPT_LINES_FLOOR:
         raise DegenerateTranscriptError(
@@ -332,6 +354,7 @@ def clean_session(
         kept_lines=len(cleaned_turns),
         windows=len(windows),
         dropped_windows=dropped_windows,
+        hallucination_lines=hallucination_lines,
     )
     return SessionDigest(
         session_id=session_id,

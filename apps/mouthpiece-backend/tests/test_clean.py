@@ -29,6 +29,7 @@ from astra_mouthpiece.clean import (
     assert_no_drift,
     batch_windows,
     clean_session,
+    drop_hallucinations,
     enrich_session,
     parse_filter_verdicts,
     resolve_verdicts,
@@ -453,3 +454,57 @@ def test_assert_no_drift_raises_on_line_count_mismatch() -> None:
     # re-execution regenerated it) — kept_ranges would now be stale.
     with pytest.raises(TranscriptDriftError, match="sid"):
         assert_no_drift(_turns(11), _digest_with_lines(10))
+
+
+# ── hallucination line drop ──────────────────────────────────────────────────────
+
+
+def _t(line: int, text: str, speaker: str = "Argyle") -> Turn:
+    return (line, speaker, text)
+
+
+def test_drop_hallucinations_drops_the_you_family() -> None:
+    turns = [
+        _t(1, "you"),
+        _t(2, "you  "),  # canonical trailing double-space
+        _t(3, "you you"),
+        _t(4, "Thank you."),
+        _t(5, "you Thank you"),
+        _t(6, "thank you thank you!"),
+        _t(7, "You?"),
+    ]
+    kept, dropped = drop_hallucinations(turns)
+    assert kept == []
+    assert dropped == 7
+
+
+def test_drop_hallucinations_keeps_real_speech() -> None:
+    turns = [
+        _t(1, "Yeah."),
+        _t(2, "Okay."),
+        _t(3, "Yes."),
+        _t(4, "you okay?"),
+        _t(5, "Thank you for the sword, truly."),
+        _t(6, "You did what?"),
+        _t(7, "I attack the spider."),
+    ]
+    kept, dropped = drop_hallucinations(turns)
+    assert kept == turns
+    assert dropped == 0
+
+
+def test_drop_hallucinations_is_stage_order_independent() -> None:
+    # Stage 2 drops BEFORE windowing/ranges; Stage 3 drops before applying ranges.
+    # Dropping then range-filtering must equal range-filtering then dropping.
+    turns = [
+        _t(1, "we open the door"),
+        _t(2, "you"),
+        _t(3, "the hinges scream"),
+        _t(4, "Thank you."),
+        _t(5, "roll for initiative"),
+    ]
+    ranges = [(1, 5)]
+    speech, _ = drop_hallucinations(turns)
+    a = apply_kept_ranges(speech, ranges)
+    b, _ = drop_hallucinations(apply_kept_ranges(turns, ranges))
+    assert a == b == [turns[0], turns[2], turns[4]]
