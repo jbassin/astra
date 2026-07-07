@@ -19,12 +19,14 @@ from astra_mouthpiece.clean import (
     DegenerateTranscriptError,
     DroppedRange,
     EnrichParseError,
+    TranscriptDriftError,
     Turn,
     Window,
     WindowVerdict,
     _collapse_ranges,
     _parse_enrichment,
     apply_kept_ranges,
+    assert_no_drift,
     batch_windows,
     clean_session,
     enrich_session,
@@ -32,6 +34,7 @@ from astra_mouthpiece.clean import (
     resolve_verdicts,
     segment_turns,
 )
+from astra_mouthpiece.models import DigestStats, SessionDigest
 from astra_mouthpiece.schemas import CLEAN_ENRICH_TOOL_NAME, CLEAN_FILTER_TOOL_NAME
 from pydantic import ValidationError
 
@@ -427,3 +430,26 @@ def test_window_verdict_rejects_bad_category() -> None:
         WindowVerdict.model_validate(
             {"window": 1, "decision": "keep", "category": "not-a-category"}
         )
+
+
+# ── Stage-3 re-read drift guard (§4.3) ──────────────────────────────────────────────
+
+
+def _digest_with_lines(n: int) -> SessionDigest:
+    return SessionDigest(
+        session_id="sid",
+        synopsis="syn",
+        kept_ranges=[(1, n)],
+        stats=DigestStats(lines=n, kept_lines=n, windows=1, dropped_windows=0),
+    )
+
+
+def test_assert_no_drift_passes_when_line_count_matches() -> None:
+    assert_no_drift(_turns(10), _digest_with_lines(10))  # no raise
+
+
+def test_assert_no_drift_raises_on_line_count_mismatch() -> None:
+    # The transcript grew by one line since Stage 2 ran (e.g. a FROM_FAILURE
+    # re-execution regenerated it) — kept_ranges would now be stale.
+    with pytest.raises(TranscriptDriftError, match="sid"):
+        assert_no_drift(_turns(11), _digest_with_lines(10))

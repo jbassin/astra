@@ -1,16 +1,18 @@
-"""Stage 2 replacement — clean + enrich (0024 §3), the distill/beats successor.
+"""Stage 2 — clean + enrich (0024 §3), the distill/beats successor.
 
 A windowed keep/drop OOC filter (heartwood's architecture — `filter.py`, ported here
 with mouthpiece's wider D4 bar: combat and all narrative content stay IN) that never
 re-emits transcript text (F1 — verdicts + line-id ranges only, deterministic
 assembly), plus one enrich call on the cleaned transcript for `synopsis` + flat
-`wiki_refs`. LLM via `call_tool` (the `digest.py` pattern: raw `LlmClient.call_tool` +
-hand-rolled parsing, no `call_structured`/dspy — H1).
+`wiki_refs`. LLM via `call_tool` (the old `digest.py` pattern: raw
+`LlmClient.call_tool` + hand-rolled parsing, no `call_structured`/dspy — H1).
 
-**Additive and unwired (S3):** `digest.py` still drives the `session_digest` asset
-until S4 rewires it and deletes `digest.py`/the beat machinery/the one-shot arm. The
-`SessionDigest`/`DigestStats` models defined here are S4's target shape (relocated
-into `models.py` then, replacing the old `SessionDigest`).
+`apply_kept_ranges` is THE single deterministic assembly function used by both
+Stage 2 (the enrich input, here) and Stage 3 (the Pass A input, `assets.py`).
+`assert_no_drift` is the Stage-3 re-read guard (§4.3): the canonical transcript is
+re-parsed from disk between stages, so a line-count mismatch against
+`digest.stats.lines` means it changed underneath the pipeline (e.g. a FROM_FAILURE
+re-execution) — never apply stale `kept_ranges` to a different transcript.
 """
 
 from __future__ import annotations
@@ -21,6 +23,7 @@ from typing import Any, Literal
 from astra_llm import LlmClient, ToolCallRequest
 from pydantic import BaseModel, ValidationError
 
+from .models import DigestStats, DroppedRange, SessionDigest
 from .prompts import CLEAN_FILTER_SYSTEM, ENRICH_SYSTEM
 from .schemas import clean_enrich_tool, clean_filter_tool
 
@@ -49,34 +52,16 @@ class EnrichParseError(ValueError):
     """Raised when the enrich tool's input doesn't match the expected shape."""
 
 
-# ── models (S4 relocates these into models.py, replacing the old SessionDigest) ────
+class TranscriptDriftError(RuntimeError):
+    """Raised when a re-read canonical transcript's line count doesn't match
+    `digest.stats.lines` (§4.3 Stage-3 guard).
 
-
-class DroppedRange(BaseModel):
-    """One inclusive line-id span the filter dropped — the human-reviewable audit trail."""
-
-    range: tuple[int, int]
-    category: str
-
-
-class DigestStats(BaseModel):
-    """Coverage stats for one session's filter pass (mirrors the §8 span attrs)."""
-
-    lines: int
-    kept_lines: int
-    windows: int
-    dropped_windows: int
-
-
-class SessionDigest(BaseModel):
-    """The clean+enrich artifact for one session (§3.3 — replaces beats/discarded)."""
-
-    session_id: str
-    synopsis: str
-    wiki_refs: list[str] = []
-    kept_ranges: list[tuple[int, int]] = []
-    dropped: list[DroppedRange] = []
-    stats: DigestStats
+    The canonical transcript changed between `session_digest` (Stage 2) and
+    `session_script` (Stage 3) — e.g. linguist regenerated it across a
+    FROM_FAILURE re-execution. `kept_ranges` are line-id ranges into a SPECIFIC
+    transcript; applying them to a different one would silently keep/drop the
+    wrong lines, so this fails the asset loudly instead.
+    """
 
 
 class WindowVerdict(BaseModel):
@@ -260,9 +245,25 @@ def _collapse_ranges(
 def apply_kept_ranges(turns: list[Turn], ranges: list[tuple[int, int]]) -> list[Turn]:
     """Deterministic reassembly: every turn whose line id falls inside any inclusive
     range in `ranges`. THE single assembly function for both Stage 2 (the enrich
-    input, here) and Stage 3 (the Pass A input, once S4 wires it in).
+    input, here) and Stage 3 (the Pass A input, `assets.py`).
     """
     return [t for t in turns if any(lo <= t[0] <= hi for lo, hi in ranges)]
+
+
+def assert_no_drift(turns: list[Turn], digest: SessionDigest) -> None:
+    """Stage-3 re-read guard (§4.3): raise `TranscriptDriftError` unless the
+    freshly re-parsed transcript has exactly the line count `digest.stats.lines`
+    recorded at Stage 2. Call this BEFORE `apply_kept_ranges` on a re-read
+    transcript — a silently-stale `kept_ranges` would keep/drop the wrong lines.
+    """
+    if len(turns) != digest.stats.lines:
+        raise TranscriptDriftError(
+            f"session {digest.session_id!r}: the canonical transcript now has "
+            f"{len(turns)} line(s) but digest.json recorded {digest.stats.lines} at "
+            "Stage 2 — it changed since session_digest ran (e.g. a FROM_FAILURE "
+            "re-execution); refusing to apply stale kept_ranges to a different "
+            "transcript."
+        )
 
 
 # ── enrich call ──────────────────────────────────────────────────────────────────

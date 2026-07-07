@@ -1,10 +1,14 @@
-"""Stage 3 — script: digest + grounding → a tavern-tone roundtable `Script`.
+"""Stage 3 — script: digest + cleaned transcript + grounding → a tavern-tone
+roundtable `Script` (0024 §4 rework of the beat-driven version).
 
 The TWO-PASS (the crux, ported from caster `script/index.ts`): Pass A `call_text`
 (free-text "raw imperfect transcript" — keeps the model out of the clean-podcast
 attractor) → Pass B `call_tool` (protective "dressing" into structured turns,
 forbidden to polish). Raw `libs/py/llm`, no dspy (H1); the verbatim prompts carry
 the craft. The `max_tokens→raise` guard + prompt caching come free from the client.
+
+The one-shot legacy arm (`two_pass=False`) is deleted (0024 §5) — two-pass is the
+only path now.
 """
 
 from __future__ import annotations
@@ -18,7 +22,6 @@ from .prompts import (
     build_dressing_system_prompt,
     build_dressing_user_content,
     build_improv_system_prompt,
-    build_script_system_prompt,
     build_script_user_content,
 )
 from .schemas import script_tool
@@ -120,27 +123,32 @@ def _split_transcript(transcript: str, max_words: int) -> list[str]:
     return segments
 
 
-def generate_two_pass(
+def generate_script(
     client: LlmClient,
     digest: SessionDigest,
+    cleaned_turns: list[tuple[int, str, str]],
     grounding: list[GroundingEntry],
     hosts: HostConfig,
     *,
+    roster_block: str = "",
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
+    sharpen: bool = False,
 ) -> Script:
-    """Pass A (free-text improv) → Pass B (structured dressing, no polishing).
+    """Pass A (free-text debate transcript) → Pass B (structured dressing, no
+    polishing) — the only script-generation path (0024 deleted the one-shot arm).
 
     A long Pass A transcript is dressed in word-bounded SEGMENTS (`PASS_B_CHUNK_WORDS`):
     GLM's structured tool output stalls typesetting a full long-episode transcript at once,
     so each segment gets its own Pass B call and the turns are concatenated (the title
     comes from the first segment). A short transcript is one segment — a single Pass B call,
-    unchanged."""
+    unchanged. With `sharpen`, run a focused per-host voice pass afterward (one call per
+    host)."""
     user_content = build_script_user_content(
-        digest.synopsis, digest.session_id, digest.beats, grounding, continuity_block
+        digest, cleaned_turns, roster_block, grounding, continuity_block
     )
-    # Pass A — raw, imperfect plaintext transcript.
+    # Pass A — raw, imperfect plaintext debate transcript.
     transcript = client.call_text(
         _text_req(build_improv_system_prompt(hosts), user_content, model, max_tokens)
     )
@@ -160,62 +168,7 @@ def generate_two_pass(
         if i == 0:
             title = part.title
         turns.extend(part.turns)
-    return Script(session_id=digest.session_id, title=title, hosts=hosts, turns=turns)
-
-
-def generate_one_shot(
-    client: LlmClient,
-    digest: SessionDigest,
-    grounding: list[GroundingEntry],
-    hosts: HostConfig,
-    *,
-    model: str | None = None,
-    max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
-    continuity_block: str = "",
-) -> Script:
-    """Legacy one-shot path (the A/B `two_pass=False` arm) — forced tool only."""
-    raw = client.call_tool(
-        _tool_req(
-            build_script_system_prompt(hosts),
-            build_script_user_content(
-                digest.synopsis,
-                digest.session_id,
-                digest.beats,
-                grounding,
-                continuity_block,
-            ),
-            model,
-            max_tokens,
-        )
-    )
-    return parse_script(digest.session_id, raw, hosts)
-
-
-def generate_script(
-    client: LlmClient,
-    digest: SessionDigest,
-    grounding: list[GroundingEntry],
-    hosts: HostConfig,
-    *,
-    two_pass: bool = True,
-    model: str | None = None,
-    max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
-    continuity_block: str = "",
-    sharpen: bool = False,
-) -> Script:
-    """Generate a two-host script from a digest. Two-pass by default (the crux);
-    `two_pass=False` is the one-shot legacy path used for the golden A/B. With
-    `sharpen`, run a focused per-host voice pass afterward (one call per host)."""
-    gen = generate_two_pass if two_pass else generate_one_shot
-    script = gen(
-        client,
-        digest,
-        grounding,
-        hosts,
-        model=model,
-        max_tokens=max_tokens,
-        continuity_block=continuity_block,
-    )
+    script = Script(session_id=digest.session_id, title=title, hosts=hosts, turns=turns)
     if sharpen:
         from .sharpen import sharpen_voices  # lazy: sharpen imports parse_script from here
 

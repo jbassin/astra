@@ -1,4 +1,4 @@
-"""Grounding — resolve a digest's beat `wiki_refs` to corpus pages (the akasha seam).
+"""Grounding — resolve a digest's flat `wiki_refs` to corpus pages (the akasha seam).
 
 A NEW code path, not a port (M5/D): faerrin's `groundDigest` matched a
 `content/wiki` `WikiCorpus`; astra matches the **akasha vellum corpus**
@@ -78,7 +78,8 @@ def pages_from_corpus(corpus_pages: list[Any]) -> list[GroundingPage]:
 
 
 def ground_digest(digest: SessionDigest, pages: list[GroundingPage]) -> list[GroundingEntry]:
-    """Resolve beat `wiki_refs` to pages (deduped, refs aggregated, first-seen order).
+    """Resolve the digest's flat `wiki_refs` to pages (deduped, refs aggregated,
+    first-seen order).
 
     Matching is case-insensitive against page title then the EFFECTIVE name (the
     folder-note's parent folder for an `…/index` page — its implicit alias). Both
@@ -95,7 +96,7 @@ def ground_digest(digest: SessionDigest, pages: list[GroundingPage]) -> list[Gro
 
     by_path: dict[str, GroundingEntry] = {}
     order: list[str] = []
-    for ref in (r for beat in digest.beats for r in beat.wiki_refs):
+    for ref in digest.wiki_refs:
         key = _norm(ref)
         page = by_title.get(key) or by_basename.get(key)
         if page is None:

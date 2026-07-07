@@ -16,7 +16,7 @@ from astra_mouthpiece.linguist_io import (
     parse_filename,
 )
 from astra_mouthpiece.models import (
-    Beat,
+    DigestStats,
     GroundingEntry,
     HostConfig,
     HostPersona,
@@ -33,12 +33,6 @@ HOSTS = HostConfig(
     b=HostPersona(name="Maeve", persona="x"),
     c=HostPersona(name="Pip", persona="x"),
 )
-
-
-def _digest(session_id: str, date: str) -> SessionDigest:
-    return SessionDigest(
-        session_id=session_id, synopsis=f"syn {date}", beats=[Beat(order=1, summary="b")]
-    )
 
 
 def test_date_sort_key_and_range() -> None:
@@ -146,16 +140,23 @@ def test_continuity_block_budget_trims_least_recent_first() -> None:
 
 
 def test_script_user_content_byte_identical_when_no_continuity() -> None:
-    beats = [Beat(order=1, summary="they fought")]
-    grounding = [GroundingEntry(refs=["r"], title="Page", path="page", text="lore")]
-    base = build_script_user_content("syn", "000.x.2025-1-1", beats, grounding)
-    assert build_script_user_content("syn", "000.x.2025-1-1", beats, grounding, "") == base
-    # with continuity, the block lands ABOVE the session beats
-    withc = build_script_user_content(
-        "syn", "000.x.2025-1-1", beats, grounding, "PREVIOUSLY: stuff"
+    digest = SessionDigest(
+        session_id="000.x.2025-1-1",
+        synopsis="syn",
+        wiki_refs=[],
+        kept_ranges=[(1, 1)],
+        stats=DigestStats(lines=1, kept_lines=1, windows=1, dropped_windows=0),
     )
+    cleaned = [(1, "Bram", "they fought")]
+    grounding = [GroundingEntry(refs=["r"], title="Page", path="page", text="lore")]
+    base = build_script_user_content(digest, cleaned, "", grounding)
+    assert build_script_user_content(digest, cleaned, "", grounding, "") == base
+    # with continuity, the block lands ABOVE the session transcript — the only diff
+    # from the empty-continuity form is the continuity block itself.
+    withc = build_script_user_content(digest, cleaned, "", grounding, "PREVIOUSLY: stuff")
     assert "PREVIOUSLY: stuff" in withc
-    assert withc.index("PREVIOUSLY: stuff") < withc.index("Things that happened this session")
+    assert withc.index("PREVIOUSLY: stuff") < withc.index("Bram: they fought")
+    assert withc.replace("PREVIOUSLY: stuff\n\n---\n\n", "") == base
     assert CONTINUITY_BUDGET == 26_000
 
 

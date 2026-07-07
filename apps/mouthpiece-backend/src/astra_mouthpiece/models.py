@@ -1,8 +1,7 @@
 """Pydantic models — the caster pipeline contracts (ported from caster `types.ts`).
 
-Typed I/O comes from these models, NOT dspy signatures (H1): distill returns a
-`SessionDigest`, the two-pass script returns a `Script`. Enrichment fields on
-`Beat` stay optional so older/mega digests still parse (M3).
+Typed I/O comes from these models, NOT dspy signatures (H1): clean+enrich (0024 §3)
+returns a `SessionDigest`, the two-pass script returns a `Script`.
 """
 
 from __future__ import annotations
@@ -16,27 +15,38 @@ from pydantic import BaseModel
 SpeakerId = Literal["A", "B", "C"]
 
 
-class Beat(BaseModel):
-    """One in-world story beat distilled from a session transcript."""
+class DroppedRange(BaseModel):
+    """One inclusive line-id span the Stage-2 filter dropped — the human-reviewable
+    audit trail (0024 §3.3)."""
 
-    order: int
-    summary: str
-    significance: str | None = None
-    details: list[str] | None = None
-    tone: str | None = None
-    table_angle: str | None = None
-    characters: list[str] = []
-    locations: list[str] = []
-    wiki_refs: list[str] = []
+    range: tuple[int, int]
+    category: str
+
+
+class DigestStats(BaseModel):
+    """Coverage stats for one session's filter pass (mirrors the §8 span attrs)."""
+
+    lines: int
+    kept_lines: int
+    windows: int
+    dropped_windows: int
 
 
 class SessionDigest(BaseModel):
-    """The distilled output for one session: ordered beats plus discarded samples."""
+    """The clean+enrich artifact for one session (0024 §3.3 — replaces beats/discarded).
+
+    The cleaned transcript itself is NOT stored — Stage 3 re-derives it from the
+    canonical transcript + `kept_ranges` (single source of truth; auditable; keeps
+    the artifact small). The only externally consumed key is the top-level
+    `synopsis` string (`episodes_index.py` reads old- and new-schema digests
+    identically — historical episodes keep their old digests forever)."""
 
     session_id: str
     synopsis: str
-    beats: list[Beat]
-    discarded: list[str] = []
+    wiki_refs: list[str] = []
+    kept_ranges: list[tuple[int, int]] = []
+    dropped: list[DroppedRange] = []
+    stats: DigestStats
 
 
 class ScriptTurn(BaseModel):

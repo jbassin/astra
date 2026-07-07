@@ -28,7 +28,7 @@ from astra_mouthpiece.assemble import (
     render_transcript,
 )
 from astra_mouthpiece.models import (
-    Beat,
+    DigestStats,
     HostConfig,
     HostPersona,
     Script,
@@ -161,8 +161,13 @@ def _fake_ffmpeg(args: list[str]) -> subprocess.CompletedProcess[str]:
 
 def test_produce_episode_end_to_end(tmp_path: Path) -> None:
     digest = SessionDigest(
-        session_id="sid", synopsis="syn", beats=[Beat(order=1, summary="a thing happened")]
+        session_id="sid",
+        synopsis="syn",
+        wiki_refs=[],
+        kept_ranges=[(1, 1)],
+        stats=DigestStats(lines=1, kept_lines=1, windows=1, dropped_windows=0),
     )
+    cleaned_turns = [(1, "Archie", "a thing happened")]
     client = StubClient(
         text="Bram: hey\nMaeve: hi\nPip: what",
         tool={
@@ -177,6 +182,7 @@ def test_produce_episode_end_to_end(tmp_path: Path) -> None:
     result = produce_episode(
         client,
         digest,
+        cleaned_turns,
         [],  # no grounding pages
         HOSTS,
         out_dir=tmp_path,

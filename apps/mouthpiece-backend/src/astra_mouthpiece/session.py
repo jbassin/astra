@@ -26,23 +26,26 @@ _tracer = get_tracer("astra.mouthpiece")
 def build_episode_script(
     client: LlmClient,
     digest: SessionDigest,
+    cleaned_turns: list[tuple[int, str, str]],
     pages: list[GroundingPage],
     hosts: HostConfig,
     *,
-    two_pass: bool = True,
+    roster_block: str = "",
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
     continuity_block: str = "",
     sharpen: bool = False,
 ) -> Script:
-    """Ground the digest against the akasha pages, then run the two-pass script."""
+    """Ground the digest against the akasha pages, then run the two-pass script
+    over the cleaned transcript (0024 §4)."""
     grounding = ground_digest(digest, pages)
     return generate_script(
         client,
         digest,
+        cleaned_turns,
         grounding,
         hosts,
-        two_pass=two_pass,
+        roster_block=roster_block,
         model=model,
         max_tokens=max_tokens,
         continuity_block=continuity_block,
@@ -70,6 +73,7 @@ def render_episode_audio(
 def produce_episode(
     client: LlmClient,
     digest: SessionDigest,
+    cleaned_turns: list[tuple[int, str, str]],
     pages: list[GroundingPage],
     hosts: HostConfig,
     *,
@@ -77,21 +81,23 @@ def produce_episode(
     provider: TTSProvider | None = None,
     voices: VoiceConfig = DEFAULT_VOICES,
     pronunciations: Lexicon | None = None,
-    two_pass: bool = True,
+    roster_block: str = "",
     model: str | None = None,
     continuity_block: str = "",
     sharpen: bool = False,
     bed: BedOptions | None = None,
     run: FfmpegRunner = run_ffmpeg,
 ) -> dict[str, str]:
-    """Full session: digest → script → audio → episode.mp3 + transcript.md."""
+    """Full session: digest + cleaned transcript → script → audio → episode.mp3 +
+    transcript.md."""
     with _tracer.start_as_current_span("mouthpiece.produce_episode") as span:
         script = build_episode_script(
             client,
             digest,
+            cleaned_turns,
             pages,
             hosts,
-            two_pass=two_pass,
+            roster_block=roster_block,
             model=model,
             continuity_block=continuity_block,
             sharpen=sharpen,

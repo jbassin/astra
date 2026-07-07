@@ -24,10 +24,9 @@ from astra_linguist.chronicle import recent_prior_entries, season_for, show_for_
 from astra_llm import LiteLLMClient
 from astra_observe import get_logger, get_meter, get_tracer
 
-from . import linguist_io
+from . import clean, linguist_io
 from .assemble import assemble_episode
 from .continuity import build_continuity_block
-from .digest import distill_session
 from .episodes_index import (
     INDEX_FILENAME,
     EpisodeHost,
@@ -38,6 +37,7 @@ from .episodes_index import (
 from .grounding import pages_from_corpus
 from .hosts import load_hosts
 from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfig
+from .roster import build_roster_block
 from .session import build_episode_script
 from .tts.elevenlabs import ElevenLabsTTSProvider
 from .tts.mock import MockTTSProvider
@@ -65,7 +65,7 @@ def _config():
 
 
 def _llm_model() -> str:
-    """The configured LLM for distill/script (config-single-source) — not the
+    """The configured LLM for clean/enrich/script (config-single-source) — not the
     LiteLLMClient constant default. linguist reads its judge models from config the same way."""
     from astra_ontology_config import load as load_config
 
@@ -126,22 +126,38 @@ _EXTERNAL_RETRY = dg.RetryPolicy(max_retries=3, delay=120, backoff=dg.Backoff.EX
 
 @dg.asset(partitions_def=mouthpiece_sessions, group_name="mouthpiece", retry_policy=_EXTERNAL_RETRY)
 def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
-    """linguist canonical transcript → distilled `SessionDigest` (Stage 2)."""
+    """linguist canonical transcript → clean + enrich `SessionDigest` (Stage 2, 0024 §3)."""
     date = context.partition_key
     with _tracer.start_as_current_span("mouthpiece.session_digest") as span:
         span.set_attribute("mouthpiece.date", date)
         tpath = linguist_io.transcript_for(date)
         if tpath is None:
             raise FileNotFoundError(f"no linguist transcript for session {date}")
-        session_id, arc, _ = linguist_io.parse_filename(tpath)
+        session_id, _arc, _ = linguist_io.parse_filename(tpath)
         turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
-        digest = distill_session(
-            LiteLLMClient(), session_id, date, turns, arc_title=arc, model=_llm_model()
-        )
+        digest = clean.clean_session(LiteLLMClient(), session_id, turns, model=_llm_model())
         _atomic_write(_session_dir(date) / "digest.json", digest.model_dump_json(indent=2))
-        span.set_attribute("mouthpiece.beats", len(digest.beats))
-        _log.info("mouthpiece distilled %s → %d beats", date, len(digest.beats))
-        return dg.MaterializeResult(metadata={"beats": len(digest.beats), "session_id": session_id})
+        stats = digest.stats
+        span.set_attribute("mouthpiece.lines", stats.lines)
+        span.set_attribute("mouthpiece.kept_lines", stats.kept_lines)
+        span.set_attribute("mouthpiece.windows", stats.windows)
+        span.set_attribute("mouthpiece.dropped_windows", stats.dropped_windows)
+        span.set_attribute("mouthpiece.wiki_refs", len(digest.wiki_refs))
+        _log.info(
+            "mouthpiece cleaned %s → %d/%d lines kept (%d/%d windows dropped)",
+            date,
+            stats.kept_lines,
+            stats.lines,
+            stats.dropped_windows,
+            stats.windows,
+        )
+        return dg.MaterializeResult(
+            metadata={
+                "kept_lines": stats.kept_lines,
+                "lines": stats.lines,
+                "session_id": session_id,
+            }
+        )
 
 
 @dg.asset(
@@ -151,11 +167,21 @@ def session_digest(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
     retry_policy=_EXTERNAL_RETRY,
 )
 def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
-    """digest + akasha grounding → the two-pass tavern-tone `Script` (Stage 3)."""
+    """digest + cleaned transcript + akasha grounding → the two-pass tavern-tone
+    `Script` (Stage 3, 0024 §4)."""
     key = context.partition_key
     with _tracer.start_as_current_span("mouthpiece.session_script") as span:
         span.set_attribute("mouthpiece.key", key)
         digest = _read_digest(key)
+        # Stage-3 re-read guard (§4.3): re-parse the canonical transcript fresh rather
+        # than trusting anything cached from Stage 2 — a FROM_FAILURE re-execution could
+        # have regenerated it, and kept_ranges are line-id ranges into a SPECIFIC file.
+        tpath = linguist_io.transcript_for(key)
+        if tpath is None:
+            raise FileNotFoundError(f"no linguist transcript for session {key}")
+        turns = linguist_io.parse_canonical_transcript(tpath.read_text(encoding="utf-8"))
+        clean.assert_no_drift(turns, digest)
+        cleaned_turns = clean.apply_kept_ranges(turns, digest.kept_ranges)
         pages = pages_from_corpus(load_corpus())
         hosts = load_hosts()
         # Recap continuity (0021 Change B): prior episodes + best-effort season arc of THIS
@@ -165,17 +191,22 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         prior = recent_prior_entries(key, show.slug, limit=6) if show else []
         season = season_for(key, show.slug) if show else None
         continuity_block = build_continuity_block(prior, season)
+        # Deterministic character roster (§4.1.3) — same best-effort posture as
+        # continuity: an unmatched/excluded show yields no roster block, not an error.
+        roster_block = build_roster_block(show.slug) if show else ""
         script = build_episode_script(
             LiteLLMClient(),
             digest,
+            cleaned_turns,
             pages,
             hosts,
-            two_pass=True,
+            roster_block=roster_block,
             continuity_block=continuity_block,
             model=_llm_model(),
         )
         span.set_attribute("mouthpiece.continuity_episodes", len(prior))
         span.set_attribute("mouthpiece.continuity_chars", len(continuity_block))
+        span.set_attribute("mouthpiece.cleaned_lines", len(cleaned_turns))
         _atomic_write(_session_dir(key) / "script.json", script.model_dump_json(indent=2))
         span.set_attribute("mouthpiece.turns", len(script.turns))
         _log.info("mouthpiece scripted %s → %d turns (%s)", key, len(script.turns), script.title)
@@ -284,7 +315,7 @@ def episodes_index(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
 # Safe to run by default because of the one-time backlog ADOPTION below: the input dir
 # holds the migrated-at-rest history (incl. the 42 committed historical transcripts), and
 # without adoption, enabling this sensor would treat all of them as "new" → 42 PAID
-# mouthpiece runs (distill + two-pass script + ElevenLabs TTS). The incident on 2026-06-23
+# mouthpiece runs (clean+enrich + two-pass script + ElevenLabs TTS). The incident on 2026-06-23
 # was exactly that. Adoption registers the existing transcripts as done-at-rest partitions
 # without running them, so only sessions that appear AFTER enable trigger the paid chain.
 @dg.sensor(

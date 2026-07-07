@@ -1,8 +1,11 @@
-"""mouthpiece-backend unit tests (NLSpec 0008 gates B–F) — hermetic.
+"""mouthpiece-backend unit tests (NLSpec 0008 gates C-F, reworked by 0024) — hermetic.
 
 No live ElevenLabs/Anthropic call and no ffmpeg-on-PATH: the LLM client is a stub
 implementing the `LlmClient` protocol (`call_text`/`call_tool`), grounding runs on
-injected pages, and the golden fixtures are the committed faerrin `out/` pairs.
+injected pages, and the golden fixtures are the committed faerrin `out/` pairs
+(script-side only — 0024 replaced the beat-driven digest shape, so the `*.digest.json`
+fixtures are read raw by episodes_index/snapshot/migrate tests, never parsed into a
+`SessionDigest` here).
 """
 
 from __future__ import annotations
@@ -13,7 +16,6 @@ from typing import Any
 
 import pytest
 from astra_llm import TextRequest, ToolCallRequest
-from astra_mouthpiece.digest import DigestParseError, distill_session, parse_digest
 from astra_mouthpiece.grounding import (
     GroundingPage,
     folder_index_name,
@@ -22,16 +24,23 @@ from astra_mouthpiece.grounding import (
 )
 from astra_mouthpiece.hosts import load_hosts
 from astra_mouthpiece.lint import compute_metrics, score_script
-from astra_mouthpiece.models import Beat, HostConfig, HostPersona, Script, ScriptTurn, SessionDigest
+from astra_mouthpiece.models import (
+    DigestStats,
+    GroundingEntry,
+    HostConfig,
+    HostPersona,
+    Script,
+    ScriptTurn,
+    SessionDigest,
+)
 from astra_mouthpiece.prompts import (
     build_dressing_system_prompt,
     build_improv_system_prompt,
-    build_script_system_prompt,
+    build_script_user_content,
 )
-from astra_mouthpiece.script import generate_one_shot, generate_two_pass, parse_script
+from astra_mouthpiece.script import generate_script, parse_script
 
 GOLDEN = Path(__file__).parent / "fixtures" / "golden"
-DIGESTS = sorted(GOLDEN.glob("*.digest.json"))
 SCRIPTS = sorted(GOLDEN.glob("*.script.json"))
 
 HOSTS = HostConfig(
@@ -61,51 +70,18 @@ class StubClient:
         return self._tool
 
 
-# ── distill / parse_digest (gate B) ────────────────────────────────────────
-@pytest.mark.parametrize("path", DIGESTS, ids=lambda p: p.name)
-def test_parse_digest_on_every_golden_fixture(path: Path) -> None:
-    raw = json.loads(path.read_text())
-    digest = parse_digest(raw["sessionId"], raw)
-    assert digest.session_id == raw["sessionId"]
-    assert digest.synopsis == raw["synopsis"]
-    assert len(digest.beats) == len(raw["beats"])
-    # Beats renumbered to a contiguous 1-based order.
-    assert [b.order for b in digest.beats] == list(range(1, len(digest.beats) + 1))
-    # camelCase tool keys mapped onto snake_case model fields.
-    first = raw["beats"][0]
-    assert digest.beats[0].summary == first["summary"]
-    assert digest.beats[0].wiki_refs == first.get("wikiRefs", [])
-
-
-def test_parse_digest_renumbers_out_of_order_beats() -> None:
-    raw = {
-        "synopsis": "s",
-        "beats": [
-            {"order": 5, "summary": "late"},
-            {"order": 1, "summary": "early"},
-        ],
-        "discarded": [],
-    }
-    digest = parse_digest("sid", raw)
-    assert [b.summary for b in digest.beats] == ["early", "late"]
-    assert [b.order for b in digest.beats] == [1, 2]
-
-
-def test_parse_digest_rejects_bad_shape() -> None:
-    with pytest.raises(DigestParseError):
-        parse_digest("sid", {"synopsis": "s", "beats": []})
-
-
-def test_distill_session_uses_call_tool() -> None:
-    client = StubClient(
-        tool={"synopsis": "syn", "beats": [{"order": 1, "summary": "x"}], "discarded": []}
+def _digest(session_id: str = "sid", wiki_refs: list[str] | None = None) -> SessionDigest:
+    return SessionDigest(
+        session_id=session_id,
+        synopsis="syn",
+        wiki_refs=wiki_refs or [],
+        kept_ranges=[(1, 1)],
+        stats=DigestStats(lines=1, kept_lines=1, windows=1, dropped_windows=0),
     )
-    digest = distill_session(client, "sid", "2026-1-1", [(1, "Archie", "hello")])
-    assert client.calls == ["tool"]
-    assert digest.synopsis == "syn"
-    assert digest.beats[0].summary == "x"
-    # The transcript line made it into the user content.
-    assert "Archie: hello" in client.last_tool_req.user_content
+
+
+def _cleaned_turns() -> list[tuple[int, str, str]]:
+    return [(1, "Archie", "they did a thing")]
 
 
 # ── prompts (gate C — load-bearing lines + interpolation; two-host, calmer) ──
@@ -121,6 +97,23 @@ def test_improv_prompt_is_the_debate_transcript_prompt() -> None:
     assert "Pip" not in p
 
 
+def test_improv_prompt_frames_the_transcript_not_a_digest() -> None:
+    p = build_improv_system_prompt(HOSTS)
+    flat = " ".join(p.split())
+    assert "digest" not in flat.lower()
+    assert "the session TRANSCRIPT itself" in flat
+    assert "no beat list" in flat.lower()
+    assert "not in the transcript below" in flat
+
+
+def test_improv_prompt_has_narrative_mechanics_instruction() -> None:
+    p = build_improv_system_prompt(HOSTS)
+    flat = " ".join(p.split())
+    assert "NARRATIVE MECHANICS" in flat
+    assert "never recite" in flat.lower()
+    assert "die result" in flat.lower() and "DC" in flat and "HP arithmetic" in flat
+
+
 def test_dressing_prompt_forbids_polishing() -> None:
     p = build_dressing_system_prompt(HOSTS)
     assert "You are a careful transcript FORMATTER, not a writer." in p
@@ -129,34 +122,18 @@ def test_dressing_prompt_forbids_polishing() -> None:
     assert "Pip" not in p and "→ C" not in p
 
 
-def test_script_system_prompt_is_two_host_and_calm() -> None:
-    p = build_script_system_prompt(HOSTS)
-    # The interruption-heavy "imperfection budget" is gone; calmer guidance replaces it.
-    assert "standalone wit" not in p
-    assert "Interruptions should be RARE" in p
-    assert "HOST A — Bram, the Recapper. fluent but imprecise." in p
-    assert "HOST B — Maeve, the grounded foil." in p
-
-
-# ── grounding (gate D — akasha seam, pure over injected pages) ──────────────
+# ── grounding (gate D — akasha seam, pure over injected pages; flat wiki_refs) ──
 def test_ground_digest_matches_by_title_and_basename() -> None:
     pages = [
         GroundingPage(path="Geography/Calaria/Wrenford", title="Wrenford", text="A town."),
         GroundingPage(path="People/Iridescent Host", title="The Iridescent Host", text="A god."),
         GroundingPage(path="unused/Nowhere", title="Nowhere", text="x"),
     ]
-    digest = SessionDigest(
-        session_id="s",
-        synopsis="x",
-        beats=[
-            Beat(order=1, summary="b1", wiki_refs=["Wrenford", "the iridescent host"]),
-            Beat(order=2, summary="b2", wiki_refs=["Wrenford", "Unmatched NPC"]),
-        ],
-    )
+    digest = _digest(wiki_refs=["Wrenford", "the iridescent host", "Wrenford", "Unmatched NPC"])
     entries = ground_digest(digest, pages)
     # Two distinct pages, in first-appearance order; Wrenford deduped; NPC dropped.
     assert [e.path for e in entries] == ["Geography/Calaria/Wrenford", "People/Iridescent Host"]
-    assert entries[0].refs == ["Wrenford"]  # deduped across beats
+    assert entries[0].refs == ["Wrenford"]  # deduped across the flat ref list
     assert entries[1].title == "The Iridescent Host"
 
 
@@ -184,29 +161,41 @@ def test_folder_index_pages_title_by_parent_and_dont_collide() -> None:
     assert titles["Divinity/index"] == "Divinity"
     assert titles["Geography/Wrenford"] == "Wrenford"
 
-    digest = SessionDigest(
-        session_id="s",
-        synopsis="x",
-        beats=[Beat(order=1, summary="b", wiki_refs=["Quiet Below", "Divinity"])],
-    )
+    digest = _digest(wiki_refs=["Quiet Below", "Divinity"])
     entries = ground_digest(digest, pages)
     # Both folder-index pages resolve by parent-folder name — no "index" collision.
     assert {e.path for e in entries} == {"Geography/Quiet Below/index", "Divinity/index"}
 
 
-# ── two-pass script (gate C) ───────────────────────────────────────────────
-def _digest() -> SessionDigest:
-    return SessionDigest(
-        session_id="sid", synopsis="syn", beats=[Beat(order=1, summary="they did a thing")]
-    )
+# ── user content (0024 §4.1 — ordering, id-stripping, roster omission) ─────────
+def test_script_user_content_orders_sections_and_strips_line_ids() -> None:
+    digest = _digest(session_id="000.x.2025-1-1")
+    cleaned = [(5, "Bram", "hello"), (6, "Maeve", "hi")]
+    grounding = [GroundingEntry(refs=["r"], title="Page", path="page", text="lore")]
+
+    content = build_script_user_content(digest, cleaned, "", grounding, "")
+    assert content.index("SESSION — 000.x.2025-1-1") < content.index("Bram: hello")
+    assert content.index("Bram: hello") < content.index("WIKI EXCERPTS")
+    assert "5\tBram" not in content and "6\tMaeve" not in content  # ids stripped
+    assert "Bram: hello" in content and "Maeve: hi" in content
+    assert "THE TABLE" not in content  # empty roster omitted cleanly
+
+    withr = build_script_user_content(digest, cleaned, "THE TABLE:\n- x", grounding, "")
+    assert "THE TABLE:" in withr
+    assert withr.index("THE TABLE:") < withr.index("Bram: hello")
+
+    withc = build_script_user_content(digest, cleaned, "", grounding, "PREVIOUSLY: stuff")
+    assert "PREVIOUSLY: stuff" in withc
+    assert withc.index("PREVIOUSLY: stuff") < withc.index("Bram: hello")
 
 
-def test_two_pass_calls_text_then_tool() -> None:
+# ── two-pass script generation (gate C) ────────────────────────────────────
+def test_generate_script_calls_text_then_tool() -> None:
     client = StubClient(
         text="Bram: hey\nMaeve: hi",
         tool={"title": "The Episode", "turns": [{"speaker": "A", "text": "hey"}]},
     )
-    script = generate_two_pass(client, _digest(), [], HOSTS)
+    script = generate_script(client, _digest(), _cleaned_turns(), [], HOSTS)
     assert client.calls == ["text", "tool"]  # Pass A (free-text) then Pass B (tool)
     assert script.title == "The Episode"
     assert script.turns[0].speaker == "A"
@@ -215,11 +204,13 @@ def test_two_pass_calls_text_then_tool() -> None:
     assert "Bram: hey" in client.last_tool_req.user_content
 
 
-def test_one_shot_uses_only_call_tool() -> None:
-    client = StubClient(tool={"title": "T", "turns": [{"speaker": "B", "text": "word"}]})
-    script = generate_one_shot(client, _digest(), [], HOSTS)
-    assert client.calls == ["tool"]
-    assert script.turns[0].speaker == "B"
+def test_generate_script_passes_roster_block_into_pass_a() -> None:
+    client = StubClient(
+        text="Bram: hey\nMaeve: hi",
+        tool={"title": "T", "turns": [{"speaker": "A", "text": "hey"}]},
+    )
+    generate_script(client, _digest(), _cleaned_turns(), [], HOSTS, roster_block="THE TABLE:\n- x")
+    assert "THE TABLE:" in client.last_text_req.user_content
 
 
 def test_split_transcript_single_segment_under_limit() -> None:
@@ -240,14 +231,14 @@ def test_split_transcript_breaks_only_on_line_boundaries() -> None:
     assert all(ln.startswith("Bram: word") for s in segs for ln in s.splitlines())
 
 
-def test_two_pass_chunks_long_transcript() -> None:
+def test_generate_script_chunks_long_transcript() -> None:
     # A long Pass A transcript is typeset in multiple Pass B calls, turns concatenated.
     long_text = "\n".join("Bram: word here" for _ in range(1500))  # 3 words × 1500 = 4500
     client = StubClient(
         text=long_text,
         tool={"title": "The Title", "turns": [{"speaker": "A", "text": "hey"}]},
     )
-    script = generate_two_pass(client, _digest(), [], HOSTS)
+    script = generate_script(client, _digest(), _cleaned_turns(), [], HOSTS)
     n_tool = client.calls.count("tool")
     assert client.calls[0] == "text"  # Pass A once
     assert n_tool >= 2  # Pass B ran per segment

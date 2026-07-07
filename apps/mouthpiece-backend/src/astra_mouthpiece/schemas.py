@@ -1,136 +1,19 @@
-"""The forced-tool input schemas — ported verbatim from caster `*/schema.ts`.
+"""The forced-tool input schemas.
 
-The model returns these shapes (camelCase keys, matching the committed faerrin
-`out/*.digest.json` / `*.script.json` fixtures); `digest.parse_digest` /
-`script.parse_script` validate them into the snake_case Pydantic models. The
-description text is byte-identical to faerrin (the model sees it); only the
+`script_tool` is ported verbatim from caster `script/schema.ts`: the model returns
+this shape (camelCase keys, matching the committed faerrin `*.script.json`
+fixtures); `script.parse_script` validates it into the snake_case Pydantic models.
+The description text is byte-identical to faerrin (the model sees it); only the
 Python source line-wrapping differs.
 
 `clean_filter_tool` / `clean_enrich_tool` (0024 §3) are net-new — not ported from
-caster — for the clean+enrich Stage-2 replacement; camelCase kept for the same
-reason (`wikiRefs` mirrors `distill_tool`'s `wikiRefs`). Unwired until S4.
+caster — for the clean+enrich Stage-2 replacement (`clean.py`); camelCase kept for
+the same house style (`wikiRefs`).
 """
 
 from __future__ import annotations
 
 from astra_llm import ToolSpec
-
-# ── distill ──────────────────────────────────────────────────────────────────
-
-DISTILL_TOOL_NAME = "record_session_digest"
-
-_DISTILL_DESC = (
-    "Record the distilled, in-world story of this play session as an ordered list "
-    "of beats, plus a short synopsis and samples of the out-of-character table talk "
-    "you discarded. Call this exactly once with the full result."
-)
-_BEATS_DESC = (
-    "The session's in-world events in narrative order. Exclude out-of-character "
-    "table talk (scheduling, technical issues, off-topic banter, rules lookups)."
-)
-_SIGNIFICANCE_DESC = (
-    "Why this beat MATTERED: the stakes, tension, or consequences — what "
-    "was at risk, what it changed, why the table leaned in. Give the recap "
-    "hosts something to react to and weigh, not just a fact to restate."
-)
-_DETAILS_DESC = (
-    "Concrete, vivid texture worth talking about: a clutch or catastrophic "
-    "dice roll, a bold or disastrous decision, a striking image, an emotional "
-    "turn, a memorable in-character line. Short fragments, grounded in what "
-    "actually happened — do not invent color the transcript doesn't support."
-)
-_TONE_DESC = (
-    'The emotional register of the beat in a word or two (e.g. "tense", '
-    '"triumphant", "grim", "comedic", "bittersweet").'
-)
-_TABLE_ANGLE_DESC = (
-    "What the hosts recapping this beat over drinks would ARGUE or rib "
-    "each other about: the contested or questionable call, the bold/dumb "
-    "decision, the read one of them would defend and another would mock. A "
-    "seed for table friction — grounded in what happened, not invented drama. "
-    "One sentence."
-)
-_WIKI_REFS_DESC = (
-    "Proper nouns (factions, places, people, concepts) a setting wiki "
-    "would likely have an entry for, for later grounding."
-)
-_DISCARDED_DESC = (
-    "A few short verbatim samples of the out-of-character table talk you "
-    "filtered out, so a human can sanity-check the filtering."
-)
-_SYNOPSIS_DESC = "One or two sentences framing what happened in this session, in-world."
-_CHARACTERS_DESC = "In-world character names involved (as they appear in the transcript)."
-
-distill_tool = ToolSpec(
-    name=DISTILL_TOOL_NAME,
-    description=_DISTILL_DESC,
-    input_schema={
-        "type": "object",
-        "additionalProperties": False,
-        "properties": {
-            "synopsis": {"type": "string", "description": _SYNOPSIS_DESC},
-            "beats": {
-                "type": "array",
-                "description": _BEATS_DESC,
-                "items": {
-                    "type": "object",
-                    "additionalProperties": False,
-                    "properties": {
-                        "order": {
-                            "type": "integer",
-                            "description": "1-based position of this beat in the session.",
-                        },
-                        "summary": {
-                            "type": "string",
-                            "description": "What happened in this beat, in-world.",
-                        },
-                        "significance": {"type": "string", "description": _SIGNIFICANCE_DESC},
-                        "details": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": _DETAILS_DESC,
-                        },
-                        "tone": {"type": "string", "description": _TONE_DESC},
-                        "tableAngle": {"type": "string", "description": _TABLE_ANGLE_DESC},
-                        "characters": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": _CHARACTERS_DESC,
-                        },
-                        "locations": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "Locations involved in this beat.",
-                        },
-                        "wikiRefs": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": _WIKI_REFS_DESC,
-                        },
-                    },
-                    "required": [
-                        "order",
-                        "summary",
-                        "significance",
-                        "details",
-                        "tone",
-                        "tableAngle",
-                        "characters",
-                        "locations",
-                        "wikiRefs",
-                    ],
-                },
-            },
-            "discarded": {
-                "type": "array",
-                "items": {"type": "string"},
-                "description": _DISCARDED_DESC,
-            },
-        },
-        "required": ["synopsis", "beats", "discarded"],
-    },
-)
-
 
 # ── script ───────────────────────────────────────────────────────────────────
 
