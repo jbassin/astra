@@ -8,18 +8,11 @@
         {
           "number": 1,
           "title": "Delivery Boys",
-          "arc_summary": "The party forms, pools meager funds for gear, and takes odd courier jobs — stumbling into a conspiracy involving Ugathul infiltrators posing as Blackline cops, Embercall Inc., and illegal radar dishes. The arc ends with a break-in at a Gryphonline mail office to crack a suspicious P.O. Box.",
+          "arc_summary": "The party forms, takes courier jobs, and investigates the Ugathul threat, Embercall's radar dishes, and the Roundhat Gang, becoming consultants for the Magical Crimes Convox — culminating in a catastrophic near-total party kill at the Crowded Flea.",
           "episode_dates": [
             "2025-8-28",
             "2025-10-20",
-            "2025-10-27"
-          ]
-        },
-        {
-          "number": 2,
-          "title": "The Consultant's Descent",
-          "arc_summary": "Signed on as Magical Crimes Convox consultants, the party sabotages a radar dish, descends into the Widdershins sewers to find a slaughtered resistance, and discovers Master Grayson's necromantic Victorian manor inside a Fane deep underground. The arc culminates in a catastrophic ambush at the Crowded Flea that leaves three party members dead.",
-          "episode_dates": [
+            "2025-10-27",
             "2025-11-4",
             "2025-11-11",
             "2025-11-18",
@@ -27,37 +20,37 @@
           ]
         },
         {
-          "number": 3,
-          "title": "The Black and White",
-          "arc_summary": "After the total party kill, Johnny and Benny navigate the void between life and death, meet the entity Aut, and return to the mortal world — losing Argyle permanently but gaining the sentient polar bear paladin Sir Arctos. The reformed party takes brutal revenge on Hlarf and Tywelwyn Leatherhide, uncovering a network of six alien gods attempting to crack the firmament via radar dishes.",
+          "number": 2,
+          "title": "Death, Rebirth, and Revenge",
+          "arc_summary": "Three party members die and navigate the Black and White void, meeting the entity Aut and returning to life at a cost. The reformed party hunts down Hlarf and Tywelwyn Leatherhide, uncovering six Thessian gods attempting to breach the Firmament via radar dishes.",
           "episode_dates": [
             "2025-12-9",
             "2025-12-16",
             "2025-12-23",
-            "2025-12-30"
+            "2025-12-30",
+            "2026-1-6"
           ]
         },
         {
-          "number": 4,
-          "title": "The Keystone Hunt",
-          "arc_summary": "Reporting their findings to the Inquisition and surviving an undead ambush at Brooks' apartment, the party rescues Anaïs and learns of the cosmic Narrative — five sibling entities including their patron Aut. They then embark on a pilgrimage scavenger hunt, trading a stolen Kellan Quinn painting for a keystone and weathering Argyle's unsettling partial resurrection.",
+          "number": 3,
+          "title": "The Pilgrimage",
+          "arc_summary": "Cosmic revelations about the Narrative — five sibling entities including Aut — reshape the party's understanding of their world. They attend the Pilgrimage gathering at Ragged Roost, survive a gladiatorial trial, solve a keystone scavenger hunt, and trade a stolen painting to secure Keystone 14.",
           "episode_dates": [
-            "2026-1-6",
             "2026-1-13",
             "2026-1-20",
             "2026-1-27",
             "2026-2-3",
             "2026-2-17",
             "2026-2-24",
-            "2026-3-3",
-            "2026-3-9"
+            "2026-3-3"
           ]
         },
         {
-          "number": 5,
-          "title": "Cracks in the Firmament",
-          "arc_summary": "During a six-month downtime, the party investigates the royal sewers beneath Hallia and discovers a hairline fracture in reality — a parallel world where a two-mile-tall imprisoned god looms behind the firmament. After hacking a terminal to uncover a vast conspiracy funded by Grayson and the Prime Minister, they bomb the Teller's Run research facility and flee through a collapsing underground.",
+          "number": 4,
+          "title": "The Firmament Fracture",
+          "arc_summary": "Argyle returns as only half a man, and during an extended downtime the party discovers a hairline crack in reality beneath Teller's Run — a parallel world where a two-mile-tall god stands imprisoned. After hacking a terminal to uncover a vast conspiracy, they bomb the research facility and flee as ash rains over the city.",
           "episode_dates": [
+            "2026-3-9",
             "2026-3-16",
             "2026-3-23",
             "2026-3-30",
@@ -65,9 +58,9 @@
           ]
         },
         {
-          "number": 6,
+          "number": 5,
           "title": "The Strider",
-          "arc_summary": "The party joins the pilgrimage aboard a colossal walking Strider city, creates their own heart named Eerie, and navigates deadly faction politics under a devil Master of Ceremonies who demands a weekly tithe of magical energy. They form alliances with neighboring organizations, absorb weaker factions' hearts, and begin exploring the dangerous spider-infested Undercroft beneath the Strider.",
+          "arc_summary": "The party boards the colossal Strider for a voidward pilgrimage, birthing their own heart 'Eerie,' navigating deadly faction politics and a weekly tithe of magical energy, and descending into the ancient Undercroft to befriend a dormant Machine God.",
           "episode_dates": [
             "2026-5-7",
             "2026-5-11",
@@ -77,7 +70,8 @@
             "2026-6-8",
             "2026-6-18",
             "2026-6-22",
-            "2026-6-29"
+            "2026-6-29",
+            "2026-7-6"
           ]
         }
       ]
@@ -105,7 +99,7 @@
         {
           "number": 1,
           "title": "The Quorum Descent",
-          "arc_summary": "Scale operatives are dispatched to a shattered Joker World to investigate a mysterious slip-shielded structure. After battling through demonic swarms, they breach the fiend-built Quorum, solve its puzzles, descend through a bloodfall portal, and fight a desperate defense to free Voice of Many — a trapped divine entity and child of Sigzil — before teleporting to safety. (Episode 1 opens with the unrelated conclusion of the Cagley Middle shadow-demon one-shot before this arc begins.)",
+          "arc_summary": "Four high-ranking Scale operatives are dispatched to a shattered Joker World to investigate a slip-shielded structure, where they breach the fiend-built Quorum, battle Sigzilheight's forces, and ultimately discover and liberate Voice of Many — a trapped divine heart and grandchild of the Judge — before escaping back to Scale headquarters.",
           "episode_dates": [
             "2025-6-9",
             "2025-6-16",
@@ -121,11 +115,18 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Husk Murders",
-          "arc_summary": "Convox detectives Cedric, Krod, and Mickey (later Andros) travel to Wrenford to investigate 48 husk-murders linked to a mysterious fey stone necklace, venturing into the mile-tall Verdant Expanse where they battle fey creatures and uncover the Gloaming Codex — a book that pulls them into its pages.",
+          "title": "Into the Verdant Expanse",
+          "arc_summary": "Three Convox detectives travel to the logging town of Wrenford to investigate husk-murders linked to a vanished pilgrim, follow a Feyrock necklace into the mile-tall forest, and battle fey creatures of the Court of Masks — only to learn their suspect is dead and the curse continues unabated.",
           "episode_dates": [
             "2025-9-11",
-            "2025-9-18",
+            "2025-9-18"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "The Gloaming Codex",
+          "arc_summary": "The investigation shifts to Hallia, where the detectives trace fey-stone to a jeweler's conference and uncover a ritual murder apartment containing the Gloaming Codex — a cursed book that pulls the entire party into its pages to fight for survival against carnivorous ink and cursed thoughts.",
+          "episode_dates": [
             "2025-9-25"
           ]
         }
@@ -154,7 +155,7 @@
         {
           "number": 1,
           "title": "The Everdawn Drift",
-          "arc_summary": "Three Sedecium agents — Scrazzy, Foral, and Ozzie — investigate an unpowered orbital station half-sunken in the slip, free a tortured ship AI, and uncover that the Thessian Esoterica recently accessed observatory records of a massive magical spike near the Astra's core.",
+          "arc_summary": "Three Sedecium agents investigate an unpowered orbital station half-sunken in the slip, freeing a tortured ship AI, rotating the station back into real space, and uncovering that the Thessian Gremory (now 'Esoterica') accessed observatory records of a massive magical spike near the Astra's core.",
           "episode_dates": [
             "2026-4-6"
           ]
@@ -162,7 +163,7 @@
         {
           "number": 2,
           "title": "One Last Job: Stealing from a Dead God",
-          "arc_summary": "The fire team is pulled from retirement for a desperate raid on the divine essence of the freshly-killed Thessian god Tithe, navigating slip-puzzles and spider temples to plant a beacon before the God Eater Harrow devours everything — becoming the only fire team to succeed.",
+          "arc_summary": "Pulled from retirement, the fire team raids the divine essence of the freshly-killed Thessian 'Tithe' before the God Eater Harrow can finish devouring it, navigating slip-space puzzles and spider temples to become the first and only fire team to succeed.",
           "episode_dates": [
             "2026-4-27"
           ]
@@ -185,5 +186,5 @@
       ]
     }
   ],
-  "inputs_hash": "f76f440541c8db68caeaddb518667ef453853cfb5916443dd5f4b4111ec59e2c"
+  "inputs_hash": "04bd5e758cd20ae64b1373d1d70fb22ed6aeec041dafc8383a7a8c20cdbe9ca2"
 }
