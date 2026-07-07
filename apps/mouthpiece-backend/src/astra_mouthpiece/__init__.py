@@ -12,7 +12,6 @@ from .digest import distill_session, parse_digest
 from .grounding import GroundingPage, ground_digest, pages_from_corpus
 from .hosts import load_hosts
 from .lint import compute_metrics, format_report, score_script
-from .mega import fuse_digests, mega_id, select_members
 from .models import (
     AudioManifest,
     Beat,
@@ -41,18 +40,15 @@ __all__ = [
     "compute_metrics",
     "distill_session",
     "format_report",
-    "fuse_digests",
     "generate_script",
     "generate_two_pass",
     "ground_digest",
     "load_hosts",
-    "mega_id",
     "pages_from_corpus",
     "parse_digest",
     "parse_script",
     "produce_episode",
     "render_episode_audio",
     "score_script",
-    "select_members",
     "sharpen_voices",
 ]

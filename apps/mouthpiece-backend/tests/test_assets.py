@@ -1,7 +1,7 @@
 """Dagster wiring structure test (gate J) — the code location builds; no live run.
 
 Importing the assets builds `dg.Definitions` (Dagster validates the dep graph at
-construction); this asserts the 4-asset graph + mega + the linguist sensor are
+construction); this asserts the 4-asset graph + the linguist sensor are
 present with the expected keys.
 """
 
@@ -16,13 +16,12 @@ def test_defs_builds() -> None:
     assert isinstance(mp.defs, dg.Definitions)
 
 
-def test_the_four_assets_plus_mega_and_index_have_expected_keys() -> None:
+def test_the_four_assets_plus_index_have_expected_keys() -> None:
     keys = {
         mp.session_digest.key.to_user_string(),
         mp.session_script.key.to_user_string(),
         mp.session_audio_clips.key.to_user_string(),
         mp.session_episode.key.to_user_string(),
-        mp.mega_digest.key.to_user_string(),
         mp.episodes_index.key.to_user_string(),
     }
     assert keys == {
@@ -30,7 +29,6 @@ def test_the_four_assets_plus_mega_and_index_have_expected_keys() -> None:
         "session_script",
         "session_audio_clips",
         "session_episode",
-        "mega_digest",
         "episodes_index",
     }
 
@@ -46,7 +44,7 @@ def test_session_script_depends_on_digest() -> None:
 
 
 def test_llm_model_comes_from_config_not_the_client_constant() -> None:
-    """distill/script/mega use the configured `llm.default-model` (config-single-source),
+    """distill/script use the configured `llm.default-model` (config-single-source),
     so changing config.kdl actually moves the pipeline's model."""
     from astra_ontology_config import load
 

@@ -21,7 +21,6 @@ from astra_linguist.assets import (
 from astra_mouthpiece.assets import (
     episodes_index,
     linguist_output_sensor,
-    mega_digest,
     session_audio_clips,
     session_digest,
     session_episode,
@@ -69,7 +68,6 @@ defs = dg.Definitions(
         session_script,
         session_audio_clips,
         session_episode,
-        mega_digest,
         episodes_index,
         session_noun_facts,
         session_page_proposals,

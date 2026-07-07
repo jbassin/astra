@@ -42,8 +42,6 @@ from pathlib import Path
 from pydantic import BaseModel, ConfigDict
 from pydantic.alias_generators import to_camel
 
-from .mega import date_sort_key
-
 EPISODE_SUFFIX = ".episode.mp3"
 TRANSCRIPT_SUFFIX = ".transcript.md"
 INDEX_FILENAME = "episodes-index.json"
@@ -104,6 +102,19 @@ def episode_title(title: str, arc_title: str) -> str:
         if rest:
             return rest
     return t
+
+
+def date_sort_key(date: str) -> int:
+    """Numeric key for a "YYYY-M-D" (unpadded) date — ported from `dateSortKey`."""
+    parts = (date.split("-") + ["0", "0", "0"])[:3]
+    y, m, d = (int(p) if p.isdigit() else 0 for p in parts)
+    return y * 10000 + m * 100 + d
+
+
+def date_in_range(date: str, start: str, end: str) -> bool:
+    """Inclusive date-range test on the "YYYY-M-D" form, via the numeric key."""
+    k = date_sort_key(date)
+    return date_sort_key(start) <= k <= date_sort_key(end)
 
 
 def build_episode_numbers(session_ids: list[str]) -> dict[str, int]:

@@ -1,4 +1,4 @@
-"""mega + sharpen + linguist I/O tests — hermetic."""
+"""sharpen + linguist I/O tests — hermetic."""
 
 from __future__ import annotations
 
@@ -9,19 +9,11 @@ import pytest
 from astra_linguist.chronicle import EpisodeEntry, EpisodeSummary, Season
 from astra_llm import ToolCallRequest
 from astra_mouthpiece.continuity import CONTINUITY_BUDGET, build_continuity_block
+from astra_mouthpiece.episodes_index import date_in_range, date_sort_key
 from astra_mouthpiece.linguist_io import (
     new_sessions,
     parse_canonical_transcript,
     parse_filename,
-)
-from astra_mouthpiece.mega import (
-    MegaMember,
-    build_mega_user_content,
-    date_in_range,
-    date_sort_key,
-    fuse_digests,
-    mega_id,
-    select_members,
 )
 from astra_mouthpiece.models import (
     Beat,
@@ -49,51 +41,10 @@ def _digest(session_id: str, date: str) -> SessionDigest:
     )
 
 
-def _member(date: str, arc: str = "through-a-song-darkly") -> MegaMember:
-    sid = f"000.{arc}.{date}"
-    return MegaMember(session_id=sid, date=date, arc=arc, digest=_digest(sid, date))
-
-
-# ── mega selection + synthetic id (pure) ───────────────────────────────────
 def test_date_sort_key_and_range() -> None:
     assert date_sort_key("2026-5-7") < date_sort_key("2026-5-11")
     assert date_in_range("2026-5-9", "2026-5-7", "2026-5-11")
     assert not date_in_range("2026-6-1", "2026-5-7", "2026-5-11")
-
-
-def test_select_members_and_mega_id() -> None:
-    members = [_member("2026-5-7"), _member("2026-5-11"), _member("2026-6-1")]
-    picked = select_members(members, "2026-5-7", "2026-5-11")
-    assert [m.date for m in picked] == ["2026-5-7", "2026-5-11"]
-    assert mega_id(picked) == "000.through-a-song-darkly.2026-5-11-recap-of-2026-5-7"
-
-
-def test_select_members_rejects_cross_arc() -> None:
-    members = [_member("2026-5-7", "arc-one"), _member("2026-5-8", "arc-two")]
-    with pytest.raises(ValueError, match="multiple arcs"):
-        select_members(members, "2026-5-1", "2026-6-1")
-
-
-def test_build_mega_user_content_has_budget_and_members() -> None:
-    content = build_mega_user_content([_member("2026-5-7"), _member("2026-5-11")], target_beats=15)
-    assert "Beat budget: about 15 beats" in content
-    assert "Session 1 —" in content and "Session 2 —" in content
-
-
-def test_fuse_digests_reuses_distill_tool() -> None:
-    class Stub:
-        def call_tool(self, req: ToolCallRequest) -> dict[str, Any]:
-            self.req = req
-            return {"synopsis": "fused", "beats": [{"order": 1, "summary": "big"}], "discarded": []}
-
-        def call_text(self, req: Any) -> str:  # satisfies the protocol
-            return ""
-
-    stub = Stub()
-    fused = fuse_digests(stub, "mega-id", [_member("2026-5-7"), _member("2026-5-11")])
-    assert fused.session_id == "mega-id"
-    assert fused.synopsis == "fused"
-    assert "MONTH-IN-REVIEW" in stub.req.system  # the mega system prompt
 
 
 # ── sharpen ─────────────────────────────────────────────────────────────────

@@ -1,4 +1,4 @@
-"""Dagster wiring — the per-session partition, the 4-asset episode graph, mega.
+"""Dagster wiring — the per-session partition, the 4-asset episode graph.
 
 One partition per session/date (a `DynamicPartitionsDefinition`); a sensor
 registers a partition + run request for each new linguist canonical transcript
@@ -7,9 +7,6 @@ registers a partition + run request for each new linguist canonical transcript
 materialization):
 
     session_digest → session_script → session_audio_clips → session_episode
-
-``mega_digest`` fuses a date range into one synthetic-id partition that the same
-script/clips/episode assets then run on (reusing Stages 3-5).
 
 The **live** materialization is deferred (gate K): distill + the two-pass script
 spend Claude tokens, and the v3 audio path is paid ElevenLabs. This layer is
@@ -40,7 +37,6 @@ from .episodes_index import (
 )
 from .grounding import pages_from_corpus
 from .hosts import load_hosts
-from .mega import MegaMember, fuse_digests, mega_id, select_members
 from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfig
 from .session import build_episode_script
 from .tts.elevenlabs import ElevenLabsTTSProvider
@@ -69,7 +65,7 @@ def _config():
 
 
 def _llm_model() -> str:
-    """The configured LLM for distill/script/mega (config-single-source) — not the
+    """The configured LLM for distill/script (config-single-source) — not the
     LiteLLMClient constant default. linguist reads its judge models from config the same way."""
     from astra_ontology_config import load as load_config
 
@@ -229,53 +225,6 @@ def session_episode(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         )
 
 
-# ── mega (date-range fuse → a synthetic-id partition) ────────────────────────
-
-
-class MegaConfig(dg.Config):
-    """Run config for a mega episode: the inclusive date span (+ optional arc)."""
-
-    start: str
-    end: str
-    arc: str | None = None
-    target_beats: int | None = None
-
-
-@dg.asset(group_name="mouthpiece")
-def mega_digest(context: dg.AssetExecutionContext, config: MegaConfig) -> dg.MaterializeResult:
-    """Fuse the member digests in [start, end] into one month-in-review digest under a
-    synthetic mega id, and register that id as a session partition so the
-    script/clips/episode assets run on it (reusing Stages 3-5)."""
-    with _tracer.start_as_current_span("mouthpiece.mega_digest") as span:
-        members: list[MegaMember] = []
-        for digest_file in sorted(_out_root().glob("*/digest.json")):
-            digest = SessionDigest.model_validate_json(digest_file.read_text())
-            parts = digest.session_id.split(".")
-            date = parts[-1]
-            arc = ".".join(parts[1:-1]) if len(parts) > 2 else digest.session_id
-            members.append(
-                MegaMember(session_id=digest.session_id, date=date, arc=arc, digest=digest)
-            )
-
-        selected = select_members(members, config.start, config.end, config.arc)
-        fused_id = mega_id(selected)
-        fused = fuse_digests(
-            LiteLLMClient(),
-            fused_id,
-            selected,
-            target_beats=config.target_beats,
-            model=_llm_model(),
-        )
-        _atomic_write(_session_dir(fused_id) / "digest.json", fused.model_dump_json(indent=2))
-        context.instance.add_dynamic_partitions(SESSIONS_NAME, [fused_id])
-        span.set_attribute("mouthpiece.mega_id", fused_id)
-        span.set_attribute("mouthpiece.members", len(selected))
-        _log.info("mouthpiece fused mega %s ← %d members", fused_id, len(selected))
-        return dg.MaterializeResult(
-            metadata={"mega_id": fused_id, "members": len(selected), "beats": len(fused.beats)}
-        )
-
-
 # ── the cross-episode catalog (D1, plan 0012) ────────────────────────────────
 
 
@@ -389,7 +338,6 @@ defs = dg.Definitions(
         session_script,
         session_audio_clips,
         session_episode,
-        mega_digest,
         episodes_index,
     ],
     sensors=[linguist_output_sensor],
