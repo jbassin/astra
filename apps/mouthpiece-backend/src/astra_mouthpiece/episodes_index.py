@@ -8,8 +8,8 @@ session dirs and writes a single sorted **``episodes-index.json``** manifest.
 
 This is the producer half of the producer/consumer split (spec 0012, D6 — revised:
 the **transcript is inlined** so the frontend is a pure single-artifact consumer).
-The **backend owns** everything: id-parse, the sort (``date_sort_key``, already here
-in :mod:`mega`), the per-arc episode numbering, the arc display title (from
+The **backend owns** everything: id-parse, the sort (``date_sort_key``, local since
+0024 retired :mod:`mega`), the per-arc episode numbering, the arc display title (from
 ontology-being ``campaign.name`` — Python is the ontology truth), the audio duration
 (``ffprobe`` over the seeded mp3s, D5), the cache-bust token, and the displayable
 transcript (``strip_audio_tags`` over each turn + host names from ontology-being).

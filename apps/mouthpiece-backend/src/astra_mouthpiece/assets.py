@@ -8,7 +8,7 @@ materialization):
 
     session_digest → session_script → session_audio_clips → session_episode
 
-The **live** materialization is deferred (gate K): distill + the two-pass script
+The **live** materialization is deferred (gate K): clean/enrich + the two-pass script
 spend Claude tokens, and the v3 audio path is paid ElevenLabs. This layer is
 import-/structure-tested; the per-stage logic is unit-tested via injected seams.
 """

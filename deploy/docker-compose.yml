@@ -21,7 +21,7 @@ x-dagster-env: &dagster-env
   ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
   GROQ_API_KEY: ${GROQ_API_KEY:-}
   ELEVENLABS_API_KEY: ${ELEVENLABS_API_KEY:-}
-  # mouthpiece's digest/script/mega calls run on GLM 5.2 via OpenRouter; litellm reads
+  # mouthpiece's clean/enrich/script calls run on GLM 5.2 via OpenRouter; litellm reads
   # this key from env (llm.default-model = openrouter/z-ai/glm-5.2).
   OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
 

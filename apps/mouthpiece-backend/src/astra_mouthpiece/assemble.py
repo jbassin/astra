@@ -197,8 +197,8 @@ def render_transcript(script: Script) -> str:
 
 
 def bed_offset(session_id: str) -> int:
-    """Deterministic seek (seconds) into the bed from the session id (synthetic-id
-    safe — a mega id hashes fine). Bounded well under the bed length."""
+    """Deterministic seek (seconds) into the bed from the session id (any string id
+    hashes fine, incl. historical synthetic recap ids). Bounded well under the bed length."""
     h = 0
     for ch in session_id:
         h = (h * 31 + ord(ch)) & 0xFFFFFFFF

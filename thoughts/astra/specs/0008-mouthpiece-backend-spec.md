@@ -1,6 +1,8 @@
 # NLSpec 0008 — mouthpiece-backend (roundtable script → TTS audio)
 
-**Status:** **Plan (pre-implementation)** — scoping verified against both repos; **decisions locked (H1
+**Status:** **BUILT; Stage 2 + Pass A input SUPERSEDED by 0024** (2026-07-07 — distill/beats, mega,
+threads, and the one-shot arm are deleted; see `0024-mouthpiece-script-rework-spec.md`. Pass B / TTS /
+assemble / episodes-index decisions below stay in force.) _(Originally:)_ **Plan (pre-implementation)** — scoping verified against both repos; **decisions locked (H1
 resolved below)**; ready for `octo:embrace`. **Phase:** 3 (pipeline). **Source plan:**
 [`../plans/0008-mouthpiece-backend.md`](../plans/0008-mouthpiece-backend.md). **Pre-impl thoughts:**
 [`../../shared/research/2026-06-20-mouthpiece-backend-0008-thoughts.md`](../../shared/research/2026-06-20-mouthpiece-backend-0008-thoughts.md).

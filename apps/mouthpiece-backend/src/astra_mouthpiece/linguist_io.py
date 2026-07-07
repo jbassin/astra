@@ -1,8 +1,8 @@
 """The linguist→mouthpiece input seam — read linguist's per-session outputs.
 
 linguist writes a **canonical** line-numbered transcript (`<stem>.<date>.txt`,
-`NNNNNN\\tSpeaker: text`) and a mouthpiece **context** per date partition. distill
-reads the canonical transcript (its format is exactly faerrin's distill input).
+`NNNNNN\\tSpeaker: text`) and a mouthpiece **context** per date partition. The
+clean+enrich stage (0024) reads the canonical transcript.
 Locating linguist's output dirs via the package keeps the contract explicit
 without re-deriving paths; parsing is pure + unit-tested.
 """
