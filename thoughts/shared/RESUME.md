@@ -51,7 +51,9 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > bearer; SigNoz `astra.portal` spans flowing 0-error. Cert minted itself off the `*.iridi.cc`
 > wildcard (~60s of TLS handshake failures before it settled — normal, same as ledger).
 >
-> **▶ NEXT — the GM step (Josh), then live acceptance:**
+> **▶ NEXT — the GM step (Josh), then live acceptance.** *(Status 2026-07-07 end-of-session: Josh
+> was unable to do the install this session — the step is PARKED awaiting his availability; nothing
+> code-side blocks it. The deployed stack idles safely: `bridge-status` reports the typed offline.)*
 > 1. Launch the "Faerrin" world at `btl.iridi.cc` (GM login).
 > 2. *Setup → Add-on Modules → Install Module → Manifest URL =*
 >    `https://portal.iridi.cc/module/module.json` → install, then enable "Astra Portal Bridge" in
