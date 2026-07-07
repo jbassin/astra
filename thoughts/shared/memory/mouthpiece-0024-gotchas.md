@@ -20,8 +20,20 @@ THE downstream contract — episodes_index/migrate/frontend needed zero edits.
   lines interleaved with real content) kept 5,660/5,821 — almost no 20-turn window is
   noise-dominated, so keep-when-in-doubt keeps mixed windows. `asr_noise` catches **contiguous
   runs** only (it nailed both block-runs). The sanity floor therefore trips only on run-dominated
-  transcripts; scattered-noise sessions flow through and Pass A ignores the residue fine. Don't
-  "fix" this without a new decision — it's the accepted failure direction (over-keep).
+  transcripts. **FIXED AT THE SOURCE same session (post-0024 follow-ups):** (1) a deterministic
+  line-level drop of the "you"/"thank you" family in mouthpiece (`drop_hallucinations`, symmetric
+  Stage 2/3, `stats.hallucination_lines`) as belt-and-suspenders for historical transcripts; then
+  (2) a **two-prong gate in scribe** — ⭐ **the Whisper confidence heuristic (no_speech_prob>0.6 ∧
+  avg_logprob<-1.0, OpenAI reference) MEASURABLY MISSES this family** (live re-transcription:
+  1,041 family segments survived it — the audio has real non-speech energy and Whisper is
+  confidently wrong) — the text prong (`HALLUCINATION_TEXT_RE`, canonical copy in
+  `astra_llm.transcription`, shared by scribe + mouthpiece) is what actually kills it. 2026-7-6
+  re-transcribed clean (5,821→4,777 lines, family=0; scribe re-run needs only the incoming/ zip —
+  `session_tracks` re-extracts, ~$2 Groq + ~9 min) and its episode re-rendered + REPLACED live
+  ("The Heart in the Basement", 31 min). Downstream chain for a re-transcription:
+  scribe 4 assets → linguist `session_transcripts,session_episode_summary` → mouthpiece
+  `session_digest,session_script` (the drift guard makes digest-first mandatory) → audio →
+  publish; stop the linguist-commit timer across the manual window.
 - **Filter boundary quality is startlingly good on real data:** 2026-6-29 dropped exactly lines
   1–1220 (the pre-game hour), ending at the GM's literal "recap time" call.
 - **Timing/cost:** digest 133s (filter batches + enrich), script 270s (Pass A + chunked Pass B),
