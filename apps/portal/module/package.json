@@ -7,10 +7,13 @@
   "scripts": {
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "build": "echo '@astra/portal-module: no build step yet (tsdown lands at S3, D11)'"
+    "build": "tsdown"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@astra/portal-shared": "workspace:*"
+  },
   "devDependencies": {
+    "tsdown": "^0.22.3",
     "vitest": "^4.1.9"
   }
 }

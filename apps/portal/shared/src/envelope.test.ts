@@ -17,6 +17,33 @@ describe("portal-shared bridge envelope", () => {
     expect(BridgeMessage.parse(msg)).toEqual(msg);
   });
 
+  it("round-trips an auth handshake carrying the S3 world/system meta", () => {
+    const msg = {
+      type: "auth",
+      apiKey: "secret-key",
+      meta: {
+        worldId: "faerrin",
+        world: "Faerrin",
+        system: "pf2e",
+        systemVersion: "7.12.2",
+        foundryVersion: "13.351",
+      },
+    };
+    expect(AuthMsg.parse(msg)).toEqual(msg);
+    expect(BridgeMessage.parse(msg)).toEqual(msg);
+  });
+
+  it("accepts an auth handshake with a partial meta object", () => {
+    const msg = { type: "auth", apiKey: "secret-key", meta: { worldId: "faerrin" } };
+    expect(AuthMsg.parse(msg)).toEqual(msg);
+  });
+
+  it("rejects extra properties on the strict meta object", () => {
+    expect(() =>
+      AuthMsg.parse({ type: "auth", apiKey: "k", meta: { worldId: "x", bogus: true } }),
+    ).toThrow();
+  });
+
   it("round-trips ping/pong", () => {
     expect(PingMsg.parse({ type: "ping" })).toEqual({ type: "ping" });
     expect(PongMsg.parse({ type: "pong" })).toEqual({ type: "pong" });

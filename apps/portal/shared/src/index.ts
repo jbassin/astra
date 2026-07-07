@@ -2,6 +2,7 @@
 // Foundry module (spec 0023 D4/D6): parse a raw WS message into `BridgeMessage`
 // immediately on receipt, never thread a raw JSON blob through bridge code.
 export {
+  AuthMeta,
   AuthMsg,
   BridgeErrorCode,
   BridgeMessage,

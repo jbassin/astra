@@ -18,6 +18,7 @@ import type { Duplex } from "node:stream";
 import { getLogger, getTracer, lazyCounter, lazyHistogram } from "@astra/observe";
 import {
   BridgeMessage,
+  type AuthMeta,
   type BridgeErrorCode,
   type McpQuery,
   type McpResponse,
@@ -58,13 +59,17 @@ export class BridgeError extends Error {
   }
 }
 
-/** Liveness + handshake snapshot for the `bridge-status` tool. `worldId`/`system`/
- * `version` land in S3 once the module's auth payload carries them — absent for now. */
+/** Liveness + handshake snapshot for the `bridge-status` tool. `worldId`/`world`/
+ * `system`/`systemVersion`/`foundryVersion` come straight from the module's S3 auth
+ * `meta` (optional — an older module build that doesn't send it just leaves these
+ * absent, same as pre-S3). */
 export interface BridgeStatus {
   connected: boolean;
   worldId?: string;
+  world?: string;
   system?: string;
-  version?: string;
+  systemVersion?: string;
+  foundryVersion?: string;
 }
 
 export interface BridgeOptions {
@@ -166,11 +171,11 @@ export class Bridge {
       }
       authed = true;
       clearTimeout(authTimer);
-      this.#adopt(ws);
+      this.#adopt(ws, parsed.data.meta);
     });
   }
 
-  #adopt(ws: WebSocket): void {
+  #adopt(ws: WebSocket, meta?: AuthMeta): void {
     // A second authed socket REPLACES the first — see the class docstring.
     const prior = this.#socket;
     if (prior && prior !== ws) {
@@ -178,7 +183,7 @@ export class Bridge {
       prior.terminate();
     }
     this.#socket = ws;
-    this.#status = { connected: true };
+    this.#status = { connected: true, ...meta };
     bridgeConnects.add(1);
     log.emit({ severityText: "INFO", body: "foundry module bridge connected" });
     this.#startHeartbeat();

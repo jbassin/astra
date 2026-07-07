@@ -1,0 +1,12 @@
+{
+  "id": "portal",
+  "title": "Astra Portal Bridge",
+  "description": "Dials out to astra's portal MCP server so an LLM client (Claude Code / Claude Desktop) can search and create against this world — search the compendium and world entities, import statblocks, drop tokens, and create items/journals (spec 0023).",
+  "version": "0.0.0",
+  "compatibility": {
+    "minimum": "13",
+    "verified": "13"
+  },
+  "esmodules": ["dist/main.js"],
+  "socket": true
+}

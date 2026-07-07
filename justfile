@@ -415,6 +415,14 @@ pg-migrate name:
         chown -R 70:70 /parent/{{name}}; chmod 700 /parent/{{name}}
         echo "migrated astra-{{name}}-pg -> {{artifacts}}/postgres/{{name}}"'
 
+# --- portal (0023) ---
+
+# Bundle the Foundry module (tsdown -> apps/portal/module/dist/main.js). dist/ is
+# gitignored; S6 packages module.json + dist/ into portal.zip during the server's
+# Docker build (D11 — install-by-Manifest-URL, no host file-drop in steady state).
+portal-module-build:
+    pnpm --filter @astra/portal-module build
+
 # --- Host edge (shared reverse proxy) ---
 
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.

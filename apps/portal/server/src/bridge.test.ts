@@ -1,7 +1,7 @@
 import { createServer, type Server as HttpServer } from "node:http";
 import type { AddressInfo } from "node:net";
 
-import type { McpQuery } from "@astra/portal-shared";
+import type { AuthMeta, McpQuery } from "@astra/portal-shared";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { WebSocket } from "ws";
 
@@ -37,11 +37,11 @@ class FakeModule {
   readonly #opened: Promise<void>;
   #onQuery?: (msg: McpQuery) => void;
 
-  constructor(url: string, apiKey = BRIDGE_API_KEY) {
+  constructor(url: string, apiKey = BRIDGE_API_KEY, meta?: AuthMeta) {
     this.ws = new WebSocket(url);
     this.#opened = new Promise((resolve) => {
       this.ws.once("open", () => {
-        this.ws.send(JSON.stringify({ type: "auth", apiKey }));
+        this.ws.send(JSON.stringify({ type: "auth", apiKey, meta }));
         resolve();
       });
     });
@@ -104,6 +104,37 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
 
     mod.onQuery((q) => mod.respond(q.id, { pong: true }));
     await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ pong: true });
+    mod.close();
+  });
+
+  it("carries the S3 auth meta (world/system/version) onto the status snapshot", async () => {
+    const meta: AuthMeta = {
+      worldId: "faerrin",
+      world: "Faerrin",
+      system: "pf2e",
+      systemVersion: "7.12.2",
+      foundryVersion: "13.351",
+    };
+    const mod = new FakeModule(url, BRIDGE_API_KEY, meta);
+    await mod.ready();
+    expect(bridge.getStatus()).toEqual({ connected: true, ...meta });
+    mod.close();
+  });
+
+  it("clears the meta snapshot once the module disconnects", async () => {
+    const mod = new FakeModule(url, BRIDGE_API_KEY, { worldId: "faerrin" });
+    await mod.ready();
+    expect(bridge.getStatus()).toMatchObject({ worldId: "faerrin" });
+
+    mod.close();
+    await sleep(50); // let the server-side "close" handler run
+    expect(bridge.getStatus()).toEqual({ connected: false });
+  });
+
+  it("authenticates cleanly with no meta at all (pre-S3 module build)", async () => {
+    const mod = new FakeModule(url);
+    await mod.ready();
+    expect(bridge.getStatus()).toEqual({ connected: true });
     mod.close();
   });
 

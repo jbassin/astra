@@ -25,11 +25,29 @@ export const BridgeErrorCode = z.enum([
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
 
+/**
+ * World/system identity the module already knows at handshake time — sent so
+ * `bridge-status` (the S3 acceptance) can report world/system/version with no extra
+ * bridge round-trip. Optional: an older/mid-upgrade module build that doesn't send it
+ * yet must still authenticate cleanly (BridgeStatus just carries less).
+ */
+export const AuthMeta = z
+  .object({
+    worldId: z.string().optional(),
+    world: z.string().optional(),
+    system: z.string().optional(),
+    systemVersion: z.string().optional(),
+    foundryVersion: z.string().optional(),
+  })
+  .strict();
+export type AuthMeta = z.infer<typeof AuthMeta>;
+
 /** The module's handshake immediately after dialing the bridge WS (D6). */
 export const AuthMsg = z
   .object({
     type: z.literal("auth"),
     apiKey: z.string().min(1),
+    meta: AuthMeta.optional(),
   })
   .strict();
 export type AuthMsg = z.infer<typeof AuthMsg>;
