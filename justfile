@@ -341,9 +341,15 @@ mouthpiece-seed:
     #!/usr/bin/env bash
     set -euo pipefail
     mkdir -p "{{artifacts}}"/audio/mouthpiece
+    # The faerrin historical back-catalog was decommissioned 2026-07-04; its mp3s already
+    # live in the persistent {{artifacts}}/audio/mouthpiece volume from earlier seeds. Only
+    # mount /hist if the source still exists — otherwise Docker would recreate the deleted
+    # path as an empty root-owned dir. Live renders are seeded regardless.
+    hist_mount=()
+    if [ -d "{{mouthpiece_audio_src}}" ]; then hist_mount=(-v "{{mouthpiece_audio_src}}":/hist:ro); fi
     docker run --rm \
       -v "{{artifacts}}"/audio/mouthpiece:/audio \
-      -v "{{mouthpiece_audio_src}}":/hist:ro \
+      "${hist_mount[@]}" \
       -v "{{mouthpiece_episodes}}":/live:ro \
       alpine sh -c '
         set -e

@@ -71,6 +71,17 @@ def main() -> None:
 
     source = Path(os.environ.get("MOUTHPIECE_AUDIO_SRC") or DEFAULT_SOURCE)
     root = _episodes_root()
+    # The back-catalog import is one-time and already in the corpus; faerrin was
+    # decommissioned 2026-07-04, so its source dir is gone for good. From the recurring
+    # publish path (the linguist-commit timer) an absent source now means "nothing to
+    # migrate" — skip cleanly rather than fail the whole publish. (migrate_history itself
+    # still raises on a missing source, so a *misconfigured* explicit path stays loud.)
+    if not source.is_dir():
+        print(
+            f"no historical episode source at {source} — skipping back-catalog migration "
+            f"(one-time import already done; live corpus in {root} is authoritative)"
+        )
+        return
     copied, skipped = migrate_history(source, root)
     print(f"migrated {copied} historical episode(s) into {root} ({skipped} already present)")
 
