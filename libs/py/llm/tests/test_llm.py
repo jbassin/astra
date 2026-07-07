@@ -155,11 +155,50 @@ def test_transcribe_normalizes_verbose_json_segments(tmp_path: Any) -> None:
     segs = transcribe(audio, transcription_fn=fake_transcription)
 
     assert segs == [
-        Segment(start=0.0, end=1.2, text="hi"),
+        Segment(start=0.0, end=1.2, text="hi", no_speech_prob=0.1),
         Segment(start=1.5, end=2.0, text="there"),
     ]
     assert captured["model"] == "groq/whisper-large-v3"
     assert captured["response_format"] == "verbose_json"  # segments only; words dropped (F1)
+
+
+def test_transcribe_parses_no_speech_prob_and_avg_logprob(tmp_path: Any) -> None:
+    """Both hallucination-gate fields parse from dict AND attr-shaped segments; absent →
+    None, never raised on."""
+    from astra_llm import Segment, transcribe
+
+    audio = tmp_path / "chunk.flac"
+    audio.write_bytes(b"")
+
+    class _AttrSeg:
+        start = 3.0
+        end = 4.0
+        text = "you"
+        no_speech_prob = 0.95
+        avg_logprob = -1.5
+
+    class _Resp:
+        segments = [
+            {
+                "start": 0.0,
+                "end": 1.0,
+                "text": "hi",
+                "no_speech_prob": 0.05,
+                "avg_logprob": -0.2,
+            },
+            _AttrSeg(),
+            {"start": 5.0, "end": 6.0, "text": "bye"},  # both fields absent
+        ]
+
+    segs = transcribe(audio, transcription_fn=lambda **_kw: _Resp())
+
+    assert segs == [
+        Segment(start=0.0, end=1.0, text="hi", no_speech_prob=0.05, avg_logprob=-0.2),
+        Segment(start=3.0, end=4.0, text="you", no_speech_prob=0.95, avg_logprob=-1.5),
+        Segment(start=5.0, end=6.0, text="bye"),
+    ]
+    assert segs[2].no_speech_prob is None
+    assert segs[2].avg_logprob is None
 
 
 def test_default_completion_sets_num_retries(monkeypatch: pytest.MonkeyPatch) -> None:

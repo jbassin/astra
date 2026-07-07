@@ -263,6 +263,62 @@ def test_groq_too_short_rejection_is_caught_not_fatal() -> None:
         tx2.transcribe_track("x.aac", "/tmp/scribe-test-work-401")
 
 
+def test_hallucination_gate_drops_only_when_both_signals_trip() -> None:
+    """Post-ASR confidence gate (OpenAI whisper reference heuristic): a segment is
+    dropped only when no_speech_prob > 0.6 AND avg_logprob < -1.0 both trip; either
+    alone, or missing fields entirely, keeps the segment (fail open)."""
+
+    def fake_run(args: list[str]) -> Any:
+        out = args[-1]
+        if out.endswith(".flac"):
+            Path(out).write_bytes(b"")
+        return SimpleNamespace(stdout="10.0", stderr="")  # no silence → one voiced span
+
+    def fake_transcribe(**_kwargs: Any) -> Any:
+        class Resp:
+            segments = [
+                # (a) both trip → dropped (the classic "you" / "Thank you." hallucination).
+                {
+                    "start": 0.0,
+                    "end": 1.0,
+                    "text": "you",
+                    "no_speech_prob": 0.9,
+                    "avg_logprob": -1.5,
+                },
+                # (b) only no_speech_prob trips → kept.
+                {
+                    "start": 1.0,
+                    "end": 2.0,
+                    "text": "real line",
+                    "no_speech_prob": 0.9,
+                    "avg_logprob": -0.2,
+                },
+                # (c) only avg_logprob trips → kept.
+                {
+                    "start": 2.0,
+                    "end": 3.0,
+                    "text": "another line",
+                    "no_speech_prob": 0.1,
+                    "avg_logprob": -1.5,
+                },
+                # (d) both fields missing → kept.
+                {"start": 3.0, "end": 4.0, "text": "no metadata"},
+            ]
+
+        return Resp()
+
+    tx = TrackTranscriber(
+        transcription_fn=fake_transcribe,
+        run=fake_run,
+        max_chunk_sec=20.0,
+        pre_roll=0.0,
+        post_roll=0.0,
+        merge_gap=0.0,
+    )
+    segs = tx.transcribe_track("x.aac", "/tmp/scribe-test-work-hallucination")
+    assert [s["text"] for s in segs] == ["real line", "another line", "no metadata"]
+
+
 # ── ffmpeg arg-builders (gate F) ───────────────────────────────────────────
 def test_ffmpeg_arg_builders_are_pure() -> None:
     assert merge_args(["a.aac", "b.aac"], "out.mp3")[-3:] == ["mp3", "-y", "out.mp3"]

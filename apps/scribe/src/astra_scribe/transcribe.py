@@ -28,9 +28,21 @@ _tracer = get_tracer("astra.scribe")
 _chunks = get_meter("astra.scribe").create_counter(
     "astra.scribe.chunks", description="Audio chunks processed per track, by outcome"
 )
+# Per-segment outcome counter — surfaces the post-ASR hallucination-gate drop rate.
+_segments = get_meter("astra.scribe").create_counter(
+    "astra.scribe.segments", description="Transcribed segments per track, by outcome"
+)
 
 #: Seam: run an ffmpeg/ffprobe argv (defaults to the real subprocess runner).
 FfmpegRunner = Callable[[list[str]], "subprocess.CompletedProcess[str]"]
+
+# OpenAI whisper reference heuristic for a hallucinated segment (e.g. "you" / "Thank
+# you." on silence/noise): Whisper itself signals low confidence on BOTH axes at once —
+# high probability the audio had no speech at all, AND a low average token log-prob for
+# the text it emitted anyway. Only drop when both trip (fail open on either alone, and
+# on missing fields — some provider responses omit them).
+NO_SPEECH_THRESHOLD = 0.6
+AVG_LOGPROB_THRESHOLD = -1.0
 
 
 @dataclass(slots=True)
@@ -90,6 +102,7 @@ class TrackTranscriber:
             span.set_attribute("scribe.chunks", len(chunks))
 
             segments: list[dict[str, Any]] = []
+            dropped_no_speech = 0
             for i, (start, end) in enumerate(chunks):
                 flac = work / f"chunk-{i:04d}.flac"
                 self.run(audio.chunk_args(path, start, end, str(flac)))
@@ -120,6 +133,18 @@ class TrackTranscriber:
                     raise
                 _chunks.add(1, {"outcome": "transcribed"})
                 for seg in chunk_segments:
+                    # Post-ASR hallucination gate (OpenAI whisper reference heuristic):
+                    # drop only when BOTH signals trip. Missing fields ⇒ keep (fail open).
+                    if (
+                        seg.no_speech_prob is not None
+                        and seg.no_speech_prob > NO_SPEECH_THRESHOLD
+                        and seg.avg_logprob is not None
+                        and seg.avg_logprob < AVG_LOGPROB_THRESHOLD
+                    ):
+                        dropped_no_speech += 1
+                        _segments.add(1, {"outcome": "dropped_no_speech"})
+                        continue
+                    _segments.add(1, {"outcome": "kept"})
                     # Each chunk is a contiguous session slice → offset is just `start`.
                     segments.append(
                         {
@@ -128,4 +153,5 @@ class TrackTranscriber:
                             "text": seg.text,
                         }
                     )
+            span.set_attribute("scribe.dropped_no_speech", dropped_no_speech)
             return segments

@@ -7,7 +7,9 @@ so unit tests need neither network nor a Groq key.
 
     from astra_llm import transcribe
     segments = transcribe("chunk.flac", model="groq/whisper-large-v3")
-    # → [Segment(start, end, text), ...]  (verbose_json, segments only — F1 drops words)
+    # → [Segment(start, end, text, no_speech_prob, avg_logprob), ...]
+    #   (verbose_json, segments only — F1 drops words; the two probs are Whisper's own
+    #   hallucination signal, carried through for a post-ASR confidence gate)
 """
 
 from __future__ import annotations
@@ -30,6 +32,10 @@ class Segment(BaseModel):
     start: float
     end: float
     text: str
+    #: Whisper's own hallucination signal (OpenAI verbose_json shape). Missing on some
+    #: provider responses → None, never raised on.
+    no_speech_prob: float | None = None
+    avg_logprob: float | None = None
 
 
 def _default_transcription(**kwargs: Any) -> Any:
@@ -68,5 +74,19 @@ def transcribe(
         start = seg["start"] if isinstance(seg, dict) else seg.start
         end = seg["end"] if isinstance(seg, dict) else seg.end
         text = seg["text"] if isinstance(seg, dict) else seg.text
-        out.append(Segment(start=float(start), end=float(end), text=str(text)))
+        if isinstance(seg, dict):
+            no_speech_prob = seg.get("no_speech_prob")
+            avg_logprob = seg.get("avg_logprob")
+        else:
+            no_speech_prob = getattr(seg, "no_speech_prob", None)
+            avg_logprob = getattr(seg, "avg_logprob", None)
+        out.append(
+            Segment(
+                start=float(start),
+                end=float(end),
+                text=str(text),
+                no_speech_prob=float(no_speech_prob) if no_speech_prob is not None else None,
+                avg_logprob=float(avg_logprob) if avg_logprob is not None else None,
+            )
+        )
     return out
