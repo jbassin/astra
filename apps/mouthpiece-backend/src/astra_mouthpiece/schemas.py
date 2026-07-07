@@ -5,6 +5,10 @@ The model returns these shapes (camelCase keys, matching the committed faerrin
 `script.parse_script` validate them into the snake_case Pydantic models. The
 description text is byte-identical to faerrin (the model sees it); only the
 Python source line-wrapping differs.
+
+`clean_filter_tool` / `clean_enrich_tool` (0024 §3) are net-new — not ported from
+caster — for the clean+enrich Stage-2 replacement; camelCase kept for the same
+reason (`wikiRefs` mirrors `distill_tool`'s `wikiRefs`). Unwired until S4.
 """
 
 from __future__ import annotations
@@ -194,5 +198,104 @@ script_tool = ToolSpec(
             },
         },
         "required": ["title", "turns"],
+    },
+)
+
+
+# ── clean: filter (0024 §3.1) ─────────────────────────────────────────────────
+
+CLEAN_FILTER_TOOL_NAME = "record_window_verdicts"
+
+_CLEAN_FILTER_DESC = (
+    "Record a keep/drop verdict for every numbered window in this batch. Call this "
+    "exactly once with a verdict for each window shown."
+)
+_WINDOW_DECISION_DESC = (
+    "keep to send this window to the podcast hosts; drop to cut it as bookkeeping noise."
+)
+_WINDOW_CATEGORY_DESC = (
+    '"content" for a kept window; for a dropped window, which kind of bookkeeping it '
+    "is — noise (recording markers), logistics (scheduling), life (real-life chatter), "
+    "bookkeeping (pure roll/initiative/HP arithmetic), or asr_noise (unintelligible/"
+    "content-free transcription gibberish)."
+)
+
+clean_filter_tool = ToolSpec(
+    name=CLEAN_FILTER_TOOL_NAME,
+    description=_CLEAN_FILTER_DESC,
+    input_schema={
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "windows": {
+                "type": "array",
+                "description": "One verdict per window shown in this batch.",
+                "items": {
+                    "type": "object",
+                    "additionalProperties": False,
+                    "properties": {
+                        "window": {
+                            "type": "integer",
+                            "description": "The window's [Wn] number.",
+                        },
+                        "decision": {
+                            "type": "string",
+                            "enum": ["keep", "drop"],
+                            "description": _WINDOW_DECISION_DESC,
+                        },
+                        "category": {
+                            "type": "string",
+                            "enum": [
+                                "noise",
+                                "logistics",
+                                "life",
+                                "bookkeeping",
+                                "asr_noise",
+                                "content",
+                            ],
+                            "description": _WINDOW_CATEGORY_DESC,
+                        },
+                    },
+                    "required": ["window", "decision", "category"],
+                },
+            },
+        },
+        "required": ["windows"],
+    },
+)
+
+
+# ── clean: enrich (0024 §3.2) ──────────────────────────────────────────────────
+
+CLEAN_ENRICH_TOOL_NAME = "record_session_enrichment"
+
+_CLEAN_ENRICH_DESC = (
+    "Record the episode blurb and wiki reference list for this session's cleaned "
+    "transcript. Call this exactly once with the full result."
+)
+_CLEAN_SYNOPSIS_DESC = (
+    "A 2 to 4 sentence public episode blurb, in-world and evocative but not "
+    "spoilery-precise, grounded only in what the transcript shows."
+)
+_CLEAN_WIKI_REFS_DESC = (
+    "Proper nouns (factions, places, people, concepts) a setting wiki would likely "
+    "document, for later grounding — as they appear in the transcript, no fabrication."
+)
+
+clean_enrich_tool = ToolSpec(
+    name=CLEAN_ENRICH_TOOL_NAME,
+    description=_CLEAN_ENRICH_DESC,
+    input_schema={
+        "type": "object",
+        "additionalProperties": False,
+        "properties": {
+            "synopsis": {"type": "string", "description": _CLEAN_SYNOPSIS_DESC},
+            "wikiRefs": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": _CLEAN_WIKI_REFS_DESC,
+            },
+        },
+        "required": ["synopsis", "wikiRefs"],
     },
 )

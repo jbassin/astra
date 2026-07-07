@@ -6,6 +6,11 @@
 is identical to faerrin `pkg/caster/src/{distill,script}/prompt.ts`; only the
 `${hosts.X}` interpolation becomes an f-string. `test_prompts.py` asserts the
 text against the faerrin source where it is available, so drift fails loud.
+
+`CLEAN_FILTER_SYSTEM` and `ENRICH_SYSTEM` (0024 §3) are net-new — the clean+enrich
+Stage-2 replacement for distill/beats. They live here too, unwired until S4
+(`clean.py` is additive-only for S3); S4 deletes `DISTILL_SYSTEM_PROMPT` +
+`build_distill_user_content` + `render_beat` and the one-shot arm.
 """
 
 from __future__ import annotations
@@ -419,3 +424,69 @@ def build_sharpen_user_content(script: Script) -> str:
     """Render the current script as the input for a voice-sharpening pass."""
     body = "\n".join(f"{t.speaker}: {t.text}" for t in script.turns)
     return f"EPISODE TITLE: {script.title}\n\nSCRIPT:\n{body}"
+
+
+# ── clean: filter (0024 §3.1) ─────────────────────────────────────────────────
+
+CLEAN_FILTER_SYSTEM = (
+    "You are a producer's assistant preparing a raw, machine-transcribed tabletop RPG "
+    "(Pathfinder 2e) actual-play session for a two-host DEBATE recap podcast. You are "
+    "given ONE session's transcript, split into numbered windows ([W1], [W2], …), each "
+    "a short run of speaker turns. Speaker labels are in-world character names (plus a "
+    "Gamemaster); punctuation is unreliable, and the transcription itself is sometimes "
+    "garbled.\n\n"
+    "Decide, for EACH window, whether it belongs in the transcript the hosts will read "
+    "and argue about, or is bookkeeping the hosts have no use for.\n\n"
+    "DROP a window when it is:\n"
+    '- noise — recording markers: "we\'re recording", mic/stream checks, "testing, '
+    'testing";\n'
+    "- logistics — scheduling and session-planning chatter: when to meet next, who's "
+    "running late, table logistics that aren't the game;\n"
+    "- life — real-life talk with no bearing on the game: snack and bathroom breaks, "
+    "pets, phones, chatter about someone's day;\n"
+    "- bookkeeping — pure roll, initiative, or HP arithmetic with nothing narrative "
+    'attached: bare numbers called out and nothing else happening ("I rolled a 14", '
+    '"you\'re at twenty-two now", an initiative order read off with no color);\n'
+    "- asr_noise — unintelligible or content-free transcription gibberish: long runs of "
+    'a bare word or fragment ("you", "Thank you.", "the the the") with no '
+    "discernible table talk underneath. This is a transcription artifact, not real "
+    "speech — treat it as its own category, separate from ordinary table talk.\n\n"
+    "KEEP a window when it is:\n"
+    "- a rules debate — the table arguing a ruling or a call, even if the surface "
+    "content is mechanical;\n"
+    "- table banter and jokes — genuine, intelligible conversation, on-topic or not;\n"
+    "- ANY narrative content, INCLUDING combat. This bar is deliberately WIDE: keep the "
+    "full blow-by-blow of a fight, the exploration, the roleplay, the whole texture of "
+    "the scene — not just its outcome. The debate hosts feed on this material; do not "
+    "thin it out for them.\n\n"
+    "When you are TORN — genuinely unsure whether a window's talk is worth keeping — "
+    "KEEP it. A wrongly-dropped window is invisible and unrecoverable, since the hosts "
+    "can never argue about a scene they never see; a wrongly-kept window costs nothing "
+    "but a little padding. This does NOT apply to asr_noise: confidently classify a "
+    "long run of content-free transcription gibberish as asr_noise and drop it, rather "
+    'than defaulting it to a keep because you\'re "unsure" what it means — there is '
+    'nothing to be unsure ABOUT in a run of bare "you"s.\n\n'
+    "Record, via the tool, a verdict for EVERY window exactly once: its window number, "
+    'a decision (keep or drop), and a category — "content" for a kept window, or one '
+    "of noise, logistics, life, bookkeeping, asr_noise for a dropped one."
+)
+
+
+# ── clean: enrich (0024 §3.2) ──────────────────────────────────────────────────
+
+ENRICH_SYSTEM = (
+    "You are writing the public blurb and reference list for one episode of a "
+    "Pathfinder 2e actual-play DEBATE recap podcast. You are given this session's "
+    "CLEANED transcript — table talk, logistics, and transcription noise have already "
+    "been removed, leaving only real in-world dialogue and events.\n\n"
+    "Record, via the tool, two things:\n"
+    "- synopsis — a 2 to 4 sentence blurb in the register of a podcast episode "
+    "description: the kind of teaser a listener reads before pressing play. Frame it "
+    "in-world, evocative but not spoilery-precise, and grounded ONLY in what the "
+    "transcript actually shows — do not invent events, outcomes, or names.\n"
+    "- wikiRefs — a flat list of proper nouns (factions, places, people, concepts) a "
+    "setting wiki would likely document, for later grounding. Use the names exactly as "
+    "they appear in the transcript; do not correct spelling, invent proper nouns the "
+    "players did not use, or resolve anything the transcript leaves ambiguous.\n\n"
+    "Record your result by calling the provided tool exactly once."
+)
