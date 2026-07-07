@@ -1,6 +1,16 @@
 # 0024 — mouthpiece script-generation rework — NLSpec
 
-- **Status:** SPEC — ready to implement. Decisions resolved; no open questions.
+- **Status:** ✅ **BUILT + DEPLOYED + LIVE** (2026-07-07; S1 `7eec3d4` / S2 `4b07682` / S3 `70e5a40` /
+  S4 `7d8b32d` / S5 `66799a5` / S6 deploy + acceptance). Acceptance A/B/E met in full; C mechanical
+  checks met (0 recited mechanics in a 5,409-word script; human listen outstanding); D met as
+  revised — the floor is unit-proven, and the live 2026-7-6 check *corrected the spec's assumption*:
+  that transcript is ~half scattered noise, not contiguous runs, so the filter (window granularity)
+  keeps 5,660/5,821 lines and `asr_noise` correctly catches only the two contiguous runs — the floor
+  trips only on run-dominated transcripts, by design. 2026-6-29 re-rendered end-to-end on the new
+  flow and published ("The Canary in the Undercroft", 31 min, real dialogue-mode TTS). Timings:
+  digest 133s / script 270s, zero LLM retries, every attempt far under `REQUEST_TIMEOUT_S=300` —
+  no raise needed. Load-bearing gotchas in [[mouthpiece-0024-gotchas]].
+  _(Originally:)_ SPEC — ready to implement. Decisions resolved; no open questions.
 - **Scope doc:** `thoughts/shared/research/2026-07-07-mouthpiece-script-rework-0024-thoughts.md` (verified)
 - **Date:** 2026-07-07
 - **Subsystem slug:** `mouthpiece-script-rework`
