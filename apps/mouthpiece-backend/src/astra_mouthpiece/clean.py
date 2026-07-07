@@ -17,11 +17,11 @@ re-execution) — never apply stale `kept_ranges` to a different transcript.
 
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
 from typing import Any, Literal
 
 from astra_llm import LlmClient, ToolCallRequest
+from astra_llm.transcription import HALLUCINATION_TEXT_RE
 from pydantic import BaseModel, ValidationError
 
 from .models import DigestStats, DroppedRange, SessionDigest
@@ -243,12 +243,10 @@ def _collapse_ranges(
     return kept, dropped, dropped_windows
 
 
-#: A line whose ENTIRE content is repetitions of "you" / "thank you" — the canonical
-#: Whisper silence-hallucination family (quiet per-speaker Craig tracks transcribe as
-#: these; 2026-7-6 had 576 bare-"you" lines scattered between real dialogue, which
-#: window-granularity filtering can't touch). Deliberately narrow: "Okay."/"Yeah."/
-#: "Yes." are real speech and stay.
-HALLUCINATION_LINE_RE = re.compile(r"^(?:(?:thank\s+)?you\b[\s.,!?]*)+$", re.IGNORECASE)
+#: The canonical Whisper silence-hallucination family (see astra_llm.transcription).
+#: scribe now drops these at the SOURCE for new sessions; this belt-and-suspenders
+#: copy of the gate covers the historical transcripts scribe will never re-run.
+HALLUCINATION_LINE_RE = HALLUCINATION_TEXT_RE
 
 
 def drop_hallucinations(turns: list[Turn]) -> tuple[list[Turn], int]:

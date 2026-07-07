@@ -438,3 +438,68 @@ def test_scribe_failed_tail_retains_tracks_dir(monkeypatch: Any, tmp_path: Path)
     )
     assert not result.success  # the transcript tail raised → run failed
     assert (tmp_path / "tmp" / date / "tracks").is_dir()  # cleanup never ran → retained
+
+
+def test_hallucination_gate_text_prong_drops_the_you_family() -> None:
+    """The text prong: bare "you"/"Thank you." segments are dropped even when their
+    confidence fields look healthy (the live 2026-7-6 rerun proved the confidence
+    prong alone misses them); "Okay." and real speech stay."""
+
+    def fake_run(args: list[str]) -> Any:
+        out = args[-1]
+        if out.endswith(".flac"):
+            Path(out).write_bytes(b"")
+        return SimpleNamespace(stdout="10.0", stderr="")
+
+    def fake_transcribe(**_kwargs: Any) -> Any:
+        class Resp:
+            segments = [
+                {
+                    "start": 0.0,
+                    "end": 1.0,
+                    "text": "you",
+                    "no_speech_prob": 0.1,
+                    "avg_logprob": -0.2,
+                },
+                {
+                    "start": 1.0,
+                    "end": 2.0,
+                    "text": " Thank you. ",
+                    "no_speech_prob": 0.1,
+                    "avg_logprob": -0.2,
+                },
+                {
+                    "start": 2.0,
+                    "end": 3.0,
+                    "text": "you you Thank you!",
+                    "no_speech_prob": 0.1,
+                    "avg_logprob": -0.2,
+                },
+                {
+                    "start": 3.0,
+                    "end": 4.0,
+                    "text": "I attack the spider.",
+                    "no_speech_prob": 0.1,
+                    "avg_logprob": -0.2,
+                },
+                {
+                    "start": 4.0,
+                    "end": 5.0,
+                    "text": "Okay.",
+                    "no_speech_prob": 0.1,
+                    "avg_logprob": -0.2,
+                },
+            ]
+
+        return Resp()
+
+    tx = TrackTranscriber(
+        transcription_fn=fake_transcribe,
+        run=fake_run,
+        max_chunk_sec=20.0,
+        pre_roll=0.0,
+        post_roll=0.0,
+        merge_gap=0.0,
+    )
+    segs = tx.transcribe_track("x.aac", "/tmp/scribe-test-work-text-prong")
+    assert [s["text"] for s in segs] == ["I attack the spider.", "Okay."]

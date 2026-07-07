@@ -14,6 +14,7 @@ so unit tests need neither network nor a Groq key.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable
 from pathlib import Path
 from typing import Any
@@ -24,6 +25,15 @@ from pydantic import BaseModel
 TranscriptionFn = Callable[..., Any]
 
 GROQ_WHISPER = "groq/whisper-large-v3"
+
+#: A segment whose ENTIRE text is repetitions of "you" / "thank you" — the canonical
+#: Whisper silence-hallucination family (non-speech audio energy — breathing, hum —
+#: transcribes as these; measured at 15-18% of lines on real astra sessions). The
+#: confidence heuristic (no_speech_prob/avg_logprob) rarely catches them: there IS
+#: audio energy and Whisper is confidently wrong. Deliberately narrow — "Okay."/
+#: "Yeah."/"Yes." are real speech and must not match. Shared by scribe (source gate)
+#: and mouthpiece (belt-and-suspenders on historical transcripts).
+HALLUCINATION_TEXT_RE = re.compile(r"^(?:(?:thank\s+)?you\b[\s.,!?]*)+$", re.IGNORECASE)
 
 
 class Segment(BaseModel):

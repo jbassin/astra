@@ -17,6 +17,7 @@ from pathlib import Path
 from typing import Any
 
 from astra_llm import GROQ_WHISPER, TranscriptionFn, transcribe
+from astra_llm.transcription import HALLUCINATION_TEXT_RE
 from astra_observe import get_meter, get_tracer
 
 from . import audio
@@ -103,6 +104,7 @@ class TrackTranscriber:
 
             segments: list[dict[str, Any]] = []
             dropped_no_speech = 0
+            dropped_hallucination_text = 0
             for i, (start, end) in enumerate(chunks):
                 flac = work / f"chunk-{i:04d}.flac"
                 self.run(audio.chunk_args(path, start, end, str(flac)))
@@ -133,8 +135,13 @@ class TrackTranscriber:
                     raise
                 _chunks.add(1, {"outcome": "transcribed"})
                 for seg in chunk_segments:
-                    # Post-ASR hallucination gate (OpenAI whisper reference heuristic):
-                    # drop only when BOTH signals trip. Missing fields ⇒ keep (fail open).
+                    # Post-ASR hallucination gate, two prongs:
+                    # 1. Confidence (OpenAI whisper reference heuristic) — drop only when
+                    #    BOTH signals trip. Missing fields ⇒ keep (fail open).
+                    # 2. Text family — the "you"/"thank you" silence-hallucination family,
+                    #    which the confidence prong measurably misses (live 2026-7-6 rerun:
+                    #    1,041 family segments survived it — Whisper is confidently wrong
+                    #    over real non-speech energy).
                     if (
                         seg.no_speech_prob is not None
                         and seg.no_speech_prob > NO_SPEECH_THRESHOLD
@@ -143,6 +150,10 @@ class TrackTranscriber:
                     ):
                         dropped_no_speech += 1
                         _segments.add(1, {"outcome": "dropped_no_speech"})
+                        continue
+                    if HALLUCINATION_TEXT_RE.match(seg.text.strip()):
+                        dropped_hallucination_text += 1
+                        _segments.add(1, {"outcome": "dropped_hallucination_text"})
                         continue
                     _segments.add(1, {"outcome": "kept"})
                     # Each chunk is a contiguous session slice → offset is just `start`.
@@ -154,4 +165,5 @@ class TrackTranscriber:
                         }
                     )
             span.set_attribute("scribe.dropped_no_speech", dropped_no_speech)
+            span.set_attribute("scribe.dropped_hallucination_text", dropped_hallucination_text)
             return segments
