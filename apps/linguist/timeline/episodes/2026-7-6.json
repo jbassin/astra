@@ -1,0 +1,49 @@
+{
+  "date": "2026-7-6",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "Heart to Heart: The Machine God Awakens",
+    "synopsis": "Deep inside an ancient Strider, the party rests among statues of Aurelia I's original adventuring party before pressing into a grand chamber housing an old mechanical heart. A complex boss fight ensues against conduit nodes, hivelings, and the heart-thief spider Vrax'leth, who moves through pipes between tubes. After destroying all the nodes and killing Vrax'leth, Johnny befriends the ancient heart — the Machine God — and strikes an accord to purge Herald followers from the Strider in exchange for its support. The party reaches level 8 and begins naming their alliance 'The Coalition.'",
+    "key_beats": [
+      "Argyle examines the statues of Aurelia I's original adventuring party and recognizes Coulombe Honorsworn, founder of the Scale, noting a familial resemblance to his grandmother; Anzu's academia lore confirms the room was once a place of great import.",
+      "The party rests in a makeshift masonry lean-to shelter; Argyle treats Johnny's avernal fever during the night and Johnny successfully shakes it off after a fortitude save. Anzu hears irregular, purposeful mechanical sounds from deeper in the Strider during his watch.",
+      "Anzu sends his familiar Othello to scout ahead, discovering a large chamber with four red-liquid conduit nodes containing floating runes, a mechanical orb on a cart in the center, and a giant mechanical humanoid (the heart) at the far end. A small colorful spider is spotted swimming inside one of the tubes.",
+      "Argyle casts Augury about destroying the heart and receives a positive omen; the party buffs up (Bane, Bless, Dirge of Doom, Haste) and enters the chamber, triggering Vrax'leth's readied area attack.",
+      "A complex boss fight unfolds against the conduit nodes (which power the heart's beam attacks, web launches, fear effects, and hiveling spawns), hivelings, larger spider variants, Vrax'leth (who moves through pipes between tubes), and the heart itself which fires 45-damage energy beams at targeted squares.",
+      "The party discovers conduit nodes are weak to bludgeoning damage; Benny switches his polytool weapons to bludgeoning and smashes multiple nodes and the central orb. Anzu shatters Gamma with an amped Telekinetic Projectile. Johnny uses Invented Vulnerability and summoned underlings to box in Vrax'leth.",
+      "All conduit nodes and the central orb are destroyed; Vrax'leth is killed when flushed from the last tube. The party survives despite repeated web-grapples (Argyle grabbed five times, Anzu multiple times) and the heart's devastating beam attacks.",
+      "Johnny rolls a natural 20 on Diplomacy (34 total) to address the heart, which awakens and identifies itself as 'Machine God' — an ancient heart from Aurelia I's era, once the eyes and ears of her party. It reveals its inhabitants were corrupted by the false god Herald, and that Herald followers still infest the Strider.",
+      "The party strikes an accord with the Machine God: they will eliminate the remaining Herald followers (one active group growing on the far side, one dormant) in exchange for its support. The Machine God connects to their heart network but refuses to link to the infernal machinery above the Strider.",
+      "The Machine God grants a Greater Jolt Coil and Vrax'leth's corpse (fashionable into a Usurper's Crown). The party hits level 8 and discusses naming their alliance 'The Coalition' with a Ki-Rin symbol, while keeping 'Heartbreakers' as a secret team name. Argyle plans to use Ring of Truth next session to vet allies."
+    ],
+    "characters_present": [
+      "Argyle (Jorge)",
+      "Anzu (Tanner)",
+      "Johnny Skyfall (Noah)",
+      "Benny (Mike)",
+      "Othello (Anzu's familiar)",
+      "Machine God (NPC)",
+      "Vrax'leth (NPC - Heart Thief spider)",
+      "Coulombe Honorsworn (statue)"
+    ],
+    "locations": [
+      "The Strider (interior)",
+      "Statue Room (statues of Aurelia I's original party, base of staircase)",
+      "Heart Chamber / Fane of the Heart (conduit nodes, central orb, Machine God)"
+    ],
+    "factions": [
+      "The Coalition (player alliance)",
+      "Iridescent Church / Rule of Three",
+      "Herald followers",
+      "The Scale",
+      "Machine God's Strider"
+    ],
+    "items": [
+      "Greater Jolt Coil (spellheart - electricity)",
+      "Usurper's Crown (from Vrax'leth's corpse, +1 mental saves, worth 500 gp)",
+      "Lesser Healing Potion (Argyle to Johnny)",
+      "Machine God connection (accord struck, no totem needed)"
+    ],
+    "cliffhanger": "The party plans to use Argyle's Ring of Truth next session to vet their Strider allies for hidden allegiances, and must decide whether to pursue the two remaining groups of Herald followers inside the Strider — one actively growing on the far side (near Anzu's sister), one dormant but poised to activate when the Strider reaches its destination."
+  }
+}
