@@ -423,6 +423,30 @@ pg-migrate name:
 portal-module-build:
     pnpm --filter @astra/portal-module build
 
+# The live "Faerrin" Foundry stack's data dir (a SEPARATE Compose project/stack,
+# apps-network, same host — verified via `docker inspect foundry_faerrin` --format
+# '{{json .Mounts}}': the container's rw bind mount is Source
+# /emerald/data/apps/apps/foundry_faerrin/data -> Destination /data, and Foundry
+# stores installed modules under Data/modules/<module-id>/ inside that). Override
+# with FOUNDRY_DATA_DIR if the host layout ever changes.
+foundry_faerrin_data := env_var_or_default("FOUNDRY_DATA_DIR", "/emerald/data/apps/apps/foundry_faerrin/data")
+
+# File-drop FALLBACK install (D11's primary path is Manifest URL —
+# https://portal.iridi.cc/module/module.json, which Foundry fetches itself with no
+# host step at all). Builds the module locally, then copies module.json + dist/
+# straight into the live Foundry data dir's modules/portal/ — no restart needed,
+# Foundry re-reads module.json on next world launch / module refresh. Idempotent
+# (mkdir -p + overwrite-copy); does NOT touch the foundry_faerrin container itself,
+# only its host-side bind-mount source directory.
+portal-module-install: portal-module-build
+    #!/usr/bin/env bash
+    set -euo pipefail
+    dest="{{foundry_faerrin_data}}/Data/modules/portal"
+    mkdir -p "$dest/dist"
+    cp apps/portal/module/module.json "$dest/module.json"
+    cp apps/portal/module/dist/main.js "$dest/dist/main.js"
+    echo "installed portal module -> $dest (restart/refresh Foundry to pick it up)"
+
 # --- Host edge (shared reverse proxy) ---
 
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.

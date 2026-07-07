@@ -18,6 +18,9 @@ COPY apps/ledger/package.json apps/ledger/
 COPY apps/mouthpiece-frontend/package.json apps/mouthpiece-frontend/
 COPY apps/orator-backend/package.json apps/orator-backend/
 COPY apps/orator-controller/package.json apps/orator-controller/
+COPY apps/portal/module/package.json apps/portal/module/
+COPY apps/portal/server/package.json apps/portal/server/
+COPY apps/portal/shared/package.json apps/portal/shared/
 COPY apps/strider/package.json apps/strider/
 COPY apps/vellum-frontend/package.json apps/vellum-frontend/
 COPY apps/vellum-render/package.json apps/vellum-render/

@@ -10,6 +10,11 @@ import { createPortalServer, type PortalServerHandle, listen } from "./server";
 const MCP_API_KEY = "test-mcp-key";
 const BRIDGE_API_KEY = "test-bridge-key";
 const MAX_CREATES_PER_REQUEST = 10;
+// S6's module-package routes are exercised separately (modulePackage.test.ts); these
+// MCP-tool tests never hit /module/*, so a non-existent moduleDir is fine (any request
+// would just 503, per modulePackage.ts).
+const TEST_PUBLIC_ORIGIN = "https://portal.test";
+const TEST_MODULE_DIR = "/nonexistent/portal-module-fixture";
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -71,6 +76,8 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
+      publicOrigin: TEST_PUBLIC_ORIGIN,
+      moduleDir: TEST_MODULE_DIR,
     });
     mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
   });
@@ -218,6 +225,8 @@ describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: 2, // deliberately small — S5's cap-pre-check test relies on it
+      publicOrigin: TEST_PUBLIC_ORIGIN,
+      moduleDir: TEST_MODULE_DIR,
     });
     mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
   });
@@ -363,6 +372,8 @@ describe("createPortalServer (unbound — construction only)", () => {
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
+      publicOrigin: TEST_PUBLIC_ORIGIN,
+      moduleDir: TEST_MODULE_DIR,
     });
     expect(handle.bridge.getStatus()).toEqual({ connected: false });
     handle.bridge.close();

@@ -17,8 +17,12 @@ import { getLogger } from "@astra/observe";
 import { Bridge } from "./bridge";
 import { MCP_HTTP_PATH, SERVICE_NAME } from "./constants";
 import { createMcpRequestHandler } from "./mcp";
+import { handleModuleJson, handlePortalZip } from "./modulePackage";
 
 const log = getLogger(SERVICE_NAME);
+
+const MODULE_JSON_PATH = "/module/module.json";
+const MODULE_ZIP_PATH = "/module/portal.zip";
 
 export interface PortalServerOptions {
   port: number;
@@ -28,6 +32,14 @@ export interface PortalServerOptions {
   /** `cfg.portal.maxCreatesPerRequest` (D8) — the S5 write tools' per-request create
    * cap, enforced in `mcp.ts` BEFORE a write query reaches the bridge at all. */
   maxCreatesPerRequest: number;
+  /** `cfg.portal.publicOrigin` (S6/D11) — baked into the rendered module.json's
+   * absolute `manifest`/`download` URLs so Foundry's install-by-Manifest-URL and
+   * update checks resolve back to this server. */
+  publicOrigin: string;
+  /** Directory holding the built Foundry module (`module.json` + `dist/main.js`,
+   * S6/D11) — see `index.ts`'s `MODULE_DIR` for how this resolves both locally and
+   * in the built image. */
+  moduleDir: string;
 }
 
 export interface PortalServerHandle {
@@ -57,6 +69,15 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
     }
     if (url.pathname === MCP_HTTP_PATH) {
       void handleMcp(req, res);
+      return;
+    }
+    const modulePackageOpts = { publicOrigin: opts.publicOrigin, moduleDir: opts.moduleDir };
+    if (req.method === "GET" && url.pathname === MODULE_JSON_PATH) {
+      handleModuleJson(res, modulePackageOpts);
+      return;
+    }
+    if (req.method === "GET" && url.pathname === MODULE_ZIP_PATH) {
+      handlePortalZip(res, modulePackageOpts);
       return;
     }
     jsonResponse(res, 404, { error: "not_found" });

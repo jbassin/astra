@@ -181,6 +181,34 @@ orator.iridi.cc {
 	}
 }
 
+# portal — the FoundryVTT MCP+WS bridge server (0023). Two upstream concerns on one
+# origin: the SSE-shaped Streamable-HTTP `/mcp` surface + the bridge `/ws` upgrade
+# (flush_interval -1, mirroring weal-overlay/orator's SSE matchers — WS upgrades need
+# the same unbuffered proxying), and an explicit `/module/*` route so Foundry's
+# server-side manifest fetch resolves cleanly (D11 — install by Manifest URL =
+# https://portal.iridi.cc/module/module.json; the catch-all would cover it too, but
+# the explicit route documents intent + lets caching be tuned here later). Compose
+# publishes host port 10372. (Needs a portal.iridi.cc DNS record — *.iridi.cc is a
+# wildcard, so it should resolve without one, like ledger/heartwood.)
+portal.iridi.cc {
+	import astra_site
+
+	@sse path /ws /mcp
+	handle @sse {
+		reverse_proxy localhost:10372 {
+			flush_interval -1
+		}
+	}
+
+	handle /module/* {
+		reverse_proxy localhost:10372
+	}
+
+	handle {
+		reverse_proxy localhost:10372
+	}
+}
+
 # OTLP/HTTP ingest for browser RUM (config.kdl telemetry.rum-endpoint points
 # here). Reverse-proxies the SigNoz collector's host port; the collector has no
 # CORS of its own, so reflect it here for *.iridi.cc frontends only.

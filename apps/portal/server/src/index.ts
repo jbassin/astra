@@ -14,10 +14,22 @@ import { SERVICE_NAME } from "./constants";
 const telemetry = initTelemetry(SERVICE_NAME);
 const log = getLogger(SERVICE_NAME);
 
+import { fileURLToPath } from "node:url";
+
 import type { SecretRef } from "@astra/config";
 import { loadConfig } from "@astra/config";
 
 import { listen } from "./server";
+
+// The Foundry module's build output (S6/D11) — `apps/portal/module/{module.json,
+// dist/main.js}`, a sibling of `apps/portal/server`. Resolved relative to THIS
+// file's own location (not `process.cwd()`), so it works identically in both
+// environments: locally `src/index.ts` lives at `apps/portal/server/src/`, so
+// `../../module` walks up to `apps/portal/` then into `module/`; the S6 Dockerfile
+// copies `apps/portal/module` (module.json + the built dist/) to the same relative
+// path alongside `apps/portal/server` in the image, so the same relative walk
+// resolves there too — no container-vs-local branch needed.
+const MODULE_DIR = fileURLToPath(new URL("../../module", import.meta.url));
 
 /** Resolve a SOPS `ref=` secret; throws with a clear pointer back to config.kdl if
  * unresolved — unlike orator's optional Discord token, portal's two D6 keys are
@@ -42,6 +54,8 @@ async function main(): Promise<void> {
     bridgeApiKey: requireSecret(cfg.portal.bridgeApiKey, "bridgeApiKey"),
     bridgeTimeoutMs: cfg.portal.bridgeTimeoutMs,
     maxCreatesPerRequest: cfg.portal.maxCreatesPerRequest,
+    publicOrigin: cfg.portal.publicOrigin,
+    moduleDir: MODULE_DIR,
   });
 }
 

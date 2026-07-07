@@ -510,6 +510,38 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- portal (0023): the FoundryVTT MCP+WS bridge server. TS on the orator-backend
+  # template (D3, no build step for the server itself — the Dockerfile DOES build the
+  # Foundry module, tsdown -> module/dist/main.js, packaged at runtime by the server
+  # itself into an installable zip, D11). No frontend/SSR here: portal-server binds
+  # /health, /mcp (Streamable-HTTP, D4/D10), /ws (the bridge, D6), and
+  # /module/{module.json,portal.zip} (S6 install-by-Manifest-URL). Behind Caddy at
+  # portal.iridi.cc; nothing works unless the GM has "Faerrin" launched (the liveness
+  # constraint — bridge-status surfaces "offline", never a hang). ---
+  portal:
+    build:
+      context: ..
+      dockerfile: apps/portal/Dockerfile
+    image: astra-portal:local
+    container_name: astra-portal
+    user: "1000:1000"
+    # SOPS secrets injected as env by `just up` (Decision E); config's env-override
+    # resolves the two D6 `ref="sops:..."` keys in-container. Both are load-bearing
+    # (index.ts throws at startup if either is unresolved — no degraded mode, unlike
+    # orator's optional Discord token).
+    environment:
+      PORTAL_MCP_API_KEY: ${PORTAL_MCP_API_KEY:-}
+      PORTAL_BRIDGE_API_KEY: ${PORTAL_BRIDGE_API_KEY:-}
+    ports:
+      - "10372:10372" # portal (astra range) — also reachable directly
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10372/health').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
 # (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
 # the substrate runs no Caddy of its own — services are reachable on their
