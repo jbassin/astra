@@ -34,6 +34,79 @@ interface FoundrySystem {
   readonly version: string;
 }
 
+/** The subset of a Foundry Document (actor/item/journal/scene/compendium entry) the S4
+ * read tools touch — `toObject()` is the D5 "opaque cargo" escape hatch (never model
+ * pf2e `system.*`), the rest is plain document identity. */
+interface FoundryDocumentLike {
+  readonly id: string;
+  readonly uuid: string;
+  readonly name: string;
+  readonly documentName: string;
+  readonly folder?: { readonly name: string } | null;
+  toObject(): Record<string, unknown>;
+}
+
+/** A `CompendiumCollection#getIndex()` (or `#index`) entry — Foundry 13 index rows
+ * carry their own `uuid` (`Compendium.<pack>.<type>.<id>`), so it's never
+ * hand-constructed (spec 0023 S4). */
+interface FoundryCompendiumIndexEntry {
+  readonly _id: string;
+  readonly uuid: string;
+  readonly name: string;
+  readonly type?: string;
+  readonly img?: string;
+}
+
+/** Map-like — the real Foundry `Collection` (a `Map` subclass) supports far more, but
+ * `values()` is all `search-compendium`/`list-compendium-packs` need. */
+interface FoundryCompendiumIndex {
+  values(): IterableIterator<FoundryCompendiumIndexEntry>;
+}
+
+interface FoundryCompendiumMetadata {
+  readonly type: string; // "Actor" | "Item" | "JournalEntry" | ...
+  readonly label: string;
+  readonly system?: string;
+}
+
+interface FoundryCompendiumCollection {
+  readonly collection: string; // e.g. "pf2e.pathfinder-monster-core"
+  readonly metadata: FoundryCompendiumMetadata;
+  getIndex(options?: { fields?: string[] }): Promise<FoundryCompendiumIndex>;
+}
+
+/** `game.packs` — iterated wholesale by both `list-compendium-packs` and
+ * `search-compendium` (D12 live-iterate, no precomputed cache in v1). */
+interface FoundryPacksCollection {
+  values(): IterableIterator<FoundryCompendiumCollection>;
+}
+
+/** A world-scoped `WorldCollection` (`game.actors`/`game.items`/`game.journal`). */
+interface FoundryWorldCollection<T extends FoundryDocumentLike = FoundryDocumentLike> {
+  values(): IterableIterator<T>;
+}
+
+interface FoundryGridInfo {
+  readonly size: number;
+  readonly type: number;
+}
+
+interface FoundryTokensCollection {
+  readonly size: number;
+}
+
+interface FoundryScene extends FoundryDocumentLike {
+  readonly active: boolean;
+  readonly grid: FoundryGridInfo;
+  readonly width: number;
+  readonly height: number;
+  readonly tokens: FoundryTokensCollection;
+}
+
+interface FoundryScenesCollection extends FoundryWorldCollection<FoundryScene> {
+  readonly active: FoundryScene | null;
+}
+
 /** `game.settings.register()`'s options bag — narrowed to the fields this module passes
  * (world-scoped, GM-restricted, primitive-typed settings only). */
 interface FoundrySettingConfig {
@@ -60,6 +133,11 @@ interface FoundryGame {
   readonly system: FoundrySystem;
   readonly version: string;
   readonly settings: FoundrySettings;
+  readonly packs: FoundryPacksCollection;
+  readonly actors: FoundryWorldCollection;
+  readonly items: FoundryWorldCollection;
+  readonly journal: FoundryWorldCollection;
+  readonly scenes: FoundryScenesCollection;
 }
 
 /** One entry of Foundry 13's `CONFIG.queries` registry — the dispatch surface a `query`
@@ -86,3 +164,7 @@ interface FoundryHooks {
 declare var game: FoundryGame;
 declare var CONFIG: FoundryConfig;
 declare var Hooks: FoundryHooks;
+/** Foundry's global UUID resolver (`Compendium.<pack>.<type>.<id>` or a bare world
+ * document id) — `get-document` (S4) is its one caller. Same `var` reasoning as above:
+ * `handlers.test.ts` stubs it per-test (S4 is Foundry-free too). */
+declare var fromUuid: (uuid: string) => Promise<FoundryDocumentLike | null>;

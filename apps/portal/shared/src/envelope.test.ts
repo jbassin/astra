@@ -83,6 +83,7 @@ describe("portal-shared bridge envelope", () => {
         "writes-disabled",
         "cap-exceeded",
         "timeout",
+        "not-found",
         "foundry-error",
       ].sort(),
     );

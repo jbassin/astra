@@ -21,6 +21,8 @@ export const BridgeErrorCode = z.enum([
   "writes-disabled", // the module's allow-write-operations setting is off
   "cap-exceeded", // max-creates-per-request exceeded (D8)
   "timeout", // the module didn't answer a query within the bridge timeout
+  "not-found", // a read resolved no such document (e.g. a bad get-document uuid) — a
+  // normal, branchable outcome, not a generic Foundry-side failure (S4)
   "foundry-error", // the module's Foundry-side call itself threw
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
