@@ -1,4 +1,4 @@
-"""mega + sharpen + threads + linguist I/O tests — hermetic."""
+"""mega + sharpen + linguist I/O tests — hermetic."""
 
 from __future__ import annotations
 
@@ -31,12 +31,10 @@ from astra_mouthpiece.models import (
     Script,
     ScriptTurn,
     SessionDigest,
-    Thread,
 )
 from astra_mouthpiece.prompts import build_script_user_content
 from astra_mouthpiece.script import ScriptParseError
 from astra_mouthpiece.sharpen import sharpen_voices
-from astra_mouthpiece.threads import format_threads, load_threads, merge_threads, save_threads
 
 HOSTS = HostConfig(
     a=HostPersona(name="Bram", persona="x"),
@@ -140,25 +138,6 @@ def test_sharpen_rejects_turn_count_drift() -> None:
         sharpen_voices(Stub(), _script(), HOSTS)
 
 
-# ── threads ─────────────────────────────────────────────────────────────────
-def test_threads_merge_dedup_and_cap() -> None:
-    existing = [Thread(text="the milk thing", kind="joke")]
-    incoming = [Thread(text="The Milk Thing!", kind="joke"), Thread(text="new bit", kind="bit")]
-    merged = merge_threads(existing, incoming)
-    assert [t.text for t in merged] == ["the milk thing", "new bit"]  # normalized dup dropped
-    assert merge_threads(existing, incoming, max_threads=1) == [Thread(text="new bit", kind="bit")]
-
-
-def test_threads_format_and_roundtrip(tmp_path: Path) -> None:
-    threads = [Thread(text="a grudge", kind="grudge")]
-    assert "RUNNING THREADS" in format_threads(threads)
-    assert format_threads([]) == ""
-    p = tmp_path / "threads.json"
-    save_threads(p, threads)
-    assert load_threads(p) == threads
-    assert load_threads(tmp_path / "missing.json") == []
-
-
 # ── 0021 Change B: recap continuity block + script-stage injection ───────────
 def _ep(
     date: str,
@@ -220,10 +199,9 @@ def test_script_user_content_byte_identical_when_no_continuity() -> None:
     grounding = [GroundingEntry(refs=["r"], title="Page", path="page", text="lore")]
     base = build_script_user_content("syn", "000.x.2025-1-1", beats, grounding)
     assert build_script_user_content("syn", "000.x.2025-1-1", beats, grounding, "") == base
-    assert build_script_user_content("syn", "000.x.2025-1-1", beats, grounding, "", "") == base
     # with continuity, the block lands ABOVE the session beats
     withc = build_script_user_content(
-        "syn", "000.x.2025-1-1", beats, grounding, "", "PREVIOUSLY: stuff"
+        "syn", "000.x.2025-1-1", beats, grounding, "PREVIOUSLY: stuff"
     )
     assert "PREVIOUSLY: stuff" in withc
     assert withc.index("PREVIOUSLY: stuff") < withc.index("Things that happened this session")

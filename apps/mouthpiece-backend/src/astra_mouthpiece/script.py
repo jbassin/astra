@@ -128,7 +128,6 @@ def generate_two_pass(
     *,
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
-    threads_block: str = "",
     continuity_block: str = "",
 ) -> Script:
     """Pass A (free-text improv) → Pass B (structured dressing, no polishing).
@@ -139,7 +138,7 @@ def generate_two_pass(
     comes from the first segment). A short transcript is one segment — a single Pass B call,
     unchanged."""
     user_content = build_script_user_content(
-        digest.synopsis, digest.session_id, digest.beats, grounding, threads_block, continuity_block
+        digest.synopsis, digest.session_id, digest.beats, grounding, continuity_block
     )
     # Pass A — raw, imperfect plaintext transcript.
     transcript = client.call_text(
@@ -172,7 +171,6 @@ def generate_one_shot(
     *,
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
-    threads_block: str = "",
     continuity_block: str = "",
 ) -> Script:
     """Legacy one-shot path (the A/B `two_pass=False` arm) — forced tool only."""
@@ -184,7 +182,6 @@ def generate_one_shot(
                 digest.session_id,
                 digest.beats,
                 grounding,
-                threads_block,
                 continuity_block,
             ),
             model,
@@ -203,7 +200,6 @@ def generate_script(
     two_pass: bool = True,
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
-    threads_block: str = "",
     continuity_block: str = "",
     sharpen: bool = False,
 ) -> Script:
@@ -218,7 +214,6 @@ def generate_script(
         hosts,
         model=model,
         max_tokens=max_tokens,
-        threads_block=threads_block,
         continuity_block=continuity_block,
     )
     if sharpen:

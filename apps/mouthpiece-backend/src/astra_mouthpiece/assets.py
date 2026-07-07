@@ -43,7 +43,6 @@ from .hosts import load_hosts
 from .mega import MegaMember, fuse_digests, mega_id, select_members
 from .models import AudioManifest, HostConfig, Script, SessionDigest, VoiceConfig
 from .session import build_episode_script
-from .threads import format_threads, load_threads
 from .tts.elevenlabs import ElevenLabsTTSProvider
 from .tts.mock import MockTTSProvider
 from .tts.provider import TTSProvider
@@ -163,7 +162,6 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
         digest = _read_digest(key)
         pages = pages_from_corpus(load_corpus())
         hosts = load_hosts()
-        threads_block = format_threads(load_threads(_out_root() / "threads.json"))
         # Recap continuity (0021 Change B): prior episodes + best-effort season arc of THIS
         # show. The ordering gate guarantees this session's episode (and so 1..N-1) exists;
         # a carve-out (excluded/unmatched → show is None) simply yields no continuity.
@@ -177,7 +175,6 @@ def session_script(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
             pages,
             hosts,
             two_pass=True,
-            threads_block=threads_block,
             continuity_block=continuity_block,
             model=_llm_model(),
         )

@@ -1,9 +1,9 @@
 """Recap continuity (0021 Change B) — "previously, on this show" script context.
 
 Built from the chronicle (Show → Season → Episode, 0019): the most-recent prior episodes
-of this session's show + a best-effort current-season arc. Injected at the script stage
-like the running-`threads_block` (faerrin caster precedent) so the hosts can open with real
-"last time" continuity without the digest carrying it. Forward-only; empty input → "".
+of this session's show + a best-effort current-season arc. Injected at the script stage as
+its own block so the hosts can open with real "last time" continuity without the digest
+carrying it. Forward-only; empty input → "".
 """
 
 from __future__ import annotations

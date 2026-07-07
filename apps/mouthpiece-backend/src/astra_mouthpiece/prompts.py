@@ -210,7 +210,7 @@ Title:
 Record the finished script by calling the provided tool exactly once."""
 
 
-# ── user content (digest beats + grounding + threads) ────────────────────────
+# ── user content (digest beats + grounding) ───────────────────────────────────
 
 
 def render_beat(b: Beat) -> str:
@@ -239,10 +239,9 @@ def build_script_user_content(
     session_id: str,
     beats: list[Beat],
     grounding: list[GroundingEntry],
-    threads_block: str = "",
     continuity_block: str = "",
 ) -> str:
-    """Per-session user content: prior-episode continuity + digest beats + wiki + threads."""
+    """Per-session user content: prior-episode continuity + digest beats + wiki."""
     rendered_beats = "\n\n".join(render_beat(b) for b in beats)
 
     wiki_parts: list[str] = []
@@ -261,7 +260,6 @@ def build_script_user_content(
         else "(no matching wiki pages for this session's references)"
     )
 
-    threads = "" if threads_block.strip() == "" else f"\n\n---\n\n{threads_block.strip()}"
     # Continuity frames "what came before" BEFORE this session's beats. Empty → the prompt
     # is byte-identical to the no-context form (forward-only).
     continuity = "" if continuity_block.strip() == "" else f"{continuity_block.strip()}\n\n---\n\n"
@@ -279,7 +277,7 @@ you reach it; don't just read the list out:
 
 WIKI EXCERPTS (for grounding names/lore only; do not reveal undiscovered plot):
 
-{wiki}{threads}"""
+{wiki}"""
 
 
 # ── two-pass: Pass A (improv) + Pass B (dressing) ────────────────────────────

@@ -95,16 +95,6 @@ class GroundingEntry(BaseModel):
     text: str
 
 
-ThreadKind = Literal["joke", "bit", "grudge", "prediction", "character"]
-
-
-class Thread(BaseModel):
-    """A cross-session running thread (inside joke, grudge, prediction…)."""
-
-    text: str
-    kind: ThreadKind
-
-
 # ── Stage 4/5: TTS + assembly ────────────────────────────────────────────────
 
 

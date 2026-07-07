@@ -32,7 +32,6 @@ def build_episode_script(
     two_pass: bool = True,
     model: str | None = None,
     max_tokens: int = DEFAULT_SCRIPT_MAX_TOKENS,
-    threads_block: str = "",
     continuity_block: str = "",
     sharpen: bool = False,
 ) -> Script:
@@ -46,7 +45,6 @@ def build_episode_script(
         two_pass=two_pass,
         model=model,
         max_tokens=max_tokens,
-        threads_block=threads_block,
         continuity_block=continuity_block,
         sharpen=sharpen,
     )
@@ -81,7 +79,6 @@ def produce_episode(
     pronunciations: Lexicon | None = None,
     two_pass: bool = True,
     model: str | None = None,
-    threads_block: str = "",
     continuity_block: str = "",
     sharpen: bool = False,
     bed: BedOptions | None = None,
@@ -96,7 +93,6 @@ def produce_episode(
             hosts,
             two_pass=two_pass,
             model=model,
-            threads_block=threads_block,
             continuity_block=continuity_block,
             sharpen=sharpen,
         )
