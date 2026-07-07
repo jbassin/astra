@@ -17721,8 +17721,8 @@
       "isMain": true,
       "date": "2026-7-6",
       "dateSortKey": 20260706,
-      "title": "The Decorative Boats and the Natural One Augury",
-      "episodeTitle": "The Decorative Boats and the Natural One Augury",
+      "title": "The Heart in the Basement",
+      "episodeTitle": "The Heart in the Basement",
       "hosts": {
         "A": {
           "name": "Bram",
@@ -17733,721 +17733,591 @@
           "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
         }
       },
-      "synopsis": "Resting among the ancient statues of Aurelia the Hierophant's original adventuring party, the party discovers a familial connection between Argyle and Coulombe Honorsworn, founder of the Scale. Pressing deeper into the Strider, they breach a chamber of conduit nodes, hivelings, and a towering mechanical heart — an ancient entity corrupted by the false god Herald. After a grueling battle against the spider Vrax'lyth and waves of hivelings spilling from the conduits, the party shatters the nodes and frees the heart, which calls itself Machine God and offers an accord: purge the remaining Herald cultists within the Strider in exchange for its aid.",
-      "durationMs": 2175530,
+      "synopsis": "Deep within an ancient, forgotten section of the Strider, the party licks their wounds among statues of the first Aurelia's original adventuring company. Pressing onward, they discover a vast chamber housing a colossal mechanical heart — the Strider's own lifeblood — guarded by conduit nodes, swarming hivelings, and a cunning spider known as Vrax'leth that travels through the pipes. After a grueling battle of shattered tubes and evaded death-rays, the party frees the heart and awakens something ancient: the Machine God, an old heart from the era of Aurelia I, long enslaved by the false god Herald. A deal is struck — purge the Strider of Herald's remaining followers, and earn a powerful new ally.",
+      "durationMs": 1878857,
       "hasAudio": true,
       "hasTranscript": true,
-      "audioVersion": "2132469-6a4c7e7a",
+      "audioVersion": "1cab65f-6a4d831c",
       "transcript": [
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "—no, no, no, I'm telling you, the statue room was the best scene of the night, hands down, because here's the thing, right, the party's been crawling through spider webs and murder bugs for two sessions, they're beat to hell, they limp into this room with six stone figures and they're ready to just blow past it to find a place to sleep, and Argyle's player goes up and rolls a thirty-four religion check and the GM drops this whole— this whole ancestral thing, like the face on the statue, Argyle recognizes it, it looks like his grandmother, and suddenly you realize this isn't just some random ruin, this is where Aurelia the First's original party walked, this is sacred ground, and it came out of nowhere—"
+          "text": "Okay so look, the big moment of the night — the thing everyone's going to be talking about — is obviously the Machine God. You cannot tell me that wasn't one of the all-time great reveals in this campaign, because here they are, right, they're sitting in this ancient forgotten basement of the Strider, they're surrounded by these beautiful seven-hundred-year-old statues of Aurelia the First's original adventuring company, and they have no idea — no idea — that they're about to stumble into what is essentially a sleeping deity, a heart from the era when hearts were actually worshipped as gods, and it just — it wakes up and talks to them in this grinding metal voice and says \"little one, I have not spoken to one in a very long time,\" and I mean come on, that's — that's movie stuff, that's the kind of moment you remember for years."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It came out of a religion check in a room they were going to walk through. That's not \"earned\" in any narrative sense, that's a lucky roll on a check nobody was sure would matter."
+          "text": "It's a good reveal. I'll give you that. But can we back up? Because the reason they got there at all is a decision I want to talk about first — they pushed forward into the room with barely any resources, half of them diseased, Argyle's sitting on exactly two fourth-level spell slots, and Anzu just says \"we're not going to rest, right? We're just going right in?\""
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But that's what makes it great though! The fact that it wasn't scripted, that Argyle just— he puts on the old Scale uniform and walks up to this statue and feels nothing magical, but he recognizes the face, and the GM gets to deliver this quiet little personal beat in the middle of a spider dungeon—"
+          "text": "And they were right to push! They'd just cleared the spider room, they'd cleared the piston room, the momentum was there, and sometimes — look, sometimes the table knows, right, you can feel it, the energy is building and you just — you go. You don't stop and rest in a spider-infested basement because you're tired. You push through."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I'm not saying it wasn't a good moment. I'm saying it was an unearned one. The party didn't seek this out. They didn't go looking for Argyle's ancestry. They stumbled into a room with statues and rolled well. That's a lucky lore drop, not a narrative payoff."
+          "text": "They literally stopped and rested. That's what happened next. They made a lean-to out of fallen masonry and slept in a corner."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, but— okay, fine, it's lucky, but the whole dungeon is lucky, they went down here for an ink ribbon, they didn't know any of this was down here, so by that standard nothing is earned—"
+          "text": "Okay, fine, fine, but the point is they didn't go back. They didn't retreat to the surface. They rested in the room and then pushed forward, and that push-forward is what got them to the Machine God. If they'd gone back to Iconoclasm, if they'd said oh let's rest somewhere safe, they never find this thing."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That's not what I'm saying and you know it. There's a difference between stumbling into plot and stumbling into character. The plot stumbling is fine, that's exploration. The character beat— Argyle's connection to Aurelia's original party— that's something you'd want to build toward, and instead it just... appeared on a religion check. Anzu's thirty academia lore confirmed the statues were non-magical, seven hundred years old, part of a place of great import. That's good worldbuilding. But Argyle's grandmother's face? That's a character reveal the player didn't earn through play."
+          "text": "Or they find it at full strength and the fight goes completely differently. We'll come back to that. But I want to start with the rest itself, because I think it matters. Johnny is carrying Avernal Fever from two sessions ago — a disease he never got cured because Argyle doesn't prepare Cleanse Affliction and won't until next level. That's a table management problem."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "I think you're being too hard on it. The player engaged with the environment, the GM rewarded the engagement. That's the social contract of the table. You roll well, you get cool stuff. And— and moving on, because we'll circle this all night— the party then tries to find a safe place to rest in this room, and this is where Benny— oh, this is peak Benny— he suggests using the boats as a barricade."
+          "text": "It's a Pathfinder problem, more than a table problem. The spell tax on disease removal in this edition is brutal — you need a fourth-rank slot for a level-appropriate disease, and Argyle's got more pressing things to prepare. He's got heals, he's got Spiritual Weapon, he's got — look, he's the only healer in the party, he can't afford to blow a top-rank slot on \"Johnny feels a little warm.\""
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The decorative boats."
+          "text": "Avernal Fever isn't \"a little warm.\" It's an infernal disease. And Johnny fails Fortitude saves against everything gross — Josh basically confirmed it at the table, the man has no immune system, which is darkly funny for a character who literally resurrects from death, but it's also a real liability. Argyle finally remembered he could Treat Disease during the rest, which is what saved Johnny, but that took them an embarrassing amount of table time to figure out."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The decorative boats on the map! The GM has to stop him and go \"Benny, the boats and trees are not real,\" which— I mean, that's the funniest tactical moment of the night, and it's so this table, because Benny's always looking at the map dressing like it's tactical cover—"
+          "text": "But they figured it out! And this is what I love about this group, right, they're not optimized, they're not — they don't sit down with spreadsheets, they just kind of muddle through, and the muddling is what makes it feel real. Argyle treating Johnny's disease while they're huddled under a stone lean-to in a seven-hundred-year-old room surrounded by statues of dead heroes — that's a scene. That's atmosphere."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's not always map dressing. Sometimes the props are real. The piston room had real machinery. The webs were real. You can't blame a player for checking."
+          "text": "The statues are a good scene, I agree. And the Argyle connection is genuinely interesting — he walks up to the statue of Coulombe Honorsworn, the founder of the Scale, and Josh tells him the face looks familiar, there's a familial resemblance to his grandmother. That's not nothing. That's a thread."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "I absolutely can blame him for trying to barricade with a decorative boat! Anyway, Johnny rolls a thirty survival, Argyle a twenty-two, they settle on the top-left corner, and Anzu and Argyle build a lean-to out of fallen masonry— Anzu's crafting check was a twenty-eight with aid, Argyle's survival a twenty-four— and the GM keeps caveating that this is not a good hiding spot, like \"it doesn't take a lot of scrutiny from somebody who is in view of this thing to see you,\" which is the GM's way of saying you are not safe here."
+          "text": "It's huge! Argyle is — okay, so Argyle is a former celestial and a former devil sharing a body, right, and now he's just the celestial half with a custode from the Scale on loan to Iconoclasm, and he's standing in front of the literal founder of his organization, carved in stone, in a room that's been sealed for centuries, and there's a connection to his family line? That's — you can't tell me that's not going to pay off later. That's Chekhov's statue."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And they weren't safe. Anzu hears something on his watch."
+          "text": "Maybe. Or maybe it's just flavor text. Josh does that — he seeds things that feel loaded and sometimes they're just texture. I'm more interested in what happened during Anzu's watch, because that's where the session's real tension starts."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Yes! So Anzu's on first watch, rolls a twenty-six perception, and he hears these sounds from beyond the hallway, and they're not the regular mechanical rhythm of the Strider's legs, they're something else— metal moving with intent, raps and pauses, turning, organic and irregular. And here's the creepy part: the sound stays at the same distance for the entire four-hour watch. It never gets closer. It never goes away. It's just... there. Aware."
+          "text": "The sounds! Yes! So Anzu takes first watch, rolls a perception check, and Josh gives him this incredible description — he can hear, beneath the regular mechanical thrum of the Strider, something irregular. Something moving with intent. These metal-on-metal raps, pauses, then it picks up again, and it's not getting closer, it's just... there. For the entire four hours."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And they don't investigate."
+          "text": "And then Benny takes over and rolls lower and can't hear it at all. Which is — look, I know Josh said maybe it got quieter, but I think that's the Vrax'leth setup. The spider's in there, doing something, and Anzu caught it and Benny didn't. That's a genuine tactical miss. If Benny had heard it, they might have gone in more carefully."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "They don't investigate."
+          "text": "But they went in loud anyway! That's the thing — Johnny's casting Dirge of Doom and Bless and Haste before they even cross the threshold, Josh explicitly tells them \"you're announcing your entrance,\" and they just... go. No stealth. No subtlety. Just four guys with music playing walking into a room they've never seen."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Good. Investigating a sound you can't identify, in hostile territory, with a split party and no spell slots, is how you get a TPK. Anzu made the right call."
+          "text": "Because Anzu's scouting was incomplete. Othello flew in, got a look around — saw the four vats with runes floating in red liquid, the mechanical ball on a cart in the center, and the giant half-torso mecha at the back — but rolled poorly on perception. Anzu even said it himself, he got \"a pretty bad check,\" and then he and the table kind of talked themselves into believing there was nothing alive in there."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "I— actually, yeah, I'll give you that one. I was going to say they should've poked at it, but they were beat up, they had no resources, and the sound wasn't getting closer. Why poke the bear?"
+          "text": "To be fair, the room was empty of visible creatures. The spider was inside the pipes. That's — Vrax'leth was hiding in the conduit system, right, it's this little blue-purple-yellow spider that floats through the liquid in the vats and travels through the pipes, and it had readied an attack for when they entered. That's a smart enemy. That's a GM who designed a boss around its environment."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Exactly. You rest, you recover, you go in fresh. Which they did. Benny takes second watch, rolls a twenty-two perception, doesn't hear the sounds at all— sees phantom movement in the webbing that's nothing— and the night passes. And Johnny, with Argyle's treatment bonus, rolls a twenty-nine fortitude save against the avernal fever and finally shakes it."
+          "text": "And I want to talk about the augury, because I think that's where the table talked themselves into a bad call. Argyle casts Augury asking \"would it be bad if we break this heart,\" and Josh gives him a good feeling. But Argyle's asking about breaking the heart — the heart they haven't even met yet. He doesn't know it's the Machine God. He doesn't know it's sentient. He doesn't know it's an ally. He's asking \"should we destroy this thing for energy\" and the spell says \"yeah, go ahead.\""
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Finally! Johnny's been carrying that disease for— what, three sessions? Four? The man's immune system is a running joke at this table, and I mean that literally, like Argyle spent his entire rest period on Treat Disease, which means he couldn't keep watch, which is why they're on a two-person rotation in the first place—"
+          "text": "And that's — okay, I see where you're going, but I think you're wrong here. The Augury is asking about the outcome of a course of action, right, and the outcome of breaking the heart is — well, it turns out the Machine God himself says he'd be fine with them taking a piece of him. He offers them a piece voluntarily. So the Augury was correct. Breaking the heart wouldn't have been catastrophic."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And here's where I want to push on something. Argyle's a cleric. He's got five fourth-level heal spells from his font, he casts a fifth-level Heal before resting to top everyone off, he's the party's only divine caster, and he's agonizing over whether to prep Cleanse Affliction. He defers it. He takes Treat Disease instead, which costs him his rest period and his watch shift. That's a sad indictment of Pathfinder's disease mechanics."
+          "text": "But it would have killed a potential ally worth far more than two hundred energy. The Augury told them \"no bad effects\" and they took that as \"this is safe to do.\" If they'd rolled poorly on that diplomacy check with the Machine God — and Johnny hit a nat twenty, which is the only reason any of this worked — they might have just killed it for the energy and never known what they lost."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Oh, absolutely, and the player was debating it across two spell systems, right, like \"in D and D restoration just removes this\"—"
+          "text": "That's — okay, that's a fair point, the nat twenty on the diplomacy check is doing a lot of work here. But I think you're underrating how the scene played out emotionally, because even without the dice, right, even if Johnny rolls average, the party's choice to kneel down and talk to this thing instead of just smashing it — that's character. That's who they are. Johnny says \"are you okay? There was a spider in you.\" That's —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "In D and D, lesser restoration is a second-level spell and you're done. In Pathfinder Two E, Cleanse Affliction is a fourth-level spell, it takes two actions, and it gives a counteract check against the disease's DC. It's level-gated. You can't just buy your way out of disease at low levels. So your only cleric is sitting there going \"is it even worth a spell slot?\" and the answer was apparently no, he'd rather spend four hours of downtime and lose his watch shift."
+          "text": "That's a very Johnny line, yes."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Which worked out, because Johnny made the save, but— okay, you're right, the system made a disease into a multi-session logistics problem when it should've been a speed bump. But it worked out! The party's rested, disease-free, and Anzu sends Othello to scout."
+          "text": "It's perfect! It's this bard who's been getting poisoned and diseased all session, who's been screaming about apothecary bugs, and he kneels down in front of an ancient mechanical god and goes \"hey buddy, you doing alright?\" That's the heart of the table right there."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Othello rolls an eighteen perception. Poor. And a twenty-two stealth."
+          "text": "I'll concede the characterization. But let's talk about the fight itself, because I think the conduit node mechanic was the most interesting encounter design Josh has done all season, and I think the party played it sloppily."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But it's enough! Anzu peers through Othello's eyes and gets the layout— four vats on each side filled with red liquid with floating runes, a mechanical ball on a cart with wires in the center, and a giant mecha humanoid torso at the back with a glowing orb in its chest. And he notes tracks in the floor for the cart, flat terrain otherwise. It's a solid scouting report."
+          "text": "Sloppily! They won!"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It was a solid report. And then the party acted shocked when they saw the room themselves. That's what I don't understand. Anzu described it. They knew what was in there."
+          "text": "They won because Benny's damage output is absurd and because Johnny finally landed some crits on the hivelings. But the strategy was a mess. You've got four conduit nodes, each one does something different — one fires a death ray that does massive electric damage to a marked square, one shoots webs that grab you, one spawns hivelings, one does a mental fear effect — and the party doesn't know which is which for most of the fight. They're just hitting whatever's closest."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "I think there's a difference between hearing \"giant mecha humanoid torso with a glowing orb\" and seeing it, you know? Like your buddy tells you about the Grand Canyon and you're like yeah yeah I get it, it's a big hole, and then you stand on the rim and— you... you had to be there."
+          "text": "But that's the encounter! You're supposed to learn by doing. The first time the death ray fires, it evaporates a hiveling instantly — forty-five electric damage to anything in the square — and the party goes \"oh, we need to not stand there.\" Then Argyle immediately starts thinking about whether they can bait it onto the nodes. That's reactive tactics. That's reading the room."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I'll take your word for it. But here's the thing— before they go in, Argyle casts Augury. He asks whether breaking or stealing the heart would cause bad effects for the rest of the Strider. And Jorge accidentally sees his own blind GM roll."
+          "text": "Except they never actually executed on it. Argyle yells \"we can cluster around the conduit nodes to get it to hit them\" but then nobody does it. The death ray keeps firing on empty squares or on hivelings, and the party just kills the nodes one by one with raw damage."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "A natural one! He sees it before the GM does! He calls it before it happens!"
+          "text": "Which worked!"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "He sees his own blind roll, it's a one, and despite that the GM gives him a \"pretty good feeling about it.\" So the party is making a major tactical decision— whether to assault this room— based on an augury cast by a player who saw behind the curtain on a natural one."
+          "text": "Which worked because Benny can crit for over a hundred damage on a tube of glass with a butterfly sword. That's not strategy, that's a damage check."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay but— okay, the roll was bad, yes, but the GM gave a positive answer anyway, which means either the GM was being generous or the actual answer is genuinely positive, and either way the party got good information—"
+          "text": "Okay, but the Vrax'leth thing — the actual spider, the heart thief — that's the clever part of the encounter. It's not just sitting there taking hits. It's traveling through the pipes. It pops out of one tube, attacks, goes back in, moves to another tube. It's whack-a-mole. You have to destroy the tubes to corner it."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Or the GM gave a vague positive on a failed roll, which is what augury does on a failure, it gives you a vague or misleading result. \"Pretty good feeling\" on a natural one could mean anything."
+          "text": "And they failed to corner it! Vrax'leth escaped. Johnny summoned eight underlings to box it in — which was genuinely clever, by the way, using the summon spell as a containment tool rather than a damage tool — but the spider just tumbles through them, because the underlings automatically fail all saving throws, and it disappears into the central orb. Then Benny smashes the orb, a dead spider pops out, and... that's it. It's dead. But they didn't kill it through strategy. They killed it because it was inside the thing they were already smashing."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It could, but— look, they went in, and they were right, because the heart was being parasitized by Vrax'leth and they needed to destroy it anyway. The augury was correct."
+          "text": "A kill's a kill! And I would argue that destroying all the conduits and the central orb was the strategy — they systematically took away every place the spider could hide until the only place left was the one they were breaking. That's cornering, even if it doesn't look like a chess move."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The augury was vague enough to be correct regardless of outcome. That's my point. It wasn't actionable information, it was a comfort blanket."
+          "text": "I'd buy that if they'd done it intentionally. But the sequence was: Benny smashes Beta, spider doesn't pop out. Benny smashes the central orb later, dead spider pops out. They didn't know the spider was in there. They got lucky."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Fine! Fine. Let's talk about the spell prep, because this is where the party makes a real tactical choice. Argyle casts Bane and Malediction on the conduits, Johnny preps Bless, Haste on Benny, and Dirge of Doom. And the GM warns them— the GM explicitly says \"you will be walking into the room with music playing, you are announcing your entrance.\" Dirge of Doom is very loud. You cannot be stealthy with it running."
+          "text": "Fine, fine, there's luck involved. There's always luck involved. But I want to talk about what I think was the real tactical story of this fight, which is Argyle getting webbed — how many times was it, four? Five?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And Johnny flip-flops. He wants to go in quietly, then takes back the Dirge of Doom, then keeps it. He goes back and forth and then commits to the loud entrance."
+          "text": "At least four. Beta's web attack targeted Argyle repeatedly."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And I think it's the right call! The party is a buff-heavy group, their whole strategy is stacking bonuses and debuffs, and Dirge of Doom is frightened-one to everything in range. That's too good to pass up for the sake of surprise against a boss they already know is in there."
+          "text": "And Argyle just — he takes it. He's stuck there, he can't move, he's spending actions trying to escape, and the whole time he's saying \"it's fine, it's fine, if it keeps webbing me it's not webbing you guys.\" He's being a damage sponge. He's being a tank. That's the champion's job."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I disagree. They had Othello's scout. They knew the room layout. They could have positioned, they could have burst in with Haste on Benny and taken out a conduit before the boss reacted. Instead they walked in with music playing, announced their presence, and the boss— which was hiding in the pipes— had a readied action waiting for them."
+          "text": "That's a very generous reading. I think Argyle got webbed because he was in a bad position and couldn't get out, not because he was sacrificing himself. He even said at one point, quote, I'm very fine getting spiderwebbed repeatedly if it lets you guys bash things, end quote — but that's rationalizing after the fact. He was stuck. His Spiritual Weapon kept missing. He tried Percussive Impact and missed. He had — what was it — three or four rounds where he did almost nothing useful."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, that's— okay, that's a fair point, because here's what happens. They enter the room. Argyle's thirty-six perception spots a tiny blue-purple-yellow spider floating in one of the vats. It swims into a pipe and vanishes. The party watches the boss disappear into the plumbing system. And then they walk in anyway."
+          "text": "But he kept casting! He kept sustaining Spiritual Weapon, he kept healing, he burned the webs with Holy Light — which was a good call, by the way, clearing the web tiles so they couldn't hide hivelings —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "They watched it swim into the pipes and did nothing."
+          "text": "That was a good call, I'll give you that. Burning the web thicket was smart. But his damage output was negligible. The nodes went down to Benny and Anzu, not to Argyle."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "What were they going to do? Jump in the vat after it?"
+          "text": "And that's — okay, that's fair, but Argyle's not a damage dealer, he's a champion. His job is battlefield control and support. The Holy Light burn, the Battle Medicine on Benny that critted and gave him a mythic point back, the Divine Wrath that vaporized a hiveling on a crit fail — he was doing his job. He was the glue."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "They could have not walked in. They could have repositioned. They could have waited for it to come out. They had full knowledge that Vrax'leth was in the pipes and they walked into the room anyway, and Vrax'leth had readied an area attack that hit everyone for twenty-one damage before anyone could act. Othello got crit for forty-two."
+          "text": "The Divine Wrath was good. I'll give you the Divine Wrath. But let's talk about Anzu's fight, because I think Anzu had a worse round than Argyle, and I don't think the table's talking about it enough."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Forty-two damage to a familiar! Anzu's bird nearly died! And Anzu learns— at the table, in the moment— that familiars don't auto-die at zero HP in Pathfinder Two E, which, cold comfort when your bird just took forty-two to the face—"
+          "text": "Anzu had a rough fight, no question. He got grabbed by the web attack early, spent his whole first turn escaping, then got grabbed again later, and then he was stupefied on top of it, so he's making flat checks just to cast cantrips —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Anzu's Shield spell prevented a crit on himself at least. But yes, the party walked into a readied action because they saw the boss go into the pipes and chose to enter anyway. That's on them."
+          "text": "He failed both flat checks on one turn. He was immobilized and stupefied, he needed to pass a DC five check for the grab and a DC six for the stupefied, and he couldn't do either. His entire turn was gone. And then on a later turn he burned his last focus point on an Amped Telekinetic Projectile and missed."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It's on them, but— look, at some point you have to fight the boss. You can't stand in the hallway all day. And the augury said go!"
+          "text": "But when he did hit — when he hit the conduit node with the telekinetic projectile for thirty-four damage — that was the one that shattered it. That was a big moment. And the bludgeoning weakness on the nodes meant his telekinetic projectile was actually one of the most efficient damage sources they had. Once he recalled knowledge and learned the weakness, he was calling it out — quote, bludgeoning damage, everybody, end quote. That's the psychic being useful in a knowledge way even when his spells are getting shut down."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The natural one augury said go."
+          "text": "The recall knowledge was good. Learning the bludgeoning weakness — and the fact that the nodes are immune to spirit damage, which Argyle should have known before he wasted Spiritual Weapon on one — that was the turning point. But Anzu's performance overall was rough. He spent more actions escaping webs than doing anything productive."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The augury said go! Moving on— round one. Argyle opens combat by using Battle Medicine on himself, then casts Spiritual Weapon as a big mace-hammer, hits Conduit Node One for seven force damage, and the GM notes the tubes are hard, not all damage penetrates. Then he Battle Medicines Benny, which crits for thirty-three healing and returns a mythic point."
+          "text": "The fight was rough for everybody except Benny. Let's just acknowledge — Benny was the MVP of this encounter, hands down. The double slice on the conduit node, the crit with the butterfly sword, the switch to the polytool for bludgeoning damage once they learned the weakness — I mean, Benny's switching his weapon's damage type on the fly to exploit a weakness he just learned about, that's —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The party's primary divine caster spent his entire first turn healing and poking a tube for seven damage. In round one of a boss fight."
+          "text": "That's good tactical play, yes. The polytool shift to bludgeoning was the single smartest moment of the fight. And his damage numbers were genuinely ridiculous. He hit Beta for over a hundred damage in one turn."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "He was responding to the readied action! Everyone just took twenty-one, he had to patch people up—"
+          "text": "Over a hundred! On a tube of glass!"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "He had to patch people up because they walked into a readied action. And his Spiritual Weapon did 7 damage through hardness. Seven. The conduit nodes have hardness, and force damage isn't bludgeoning, so it's barely scratching them. Argyle's opening turn was a combat medic turn, and that's a positioning problem— the cleric shouldn't be the one probing for weaknesses on round one."
+          "text": "On a tube with hardness, no less. The butterfly sword is doing too much damage for a two-d-four weapon."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And then Johnny— oh, Johnny. Johnny sustains Bless to increase its radius, attempts Lingering Composition to extend Dirge of Doom, rolls a 22, needs a 23, fails by one. One! Doesn't lose the focus point, but the composition only lasts one round. And then for his third action, he uses Distracting Performance on Benny to give him off-guard against his next target. Rolls a 38 performance, great check— but he's distracting his own party member. Not an enemy. Benny."
+          "text": "It's the twinned weapon property, right, the stacking damage, plus the spirit damage, plus — look, Benny's a fighter, fighters hit things, that's what they do. And Mike plays Benny with this beautiful energy where he's just — he's this nine-year-old android child who is also a killing machine, and he's foaming at the mouth because the spider finally hit him. Quote, now he has a reason to kill these. Before, he didn't really know. He was like, I don't know, maybe they're mean or something, end quote."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Argyle's reaction was perfect. \"I like how you don't distract\" an enemy."
+          "text": "That was a great line, I'll admit. Benny's characterization carries encounters."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Because it's— I mean, it's technically functional, right, off-guard is off-guard, Benny gets the benefit, but the bard is using his performance to distract his ally instead of the spider that just ambushed them—"
+          "text": "And then Johnny — poor Johnny, right — Johnny spends most of this fight running after Benny trying to keep buffs up, his Dirge of Doom keeps getting mentioned and then not mattering because the hivelings are trivial, and he keeps trying to cast things on the central orb and getting told quote, it's not a creature, it doesn't have a mind, end quote. He tries Invented Vulnerability on a conduit node — immune to mental. He tries Albatross Curse on the orb — that targets a creature. He literally starts reciting the Rime of the Ancient Mariner at a ball and then gives up and throws needle darts at it."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's a wash. Johnny's opening round was a complete wash. Failed Lingering Composition by one, distracted the wrong target. The bard's round one was a wash in a boss fight."
+          "text": "And the needle darts did fifteen damage, which was enough to start cracks in the orb. So Johnny's damage, even when he's fumbling, is contributing. And his Invented Vulnerability on Vrax'leth itself was huge — five slashing weakness, then eight underlings at fourth rank doing eight-d-four plus forty damage. That bloodied the spider."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, but the debuffs are already working, because Conduit Node Alpha activates, right, the heart's eyes glow, it carves out a targeting square in the party's area— it's telegraphing a beam for next round— and a Hiveling charges Benny and misses because of the layered debuffs. The GM rolls a 7 for the attack, which is still a 26, so it's a hit, but the frightened, baned, and Dirge of Doom stack causes the follow-up attack to miss."
+          "text": "Eighty-four damage! From Johnny! The bard who keeps failing fortitude saves! And then — the moment — the conduit reforms. The glass around Beta rebuilds itself because the spider's been bloodied and it triggers some kind of regeneration. Josh literally takes the dead condition off the conduit. The tube came back from the dead."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "So the debuff stacking worked. But here's my question: was stacking three debuffs on a single Hiveling efficient? That's a mook. The Hiveling is a mook. They piled Bane, Malediction, and Dirge of Doom onto the encounter and the immediate payoff was one mook missing an attack."
+          "text": "That was cruel. That was genuinely cruel encounter design. You smash a tube, you think it's gone, and then the act of bloodying the boss brings it back. That's a gut punch."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The payoff was the whole fight! Those debuffs are area effects, they're hitting everything—"
+          "text": "But it's fair! It's telegraphed — the room shakes every time they break a tube, right, the heart is reacting. The healing is coming from the heart. It makes sense that the system would try to repair itself."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The Dirge of Doom is area, yes. But the point stands that the first tangible result was a mook missing. And then Conduit Node Beta activates, and the heart shoots a web at Anzu. GM rolls a d4 to pick the target. Anzu. 31 against AC, hit, 12 bludgeoning damage and grabbed. Anzu is pinned."
+          "text": "It makes sense, but it also means the encounter is a damage race in a way that punishes the party for having already spent most of their resources in the previous two rooms. If they'd come in fresh, the conduits reforming wouldn't matter — they'd have the spell slots to burn through it. Coming in depleted, it nearly killed them."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And Anzu says \"I can't do anything that I want to do.\" Which is— that's the whole fight for Anzu, right there. He's grabbed, he's stuck, he can't cast, he's—"
+          "text": "But it didn't! And that's — look, we keep coming back to this, they were depleted and they went in anyway and they won. Sometimes the gamble pays off."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "A d4. A random d4 picked Anzu, and the party's highest single-target damage dealer is removed from the fight for multiple rounds. That's brutal. That's a brutal outcome from a die they had no control over."
+          "text": "Sometimes the gamble pays off. I want that on record. Because next time it might not."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But it's fair! The boss has to target someone, the GM randomizes it, Anzu gets unlucky—"
+          "text": "Noted. Can we talk about the Machine God now? Because this is — this is the thing. This is the moment."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I didn't say it was unfair. I said it was brutal. You can be fair and brutal at the same time. Meanwhile Benny's doing work. Benny charges in, Double Slice on the nearest conduit node with his butterfly sword. First attack hits, second crits, 28 damage, but the tube's hardness absorbs some of it— just cracks, still intact. Then he uses his hasted action to kill a Hiveling with his falcata."
+          "text": "Let's talk about it."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And the table can't stop talking about how Benny's butterfly sword does way too much damage for 2d4s— Argyle had this whole bit where he pictures Benny hitting the container, it doesn't break, Benny gets mad and just slams his sword down on the Hiveling. It's great table energy."
+          "text": "So they clear the room, Vrax'leth is dead, the conduits are shattered, and Johnny — Johnny just walks up to this giant mechanical half-torso with a glowing orb in its chest and says hello. And Josh has him roll diplomacy. Nat twenty. Natural freaking twenty."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's also the martial-caster disparity in microcosm. Benny's doing 28 on a crit with a weapon he can shift to bludgeoning. Argyle's Spiritual Weapon did 7. We'll come back to that."
+          "text": "And the Machine God responds. In this grinding, metal-on-metal voice. Quote, little one, I have not spoken to one in a very long time, end quote. And you can feel — I mean, Josh's delivery on this was —"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Oh, we'll come back to it. But first— Conduit Node Delta. This one's different. It fills with light, emits this off-harmony singing, and Argyle, Anzu, and Benny all have to make will saves against auditory, emotion, fear, and mental effects. Argyle critically succeeds and is completely unaffected. Just shrugs it off. \"You cannot affect me.\""
+          "text": "It was incredible. And the lore dump! So Argyle rolls a religion check, gets a thirty-eight after Johnny's aid bumps him up, and Josh lays out this whole history: in the early days of Aurelia the First, hearts were believed to be gods manifest on Færrin. They were treated as deities. Then after Aurelia the Second, the manufacturing process changed, hearts became less powerful, and the church declared that modern hearts aren't direct divine manifestations. But the old ones — the old ones are different. They have abilities modern hearts don't. And this is one of them."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And Benny— Benny gets frightened but his Bravery feat negates frightened 1, so the table's read on that is Benny \"starts to get frightened and then remembered he got abused by his father as a kid and he's like this isn't anything.\" Which is— that's a dark read on a class feature, but it's functionally correct."
+          "text": "And Argyle would know this because he's interacted with an old heart before — Voice of Many, the one that could make large jumps across the Infinite Horizon. So he has context for what they're looking at. This isn't just a stronger version of their little Eerie heart back at base. This is something from a different era entirely."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It's the funniest character beat of the fight! Benny's Bravery feat is literally \"my childhood was worse than your fear effect.\""
+          "text": "And the Machine God confirms it, right — he was Aurelia's eyes and ears. He worked with the original party. He's been trapped in this Strider, adrift on the horizon, for centuries. The Strider was a trap that was never sprung. His inhabitants were taken and changed by Herald —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I'll give you that. But the point is Argyle crit the will save while his allies are shaken. The cleric's power fantasy in this fight is making saves, because his damage is negligible."
+          "text": "The false god. One of the outer gods, or something claiming to be one. The Machine God calls it quote, a false god, one of many, worming its way into the people for years, centuries, end quote. And Johnny immediately connects the dots — quote, was its name Herald? end quote"
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Ouch. Okay, but— okay, next round, Argyle recasts Spiritual Weapon, attacks a Hiveling, moves, and casts Holy Light into a dense thicket of spider webs, 37 fire and spirit damage, burns the web zone away entirely. Clears a terrain hazard that was probably spawning Hivelings. \"I didn't like it, I didn't want it there.\""
+          "text": "Which is — that's a callback to earlier in the season, right, the whole Strider pilgrimage is voidward, toward the wall, and the theory from Kadou was that Raelion was thrown voidward past the wall and the Voidsong is its cry for help. And now we've got an ancient heart saying Herald's followers are on this ship, they wormed their way in, they have a destination in mind. That's — those threads are converging."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "37 damage from a premium spell slot to clear a web thicket. Meanwhile Benny's doing 100-plus to conduit nodes with mundane weapons. The resource gap is— it's glaring. It's right there on the table. Argyle is spending spell slots on terrain clearance while the fighter is soloing the encounter's main mechanic."
+          "text": "They are. And I think the most important detail the Machine God gives them is about the followers. There are — well, there were three groups, now two since they killed Vrax'leth's spiders. One is dormant, would activate at the right conditions — presumably when the Strider reaches whatever destination Herald's followers are aiming for. The other is active, growing, on the other side of the Strider, and has recently taken on new members from outside and is converting people from inside."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "He's also the reason the Hivelings aren't spawning anymore! That's— you can't just look at raw damage—"
+          "text": "And that's where Anzu's sister is."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "I can when the raw damage difference is a factor of ten. And speaking of damage— Conduit Node Alpha fires its beam. A column of blue and red energy from the heart into the targeted square. 45 electric damage to everything in the zone. Two Hivelings are instantly vaporized. Just— gone."
+          "text": "That's the implication, yes. Anzu's been trying to reach his sister, who's somewhere on the Strider, and now the Machine God is telling them there's an active cult of Herald on that side of the ship. That's personal stakes for Anzu."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Evaporated! The GM says \"instantaneously evaporated!\" And then the heart redirects its gaze to a new area near Johnny and Benny. And this is where the party starts scheming— can they bait the beam onto conduit nodes? Can they position enemies in the targeted zone?"
+          "text": "And Argyle immediately goes — quote, I got resurrect now, so if we gotta kill her, we can bring her back, end quote. Which is — okay, that's dark, but it's also practical, and it's very Argyle. He's thinking about the mission. But the table's reaction, right, Benny's like quote, we going to kill her right, guys? end quote and it's this moment of — are they actually considering killing Anzu's sister if she's been converted?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Wishful thinking. They don't fully understand the mechanic yet. The beam targets where the conduit designates, and they can't control that. They're scheming about boss mechanics they haven't cracked."
+          "text": "I think that's a real question this table is going to have to answer. The Machine God's deal is clear: purge Herald's remaining followers from the Strider, and it lends them its support. That's the quest. And if Anzu's sister is among the converted, that's a moral dilemma this table hasn't faced before."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But it's smart thinking! You see a 45-damage beam, you want to use it! That's tactical creativity—"
+          "text": "But that's next session. That's — we're not there yet. What I want to talk about is the deal itself, because I think the party made the right call. They didn't kill the heart for two hundred energy. They didn't harvest it. They struck an alliance."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's creative, but it's also premature. They don't know if the beam can hit conduits. They're wishing, not planning. And meanwhile, a Hiveling attacks Anzu with two actions and the GM rolls a natural 20 on both attacks. Double crit."
+          "text": "I agree that keeping the Machine God alive was the right call, but I want to push on why. The two hundred energy is a lot — it's more than they've gotten from any single source this season. But the Machine God offers something energy can't buy: eyes and ears throughout the Strider. It can see everything inside its own body. It knows where the Herald cultists are. It can communicate with them telepathically without a totem. And it's an old heart with unknown capabilities that dwarf anything modern hearts can do."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Double nat 20s on Anzu! But— and this is the key— the Hiveling is frightened from Dirge of Doom, so one crit gets downgraded to a regular hit. 18 plus 12, 30 total. Still bad, but not double-crit bad."
+          "text": "So the calculus is obvious — two hundred energy now, or a living ally that can see the whole board."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And that's Dirge of Doom earning its slot. That frightened 1 turned a crit into a hit. That's the tangible payoff for Johnny's whole messy opening round. The composition that failed to linger still saved Anzu from a second crit."
+          "text": "Right. But here's what I want to push on: Argyle asks if the Machine God would connect to the tithe system, and the Machine God says it's loathe to connect itself to quote, whatever infernal machinery has been added to the Strider, end quote, but would do so if necessary for their survival. And Argyle immediately says quote, don't do it yet, this is a last resort, end quote. Which I think is correct, but also — that's a contingency plan. That's the party's emergency button if the tithe becomes unsustainable. And I don't think they're fully thinking through what it means to have an ancient heart plugged into the tithe network."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Johnny said \"That's all you get for the fight, though\" and Benny said \"But I guess that did come true\"— which, I mean, Anzu does take 30 and then spends most of the rest of the fight grabbed and stupefied, so—"
+          "text": "What do you mean?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Not far off. Okay, the turning point. Anzu finally Recall Knowledges on the conduit nodes. Learns they're weak to bludgeoning damage. Immune to nearly everything else— bleed, disease, doomed, drained, fatigued, healing, mental, non-lethal, paralyzed, poison, sickened, spirit, unconscious, vitality, void, death effects. Weak to bludgeoning. That's it."
+          "text": "The tithe drains energy from hearts. If they connect the Machine God to the tithe, it's being drained alongside everyone else. But it's also an enormously powerful old heart — does it have enough energy to sustain the tithe where others don't? Could it replace Obratz as the energy source that keeps the Strider running? And if so, what does that mean for the faction politics on the surface? If the Machine God is secretly paying the tithe, the surface factions don't need to fight over energy anymore, which means the party's whole alliance structure becomes irrelevant."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "So the party's been chipping away with force and spirit damage for multiple rounds— Argyle's Spiritual Weapon, Holy Light, all of it barely scratching— and the answer was bludgeoning the whole time. Anzu's recall is turns late but fight-changing."
+          "text": "That's — okay, that's a big swing. I think you're getting ahead of the table. Right now they've got a quest — kill two more cult groups, earn an ally. That's clear, that's actionable, and that's what they're going to do next session."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Turns late. That's the thing. How many rounds did they spend before anyone thought to Recall Knowledge? In Pathfinder 2e, Recall Knowledge is a single action. You can do it on round one. Anzu is the party's knowledge character and he didn't check until he was already grabbed and desperate."
+          "text": "Probably. But Argyle also mentioned wanting to use a Ring of Truth on everyone in their alliance next session to root out spies, which — given that the Machine God already told them none of their allies inside the Strider are actively screwing them over — might be unnecessary. And might offend people."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "In his defense, he was grabbed! He couldn't—"
+          "text": "But the Machine God said it can't see above the Strider. It only sees inside. The allies who might be compromised — Tas from Prime Meridian, Hildebrandt — their dealings could be happening on the surface where the Machine God can't see."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "He was grabbed on round two. Round one he had three actions and he spent them on— actually, I don't think he even got a clean round one because of the readied action and the web grab. Fair enough. But the point stands: the recall should have been the first thing anyone did when they saw the conduit nodes tanking force and spirit damage."
+          "text": "That's a fair distinction. The Machine God's knowledge is limited to the interior. But still — walking into your alliance meeting and going everyone drink this truth serum is not a diplomacy move."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Agreed, but once he does it, Anzu casts Amped Telekinetic Projectile with bludgeoning damage, rolls well, 34 damage, shatters the conduit. Orange liquid floods out, the room shakes, the heart takes damage. It works. And Benny switches his butterfly sword to bludgeoning via the shifting property, so now he's got the right damage type too."
+          "text": "It's a very Argyle move, though."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And then Johnny finally contributes. He casts Invented Vulnerability on Vrax'leth, makes it weak to slashing. Then he summons eight small underlings at 4th rank, 8d4 plus 40 slashing, 58 damage, bloodies the spider. And he boxes Vrax'leth in completely— all eight underlings surrounding it. Which is clever."
+          "text": "It is. It is a very Argyle move."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It's brilliant! Johnny's underling wall is the most creative tactical play of the fight! He surrounds the boss with bodies, it can't move—"
+          "text": "Can we talk about the loot, at least? Because the Machine God gives them a piece of itself — a Greater Jolt Coil, spellheart, electric resistance and lightning bolt — and the Vrax'leth corpse, which can be fashioned into a Usurper's Crown, plus one to mental saves, once per day turn a failed mental save into a success."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "\"These things each have one hit point, but the spider doesn't know that.\" Johnny's own words. He was bluffing with paper dolls. And it worked— for exactly one turn, because Vrax'leth uses Tumble Through, the underlings automatically fail their saves, and the spider just tumbles right through the wall. One action. Gone. Then it dives into a conduit opening and disappears into the tube system."
+          "text": "The crown's the better item. Five hundred gold value, and the mental save turnaround is exactly what this party needs — they just spent an entire fight getting feared by a conduit node's mental attack. Anzu was stupefied, half the party was frightened. Mental protection is their weak spot."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "One turn! The entire underling box lasted one turn!"
+          "text": "And Anzu couldn't identify it. He rolled a twenty-three on the occultism check, which was a failure. So they're sitting on a dead spider they can't fully assess until they rest and retry."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Because Tumble Through doesn't care how many bodies you put in the way. It's a movement check, not a combat check. Johnny didn't know that mechanic existed, and neither did anyone else at the table. Their tactical setups keep getting negated by mechanics they haven't researched."
+          "text": "Josh ended up just giving it to them, which — I mean, I understand, it was the end of the session and the stakes were low, but that's the second time Josh has handed them information they didn't earn because the session was running long. I don't love it."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But that's— that's the fight, right? The party sets something up, the boss has an answer, they adapt. It's whack-a-mole. The spider uses the tubes to travel between nodes, you can't pin it down while any conduits are alive, so you have to destroy all the conduits. That's a puzzle boss, and the puzzle is good."
+          "text": "It's pragmatic. You don't want to end a session on you can't identify the loot, see you next week. That's an anticlimax."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "The puzzle is good. The execution was ugly. And here's where it ends— after multiple rounds of grinding, Benny clambers on top of the central cart and strikes the orb mechanism with his bludgeoning weapons. The orb bursts. A dead spider— Vrax'leth— is launched onto the floor with the flood of orange liquid. Boss is dead. Benny did it."
+          "text": "You identify it next session. That's how it works."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Benny! The man, the myth, the butterfly sword! He converted to a polytool, hit with both attacks, the orb was less protected than the conduit nodes— Johnny's earlier needle darts had already started leaks— and when it burst, out pops a dead spider. The killing blow landed on Vrax'leth inside the mechanism. It's such a great boss death."
+          "text": "Not everyone is as patient as you. Some of us want to know if we're wearing a dead spider on our head."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's a great boss death. And Anzu spent the back half of the fight grabbed and stupefied, unable to cast effectively. He tried to Recall Knowledge on the central orb, rolled a 20, not enough. The martial-caster disparity in this encounter was extreme. Benny did the overwhelming majority of the conduit damage. Anzu's one big contribution was the Recall Knowledge that revealed the bludgeoning weakness. One action that changed the fight. Everything else was Benny."
+          "text": "You're wearing a dead spider on your head."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "That's not nothing though! That recall knowledge is the reason Benny knew to switch to bludgeoning. Anzu's one action enabled every subsequent Benny attack. That's the caster's role in a boss fight— you don't have to do the damage, you have to unlock the damage."
+          "text": "The Usurper's Crown! It's a crown made from a spider's cephalothorax! That's metal as hell!"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That's a very generous framing of \"I was grabbed for four rounds and did one useful thing.\""
+          "text": "It is admittedly metal. Both senses."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It was the most useful thing anyone did all fight!"
+          "text": "And then — the level-up. They hit level eight. Argyle's already got his sheet sent to Josh, which Josh is both annoyed and delighted by. Anzu's got new spells to pick. And the table ends on this naming discussion, which has been going on for multiple sessions now — they've gone through Chronicle, Heartbreakers, Choir, Topside Boys, and now Argyle proposes the Coalition."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Debatable. Benny was doing 28-damage crits on conduits before the recall. He would've figured it out eventually just by trying different damage types. But fine. I'll give Anzu the recall. Let's talk about what happens after combat, because this is where the session goes from good boss fight to campaign-defining moment. Johnny attempts to communicate with the mechanical heart. Rolls a natural 20 on diplomacy. 34 total. And after a long pause, the Machine God responds."
+          "text": "The Coalition is fine. It's not exciting, but it's fine. Benny still wants to be the Heartbreakers secretly, which is the best idea anyone's had."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "The Machine God! In this gravelly, metal-grinding voice— \"little one, I have not spoken to one in a very long time. What would you ask of me?\" Chills. Actual chills. And the GM confirms there was a real chance they never meet this NPC at all. Like, if Johnny doesn't roll a nat 20, the heart just... sits there. They never know it's sentient."
+          "text": "Heartbreakers is great! Heartbreakers is — it's got edge, it's got humor, it references what they actually do, which is break hearts —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "That's the most swingy single roll of the campaign. A natural twenty on diplomacy is the threshold for meeting an ancient sentient heart that can communicate without a totem, knows the Strider's interior, and has direct knowledge of the Herald. If Johnny rolls a nineteen, they don't meet the Machine God. If they don't meet the Machine God, they don't learn about the three groups of Herald followers. They don't get the Greater Jolt Coil. They don't get the alliance. One die."
+          "text": "It references what they do, yes. The Coalition sounds like a government agency."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "One die! That's— I mean, that's tabletop RPGs, right? That's the whole medium in a nutshell. One roll changes everything."
+          "text": "But that's the point! Argyle says it himself — they like simple, generic names. The Wayfinders, the adventurers. They're not trying to be cool, they're trying to be functional. And the Coalition with a Ki-Rin on the flag is — okay, the Ki-Rin thing is weird because they killed Ki-Rin, like, that's a trophy from a fight, but —"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Or it's bad encounter design. If meeting a campaign-critical NPC is gated behind a single diplomacy check that can fail, and the failure state is \"you never know this exists,\" that's a hidden failure. The party can't even attempt to fix it because they don't know they missed something."
+          "text": "They killed corrupted Ki-Rin. The Ki-Rin itself is presumably a noble creature. Having it on your flag is a statement about what you're fighting for, not what you killed."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But that's— no, I think that's great design! Not everything should be guaranteed! The party chose to talk to the heart, they rolled well, they got rewarded. If they'd chosen to smash it for two hundred energy, they'd have gotten a different outcome. Player agency!"
+          "text": "Exactly! It's aspirational. It's — look, the naming thing is going to keep going, it's going to be next session too, and I don't think we need to resolve it here. What I want to say is — this was a session where the table went in tired, went in depleted, went in with diseases and missing spell slots, and they came out with a new ally that fundamentally changes the strategic landscape of the entire Strider arc. They came out with a quest that has personal stakes for Anzu. They came out with loot that patches their biggest defensive weakness. And they leveled up. That's a session."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Player agency requires informed choice. They didn't know the heart was sentient. They could have destroyed it for energy and never known they killed an ally. That's not agency, that's a trap."
+          "text": "I'll give you most of that. I think the fight was messier than it needed to be, I think they got bailed out by a nat twenty on the diplomacy check, and I think the augury was a misuse of a spell that could have gone very badly. But the outcome — the Machine God, the quest, the lore — I can't argue with the outcome. It's the biggest thing that's happened this season."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Okay, I'll— I'll give you that the failure state is harsh, but the success state is so good. Through the dialogue and Argyle's thirty-seven religion check— barely a success— they learn the Machine God is an old heart from the era of Aurelia the First, when hearts were considered deific manifestations. It was the eyes and ears of Aurelia's original party. It fell silent. The Strider's original inhabitants were corrupted by the Herald— a false god— and transformed into the insectoid creatures the party's been fighting. The Machine God was adrift on the horizon as an unsprung trap."
+          "text": "Bigger than the tithe? Bigger than Obratz getting wrung dry on the dance floor?"
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "A lore bomb connecting the Herald, the Strider's origin, the insectoid enemies, and old heart mechanics in a single conversation. And the heart manufacturing process changed around the time of Aurelia the Second, which means old hearts like the Machine God have abilities modern hearts don't. That's a lot of information to absorb at the end of a boss fight when everyone's tired."
+          "text": "The tithe was the inciting incident. The Machine God is the pivot. Everything after this is about Herald, about the voidward journey, about what's waiting at the wall. The tithe told them they were in danger. The Machine God tells them what the danger is for."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "But it's so good! It recontextualizes the entire dungeon! The spiders, the mongrel folk, the Sinister Six iconography— it's all Herald corruption. The Strider wasn't always a horror show. It was Aurelia's ship and something got in and rotted it from the inside."
+          "text": "That's — yeah. That's a good way to put it. The Strider isn't just a ship. It's a trap. It's a vessel that was taken over by a false god's followers, and the party is now inside it, making deals with the thing that used to run it. That's — that's the season, right there. That's the whole season in one image."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And then the negotiation. The Machine God offers to aid them if they kill the remaining Herald followers. Three groups: the spiders, which they just destroyed; an active growing group on the far side of the Strider near Anzu's sister; and a dormant group that activates when the Strider reaches its destination. The Machine God can communicate without a totem, gives them a permanent channel. And Argyle asks if any allies are betraying them— the Machine God says none within the Strider."
+          "text": "And next session they either go after the active cult on the other side of the Strider — where Anzu's sister probably is — or they try to deal with the dormant one first. Or they go back to the surface and try to manage their alliances with the Ring of Truth idea. They've got options."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Which is huge! That's the party's paranoia— Braxton Hall's coldness, Tas maybe double-dipping, Hildebrandt's shady reputation— all of that gets at least partially resolved. Nobody in the Strider is actively betraying them. They can breathe."
+          "text": "Too many options. That's their problem. They always have too many options and not enough spell slots."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "For now. \"None within the confines of the Strider\" is a very specific phrasing. It doesn't account for people outside the Strider, and it doesn't account for people who might change their minds. But yes, for now, it's reassuring."
+          "text": "Some things don't change with level."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "And then— and this is the most Argyle thing— Argyle immediately tries to get the Machine God to handle tithe logistics. Like, \"can you help with the energy tithe?\" And the Machine God is like, \"I am loathe to connect myself to whatever infernal machinery has been added to the Strider.\" Shut down! The cleric's instinct to optimize the new NPC's utility over the roleplay, immediately shut down!"
+          "text": "Ha. No, they don't. But you know what does change? Now they've got a Machine God in their corner. And I cannot wait to see what that looks like when the Herald cultists find out."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "Which is the right call from the Machine God, honestly. It's an ancient deific heart that just woke up from centuries of parasitism. It's not going to be your battery manager. Argyle treating it like a resource node before they've even finished the conversation is—"
+          "text": "Assuming the cultists don't find out first. The Machine God just joined their skein network — everyone in the alliance can see it now. Machine God has joined the chat, all caps, different font. That's not subtle."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "It's very Argyle! It's very Jorge! The man sees an NPC and immediately thinks \"what can this NPC do for our energy economy.\" It's not wrong, it's just— it's a particular way of engaging with the game."
+          "text": "No. No, it is not. And that's going to be a problem."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "It's a mercenary way of engaging with the game. The Machine God just told them it was the eyes and ears of Aurelia the First's adventuring party, and Argyle's first follow-up is about tithe logistics. I'm not saying it's wrong, I'm saying it's very him."
+          "text": "That's going to be a problem."
         },
         {
           "speaker": "A",
           "name": "Bram",
-          "text": "Fine! Moving on— loot. The Machine God gives them a small piece of itself, this coiled material that pops off the remains of the central orb, and permission to take Vrax'leth's corpse. Anzu identifies the coil as a Greater Jolt Coil— electricity resistance three to armor, or one d-six electric damage to a weapon after casting an electric spell, plus it can cast Electric Arc and Lightning Bolt. Solid spellheart."
+          "text": "Next Monday."
         },
         {
           "speaker": "B",
           "name": "Maeve",
-          "text": "And the spider corpse can be fashioned into a Usurper's Crown— plus one item bonus to saves versus mental effects, once per day change a failed mental save to a success, worth five hundred gold. Anzu failed the occultism check on that, rolled a twenty-three, but the GM gave the info anyway at session end."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Which— I love this— the GM just fast-tracked it because he knew the party would recheck it next session. He meta-gamed the meta-gamers. \"You're going to Identify Magic this first thing next time, I'm saving us all ten minutes.\" Efficient GMing."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Or he could have let them fail and rediscover it. The failed occultism check is a real failure state. You don't get to just override it because the players will retry later. That's— it's convenient, but it undermines the skill check system."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "It's a spider corpse! It's not plot-critical information! The GM is saving table time on a recheck that's going to succeed anyway. I think that's fine."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "I think it's a slippery slope. But I'll let it go. The Machine God also revealed the heart could be converted to two hundred energy if killed, and the party chose not to kill it."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Which is the right call! Two hundred energy is a lot, but a sentient ally that can communicate without a totem, knows the Strider's interior, and has connections to Aurelia the First is worth way more than two hundred energy. That's a long-term investment."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Agreed. That's the right call. And then— the name. They finally name the group. Argyle proposes \"The Coalition\" with a Ki-Rin as their symbol. Benny lobbies for \"Heartbreakers.\" They settle on The Coalition."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "The Coalition! After going unnamed for the entire campaign! And Argyle's pitch is— he's got a whole branding package, a flag, a Ki-Rin logo, the works. And Benny's counter is \"Heartbreakers,\" because— and I quote— \"we can have it if we talking to Machine God like oh we the Machine God murderers.\" Which is honest! The party's MO is literally destroying hearts!"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The Coalition is the most boring possible name for a faction. It's generic. It tells you nothing. Heartbreakers is at least memorable and honest about what they do."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "But that's why Argyle picks it! He says \"The Coalition is on track for our team because we like just the adventurers, the Wayfinders, we like simple generic names.\" He's leaning into it! The blandness is the brand!"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The blandness is the brand is the most Argyle sentence I've ever heard. And then Benny suggests \"The Icona Coalition\" and Johnny hears \"Iconicola\"—"
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Iconicola! Like a disease! Like a medical condition! \"I'm sorry, you've got Iconicola.\""
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "The Coalition it is. And then the level-up. Level eight. The GM announces it and Jorge has already sent his level eight character sheet. Already sent it. Before being told."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Before being told! The GM says \"by the end of this campaign he's gonna send me his level twenty character like ten minutes before I tell you guys you've leveled up.\" That's the most Argyle player behavior possible! The man has pre-built character sheets waiting in the wings!"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It's also— I mean, it's a little much. The GM's exasperation is completely justified. You're sending homework the teacher hasn't assigned yet."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "It's enthusiasm! The man loves his character! He's got Resurrect now, which— remember earlier, Argyle made that comment about killing and resurrecting Anzu's sister? That's a callback to— okay, it's a dark callback, but it's a callback!"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It's a dark callback. And the session ends with clear hooks: Ring of Truth to vet allies, consulting the Machine God about the Herald's mind control, and targeting the active Herald follower group on the far side of the Strider near Anzu's sister. Three threads, all setup for next session."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "And the party discussed Brennan Lee Mulligan's leveling approach from Critical Role as a model for surprise level-ups, which— I don't know if that's going anywhere, but it's a fun table conversation."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "That's from Dimension Twenty, not Critical Role."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "What? No, I'm pretty sure—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "Brennan Lee Mulligan is Dimension Twenty. He's not on Critical Role."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Are— okay, maybe I'm— look, the point is they talked about surprise level-ups and Jorge had already pre-built his sheet, and the Machine God is alive and talking, and the Herald has three follower groups and one of them is near Anzu's sister, and the party is level eight and named and they've got a Greater Jolt Coil and a Usurper's Crown and— this was a good session. This was a really good session."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "It was a good session. The boss fight was messy, the recall knowledge was late, the martial-caster disparity was glaring, and the entire campaign pivot hinged on a single nat twenty. But it was a good session."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "You're such a— you can't just say it was good, you have to qualify it—"
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "I'm giving you the accurate version. You give the hype version. That's how this works."
-        },
-        {
-          "speaker": "A",
-          "name": "Bram",
-          "text": "Fine. Fine. But the Machine God— that moment, that voice, that \"little one, I have not spoken to one in a very long time\"— that's the moment of the campaign so far. You can't qualify that."
-        },
-        {
-          "speaker": "B",
-          "name": "Maeve",
-          "text": "I won't. That moment earned itself."
+          "text": "Next Monday."
         }
       ]
     }
