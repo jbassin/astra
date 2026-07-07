@@ -54,6 +54,10 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.heartwood.service_name == "astra.heartwood-frontend"
     assert cfg.heartwood.port == 10371
     assert cfg.heartwood.public_origin == "https://heartwood.iridi.cc"
+    assert cfg.portal.port == 10372
+    assert cfg.portal.public_origin == "https://portal.iridi.cc"
+    assert cfg.portal.bridge_timeout_ms == 15000
+    assert cfg.portal.max_creates_per_request == 10
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
@@ -64,6 +68,10 @@ def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
     assert "sops:anthropic_api_key" in repr(cfg.llm.anthropic_api_key)
     assert isinstance(cfg.llm.openrouter_api_key, SecretRef)
     assert cfg.llm.openrouter_api_key.ref == "sops:openrouter_api_key"
+    assert isinstance(cfg.portal.mcp_api_key, SecretRef)
+    assert cfg.portal.mcp_api_key.ref == "sops:portal_mcp_api_key"
+    assert isinstance(cfg.portal.bridge_api_key, SecretRef)
+    assert cfg.portal.bridge_api_key.ref == "sops:portal_bridge_api_key"
 
 
 @sops_required

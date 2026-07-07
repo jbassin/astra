@@ -218,6 +218,23 @@ const Heartwood = z
   })
   .strict();
 
+// portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
+// orator-backend template. No serviceName field (D3): unlike the SSR frontends
+// there's no browser RUM surface, so `astra.portal` is hardcoded in
+// server/src/index.ts, mirroring Orator.
+const Portal = z
+  .object({
+    port: z.number().default(10372),
+    publicOrigin: z.string().default("https://portal.iridi.cc"),
+    // Two-hop auth (D6): mcpApiKey bearer-gates /mcp (MCP client -> server);
+    // bridgeApiKey gates the Foundry module's WS handshake (module -> server).
+    bridgeTimeoutMs: z.number().default(15000),
+    maxCreatesPerRequest: z.number().default(10), // the D8 write-gate cap
+    mcpApiKey: secret(),
+    bridgeApiKey: secret(),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -251,6 +268,7 @@ export const ConfigSchema = z
     harrow: Harrow.default(() => Harrow.parse({})),
     ledger: Ledger.default(() => Ledger.parse({})),
     heartwood: Heartwood.default(() => Heartwood.parse({})),
+    portal: Portal.default(() => Portal.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

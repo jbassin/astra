@@ -60,6 +60,10 @@ describe("@astra/config", () => {
     expect(cfg.heartwood.serviceName).toBe("astra.heartwood-frontend");
     expect(cfg.heartwood.port).toBe(10371);
     expect(cfg.heartwood.publicOrigin).toBe("https://heartwood.iridi.cc");
+    expect(cfg.portal.port).toBe(10372);
+    expect(cfg.portal.publicOrigin).toBe("https://portal.iridi.cc");
+    expect(cfg.portal.bridgeTimeoutMs).toBe(15000);
+    expect(cfg.portal.maxCreatesPerRequest).toBe(10);
   });
 
   test("secret fields are lazy refs, not plaintext", () => {
@@ -69,6 +73,10 @@ describe("@astra/config", () => {
     expect(JSON.stringify(cfg.llm.anthropicApiKey)).toContain("SecretRef"); // never leaks the value
     expect(cfg.llm.openrouterApiKey).toBeInstanceOf(SecretRef);
     expect(cfg.llm.openrouterApiKey?.ref).toBe("sops:openrouter_api_key");
+    expect(cfg.portal.mcpApiKey).toBeInstanceOf(SecretRef);
+    expect(cfg.portal.mcpApiKey?.ref).toBe("sops:portal_mcp_api_key");
+    expect(cfg.portal.bridgeApiKey).toBeInstanceOf(SecretRef);
+    expect(cfg.portal.bridgeApiKey?.ref).toBe("sops:portal_bridge_api_key");
   });
 
   test.skipIf(!SOPS)("present secret resolves via sops", () => {

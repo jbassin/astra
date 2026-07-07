@@ -200,6 +200,21 @@ class HeartwoodConfig(_Base):
     public_origin: str = "https://heartwood.iridi.cc"
 
 
+class PortalConfig(_Base):
+    # portal (0023) — MCP+WS server for the live FoundryVTT "Faerrin" world, on the
+    # orator-backend template. No service_name field (D3): unlike the SSR frontends
+    # there's no browser RUM surface, so astra.portal is hardcoded in
+    # server/src/index.ts, mirroring OratorConfig.
+    port: int = 10372
+    public_origin: str = "https://portal.iridi.cc"
+    # Two-hop auth (D6): mcp_api_key bearer-gates /mcp (MCP client -> server);
+    # bridge_api_key gates the Foundry module's WS handshake (module -> server).
+    bridge_timeout_ms: int = 15000
+    max_creates_per_request: int = 10  # the D8 write-gate cap
+    mcp_api_key: SecretRef | None = None
+    bridge_api_key: SecretRef | None = None
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -222,4 +237,5 @@ class Config(_Base):
     harrow: HarrowConfig = Field(default_factory=HarrowConfig)
     ledger: LedgerConfig = Field(default_factory=LedgerConfig)
     heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
+    portal: PortalConfig = Field(default_factory=PortalConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

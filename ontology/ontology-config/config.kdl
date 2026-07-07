@@ -252,6 +252,26 @@ heartwood {
     public-origin "https://heartwood.iridi.cc"
 }
 
+portal {
+    // portal (0023) — a TypeScript MCP+WS server for the live FoundryVTT "Faerrin"
+    // campaign world, on the orator-backend template (D3: no build step, no browser
+    // RUM surface, so — unlike the SSR frontends — there's no service-name field
+    // here; astra.portal is hardcoded in server/src/index.ts, mirroring orator).
+    // Same config-single-source contract otherwise: the server binds this port; no
+    // PORT env. Behind Caddy at portal.iridi.cc → host 10372 (S6).
+    port 10372
+    public-origin "https://portal.iridi.cc"
+    // Two-hop auth (D6): mcp-api-key bearer-gates the Streamable-HTTP /mcp surface
+    // (MCP client -> server); bridge-api-key gates the Foundry module's WS
+    // handshake (module -> server). bridge-timeout-ms bounds a stalled
+    // module round-trip (typed "timeout" error, never a hang — the liveness
+    // constraint). max-creates-per-request is the D8 write-gate cap.
+    bridge-timeout-ms 15000
+    max-creates-per-request 10
+    mcp-api-key ref="sops:portal_mcp_api_key"
+    bridge-api-key ref="sops:portal_bridge_api_key"
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }
