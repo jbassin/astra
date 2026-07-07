@@ -41,6 +41,7 @@ async function main(): Promise<void> {
     mcpApiKey: requireSecret(cfg.portal.mcpApiKey, "mcpApiKey"),
     bridgeApiKey: requireSecret(cfg.portal.bridgeApiKey, "bridgeApiKey"),
     bridgeTimeoutMs: cfg.portal.bridgeTimeoutMs,
+    maxCreatesPerRequest: cfg.portal.maxCreatesPerRequest,
   });
 }
 

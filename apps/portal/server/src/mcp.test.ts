@@ -9,6 +9,7 @@ import { createPortalServer, type PortalServerHandle, listen } from "./server";
 
 const MCP_API_KEY = "test-mcp-key";
 const BRIDGE_API_KEY = "test-bridge-key";
+const MAX_CREATES_PER_REQUEST = 10;
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -69,6 +70,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
       mcpApiKey: MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
+      maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
     });
     mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
   });
@@ -205,6 +207,154 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
   });
 });
 
+describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
+  let handle: PortalServerHandle & { port: number };
+  let mcpUrl: URL;
+
+  beforeEach(async () => {
+    handle = await listen({
+      port: 0,
+      mcpApiKey: MCP_API_KEY,
+      bridgeApiKey: BRIDGE_API_KEY,
+      bridgeTimeoutMs: 250,
+      maxCreatesPerRequest: 2, // deliberately small — S5's cap-pre-check test relies on it
+    });
+    mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
+  });
+
+  afterEach(async () => {
+    await handle.close();
+  });
+
+  async function connectedClient(): Promise<Client> {
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+    return client;
+  }
+
+  it("rejects an over-cap import-from-compendium with NO bridge round-trip", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    let queried = false;
+    mod.onQuery(() => {
+      queried = true;
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "import-from-compendium",
+      arguments: { uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.g1", quantity: 5 },
+    });
+    expect(result.isError).toBe(true);
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toMatchObject({ code: "cap-exceeded" });
+    // The cap rejection must short-circuit BEFORE the bridge query — the connected
+    // fake module should never have seen this request at all.
+    expect(queried).toBe(false);
+
+    await client.close();
+    mod.close();
+  });
+
+  it("allows an at-cap create-token and round-trips it through the bridge (S5/D13)", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+
+    const canned = {
+      actor: { uuid: "Actor.a1", id: "a1", name: "Goblin Warrior" },
+      tokens: [
+        { id: "t1", x: 100, y: 100 },
+        { id: "t2", x: 200, y: 200 },
+      ],
+      sceneId: "sc1",
+    };
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.create-token");
+      expect(q.params).toMatchObject({ actorId: "a1", x: 100, y: 100, quantity: 2 });
+      mod.respond(q.id, canned);
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "create-token",
+      arguments: { actorId: "a1", x: 100, y: 100, quantity: 2 },
+    });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual(canned);
+
+    await client.close();
+    mod.close();
+  });
+
+  it("round-trips create-journal through the bridge — always exactly 1 create, never caps out", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+
+    const canned = { uuid: "JournalEntry.j1", id: "j1", name: "Session Notes" };
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.create-journal");
+      expect(q.params).toMatchObject({ name: "Session Notes", content: "<p>hi</p>" });
+      mod.respond(q.id, canned);
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "create-journal",
+      arguments: { name: "Session Notes", content: "<p>hi</p>" },
+    });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual(canned);
+
+    await client.close();
+    mod.close();
+  });
+
+  it("maps a module-side writes-disabled denial onto a typed isError result", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respondError(q.id, "writes-disabled", "write operations are disabled");
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "create-journal",
+      arguments: { name: "x", content: "y" },
+    });
+    expect(result.isError).toBe(true);
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual({
+      code: "writes-disabled",
+      message: "write operations are disabled",
+    });
+
+    await client.close();
+    mod.close();
+  });
+
+  // Note: the audit-log line itself (mcp.ts's `auditWrite` -> `log.emit`) isn't
+  // cheaply assertable from this test file — `@astra/observe`'s `getLogger` resolves
+  // to a no-op OTel logger unless a real LoggerProvider is installed (`initTelemetry`,
+  // never called in these Foundry-free unit tests), and wiring an in-memory log
+  // exporter here would mean adding `@opentelemetry/sdk-logs` as a new portal-server
+  // devDependency for one assertion. The write-tool round-trip tests above already
+  // exercise every `auditWrite` call site (ok/denied/cap-exceeded); the log line's
+  // presence is a one-line, low-risk addition reviewed by inspection instead.
+});
+
 describe("createPortalServer (unbound — construction only)", () => {
   it("builds without binding a port", () => {
     const handle = createPortalServer({
@@ -212,6 +362,7 @@ describe("createPortalServer (unbound — construction only)", () => {
       mcpApiKey: MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
+      maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
     });
     expect(handle.bridge.getStatus()).toEqual({ connected: false });
     handle.bridge.close();

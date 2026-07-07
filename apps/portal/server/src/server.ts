@@ -25,6 +25,9 @@ export interface PortalServerOptions {
   mcpApiKey: string;
   bridgeApiKey: string;
   bridgeTimeoutMs: number;
+  /** `cfg.portal.maxCreatesPerRequest` (D8) — the S5 write tools' per-request create
+   * cap, enforced in `mcp.ts` BEFORE a write query reaches the bridge at all. */
+  maxCreatesPerRequest: number;
 }
 
 export interface PortalServerHandle {
@@ -43,7 +46,7 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
     bridgeApiKey: opts.bridgeApiKey,
     queryTimeoutMs: opts.bridgeTimeoutMs,
   });
-  const handleMcp = createMcpRequestHandler(bridge, opts.mcpApiKey);
+  const handleMcp = createMcpRequestHandler(bridge, opts.mcpApiKey, opts.maxCreatesPerRequest);
 
   const httpServer = createServer((req, res) => {
     const url = new URL(req.url ?? "/", "http://localhost");

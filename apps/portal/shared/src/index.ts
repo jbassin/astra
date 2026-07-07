@@ -33,3 +33,14 @@ export {
   WorldSearchRow,
   WorldSearchType,
 } from "./tools";
+// The S5 write tools' shared param/result contracts (spec 0023 slice S5, D5/D8/D13).
+export {
+  CreatedTokenRow,
+  CreateJournalParams,
+  CreateJournalResult,
+  CreateTokenParams,
+  CreateTokenResult,
+  ImportedDocumentRow,
+  ImportFromCompendiumParams,
+  ImportFromCompendiumResult,
+} from "./tools";

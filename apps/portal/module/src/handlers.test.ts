@@ -1,12 +1,25 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { SETTING_ALLOW_WRITES } from "./constants";
 import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./handlers";
 
-/** A fake `FoundryPacksCollection`/`FoundryWorldCollection`/`FoundryScenesCollection` —
- * `values()` is all any S4 handler needs (see `types/foundry.d.ts`'s own minimal-surface
- * philosophy). */
-function fakeValuesCollection<T>(items: T[]): { values(): IterableIterator<T> } {
-  return { values: () => items[Symbol.iterator]() };
+/** A fake `FoundryPacksCollection`/`FoundryWorldCollection`/`FoundryScenesCollection`/
+ * `FoundryFoldersCollection` — `values()` covers every S4 handler (see
+ * `types/foundry.d.ts`'s own minimal-surface philosophy); `get(id)` is S5's addition
+ * (`create-token`'s `actorId` path) — harmless on collections that never call it.
+ * Deliberately unconstrained/cast rather than `T extends {id?: string}`: some callers
+ * (compendium packs/index entries) have no `id` field at all, and TypeScript's "weak
+ * type" detection rejects assigning a zero-overlap object to an all-optional-props
+ * constraint — casting inside `get`'s body sidesteps that without weakening the
+ * collection's own declared element type. */
+function fakeValuesCollection<T>(items: T[]): {
+  values(): IterableIterator<T>;
+  get(id: string): T | undefined;
+} {
+  return {
+    values: () => items[Symbol.iterator](),
+    get: (id) => items.find((i) => (i as { id?: string }).id === id),
+  };
 }
 
 function fakePack(opts: {
@@ -23,6 +36,11 @@ function fakePack(opts: {
   };
 }
 
+/** Returns a {@link FoundryActor} (a superset of `FoundryDocumentLike`) so every
+ * existing S4 call site — journal/item/scene stand-ins that never call
+ * `getTokenDocument` — keeps working unchanged, while S5's actor-specific tests get a
+ * working `getTokenDocument` stub for free (the returned "token" is just the given
+ * position + this doc's name, enough for `create-token`'s offset-math assertions). */
 function fakeDoc(opts: {
   id: string;
   uuid: string;
@@ -30,7 +48,7 @@ function fakeDoc(opts: {
   documentName: string;
   folder?: string;
   data?: Record<string, unknown>;
-}): FoundryDocumentLike {
+}): FoundryActor {
   return {
     id: opts.id,
     uuid: opts.uuid,
@@ -38,7 +56,29 @@ function fakeDoc(opts: {
     documentName: opts.documentName,
     folder: opts.folder !== undefined ? { name: opts.folder } : null,
     toObject: () => opts.data ?? { _id: opts.id, name: opts.name },
+    getTokenDocument: (pos: { x: number; y: number }) =>
+      Promise.resolve({ toObject: () => ({ x: pos.x, y: pos.y, name: opts.name }) }),
   };
+}
+
+/** S5's `create-token` landing call — by default just echoes each given token payload
+ * back as a minted doc (so a test asserting on the RESULT's x/y sees exactly what
+ * `actor.getTokenDocument().toObject()` produced), with a distinct sequential id per
+ * token. Override for a test that wants to assert on the exact `data` it was called
+ * with (S3/S4 scenes never call this at all). */
+function fakeCreateEmbeddedDocuments(
+  embeddedName: string,
+  data: Record<string, unknown>[],
+): Promise<FoundryDocumentLike[]> {
+  return Promise.resolve(
+    data.map((d, i) => ({
+      id: `${embeddedName.toLowerCase()}${i + 1}`,
+      uuid: `${embeddedName}.${embeddedName.toLowerCase()}${i + 1}`,
+      name: typeof d.name === "string" ? d.name : embeddedName,
+      documentName: embeddedName,
+      toObject: () => d,
+    })),
+  );
 }
 
 function fakeScene(opts: {
@@ -54,21 +94,28 @@ function fakeScene(opts: {
     width: 4000,
     height: 3000,
     tokens: { size: opts.tokenCount ?? 0 },
+    createEmbeddedDocuments: fakeCreateEmbeddedDocuments,
   };
 }
 
 interface FoundryStubOverrides {
   packs?: FoundryCompendiumCollection[];
-  actors?: FoundryDocumentLike[];
+  actors?: FoundryActor[];
   items?: FoundryDocumentLike[];
   journal?: FoundryDocumentLike[];
   scenes?: FoundryScene[];
+  folders?: FoundryFolder[];
   fromUuid?: (uuid: string) => Promise<FoundryDocumentLike | null>;
+  /** S5 — the world-settings map `game.settings.get` reads from, keyed by setting key
+   * (namespace ignored, this module only ever registers its own). */
+  settings?: Record<string, unknown>;
+  /** S5 — `getDocumentClass` per document type; see {@link fakeDocumentClass}. */
+  getDocumentClass?: (documentName: string) => FoundryDocumentClass;
 }
 
 /** Stubs the ambient Foundry globals `handlers.ts` touches (`game`, `CONFIG`,
- * `fromUuid`) — S3/S4 are Foundry-free, so these are plain objects, not a real Foundry
- * runtime. */
+ * `fromUuid`, `getDocumentClass`) — S3/S4/S5 are all Foundry-free, so these are plain
+ * objects, not a real Foundry runtime. */
 function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void {
   globalThis.game = {
     user: { isGM },
@@ -77,7 +124,7 @@ function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void 
     version: "13.351",
     settings: {
       register: () => {},
-      get: () => undefined,
+      get: (_namespace, key) => overrides.settings?.[key],
     },
     packs: fakeValuesCollection(overrides.packs ?? []),
     actors: fakeValuesCollection(overrides.actors ?? []),
@@ -87,9 +134,43 @@ function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void 
       ...fakeValuesCollection(overrides.scenes ?? []),
       active: (overrides.scenes ?? []).find((s) => s.active) ?? null,
     },
+    folders: fakeValuesCollection(overrides.folders ?? []),
   };
   globalThis.CONFIG = { queries: {} };
   globalThis.fromUuid = overrides.fromUuid ?? (() => Promise.resolve(null));
+  globalThis.getDocumentClass =
+    overrides.getDocumentClass ??
+    (() => {
+      throw new Error("getDocumentClass not stubbed in this test");
+    });
+}
+
+/** A minimal fake `FoundryDocumentClass` (S5) — `createDocuments`/`create` just mint
+ * a sequential id per call and hand back a {@link fakeDoc}-shaped result, recording
+ * every payload it was given in `created` so tests can assert on exactly what
+ * `handlers.ts` sent (e.g. that `_id` was stripped, `folder` was resolved to an id). */
+function fakeDocumentClass(
+  documentName: string,
+  idPrefix = "new",
+): { docClass: FoundryDocumentClass; created: Record<string, unknown>[] } {
+  const created: Record<string, unknown>[] = [];
+  let counter = 0;
+  function mint(data: Record<string, unknown>): FoundryActor {
+    counter += 1;
+    const id = `${idPrefix}${counter}`;
+    created.push(data);
+    return fakeDoc({
+      id,
+      uuid: `${documentName}.${id}`,
+      name: typeof data.name === "string" ? data.name : "Unnamed",
+      documentName,
+    });
+  }
+  const docClass: FoundryDocumentClass = {
+    createDocuments: (data) => Promise.resolve(data.map((d) => mint(d))),
+    create: (data) => Promise.resolve(mint(data)),
+  };
+  return { docClass, created };
 }
 
 describe("portal-module handlers (spec 0023 S3 — Foundry-free)", () => {
@@ -104,6 +185,8 @@ describe("portal-module handlers (spec 0023 S3 — Foundry-free)", () => {
     delete globalThis.CONFIG;
     // @ts-expect-error — same.
     delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
   });
 
   it("registers portal.ping into CONFIG.queries", () => {
@@ -151,6 +234,8 @@ describe("portal-module read tools (spec 0023 S4 — Foundry-free)", () => {
     delete globalThis.CONFIG;
     // @ts-expect-error — same.
     delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
   });
 
   const bestiary = fakePack({
@@ -373,5 +458,304 @@ describe("portal-module read tools (spec 0023 S4 — Foundry-free)", () => {
     registerHandlers();
     const result = await dispatchQuery("portal.get-current-scene", {});
     expect(result).toEqual({ scene: null });
+  });
+});
+
+describe("portal-module write tools (spec 0023 S5 — Foundry-free)", () => {
+  afterEach(() => {
+    // @ts-expect-error — tearing down the stub between tests, not a real Foundry global.
+    delete globalThis.game;
+    // @ts-expect-error — same.
+    delete globalThis.CONFIG;
+    // @ts-expect-error — same.
+    delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
+  });
+
+  const bestiaryGoblin = fakeDoc({
+    id: "g1",
+    uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.g1",
+    name: "Goblin Warrior",
+    documentName: "Actor",
+    data: { _id: "g1", name: "Goblin Warrior", system: { details: { level: { value: 1 } } } },
+  });
+
+  describe("the write gate (D8)", () => {
+    it("import-from-compendium is denied with writes-disabled when the module setting is off", async () => {
+      stubFoundry(true, {
+        settings: { [SETTING_ALLOW_WRITES]: false },
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+      });
+      registerHandlers();
+      const err = await dispatchQuery("portal.import-from-compendium", {
+        uuid: bestiaryGoblin.uuid,
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+
+    it("create-token is denied with cap-exceeded above the module's hard creates ceiling", async () => {
+      stubFoundry(true, {});
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-token", {
+        actorId: "a1",
+        x: 0,
+        y: 0,
+        quantity: 51, // MODULE_MAX_CREATES_CEILING is 50 — this must be denied module-side
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("cap-exceeded");
+    });
+
+    it("writes are allowed by default (the setting is unset, D8 default true)", async () => {
+      const { docClass } = fakeDocumentClass("Actor");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+        getDocumentClass: () => docClass,
+      });
+      registerHandlers();
+      await expect(
+        dispatchQuery("portal.import-from-compendium", { uuid: bestiaryGoblin.uuid }),
+      ).resolves.toBeDefined();
+    });
+  });
+
+  describe("import-from-compendium (D5 clone-from-compendium ONLY)", () => {
+    it("clones the compendium doc's own toObject(), stripping _id, via getDocumentClass", async () => {
+      const { docClass, created } = fakeDocumentClass("Actor");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+        getDocumentClass: () => docClass,
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.import-from-compendium", {
+        uuid: bestiaryGoblin.uuid,
+      })) as { rows: Array<{ uuid: string; id: string; name: string; documentType: string }> };
+
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toMatchObject({ name: "Goblin Warrior", documentType: "Actor" });
+      expect(created).toHaveLength(1);
+      expect(created[0]).not.toHaveProperty("_id");
+      expect(created[0]).toMatchObject({
+        name: "Goblin Warrior",
+        system: { details: { level: { value: 1 } } },
+      });
+    });
+
+    it("creates `quantity` copies in one call", async () => {
+      const { docClass, created } = fakeDocumentClass("Actor");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+        getDocumentClass: () => docClass,
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.import-from-compendium", {
+        uuid: bestiaryGoblin.uuid,
+        quantity: 3,
+      })) as { rows: unknown[] };
+      expect(result.rows).toHaveLength(3);
+      expect(created).toHaveLength(3);
+    });
+
+    it("resolves an existing folder by name + document type onto the cloned doc", async () => {
+      const { docClass, created } = fakeDocumentClass("Actor");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+        getDocumentClass: () => docClass,
+        folders: [{ id: "f1", name: "Bestiary Imports", type: "Actor" }],
+      });
+      registerHandlers();
+      await dispatchQuery("portal.import-from-compendium", {
+        uuid: bestiaryGoblin.uuid,
+        folder: "Bestiary Imports",
+      });
+      expect(created[0]).toMatchObject({ folder: "f1" });
+    });
+
+    it("rejects a folder name that doesn't exist with a typed not-found error", async () => {
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+        folders: [],
+      });
+      registerHandlers();
+      const err = await dispatchQuery("portal.import-from-compendium", {
+        uuid: bestiaryGoblin.uuid,
+        folder: "No Such Folder",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("rejects a bad/unresolvable uuid with a typed not-found error", async () => {
+      stubFoundry(true, { fromUuid: () => Promise.resolve(null) });
+      registerHandlers();
+      const err = await dispatchQuery("portal.import-from-compendium", {
+        uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.nope",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("rejects a non-compendium uuid (D5 clone-from-compendium ONLY)", async () => {
+      stubFoundry(true, {});
+      registerHandlers();
+      const err = await dispatchQuery("portal.import-from-compendium", {
+        uuid: "Actor.a1", // a world uuid, not a compendium one
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("foundry-error");
+    });
+
+    it("rejects params missing the required uuid", async () => {
+      stubFoundry(true, {});
+      registerHandlers();
+      await expect(dispatchQuery("portal.import-from-compendium", {})).rejects.toThrow();
+    });
+  });
+
+  describe("create-token (D13 import-then-tokenize)", () => {
+    const existingActor = fakeDoc({
+      id: "a1",
+      uuid: "Actor.a1",
+      name: "Goblin Slayer",
+      documentName: "Actor",
+    });
+    const activeScene = fakeScene({ id: "sc1", name: "The Warren", active: true });
+
+    it("tokenizes an existing world actor via actorId onto the active scene", async () => {
+      stubFoundry(true, { actors: [existingActor], scenes: [activeScene] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-token", {
+        actorId: "a1",
+        x: 100,
+        y: 200,
+      })) as { actor: { id: string }; tokens: Array<{ x: number; y: number }>; sceneId: string };
+
+      expect(result.actor).toMatchObject({ id: "a1", name: "Goblin Slayer" });
+      expect(result.sceneId).toBe("sc1");
+      expect(result.tokens).toEqual([{ id: expect.any(String), x: 100, y: 200 }]);
+    });
+
+    it("offsets each additional token by one grid square so they don't stack exactly", async () => {
+      stubFoundry(true, { actors: [existingActor], scenes: [activeScene] }); // grid.size = 100
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-token", {
+        actorId: "a1",
+        x: 0,
+        y: 0,
+        quantity: 3,
+      })) as { tokens: Array<{ x: number; y: number }> };
+
+      expect(result.tokens.map((t) => [t.x, t.y])).toEqual([
+        [0, 0],
+        [100, 100],
+        [200, 200],
+      ]);
+    });
+
+    it("imports the compendium doc first when given uuid instead of actorId (D13)", async () => {
+      const { docClass } = fakeDocumentClass("Actor", "imported");
+      stubFoundry(true, {
+        scenes: [activeScene],
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+        getDocumentClass: () => docClass,
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-token", {
+        uuid: bestiaryGoblin.uuid,
+        x: 50,
+        y: 50,
+      })) as { actor: { name: string }; tokens: unknown[] };
+
+      expect(result.actor.name).toBe("Goblin Warrior");
+      expect(result.tokens).toHaveLength(1);
+    });
+
+    it("rejects with a typed not-found error when no scene is active", async () => {
+      stubFoundry(true, { actors: [existingActor], scenes: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-token", {
+        actorId: "a1",
+        x: 0,
+        y: 0,
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("rejects an unknown actorId with a typed not-found error", async () => {
+      stubFoundry(true, { actors: [], scenes: [activeScene] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-token", {
+        actorId: "no-such-actor",
+        x: 0,
+        y: 0,
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("rejects params carrying both uuid and actorId, or neither", async () => {
+      stubFoundry(true, {});
+      registerHandlers();
+      await expect(
+        dispatchQuery("portal.create-token", {
+          uuid: "Compendium.x.Actor.1",
+          actorId: "a1",
+          x: 0,
+          y: 0,
+        }),
+      ).rejects.toThrow();
+      await expect(dispatchQuery("portal.create-token", { x: 0, y: 0 })).rejects.toThrow();
+    });
+  });
+
+  describe("create-journal", () => {
+    it("creates a JournalEntry with one text page carrying the given HTML content", async () => {
+      const { docClass, created } = fakeDocumentClass("JournalEntry");
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-journal", {
+        name: "Session Notes",
+        content: "<p>The party found a goblin warren.</p>",
+      })) as { uuid: string; id: string; name: string };
+
+      expect(result).toMatchObject({ name: "Session Notes" });
+      expect(created).toHaveLength(1);
+      expect(created[0]).toMatchObject({
+        name: "Session Notes",
+        pages: [
+          {
+            name: "Session Notes",
+            type: "text",
+            text: { content: "<p>The party found a goblin warren.</p>" },
+          },
+        ],
+      });
+    });
+
+    it("resolves a JournalEntry-type folder by name", async () => {
+      const { docClass, created } = fakeDocumentClass("JournalEntry");
+      stubFoundry(true, {
+        getDocumentClass: () => docClass,
+        folders: [{ id: "jf1", name: "Session Logs", type: "JournalEntry" }],
+      });
+      registerHandlers();
+      await dispatchQuery("portal.create-journal", {
+        name: "Session Notes",
+        content: "<p>hi</p>",
+        folder: "Session Logs",
+      });
+      expect(created[0]).toMatchObject({ folder: "jf1" });
+    });
+
+    it("rejects params missing the required name", async () => {
+      stubFoundry(true, {});
+      registerHandlers();
+      await expect(
+        dispatchQuery("portal.create-journal", { content: "<p>hi</p>" }),
+      ).rejects.toThrow();
+    });
   });
 });

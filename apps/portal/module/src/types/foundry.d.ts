@@ -81,9 +81,52 @@ interface FoundryPacksCollection {
   values(): IterableIterator<FoundryCompendiumCollection>;
 }
 
-/** A world-scoped `WorldCollection` (`game.actors`/`game.items`/`game.journal`). */
+/** A world-scoped `WorldCollection` (`game.actors`/`game.items`/`game.journal`). `get`
+ * is S5's addition (`create-token`'s `actorId` path resolves an existing world actor by
+ * id) — every S4 stub already indexes by `id`, so it costs S4 nothing. */
 interface FoundryWorldCollection<T extends FoundryDocumentLike = FoundryDocumentLike> {
   values(): IterableIterator<T>;
+  get(id: string): T | undefined;
+}
+
+/** The subset of a Foundry `TokenDocument` this module touches — an unsaved token doc
+ * fresh off `Actor#getTokenDocument`, not yet embedded in a scene (S5 D13). */
+interface FoundryTokenDocumentLike {
+  toObject(): Record<string, unknown>;
+}
+
+/** A world Actor (S5) — extends the general document surface with the one
+ * actor-specific call `create-token` needs: cloning the actor's prototype token at a
+ * given position (D13 "import-then-tokenize"). */
+interface FoundryActor extends FoundryDocumentLike {
+  getTokenDocument(pos: { x: number; y: number }): Promise<FoundryTokenDocumentLike>;
+}
+
+/** A world Folder (S5) — `import-from-compendium`/`create-journal`'s `folder` param
+ * resolves against this by name + `type` (the target document's `documentName`); never
+ * created on the fly (a missing folder is a typed "not-found", not a silent skip). */
+interface FoundryFolder {
+  readonly id: string;
+  readonly name: string;
+  readonly type: string;
+}
+
+interface FoundryFoldersCollection {
+  values(): IterableIterator<FoundryFolder>;
+}
+
+/** A Foundry Document class's static creation surface (S5 D5) — `getDocumentClass`
+ * below is the forward-safe way to reach it (avoiding a hardcoded `Actor`/`Item`/
+ * `JournalEntry` global reference, which the v13->v15 deprecation notes flag). */
+interface FoundryDocumentClass {
+  createDocuments(
+    data: Record<string, unknown>[],
+    options?: Record<string, unknown>,
+  ): Promise<FoundryDocumentLike[]>;
+  create(
+    data: Record<string, unknown>,
+    options?: Record<string, unknown>,
+  ): Promise<FoundryDocumentLike | undefined>;
 }
 
 interface FoundryGridInfo {
@@ -101,6 +144,12 @@ interface FoundryScene extends FoundryDocumentLike {
   readonly width: number;
   readonly height: number;
   readonly tokens: FoundryTokensCollection;
+  /** `create-token`'s (S5 D13) landing call — embeds the token doc(s) produced by
+   * `Actor#getTokenDocument` into this scene. */
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Record<string, unknown>[],
+  ): Promise<FoundryDocumentLike[]>;
 }
 
 interface FoundryScenesCollection extends FoundryWorldCollection<FoundryScene> {
@@ -134,10 +183,12 @@ interface FoundryGame {
   readonly version: string;
   readonly settings: FoundrySettings;
   readonly packs: FoundryPacksCollection;
-  readonly actors: FoundryWorldCollection;
+  readonly actors: FoundryWorldCollection<FoundryActor>;
   readonly items: FoundryWorldCollection;
   readonly journal: FoundryWorldCollection;
   readonly scenes: FoundryScenesCollection;
+  /** S5's folder-by-name lookup surface (`import-from-compendium`/`create-journal`). */
+  readonly folders: FoundryFoldersCollection;
 }
 
 /** One entry of Foundry 13's `CONFIG.queries` registry — the dispatch surface a `query`
@@ -168,3 +219,7 @@ declare var Hooks: FoundryHooks;
  * document id) — `get-document` (S4) is its one caller. Same `var` reasoning as above:
  * `handlers.test.ts` stubs it per-test (S4 is Foundry-free too). */
 declare var fromUuid: (uuid: string) => Promise<FoundryDocumentLike | null>;
+/** Foundry's forward-safe document-class resolver (avoids a hardcoded `Actor`/`Item`/
+ * `JournalEntry` global reference — the v13->v15 deprecation cliff, spec Risks). S5's
+ * write handlers are its only callers. Same `var` reasoning as `fromUuid`. */
+declare var getDocumentClass: (documentName: string) => FoundryDocumentClass;
