@@ -75,18 +75,25 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
     bridgeApiKey: opts.bridgeApiKey,
     queryTimeoutMs: opts.bridgeTimeoutMs,
   });
-  const handleMcp = createMcpRequestHandler(bridge, opts.mcpApiKey, opts.maxCreatesPerRequest);
-
   // Spec 0025 D-6: portal does NOT become an Express app — `authApp` is only ever
   // invoked as a bare `(req, res)` function from the one new dispatch arm below,
   // for the handful of OAuth paths. `/mcp`, `/module/*`, `/health`, `/ws` are
-  // untouched raw-node handlers.
+  // untouched raw-node handlers. Built before `handleMcp` (S2) so its `provider`
+  // is available for the `/mcp` dual-auth check (D-3).
   const { app: authApp, provider: oauthProvider } = createOAuthSubApp({
     statePath: opts.oauthStatePath,
     consentKey: opts.mcpApiKey, // D-1: reuse the existing /mcp key as the consent password
     publicOrigin: opts.publicOrigin,
     accessTokenTtlS: opts.accessTokenTtlS,
   });
+
+  const handleMcp = createMcpRequestHandler(
+    bridge,
+    opts.mcpApiKey,
+    opts.maxCreatesPerRequest,
+    oauthProvider,
+    opts.publicOrigin,
+  );
 
   const httpServer = createServer((req, res) => {
     const url = new URL(req.url ?? "/", "http://localhost");

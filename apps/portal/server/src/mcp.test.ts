@@ -114,6 +114,41 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     expect(res.status).toBe(401);
   });
 
+  it("rejects a garbage bearer token (neither the static key nor a valid OAuth token)", async () => {
+    const res = await fetch(mcpUrl, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: "Bearer totally-made-up" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+    });
+    expect(res.status).toBe(401);
+    expect(await res.json()).toEqual({ error: "unauthorized" });
+    expect(res.headers.get("www-authenticate")).toMatch(/^Bearer resource_metadata="/);
+  });
+
+  it("every 401 carries a D-9 WWW-Authenticate header pointing at a working PRM endpoint", async () => {
+    const res = await fetch(mcpUrl, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+    });
+    expect(res.status).toBe(401);
+
+    const header = res.headers.get("www-authenticate");
+    const match = /^Bearer resource_metadata="([^"]+)"$/.exec(header ?? "");
+    expect(match).toBeTruthy();
+    const metadataUrl = new URL(match?.[1] ?? "");
+    // The URL is built from TEST_PUBLIC_ORIGIN (the configured public origin), not
+    // the real ephemeral test port — exactly D-9's contract.
+    expect(metadataUrl.href).toBe(`${TEST_PUBLIC_ORIGIN}/.well-known/oauth-protected-resource/mcp`);
+
+    // Fetch the PRM at the equivalent path on the actual ephemeral test server.
+    const prmRes = await fetch(new URL(metadataUrl.pathname, `http://127.0.0.1:${handle.port}`));
+    expect(prmRes.status).toBe(200);
+    const prm = (await prmRes.json()) as Record<string, unknown>;
+    expect(prm.resource).toBe(`${TEST_PUBLIC_ORIGIN}${MCP_HTTP_PATH}`);
+    expect(prm.authorization_servers).toEqual([new URL(TEST_PUBLIC_ORIGIN).href]);
+  });
+
   it("serves the bridge-status tool (offline, no module connected) through a real MCP client round-trip", async () => {
     const transport = new StreamableHTTPClientTransport(mcpUrl, {
       requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },

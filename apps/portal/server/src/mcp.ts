@@ -26,13 +26,14 @@ import {
   SearchCompendiumParams,
   SearchWorldParams,
 } from "@astra/portal-shared";
+import { getOAuthProtectedResourceMetadataUrl } from "@modelcontextprotocol/sdk/server/auth/router.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { SpanStatusCode } from "@opentelemetry/api";
 import type { z } from "zod";
 
 import { BridgeError, type Bridge } from "./bridge";
-import { SERVICE_NAME } from "./constants";
+import { MCP_HTTP_PATH, SERVICE_NAME } from "./constants";
 
 const log = getLogger(SERVICE_NAME);
 const tracer = getTracer(SERVICE_NAME);
@@ -301,23 +302,64 @@ export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): Mc
   return server;
 }
 
-/** Builds the `/mcp` request handler: bearer-check, then a stateless Streamable-HTTP
- * round-trip. Takes the resolved key (not the config/SecretRef) so tests never need
- * real SOPS secrets. */
+/** The seam this file needs from {@link PortalOAuthProvider} (spec 0025 D-3) —
+ * narrower than the full `OAuthServerProvider` surface so `mcp.ts` doesn't couple to
+ * `oauth.ts`'s registration/consent/persistence machinery, just token verification.
+ * `verifyAccessToken` throws (`InvalidTokenError`) on an unknown/expired token —
+ * `createMcpRequestHandler` below treats any rejection as "not an OAuth token" and
+ * falls through to the 401. */
+export interface OAuthTokenVerifier {
+  verifyAccessToken(token: string): Promise<unknown>;
+}
+
+/** Builds the `/mcp` request handler: dual-auth check (spec 0025 D-3), then a
+ * stateless Streamable-HTTP round-trip. Takes the resolved key (not the
+ * config/SecretRef) so tests never need real SOPS secrets.
+ *
+ * Dual auth: the legacy static bearer (`mcpApiKey`, exact match — Claude Code stays
+ * untouched) OR a valid, unexpired OAuth access token (`oauth.verifyAccessToken`,
+ * spec 0025 S1). Every 401 — missing header, wrong scheme, bad key, invalid/expired
+ * OAuth token — carries the spec's D-9 `WWW-Authenticate: Bearer
+ * resource_metadata="<url>"` header so an OAuth-aware client (claude.ai) discovers
+ * where to start the authorization flow; the URL is computed once here via the SDK's
+ * own {@link getOAuthProtectedResourceMetadataUrl} (never hand-built) since it must
+ * exactly match the PRM path `mcpAuthRouter` actually mounts in `oauth.ts`. */
 export function createMcpRequestHandler(
   bridge: Bridge,
   mcpApiKey: string,
   maxCreatesPerRequest: number,
+  oauth: OAuthTokenVerifier,
+  publicOrigin: string,
 ): (req: IncomingMessage, res: ServerResponse) => Promise<void> {
+  const resourceMetadataUrl = getOAuthProtectedResourceMetadataUrl(
+    new URL(`${publicOrigin}${MCP_HTTP_PATH}`),
+  );
+  const wwwAuthenticateHeader = `Bearer resource_metadata="${resourceMetadataUrl}"`;
+
+  function reject(res: ServerResponse, reason: string): void {
+    mcpAuthRejections.add(1, { reason });
+    log.emit({ severityText: "WARN", body: `rejected /mcp request: ${reason}` });
+    res
+      .writeHead(401, {
+        "content-type": "application/json",
+        "www-authenticate": wwwAuthenticateHeader,
+      })
+      .end(JSON.stringify({ error: "unauthorized" }));
+  }
+
   return async function handleMcpRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
     const [scheme, token] = (req.headers.authorization ?? "").split(" ");
-    if (scheme !== "Bearer" || !token || token !== mcpApiKey) {
-      mcpAuthRejections.add(1);
-      log.emit({ severityText: "WARN", body: "rejected /mcp request: missing/wrong bearer key" });
-      res
-        .writeHead(401, { "content-type": "application/json" })
-        .end(JSON.stringify({ error: "unauthorized" }));
+    if (scheme !== "Bearer" || !token) {
+      reject(res, "missing-or-malformed-bearer");
       return;
+    }
+    if (token !== mcpApiKey) {
+      try {
+        await oauth.verifyAccessToken(token);
+      } catch {
+        reject(res, "invalid-oauth-token");
+        return;
+      }
     }
 
     const server = buildMcpServer(bridge, maxCreatesPerRequest);

@@ -10,8 +10,11 @@ import { mkdtempSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
+import { MCP_HTTP_PATH } from "./constants";
 import type { PortalServerHandle } from "./server";
 import { listen } from "./server";
 
@@ -585,4 +588,56 @@ describe("token-material log hygiene (spec 0025 Scope-6 hard rule)", () => {
   // construction to carry only client_id + a fixed literal (grepped by inspection,
   // per the module's hard rule) — this test instead proves the observable surface
   // (HTML + JSON error bodies) never leaks token material.
+});
+
+describe("/mcp dual auth — the OAuth side (spec 0025 S2, D-3)", () => {
+  it("an OAuth-issued access token calls a real tool through StreamableHTTPClientTransport", async () => {
+    const state = newOauthStatePath();
+    const handle = await startServer(state.path);
+    const origin = `http://127.0.0.1:${handle.port}`;
+    try {
+      const { accessToken } = await fullFlow(origin);
+
+      const transport = new StreamableHTTPClientTransport(new URL(MCP_HTTP_PATH, origin), {
+        requestInit: { headers: { authorization: `Bearer ${accessToken}` } },
+      });
+      const client = new Client({ name: "oauth-test-client", version: "0.0.0" });
+      await client.connect(transport);
+
+      // bridge-status returning the typed offline result (no Foundry module
+      // connected in this hermetic test) proves the request got past dual-auth
+      // and reached a real tool call — that's the whole point of this test, not
+      // the bridge behavior itself (covered elsewhere in mcp.test.ts).
+      const result = await client.callTool({ name: "bridge-status" });
+      const [content] = result.content as Array<{ type: "text"; text: string }>;
+      if (!content) throw new Error("unreachable — asserted above");
+      expect(JSON.parse(content.text)).toEqual({ connected: false });
+
+      await client.close();
+    } finally {
+      await handle.close();
+      rmSync(state.dir, { recursive: true, force: true });
+    }
+  });
+
+  it("an expired OAuth access token is rejected with 401 + the D-9 WWW-Authenticate header", async () => {
+    const state = newOauthStatePath();
+    const handle = await startServer(state.path, 1); // 1s TTL
+    const origin = `http://127.0.0.1:${handle.port}`;
+    try {
+      const { accessToken } = await fullFlow(origin);
+      await sleep(1200);
+
+      const res = await fetch(new URL(MCP_HTTP_PATH, origin), {
+        method: "POST",
+        headers: { "content-type": "application/json", authorization: `Bearer ${accessToken}` },
+        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+      });
+      expect(res.status).toBe(401);
+      expect(res.headers.get("www-authenticate")).toMatch(/^Bearer resource_metadata="/);
+    } finally {
+      await handle.close();
+      rmSync(state.dir, { recursive: true, force: true });
+    }
+  });
 });
