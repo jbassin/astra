@@ -14,3 +14,11 @@ export const BRIDGE_WS_PATH = "/ws";
 
 /** The path the Streamable-HTTP MCP server listens on. */
 export const MCP_HTTP_PATH = "/mcp";
+
+/** The one OAuth-flow path portal itself owns (spec 0025 D-10) — `/authorize`,
+ * `/token`, `/register`, `/revoke`, and every `/.well-known/*` metadata path are
+ * mounted by the MCP SDK's own `mcpAuthRouter` (see `oauth.ts`); this is the astra-
+ * authored consent-form POST route the SDK knows nothing about. Shared between
+ * `server.ts` (dispatch) and `oauth.ts` (the form's `action=`), same pattern as
+ * `MCP_HTTP_PATH`. */
+export const OAUTH_CONSENT_PATH = "/consent";

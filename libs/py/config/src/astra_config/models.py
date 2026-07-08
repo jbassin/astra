@@ -213,6 +213,10 @@ class PortalConfig(_Base):
     max_creates_per_request: int = 10  # the D8 write-gate cap
     mcp_api_key: SecretRef | None = None
     bridge_api_key: SecretRef | None = None
+    # 0025 D-2: the bind-mounted JSON file holding OAuth-registered clients +
+    # hashed tokens, on the new portal-oauth bind mount — survives `just up`
+    # redeploys (unlike the in-memory pending-consent/auth-code state).
+    oauth_state_path: str = "/data/oauth/state.json"
 
 
 class CaddyConfig(_Base):

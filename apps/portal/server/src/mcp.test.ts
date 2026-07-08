@@ -1,3 +1,7 @@
+import { mkdtempSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+
 import type { McpQuery } from "@astra/portal-shared";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
@@ -15,6 +19,10 @@ const MAX_CREATES_PER_REQUEST = 10;
 // would just 503, per modulePackage.ts).
 const TEST_PUBLIC_ORIGIN = "https://portal.test";
 const TEST_MODULE_DIR = "/nonexistent/portal-module-fixture";
+// Spec 0025 S1 — these tests never touch OAuth (that's oauth.test.ts); a single
+// shared per-file tmp path is enough to satisfy `createPortalServer`'s now-required
+// oauthStatePath (the file is never actually written unless a token is issued).
+const TEST_OAUTH_STATE_PATH = join(mkdtempSync(join(tmpdir(), "portal-oauth-")), "state.json");
 
 function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -78,6 +86,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
       maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
       publicOrigin: TEST_PUBLIC_ORIGIN,
       moduleDir: TEST_MODULE_DIR,
+      oauthStatePath: TEST_OAUTH_STATE_PATH,
     });
     mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
   });
@@ -252,6 +261,7 @@ describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
       maxCreatesPerRequest: 2, // deliberately small — S5's cap-pre-check test relies on it
       publicOrigin: TEST_PUBLIC_ORIGIN,
       moduleDir: TEST_MODULE_DIR,
+      oauthStatePath: TEST_OAUTH_STATE_PATH,
     });
     mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
   });
@@ -399,6 +409,7 @@ describe("createPortalServer (unbound — construction only)", () => {
       maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
       publicOrigin: TEST_PUBLIC_ORIGIN,
       moduleDir: TEST_MODULE_DIR,
+      oauthStatePath: TEST_OAUTH_STATE_PATH,
     });
     expect(handle.bridge.getStatus()).toEqual({ connected: false });
     handle.bridge.close();

@@ -232,6 +232,10 @@ const Portal = z
     maxCreatesPerRequest: z.number().default(10), // the D8 write-gate cap
     mcpApiKey: secret(),
     bridgeApiKey: secret(),
+    // 0025 D-2: the bind-mounted JSON file holding OAuth-registered clients +
+    // hashed tokens, on the new portal-oauth bind mount — survives `just up`
+    // redeploys (unlike the in-memory pending-consent/auth-code state).
+    oauthStatePath: z.string().default("/data/oauth/state.json"),
   })
   .strict();
 

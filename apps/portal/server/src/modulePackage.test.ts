@@ -36,16 +36,22 @@ function writeBuiltModule(dir: string): void {
 
 describe("module-package routes (spec 0023 S6)", () => {
   let moduleDir: string;
+  // These tests don't exercise OAuth at all (that's oauth.test.ts) — a fresh
+  // per-test tmp-dir state path is just what `createPortalServer` now requires to
+  // construct (spec 0025 S1).
+  let oauthDir: string;
   let handle: PortalServerHandle & { port: number };
   let baseUrl: string;
 
   beforeEach(() => {
     moduleDir = mkdtempSync(join(tmpdir(), "portal-module-"));
+    oauthDir = mkdtempSync(join(tmpdir(), "portal-oauth-"));
   });
 
   afterEach(async () => {
     if (handle) await handle.close();
     rmSync(moduleDir, { recursive: true, force: true });
+    rmSync(oauthDir, { recursive: true, force: true });
   });
 
   async function start(): Promise<void> {
@@ -57,6 +63,7 @@ describe("module-package routes (spec 0023 S6)", () => {
       maxCreatesPerRequest: 10,
       publicOrigin: PUBLIC_ORIGIN,
       moduleDir,
+      oauthStatePath: join(oauthDir, "state.json"),
     });
     baseUrl = `http://127.0.0.1:${handle.port}`;
   }
@@ -139,6 +146,7 @@ describe("module-package routes (spec 0023 S6)", () => {
       maxCreatesPerRequest: 10,
       publicOrigin: PUBLIC_ORIGIN,
       moduleDir,
+      oauthStatePath: join(oauthDir, "state.json"),
     });
     expect(unbound.bridge.getStatus()).toEqual({ connected: false });
     unbound.bridge.close();

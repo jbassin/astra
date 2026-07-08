@@ -56,6 +56,10 @@ async function main(): Promise<void> {
     maxCreatesPerRequest: cfg.portal.maxCreatesPerRequest,
     publicOrigin: cfg.portal.publicOrigin,
     moduleDir: MODULE_DIR,
+    // Spec 0025 D-2 — the bind-mounted OAuth state file (registered clients +
+    // hashed tokens); D-1 reuses the mcpApiKey resolved above as the consent
+    // password, threaded through inside `createPortalServer` (no new SOPS key).
+    oauthStatePath: cfg.portal.oauthStatePath,
   });
 }
 

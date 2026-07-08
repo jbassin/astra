@@ -270,6 +270,9 @@ portal {
     max-creates-per-request 10
     mcp-api-key ref="sops:portal_mcp_api_key"
     bridge-api-key ref="sops:portal_bridge_api_key"
+    // 0025 OAuth state file (registered clients + hashed tokens) — on the
+    // portal-oauth bind mount, so a claude.ai connection survives `just up`.
+    oauth-state-path "/data/oauth/state.json"
 }
 
 caddy {

@@ -15,14 +15,20 @@ import { createServer, type Server as HttpServer, type ServerResponse } from "no
 import { getLogger } from "@astra/observe";
 
 import { Bridge } from "./bridge";
-import { MCP_HTTP_PATH, SERVICE_NAME } from "./constants";
+import { MCP_HTTP_PATH, OAUTH_CONSENT_PATH, SERVICE_NAME } from "./constants";
 import { createMcpRequestHandler } from "./mcp";
 import { handleModuleJson, handlePortalZip } from "./modulePackage";
+import { createOAuthSubApp, type PortalOAuthProvider } from "./oauth";
 
 const log = getLogger(SERVICE_NAME);
 
 const MODULE_JSON_PATH = "/module/module.json";
 const MODULE_ZIP_PATH = "/module/portal.zip";
+
+// The SDK's own OAuth endpoints (spec 0025 D-5/D-6) — everything `mcpAuthRouter`
+// mounts itself. `OAUTH_CONSENT_PATH` (astra-owned, checked separately below) is
+// the one OAuth-flow path the SDK doesn't provide.
+const OAUTH_SDK_PATHS = new Set(["/authorize", "/token", "/register", "/revoke"]);
 
 export interface PortalServerOptions {
   port: number;
@@ -40,11 +46,22 @@ export interface PortalServerOptions {
    * S6/D11) — see `index.ts`'s `MODULE_DIR` for how this resolves both locally and
    * in the built image. */
   moduleDir: string;
+  /** `cfg.portal.oauthStatePath` (spec 0025 D-2) — the bind-mounted JSON file
+   * holding registered OAuth clients + hashed tokens, so a claude.ai connection
+   * survives a `just up` redeploy. */
+  oauthStatePath: string;
+  /** Test-only access-token TTL override (seconds) — production always takes the
+   * D-7 default (3600s) baked into `PortalOAuthProvider`; tests shorten this to
+   * exercise expiry without a 1h sleep. Not config-sourced (no prod knob needed). */
+  accessTokenTtlS?: number;
 }
 
 export interface PortalServerHandle {
   httpServer: HttpServer;
   bridge: Bridge;
+  /** Spec 0025 S1 — exposed so S2's `/mcp` dual-auth check and tests can call
+   * `verifyAccessToken` directly without re-parsing the OAuth state file. */
+  oauthProvider: PortalOAuthProvider;
   close(): Promise<void>;
 }
 
@@ -60,6 +77,17 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
   });
   const handleMcp = createMcpRequestHandler(bridge, opts.mcpApiKey, opts.maxCreatesPerRequest);
 
+  // Spec 0025 D-6: portal does NOT become an Express app — `authApp` is only ever
+  // invoked as a bare `(req, res)` function from the one new dispatch arm below,
+  // for the handful of OAuth paths. `/mcp`, `/module/*`, `/health`, `/ws` are
+  // untouched raw-node handlers.
+  const { app: authApp, provider: oauthProvider } = createOAuthSubApp({
+    statePath: opts.oauthStatePath,
+    consentKey: opts.mcpApiKey, // D-1: reuse the existing /mcp key as the consent password
+    publicOrigin: opts.publicOrigin,
+    accessTokenTtlS: opts.accessTokenTtlS,
+  });
+
   const httpServer = createServer((req, res) => {
     const url = new URL(req.url ?? "/", "http://localhost");
 
@@ -69,6 +97,14 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
     }
     if (url.pathname === MCP_HTTP_PATH) {
       void handleMcp(req, res);
+      return;
+    }
+    if (
+      OAUTH_SDK_PATHS.has(url.pathname) ||
+      url.pathname === OAUTH_CONSENT_PATH ||
+      url.pathname.startsWith("/.well-known/")
+    ) {
+      authApp(req, res);
       return;
     }
     const modulePackageOpts = { publicOrigin: opts.publicOrigin, moduleDir: opts.moduleDir };
@@ -88,6 +124,7 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
   return {
     httpServer,
     bridge,
+    oauthProvider,
     close: () =>
       new Promise((resolve) => {
         bridge.close();
