@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-07 late evening — portal-oauth 0025 BUILT + DEPLOYED)
+## Current state — UPDATE THIS SECTION (as of commit `6bdf8b7`, 2026-07-07 late evening — portal-oauth 0025 BUILT + DEPLOYED)
 
 > **▶ portal-oauth (0025) — BUILT + DEPLOYED + LIVE-VERIFIED; ONLY the claude.ai connect (human)
 > remains.** claude.ai custom connectors are OAuth-only (the `static_headers` beta isn't on the
@@ -58,6 +58,14 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > consent page → paste the `portal_mcp_api_key` value → connected. Then enable the connector in a
 > chat and call a tool (world launched for real reads/writes; `bridge-status` works regardless).
 > A `just up` later must NOT require re-consent (persistence).
+>
+> **Assessed + DECLINED (end of session, stakeholder call — don't re-scope unprompted):** making
+> portal work with NO GM tab open. The only viable shape is a supervised **headless-Chromium GM
+> session as a Compose unit** (vellum-render browser-in-container precedent; needs a dedicated GM
+> account, `FOUNDRY_WORLD` auto-launch, a login/rejoin supervisor, and a small module setting so
+> two GM sessions don't oscillate over replace-adopt). Direct server-side integration is a dead
+> end (no Foundry API; LevelDB process-locked; socket.io client reimplementation too fragile).
+> Revisit only if the stakeholder asks — the sketch lives in this entry + [[portal-oauth-0025-gotchas]].
 
 ---
 

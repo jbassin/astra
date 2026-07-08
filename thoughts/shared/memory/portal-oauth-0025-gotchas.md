@@ -49,5 +49,12 @@ client ID/secret → consent page → paste the portal key → tool call from a 
 - Hygiene hard rule held: no token/key/code material in any log body, span attribute, or error
   message (audit logs carry `client_id` + `portal.oauth.event` only).
 
+**Tab-free operation assessed + DECLINED (2026-07-07, stakeholder):** the only viable shape for a
+no-GM-tab portal is a supervised headless-Chromium GM session as a Compose unit (dedicated GM
+account + `FOUNDRY_WORLD` auto-launch + login/rejoin supervisor + a module "bridge user" setting so
+two GM sessions don't oscillate over replace-adopt; ~200–400 MB idle RAM). Server-side Foundry
+integration is a dead end (no API, LevelDB process-locked while running, socket.io client
+reimplementation version-fragile). Don't re-scope unprompted.
+
 Builds on [[portal-0023-gotchas]] + [[deploy-artifacts-run-as-user]] + [[config-single-source]] +
 [[telemetry-coverage-pass]] + [[flag-paid-live-actions]].
