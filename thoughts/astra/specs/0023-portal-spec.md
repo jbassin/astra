@@ -1,12 +1,18 @@
 # NLSpec 0023 — portal: an MCP for the FoundryVTT campaign instance
 
-**Status:** BUILT + DEPLOYED LIVE (2026-07-07) — all 6 slices CI-green + pushed (`87f633f` S1 ·
+**Status:** COMPLETE — ALL ACCEPTANCE A–H MET (2026-07-07) — all 6 slices CI-green + pushed (`87f633f` S1 ·
   `f015063` S2 · `a498a35` S3 · `1023381` S4 · `d554527` S5 · `18cecff` S6); deployed via `just up` +
-  `just caddy-reload`, live-verified at `portal.iridi.cc` (health/module.json/zip/mcp-auth/
-  bridge-status-offline + SigNoz spans). Acceptance: **A–D met; E/F's live halves + G's full-loop and
-  H await the GM step** (install the module in a launched "Faerrin" world — see RESUME). Two
+  `just caddy-reload`, live-verified at `portal.iridi.cc`. **Live acceptance closed 2026-07-07 evening**
+  after the GM installed + configured the module in the launched "Faerrin" world: E (search-compendium
+  Monster-Core goblin hits, get-document full 18.5 KB actor, get-current-scene `engine-heart`,
+  search-world), F (import Goblin Warrior → token drop on the active scene (tokenCount 7→8) → journal
+  create; `cap-exceeded` rejection at quantity 11 vs cap 10; every write audit-logged ok/denied with
+  span-linked `portal.audit.*` attrs), G (the full search→import→token loop driven by a Claude client
+  through the public edge; SigNoz traces+logs+metrics flowing, 0 unexpected errors). Two
   orchestrator-review hardenings beyond the spec text: heartbeat-interval cleanup on replace-adopt;
-  healthy-hold (≥10s) backoff reset in the module reconnect.
+  healthy-hold (≥10s) backoff reset in the module reconnect. Fast-follow flagged (not built): the
+  `search-compendium` `type` param means pack `metadata.type` (`"Actor"`) but the zod schema carries no
+  `.describe()`, so an MCP client guesses `"npc"` and gets `[]`; same for `folder` (must pre-exist).
 **Scope doc:** `thoughts/shared/research/2026-07-06-portal-0023-thoughts.md` (verified against the live
   `foundry_faerrin` container + the astra orator-backend template). This spec resolves scope §9 open
   items (§9.1 empirically; §9.6 + write posture via stakeholder decision; the rest by default below).

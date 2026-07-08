@@ -36,42 +36,68 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of commit `18cecff`, 2026-07-07 — portal 0023 BUILD+DEPLOY session)
+## Current state — UPDATE THIS SECTION (as of 2026-07-07 evening — portal 0023 live acceptance CLOSED)
+
+> **✅ portal (0023) — COMPLETE, ALL ACCEPTANCE A–H MET.** All 6 slices built + pushed
+> (`87f633f`…`18cecff`), deployed live at `portal.iridi.cc`, and — this session — the GM (Josh)
+> installed + configured the module in the launched "Faerrin" world and the **live acceptance E/F/G
+> passed through the public edge**: `bridge-status` connected (Faerrin / pf2e 7.12.2 / Foundry
+> 13.351); reads = Monster-Core "goblin" search + full-actor `get-document` + `get-current-scene`
+> (`engine-heart`) + `search-world`; writes = import Goblin Warrior → token on the active scene
+> (tokenCount 7→8) → journal create, `cap-exceeded` rejection at quantity 11 (cap 10), every write
+> audit-logged (`portal.audit.*`, span-linked); SigNoz traces+logs+metrics flowing, 0 unexpected
+> errors. Spec status → COMPLETE; acceptance gotchas in [[portal-0023-gotchas]].
+>
+> **Acceptance-session findings:** the module dials only on the `ready` hook — after setting WS URL
+> + bridge key the GM must **reload (F5)** or the bridge stays offline with zero server-side WS
+> attempts; `search-compendium`'s `type` param means pack `metadata.type` (`"Actor"`), not the pf2e
+> subtype (`"npc"`) — the zod schema lacks `.describe()` so an MCP client guesses wrong and silently
+> gets `[]` (**flagged fast-follow:** add `.describe()` to `type`/`folder` in
+> `apps/portal/shared/src/tools.ts`); `import-from-compendium`'s `folder` must already exist (typed
+> `not-found`, it doesn't create one). Acceptance debris left in the world for Josh to eyeball then
+> delete: actor "Goblin Warrior" (`KSKAiNDEg0nJ2YOx`), its token on `engine-heart`, journal
+> "Portal 0023 acceptance".
+>
+> **▶ NEXT: no subsystem is code-in-flight.** Open items — heartwood Phase-4 **content acceptance**
+> (human-gated D1: approve ≥1 create + ≥1 rewrite on `heartwood.iridi.cc` → `just heartwood-apply
+> 2025-8-28`; Phase 5 backfill gated behind it; ON HOLD by stakeholder); the portal `.describe()`
+> fast-follow above; nice-to-haves (rotate the Discord alert webhook, broaden Class-A alerting to
+> frontends, scribe Groq ASR cost telemetry). MCP client config for portal:
+> `https://portal.iridi.cc/mcp` + Bearer `portal_mcp_api_key` (Claude Code: `claude mcp add
+> --transport http portal … --header "Authorization: Bearer <key>"`).
+
+---
+
+### Previous session (archive) — mouthpiece 0024 script rework + scribe hallucination gate (2026-07-07 day — COMPLETE + LIVE)
+
+> **✅ mouthpiece 0024 — script rework BUILT + DEPLOYED + LIVE** (S1 `7eec3d4` → S5 `66799a5` + deploy;
+> spec `thoughts/astra/specs/0024-mouthpiece-script-rework-spec.md`): Stage 2 is now **clean+enrich**
+> (windowed OOC filter → compact `kept_ranges` + floor; one enrich call → synopsis + wikiRefs), Pass A
+> debates the full cleaned transcript + a deterministic being.kdl roster block; threads/mega/one-shot
+> DELETED; the `digest.json` + top-level `synopsis` contract held (zero downstream edits). 2026-6-29
+> re-rendered + published ("The Canary in the Undercroft"). **THE finding: Whisper's confidence
+> heuristic (no_speech_prob ∧ avg_logprob) measurably MISSES the you/thank-you hallucination family
+> (1,041 segments survived it live) — the TEXT prong (`HALLUCINATION_TEXT_RE` in `astra_llm`, shared
+> scribe+mouthpiece) is what kills it.** Scribe two-prong gate shipped (`e23ca0c`/`9068d44`);
+> 2026-7-6 re-transcribed clean (5,821→4,777 lines, family=0) + its episode re-rendered + replaced
+> live ("The Heart in the Basement", 31 min). Full detail in [[mouthpiece-0024-gotchas]].
+
+---
+
+### Previous session (archive) — portal 0023 build+deploy (superseded by the acceptance close above)
 
 > **▶ portal (0023) — ALL 6 SLICES BUILT + PUSHED + DEPLOYED LIVE (`87f633f` S1 · `f015063` S2 ·
-> `a498a35` S3 · `1023381` S4 · `d554527` S5 · `18cecff` S6). The server is LIVE at
-> `portal.iridi.cc` (container `astra-portal` healthy @10372, edge-verified). THE ONLY REMAINING
-> STEP: the GM install + live acceptance (E/F/G's live halves) — a human step, handed to Josh.**
->
-> **Verified live this session (post `just up` + `just caddy-reload`):** all 18 astra containers
-> healthy after the 12-image rebuild (the manifest ripple touched 11 siblings — all 9 public edges
-> still 200); `portal.iridi.cc/health` 200; `/module/module.json` renders absolute manifest/download
-> URLs from config public-origin; `/module/portal.zip` 200 (37.9 KB, fflate-packaged in-process);
-> `/mcp` = 401 unauth, full 10-tool list + `bridge-status` → typed `{"connected":false}` with the
-> bearer; SigNoz `astra.portal` spans flowing 0-error. Cert minted itself off the `*.iridi.cc`
-> wildcard (~60s of TLS handshake failures before it settled — normal, same as ledger).
->
-> **▶ NEXT — the GM step (Josh), then live acceptance.** *(Status 2026-07-07 end-of-session: Josh
-> was unable to do the install this session — the step is PARKED awaiting his availability; nothing
-> code-side blocks it. The deployed stack idles safely: `bridge-status` reports the typed offline.)*
-> 1. Launch the "Faerrin" world at `btl.iridi.cc` (GM login).
-> 2. *Setup → Add-on Modules → Install Module → Manifest URL =*
->    `https://portal.iridi.cc/module/module.json` → install, then enable "Astra Portal Bridge" in
->    the world (Manage Modules).
-> 3. In the module's settings: WS URL = `wss://portal.iridi.cc/ws`; API key = the value of
->    `sops -d --extract '["portal_bridge_api_key"]' deploy/sops/secrets.enc.yaml`
->    (with `SOPS_AGE_KEY_FILE=deploy/sops/age.key`).
-> 4. Then any session verifies: `bridge-status` → connected + world meta, the S4 reads (search
->    "goblin" etc.), the S5 writes (import → token on the active scene → journal), = acceptance
->    E/F/G live halves. MCP client config: `https://portal.iridi.cc/mcp` + Bearer
->    `portal_mcp_api_key` (Claude Code: `claude mcp add --transport http portal … --header
->    "Authorization: Bearer <key>"`).
->
-> **Orchestrator review fixes this session (recorded in [[portal-0023-gotchas]]):** the bridge
-> replace-adopt leaked the prior heartbeat interval (double-ping could kill a healthy socket);
-> module reconnect backoff resets only after a ≥10s healthy hold (open-reset would let a wrong key
-> hammer at ~1/s). Known flakes hit: repo-wide `pnpm run lint` OOM (use `--threads=4`), the
-> heartwood `routeTree.gen.ts` regen flap (checkout it back), both pre-existing.
+> `a498a35` S3 · `1023381` S4 · `d554527` S5 · `18cecff` S6), live at `portal.iridi.cc`.**
+> Verified live that session (post `just up` + `just caddy-reload`): all 18 astra containers healthy
+> after the 12-image rebuild (the manifest ripple touched 11 siblings — all 9 public edges still
+> 200); `portal.iridi.cc/health` 200; `/module/module.json` renders absolute manifest/download URLs
+> from config public-origin; `/module/portal.zip` 200 (37.9 KB, fflate-packaged in-process); `/mcp`
+> = 401 unauth, full 10-tool list + `bridge-status` → typed `{"connected":false}` with the bearer;
+> SigNoz `astra.portal` spans flowing 0-error. Cert minted itself off the `*.iridi.cc` wildcard
+> (~60s of TLS handshake failures — normal, same as ledger). Orchestrator review fixes (recorded in
+> [[portal-0023-gotchas]]): the bridge replace-adopt leaked the prior heartbeat interval; module
+> reconnect backoff resets only after a ≥10s healthy hold. Known flakes hit: repo-wide `pnpm run
+> lint` OOM (use `--threads=4`), the heartwood `routeTree.gen.ts` regen flap, both pre-existing.
 
 ---
 

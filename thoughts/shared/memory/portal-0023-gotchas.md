@@ -1,6 +1,6 @@
 ---
 name: portal-0023-gotchas
-description: portal (0023) — the FoundryVTT MCP; ALL 6 SLICES BUILT + DEPLOYED LIVE on portal.iridi.cc; only the GM install + live acceptance remain; the load-bearing decisions + build gotchas
+description: portal (0023) — the FoundryVTT MCP; COMPLETE — built + deployed + GM-installed + LIVE ACCEPTANCE E/F/G PASSED 2026-07-07; the load-bearing decisions + build/acceptance gotchas
 metadata:
   type: project
 ---
@@ -8,15 +8,29 @@ metadata:
 **portal (0023)** — a net-new astra subsystem: a **TypeScript MCP server** + a **custom astra-owned
 FoundryVTT module** so an LLM (Claude Code + Claude Desktop) can **search** the pf2e compendium + world
 entities and **create** (import statblocks, drop tokens on the active scene, items, journals) against
-the live **pf2e "Faerrin"** world. **State 2026-07-07: ALL 6 SLICES BUILT + PUSHED (`87f633f`…`18cecff`)
-+ DEPLOYED LIVE** — `astra-portal` healthy @10372 behind `portal.iridi.cc` (health/module-package/
-mcp-auth/SigNoz all edge-verified; `bridge-status` correctly reports the typed offline). **The ONLY
-remaining step is the GM install + live acceptance** (launch "Faerrin" on `btl.iridi.cc` → Install
-Module → Manifest URL `https://portal.iridi.cc/module/module.json` → enable → set WS URL
-`wss://portal.iridi.cc/ws` + the `portal_bridge_api_key` SOPS value in module settings), then verify
-reads/writes live (acceptance E/F/G). Scope
-`thoughts/shared/research/2026-07-06-portal-0023-thoughts.md`; spec `thoughts/astra/specs/0023-portal-spec.md`
-(6 slices S1–S6, decisions D1–D14; status header carries the commit map).
+the live **pf2e "Faerrin"** world. **State 2026-07-07 evening: COMPLETE — all 6 slices built + pushed
+(`87f633f`…`18cecff`) + deployed live + the GM installed/configured the module + LIVE ACCEPTANCE E/F/G
+PASSED** (all A–H met; spec status header carries the detail). Live-verified through the public edge:
+reads (Monster-Core search, full-actor get-document, current scene `engine-heart`, world search), writes
+(import Goblin Warrior → token on the active scene tokenCount 7→8 → journal; `cap-exceeded` at 11 vs
+cap 10; every write audit-logged with span-linked `portal.audit.*`), SigNoz three signals 0 unexpected
+errors. Scope `thoughts/shared/research/2026-07-06-portal-0023-thoughts.md`; spec
+`thoughts/astra/specs/0023-portal-spec.md` (6 slices S1–S6, decisions D1–D14; commit map in the header).
+
+**⭐ Live-acceptance gotchas (2026-07-07, found by running the acceptance):**
+
+- **The module dials ONLY on the `ready` hook — no settings `onChange` redial.** After the GM pastes
+  WS URL + bridge key into module settings, the bridge stays offline until the GM **reloads the Foundry
+  page (F5)**. Symptom: settings look right, `bridge-status` says `{"connected":false}`, portal logs
+  show zero WS attempts.
+- **`search-compendium`'s `type` param means pack `metadata.type` (`"Actor"`/`"Item"`/`"Scene"`), NOT
+  the pf2e subtype (`"npc"`)** — but result rows report `entry.type` = the subtype, and the zod schema
+  has no `.describe()`, so an MCP client naturally guesses `"npc"` and silently gets `[]`. Flagged
+  fast-follow: add `.describe()` to `type` (and `folder`) in `apps/portal/shared/src/tools.ts`.
+- **`import-from-compendium`'s `folder` must name an EXISTING Actor folder** (typed `not-found`
+  otherwise — it doesn't create one).
+- Negative-path tool calls (cap-exceeded, not-found) surface as `hasError` spans by design — filter
+  them out before reading a SigNoz "0-error" check.
 
 **⭐ Build-session gotchas (2026-07-07, found by review/running — not in the spec):**
 
