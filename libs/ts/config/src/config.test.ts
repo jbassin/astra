@@ -64,6 +64,11 @@ describe("@astra/config", () => {
     expect(cfg.portal.publicOrigin).toBe("https://portal.iridi.cc");
     expect(cfg.portal.bridgeTimeoutMs).toBe(15000);
     expect(cfg.portal.maxCreatesPerRequest).toBe(10);
+    expect(cfg.portalHeadless.port).toBe(10373);
+    expect(cfg.portalHeadless.foundryOrigin).toBe("https://btl.iridi.cc");
+    expect(cfg.portalHeadless.world).toBe("faerrin");
+    expect(cfg.portalHeadless.gmUsername).toBe("Portal");
+    expect(cfg.portalHeadless.reloadIntervalHours).toBe(24);
   });
 
   test("secret fields are lazy refs, not plaintext", () => {
@@ -77,6 +82,8 @@ describe("@astra/config", () => {
     expect(cfg.portal.mcpApiKey?.ref).toBe("sops:portal_mcp_api_key");
     expect(cfg.portal.bridgeApiKey).toBeInstanceOf(SecretRef);
     expect(cfg.portal.bridgeApiKey?.ref).toBe("sops:portal_bridge_api_key");
+    expect(cfg.portalHeadless.gmPassword).toBeInstanceOf(SecretRef);
+    expect(cfg.portalHeadless.gmPassword?.ref).toBe("sops:foundry_portal_gm_password");
   });
 
   test.skipIf(!SOPS)("present secret resolves via sops", () => {

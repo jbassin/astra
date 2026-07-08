@@ -239,6 +239,25 @@ const Portal = z
   })
   .strict();
 
+// portal-headless (0027 D27-5/-13) — the supervised headless-Chromium GM session, a
+// SEPARATE Compose unit from portal-server (health-only, not edge-routed). No
+// serviceName field (D27-5, same rationale as Portal — no browser RUM surface; the
+// name is hardcoded in the entrypoint). `gmPassword` is the D27-4 dedicated "Portal"
+// Foundry account's password, resolved only at login time (D27-14 — never logged).
+const PortalHeadless = z
+  .object({
+    port: z.number().default(10373),
+    // D27-3: the public edge, identical to a human browser's path.
+    foundryOrigin: z.string().default("https://btl.iridi.cc"),
+    world: z.string().default("faerrin"),
+    gmUsername: z.string().default("Portal"),
+    gmPassword: secret(),
+    // D27-10's slow-leak insurance knob — a periodic page reload while healthy; 0
+    // disables it.
+    reloadIntervalHours: z.number().default(24),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -273,6 +292,7 @@ export const ConfigSchema = z
     ledger: Ledger.default(() => Ledger.parse({})),
     heartwood: Heartwood.default(() => Heartwood.parse({})),
     portal: Portal.default(() => Portal.parse({})),
+    portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

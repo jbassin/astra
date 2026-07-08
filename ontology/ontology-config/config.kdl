@@ -275,6 +275,24 @@ portal {
     oauth-state-path "/data/oauth/state.json"
 }
 
+portal-headless {
+    // portal-headless (0027 D27-5/-13) — a supervised headless-Chromium GM session, a
+    // dedicated Foundry account ("Portal", full GM) permanently logged into the live
+    // pf2e "Faerrin" world through the public edge, so portal's MCP tools work with no
+    // human browser tab open (spec 0027). A SEPARATE Compose unit from portal-server:
+    // health-only, not edge-routed (no Caddy entry).
+    port 10373
+    // D27-3: the public edge — the exact path a human browser takes.
+    foundry-origin "https://btl.iridi.cc"
+    world "faerrin"
+    gm-username "Portal"
+    // D27-4/-14: the dedicated account's password, resolved only at login time —
+    // never logged. Set at S4 with the stakeholder.
+    gm-password ref="sops:foundry_portal_gm_password"
+    // D27-10: periodic page reload while healthy (slow-leak insurance); 0 disables.
+    reload-interval-hours 24
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }

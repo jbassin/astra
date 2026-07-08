@@ -219,6 +219,20 @@ class PortalConfig(_Base):
     oauth_state_path: str = "/data/oauth/state.json"
 
 
+class PortalHeadlessConfig(_Base):
+    # portal-headless (0027 D27-5/-13) — the supervised headless-Chromium GM session, a
+    # SEPARATE Compose unit from portal-server (health-only, not edge-routed). No
+    # service_name field (D27-5, same rationale as PortalConfig — no browser RUM
+    # surface). gm_password is the D27-4 dedicated "Portal" Foundry account's password,
+    # resolved only at login time (D27-14 — never logged).
+    port: int = 10373
+    foundry_origin: str = "https://btl.iridi.cc"  # D27-3: the public edge
+    world: str = "faerrin"
+    gm_username: str = "Portal"
+    gm_password: SecretRef | None = None
+    reload_interval_hours: int = 24  # D27-10 slow-leak insurance knob; 0 disables it
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -242,4 +256,5 @@ class Config(_Base):
     ledger: LedgerConfig = Field(default_factory=LedgerConfig)
     heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
     portal: PortalConfig = Field(default_factory=PortalConfig)
+    portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

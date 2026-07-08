@@ -1,0 +1,21 @@
+{
+  "name": "@astra/portal-headless",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "module": "src/index.ts",
+  "scripts": {
+    "start": "node --import ../../../libs/ts/site-kit/src/nodeTsResolve.mjs src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "echo '@astra/portal-headless: no build step (runs unbuilt TS, mirrors portal-server)'"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "playwright": "^1.60.0"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9"
+  }
+}
