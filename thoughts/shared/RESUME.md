@@ -51,17 +51,19 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > **Acceptance-session findings:** the module dials only on the `ready` hook — after setting WS URL
 > + bridge key the GM must **reload (F5)** or the bridge stays offline with zero server-side WS
 > attempts; `search-compendium`'s `type` param means pack `metadata.type` (`"Actor"`), not the pf2e
-> subtype (`"npc"`) — the zod schema lacks `.describe()` so an MCP client guesses wrong and silently
-> gets `[]` (**flagged fast-follow:** add `.describe()` to `type`/`folder` in
-> `apps/portal/shared/src/tools.ts`); `import-from-compendium`'s `folder` must already exist (typed
+> subtype (`"npc"`) — the zod schema lacked `.describe()` so an MCP client guessed wrong and silently
+> got `[]` (**fast-follow SHIPPED same session, `e3de7bf`:** per-field `.describe()` across all
+> LLM-facing tool schemas + a real-client tools/list test; rebuilt + redeployed + edge-verified —
+> the bridge shows offline afterwards only because the world was shut down, by-design liveness);
+> `import-from-compendium`'s `folder` must already exist (typed
 > `not-found`, it doesn't create one). Acceptance debris left in the world for Josh to eyeball then
 > delete: actor "Goblin Warrior" (`KSKAiNDEg0nJ2YOx`), its token on `engine-heart`, journal
 > "Portal 0023 acceptance".
 >
 > **▶ NEXT: no subsystem is code-in-flight.** Open items — heartwood Phase-4 **content acceptance**
 > (human-gated D1: approve ≥1 create + ≥1 rewrite on `heartwood.iridi.cc` → `just heartwood-apply
-> 2025-8-28`; Phase 5 backfill gated behind it; ON HOLD by stakeholder); the portal `.describe()`
-> fast-follow above; nice-to-haves (rotate the Discord alert webhook, broaden Class-A alerting to
+> 2025-8-28`; Phase 5 backfill gated behind it; ON HOLD by stakeholder); nice-to-haves (rotate the
+> Discord alert webhook, broaden Class-A alerting to
 > frontends, scribe Groq ASR cost telemetry). MCP client config for portal:
 > `https://portal.iridi.cc/mcp` + Bearer `portal_mcp_api_key` (Claude Code: `claude mcp add
 > --transport http portal … --header "Authorization: Bearer <key>"`).

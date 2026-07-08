@@ -25,8 +25,11 @@ errors. Scope `thoughts/shared/research/2026-07-06-portal-0023-thoughts.md`; spe
   show zero WS attempts.
 - **`search-compendium`'s `type` param means pack `metadata.type` (`"Actor"`/`"Item"`/`"Scene"`), NOT
   the pf2e subtype (`"npc"`)** — but result rows report `entry.type` = the subtype, and the zod schema
-  has no `.describe()`, so an MCP client naturally guesses `"npc"` and silently gets `[]`. Flagged
-  fast-follow: add `.describe()` to `type` (and `folder`) in `apps/portal/shared/src/tools.ts`.
+  had no `.describe()`, so an MCP client naturally guessed `"npc"` and silently got `[]`. **FIXED same
+  session (`e3de7bf`):** per-field `.describe()` across all LLM-facing tool schemas in
+  `apps/portal/shared/src/tools.ts` + a real-client tools/list round-trip test pinning the
+  load-bearing descriptions; redeployed + edge-verified. **The general rule: a zod JSDoc comment
+  never crosses the MCP wire — anything an LLM client needs must be `.describe()`.**
 - **`import-from-compendium`'s `folder` must name an EXISTING Actor folder** (typed `not-found`
   otherwise — it doesn't create one).
 - Negative-path tool calls (cap-exceeded, not-found) surface as `hasError` spans by design — filter
