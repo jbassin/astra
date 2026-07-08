@@ -3,7 +3,8 @@
 #   - host systemd `OnFailure=` handlers (Class C: craig-sync / linguist-commit unit
 #     failures, which emit ZERO telemetry — SigNoz never sees them);
 #   - the astra-watchdog.timer (Class B: liveness — Drive FUSE mount responsive + the
-#     pipeline timers active & armed).
+#     pipeline timers active & armed; a wedged FUSE mount is auto-remediated, see
+#     remediate_mount below).
 # Deliberately curls Discord DIRECTLY (not via SigNoz/the collector) so a paging path
 # survives even when SigNoz itself is down. The webhook is decrypted from SOPS at runtime
 # — never baked into a unit, an image, or the environment.
@@ -33,6 +34,17 @@ WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer)
 # few times over a short window and only page if it stays bad across ALL of them.
 CONFIRM_TRIES="${WATCHDOG_CONFIRM_TRIES:-3}"
 CONFIRM_GAP_S="${WATCHDOG_CONFIRM_GAP_S:-5}"
+
+# Wedged-mount auto-remediation (the 2026-07-08 incident, automated): the ocamlfuse
+# daemon wedged/died leaving the kernel FUSE connection holding 130 unanswered requests,
+# so every toucher of the mount piled up in uninterruptible D state for hours. The manual
+# fix that worked: abort the kernel connection (fails all pending requests, frees the
+# D-state waiters), lazy-unmount the corpse, and let gdrive.service (system scope,
+# Restart=always — the abort kills the daemon's /dev/fuse read, systemd respawns it)
+# remount. Debounced so a systematically-broken mount doesn't get abort-thrashed every
+# 15-min tick; WATCHDOG_REMEDIATE=0 disables the whole path (detect-and-page only).
+REMEDIATE_DEBOUNCE_S="${WATCHDOG_REMEDIATE_DEBOUNCE_S:-3600}"
+REMOUNT_WAIT_S="${WATCHDOG_REMOUNT_WAIT_S:-45}"
 
 # Class C `failure` debounce window. A wedged host dependency (e.g. the Drive FUSE mount)
 # makes a 5-min timer's unit fail every tick forever — 610 pages in the incident that
@@ -152,6 +164,73 @@ check_mount() {
   return 1
 }
 
+# Locate the FUSE mount serving DRIVE_MOUNT WITHOUT ever stat()ing the path (that's what
+# hangs on a wedged mount) — /proc/self/mountinfo is safe to read. Prints "maj:min mountpoint"
+# for the longest fuse-fstype mountpoint that is a path-prefix of DRIVE_MOUNT; the device
+# MINOR is the kernel connection id under /sys/fs/fuse/connections/.
+find_fuse_mount() {
+  awk -v target="$DRIVE_MOUNT/" '
+    { fstype=""
+      for (i = 7; i < NF; i++) if ($i == "-") { fstype = $(i + 1); break }
+      if (fstype ~ /^fuse/ && index(target, $5 "/") == 1 && length($5) > length(best_mp)) {
+        best_mp = $5; best_dev = $3
+      }
+    }
+    END { if (best_mp != "") print best_dev, best_mp }' /proc/self/mountinfo
+}
+
+# Attempt to heal a wedged Drive FUSE mount. Echoes a human summary either way; returns 0
+# only when the mount came back AND answers a bounded probe. Ordering matters: the abort
+# is what frees existing D-state waiters and makes the daemon exit so Restart= respawns it;
+# the lazy unmount just detaches the corpse so the fresh mount can take the mountpoint.
+remediate_mount() {
+  local f="$STATE_DIR/remediate-mount.ts" now last dev mp minor
+  mkdir -p "$STATE_DIR"
+  now="$(date +%s)"
+  last="$(cat "$f" 2>/dev/null || echo 0)"
+  if [ "${WATCHDOG_REMEDIATE:-1}" = "0" ]; then
+    echo "disabled (WATCHDOG_REMEDIATE=0)"; return 1
+  fi
+  if [ $((now - last)) -lt "$REMEDIATE_DEBOUNCE_S" ]; then
+    echo "already attempted $((now - last))s ago (debounce ${REMEDIATE_DEBOUNCE_S}s) — not retrying"
+    return 1
+  fi
+  read -r dev mp <<<"$(find_fuse_mount)" || true
+  if [ -z "${mp:-}" ]; then
+    echo "no FUSE mount found above '$DRIVE_MOUNT' in mountinfo — nothing to remediate"
+    return 1
+  fi
+  minor="${dev#*:}"
+  if [ "${ALERT_DRY_RUN:-}" = "1" ]; then
+    echo "[dry-run] would abort FUSE conn $minor + lazy-unmount '$mp'"; return 1
+  fi
+  printf '%s' "$now" >"$f"
+  log "remediating wedged FUSE mount '$mp' (conn $minor)"
+  if [ -e "/sys/fs/fuse/connections/$minor/abort" ]; then
+    echo 1 >"/sys/fs/fuse/connections/$minor/abort" 2>/dev/null \
+      || log "WARN: could not write conn $minor abort (continuing)"
+  fi
+  run_bounded 15 fusermount -uz "$mp" >/dev/null 2>&1 \
+    || log "WARN: fusermount -uz '$mp' failed (continuing)"
+  # Wait for the respawned daemon's FRESH mount (a new device id at the same mountpoint).
+  local waited=0 newdev=""
+  while [ "$waited" -lt "$REMOUNT_WAIT_S" ]; do
+    newdev="$(awk -v mp="$mp" '$5 == mp { dev = $3 } END { print dev }' /proc/self/mountinfo)"
+    if [ -n "$newdev" ] && [ "$newdev" != "$dev" ]; then break; fi
+    sleep 3; waited=$((waited + 3))
+  done
+  if [ -z "$newdev" ] || [ "$newdev" = "$dev" ]; then
+    echo "aborted stale FUSE conn $minor + lazy-unmounted '$mp', but no fresh mount appeared in ${REMOUNT_WAIT_S}s — check gdrive.service (sudo systemctl restart gdrive.service)"
+    return 1
+  fi
+  if run_bounded 20 bash -c 'ls "$1" >/dev/null 2>&1' _ "$DRIVE_MOUNT"; then
+    echo "aborted stale FUSE conn $minor (freed D-state waiters), lazy-unmounted '$mp'; gdrive.service remounted (conn ${newdev#*:}) and '$DRIVE_MOUNT' answers again"
+    return 0
+  fi
+  echo "remounted (conn ${newdev#*:}) but '$DRIVE_MOUNT' is still unresponsive"
+  return 1
+}
+
 check_timer() {
   local t="$1"
   if [ "$(systemctl --user is-active "$t" 2>/dev/null)" != "active" ]; then
@@ -186,9 +265,17 @@ confirm() {
 }
 
 run_watchdog() {
-  local reason
-  if reason="$(confirm check_mount)"; then transition mount ok   "Drive mount '$DRIVE_MOUNT' responsive again"
-  else                                     transition mount bad  "$reason"; fi
+  local reason fix
+  if reason="$(confirm check_mount)"; then transition mount ok "Drive mount '$DRIVE_MOUNT' responsive again"
+  elif fix="$(remediate_mount)"; then
+    # Healed within one tick. Post the orange remediation notice and record state ok
+    # directly (skipping transition() so a wedge-then-fix inside one tick doesn't also
+    # emit a confusing red/green pair).
+    post "🟠 **astra watchdog auto-remediated** — Drive mount was wedged: $fix"
+    mkdir -p "$STATE_DIR"; printf 'ok' >"$STATE_DIR/mount.state"
+  else
+    transition mount bad "$reason — auto-remediation: $fix"
+  fi
   local t
   for t in "${WATCHED_TIMERS[@]}"; do
     if reason="$(confirm check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"

@@ -1,9 +1,28 @@
 ---
 name: astra-alerting-setup
-description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30); watchdog FLAP fixed same day (13ef941, confirmation/hysteresis); Class C flood fixed 2026-07-08 (22ad895, per-unit failure debounce after a 38h FUSE wedge paged 610×). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
+description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30); watchdog FLAP fixed same day (13ef941, confirmation/hysteresis); Class C flood fixed 2026-07-08 (22ad895, per-unit failure debounce after a 38h FUSE wedge paged 610×); watchdog now AUTO-REMEDIATES a wedged Drive FUSE mount 2026-07-08 (abort conn + fusermount -uz + gdrive.service remounts). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
 metadata:
   type: project
 ---
+
+**UPDATE 2026-07-08 (later) — the wedge recurred; watchdog now AUTO-REMEDIATES it.** The
+ocamlfuse daemon wedged again (kernel conn 54 held 130 unanswered requests; ~20 craig-sync
+probes + a Claude instance in D state). Manual fix that worked, now automated in
+`remediate_mount()` in `alert-notify.sh`: **never stat the mount path** — find the mount +
+kernel conn id from `/proc/self/mountinfo` (device `0:<minor>` → `/sys/fs/fuse/connections/<minor>`),
+`echo 1 > …/<minor>/abort` (fails all pending requests → **frees the D-state waiters** →
+the daemon's /dev/fuse read dies), `fusermount -uz` the corpse, then **`gdrive.service`
+(SYSTEM scope, `/etc/systemd/system/`, `Restart=always`, runs as jbassin, WantedBy=default.target —
+it DOES autostart; the older "manual mount, no unit" note below is STALE) respawns + remounts**
+in seconds; re-probe bounded. Runs as the user (fusectl conn dirs are owned by the mount's
+`user_id=1000` — no root needed). Wired into `run_watchdog`: confirmed-bad mount → remediate →
+on success post one 🟠 auto-remediated notice + state ok (no red/green pair); on failure the
+usual 🔴 with the remediation reason appended. Guards: 1h debounce (`WATCHDOG_REMEDIATE_DEBOUNCE_S`,
+no abort-thrash), `WATCHDOG_REMEDIATE=0` kill-switch, `ALERT_DRY_RUN=1` stops before the abort.
+Unit `TimeoutStartSec` 240→360 (`just alert-install` re-run). NB `gdrive.service` ExecStarts
+`/emerald/data/home/drive` — /emerald resolves to the same place as /ruby (the mount table
+shows `/ruby/data/home/drive`); an orphan ocamlfuse pid pointing at /emerald was left running
+(harmless, possibly another namespace).
 
 **UPDATE 2026-07-08 — THE 610-page flood + the Class C debounce (`22ad895`).** The
 `google-drive-ocamlfuse` **daemon died** ~2026-07-07 03:00 EDT (kernel mount entry persisted,
