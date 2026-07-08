@@ -34,6 +34,14 @@ WATCHED_TIMERS=(craig-sync.timer linguist-commit.timer)
 CONFIRM_TRIES="${WATCHDOG_CONFIRM_TRIES:-3}"
 CONFIRM_GAP_S="${WATCHDOG_CONFIRM_GAP_S:-5}"
 
+# Class C `failure` debounce window. A wedged host dependency (e.g. the Drive FUSE mount)
+# makes a 5-min timer's unit fail every tick forever — 610 pages in the incident that
+# prompted this. Unlike transition() below, a persistent hard failure never "changes
+# state" (it's bad->bad every tick), so the edge-trigger debounce doesn't help here; instead
+# we page once, then suppress repeats of the SAME unit for this many seconds, then re-page
+# once (with the accumulated count) if it's still failing.
+FAILURE_DEBOUNCE_S="${FAILURE_DEBOUNCE_S:-3600}"
+
 log() { echo "alert-notify: $*" >&2; }
 
 # Decrypt the Discord webhook URL. Never echoed — only piped into curl.
@@ -88,6 +96,54 @@ transition() {
   printf '%s' "$status" >"$f"
 }
 
+# Debounced page decision for a Class C `failure` event (per unit). State is 3 lines —
+# first_ts / last_page_ts / count — in `$STATE_DIR/failure-<unit>.state` (same dotted-key
+# idiom as transition()'s `$key.state`). First-ever failure: no file, pages immediately.
+# Repeat failures within FAILURE_DEBOUNCE_S of the last page: suppressed (journal-only).
+# Once the window elapses with the unit still failing: pages again, count included.
+# Echoes the running count on stdout when it decides to page; returns 1 (nothing echoed,
+# already logged) when suppressed — caller gates the actual post() on the return code.
+failure_gate() {
+  local unit="$1" f now first_ts last_ts count elapsed page=1
+  f="$STATE_DIR/failure-$unit.state"
+  mkdir -p "$STATE_DIR"
+  now="$(date +%s)"
+  first_ts="$now" last_ts="$now" count=1
+  if [ -f "$f" ]; then
+    { read -r first_ts; read -r last_ts; read -r count; } <"$f" 2>/dev/null
+    first_ts="${first_ts:-$now}"; last_ts="${last_ts:-$now}"; count="${count:-0}"
+    count=$((count + 1))
+    elapsed=$((now - last_ts))
+    if [ "$elapsed" -lt "$FAILURE_DEBOUNCE_S" ]; then
+      page=0
+    else
+      last_ts="$now"
+    fi
+  fi
+  printf '%s\n%s\n%s\n' "$first_ts" "$last_ts" "$count" >"$f"
+  if [ "$page" -eq 0 ]; then
+    log "suppressed repeat failure page for $unit ($count failures since first page)"
+    return 1
+  fi
+  printf '%s' "$count"
+}
+
+# Class C recovery cleanup, run every watchdog tick (15 min): a failure-debounce state file
+# whose unit is no longer failed means the incident resolved — drop the state so a FUTURE,
+# unrelated failure of the same unit pages immediately instead of inheriting the old
+# window. Silent on purpose: Class B's transition() already announces recoveries for the
+# checks it owns; this is just clearing stale debounce bookkeeping, not a health signal.
+clear_recovered_failures() {
+  local f unit
+  for f in "$STATE_DIR"/failure-*.state; do
+    [ -e "$f" ] || continue
+    unit="$(basename "$f")"; unit="${unit#failure-}"; unit="${unit%.state}"
+    if [ "$(systemctl --user is-failed "$unit" 2>/dev/null)" != "failed" ]; then
+      rm -f "$f"
+    fi
+  done
+}
+
 # --- liveness checks (each echoes a reason on failure, returns non-zero) ---
 
 check_mount() {
@@ -138,19 +194,24 @@ run_watchdog() {
     if reason="$(confirm check_timer "$t")"; then transition "timer-$t" ok  "timer $t healthy again"
     else                                          transition "timer-$t" bad "$reason"; fi
   done
+  clear_recovered_failures
 }
 
 cmd="${1:-}"; [ "$#" -gt 0 ] && shift
 case "$cmd" in
   failure)
     unit="${1:-unknown.unit}"
-    # Compact tail of the failed unit's journal (user-scope units). Trimmed to fit Discord.
-    logs="$(journalctl --user -u "$unit" -n 25 --no-pager -o cat 2>/dev/null | tail -c 1200)"
-    post "🔴 **astra unit FAILED** — \`$unit\` on $HOST
+    if count="$(failure_gate "$unit")"; then
+      # Compact tail of the failed unit's journal (user-scope units). Trimmed for Discord.
+      logs="$(journalctl --user -u "$unit" -n 25 --no-pager -o cat 2>/dev/null | tail -c 1200)"
+      recur=""
+      [ "$count" -gt 1 ] && recur=" — still failing ($count failures since first page)"
+      post "🔴 **astra unit FAILED**$recur — \`$unit\` on $HOST
 \`\`\`
 ${logs:-<no journal output captured>}
 \`\`\`
 Inspect: systemctl --user status $unit"
+    fi
     ;;
   watchdog) run_watchdog ;;
   test)     post "✅ astra alerting test from $HOST — $(date -u '+%Y-%m-%dT%H:%M:%SZ')" ;;
