@@ -192,7 +192,12 @@ export class Supervisor {
   }
 
   #onConsole(level: "warn" | "error", text: string): void {
-    this.#log(level, `page console: ${text}`);
+    // Always logged at warn: page-console lines are Foundry/world-module output, not
+    // supervisor faults, and an in-page console.error would otherwise land at ERROR
+    // severity and page ops via the Class-A error/fatal-logs alert (it did, live —
+    // Foundry's screen-resolution complaint, 2026-07-08). The event keeps the real
+    // level, so the module_console counter still distinguishes warn from error.
+    this.#log("warn", `page console: ${text}`);
     this.#emit({ type: "console", level, text });
   }
 

@@ -344,6 +344,19 @@ describe("Supervisor (spec 0027 S2 — hermetic)", () => {
       text: "bridge-user-id set but no matching game.users entry",
     });
 
+    // A page-console ERROR is demoted to a warn-level LOG (world noise must not trip
+    // the Class-A error/fatal-logs alert) while the EVENT keeps the real level.
+    page.emitConsole("error", "some world module exploded");
+    expect(
+      logs.some((l) => l.level === "warn" && l.message.includes("some world module exploded")),
+    ).toBe(true);
+    expect(logs.some((l) => l.level === "error")).toBe(false);
+    expect(events).toContainEqual({
+      type: "console",
+      level: "error",
+      text: "some world module exploded",
+    });
+
     sup.stop();
   });
 
