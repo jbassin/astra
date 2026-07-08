@@ -547,6 +547,44 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- portal-headless (0027): the supervised headless-Chromium GM session — a
+  # dedicated Foundry account ("Portal", full GM) permanently logged into the live
+  # pf2e "Faerrin" world through the public edge, so portal's MCP tools work with no
+  # human browser tab open. A SEPARATE unit from portal-server (D27-5): health-only,
+  # not edge-routed (no Caddy entry), `signoz-net` alone (D27-3). Follows
+  # vellum-render's browser-in-a-container lifecycle with D27-10's long-lived-tab
+  # deltas: `shm_size` (Docker's 64MB `/dev/shm` default is the known Chromium OOM
+  # source for a process-life-long page) and a generous `start_period` (Chromium warm-up
+  # + first navigation + `/join`). ---
+  portal-headless:
+    build:
+      context: ..
+      dockerfile: apps/portal/headless/Dockerfile
+    image: astra-portal-headless:local
+    container_name: astra-portal-headless
+    user: "1000:1000"
+    shm_size: "1gb"
+    # SOPS secret injected as env by `just up` (Decision E); config's env-override
+    # resolves the D27-13 `ref="sops:foundry_portal_gm_password"` key in-container.
+    # Load-bearing (index.ts throws at startup if unresolved, mirroring portal's two
+    # keys) — a dummy value is fine for non-live acceptance runs, since D27-6's
+    # classifier never reaches the login step against a world-down/unreachable target.
+    environment:
+      FOUNDRY_PORTAL_GM_PASSWORD: ${FOUNDRY_PORTAL_GM_PASSWORD:-}
+    ports:
+      - "10373:10373" # portal-headless (astra range) — health-only, not edge-routed
+    networks: [signoz-net]
+    healthcheck:
+      # D27-11: process-up + browser-connected ONLY — `world-down` is a reported
+      # `state`, never unhealthy (a restart can't launch a world; a restart-loop during
+      # the GM's maintenance window would be noise).
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10373/health').then(r=>r.json()).then(j=>process.exit(j.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    restart: unless-stopped
+
 # The production edge is the shared HOST reverse proxy at /ruby/data/reverse-proxy
 # (it imports this repo's root sites.caddyfile; reload via `just caddy-reload`), so
 # the substrate runs no Caddy of its own — services are reachable on their

@@ -21,6 +21,7 @@ COPY apps/ledger/package.json apps/ledger/
 COPY apps/mouthpiece-frontend/package.json apps/mouthpiece-frontend/
 COPY apps/orator-backend/package.json apps/orator-backend/
 COPY apps/orator-controller/package.json apps/orator-controller/
+COPY apps/portal/headless/package.json apps/portal/headless/
 COPY apps/portal/module/package.json apps/portal/module/
 COPY apps/portal/server/package.json apps/portal/server/
 COPY apps/portal/shared/package.json apps/portal/shared/
