@@ -46,12 +46,25 @@ export type ListCompendiumPacksResult = z.infer<typeof ListCompendiumPacksResult
 
 export const SearchCompendiumParams = z
   .object({
-    query: z.string().min(1),
-    /** Restrict to one `metadata.type` (e.g. `"Actor"`). */
-    type: z.string().optional(),
-    /** Restrict to specific pack collection keys (e.g. `"pf2e.pathfinder-monster-core"`). */
-    packIds: z.array(z.string()).optional(),
-    limit: z.number().int().positive().max(200).optional(),
+    query: z.string().min(1).describe("Case-insensitive substring matched against entry names."),
+    // The LLM-facing .describe() is load-bearing (found live, 2026-07-07): without it a
+    // client guesses the pf2e subtype ("npc") and silently gets zero results.
+    type: z
+      .string()
+      .optional()
+      .describe(
+        'Restrict to packs of one document class — the pack\'s metadata.type, e.g. "Actor" ' +
+          '(statblocks/NPCs), "Item", "JournalEntry", "Scene". NOT the pf2e subtype: "npc" ' +
+          "matches nothing (result rows report the subtype in their own type field).",
+      ),
+    packIds: z
+      .array(z.string())
+      .optional()
+      .describe(
+        'Restrict to specific pack collection keys, e.g. "pf2e.pathfinder-monster-core" ' +
+          "(browse them with list-compendium-packs).",
+      ),
+    limit: z.number().int().positive().max(200).optional().describe("Max results (default 25)."),
   })
   .strict();
 export type SearchCompendiumParams = z.infer<typeof SearchCompendiumParams>;
@@ -84,7 +97,13 @@ export type SearchCompendiumResult = z.infer<typeof SearchCompendiumResult>;
 
 export const GetDocumentParams = z
   .object({
-    uuid: z.string().min(1),
+    uuid: z
+      .string()
+      .min(1)
+      .describe(
+        "The uuid field of a search/list result row — a compendium uuid " +
+          '("Compendium.<pack>.<type>.<id>") or a world uuid ("Actor.<id>", "Scene.<id>", …).',
+      ),
   })
   .strict();
 export type GetDocumentParams = z.infer<typeof GetDocumentParams>;
@@ -107,10 +126,12 @@ export type WorldSearchType = z.infer<typeof WorldSearchType>;
 
 export const SearchWorldParams = z
   .object({
-    query: z.string().min(1),
-    /** Defaults to all four world collections when omitted. */
-    types: z.array(WorldSearchType).optional(),
-    limit: z.number().int().positive().max(200).optional(),
+    query: z.string().min(1).describe("Case-insensitive substring matched against entry names."),
+    types: z
+      .array(WorldSearchType)
+      .optional()
+      .describe("World collections to search; defaults to all four when omitted."),
+    limit: z.number().int().positive().max(200).optional().describe("Max results (default 25)."),
   })
   .strict();
 export type SearchWorldParams = z.infer<typeof SearchWorldParams>;
@@ -197,16 +218,29 @@ const SANE_QUANTITY_MAX = 1000;
 
 export const ImportFromCompendiumParams = z
   .object({
-    /** A compendium document's own uuid, e.g.
-     * `"Compendium.pf2e.pathfinder-bestiary.Actor.g1"` — never a world uuid (D5: this
-     * tool ONLY clones from a compendium; rejected otherwise). */
-    uuid: z.string().min(1),
-    /** How many copies to create in one call. */
-    quantity: z.number().int().positive().max(SANE_QUANTITY_MAX).default(1),
-    /** An existing world folder's name (of the matching document type) to file the new
-     * document(s) under. Looked up, never created — a missing folder is a typed
-     * "not-found" error, not a silent skip. */
-    folder: z.string().optional(),
+    // D5: this tool ONLY clones from a compendium; a world uuid is rejected.
+    uuid: z
+      .string()
+      .min(1)
+      .describe(
+        'A compendium document\'s uuid ("Compendium.<pack>.<type>.<id>", from ' +
+          "search-compendium) — never a world uuid; this tool only clones from a compendium.",
+      ),
+    quantity: z
+      .number()
+      .int()
+      .positive()
+      .max(SANE_QUANTITY_MAX)
+      .default(1)
+      .describe("How many copies to create in one call (the server's per-request cap applies)."),
+    folder: z
+      .string()
+      .optional()
+      .describe(
+        "Name of an EXISTING world folder (of the matching document type) to file the new " +
+          'document(s) under — looked up, never created; a missing folder is a typed "not-found" ' +
+          "error, not a silent skip.",
+      ),
   })
   .strict();
 export type ImportFromCompendiumParams = z.infer<typeof ImportFromCompendiumParams>;
@@ -235,17 +269,34 @@ export type ImportFromCompendiumResult = z.infer<typeof ImportFromCompendiumResu
 
 export const CreateTokenParams = z
   .object({
-    /** Import this compendium document first, then tokenize the imported actor.
-     * Mutually exclusive with `actorId` — exactly one of the two must be given. */
-    uuid: z.string().min(1).optional(),
-    /** Tokenize an actor that already exists in the world. Mutually exclusive with
-     * `uuid` — exactly one of the two must be given. */
-    actorId: z.string().min(1).optional(),
-    x: z.number(),
-    y: z.number(),
-    /** How many tokens to drop (each offset by one grid square so they don't stack
-     * exactly); when `uuid` is given, also how many copies of the actor to import. */
-    quantity: z.number().int().positive().max(SANE_QUANTITY_MAX).default(1),
+    uuid: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "A compendium document uuid to import first, then tokenize. Exactly one of uuid or " +
+          "actorId must be given.",
+      ),
+    actorId: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "Id of an actor already in the world to tokenize. Exactly one of uuid or actorId " +
+          "must be given.",
+      ),
+    x: z.number().describe("Scene pixel x coordinate for the drop (see get-current-scene)."),
+    y: z.number().describe("Scene pixel y coordinate for the drop (see get-current-scene)."),
+    quantity: z
+      .number()
+      .int()
+      .positive()
+      .max(SANE_QUANTITY_MAX)
+      .default(1)
+      .describe(
+        "How many tokens to drop (each offset by one grid square so they don't stack exactly); " +
+          "when uuid is given, also how many copies of the actor to import.",
+      ),
   })
   .strict()
   .refine((v) => (v.uuid !== undefined) !== (v.actorId !== undefined), {
@@ -278,12 +329,15 @@ export type CreateTokenResult = z.infer<typeof CreateTokenResult>;
 
 export const CreateJournalParams = z
   .object({
-    name: z.string().min(1),
-    /** HTML body for the journal's single text page. */
-    content: z.string(),
-    /** An existing "JournalEntry"-type world folder's name. Looked up, never created —
-     * same contract as `import-from-compendium`'s `folder`. */
-    folder: z.string().optional(),
+    name: z.string().min(1).describe("The journal entry's title."),
+    content: z.string().describe("HTML body for the journal's single text page."),
+    folder: z
+      .string()
+      .optional()
+      .describe(
+        'Name of an EXISTING "JournalEntry"-type world folder — looked up, never created; ' +
+          'a missing folder is a typed "not-found" error.',
+      ),
   })
   .strict();
 export type CreateJournalParams = z.infer<typeof CreateJournalParams>;

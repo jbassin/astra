@@ -121,6 +121,31 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
+  it("surfaces per-param .describe() text in tools/list (the LLM-facing schema docs)", async () => {
+    // Found live (2026-07-07 acceptance): without a JSON-schema description on
+    // search-compendium's `type`, an MCP client guesses the pf2e subtype ("npc") and
+    // silently gets zero results — the zod JSDoc never crosses the wire, .describe() does.
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+
+    const { tools } = await client.listTools();
+    const propDescription = (tool: string, prop: string): string => {
+      const schema = tools.find((t) => t.name === tool)?.inputSchema as
+        | { properties?: Record<string, { description?: string }> }
+        | undefined;
+      return schema?.properties?.[prop]?.description ?? "";
+    };
+    expect(propDescription("search-compendium", "type")).toContain("metadata.type");
+    expect(propDescription("import-from-compendium", "folder")).toContain("EXISTING");
+    expect(propDescription("create-journal", "folder")).toContain("EXISTING");
+    expect(propDescription("create-token", "actorId")).toContain("Exactly one of");
+
+    await client.close();
+  });
+
   it("maps a bridge-offline BridgeError to an isError result when no module is connected (S4)", async () => {
     const transport = new StreamableHTTPClientTransport(mcpUrl, {
       requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
