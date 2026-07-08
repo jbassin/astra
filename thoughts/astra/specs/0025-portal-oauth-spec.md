@@ -1,12 +1,14 @@
 # NLSpec 0025 — portal-oauth: OAuth 2.1 on portal for claude.ai custom connectors
 
-**Status:** BUILT + DEPLOYED + LIVE-VERIFIED (2026-07-07) — S1 `b6de520` (authorization server,
+**Status:** COMPLETE — ALL ACCEPTANCE A–H MET (2026-07-07) — S1 `b6de520` (authorization server,
   20 hermetic tests) · S2 `fa988ff` (dual auth + discovery header) · S3 (compose bind mount +
-  `just up`). Acceptance **A–E + G met** (full curl flow through the public edge: 401
+  `just up`). A–E + G verified by the full curl flow through the public edge (401
   `resource_metadata` header → DCR → consent → PKCE token → tool call → refresh rotation →
-  old-refresh `invalid_grant`; persistence proven across a container restart; SigNoz
-  `portal.oauth.*` audit events span-linked, no token material). **F (the claude.ai human half)
-  pending** — add the custom connector + consent + chat tool call. H done ([[portal-oauth-0025-gotchas]]).
+  old-refresh `invalid_grant`; persistence across a container restart; SigNoz `portal.oauth.*`
+  audit events span-linked, no token material). **F closed 2026-07-08T01:03Z:** the stakeholder
+  added the custom connector in claude.ai — its own DCR client (`748f3034-…`) registered →
+  consent-ok → token-issued in the live audit trail, and tool calls work from a claude.ai chat.
+  H done ([[portal-oauth-0025-gotchas]]).
 **Scope doc:** `thoughts/shared/research/2026-07-07-portal-oauth-0025-thoughts.md` (all claims
   verified 2026-07-07: Anthropic connector docs fetched live; the installed SDK 1.29.0 auth module
   inventoried file-by-file; portal server/config/deploy mapped file:line; the stakeholder's

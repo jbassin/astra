@@ -1,6 +1,6 @@
 ---
 name: portal-oauth-0025-gotchas
-description: portal-oauth (0025) — OAuth 2.1 AS on portal for claude.ai custom connectors; BUILT + DEPLOYED + LIVE-VERIFIED (curl flow through the edge); only the claude.ai connect (human) remains; the load-bearing gotchas
+description: portal-oauth (0025) — OAuth 2.1 AS on portal for claude.ai custom connectors; COMPLETE — all acceptance A–H met incl. the real claude.ai connect (2026-07-08T01:03Z); the load-bearing gotchas
 metadata:
   type: project
 ---
@@ -17,9 +17,11 @@ access TTL, rotate-on-refresh) + a JSON state file on the new `artifacts/portal-
 (legacy key OR OAuth token; Claude Code config untouched); every 401 carries `WWW-Authenticate:
 Bearer resource_metadata="…/.well-known/oauth-protected-resource/mcp"` (the claude.ai discovery
 path). Full curl flow verified through the public edge: 401-header → DCR → consent → PKCE token →
-tool call → rotation → old-refresh `invalid_grant`. **▶ ONLY REMAINING: acceptance F (human) —
-claude.ai Settings → Connectors → Add custom connector → URL `https://portal.iridi.cc/mcp`, NO
-client ID/secret → consent page → paste the portal key → tool call from a chat.**
+tool call → rotation → old-refresh `invalid_grant`. **Acceptance F CLOSED 2026-07-08T01:03Z: the
+stakeholder connected claude.ai for real** (Add custom connector → `https://portal.iridi.cc/mcp`,
+no client ID/secret → consent with the portal key) — claude.ai's own DCR client registered →
+consent-ok → token-issued in the audit trail, tool calls work from chats. **0025 COMPLETE, all
+A–H.**
 
 **⭐ Load-bearing gotchas (found by building/running):**
 
