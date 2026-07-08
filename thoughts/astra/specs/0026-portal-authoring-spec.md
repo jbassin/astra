@@ -1,6 +1,15 @@
 # NLSpec 0026 — portal-authoring: full content-authoring write surface for the portal MCP
 
-**Status:** SPEC'D — ready for implementation (octo:embrace), no code yet.
+**Status:** COMPLETE (2026-07-08) — S1 `ccaadbe` · S2 `f1c8431` · S3 `c7a3958` · S4 (deploy +
+  live acceptance + docs). Exit gate: A–C, E–H met in full; D met with two module-side guards
+  live-proven in the enforcing direction only (stamped deletes succeeded across actor/item/macro;
+  the unstamped-refusal + `allow-macro-execution`-OFF toggles are unit-proven — live exercise was
+  blocked by the harness permission classifier / needs a GM settings click; recorded in
+  [[portal-authoring-0026-gotchas]], stakeholder-visible, upgradable on request). Live loop
+  2026-07-08T02:43–02:55Z through the public edge: hand-authored NPC (GM-eyeballed), aura pair,
+  baseUuid spell+entry, light CRUD on an embedded uuid, frightened + non-dialog persistent-damage,
+  PC HP edit + derived-path refusal, macro create+execute (`returned: "42"`), full `portal.audit.*`
+  trail in SigNoz incl. the denied attempt.
 **Scope doc:** `thoughts/shared/research/2026-07-07-portal-authoring-0026-thoughts.md` (all claims
   verified 2026-07-07: pf2e source read at tag `pf2e-7.12.2` — the exact deployed version; Foundry
   v13 API docs fetched; prior-art repos cloned and read; live documents pulled through the running

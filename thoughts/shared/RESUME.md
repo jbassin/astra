@@ -36,7 +36,34 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-08 — portal-oauth 0025 COMPLETE, all A–H)
+## Current state — UPDATE THIS SECTION (as of 2026-07-08 — portal-authoring 0026 COMPLETE)
+
+> **✅ portal-authoring (0026) — COMPLETE, same-day scope→spec→build→deploy→live-acceptance.**
+> Portal is now a full content-authoring surface against the live pf2e "Faerrin" world: **8 new
+> tools (18 total)** — `create-actor` (hand-authored NPC/hazard statblocks + embedded strikes),
+> `create-item` (effects/auras/spells/spellcasting entries w/ rule elements; `baseUuid` hybrid
+> clone+patch, D-1 supersedes 0023 D5), `apply-condition` (incl. the source-verified NON-dialog
+> persistent-damage path), `create-light`, `create-macro`, `update-document` (dot-path, full PC
+> edit access + derived-path deny-list), `delete-document` (refuses anything without the D-6
+> `flags[astra-portal]` stamp), `execute-macro` (own `allow-macro-execution` module setting).
+> S1 `ccaadbe` · S2 `f1c8431` · S3 `c7a3958` · S4 deploy+docs; module version 0.2.0; spec
+> `thoughts/astra/specs/0026-portal-authoring-spec.md` status COMPLETE (exit-gate nuance on two
+> unit-only guards recorded there + in [[portal-authoring-0026-gotchas]]); scope doc
+> `thoughts/shared/research/2026-07-07-portal-authoring-0026-thoughts.md` is THE pf2e authoring
+> reference (validation split, RE fail-soft, aura two-item, spell↔entry linking, PC source-vs-
+> derived). Live loop verified through the public edge with the GM present; full `portal.audit.*`
+> trail in SigNoz. **Operational gotchas for next time** (session MCP tool-list snapshot →
+> `/mcp` reconnect; `portal-module-install` EACCES → docker-as-root cp; classifier gates on
+> `just up`/`execute-macro`/non-session deletes) in [[portal-authoring-0026-gotchas]].
+> **▶ NEXT: nothing code-in-flight** — heartwood Phase-4 content acceptance remains the
+> stakeholder-paused main-track item; nice-to-haves unchanged (webhook rotation, Class-A alerting
+> breadth, scribe ASR cost telemetry) + new small ones: fix `portal-module-install` perms, GM
+> hand-deletes the pre-stamp 0023 Goblin Warrior debris, optionally live-prove the two unit-only
+> guards.
+
+---
+
+### Previous section (same day) — portal-oauth 0025 COMPLETE, all A–H (superseded above)
 
 > **✅ portal-oauth (0025) — COMPLETE. Acceptance F closed 2026-07-08T01:03Z: the stakeholder
 > connected claude.ai for real** — its own DCR client (`748f3034-…`) registered → consent-ok →
