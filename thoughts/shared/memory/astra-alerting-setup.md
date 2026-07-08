@@ -1,9 +1,38 @@
 ---
 name: astra-alerting-setup
-description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30); watchdog FLAP fixed same day (13ef941, confirmation/hysteresis). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
+description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30); watchdog FLAP fixed same day (13ef941, confirmation/hysteresis); Class C flood fixed 2026-07-08 (22ad895, per-unit failure debounce after a 38h FUSE wedge paged 610×). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
 metadata:
   type: project
 ---
+
+**UPDATE 2026-07-08 — THE 610-page flood + the Class C debounce (`22ad895`).** The
+`google-drive-ocamlfuse` **daemon died** ~2026-07-07 03:00 EDT (kernel mount entry persisted,
+no userspace process → every access hangs, not ENOTCONN) and nobody noticed for ~38h while
+Class C paged Discord **610 times**: craig-sync failed every 5-min tick (458 pages) and the
+watchdog *itself* failed every 15-min tick (152) — its `kill -KILL`-on-timeout is useless
+against D-state FUSE-blocked probes, the leaked procs accumulated run-over-run, and the pileup
+pushed the watchdog past its own `TimeoutStartSec=240` → `Result: timeout` → its own
+`OnFailure=` page. Class B behaved perfectly (one ok→bad transition, one recovery). **The
+design gap: `astra-alert@` (Class C) had NO debounce — a persistent fault is bad→bad every
+tick, so transition-style edge-debounce can't help; it re-paged on every timer firing (~16/h).**
+- **Recovery:** `fusermount -uz /ruby/data/home/drive` + relaunch `google-drive-ocamlfuse
+  /ruby/data/home/drive` (default gdfuse label). It's a **manual mount — no fstab entry, no
+  autostart unit** → does NOT survive reboot; remember to remount. D-state leftovers cleared
+  once the endpoint was replaced. Then `reset-failed` + one manual `start` of craig-sync and
+  the watchdog to confirm green (watchdog posts the by-design recovery transitions).
+- **Fix (`22ad895`):** `failure_gate()` in `alert-notify.sh` — per-unit 3-line state file
+  (`failure-<unit>.state`: first_ts/last_page_ts/count) under the watchdog state dir. First
+  failure pages immediately; repeats within `FAILURE_DEBOUNCE_S` (default 3600) suppress to
+  journal; still-failing re-pages once per window with the accumulated count.
+  `clear_recovered_failures()` runs each watchdog tick and drops the state of any unit no
+  longer `is-failed`, so a fresh incident pages instantly. **No `just alert-install` needed
+  for script-only edits** — the installed units `ExecStart` the script's absolute in-repo path.
+- **Same week's Class A noise was self-inflicted:** an ad-hoc 0027 headless-gm container
+  verification run attached to `signoz-net` drove the supervisor against a synthetic
+  unreachable fixture → 6 real ERRORs into live SigNoz → Discord page. **Rule: negative-path
+  container verification runs must NOT attach to `signoz-net`** — off that network the
+  in-cluster collector hostname DNS-fails and the export silently drops (the config.kdl-documented
+  dev behavior). No code change; don't add a test-mode flag to observe/initTelemetry.
 
 **UPDATE 2026-06-30 — DONE + LIVE + verified end-to-end.** All three classes built, `git
 push`ed (`95735d4`), and live-tested. Discord got real test pages during verification
