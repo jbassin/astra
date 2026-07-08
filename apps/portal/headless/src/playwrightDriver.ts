@@ -48,7 +48,9 @@ export function createPlaywrightPageAdapter(opts: PlaywrightDriverOptions): Page
     // per D27-7's explicit "re-seeded on every (re)launch".
     await teardown();
     browser = await chromium.launch({ args: ["--no-sandbox"] });
-    context = await browser.newContext();
+    // Playwright's default 1280x720 is below Foundry's 1366x768 minimum (it logs a
+    // loud console error and disclaims feature breakage below that).
+    context = await browser.newContext({ viewport: { width: 1600, height: 900 } });
     // D27-7: seed core.noCanvas=true BEFORE any page script runs, via an init script —
     // this applies on every navigation in this context regardless of what a prior
     // session might have left in localStorage (moot here since the profile is
