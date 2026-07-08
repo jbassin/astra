@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SETTING_ALLOW_MACRO_EXECUTION, SETTING_ALLOW_WRITES } from "./constants";
+import {
+  SETTING_ALLOW_MACRO_EXECUTION,
+  SETTING_ALLOW_WRITES,
+  SETTING_BRIDGE_USER_ID,
+} from "./constants";
 import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./handlers";
 
 /** A fake `FoundryPacksCollection`/`FoundryWorldCollection`/`FoundryScenesCollection`/
@@ -215,6 +219,10 @@ interface FoundryStubOverrides {
   /** S5 — the world-settings map `game.settings.get` reads from, keyed by setting key
    * (namespace ignored, this module only ever registers its own). */
   settings?: Record<string, unknown>;
+  /** 0027 S1 — this session's `game.user.id`/`.name`; override to simulate a
+   * non-designated session under the `bridge-user-id` setting. */
+  userId?: string;
+  userName?: string;
   /** S5 — `getDocumentClass` per document type; see {@link fakeDocumentClass}. */
   getDocumentClass?: (documentName: string) => FoundryDocumentClass;
   /** 0026 S3 — `execute-macro`'s `game.macros.get` lookup. */
@@ -231,7 +239,7 @@ interface FoundryStubOverrides {
  * objects, not a real Foundry runtime. */
 function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void {
   globalThis.game = {
-    user: { isGM },
+    user: { id: overrides.userId ?? "gm1", name: overrides.userName ?? "GM", isGM },
     world: { id: "faerrin", title: "Faerrin" },
     system: { id: "pf2e", version: "7.12.2" },
     version: "13.351",
@@ -249,6 +257,11 @@ function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void 
     },
     folders: fakeValuesCollection(overrides.folders ?? []),
     macros: fakeValuesCollection(overrides.macros ?? []),
+    // 0027 S1 — dispatchQuery's designated-dialer re-check is a plain id comparison
+    // against the settings value, never `game.users` (that resolvability lookup is
+    // `main.ts`'s `ready`-hook concern, covered in `main.test.ts`); an empty stub here
+    // is enough for every handlers.test.ts case.
+    users: fakeValuesCollection([]),
     pf2e: {
       ConditionManager: overrides.conditionManager ?? {
         getCondition: () => ({
@@ -375,6 +388,30 @@ describe("portal-module handlers (spec 0023 S3 — Foundry-free)", () => {
     const err = await dispatchQuery("portal.ping", undefined).catch((e: unknown) => e);
     expect(err).toBeInstanceOf(BridgeHandlerError);
     expect((err as BridgeHandlerError).code).toBe("not-gm");
+  });
+
+  it("dispatchQuery rejects with a typed not-designated error when bridge-user-id doesn't match this session (0027 S1)", async () => {
+    stubFoundry(true, {
+      userId: "gm1",
+      settings: { [SETTING_BRIDGE_USER_ID]: "portal-bot" },
+    });
+    registerHandlers();
+    const err = await dispatchQuery("portal.ping", undefined).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(BridgeHandlerError);
+    expect((err as BridgeHandlerError).code).toBe("not-designated");
+  });
+
+  it("dispatchQuery dispatches normally when bridge-user-id matches this session (0027 S1)", async () => {
+    stubFoundry(true, {
+      userId: "portal-bot",
+      settings: { [SETTING_BRIDGE_USER_ID]: "portal-bot" },
+    });
+    registerHandlers();
+    await expect(dispatchQuery("portal.ping", undefined)).resolves.toEqual({
+      pong: true,
+      worldId: "faerrin",
+      system: "pf2e",
+    });
   });
 
   it("dispatchQuery rejects with a typed foundry-error for an unregistered method", async () => {

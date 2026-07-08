@@ -30,6 +30,9 @@ export const BridgeErrorCode = z.enum([
   // Foundry's message preserved verbatim) or a known-derived PC path was targeted (0026 D-7/D-10)
   "execution-failed", // execute-macro's script/chat macro threw at runtime (0026 D-9);
   // the thrown error's message is preserved, distinct from the module dispatch itself failing
+  "not-designated", // dispatchQuery's defense-in-depth refusal when bridge-user-id is set
+  // and this session isn't the matching user (0027 D27-2/D27-9) — distinct from "not-gm"
+  // because the session IS a GM, just not the one designated to dial
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
 
@@ -38,6 +41,10 @@ export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
  * `bridge-status` (the S3 acceptance) can report world/system/version with no extra
  * bridge round-trip. Optional: an older/mid-upgrade module build that doesn't send it
  * yet must still authenticate cleanly (BridgeStatus just carries less).
+ *
+ * `userId`/`userName` (0027 D27-8) are the connected Foundry user's identity — also
+ * optional for the same reason, and the mechanism that lets `bridge-status` prove
+ * *which* session (e.g. the headless "Portal" account) holds the bridge.
  */
 export const AuthMeta = z
   .object({
@@ -46,6 +53,8 @@ export const AuthMeta = z
     system: z.string().optional(),
     systemVersion: z.string().optional(),
     foundryVersion: z.string().optional(),
+    userId: z.string().optional(),
+    userName: z.string().optional(),
   })
   .strict();
 export type AuthMeta = z.infer<typeof AuthMeta>;

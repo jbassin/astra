@@ -17,8 +17,12 @@
  * `export {}` just to unlock one) needed.
  */
 
-/** The subset of `foundry.documents.User` this module reads. */
+/** The subset of `foundry.documents.User` this module reads. `id`/`name` (0027
+ * D27-8/D27-9) back the designated-dialer gate + the identity `bridge-status` surfaces
+ * — every real Foundry `User` document already carries both. */
 interface FoundryUser {
+  readonly id: string;
+  readonly name: string;
   readonly isGM: boolean;
 }
 
@@ -203,6 +207,15 @@ interface FoundryFoldersCollection {
   values(): IterableIterator<FoundryFolder>;
 }
 
+/** `game.users` (0027 D27-2/D27-9) — the world's user list; `get` backs the
+ * designated-dialer resolvability check (`bridge-user-id` -> a real user, or not).
+ * Deliberately its own interface rather than `FoundryWorldCollection<FoundryUser>`:
+ * that generic is constrained to {@link FoundryDocumentLike} (uuid/toObject/...), which
+ * a `User` document doesn't carry. */
+interface FoundryUsersCollection {
+  get(id: string): FoundryUser | undefined;
+}
+
 /** A Foundry Document class's static creation surface (S5 D5) — `getDocumentClass`
  * below is the forward-safe way to reach it (avoiding a hardcoded `Actor`/`Item`/
  * `JournalEntry` global reference, which the v13->v15 deprecation notes flag). */
@@ -283,6 +296,10 @@ interface FoundryGame {
    * not optional — same "this module targets pf2e exclusively" reasoning as
    * `FoundryActor`'s condition methods. */
   readonly pf2e: FoundryPf2eNamespace;
+  /** The designated-dialer gate's (0027 D27-2/D27-9) user-by-id lookup — resolves
+   * `bridge-user-id` against the world's actual user list to distinguish "some other
+   * GM is designated" from "the setting is misconfigured". */
+  readonly users: FoundryUsersCollection;
 }
 
 /** One entry of Foundry 13's `CONFIG.queries` registry — the dispatch surface a `query`

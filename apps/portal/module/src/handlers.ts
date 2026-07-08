@@ -54,7 +54,12 @@ import {
   type WorldSearchType,
 } from "@astra/portal-shared";
 
-import { MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION, SETTING_ALLOW_WRITES } from "./constants";
+import {
+  MODULE_ID,
+  SETTING_ALLOW_MACRO_EXECUTION,
+  SETTING_ALLOW_WRITES,
+  SETTING_BRIDGE_USER_ID,
+} from "./constants";
 
 /** Default `search-compendium`/`search-world` result cap when the caller doesn't
  * specify one — generous enough for an LLM to scan, small enough not to flood context. */
@@ -1262,7 +1267,9 @@ export function registerHandlers(): void {
  * `McpQuery.method` in `@astra/portal-shared`). Re-checks `game.user?.isGM` as defense
  * in depth: the `ready` hook already refuses to DIAL the bridge at all for a non-GM
  * session, but this is the last line of defense against a session that started as GM
- * and was demoted while its socket stayed open.
+ * and was demoted while its socket stayed open. Also re-checks the 0027 D27-2/D27-9
+ * designated-dialer setting for the same reason — the GM may repoint `bridge-user-id`
+ * on an already-adopted socket without an F5.
  *
  * Throws {@link BridgeHandlerError} (typed `.code`) for both denial paths; any error a
  * handler itself throws propagates as-is — `bridgeClient.ts` falls back to
@@ -1271,6 +1278,13 @@ export function registerHandlers(): void {
 export async function dispatchQuery(method: string, params: unknown): Promise<unknown> {
   if (!game.user?.isGM) {
     throw new BridgeHandlerError("not-gm", "the connected Foundry session isn't a GM");
+  }
+  const bridgeUserId = String(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID) ?? "");
+  if (bridgeUserId && game.user.id !== bridgeUserId) {
+    throw new BridgeHandlerError(
+      "not-designated",
+      "this Foundry session is not the designated bridge dialer (bridge-user-id)",
+    );
   }
   const handler = CONFIG.queries[method];
   if (!handler) {

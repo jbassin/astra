@@ -17,6 +17,7 @@ import {
   SETTING_ALLOW_MACRO_EXECUTION,
   SETTING_ALLOW_WRITES,
   SETTING_BRIDGE_API_KEY,
+  SETTING_BRIDGE_USER_ID,
   SETTING_WS_URL,
 } from "./constants";
 import { dispatchQuery, registerHandlers } from "./handlers";
@@ -34,6 +35,17 @@ function registerSettings(): void {
   game.settings.register(MODULE_ID, SETTING_BRIDGE_API_KEY, {
     name: "Portal bridge API key",
     hint: "Must match the bridge-api-key configured on the portal server (D6 two-hop auth).",
+    scope: "world",
+    config: true,
+    type: String,
+    default: "",
+    restricted: true,
+  });
+  game.settings.register(MODULE_ID, SETTING_BRIDGE_USER_ID, {
+    name: "Portal bridge designated dialer",
+    hint:
+      "Only the Foundry user with this id dials the portal bridge; empty = any GM. " +
+      "Changes take effect on your next reload (F5).",
     scope: "world",
     config: true,
     type: String,
@@ -83,6 +95,32 @@ Hooks.once("ready", () => {
   // (and only visible to) the GM, but this is the actual boundary.
   if (!game.user?.isGM) return;
 
+  const userId = game.user.id;
+  const userName = game.user.name;
+
+  // 0027 D27-2/D27-9: the designated-dialer gate, right after the isGM gate above —
+  // empty (default) is purely additive (today's any-GM behavior), so this whole block
+  // is a no-op until the GM sets the setting.
+  const bridgeUserId = String(game.settings.get(MODULE_ID, SETTING_BRIDGE_USER_ID) ?? "");
+  if (bridgeUserId) {
+    const designated = game.users.get(bridgeUserId);
+    if (!designated) {
+      consoleLog(
+        "warn",
+        `the "Portal bridge designated dialer" setting is set to user id "${bridgeUserId}", ` +
+          "which doesn't match any user in this world — not dialing. Fix or clear the setting.",
+      );
+      return;
+    }
+    if (userId !== bridgeUserId) {
+      consoleLog(
+        "info",
+        `not dialing the bridge — this session isn't the designated dialer ("${designated.name}" is).`,
+      );
+      return;
+    }
+  }
+
   const wsUrl = String(game.settings.get(MODULE_ID, SETTING_WS_URL) ?? "");
   const apiKey = String(game.settings.get(MODULE_ID, SETTING_BRIDGE_API_KEY) ?? "");
   if (!wsUrl || !apiKey) {
@@ -103,6 +141,8 @@ Hooks.once("ready", () => {
       system: game.system.id,
       systemVersion: game.system.version,
       foundryVersion: game.version,
+      userId,
+      userName,
     }),
     dispatch: dispatchQuery,
     createWebSocket: (url) => new WebSocket(url),

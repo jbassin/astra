@@ -2,7 +2,7 @@ import { mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
-import type { McpQuery } from "@astra/portal-shared";
+import type { AuthMeta, McpQuery } from "@astra/portal-shared";
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -36,11 +36,11 @@ class FakeModule {
   readonly #opened: Promise<void>;
   #onQuery?: (msg: McpQuery) => void;
 
-  constructor(url: string) {
+  constructor(url: string, meta?: AuthMeta) {
     this.ws = new WebSocket(url);
     this.#opened = new Promise((resolve) => {
       this.ws.once("open", () => {
-        this.ws.send(JSON.stringify({ type: "auth", apiKey: BRIDGE_API_KEY }));
+        this.ws.send(JSON.stringify({ type: "auth", apiKey: BRIDGE_API_KEY, meta }));
         resolve();
       });
     });
@@ -163,6 +163,30 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     expect(JSON.parse(content.text)).toEqual({ connected: false });
 
     await client.close();
+  });
+
+  it("bridge-status round-trips the 0027 D27-8 userName identity via a stub bridge module", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl, { userId: "user1", userName: "Portal" });
+    await mod.ready();
+
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+
+    const result = await client.callTool({ name: "bridge-status" });
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual({
+      connected: true,
+      userId: "user1",
+      userName: "Portal",
+    });
+
+    await client.close();
+    mod.close();
   });
 
   it("surfaces per-param .describe() text in tools/list (the LLM-facing schema docs)", async () => {

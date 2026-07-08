@@ -181,7 +181,7 @@ export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): Mc
   // update-check compares module.json's version string (bumped in lockstep,
   // module.json), and this server-side McpServer version travels with a real MCP
   // client's own connection/capability negotiation.
-  const server = new McpServer({ name: "astra-portal", version: "0.2.0" });
+  const server = new McpServer({ name: "astra-portal", version: "0.3.0" });
 
   server.registerTool(
     "bridge-status",

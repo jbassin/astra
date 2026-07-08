@@ -60,9 +60,11 @@ export class BridgeError extends Error {
 }
 
 /** Liveness + handshake snapshot for the `bridge-status` tool. `worldId`/`world`/
- * `system`/`systemVersion`/`foundryVersion` come straight from the module's S3 auth
- * `meta` (optional — an older module build that doesn't send it just leaves these
- * absent, same as pre-S3). */
+ * `system`/`systemVersion`/`foundryVersion`/`userId`/`userName` come straight from the
+ * module's auth `meta` (optional — an older module build that doesn't send them yet
+ * just leaves these absent, same as pre-S3). `userId`/`userName` (0027 D27-8) are what
+ * lets `bridge-status` prove which Foundry session — e.g. the headless "Portal"
+ * account — currently holds the bridge. */
 export interface BridgeStatus {
   connected: boolean;
   worldId?: string;
@@ -70,6 +72,8 @@ export interface BridgeStatus {
   system?: string;
   systemVersion?: string;
   foundryVersion?: string;
+  userId?: string;
+  userName?: string;
 }
 
 export interface BridgeOptions {

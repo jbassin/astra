@@ -38,6 +38,24 @@ describe("portal-shared bridge envelope", () => {
     expect(AuthMsg.parse(msg)).toEqual(msg);
   });
 
+  it("round-trips an auth handshake carrying the 0027 D27-8 userId/userName meta", () => {
+    const msg = {
+      type: "auth",
+      apiKey: "secret-key",
+      meta: {
+        worldId: "faerrin",
+        world: "Faerrin",
+        system: "pf2e",
+        systemVersion: "7.12.2",
+        foundryVersion: "13.351",
+        userId: "user1",
+        userName: "Portal",
+      },
+    };
+    expect(AuthMsg.parse(msg)).toEqual(msg);
+    expect(BridgeMessage.parse(msg)).toEqual(msg);
+  });
+
   it("rejects extra properties on the strict meta object", () => {
     expect(() =>
       AuthMsg.parse({ type: "auth", apiKey: "k", meta: { worldId: "x", bogus: true } }),
@@ -89,6 +107,8 @@ describe("portal-shared bridge envelope", () => {
         "not-portal-created",
         "validation-failed",
         "execution-failed",
+        // 0027 D27-9 — additive, wire shape untouched.
+        "not-designated",
       ].sort(),
     );
   });

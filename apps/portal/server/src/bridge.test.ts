@@ -121,6 +121,19 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     mod.close();
   });
 
+  it("carries the 0027 D27-8 userId/userName identity onto the status snapshot", async () => {
+    const meta: AuthMeta = {
+      worldId: "faerrin",
+      world: "Faerrin",
+      userId: "user1",
+      userName: "Portal",
+    };
+    const mod = new FakeModule(url, BRIDGE_API_KEY, meta);
+    await mod.ready();
+    expect(bridge.getStatus()).toEqual({ connected: true, ...meta });
+    mod.close();
+  });
+
   it("clears the meta snapshot once the module disconnects", async () => {
     const mod = new FakeModule(url, BRIDGE_API_KEY, { worldId: "faerrin" });
     await mod.ready();
