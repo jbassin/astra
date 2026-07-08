@@ -1,6 +1,11 @@
 # NLSpec 0027 — headless-gm: a supervised 24/7 GM session so portal works with no human tab
 
-**Status:** SPEC (2026-07-08) — not yet built. Slices S1–S4 below; update this header per slice.
+**Status:** IN PROGRESS (2026-07-08) — S1 `32f509b` (dialer + identity) · S2 `f281283` (supervisor
+  service; classify() hardened at review: in-world is positively `/game`, unknown → `world-down`) ·
+  S3 `4914111` (container + compose; non-live acceptance passed: unreachable→`broken` no-crash-loop,
+  /setup-fixture→`world-down` zero-login) — all CI-green + pushed. **▶ S4 remaining:** the live
+  gate (stakeholder-coordinated: "Portal" account, SOPS key, `options.json` edit, `bridge-user-id`
+  + F5, `just up`, exit gate A–H incl. the ≥24h soak).
 **Scope doc:** `thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md` (all claims
   verified 2026-07-08: live host inspected read-only — compose labels, env, `options.json` read
   directly; module/bridge code walked file:line; Foundry v13.351 `/join`+session+`core.noCanvas`

@@ -36,7 +36,48 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-08 — portal-authoring 0026 COMPLETE)
+## Current state — UPDATE THIS SECTION (as of `4914111`, 2026-07-08 — headless-gm 0027 S1–S3 BUILT)
+
+> **▶ headless-gm (0027) — SCOPE + SPEC + S1–S3 BUILT + PUSHED; ▶ RESUME AT S4 (live gate,
+> stakeholder-coordinated).** The stakeholder sanctioned the 0025-parked idea: a supervised
+> headless-Chromium GM session (dedicated Foundry account) as a Compose unit, so portal MCP tools
+> work 24/7 with zero human tabs open.
+> - **Docs (committed):** scope `thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md`
+>   (`5699ab5`, verified vs live host + module code + the live server's own `foundry.mjs`); spec
+>   `thoughts/astra/specs/0027-headless-gm-spec.md` (`68ab06b`, D27-1..14 all resolved,
+>   adversarially reviewed). Stakeholder decisions: **D27-1** world auto-launch via a one-line
+>   `options.json` `"world":"faerrin"` edit (verified currently `null` — a container restart
+>   strands at /setup today); supervisor NEVER touches /setup, no admin key in SOPS; **D27-2**
+>   strict designated dialer (`bridge-user-id` world setting, no fallback); **D27-3** public edge
+>   `btl.iridi.cc`; **D27-4** account "Portal", full GM, password → SOPS
+>   `foundry_portal_gm_password`.
+> - **S1 `32f509b`** — module designated-dialer gate + `dispatchQuery` re-check + new
+>   `not-designated` error code; `AuthMeta`/`BridgeStatus` gain optional `userId`/`userName`
+>   (bridge-status now proves WHO holds the bridge); module+server 0.3.0 lockstep.
+> - **S2 `f281283`** — new nested member `apps/portal/headless` (@astra/portal-headless, port
+>   10373): supervisor state machine (join/in-world/world-down/broken; world-down = polite
+>   backoff-idle, ZERO login attempts) hermetic behind an injected PageAdapter (18 tests, fake
+>   timers); Playwright driver (noCanvas localStorage seed on every (re)launch, `page.on(console)`
+>   warn/error → telemetry — the ONLY way a misconfigured bridge-user-id is visible); `/health`
+>   (ok = process+browser only; world-down is NOT unhealthy); config block `portal-headless` +
+>   BOTH schema mirrors.
+> - **S3 `4914111`** — Dockerfile (vellum-render Chromium recipe × portal-server unbuilt-TS idiom)
+>   + compose unit (`shm_size: 1gb`, healthcheck per D27-11) + the 12-sibling manifest-COPY
+>   ripple. **Proven against non-live targets:** unreachable origin → `broken`, bounded backoff,
+>   no crash-loop; local /setup fixture → `world-down`, zero `/join` hits in the fixture log.
+> - **▶ S4 NEXT — needs Josh at the table:** (1) create user "Portal" (Gamemaster) in-world;
+>   (2) `sops set foundry_portal_gm_password`; (3) the flagged `options.json` edit (root-owned →
+>   docker-as-root); (4) set module `bridge-user-id` to Portal's id + F5 his tab; (5) "deploy it"
+>   → `just up` + GM module update + F5; (6) exit gate A–H incl. zero-tab tool calls,
+>   `bridge-status` userName "Portal", no-oscillation with his tab open, restart resilience,
+>   Return-to-Setup politeness, noCanvas smoke, **≥24h soak** before closing the spec.
+> - ⚠️ **Surfaced to Josh (pre-existing, NOT 0027):** the host Caddy admin API (`localhost:2019`)
+>   is unauthenticated and serves the full config incl. a plaintext Cloudflare DNS token —
+>   `/emerald/data/reverse-proxy` territory; recommend `admin off`/unix-socket when convenient.
+
+---
+
+### Previous section (same day) — portal-authoring 0026 COMPLETE (superseded above)
 
 > **✅ portal-authoring (0026) — COMPLETE, same-day scope→spec→build→deploy→live-acceptance.**
 > Portal is now a full content-authoring surface against the live pf2e "Faerrin" world: **8 new
