@@ -1,6 +1,12 @@
 # NLSpec 0025 — portal-oauth: OAuth 2.1 on portal for claude.ai custom connectors
 
-**Status:** SPEC — ready to implement (3 slices S1–S3).
+**Status:** BUILT + DEPLOYED + LIVE-VERIFIED (2026-07-07) — S1 `b6de520` (authorization server,
+  20 hermetic tests) · S2 `fa988ff` (dual auth + discovery header) · S3 (compose bind mount +
+  `just up`). Acceptance **A–E + G met** (full curl flow through the public edge: 401
+  `resource_metadata` header → DCR → consent → PKCE token → tool call → refresh rotation →
+  old-refresh `invalid_grant`; persistence proven across a container restart; SigNoz
+  `portal.oauth.*` audit events span-linked, no token material). **F (the claude.ai human half)
+  pending** — add the custom connector + consent + chat tool call. H done ([[portal-oauth-0025-gotchas]]).
 **Scope doc:** `thoughts/shared/research/2026-07-07-portal-oauth-0025-thoughts.md` (all claims
   verified 2026-07-07: Anthropic connector docs fetched live; the installed SDK 1.29.0 auth module
   inventoried file-by-file; portal server/config/deploy mapped file:line; the stakeholder's

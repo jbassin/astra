@@ -36,7 +36,32 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-07 evening — portal 0023 live acceptance CLOSED)
+## Current state — UPDATE THIS SECTION (as of 2026-07-07 late evening — portal-oauth 0025 BUILT + DEPLOYED)
+
+> **▶ portal-oauth (0025) — BUILT + DEPLOYED + LIVE-VERIFIED; ONLY the claude.ai connect (human)
+> remains.** claude.ai custom connectors are OAuth-only (the `static_headers` beta isn't on the
+> account), so portal-server now runs a single-user **OAuth 2.1 authorization server** on the MCP
+> SDK's own `mcpAuthRouter` toolkit: DCR with a claude.ai+loopback redirect allowlist, a consent
+> page keyed on the existing `portal_mcp_api_key` (no new SOPS keys), opaque sha256-hashed tokens
+> (1h access, rotate-on-refresh), JSON state persisted on the new `artifacts/portal-oauth` bind
+> mount (connections survive redeploys — live-proven). `/mcp` is dual-auth (legacy static key OR
+> OAuth token — the Claude Code config is untouched); 401s carry the `WWW-Authenticate:
+> resource_metadata` discovery header. S1 `b6de520` · S2 `fa988ff` · S3 deploy; spec
+> `thoughts/astra/specs/0025-portal-oauth-spec.md` status BUILT (acceptance A–E,G,H met); gotchas
+> [[portal-oauth-0025-gotchas]]. **Live-verified through the public edge:** discovery docs, full
+> DCR→consent→PKCE→token→tool-call flow, refresh rotation + old-refresh `invalid_grant`,
+> persistence across a container restart, SigNoz `portal.oauth.*` audit events, legacy bearer
+> still green.
+>
+> **▶ NEXT — acceptance F (Josh, ~2 min):** claude.ai → Settings → Connectors → Add custom
+> connector → URL `https://portal.iridi.cc/mcp` (leave client ID/secret EMPTY) → Claude opens the
+> consent page → paste the `portal_mcp_api_key` value → connected. Then enable the connector in a
+> chat and call a tool (world launched for real reads/writes; `bridge-status` works regardless).
+> A `just up` later must NOT require re-consent (persistence).
+
+---
+
+### Previous section (same day) — portal 0023 live acceptance CLOSED (2026-07-07 evening)
 
 > **✅ portal (0023) — COMPLETE, ALL ACCEPTANCE A–H MET.** All 6 slices built + pushed
 > (`87f633f`…`18cecff`), deployed live at `portal.iridi.cc`, and — this session — the GM (Josh)

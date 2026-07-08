@@ -532,6 +532,11 @@ services:
     environment:
       PORTAL_MCP_API_KEY: ${PORTAL_MCP_API_KEY:-}
       PORTAL_BRIDGE_API_KEY: ${PORTAL_BRIDGE_API_KEY:-}
+    # 0025 OAuth state (registered claude.ai clients + hashed tokens) bind-mounted
+    # from artifacts/ so connections survive redeploys; container path matches kdl
+    # portal.oauth-state-path (/data/oauth/state.json). Writes land 1000:1000.
+    volumes:
+      - /ruby/data/experiments/astra/artifacts/portal-oauth:/data/oauth
     ports:
       - "10372:10372" # portal (astra range) — also reachable directly
     networks: [signoz-net]
