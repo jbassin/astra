@@ -14,6 +14,7 @@
 import { BridgeClient } from "./bridgeClient";
 import {
   MODULE_ID,
+  SETTING_ALLOW_MACRO_EXECUTION,
   SETTING_ALLOW_WRITES,
   SETTING_BRIDGE_API_KEY,
   SETTING_WS_URL,
@@ -44,6 +45,18 @@ function registerSettings(): void {
     hint:
       "Let a connected MCP client create tokens/items/journals in this world. On by " +
       "default (D8) — reads are always allowed regardless of this setting.",
+    scope: "world",
+    config: true,
+    type: Boolean,
+    default: true,
+    restricted: true,
+  });
+  game.settings.register(MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION, {
+    name: "Allow macro execution",
+    hint:
+      "Let a connected MCP client run existing macros immediately, as the GM (0026 D-9) — " +
+      "a script macro is arbitrary GM-privileged JavaScript. On by default; switch off to block " +
+      'ONLY execution (creating/editing macros via "Allow write operations" is unaffected).',
     scope: "world",
     config: true,
     type: Boolean,

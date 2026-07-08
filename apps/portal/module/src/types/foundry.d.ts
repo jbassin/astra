@@ -36,14 +36,33 @@ interface FoundrySystem {
 
 /** The subset of a Foundry Document (actor/item/journal/scene/compendium entry) the S4
  * read tools touch — `toObject()` is the D5 "opaque cargo" escape hatch (never model
- * pf2e `system.*`), the rest is plain document identity. */
+ * pf2e `system.*`), the rest is plain document identity. `type`/`flags` (0026 S3) are
+ * optional: most S3/S4 read-tool stand-ins never carry either, and both are genuinely
+ * absent on some real document kinds — `type` is D-10's "is this a PC" discriminator
+ * (`documentName === "Actor" && type === "character"`), `flags` is D-4's stamp-read
+ * surface (`flags["astra-portal"]?.created`). */
 interface FoundryDocumentLike {
   readonly id: string;
   readonly uuid: string;
   readonly name: string;
   readonly documentName: string;
+  readonly type?: string;
   readonly folder?: { readonly name: string } | null;
+  readonly flags?: Record<string, unknown>;
   toObject(): Record<string, unknown>;
+}
+
+/** The instance-mutation surface `update-document` (0026 S3 D-10) and
+ * `delete-document` (D-4) need — every world/embedded document `fromUuid` can
+ * resolve supports both `update()`/`delete()` in real Foundry (Actor/Item/Scene/
+ * AmbientLight/Macro alike). Deliberately narrower than baking these onto the base
+ * `FoundryDocumentLike`: every OTHER handler in this module only ever reads/creates,
+ * so this keeps the ripple confined to the two handlers that actually mutate an
+ * existing document, via a narrowing cast at the call site (same idiom as
+ * `createChecked`'s `as FoundryActor`, `types/foundry.d.ts` policy). */
+interface FoundryMutableDocument extends FoundryDocumentLike {
+  update(changes: Record<string, unknown>): Promise<unknown>;
+  delete(): Promise<unknown>;
 }
 
 /** A `CompendiumCollection#getIndex()` (or `#index`) entry — Foundry 13 index rows
@@ -116,18 +135,59 @@ interface FoundryItemLike extends FoundryDocumentLike {
   readonly rules?: FoundryRuleElement[];
 }
 
+/** One pf2e condition item as read off an actor's own `itemTypes.condition` array
+ * (0026 S3 D-14) — the same surface `ActorPF2e#increaseCondition` itself reads
+ * internally (verified `pf2e-7.12.2` `src/module/actor/base.ts:1777`), so this is the
+ * cheapest post-action read-back: no separate `ActorConditions` collection API
+ * needed. `value: null` covers both a valueless condition (e.g. "prone") and a
+ * persistent-damage instance (which tracks its formula, not a numeric value). */
+interface FoundryConditionLike {
+  readonly slug: string;
+  readonly active: boolean;
+  readonly value: number | null;
+}
+
 /** A world Actor (S5) — extends the general document surface with the one
  * actor-specific call `create-token` needs: cloning the actor's prototype token at a
  * given position (D13 "import-then-tokenize"), plus (0026 S2) embedding items
  * directly on the actor (`create-actor`'s `items[]`, `create-item`'s `actorId` path)
  * — the return type carries {@link FoundryItemLike} so callers can read `.rules`
- * straight off the result without an extra cast. */
+ * straight off the result without an extra cast. (0026 S3 D-14) adds pf2e's own
+ * `ConditionManager`-backed condition mutators + the `itemTypes.condition` read-back
+ * surface — required, not optional: every actor in a pf2e world carries them (this
+ * module targets pf2e exclusively), so a handler that can't find them at runtime
+ * (`apply-condition`'s `requireActorMethod` in `handlers.ts`) treats it as a genuine
+ * `foundry-error`, not a type-level maybe. */
 interface FoundryActor extends FoundryDocumentLike {
   getTokenDocument(pos: { x: number; y: number }): Promise<FoundryTokenDocumentLike>;
   createEmbeddedDocuments(
     embeddedName: string,
     data: Record<string, unknown>[],
   ): Promise<FoundryItemLike[]>;
+  increaseCondition(slug: string, options?: { value?: number }): Promise<unknown>;
+  decreaseCondition(slug: string): Promise<unknown>;
+  toggleCondition(slug: string): Promise<unknown>;
+  readonly itemTypes: { readonly condition: readonly FoundryConditionLike[] };
+}
+
+/** A world Macro (0026 S3 D-9) — `execute()` is Foundry's own run-immediately call;
+ * `create-macro` (S2) never invokes it, only `execute-macro` (S3) does. */
+interface FoundryMacro extends FoundryDocumentLike {
+  execute(): Promise<unknown>;
+}
+
+/** `game.pf2e.ConditionManager` (0026 S3 D-14) — the ONE static call `apply-
+ * condition`'s persistent-damage non-dialog path needs: a fresh, un-owned
+ * `persistent-damage` condition source to merge `{formula, damageType, dc}` onto
+ * (verified `pf2e-7.12.2` `src/module/item/condition/persistent-damage-editor.ts`
+ * `#onClickAdd`). Not part of the general `foundry.utils`-style ambient surface —
+ * scoped to its own `game.pf2e` namespace, mirroring the real API shape. */
+interface FoundryPf2eConditionManager {
+  getCondition(slug: string): { toObject(): Record<string, unknown> };
+}
+
+interface FoundryPf2eNamespace {
+  readonly ConditionManager: FoundryPf2eConditionManager;
 }
 
 /** A world Folder (S5) — `import-from-compendium`/`create-journal`'s `folder` param
@@ -217,6 +277,12 @@ interface FoundryGame {
   readonly scenes: FoundryScenesCollection;
   /** S5's folder-by-name lookup surface (`import-from-compendium`/`create-journal`). */
   readonly folders: FoundryFoldersCollection;
+  /** `execute-macro`'s (0026 S3) macro-by-id lookup. */
+  readonly macros: FoundryWorldCollection<FoundryMacro>;
+  /** `apply-condition`'s (0026 S3 D-14) persistent-damage non-dialog path. Required,
+   * not optional — same "this module targets pf2e exclusively" reasoning as
+   * `FoundryActor`'s condition methods. */
+  readonly pf2e: FoundryPf2eNamespace;
 }
 
 /** One entry of Foundry 13's `CONFIG.queries` registry — the dispatch surface a `query`

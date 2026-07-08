@@ -8,9 +8,12 @@
  * read/write tools) gets the same GM re-check + error wrapping for free.
  */
 import {
+  ApplyConditionParams,
+  type ApplyConditionResult,
   type BridgeErrorCode,
   type CompendiumIndexRow,
   type CompendiumPackRow,
+  type ConditionAction,
   type CreatedTokenRow,
   CreateActorParams,
   type CreateActorResult,
@@ -25,6 +28,10 @@ import {
   CreateTokenParams,
   type CreateTokenResult,
   type CurrentSceneInfo,
+  DeleteDocumentParams,
+  type DeleteDocumentResult,
+  ExecuteMacroParams,
+  type ExecuteMacroResult,
   GetCurrentSceneParams,
   type GetCurrentSceneResult,
   GetDocumentParams,
@@ -36,15 +43,18 @@ import {
   type ListCompendiumPacksResult,
   ListScenesParams,
   type ListScenesResult,
+  type PersistentDamageParams,
   SearchCompendiumParams,
   type SearchCompendiumResult,
   SearchWorldParams,
   type SearchWorldResult,
+  UpdateDocumentParams,
+  type UpdateDocumentResult,
   type WorldSearchRow,
   type WorldSearchType,
 } from "@astra/portal-shared";
 
-import { MODULE_ID, SETTING_ALLOW_WRITES } from "./constants";
+import { MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION, SETTING_ALLOW_WRITES } from "./constants";
 
 /** Default `search-compendium`/`search-world` result cap when the caller doesn't
  * specify one — generous enough for an LLM to scan, small enough not to flood context. */
@@ -397,6 +407,27 @@ async function createEmbeddedChecked(
   }
 }
 
+/** Mirrors {@link createChecked} for the mutation path (0026 S3 D-10) — maps a
+ * `DataModelValidationError` from `doc.update()` to the same typed `validation-failed`
+ * (Foundry's message preserved verbatim; the caller is an LLM, the message IS its
+ * repair loop). `update-document` is the only caller. */
+async function updateChecked(
+  doc: FoundryMutableDocument,
+  updates: Record<string, unknown>,
+): Promise<void> {
+  try {
+    await doc.update(updates);
+  } catch (err) {
+    if (isDataModelValidationError(err)) {
+      throw new BridgeHandlerError(
+        "validation-failed",
+        err instanceof Error ? err.message : String(err),
+      );
+    }
+    throw err;
+  }
+}
+
 /** D-7 RE read-back: after an item is created OWNED (embedded on an actor — only then
  * does pf2e instantiate rule elements at data-prep), inspect what actually came back.
  * Two findings, both surfaced as plain strings naming the item:
@@ -693,6 +724,335 @@ async function handleCreateMacro(rawParams: unknown): Promise<CreateMacroResult>
   }
 }
 
+// ---------------------------------------------------------------------------
+// S3 authoring tools (spec 0026 D-4/D-9/D-10/D-14) — apply-condition,
+// update-document, delete-document, execute-macro.
+// ---------------------------------------------------------------------------
+
+/** Looks up one of {@link FoundryActor}'s three ConditionManager-backed mutators and
+ * throws a typed `foundry-error` (naming the method) if it's missing at runtime,
+ * rather than a raw `TypeError` — defense in depth even though the ambient type
+ * declares all three as required (this module targets pf2e exclusively, `types/
+ * foundry.d.ts`'s `FoundryActor` doc comment). */
+function requireActorMethod<
+  K extends "increaseCondition" | "decreaseCondition" | "toggleCondition",
+>(actor: FoundryActor, method: K): FoundryActor[K] {
+  const fn = actor[method];
+  if (typeof fn !== "function") {
+    throw new BridgeHandlerError(
+      "foundry-error",
+      `actor does not support ${method} — is this world running the pf2e system?`,
+    );
+  }
+  return fn;
+}
+
+/** D-14 read-back: after ANY apply-condition action, report the resulting state by
+ * inspecting the actor's own `itemTypes.condition` array directly — the same surface
+ * `ActorPF2e#increaseCondition` itself reads internally (verified `pf2e-7.12.2`
+ * `src/module/actor/base.ts:1777`) — rather than trusting any one action method's own
+ * return value (increase/decrease/toggle each return a different, inconsistent
+ * shape: the condition itself, `void`, or a `boolean`). */
+function readConditionState(
+  actor: FoundryActor,
+  slug: string,
+): { active: boolean; value?: number } {
+  const match = actor.itemTypes.condition.find((c) => c.slug === slug && c.active);
+  return { active: match !== undefined, value: match?.value ?? undefined };
+}
+
+/** D-14's persistent-damage special case, verified against pf2e-7.12.2's own
+ * `PersistentDamageEditor#onClickAdd` (`src/module/item/condition/persistent-damage-
+ * editor.ts:114-130`): a persistent-damage instance is created by taking
+ * `game.pf2e.ConditionManager.getCondition("persistent-damage").toObject()` and
+ * deep-merging `{system: {persistent: {formula, damageType, dc}}}` on top, then
+ * `actor.createEmbeddedDocuments("Item", [...])` — NEVER `actor.increaseCondition`,
+ * which for this one slug opens `PersistentDamageEditor` as a GM-browser dialog
+ * instead of creating anything at all (`src/module/actor/base.ts:1766-1770`), a UI
+ * trigger this bridge must never cause. The created item is portal-stamped (D-6) like
+ * every other document this module creates. */
+async function createPersistentDamage(
+  actor: FoundryActor,
+  persistentDamage: PersistentDamageParams | undefined,
+): Promise<void> {
+  if (!persistentDamage) {
+    throw new BridgeHandlerError(
+      "validation-failed",
+      "persistent-damage requires persistentDamage: {formula, damageType, dc?} — increasing " +
+        "this condition without them would otherwise open an editor dialog in the GM's own " +
+        "browser, which this bridge never triggers",
+    );
+  }
+  if (typeof game.pf2e?.ConditionManager?.getCondition !== "function") {
+    throw new BridgeHandlerError(
+      "foundry-error",
+      "game.pf2e.ConditionManager is not available — is this world running the pf2e system?",
+    );
+  }
+  const base = game.pf2e.ConditionManager.getCondition("persistent-damage").toObject();
+  const persistentSource = foundry.utils.mergeObject(
+    base,
+    {
+      system: {
+        persistent: {
+          formula: persistentDamage.formula,
+          damageType: persistentDamage.damageType,
+          dc: persistentDamage.dc,
+        },
+      },
+    },
+    { inplace: false },
+  );
+  persistentSource.flags = withStamp(persistentSource.flags, "apply-condition");
+  await createEmbeddedChecked(actor, "Item", [persistentSource]);
+}
+
+/** Routes a `persistent-damage` `apply-condition` call to the non-dialog path
+ * ({@link createPersistentDamage}) or, when the call is actually a removal, to pf2e's
+ * OWN `decreaseCondition` — which already special-cases persistent-damage as a plain
+ * delete-by-key with no dialog risk at all (`src/module/actor/base.ts:1745-1750`), so
+ * that half needs no bespoke handling here. A `toggle` decides which branch it is by
+ * reading the CURRENT state first (D-14 read-back, reused for the decision as well as
+ * the result). */
+async function applyPersistentDamage(
+  actor: FoundryActor,
+  action: ConditionAction,
+  persistentDamage: PersistentDamageParams | undefined,
+): Promise<void> {
+  const currentlyActive = readConditionState(actor, "persistent-damage").active;
+  const removing = action === "decrease" || (action === "toggle" && currentlyActive);
+  if (removing) {
+    await requireActorMethod(actor, "decreaseCondition").call(actor, "persistent-damage");
+    return;
+  }
+  // "increase", or a toggle turning it ON — both need the non-dialog create.
+  await createPersistentDamage(actor, persistentDamage);
+}
+
+/** Every non-`persistent-damage` slug: pf2e's own `ConditionManager`-backed actor
+ * methods handle add/remove/toggle correctly with no dialog risk (D-14) — this
+ * module never hand-builds a condition item for these. `decreaseCondition` takes no
+ * amount parameter of its own (`pf2e-7.12.2` `src/module/actor/base.ts:1737-1759`
+ * steps by exactly 1 per call), so a `decrease` with `value > 1` is applied as that
+ * many sequential calls; `increaseCondition`'s own `value` option IS an addend, so
+ * `increase` needs only one call. */
+async function applyStandardCondition(
+  actor: FoundryActor,
+  slug: string,
+  action: ConditionAction,
+  value: number | undefined,
+): Promise<void> {
+  if (action === "increase") {
+    const fn = requireActorMethod(actor, "increaseCondition");
+    await fn.call(actor, slug, value !== undefined ? { value } : undefined);
+  } else if (action === "decrease") {
+    const fn = requireActorMethod(actor, "decreaseCondition");
+    for (let i = 0; i < (value ?? 1); i++) {
+      await fn.call(actor, slug);
+    }
+  } else {
+    await requireActorMethod(actor, "toggleCondition").call(actor, slug);
+  }
+}
+
+/** `apply-condition` (spec 0026 S3/D-14) — wraps `game.pf2e.ConditionManager`'s own
+ * actor-side surface for increase/decrease/toggle; never hand-builds a condition
+ * item except in the persistent-damage non-dialog path (see
+ * {@link applyPersistentDamage}). `writeGate(1)` because this IS a write (it creates
+ * or mutates a condition item embedded on the actor) even though it never counts
+ * against the D-8 create cap (server `mcp.ts` registers no `creates` for this tool). */
+async function handleApplyCondition(rawParams: unknown): Promise<ApplyConditionResult> {
+  const params = ApplyConditionParams.parse(rawParams);
+  try {
+    writeGate(1);
+    const actor = game.actors.get(params.actorId);
+    if (!actor) {
+      throw new BridgeHandlerError("not-found", `actor not found: ${params.actorId}`);
+    }
+
+    if (params.slug === "persistent-damage") {
+      await applyPersistentDamage(actor, params.action, params.persistentDamage);
+    } else {
+      await applyStandardCondition(actor, params.slug, params.action, params.value);
+    }
+
+    const state = readConditionState(actor, params.slug);
+    const result: ApplyConditionResult = {
+      actorUuid: actor.uuid,
+      slug: params.slug,
+      active: state.active,
+      value: state.value,
+    };
+    auditLog(
+      "apply-condition",
+      params,
+      `ok (${params.slug} ${params.action} on ${actor.id} -> active=${state.active})`,
+    );
+    return result;
+  } catch (err) {
+    auditLog("apply-condition", params, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
+/** The known-derived PC source paths (0026 D-10) — `CharacterSystemSource` types
+ * `perception`/`saves`/`traits` as `never` and AC/class DC are computed every prep
+ * cycle, so hand-setting any of these on a `type: "character"` actor would either be
+ * silently discarded or corrupt data-prep. Segment-boundary matched (`key === prefix
+ * || key.startsWith(prefix + ".")`) so e.g. "system.perceptionFoo" — NOT an actual
+ * derived path — is never falsely caught. */
+const PC_DERIVED_PATH_PREFIXES = [
+  "system.saves",
+  "system.perception",
+  "system.traits",
+  "system.attributes.ac",
+  "system.attributes.classDC",
+];
+
+function isDerivedPcPath(path: string): boolean {
+  return PC_DERIVED_PATH_PREFIXES.some(
+    (prefix) => path === prefix || path.startsWith(`${prefix}.`),
+  );
+}
+
+/** `update-document` (spec 0026 S3/D-10) — generic dot-path diff-merge update by
+ * uuid, resolved the same forward-safe way `get-document` already does. The D-10
+ * deny-list ONLY applies to `type: "character"` actors (NPCs/hazards/items/scenes/
+ * macros have no such restriction); it's a pre-flight check on the REQUESTED keys,
+ * not a read-back, so a denied path never reaches `doc.update()` at all. The audit
+ * line carries the touched PATHS, never the values (0026 S3 scope — values may be
+ * long HTML; the server-side audit already logs the full params). */
+async function handleUpdateDocument(rawParams: unknown): Promise<UpdateDocumentResult> {
+  const params = UpdateDocumentParams.parse(rawParams);
+  const paths = Object.keys(params.updates);
+  try {
+    writeGate(1);
+    const doc = await fromUuid(params.uuid);
+    if (!doc) {
+      throw new BridgeHandlerError("not-found", `not found: ${params.uuid}`);
+    }
+    if (doc.documentName === "Actor" && doc.type === "character") {
+      const deniedPath = paths.find(isDerivedPcPath);
+      if (deniedPath !== undefined) {
+        throw new BridgeHandlerError(
+          "validation-failed",
+          `"${deniedPath}" is a derived path on a player character — pf2e recomputes it every ` +
+            "data-prep cycle, so it can't be hand-set (update-document's description lists the " +
+            "writable PC source paths instead)",
+        );
+      }
+    }
+    // Narrowing cast, not a lossy one (mirrors `createChecked`'s `as FoundryActor`):
+    // every document `fromUuid` can resolve — Actor/Item/Scene/AmbientLight/Macro
+    // alike — supports `update()` in real Foundry; `types/foundry.d.ts` keeps it off
+    // the base `FoundryDocumentLike` only to confine the ripple to this one handler.
+    await updateChecked(doc as FoundryMutableDocument, params.updates);
+    const result: UpdateDocumentResult = { uuid: params.uuid, updatedPaths: paths };
+    auditLog("update-document", { uuid: params.uuid, paths }, "ok");
+    return result;
+  } catch (err) {
+    auditLog("update-document", { uuid: params.uuid, paths }, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
+/** `delete-document` (spec 0026 S3/D-4) — refuses anything not stamped
+ * `flags["astra-portal"].created === true` (D-6): portal can only clean up after
+ * itself, never destroy hand-authored content. Works uniformly for world AND
+ * embedded uuids (`Scene.<id>.AmbientLight.<id>`, `Actor.<id>.Item.<id>`) — `fromUuid`
+ * resolves both, and Foundry's `document.delete()` on an embedded doc delegates to
+ * its parent's `deleteEmbeddedDocuments` correctly on its own. */
+async function handleDeleteDocument(rawParams: unknown): Promise<DeleteDocumentResult> {
+  const params = DeleteDocumentParams.parse(rawParams);
+  try {
+    writeGate(1);
+    const doc = await fromUuid(params.uuid);
+    if (!doc) {
+      throw new BridgeHandlerError("not-found", `not found: ${params.uuid}`);
+    }
+    const stamp = doc.flags?.["astra-portal"] as { created?: boolean } | undefined;
+    if (stamp?.created !== true) {
+      throw new BridgeHandlerError(
+        "not-portal-created",
+        `refusing to delete ${params.uuid} — it carries no astra-portal creation stamp; this ` +
+          "tool can only delete documents portal itself created (D-4)",
+      );
+    }
+    // Same narrowing-cast reasoning as `update-document` above.
+    await (doc as FoundryMutableDocument).delete();
+    auditLog("delete-document", params, "ok");
+    return { uuid: params.uuid, deleted: true };
+  } catch (err) {
+    auditLog("delete-document", params, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
+/** Foundry's `Macro#execute()` return value is arbitrary script-macro JS output (or
+ * `undefined` for a chat macro / a script that returns nothing) — best-effort
+ * JSON-stringified and capped so one wildly chatty macro can't blow up the tool
+ * result size; `String(value)` is the fallback for anything `JSON.stringify` itself
+ * can't handle (e.g. a value containing a BigInt). */
+const EXECUTE_MACRO_RETURN_CAP = 8 * 1024; // 8 KiB
+
+function stringifyReturned(value: unknown): string | undefined {
+  if (value === undefined) return undefined;
+  let text: string;
+  try {
+    const json = JSON.stringify(value);
+    text = json === undefined ? String(value) : json;
+  } catch {
+    text = String(value);
+  }
+  return text.length > EXECUTE_MACRO_RETURN_CAP
+    ? `${text.slice(0, EXECUTE_MACRO_RETURN_CAP)}… (truncated)`
+    : text;
+}
+
+/** `execute-macro` (spec 0026 S3/D-9) — runs an existing world macro immediately, as
+ * the GM. Gated by BOTH the normal write gate and the module's own `allow-macro-
+ * execution` setting, independently switchable off without touching `allow-write-
+ * operations` — reuses the `writes-disabled` code (D-11's final error-code list has
+ * no separate "execution-disabled" entry) with a message naming THIS specific
+ * setting, so an LLM client can still tell the two refusals apart by text even though
+ * `.code` is shared. A macro's own command text was already audited in full at
+ * create (create-macro, D-9); this audit line only ever needs id+name+outcome. */
+async function handleExecuteMacro(rawParams: unknown): Promise<ExecuteMacroResult> {
+  const params = ExecuteMacroParams.parse(rawParams);
+  try {
+    writeGate(1);
+    if (game.settings.get(MODULE_ID, SETTING_ALLOW_MACRO_EXECUTION) === false) {
+      throw new BridgeHandlerError(
+        "writes-disabled",
+        'macro execution is disabled — enable the "Allow macro execution" module setting ' +
+          "(other writes are unaffected by this setting)",
+      );
+    }
+    const macro = game.macros.get(params.macroId);
+    if (!macro) {
+      throw new BridgeHandlerError("not-found", `macro not found: ${params.macroId}`);
+    }
+    let returned: unknown;
+    try {
+      returned = await macro.execute();
+    } catch (err) {
+      throw new BridgeHandlerError(
+        "execution-failed",
+        err instanceof Error ? err.message : String(err),
+      );
+    }
+    const result: ExecuteMacroResult = {
+      macroId: params.macroId,
+      returned: stringifyReturned(returned),
+    };
+    auditLog("execute-macro", params, `ok (macro ${macro.id} "${macro.name}")`);
+    return result;
+  } catch (err) {
+    auditLog("execute-macro", params, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
 /** Clone-from-compendium core (D5): resolve `uuid` (must be a compendium document —
  * never a world uuid, so this tool can never be used to duplicate an already-imported
  * actor), take its OWN `toObject()` verbatim (never a hand-authored pf2e `system.*`
@@ -890,6 +1250,10 @@ export function registerHandlers(): void {
   CONFIG.queries[queryKey("create-item")] = handleCreateItem;
   CONFIG.queries[queryKey("create-light")] = handleCreateLight;
   CONFIG.queries[queryKey("create-macro")] = handleCreateMacro;
+  CONFIG.queries[queryKey("apply-condition")] = handleApplyCondition;
+  CONFIG.queries[queryKey("update-document")] = handleUpdateDocument;
+  CONFIG.queries[queryKey("delete-document")] = handleDeleteDocument;
+  CONFIG.queries[queryKey("execute-macro")] = handleExecuteMacro;
 }
 
 /**

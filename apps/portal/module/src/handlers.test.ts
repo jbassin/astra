@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { SETTING_ALLOW_WRITES } from "./constants";
+import { SETTING_ALLOW_MACRO_EXECUTION, SETTING_ALLOW_WRITES } from "./constants";
 import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./handlers";
 
 /** A fake `FoundryPacksCollection`/`FoundryWorldCollection`/`FoundryScenesCollection`/
@@ -48,12 +48,16 @@ function fakeDoc(opts: {
   documentName: string;
   folder?: string;
   data?: Record<string, unknown>;
+  type?: string;
+  flags?: Record<string, unknown>;
 }): FoundryActor {
   return {
     id: opts.id,
     uuid: opts.uuid,
     name: opts.name,
     documentName: opts.documentName,
+    type: opts.type,
+    flags: opts.flags,
     folder: opts.folder !== undefined ? { name: opts.folder } : null,
     // `structuredClone`, not the same `opts.data` reference every call: real Foundry's
     // `toObject()` always hands back a FRESH plain-object clone, never the live
@@ -69,6 +73,15 @@ function fakeDoc(opts: {
     // defensive case) — S2 tests needing control over the returned `rules` override
     // this with `fakeItemEmbedded`'s `fn` instead.
     createEmbeddedDocuments: fakeCreateEmbeddedDocuments,
+    // 0026 S3 defaults: never called/read unless a test explicitly exercises
+    // apply-condition (`fakeConditionActor` below overrides all four) — present here
+    // only so every existing `fakeDoc`/`fakeScene`/`fakeActorDocumentClass` call site
+    // (S3/S4/S2, none of which touch conditions) keeps satisfying `FoundryActor`'s
+    // now-required condition surface.
+    increaseCondition: () => Promise.resolve(null),
+    decreaseCondition: () => Promise.resolve(),
+    toggleCondition: () => Promise.resolve(),
+    itemTypes: { condition: [] },
   };
 }
 
@@ -204,6 +217,13 @@ interface FoundryStubOverrides {
   settings?: Record<string, unknown>;
   /** S5 — `getDocumentClass` per document type; see {@link fakeDocumentClass}. */
   getDocumentClass?: (documentName: string) => FoundryDocumentClass;
+  /** 0026 S3 — `execute-macro`'s `game.macros.get` lookup. */
+  macros?: FoundryMacro[];
+  /** 0026 S3 — `apply-condition`'s persistent-damage non-dialog path
+   * (`game.pf2e.ConditionManager.getCondition`); defaults to a stand-in returning a
+   * bare `{system: {value: {value: null}}}` persistent-damage source, close enough to
+   * real pf2e's compendium condition source for these Foundry-free tests. */
+  conditionManager?: FoundryPf2eConditionManager;
 }
 
 /** Stubs the ambient Foundry globals `handlers.ts` touches (`game`, `CONFIG`,
@@ -228,6 +248,18 @@ function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void 
       active: (overrides.scenes ?? []).find((s) => s.active) ?? null,
     },
     folders: fakeValuesCollection(overrides.folders ?? []),
+    macros: fakeValuesCollection(overrides.macros ?? []),
+    pf2e: {
+      ConditionManager: overrides.conditionManager ?? {
+        getCondition: () => ({
+          toObject: () => ({
+            name: "Persistent Damage",
+            type: "condition",
+            system: { value: { value: null } },
+          }),
+        }),
+      },
+    },
   };
   globalThis.CONFIG = { queries: {} };
   globalThis.fromUuid = overrides.fromUuid ?? (() => Promise.resolve(null));
@@ -1346,6 +1378,523 @@ describe("portal-module S2 authoring tools (spec 0026 S2 — Foundry-free)", () 
         macroType: "chat",
         command: "hi",
       }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+});
+
+describe("portal-module S3 authoring tools (spec 0026 S3 — Foundry-free)", () => {
+  afterEach(() => {
+    // @ts-expect-error — tearing down the stub between tests, not a real Foundry global.
+    delete globalThis.game;
+    // @ts-expect-error — same.
+    delete globalThis.CONFIG;
+    // @ts-expect-error — same.
+    delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
+  });
+
+  /** A pf2e-ConditionManager-backed fake actor (D-14): tracks condition state as a
+   * local mutable array so a handler's increase/decrease/toggle/createEmbeddedDocuments
+   * call and the subsequent read-back see one consistent world, with no real pf2e/
+   * Foundry runtime. `calls` records which underlying method actually fired, so a
+   * test can prove e.g. "increaseCondition was NEVER called for persistent-damage" —
+   * the non-dialog path was taken instead. Persistent-damage creation is hardcoded to
+   * always land as `{slug: "persistent-damage", active: true, value: null}`: the only
+   * caller in this module is `createPersistentDamage`, which only ever touches that
+   * one slug. */
+  function fakeConditionActor(initial: FoundryConditionLike[] = []): FoundryActor & {
+    calls: { increase: number; decrease: number; toggle: number; createEmbedded: number };
+  } {
+    const state: FoundryConditionLike[] = initial.map((c) => ({ ...c }));
+    const calls = { increase: 0, decrease: 0, toggle: 0, createEmbedded: 0 };
+
+    function upsert(slug: string, active: boolean, value: number | null): void {
+      const idx = state.findIndex((c) => c.slug === slug);
+      const entry = { slug, active, value };
+      if (idx === -1) state.push(entry);
+      else state[idx] = entry;
+    }
+
+    return {
+      ...fakeDoc({ id: "a1", uuid: "Actor.a1", name: "Test NPC", documentName: "Actor" }),
+      calls,
+      get itemTypes() {
+        return { condition: state };
+      },
+      increaseCondition: (slug: string, options?: { value?: number }) => {
+        calls.increase += 1;
+        const existing = state.find((c) => c.slug === slug && c.active);
+        upsert(slug, true, (existing?.value ?? 0) + (options?.value ?? 1));
+        return Promise.resolve(null);
+      },
+      decreaseCondition: (slug: string) => {
+        calls.decrease += 1;
+        const idx = state.findIndex((c) => c.slug === slug && c.active);
+        if (idx !== -1) state.splice(idx, 1);
+        return Promise.resolve();
+      },
+      toggleCondition: (slug: string) => {
+        calls.toggle += 1;
+        const idx = state.findIndex((c) => c.slug === slug && c.active);
+        if (idx !== -1) state.splice(idx, 1);
+        else state.push({ slug, active: true, value: null });
+        return Promise.resolve();
+      },
+      createEmbeddedDocuments: (embeddedName: string, data: Record<string, unknown>[]) => {
+        calls.createEmbedded += 1;
+        upsert("persistent-damage", true, null);
+        return fakeCreateEmbeddedDocuments(embeddedName, data);
+      },
+    };
+  }
+
+  describe("apply-condition (D-14)", () => {
+    it("increases a valued condition from nothing, returning the resulting value", async () => {
+      const actor = fakeConditionActor();
+      stubFoundry(true, { actors: [actor] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.apply-condition", {
+        actorId: "a1",
+        slug: "frightened",
+        action: "increase",
+        value: 2,
+      })) as { actorUuid: string; slug: string; active: boolean; value?: number };
+      expect(result).toEqual({ actorUuid: "Actor.a1", slug: "frightened", active: true, value: 2 });
+      expect(actor.calls.increase).toBe(1);
+    });
+
+    it("decreases a valued condition, reflecting the new value in the read-back", async () => {
+      const actor = fakeConditionActor([{ slug: "frightened", active: true, value: 2 }]);
+      stubFoundry(true, { actors: [actor] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.apply-condition", {
+        actorId: "a1",
+        slug: "frightened",
+        action: "decrease",
+      })) as { active: boolean };
+      // This fake's decreaseCondition removes on any call (see helper) — proving the
+      // wrapper dispatches to decreaseCondition at all, which is the S3 contract;
+      // pf2e's own step-by-1 arithmetic is pf2e's problem, not this module's.
+      expect(actor.calls.decrease).toBe(1);
+      expect(result.active).toBe(false);
+    });
+
+    it("toggles a valueless condition on then off", async () => {
+      const actor = fakeConditionActor();
+      stubFoundry(true, { actors: [actor] });
+      registerHandlers();
+      const on = (await dispatchQuery("portal.apply-condition", {
+        actorId: "a1",
+        slug: "prone",
+        action: "toggle",
+      })) as { active: boolean };
+      expect(on).toEqual({ actorUuid: "Actor.a1", slug: "prone", active: true });
+
+      const off = (await dispatchQuery("portal.apply-condition", {
+        actorId: "a1",
+        slug: "prone",
+        action: "toggle",
+      })) as { active: boolean };
+      expect(off.active).toBe(false);
+      expect(actor.calls.toggle).toBe(2);
+    });
+
+    it("rejects an unknown actorId with a typed not-found error", async () => {
+      stubFoundry(true, { actors: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.apply-condition", {
+        actorId: "no-such-actor",
+        slug: "prone",
+        action: "toggle",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    describe("persistent-damage special case", () => {
+      it("rejects increase without persistentDamage params, naming what's missing", async () => {
+        const actor = fakeConditionActor();
+        stubFoundry(true, { actors: [actor] });
+        registerHandlers();
+        const err = await dispatchQuery("portal.apply-condition", {
+          actorId: "a1",
+          slug: "persistent-damage",
+          action: "increase",
+        }).catch((e: unknown) => e);
+        expect(err).toBeInstanceOf(BridgeHandlerError);
+        expect((err as BridgeHandlerError).code).toBe("validation-failed");
+        expect((err as BridgeHandlerError).message).toContain("persistentDamage");
+        expect(actor.calls.increase).toBe(0);
+      });
+
+      it("creates persistent damage via createEmbeddedDocuments, NEVER via increaseCondition (no dialog)", async () => {
+        const actor = fakeConditionActor();
+        stubFoundry(true, { actors: [actor] });
+        registerHandlers();
+        const result = (await dispatchQuery("portal.apply-condition", {
+          actorId: "a1",
+          slug: "persistent-damage",
+          action: "increase",
+          persistentDamage: { formula: "2d6", damageType: "fire", dc: 20 },
+        })) as { active: boolean };
+
+        expect(result.active).toBe(true);
+        expect(actor.calls.increase).toBe(0); // the dialog-opening path was NEVER taken
+        expect(actor.calls.createEmbedded).toBe(1);
+      });
+
+      it("stamps the created persistent-damage item (D-6)", async () => {
+        const embedded = fakeItemEmbedded();
+        const actor = { ...fakeConditionActor(), createEmbeddedDocuments: embedded.fn };
+        stubFoundry(true, { actors: [actor] });
+        registerHandlers();
+        await dispatchQuery("portal.apply-condition", {
+          actorId: "a1",
+          slug: "persistent-damage",
+          action: "increase",
+          persistentDamage: { formula: "1d6", damageType: "bleed" },
+        });
+        expect(embedded.calls[0]?.data[0]).toMatchObject({
+          system: { persistent: { formula: "1d6", damageType: "bleed" } },
+          flags: { "astra-portal": { created: true, tool: "apply-condition" } },
+        });
+      });
+
+      it("removes persistent damage via decreaseCondition (already non-dialog in pf2e itself)", async () => {
+        const actor = fakeConditionActor([
+          { slug: "persistent-damage", active: true, value: null },
+        ]);
+        stubFoundry(true, { actors: [actor] });
+        registerHandlers();
+        const result = (await dispatchQuery("portal.apply-condition", {
+          actorId: "a1",
+          slug: "persistent-damage",
+          action: "decrease",
+        })) as { active: boolean };
+        expect(actor.calls.decrease).toBe(1);
+        expect(actor.calls.increase).toBe(0);
+        expect(result.active).toBe(false);
+      });
+    });
+
+    it("is denied with writes-disabled when the module setting is off", async () => {
+      const actor = fakeConditionActor();
+      stubFoundry(true, { actors: [actor], settings: { [SETTING_ALLOW_WRITES]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.apply-condition", {
+        actorId: "a1",
+        slug: "prone",
+        action: "toggle",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+
+  describe("update-document (D-10)", () => {
+    it("applies a dot-path update and returns the touched paths", async () => {
+      const updateSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({ id: "a1", uuid: "Actor.a1", name: "Goblin", documentName: "Actor" }),
+        update: updateSpy,
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.update-document", {
+        uuid: "Actor.a1",
+        updates: { "system.attributes.hp.value": 20 },
+      })) as { uuid: string; updatedPaths?: string[] };
+      expect(updateSpy).toHaveBeenCalledWith({ "system.attributes.hp.value": 20 });
+      expect(result).toEqual({ uuid: "Actor.a1", updatedPaths: ["system.attributes.hp.value"] });
+    });
+
+    it("rejects a derived PC path on a character actor, naming the path", async () => {
+      const updateSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({
+          id: "p1",
+          uuid: "Actor.p1",
+          name: "Hero",
+          documentName: "Actor",
+          type: "character",
+        }),
+        update: updateSpy,
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      const err = await dispatchQuery("portal.update-document", {
+        uuid: "Actor.p1",
+        updates: { "system.saves.fortitude.value": 99 },
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("validation-failed");
+      expect((err as BridgeHandlerError).message).toContain("system.saves.fortitude.value");
+      expect(updateSpy).not.toHaveBeenCalled();
+    });
+
+    it("does not false-positive on a segment-boundary near-miss (system.perceptionFoo)", async () => {
+      const updateSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({
+          id: "p1",
+          uuid: "Actor.p1",
+          name: "Hero",
+          documentName: "Actor",
+          type: "character",
+        }),
+        update: updateSpy,
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      await dispatchQuery("portal.update-document", {
+        uuid: "Actor.p1",
+        updates: { "system.perceptionFoo": 1 },
+      });
+      expect(updateSpy).toHaveBeenCalledWith({ "system.perceptionFoo": 1 });
+    });
+
+    it("allows the same derived-looking path on a non-character actor (NPC)", async () => {
+      const updateSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({
+          id: "n1",
+          uuid: "Actor.n1",
+          name: "Goblin",
+          documentName: "Actor",
+          type: "npc",
+        }),
+        update: updateSpy,
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      await dispatchQuery("portal.update-document", {
+        uuid: "Actor.n1",
+        updates: { "system.saves.fortitude.value": 12 },
+      });
+      expect(updateSpy).toHaveBeenCalledWith({ "system.saves.fortitude.value": 12 });
+    });
+
+    it("maps a DataModelValidationError from doc.update() to a typed validation-failed error", async () => {
+      const doc = {
+        ...fakeDoc({ id: "h1", uuid: "Actor.h1", name: "Trap", documentName: "Actor" }),
+        update: () => Promise.reject(fakeDataModelValidationError("attributes.hp.value: invalid")),
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      const err = await dispatchQuery("portal.update-document", {
+        uuid: "Actor.h1",
+        updates: { "system.attributes.hp.value": -1 },
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("validation-failed");
+      expect((err as BridgeHandlerError).message).toBe("attributes.hp.value: invalid");
+    });
+
+    it("rejects an unresolvable uuid with a typed not-found error", async () => {
+      stubFoundry(true, { fromUuid: () => Promise.resolve(null) });
+      registerHandlers();
+      const err = await dispatchQuery("portal.update-document", {
+        uuid: "Actor.nope",
+        updates: { "system.attributes.hp.value": 1 },
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("is denied with writes-disabled when the module setting is off", async () => {
+      stubFoundry(true, { settings: { [SETTING_ALLOW_WRITES]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.update-document", {
+        uuid: "Actor.a1",
+        updates: { "system.attributes.hp.value": 1 },
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+
+  describe("delete-document (D-4)", () => {
+    it("refuses to delete an unstamped (hand-authored) document", async () => {
+      const deleteSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({ id: "a1", uuid: "Actor.a1", name: "Hand-made NPC", documentName: "Actor" }),
+        delete: deleteSpy,
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      const err = await dispatchQuery("portal.delete-document", { uuid: "Actor.a1" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-portal-created");
+      expect(deleteSpy).not.toHaveBeenCalled();
+    });
+
+    it("deletes a portal-stamped world document", async () => {
+      const deleteSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({
+          id: "a1",
+          uuid: "Actor.a1",
+          name: "Portal NPC",
+          documentName: "Actor",
+          flags: {
+            "astra-portal": { created: true, tool: "create-actor", ts: "2026-07-07T00:00:00.000Z" },
+          },
+        }),
+        delete: deleteSpy,
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      const result = await dispatchQuery("portal.delete-document", { uuid: "Actor.a1" });
+      expect(result).toEqual({ uuid: "Actor.a1", deleted: true });
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("deletes a portal-stamped embedded document (Scene.<id>.AmbientLight.<id>)", async () => {
+      const deleteSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({
+          id: "l1",
+          uuid: "Scene.sc1.AmbientLight.l1",
+          name: "Light",
+          documentName: "AmbientLight",
+          flags: {
+            "astra-portal": { created: true, tool: "create-light", ts: "2026-07-07T00:00:00.000Z" },
+          },
+        }),
+        delete: deleteSpy,
+      };
+      stubFoundry(true, { fromUuid: () => Promise.resolve(doc) });
+      registerHandlers();
+      const result = await dispatchQuery("portal.delete-document", {
+        uuid: "Scene.sc1.AmbientLight.l1",
+      });
+      expect(result).toEqual({ uuid: "Scene.sc1.AmbientLight.l1", deleted: true });
+      expect(deleteSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("rejects an unresolvable uuid with a typed not-found error", async () => {
+      stubFoundry(true, { fromUuid: () => Promise.resolve(null) });
+      registerHandlers();
+      const err = await dispatchQuery("portal.delete-document", { uuid: "Actor.nope" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("is denied with writes-disabled when the module setting is off", async () => {
+      stubFoundry(true, { settings: { [SETTING_ALLOW_WRITES]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.delete-document", { uuid: "Actor.a1" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+
+  describe("execute-macro (D-9)", () => {
+    it("runs the macro and returns its captured (JSON-stringified) return value", async () => {
+      const macro = {
+        ...fakeDoc({ id: "m1", uuid: "Macro.m1", name: "Whisper Macro", documentName: "Macro" }),
+        execute: () => Promise.resolve({ whispered: true }),
+      };
+      stubFoundry(true, { macros: [macro] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.execute-macro", { macroId: "m1" })) as {
+        macroId: string;
+        returned?: string;
+      };
+      expect(result.macroId).toBe("m1");
+      expect(result.returned).toBe(JSON.stringify({ whispered: true }));
+    });
+
+    it("omits `returned` when the macro produces nothing", async () => {
+      const macro = {
+        ...fakeDoc({ id: "m1", uuid: "Macro.m1", name: "Chat Macro", documentName: "Macro" }),
+        execute: () => Promise.resolve(undefined),
+      };
+      stubFoundry(true, { macros: [macro] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.execute-macro", { macroId: "m1" })) as {
+        returned?: string;
+      };
+      expect(result.returned).toBeUndefined();
+    });
+
+    it("maps a throwing macro to a typed execution-failed error, message preserved", async () => {
+      const macro = {
+        ...fakeDoc({ id: "m1", uuid: "Macro.m1", name: "Boom Macro", documentName: "Macro" }),
+        execute: () => Promise.reject(new Error("ReferenceError: foo is not defined")),
+      };
+      stubFoundry(true, { macros: [macro] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.execute-macro", { macroId: "m1" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("execution-failed");
+      expect((err as BridgeHandlerError).message).toBe("ReferenceError: foo is not defined");
+    });
+
+    it("rejects an unknown macroId with a typed not-found error", async () => {
+      stubFoundry(true, { macros: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.execute-macro", { macroId: "no-such-macro" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("is refused via writes-disabled when JUST allow-macro-execution is off, naming that setting", async () => {
+      const macro = {
+        ...fakeDoc({ id: "m1", uuid: "Macro.m1", name: "Whisper Macro", documentName: "Macro" }),
+        execute: () => Promise.resolve(undefined),
+      };
+      stubFoundry(true, { macros: [macro], settings: { [SETTING_ALLOW_MACRO_EXECUTION]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.execute-macro", { macroId: "m1" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+      expect((err as BridgeHandlerError).message).toContain("Allow macro execution");
+    });
+
+    it("leaves other writes unaffected when allow-macro-execution is off (update-document still works)", async () => {
+      const updateSpy = vi.fn().mockResolvedValue(undefined);
+      const doc = {
+        ...fakeDoc({ id: "a1", uuid: "Actor.a1", name: "Goblin", documentName: "Actor" }),
+        update: updateSpy,
+      };
+      stubFoundry(true, {
+        fromUuid: () => Promise.resolve(doc),
+        settings: { [SETTING_ALLOW_MACRO_EXECUTION]: false },
+      });
+      registerHandlers();
+      await expect(
+        dispatchQuery("portal.update-document", {
+          uuid: "Actor.a1",
+          updates: { "system.attributes.hp.value": 5 },
+        }),
+      ).resolves.toBeDefined();
+      expect(updateSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("is ALSO denied when allow-write-operations (the general write gate) is off", async () => {
+      stubFoundry(true, { settings: { [SETTING_ALLOW_WRITES]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.execute-macro", { macroId: "m1" }).catch(
+        (e: unknown) => e,
+      );
       expect(err).toBeInstanceOf(BridgeHandlerError);
       expect((err as BridgeHandlerError).code).toBe("writes-disabled");
     });

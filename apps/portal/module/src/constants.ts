@@ -27,3 +27,10 @@ export const SETTING_BRIDGE_API_KEY = "bridge-api-key";
 /** D8: creates ON by default. S3 only registers this setting; S5's write tools read
  * it as one of the three write-gate checks (isGM AND bridge-key AND this setting). */
 export const SETTING_ALLOW_WRITES = "allow-write-operations";
+
+/** 0026 D-9: execute-macro is arbitrary GM-privileged JS by construction — this
+ * setting lets the GM kill just THAT capability without disabling every other write
+ * (`allow-write-operations` stays a separate switch). Default ON, matching D8's
+ * creates-ON philosophy. `handlers.ts`'s `handleExecuteMacro` checks it in addition
+ * to, not instead of, `writeGate`. */
+export const SETTING_ALLOW_MACRO_EXECUTION = "allow-macro-execution";
