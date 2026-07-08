@@ -85,6 +85,10 @@ describe("portal-shared bridge envelope", () => {
         "timeout",
         "not-found",
         "foundry-error",
+        // 0026 D-11 — additive, wire shape untouched.
+        "not-portal-created",
+        "validation-failed",
+        "execution-failed",
       ].sort(),
     );
   });

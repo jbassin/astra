@@ -44,3 +44,31 @@ export {
   ImportFromCompendiumParams,
   ImportFromCompendiumResult,
 } from "./tools";
+// The S1 authoring tools' shared param/result contracts (spec 0026 D-1..D-14) — 8 new
+// write tools superseding 0023 D5 for these tools only.
+export {
+  ApplyConditionParams,
+  ApplyConditionResult,
+  ConditionAction,
+  CreateActorParams,
+  CreateActorResult,
+  CreateActorType,
+  CreateItemParams,
+  CreateItemResult,
+  CreateLightParams,
+  CreateLightResult,
+  CreateMacroParams,
+  CreateMacroResult,
+  DeleteDocumentParams,
+  DeleteDocumentResult,
+  ExecuteMacroParams,
+  ExecuteMacroResult,
+  LightAnimationParams,
+  LightConfigParams,
+  LightDarknessRange,
+  MacroType,
+  PersistentDamageParams,
+  Pf2eItemType,
+  UpdateDocumentParams,
+  UpdateDocumentResult,
+} from "./tools";

@@ -16,8 +16,15 @@ import type { IncomingMessage, ServerResponse } from "node:http";
 
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import {
+  ApplyConditionParams,
+  CreateActorParams,
+  CreateItemParams,
   CreateJournalParams,
+  CreateLightParams,
+  CreateMacroParams,
   CreateTokenParams,
+  DeleteDocumentParams,
+  ExecuteMacroParams,
   GetCurrentSceneParams,
   GetDocumentParams,
   ImportFromCompendiumParams,
@@ -25,6 +32,7 @@ import {
   ListScenesParams,
   SearchCompendiumParams,
   SearchWorldParams,
+  UpdateDocumentParams,
 } from "@astra/portal-shared";
 import { getOAuthProtectedResourceMetadataUrl } from "@modelcontextprotocol/sdk/server/auth/router.js";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -156,11 +164,24 @@ function createCount(params: unknown): number {
   return typeof quantity === "number" ? quantity : 1;
 }
 
+/** create-actor's create count (0026 D-8): the actor itself plus every embedded
+ * `items[]` entry requested alongside it — cascade-created documents (e.g. GrantItem
+ * REs) are NOT pre-counted here, deliberately (D-8: unknowable pre-flight, bounded by
+ * content, fully audited). */
+function actorCreateCount(params: unknown): number {
+  const items = (params as { items?: unknown } | null)?.items;
+  return 1 + (Array.isArray(items) ? items.length : 0);
+}
+
 /** Registers every portal MCP tool against one `Bridge` instance. `maxCreatesPerRequest`
  * is `cfg.portal.maxCreatesPerRequest` (D8) — threaded in so the three S5 write tools
  * can reject an oversized batch before it ever reaches the bridge. */
 export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): McpServer {
-  const server = new McpServer({ name: "astra-portal", version: "0.0.0" });
+  // 0026 D-12: bump this version on every portal release. Foundry's module
+  // update-check compares module.json's version string (bumped in lockstep,
+  // module.json), and this server-side McpServer version travels with a real MCP
+  // client's own connection/capability negotiation.
+  const server = new McpServer({ name: "astra-portal", version: "0.2.0" });
 
   server.registerTool(
     "bridge-status",
@@ -296,6 +317,134 @@ export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): Mc
     method: "portal.create-journal",
     creates: () => 1,
     cap: maxCreatesPerRequest,
+    audit: true,
+  });
+
+  // --- S1 authoring tools (spec 0026) -------------------------------------------
+  // Supersede 0023 D5 for these tools only (D-1 hybrid): hand-authored pf2e system
+  // JSON + rule elements are now in scope. Every one of these WRITES to the live
+  // "Faerrin" FoundryVTT world; creates carry the same cap/audit treatment as the
+  // S5 tools above, and update-document/delete-document/execute-macro are audited
+  // writes that do NOT count against the create cap (D-8 — they mutate/act, they
+  // don't create new documents).
+
+  registerBridgeTool(server, bridge, "create-actor", {
+    description:
+      "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new NPC or hazard actor " +
+      "(type), either from scratch via a `system` JSON payload and embedded `items` (strikes, " +
+      "actions, spellcasting), or by cloning an existing compendium statblock (`baseUuid`) and " +
+      "patching it (D-1 hybrid — prefer this when a close base exists). NPC actors get NO " +
+      "schema validation from Foundry — garbage system data is stored silently; hazards ARE " +
+      "strictly validated. The result's `warnings` array reports anything that looked wrong " +
+      "after creation (e.g. an ignored rule element) — always check it, a clean-looking result " +
+      "can still carry warnings. Counts 1 + items.length against the per-request create cap.",
+    paramsSchema: CreateActorParams,
+    method: "portal.create-actor",
+    creates: actorCreateCount,
+    cap: maxCreatesPerRequest,
+    audit: true,
+  });
+
+  registerBridgeTool(server, bridge, "create-item", {
+    description:
+      "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new item — an effect, " +
+      "spell, spellcastingEntry, weapon, armor, feat, action, melee strike, condition, or other " +
+      "pf2e item type — as a standalone world item or embedded directly on an actor " +
+      "(`actorId`). Supports the same hybrid model as create-actor (`baseUuid` clone+patch, " +
+      "strongly preferred for spells). Carries pf2e rule elements via `system.rules`, including " +
+      "the two-item aura pattern and TokenLight for a glowing creature — see the `system` field " +
+      "description for the exact recipes. Pass `rulesSelections` when granting an item with a " +
+      "ChoiceSet rule element, or the call wedges on a GM-browser dialog. Result `warnings` " +
+      "reports any rule element Foundry ignored at creation. Counts 1 against the create cap.",
+    paramsSchema: CreateItemParams,
+    method: "portal.create-item",
+    creates: () => 1,
+    cap: maxCreatesPerRequest,
+    audit: true,
+  });
+
+  registerBridgeTool(server, bridge, "create-light", {
+    description:
+      "WRITES to the live 'Faerrin' FoundryVTT world: places a new ambient light on a scene " +
+      "(defaults to the active scene) at (x, y) — static scene furniture such as a torch or a " +
+      "room's magical glow, visible to every connected player immediately. NOT for a light that " +
+      "should move with a creature — that's create-item with a TokenLight rule element. Returns " +
+      "only the created light's embedded uuid (there is no full-scene-read tool — a scene's " +
+      "document also includes walls/tiles and is deliberately not exposed); use " +
+      "update-document/delete-document on that uuid to change or remove it later. Counts 1 " +
+      "against the create cap.",
+    paramsSchema: CreateLightParams,
+    method: "portal.create-light",
+    creates: () => 1,
+    cap: maxCreatesPerRequest,
+    audit: true,
+  });
+
+  registerBridgeTool(server, bridge, "create-macro", {
+    description:
+      "WRITES to the live 'Faerrin' FoundryVTT world: creates a new script or chat macro. " +
+      "Creating a macro NEVER runs it — the full command text is captured in this write's audit " +
+      "trail as the payload of record. To actually run a script macro (arbitrary JavaScript, " +
+      "GM-privileged) or post a chat macro, use execute-macro afterward. Counts 1 against the " +
+      "create cap.",
+    paramsSchema: CreateMacroParams,
+    method: "portal.create-macro",
+    creates: () => 1,
+    cap: maxCreatesPerRequest,
+    audit: true,
+  });
+
+  registerBridgeTool(server, bridge, "apply-condition", {
+    description:
+      "WRITES to the live 'Faerrin' FoundryVTT world: increases, decreases, or toggles a pf2e " +
+      "condition on a world actor via Foundry's own condition manager (never a hand-built " +
+      "condition item). `persistent-damage` requires explicit formula/damageType params — the " +
+      "bare path for that condition would otherwise pop an interactive editor dialog in the " +
+      "GM's browser, which this tool never triggers. This is a mutation, not a create — it does " +
+      "not count against the per-request create cap.",
+    paramsSchema: ApplyConditionParams,
+    method: "portal.apply-condition",
+    audit: true,
+  });
+
+  registerBridgeTool(server, bridge, "update-document", {
+    description:
+      "WRITES to the live 'Faerrin' FoundryVTT world: applies a dot-path diff-merge update to " +
+      "ANY world or embedded document by uuid — including PLAYER CHARACTER sheets (full source " +
+      "edit access; HP, level, skill ranks, resources, details, ...), scene lights, and macros. " +
+      'Arrays are REPLACED WHOLESALE, not spliced; a `"path.-=key": null` entry deletes a key. ' +
+      "Known-derived PC paths (saves/perception/traits/AC/class DC on characters) are refused " +
+      "with a typed validation-failed error naming the path, since pf2e recomputes them and a " +
+      "write would just be silently discarded or corrupt data prep. Every path touched is " +
+      "audited. Not a create — doesn't count against the create cap.",
+    paramsSchema: UpdateDocumentParams,
+    method: "portal.update-document",
+    audit: true,
+  });
+
+  registerBridgeTool(server, bridge, "delete-document", {
+    description:
+      "WRITES to the live 'Faerrin' FoundryVTT world: PERMANENTLY DELETES a world or embedded " +
+      "document by uuid. Refuses with a typed not-portal-created error unless the document is " +
+      "stamped as something a portal tool created — portal can only clean up after itself and " +
+      "can never destroy hand-authored campaign content, no matter what the caller asks for. " +
+      "Not a create — doesn't count against the create cap.",
+    paramsSchema: DeleteDocumentParams,
+    method: "portal.delete-document",
+    audit: true,
+  });
+
+  registerBridgeTool(server, bridge, "execute-macro", {
+    description:
+      "WRITES to (acts on) the live 'Faerrin' FoundryVTT world: runs an existing world macro " +
+      "IMMEDIATELY, AS THE GM. A script macro is arbitrary JavaScript executed with full GM " +
+      "privileges the instant this call succeeds — there is no confirmation step. Independently " +
+      "gated by the module's allow-macro-execution setting on top of the normal write gate, so " +
+      "execution can be switched off without disabling other writes. Captures the macro's " +
+      "return value best-effort; a thrown error maps to a typed execution-failed result. Not a " +
+      "create — doesn't count against the create cap.",
+    paramsSchema: ExecuteMacroParams,
+    method: "portal.execute-macro",
     audit: true,
   });
 

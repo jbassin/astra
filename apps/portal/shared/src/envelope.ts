@@ -24,6 +24,12 @@ export const BridgeErrorCode = z.enum([
   "not-found", // a read resolved no such document (e.g. a bad get-document uuid) — a
   // normal, branchable outcome, not a generic Foundry-side failure (S4)
   "foundry-error", // the module's Foundry-side call itself threw
+  "not-portal-created", // delete-document refused a document not stamped
+  // flags["astra-portal"].created — portal can only clean up after itself (0026 D-4/D-6)
+  "validation-failed", // a pf2e DataModel rejected the payload (DataModelValidationError,
+  // Foundry's message preserved verbatim) or a known-derived PC path was targeted (0026 D-7/D-10)
+  "execution-failed", // execute-macro's script/chat macro threw at runtime (0026 D-9);
+  // the thrown error's message is preserved, distinct from the module dispatch itself failing
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
 

@@ -190,6 +190,71 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
+  it("lists all 18 tools (spec 0026 S1 — 10 pre-existing + 8 new authoring tools), every new field described", async () => {
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+
+    const { tools } = await client.listTools();
+    expect(tools.map((t) => t.name).sort()).toEqual(
+      [
+        "bridge-status",
+        "list-compendium-packs",
+        "search-compendium",
+        "get-document",
+        "search-world",
+        "list-scenes",
+        "get-current-scene",
+        "import-from-compendium",
+        "create-token",
+        "create-journal",
+        "create-actor",
+        "create-item",
+        "create-light",
+        "create-macro",
+        "apply-condition",
+        "update-document",
+        "delete-document",
+        "execute-macro",
+      ].sort(),
+    );
+
+    // Every field on every new tool's schema must carry a .describe() — the 0023
+    // acceptance lesson (zod JSDoc never crosses the wire, .describe() does).
+    const schemaOf = (tool: string): { properties?: Record<string, { description?: string }> } =>
+      (tools.find((t) => t.name === tool)?.inputSchema ?? {}) as {
+        properties?: Record<string, { description?: string }>;
+      };
+    const newToolFields: Record<string, string[]> = {
+      "create-actor": ["type", "name", "system", "items", "baseUuid", "folder", "img"],
+      "create-item": ["name", "type", "system", "actorId", "baseUuid", "rulesSelections", "img"],
+      "apply-condition": ["actorId", "slug", "action", "value", "persistentDamage"],
+      "create-light": ["sceneId", "x", "y", "hidden", "config"],
+      "create-macro": ["name", "macroType", "command", "img"],
+      "update-document": ["uuid", "updates"],
+      "delete-document": ["uuid"],
+      "execute-macro": ["macroId"],
+    };
+    for (const [tool, fields] of Object.entries(newToolFields)) {
+      const properties = schemaOf(tool).properties ?? {};
+      for (const field of fields) {
+        expect(properties[field]?.description, `${tool}.${field} should be described`).toBeTruthy();
+      }
+    }
+
+    // D-11 loudness spot-checks: the write descriptions state loudly that they WRITE
+    // to the live campaign, and the riskiest tools name their own guardrails.
+    const description = (tool: string): string =>
+      tools.find((t) => t.name === tool)?.description ?? "";
+    expect(description("create-actor")).toContain("WRITES to the live 'Faerrin'");
+    expect(description("delete-document")).toContain("not-portal-created");
+    expect(description("execute-macro")).toContain("AS THE GM");
+
+    await client.close();
+  });
+
   it("maps a bridge-offline BridgeError to an isError result when no module is connected (S4)", async () => {
     const transport = new StreamableHTTPClientTransport(mcpUrl, {
       requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
@@ -432,6 +497,160 @@ describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
   // devDependency for one assertion. The write-tool round-trip tests above already
   // exercise every `auditWrite` call site (ok/denied/cap-exceeded); the log line's
   // presence is a one-line, low-risk addition reviewed by inspection instead.
+});
+
+describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
+  let handle: PortalServerHandle & { port: number };
+  let mcpUrl: URL;
+
+  beforeEach(async () => {
+    handle = await listen({
+      port: 0,
+      mcpApiKey: MCP_API_KEY,
+      bridgeApiKey: BRIDGE_API_KEY,
+      bridgeTimeoutMs: 250,
+      maxCreatesPerRequest: 2, // deliberately small — the cap-pre-check test below relies on it
+      publicOrigin: TEST_PUBLIC_ORIGIN,
+      moduleDir: TEST_MODULE_DIR,
+      oauthStatePath: TEST_OAUTH_STATE_PATH,
+    });
+    mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
+  });
+
+  afterEach(async () => {
+    await handle.close();
+  });
+
+  async function connectedClient(): Promise<Client> {
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+    return client;
+  }
+
+  it("rejects an over-cap create-actor (1 + items.length > cap) with NO bridge round-trip", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    let queried = false;
+    mod.onQuery(() => {
+      queried = true;
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "create-actor",
+      arguments: {
+        type: "npc",
+        name: "Test Goblin",
+        // 1 (the actor) + 3 items = 4, over the maxCreatesPerRequest: 2 cap above.
+        items: [
+          { type: "melee", name: "Claw" },
+          { type: "melee", name: "Claw 2" },
+          { type: "action", name: "Special" },
+        ],
+      },
+    });
+    expect(result.isError).toBe(true);
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toMatchObject({ code: "cap-exceeded" });
+    // The cap rejection must short-circuit BEFORE the bridge query — the connected
+    // fake module should never have seen this request at all.
+    expect(queried).toBe(false);
+
+    await client.close();
+    mod.close();
+  });
+
+  it("round-trips update-document through the bridge (generic uuid + dot-path updates)", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+
+    const canned = { uuid: "Actor.a1", updatedPaths: ["system.attributes.hp.value"] };
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.update-document");
+      expect(q.params).toEqual({
+        uuid: "Actor.a1",
+        updates: { "system.attributes.hp.value": 20 },
+      });
+      mod.respond(q.id, canned);
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "update-document",
+      arguments: { uuid: "Actor.a1", updates: { "system.attributes.hp.value": 20 } },
+    });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual(canned);
+
+    await client.close();
+    mod.close();
+  });
+
+  it("update-document/delete-document/execute-macro never trip the create cap even at 1 above it", async () => {
+    // maxCreatesPerRequest is 2 in this describe block; these three tools register
+    // with no `creates`/`cap` at all (0026 D-8: mutations/actions, not creates), so a
+    // large `updates` payload must never be rejected as cap-exceeded.
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respond(q.id, { uuid: "Actor.a1", updatedPaths: Object.keys(q.params as object) });
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "update-document",
+      arguments: {
+        uuid: "Actor.a1",
+        updates: { a: 1, b: 2, c: 3, d: 4, e: 5 }, // 5 keys, well over the cap of 2
+      },
+    });
+    expect(result.isError).toBeFalsy();
+
+    await client.close();
+    mod.close();
+  });
+
+  it("maps a stub bridge's unrecognized-method response to a typed error, not a throw (mid-rollout safety)", async () => {
+    // Mirrors the module's own `dispatchQuery` behavior for a method with no
+    // registered handler (module/src/handlers.ts): a BridgeHandlerError with code
+    // "foundry-error" and a message naming the unknown method — verified by reading
+    // handlers.ts directly (S1 is Foundry-free, so this test stubs that exact shape
+    // rather than exercising the real module). This proves the server's new S1
+    // tools stay safe to register even against an OLD, not-yet-updated module
+    // build (D-12's versioning discipline covers the human GM-refresh side).
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respondError(q.id, "foundry-error", `no handler registered for query "${q.method}"`);
+    });
+
+    const client = await connectedClient();
+    const result = await client.callTool({
+      name: "create-macro",
+      arguments: { name: "Test Macro", macroType: "chat", command: "hello" },
+    });
+    // A typed isError result — never an uncaught throw back to the MCP client.
+    expect(result.isError).toBe(true);
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual({
+      code: "foundry-error",
+      message: 'no handler registered for query "portal.create-macro"',
+    });
+
+    await client.close();
+    mod.close();
+  });
 });
 
 describe("createPortalServer (unbound — construction only)", () => {
