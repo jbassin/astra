@@ -12,8 +12,16 @@ import {
   type CompendiumIndexRow,
   type CompendiumPackRow,
   type CreatedTokenRow,
+  CreateActorParams,
+  type CreateActorResult,
+  CreateItemParams,
+  type CreateItemResult,
   CreateJournalParams,
   type CreateJournalResult,
+  CreateLightParams,
+  type CreateLightResult,
+  CreateMacroParams,
+  type CreateMacroResult,
   CreateTokenParams,
   type CreateTokenResult,
   type CurrentSceneInfo,
@@ -287,6 +295,404 @@ function resolveFolderId(folderName: string | undefined, documentType: string): 
   return match.id;
 }
 
+// ---------------------------------------------------------------------------
+// S2 authoring tools (spec 0026 D-1 hybrid clone-or-hand-author, D-6 stamp, D-7
+// read-back) — create-actor, create-item, create-light, create-macro.
+// ---------------------------------------------------------------------------
+
+/** D-6 — every document any portal tool creates gets this stamped into its `flags`,
+ * additively merged alongside whatever flags the payload already carries. `delete-
+ * document` (0026 S3) reads `flags["astra-portal"].created` back to refuse deleting
+ * anything portal didn't make itself — so this must land on every create path (this
+ * S2 slice's four new handlers AND the three 0023 write handlers below, retrofitted).
+ * Never applied to an update — only to a document at the moment it's created. */
+function portalStamp(tool: string): {
+  "astra-portal": { created: true; tool: string; ts: string };
+} {
+  return { "astra-portal": { created: true, tool, ts: new Date().toISOString() } };
+}
+
+/** Merges a portal stamp (optionally plus more flag data) onto an existing `flags`
+ * object without disturbing whatever the caller/base document already put there —
+ * the additive-only half of D-6 (a hand-authored document's OWN flags, e.g. a cloned
+ * compendium item's existing `flags.pf2e`, must survive untouched). */
+function withStamp(
+  existingFlags: unknown,
+  tool: string,
+  extra?: Record<string, unknown>,
+): Record<string, unknown> {
+  const base = (existingFlags && typeof existingFlags === "object" ? existingFlags : {}) as Record<
+    string,
+    unknown
+  >;
+  return foundry.utils.mergeObject(base, { ...portalStamp(tool), ...extra }, { inplace: false });
+}
+
+/** Detects Foundry's `DataModelValidationError` (D-7) without importing the class —
+ * it isn't part of this module's deliberately-minimal ambient surface (see
+ * `types/foundry.d.ts`'s header policy), so this checks the runtime error's own
+ * name/constructor-name string instead of `instanceof`. Real Foundry throws this
+ * exact class for a strictly-validated DataModel document (hazard/effect/condition/
+ * melee/feat/action) rejecting a bad payload on create. */
+function isDataModelValidationError(err: unknown): boolean {
+  if (!(err instanceof Error)) return false;
+  return (
+    err.name === "DataModelValidationError" || err.constructor.name === "DataModelValidationError"
+  );
+}
+
+/** Wraps a `FoundryDocumentClass#create()` call, mapping a `DataModelValidationError`
+ * to a typed `validation-failed` (D-7, message preserved verbatim — the caller is an
+ * LLM, the error text is its repair loop) and a `create()` that resolved to nothing
+ * to a typed `foundry-error`. */
+async function createChecked(
+  docClass: FoundryDocumentClass,
+  data: Record<string, unknown>,
+): Promise<FoundryDocumentLike> {
+  let created: FoundryDocumentLike | undefined;
+  try {
+    created = await docClass.create(data);
+  } catch (err) {
+    if (isDataModelValidationError(err)) {
+      throw new BridgeHandlerError(
+        "validation-failed",
+        err instanceof Error ? err.message : String(err),
+      );
+    }
+    throw err;
+  }
+  if (!created) {
+    throw new BridgeHandlerError("foundry-error", "document creation returned no document");
+  }
+  return created;
+}
+
+/** The minimal embedded-document-creating surface both `FoundryActor` and
+ * `FoundryScene` share — narrow enough that either satisfies it structurally. */
+interface EmbeddedDocumentHost {
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Record<string, unknown>[],
+  ): Promise<FoundryDocumentLike[]>;
+}
+
+/** Same `DataModelValidationError` mapping as {@link createChecked}, for the embedded-
+ * document creation path (`actor.createEmbeddedDocuments("Item", ...)`,
+ * `scene.createEmbeddedDocuments("AmbientLight", ...)`). */
+async function createEmbeddedChecked(
+  host: EmbeddedDocumentHost,
+  embeddedName: string,
+  data: Record<string, unknown>[],
+): Promise<FoundryDocumentLike[]> {
+  try {
+    return await host.createEmbeddedDocuments(embeddedName, data);
+  } catch (err) {
+    if (isDataModelValidationError(err)) {
+      throw new BridgeHandlerError(
+        "validation-failed",
+        err instanceof Error ? err.message : String(err),
+      );
+    }
+    throw err;
+  }
+}
+
+/** D-7 RE read-back: after an item is created OWNED (embedded on an actor — only then
+ * does pf2e instantiate rule elements at data-prep), inspect what actually came back.
+ * Two findings, both surfaced as plain strings naming the item:
+ *  - an instantiated rule element with `ignored === true` (a bad/unknown RE — pf2e
+ *    `console.warn`s and inerts it rather than failing the create);
+ *  - a `system.rules` source entry that produced no instantiated rule at all.
+ * Defensive by design: if the created document doesn't even expose a `rules` array
+ * (a stub, or some future Foundry surface change), this reports NO warnings rather
+ * than guessing — an absent `rules` property is "unknown", not "everything failed". */
+function collectRuleWarnings(
+  itemName: string,
+  sentSystem: Record<string, unknown> | undefined,
+  created: FoundryItemLike,
+): string[] {
+  if (created.rules === undefined) return [];
+  const warnings: string[] = [];
+  created.rules.forEach((re, i) => {
+    if (re && re.ignored === true) {
+      const key = re.key !== undefined ? ` (key: ${re.key})` : "";
+      warnings.push(`item "${itemName}": rule element ${i}${key} was ignored at data-prep`);
+    }
+  });
+  const sourceRules = sentSystem?.rules;
+  const sourceCount = Array.isArray(sourceRules) ? sourceRules.length : 0;
+  if (sourceCount > created.rules.length) {
+    warnings.push(
+      `item "${itemName}": ${sourceCount - created.rules.length} of ${sourceCount} rule ` +
+        "element(s) in system.rules produced no instantiated rule",
+    );
+  }
+  return warnings;
+}
+
+/** D-1 hybrid clone+patch core, shared by `create-actor`/`create-item`: resolve a
+ * compendium `baseUuid` (never a world uuid — mirrors `cloneFromCompendium`'s own
+ * guard), take its `toObject()` verbatim, strip the id, then deep-merge the caller's
+ * `name`/`system`/`img` on top via `foundry.utils.mergeObject` (never mutates the
+ * source compendium document — `toObject()` already handed back a fresh plain
+ * object). Returns `undefined` when no `baseUuid` was given, so callers build a
+ * from-scratch payload instead (D-1's other branch). */
+async function resolveBasePayload(
+  baseUuid: string | undefined,
+  patch: { name: string; system?: Record<string, unknown>; img?: string },
+): Promise<Record<string, unknown> | undefined> {
+  if (baseUuid === undefined) return undefined;
+  if (!baseUuid.startsWith("Compendium.")) {
+    throw new BridgeHandlerError(
+      "foundry-error",
+      `baseUuid must be a compendium uuid (starting "Compendium."), got: ${baseUuid}`,
+    );
+  }
+  const doc = await fromUuid(baseUuid);
+  if (!doc) {
+    throw new BridgeHandlerError("not-found", `not found: ${baseUuid}`);
+  }
+  const base = doc.toObject();
+  delete base._id;
+  const patchData: Record<string, unknown> = { name: patch.name };
+  if (patch.system !== undefined) patchData.system = patch.system;
+  if (patch.img !== undefined) patchData.img = patch.img;
+  return foundry.utils.mergeObject(base, patchData, { inplace: false });
+}
+
+/** `create-actor` (spec 0026 S2/D-1/D-6/D-7) — hand-authors a new NPC/hazard actor
+ * from scratch, or clones+patches a compendium base (`baseUuid`), then creates any
+ * embedded `items[]` alongside it in the same call. `writeGate` counts the actor
+ * itself plus every requested item (D-8); the actor's own creation never gets a RE
+ * read-back (actors don't carry rule elements directly), but each embedded item does
+ * once it's OWNED by the actor (D-7). */
+async function handleCreateActor(rawParams: unknown): Promise<CreateActorResult> {
+  const params = CreateActorParams.parse(rawParams);
+  const itemCount = params.items?.length ?? 0;
+  try {
+    writeGate(1 + itemCount);
+    const folderId = resolveFolderId(params.folder, "Actor");
+
+    const base = await resolveBasePayload(params.baseUuid, {
+      name: params.name,
+      system: params.system,
+      img: params.img,
+    });
+    const payload: Record<string, unknown> = base ?? {
+      name: params.name,
+      type: params.type,
+      ...(params.system !== undefined ? { system: params.system } : {}),
+      ...(params.img !== undefined ? { img: params.img } : {}),
+    };
+    if (folderId !== undefined) payload.folder = folderId;
+    payload.flags = withStamp(payload.flags, "create-actor");
+
+    const docClass = getDocumentClass("Actor");
+    // Narrowing cast, not a lossy one: `getDocumentClass("Actor").create()` always
+    // mints a real Actor document (which always carries `createEmbeddedDocuments`);
+    // `createChecked`'s own return type stays the general `FoundryDocumentLike`
+    // because it's shared by every document type this module creates.
+    const actor = (await createChecked(docClass, payload)) as FoundryActor;
+
+    let itemUuids: string[] | undefined;
+    const warnings: string[] = [];
+    if (params.items !== undefined && params.items.length > 0) {
+      const itemsWithStamps = params.items.map((item) => ({
+        ...item,
+        flags: withStamp(item.flags, "create-actor"),
+      }));
+      const createdItems = await createEmbeddedChecked(actor, "Item", itemsWithStamps);
+      itemUuids = createdItems.map((it) => it.uuid);
+      createdItems.forEach((it, i) => {
+        const source = params.items?.[i];
+        warnings.push(
+          ...collectRuleWarnings(
+            it.name,
+            source?.system as Record<string, unknown> | undefined,
+            it as FoundryItemLike,
+          ),
+        );
+      });
+    }
+
+    const result: CreateActorResult = {
+      uuid: actor.uuid,
+      id: actor.id,
+      name: actor.name,
+      itemUuids,
+      warnings,
+    };
+    auditLog(
+      "create-actor",
+      params,
+      `ok (actor ${actor.id}${itemUuids ? `, ${itemUuids.length} item(s)` : ""})`,
+    );
+    return result;
+  } catch (err) {
+    auditLog("create-actor", params, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
+/** `create-item` (spec 0026 S2/D-1/D-6/D-7) — hand-authors a new item from scratch or
+ * clones+patches a compendium base, either as a standalone world item or embedded
+ * directly on an actor (`actorId`). `rulesSelections` pre-seeds
+ * `flags.pf2e.rulesSelections` (the ChoiceSet-modal-avoidance pass-through, spec
+ * Verified footprint). Only the actor-embedded path gets a RE read-back — a world
+ * item has no owner, so pf2e never instantiates its rule elements at all. */
+async function handleCreateItem(rawParams: unknown): Promise<CreateItemResult> {
+  const params = CreateItemParams.parse(rawParams);
+  try {
+    writeGate(1);
+
+    const base = await resolveBasePayload(params.baseUuid, {
+      name: params.name,
+      system: params.system,
+      img: params.img,
+    });
+    const payload: Record<string, unknown> = base ?? {
+      name: params.name,
+      type: params.type,
+      ...(params.system !== undefined ? { system: params.system } : {}),
+      ...(params.img !== undefined ? { img: params.img } : {}),
+    };
+    payload.flags = withStamp(
+      payload.flags,
+      "create-item",
+      params.rulesSelections !== undefined
+        ? { pf2e: { rulesSelections: params.rulesSelections } }
+        : undefined,
+    );
+    const sentSystem = payload.system as Record<string, unknown> | undefined;
+
+    let created: FoundryDocumentLike;
+    let warnings: string[] = [];
+    if (params.actorId !== undefined) {
+      const actor = game.actors.get(params.actorId);
+      if (!actor) {
+        throw new BridgeHandlerError("not-found", `actor not found: ${params.actorId}`);
+      }
+      const [item] = await createEmbeddedChecked(actor, "Item", [payload]);
+      if (!item) {
+        throw new BridgeHandlerError("foundry-error", "item creation returned no document");
+      }
+      created = item;
+      warnings = collectRuleWarnings(item.name, sentSystem, item as FoundryItemLike);
+    } else {
+      // World items have no owning actor, so pf2e's data-prep (which instantiates
+      // rule elements) never runs on them — there is nothing to read back (D-7).
+      const docClass = getDocumentClass("Item");
+      created = await createChecked(docClass, payload);
+    }
+
+    const result: CreateItemResult = {
+      uuid: created.uuid,
+      id: created.id,
+      name: created.name,
+      warnings,
+    };
+    auditLog("create-item", params, `ok (${created.id})`);
+    return result;
+  } catch (err) {
+    auditLog("create-item", params, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
+/** `create-light` (spec 0026 S2/D-13/D-6) — places a new `AmbientLight` embedded
+ * document on a scene (an explicit `sceneId`, or the active scene when omitted),
+ * mapping the wire's `config` subset onto Foundry's `LightData` shape 1:1. Returns
+ * only the created light's embedded uuid, hand-built as `Scene.<id>.AmbientLight.
+ * <id>` (D-13 — there is no scene-read tool to fetch it back through). */
+async function handleCreateLight(rawParams: unknown): Promise<CreateLightResult> {
+  const params = CreateLightParams.parse(rawParams);
+  try {
+    writeGate(1);
+    const scene =
+      params.sceneId !== undefined ? game.scenes.get(params.sceneId) : game.scenes.active;
+    if (!scene) {
+      throw new BridgeHandlerError(
+        "not-found",
+        params.sceneId !== undefined
+          ? `scene not found: ${params.sceneId}`
+          : "no active scene — open a scene in Foundry, or pass sceneId",
+      );
+    }
+
+    const config: Record<string, unknown> = {};
+    const c = params.config;
+    if (c?.bright !== undefined) config.bright = c.bright;
+    if (c?.dim !== undefined) config.dim = c.dim;
+    if (c?.color !== undefined) config.color = c.color;
+    if (c?.alpha !== undefined) config.alpha = c.alpha;
+    if (c?.angle !== undefined) config.angle = c.angle;
+    if (c?.negative !== undefined) config.negative = c.negative;
+    if (c?.animation !== undefined) {
+      const animation: Record<string, unknown> = {};
+      if (c.animation.type !== undefined) animation.type = c.animation.type;
+      if (c.animation.speed !== undefined) animation.speed = c.animation.speed;
+      if (c.animation.intensity !== undefined) animation.intensity = c.animation.intensity;
+      config.animation = animation;
+    }
+    if (c?.darkness !== undefined) {
+      const darkness: Record<string, unknown> = {};
+      if (c.darkness.min !== undefined) darkness.min = c.darkness.min;
+      if (c.darkness.max !== undefined) darkness.max = c.darkness.max;
+      config.darkness = darkness;
+    }
+
+    const lightData: Record<string, unknown> = {
+      x: params.x,
+      y: params.y,
+      hidden: params.hidden ?? false,
+      config,
+      flags: portalStamp("create-light"),
+    };
+    const [created] = await createEmbeddedChecked(scene, "AmbientLight", [lightData]);
+    if (!created) {
+      throw new BridgeHandlerError("foundry-error", "AmbientLight creation returned no document");
+    }
+    const lightUuid = `Scene.${scene.id}.AmbientLight.${created.id}`;
+    const result: CreateLightResult = { sceneId: scene.id, lightUuid, warnings: [] };
+    auditLog("create-light", params, `ok (${lightUuid})`);
+    return result;
+  } catch (err) {
+    auditLog("create-light", params, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
+/** `create-macro` (spec 0026 S2/D-6/D-9) — creates a script or chat macro; verified
+ * (spec Verified footprint) that Foundry NEVER executes a macro on create, only via
+ * the separate `execute-macro` tool (0026 S3). D-9's audit-the-full-command-text
+ * requirement is satisfied for free: {@link auditLog} already serializes the whole
+ * `params` object, which carries `command` verbatim. */
+async function handleCreateMacro(rawParams: unknown): Promise<CreateMacroResult> {
+  const params = CreateMacroParams.parse(rawParams);
+  try {
+    writeGate(1);
+    const docClass = getDocumentClass("Macro");
+    const created = await createChecked(docClass, {
+      name: params.name,
+      type: params.macroType,
+      command: params.command,
+      img: params.img,
+      flags: portalStamp("create-macro"),
+    });
+    const result: CreateMacroResult = {
+      uuid: created.uuid,
+      id: created.id,
+      name: created.name,
+      warnings: [],
+    };
+    auditLog("create-macro", params, `ok (${created.id})`);
+    return result;
+  } catch (err) {
+    auditLog("create-macro", params, `denied/failed: ${String(err)}`);
+    throw err;
+  }
+}
+
 /** Clone-from-compendium core (D5): resolve `uuid` (must be a compendium document —
  * never a world uuid, so this tool can never be used to duplicate an already-imported
  * actor), take its OWN `toObject()` verbatim (never a hand-authored pf2e `system.*`
@@ -297,11 +703,15 @@ function resolveFolderId(folderName: string | undefined, documentType: string): 
  * real created Actor to call `getTokenDocument` on directly, not a re-fetch through
  * `game.actors` (Foundry's own world collection updates reactively on
  * `createDocuments`, but there's no cheaper way to get the SAME object back than just
- * keeping the one `createDocuments` already handed us). */
+ * keeping the one `createDocuments` already handed us). `tool` (0026 D-6 retrofit)
+ * names the actual calling tool ("import-from-compendium" or "create-token") for the
+ * stamp each clone gets — additive onto `flags`, never disturbing whatever the source
+ * compendium document's own flags already carried. */
 async function cloneFromCompendium(
   uuid: string,
   quantity: number,
   folder: string | undefined,
+  tool: string,
 ): Promise<FoundryDocumentLike[]> {
   if (!uuid.startsWith("Compendium.")) {
     throw new BridgeHandlerError(
@@ -318,6 +728,7 @@ async function cloneFromCompendium(
   const base = doc.toObject();
   delete base._id;
   if (folderId !== undefined) base.folder = folderId;
+  base.flags = withStamp(base.flags, tool);
 
   const docClass = getDocumentClass(doc.documentName);
   return docClass.createDocuments(
@@ -333,7 +744,7 @@ async function importFromCompendium(
   quantity: number,
   folder: string | undefined,
 ): Promise<ImportedDocumentRow[]> {
-  const created = await cloneFromCompendium(uuid, quantity, folder);
+  const created = await cloneFromCompendium(uuid, quantity, folder, "import-from-compendium");
   return created.map((c) => ({
     uuid: c.uuid,
     id: c.id,
@@ -382,7 +793,12 @@ async function handleCreateToken(rawParams: unknown): Promise<CreateTokenResult>
       // FRESHLY created document directly (cloneFromCompendium, not the compact-row
       // importFromCompendium) — no need to round-trip through game.actors.get, and it
       // sidesteps relying on exactly when/how the world collection updates.
-      const [imported] = await cloneFromCompendium(params.uuid as string, 1, undefined);
+      const [imported] = await cloneFromCompendium(
+        params.uuid as string,
+        1,
+        undefined,
+        "create-token",
+      );
       if (!imported) {
         throw new BridgeHandlerError("foundry-error", "import produced no document to tokenize");
       }
@@ -399,7 +815,10 @@ async function handleCreateToken(rawParams: unknown): Promise<CreateTokenResult>
         x: params.x + i * gridSize,
         y: params.y + i * gridSize,
       });
-      tokenData.push(tokenDoc.toObject());
+      const obj = tokenDoc.toObject();
+      // 0026 D-6 retrofit: the token document itself is a portal creation too.
+      obj.flags = withStamp(obj.flags, "create-token");
+      tokenData.push(obj);
     }
     const createdTokens = await scene.createEmbeddedDocuments("Token", tokenData);
     const tokens: CreatedTokenRow[] = createdTokens.map((t, i) => {
@@ -437,6 +856,8 @@ async function handleCreateJournal(rawParams: unknown): Promise<CreateJournalRes
       name: params.name,
       folder: folderId,
       pages: [{ name: params.name, type: "text", text: { content: params.content } }],
+      // 0026 D-6 retrofit: journals are a portal creation too.
+      flags: portalStamp("create-journal"),
     });
     if (!created) {
       throw new BridgeHandlerError("foundry-error", "JournalEntry creation returned no document");
@@ -465,6 +886,10 @@ export function registerHandlers(): void {
   CONFIG.queries[queryKey("import-from-compendium")] = handleImportFromCompendium;
   CONFIG.queries[queryKey("create-token")] = handleCreateToken;
   CONFIG.queries[queryKey("create-journal")] = handleCreateJournal;
+  CONFIG.queries[queryKey("create-actor")] = handleCreateActor;
+  CONFIG.queries[queryKey("create-item")] = handleCreateItem;
+  CONFIG.queries[queryKey("create-light")] = handleCreateLight;
+  CONFIG.queries[queryKey("create-macro")] = handleCreateMacro;
 }
 
 /**

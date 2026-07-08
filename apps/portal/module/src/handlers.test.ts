@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SETTING_ALLOW_WRITES } from "./constants";
 import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./handlers";
@@ -55,9 +55,20 @@ function fakeDoc(opts: {
     name: opts.name,
     documentName: opts.documentName,
     folder: opts.folder !== undefined ? { name: opts.folder } : null,
-    toObject: () => opts.data ?? { _id: opts.id, name: opts.name },
+    // `structuredClone`, not the same `opts.data` reference every call: real Foundry's
+    // `toObject()` always hands back a FRESH plain-object clone, never the live
+    // document's own backing data — a caller that mutates what it gets back (as
+    // `resolveBasePayload`/`cloneFromCompendium` deliberately do, stripping `_id`)
+    // must never be able to corrupt this fake's "source" doc as a side effect (0026
+    // S2's "baseUuid clones-then-patches without mutating the source" acceptance).
+    toObject: () => structuredClone(opts.data ?? { _id: opts.id, name: opts.name }),
     getTokenDocument: (pos: { x: number; y: number }) =>
       Promise.resolve({ toObject: () => ({ x: pos.x, y: pos.y, name: opts.name }) }),
+    // 0026 S2's default: an actor stand-in that just echoes back whatever embedded
+    // item payloads it's given (no `rules`, matching the D-7 "absent = no warnings"
+    // defensive case) — S2 tests needing control over the returned `rules` override
+    // this with `fakeItemEmbedded`'s `fn` instead.
+    createEmbeddedDocuments: fakeCreateEmbeddedDocuments,
   };
 }
 
@@ -79,6 +90,88 @@ function fakeCreateEmbeddedDocuments(
       toObject: () => d,
     })),
   );
+}
+
+/** A plain, non-mutating deep merge good enough to stand in for real Foundry's
+ * `foundry.utils.mergeObject` in these Foundry-free tests (0026 S2) — objects merge
+ * key-by-key recursively, anything else (arrays included, matching real Foundry's own
+ * "arrays replace wholesale" semantics) is a plain overwrite. */
+function deepMergeObject<T extends Record<string, unknown>>(
+  original: Record<string, unknown>,
+  other: Record<string, unknown> = {},
+): T {
+  const result: Record<string, unknown> = { ...original };
+  for (const [key, value] of Object.entries(other)) {
+    const existing = result[key];
+    if (isPlainObject(value) && isPlainObject(existing)) {
+      result[key] = deepMergeObject(existing, value);
+    } else {
+      result[key] = value;
+    }
+  }
+  return result as T;
+}
+
+function isPlainObject(v: unknown): v is Record<string, unknown> {
+  return v !== null && typeof v === "object" && !Array.isArray(v);
+}
+
+/** S2 (0026) — a `createEmbeddedDocuments` stub for the D-7 RE read-back tests: mints
+ * one item per given payload, optionally stamping a specific `rules` array onto the
+ * item at a given index (everything else falls back to no `rules` at all — the
+ * defensive "absent means unknown, not everything-failed" case). Records every call's
+ * raw `data` so a test can assert on exactly what a handler sent (the stamp, an
+ * untouched aura RE, ...). */
+function fakeItemEmbedded(rulesByIndex: Record<number, FoundryRuleElement[]> = {}): {
+  fn: (embeddedName: string, data: Record<string, unknown>[]) => Promise<FoundryItemLike[]>;
+  calls: Array<{ embeddedName: string; data: Record<string, unknown>[] }>;
+} {
+  const calls: Array<{ embeddedName: string; data: Record<string, unknown>[] }> = [];
+  let counter = 0;
+  const fn = (
+    embeddedName: string,
+    data: Record<string, unknown>[],
+  ): Promise<FoundryItemLike[]> => {
+    calls.push({ embeddedName, data });
+    const items: FoundryItemLike[] = data.map((d) => {
+      const idx = counter;
+      counter += 1;
+      const id = `item${counter}`;
+      return {
+        id,
+        uuid: `${embeddedName}.${id}`,
+        name: typeof d.name === "string" ? d.name : embeddedName,
+        documentName: embeddedName,
+        toObject: () => d,
+        rules: rulesByIndex[idx],
+      };
+    });
+    return Promise.resolve(items);
+  };
+  return { fn, calls };
+}
+
+/** A `FoundryDocumentClass` whose `create`/`createDocuments` always reject with the
+ * given rejection — for simulating Foundry's `DataModelValidationError` (0026 S2 D-7).
+ * Wrapped in a function (rather than `Promise.reject(rejection)` inline on the object
+ * literal) to sidestep oxlint's `promise/no-promise-in-callback` heuristic, which
+ * otherwise flags an inline reject of a captured error-shaped variable. */
+function fakeThrowingDocumentClass(rejection: unknown): FoundryDocumentClass {
+  function alwaysRejects(): Promise<never> {
+    return Promise.reject(rejection);
+  }
+  return {
+    createDocuments: alwaysRejects,
+    create: alwaysRejects,
+  };
+}
+
+/** A stand-in `DataModelValidationError` — handlers.ts detects it by name/constructor-
+ * name string (the real class isn't part of this module's ambient surface, see
+ * `types/foundry.d.ts`), so a plain `Error` with the name overridden is indistinguishable
+ * from the real thing at the one call site that checks it. */
+function fakeDataModelValidationError(message: string): Error {
+  return Object.assign(new Error(message), { name: "DataModelValidationError" });
 }
 
 function fakeScene(opts: {
@@ -143,6 +236,10 @@ function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void 
     (() => {
       throw new Error("getDocumentClass not stubbed in this test");
     });
+  // 0026 S2 — `foundry.utils.mergeObject` backs the D-1 baseUuid clone+patch path and
+  // the D-6 stamp merge; {@link deepMergeObject} is a plain stand-in, real enough for
+  // these Foundry-free tests.
+  globalThis.foundry = { utils: { mergeObject: deepMergeObject } };
 }
 
 /** A minimal fake `FoundryDocumentClass` (S5) — `createDocuments`/`create` just mint
@@ -173,6 +270,41 @@ function fakeDocumentClass(
   return { docClass, created };
 }
 
+/** Like {@link fakeDocumentClass} but for `getDocumentClass("Actor")` specifically
+ * (0026 S2): the minted actor's `createEmbeddedDocuments` is the given stub, so a
+ * `create-actor` test can control/inspect exactly what happens when its embedded
+ * `items[]` get created, while `created` still records the actor's OWN payload (for
+ * asserting the D-6 stamp landed on the actor as well as its items). */
+function fakeActorDocumentClass(
+  embeddedFn: (
+    embeddedName: string,
+    data: Record<string, unknown>[],
+  ) => Promise<FoundryItemLike[]> = fakeCreateEmbeddedDocuments,
+): { docClass: FoundryDocumentClass; created: Record<string, unknown>[] } {
+  const created: Record<string, unknown>[] = [];
+  let counter = 0;
+  function mint(data: Record<string, unknown>): FoundryActor {
+    counter += 1;
+    const id = `actor${counter}`;
+    created.push(data);
+    return {
+      ...fakeDoc({
+        id,
+        uuid: `Actor.${id}`,
+        name: typeof data.name === "string" ? data.name : "Unnamed",
+        documentName: "Actor",
+        data,
+      }),
+      createEmbeddedDocuments: embeddedFn,
+    };
+  }
+  const docClass: FoundryDocumentClass = {
+    createDocuments: (data) => Promise.resolve(data.map((d) => mint(d))),
+    create: (data) => Promise.resolve(mint(data)),
+  };
+  return { docClass, created };
+}
+
 describe("portal-module handlers (spec 0023 S3 — Foundry-free)", () => {
   beforeEach(() => {
     stubFoundry(true);
@@ -187,6 +319,8 @@ describe("portal-module handlers (spec 0023 S3 — Foundry-free)", () => {
     delete globalThis.fromUuid;
     // @ts-expect-error — same.
     delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
   });
 
   it("registers portal.ping into CONFIG.queries", () => {
@@ -236,6 +370,8 @@ describe("portal-module read tools (spec 0023 S4 — Foundry-free)", () => {
     delete globalThis.fromUuid;
     // @ts-expect-error — same.
     delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
   });
 
   const bestiary = fakePack({
@@ -471,6 +607,8 @@ describe("portal-module write tools (spec 0023 S5 — Foundry-free)", () => {
     delete globalThis.fromUuid;
     // @ts-expect-error — same.
     delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
   });
 
   const bestiaryGoblin = fakeDoc({
@@ -540,6 +678,19 @@ describe("portal-module write tools (spec 0023 S5 — Foundry-free)", () => {
       expect(created[0]).toMatchObject({
         name: "Goblin Warrior",
         system: { details: { level: { value: 1 } } },
+      });
+    });
+
+    it("stamps the cloned document (0026 D-6 retrofit)", async () => {
+      const { docClass, created } = fakeDocumentClass("Actor");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === bestiaryGoblin.uuid ? bestiaryGoblin : null),
+        getDocumentClass: () => docClass,
+      });
+      registerHandlers();
+      await dispatchQuery("portal.import-from-compendium", { uuid: bestiaryGoblin.uuid });
+      expect(created[0]).toMatchObject({
+        flags: { "astra-portal": { created: true, tool: "import-from-compendium" } },
       });
     });
 
@@ -672,6 +823,17 @@ describe("portal-module write tools (spec 0023 S5 — Foundry-free)", () => {
       expect(result.tokens).toHaveLength(1);
     });
 
+    it("stamps the created token (0026 D-6 retrofit)", async () => {
+      const embedded = fakeItemEmbedded();
+      const scene = { ...activeScene, createEmbeddedDocuments: embedded.fn };
+      stubFoundry(true, { actors: [existingActor], scenes: [scene] });
+      registerHandlers();
+      await dispatchQuery("portal.create-token", { actorId: "a1", x: 0, y: 0 });
+      expect(embedded.calls[0]?.data[0]).toMatchObject({
+        flags: { "astra-portal": { created: true, tool: "create-token" } },
+      });
+    });
+
     it("rejects with a typed not-found error when no scene is active", async () => {
       stubFoundry(true, { actors: [existingActor], scenes: [] });
       registerHandlers();
@@ -750,12 +912,442 @@ describe("portal-module write tools (spec 0023 S5 — Foundry-free)", () => {
       expect(created[0]).toMatchObject({ folder: "jf1" });
     });
 
+    it("stamps the created journal (0026 D-6 retrofit)", async () => {
+      const { docClass, created } = fakeDocumentClass("JournalEntry");
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      await dispatchQuery("portal.create-journal", { name: "Session Notes", content: "<p>hi</p>" });
+      expect(created[0]).toMatchObject({
+        flags: { "astra-portal": { created: true, tool: "create-journal" } },
+      });
+    });
+
     it("rejects params missing the required name", async () => {
       stubFoundry(true, {});
       registerHandlers();
       await expect(
         dispatchQuery("portal.create-journal", { content: "<p>hi</p>" }),
       ).rejects.toThrow();
+    });
+  });
+});
+
+describe("portal-module S2 authoring tools (spec 0026 S2 — Foundry-free)", () => {
+  afterEach(() => {
+    // @ts-expect-error — tearing down the stub between tests, not a real Foundry global.
+    delete globalThis.game;
+    // @ts-expect-error — same.
+    delete globalThis.CONFIG;
+    // @ts-expect-error — same.
+    delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
+  });
+
+  describe("create-actor (D-1/D-6/D-7)", () => {
+    it("creates an NPC with embedded melee strikes, stamped on actor AND items", async () => {
+      const embedded = fakeItemEmbedded();
+      const { docClass, created } = fakeActorDocumentClass(embedded.fn);
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-actor", {
+        type: "npc",
+        name: "Goblin Bruiser",
+        system: { details: { level: { value: 1 } } },
+        items: [
+          {
+            name: "Jagged Shortsword",
+            type: "melee",
+            system: { bonus: { value: 8 }, damageRolls: {} },
+          },
+        ],
+      })) as { uuid: string; itemUuids?: string[]; warnings: string[] };
+
+      expect(created[0]).toMatchObject({
+        name: "Goblin Bruiser",
+        flags: { "astra-portal": { created: true, tool: "create-actor" } },
+      });
+      expect(embedded.calls).toHaveLength(1);
+      expect(embedded.calls[0]?.data[0]).toMatchObject({
+        name: "Jagged Shortsword",
+        flags: { "astra-portal": { created: true, tool: "create-actor" } },
+      });
+      expect(result.uuid).toBe("Actor.actor1");
+      expect(result.itemUuids).toEqual(["Item.item1"]);
+      expect(result.warnings).toEqual([]);
+    });
+
+    it("clones+patches a compendium baseUuid without mutating the source", async () => {
+      const baseData = {
+        _id: "g1",
+        name: "Goblin Warrior",
+        type: "npc",
+        system: { details: { level: { value: 1 } }, attributes: { hp: { value: 6 } } },
+      };
+      const base = fakeDoc({
+        id: "g1",
+        uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.g1",
+        name: "Goblin Warrior",
+        documentName: "Actor",
+        data: baseData,
+      });
+      const { docClass, created } = fakeDocumentClass("Actor");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === base.uuid ? base : null),
+        getDocumentClass: () => docClass,
+      });
+      registerHandlers();
+      await dispatchQuery("portal.create-actor", {
+        type: "npc",
+        name: "Goblin Warrior (Elite)",
+        baseUuid: base.uuid,
+        system: { attributes: { hp: { value: 12 } } },
+      });
+
+      // The source is untouched — a fresh toObject() still carries its own _id/hp,
+      // proving `resolveBasePayload`'s `delete base._id` never reached back into it.
+      expect(base.toObject()).toEqual(baseData);
+      expect(created[0]).not.toHaveProperty("_id");
+      expect(created[0]).toMatchObject({
+        name: "Goblin Warrior (Elite)",
+        system: { details: { level: { value: 1 } }, attributes: { hp: { value: 12 } } },
+        flags: { "astra-portal": { created: true, tool: "create-actor" } },
+      });
+    });
+
+    it("rejects a non-compendium baseUuid (compendium-only guard, mirrors cloneFromCompendium)", async () => {
+      stubFoundry(true, {});
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-actor", {
+        type: "npc",
+        name: "X",
+        baseUuid: "Actor.a1", // a world uuid, not a compendium one
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("foundry-error");
+    });
+
+    it("maps a DataModelValidationError to a typed validation-failed error (hazard)", async () => {
+      const docClass = fakeThrowingDocumentClass(
+        fakeDataModelValidationError("attributes.hp.value: must be a non-negative integer"),
+      );
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-actor", {
+        type: "hazard",
+        name: "Rigged Trap",
+        system: { attributes: { hp: { value: -5 } } },
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("validation-failed");
+      expect((err as BridgeHandlerError).message).toBe(
+        "attributes.hp.value: must be a non-negative integer",
+      );
+    });
+
+    it("is denied with writes-disabled when the module setting is off", async () => {
+      stubFoundry(true, { settings: { [SETTING_ALLOW_WRITES]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-actor", { type: "npc", name: "X" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+
+  describe("create-item (D-1/D-6/D-7)", () => {
+    it("creates an effect item carrying an Aura RE referencing a companion effect uuid, pass-through untouched", async () => {
+      const { docClass, created } = fakeDocumentClass("Item");
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      const auraSystem = {
+        rules: [
+          {
+            key: "Aura",
+            radius: "10",
+            effects: [{ uuid: "Item.companion-effect-1", affects: "allies", removeOnExit: true }],
+          },
+        ],
+      };
+      const result = (await dispatchQuery("portal.create-item", {
+        name: "Aura of Courage",
+        type: "effect",
+        system: auraSystem,
+      })) as { uuid: string; warnings: string[] };
+
+      expect(created[0]).toMatchObject({
+        name: "Aura of Courage",
+        type: "effect",
+        system: auraSystem,
+      });
+      // Pass-through untouched: the companion effect's uuid rides verbatim, never
+      // validated/rewritten at this layer (D-7's "structurally opaque" posture).
+      const sentSystem = created[0]?.system as typeof auraSystem;
+      expect(sentSystem.rules[0]?.effects[0]?.uuid).toBe("Item.companion-effect-1");
+      // A world item has no owner, so pf2e never instantiates its rule elements —
+      // nothing to read back.
+      expect(result.warnings).toEqual([]);
+    });
+
+    it("creates a spellcastingEntry + spell pair with location.value linking, payloads pass through untouched", async () => {
+      const { docClass, created } = fakeDocumentClass("Item", "item");
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      const entryResult = (await dispatchQuery("portal.create-item", {
+        name: "Innate Spells",
+        type: "spellcastingEntry",
+        system: {
+          tradition: { value: "arcane" },
+          prepared: { value: "innate" },
+          spelldc: { value: 18, dc: 28 },
+        },
+      })) as { id: string };
+
+      await dispatchQuery("portal.create-item", {
+        name: "Fireball",
+        type: "spell",
+        system: { location: { value: entryResult.id } },
+      });
+
+      expect(created[0]).toMatchObject({ name: "Innate Spells", type: "spellcastingEntry" });
+      expect(created[1]).toMatchObject({
+        name: "Fireball",
+        type: "spell",
+        system: { location: { value: entryResult.id } },
+      });
+    });
+
+    it("pre-seeds rulesSelections under flags.pf2e.rulesSelections", async () => {
+      const { docClass, created } = fakeDocumentClass("Item");
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      await dispatchQuery("portal.create-item", {
+        name: "Ancestry Feat Grant",
+        type: "feat",
+        system: { rules: [{ key: "ChoiceSet" }] },
+        rulesSelections: { "choice-set-1": "some-feat-slug" },
+      });
+      expect(created[0]).toMatchObject({
+        flags: {
+          pf2e: { rulesSelections: { "choice-set-1": "some-feat-slug" } },
+          "astra-portal": { created: true, tool: "create-item" },
+        },
+      });
+    });
+
+    it("surfaces an ignored rule element as warnings[] when created embedded on an actor", async () => {
+      const embedded = fakeItemEmbedded({
+        0: [{ key: "FlatModifier" }, { key: "BadKey", ignored: true }],
+      });
+      const actor = {
+        ...fakeDoc({ id: "a1", uuid: "Actor.a1", name: "Test NPC", documentName: "Actor" }),
+        createEmbeddedDocuments: embedded.fn,
+      };
+      stubFoundry(true, { actors: [actor] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-item", {
+        name: "Weird Effect",
+        type: "effect",
+        system: { rules: [{ key: "FlatModifier" }, { key: "BadKey" }] },
+        actorId: "a1",
+      })) as { warnings: string[] };
+      expect(result.warnings).toEqual([
+        expect.stringContaining("rule element 1 (key: BadKey) was ignored at data-prep"),
+      ]);
+    });
+
+    it("treats a missing `rules` property on the created item as no warnings (defensive)", async () => {
+      const embedded = fakeItemEmbedded(); // no override -> item.rules is undefined
+      const actor = {
+        ...fakeDoc({ id: "a1", uuid: "Actor.a1", name: "Test NPC", documentName: "Actor" }),
+        createEmbeddedDocuments: embedded.fn,
+      };
+      stubFoundry(true, { actors: [actor] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-item", {
+        name: "Mystery Effect",
+        type: "effect",
+        system: { rules: [{ key: "FlatModifier" }] },
+        actorId: "a1",
+      })) as { warnings: string[] };
+      expect(result.warnings).toEqual([]);
+    });
+
+    it("rejects an unknown actorId with a typed not-found error", async () => {
+      stubFoundry(true, { actors: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-item", {
+        name: "X",
+        type: "equipment",
+        actorId: "no-such-actor",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("is denied with writes-disabled when the module setting is off", async () => {
+      stubFoundry(true, { settings: { [SETTING_ALLOW_WRITES]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-item", { name: "X", type: "equipment" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+
+  describe("create-light (D-13/D-6)", () => {
+    it("returns the embedded uuid, stamped, defaulting to the active scene", async () => {
+      const embedded = fakeItemEmbedded();
+      const scene = {
+        ...fakeScene({ id: "sc1", name: "The Warren", active: true }),
+        createEmbeddedDocuments: embedded.fn,
+      };
+      stubFoundry(true, { scenes: [scene] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-light", {
+        x: 100,
+        y: 200,
+        config: { bright: 20, dim: 40, color: "#ff8800", animation: { type: "torch" } },
+      })) as { sceneId: string; lightUuid: string; warnings: string[] };
+
+      expect(result).toMatchObject({
+        sceneId: "sc1",
+        lightUuid: "Scene.sc1.AmbientLight.item1",
+        warnings: [],
+      });
+      expect(embedded.calls[0]?.embeddedName).toBe("AmbientLight");
+      expect(embedded.calls[0]?.data[0]).toMatchObject({
+        x: 100,
+        y: 200,
+        hidden: false,
+        config: { bright: 20, dim: 40, color: "#ff8800", animation: { type: "torch" } },
+        flags: { "astra-portal": { created: true, tool: "create-light" } },
+      });
+    });
+
+    it("targets an explicit sceneId rather than the active scene", async () => {
+      const embedded = fakeItemEmbedded();
+      const active = fakeScene({ id: "sc1", name: "Active", active: true });
+      const target = {
+        ...fakeScene({ id: "sc2", name: "Idle Room", active: false }),
+        createEmbeddedDocuments: embedded.fn,
+      };
+      stubFoundry(true, { scenes: [active, target] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.create-light", {
+        sceneId: "sc2",
+        x: 0,
+        y: 0,
+      })) as { sceneId: string };
+      expect(result.sceneId).toBe("sc2");
+    });
+
+    it("rejects with a typed not-found error when no scene is active and no sceneId is given", async () => {
+      stubFoundry(true, { scenes: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-light", { x: 0, y: 0 }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("rejects an unknown explicit sceneId with a typed not-found error", async () => {
+      stubFoundry(true, { scenes: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-light", { sceneId: "nope", x: 0, y: 0 }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("is denied with writes-disabled when the module setting is off", async () => {
+      stubFoundry(true, {
+        scenes: [fakeScene({ id: "sc1", name: "The Warren", active: true })],
+        settings: { [SETTING_ALLOW_WRITES]: false },
+      });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-light", { x: 0, y: 0 }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+
+  describe("create-macro (D-6/D-9)", () => {
+    it("creates a macro, NEVER executes it, and audits the full command text", async () => {
+      const executeSpy = vi.fn();
+      const macroDoc = {
+        ...fakeDoc({
+          id: "macro1",
+          uuid: "Macro.macro1",
+          name: "Portal Test Macro",
+          documentName: "Macro",
+        }),
+        execute: executeSpy,
+      };
+      const docClass: FoundryDocumentClass = {
+        createDocuments: () => Promise.resolve([macroDoc]),
+        create: (data) => {
+          macroDoc.toObject = () => data;
+          return Promise.resolve(macroDoc);
+        },
+      };
+      const logSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      // No embedded double-quotes: JSON.stringify (auditLog's serialization) would
+      // escape them, and this test asserts the RAW command text is a substring of
+      // the audit line — single quotes round-trip through JSON.stringify unescaped.
+      const command = "ChatMessage.create({content: 'Hello from portal'});";
+      const result = (await dispatchQuery("portal.create-macro", {
+        name: "Portal Test Macro",
+        macroType: "script",
+        command,
+      })) as { uuid: string; id: string; name: string; warnings: string[] };
+
+      expect(result).toMatchObject({ name: "Portal Test Macro", warnings: [] });
+      expect(executeSpy).not.toHaveBeenCalled();
+      const auditedOk = logSpy.mock.calls.find(
+        ([line]) =>
+          typeof line === "string" &&
+          line.includes("tool=create-macro") &&
+          line.includes("outcome=ok"),
+      );
+      expect(auditedOk?.[0]).toContain(command);
+      logSpy.mockRestore();
+    });
+
+    it("stamps the created macro", async () => {
+      const { docClass, created } = fakeDocumentClass("Macro");
+      stubFoundry(true, { getDocumentClass: () => docClass });
+      registerHandlers();
+      await dispatchQuery("portal.create-macro", {
+        name: "Portal Test Macro",
+        macroType: "chat",
+        command: "hi",
+      });
+      expect(created[0]).toMatchObject({
+        flags: { "astra-portal": { created: true, tool: "create-macro" } },
+      });
+    });
+
+    it("is denied with writes-disabled when the module setting is off", async () => {
+      stubFoundry(true, { settings: { [SETTING_ALLOW_WRITES]: false } });
+      registerHandlers();
+      const err = await dispatchQuery("portal.create-macro", {
+        name: "X",
+        macroType: "chat",
+        command: "hi",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("writes-disabled");
     });
   });
 });

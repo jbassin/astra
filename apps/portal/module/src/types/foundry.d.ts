@@ -95,11 +95,39 @@ interface FoundryTokenDocumentLike {
   toObject(): Record<string, unknown>;
 }
 
+/** One instantiated pf2e rule element on an OWNED item, as read back from `.rules`
+ * after `createEmbeddedDocuments` (0026 S2 D-7) — `ignored: true` is pf2e's own
+ * fail-soft marker for a bad/unknown RE (it `console.warn`s at data-prep rather than
+ * rejecting the create; `system.rules` itself is never DB-validated). A WORLD item
+ * (no owning actor) never gets this array populated at all — data-prep only runs on
+ * owned documents — which is why `create-item`'s standalone-item path skips read-back
+ * entirely rather than reporting a false "everything ignored". */
+interface FoundryRuleElement {
+  readonly key?: string;
+  readonly ignored?: boolean;
+}
+
+/** The subset of an embedded Item document the D-7 RE read-back inspects — a superset
+ * of {@link FoundryDocumentLike} that MAY carry instantiated `rules`. `rules` is
+ * optional/absent both for a fresh non-Foundry stub and, in the real client, for any
+ * item that hasn't gone through actor data-prep — both are treated identically
+ * (no warnings), never as "every rule failed". */
+interface FoundryItemLike extends FoundryDocumentLike {
+  readonly rules?: FoundryRuleElement[];
+}
+
 /** A world Actor (S5) — extends the general document surface with the one
  * actor-specific call `create-token` needs: cloning the actor's prototype token at a
- * given position (D13 "import-then-tokenize"). */
+ * given position (D13 "import-then-tokenize"), plus (0026 S2) embedding items
+ * directly on the actor (`create-actor`'s `items[]`, `create-item`'s `actorId` path)
+ * — the return type carries {@link FoundryItemLike} so callers can read `.rules`
+ * straight off the result without an extra cast. */
 interface FoundryActor extends FoundryDocumentLike {
   getTokenDocument(pos: { x: number; y: number }): Promise<FoundryTokenDocumentLike>;
+  createEmbeddedDocuments(
+    embeddedName: string,
+    data: Record<string, unknown>[],
+  ): Promise<FoundryItemLike[]>;
 }
 
 /** A world Folder (S5) — `import-from-compendium`/`create-journal`'s `folder` param
@@ -223,3 +251,32 @@ declare var fromUuid: (uuid: string) => Promise<FoundryDocumentLike | null>;
  * `JournalEntry` global reference — the v13->v15 deprecation cliff, spec Risks). S5's
  * write handlers are its only callers. Same `var` reasoning as `fromUuid`. */
 declare var getDocumentClass: (documentName: string) => FoundryDocumentClass;
+
+/** The one `foundry.utils` helper this module calls (0026 S2 D-1 hybrid `baseUuid`
+ * clone+patch path, and the D-6 stamp merge): a plain, non-mutating deep merge. Real
+ * Foundry's `mergeObject` takes many more options (array-insertion keys, strict mode,
+ * ...); this module only ever needs `{inplace: false}`. */
+interface FoundryUtils {
+  mergeObject<T extends Record<string, unknown> = Record<string, unknown>>(
+    original: Record<string, unknown>,
+    other?: Record<string, unknown>,
+    options?: { inplace?: boolean },
+  ): T;
+}
+
+interface FoundryNamespace {
+  readonly utils: FoundryUtils;
+}
+
+/** Same `var` reasoning as `fromUuid`/`getDocumentClass`: `handlers.test.ts` stubs
+ * this per-test, never the real Foundry-injected global. */
+declare var foundry: FoundryNamespace;
+
+// Note (0026 S2, D-7): Foundry's `DataModelValidationError` class is deliberately NOT
+// part of this ambient surface — importing/declaring the real class would pull in far
+// more of Foundry's DataModel machinery than this module otherwise touches. handlers.ts
+// detects it defensively at the call site instead, by checking the thrown error's own
+// `.name`/`.constructor.name` string against `"DataModelValidationError"` rather than
+// an `instanceof` check (see `isDataModelValidationError` in `handlers.ts`) — this is
+// also what lets a plain `Error({name: "DataModelValidationError"})` fake stand in for
+// the real thing in tests without any Foundry runtime present.
