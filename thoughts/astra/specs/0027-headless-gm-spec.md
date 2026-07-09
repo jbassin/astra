@@ -3,9 +3,16 @@
 **Status:** IN PROGRESS (2026-07-08) — S1 `32f509b` (dialer + identity) · S2 `f281283` (supervisor
   service; classify() hardened at review: in-world is positively `/game`, unknown → `world-down`) ·
   S3 `4914111` (container + compose; non-live acceptance passed: unreachable→`broken` no-crash-loop,
-  /setup-fixture→`world-down` zero-login) — all CI-green + pushed. **▶ S4 remaining:** the live
-  gate (stakeholder-coordinated: "Portal" account, SOPS key, `options.json` edit, `bridge-user-id`
-  + F5, `just up`, exit gate A–H incl. the ≥24h soak).
+  /setup-fixture→`world-down` zero-login) — all CI-green + pushed. **S4 LIVE GATE RUN 2026-07-08
+  evening: acceptance A/B/C/D/F/G-signals ALL PASSED live** (zero-tab read+write; `userName:
+  "Portal"`; the real oscillation observed in the empty-setting window then dead once
+  `bridge-user-id` landed; restart → in-world in ~5s; world-down politeness during the GM's Setup
+  session; hidden-light + Goblin-Warrior token create/delete clean, zero debris). Two live
+  fast-follows shipped: viewport 1600×900 `bda23ee` (Foundry min 1366×768 — its console error paged
+  Class A) + page-console demote-to-warn `6fd8d5e` (world noise must not trip the error/fatal
+  alert; the `module_console` counter keeps the real level). **▶ Remaining to close: the ≥24h soak
+  (G) + acceptance E** (options.json auto-launch proof — foundry-container bounce awaits explicit
+  stakeholder approval, else the next natural restart).
 **Scope doc:** `thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md` (all claims
   verified 2026-07-08: live host inspected read-only — compose labels, env, `options.json` read
   directly; module/bridge code walked file:line; Foundry v13.351 `/join`+session+`core.noCanvas`

@@ -1,11 +1,11 @@
 ---
 name: headless-gm-0027-gotchas
-description: headless-gm (0027) — supervised headless-Chromium GM session so portal works with zero human tabs; S1–S3 built+pushed, S4 live gate pending; the load-bearing findings + gotchas
+description: headless-gm (0027) — supervised headless-Chromium GM session so portal works with zero human tabs; S4 live gate RUN (A/B/C/D/F all passed), soak + acceptance-E pending; the load-bearing findings + gotchas
 metadata:
   type: project
 ---
 
-# headless-gm 0027 — S1–S3 BUILT + PUSHED (2026-07-08); ▶ S4 live gate pending
+# headless-gm 0027 — S4 LIVE GATE RUN 2026-07-08 (A/B/C/D/F ✅); ▶ soak + acceptance E remain
 
 A dedicated Foundry GM account ("Portal") permanently logged in via headless Chromium (Compose
 unit `apps/portal/headless`, port 10373) so portal MCP tools work 24/7 tab-free. Scope
@@ -67,17 +67,38 @@ identity, module 0.3.0) · S2 `f281283` (supervisor service) · S3 `4914111` (co
   `extra="forbid"` — an unmirrored kdl block breaks Python config loading outright).
 - The TS-Dockerfile manifest-COPY ripple is now **13** files (every sibling + the new one).
 
-## ▶ S4 checklist (live gate — Josh at the table)
+## S4 live gate — RUN 2026-07-08 evening (A/B/C/D/F ✅; soak + E remain)
 
-(1) create user "Portal" (Gamemaster) in-world; (2) `sops set foundry_portal_gm_password`;
-(3) the flagged `options.json` `"world":"faerrin"` edit (docker-as-root); (4) set module
-`bridge-user-id` to Portal's id + F5 Josh's tab; (5) "deploy it" → `just up` + GM module update
-(0.3.0) + F5; (6) exit gate A–H: zero-tab tool calls, `bridge-status` `userName:"Portal"`,
-no-oscillation with Josh's tab open, `docker restart` resilience, Return-to-Setup politeness,
-noCanvas smoke (get-current-scene/create-token/create-light), **≥24h soak**. Foundry-container
-bounce to prove auto-launch ONLY with Josh's explicit approval. Driver DOM selectors
-(`select[name=userid]` etc.) are best-effort — verify at S4 (the network contract is
-source-proven, the markup isn't).
+All host steps done (SOPS key set; `options.json` `"world":"faerrin"` edited via docker-as-root,
+backup `options.json.bak-2026-07-08` alongside — foundry data dir is
+`/emerald/data/apps/apps/foundry_faerrin/data`, container `foundry_faerrin`). Portal's user id is
+**`xlC6LfQ7godJVVFf`**. Driver DOM selectors held (join → in-world in ~0.6s). Results: zero-tab
+read+write ✅; `bridge-status` `userName:"Portal"` ✅; `docker restart` → in-world in **~5s** ✅;
+world-down politeness proven live during the GM's real Setup session (zero `/join` attempts) ✅;
+noCanvas smoke (scene read, hidden light, Goblin Warrior token create+delete, zero debris) ✅;
+three signals in SigNoz ✅. **Remaining: the ≥24h soak + acceptance E** (auto-launch proof —
+foundry bounce needs explicit stakeholder approval, else next natural restart).
+
+## S4 live-gate gotchas (will bite again)
+
+- **Set `bridge-user-id` BEFORE bringing the headless unit up.** We sequenced it the other way
+  (module 0.3.0 didn't exist in the world until the deploy) and the empty-setting window produced
+  THE oscillation for real — six bridge connects in 13s while both sessions were eligible — until
+  the setting landed. Next designated-dialer change: fill the setting first, then start the dialer.
+- **`not-designated` while `bridge-status` is green = a mis-entered setting value.** The console
+  displays ids WITH quotes — pasting them (or a stray space) breaks the exact `game.user.id`
+  string match. `bridge-status` still works (server-side, no module dispatch), so it LOOKS
+  connected while every real tool call refuses. Check in the GM console:
+  `game.settings.get("astra-portal", "bridge-user-id")`. The setting reads live at query time —
+  fixing it needs NO F5.
+- **Playwright's default 1280×720 viewport is under Foundry's 1366×768 minimum** — Foundry
+  console.errors about it on every join, which (pre-demote) paged Class A. Fixed `bda23ee`
+  (1600×900 in `newContext`).
+- **Captured page-console lines log at WARN always** (`6fd8d5e`): an in-page `console.error`
+  (Foundry or any world module) is world noise, not a supervisor fault, and must not trip the
+  Class-A error/fatal alert (it did, live). The `console` EVENT keeps the real level →
+  `module_console{level}` still distinguishes. The OTel severity comes only from the supervisor's
+  `log` callback — one choke point.
 
 ⚠️ Incidental pre-existing find (surfaced 2026-07-08, NOT 0027): host Caddy admin API
 `localhost:2019` unauthenticated, serves full config incl. a plaintext Cloudflare DNS token.

@@ -36,10 +36,32 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `4914111`, 2026-07-08 — headless-gm 0027 S1–S3 BUILT)
+## Current state — UPDATE THIS SECTION (as of `6fd8d5e`, 2026-07-08 evening — 0027 S4 live gate RUN)
 
-> **▶ headless-gm (0027) — SCOPE + SPEC + S1–S3 BUILT + PUSHED; ▶ RESUME AT S4 (live gate,
-> stakeholder-coordinated).** The stakeholder sanctioned the 0025-parked idea: a supervised
+> **▶ headless-gm (0027) — S4 LIVE GATE RUN, acceptance A/B/C/D/F + G-signals ALL PASSED;
+> ▶ REMAINING: the ≥24h soak (started ~2026-07-08T23:56Z) + acceptance E.** The gate ran with
+> the stakeholder at the table: SOPS `foundry_portal_gm_password` set; the flagged `options.json`
+> `"world":"faerrin"` edit applied (docker-as-root, backup `options.json.bak-2026-07-08`,
+> container `foundry_faerrin`, data dir `/emerald/data/apps/apps/foundry_faerrin/data`); user
+> "Portal" created (id `xlC6LfQ7godJVVFf`); module → 0.3.0 + `bridge-user-id` set.
+> **Live results:** zero-tab read+write as Portal ✅; `bridge-status` `userName:"Portal"` ✅;
+> THE oscillation observed for real (six connects/13s in the pre-setting window) then dead ✅;
+> `docker restart` → in-world in ~5s ✅; world-down politeness during the GM's real Setup
+> session (zero /join attempts) ✅; noCanvas smoke create/delete, zero debris ✅; three signals
+> in SigNoz, no ERROR since the fixes ✅. **Two live fast-follows:** viewport 1600×900 `bda23ee`
+> (Foundry's 1366×768 minimum console-error paged Class A) + page-console demote-to-warn
+> `6fd8d5e` (world noise must never trip the error/fatal alert; `module_console{level}` keeps
+> the real level). **Live gotchas** (detail in [[headless-gm-0027-gotchas]]): set
+> `bridge-user-id` BEFORE headless-up; a mis-pasted setting value (console shows ids WITH
+> quotes) = `not-designated` on every tool call while `bridge-status` still shows connected —
+> the setting reads live, no F5 to fix.
+> **▶ To close 0027: (1) the ≥24h soak** (check SigNoz `astra.portal-headless` after
+> 2026-07-09T23:56Z: no relaunch loop, no unexpected ERROR, bridge stable) **+ (2) acceptance E**
+> (options.json auto-launch — bounce `foundry_faerrin` ONLY with explicit stakeholder approval,
+> else the next natural restart), then spec → COMPLETE + finalize the memory.
+>
+> _(Original S1–S3 checkpoint, superseded by the gate run above:)_ the stakeholder sanctioned
+> the 0025-parked idea: a supervised
 > headless-Chromium GM session (dedicated Foundry account) as a Compose unit, so portal MCP tools
 > work 24/7 with zero human tabs open.
 > - **Docs (committed):** scope `thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md`
