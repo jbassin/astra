@@ -85,10 +85,23 @@ export function createPlaywrightPageAdapter(opts: PlaywrightDriverOptions): Page
 
   async function classify(): Promise<PageClassification> {
     const p = currentPage();
-    const path = new URL(p.url()).pathname;
+    let path = new URL(p.url()).pathname;
     if (path === "/join") return "join";
     // In-world is identified POSITIVELY (Foundry's in-world route is /game) — never by
     // elimination, so an unexpected landing page can't masquerade as healthy in /health.
+    if (path === "/game") return "in-world";
+    // Anything else can be a STALE DOM: a server outage/restart tears the client off
+    // /game onto a page whose socket is dead, and nothing server-side can ever navigate
+    // it again (Foundry pushes only reach live sockets) — passively classifying it
+    // would report world-down forever while the world is actually back (observed live,
+    // 2026-07-09: the acceptance-E container bounce). Re-navigate so the classification
+    // reflects the server's CURRENT state; if the server is unreachable this goto
+    // throws → the supervisor maps it to `broken` → bounded relaunch backoff (the
+    // S3-proven unreachable-origin path). A plain GET of the origin is read-only —
+    // D27-1's "never interfere with /setup" politeness is untouched.
+    await p.goto(opts.origin, { waitUntil: "load" });
+    path = new URL(p.url()).pathname;
+    if (path === "/join") return "join";
     if (path === "/game") return "in-world";
     // D27-6: /setup, /auth, and / (a shut-down world's post-redirect landing page,
     // scope doc §2.3) all mean "the world isn't up" — back off, never interfere.
