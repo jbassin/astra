@@ -10,9 +10,15 @@
   session; hidden-light + Goblin-Warrior token create/delete clean, zero debris). Two live
   fast-follows shipped: viewport 1600×900 `bda23ee` (Foundry min 1366×768 — its console error paged
   Class A) + page-console demote-to-warn `6fd8d5e` (world noise must not trip the error/fatal
-  alert; the `module_console` counter keeps the real level). **▶ Remaining to close: the ≥24h soak
-  (G) + acceptance E** (options.json auto-launch proof — foundry-container bounce awaits explicit
-  stakeholder approval, else the next natural restart).
+  alert; the `module_console` counter keeps the real level). **Acceptance E PASSED same evening
+  (stakeholder-approved `foundry_faerrin` bounce ×2):** auto-launch proven (restart → world
+  `faerrin` active in ~20s, zero human action) — and the first bounce exposed a REAL S4 bug:
+  `classify()` never re-navigated, so a server restart left a stale dead DOM classified
+  `world-down` forever (Foundry pushes only reach live sockets). Fixed `c553290` (re-navigate
+  before classifying any non-`/game`/non-`/join` page; unreachable origin → goto throws →
+  `broken` → the S3-proven bounded relaunch). Second bounce proved the self-heal live: stale
+  `/game` → Foundry's client kicks to `/join` → re-login, **in-world again in ~36s, joins=2,
+  relaunches=0, no container recreate.** **▶ Remaining to close: only the ≥24h soak (G).**
 **Scope doc:** `thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md` (all claims
   verified 2026-07-08: live host inspected read-only — compose labels, env, `options.json` read
   directly; module/bridge code walked file:line; Foundry v13.351 `/join`+session+`core.noCanvas`

@@ -55,10 +55,16 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 > `bridge-user-id` BEFORE headless-up; a mis-pasted setting value (console shows ids WITH
 > quotes) = `not-designated` on every tool call while `bridge-status` still shows connected —
 > the setting reads live, no F5 to fix.
-> **▶ To close 0027: (1) the ≥24h soak** (check SigNoz `astra.portal-headless` after
-> 2026-07-09T23:56Z: no relaunch loop, no unexpected ERROR, bridge stable) **+ (2) acceptance E**
-> (options.json auto-launch — bounce `foundry_faerrin` ONLY with explicit stakeholder approval,
-> else the next natural restart), then spec → COMPLETE + finalize the memory.
+> **Acceptance E PASSED (2026-07-09T00:03–00:11Z, stakeholder-approved bounce ×2):** auto-launch
+> proven (restart → `faerrin` active ~20s, zero human action) — and the first bounce exposed a
+> REAL bug: `classify()` was passive, so the restart left a stale dead DOM stuck `world-down`
+> forever (Foundry pushes only reach live sockets; the earlier Setup-session recovery only worked
+> because that page was live). Fixed `c553290` (re-navigate before classifying any
+> non-`/game`/non-`/join` page); the second bounce proved the self-heal live — stale `/game` →
+> Foundry kicks to `/join` → re-login, in-world in ~36s, joins=2, relaunches=0, no recreate.
+> **▶ To close 0027: ONLY the ≥24h soak** (check SigNoz `astra.portal-headless` after
+> ~2026-07-10T00:00Z: no relaunch loop, no unexpected ERROR, bridge stable), then spec →
+> COMPLETE + finalize the memory.
 >
 > _(Original S1–S3 checkpoint, superseded by the gate run above:)_ the stakeholder sanctioned
 > the 0025-parked idea: a supervised

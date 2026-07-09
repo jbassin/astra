@@ -5,7 +5,7 @@ metadata:
   type: project
 ---
 
-# headless-gm 0027 — S4 LIVE GATE RUN 2026-07-08 (A/B/C/D/F ✅); ▶ soak + acceptance E remain
+# headless-gm 0027 — S4 LIVE GATE RUN 2026-07-08/09 (A–F ALL ✅); ▶ only the ≥24h soak remains
 
 A dedicated Foundry GM account ("Portal") permanently logged in via headless Chromium (Compose
 unit `apps/portal/headless`, port 10373) so portal MCP tools work 24/7 tab-free. Scope
@@ -76,11 +76,22 @@ backup `options.json.bak-2026-07-08` alongside — foundry data dir is
 read+write ✅; `bridge-status` `userName:"Portal"` ✅; `docker restart` → in-world in **~5s** ✅;
 world-down politeness proven live during the GM's real Setup session (zero `/join` attempts) ✅;
 noCanvas smoke (scene read, hidden light, Goblin Warrior token create+delete, zero debris) ✅;
-three signals in SigNoz ✅. **Remaining: the ≥24h soak + acceptance E** (auto-launch proof —
-foundry bounce needs explicit stakeholder approval, else next natural restart).
+three signals in SigNoz ✅. **Acceptance E ✅ (stakeholder-approved bounce ×2):** auto-launch
+proven (restart → `faerrin` active ~20s, zero human action); second bounce proved the FULL
+self-heal (stale `/game` → Foundry kicks to `/join` → re-login, in-world in ~36s, joins=2,
+relaunches=0, no recreate). **Remaining: only the ≥24h soak.**
 
 ## S4 live-gate gotchas (will bite again)
 
+- **⭐ A passive page classifier CANNOT see server recovery — re-navigate before classifying**
+  (`c553290`). A server restart tears the client off `/game` onto a DOM whose socket is dead;
+  Foundry pushes only reach live sockets, so NOTHING ever navigates that page again and the
+  passive classifier reported `world-down` forever while the world was back (observed live at
+  the acceptance-E bounce — the supervisor sat stuck 2.5min+). The earlier world-down recovery
+  (GM's Setup session) only worked because THAT page was live and the server pushed it forward.
+  `classify()` now `goto`s the origin for any non-`/game`/non-`/join` page; unreachable origin
+  → throw → `broken` → the S3-proven bounded relaunch. Stale-`/game` is covered by Foundry
+  itself (≥5s outage → its client kicks to `/join`, source-verified).
 - **Set `bridge-user-id` BEFORE bringing the headless unit up.** We sequenced it the other way
   (module 0.3.0 didn't exist in the world until the deploy) and the empty-setting window produced
   THE oscillation for real — six bridge connects in 13s while both sessions were eligible — until
