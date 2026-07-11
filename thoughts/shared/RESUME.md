@@ -36,7 +36,56 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `6fd8d5e`, 2026-07-08 evening — 0027 S4 live gate RUN)
+## Current state — UPDATE THIS SECTION (as of `482174b`, 2026-07-11 — 0028 scoped + spec drafted)
+
+> **▶ portal-player (0028) — SCOPE DONE (committed `482174b`) + SPEC DRAFTED (committed this
+> checkpoint); ▶ RESUME AT: fold the adversarial-review findings into the spec → finalize →
+> `octo:embrace` S1.** A read-only tool subset for the stakeholder's players behind a NEW static
+> API key (`portal_player_api_key`): when that key authenticates `/mcp`, exactly five tools are
+> visible — `bridge-status` + `query-rolls` (paginated/filterable public roll history) +
+> `query-party` + `query-player` (sectioned sheets — live PCs measure 166–579 KB, items[] is
+> 97–99% of bytes) + `query-item`; results render as **markdown at the server** (module wire
+> stays typed JSON). Players use Claude Code — **static key only, OAuth untouched** (stakeholder
+> decision).
+> - **Scope doc:** `thoughts/shared/research/2026-07-11-portal-player-0028-thoughts.md` — verified
+>   vs repo (per-request McpServer ⇒ per-key tool scope = cheap conditional in the `mcp.ts:499-512`
+>   auth branch; 8-file key plumbing; zero Dockerfile ripple), vs the live world (party actor +
+>   4 PCs + familiar Othello; `toObject()` has NO combat stats — AC/saves/skill totals/ability
+>   scores are ALL runtime-derived), and vs the live container source (v13 ChatMessage schema —
+>   `author` not `user`; serialized-Roll JSON is render-complete; pf2e `flags.pf2e.context`
+>   taxonomy; **`game.messages` is UNCAPPED client-side** ⇒ pagination = module-side
+>   filter+slice, cursor `(timestamp,_id)`).
+> - **Spec:** `thoughts/astra/specs/0028-portal-player-spec.md` — D28-1..7 stakeholder-resolved
+>   (derived stats from the live prepared Actor, fail-soft; **public-rolls-only baked module-side**
+>   — `whisper.length===0 ∧ !blind`; PC predicate `type ∈ {character,familiar}`; item tri-scope
+>   world+party-embedded+compendium with `ownership.default ≥ 2` on world items) + D28-8..14
+>   spec-level (PLAYER_TOOL_NAMES scope machinery; `auth` telemetry attr; version lockstep →
+>   0.4.0 at S3; module-skew = typed error). 4 slices: S1 key+scope (Foundry-free) · S2
+>   party+player · S3 item+rolls+lockstep · S4 deploy+live gate A–H.
+> - **⚠ Spec is DRAFT:** an adversarial review agent was launched (in-flight at this checkpoint;
+>   findings NOT yet folded in). Its named targets: (1) re-verify "every non-public roll mode
+>   reduces to whisper/blind at storage" against the live Foundry source **incl. pf2e
+>   `context.secret`** (the spec's pass asserts it but exploration never verified it); (2) is the
+>   server-side `BridgeErrorCode` zod union CLOSED? (wire-compat hazard for the new
+>   `not-a-player-character`/`ambiguous-name` codes under skew — D28-14 only analyzed
+>   method-level); (3) `bridge-status` payload sensitivity for players; (4) arithmetic on the
+>   Argyle 196-spell section vs the ~10 KB markdown cap. **If resuming cold and no findings are
+>   recorded in the spec, re-run that review before implementing.**
+> - Housekeeping: `deploy/sops/secrets.enc.yaml` is dirty in the tree (almost certainly the 0027
+>   S4 `foundry_portal_gm_password` sops-set, never committed) — commit or reconcile deliberately;
+>   `routeTree.gen.ts` is the known regen flap.
+>
+> **▶ Also open: 0027 headless-gm is one step from closure — the ≥24h soak check is OVERDUE**
+> (soak started ~2026-07-08T23:56Z; nothing checked since). Verify SigNoz `astra.portal-headless`
+> over 2026-07-09→now (no relaunch loop, no unexpected ERROR since the demote fix `6fd8d5e`,
+> bridge stable) → then 0027 spec → COMPLETE + finalize [[headless-gm-0027-gotchas]] + retire the
+> superseded section below. Independent of 0028.
+
+---
+
+### Previous section (2026-07-08) — 0027 S4 live gate run (soak-close pointer folded into the entry above)
+
+## (was) Current state (as of `6fd8d5e`, 2026-07-08 evening — 0027 S4 live gate RUN)
 
 > **▶ headless-gm (0027) — S4 LIVE GATE RUN, acceptance A/B/C/D/F + G-signals ALL PASSED;
 > ▶ REMAINING: the ≥24h soak (started ~2026-07-08T23:56Z) + acceptance E.** The gate ran with
