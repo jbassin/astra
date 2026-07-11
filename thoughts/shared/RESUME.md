@@ -36,17 +36,37 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `482174b`, 2026-07-11 — 0028 scoped + spec drafted)
+## Current state — UPDATE THIS SECTION (as of `a59d53c`, 2026-07-11 — 0028 S1–S3 BUILT; 0027 CLOSED)
 
-> **▶ portal-player (0028) — SCOPE DONE (committed `482174b`) + SPEC DRAFTED (committed this
-> checkpoint); ▶ RESUME AT: fold the adversarial-review findings into the spec → finalize →
-> `octo:embrace` S1.** A read-only tool subset for the stakeholder's players behind a NEW static
-> API key (`portal_player_api_key`): when that key authenticates `/mcp`, exactly five tools are
-> visible — `bridge-status` + `query-rolls` (paginated/filterable public roll history) +
-> `query-party` + `query-player` (sectioned sheets — live PCs measure 166–579 KB, items[] is
-> 97–99% of bytes) + `query-item`; results render as **markdown at the server** (module wire
-> stays typed JSON). Players use Claude Code — **static key only, OAuth untouched** (stakeholder
-> decision).
+> **▶ portal-player (0028) — S1 `8655edb` (key + scope machinery) · S2 `a889034` (query-party +
+> query-player + markdown renderer) · S3 `a59d53c` (query-item + query-rolls + 0.4.0 lockstep +
+> D28-14 skew fix) ALL BUILT, CI-green + pushed (S1/S2 GHA green, S3 queued at checkpoint);
+> ▶ RESUME AT: S4 — deploy + live gate A–H, NEEDS THE STAKEHOLDER.** S4 runbook (spec order is
+> load-bearing): (1) mint `sops set … portal_player_api_key` **BEFORE** any portal redeploy —
+> the key is `requireSecret` at startup, portal-server won't boot without it; (2) "deploy it" →
+> `just up`; (3) GM updates the module to **0.4.0** + F5s any human tab; (4) **restart
+> `astra-portal-headless`** so the headless session picks up 0.4.0; (5) existing GM MCP sessions
+> `/mcp`-reconnect (tool-list snapshot); (6) the A–H gate incl. staging a GM-hidden world item
+> for F (no vacuous pass) + recording `totalMessages` (the §Risks probe). Player onboarding
+> one-liner lands in the memory at S4 (H).
+> - **Build findings (recorded in spec status + scope-doc appendices):** the D28-11 12k cap
+>   fires on the REAL Argyle spells render (12,215 → group-summary fallback 3,053); D28-2
+>   derived paths + pf2e biography-visibility paths + pack-ownership shape all confirmed against
+>   the live container `pf2e.mjs`/`system.json` (67/94 packs ship `PLAYER:"LIMITED"` — the
+>   D28-5 gate excludes them); an S2-amendment **biography GM-visibility gate on `notes`**
+>   shipped in S3 (orchestrator adversarial find, same class as B1/B2); skill totals live in
+>   the `skills` section (not `stats`) per the D28-11 enum — acceptance D eyeballs both.
+> - Live-derived fixtures committed (`apps/portal/module/tests/fixtures/{argyle,party,othello}
+>   .json`, captured read-only through the bridge 2026-07-11 — the headless Portal session
+>   serving them proves 0027 in production).
+>
+> _(Original 0028 shape, still accurate:)_ A read-only tool subset for the stakeholder's players
+> behind a NEW static API key (`portal_player_api_key`): when that key authenticates `/mcp`,
+> exactly five tools are visible — `bridge-status` + `query-rolls` (paginated/filterable public
+> roll history) + `query-party` + `query-player` (sectioned sheets — live PCs measure 166–579 KB,
+> items[] is 97–99% of bytes) + `query-item`; results render as **markdown at the server** (module
+> wire stays typed JSON). Players use Claude Code — **static key only, OAuth untouched**
+> (stakeholder decision).
 > - **Scope doc:** `thoughts/shared/research/2026-07-11-portal-player-0028-thoughts.md` — verified
 >   vs repo (per-request McpServer ⇒ per-key tool scope = cheap conditional in the `mcp.ts:499-512`
 >   auth branch; 8-file key plumbing; zero Dockerfile ripple), vs the live world (party actor +

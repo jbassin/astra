@@ -1,9 +1,16 @@
 # NLSpec 0028 — portal-player: a read-only, player-keyed portal tool subset
 
-**Status:** SPEC (2026-07-11) — no code yet; adversarial review RUN + FOLDED IN (2 blockers
-  found and fixed: the pf2e `metagame_secretChecks` secret-check leak → D28-3's `context.secret`
-  backstop; compendium pack-ownership leak → D28-5's pack visibility gate; plus 6 should-fix/note
-  amendments — see the pass section). Implement via `octo:embrace`, slice by slice.
+**Status:** IN PROGRESS (2026-07-11) — **S1 `8655edb` · S2 `a889034` · S3 `a59d53c` BUILT,
+  CI-green + pushed; ▶ S4 (deploy + live gate A–H) pending a stakeholder session.** S2/S3
+  build notes: the D28-11 12k cap fires for real on Argyle's spells (12,215 → 3,053 fallback);
+  D28-2 paths + pf2e biography visibility paths + pack-ownership shape all confirmed against
+  the live container source (recorded in the scope doc's S2/S3 appendices); the S2 amendment
+  (biography GM-visibility gate on `notes`) shipped in S3; live pf2e `system.json` ships 67/94
+  packs `PLAYER:"LIMITED"` — the D28-5 gate excludes them. ⚠ S4 ordering: `portal_player_api_key`
+  is load-bearing at startup (`requireSecret`) — mint the SOPS value BEFORE any portal redeploy.
+  Adversarial review RUN + FOLDED IN pre-build (2 blockers fixed: the pf2e `metagame_secretChecks`
+  secret-check leak → D28-3's `context.secret` backstop; compendium pack-ownership leak → D28-5's
+  pack visibility gate; plus 6 should-fix/note amendments — see the pass section).
 **Scope doc:** `thoughts/shared/research/2026-07-11-portal-player-0028-thoughts.md` (all claims
   verified 2026-07-11: repo at `3a2008b` walked file:line; live world probed read-only through the
   bridge — party/PC/item shapes + sizes; Foundry 13.351 + pf2e 7.12.2 internals read from the live
