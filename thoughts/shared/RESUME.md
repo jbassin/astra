@@ -62,15 +62,18 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 >   spec-level (PLAYER_TOOL_NAMES scope machinery; `auth` telemetry attr; version lockstep →
 >   0.4.0 at S3; module-skew = typed error). 4 slices: S1 key+scope (Foundry-free) · S2
 >   party+player · S3 item+rolls+lockstep · S4 deploy+live gate A–H.
-> - **⚠ Spec is DRAFT:** an adversarial review agent was launched (in-flight at this checkpoint;
->   findings NOT yet folded in). Its named targets: (1) re-verify "every non-public roll mode
->   reduces to whisper/blind at storage" against the live Foundry source **incl. pf2e
->   `context.secret`** (the spec's pass asserts it but exploration never verified it); (2) is the
->   server-side `BridgeErrorCode` zod union CLOSED? (wire-compat hazard for the new
->   `not-a-player-character`/`ambiguous-name` codes under skew — D28-14 only analyzed
->   method-level); (3) `bridge-status` payload sensitivity for players; (4) arithmetic on the
->   Argyle 196-spell section vs the ~10 KB markdown cap. **If resuming cold and no findings are
->   recorded in the spec, re-run that review before implementing.**
+> - **✅ Spec FINALIZED — adversarial review RUN + FOLDED IN (same session).** 2 blockers fixed:
+>   (B1) pf2e `metagame_secretChecks` ON lets a SECRET check land public-shaped
+>   (`whisper=[] ∧ !blind` with only `flags.pf2e.context.secret=true` marking it — verified
+>   `pf2e.mjs:23942`) → D28-3 is now a THREE-prong filter incl. the `context.secret` backstop;
+>   (B2) compendium packs are NOT inherently public (per-pack ownership, GM-restrictable) →
+>   D28-5 pack-visibility gate. Plus: closed `BridgeErrorCode` enum + `Bridge#onMessage`
+>   silent-drop turns unknown error codes into TIMEOUTS under rollback skew → S3 maps
+>   unknown-code responses to `foundry-error` (forward-proofs all future additive codes) +
+>   rollback-symmetry rule in Risks; the "~10 KB" section cap was asserted-not-derived → D28-11
+>   hard 12k-char cap + group-summary fallback, S2 measures Argyle; acceptance-F vacuous-pass →
+>   S4 stages a GM-hidden item; D28-8 `AuthContext {scope, method}` two-field split. **▶ RESUME
+>   AT: `octo:embrace` S1** (key + scope machinery, Foundry-free).
 > - Housekeeping: `deploy/sops/secrets.enc.yaml` is dirty in the tree (almost certainly the 0027
 >   S4 `foundry_portal_gm_password` sops-set, never committed) — commit or reconcile deliberately;
 >   `routeTree.gen.ts` is the known regen flap.

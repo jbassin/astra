@@ -1,11 +1,9 @@
 # NLSpec 0028 — portal-player: a read-only, player-keyed portal tool subset
 
-**Status:** DRAFT (2026-07-11) — no code yet. An adversarial completeness review was launched
-  against this draft (targets: the roll-mode⇒whisper/blind claim vs live Foundry source; whether
-  the server's `BridgeErrorCode` zod union is closed — wire-compat for the two new error codes;
-  `bridge-status` payload player-sensitivity; the Argyle 196-spell section vs the ~10 KB cap).
-  **Fold its findings in before implementation; if resuming cold with no findings recorded below,
-  re-run that review.** Then → `octo:embrace`, slice by slice.
+**Status:** SPEC (2026-07-11) — no code yet; adversarial review RUN + FOLDED IN (2 blockers
+  found and fixed: the pf2e `metagame_secretChecks` secret-check leak → D28-3's `context.secret`
+  backstop; compendium pack-ownership leak → D28-5's pack visibility gate; plus 6 should-fix/note
+  amendments — see the pass section). Implement via `octo:embrace`, slice by slice.
 **Scope doc:** `thoughts/shared/research/2026-07-11-portal-player-0028-thoughts.md` (all claims
   verified 2026-07-11: repo at `3a2008b` walked file:line; live world probed read-only through the
   bridge — party/PC/item shapes + sizes; Foundry 13.351 + pf2e 7.12.2 internals read from the live
@@ -27,7 +25,8 @@ stakeholder wants to hand his **players** a connection: a **new static API key**
 history), `query-party` (roster), `query-player` (one PC's sheet, **sectioned** — live sheets
 measure 166–579 KB), `query-item` (lookup by id/name) — with results rendered as **markdown** for
 LLM consumption. Players connect from Claude Code; the admin key and OAuth keep the full surface
-(which grows to include the four new query tools). Nothing about the GM experience changes.
+(which grows to include the four new query tools). The GM surface is unchanged apart from the
+one-time 0.4.0 rollout (module update + F5 + headless restart at S4).
 
 ## Decisions in force
 
@@ -38,18 +37,18 @@ spec-level technical decisions.
 |---|---|---|
 | D28-1 | Auth shape | **Second static key, same `/mcp` endpoint, OAuth untouched.** `portal_player_api_key` is compared in the existing dual-auth branch (`mcp.ts:499-512`); the matched credential selects the tool scope. Players use Claude Code (stakeholder decision — no player OAuth, no per-player identity). Admin key + OAuth tokens keep the full superset. |
 | D28-2 | Derived stats | **query-player reads the live prepared Actor** for a curated projection (AC, saves, perception, skill totals, ability mods, class/spell DC) — raw `toObject()` source has NONE of these (verified: `system.abilities` is null, `system.saves` absent, skill totals absent). A deliberate, narrow read-side exception to 0023-D5 (which banned hand-authored **write** schemas): a hand-picked list of read paths, **fail-soft per field** (missing path renders "—", logs a module warn, never throws). Exact paths verified against the container's `pf2e.mjs` during S2 + one live probe at S4. |
-| D28-3 | Roll privacy | **Public rolls only, baked in module-side, not a param:** `whisper.length === 0 ∧ blind !== true`. GM secrets and player↔GM whispers never cross the shared player key. If per-player visibility is ever wanted, that's a future multi-key project (scope-out). |
+| D28-3 | Roll privacy | **Public rolls only, baked in module-side, not a param:** `whisper.length === 0 ∧ blind !== true` **∧ `flags.pf2e.context.secret !== true`**. The third prong is load-bearing (adversarial find, verified in the live pf2e source): with the GM-toggleable world setting `metagame_secretChecks` ON, pf2e SKIPS the forced gmroll/blindroll rewrite for secret checks (`pf2e.mjs:23942`) — a secret Perception/Stealth check can land with `whisper=[]`/`blind=false` while `context.secret === true` remains on the message. Whisper/blind alone would leak it. GM secrets and player↔GM whispers never cross the shared player key; per-player visibility is a future multi-key project (scope-out). |
 | D28-4 | PC predicate | `query-player` accepts `type ∈ {"character","familiar"}` only — never npc/party/loot/vehicle/hazard; typed **`not-a-player-character`** error (additive `BridgeErrorCode` union member, 0026 D-11 pattern). `query-party` returns PCs as full rows + companions/familiars as labeled minimal rows (name, type, master) — the live party actor's `system.details.members` includes a familiar (verified). |
-| D28-5 | Item scope | `query-item` covers **world items + party-member-embedded items + compendium items**: lookup by uuid/id (any of the three shapes) or name search across all three, provenance-labeled. Visibility: world items require `ownership.default ≥ OBSERVER(2)` (the bridge runs as GM and would otherwise leak GM-hidden items); embedded = party members only; compendium = public. |
+| D28-5 | Item scope | `query-item` covers **world items + party-member-embedded items + compendium items**: lookup by uuid/id (any of the three shapes) or name search across all three, provenance-labeled. Visibility: world items require `ownership.default ≥ OBSERVER(2)`; embedded = party members only; **compendium packs are NOT inherently public** (adversarial find): packs carry their own ownership config (`CompendiumCollection` `getUserLevel()` / per-role ownership, GM-restrictable — e.g. spoiler packs), so the compendium branch requires player-role visibility (`ownership.PLAYER ≥ OBSERVER` or equivalent `getUserLevel` check) before returning a hit. Rationale is uniform: the bridge runs as GM and must not leak GM-hidden content in any of the three scopes. |
 | D28-6 | Markdown at the server | The four query tools return markdown text content. **The module returns typed compact JSON over the wire (zod contracts as ever); the server renders markdown** — keeps the module dumb, the renderer unit-testable without Foundry, and the wire contract reusable. Includes a small **HTML→markdown pass** (Foundry rich-text: strip tags, translate `@UUID[…]{label}`-style enrichers to their labels) with golden tests — new code, ~100 lines, sized honestly. |
 | D28-7 | Versioning | Module `module.json` + server `McpServer` → **0.4.0 in lockstep** (new module handlers ⇒ the 0027 rule). Bump lands in the final code slice (S3) so exactly one module-update/deploy cycle ships it. |
-| D28-8 | Scope machinery | `buildMcpServer(bridge, maxCreatesPerRequest, scope: "admin" \| "player")`. A single declarative **`PLAYER_TOOL_NAMES`** const (the five names) lives next to the tool registrations; registration is filtered by it under `scope: "player"`. One source of truth, asserted by tests from both directions (player sees exactly 5; admin sees all 22). The auth branch resolves scope: admin key → admin; player key → player; OAuth → admin (unchanged single-user semantics). |
-| D28-9 | Telemetry | Reads follow the existing read-tool discipline: span `portal.mcp.tool.<name>` + `mcpToolCalls` counter, **no `portal.audit.*`** (audit stays write-only). New: the counter and tool spans gain an **`auth` attribute** (`"admin-key" \| "player-key" \| "oauth"`) so player usage is distinguishable in SigNoz. The player key itself never appears in any log/span/error ([[portal-oauth-0025-gotchas]] hygiene rule verbatim). |
-| D28-10 | query-rolls shape | Newest-first, cursor-paginated over `game.messages.contents` (verified uncapped, in-memory, insertion-ordered): cursor **`(timestamp, _id)`**, `limit` default 20 / max 100. Filters: `actor` (uuid or name → `speaker.actor` ∪ `flags.pf2e.context.actor`), `type` (pf2e `context.type` taxonomy + `"roll"` fallback bucket for untagged `rolls.length > 0` messages), `outcome` (the four degree-of-success strings), `since`/`until` (ms epoch or ISO-8601). Only messages with `rolls.length > 0` qualify (chat chatter excluded). Result meta carries `totalMessages` (collection size — doubles as the §Risks probe) + `hasMore` + `nextCursor`. |
-| D28-11 | query-player sections | `section ∈ {summary, stats, skills, spells, feats, inventory, notes}` (zod enum, every value `.describe()`d — the 0023 lesson). Grounding: `items[]` is 97–99% of sheet bytes; spells (30–76%) and feats (15–44%) get their own sections. `spells` groups by spellcasting entry → rank, slots/prepared state, names + traits only (full descriptions via `query-item` on the spell's uuid); optional `entry` filter param for casters with multiple entries. Every section's markdown stays comfortably under ~10 KB on the live worst case (Argyle, 258 items) — asserted in tests with a fixture derived from the live probe. |
+| D28-8 | Scope machinery | `buildMcpServer(bridge, maxCreatesPerRequest, auth: AuthContext)` where `AuthContext = {scope: "admin" \| "player", method: "admin-key" \| "player-key" \| "oauth"}` — **two fields, not one** (adversarial find): `scope` drives tool filtering (OAuth + admin key → `"admin"`), `method` is threaded into the tool-call closures for the D28-9 telemetry label (3-way, distinguishes OAuth from the admin key). A single declarative **`PLAYER_TOOL_NAMES`** const (the five names) lives next to the tool registrations; registration is filtered by it under `scope: "player"`. One source of truth, asserted by tests from both directions (player sees exactly 5; admin sees all 22). The auth branch resolves both fields. |
+| D28-9 | Telemetry | Reads follow the existing read-tool discipline: span `portal.mcp.tool.<name>` + `mcpToolCalls` counter, **no `portal.audit.*`** (audit stays write-only). New: the counter and tool spans gain an **`auth` attribute** = D28-8's `method` (`"admin-key" \| "player-key" \| "oauth"`) so player usage is distinguishable in SigNoz. The player key itself never appears in any log/span/error ([[portal-oauth-0025-gotchas]] hygiene rule verbatim). |
+| D28-10 | query-rolls shape | Newest-first, cursor-paginated over `game.messages.contents` (verified uncapped, in-memory, insertion-ordered): cursor **`(timestamp, _id)`**, `limit` default 20 / max 100. Filters: `actor` (uuid or name → `speaker.actor` ∪ `flags.pf2e.context.actor`), `type` (pf2e `context.type` taxonomy + `"roll"` fallback bucket for untagged `rolls.length > 0` messages), `outcome` (the four degree-of-success strings), `since`/`until` (`z.union([z.number().int(), z.string().datetime()])` — a JSON number = ms epoch, a string MUST be ISO-8601 (`z.string().datetime()`); numeric strings are rejected, so the union is unambiguous). Only messages with `rolls.length > 0` qualify (chat chatter excluded). Result meta carries `totalMessages` (collection size — doubles as the §Risks probe) + `hasMore` + `nextCursor`. |
+| D28-11 | query-player sections | `section ∈ {summary, stats, skills, spells, feats, inventory, notes}` (zod enum, every value `.describe()`d — the 0023 lesson). Grounding: `items[]` is 97–99% of sheet bytes; spells (30–76%) and feats (15–44%) get their own sections. `spells` groups by spellcasting entry → rank, slots/prepared state, names + traits only (full descriptions via `query-item` on the spell's uuid); optional `entry` + `rank` filter params. **Hard cap (adversarial find — the draft's "~10 KB" was asserted, not derived; the scope doc left "spec decides the cap" open): 12,000 chars of rendered markdown per response.** If a full `spells`/`feats` render exceeds it, the tool returns the group-level summary (per entry→rank / per category: names + counts only) plus an explicit line instructing re-query with the `rank`/`category` filter — deterministic, no cursor state. S2 measures the real Argyle render against the cap with the live-derived fixture and records the number; the cap is a constant, not a config knob. |
 | D28-12 | Rolls wire shape | The module renders each qualifying message to a compact typed row: `{id, timestamp, speakerAlias, speakerActorId, checkName (flags.pf2e.modifierName ?? flavor-derived), rollType, outcome, dcValue (only when dc.visible), formula, total, dice: [{faces, results…}], originItemName?}` — parsed from the stored Roll JSON (`formula`/`total`/`terms` — verified complete; never re-evaluate). `content` HTML is NOT shipped (bulky, unsafe); `flavor` only via the derived check name. |
 | D28-13 | Name resolution | `query-player` and `query-item` accept `name` (case-insensitive exact, then unambiguous-prefix; ambiguous → typed `ambiguous-name` error listing candidates — additive union member) or `uuid`/`id`. `query-rolls`'s `actor` filter resolves the same way against world actors. |
-| D28-14 | Module-skew behavior | Server 0.4.0 + module 0.3.0 (the deploy window / a stale F5): query-* dispatch reaches `CONFIG.queries` with no registered handler — S3 verifies this surfaces as a **typed error** (existing `unknown-method`-shaped failure or equivalent), never a hang or crash; the tool result tells the caller the module needs updating. Module 0.4.0 + older server: handlers registered but never called — inert, safe. No envelope/AuthMeta change in 0028 ⇒ no 0027-style `bad-key` skew signature. |
+| D28-14 | Module-skew behavior | Server 0.4.0 + module 0.3.0 (the deploy window / a stale F5): query-* dispatch reaches `CONFIG.queries` with no registered handler — S3 verifies this surfaces as a **typed error** (existing `unknown-method`-shaped failure or equivalent), never a hang or crash; the tool result tells the caller the module needs updating. Module 0.4.0 + older server: handlers registered but never called — inert for methods, **but NOT for error codes** (adversarial find): `BridgeErrorCode` is a closed `z.enum` (`envelope.ts:17-37`) and `Bridge#onMessage` `safeParse`-fails → **silently drops** the message (`bridge.ts:224-232`), so a 0.4.0 module returning `not-a-player-character`/`ambiguous-name` to a rolled-back pre-0028 server turns into a query TIMEOUT, not a typed error — the same closed-schema-skew class as 0027's `bad-key` signature. **Fix shipped in S3:** the server maps a well-formed `response` envelope whose error code fails the enum to a generic `foundry-error` (message preserved) instead of dropping it — forward-proofs ALL future additive codes; plus the rollback-must-be-symmetric rule recorded in Risks. |
 
 ## Verified footprint (trust these over prose — file:line in the scope doc §2–4)
 
@@ -130,9 +129,10 @@ spec-level technical decisions.
 ## Slices
 
 ### Slice S1 — player key + tool scoping (server + config; Foundry-free)
-- The 8-file key plumbing (SOPS value minted at S4; CI uses a test value); `buildMcpServer` scope
-  param + `PLAYER_TOOL_NAMES` const (initially `["bridge-status"]` + the four query names —
-  declared up front, names simply not yet registered); auth-branch scope resolution; `auth`
+- The 8-file key plumbing (SOPS value minted at S4; CI uses a test value); `buildMcpServer`
+  `AuthContext` param (D28-8: `scope` for filtering + `method` for telemetry) +
+  `PLAYER_TOOL_NAMES` const (initially `["bridge-status"]` + the four query names — declared up
+  front, names simply not yet registered); auth-branch resolution of both fields; `auth`
   attribute on counter + spans (D28-9).
 - **Acceptance:** CI-green both lanes locally. Tests prove — player key authenticates and sees a
   tool list ⊆ `PLAYER_TOOL_NAMES` (exact-5 asserted at S3 when all exist); admin key sees the full
@@ -159,11 +159,17 @@ spec-level technical decisions.
   + DC-visibility rule); server registration + renderers; **module + McpServer → 0.4.0**;
   `PLAYER_TOOL_NAMES` now fully registered — the exact-5/exact-22 tool-list tests land here,
   plus the D28-14 skew test (query against a FakeModule lacking the handler → typed error).
+- Also in S3 (D28-14 fix): `Bridge#onMessage`/response handling maps a well-formed `response`
+  envelope with an unknown error code to `foundry-error` (message preserved) instead of the
+  silent drop-to-timeout.
 - **Acceptance:** CI-green. Tests prove — whispered/blind messages NEVER appear regardless of
-  filters; cursor walks a synthetic 1k-message history stably (same-timestamp tiebreak included);
-  filters compose (actor ∧ type ∧ outcome ∧ time); untagged `/roll` messages land in the `roll`
-  bucket; item search labels provenance and respects `ownership.default < 2` exclusion; player
-  tool list is exactly the five; admin list is exactly 22.
+  filters **and a `whisper=[] ∧ blind=false ∧ flags.pf2e.context.secret=true` fixture message is
+  excluded (the D28-3 metagame_secretChecks backstop)**; cursor walks a synthetic 1k-message
+  history stably (same-timestamp tiebreak included); filters compose (actor ∧ type ∧ outcome ∧
+  time); untagged `/roll` messages land in the `roll` bucket; item search labels provenance,
+  respects `ownership.default < 2` exclusion on world items **and the pack-visibility gate on
+  compendium hits (D28-5)**; an unknown-error-code response resolves as `foundry-error`, not a
+  timeout; player tool list is exactly the five; admin list is exactly 22.
 
 ### Slice S4 — deploy + live acceptance + memory (stakeholder present)
 - Mint the key: `sops set … portal_player_api_key` ([[flag-paid-live-actions]] — flag at
@@ -190,11 +196,16 @@ spec-level technical decisions.
 - **E.** **query-rolls live:** a real page of recent rolls with correct formula→total, degree
   outcomes, and DC-visibility handling; `actor`/`type`/`outcome`/time filters return correct
   subsets; cursor pagination walks back through history; **a known whispered/blind GM roll is
-  verified ABSENT** while a public roll from the same window is present; `totalMessages` recorded
-  (the §Risks probe — note the number in the memory).
+  verified ABSENT** while a public roll from the same window is present; if the world runs
+  `metagame_secretChecks` ON, a secret check is verified ABSENT too (else the S3 fixture test
+  stands as the backstop proof). *(Operational, not gating: record `totalMessages` — the §Risks
+  probe — in the memory.)*
 - **F.** **query-item live:** one world item, one party-embedded item (by name), one compendium
   entry (e.g. a spell's full description) all resolve; a GM-hidden world item
-  (`ownership.default < 2`) is NOT returned.
+  (`ownership.default < 2`) is NOT returned — **S4 must stage or confirm such an item exists
+  before the gate** (create via admin tools + stamped cleanup if none does; a vacuous pass
+  doesn't count). Same staging rule for a player-restricted compendium pack if one exists;
+  if the world has none, the S3 unit gate stands as the proof and that's recorded.
 - **G.** **Telemetry:** `portal.mcp.tool.query-*` spans + `mcpToolCalls{auth="player-key"}`
   visible in SigNoz; no `portal.audit.*` from reads; no key material anywhere (D28-9 spot-check).
 - **H.** Memory + RESUME + spec status updated; player onboarding one-liner recorded (the
@@ -226,12 +237,30 @@ spec-level technical decisions.
 - **`.describe()` discipline:** every new param gets one (the 0023 `search-compendium type` lesson
   — an undescribed enum makes LLM clients guess and silently fail); the S1–S3 tests re-assert the
   tools/list carries descriptions.
+- **Rollback symmetry (D28-14):** rolling the SERVER back past 0028 while the 0.4.0 module stays
+  installed re-opens the closed-enum skew for the two new error codes on any pre-fix server build.
+  Operational rule: roll back server + module together (module zip is served by whatever server is
+  live — reinstall + F5, the 0027 recovery). The S3 unknown-code→`foundry-error` mapping removes
+  this class going forward.
+- **Future player-tool changes:** the MCP tool list is a session snapshot (0026 gotcha) — any
+  future change to `PLAYER_TOOL_NAMES` requires existing player Claude Code sessions to `/mcp`
+  reconnect. Record in the player onboarding note so it doesn't need re-discovery.
 - **The linguist-commit timer** sweeps staged files — keep a clean index during commits
   ([[pipeline-reorder-0021]]).
 
 ## Adversarial completeness pass
 
-*(run 2026-07-11 against the draft; findings incorporated above)*
+*(independent adversarial review run 2026-07-11 against the draft — 2 blockers + 4 should-fix +
+4 notes, ALL folded into the decisions/slices/acceptance/risks above: **B1** the pf2e
+`metagame_secretChecks` secret-check leak → D28-3's third prong; **B2** compendium pack ownership
+→ D28-5's pack gate; **SF** closed `BridgeErrorCode` enum + silent-drop under rollback skew →
+D28-14's S3 mapping fix + the Risks rule; **SF** the asserted "~10 KB" section cap → D28-11's
+hard 12k-char cap + group-summary fallback; **SF** acceptance-F vacuous-pass → the S4 staging
+rule; **SF** scope/auth-label conflation → D28-8's two-field `AuthContext`; notes: goal wording,
+E's probe split out as non-gating, the future-`PLAYER_TOOL_NAMES` reconnect note, the
+`since`/`until` zod disambiguation. The review also confirmed every cited file:line, the
+allowlist nature of the D28-4 predicate against pf2e's full actor-type list, and that no
+HTML→markdown utility exists in-repo to reuse.)*
 
 - *"Can the player key reach a write through a query tool?"* — No handler in the player set
   mutates; module-side, the four new handlers are pure reads over collections; server-side, the
@@ -240,11 +269,14 @@ spec-level technical decisions.
 - *"Does markdown-at-the-server break the existing tools' JSON contract?"* — The four new tools
   are new; no existing tool's result shape changes. Admin clients see the new tools too, whose
   output is markdown by design (D28-6) — acceptable, they're player-purpose tools. ✓
-- *"Is `whisper.length === 0` sufficient? What about `rollMode` / GM-only flags?"* — Foundry
-  implements every non-public roll mode (gmroll/blindroll/selfroll) THROUGH `whisper` +
-  `blind` (verified in the container source: roll modes populate `whisper` with GM ids and/or set
-  `blind`) — the two fields are the storage-level truth, not a proxy. `dc.visible` additionally
-  gates DC display (D28-12). ✓
+- *"Is `whisper.length === 0` sufficient? What about `rollMode` / GM-only flags?"* — **Refuted as
+  originally drafted.** The base mechanism IS whisper/blind (`ChatMessage.applyRollMode`,
+  `chat-message.mjs:152-168`: publicroll→`whisper=[]`, selfroll/gmroll→whisper populated,
+  blindroll→whisper+`blind=true`) — but pf2e's check path has a verified escape hatch: with
+  `metagame_secretChecks` ON, secret checks skip the forced-gmroll rewrite (`pf2e.mjs:23942`) and
+  can land fully public-shaped with only `flags.pf2e.context.secret === true` marking them.
+  D28-3 now carries the `context.secret` backstop + an S3 fixture test. `dc.visible` additionally
+  gates DC display (D28-12). ✓ (after fix)
 - *"The projection is GM-authority data — does `stats` leak anything a player shouldn't see?"* —
   It serves only the player's OWN party's `character`/`familiar` actors (D28-4); PCs are
   player-visible by definition in this campaign. NPC stats are unreachable (predicate). ✓
