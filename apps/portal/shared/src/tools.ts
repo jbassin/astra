@@ -839,3 +839,287 @@ export const ExecuteMacroResult = z
   })
   .strict();
 export type ExecuteMacroResult = z.infer<typeof ExecuteMacroResult>;
+
+// ---------------------------------------------------------------------------
+// 0028 S2 — query-party / query-player (the player-key read-only tool subset,
+// spec D28-4/D28-6/D28-11). Module -> server wire shape stays typed compact JSON
+// (D5's discipline, unchanged); the SERVER renders this into markdown for the
+// player-facing tool result (D28-6) — the renderers live in portal-server's
+// markdown.ts, not here.
+// ---------------------------------------------------------------------------
+
+// --- query-party ---
+
+export const QueryPartyParams = z.object({}).strict();
+export type QueryPartyParams = z.infer<typeof QueryPartyParams>;
+
+/** A full player-character roster row (D28-4) — party actor member resolved to
+ * `type: "character"`. `ownerPlayer` is best-effort (an OWNER-level (3) ownership
+ * entry resolved against `game.users`, excluding the GM) and omitted when no such
+ * entry resolves. */
+export const PartyPcRow = z
+  .object({
+    uuid: z.string(),
+    id: z.string(),
+    name: z.string(),
+    level: z.number().int().optional(),
+    hp: z.object({ value: z.number(), max: z.number() }).strict().optional(),
+    heroPoints: z.object({ value: z.number(), max: z.number() }).strict().optional(),
+    ancestry: z.string().optional(),
+    className: z.string().optional(),
+    ownerPlayer: z.string().optional(),
+  })
+  .strict();
+export type PartyPcRow = z.infer<typeof PartyPcRow>;
+
+/** A labeled minimal row for a non-`character` party member (D28-4) — verified live:
+ * the party's own familiar, Othello, carries `system.master.id`. */
+export const PartyCompanionRow = z
+  .object({
+    uuid: z.string(),
+    id: z.string(),
+    name: z.string(),
+    type: z.string(),
+    master: z.string().optional().describe("The linked master actor's name, when resolvable."),
+  })
+  .strict();
+export type PartyCompanionRow = z.infer<typeof PartyCompanionRow>;
+
+export const QueryPartyResult = z
+  .object({
+    partyName: z.string().optional(),
+    pcs: z.array(PartyPcRow),
+    companions: z.array(PartyCompanionRow),
+  })
+  .strict();
+export type QueryPartyResult = z.infer<typeof QueryPartyResult>;
+
+// --- query-player ---
+
+export const QueryPlayerSection = z.enum([
+  "summary",
+  "stats",
+  "skills",
+  "spells",
+  "feats",
+  "inventory",
+  "notes",
+]);
+export type QueryPlayerSection = z.infer<typeof QueryPlayerSection>;
+
+export const QueryPlayerParams = z
+  .object({
+    name: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "The player character or familiar's name — case-insensitive exact match preferred, " +
+          "falling back to an unambiguous case-insensitive prefix match. Give exactly one of " +
+          "name or uuid.",
+      ),
+    uuid: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        'A Foundry actor uuid ("Actor.<id>", from query-party) or a bare world actor id — ' +
+          "either form is accepted. Give exactly one of name or uuid.",
+      ),
+    section: QueryPlayerSection.describe(
+      "Which slice of the sheet to fetch — sheets are 166-579 KB, far too large for one call, " +
+        'so always fetch one section at a time. "summary": identity, level/XP, HP/resources, ' +
+        'ancestry/heritage/background/class/deity, languages. "stats": the LIVE derived ' +
+        "projection — AC, saving throws, perception, ability modifiers, class/spell DC — " +
+        'computed by pf2e at runtime (never available from stored source data). "skills": ' +
+        'per-skill proficiency rank + derived total, lore skills included. "spells": spells ' +
+        "grouped by spellcasting entry then rank, with slot/prepared state; optionally " +
+        'narrowed with the entry/rank params. "feats": feats grouped by category. ' +
+        '"inventory": weapons/armor/equipment/consumables with quantity/bulk/runes. "notes": ' +
+        "deity and biography prose.",
+    ),
+    entry: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "spells section only: restrict to one spellcasting entry, matched by id or a " +
+          'case-insensitive substring of its name (e.g. "Cleric Spells").',
+      ),
+    rank: z
+      .number()
+      .int()
+      .min(0)
+      .max(10)
+      .optional()
+      .describe("spells section only: restrict to one spell rank (0 = cantrips)."),
+  })
+  .strict()
+  .refine((v) => (v.name !== undefined) !== (v.uuid !== undefined), {
+    message: "exactly one of name or uuid must be given",
+    path: ["name"],
+  });
+export type QueryPlayerParams = z.infer<typeof QueryPlayerParams>;
+
+export const PlayerSummarySection = z
+  .object({
+    section: z.literal("summary"),
+    uuid: z.string(),
+    id: z.string(),
+    name: z.string(),
+    actorType: z.string(),
+    level: z.number().int().optional(),
+    xp: z.object({ value: z.number(), max: z.number() }).strict().optional(),
+    hp: z
+      .object({ value: z.number(), max: z.number().optional(), temp: z.number().optional() })
+      .strict()
+      .optional(),
+    heroPoints: z.object({ value: z.number(), max: z.number() }).strict().optional(),
+    ancestry: z.string().optional(),
+    heritage: z.string().optional(),
+    background: z.string().optional(),
+    className: z.string().optional(),
+    deity: z.string().optional(),
+    languages: z.array(z.string()).optional(),
+    alliance: z.string().optional(),
+    master: z.string().optional().describe("Familiars only — the master actor's id."),
+  })
+  .strict();
+export type PlayerSummarySection = z.infer<typeof PlayerSummarySection>;
+
+export const PlayerSaveRow = z
+  .object({ type: z.string(), value: z.number().optional(), dc: z.number().optional() })
+  .strict();
+export type PlayerSaveRow = z.infer<typeof PlayerSaveRow>;
+
+/** The D28-2 curated derived-stats projection — read off the LIVE prepared actor,
+ * fail-soft per field (a missing/wrong-shaped pf2e-internal path renders the field
+ * absent here, never throws; `warnings` names every field that came back missing). */
+export const PlayerStatsSection = z
+  .object({
+    section: z.literal("stats"),
+    ac: z.number().optional(),
+    perception: z.object({ value: z.number().optional(), dc: z.number().optional() }).strict(),
+    saves: z.array(PlayerSaveRow),
+    abilityMods: z.record(z.string(), z.number()),
+    classDC: z.object({ value: z.number().optional(), rank: z.number().optional() }).strict(),
+    spellDC: z.object({ value: z.number().optional() }).strict(),
+    warnings: z
+      .array(z.string())
+      .describe("Which derived paths came back missing/invalid on this actor, if any."),
+  })
+  .strict();
+export type PlayerStatsSection = z.infer<typeof PlayerStatsSection>;
+
+export const PlayerSkillRow = z
+  .object({
+    slug: z.string(),
+    label: z.string().optional(),
+    rank: z.number().optional(),
+    value: z.number().optional(),
+    dc: z.number().optional(),
+    lore: z.boolean(),
+  })
+  .strict();
+export type PlayerSkillRow = z.infer<typeof PlayerSkillRow>;
+
+export const PlayerSkillsSection = z
+  .object({ section: z.literal("skills"), skills: z.array(PlayerSkillRow) })
+  .strict();
+export type PlayerSkillsSection = z.infer<typeof PlayerSkillsSection>;
+
+export const PlayerSpellRow = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    rank: z.number().int(),
+    traits: z.array(z.string()),
+    prepared: z.boolean().optional(),
+    expended: z.boolean().optional(),
+  })
+  .strict();
+export type PlayerSpellRow = z.infer<typeof PlayerSpellRow>;
+
+export const PlayerSpellRankGroup = z
+  .object({
+    rank: z.number().int(),
+    slots: z.object({ value: z.number(), max: z.number() }).strict().optional(),
+    spells: z.array(PlayerSpellRow),
+  })
+  .strict();
+export type PlayerSpellRankGroup = z.infer<typeof PlayerSpellRankGroup>;
+
+export const PlayerSpellcastingEntryGroup = z
+  .object({
+    entryId: z.string(),
+    entryName: z.string(),
+    tradition: z.string().optional(),
+    preparedType: z.string().optional(),
+    dc: z.number().optional(),
+    ranks: z.array(PlayerSpellRankGroup),
+  })
+  .strict();
+export type PlayerSpellcastingEntryGroup = z.infer<typeof PlayerSpellcastingEntryGroup>;
+
+export const PlayerSpellsSection = z
+  .object({ section: z.literal("spells"), entries: z.array(PlayerSpellcastingEntryGroup) })
+  .strict();
+export type PlayerSpellsSection = z.infer<typeof PlayerSpellsSection>;
+
+export const PlayerFeatRow = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    category: z.string(),
+    level: z.number().int().optional(),
+  })
+  .strict();
+export type PlayerFeatRow = z.infer<typeof PlayerFeatRow>;
+
+export const PlayerFeatsSection = z
+  .object({ section: z.literal("feats"), feats: z.array(PlayerFeatRow) })
+  .strict();
+export type PlayerFeatsSection = z.infer<typeof PlayerFeatsSection>;
+
+export const PlayerInventoryRow = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    type: z.string(),
+    quantity: z.number().optional(),
+    bulk: z.number().optional(),
+    carryType: z.string().optional(),
+    invested: z.boolean().optional(),
+    runes: z.array(z.string()).optional(),
+  })
+  .strict();
+export type PlayerInventoryRow = z.infer<typeof PlayerInventoryRow>;
+
+export const PlayerInventorySection = z
+  .object({ section: z.literal("inventory"), items: z.array(PlayerInventoryRow) })
+  .strict();
+export type PlayerInventorySection = z.infer<typeof PlayerInventorySection>;
+
+export const PlayerNotesSection = z
+  .object({
+    section: z.literal("notes"),
+    deity: z.string().optional(),
+    appearance: z.string().optional(),
+    backstory: z.string().optional(),
+    likes: z.string().optional(),
+    dislikes: z.string().optional(),
+    campaignNotes: z.string().optional(),
+  })
+  .strict();
+export type PlayerNotesSection = z.infer<typeof PlayerNotesSection>;
+
+export const QueryPlayerResult = z.discriminatedUnion("section", [
+  PlayerSummarySection,
+  PlayerStatsSection,
+  PlayerSkillsSection,
+  PlayerSpellsSection,
+  PlayerFeatsSection,
+  PlayerInventorySection,
+  PlayerNotesSection,
+]);
+export type QueryPlayerResult = z.infer<typeof QueryPlayerResult>;

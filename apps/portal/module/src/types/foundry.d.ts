@@ -53,6 +53,19 @@ interface FoundryDocumentLike {
   readonly type?: string;
   readonly folder?: { readonly name: string } | null;
   readonly flags?: Record<string, unknown>;
+  /** The LIVE (prepared) `system` data tree — 0028 S2's `query-player` `stats`/`skills`
+   * sections read AC/saves/perception/ability-mods/class-DC/spell-DC/skill-totals off
+   * this directly (D28-2: these are runtime-derived by pf2e's `prepareData()` and are
+   * simply absent from `toObject()`'s stored source — verified live, e.g. `system.
+   * abilities` is `null` in source). Every world/embedded document `fromUuid`/`game.
+   * actors` resolves is already the live, prepared instance in real Foundry, so no
+   * separate "get the live one" call is ever needed — this field is just that same
+   * instance's own `system` property, read directly instead of through `toObject()`.
+   * Deliberately opaque (`Record<string, unknown>`, D5) and optional (not every
+   * document kind this module touches carries one, e.g. a Macro/Scene/AmbientLight) —
+   * `query-player`'s own path-reader treats an absent/wrong-shaped path as "unknown"
+   * fail-soft, never a throw (D28-2 Risks: pf2e-internal paths can drift). */
+  readonly system?: Record<string, unknown>;
   toObject(): Record<string, unknown>;
 }
 

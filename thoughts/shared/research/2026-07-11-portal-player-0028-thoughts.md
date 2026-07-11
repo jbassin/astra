@@ -246,3 +246,27 @@ family prefix and doubles as the player-surface namespace — keep it.
 | Module handlers | `apps/portal/module/src/handlers.ts` (+`game.messages`/`game.actors` surface in `types/foundry.d.ts`) |
 | Version lockstep | `module/module.json` + `mcp.ts` → 0.4.0 |
 | Deploy | `just up` (server) + GM module update + F5 (or headless relaunch) — no Dockerfile edits |
+
+## D28-2 confirmed paths (S2, 2026-07-11)
+
+Confirmed by `docker exec foundry_faerrin grep/sed /data/Data/systems/pf2e/pf2e.mjs` (a
+minified-but-greppable single-file bundle, Foundry 13.351 / pf2e 7.12.2, 79,570 lines) — read-only,
+against the LIVE container. `handlers.ts`'s `buildStats` reads exactly these paths off the live
+prepared actor's `system` tree (never `toObject()`), fail-soft per field via `readDerivedNumber`.
+
+| Derived path | pf2e.mjs evidence |
+|---|---|
+| `system.attributes.ac.value` | Assignment `pf2e.mjs:39112` (`system2.attributes.ac = foundry.utils.mergeObject(armorStatistic.getTraceData(), {attribute...})`); `ArmorStatistic#getTraceData` overrides the base to force the `{value:"dc"}` branch (`pf2e.mjs:20463-20480`) — so `.value` IS the actual AC number, not a bare modifier. |
+| `system.saves.<type>.value` / `.dc` | Assignment in `CharacterPF2e#prepareSaves` (`pf2e.mjs:39204-39247`): `this.system.saves[saveType] = foundry.utils.mergeObject(this.system.saves[saveType], statistic.getTraceData())`. Base `Statistic#getTraceData` default `"mod"` branch (`pf2e.mjs:20193-20211`) returns `{value: check.mod, dc: dc.value, ...}`. |
+| `system.perception.value` / `.dc` | Assignment `pf2e.mjs:39095-39104` (`system2.perception = foundry.utils.mergeObject(this.perception.getTraceData(), {attribute, rank})`), same base `getTraceData` as saves. |
+| `system.abilities.<key>.mod` | `CharacterPF2e#prepareEmbeddedDocuments`, `pf2e.mjs:39018`: `for (const attribute of Object.values(this.system.abilities)) attribute.mod = Math.trunc(attribute.mod) || 0;` — confirms the live actor's `system.abilities` carries a numeric `.mod` per key (source-side it's `null`, verified separately against the Argyle fixture). |
+| `system.skills.<slug>.value` / `.dc` (incl. lore) | `CharacterPF2e#prepareSkills`, `pf2e.mjs:39302-39310`: `this.system.skills = t$10(Object.entries(this.skills), ([key, statistic]) => [key, foundry.utils.mergeObject(baseData, {...statistic.getTraceData(), rank, armor, itemId, lore})])` — lore items are merged into `this.skills` just before this line (`pf2e.mjs:39292-39301`), so lore skills get the same `.value`/`.dc` treatment as standard skills. |
+| `system.attributes.classDC.value` / `.rank` | `pf2e.mjs:39105-39110`: per-class-DC loop calls `statistic.getTraceData({value:"dc"})` (`pf2e.mjs:39108`), then `system2.attributes.classDC = Object.values(system2.proficiencies.classDCs).find(c=>c.primary) ?? null` (`pf2e.mjs:39110`). |
+| `system.attributes.spellDC.value` | `SpellcastingEntryPF2e`'s statistic prep, `pf2e.mjs:58730-58736`: `const stat = actor.isOfType("npc") ? {value: this.statistic.dc.value} : {value: this.statistic.dc.value, rank...}; ... (!attributes.spellDC \|\| stat.value > attributes.spellDC.value) && (attributes.spellDC = stat);` — the HIGHEST-DC spellcasting entry wins when a character has more than one (Argyle has two: "Cleric Spells" + "Cleric Font"). |
+| `system.attributes.classOrSpellDC.value` | Same block, `pf2e.mjs:58736` — the higher of `classDC`/`spellDC`; not separately surfaced by `buildStats` (S2 exposes `classDC`+`spellDC` individually, matching the spec's D28-2 field list) but confirmed present for a future field if wanted. |
+
+Container grep worked cleanly (no blocker) — `docker exec foundry_faerrin` was reachable throughout
+S2. One correction to the D28-2 draft text: the projection is read off the **live prepared actor
+instance itself** (`fromUuid`/`game.actors.get(...)` already returns that live, data-prepped
+document in real Foundry — there's no separate "get the live one" step), not a second lookup
+alongside a `toObject()` read.

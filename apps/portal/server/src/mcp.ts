@@ -30,6 +30,8 @@ import {
   ImportFromCompendiumParams,
   ListCompendiumPacksParams,
   ListScenesParams,
+  QueryPartyParams,
+  QueryPlayerParams,
   SearchCompendiumParams,
   SearchWorldParams,
   UpdateDocumentParams,
@@ -42,6 +44,7 @@ import type { z } from "zod";
 
 import { BridgeError, type Bridge } from "./bridge";
 import { MCP_HTTP_PATH, SERVICE_NAME } from "./constants";
+import { renderQueryParty, renderQueryPlayer } from "./markdown";
 
 const log = getLogger(SERVICE_NAME);
 const tracer = getTracer(SERVICE_NAME);
@@ -97,6 +100,11 @@ function registerBridgeTool<Args extends z.ZodType>(
     cap?: number;
     /** Write tools only (S5, D8): emit an {@link auditWrite} log line for this tool. */
     audit?: boolean;
+    /** 0028 D28-6: the four player-facing query tools render their bridge result as
+     * markdown instead of raw JSON — the module stays dumb (typed compact JSON over
+     * the wire, unchanged), this is purely a server-side presentation choice for
+     * LLM-client consumption. Omitted for every other (JSON) tool. */
+    render?: (result: unknown, params: unknown) => string;
   },
   auth: AuthContext,
 ): void {
@@ -131,7 +139,8 @@ function registerBridgeTool<Args extends z.ZodType>(
         const result = await bridge.sendQuery(config.method, params);
         mcpToolCalls.add(1, { tool: name, outcome: "ok", auth: auth.method });
         if (config.audit) auditWrite(name, params, "ok");
-        return { content: [{ type: "text" as const, text: JSON.stringify(result) }] };
+        const text = config.render ? config.render(result, params) : JSON.stringify(result);
+        return { content: [{ type: "text" as const, text }] };
       } catch (err) {
         const bridgeErr =
           err instanceof BridgeError
@@ -346,6 +355,49 @@ export function buildMcpServer(
         "idle world (no active scene) is a normal result, not an error.",
       paramsSchema: GetCurrentSceneParams,
       method: "portal.get-current-scene",
+    },
+    auth,
+  );
+
+  // --- 0028 S2 player-key query tools (D28-4/D28-6/D28-11) --------------------
+  // Read-tool config (no audit/cap/creates), same as the six tools above — the only
+  // difference is `render`: these return markdown (D28-6), not JSON. Both names
+  // already live in PLAYER_TOOL_NAMES (S1), so registering them makes them visible to
+  // player-key requests with no further scope-machinery change.
+
+  registerBridgeTool(
+    server,
+    bridge,
+    "query-party",
+    {
+      description:
+        "The party roster for the LIVE 'Faerrin' FoundryVTT world — every player character " +
+        "as a full row (name, level, HP, hero points, ancestry/class, owning player) plus every " +
+        "companion/familiar as a labeled minimal row (name, type, master). Resolves the party " +
+        "actor by type, never a hardcoded id.",
+      paramsSchema: QueryPartyParams,
+      method: "portal.query-party",
+      render: (result) => renderQueryParty(result as Parameters<typeof renderQueryParty>[0]),
+    },
+    auth,
+  );
+
+  registerBridgeTool(
+    server,
+    bridge,
+    "query-player",
+    {
+      description:
+        "One section of a player character or familiar's sheet in the LIVE 'Faerrin' " +
+        "FoundryVTT world, by name or uuid. Sheets are 166-579 KB — far too large for one call " +
+        "— so this ALWAYS returns exactly one section per call (see the section param's own " +
+        "description for what each one covers). Refuses with a typed not-a-player-character " +
+        "error for an npc/party/loot/vehicle/hazard target, and a typed ambiguous-name error " +
+        "when a name matches more than one actor (retry with a uuid — see query-party's rows).",
+      paramsSchema: QueryPlayerParams,
+      method: "portal.query-player",
+      render: (result, params) =>
+        renderQueryPlayer(result as Parameters<typeof renderQueryPlayer>[0], params),
     },
     auth,
   );

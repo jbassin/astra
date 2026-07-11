@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
@@ -6,6 +9,22 @@ import {
   SETTING_BRIDGE_USER_ID,
 } from "./constants";
 import { BridgeHandlerError, dispatchQuery, registerHandlers } from "./handlers";
+
+/** Loads one of the live-derived, committed test fixtures under `../tests/fixtures/`
+ * (0028 S2 — real `Actor.toObject()` payloads pulled read-only through the live
+ * bridge 2026-07-11: the party actor, Argyle's full 577 KB worst-case-scale sheet,
+ * and the familiar Othello — see the fixtures dir for provenance). Same shape every
+ * `get-document` result already carries: `{uuid, document}`. */
+function loadFixture(name: "party" | "argyle" | "othello"): {
+  uuid: string;
+  document: Record<string, unknown>;
+} {
+  const path = fileURLToPath(new URL(`../tests/fixtures/${name}.json`, import.meta.url));
+  return JSON.parse(readFileSync(path, "utf8")) as {
+    uuid: string;
+    document: Record<string, unknown>;
+  };
+}
 
 /** A fake `FoundryPacksCollection`/`FoundryWorldCollection`/`FoundryScenesCollection`/
  * `FoundryFoldersCollection` — `values()` covers every S4 handler (see
@@ -232,6 +251,9 @@ interface FoundryStubOverrides {
    * bare `{system: {value: {value: null}}}` persistent-damage source, close enough to
    * real pf2e's compendium condition source for these Foundry-free tests. */
   conditionManager?: FoundryPf2eConditionManager;
+  /** 0028 S2 — `query-party`'s owner-player-name resolution (`game.users.get`);
+   * defaults to empty (no test before S2 needed a real `game.users` lookup). */
+  users?: FoundryUser[];
 }
 
 /** Stubs the ambient Foundry globals `handlers.ts` touches (`game`, `CONFIG`,
@@ -259,9 +281,10 @@ function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void 
     macros: fakeValuesCollection(overrides.macros ?? []),
     // 0027 S1 — dispatchQuery's designated-dialer re-check is a plain id comparison
     // against the settings value, never `game.users` (that resolvability lookup is
-    // `main.ts`'s `ready`-hook concern, covered in `main.test.ts`); an empty stub here
-    // is enough for every handlers.test.ts case.
-    users: fakeValuesCollection([]),
+    // `main.ts`'s `ready`-hook concern, covered in `main.test.ts`) — an empty default
+    // is enough there. 0028 S2's `query-party` owner-player resolution DOES read
+    // `game.users.get`, hence the override.
+    users: fakeValuesCollection(overrides.users ?? []),
     pf2e: {
       ConditionManager: overrides.conditionManager ?? {
         getCondition: () => ({
@@ -1934,6 +1957,607 @@ describe("portal-module S3 authoring tools (spec 0026 S3 — Foundry-free)", () 
       );
       expect(err).toBeInstanceOf(BridgeHandlerError);
       expect((err as BridgeHandlerError).code).toBe("writes-disabled");
+    });
+  });
+});
+
+describe("portal-module 0028 S2 — query-party / query-player (Foundry-free)", () => {
+  afterEach(() => {
+    // @ts-expect-error — tearing down the stub between tests, not a real Foundry global.
+    delete globalThis.game;
+    // @ts-expect-error — same.
+    delete globalThis.CONFIG;
+    // @ts-expect-error — same.
+    delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
+  });
+
+  /** Builds a `FoundryActor` test double off a committed fixture — `toObject()`
+   * returns the fixture's real stored source (items[] and all), and `.system`
+   * defaults to that SAME stored `system` tree unless `liveSystem` overrides it. Real
+   * Foundry's `system` on a live/prepared instance is a strict superset of the stored
+   * source (derived fields merged in) — {@link liveSystemFor} builds a realistic
+   * synthetic superset for the `stats`/`skills` tests, since the fixtures themselves
+   * (captured via `toObject()`) provably lack every derived field (D28-2's whole
+   * premise, verified: `system.abilities` is `null` in every one of them). */
+  function fixtureActorDoc(
+    name: "party" | "argyle" | "othello",
+    liveSystem?: Record<string, unknown>,
+  ): FoundryActor {
+    const { uuid, document } = loadFixture(name);
+    const rawSystem = document.system as Record<string, unknown>;
+    return {
+      ...fakeDoc({
+        id: String(document._id),
+        uuid,
+        name: String(document.name),
+        documentName: "Actor",
+        type: String(document.type),
+        data: document,
+      }),
+      system: liveSystem ? deepMergeObject(rawSystem, liveSystem) : rawSystem,
+    };
+  }
+
+  /** A synthetic "live prepared actor" `system` tree — the derived fields D28-2's
+   * `stats`/`skills` sections read, none of which any fixture's stored source ever
+   * carries. Values are plausible but not real pf2e math (Foundry-free tests only
+   * verify this module reads/renders the right PATHS, not pf2e's own arithmetic). */
+  function liveDerivedSystem(): Record<string, unknown> {
+    return {
+      attributes: {
+        ac: { value: 21 },
+        classDC: { value: 27, rank: 3 },
+        spellDC: { value: 28 },
+      },
+      perception: { value: 11, dc: 21 },
+      saves: {
+        fortitude: { value: 8, dc: 18 },
+        reflex: { value: 6, dc: 16 },
+        will: { value: 11, dc: 21 },
+      },
+      abilities: {
+        str: { mod: 1 },
+        dex: { mod: 2 },
+        con: { mod: 1 },
+        int: { mod: 0 },
+        wis: { mod: 4 },
+        cha: { mod: 1 },
+      },
+      skills: {
+        religion: { label: "Religion", rank: 3, value: 12, dc: 22, lore: false },
+        scribing: {
+          label: "Scribing",
+          rank: 2,
+          value: 8,
+          dc: 18,
+          lore: true,
+          itemId: "vfbDvpx13FUtGrcV",
+        },
+      },
+    };
+  }
+
+  describe("query-party (D28-4)", () => {
+    it("resolves the party actor by type (never hardcoded), splits PC vs companion rows", async () => {
+      const partyDoc = fixtureActorDoc("party");
+      const argyleDoc = fixtureActorDoc("argyle", {
+        attributes: { hp: { value: 100, max: 120, temp: 0 } },
+      });
+      const othelloDoc = fixtureActorDoc("othello");
+      const anzuDoc = fakeDoc({
+        id: "W2dpWihnH1lli52S",
+        uuid: "Actor.W2dpWihnH1lli52S",
+        name: "Anzu",
+        documentName: "Actor",
+        type: "character",
+      });
+      const bennyDoc = fakeDoc({
+        id: "OBLdOPi1IO09PVvg",
+        uuid: "Actor.OBLdOPi1IO09PVvg",
+        name: "Benny",
+        documentName: "Actor",
+        type: "character",
+      });
+      const johnnyDoc = fakeDoc({
+        id: "mA7T7lD7Ku0qaDxN",
+        uuid: "Actor.mA7T7lD7Ku0qaDxN",
+        name: "Johnny",
+        documentName: "Actor",
+        type: "character",
+      });
+      const membersByUuid: Record<string, FoundryActor> = {
+        "Actor.W2dpWihnH1lli52S": anzuDoc,
+        "Actor.zpeNslKKrnaq07HI": argyleDoc,
+        "Actor.OBLdOPi1IO09PVvg": bennyDoc,
+        "Actor.mA7T7lD7Ku0qaDxN": johnnyDoc,
+        "Actor.7VhBCByBPE7HRvWw": othelloDoc,
+      };
+      stubFoundry(true, {
+        actors: [partyDoc, anzuDoc],
+        users: [
+          { id: "orAwNSgJQglrpRkr", name: "GM", isGM: true },
+          { id: "pS0rW8VPRa3jClOc", name: "PlayerOne", isGM: false },
+        ],
+        fromUuid: (uuid) => Promise.resolve(membersByUuid[uuid] ?? null),
+      });
+      registerHandlers();
+
+      const result = (await dispatchQuery("portal.query-party", {})) as {
+        partyName?: string;
+        pcs: Array<{
+          name: string;
+          level?: number;
+          hp?: { value: number; max: number };
+          ancestry?: string;
+          className?: string;
+          ownerPlayer?: string;
+        }>;
+        companions: Array<{ name: string; type: string; master?: string }>;
+      };
+
+      expect(result.partyName).toBe("The Party");
+      expect(result.pcs.map((p) => p.name).sort()).toEqual(["Anzu", "Argyle", "Benny", "Johnny"]);
+      const argyleRow = result.pcs.find((p) => p.name === "Argyle");
+      expect(argyleRow).toMatchObject({
+        level: 8,
+        ancestry: "Elf",
+        className: "Cleric",
+        hp: { value: 100, max: 120 },
+        ownerPlayer: "PlayerOne",
+      });
+      // Anzu/Benny/Johnny are minimal fakeDoc stand-ins with no system data at all —
+      // fail-soft: absent fields render as `undefined`, never a throw.
+      const anzuRow = result.pcs.find((p) => p.name === "Anzu");
+      expect(anzuRow?.level).toBeUndefined();
+      expect(anzuRow?.hp).toBeUndefined();
+
+      expect(result.companions).toEqual([
+        {
+          uuid: "Actor.7VhBCByBPE7HRvWw",
+          id: "7VhBCByBPE7HRvWw",
+          name: "Othello",
+          type: "familiar",
+          master: "Anzu",
+        },
+      ]);
+    });
+
+    it("rejects with a typed not-found error when no party actor exists in the world", async () => {
+      stubFoundry(true, { actors: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-party", {}).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("unions members across multiple party actors (pf2e allows more than one)", async () => {
+      const partyA = fakeDoc({
+        id: "partyA",
+        uuid: "Actor.partyA",
+        name: "Party A",
+        documentName: "Actor",
+        type: "party",
+        data: { system: { details: { members: [{ uuid: "Actor.pc1" }] } } },
+      });
+      const partyB = fakeDoc({
+        id: "partyB",
+        uuid: "Actor.partyB",
+        name: "Party B",
+        documentName: "Actor",
+        type: "party",
+        data: { system: { details: { members: [{ uuid: "Actor.pc2" }] } } },
+      });
+      const pc1 = fakeDoc({
+        id: "pc1",
+        uuid: "Actor.pc1",
+        name: "PC One",
+        documentName: "Actor",
+        type: "character",
+      });
+      const pc2 = fakeDoc({
+        id: "pc2",
+        uuid: "Actor.pc2",
+        name: "PC Two",
+        documentName: "Actor",
+        type: "character",
+      });
+      stubFoundry(true, {
+        actors: [partyA, partyB],
+        fromUuid: (uuid) =>
+          Promise.resolve(uuid === "Actor.pc1" ? pc1 : uuid === "Actor.pc2" ? pc2 : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-party", {})) as {
+        pcs: Array<{ name: string }>;
+      };
+      expect(result.pcs.map((p) => p.name).sort()).toEqual(["PC One", "PC Two"]);
+    });
+
+    it("skips a stale member uuid that no longer resolves, without failing the whole roster", async () => {
+      const partyDoc = fakeDoc({
+        id: "p1",
+        uuid: "Actor.p1",
+        name: "The Party",
+        documentName: "Actor",
+        type: "party",
+        data: { system: { details: { members: [{ uuid: "Actor.gone" }, { uuid: "Actor.pc1" }] } } },
+      });
+      const pc1 = fakeDoc({
+        id: "pc1",
+        uuid: "Actor.pc1",
+        name: "PC One",
+        documentName: "Actor",
+        type: "character",
+      });
+      stubFoundry(true, {
+        actors: [partyDoc],
+        fromUuid: (uuid) => Promise.resolve(uuid === "Actor.pc1" ? pc1 : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-party", {})) as {
+        pcs: Array<{ name: string }>;
+      };
+      expect(result.pcs.map((p) => p.name)).toEqual(["PC One"]);
+    });
+  });
+
+  describe("query-player resolution + predicate (D28-4/D28-13)", () => {
+    it("resolves by uuid", async () => {
+      const argyleDoc = fixtureActorDoc("argyle");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === argyleDoc.uuid ? argyleDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: argyleDoc.uuid,
+        section: "summary",
+      })) as { name: string };
+      expect(result.name).toBe("Argyle");
+    });
+
+    it("resolves a bare world actor id (not a full uuid) the same way", async () => {
+      const argyleDoc = fixtureActorDoc("argyle");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === argyleDoc.uuid ? argyleDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: "zpeNslKKrnaq07HI",
+        section: "summary",
+      })) as { name: string };
+      expect(result.name).toBe("Argyle");
+    });
+
+    it("resolves by case-insensitive exact name", async () => {
+      const argyleDoc = fixtureActorDoc("argyle");
+      stubFoundry(true, { actors: [argyleDoc] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        name: "argyle",
+        section: "summary",
+      })) as { name: string };
+      expect(result.name).toBe("Argyle");
+    });
+
+    it("resolves an unambiguous name prefix", async () => {
+      const argyleDoc = fixtureActorDoc("argyle");
+      stubFoundry(true, { actors: [argyleDoc] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        name: "Arg",
+        section: "summary",
+      })) as { name: string };
+      expect(result.name).toBe("Argyle");
+    });
+
+    it("rejects an ambiguous name with a typed ambiguous-name error listing candidates", async () => {
+      const argyle = fakeDoc({
+        id: "a1",
+        uuid: "Actor.a1",
+        name: "Argyle",
+        documentName: "Actor",
+        type: "character",
+      });
+      const argyleTwin = fakeDoc({
+        id: "a2",
+        uuid: "Actor.a2",
+        name: "Argyle Twin",
+        documentName: "Actor",
+        type: "character",
+      });
+      stubFoundry(true, { actors: [argyle, argyleTwin] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-player", {
+        name: "Arg",
+        section: "summary",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("ambiguous-name");
+      expect((err as BridgeHandlerError).message).toContain("Argyle");
+      expect((err as BridgeHandlerError).message).toContain("Argyle Twin");
+    });
+
+    it("rejects a not-found name with a typed not-found error", async () => {
+      stubFoundry(true, { actors: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-player", {
+        name: "Nobody",
+        section: "summary",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it.each(["npc", "party", "loot"])(
+      "rejects a resolved %s actor with a typed not-a-player-character error",
+      async (type) => {
+        const doc = fakeDoc({
+          id: "x1",
+          uuid: "Actor.x1",
+          name: "Some Thing",
+          documentName: "Actor",
+          type,
+        });
+        stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+        registerHandlers();
+        const err = await dispatchQuery("portal.query-player", {
+          uuid: doc.uuid,
+          section: "summary",
+        }).catch((e: unknown) => e);
+        expect(err).toBeInstanceOf(BridgeHandlerError);
+        expect((err as BridgeHandlerError).code).toBe("not-a-player-character");
+        expect((err as BridgeHandlerError).message).toContain(type);
+      },
+    );
+
+    it("accepts a familiar, with the master's id surfaced on the summary section", async () => {
+      const othelloDoc = fixtureActorDoc("othello");
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === othelloDoc.uuid ? othelloDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: othelloDoc.uuid,
+        section: "summary",
+      })) as { name: string; actorType: string; master?: string; hp?: { value: number } };
+      expect(result).toMatchObject({
+        name: "Othello",
+        actorType: "familiar",
+        master: "W2dpWihnH1lli52S",
+      });
+      expect(result.hp?.value).toBe(7);
+    });
+  });
+
+  describe("query-player stats section (D28-2 derived projection)", () => {
+    it("reads every derived path off the LIVE system, never toObject()'s stored source", async () => {
+      const doc = fixtureActorDoc("argyle", liveDerivedSystem());
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "stats",
+      })) as {
+        ac?: number;
+        perception: { value?: number; dc?: number };
+        saves: Array<{ type: string; value?: number; dc?: number }>;
+        abilityMods: Record<string, number>;
+        classDC: { value?: number; rank?: number };
+        spellDC: { value?: number };
+        warnings: string[];
+      };
+      expect(result.ac).toBe(21);
+      expect(result.perception).toEqual({ value: 11, dc: 21 });
+      expect(result.saves).toEqual([
+        { type: "fortitude", value: 8, dc: 18 },
+        { type: "reflex", value: 6, dc: 16 },
+        { type: "will", value: 11, dc: 21 },
+      ]);
+      expect(result.abilityMods).toEqual({ str: 1, dex: 2, con: 1, int: 0, wis: 4, cha: 1 });
+      expect(result.classDC).toEqual({ value: 27, rank: 3 });
+      expect(result.spellDC).toEqual({ value: 28 });
+      expect(result.warnings).toEqual([]);
+    });
+
+    it("fails soft per field when the live actor carries no `system` at all — never throws", async () => {
+      const bareDoc = fakeDoc({
+        id: "a1",
+        uuid: "Actor.a1",
+        name: "Bare",
+        documentName: "Actor",
+        type: "character",
+      });
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === bareDoc.uuid ? bareDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: bareDoc.uuid,
+        section: "stats",
+      })) as {
+        ac?: number;
+        perception: { value?: number; dc?: number };
+        classDC: { value?: number };
+        warnings: string[];
+      };
+      expect(result.ac).toBeUndefined();
+      expect(result.perception).toEqual({ value: undefined, dc: undefined });
+      expect(result.classDC.value).toBeUndefined();
+      expect(result.warnings.length).toBeGreaterThan(0);
+      expect(result.warnings.some((w) => w.includes("attributes.ac.value"))).toBe(true);
+    });
+
+    it("fails soft per field when only SOME derived paths are present", async () => {
+      const doc = fakeDoc({
+        id: "a1",
+        uuid: "Actor.a1",
+        name: "Partial",
+        documentName: "Actor",
+        type: "character",
+      });
+      const partial = { ...doc, system: { attributes: { ac: { value: 18 } } } };
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === partial.uuid ? partial : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: partial.uuid,
+        section: "stats",
+      })) as { ac?: number; perception: { value?: number }; warnings: string[] };
+      expect(result.ac).toBe(18);
+      expect(result.perception.value).toBeUndefined();
+      expect(result.warnings.some((w) => w.includes("perception.value"))).toBe(true);
+    });
+  });
+
+  describe("query-player skills section", () => {
+    it("returns per-skill rank + total, lore skills included", async () => {
+      const doc = fixtureActorDoc("argyle", liveDerivedSystem());
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "skills",
+      })) as {
+        skills: Array<{ slug: string; rank?: number; value?: number; dc?: number; lore: boolean }>;
+      };
+      expect(result.skills).toEqual(
+        expect.arrayContaining([
+          { slug: "religion", label: "Religion", rank: 3, value: 12, dc: 22, lore: false },
+          {
+            slug: "scribing",
+            label: "Scribing",
+            rank: 2,
+            value: 8,
+            dc: 18,
+            lore: true,
+          },
+        ]),
+      );
+    });
+  });
+
+  describe("query-player spells section (D28-11) — real Argyle-scale fixture", () => {
+    it("groups by spellcasting entry then rank, slot rank overrides the spell's own innate rank", async () => {
+      const doc = fixtureActorDoc("argyle");
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "spells",
+      })) as {
+        entries: Array<{
+          entryId: string;
+          entryName: string;
+          tradition?: string;
+          ranks: Array<{
+            rank: number;
+            slots?: { value: number; max: number };
+            spells: Array<{
+              id: string;
+              name: string;
+              rank: number;
+              prepared?: boolean;
+              expended?: boolean;
+            }>;
+          }>;
+        }>;
+      };
+      expect(result.entries.map((e) => e.entryName).sort()).toEqual([
+        "Cleric Font",
+        "Cleric Spells",
+      ]);
+      const clericSpells = result.entries.find((e) => e.entryId === "IurrECIEo4RFGgVB");
+      expect(clericSpells?.tradition).toBe("divine");
+      const cantrips = clericSpells?.ranks.find((r) => r.rank === 0);
+      expect(cantrips?.slots).toEqual({ value: 0, max: 5 });
+      // "Vitality Lash" has an own/innate level.value of 1, but it's prepared into
+      // slot0 — the SLOT rank (0, a cantrip) must win, not the spell's own rank.
+      const vitalityLash = cantrips?.spells.find((s) => s.id === "MjW0Dvzfk4g6TeZn");
+      expect(vitalityLash).toMatchObject({
+        name: "Vitality Lash",
+        rank: 0,
+        prepared: true,
+        expended: false,
+      });
+    });
+
+    it("the entry filter narrows to one spellcasting entry", async () => {
+      const doc = fixtureActorDoc("argyle");
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "spells",
+        entry: "Cleric Font",
+      })) as { entries: Array<{ entryName: string }> };
+      expect(result.entries).toHaveLength(1);
+      expect(result.entries[0]?.entryName).toBe("Cleric Font");
+    });
+
+    it("the rank filter narrows every entry to one rank", async () => {
+      const doc = fixtureActorDoc("argyle");
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "spells",
+        rank: 0,
+      })) as { entries: Array<{ ranks: Array<{ rank: number }> }> };
+      for (const entry of result.entries) {
+        for (const rankGroup of entry.ranks) expect(rankGroup.rank).toBe(0);
+      }
+    });
+  });
+
+  describe("query-player feats/inventory/notes sections — real Argyle-scale fixture", () => {
+    it("feats: 39 feats present, grouped/sorted by category then level", async () => {
+      const doc = fixtureActorDoc("argyle");
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "feats",
+      })) as { feats: Array<{ name: string; category: string; level?: number }> };
+      expect(result.feats).toHaveLength(39);
+      for (let i = 1; i < result.feats.length; i++) {
+        const prev = result.feats[i - 1] as { category: string; level?: number };
+        const cur = result.feats[i] as { category: string; level?: number };
+        expect(cur.category >= prev.category).toBe(true);
+      }
+    });
+
+    it("inventory: physical items only, runes summarized", async () => {
+      const doc = fixtureActorDoc("argyle");
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "inventory",
+      })) as { items: Array<{ name: string; type: string }> };
+      // 4 weapon + 4 equipment + 2 consumable + 1 ammo + 1 shield + 1 armor = 13 —
+      // spells/feats/ancestry/class/deity/background/lore never leak into inventory.
+      expect(result.items).toHaveLength(13);
+      expect(result.items.every((i) => i.type !== "spell" && i.type !== "feat")).toBe(true);
+    });
+
+    it("notes: non-empty biography fields surfaced, empty ones omitted", async () => {
+      const doc = fixtureActorDoc("argyle");
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "notes",
+      })) as { deity?: string; appearance?: string; backstory?: string };
+      // Argyle's fixture biography is entirely empty strings (a real, unfilled-in
+      // sheet) — every prose field must be omitted, never rendered as "".
+      expect(result.appearance).toBeUndefined();
+      expect(result.backstory).toBeUndefined();
+      expect(result.deity).toBe("The Judge of Ages");
     });
   });
 });

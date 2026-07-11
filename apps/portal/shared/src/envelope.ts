@@ -33,6 +33,11 @@ export const BridgeErrorCode = z.enum([
   "not-designated", // dispatchQuery's defense-in-depth refusal when bridge-user-id is set
   // and this session isn't the matching user (0027 D27-2/D27-9) — distinct from "not-gm"
   // because the session IS a GM, just not the one designated to dial
+  "not-a-player-character", // query-player's D28-4 predicate refused a resolved actor
+  // whose type isn't "character"/"familiar" (an npc/party/loot/vehicle/hazard uuid)
+  "ambiguous-name", // query-player's D28-13 name resolution matched more than one
+  // candidate (neither an exact nor an unambiguous-prefix match) — the error message
+  // lists the candidates so the caller can retry with a uuid instead
 ]);
 export type BridgeErrorCode = z.infer<typeof BridgeErrorCode>;
 

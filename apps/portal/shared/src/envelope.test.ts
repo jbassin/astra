@@ -109,6 +109,9 @@ describe("portal-shared bridge envelope", () => {
         "execution-failed",
         // 0027 D27-9 — additive, wire shape untouched.
         "not-designated",
+        // 0028 S2 D28-4/D28-13 — additive, wire shape untouched.
+        "not-a-player-character",
+        "ambiguous-name",
       ].sort(),
     );
   });

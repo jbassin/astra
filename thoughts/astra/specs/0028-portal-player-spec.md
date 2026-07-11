@@ -153,6 +153,15 @@ spec-level technical decisions.
   renders "—" + warn, never throws); spells group by entry→rank with slot state; markdown goldens
   stable.
 
+> **S2 amendment (2026-07-11, orchestrator review):** the `notes` section as built at S2 serves
+> biography prose without honoring pf2e's own per-subsection GM-visibility toggles
+> (`system.details.biography.visibility`-class flags). D28-5's uniform rationale — *the bridge
+> runs as GM and must not leak GM-hidden content in any scope* — makes that a gap of the same
+> class as adversarial blockers B1/B2. **S3 adds the gate:** verify the actual visibility-flag
+> paths against the container's `pf2e.mjs` (never guess), exclude GM-hidden biography
+> subsections from the `notes` wire payload module-side, with a unit test. Recorded here rather
+> than silently resolved.
+
 ### Slice S3 — query-item + query-rolls + version lockstep
 - Shared contracts; module handlers: item tri-scope lookup/search (D28-5 ownership rule) and rolls
   (D28-3 public-only filter, D28-10 cursor pagination, D28-12 row parsing incl. degree-of-success

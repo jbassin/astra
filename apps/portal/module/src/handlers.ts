@@ -43,7 +43,27 @@ import {
   type ListCompendiumPacksResult,
   ListScenesParams,
   type ListScenesResult,
+  type PartyCompanionRow,
+  type PartyPcRow,
   type PersistentDamageParams,
+  type PlayerFeatRow,
+  type PlayerFeatsSection,
+  type PlayerInventoryRow,
+  type PlayerInventorySection,
+  type PlayerNotesSection,
+  type PlayerSaveRow,
+  type PlayerSkillRow,
+  type PlayerSkillsSection,
+  type PlayerSpellcastingEntryGroup,
+  type PlayerSpellRankGroup,
+  type PlayerSpellRow,
+  type PlayerSpellsSection,
+  type PlayerStatsSection,
+  type PlayerSummarySection,
+  QueryPartyParams,
+  type QueryPartyResult,
+  QueryPlayerParams,
+  type QueryPlayerResult,
   SearchCompendiumParams,
   type SearchCompendiumResult,
   SearchWorldParams,
@@ -1236,6 +1256,560 @@ async function handleCreateJournal(rawParams: unknown): Promise<CreateJournalRes
   }
 }
 
+// ---------------------------------------------------------------------------
+// 0028 S2 — query-party / query-player (the player-key read-only tool subset).
+// Module -> server wire stays typed compact JSON (D5); the SERVER renders markdown
+// (D28-6, portal-server's markdown.ts) — every builder below returns plain data,
+// never a string of prose.
+// ---------------------------------------------------------------------------
+
+/** Case-insensitive exact-then-unambiguous-prefix name resolution (D28-13), shared by
+ * `query-player`'s `name` param. Throws typed `ambiguous-name` (additive `BridgeErrorCode`
+ * member) naming every candidate when neither pass narrows to exactly one, or `not-found`
+ * when nothing matches at all. */
+function resolveByName<T extends { name: string }>(candidates: T[], name: string): T {
+  const needle = name.toLowerCase();
+  const exact = candidates.filter((c) => c.name.toLowerCase() === needle);
+  if (exact.length === 1) return exact[0] as T;
+  if (exact.length > 1) throw ambiguousNameError(name, exact);
+  const prefixed = candidates.filter((c) => c.name.toLowerCase().startsWith(needle));
+  if (prefixed.length === 1) return prefixed[0] as T;
+  if (prefixed.length > 1) throw ambiguousNameError(name, prefixed);
+  throw new BridgeHandlerError("not-found", `no actor found matching name: "${name}"`);
+}
+
+function ambiguousNameError(name: string, candidates: { name: string }[]): BridgeHandlerError {
+  const list = candidates.map((c) => c.name).join(", ");
+  return new BridgeHandlerError(
+    "ambiguous-name",
+    `"${name}" matches ${candidates.length} actors: ${list} — retry with a uuid instead`,
+  );
+}
+
+/** `query-party` (0028 S2/D28-4) — resolves the party actor(s) by `type === "party"`
+ * AT QUERY TIME (never hardcoded, spec Verified footprint), unions every resolved
+ * party's `system.details.members` uuid refs (pf2e allows multiple parties; this
+ * world has one), then splits each resolved member into a full PC row (`type ===
+ * "character"`) or a labeled minimal companion row (anything else — the live world's
+ * familiar Othello is the verified case). A member uuid that no longer resolves
+ * (stale reference) is skipped, not a failure — one dangling ref shouldn't sink the
+ * whole roster. Zero party actors in the world is the one hard failure (typed
+ * `not-found`, per the spec's adversarial-pass answer on a missing/renamed party). */
+async function handleQueryParty(rawParams: unknown): Promise<QueryPartyResult> {
+  QueryPartyParams.parse(rawParams);
+  const parties = Array.from(game.actors.values()).filter((a) => a.type === "party");
+  if (parties.length === 0) {
+    throw new BridgeHandlerError("not-found", "no party actor found in this world");
+  }
+
+  const memberUuids = new Set<string>();
+  let partyName: string | undefined;
+  for (const party of parties) {
+    partyName ??= party.name;
+    const raw = party.toObject();
+    const system = (raw.system ?? {}) as Record<string, unknown>;
+    const details = (system.details ?? {}) as Record<string, unknown>;
+    const members = Array.isArray(details.members) ? (details.members as unknown[]) : [];
+    for (const member of members) {
+      const uuid = (member as { uuid?: unknown } | null)?.uuid;
+      if (typeof uuid === "string") memberUuids.add(uuid);
+    }
+  }
+
+  const pcs: PartyPcRow[] = [];
+  const companions: PartyCompanionRow[] = [];
+  for (const uuid of memberUuids) {
+    const doc = await fromUuid(uuid);
+    if (!doc) continue; // a stale member reference — skip, never fail the whole roster
+    if (doc.type === "character") {
+      pcs.push(buildPartyPcRow(doc));
+    } else {
+      companions.push(buildPartyCompanionRow(doc));
+    }
+  }
+  return { partyName, pcs, companions };
+}
+
+/** Best-effort owner-player-name resolution (D28-4's roster row) — an OWNER-level
+ * (3) `ownership` entry (excluding the special `"default"` key) resolved against
+ * `game.users`, skipping the GM's own OWNER grant (every document carries one). Omits
+ * the field entirely rather than guessing when nothing resolves. */
+function resolveOwnerPlayer(ownership: unknown): string | undefined {
+  const OWNER_LEVEL = 3;
+  if (!ownership || typeof ownership !== "object") return undefined;
+  for (const [userId, level] of Object.entries(ownership as Record<string, unknown>)) {
+    if (userId === "default" || level !== OWNER_LEVEL) continue;
+    const user = game.users.get(userId);
+    if (user && !user.isGM) return user.name;
+  }
+  return undefined;
+}
+
+function buildPartyPcRow(doc: FoundryDocumentLike): PartyPcRow {
+  const raw = doc.toObject();
+  const system = (raw.system ?? {}) as Record<string, unknown>;
+  const details = (system.details ?? {}) as Record<string, unknown>;
+  const attributes = (system.attributes ?? {}) as Record<string, unknown>;
+  const resources = (system.resources ?? {}) as Record<string, unknown>;
+  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+  const ancestry = items.find((i) => i.type === "ancestry")?.name;
+  const className = items.find((i) => i.type === "class")?.name;
+  // The live doc's own `system` (not toObject()'s stored source) carries hp.max —
+  // pf2e derives it at prepareDerivedData; source only ever stores {value, temp}.
+  const liveHp = (doc.system?.attributes as Record<string, unknown> | undefined)?.hp as
+    | Record<string, unknown>
+    | undefined;
+  const hp = liveHp ?? (attributes.hp as Record<string, unknown> | undefined);
+  const heroPoints = resources.heroPoints as Record<string, unknown> | undefined;
+  const level = (details.level as Record<string, unknown> | undefined)?.value;
+
+  return {
+    uuid: doc.uuid,
+    id: doc.id,
+    name: doc.name,
+    level: typeof level === "number" ? level : undefined,
+    hp:
+      hp && typeof hp.value === "number" && typeof hp.max === "number"
+        ? { value: hp.value, max: hp.max }
+        : undefined,
+    heroPoints:
+      heroPoints && typeof heroPoints.value === "number" && typeof heroPoints.max === "number"
+        ? { value: heroPoints.value, max: heroPoints.max }
+        : undefined,
+    ancestry: typeof ancestry === "string" ? ancestry : undefined,
+    className: typeof className === "string" ? className : undefined,
+    ownerPlayer: resolveOwnerPlayer(raw.ownership),
+  };
+}
+
+function buildPartyCompanionRow(doc: FoundryDocumentLike): PartyCompanionRow {
+  const raw = doc.toObject();
+  const system = (raw.system ?? {}) as Record<string, unknown>;
+  const master = (system.master as Record<string, unknown> | undefined)?.id;
+  const masterActor = typeof master === "string" ? game.actors.get(master) : undefined;
+  return {
+    uuid: doc.uuid,
+    id: doc.id,
+    name: doc.name,
+    type: doc.type ?? "unknown",
+    master: masterActor?.name,
+  };
+}
+
+/** `query-player`'s D28-13 resolution: `uuid` (a full `Actor.<id>` uuid, or a bare
+ * world actor id — either form accepted) resolves via `fromUuid`; `name` resolves via
+ * {@link resolveByName} across every world actor (the D28-4 type predicate is checked
+ * AFTER resolution, uniformly for both paths, so an unambiguous name match against an
+ * NPC still resolves — and then gets the correct typed `not-a-player-character`
+ * refusal, not a confusing `not-found`). The params schema's own `.refine()` already
+ * guarantees exactly one of `name`/`uuid` is present. */
+async function resolvePlayerActor(params: QueryPlayerParams): Promise<FoundryDocumentLike> {
+  if (params.uuid !== undefined) {
+    const uuid = params.uuid.includes(".") ? params.uuid : `Actor.${params.uuid}`;
+    const doc = await fromUuid(uuid);
+    if (!doc) throw new BridgeHandlerError("not-found", `not found: ${uuid}`);
+    return doc;
+  }
+  // The schema refine guarantees `name` is set whenever `uuid` isn't.
+  return resolveByName(Array.from(game.actors.values()), params.name as string);
+}
+
+/** Reads a dot-path off the LIVE prepared actor's `system` tree (D28-2) — fail-soft:
+ * a missing/wrong-shaped path logs a module `console.warn` naming the path and
+ * returns `undefined`, NEVER throws (the spec's Risks: pf2e-internal derived paths
+ * can drift across system majors, and a familiar/edge-case actor may legitimately
+ * lack a path like `attributes.classDC`). `warnings` collects the same message the
+ * console gets, so `query-player`'s `stats` result carries a machine-readable record
+ * of what came back missing alongside the human-readable console line. */
+function readDerivedNumber(
+  system: Record<string, unknown>,
+  path: string,
+  warnings: string[],
+): number | undefined {
+  let cur: unknown = system;
+  for (const segment of path.split(".")) {
+    if (cur === null || typeof cur !== "object") {
+      cur = undefined;
+      break;
+    }
+    cur = (cur as Record<string, unknown>)[segment];
+  }
+  if (typeof cur === "number") return cur;
+  const message = `query-player stats: missing/invalid derived path "system.${path}"`;
+  warnings.push(message);
+  console.warn(`[${MODULE_ID}] ${message}`);
+  return undefined;
+}
+
+const SAVE_SLUGS = ["fortitude", "reflex", "will"];
+const ABILITY_SLUGS = ["str", "dex", "con", "int", "wis", "cha"];
+
+/** `query-player`'s `stats` section (0028 S2/D28-2) — the curated derived-stats
+ * projection, read off the LIVE prepared actor (`doc.system`, never `toObject()`):
+ * AC, saves, perception, ability modifiers, class DC, spell DC. Every individual
+ * field is read via {@link readDerivedNumber} — fail-soft per field, never throws. */
+function buildStats(doc: FoundryDocumentLike): PlayerStatsSection {
+  const system = doc.system ?? {};
+  const warnings: string[] = [];
+  const read = (path: string): number | undefined => readDerivedNumber(system, path, warnings);
+
+  const saves: PlayerSaveRow[] = SAVE_SLUGS.map((type) => ({
+    type,
+    value: read(`saves.${type}.value`),
+    dc: read(`saves.${type}.dc`),
+  }));
+  const abilityMods: Record<string, number> = {};
+  for (const slug of ABILITY_SLUGS) {
+    const mod = read(`abilities.${slug}.mod`);
+    if (mod !== undefined) abilityMods[slug] = mod;
+  }
+
+  return {
+    section: "stats",
+    ac: read("attributes.ac.value"),
+    perception: { value: read("perception.value"), dc: read("perception.dc") },
+    saves,
+    abilityMods,
+    classDC: { value: read("attributes.classDC.value"), rank: read("attributes.classDC.rank") },
+    spellDC: { value: read("attributes.spellDC.value") },
+    warnings,
+  };
+}
+
+/** `query-player`'s `skills` section (0028 S2) — the LIVE `system.skills` map, which
+ * (unlike stored source) carries a total `value`/`dc` per skill AND every lore skill
+ * (added by `prepareSkills()`'s loreItems merge, verified in pf2e.mjs). */
+function buildSkills(doc: FoundryDocumentLike): PlayerSkillsSection {
+  const skillsObj = (doc.system?.skills ?? {}) as Record<string, unknown>;
+  const skills: PlayerSkillRow[] = [];
+  for (const [slug, raw] of Object.entries(skillsObj)) {
+    if (!raw || typeof raw !== "object") continue;
+    const s = raw as Record<string, unknown>;
+    skills.push({
+      slug,
+      label: typeof s.label === "string" ? s.label : undefined,
+      rank: typeof s.rank === "number" ? s.rank : undefined,
+      value: typeof s.value === "number" ? s.value : undefined,
+      dc: typeof s.dc === "number" ? s.dc : undefined,
+      lore: s.lore === true,
+    });
+  }
+  skills.sort((a, b) => a.slug.localeCompare(b.slug));
+  return { section: "skills", skills };
+}
+
+function buildSummary(
+  doc: FoundryDocumentLike,
+  raw: Record<string, unknown>,
+): PlayerSummarySection {
+  // Prefer the live `system` (has derived hp.max) but fall back to the stored source
+  // (familiars/edge cases where the live surface isn't stubbed, e.g. in tests).
+  const system = (doc.system ?? raw.system ?? {}) as Record<string, unknown>;
+  const details = (system.details ?? {}) as Record<string, unknown>;
+  const attributes = (system.attributes ?? {}) as Record<string, unknown>;
+  const resources = (system.resources ?? {}) as Record<string, unknown>;
+  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+  const findName = (type: string): string | undefined => {
+    const name = items.find((i) => i.type === type)?.name;
+    return typeof name === "string" ? name : undefined;
+  };
+
+  const level = (details.level as Record<string, unknown> | undefined)?.value;
+  const xp = details.xp as Record<string, unknown> | undefined;
+  const hp = attributes.hp as Record<string, unknown> | undefined;
+  const heroPoints = resources.heroPoints as Record<string, unknown> | undefined;
+  const languages = (details.languages as Record<string, unknown> | undefined)?.value;
+  const master = (system.master as Record<string, unknown> | undefined)?.id;
+
+  return {
+    section: "summary",
+    uuid: doc.uuid,
+    id: doc.id,
+    name: doc.name,
+    actorType: doc.type ?? "unknown",
+    level: typeof level === "number" ? level : undefined,
+    xp:
+      typeof xp?.value === "number" && typeof xp.max === "number"
+        ? { value: xp.value, max: xp.max }
+        : undefined,
+    hp:
+      hp && typeof hp.value === "number"
+        ? {
+            value: hp.value,
+            max: typeof hp.max === "number" ? hp.max : undefined,
+            temp: typeof hp.temp === "number" ? hp.temp : undefined,
+          }
+        : undefined,
+    heroPoints:
+      heroPoints && typeof heroPoints.value === "number" && typeof heroPoints.max === "number"
+        ? { value: heroPoints.value, max: heroPoints.max }
+        : undefined,
+    ancestry: findName("ancestry"),
+    heritage: findName("heritage"),
+    background: findName("background"),
+    className: findName("class"),
+    deity: findName("deity"),
+    languages: Array.isArray(languages)
+      ? languages.filter((l): l is string => typeof l === "string")
+      : undefined,
+    alliance: typeof details.alliance === "string" ? details.alliance : undefined,
+    master: typeof master === "string" ? master : undefined,
+  };
+}
+
+interface SpellSlotState {
+  rank: number;
+  prepared: boolean;
+  expended?: boolean;
+}
+
+/** Locates a spell's slot state in a spellcastingEntry's `system.slots.slot0..11`
+ * (spec Verified footprint) by scanning every slot's `prepared[]` list for a matching
+ * item id — this is how a PREPARED caster's spell gets its cast-at rank (which can
+ * differ from the spell's own innate rank via heightening into a higher slot); a
+ * spontaneous/innate/focus spell simply never appears in any slot's `prepared[]`. */
+function findSlotState(
+  slotsObj: Record<string, unknown>,
+  spellId: string,
+): SpellSlotState | undefined {
+  for (const [slotKey, slotVal] of Object.entries(slotsObj)) {
+    const match = /^slot(\d+)$/.exec(slotKey);
+    if (!match?.[1]) continue;
+    const slot = slotVal as Record<string, unknown>;
+    const preparedList = Array.isArray(slot.prepared)
+      ? (slot.prepared as Record<string, unknown>[])
+      : [];
+    const hit = preparedList.find((p) => p.id === spellId);
+    if (hit) return { rank: Number(match[1]), prepared: true, expended: hit.expended === true };
+  }
+  return undefined;
+}
+
+/** `query-player`'s `spells` section (0028 S2/D28-11) — groups by spellcasting entry
+ * then rank (slot rank when the spell is in a prepared slot, else its own innate
+ * `system.level.value`), names + traits only (full descriptions are `query-item`'s
+ * job, S3). Both `entryFilter`/`rankFilter` narrow the module-side result — cheap,
+ * since these are already the full parsed source items; the D28-11 12,000-char
+ * markdown cap and its group-summary fallback are entirely server-side (D28-6: the
+ * module stays dumb, it never measures or truncates markdown). */
+function buildSpells(
+  raw: Record<string, unknown>,
+  entryFilter: string | undefined,
+  rankFilter: number | undefined,
+): PlayerSpellsSection {
+  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+  const entryItems = items.filter((i) => i.type === "spellcastingEntry");
+  const spellItems = items.filter((i) => i.type === "spell");
+  const needle = entryFilter?.toLowerCase();
+
+  const entries: PlayerSpellcastingEntryGroup[] = [];
+  for (const entry of entryItems) {
+    const entryId = String(entry._id ?? "");
+    const entryName = typeof entry.name === "string" ? entry.name : "Spells";
+    if (
+      needle !== undefined &&
+      entryId !== entryFilter &&
+      !entryName.toLowerCase().includes(needle)
+    ) {
+      continue;
+    }
+    const esys = (entry.system ?? {}) as Record<string, unknown>;
+    const tradition = (esys.tradition as Record<string, unknown> | undefined)?.value;
+    const preparedType = (esys.prepared as Record<string, unknown> | undefined)?.value;
+    const dc = (esys.spelldc as Record<string, unknown> | undefined)?.dc;
+    const slotsObj = (esys.slots ?? {}) as Record<string, unknown>;
+
+    const rankGroups = new Map<number, PlayerSpellRow[]>();
+    for (const spell of spellItems) {
+      const ssys = (spell.system ?? {}) as Record<string, unknown>;
+      const location = (ssys.location as Record<string, unknown> | undefined)?.value;
+      if (location !== entryId) continue;
+      const spellId = String(spell._id ?? "");
+      const slotState = findSlotState(slotsObj, spellId);
+      const ownRank = Number((ssys.level as Record<string, unknown> | undefined)?.value ?? 0);
+      const rank = slotState?.rank ?? ownRank;
+      if (rankFilter !== undefined && rank !== rankFilter) continue;
+      const traitsValue = (ssys.traits as Record<string, unknown> | undefined)?.value;
+      const traits = Array.isArray(traitsValue)
+        ? traitsValue.filter((t): t is string => typeof t === "string")
+        : [];
+      const row: PlayerSpellRow = {
+        id: spellId,
+        name: typeof spell.name === "string" ? spell.name : "Unnamed",
+        rank,
+        traits,
+        prepared: slotState?.prepared,
+        expended: slotState?.expended,
+      };
+      const bucket = rankGroups.get(rank) ?? [];
+      bucket.push(row);
+      rankGroups.set(rank, bucket);
+    }
+
+    const ranks: PlayerSpellRankGroup[] = Array.from(rankGroups.entries())
+      .sort(([a], [b]) => a - b)
+      .map(([rank, spellsAtRank]) => {
+        const slot = slotsObj[`slot${rank}`] as Record<string, unknown> | undefined;
+        const slots =
+          slot && typeof slot.max === "number"
+            ? { value: typeof slot.value === "number" ? slot.value : 0, max: slot.max }
+            : undefined;
+        spellsAtRank.sort((a, b) => a.name.localeCompare(b.name));
+        return { rank, slots, spells: spellsAtRank };
+      });
+
+    entries.push({
+      entryId,
+      entryName,
+      tradition: typeof tradition === "string" ? tradition : undefined,
+      preparedType: typeof preparedType === "string" ? preparedType : undefined,
+      dc: typeof dc === "number" ? dc : undefined,
+      ranks,
+    });
+  }
+
+  return { section: "spells", entries };
+}
+
+const FEAT_CATEGORY_FALLBACK = "other";
+
+/** `query-player`'s `feats` section (0028 S2) — grouped by category (`system.category`,
+ * e.g. "ancestry"/"class"/"skill"/"general"/"classfeature") with the feat's own level. */
+function buildFeats(raw: Record<string, unknown>): PlayerFeatsSection {
+  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+  const feats: PlayerFeatRow[] = items
+    .filter((i) => i.type === "feat")
+    .map((f) => {
+      const fsys = (f.system ?? {}) as Record<string, unknown>;
+      const level = (fsys.level as Record<string, unknown> | undefined)?.value;
+      return {
+        id: String(f._id ?? ""),
+        name: typeof f.name === "string" ? f.name : "Unnamed",
+        category: typeof fsys.category === "string" ? fsys.category : FEAT_CATEGORY_FALLBACK,
+        level: typeof level === "number" ? level : undefined,
+      };
+    });
+  feats.sort(
+    (a, b) =>
+      a.category.localeCompare(b.category) ||
+      (a.level ?? 0) - (b.level ?? 0) ||
+      a.name.localeCompare(b.name),
+  );
+  return { section: "feats", feats };
+}
+
+const INVENTORY_ITEM_TYPES = new Set([
+  "weapon",
+  "armor",
+  "equipment",
+  "consumable",
+  "backpack",
+  "treasure",
+  "kit",
+  "shield",
+  "ammo",
+]);
+
+/** `query-player`'s `inventory` section (0028 S2) — every embedded item whose type is
+ * physical gear, with quantity/bulk/carry-state/runes. Fusion/property runes are
+ * summarized as short labels (e.g. "+1 potency", "striking 2") rather than the raw
+ * rune source objects. */
+function buildInventory(raw: Record<string, unknown>): PlayerInventorySection {
+  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+  const rows: PlayerInventoryRow[] = items
+    .filter((i) => typeof i.type === "string" && INVENTORY_ITEM_TYPES.has(i.type))
+    .map((it) => {
+      const isys = (it.system ?? {}) as Record<string, unknown>;
+      const bulk = (isys.bulk as Record<string, unknown> | undefined)?.value;
+      const equipped = isys.equipped as Record<string, unknown> | undefined;
+      const runesObj = isys.runes as Record<string, unknown> | undefined;
+      const runes: string[] = [];
+      if (runesObj) {
+        if (typeof runesObj.potency === "number" && runesObj.potency > 0) {
+          runes.push(`+${runesObj.potency} potency`);
+        }
+        if (typeof runesObj.striking === "number" && runesObj.striking > 0) {
+          runes.push(`striking ${runesObj.striking}`);
+        }
+        if (typeof runesObj.resilient === "number" && runesObj.resilient > 0) {
+          runes.push(`resilient ${runesObj.resilient}`);
+        }
+        if (Array.isArray(runesObj.property)) {
+          for (const p of runesObj.property) if (typeof p === "string") runes.push(p);
+        }
+      }
+      return {
+        id: String(it._id ?? ""),
+        name: typeof it.name === "string" ? it.name : "Unnamed",
+        type: String(it.type),
+        quantity: typeof isys.quantity === "number" ? isys.quantity : undefined,
+        bulk: typeof bulk === "number" ? bulk : undefined,
+        carryType: typeof equipped?.carryType === "string" ? equipped.carryType : undefined,
+        invested: typeof equipped?.invested === "boolean" ? equipped.invested : undefined,
+        runes: runes.length > 0 ? runes : undefined,
+      };
+    });
+  rows.sort((a, b) => a.name.localeCompare(b.name));
+  return { section: "inventory", items: rows };
+}
+
+/** `query-player`'s `notes` section (0028 S2) — deity (an embedded `deity`-type item's
+ * name) plus non-empty biography prose fields. The shared player key has no
+ * per-player identity (D28-1), so — per the spec's own accepted Risks posture ("any
+ * player sees the whole party's sheets... read-only, campaign-internal data") — this
+ * doesn't gate on pf2e's own GM-visibility biography flags; it surfaces whatever
+ * prose the sheet carries. */
+function buildNotes(raw: Record<string, unknown>): PlayerNotesSection {
+  const system = (raw.system ?? {}) as Record<string, unknown>;
+  const details = (system.details ?? {}) as Record<string, unknown>;
+  const bio = (details.biography ?? {}) as Record<string, unknown>;
+  const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+  const deity = items.find((i) => i.type === "deity")?.name;
+  const nonEmpty = (v: unknown): string | undefined =>
+    typeof v === "string" && v.length > 0 ? v : undefined;
+  return {
+    section: "notes",
+    deity: typeof deity === "string" ? deity : undefined,
+    appearance: nonEmpty(bio.appearance),
+    backstory: nonEmpty(bio.backstory),
+    likes: nonEmpty(bio.likes),
+    dislikes: nonEmpty(bio.dislikes),
+    campaignNotes: nonEmpty(bio.campaignNotes),
+  };
+}
+
+/** `query-player` (0028 S2/D28-4/D28-11) — resolves the target actor (D28-13), refuses
+ * anything that isn't `type ∈ {character, familiar}` with the typed
+ * `not-a-player-character` error, then builds exactly the requested `section`. */
+async function handleQueryPlayer(rawParams: unknown): Promise<QueryPlayerResult> {
+  const params = QueryPlayerParams.parse(rawParams);
+  const doc = await resolvePlayerActor(params);
+  if (doc.type !== "character" && doc.type !== "familiar") {
+    throw new BridgeHandlerError(
+      "not-a-player-character",
+      `"${doc.name}" is a ${doc.type ?? "unknown-type"} actor — query-player only serves ` +
+        "player characters and familiars",
+    );
+  }
+  const raw = doc.toObject();
+  switch (params.section) {
+    case "summary":
+      return buildSummary(doc, raw);
+    case "stats":
+      return buildStats(doc);
+    case "skills":
+      return buildSkills(doc);
+    case "spells":
+      return buildSpells(raw, params.entry, params.rank);
+    case "feats":
+      return buildFeats(raw);
+    case "inventory":
+      return buildInventory(raw);
+    case "notes":
+      return buildNotes(raw);
+  }
+}
+
 /** Registers every handler this module build knows about into `CONFIG.queries`. Call
  * once, on the `init` hook (Foundry's `CONFIG` global exists by then, before `ready`
  * dials the bridge). S5 adds more `CONFIG.queries[queryKey(...)] = ...` lines here —
@@ -1259,6 +1833,8 @@ export function registerHandlers(): void {
   CONFIG.queries[queryKey("update-document")] = handleUpdateDocument;
   CONFIG.queries[queryKey("delete-document")] = handleDeleteDocument;
   CONFIG.queries[queryKey("execute-macro")] = handleExecuteMacro;
+  CONFIG.queries[queryKey("query-party")] = handleQueryParty;
+  CONFIG.queries[queryKey("query-player")] = handleQueryPlayer;
 }
 
 /**

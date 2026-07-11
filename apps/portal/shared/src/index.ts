@@ -72,3 +72,29 @@ export {
   UpdateDocumentParams,
   UpdateDocumentResult,
 } from "./tools";
+// 0028 S2's player-key query tools — query-party (D28-4) + query-player (D28-2/D28-11/
+// D28-13). Module -> server wire stays typed compact JSON; the server (not exported
+// here) renders markdown from these (D28-6).
+export {
+  PartyCompanionRow,
+  PartyPcRow,
+  PlayerFeatRow,
+  PlayerFeatsSection,
+  PlayerInventoryRow,
+  PlayerInventorySection,
+  PlayerNotesSection,
+  PlayerSaveRow,
+  PlayerSkillRow,
+  PlayerSkillsSection,
+  PlayerSpellcastingEntryGroup,
+  PlayerSpellRankGroup,
+  PlayerSpellRow,
+  PlayerSpellsSection,
+  PlayerStatsSection,
+  PlayerSummarySection,
+  QueryPartyParams,
+  QueryPartyResult,
+  QueryPlayerParams,
+  QueryPlayerResult,
+  QueryPlayerSection,
+} from "./tools";

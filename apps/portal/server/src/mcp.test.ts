@@ -217,7 +217,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
-  it("lists all 18 tools (spec 0026 S1 — 10 pre-existing + 8 new authoring tools), every new field described", async () => {
+  it("lists all 20 tools (spec 0026 S1's 18 + 0028 S2's query-party/query-player), every new field described", async () => {
     const transport = new StreamableHTTPClientTransport(mcpUrl, {
       requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
     });
@@ -245,6 +245,8 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
         "update-document",
         "delete-document",
         "execute-macro",
+        "query-party",
+        "query-player",
       ].sort(),
     );
 
@@ -263,6 +265,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
       "update-document": ["uuid", "updates"],
       "delete-document": ["uuid"],
       "execute-macro": ["macroId"],
+      "query-player": ["name", "uuid", "section", "entry", "rank"],
     };
     for (const [tool, fields] of Object.entries(newToolFields)) {
       const properties = schemaOf(tool).properties ?? {};
@@ -719,14 +722,14 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name);
 
-    // Subset-of, not exact-5: only bridge-status exists so far (query-rolls/
-    // query-party/query-player/query-item land in S2/S3). The exact-5 assertion is
-    // an S3 acceptance item, per the spec.
+    // Subset-of, not exact-5: query-party/query-player land in S2 (this slice);
+    // query-rolls/query-item land in S3. The exact-5 assertion is an S3 acceptance
+    // item, per the spec.
     expect(names.length).toBeGreaterThan(0);
     for (const name of names) {
       expect(PLAYER_TOOL_NAMES.has(name)).toBe(true);
     }
-    expect(names).toEqual(["bridge-status"]);
+    expect(names.sort()).toEqual(["bridge-status", "query-party", "query-player"].sort());
 
     // No write tool reachable under the player key.
     for (const writeTool of [
@@ -759,13 +762,17 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     await client.close();
   });
 
-  it("the admin key still sees the full 18-tool list, unaffected by player scoping (D28-8)", async () => {
+  it("the admin key still sees the full 20-tool list, unaffected by player scoping (D28-8)", async () => {
     const client = await clientWith(MCP_API_KEY);
     const { tools } = await client.listTools();
-    expect(tools.length).toBe(18);
+    // 18 (0023/0026) + query-party + query-player (0028 S2) = 20. S3 adds
+    // query-rolls/query-item -> 22 (the spec's final admin count).
+    expect(tools.length).toBe(20);
     expect(tools.map((t) => t.name)).toContain("bridge-status");
     expect(tools.map((t) => t.name)).toContain("search-world");
     expect(tools.map((t) => t.name)).toContain("create-journal");
+    expect(tools.map((t) => t.name)).toContain("query-party");
+    expect(tools.map((t) => t.name)).toContain("query-player");
     await client.close();
   });
 
@@ -814,6 +821,185 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     for (const [, value] of res.headers.entries()) {
       expect(value).not.toContain(PLAYER_MCP_API_KEY);
     }
+  });
+});
+
+describe("0028 S2 — query-party / query-player (markdown rendering, Foundry-free)", () => {
+  let handle: PortalServerHandle & { port: number };
+  let mcpUrl: URL;
+
+  beforeEach(async () => {
+    handle = await listen({
+      port: 0,
+      mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
+      bridgeApiKey: BRIDGE_API_KEY,
+      bridgeTimeoutMs: 250,
+      maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
+      publicOrigin: TEST_PUBLIC_ORIGIN,
+      moduleDir: TEST_MODULE_DIR,
+      oauthStatePath: TEST_OAUTH_STATE_PATH,
+    });
+    mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
+  });
+
+  afterEach(async () => {
+    await handle.close();
+  });
+
+  async function clientWith(key: string): Promise<Client> {
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${key}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+    return client;
+  }
+
+  it("query-party renders the module's typed result as markdown (D28-6), not JSON", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.query-party");
+      mod.respond(q.id, {
+        partyName: "The Party",
+        pcs: [
+          {
+            uuid: "Actor.a1",
+            id: "a1",
+            name: "Argyle",
+            level: 8,
+            hp: { value: 100, max: 120 },
+            ancestry: "Elf",
+            className: "Cleric",
+          },
+        ],
+        companions: [
+          { uuid: "Actor.o1", id: "o1", name: "Othello", type: "familiar", master: "Anzu" },
+        ],
+      });
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({ name: "query-party", arguments: {} });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(content.text).not.toMatch(/^\s*[{[]/); // not JSON
+    expect(content.text).toContain("# The Party");
+    expect(content.text).toContain("Argyle");
+    expect(content.text).toContain("Othello (familiar, master: Anzu)");
+
+    await client.close();
+    mod.close();
+  });
+
+  it("query-player renders a requested section (skills) as markdown", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.query-player");
+      expect(q.params).toMatchObject({ uuid: "Actor.a1", section: "skills" });
+      mod.respond(q.id, {
+        section: "skills",
+        skills: [{ slug: "religion", label: "Religion", rank: 3, value: 12, dc: 22, lore: false }],
+      });
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({
+      name: "query-player",
+      arguments: { uuid: "Actor.a1", section: "skills" },
+    });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(content.text).toContain("# Skills");
+    expect(content.text).toContain("Religion");
+
+    await client.close();
+    mod.close();
+  });
+
+  it("maps the module's typed not-a-player-character error to an isError result", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respondError(q.id, "not-a-player-character", '"Goblin" is a npc actor');
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({
+      name: "query-player",
+      arguments: { uuid: "Actor.g1", section: "summary" },
+    });
+    expect(result.isError).toBe(true);
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual({
+      code: "not-a-player-character",
+      message: '"Goblin" is a npc actor',
+    });
+
+    await client.close();
+    mod.close();
+  });
+
+  it("maps the module's typed ambiguous-name error to an isError result", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respondError(q.id, "ambiguous-name", '"Arg" matches 2 actors: Argyle, Argyle Twin');
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({
+      name: "query-player",
+      arguments: { name: "Arg", section: "summary" },
+    });
+    expect(result.isError).toBe(true);
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toMatchObject({ code: "ambiguous-name" });
+
+    await client.close();
+    mod.close();
+  });
+
+  it("both tools are reachable via the PLAYER key too (already in PLAYER_TOOL_NAMES since S1)", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respond(q.id, { partyName: "The Party", pcs: [], companions: [] });
+    });
+
+    const client = await clientWith(PLAYER_MCP_API_KEY);
+    const { tools } = await client.listTools();
+    expect(tools.map((t) => t.name)).toEqual(
+      expect.arrayContaining(["query-party", "query-player"]),
+    );
+    const result = await client.callTool({ name: "query-party", arguments: {} });
+    expect(result.isError).toBeFalsy();
+
+    await client.close();
+    mod.close();
+  });
+
+  it("every query-player param carries a .describe() (the 0023 lesson)", async () => {
+    const client = await clientWith(MCP_API_KEY);
+    const { tools } = await client.listTools();
+    const schema = tools.find((t) => t.name === "query-player")?.inputSchema as
+      | { properties?: Record<string, { description?: string }> }
+      | undefined;
+    for (const field of ["name", "uuid", "section", "entry", "rank"]) {
+      expect(schema?.properties?.[field]?.description, `${field} should be described`).toBeTruthy();
+    }
+    await client.close();
   });
 });
 
