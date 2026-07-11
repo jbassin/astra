@@ -75,6 +75,9 @@ def test_secret_fields_are_lazy_refs_not_plaintext() -> None:
     assert cfg.llm.openrouter_api_key.ref == "sops:openrouter_api_key"
     assert isinstance(cfg.portal.mcp_api_key, SecretRef)
     assert cfg.portal.mcp_api_key.ref == "sops:portal_mcp_api_key"
+    # 0028 D28-1: the player-facing static key mirror.
+    assert isinstance(cfg.portal.player_mcp_api_key, SecretRef)
+    assert cfg.portal.player_mcp_api_key.ref == "sops:portal_player_api_key"
     assert isinstance(cfg.portal.bridge_api_key, SecretRef)
     assert cfg.portal.bridge_api_key.ref == "sops:portal_bridge_api_key"
     assert isinstance(cfg.portal_headless.gm_password, SecretRef)

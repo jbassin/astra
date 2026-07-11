@@ -526,11 +526,12 @@ services:
     container_name: astra-portal
     user: "1000:1000"
     # SOPS secrets injected as env by `just up` (Decision E); config's env-override
-    # resolves the two D6 `ref="sops:..."` keys in-container. Both are load-bearing
-    # (index.ts throws at startup if either is unresolved — no degraded mode, unlike
-    # orator's optional Discord token).
+    # resolves the D6 `ref="sops:..."` keys in-container, plus the 0028 D28-1 player
+    # key. All three are load-bearing (index.ts throws at startup if any is
+    # unresolved — no degraded mode, unlike orator's optional Discord token).
     environment:
       PORTAL_MCP_API_KEY: ${PORTAL_MCP_API_KEY:-}
+      PORTAL_PLAYER_MCP_API_KEY: ${PORTAL_PLAYER_MCP_API_KEY:-}
       PORTAL_BRIDGE_API_KEY: ${PORTAL_BRIDGE_API_KEY:-}
     # 0025 OAuth state (registered claude.ai clients + hashed tokens) bind-mounted
     # from artifacts/ so connections survive redeploys; container path matches kdl

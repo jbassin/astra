@@ -17,6 +17,7 @@ import { MCP_HTTP_PATH } from "./constants";
 import { createPortalServer, type PortalServerHandle, listen } from "./server";
 
 const MCP_API_KEY = "test-mcp-key";
+const PLAYER_MCP_API_KEY = "test-player-mcp-key";
 const BRIDGE_API_KEY = "test-bridge-key";
 const PUBLIC_ORIGIN = "https://portal.test";
 const MODULE_JSON_SOURCE = {
@@ -58,6 +59,7 @@ describe("module-package routes (spec 0023 S6)", () => {
     handle = await listen({
       port: 0,
       mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: 10,
@@ -141,6 +143,7 @@ describe("module-package routes (spec 0023 S6)", () => {
     const unbound = createPortalServer({
       port: 0,
       mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: 10,

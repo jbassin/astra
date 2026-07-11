@@ -80,6 +80,9 @@ describe("@astra/config", () => {
     expect(cfg.llm.openrouterApiKey?.ref).toBe("sops:openrouter_api_key");
     expect(cfg.portal.mcpApiKey).toBeInstanceOf(SecretRef);
     expect(cfg.portal.mcpApiKey?.ref).toBe("sops:portal_mcp_api_key");
+    // 0028 D28-1: the player-facing static key mirror.
+    expect(cfg.portal.playerMcpApiKey).toBeInstanceOf(SecretRef);
+    expect(cfg.portal.playerMcpApiKey?.ref).toBe("sops:portal_player_api_key");
     expect(cfg.portal.bridgeApiKey).toBeInstanceOf(SecretRef);
     expect(cfg.portal.bridgeApiKey?.ref).toBe("sops:portal_bridge_api_key");
     expect(cfg.portalHeadless.gmPassword).toBeInstanceOf(SecretRef);

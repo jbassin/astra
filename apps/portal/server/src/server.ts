@@ -33,6 +33,12 @@ const OAUTH_SDK_PATHS = new Set(["/authorize", "/token", "/register", "/revoke"]
 export interface PortalServerOptions {
   port: number;
   mcpApiKey: string;
+  /** `cfg.portal.playerMcpApiKey` (0028 D28-1) — the second static bearer, compared
+   * alongside `mcpApiKey` in the `/mcp` auth branch; a match resolves `scope: "player"`
+   * (D28-8's read-only tool subset) instead of the admin scope. Load-bearing like
+   * `mcpApiKey`/`bridgeApiKey` (resolved via `requireSecret` in `index.ts`), never
+   * logged. */
+  playerMcpApiKey: string;
   bridgeApiKey: string;
   bridgeTimeoutMs: number;
   /** `cfg.portal.maxCreatesPerRequest` (D8) — the S5 write tools' per-request create
@@ -90,6 +96,7 @@ export function createPortalServer(opts: PortalServerOptions): PortalServerHandl
   const handleMcp = createMcpRequestHandler(
     bridge,
     opts.mcpApiKey,
+    opts.playerMcpApiKey,
     opts.maxCreatesPerRequest,
     oauthProvider,
     opts.publicOrigin,

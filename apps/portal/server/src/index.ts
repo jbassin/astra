@@ -51,6 +51,7 @@ async function main(): Promise<void> {
   await listen({
     port: cfg.portal.port,
     mcpApiKey: requireSecret(cfg.portal.mcpApiKey, "mcpApiKey"),
+    playerMcpApiKey: requireSecret(cfg.portal.playerMcpApiKey, "playerMcpApiKey"),
     bridgeApiKey: requireSecret(cfg.portal.bridgeApiKey, "bridgeApiKey"),
     bridgeTimeoutMs: cfg.portal.bridgeTimeoutMs,
     maxCreatesPerRequest: cfg.portal.maxCreatesPerRequest,

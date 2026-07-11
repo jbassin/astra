@@ -231,6 +231,9 @@ const Portal = z
     bridgeTimeoutMs: z.number().default(15000),
     maxCreatesPerRequest: z.number().default(10), // the D8 write-gate cap
     mcpApiKey: secret(),
+    // 0028 D28-1: the player-facing static key, a second bearer compared alongside
+    // mcpApiKey in the /mcp auth branch — resolves the read-only D28-8 tool subset.
+    playerMcpApiKey: secret(),
     bridgeApiKey: secret(),
     // 0025 D-2: the bind-mounted JSON file holding OAuth-registered clients +
     // hashed tokens, on the new portal-oauth bind mount — survives `just up`

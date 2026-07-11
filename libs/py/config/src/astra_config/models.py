@@ -212,6 +212,9 @@ class PortalConfig(_Base):
     bridge_timeout_ms: int = 15000
     max_creates_per_request: int = 10  # the D8 write-gate cap
     mcp_api_key: SecretRef | None = None
+    # 0028 D28-1: the player-facing static key, a second bearer compared alongside
+    # mcp_api_key in the /mcp auth branch — resolves the read-only D28-8 tool subset.
+    player_mcp_api_key: SecretRef | None = None
     bridge_api_key: SecretRef | None = None
     # 0025 D-2: the bind-mounted JSON file holding OAuth-registered clients +
     # hashed tokens, on the new portal-oauth bind mount — survives `just up`

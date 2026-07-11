@@ -9,9 +9,11 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { WebSocket } from "ws";
 
 import { BRIDGE_WS_PATH, MCP_HTTP_PATH } from "./constants";
+import { PLAYER_TOOL_NAMES } from "./mcp";
 import { createPortalServer, type PortalServerHandle, listen } from "./server";
 
 const MCP_API_KEY = "test-mcp-key";
+const PLAYER_MCP_API_KEY = "test-player-mcp-key";
 const BRIDGE_API_KEY = "test-bridge-key";
 const MAX_CREATES_PER_REQUEST = 10;
 // S6's module-package routes are exercised separately (modulePackage.test.ts); these
@@ -81,6 +83,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     handle = await listen({
       port: 0,
       mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
@@ -380,6 +383,7 @@ describe("S5 write tools (spec 0023 D8 — Foundry-free)", () => {
     handle = await listen({
       port: 0,
       mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: 2, // deliberately small — S5's cap-pre-check test relies on it
@@ -531,6 +535,7 @@ describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
     handle = await listen({
       port: 0,
       mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: 2, // deliberately small — the cap-pre-check test below relies on it
@@ -677,11 +682,147 @@ describe("S1 authoring tools (spec 0026 — Foundry-free)", () => {
   });
 });
 
+describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
+  let handle: PortalServerHandle & { port: number };
+  let mcpUrl: URL;
+
+  beforeEach(async () => {
+    handle = await listen({
+      port: 0,
+      mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
+      bridgeApiKey: BRIDGE_API_KEY,
+      bridgeTimeoutMs: 250,
+      maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
+      publicOrigin: TEST_PUBLIC_ORIGIN,
+      moduleDir: TEST_MODULE_DIR,
+      oauthStatePath: TEST_OAUTH_STATE_PATH,
+    });
+    mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
+  });
+
+  afterEach(async () => {
+    await handle.close();
+  });
+
+  async function clientWith(key: string): Promise<Client> {
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${key}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+    return client;
+  }
+
+  it("the player key authenticates /mcp and lists a tool subset ⊆ PLAYER_TOOL_NAMES, with no write tool and no admin-only read tool", async () => {
+    const client = await clientWith(PLAYER_MCP_API_KEY);
+    const { tools } = await client.listTools();
+    const names = tools.map((t) => t.name);
+
+    // Subset-of, not exact-5: only bridge-status exists so far (query-rolls/
+    // query-party/query-player/query-item land in S2/S3). The exact-5 assertion is
+    // an S3 acceptance item, per the spec.
+    expect(names.length).toBeGreaterThan(0);
+    for (const name of names) {
+      expect(PLAYER_TOOL_NAMES.has(name)).toBe(true);
+    }
+    expect(names).toEqual(["bridge-status"]);
+
+    // No write tool reachable under the player key.
+    for (const writeTool of [
+      "import-from-compendium",
+      "create-token",
+      "create-journal",
+      "create-actor",
+      "create-item",
+      "create-light",
+      "create-macro",
+      "apply-condition",
+      "update-document",
+      "delete-document",
+      "execute-macro",
+    ]) {
+      expect(names).not.toContain(writeTool);
+    }
+    // No admin-only read tool reachable either.
+    for (const adminReadTool of [
+      "list-compendium-packs",
+      "search-compendium",
+      "get-document",
+      "search-world",
+      "list-scenes",
+      "get-current-scene",
+    ]) {
+      expect(names).not.toContain(adminReadTool);
+    }
+
+    await client.close();
+  });
+
+  it("the admin key still sees the full 18-tool list, unaffected by player scoping (D28-8)", async () => {
+    const client = await clientWith(MCP_API_KEY);
+    const { tools } = await client.listTools();
+    expect(tools.length).toBe(18);
+    expect(tools.map((t) => t.name)).toContain("bridge-status");
+    expect(tools.map((t) => t.name)).toContain("search-world");
+    expect(tools.map((t) => t.name)).toContain("create-journal");
+    await client.close();
+  });
+
+  it("a player-key call to an admin-only tool fails — the tool is unregistered, not merely denied", async () => {
+    const client = await clientWith(PLAYER_MCP_API_KEY);
+    // The SDK surfaces an unregistered tool name as an isError tool result (not a
+    // rejected call/protocol error) — either way, the call never reaches the bridge
+    // and never succeeds.
+    const result = await client.callTool({ name: "search-world", arguments: { query: "goblin" } });
+    expect(result.isError).toBe(true);
+    await client.close();
+  });
+
+  it("a wrong key (neither admin nor player) still 401s with the D-9 resource_metadata discovery header", async () => {
+    const res = await fetch(mcpUrl, {
+      method: "POST",
+      headers: { "content-type": "application/json", authorization: "Bearer not-a-real-key" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+    });
+    expect(res.status).toBe(401);
+    expect(res.headers.get("www-authenticate")).toMatch(/^Bearer resource_metadata="/);
+  });
+
+  it("the player key value never appears in any captured response body or header (D28-9 hygiene)", async () => {
+    // A successful player-key round trip.
+    const client = await clientWith(PLAYER_MCP_API_KEY);
+    const listResult = await client.listTools();
+    expect(JSON.stringify(listResult)).not.toContain(PLAYER_MCP_API_KEY);
+    const toolResult = await client.callTool({ name: "bridge-status" });
+    expect(JSON.stringify(toolResult)).not.toContain(PLAYER_MCP_API_KEY);
+    await client.close();
+
+    // A near-miss wrong-key rejection (close enough to the real key to catch an
+    // accidental substring-echo bug, e.g. in an error message).
+    const res = await fetch(mcpUrl, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${PLAYER_MCP_API_KEY}-wrong`,
+      },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "ping" }),
+    });
+    expect(res.status).toBe(401);
+    const body = await res.text();
+    expect(body).not.toContain(PLAYER_MCP_API_KEY);
+    for (const [, value] of res.headers.entries()) {
+      expect(value).not.toContain(PLAYER_MCP_API_KEY);
+    }
+  });
+});
+
 describe("createPortalServer (unbound — construction only)", () => {
   it("builds without binding a port", () => {
     const handle = createPortalServer({
       port: 0,
       mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
       bridgeApiKey: BRIDGE_API_KEY,
       bridgeTimeoutMs: 250,
       maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,

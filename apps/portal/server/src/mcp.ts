@@ -98,7 +98,15 @@ function registerBridgeTool<Args extends z.ZodType>(
     /** Write tools only (S5, D8): emit an {@link auditWrite} log line for this tool. */
     audit?: boolean;
   },
+  auth: AuthContext,
 ): void {
+  // D28-8: under scope "player", registration is filtered to PLAYER_TOOL_NAMES — the
+  // one source of truth also asserted by the tools/list tests from both directions.
+  // Skipping registration entirely (not just hiding it) means the SDK rejects a
+  // player-key call to an admin-only tool as unknown, never as a reachable-but-denied
+  // call.
+  if (auth.scope === "player" && !PLAYER_TOOL_NAMES.has(name)) return;
+
   // The callback body only ever forwards `params` verbatim to `bridge.sendQuery` — it
   // never inspects its shape — so it's typed `unknown` here and cast on the way in.
   // The cast is required, not stylistic: the MCP SDK's `registerTool` picks the
@@ -109,6 +117,7 @@ function registerBridgeTool<Args extends z.ZodType>(
   // never` seam once, here, instead of at all nine call sites.
   const handler = async (params: unknown) => {
     return tracer.startActiveSpan(`portal.mcp.tool.${name}`, async (span) => {
+      span.setAttribute("auth", auth.method);
       try {
         if (config.creates && config.cap !== undefined) {
           const count = config.creates(params);
@@ -120,7 +129,7 @@ function registerBridgeTool<Args extends z.ZodType>(
           }
         }
         const result = await bridge.sendQuery(config.method, params);
-        mcpToolCalls.add(1, { tool: name, outcome: "ok" });
+        mcpToolCalls.add(1, { tool: name, outcome: "ok", auth: auth.method });
         if (config.audit) auditWrite(name, params, "ok");
         return { content: [{ type: "text" as const, text: JSON.stringify(result) }] };
       } catch (err) {
@@ -130,7 +139,7 @@ function registerBridgeTool<Args extends z.ZodType>(
             : new BridgeError("foundry-error", err instanceof Error ? err.message : String(err));
         span.recordException(bridgeErr);
         span.setStatus({ code: SpanStatusCode.ERROR, message: bridgeErr.message });
-        mcpToolCalls.add(1, { tool: name, outcome: bridgeErr.code });
+        mcpToolCalls.add(1, { tool: name, outcome: bridgeErr.code, auth: auth.method });
         if (config.audit) auditWrite(name, params, `denied: ${bridgeErr.code}`);
         return {
           isError: true,
@@ -173,16 +182,51 @@ function actorCreateCount(params: unknown): number {
   return 1 + (Array.isArray(items) ? items.length : 0);
 }
 
+/**
+ * D28-8 — the player key's tool subset (0028 S1). One source of truth: `buildMcpServer`
+ * filters registration to this set under `scope: "player"`, and the tools/list tests
+ * assert both directions against it. Declared up front with all five names even though
+ * only `bridge-status` is registered so far — `query-rolls`/`query-party`/
+ * `query-player`/`query-item` land in S2/S3, at which point this set (unchanged) makes
+ * them visible to players with no further scope-machinery edits.
+ */
+export const PLAYER_TOOL_NAMES: ReadonlySet<string> = new Set([
+  "bridge-status",
+  "query-rolls",
+  "query-party",
+  "query-player",
+  "query-item",
+]);
+
+/**
+ * D28-8 — resolved once per `/mcp` request in the auth branch below. `scope` drives
+ * tool-list filtering (OAuth and the admin key both resolve to `"admin"`); `method` is
+ * the D28-9 telemetry label threaded into every tool-call span/counter so player usage
+ * is distinguishable from admin-key/OAuth usage in SigNoz, independent of scope.
+ */
+export interface AuthContext {
+  scope: "admin" | "player";
+  method: "admin-key" | "player-key" | "oauth";
+}
+
 /** Registers every portal MCP tool against one `Bridge` instance. `maxCreatesPerRequest`
  * is `cfg.portal.maxCreatesPerRequest` (D8) — threaded in so the three S5 write tools
- * can reject an oversized batch before it ever reaches the bridge. */
-export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): McpServer {
+ * can reject an oversized batch before it ever reaches the bridge. `auth` (D28-8) picks
+ * the registered tool subset (`scope`) and labels every tool-call span/counter
+ * (`method`, D28-9). */
+export function buildMcpServer(
+  bridge: Bridge,
+  maxCreatesPerRequest: number,
+  auth: AuthContext,
+): McpServer {
   // 0026 D-12: bump this version on every portal release. Foundry's module
   // update-check compares module.json's version string (bumped in lockstep,
   // module.json), and this server-side McpServer version travels with a real MCP
   // client's own connection/capability negotiation.
   const server = new McpServer({ name: "astra-portal", version: "0.3.0" });
 
+  // bridge-status is in PLAYER_TOOL_NAMES, so it's always registered regardless of
+  // scope — no filter needed here (contrast registerBridgeTool's guard below).
   server.registerTool(
     "bridge-status",
     {
@@ -194,9 +238,10 @@ export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): Mc
     },
     async () => {
       return tracer.startActiveSpan("portal.mcp.tool.bridge-status", (span) => {
+        span.setAttribute("auth", auth.method);
         try {
           const status = bridge.getStatus();
-          mcpToolCalls.add(1, { tool: "bridge-status", outcome: "ok" });
+          mcpToolCalls.add(1, { tool: "bridge-status", outcome: "ok", auth: auth.method });
           return { content: [{ type: "text" as const, text: JSON.stringify(status) }] };
         } finally {
           span.end();
@@ -205,120 +250,174 @@ export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): Mc
     },
   );
 
-  registerBridgeTool(server, bridge, "list-compendium-packs", {
-    description:
-      "List every compendium pack available in the LIVE pf2e 'Faerrin' FoundryVTT world " +
-      "(bestiaries, equipment, spells, feats, ancestries, etc.), with each pack's collection " +
-      "id, document type, and label. Use this to discover which pack ids to pass as " +
-      "search-compendium's packIds filter, or just to see what source content is installed.",
-    paramsSchema: ListCompendiumPacksParams,
-    method: "portal.list-compendium-packs",
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "list-compendium-packs",
+    {
+      description:
+        "List every compendium pack available in the LIVE pf2e 'Faerrin' FoundryVTT world " +
+        "(bestiaries, equipment, spells, feats, ancestries, etc.), with each pack's collection " +
+        "id, document type, and label. Use this to discover which pack ids to pass as " +
+        "search-compendium's packIds filter, or just to see what source content is installed.",
+      paramsSchema: ListCompendiumPacksParams,
+      method: "portal.list-compendium-packs",
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "search-compendium", {
-    description:
-      "Search the pf2e compendium (bestiaries, equipment, spells, feats, etc.) in the LIVE " +
-      "'Faerrin' FoundryVTT world for entries whose name matches a query (e.g. 'goblin' finds " +
-      "Monster Core goblin statblocks). Use this to find source material to inspect or import — " +
-      "results are compact index rows (uuid/name/type/pack), ranked by match quality; pass a " +
-      "row's uuid to get-document for the full statblock. Optionally filter by document type " +
-      "or a specific set of pack ids (see list-compendium-packs).",
-    paramsSchema: SearchCompendiumParams,
-    method: "portal.search-compendium",
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "search-compendium",
+    {
+      description:
+        "Search the pf2e compendium (bestiaries, equipment, spells, feats, etc.) in the LIVE " +
+        "'Faerrin' FoundryVTT world for entries whose name matches a query (e.g. 'goblin' finds " +
+        "Monster Core goblin statblocks). Use this to find source material to inspect or import — " +
+        "results are compact index rows (uuid/name/type/pack), ranked by match quality; pass a " +
+        "row's uuid to get-document for the full statblock. Optionally filter by document type " +
+        "or a specific set of pack ids (see list-compendium-packs).",
+      paramsSchema: SearchCompendiumParams,
+      method: "portal.search-compendium",
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "get-document", {
-    description:
-      "Fetch the full data of one document (an actor, item, journal entry, or scene) from the " +
-      "LIVE 'Faerrin' FoundryVTT world or its compendia, by Foundry uuid (as returned by " +
-      "search-compendium/search-world/get-current-scene). Returns the complete document as " +
-      "opaque JSON — this tool never interprets pf2e's system.* schema, so treat the result as " +
-      "raw data to read, not a fixed shape to rely on. Returns a 'not-found' error for an " +
-      "unresolvable uuid.",
-    paramsSchema: GetDocumentParams,
-    method: "portal.get-document",
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "get-document",
+    {
+      description:
+        "Fetch the full data of one document (an actor, item, journal entry, or scene) from the " +
+        "LIVE 'Faerrin' FoundryVTT world or its compendia, by Foundry uuid (as returned by " +
+        "search-compendium/search-world/get-current-scene). Returns the complete document as " +
+        "opaque JSON — this tool never interprets pf2e's system.* schema, so treat the result as " +
+        "raw data to read, not a fixed shape to rely on. Returns a 'not-found' error for an " +
+        "unresolvable uuid.",
+      paramsSchema: GetDocumentParams,
+      method: "portal.get-document",
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "search-world", {
-    description:
-      "Search actors, items, journal entries, and/or scenes already imported INTO the LIVE " +
-      "'Faerrin' FoundryVTT world (not the compendia) for a name match. Use this to find " +
-      "existing world content — a player character, an already-imported NPC, a journal page — " +
-      "as opposed to compendium source material (use search-compendium for that). Restrict to " +
-      "a subset of collections via `types`; defaults to searching all four.",
-    paramsSchema: SearchWorldParams,
-    method: "portal.search-world",
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "search-world",
+    {
+      description:
+        "Search actors, items, journal entries, and/or scenes already imported INTO the LIVE " +
+        "'Faerrin' FoundryVTT world (not the compendia) for a name match. Use this to find " +
+        "existing world content — a player character, an already-imported NPC, a journal page — " +
+        "as opposed to compendium source material (use search-compendium for that). Restrict to " +
+        "a subset of collections via `types`; defaults to searching all four.",
+      paramsSchema: SearchWorldParams,
+      method: "portal.search-world",
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "list-scenes", {
-    description:
-      "List every scene in the LIVE 'Faerrin' FoundryVTT world, noting which one (if any) is " +
-      "currently active. Use this to see what scenes exist, or to find a scene's id before " +
-      "targeting it with another tool.",
-    paramsSchema: ListScenesParams,
-    method: "portal.list-scenes",
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "list-scenes",
+    {
+      description:
+        "List every scene in the LIVE 'Faerrin' FoundryVTT world, noting which one (if any) is " +
+        "currently active. Use this to see what scenes exist, or to find a scene's id before " +
+        "targeting it with another tool.",
+      paramsSchema: ListScenesParams,
+      method: "portal.list-scenes",
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "get-current-scene", {
-    description:
-      "Get the scene currently active/displayed in the LIVE 'Faerrin' FoundryVTT world — grid, " +
-      "dimensions, and token count — or `scene: null` if the GM has no scene open. Use this " +
-      "before reasoning about the current in-game location or placing something on the map; an " +
-      "idle world (no active scene) is a normal result, not an error.",
-    paramsSchema: GetCurrentSceneParams,
-    method: "portal.get-current-scene",
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "get-current-scene",
+    {
+      description:
+        "Get the scene currently active/displayed in the LIVE 'Faerrin' FoundryVTT world — grid, " +
+        "dimensions, and token count — or `scene: null` if the GM has no scene open. Use this " +
+        "before reasoning about the current in-game location or placing something on the map; an " +
+        "idle world (no active scene) is a normal result, not an error.",
+      paramsSchema: GetCurrentSceneParams,
+      method: "portal.get-current-scene",
+    },
+    auth,
+  );
 
   // --- S5 write tools (D8: creates ON by default) ------------------------------
   // Every one of these WRITES to the live "Faerrin" campaign world — the description
   // says so loudly (spec Risks: "Default-ON writes"), `creates`+`cap` reject an
   // oversized batch before it reaches the bridge, and `audit: true` logs every call.
 
-  registerBridgeTool(server, bridge, "import-from-compendium", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: clones a compendium document (an actor, " +
-      "item, etc. — found via search-compendium/get-document) into the world as a new document, " +
-      "verbatim except for a freshly assigned id and (optionally) a folder. Never invents or " +
-      "edits pf2e system data — this is a clone, not a hand-authored creation (D5). Creates 1 " +
-      "copy by default; pass `quantity` for more. Rejected if write operations are disabled in " +
-      "Foundry, the connected session isn't a GM, or the request exceeds the configured " +
-      "per-request create cap.",
-    paramsSchema: ImportFromCompendiumParams,
-    method: "portal.import-from-compendium",
-    creates: createCount,
-    cap: maxCreatesPerRequest,
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "import-from-compendium",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: clones a compendium document (an actor, " +
+        "item, etc. — found via search-compendium/get-document) into the world as a new document, " +
+        "verbatim except for a freshly assigned id and (optionally) a folder. Never invents or " +
+        "edits pf2e system data — this is a clone, not a hand-authored creation (D5). Creates 1 " +
+        "copy by default; pass `quantity` for more. Rejected if write operations are disabled in " +
+        "Foundry, the connected session isn't a GM, or the request exceeds the configured " +
+        "per-request create cap.",
+      paramsSchema: ImportFromCompendiumParams,
+      method: "portal.import-from-compendium",
+      creates: createCount,
+      cap: maxCreatesPerRequest,
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "create-token", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: drops a token onto the currently active " +
-      "scene at (x, y), visible to everyone in the game immediately. Either tokenizes an actor " +
-      "that already exists in the world (`actorId`) or imports a compendium document first and " +
-      "then tokenizes it (`uuid`, D13) — give exactly one of the two. `quantity` drops multiple " +
-      "tokens, each offset by one grid square so they don't stack exactly. Fails with a typed " +
-      "'not-found' error if there's no active scene. Same write-gate/cap/audit rules as " +
-      "import-from-compendium.",
-    paramsSchema: CreateTokenParams,
-    method: "portal.create-token",
-    creates: createCount,
-    cap: maxCreatesPerRequest,
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "create-token",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: drops a token onto the currently active " +
+        "scene at (x, y), visible to everyone in the game immediately. Either tokenizes an actor " +
+        "that already exists in the world (`actorId`) or imports a compendium document first and " +
+        "then tokenizes it (`uuid`, D13) — give exactly one of the two. `quantity` drops multiple " +
+        "tokens, each offset by one grid square so they don't stack exactly. Fails with a typed " +
+        "'not-found' error if there's no active scene. Same write-gate/cap/audit rules as " +
+        "import-from-compendium.",
+      paramsSchema: CreateTokenParams,
+      method: "portal.create-token",
+      creates: createCount,
+      cap: maxCreatesPerRequest,
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "create-journal", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: creates a new journal entry with the " +
-      "given name and one HTML text page. Use this to record session notes, NPC dossiers, or " +
-      "lore for the GM/players to read in Foundry. Same write-gate/audit rules as " +
-      "import-from-compendium (always creates exactly one document, so it never trips the " +
-      "per-request cap on its own).",
-    paramsSchema: CreateJournalParams,
-    method: "portal.create-journal",
-    creates: () => 1,
-    cap: maxCreatesPerRequest,
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "create-journal",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: creates a new journal entry with the " +
+        "given name and one HTML text page. Use this to record session notes, NPC dossiers, or " +
+        "lore for the GM/players to read in Foundry. Same write-gate/audit rules as " +
+        "import-from-compendium (always creates exactly one document, so it never trips the " +
+        "per-request cap on its own).",
+      paramsSchema: CreateJournalParams,
+      method: "portal.create-journal",
+      creates: () => 1,
+      cap: maxCreatesPerRequest,
+      audit: true,
+    },
+    auth,
+  );
 
   // --- S1 authoring tools (spec 0026) -------------------------------------------
   // Supersede 0023 D5 for these tools only (D-1 hybrid): hand-authored pf2e system
@@ -328,125 +427,173 @@ export function buildMcpServer(bridge: Bridge, maxCreatesPerRequest: number): Mc
   // writes that do NOT count against the create cap (D-8 — they mutate/act, they
   // don't create new documents).
 
-  registerBridgeTool(server, bridge, "create-actor", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new NPC or hazard actor " +
-      "(type), either from scratch via a `system` JSON payload and embedded `items` (strikes, " +
-      "actions, spellcasting), or by cloning an existing compendium statblock (`baseUuid`) and " +
-      "patching it (D-1 hybrid — prefer this when a close base exists). NPC actors get NO " +
-      "schema validation from Foundry — garbage system data is stored silently; hazards ARE " +
-      "strictly validated. The result's `warnings` array reports anything that looked wrong " +
-      "after creation (e.g. an ignored rule element) — always check it, a clean-looking result " +
-      "can still carry warnings. Counts 1 + items.length against the per-request create cap.",
-    paramsSchema: CreateActorParams,
-    method: "portal.create-actor",
-    creates: actorCreateCount,
-    cap: maxCreatesPerRequest,
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "create-actor",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new NPC or hazard actor " +
+        "(type), either from scratch via a `system` JSON payload and embedded `items` (strikes, " +
+        "actions, spellcasting), or by cloning an existing compendium statblock (`baseUuid`) and " +
+        "patching it (D-1 hybrid — prefer this when a close base exists). NPC actors get NO " +
+        "schema validation from Foundry — garbage system data is stored silently; hazards ARE " +
+        "strictly validated. The result's `warnings` array reports anything that looked wrong " +
+        "after creation (e.g. an ignored rule element) — always check it, a clean-looking result " +
+        "can still carry warnings. Counts 1 + items.length against the per-request create cap.",
+      paramsSchema: CreateActorParams,
+      method: "portal.create-actor",
+      creates: actorCreateCount,
+      cap: maxCreatesPerRequest,
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "create-item", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new item — an effect, " +
-      "spell, spellcastingEntry, weapon, armor, feat, action, melee strike, condition, or other " +
-      "pf2e item type — as a standalone world item or embedded directly on an actor " +
-      "(`actorId`). Supports the same hybrid model as create-actor (`baseUuid` clone+patch, " +
-      "strongly preferred for spells). Carries pf2e rule elements via `system.rules`, including " +
-      "the two-item aura pattern and TokenLight for a glowing creature — see the `system` field " +
-      "description for the exact recipes. Pass `rulesSelections` when granting an item with a " +
-      "ChoiceSet rule element, or the call wedges on a GM-browser dialog. Result `warnings` " +
-      "reports any rule element Foundry ignored at creation. Counts 1 against the create cap.",
-    paramsSchema: CreateItemParams,
-    method: "portal.create-item",
-    creates: () => 1,
-    cap: maxCreatesPerRequest,
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "create-item",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: hand-authors a new item — an effect, " +
+        "spell, spellcastingEntry, weapon, armor, feat, action, melee strike, condition, or other " +
+        "pf2e item type — as a standalone world item or embedded directly on an actor " +
+        "(`actorId`). Supports the same hybrid model as create-actor (`baseUuid` clone+patch, " +
+        "strongly preferred for spells). Carries pf2e rule elements via `system.rules`, including " +
+        "the two-item aura pattern and TokenLight for a glowing creature — see the `system` field " +
+        "description for the exact recipes. Pass `rulesSelections` when granting an item with a " +
+        "ChoiceSet rule element, or the call wedges on a GM-browser dialog. Result `warnings` " +
+        "reports any rule element Foundry ignored at creation. Counts 1 against the create cap.",
+      paramsSchema: CreateItemParams,
+      method: "portal.create-item",
+      creates: () => 1,
+      cap: maxCreatesPerRequest,
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "create-light", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: places a new ambient light on a scene " +
-      "(defaults to the active scene) at (x, y) — static scene furniture such as a torch or a " +
-      "room's magical glow, visible to every connected player immediately. NOT for a light that " +
-      "should move with a creature — that's create-item with a TokenLight rule element. Returns " +
-      "only the created light's embedded uuid (there is no full-scene-read tool — a scene's " +
-      "document also includes walls/tiles and is deliberately not exposed); use " +
-      "update-document/delete-document on that uuid to change or remove it later. Counts 1 " +
-      "against the create cap.",
-    paramsSchema: CreateLightParams,
-    method: "portal.create-light",
-    creates: () => 1,
-    cap: maxCreatesPerRequest,
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "create-light",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: places a new ambient light on a scene " +
+        "(defaults to the active scene) at (x, y) — static scene furniture such as a torch or a " +
+        "room's magical glow, visible to every connected player immediately. NOT for a light that " +
+        "should move with a creature — that's create-item with a TokenLight rule element. Returns " +
+        "only the created light's embedded uuid (there is no full-scene-read tool — a scene's " +
+        "document also includes walls/tiles and is deliberately not exposed); use " +
+        "update-document/delete-document on that uuid to change or remove it later. Counts 1 " +
+        "against the create cap.",
+      paramsSchema: CreateLightParams,
+      method: "portal.create-light",
+      creates: () => 1,
+      cap: maxCreatesPerRequest,
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "create-macro", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: creates a new script or chat macro. " +
-      "Creating a macro NEVER runs it — the full command text is captured in this write's audit " +
-      "trail as the payload of record. To actually run a script macro (arbitrary JavaScript, " +
-      "GM-privileged) or post a chat macro, use execute-macro afterward. Counts 1 against the " +
-      "create cap.",
-    paramsSchema: CreateMacroParams,
-    method: "portal.create-macro",
-    creates: () => 1,
-    cap: maxCreatesPerRequest,
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "create-macro",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: creates a new script or chat macro. " +
+        "Creating a macro NEVER runs it — the full command text is captured in this write's audit " +
+        "trail as the payload of record. To actually run a script macro (arbitrary JavaScript, " +
+        "GM-privileged) or post a chat macro, use execute-macro afterward. Counts 1 against the " +
+        "create cap.",
+      paramsSchema: CreateMacroParams,
+      method: "portal.create-macro",
+      creates: () => 1,
+      cap: maxCreatesPerRequest,
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "apply-condition", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: increases, decreases, or toggles a pf2e " +
-      "condition on a world actor via Foundry's own condition manager (never a hand-built " +
-      "condition item). `persistent-damage` requires explicit formula/damageType params — the " +
-      "bare path for that condition would otherwise pop an interactive editor dialog in the " +
-      "GM's browser, which this tool never triggers. This is a mutation, not a create — it does " +
-      "not count against the per-request create cap.",
-    paramsSchema: ApplyConditionParams,
-    method: "portal.apply-condition",
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "apply-condition",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: increases, decreases, or toggles a pf2e " +
+        "condition on a world actor via Foundry's own condition manager (never a hand-built " +
+        "condition item). `persistent-damage` requires explicit formula/damageType params — the " +
+        "bare path for that condition would otherwise pop an interactive editor dialog in the " +
+        "GM's browser, which this tool never triggers. This is a mutation, not a create — it does " +
+        "not count against the per-request create cap.",
+      paramsSchema: ApplyConditionParams,
+      method: "portal.apply-condition",
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "update-document", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: applies a dot-path diff-merge update to " +
-      "ANY world or embedded document by uuid — including PLAYER CHARACTER sheets (full source " +
-      "edit access; HP, level, skill ranks, resources, details, ...), scene lights, and macros. " +
-      'Arrays are REPLACED WHOLESALE, not spliced; a `"path.-=key": null` entry deletes a key. ' +
-      "Known-derived PC paths (saves/perception/traits/AC/class DC on characters) are refused " +
-      "with a typed validation-failed error naming the path, since pf2e recomputes them and a " +
-      "write would just be silently discarded or corrupt data prep. Every path touched is " +
-      "audited. Not a create — doesn't count against the create cap.",
-    paramsSchema: UpdateDocumentParams,
-    method: "portal.update-document",
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "update-document",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: applies a dot-path diff-merge update to " +
+        "ANY world or embedded document by uuid — including PLAYER CHARACTER sheets (full source " +
+        "edit access; HP, level, skill ranks, resources, details, ...), scene lights, and macros. " +
+        'Arrays are REPLACED WHOLESALE, not spliced; a `"path.-=key": null` entry deletes a key. ' +
+        "Known-derived PC paths (saves/perception/traits/AC/class DC on characters) are refused " +
+        "with a typed validation-failed error naming the path, since pf2e recomputes them and a " +
+        "write would just be silently discarded or corrupt data prep. Every path touched is " +
+        "audited. Not a create — doesn't count against the create cap.",
+      paramsSchema: UpdateDocumentParams,
+      method: "portal.update-document",
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "delete-document", {
-    description:
-      "WRITES to the live 'Faerrin' FoundryVTT world: PERMANENTLY DELETES a world or embedded " +
-      "document by uuid. Refuses with a typed not-portal-created error unless the document is " +
-      "stamped as something a portal tool created — portal can only clean up after itself and " +
-      "can never destroy hand-authored campaign content, no matter what the caller asks for. " +
-      "Not a create — doesn't count against the create cap.",
-    paramsSchema: DeleteDocumentParams,
-    method: "portal.delete-document",
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "delete-document",
+    {
+      description:
+        "WRITES to the live 'Faerrin' FoundryVTT world: PERMANENTLY DELETES a world or embedded " +
+        "document by uuid. Refuses with a typed not-portal-created error unless the document is " +
+        "stamped as something a portal tool created — portal can only clean up after itself and " +
+        "can never destroy hand-authored campaign content, no matter what the caller asks for. " +
+        "Not a create — doesn't count against the create cap.",
+      paramsSchema: DeleteDocumentParams,
+      method: "portal.delete-document",
+      audit: true,
+    },
+    auth,
+  );
 
-  registerBridgeTool(server, bridge, "execute-macro", {
-    description:
-      "WRITES to (acts on) the live 'Faerrin' FoundryVTT world: runs an existing world macro " +
-      "IMMEDIATELY, AS THE GM. A script macro is arbitrary JavaScript executed with full GM " +
-      "privileges the instant this call succeeds — there is no confirmation step. Independently " +
-      "gated by the module's allow-macro-execution setting on top of the normal write gate, so " +
-      "execution can be switched off without disabling other writes. Captures the macro's " +
-      "return value best-effort; a thrown error maps to a typed execution-failed result. Not a " +
-      "create — doesn't count against the create cap.",
-    paramsSchema: ExecuteMacroParams,
-    method: "portal.execute-macro",
-    audit: true,
-  });
+  registerBridgeTool(
+    server,
+    bridge,
+    "execute-macro",
+    {
+      description:
+        "WRITES to (acts on) the live 'Faerrin' FoundryVTT world: runs an existing world macro " +
+        "IMMEDIATELY, AS THE GM. A script macro is arbitrary JavaScript executed with full GM " +
+        "privileges the instant this call succeeds — there is no confirmation step. Independently " +
+        "gated by the module's allow-macro-execution setting on top of the normal write gate, so " +
+        "execution can be switched off without disabling other writes. Captures the macro's " +
+        "return value best-effort; a thrown error maps to a typed execution-failed result. Not a " +
+        "create — doesn't count against the create cap.",
+      paramsSchema: ExecuteMacroParams,
+      method: "portal.execute-macro",
+      audit: true,
+    },
+    auth,
+  );
 
   return server;
 }
@@ -461,14 +608,17 @@ export interface OAuthTokenVerifier {
   verifyAccessToken(token: string): Promise<unknown>;
 }
 
-/** Builds the `/mcp` request handler: dual-auth check (spec 0025 D-3), then a
- * stateless Streamable-HTTP round-trip. Takes the resolved key (not the
- * config/SecretRef) so tests never need real SOPS secrets.
+/** Builds the `/mcp` request handler: tri-way auth check (spec 0025 D-3 + 0028 D28-1/
+ * D28-8), then a stateless Streamable-HTTP round-trip. Takes the resolved keys (not
+ * the config/SecretRef) so tests never need real SOPS secrets.
  *
- * Dual auth: the legacy static bearer (`mcpApiKey`, exact match — Claude Code stays
- * untouched) OR a valid, unexpired OAuth access token (`oauth.verifyAccessToken`,
- * spec 0025 S1). Every 401 — missing header, wrong scheme, bad key, invalid/expired
- * OAuth token — carries the spec's D-9 `WWW-Authenticate: Bearer
+ * Auth: the admin static bearer (`mcpApiKey`, exact match — Claude Code stays
+ * untouched) OR the player static bearer (`playerMcpApiKey`, exact match, 0028 D28-1)
+ * OR a valid, unexpired OAuth access token (`oauth.verifyAccessToken`, spec 0025 S1).
+ * Each resolves an {@link AuthContext}: admin key and OAuth both resolve `scope:
+ * "admin"` (the full tool set, unchanged); the player key resolves `scope: "player"`
+ * (D28-8's `PLAYER_TOOL_NAMES` subset). Every 401 — missing header, wrong scheme, bad
+ * key, invalid/expired OAuth token — carries the spec's D-9 `WWW-Authenticate: Bearer
  * resource_metadata="<url>"` header so an OAuth-aware client (claude.ai) discovers
  * where to start the authorization flow; the URL is computed once here via the SDK's
  * own {@link getOAuthProtectedResourceMetadataUrl} (never hand-built) since it must
@@ -476,6 +626,7 @@ export interface OAuthTokenVerifier {
 export function createMcpRequestHandler(
   bridge: Bridge,
   mcpApiKey: string,
+  playerMcpApiKey: string,
   maxCreatesPerRequest: number,
   oauth: OAuthTokenVerifier,
   publicOrigin: string,
@@ -502,16 +653,22 @@ export function createMcpRequestHandler(
       reject(res, "missing-or-malformed-bearer");
       return;
     }
-    if (token !== mcpApiKey) {
+    let auth: AuthContext;
+    if (token === mcpApiKey) {
+      auth = { scope: "admin", method: "admin-key" };
+    } else if (token === playerMcpApiKey) {
+      auth = { scope: "player", method: "player-key" };
+    } else {
       try {
         await oauth.verifyAccessToken(token);
       } catch {
         reject(res, "invalid-oauth-token");
         return;
       }
+      auth = { scope: "admin", method: "oauth" };
     }
 
-    const server = buildMcpServer(bridge, maxCreatesPerRequest);
+    const server = buildMcpServer(bridge, maxCreatesPerRequest, auth);
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
     res.on("close", () => {
       void transport.close();

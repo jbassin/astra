@@ -19,6 +19,7 @@ import type { PortalServerHandle } from "./server";
 import { listen } from "./server";
 
 const MCP_API_KEY = "test-mcp-key";
+const PLAYER_MCP_API_KEY = "test-player-mcp-key";
 const BRIDGE_API_KEY = "test-bridge-key";
 const TEST_PUBLIC_ORIGIN = "https://portal.test";
 const TEST_MODULE_DIR = "/nonexistent/portal-module-fixture";
@@ -45,6 +46,7 @@ async function startServer(oauthStatePath: string, accessTokenTtlS?: number) {
   return listen({
     port: 0,
     mcpApiKey: MCP_API_KEY,
+    playerMcpApiKey: PLAYER_MCP_API_KEY,
     bridgeApiKey: BRIDGE_API_KEY,
     bridgeTimeoutMs: 250,
     maxCreatesPerRequest: 10,
@@ -612,6 +614,30 @@ describe("/mcp dual auth — the OAuth side (spec 0025 S2, D-3)", () => {
       const [content] = result.content as Array<{ type: "text"; text: string }>;
       if (!content) throw new Error("unreachable — asserted above");
       expect(JSON.parse(content.text)).toEqual({ connected: false });
+
+      await client.close();
+    } finally {
+      await handle.close();
+      rmSync(state.dir, { recursive: true, force: true });
+    }
+  });
+
+  it("an OAuth-issued access token resolves the full admin tool list, unaffected by player scoping (0028 D28-8)", async () => {
+    const state = newOauthStatePath();
+    const handle = await startServer(state.path);
+    const origin = `http://127.0.0.1:${handle.port}`;
+    try {
+      const { accessToken } = await fullFlow(origin);
+
+      const transport = new StreamableHTTPClientTransport(new URL(MCP_HTTP_PATH, origin), {
+        requestInit: { headers: { authorization: `Bearer ${accessToken}` } },
+      });
+      const client = new Client({ name: "oauth-test-client", version: "0.0.0" });
+      await client.connect(transport);
+
+      const { tools } = await client.listTools();
+      expect(tools.length).toBe(18);
+      expect(tools.map((t) => t.name)).toContain("search-world"); // an admin-only read tool
 
       await client.close();
     } finally {
