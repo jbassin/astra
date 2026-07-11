@@ -30,8 +30,10 @@ import {
   ImportFromCompendiumParams,
   ListCompendiumPacksParams,
   ListScenesParams,
+  QueryItemParams,
   QueryPartyParams,
   QueryPlayerParams,
+  QueryRollsParams,
   SearchCompendiumParams,
   SearchWorldParams,
   UpdateDocumentParams,
@@ -44,7 +46,7 @@ import type { z } from "zod";
 
 import { BridgeError, type Bridge } from "./bridge";
 import { MCP_HTTP_PATH, SERVICE_NAME } from "./constants";
-import { renderQueryParty, renderQueryPlayer } from "./markdown";
+import { renderQueryItem, renderQueryParty, renderQueryPlayer, renderQueryRolls } from "./markdown";
 
 const log = getLogger(SERVICE_NAME);
 const tracer = getTracer(SERVICE_NAME);
@@ -192,12 +194,10 @@ function actorCreateCount(params: unknown): number {
 }
 
 /**
- * D28-8 — the player key's tool subset (0028 S1). One source of truth: `buildMcpServer`
- * filters registration to this set under `scope: "player"`, and the tools/list tests
- * assert both directions against it. Declared up front with all five names even though
- * only `bridge-status` is registered so far — `query-rolls`/`query-party`/
- * `query-player`/`query-item` land in S2/S3, at which point this set (unchanged) makes
- * them visible to players with no further scope-machinery edits.
+ * D28-8 — the player key's tool subset (declared 0028 S1, fully registered as of
+ * S3). One source of truth: `buildMcpServer` filters registration to this set
+ * under `scope: "player"`, and the tools/list tests assert both directions
+ * against it (player sees exactly these five; admin sees all 22).
  */
 export const PLAYER_TOOL_NAMES: ReadonlySet<string> = new Set([
   "bridge-status",
@@ -231,8 +231,9 @@ export function buildMcpServer(
   // 0026 D-12: bump this version on every portal release. Foundry's module
   // update-check compares module.json's version string (bumped in lockstep,
   // module.json), and this server-side McpServer version travels with a real MCP
-  // client's own connection/capability negotiation.
-  const server = new McpServer({ name: "astra-portal", version: "0.3.0" });
+  // client's own connection/capability negotiation. 0028 D28-7: 0.3.0 -> 0.4.0
+  // alongside module.json, landing in this one S3 code slice.
+  const server = new McpServer({ name: "astra-portal", version: "0.4.0" });
 
   // bridge-status is in PLAYER_TOOL_NAMES, so it's always registered regardless of
   // scope — no filter needed here (contrast registerBridgeTool's guard below).
@@ -398,6 +399,48 @@ export function buildMcpServer(
       method: "portal.query-player",
       render: (result, params) =>
         renderQueryPlayer(result as Parameters<typeof renderQueryPlayer>[0], params),
+    },
+    auth,
+  );
+
+  // --- 0028 S3 player-key query tools (D28-3/D28-5/D28-10/D28-12/D28-13) -------
+  // Same read-tool config + markdown-render posture as query-party/query-player
+  // above; both names already live in PLAYER_TOOL_NAMES (S1).
+
+  registerBridgeTool(
+    server,
+    bridge,
+    "query-item",
+    {
+      description:
+        "Looks up items in the LIVE 'Faerrin' FoundryVTT world — world items, items embedded " +
+        "on party members, and compendium rules content (e.g. 'look up the Grab action') — by " +
+        "uuid/id or by name. A uuid/id lookup returns ONE item's full detail (traits, price, " +
+        "bulk, damage/AC where present, description). A name search returns a provenance-" +
+        "labeled hit LIST (never full detail, even for a single match — a world item and an " +
+        "embedded item can share a name); pass one hit's uuid back in a follow-up call for its " +
+        "detail. GM-hidden world items and player-restricted compendium packs never appear.",
+      paramsSchema: QueryItemParams,
+      method: "portal.query-item",
+      render: (result) => renderQueryItem(result as Parameters<typeof renderQueryItem>[0]),
+    },
+    auth,
+  );
+
+  registerBridgeTool(
+    server,
+    bridge,
+    "query-rolls",
+    {
+      description:
+        "Paginated chat roll history from the LIVE 'Faerrin' FoundryVTT world — newest first. " +
+        "Only PUBLIC rolls ever appear (whispered/blind/GM-secret rolls are filtered out " +
+        "unconditionally, not a param); filters actor/type/outcome/since/until compose. Each " +
+        "row carries the check name, formula → total, degree of success, DC (only when it was " +
+        "player-visible), and per-die results. Paginate with the previous call's nextCursor.",
+      paramsSchema: QueryRollsParams,
+      method: "portal.query-rolls",
+      render: (result) => renderQueryRolls(result as Parameters<typeof renderQueryRolls>[0]),
     },
     auth,
   );

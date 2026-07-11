@@ -1,8 +1,8 @@
 {
   "id": "portal",
   "title": "Astra Portal Bridge",
-  "description": "Dials out to astra's portal MCP server so an LLM client (Claude Code / Claude Desktop) can search and create against this world — search the compendium and world entities, import statblocks, drop tokens, and create items/journals (spec 0023). 0026 adds full content authoring: actors, items/effects/spells with rule elements, scene lights, conditions, macros, and generic update/delete.",
-  "version": "0.3.0",
+  "description": "Dials out to astra's portal MCP server so an LLM client (Claude Code / Claude Desktop) can search and create against this world — search the compendium and world entities, import statblocks, drop tokens, and create items/journals (spec 0023). 0026 adds full content authoring: actors, items/effects/spells with rule elements, scene lights, conditions, macros, and generic update/delete. 0028 adds a read-only player-key tool subset: query-party/query-player/query-item/query-rolls.",
+  "version": "0.4.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13"

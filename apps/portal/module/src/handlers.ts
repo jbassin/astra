@@ -60,10 +60,16 @@ import {
   type PlayerSpellsSection,
   type PlayerStatsSection,
   type PlayerSummarySection,
+  QueryItemParams,
+  type QueryItemResult,
   QueryPartyParams,
   type QueryPartyResult,
   QueryPlayerParams,
   type QueryPlayerResult,
+  QueryRollsParams,
+  type QueryRollsResult,
+  type RollDieRow,
+  type RollRow,
   SearchCompendiumParams,
   type SearchCompendiumResult,
   SearchWorldParams,
@@ -1753,28 +1759,68 @@ function buildInventory(raw: Record<string, unknown>): PlayerInventorySection {
   return { section: "inventory", items: rows };
 }
 
-/** `query-player`'s `notes` section (0028 S2) — deity (an embedded `deity`-type item's
- * name) plus non-empty biography prose fields. The shared player key has no
- * per-player identity (D28-1), so — per the spec's own accepted Risks posture ("any
- * player sees the whole party's sheets... read-only, campaign-internal data") — this
- * doesn't gate on pf2e's own GM-visibility biography flags; it surfaces whatever
- * prose the sheet carries. */
+/** pf2e's own per-subsection biography GM-visibility toggles (verified against the
+ * live `foundry_faerrin` container 2026-07-11 — see the scope doc's dated S3
+ * appendix for the exact evidence): the character sheet's `biography.hbs` gates
+ * each subsection's header+body behind `{{#if (or document.isOwner biography.
+ * visibility.<section>)}}`, toggled by a GM-only "eye" icon that writes `system.
+ * details.biography.visibility.<section>` (`pf2e.mjs:29881-29882`,
+ * `toggle-bio-visibility`). `template.json:65-70` gives the stored defaults:
+ * `appearance` starts VISIBLE, everything else starts HIDDEN. Two of this
+ * section's four prose fields (`likes`/`dislikes` under `personality`;
+ * `campaignNotes` under `campaign`) share a visibility flag with sibling fields
+ * this section doesn't surface (attitude/beliefs/edicts/anathema/catchphrases;
+ * allies/enemies/organizations) — gating by the SAME shared flag is still correct,
+ * it's the section pf2e itself groups them under. `deity` is a separate embedded
+ * item, not part of the biography visibility system at all — never gated. */
+const BIOGRAPHY_VISIBILITY_DEFAULTS: Record<string, boolean> = {
+  appearance: true,
+  backstory: false,
+  personality: false,
+  campaign: false,
+};
+
+/** Fail-soft per the same posture as {@link readDerivedNumber}: an absent/wrong-
+ * shaped `visibility` object (a familiar, a pre-this-field legacy actor, ...) falls
+ * back to pf2e's own stored template.json default for that subsection rather than
+ * assuming visible — the safer failure direction for a GM-visibility gate. */
+function biographySectionVisible(visibility: unknown, section: string): boolean {
+  const value =
+    visibility && typeof visibility === "object"
+      ? (visibility as Record<string, unknown>)[section]
+      : undefined;
+  if (typeof value === "boolean") return value;
+  return BIOGRAPHY_VISIBILITY_DEFAULTS[section] ?? false;
+}
+
+/** `query-player`'s `notes` section (0028 S2, S3-amended) — deity (an embedded
+ * `deity`-type item's name, never gated) plus non-empty biography prose fields,
+ * EXCLUDING any subsection the GM has left/set GM-only via pf2e's own biography
+ * visibility toggles ({@link biographySectionVisible}). D28-5's uniform rationale
+ * — the bridge runs as GM and must not leak GM-hidden content in ANY scope —
+ * applies here too (the S2-amendment gap this fixes): the shared player key having
+ * no per-player identity (D28-1) means "hide this from players" always means
+ * "hide from every holder of this key", the same posture as a GM-hidden world item
+ * or a spoiler compendium pack. */
 function buildNotes(raw: Record<string, unknown>): PlayerNotesSection {
   const system = (raw.system ?? {}) as Record<string, unknown>;
   const details = (system.details ?? {}) as Record<string, unknown>;
   const bio = (details.biography ?? {}) as Record<string, unknown>;
+  const visibility = bio.visibility;
   const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
   const deity = items.find((i) => i.type === "deity")?.name;
-  const nonEmpty = (v: unknown): string | undefined =>
-    typeof v === "string" && v.length > 0 ? v : undefined;
+  const visibleProse = (v: unknown, section: string): string | undefined =>
+    typeof v === "string" && v.length > 0 && biographySectionVisible(visibility, section)
+      ? v
+      : undefined;
   return {
     section: "notes",
     deity: typeof deity === "string" ? deity : undefined,
-    appearance: nonEmpty(bio.appearance),
-    backstory: nonEmpty(bio.backstory),
-    likes: nonEmpty(bio.likes),
-    dislikes: nonEmpty(bio.dislikes),
-    campaignNotes: nonEmpty(bio.campaignNotes),
+    appearance: visibleProse(bio.appearance, "appearance"),
+    backstory: visibleProse(bio.backstory, "backstory"),
+    likes: visibleProse(bio.likes, "personality"),
+    dislikes: visibleProse(bio.dislikes, "personality"),
+    campaignNotes: visibleProse(bio.campaignNotes, "campaign"),
   };
 }
 
@@ -1810,6 +1856,584 @@ async function handleQueryPlayer(rawParams: unknown): Promise<QueryPlayerResult>
   }
 }
 
+// ---------------------------------------------------------------------------
+// 0028 S3 — query-item / query-rolls (D28-3/D28-5/D28-10/D28-12/D28-13). Module ->
+// server wire stays typed compact JSON (D5); the SERVER renders markdown (D28-6).
+// ---------------------------------------------------------------------------
+
+/** `CONST.DOCUMENT_OWNERSHIP_LEVELS` string-key values, verified `common/
+ * constants.mjs:372-397`. World/embedded document `ownership` fields already carry
+ * the NUMERIC form directly (see `resolveOwnerPlayer`'s `OWNER_LEVEL = 3` above) —
+ * only a compendium PACK's `ownership` config (`CompendiumCollection#CONFIG_FIELD`,
+ * `client/documents/collections/compendium-collection.mjs:99-104`) stores these as
+ * STRING level names, hence this lookup table. */
+const OWNERSHIP_LEVEL_VALUES: Record<string, number> = {
+  INHERIT: -1,
+  NONE: 0,
+  LIMITED: 1,
+  OBSERVER: 2,
+  OWNER: 3,
+};
+const OBSERVER_LEVEL = 2;
+
+/** D28-5's world/embedded-item visibility rule: `ownership.default >= OBSERVER(2)`
+ * — the same numeric ownership field `resolveOwnerPlayer` (query-party) already
+ * reads, just checked against a different threshold/purpose here. */
+function ownershipDefaultVisible(raw: Record<string, unknown>): boolean {
+  const ownership = raw.ownership as Record<string, unknown> | undefined;
+  const level = ownership?.default;
+  return typeof level === "number" && level >= OBSERVER_LEVEL;
+}
+
+/** D28-5's compendium pack visibility gate (adversarial B2) — reads the pack's OWN
+ * per-role `ownership` config (`pack.ownership.PLAYER`, a string level name; see
+ * `types/foundry.d.ts`'s `FoundryCompendiumOwnership` doc comment for the full
+ * verified evidence trail and why this is NOT `pack.getUserLevel(game.user)`, which
+ * called with the bridge's own GM user always resolves OWNER regardless of the
+ * pack's real player-facing config). An absent/unrecognized level defaults to the
+ * least-visible reading (`INHERIT`, -1) — fail CLOSED, matching D28-5's "the bridge
+ * must not leak GM-hidden content" rationale (the opposite failure direction from
+ * D28-2's stats projection, deliberately: a missing derived STAT renders "—"
+ * harmlessly, but a missing/malformed PACK ownership config must never default to
+ * "visible"). */
+function packVisibleToPlayers(pack: FoundryCompendiumCollection): boolean {
+  const level = pack.ownership?.PLAYER;
+  const numeric = typeof level === "string" ? (OWNERSHIP_LEVEL_VALUES[level] ?? -1) : -1;
+  return numeric >= OBSERVER_LEVEL;
+}
+
+/** The set of every `type==="party"` actor's member uuids, across every party in
+ * the world (pf2e allows more than one — same union-across-parties posture as
+ * `handleQueryParty`, D28-4) — used here only for `query-item`'s embedded-scope
+ * membership check, so unlike `handleQueryParty` this never throws when no party
+ * actor exists: an item search against zero parties just has zero embedded hits,
+ * not a query-time failure. */
+function partyMemberUuids(): Set<string> {
+  const memberUuids = new Set<string>();
+  for (const party of Array.from(game.actors.values()).filter((a) => a.type === "party")) {
+    const raw = party.toObject();
+    const system = (raw.system ?? {}) as Record<string, unknown>;
+    const details = (system.details ?? {}) as Record<string, unknown>;
+    const members = Array.isArray(details.members) ? (details.members as unknown[]) : [];
+    for (const member of members) {
+      const uuid = (member as { uuid?: unknown } | null)?.uuid;
+      if (typeof uuid === "string") memberUuids.add(uuid);
+    }
+  }
+  return memberUuids;
+}
+
+/** D28-5's small pf2e-item read projection, shared by every `query-item` detail
+ * fetch — a hand-picked list of display fields (the same narrow read-side
+ * exception posture as D28-2), never a modeled write schema. Every field is
+ * fail-soft (a missing/wrong-shaped source path is simply omitted). */
+function extractItemDetailFields(raw: Record<string, unknown>): {
+  level?: number;
+  traits?: string[];
+  rarity?: string;
+  price?: string;
+  bulk?: number;
+  damage?: string;
+  ac?: number;
+  description?: string;
+} {
+  const system = (raw.system ?? {}) as Record<string, unknown>;
+  const traitsObj = (system.traits ?? {}) as Record<string, unknown>;
+  const traitsValue = traitsObj.value;
+  const traits = Array.isArray(traitsValue)
+    ? traitsValue.filter((t): t is string => typeof t === "string")
+    : undefined;
+  const level = (system.level as Record<string, unknown> | undefined)?.value;
+  const bulk = (system.bulk as Record<string, unknown> | undefined)?.value;
+  const description = (system.description as Record<string, unknown> | undefined)?.value;
+  const damage = formatItemDamage(system.damage);
+  const ac = system.acBonus;
+  return {
+    level: typeof level === "number" ? level : undefined,
+    traits: traits && traits.length > 0 ? traits : undefined,
+    rarity: typeof traitsObj.rarity === "string" ? traitsObj.rarity : undefined,
+    price: formatItemPrice(system.price),
+    bulk: typeof bulk === "number" ? bulk : undefined,
+    damage,
+    ac: typeof ac === "number" ? ac : undefined,
+    description:
+      typeof description === "string" && description.length > 0 ? description : undefined,
+  };
+}
+
+const PRICE_DENOMINATIONS = ["pp", "gp", "sp", "cp"] as const;
+
+/** `system.price.value` is `{pp?,gp?,sp?,cp?}` (verified against the Argyle
+ * fixture's "Bastard Sword": `{"value":{"gp":4}}`) — formats every non-zero
+ * denomination, highest first, e.g. "4 gp" or "1 pp, 5 gp". */
+function formatItemPrice(priceField: unknown): string | undefined {
+  const value = (priceField as Record<string, unknown> | undefined)?.value;
+  if (!value || typeof value !== "object") return undefined;
+  const parts: string[] = [];
+  for (const denom of PRICE_DENOMINATIONS) {
+    const n = (value as Record<string, unknown>)[denom];
+    if (typeof n === "number" && n > 0) parts.push(`${n} ${denom}`);
+  }
+  return parts.length > 0 ? parts.join(", ") : undefined;
+}
+
+/** `system.damage` is `{dice,die,damageType}` (verified against the Argyle
+ * fixture's "Bastard Sword": `{"dice":1,"die":"d8","damageType":"slashing"}`) —
+ * a strike's/weapon's base damage formula, e.g. "1d8 slashing". */
+function formatItemDamage(damageField: unknown): string | undefined {
+  const d = damageField as Record<string, unknown> | undefined;
+  if (!d || typeof d.dice !== "number" || typeof d.die !== "string") return undefined;
+  const type = typeof d.damageType === "string" ? ` ${d.damageType}` : "";
+  return `${d.dice}${d.die}${type}`;
+}
+
+interface ResolvedItem {
+  doc: FoundryDocumentLike;
+  provenance: "world" | "embedded" | "compendium";
+  ownerActor?: string;
+  pack?: FoundryCompendiumCollection;
+}
+
+/** D28-5/D28-13's uuid-or-bare-id item resolution + tri-scope visibility gate —
+ * the single choke point every `query-item` uuid fetch goes through. A visibility
+ * failure resolves as the SAME typed `not-found` a genuinely-missing uuid would
+ * (never a distinct "found but hidden" code) — matching D28-5's uniform "the
+ * bridge must not leak GM-hidden content" rationale: a player-key caller can't
+ * distinguish "doesn't exist" from "exists but you can't see it" either way. */
+async function resolveItemForFetch(rawUuid: string): Promise<ResolvedItem> {
+  const uuid = rawUuid.includes(".") ? rawUuid : `Item.${rawUuid}`;
+  const notFound = (): never => {
+    throw new BridgeHandlerError("not-found", `not found: ${uuid}`);
+  };
+
+  if (uuid.startsWith("Compendium.")) {
+    const doc = await fromUuid(uuid);
+    if (!doc || doc.documentName !== "Item") notFound();
+    const packKey = (doc as FoundryDocumentLike).pack;
+    const pack =
+      typeof packKey === "string"
+        ? Array.from(game.packs.values()).find((p) => p.collection === packKey)
+        : undefined;
+    if (!pack || !packVisibleToPlayers(pack)) notFound();
+    return { doc: doc as FoundryDocumentLike, provenance: "compendium", pack };
+  }
+
+  const embeddedMatch = /^Actor\.([^.]+)\.Item\.([^.]+)$/.exec(uuid);
+  if (embeddedMatch) {
+    const actorId = embeddedMatch[1] as string;
+    if (!partyMemberUuids().has(`Actor.${actorId}`)) notFound();
+    const doc = await fromUuid(uuid);
+    if (!doc || doc.documentName !== "Item") notFound();
+    const owner = game.actors.get(actorId);
+    return { doc: doc as FoundryDocumentLike, provenance: "embedded", ownerActor: owner?.name };
+  }
+
+  // World item.
+  const doc = await fromUuid(uuid);
+  if (!doc || doc.documentName !== "Item") notFound();
+  if (!ownershipDefaultVisible((doc as FoundryDocumentLike).toObject())) notFound();
+  return { doc: doc as FoundryDocumentLike, provenance: "world" };
+}
+
+function buildItemDetail(resolved: ResolvedItem): {
+  uuid: string;
+  id: string;
+  name: string;
+  type: string;
+  provenance: "world" | "embedded" | "compendium";
+  ownerActor?: string;
+  pack?: string;
+  packLabel?: string;
+} & ReturnType<typeof extractItemDetailFields> {
+  const raw = resolved.doc.toObject();
+  return {
+    uuid: resolved.doc.uuid,
+    id: resolved.doc.id,
+    name: resolved.doc.name,
+    type: resolved.doc.type ?? "item",
+    provenance: resolved.provenance,
+    ownerActor: resolved.ownerActor,
+    pack: resolved.pack?.collection,
+    packLabel: resolved.pack?.metadata.label,
+    ...extractItemDetailFields(raw),
+  };
+}
+
+interface ItemHitRow {
+  uuid: string;
+  id: string;
+  name: string;
+  type: string;
+  provenance: "world" | "embedded" | "compendium";
+  ownerActor?: string;
+  pack?: string;
+  packLabel?: string;
+}
+
+type ItemHitCandidate = ItemHitRow & { _rank: number };
+
+/** D28-5's tri-scope name search, merged/ranked/truncated the same way as
+ * `search-compendium`/`search-world` ({@link matchRank}/{@link byRankThenName}). */
+async function searchItemsByName(name: string, limit: number | undefined): Promise<ItemHitRow[]> {
+  const needle = name.toLowerCase();
+  const rows: ItemHitCandidate[] = [];
+
+  // World items — same ownership.default >= OBSERVER gate as the uuid-fetch path.
+  for (const item of game.items.values()) {
+    const rank = matchRank(item.name, needle);
+    if (rank === undefined) continue;
+    if (!ownershipDefaultVisible(item.toObject())) continue;
+    rows.push({
+      uuid: item.uuid,
+      id: item.id,
+      name: item.name,
+      type: item.type ?? "item",
+      provenance: "world",
+      _rank: rank,
+    });
+  }
+
+  // Party-member-embedded items — iterate each party member's OWN stored item
+  // list (raw source objects, not Document instances; same `raw.items` surface
+  // `buildInventory` reads), never a separate world-item-style collection.
+  for (const memberUuid of partyMemberUuids()) {
+    const memberDoc = await fromUuid(memberUuid);
+    if (!memberDoc) continue;
+    const raw = memberDoc.toObject();
+    const items = Array.isArray(raw.items) ? (raw.items as Record<string, unknown>[]) : [];
+    for (const it of items) {
+      const itemName = typeof it.name === "string" ? it.name : "";
+      const rank = matchRank(itemName, needle);
+      if (rank === undefined) continue;
+      const itemId = String(it._id ?? "");
+      rows.push({
+        uuid: `Actor.${memberDoc.id}.Item.${itemId}`,
+        id: itemId,
+        name: itemName,
+        type: typeof it.type === "string" ? it.type : "item",
+        provenance: "embedded",
+        ownerActor: memberDoc.name,
+        _rank: rank,
+      });
+    }
+  }
+
+  // Compendium items — only packs a player-role user could actually see
+  // (D28-5's B2 gate), restricted to Item-type packs.
+  const itemPacks = Array.from(game.packs.values()).filter(
+    (p) => p.metadata.type === "Item" && packVisibleToPlayers(p),
+  );
+  for (const pack of itemPacks) {
+    const index = await pack.getIndex({ fields: ["img"] });
+    for (const entry of index.values()) {
+      const rank = matchRank(entry.name, needle);
+      if (rank === undefined) continue;
+      rows.push({
+        uuid: entry.uuid,
+        id: entry._id,
+        name: entry.name,
+        type: entry.type ?? pack.metadata.type,
+        provenance: "compendium",
+        pack: pack.collection,
+        packLabel: pack.metadata.label,
+        _rank: rank,
+      });
+    }
+  }
+
+  rows.sort(byRankThenName);
+  return rows.slice(0, limit ?? DEFAULT_SEARCH_LIMIT).map(({ _rank, ...row }) => row);
+}
+
+/** `query-item` (0028 S3/D28-5/D28-13) — an id/uuid fetch renders ONE item's full
+ * detail; a name search returns a provenance-labeled hit LIST (never a single
+ * item, even when exactly one hit matches — D28-5's adversarial-pass answer on
+ * cross-scope name collisions, e.g. a world "Dagger" AND an embedded "Dagger"). */
+async function handleQueryItem(rawParams: unknown): Promise<QueryItemResult> {
+  const params = QueryItemParams.parse(rawParams);
+  if (params.uuid !== undefined) {
+    const resolved = await resolveItemForFetch(params.uuid);
+    return { kind: "item", item: buildItemDetail(resolved) };
+  }
+  const hits = await searchItemsByName(params.name as string, params.limit);
+  return { kind: "hits", hits };
+}
+
+/** D28-3's non-negotiable public-only privacy filter, baked in module-side — never
+ * a param. Three prongs, the third the adversarial B1 backstop: `whisper.length
+ * === 0 ∧ blind !== true ∧ flags.pf2e.context.secret !== true`. With the
+ * GM-toggleable world setting `metagame_secretChecks` ON, pf2e skips the forced
+ * gmroll/blindroll rewrite for secret checks (`pf2e.mjs:23942`) — a secret
+ * Perception/Stealth check can land with `whisper=[]`/`blind=false` while
+ * `flags.pf2e.context.secret === true` remains the only marker; prongs 1-2 alone
+ * would leak it. */
+function isPublicRollMessage(
+  msg: FoundryChatMessage,
+  context: Pf2eRollContext | undefined,
+): boolean {
+  return msg.whisper.length === 0 && msg.blind !== true && context?.secret !== true;
+}
+
+interface Pf2eRollContext {
+  type?: string;
+  outcome?: string;
+  actor?: string;
+  secret?: boolean;
+  dc?: { value?: number; visible?: boolean };
+}
+
+/** Reads `flags.pf2e.context` (pf2e's own check/damage-roll taxonomy — verified
+ * `pf2e.mjs` ~:23931/:23028/:383) off a chat message — `undefined` for a message
+ * with no `flags.pf2e.context` at all (a plain `/roll`, verified to have no
+ * `flags.pf2e`), which `handleQueryRolls` treats as the untagged `"roll"` bucket. */
+function extractPf2eRollContext(
+  flags: Record<string, unknown> | undefined,
+): Pf2eRollContext | undefined {
+  const pf2e = flags?.pf2e as Record<string, unknown> | undefined;
+  const context = pf2e?.context as Record<string, unknown> | undefined;
+  if (!context || typeof context !== "object") return undefined;
+  const dcRaw = context.dc as Record<string, unknown> | undefined;
+  return {
+    type: typeof context.type === "string" ? context.type : undefined,
+    outcome: typeof context.outcome === "string" ? context.outcome : undefined,
+    actor: typeof context.actor === "string" ? context.actor : undefined,
+    secret: context.secret === true,
+    dc: dcRaw
+      ? {
+          value: typeof dcRaw.value === "number" ? dcRaw.value : undefined,
+          visible: dcRaw.visible === true,
+        }
+      : undefined,
+  };
+}
+
+interface ParsedRollDieResult {
+  result?: unknown;
+  discarded?: unknown;
+}
+
+interface ParsedRollTerm {
+  class?: unknown;
+  faces?: unknown;
+  results?: unknown;
+}
+
+interface ParsedRollJson {
+  formula?: unknown;
+  total?: unknown;
+  terms?: unknown;
+}
+
+/** D28-12 — parses the stored serialized-Roll JSON string (`client/dice/roll.mjs#
+ * toJSON`: `{class, formula, total, evaluated, terms[]}`) — everything needed for
+ * a markdown row is already in the stored JSON, this NEVER re-evaluates the roll.
+ * A malformed/unparseable string (shouldn't happen for a write-validated
+ * `evaluated===true` roll, but this module never trusts stored data blindly)
+ * returns `undefined` rather than throwing — the caller skips that roll's row. */
+function parseRollJson(
+  text: string,
+): { formula?: string; total?: number; dice: RollDieRow[] } | undefined {
+  let parsed: ParsedRollJson;
+  try {
+    parsed = JSON.parse(text) as ParsedRollJson;
+  } catch {
+    return undefined;
+  }
+  const terms = Array.isArray(parsed.terms) ? (parsed.terms as ParsedRollTerm[]) : [];
+  const dice: RollDieRow[] = [];
+  for (const term of terms) {
+    if (term.class !== "Die" || typeof term.faces !== "number") continue;
+    const rawResults = Array.isArray(term.results) ? (term.results as ParsedRollDieResult[]) : [];
+    const results = rawResults
+      .filter((r): r is ParsedRollDieResult & { result: number } => typeof r.result === "number")
+      .map((r) => ({ result: r.result, discarded: r.discarded === true ? true : undefined }));
+    dice.push({ faces: term.faces, results });
+  }
+  return {
+    formula: typeof parsed.formula === "string" ? parsed.formula : undefined,
+    total: typeof parsed.total === "number" ? parsed.total : undefined,
+    dice,
+  };
+}
+
+/** Strips HTML down to plain text and takes a short leading fragment — the
+ * module-side fallback when `flags.pf2e.modifierName` is absent (a plain `/roll`
+ * or an older pf2e message shape). The server owns full HTML->markdown rendering
+ * (D28-6); this is only ever a short derived LABEL, never shipped as prose. */
+function deriveCheckNameFromFlavor(flavor: string | undefined): string | undefined {
+  if (!flavor) return undefined;
+  const stripped = flavor
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (stripped.length === 0) return undefined;
+  return stripped.length > 120 ? `${stripped.slice(0, 120)}…` : stripped;
+}
+
+/** Builds one `query-rolls` row from a qualifying `ChatMessage` — `undefined` when
+ * the message's first roll doesn't parse (skipped, never fails the whole page).
+ * `originItemName` resolves `flags.pf2e.origin.uuid` (verified `pf2e.mjs`'s
+ * `Item#getOriginData`: `{actor, uuid, type, rollOptions}` — NO name field is ever
+ * stored, so this is the one per-row `fromUuid` call D28-12's shape requires;
+ * bounded by the page `limit`, never the full scanned history). */
+async function buildRollRow(
+  msg: FoundryChatMessage,
+  context: Pf2eRollContext | undefined,
+): Promise<RollRow | undefined> {
+  const rollJson = msg.rolls[0];
+  if (!rollJson) return undefined;
+  const parsedRoll = parseRollJson(rollJson);
+  if (!parsedRoll) return undefined;
+
+  const pf2e = (msg.flags?.pf2e ?? {}) as Record<string, unknown>;
+  const modifierName = typeof pf2e.modifierName === "string" ? pf2e.modifierName : undefined;
+  const checkName = modifierName ?? deriveCheckNameFromFlavor(msg.flavor);
+  const origin = pf2e.origin as Record<string, unknown> | undefined;
+  const originUuid = typeof origin?.uuid === "string" ? origin.uuid : undefined;
+  let originItemName: string | undefined;
+  if (originUuid) {
+    const originDoc = await fromUuid(originUuid).catch(() => null);
+    originItemName = originDoc?.name;
+  }
+
+  const outcome =
+    context?.outcome === "criticalFailure" ||
+    context?.outcome === "failure" ||
+    context?.outcome === "success" ||
+    context?.outcome === "criticalSuccess"
+      ? context.outcome
+      : undefined;
+
+  return {
+    id: msg.id,
+    timestamp: msg.timestamp,
+    speakerAlias: msg.speaker?.alias,
+    speakerActorId: msg.speaker?.actor,
+    checkName,
+    rollType: context?.type ?? "roll",
+    outcome,
+    dcValue: context?.dc?.visible === true ? context.dc.value : undefined,
+    formula: parsedRoll.formula ?? "",
+    total: parsedRoll.total ?? 0,
+    dice: parsedRoll.dice,
+    originItemName,
+  };
+}
+
+/** D28-13's actor-filter resolution for `query-rolls`' `actor` param: a uuid/bare-
+ * id resolves directly to that world actor id; anything else resolves BY NAME the
+ * same way `query-player` does ({@link resolveByName} — exact-then-unambiguous-
+ * prefix, typed `ambiguous-name`/`not-found` on failure). */
+function resolveActorFilterId(raw: string): string {
+  if (raw.includes(".")) {
+    const segments = raw.split(".");
+    const id = segments.at(-1);
+    return id && id.length > 0 ? id : raw;
+  }
+  const direct = game.actors.get(raw);
+  if (direct) return direct.id;
+  return resolveByName(Array.from(game.actors.values()), raw).id;
+}
+
+function decodeRollsCursor(raw: string): { timestamp: number; id: string } | undefined {
+  const idx = raw.indexOf(":");
+  if (idx === -1) return undefined;
+  const timestamp = Number(raw.slice(0, idx));
+  const id = raw.slice(idx + 1);
+  if (!Number.isFinite(timestamp) || id.length === 0) return undefined;
+  return { timestamp, id };
+}
+
+function encodeRollsCursor(c: { timestamp: number; id: string }): string {
+  return `${c.timestamp}:${c.id}`;
+}
+
+/** Newest-first-with-`_id`-tiebreak total order (D28-10) — `compareRowsDesc(a,b) <
+ * 0` means `a` sorts BEFORE `b` (newer, or same-timestamp-and-greater-id). Cursor
+ * semantics are defined directly against this same comparator ({@link
+ * isAfterCursor}) so the two can never drift out of sync. */
+function compareRowsDesc(
+  a: { timestamp: number; id: string },
+  b: { timestamp: number; id: string },
+): number {
+  if (a.timestamp !== b.timestamp) return b.timestamp - a.timestamp;
+  return b.id.localeCompare(a.id);
+}
+
+/** True when `row` sorts strictly AFTER `cursor` in {@link compareRowsDesc}'s
+ * newest-first order — i.e. it belongs on the page immediately following the one
+ * `cursor` was the last row of. Value-based (not an array-index lookup), so a
+ * cursor still resumes correctly even if the exact message it names no longer
+ * exists between calls. */
+function isAfterCursor(
+  row: { timestamp: number; id: string },
+  cursor: { timestamp: number; id: string },
+): boolean {
+  if (row.timestamp !== cursor.timestamp) return row.timestamp < cursor.timestamp;
+  return row.id.localeCompare(cursor.id) < 0;
+}
+
+const DEFAULT_ROLLS_LIMIT = 20;
+
+function toEpochMs(value: number | string): number {
+  return typeof value === "number" ? value : Date.parse(value);
+}
+
+/** `query-rolls` (0028 S3/D28-3/D28-10/D28-12) — filters `game.messages.contents`
+ * (verified uncapped, D28-10) down to public roll messages, newest-first with
+ * `(timestamp,_id)` cursor pagination. The D28-3 privacy filter is unconditional;
+ * every other filter (`actor`/`type`/`outcome`/`since`/`until`) composes with it
+ * and with each other. */
+async function handleQueryRolls(rawParams: unknown): Promise<QueryRollsResult> {
+  const params = QueryRollsParams.parse(rawParams);
+  const messages = game.messages;
+  const totalMessages = messages.size;
+
+  const actorFilterId = params.actor !== undefined ? resolveActorFilterId(params.actor) : undefined;
+  const sinceMs = params.since !== undefined ? toEpochMs(params.since) : undefined;
+  const untilMs = params.until !== undefined ? toEpochMs(params.until) : undefined;
+  const cursor = params.cursor !== undefined ? decodeRollsCursor(params.cursor) : undefined;
+
+  const qualifying: Array<{ msg: FoundryChatMessage; context: Pf2eRollContext | undefined }> = [];
+  for (const msg of messages.contents) {
+    if (!Array.isArray(msg.rolls) || msg.rolls.length === 0) continue;
+    const context = extractPf2eRollContext(msg.flags);
+    if (!isPublicRollMessage(msg, context)) continue;
+    if (sinceMs !== undefined && msg.timestamp < sinceMs) continue;
+    if (untilMs !== undefined && msg.timestamp > untilMs) continue;
+    if (actorFilterId !== undefined) {
+      const speakerActor = msg.speaker?.actor;
+      const contextActor = context?.actor;
+      if (speakerActor !== actorFilterId && contextActor !== actorFilterId) continue;
+    }
+    const rollType = context?.type ?? "roll";
+    if (params.type !== undefined && rollType !== params.type) continue;
+    if (params.outcome !== undefined && context?.outcome !== params.outcome) continue;
+    qualifying.push({ msg, context });
+  }
+
+  qualifying.sort((a, b) => compareRowsDesc(a.msg, b.msg));
+  const afterCursor = cursor ? qualifying.filter((q) => isAfterCursor(q.msg, cursor)) : qualifying;
+
+  const limit = params.limit ?? DEFAULT_ROLLS_LIMIT;
+  const page = afterCursor.slice(0, limit);
+  const hasMore = afterCursor.length > limit;
+
+  const rows: RollRow[] = [];
+  for (const { msg, context } of page) {
+    const row = await buildRollRow(msg, context);
+    if (row) rows.push(row);
+  }
+
+  const lastPageMsg = page.at(-1)?.msg;
+  const nextCursor =
+    hasMore && lastPageMsg
+      ? encodeRollsCursor({ timestamp: lastPageMsg.timestamp, id: lastPageMsg.id })
+      : undefined;
+
+  return { rows, totalMessages, hasMore, nextCursor };
+}
+
 /** Registers every handler this module build knows about into `CONFIG.queries`. Call
  * once, on the `init` hook (Foundry's `CONFIG` global exists by then, before `ready`
  * dials the bridge). S5 adds more `CONFIG.queries[queryKey(...)] = ...` lines here —
@@ -1835,6 +2459,8 @@ export function registerHandlers(): void {
   CONFIG.queries[queryKey("execute-macro")] = handleExecuteMacro;
   CONFIG.queries[queryKey("query-party")] = handleQueryParty;
   CONFIG.queries[queryKey("query-player")] = handleQueryPlayer;
+  CONFIG.queries[queryKey("query-item")] = handleQueryItem;
+  CONFIG.queries[queryKey("query-rolls")] = handleQueryRolls;
 }
 
 /**

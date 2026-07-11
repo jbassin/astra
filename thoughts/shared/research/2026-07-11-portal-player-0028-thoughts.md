@@ -270,3 +270,41 @@ S2. One correction to the D28-2 draft text: the projection is read off the **liv
 instance itself** (`fromUuid`/`game.actors.get(...)` already returns that live, data-prepped
 document in real Foundry — there's no separate "get the live one" step), not a second lookup
 alongside a `toObject()` read.
+
+## Biography visibility (S3, 2026-07-11) — the S2-amendment gate
+
+Confirmed by `docker exec foundry_faerrin` against the live container's own template/handlebars
+source (Foundry 13.351 / pf2e 7.12.2), read-only — `docker exec foundry_faerrin` was reachable
+throughout S3 too.
+
+- **The toggle write path** — `pf2e.mjs:29873-29882`: the character sheet's `toggle-bio-visibility`
+  action reads the clicked `<a data-action="toggle-bio-visibility" data-section="<section>">`'s
+  `data-section`, then does `actor.update({["system.details.biography.visibility.<section>"]:
+  !biography.visibility[<section>]})` — a GM-only "eye" icon per subsection.
+- **The four sections + their gate** (`templates/actors/character/tabs/biography.hbs`, the character
+  sheet's own biography tab) — each subsection's header+body is wrapped in `{{#if (or
+  document.isOwner biography.visibility.<section>)}}`, i.e. visible to a non-owner (a player) only
+  when the flag is `true`:
+  - `visibility.appearance` gates `appearance` (biography.hbs:2-25).
+  - `visibility.backstory` gates `backstory` + `birthPlace` (biography.hbs:27-47).
+  - `visibility.personality` gates `attitude`/`beliefs`/`edicts`/`anathema`/`likes`/`dislikes`/
+    `catchphrases` (biography.hbs:49-149) — `likes`/`dislikes` (the two of these query-player's
+    `notes` section surfaces) share this ONE flag with siblings the section doesn't expose.
+  - `visibility.campaign` gates `campaignNotes`/`allies`/`enemies`/`organizations`
+    (biography.hbs:152-183) — `campaignNotes` (the one of these `notes` surfaces) shares this flag
+    too.
+- **Stored defaults** — `template.json:65-70`: `visibility: {appearance: true, backstory: false,
+  personality: false, campaign: false}` — every PC starts with `appearance` visible and everything
+  else hidden until the GM explicitly flips it.
+- **`deity`** is a separate embedded item (not part of `system.details.biography` at all) — never
+  gated by any of this; `query-player`'s `notes.deity` field stays ungated, unchanged from S2.
+
+**Fix applied in `handlers.ts`'s `buildNotes`** (S3): each of the four prose fields is now emitted
+only when its owning `visibility.<section>` flag reads `true` (missing/wrong-shaped `visibility` —
+a legacy pre-field actor — falls back to the `template.json` per-section default rather than
+assuming visible, matching D28-2's fail-soft-toward-safety posture for this gate specifically,
+mirrored from `readDerivedNumber`'s fail-soft-toward-"—" posture but inverted in DIRECTION since a
+missing visibility config must never default to leaking content). Unit-tested in
+`handlers.test.ts`'s "query-player feats/inventory/notes sections" describe block (a GM-hidden
+subsection with real, non-empty content is excluded; an explicitly-toggled-visible subsection is
+surfaced; a legacy actor with no `visibility` object falls back to the template defaults).

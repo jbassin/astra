@@ -8,6 +8,7 @@ export {
   BridgeMessage,
   McpQuery,
   McpResponse,
+  McpResponseErrUnknownCode,
   PingMsg,
   PongMsg,
 } from "./envelope";
@@ -97,4 +98,19 @@ export {
   QueryPlayerParams,
   QueryPlayerResult,
   QueryPlayerSection,
+} from "./tools";
+// 0028 S3's player-key query tools — query-item (D28-5/D28-13) + query-rolls
+// (D28-3/D28-10/D28-12). Same module-typed-JSON / server-renders-markdown split.
+export {
+  ItemProvenance,
+  QueryItemDetail,
+  QueryItemHitRow,
+  QueryItemParams,
+  QueryItemResult,
+  QueryRollsParams,
+  QueryRollsResult,
+  RollDegreeOutcome,
+  RollDieResult,
+  RollDieRow,
+  RollRow,
 } from "./tools";

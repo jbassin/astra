@@ -120,6 +120,28 @@ export const McpResponse = z.discriminatedUnion("ok", [McpResponseOk, McpRespons
 export type McpResponse = z.infer<typeof McpResponse>;
 
 /**
+ * D28-14's skew-recovery shape: a well-formed error `response` envelope whose
+ * `error.code` ISN'T one of `BridgeErrorCode`'s closed enum members — the exact
+ * shape a 0.4.0+ module sends when it returns a code this build's `BridgeErrorCode`
+ * doesn't know yet (e.g. a rolled-back pre-0028 server talking to a 0.4.0 module
+ * that returns `not-a-player-character`/`ambiguous-name`). `code` is only checked
+ * for being a non-empty string here — {@link McpResponseErr}'s stricter `code:
+ * BridgeErrorCode` already covers every KNOWN code, so this schema only ever
+ * matches after that one has already failed to parse. `server/src/bridge.ts`'s
+ * `#onMessage` tries this as a second-chance parse and remaps the code to a
+ * generic `foundry-error` (message preserved) instead of silently dropping the
+ * message into a timeout. */
+export const McpResponseErrUnknownCode = z
+  .object({
+    type: z.literal("response"),
+    id: z.string().min(1),
+    ok: z.literal(false),
+    error: z.object({ code: z.string().min(1), message: z.string().min(1) }).strict(),
+  })
+  .strict();
+export type McpResponseErrUnknownCode = z.infer<typeof McpResponseErrUnknownCode>;
+
+/**
  * The full bridge wire envelope. A `Map<id, {resolve,reject,timeout}>` request
  * tracker (S2) keys off `McpQuery.id`/`McpResponse.id`; everything else is
  * connection-lifecycle (`auth`/`ping`/`pong`).

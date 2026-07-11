@@ -51,10 +51,14 @@ function fakePack(opts: {
   label: string;
   system?: string;
   entries?: FoundryCompendiumIndexEntry[];
+  /** 0028 S3 (D28-5) — the pack's per-role visibility config; omit for a pack a
+   * test never puts through the `query-item` compendium-visibility gate. */
+  ownership?: FoundryCompendiumOwnership;
 }): FoundryCompendiumCollection {
   return {
     collection: opts.collection,
     metadata: { type: opts.type, label: opts.label, system: opts.system },
+    ownership: opts.ownership,
     getIndex: () => Promise.resolve(fakeValuesCollection(opts.entries ?? [])),
   };
 }
@@ -73,6 +77,10 @@ function fakeDoc(opts: {
   data?: Record<string, unknown>;
   type?: string;
   flags?: Record<string, unknown>;
+  /** 0028 S3 (D28-5) — the compendium collection key this doc "came from", for
+   * `query-item`'s compendium branch (real Foundry's `Document#pack`); omit for a
+   * world/embedded stand-in. */
+  pack?: string;
 }): FoundryActor {
   return {
     id: opts.id,
@@ -81,6 +89,7 @@ function fakeDoc(opts: {
     documentName: opts.documentName,
     type: opts.type,
     flags: opts.flags,
+    pack: opts.pack,
     folder: opts.folder !== undefined ? { name: opts.folder } : null,
     // `structuredClone`, not the same `opts.data` reference every call: real Foundry's
     // `toObject()` always hands back a FRESH plain-object clone, never the live
@@ -254,6 +263,10 @@ interface FoundryStubOverrides {
   /** 0028 S2 — `query-party`'s owner-player-name resolution (`game.users.get`);
    * defaults to empty (no test before S2 needed a real `game.users` lookup). */
   users?: FoundryUser[];
+  /** 0028 S3 — `query-rolls`' chat-message history (`game.messages`); defaults to
+   * empty. `size` is derived from the array length, matching real Foundry's
+   * `Collection#size` (a `Map` subclass). */
+  messages?: FoundryChatMessage[];
 }
 
 /** Stubs the ambient Foundry globals `handlers.ts` touches (`game`, `CONFIG`,
@@ -285,6 +298,10 @@ function stubFoundry(isGM: boolean, overrides: FoundryStubOverrides = {}): void 
     // is enough there. 0028 S2's `query-party` owner-player resolution DOES read
     // `game.users.get`, hence the override.
     users: fakeValuesCollection(overrides.users ?? []),
+    messages: {
+      contents: overrides.messages ?? [],
+      size: (overrides.messages ?? []).length,
+    },
     pf2e: {
       ConditionManager: overrides.conditionManager ?? {
         getCondition: () => ({
@@ -2559,5 +2576,1010 @@ describe("portal-module 0028 S2 — query-party / query-player (Foundry-free)", 
       expect(result.backstory).toBeUndefined();
       expect(result.deity).toBe("The Judge of Ages");
     });
+
+    it("notes: a GM-hidden biography subsection (visibility flag false) is excluded even though it has content (S2 amendment)", async () => {
+      // Argyle's OWN fixture biography.visibility is the template.json default
+      // ({appearance:true, backstory:false, personality:false, campaign:false}) —
+      // build a synthetic doc with every subsection FILLED IN to prove the gate,
+      // not just the "empty string omitted" case the prior test already covers.
+      const doc = fixtureActorDoc("argyle", undefined);
+      const raw = doc.toObject();
+      raw.system = {
+        ...(raw.system as Record<string, unknown>),
+        details: {
+          ...((raw.system as Record<string, unknown>).details as Record<string, unknown>),
+          biography: {
+            appearance: "Tall and gaunt.",
+            backstory: "Raised in the Cathedral.",
+            likes: "Quiet mornings.",
+            dislikes: "Loud noises.",
+            campaignNotes: "Owes a debt to the Judge.",
+            visibility: { appearance: true, backstory: false, personality: false, campaign: false },
+          },
+        },
+      };
+      const gatedDoc: FoundryActor = { ...doc, toObject: () => raw };
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === gatedDoc.uuid ? gatedDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: gatedDoc.uuid,
+        section: "notes",
+      })) as {
+        appearance?: string;
+        backstory?: string;
+        likes?: string;
+        dislikes?: string;
+        campaignNotes?: string;
+      };
+      // appearance's visibility flag is true -> surfaced.
+      expect(result.appearance).toBe("Tall and gaunt.");
+      // backstory/personality(likes+dislikes)/campaign are all false -> excluded,
+      // even though every one of them has real, non-empty content.
+      expect(result.backstory).toBeUndefined();
+      expect(result.likes).toBeUndefined();
+      expect(result.dislikes).toBeUndefined();
+      expect(result.campaignNotes).toBeUndefined();
+    });
+
+    it("notes: an explicitly-toggled-visible subsection (GM flipped the eye icon) is surfaced", async () => {
+      const doc = fixtureActorDoc("argyle", undefined);
+      const raw = doc.toObject();
+      raw.system = {
+        ...(raw.system as Record<string, unknown>),
+        details: {
+          ...((raw.system as Record<string, unknown>).details as Record<string, unknown>),
+          biography: {
+            backstory: "Raised in the Cathedral.",
+            visibility: { appearance: true, backstory: true, personality: false, campaign: false },
+          },
+        },
+      };
+      const gatedDoc: FoundryActor = { ...doc, toObject: () => raw };
+      stubFoundry(true, {
+        fromUuid: (uuid) => Promise.resolve(uuid === gatedDoc.uuid ? gatedDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: gatedDoc.uuid,
+        section: "notes",
+      })) as { backstory?: string };
+      expect(result.backstory).toBe("Raised in the Cathedral.");
+    });
+
+    it("notes: a legacy actor with no visibility object at all falls back to the template.json defaults (fail-soft)", async () => {
+      const doc = fakeDoc({
+        id: "legacy1",
+        uuid: "Actor.legacy1",
+        name: "Legacy PC",
+        documentName: "Actor",
+        type: "character",
+        data: {
+          _id: "legacy1",
+          name: "Legacy PC",
+          type: "character",
+          system: {
+            details: {
+              biography: {
+                appearance: "Weathered.",
+                campaignNotes: "Some old note.",
+                // No `visibility` key at all — pre-dates the field.
+              },
+            },
+          },
+          items: [],
+        },
+      });
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        uuid: doc.uuid,
+        section: "notes",
+      })) as { appearance?: string; campaignNotes?: string };
+      // appearance defaults VISIBLE (template.json), campaign defaults HIDDEN.
+      expect(result.appearance).toBe("Weathered.");
+      expect(result.campaignNotes).toBeUndefined();
+    });
+  });
+});
+
+describe("portal-module 0028 S3 — query-item (D28-5/D28-13, Foundry-free)", () => {
+  afterEach(() => {
+    // @ts-expect-error — tearing down the stub between tests, not a real Foundry global.
+    delete globalThis.game;
+    // @ts-expect-error — same.
+    delete globalThis.CONFIG;
+    // @ts-expect-error — same.
+    delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
+  });
+
+  function worldItem(opts: {
+    id: string;
+    name: string;
+    type?: string;
+    ownershipDefault?: number;
+  }): FoundryActor {
+    return fakeDoc({
+      id: opts.id,
+      uuid: `Item.${opts.id}`,
+      name: opts.name,
+      documentName: "Item",
+      type: opts.type ?? "weapon",
+      data: {
+        _id: opts.id,
+        name: opts.name,
+        type: opts.type ?? "weapon",
+        system: { description: { value: "<p>A fine item.</p>" }, price: { value: { gp: 4 } } },
+        ownership: { default: opts.ownershipDefault ?? 2 },
+      },
+    });
+  }
+
+  describe("world items", () => {
+    it("fetches a visible world item by uuid with the full detail projection", async () => {
+      const item = worldItem({ id: "w1", name: "Bastard Sword", ownershipDefault: 2 });
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === item.uuid ? item : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { uuid: "Item.w1" })) as {
+        kind: string;
+        item: { name: string; provenance: string; price?: string; description?: string };
+      };
+      expect(result.kind).toBe("item");
+      expect(result.item).toMatchObject({
+        name: "Bastard Sword",
+        provenance: "world",
+        price: "4 gp",
+        description: "<p>A fine item.</p>",
+      });
+    });
+
+    it("resolves a bare id the same way as a full uuid", async () => {
+      const item = worldItem({ id: "w1", name: "Bastard Sword" });
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === item.uuid ? item : null) });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { uuid: "w1" })) as {
+        item: { name: string };
+      };
+      expect(result.item.name).toBe("Bastard Sword");
+    });
+
+    it("excludes a GM-hidden world item (ownership.default < OBSERVER) as a typed not-found", async () => {
+      const item = worldItem({ id: "hidden1", name: "Secret Dagger", ownershipDefault: 0 });
+      stubFoundry(true, { fromUuid: (uuid) => Promise.resolve(uuid === item.uuid ? item : null) });
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-item", { uuid: "Item.hidden1" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("excludes a GM-hidden world item from a name search too", async () => {
+      const visible = worldItem({ id: "v1", name: "Dagger of Speaking", ownershipDefault: 2 });
+      const hidden = worldItem({ id: "h1", name: "Dagger of Secrets", ownershipDefault: 0 });
+      stubFoundry(true, { items: [visible, hidden] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { name: "Dagger" })) as {
+        hits: Array<{ name: string }>;
+      };
+      expect(result.hits.map((h) => h.name)).toEqual(["Dagger of Speaking"]);
+    });
+  });
+
+  describe("party-member-embedded items", () => {
+    function partyWithMember(memberUuid: string): FoundryActor {
+      return fakeDoc({
+        id: "party1",
+        uuid: "Actor.party1",
+        name: "The Party",
+        documentName: "Actor",
+        type: "party",
+        data: { system: { details: { members: [{ uuid: memberUuid }] } } },
+      });
+    }
+
+    it("fetches an embedded item on a party member by its Actor.<id>.Item.<id> uuid", async () => {
+      const memberDoc = fakeDoc({
+        id: "pc1",
+        uuid: "Actor.pc1",
+        name: "Argyle",
+        documentName: "Actor",
+        type: "character",
+        data: {
+          items: [
+            { _id: "i1", name: "Holy Symbol", type: "equipment", system: { bulk: { value: 0 } } },
+          ],
+        },
+      });
+      const party = partyWithMember("Actor.pc1");
+      const embeddedUuid = "Actor.pc1.Item.i1";
+      stubFoundry(true, {
+        actors: [party, memberDoc],
+        fromUuid: (uuid) =>
+          Promise.resolve(
+            uuid === embeddedUuid
+              ? fakeDoc({
+                  id: "i1",
+                  uuid: embeddedUuid,
+                  name: "Holy Symbol",
+                  documentName: "Item",
+                  type: "equipment",
+                  data: { _id: "i1", name: "Holy Symbol", type: "equipment", system: {} },
+                })
+              : uuid === "Actor.pc1"
+                ? memberDoc
+                : null,
+          ),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { uuid: embeddedUuid })) as {
+        item: { name: string; provenance: string; ownerActor?: string };
+      };
+      expect(result.item).toMatchObject({
+        name: "Holy Symbol",
+        provenance: "embedded",
+        ownerActor: "Argyle",
+      });
+    });
+
+    it("refuses an Actor.<id>.Item.<id> uuid when that actor is NOT a party member", async () => {
+      stubFoundry(true, { actors: [] }); // no party at all
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-item", {
+        uuid: "Actor.someNpc.Item.i1",
+      }).catch((e: unknown) => e);
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("name search finds an embedded item and labels its owner", async () => {
+      const memberDoc = fakeDoc({
+        id: "pc1",
+        uuid: "Actor.pc1",
+        name: "Argyle",
+        documentName: "Actor",
+        type: "character",
+        data: {
+          items: [{ _id: "i1", name: "Sunrod", type: "equipment" }],
+        },
+      });
+      const party = partyWithMember("Actor.pc1");
+      stubFoundry(true, {
+        actors: [party],
+        fromUuid: (uuid) => Promise.resolve(uuid === "Actor.pc1" ? memberDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { name: "Sunrod" })) as {
+        hits: Array<{ name: string; provenance: string; ownerActor?: string; uuid: string }>;
+      };
+      expect(result.hits).toEqual([
+        {
+          uuid: "Actor.pc1.Item.i1",
+          id: "i1",
+          name: "Sunrod",
+          type: "equipment",
+          provenance: "embedded",
+          ownerActor: "Argyle",
+        },
+      ]);
+    });
+  });
+
+  describe("compendium items (D28-5 pack-visibility gate, adversarial B2)", () => {
+    function compendiumItemDoc(id: string, name: string, pack: string): FoundryActor {
+      return fakeDoc({
+        id,
+        uuid: `Compendium.${pack}.Item.${id}`,
+        name,
+        documentName: "Item",
+        type: "spell",
+        pack,
+        data: {
+          _id: id,
+          name,
+          type: "spell",
+          system: { description: { value: "<p>Zap.</p>" } },
+        },
+      });
+    }
+
+    it("fetches a compendium item from a PLAYER-visible pack (ownership.PLAYER >= OBSERVER)", async () => {
+      const pack = fakePack({
+        collection: "pf2e.spells-srd",
+        type: "Item",
+        label: "Spells",
+        ownership: { PLAYER: "OBSERVER" },
+      });
+      const doc = compendiumItemDoc("s1", "Magic Missile", "pf2e.spells-srd");
+      stubFoundry(true, {
+        packs: [pack],
+        fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { uuid: doc.uuid })) as {
+        item: { name: string; provenance: string; pack?: string };
+      };
+      expect(result.item).toMatchObject({
+        name: "Magic Missile",
+        provenance: "compendium",
+        pack: "pf2e.spells-srd",
+      });
+    });
+
+    it("refuses a compendium item from a PLAYER-restricted pack (ownership.PLAYER = LIMITED, below OBSERVER) as not-found", async () => {
+      // The real live-pf2e default for bestiary packs (verified 2026-07-11:
+      // 67/94 packs ship exactly this — LIMITED(1) < OBSERVER(2)).
+      const pack = fakePack({
+        collection: "pf2e.pathfinder-bestiary",
+        type: "Item",
+        label: "Bestiary",
+        ownership: { PLAYER: "LIMITED" },
+      });
+      const doc = compendiumItemDoc("s1", "Secret Ritual", "pf2e.pathfinder-bestiary");
+      stubFoundry(true, {
+        packs: [pack],
+        fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null),
+      });
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-item", { uuid: doc.uuid }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("a pack with no ownership config at all (undefined) fails CLOSED, not open", async () => {
+      const pack = fakePack({
+        collection: "pf2e.unconfigured",
+        type: "Item",
+        label: "Unconfigured",
+      });
+      const doc = compendiumItemDoc("s1", "Mystery Item", "pf2e.unconfigured");
+      stubFoundry(true, {
+        packs: [pack],
+        fromUuid: (uuid) => Promise.resolve(uuid === doc.uuid ? doc : null),
+      });
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-item", { uuid: doc.uuid }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("not-found");
+    });
+
+    it("name search excludes hits from a player-restricted pack, includes hits from a visible one", async () => {
+      const visiblePack = fakePack({
+        collection: "pf2e.spells-srd",
+        type: "Item",
+        label: "Spells",
+        ownership: { PLAYER: "OBSERVER" },
+        entries: [
+          {
+            _id: "s1",
+            uuid: "Compendium.pf2e.spells-srd.Item.s1",
+            name: "Fireball",
+            type: "spell",
+          },
+        ],
+      });
+      const hiddenPack = fakePack({
+        collection: "pf2e.pathfinder-bestiary",
+        type: "Item",
+        label: "Bestiary",
+        ownership: { PLAYER: "LIMITED" },
+        entries: [
+          {
+            _id: "s2",
+            uuid: "Compendium.pf2e.pathfinder-bestiary.Item.s2",
+            name: "Fireball Trap",
+            type: "hazard",
+          },
+        ],
+      });
+      stubFoundry(true, { packs: [visiblePack, hiddenPack] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { name: "Fireball" })) as {
+        hits: Array<{ name: string }>;
+      };
+      expect(result.hits.map((h) => h.name)).toEqual(["Fireball"]);
+    });
+
+    it("a pack of the wrong document type (not Item) is never searched", async () => {
+      const actorPack = fakePack({
+        collection: "pf2e.pathfinder-bestiary",
+        type: "Actor",
+        label: "Bestiary",
+        ownership: { PLAYER: "OBSERVER" },
+        entries: [
+          {
+            _id: "a1",
+            uuid: "Compendium.pf2e.pathfinder-bestiary.Actor.a1",
+            name: "Goblin",
+            type: "npc",
+          },
+        ],
+      });
+      stubFoundry(true, { packs: [actorPack] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { name: "Goblin" })) as {
+        hits: unknown[];
+      };
+      expect(result.hits).toEqual([]);
+    });
+  });
+
+  describe("name search — cross-scope, provenance-labeled hit list (D28-5)", () => {
+    it("never renders a single item, even for an unambiguous single hit — always a hit list", async () => {
+      const item = worldItem({ id: "w1", name: "Unique Amulet" });
+      stubFoundry(true, { items: [item] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", { name: "Unique Amulet" })) as {
+        kind: string;
+        hits?: unknown[];
+      };
+      expect(result.kind).toBe("hits");
+      expect(result.hits).toHaveLength(1);
+    });
+
+    it("respects the limit param", async () => {
+      const items = Array.from({ length: 5 }, (_, i) =>
+        worldItem({ id: `w${i}`, name: `Dagger ${i}` }),
+      );
+      stubFoundry(true, { items });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-item", {
+        name: "Dagger",
+        limit: 2,
+      })) as { hits: unknown[] };
+      expect(result.hits).toHaveLength(2);
+    });
+  });
+});
+
+describe("portal-module 0028 S3 — query-rolls (D28-3/D28-10/D28-12, Foundry-free)", () => {
+  afterEach(() => {
+    // @ts-expect-error — tearing down the stub between tests, not a real Foundry global.
+    delete globalThis.game;
+    // @ts-expect-error — same.
+    delete globalThis.CONFIG;
+    // @ts-expect-error — same.
+    delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
+  });
+
+  function fakeRollJson(opts: {
+    formula: string;
+    total: number;
+    dice?: Array<{ faces: number; results: Array<{ result: number; discarded?: boolean }> }>;
+  }): string {
+    const terms = (opts.dice ?? []).map((d) => ({
+      class: "Die",
+      faces: d.faces,
+      number: d.results.length,
+      results: d.results.map((r) => ({
+        result: r.result,
+        active: r.discarded !== true,
+        discarded: r.discarded === true,
+      })),
+    }));
+    return JSON.stringify({
+      class: "Roll",
+      formula: opts.formula,
+      total: opts.total,
+      evaluated: true,
+      terms,
+    });
+  }
+
+  function fakeMessage(opts: {
+    id: string;
+    timestamp: number;
+    whisper?: string[];
+    blind?: boolean;
+    speaker?: { actor?: string; alias?: string };
+    rolls?: string[];
+    flavor?: string;
+    flags?: Record<string, unknown>;
+  }): FoundryChatMessage {
+    return {
+      id: opts.id,
+      timestamp: opts.timestamp,
+      speaker: opts.speaker,
+      whisper: opts.whisper ?? [],
+      blind: opts.blind ?? false,
+      rolls: opts.rolls ?? [],
+      flavor: opts.flavor,
+      flags: opts.flags,
+    };
+  }
+
+  const PUBLIC_CHECK_ROLL = fakeRollJson({
+    formula: "1d20+7",
+    total: 21,
+    dice: [{ faces: 20, results: [{ result: 14 }] }],
+  });
+
+  describe("D28-3 privacy filter (public-only, non-negotiable)", () => {
+    it("a whispered message never appears, regardless of other filters", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        whisper: ["user1"],
+        rolls: [PUBLIC_CHECK_ROLL],
+      });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as { rows: unknown[] };
+      expect(result.rows).toEqual([]);
+    });
+
+    it("a blind message never appears", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        blind: true,
+        rolls: [PUBLIC_CHECK_ROLL],
+      });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as { rows: unknown[] };
+      expect(result.rows).toEqual([]);
+    });
+
+    it("THE B1 backstop — whisper=[] and blind=false but flags.pf2e.context.secret=true is still excluded", async () => {
+      const secretMsg = fakeMessage({
+        id: "secret1",
+        timestamp: 1000,
+        whisper: [],
+        blind: false,
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { context: { type: "skill-check", secret: true } } },
+      });
+      const publicMsg = fakeMessage({
+        id: "public1",
+        timestamp: 2000,
+        whisper: [],
+        blind: false,
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { context: { type: "skill-check" } } },
+      });
+      stubFoundry(true, { messages: [secretMsg, publicMsg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ id: string }>;
+      };
+      expect(result.rows.map((r) => r.id)).toEqual(["public1"]);
+    });
+
+    it("a non-roll message (rolls.length === 0) never qualifies even if otherwise public", async () => {
+      const chatter = fakeMessage({ id: "chat1", timestamp: 1000, rolls: [] });
+      stubFoundry(true, { messages: [chatter] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as { rows: unknown[] };
+      expect(result.rows).toEqual([]);
+    });
+  });
+
+  describe("row shape (D28-12)", () => {
+    it("renders formula/total/dice/checkName/outcome/dcValue from a real pf2e-shaped message", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        speaker: { actor: "a1", alias: "Argyle" },
+        rolls: [PUBLIC_CHECK_ROLL],
+        flavor: "<b>Religion Check</b>",
+        flags: {
+          pf2e: {
+            modifierName: "Religion",
+            context: { type: "skill-check", outcome: "success", dc: { value: 18, visible: true } },
+          },
+        },
+      });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{
+          id: string;
+          speakerAlias?: string;
+          speakerActorId?: string;
+          checkName?: string;
+          rollType: string;
+          outcome?: string;
+          dcValue?: number;
+          formula: string;
+          total: number;
+          dice: Array<{ faces: number; results: Array<{ result: number }> }>;
+        }>;
+      };
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]).toMatchObject({
+        id: "m1",
+        speakerAlias: "Argyle",
+        speakerActorId: "a1",
+        checkName: "Religion",
+        rollType: "skill-check",
+        outcome: "success",
+        dcValue: 18,
+        formula: "1d20+7",
+        total: 21,
+        dice: [{ faces: 20, results: [{ result: 14 }] }],
+      });
+    });
+
+    it("omits dcValue when dc.visible is false, even though a dc.value is present", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { context: { type: "skill-check", dc: { value: 18, visible: false } } } },
+      });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ dcValue?: number }>;
+      };
+      expect(result.rows[0]?.dcValue).toBeUndefined();
+    });
+
+    it("falls back to a flavor-derived check name when flags.pf2e.modifierName is absent", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        rolls: [PUBLIC_CHECK_ROLL],
+        flavor: "<strong>Perception Check</strong>",
+      });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ checkName?: string }>;
+      };
+      expect(result.rows[0]?.checkName).toBe("Perception Check");
+    });
+
+    it("an untagged /roll message (no flags.pf2e at all) lands in the 'roll' fallback bucket", async () => {
+      const msg = fakeMessage({ id: "m1", timestamp: 1000, rolls: [PUBLIC_CHECK_ROLL] });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ rollType: string }>;
+      };
+      expect(result.rows[0]?.rollType).toBe("roll");
+    });
+
+    it("resolves originItemName via flags.pf2e.origin.uuid when present", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { origin: { uuid: "Item.weapon1" } } },
+      });
+      const weaponDoc = fakeDoc({
+        id: "weapon1",
+        uuid: "Item.weapon1",
+        name: "Bastard Sword",
+        documentName: "Item",
+      });
+      stubFoundry(true, {
+        messages: [msg],
+        fromUuid: (uuid) => Promise.resolve(uuid === "Item.weapon1" ? weaponDoc : null),
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ originItemName?: string }>;
+      };
+      expect(result.rows[0]?.originItemName).toBe("Bastard Sword");
+    });
+
+    it("marks a discarded die compactly in the results array", async () => {
+      const rollJson = fakeRollJson({
+        formula: "2d20kl1",
+        total: 8,
+        dice: [
+          {
+            faces: 20,
+            results: [{ result: 14, discarded: true }, { result: 8 }],
+          },
+        ],
+      });
+      const msg = fakeMessage({ id: "m1", timestamp: 1000, rolls: [rollJson] });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ dice: Array<{ results: Array<{ result: number; discarded?: boolean }> }> }>;
+      };
+      expect(result.rows[0]?.dice[0]?.results).toEqual([
+        { result: 14, discarded: true },
+        { result: 8, discarded: undefined },
+      ]);
+    });
+  });
+
+  describe("filters compose (actor ∧ type ∧ outcome ∧ time window)", () => {
+    function taggedMessage(
+      id: string,
+      timestamp: number,
+      actor: string,
+      type: string,
+      outcome: string,
+    ): FoundryChatMessage {
+      return fakeMessage({
+        id,
+        timestamp,
+        speaker: { actor },
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { context: { type, outcome } } },
+      });
+    }
+
+    /** A minimal world-actor stand-in, purely so `resolveActorFilterId`'s
+     * `game.actors.get(id)` direct-id lookup succeeds — mirrors reality (a
+     * `speaker.actor`/`context.actor` id names a real world actor). */
+    function actorStub(id: string): FoundryActor {
+      return fakeDoc({
+        id,
+        uuid: `Actor.${id}`,
+        name: id,
+        documentName: "Actor",
+        type: "character",
+      });
+    }
+
+    it("actor filter matches speaker.actor by bare id", async () => {
+      const messages = [
+        taggedMessage("m1", 1000, "a1", "skill-check", "success"),
+        taggedMessage("m2", 1000, "a2", "skill-check", "success"),
+      ];
+      stubFoundry(true, { actors: [actorStub("a1"), actorStub("a2")], messages });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", { actor: "a1" })) as {
+        rows: Array<{ id: string }>;
+      };
+      expect(result.rows.map((r) => r.id)).toEqual(["m1"]);
+    });
+
+    it("actor filter also matches flags.pf2e.context.actor when speaker.actor differs", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        speaker: { actor: "a1" },
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { context: { type: "damage-roll", actor: "a2" } } },
+      });
+      stubFoundry(true, {
+        actors: [actorStub("a1"), actorStub("a2")],
+        messages: [msg],
+      });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", { actor: "a2" })) as {
+        rows: Array<{ id: string }>;
+      };
+      expect(result.rows.map((r) => r.id)).toEqual(["m1"]);
+    });
+
+    it("actor filter resolves an unambiguous name the same way as query-player (D28-13)", async () => {
+      const argyle = fakeDoc({
+        id: "a1",
+        uuid: "Actor.a1",
+        name: "Argyle",
+        documentName: "Actor",
+        type: "character",
+      });
+      const messages = [
+        taggedMessage("m1", 1000, "a1", "skill-check", "success"),
+        taggedMessage("m2", 1000, "a2", "skill-check", "success"),
+      ];
+      stubFoundry(true, { actors: [argyle], messages });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", { actor: "Argyle" })) as {
+        rows: Array<{ id: string }>;
+      };
+      expect(result.rows.map((r) => r.id)).toEqual(["m1"]);
+    });
+
+    it("an ambiguous actor name throws the typed ambiguous-name error", async () => {
+      const a = fakeDoc({
+        id: "a1",
+        uuid: "Actor.a1",
+        name: "Argyle",
+        documentName: "Actor",
+        type: "character",
+      });
+      const b = fakeDoc({
+        id: "a2",
+        uuid: "Actor.a2",
+        name: "Argyle Twin",
+        documentName: "Actor",
+        type: "character",
+      });
+      stubFoundry(true, { actors: [a, b], messages: [] });
+      registerHandlers();
+      const err = await dispatchQuery("portal.query-rolls", { actor: "Arg" }).catch(
+        (e: unknown) => e,
+      );
+      expect(err).toBeInstanceOf(BridgeHandlerError);
+      expect((err as BridgeHandlerError).code).toBe("ambiguous-name");
+    });
+
+    it("type + outcome + time window compose with actor", async () => {
+      const messages = [
+        taggedMessage("m1", 1000, "a1", "skill-check", "success"),
+        taggedMessage("m2", 2000, "a1", "skill-check", "failure"), // wrong outcome
+        taggedMessage("m3", 3000, "a1", "saving-throw", "success"), // wrong type
+        taggedMessage("m4", 500, "a1", "skill-check", "success"), // before since
+        taggedMessage("m5", 5000, "a1", "skill-check", "success"), // after until
+      ];
+      stubFoundry(true, { actors: [actorStub("a1")], messages });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {
+        actor: "a1",
+        type: "skill-check",
+        outcome: "success",
+        since: 900,
+        until: 4000,
+      })) as { rows: Array<{ id: string }> };
+      expect(result.rows.map((r) => r.id)).toEqual(["m1"]);
+    });
+
+    it("since/until accept an ISO-8601 string, not just a ms-epoch number", async () => {
+      const messages = [
+        taggedMessage("early", Date.parse("2026-01-01T00:00:00Z"), "a1", "skill-check", "success"),
+        taggedMessage("late", Date.parse("2026-06-01T00:00:00Z"), "a1", "skill-check", "success"),
+      ];
+      stubFoundry(true, { messages });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {
+        since: "2026-03-01T00:00:00Z",
+      })) as { rows: Array<{ id: string }> };
+      expect(result.rows.map((r) => r.id)).toEqual(["late"]);
+    });
+  });
+
+  describe("newest-first cursor pagination (D28-10) — synthetic 1,000-message history", () => {
+    function buildHistory(): FoundryChatMessage[] {
+      const messages: FoundryChatMessage[] = [];
+      for (let i = 0; i < 1000; i++) {
+        // Every 10th message shares a timestamp with its neighbor, to exercise the
+        // (timestamp,_id) tiebreak — id strings are zero-padded so lexicographic
+        // order matches insertion order for the same-timestamp group.
+        const timestamp = 1_000_000 + Math.floor(i / 10) * 1000;
+        messages.push(
+          fakeMessage({
+            id: `m${String(i).padStart(4, "0")}`,
+            timestamp,
+            rolls: [PUBLIC_CHECK_ROLL],
+          }),
+        );
+      }
+      return messages;
+    }
+
+    it("walks the whole history via nextCursor with no gaps/dupes, newest first", async () => {
+      const messages = buildHistory();
+      stubFoundry(true, { messages });
+      registerHandlers();
+
+      const seenIds: string[] = [];
+      let cursor: string | undefined;
+      let guard = 0;
+      for (;;) {
+        guard += 1;
+        if (guard > 200) throw new Error("pagination did not terminate");
+        const page = (await dispatchQuery("portal.query-rolls", {
+          limit: 37, // deliberately not a divisor of 1000, and not a divisor of 10
+          cursor,
+        })) as {
+          rows: Array<{ id: string }>;
+          totalMessages: number;
+          hasMore: boolean;
+          nextCursor?: string;
+        };
+        expect(page.totalMessages).toBe(1000);
+        for (const row of page.rows) seenIds.push(row.id);
+        if (!page.hasMore) {
+          expect(page.nextCursor).toBeUndefined();
+          break;
+        }
+        expect(page.nextCursor).toBeDefined();
+        cursor = page.nextCursor;
+      }
+
+      // Every message visited exactly once, newest-first overall.
+      expect(seenIds).toHaveLength(1000);
+      expect(new Set(seenIds).size).toBe(1000);
+      const expectedNewestFirst = messages
+        .slice()
+        .sort((a, b) => b.timestamp - a.timestamp || b.id.localeCompare(a.id))
+        .map((m) => m.id);
+      expect(seenIds).toEqual(expectedNewestFirst);
+    });
+
+    it("the first page (no cursor) starts at the single newest message", async () => {
+      const messages = buildHistory();
+      stubFoundry(true, { messages });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", { limit: 1 })) as {
+        rows: Array<{ id: string; timestamp: number }>;
+        hasMore: boolean;
+      };
+      expect(result.rows).toHaveLength(1);
+      expect(result.hasMore).toBe(true);
+      const maxTimestamp = Math.max(...messages.map((m) => m.timestamp));
+      expect(result.rows[0]?.timestamp).toBe(maxTimestamp);
+    });
+
+    it("defaults limit to 20 when omitted", async () => {
+      const messages = buildHistory();
+      stubFoundry(true, { messages });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as { rows: unknown[] };
+      expect(result.rows).toHaveLength(20);
+    });
+  });
+
+  describe("totalMessages (spec Risks message-count probe)", () => {
+    it("reports the RAW game.messages size, including non-qualifying messages", async () => {
+      const messages = [
+        fakeMessage({ id: "roll1", timestamp: 1000, rolls: [PUBLIC_CHECK_ROLL] }),
+        fakeMessage({ id: "chatter1", timestamp: 2000, rolls: [] }), // not a roll
+        fakeMessage({
+          id: "whisper1",
+          timestamp: 3000,
+          whisper: ["u1"],
+          rolls: [PUBLIC_CHECK_ROLL],
+        }),
+      ];
+      stubFoundry(true, { messages });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: unknown[];
+        totalMessages: number;
+      };
+      expect(result.totalMessages).toBe(3);
+      expect(result.rows).toHaveLength(1); // only the one qualifying public roll
+    });
+  });
+});
+
+describe("portal-module 0028 S3 — module-skew (D28-14 first half, Foundry-free)", () => {
+  afterEach(() => {
+    // @ts-expect-error — tearing down the stub between tests, not a real Foundry global.
+    delete globalThis.game;
+    // @ts-expect-error — same.
+    delete globalThis.CONFIG;
+    // @ts-expect-error — same.
+    delete globalThis.fromUuid;
+    // @ts-expect-error — same.
+    delete globalThis.getDocumentClass;
+    // @ts-expect-error — same.
+    delete globalThis.foundry;
+  });
+
+  it("a query for a method this module build never registered (a stale pre-0028 module) surfaces a typed error, never a hang", async () => {
+    // Deliberately DON'T call registerHandlers() — simulates a 0.3.0 module whose
+    // CONFIG.queries registry has never heard of "portal.query-item"/"portal.
+    // query-rolls" at all (the server-0.4.0/module-0.3.0 deploy-window skew, D28-14).
+    stubFoundry(true);
+    const err = await dispatchQuery("portal.query-item", { name: "anything" }).catch(
+      (e: unknown) => e,
+    );
+    expect(err).toBeInstanceOf(BridgeHandlerError);
+    expect((err as BridgeHandlerError).code).toBe("foundry-error");
+    expect((err as BridgeHandlerError).message).toContain("portal.query-item");
+  });
+
+  it("same for query-rolls", async () => {
+    stubFoundry(true);
+    const err = await dispatchQuery("portal.query-rolls", {}).catch((e: unknown) => e);
+    expect(err).toBeInstanceOf(BridgeHandlerError);
+    expect((err as BridgeHandlerError).code).toBe("foundry-error");
+    expect((err as BridgeHandlerError).message).toContain("portal.query-rolls");
   });
 });

@@ -636,10 +636,12 @@ describe("/mcp dual auth — the OAuth side (spec 0025 S2, D-3)", () => {
       await client.connect(transport);
 
       const { tools } = await client.listTools();
-      // 18 (0023/0026) + query-party + query-player (0028 S2) = 20.
-      expect(tools.length).toBe(20);
+      // 18 (0023/0026) + query-party/query-player/query-item/query-rolls (0028) = 22.
+      expect(tools.length).toBe(22);
       expect(tools.map((t) => t.name)).toContain("search-world"); // an admin-only read tool
       expect(tools.map((t) => t.name)).toContain("query-player");
+      expect(tools.map((t) => t.name)).toContain("query-item");
+      expect(tools.map((t) => t.name)).toContain("query-rolls");
 
       await client.close();
     } finally {

@@ -18,6 +18,7 @@ import type { Duplex } from "node:stream";
 import { getLogger, getTracer, lazyCounter, lazyHistogram } from "@astra/observe";
 import {
   BridgeMessage,
+  McpResponseErrUnknownCode,
   type AuthMeta,
   type BridgeErrorCode,
   type McpQuery,
@@ -112,6 +113,34 @@ function safeJsonParse(text: string): unknown {
   } catch {
     return undefined;
   }
+}
+
+/**
+ * D28-14's skew fix: `#onMessage` only reaches this once `BridgeMessage.safeParse`
+ * has ALREADY failed — so if the message is otherwise a well-formed error
+ * `response` envelope (checked via {@link McpResponseErrUnknownCode}, which is
+ * identical to `McpResponse`'s error variant except `error.code` is any non-empty
+ * string instead of the closed `BridgeErrorCode` enum), the only thing wrong with
+ * it is an unrecognized code — remap to a generic `foundry-error` (message
+ * preserved verbatim) instead of the prior silent drop-to-timeout. Returns
+ * `undefined` for anything else (a genuinely malformed message, a query/auth/ping
+ * message that merely happens to be malformed, ...), which keeps `#onMessage`'s
+ * normal "unparseable message" WARN path as the fallback.
+ */
+function recoverSkewedErrorResponse(
+  raw: unknown,
+): { response: McpResponse; originalCode: string } | undefined {
+  const loose = McpResponseErrUnknownCode.safeParse(raw);
+  if (!loose.success) return undefined;
+  return {
+    response: {
+      type: "response",
+      id: loose.data.id,
+      ok: false,
+      error: { code: "foundry-error", message: loose.data.error.message },
+    },
+    originalCode: loose.data.error.code,
+  };
 }
 
 /**
@@ -222,8 +251,20 @@ export class Bridge {
   }
 
   #onMessage(data: WebSocket.RawData): void {
-    const parsed = BridgeMessage.safeParse(safeJsonParse(data.toString()));
+    const raw = safeJsonParse(data.toString());
+    const parsed = BridgeMessage.safeParse(raw);
     if (!parsed.success) {
+      const recovered = recoverSkewedErrorResponse(raw);
+      if (recovered) {
+        log.emit({
+          severityText: "WARN",
+          body:
+            `bridge received a response with an unknown error code "${recovered.originalCode}" ` +
+            "— mapping to foundry-error (module/server version skew — D28-14)",
+        });
+        this.#onResponse(recovered.response);
+        return;
+      }
       log.emit({
         severityText: "WARN",
         body: `bridge received an unparseable message: ${String(data)}`,

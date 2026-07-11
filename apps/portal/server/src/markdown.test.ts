@@ -11,11 +11,19 @@ import type {
   PlayerSpellsSection,
   PlayerStatsSection,
   PlayerSummarySection,
+  QueryItemResult,
   QueryPartyResult,
+  QueryRollsResult,
 } from "@astra/portal-shared";
 import { describe, expect, it } from "vitest";
 
-import { htmlToMarkdown, renderQueryParty, renderQueryPlayer } from "./markdown";
+import {
+  htmlToMarkdown,
+  renderQueryItem,
+  renderQueryParty,
+  renderQueryPlayer,
+  renderQueryRolls,
+} from "./markdown";
 
 /** The same committed, live-derived Argyle fixture the module's `handlers.test.ts`
  * uses (0028 S2 provenance: a real `Actor.toObject()` pulled read-only through the
@@ -381,5 +389,211 @@ describe("D28-11 hard 12,000-char cap — measured against the real Argyle fixtu
     const md = renderQueryPlayer(filtered, { entry: "Cleric Font" });
     expect(md).not.toContain("summary — the full render exceeded");
     expect(md.length).toBeLessThan(12_000);
+  });
+});
+
+describe("renderQueryItem (0028 S3, D28-5/D28-6)", () => {
+  it("renders a provenance-labeled hit list, never a single item even for one hit", () => {
+    const result: QueryItemResult = {
+      kind: "hits",
+      hits: [
+        { uuid: "Item.w1", id: "w1", name: "Dagger", type: "weapon", provenance: "world" },
+        {
+          uuid: "Actor.a1.Item.i1",
+          id: "i1",
+          name: "Holy Symbol",
+          type: "equipment",
+          provenance: "embedded",
+          ownerActor: "Argyle",
+        },
+        {
+          uuid: "Compendium.pf2e.spells-srd.Item.s1",
+          id: "s1",
+          name: "Fireball",
+          type: "spell",
+          provenance: "compendium",
+          pack: "pf2e.spells-srd",
+          packLabel: "Spells",
+        },
+      ],
+    };
+    const md = renderQueryItem(result);
+    expect(md).toContain("# Item Search");
+    expect(md).toContain("Dagger");
+    expect(md).toContain("world");
+    expect(md).toContain("embedded (Argyle)");
+    expect(md).toContain("compendium — Spells");
+    expect(md).toContain("Fetch one item's full detail");
+  });
+
+  it("renders an empty hit list without crashing", () => {
+    const md = renderQueryItem({ kind: "hits", hits: [] });
+    expect(md).toContain("No items matched");
+  });
+
+  it("renders a single item's full detail, HTML description -> markdown, never raw HTML", () => {
+    const result: QueryItemResult = {
+      kind: "item",
+      item: {
+        uuid: "Item.w1",
+        id: "w1",
+        name: "Bastard Sword",
+        type: "weapon",
+        provenance: "world",
+        level: 0,
+        traits: ["two-hand-d12"],
+        rarity: "common",
+        price: "4 gp",
+        bulk: 1,
+        damage: "1d8 slashing",
+        description: "<p>A <strong>fine</strong> blade.</p>",
+      },
+    };
+    const md = renderQueryItem(result);
+    expect(md).toContain("# Bastard Sword");
+    expect(md).toContain("weapon");
+    expect(md).toContain("common");
+    expect(md).toContain("Traits: two-hand-d12");
+    expect(md).toContain("Price: 4 gp");
+    expect(md).toContain("Bulk: 1");
+    expect(md).toContain("Damage: 1d8 slashing");
+    expect(md).toContain("**fine**");
+    expect(md).not.toMatch(/<[a-z][\s\S]*>/i);
+  });
+
+  it("labels a compendium item's source with its pack", () => {
+    const result: QueryItemResult = {
+      kind: "item",
+      item: {
+        uuid: "Compendium.pf2e.spells-srd.Item.s1",
+        id: "s1",
+        name: "Fireball",
+        type: "spell",
+        provenance: "compendium",
+        pack: "pf2e.spells-srd",
+        packLabel: "Spells (SRD)",
+      },
+    };
+    const md = renderQueryItem(result);
+    expect(md).toContain("Source: compendium — Spells (SRD)");
+  });
+
+  it("labels an embedded item's owner", () => {
+    const result: QueryItemResult = {
+      kind: "item",
+      item: {
+        uuid: "Actor.a1.Item.i1",
+        id: "i1",
+        name: "Holy Symbol",
+        type: "equipment",
+        provenance: "embedded",
+        ownerActor: "Argyle",
+      },
+    };
+    const md = renderQueryItem(result);
+    expect(md).toContain("Source: embedded (Argyle)");
+  });
+
+  it("truncates an oversized description rather than dropping the structured fields above it", () => {
+    const result: QueryItemResult = {
+      kind: "item",
+      item: {
+        uuid: "Item.w1",
+        id: "w1",
+        name: "Verbose Tome",
+        type: "equipment",
+        provenance: "world",
+        price: "4 gp",
+        description: `<p>${"word ".repeat(4000)}</p>`,
+      },
+    };
+    const md = renderQueryItem(result);
+    expect(md).toContain("# Verbose Tome");
+    expect(md).toContain("Price: 4 gp");
+    expect(md.length).toBeLessThan(12_100);
+    expect(md).toContain("truncated at the size limit");
+  });
+});
+
+describe("renderQueryRolls (0028 S3, D28-3/D28-10/D28-12)", () => {
+  it("renders a table with speaker/check/type/outcome/formula-total/dice + the totalMessages footer", () => {
+    const result: QueryRollsResult = {
+      rows: [
+        {
+          id: "m1",
+          timestamp: Date.parse("2026-07-01T12:00:00Z"),
+          speakerAlias: "Argyle",
+          speakerActorId: "a1",
+          checkName: "Religion",
+          rollType: "skill-check",
+          outcome: "success",
+          dcValue: 18,
+          formula: "1d20+7",
+          total: 21,
+          dice: [{ faces: 20, results: [{ result: 14 }] }],
+        },
+      ],
+      totalMessages: 42,
+      hasMore: false,
+    };
+    const md = renderQueryRolls(result);
+    expect(md).toContain("# Roll History");
+    expect(md).toContain("Argyle");
+    expect(md).toContain("Religion");
+    expect(md).toContain("skill-check");
+    expect(md).toContain("Success (DC 18)");
+    expect(md).toContain("1d20+7 → 21");
+    expect(md).toContain("d20[14]");
+    expect(md).toContain("Showing 1 row(s); 42 total messages");
+  });
+
+  it("marks a discarded die compactly", () => {
+    const result: QueryRollsResult = {
+      rows: [
+        {
+          id: "m1",
+          timestamp: 1000,
+          rollType: "roll",
+          formula: "2d20kl1",
+          total: 8,
+          dice: [
+            {
+              faces: 20,
+              results: [{ result: 14, discarded: true }, { result: 8 }],
+            },
+          ],
+        },
+      ],
+      totalMessages: 1,
+      hasMore: false,
+    };
+    const md = renderQueryRolls(result);
+    expect(md).toContain("d20[~14~,8]");
+  });
+
+  it("omits the DC when dcValue is absent and renders '—' for an outcome-less roll", () => {
+    const result: QueryRollsResult = {
+      rows: [{ id: "m1", timestamp: 1000, rollType: "roll", formula: "1d20", total: 12, dice: [] }],
+      totalMessages: 1,
+      hasMore: false,
+    };
+    const md = renderQueryRolls(result);
+    expect(md).toMatch(/\|\s*—\s*\|/);
+  });
+
+  it("includes the nextCursor hint when hasMore is true", () => {
+    const result: QueryRollsResult = {
+      rows: [],
+      totalMessages: 5,
+      hasMore: true,
+      nextCursor: "1000:m1",
+    };
+    const md = renderQueryRolls(result);
+    expect(md).toContain('cursor="1000:m1"');
+  });
+
+  it("renders a 'no matching rolls' placeholder for an empty page", () => {
+    const md = renderQueryRolls({ rows: [], totalMessages: 0, hasMore: false });
+    expect(md).toContain("No matching public rolls found");
   });
 });

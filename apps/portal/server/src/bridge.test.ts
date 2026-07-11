@@ -64,6 +64,15 @@ class FakeModule {
     this.ws.send(JSON.stringify({ type: "response", id, ok: true, result }));
   }
 
+  /** Sends an error `response` with an ARBITRARY `code` string — including one
+   * outside the closed `BridgeErrorCode` enum, for the D28-14 skew test below. A
+   * real module would never construct this deliberately; it's the shape a
+   * pre-rollback server sees from a 0.4.0+ module returning an additive error
+   * code the server doesn't know yet. */
+  respondErrorRaw(id: string, code: string, message: string): void {
+    this.ws.send(JSON.stringify({ type: "response", id, ok: false, error: { code, message } }));
+  }
+
   close(): void {
     this.ws.close();
   }
@@ -201,5 +210,35 @@ describe("Bridge (spec 0023 S2 — Foundry-free)", () => {
     second.onQuery((q) => second.respond(q.id, { from: "second" }));
     await expect(bridge.sendQuery("portal.ping")).resolves.toEqual({ from: "second" });
     second.close();
+  });
+
+  it("D28-14: maps a well-formed response envelope with an unknown error code to a typed foundry-error, never a silent drop-to-timeout", async () => {
+    const mod = new FakeModule(url);
+    await mod.ready();
+    mod.onQuery((q) => {
+      // A code this build's BridgeErrorCode enum has never heard of — the exact
+      // shape a 0.4.0+ module sends a rolled-back pre-0028 server (spec Risks'
+      // "rollback symmetry" scenario).
+      mod.respondErrorRaw(q.id, "some-future-code-this-server-does-not-know", "future skew");
+    });
+    // queryTimeoutMs is 250 in this describe block's beforeEach — if the fix
+    // regressed back to a silent drop, this assertion would fail with a `timeout`
+    // code instead (after the full 250ms), not resolve promptly as `foundry-error`.
+    await expect(bridge.sendQuery("portal.query-item")).rejects.toMatchObject({
+      code: "foundry-error",
+      message: "future skew",
+    });
+    mod.close();
+  });
+
+  it("D28-14: a genuinely unparseable message still falls through to the normal drop (no false-positive recovery)", async () => {
+    const mod = new FakeModule(url);
+    await mod.ready();
+    // Not even valid JSON — must NOT be mistaken for a recoverable skewed response.
+    mod.ws.send("this is not json");
+    // The bridge only ever exposes this by NOT resolving/rejecting anything — prove
+    // it via a real pending query that still times out normally afterward.
+    await expect(bridge.sendQuery("portal.ping")).rejects.toMatchObject({ code: "timeout" });
+    mod.close();
   });
 });

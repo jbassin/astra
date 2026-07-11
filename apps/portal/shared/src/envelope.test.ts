@@ -6,6 +6,7 @@ import {
   BridgeMessage,
   McpQuery,
   McpResponse,
+  McpResponseErrUnknownCode,
   PingMsg,
   PongMsg,
 } from "./envelope";
@@ -137,5 +138,28 @@ describe("portal-shared bridge envelope", () => {
 
   it("rejects extra properties on a strict envelope", () => {
     expect(() => AuthMsg.parse({ type: "auth", apiKey: "k", extra: true })).toThrow();
+  });
+
+  describe("McpResponseErrUnknownCode (0028 D28-14 skew-recovery)", () => {
+    it("accepts a well-formed error response whose code isn't in BridgeErrorCode", () => {
+      const r = {
+        type: "response",
+        id: "x",
+        ok: false,
+        error: { code: "some-future-code", message: "future skew" },
+      };
+      expect(McpResponseErrUnknownCode.parse(r)).toEqual(r);
+      // ...but the real McpResponse still rejects it (it's not a KNOWN code).
+      expect(() => McpResponse.parse(r)).toThrow();
+    });
+
+    it("still rejects a genuinely malformed envelope (missing id, wrong type, ...)", () => {
+      expect(() =>
+        McpResponseErrUnknownCode.parse({ type: "response", ok: false, error: { code: "x" } }),
+      ).toThrow();
+      expect(() =>
+        McpResponseErrUnknownCode.parse({ type: "query", id: "x", ok: false, error: {} }),
+      ).toThrow();
+    });
   });
 });

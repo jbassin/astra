@@ -1123,3 +1123,231 @@ export const QueryPlayerResult = z.discriminatedUnion("section", [
   PlayerNotesSection,
 ]);
 export type QueryPlayerResult = z.infer<typeof QueryPlayerResult>;
+
+// ---------------------------------------------------------------------------
+// 0028 S3 — query-item / query-rolls (D28-3/D28-5/D28-10/D28-12/D28-13). Same
+// module-typed-JSON / server-renders-markdown split as S2's query-party/query-player
+// (D28-6) — the renderers live in portal-server's markdown.ts, not here.
+// ---------------------------------------------------------------------------
+
+// --- query-item ---
+
+/** Where a hit/detail item lives (D28-5's tri-scope search: world items, items
+ * embedded on party members, and compendium items). */
+export const ItemProvenance = z.enum(["world", "embedded", "compendium"]);
+export type ItemProvenance = z.infer<typeof ItemProvenance>;
+
+export const QueryItemParams = z
+  .object({
+    uuid: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        'A Foundry item uuid — world ("Item.<id>"), party-member-embedded ' +
+          '("Actor.<id>.Item.<id>"), or compendium ("Compendium.<pack>.Item.<id>") — or a bare ' +
+          "world item id. Fetches this ONE item's full detail (description, traits, price, " +
+          "damage/AC where present). Give exactly one of uuid or name.",
+      ),
+    name: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "Case-insensitive substring matched by name across world items, items embedded on " +
+          "party members, and compendium items (visible packs only — a GM-restricted spoiler " +
+          "pack never surfaces a hit). Returns a provenance-labeled hit LIST, not full detail — " +
+          "pass one hit's uuid back in a follow-up call to fetch its description. Give exactly " +
+          "one of uuid or name.",
+      ),
+    limit: z
+      .number()
+      .int()
+      .positive()
+      .max(200)
+      .optional()
+      .describe("Max hits for a name search (default 25); ignored for a uuid lookup."),
+  })
+  .strict()
+  .refine((v) => (v.uuid !== undefined) !== (v.name !== undefined), {
+    message: "exactly one of uuid or name must be given",
+    path: ["uuid"],
+  });
+export type QueryItemParams = z.infer<typeof QueryItemParams>;
+
+export const QueryItemHitRow = z
+  .object({
+    uuid: z.string(),
+    id: z.string(),
+    name: z.string(),
+    type: z.string(),
+    provenance: ItemProvenance,
+    ownerActor: z
+      .string()
+      .optional()
+      .describe("embedded hits only: the owning party member's name."),
+    pack: z.string().optional().describe("compendium hits only: the pack's collection id."),
+    packLabel: z.string().optional().describe("compendium hits only: the pack's display label."),
+  })
+  .strict();
+export type QueryItemHitRow = z.infer<typeof QueryItemHitRow>;
+
+/** A single item's full detail (D28-5) — the raw `description` HTML is rendered to
+ * markdown server-side (D28-6); everything else is a small, hand-picked read
+ * projection (the same narrow-read-side-exception posture as D28-2's stats section). */
+export const QueryItemDetail = z
+  .object({
+    uuid: z.string(),
+    id: z.string(),
+    name: z.string(),
+    type: z.string(),
+    provenance: ItemProvenance,
+    ownerActor: z.string().optional(),
+    pack: z.string().optional(),
+    packLabel: z.string().optional(),
+    level: z.number().optional(),
+    traits: z.array(z.string()).optional(),
+    rarity: z.string().optional(),
+    price: z.string().optional().describe('Formatted denomination string, e.g. "4 gp".'),
+    bulk: z.number().optional(),
+    damage: z
+      .string()
+      .optional()
+      .describe('A weapon/strike\'s base damage formula, e.g. "1d8 slashing".'),
+    ac: z.number().optional().describe("An armor item's AC bonus."),
+    description: z
+      .string()
+      .optional()
+      .describe("Raw Foundry rich-text HTML; rendered to markdown server-side (D28-6)."),
+  })
+  .strict();
+export type QueryItemDetail = z.infer<typeof QueryItemDetail>;
+
+export const QueryItemResult = z.discriminatedUnion("kind", [
+  z.object({ kind: z.literal("hits"), hits: z.array(QueryItemHitRow) }).strict(),
+  z.object({ kind: z.literal("item"), item: QueryItemDetail }).strict(),
+]);
+export type QueryItemResult = z.infer<typeof QueryItemResult>;
+
+// --- query-rolls ---
+
+export const RollDegreeOutcome = z.enum([
+  "criticalFailure",
+  "failure",
+  "success",
+  "criticalSuccess",
+]);
+export type RollDegreeOutcome = z.infer<typeof RollDegreeOutcome>;
+
+export const RollDieResult = z
+  .object({
+    result: z.number(),
+    discarded: z
+      .boolean()
+      .optional()
+      .describe("True for a dropped/discarded die (kept-vs-dropped, e.g. a reroll)."),
+  })
+  .strict();
+export type RollDieResult = z.infer<typeof RollDieResult>;
+
+export const RollDieRow = z
+  .object({ faces: z.number().int(), results: z.array(RollDieResult) })
+  .strict();
+export type RollDieRow = z.infer<typeof RollDieRow>;
+
+/** D28-12's compact per-message roll row, parsed from the stored serialized-Roll
+ * JSON — never re-evaluated. */
+export const RollRow = z
+  .object({
+    id: z.string(),
+    timestamp: z.number().describe("Ms-epoch creation time."),
+    speakerAlias: z.string().optional(),
+    speakerActorId: z.string().optional(),
+    checkName: z
+      .string()
+      .optional()
+      .describe("flags.pf2e.modifierName, falling back to a flavor-text-derived name."),
+    rollType: z
+      .string()
+      .describe(
+        'The pf2e flags.pf2e.context.type taxonomy value (e.g. "skill-check", "saving-throw", ' +
+          '"damage-roll"), or "roll" for an untagged /roll message.',
+      ),
+    outcome: RollDegreeOutcome.optional().describe("Absent when the roll had no DC to compare to."),
+    dcValue: z.number().optional().describe("Only present when the DC was player-visible."),
+    formula: z.string(),
+    total: z.number(),
+    dice: z.array(RollDieRow),
+    originItemName: z
+      .string()
+      .optional()
+      .describe("The item this roll originated from (a strike, spell, etc.), when resolvable."),
+  })
+  .strict();
+export type RollRow = z.infer<typeof RollRow>;
+
+export const QueryRollsParams = z
+  .object({
+    actor: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "Restrict to rolls from one actor — a world actor uuid/id, or a name (case-insensitive " +
+          "exact match preferred, falling back to an unambiguous prefix match — same resolution " +
+          "as query-player's name param, D28-13). Matches either the roll's speaker or its pf2e " +
+          "origin actor.",
+      ),
+    type: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        'Restrict to one roll type — the pf2e taxonomy (e.g. "skill-check", "attack-roll", ' +
+          '"saving-throw", "perception-check", "damage-roll", "flat-check", "spell-cast", ' +
+          '"initiative") or "roll" for untagged /roll messages.',
+      ),
+    outcome: RollDegreeOutcome.optional().describe("Restrict to one degree of success."),
+    since: z
+      .union([z.number().int(), z.string().datetime()])
+      .optional()
+      .describe(
+        "Only rolls at or after this time — a ms-epoch number, or an ISO-8601 string " +
+          '(e.g. "2026-07-01T00:00:00Z"). A plain numeric STRING is rejected; pass a JSON number ' +
+          "for an epoch timestamp.",
+      ),
+    until: z
+      .union([z.number().int(), z.string().datetime()])
+      .optional()
+      .describe("Only rolls at or before this time — same shape as since."),
+    cursor: z
+      .string()
+      .min(1)
+      .optional()
+      .describe(
+        "Opaque pagination cursor from a prior call's nextCursor — omit for the first (most " +
+          "recent) page.",
+      ),
+    limit: z
+      .number()
+      .int()
+      .positive()
+      .max(100)
+      .optional()
+      .describe("Max rows per page (default 20, max 100)."),
+  })
+  .strict();
+export type QueryRollsParams = z.infer<typeof QueryRollsParams>;
+
+/** Newest-first page of public roll messages (D28-3's privacy filter is baked in
+ * module-side, never a param). `totalMessages` is the RAW `game.messages` collection
+ * size (all messages, not just qualifying rolls) — the spec Risks' message-count probe. */
+export const QueryRollsResult = z
+  .object({
+    rows: z.array(RollRow),
+    totalMessages: z.number().int().nonnegative(),
+    hasMore: z.boolean(),
+    nextCursor: z.string().optional(),
+  })
+  .strict();
+export type QueryRollsResult = z.infer<typeof QueryRollsResult>;

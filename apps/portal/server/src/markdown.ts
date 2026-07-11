@@ -25,8 +25,11 @@ import type {
   PlayerSpellsSection,
   PlayerStatsSection,
   PlayerSummarySection,
+  QueryItemResult,
   QueryPartyResult,
   QueryPlayerResult,
+  QueryRollsResult,
+  RollRow,
 } from "@astra/portal-shared";
 
 // ---------------------------------------------------------------------------
@@ -387,4 +390,127 @@ export function renderQueryPlayer(result: QueryPlayerResult, params: unknown): s
     case "notes":
       return renderPlayerNotes(result);
   }
+}
+
+// ---------------------------------------------------------------------------
+// query-item (0028 S3, D28-5/D28-6)
+// ---------------------------------------------------------------------------
+
+function provenanceLabel(provenance: "world" | "embedded" | "compendium", extra?: string): string {
+  if (provenance === "embedded") return `embedded${extra ? ` (${extra})` : ""}`;
+  if (provenance === "compendium") return `compendium${extra ? ` — ${extra}` : ""}`;
+  return "world";
+}
+
+function renderItemHits(result: Extract<QueryItemResult, { kind: "hits" }>): string {
+  if (result.hits.length === 0) {
+    return "# Item Search\n\n_No items matched._";
+  }
+  const lines = [
+    "# Item Search\n",
+    "| Name | Type | Provenance | uuid |",
+    "| --- | --- | --- | --- |",
+  ];
+  for (const hit of result.hits) {
+    const provenance =
+      hit.provenance === "embedded"
+        ? provenanceLabel(hit.provenance, hit.ownerActor)
+        : hit.provenance === "compendium"
+          ? provenanceLabel(hit.provenance, hit.packLabel ?? hit.pack)
+          : provenanceLabel(hit.provenance);
+    lines.push(`| ${hit.name} | ${hit.type} | ${provenance} | \`${hit.uuid}\` |`);
+  }
+  lines.push("");
+  lines.push("Fetch one item's full detail: re-query query-item with that row's uuid.");
+  return lines.join("\n").trim();
+}
+
+function renderItemDetail(result: Extract<QueryItemResult, { kind: "item" }>): string {
+  const item = result.item;
+  const lines = [`# ${item.name}\n`];
+  const bits: string[] = [item.type];
+  if (item.level !== undefined) bits.push(`level ${item.level}`);
+  if (item.rarity) bits.push(item.rarity);
+  lines.push(`_${bits.join(" · ")}_\n`);
+  const provenance =
+    item.provenance === "embedded"
+      ? provenanceLabel(item.provenance, item.ownerActor)
+      : item.provenance === "compendium"
+        ? provenanceLabel(item.provenance, item.packLabel ?? item.pack)
+        : provenanceLabel(item.provenance);
+  lines.push(`- Source: ${provenance}`);
+  if (item.traits && item.traits.length > 0) lines.push(`- Traits: ${item.traits.join(", ")}`);
+  if (item.price) lines.push(`- Price: ${item.price}`);
+  if (item.bulk !== undefined) lines.push(`- Bulk: ${item.bulk}`);
+  if (item.damage) lines.push(`- Damage: ${item.damage}`);
+  if (item.ac !== undefined) lines.push(`- AC bonus: ${item.ac}`);
+  if (item.description) {
+    lines.push("");
+    lines.push(htmlToMarkdown(item.description));
+  }
+  const full = lines.join("\n").trim();
+  // Same D28-11 idiom as the player sections: a description could in principle be
+  // long enough to blow the cap (a handful of pf2e items run long) — truncate
+  // rather than drop the rest of the item's structured fields, which already
+  // rendered above the description.
+  return full.length <= MARKDOWN_CHAR_CAP
+    ? full
+    : `${full.slice(0, MARKDOWN_CHAR_CAP)}\n\n_… (description truncated at the size limit)_`;
+}
+
+export function renderQueryItem(result: QueryItemResult): string {
+  return result.kind === "hits" ? renderItemHits(result) : renderItemDetail(result);
+}
+
+// ---------------------------------------------------------------------------
+// query-rolls (0028 S3, D28-3/D28-10/D28-12)
+// ---------------------------------------------------------------------------
+
+function renderDice(row: RollRow): string {
+  if (row.dice.length === 0) return "—";
+  return row.dice
+    .map(
+      (d) =>
+        `d${d.faces}[${d.results.map((r) => (r.discarded ? `~${r.result}~` : String(r.result))).join(",")}]`,
+    )
+    .join(" ");
+}
+
+function renderOutcome(row: RollRow): string {
+  if (!row.outcome) return "—";
+  const label: Record<string, string> = {
+    criticalSuccess: "Critical Success",
+    success: "Success",
+    failure: "Failure",
+    criticalFailure: "Critical Failure",
+  };
+  const dc = row.dcValue !== undefined ? ` (DC ${row.dcValue})` : "";
+  return `${label[row.outcome] ?? row.outcome}${dc}`;
+}
+
+export function renderQueryRolls(result: QueryRollsResult): string {
+  const lines = ["# Roll History\n"];
+  if (result.rows.length === 0) {
+    lines.push("_No matching public rolls found._");
+  } else {
+    lines.push("| Time | Speaker | Check | Type | Outcome | Formula → Total | Dice |");
+    lines.push("| --- | --- | --- | --- | --- | --- | --- |");
+    for (const row of result.rows) {
+      const time = new Date(row.timestamp).toISOString();
+      const speaker = row.speakerAlias ?? "—";
+      const check = [row.checkName, row.originItemName ? `(${row.originItemName})` : undefined]
+        .filter(Boolean)
+        .join(" ");
+      lines.push(
+        `| ${time} | ${speaker} | ${check || "—"} | ${row.rollType} | ${renderOutcome(row)} | ` +
+          `${row.formula} → ${row.total} | ${renderDice(row)} |`,
+      );
+    }
+  }
+  lines.push("");
+  lines.push(
+    `_Showing ${result.rows.length} row(s); ${result.totalMessages} total messages in this world.` +
+      `${result.hasMore ? ` More available — re-query with cursor="${result.nextCursor}".` : ""}_`,
+  );
+  return lines.join("\n").trim();
 }

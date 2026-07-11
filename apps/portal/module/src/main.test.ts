@@ -63,6 +63,9 @@ function stubGame(opts: {
     scenes: { ...emptyCollection<FoundryScene>(), active: null },
     folders: emptyCollection<FoundryFolder>(),
     macros: emptyCollection<FoundryMacro>(),
+    // 0028 S3 — `main.ts` never touches `game.messages` itself (that's
+    // `handlers.ts`'s `query-rolls` surface), so an empty stand-in is enough here.
+    messages: { contents: [], size: 0 },
     users: fakeUsersCollection(opts.users ?? [user]),
     pf2e: { ConditionManager: { getCondition: () => ({ toObject: () => ({}) }) } },
   };

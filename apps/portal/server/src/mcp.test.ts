@@ -217,7 +217,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
     await client.close();
   });
 
-  it("lists all 20 tools (spec 0026 S1's 18 + 0028 S2's query-party/query-player), every new field described", async () => {
+  it("lists all 22 tools (spec 0026 S1's 18 + 0028's query-party/query-player/query-item/query-rolls), every new field described", async () => {
     const transport = new StreamableHTTPClientTransport(mcpUrl, {
       requestInit: { headers: { authorization: `Bearer ${MCP_API_KEY}` } },
     });
@@ -247,6 +247,8 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
         "execute-macro",
         "query-party",
         "query-player",
+        "query-item",
+        "query-rolls",
       ].sort(),
     );
 
@@ -266,6 +268,8 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
       "delete-document": ["uuid"],
       "execute-macro": ["macroId"],
       "query-player": ["name", "uuid", "section", "entry", "rank"],
+      "query-item": ["uuid", "name", "limit"],
+      "query-rolls": ["actor", "type", "outcome", "since", "until", "cursor", "limit"],
     };
     for (const [tool, fields] of Object.entries(newToolFields)) {
       const properties = schemaOf(tool).properties ?? {};
@@ -717,19 +721,20 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     return client;
   }
 
-  it("the player key authenticates /mcp and lists a tool subset ⊆ PLAYER_TOOL_NAMES, with no write tool and no admin-only read tool", async () => {
+  it("the player key authenticates /mcp and lists EXACTLY the five PLAYER_TOOL_NAMES, with no write tool and no admin-only read tool", async () => {
     const client = await clientWith(PLAYER_MCP_API_KEY);
     const { tools } = await client.listTools();
     const names = tools.map((t) => t.name);
 
-    // Subset-of, not exact-5: query-party/query-player land in S2 (this slice);
-    // query-rolls/query-item land in S3. The exact-5 assertion is an S3 acceptance
-    // item, per the spec.
-    expect(names.length).toBeGreaterThan(0);
+    // 0028 S3 acceptance: exactly five, both directions (this test + the
+    // "player-key subset" identity check below), not merely a subset-of.
     for (const name of names) {
       expect(PLAYER_TOOL_NAMES.has(name)).toBe(true);
     }
-    expect(names.sort()).toEqual(["bridge-status", "query-party", "query-player"].sort());
+    expect(names.sort()).toEqual(
+      ["bridge-status", "query-rolls", "query-party", "query-player", "query-item"].sort(),
+    );
+    expect(names).toHaveLength(5);
 
     // No write tool reachable under the player key.
     for (const writeTool of [
@@ -762,17 +767,19 @@ describe("0028 S1 — player key + tool scoping (Foundry-free)", () => {
     await client.close();
   });
 
-  it("the admin key still sees the full 20-tool list, unaffected by player scoping (D28-8)", async () => {
+  it("the admin key sees the full 22-tool list (the spec's final admin count), unaffected by player scoping (D28-8)", async () => {
     const client = await clientWith(MCP_API_KEY);
     const { tools } = await client.listTools();
-    // 18 (0023/0026) + query-party + query-player (0028 S2) = 20. S3 adds
-    // query-rolls/query-item -> 22 (the spec's final admin count).
-    expect(tools.length).toBe(20);
+    // 18 (0023/0026) + query-party + query-player + query-item + query-rolls
+    // (0028 S2/S3) = 22.
+    expect(tools.length).toBe(22);
     expect(tools.map((t) => t.name)).toContain("bridge-status");
     expect(tools.map((t) => t.name)).toContain("search-world");
     expect(tools.map((t) => t.name)).toContain("create-journal");
     expect(tools.map((t) => t.name)).toContain("query-party");
     expect(tools.map((t) => t.name)).toContain("query-player");
+    expect(tools.map((t) => t.name)).toContain("query-item");
+    expect(tools.map((t) => t.name)).toContain("query-rolls");
     await client.close();
   });
 
@@ -1000,6 +1007,189 @@ describe("0028 S2 — query-party / query-player (markdown rendering, Foundry-fr
       expect(schema?.properties?.[field]?.description, `${field} should be described`).toBeTruthy();
     }
     await client.close();
+  });
+});
+
+describe("0028 S3 — query-item / query-rolls (markdown rendering, Foundry-free)", () => {
+  let handle: PortalServerHandle & { port: number };
+  let mcpUrl: URL;
+
+  beforeEach(async () => {
+    handle = await listen({
+      port: 0,
+      mcpApiKey: MCP_API_KEY,
+      playerMcpApiKey: PLAYER_MCP_API_KEY,
+      bridgeApiKey: BRIDGE_API_KEY,
+      bridgeTimeoutMs: 250,
+      maxCreatesPerRequest: MAX_CREATES_PER_REQUEST,
+      publicOrigin: TEST_PUBLIC_ORIGIN,
+      moduleDir: TEST_MODULE_DIR,
+      oauthStatePath: TEST_OAUTH_STATE_PATH,
+    });
+    mcpUrl = new URL(`http://127.0.0.1:${handle.port}${MCP_HTTP_PATH}`);
+  });
+
+  afterEach(async () => {
+    await handle.close();
+  });
+
+  async function clientWith(key: string): Promise<Client> {
+    const transport = new StreamableHTTPClientTransport(mcpUrl, {
+      requestInit: { headers: { authorization: `Bearer ${key}` } },
+    });
+    const client = new Client({ name: "portal-test-client", version: "0.0.0" });
+    await client.connect(transport);
+    return client;
+  }
+
+  it("query-item renders a hit list as markdown, provenance-labeled", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.query-item");
+      mod.respond(q.id, {
+        kind: "hits",
+        hits: [
+          { uuid: "Item.w1", id: "w1", name: "Dagger", type: "weapon", provenance: "world" },
+          {
+            uuid: "Actor.a1.Item.i1",
+            id: "i1",
+            name: "Holy Symbol",
+            type: "equipment",
+            provenance: "embedded",
+            ownerActor: "Argyle",
+          },
+        ],
+      });
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({ name: "query-item", arguments: { name: "dag" } });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(content.text).not.toMatch(/^\s*[{[]/);
+    expect(content.text).toContain("Dagger");
+    expect(content.text).toContain("Holy Symbol");
+    expect(content.text).toContain("Argyle");
+
+    await client.close();
+    mod.close();
+  });
+
+  it("query-item renders a single item's detail (description HTML -> markdown)", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      expect(q.params).toEqual({ uuid: "Item.w1" });
+      mod.respond(q.id, {
+        kind: "item",
+        item: {
+          uuid: "Item.w1",
+          id: "w1",
+          name: "Bastard Sword",
+          type: "weapon",
+          provenance: "world",
+          price: "4 gp",
+          description: "<p>A <strong>fine</strong> blade.</p>",
+        },
+      });
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({ name: "query-item", arguments: { uuid: "Item.w1" } });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(content.text).toContain("# Bastard Sword");
+    expect(content.text).toContain("4 gp");
+    expect(content.text).toContain("**fine**");
+    expect(content.text).not.toMatch(/<[a-z][\s\S]*>/i);
+
+    await client.close();
+    mod.close();
+  });
+
+  it("query-rolls renders a table with formula -> total, outcome/DC, and dice", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.query-rolls");
+      mod.respond(q.id, {
+        rows: [
+          {
+            id: "m1",
+            timestamp: 1_752_000_000_000,
+            speakerAlias: "Argyle",
+            checkName: "Religion",
+            rollType: "skill-check",
+            outcome: "success",
+            dcValue: 18,
+            formula: "1d20+7",
+            total: 21,
+            dice: [{ faces: 20, results: [{ result: 14 }] }],
+          },
+        ],
+        totalMessages: 1,
+        hasMore: false,
+      });
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({ name: "query-rolls", arguments: {} });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(content.text).not.toMatch(/^\s*[{[]/);
+    expect(content.text).toContain("Argyle");
+    expect(content.text).toContain("Religion");
+    expect(content.text).toContain("1d20+7 → 21");
+    expect(content.text).toContain("Success (DC 18)");
+    expect(content.text).toContain("d20[14]");
+
+    await client.close();
+    mod.close();
+  });
+
+  it("both tools are reachable via the PLAYER key (D28-8/final PLAYER_TOOL_NAMES)", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      if (q.method === "portal.query-item") mod.respond(q.id, { kind: "hits", hits: [] });
+      else mod.respond(q.id, { rows: [], totalMessages: 0, hasMore: false });
+    });
+
+    const client = await clientWith(PLAYER_MCP_API_KEY);
+    const itemResult = await client.callTool({ name: "query-item", arguments: { name: "x" } });
+    expect(itemResult.isError).toBeFalsy();
+    const rollsResult = await client.callTool({ name: "query-rolls", arguments: {} });
+    expect(rollsResult.isError).toBeFalsy();
+
+    await client.close();
+    mod.close();
+  });
+
+  it("D28-14: an unknown module error code resolves as a typed foundry-error tool result, not a hang", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respondError(q.id, "some-future-code-this-server-does-not-know", "future skew");
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({ name: "query-item", arguments: { name: "x" } });
+    expect(result.isError).toBe(true);
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(JSON.parse(content.text)).toEqual({ code: "foundry-error", message: "future skew" });
+
+    await client.close();
+    mod.close();
   });
 });
 
