@@ -531,7 +531,10 @@ services:
     # unresolved — no degraded mode, unlike orator's optional Discord token).
     environment:
       PORTAL_MCP_API_KEY: ${PORTAL_MCP_API_KEY:-}
-      PORTAL_PLAYER_MCP_API_KEY: ${PORTAL_PLAYER_MCP_API_KEY:-}
+      # NB: the env-override name is the SOPS key upper-cased (portal_player_api_key →
+      # PORTAL_PLAYER_API_KEY), NOT the kdl field name — the mismatch crash-looped the
+      # 0028 S4 deploy.
+      PORTAL_PLAYER_API_KEY: ${PORTAL_PLAYER_API_KEY:-}
       PORTAL_BRIDGE_API_KEY: ${PORTAL_BRIDGE_API_KEY:-}
     # 0025 OAuth state (registered claude.ai clients + hashed tokens) bind-mounted
     # from artifacts/ so connections survive redeploys; container path matches kdl
