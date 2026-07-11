@@ -358,7 +358,7 @@ describe("D28-11 hard 12,000-char cap — measured against the real Argyle fixtu
     expect(md.length).toBeLessThan(12_000);
   });
 
-  it("spells (196 real spells, 189 linked to the 2 entries) trip the cap and fall back to a group summary", () => {
+  it("spells (196 real spells, 189 linked to the 2 entries): an UNFILTERED request always gets the group summary (D28-11 as amended 2026-07-11)", () => {
     const section = buildSpellsSectionFromFixture(document);
     const totalSpells = section.entries.reduce(
       (n, e) => n + e.ranks.reduce((m, r) => m + r.spells.length, 0),
@@ -372,12 +372,24 @@ describe("D28-11 hard 12,000-char cap — measured against the real Argyle fixtu
 
     const md = renderQueryPlayer(section, {});
     expect(md.length).toBeLessThan(12_000);
-    // Argyle's own 196-spell full render measures ABOVE the cap (verified: ~12.4-13.5
-    // KB depending on trait/slot-label overhead) — this real actor is the case D28-11
-    // exists for, not a synthetic worst case.
-    expect(md).toContain("summary — the full render exceeded");
+    // Default-summary, not a cap fallback: neutral header + the drill-down hint.
+    expect(md).toContain("# Spells (summary)");
+    expect(md).not.toContain("exceeded the size limit");
     expect(md).toContain("Re-query query-player");
     expect(md).not.toMatch(/<[a-z][\s\S]*>/i);
+  });
+
+  it("a broad FILTERED spells render that still exceeds the cap falls back to the summary with the over-cap wording", () => {
+    // Simulate a filter broad enough to match everything (the module filters
+    // module-side; the server only sees the echoed params) — Argyle's own 189-spell
+    // full render measures ABOVE the cap (verified: ~12.4-13.5 KB depending on
+    // trait/slot-label overhead) — this real actor is the case the cap backstop
+    // exists for, not a synthetic worst case.
+    const section = buildSpellsSectionFromFixture(document);
+    const md = renderQueryPlayer(section, { entry: "spells" });
+    expect(md.length).toBeLessThan(12_000);
+    expect(md).toContain("summary — the full render exceeded");
+    expect(md).toContain("Narrow further");
   });
 
   it("the entry/rank-filtered spells render (post-filter, module-side) stays comfortably under the cap", () => {

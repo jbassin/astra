@@ -932,9 +932,10 @@ export const QueryPlayerParams = z
         'ancestry/heritage/background/class/deity, languages. "stats": the LIVE derived ' +
         "projection — AC, saving throws, perception, ability modifiers, class/spell DC — " +
         'computed by pf2e at runtime (never available from stored source data). "skills": ' +
-        'per-skill proficiency rank + derived total, lore skills included. "spells": spells ' +
-        "grouped by spellcasting entry then rank, with slot/prepared state; optionally " +
-        'narrowed with the entry/rank params. "feats": feats grouped by category. ' +
+        'per-skill proficiency rank + derived total, lore skills included. "spells": a ' +
+        "group-level summary by default (spell names + counts per spellcasting entry and " +
+        "rank); pass the entry and/or rank params for full details (traits, prepared/slot " +
+        'state) of one group. "feats": feats grouped by category. ' +
         '"inventory": weapons/armor/equipment/consumables with quantity/bulk/runes. "notes": ' +
         "deity and biography prose.",
     ),
@@ -944,7 +945,9 @@ export const QueryPlayerParams = z
       .optional()
       .describe(
         "spells section only: restrict to one spellcasting entry, matched by id or a " +
-          'case-insensitive substring of its name (e.g. "Cleric Spells").',
+          'case-insensitive substring of its name (e.g. "Cleric Spells"). Passing entry ' +
+          "and/or rank switches the spells section from its default summary to full " +
+          "per-spell detail.",
       ),
     rank: z
       .number()

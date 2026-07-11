@@ -259,13 +259,20 @@ function renderSpellsFull(section: PlayerSpellsSection): string {
   return lines.join("\n").trim();
 }
 
-/** D28-11's group-level fallback: names + counts only, no traits/prepared state, plus
- * the explicit re-query instruction — deterministic, no cursor state. */
+/** D28-11's group-level summary: names + counts only, no traits/prepared state, plus
+ * the explicit re-query instruction — deterministic, no cursor state. This is the
+ * DEFAULT view for an unfiltered request (D28-11 as amended 2026-07-11) and the
+ * over-cap fallback for a filtered one. */
 function renderSpellsSummary(
   section: PlayerSpellsSection,
   filters: { entry?: string; rank?: number },
 ): string {
-  const lines = ["# Spells (summary — the full render exceeded the size limit)\n"];
+  const filtered = filters.entry !== undefined || filters.rank !== undefined;
+  const lines = [
+    filtered
+      ? "# Spells (summary — the full render exceeded the size limit)\n"
+      : "# Spells (summary)\n",
+  ];
   for (const entry of section.entries) {
     lines.push(`## ${entry.entryName}`);
     for (const rankGroup of entry.ranks) {
@@ -275,11 +282,10 @@ function renderSpellsSummary(
     }
   }
   lines.push("");
-  const hint =
-    filters.entry !== undefined || filters.rank !== undefined
-      ? "Narrow further with a more specific `entry`/`rank` filter to see full spell details."
-      : 'Re-query query-player with section="spells" and an `entry` and/or `rank` filter to ' +
-        "see full details for one group.";
+  const hint = filtered
+    ? "Narrow further with a more specific `entry`/`rank` filter to see full spell details."
+    : 'This is the default view. Re-query query-player with section="spells" and an `entry` ' +
+      "and/or `rank` filter to see full details (traits, prepared/slot state) for one group.";
   lines.push(hint);
   return lines.join("\n").trim();
 }
@@ -288,6 +294,12 @@ function renderPlayerSpells(
   section: PlayerSpellsSection,
   filters: { entry?: string; rank?: number },
 ): string {
+  // D28-11 as amended 2026-07-11 (stakeholder): an UNFILTERED request always gets the
+  // group summary — Argyle's real full render already exceeds the cap and spell lists
+  // only grow, so the default view must not flip shape when a level-up crosses the
+  // threshold. Full detail is opt-in via entry/rank, with the cap as the backstop.
+  const filtered = filters.entry !== undefined || filters.rank !== undefined;
+  if (!filtered) return renderSpellsSummary(section, filters);
   const full = renderSpellsFull(section);
   return full.length <= MARKDOWN_CHAR_CAP ? full : renderSpellsSummary(section, filters);
 }
