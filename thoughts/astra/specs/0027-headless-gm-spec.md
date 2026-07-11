@@ -1,6 +1,12 @@
 # NLSpec 0027 — headless-gm: a supervised 24/7 GM session so portal works with no human tab
 
-**Status:** IN PROGRESS (2026-07-08) — S1 `32f509b` (dialer + identity) · S2 `f281283` (supervisor
+**Status:** COMPLETE (2026-07-11) — all acceptance A–H met incl. the ≥24h soak (G): SigNoz
+  `astra.portal-headless` verified over 2026-07-09T00:00Z→2026-07-11 (~2.2 days): **zero ERROR in
+  the window** (the only 5 ERRORs are pre-soak 23:35–23:46Z viewport noise, killed by `bda23ee`);
+  WARNs are all demoted page-console world noise per `6fd8d5e`; one clean self-heal 2026-07-11
+  00:10Z (join → in-world in ~0.5s, relaunches=0) after a Foundry-side kick; two transient
+  socket re-establish WARNs with no state change; portal server 0 ERROR, bridge stable.
+  — S1 `32f509b` (dialer + identity) · S2 `f281283` (supervisor
   service; classify() hardened at review: in-world is positively `/game`, unknown → `world-down`) ·
   S3 `4914111` (container + compose; non-live acceptance passed: unreachable→`broken` no-crash-loop,
   /setup-fixture→`world-down` zero-login) — all CI-green + pushed. **S4 LIVE GATE RUN 2026-07-08
@@ -18,7 +24,7 @@
   before classifying any non-`/game`/non-`/join` page; unreachable origin → goto throws →
   `broken` → the S3-proven bounded relaunch). Second bounce proved the self-heal live: stale
   `/game` → Foundry's client kicks to `/join` → re-login, **in-world again in ~36s, joins=2,
-  relaunches=0, no container recreate.** **▶ Remaining to close: only the ≥24h soak (G).**
+  relaunches=0, no container recreate.** **Soak (G) PASSED 2026-07-11 — spec CLOSED.**
 **Scope doc:** `thoughts/shared/research/2026-07-08-headless-gm-0027-thoughts.md` (all claims
   verified 2026-07-08: live host inspected read-only — compose labels, env, `options.json` read
   directly; module/bridge code walked file:line; Foundry v13.351 `/join`+session+`core.noCanvas`

@@ -1,11 +1,11 @@
 ---
 name: headless-gm-0027-gotchas
-description: headless-gm (0027) — supervised headless-Chromium GM session so portal works with zero human tabs; S4 live gate RUN (A/B/C/D/F all passed), soak + acceptance-E pending; the load-bearing findings + gotchas
+description: headless-gm (0027) — COMPLETE 2026-07-11 (all acceptance A–H incl. the ≥24h soak); supervised headless-Chromium GM session so portal works with zero human tabs; the load-bearing findings + gotchas
 metadata:
   type: project
 ---
 
-# headless-gm 0027 — S4 LIVE GATE RUN 2026-07-08/09 (A–F ALL ✅); ▶ only the ≥24h soak remains
+# headless-gm 0027 — COMPLETE 2026-07-11 (all acceptance A–H ✅ incl. the ≥24h soak)
 
 A dedicated Foundry GM account ("Portal") permanently logged in via headless Chromium (Compose
 unit `apps/portal/headless`, port 10373) so portal MCP tools work 24/7 tab-free. Scope
@@ -79,7 +79,12 @@ noCanvas smoke (scene read, hidden light, Goblin Warrior token create+delete, ze
 three signals in SigNoz ✅. **Acceptance E ✅ (stakeholder-approved bounce ×2):** auto-launch
 proven (restart → `faerrin` active ~20s, zero human action); second bounce proved the FULL
 self-heal (stale `/game` → Foundry kicks to `/join` → re-login, in-world in ~36s, joins=2,
-relaunches=0, no recreate). **Remaining: only the ≥24h soak.**
+relaunches=0, no recreate). **Soak ✅ (checked 2026-07-11, ~2.2 days of window):** zero ERROR
+in-window (the 5 pre-soak ERRORs were the viewport noise `bda23ee` killed); WARNs all demoted
+page-console world noise per `6fd8d5e`; ONE clean self-heal 2026-07-11 00:10Z (join → in-world
+~0.5s, relaunches=0) after a Foundry-side kick — the supervisor absorbed it silently, which is
+the whole point; two transient socket re-establish WARNs healed without a state change; portal
+server 0 ERROR. **0027 CLOSED.**
 
 ## S4 live-gate gotchas (will bite again)
 

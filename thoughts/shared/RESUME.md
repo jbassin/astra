@@ -74,15 +74,16 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 >   hard 12k-char cap + group-summary fallback, S2 measures Argyle; acceptance-F vacuous-pass →
 >   S4 stages a GM-hidden item; D28-8 `AuthContext {scope, method}` two-field split. **▶ RESUME
 >   AT: `octo:embrace` S1** (key + scope machinery, Foundry-free).
-> - Housekeeping: `deploy/sops/secrets.enc.yaml` is dirty in the tree (almost certainly the 0027
->   S4 `foundry_portal_gm_password` sops-set, never committed) — commit or reconcile deliberately;
->   `routeTree.gen.ts` is the known regen flap.
+> - Housekeeping DONE 2026-07-11: `deploy/sops/secrets.enc.yaml` (the 0027 S4
+>   `foundry_portal_gm_password` sops-set) committed deliberately; the `routeTree.gen.ts` regen
+>   flap restored from HEAD.
 >
-> **▶ Also open: 0027 headless-gm is one step from closure — the ≥24h soak check is OVERDUE**
-> (soak started ~2026-07-08T23:56Z; nothing checked since). Verify SigNoz `astra.portal-headless`
-> over 2026-07-09→now (no relaunch loop, no unexpected ERROR since the demote fix `6fd8d5e`,
-> bridge stable) → then 0027 spec → COMPLETE + finalize [[headless-gm-0027-gotchas]] + retire the
-> superseded section below. Independent of 0028.
+> **✅ 0027 headless-gm CLOSED 2026-07-11 — the ≥24h soak PASSED** (SigNoz `astra.portal-headless`
+> over 2026-07-09T00:00Z→2026-07-11, ~2.2 days: zero in-window ERROR — the only 5 ERRORs predate
+> the soak and are the `bda23ee` viewport noise; WARNs all demoted page-console world noise per
+> `6fd8d5e`; ONE clean self-heal 2026-07-11T00:10Z, join→in-world ~0.5s, relaunches=0, after a
+> Foundry-side kick; two transient socket re-establish WARNs healed with no state change; portal
+> server 0 ERROR, bridge stable). Spec status → COMPLETE (all A–H); memory finalized.
 
 ---
 
