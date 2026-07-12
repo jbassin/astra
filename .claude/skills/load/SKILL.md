@@ -50,7 +50,7 @@ Summarize in a few lines: **what subsystem is in flight, which slice is next, th
 constrain it, and any spec-sanctioned deferrals.** Then ask whether to proceed (unless the invoking
 prompt already said to continue).
 
-> The hard rules (from the feedback memories): **port faerrin, don't reinvent** (grep
-> `/ruby/data/experiments/faerrin` first); **verify before acting**; **build the spec's scope in full** —
+> The hard rules (from the feedback memories): **reuse what exists, don't reinvent** (mirror the
+> nearest already-built astra subsystem); **verify before acting**; **build the spec's scope in full** —
 > surface trade-offs, never silently defer; **commit each CI-green slice + push on chunk completion**
 > after reproducing CI locally (don't watch the GHA run).

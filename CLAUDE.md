@@ -1,7 +1,7 @@
 # CLAUDE.md
 
-Root guidance for **astra** — the next-generation rebuild of [faerrin](/ruby/data/experiments/faerrin).
-astra is a **polyglot monorepo**: Python (data + LLM, managed by **uv**) and TypeScript (web servers +
+Root guidance for **astra** — the campaign's live stack (a completed 2026 re-architecture of its
+now-decommissioned predecessor, faerrin). astra is a **polyglot monorepo**: Python (data + LLM, managed by **uv**) and TypeScript (web servers +
 frontends, managed by **pnpm**) — two toolchains, no third language. Read [`ASTRA.md`](./ASTRA.md) for the
 product vision and [`thoughts/astra/plans/`](./thoughts/astra/plans/) for the migration roadmap (`0000`)
 and per-subsystem sub-plans. **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** is the practical onboarding guide —
@@ -9,7 +9,7 @@ the dev process, exact CI commands, working-style expectations, and the load-bea
 
 ## Version control: plain git + conventional commits (NOT jj)
 
-astra uses **plain git** on GitHub — no jujutsu. (faerrin used jj; astra deliberately does not.) Commit
+astra uses **plain git** on GitHub — no jujutsu. Commit
 messages follow **Conventional Commits** (`type(scope): subject`); CI lints them with commitlint. A
 **pre-commit gate** (`.githooks/pre-commit`, auto-installed via the root `package.json` `prepare` script →
 `git config core.hooksPath .githooks`) blocks a commit on any **format/lint** issue across both lanes —
@@ -21,14 +21,13 @@ CI.
 
 ## Memory + thoughts (project-local — astra owns its own)
 
-Project memory and planning docs live **in this repo**, not in faerrin and not in the harness default
-`~/.claude/…`. The memory index is auto-loaded each session via this import:
+Project memory and planning docs live **in this repo**, not in the harness default `~/.claude/…`. The memory index is auto-loaded each session via this import:
 
 @thoughts/shared/memory/MEMORY.md
 
 - **Writing memory:** create/update one-fact-per-file memories under `thoughts/shared/memory/` (harness
   format — frontmatter + body), and add a one-line pointer in `MEMORY.md`. Do **not** write astra memory
-  to the faerrin repo or to `~/.claude`.
+  to `~/.claude`.
 - `thoughts/` is also the home for the migration **plans + specs** (`thoughts/astra/{plans,specs}`) and
   **research** (`thoughts/shared/research/`). astra is the single canonical home for all of these.
 
@@ -37,8 +36,8 @@ Project memory and planning docs live **in this repo**, not in faerrin and not i
 Each subsystem moves through three gates, leaving a paper trail in `thoughts/`:
 
 1. **Scope** — a verified pre-implementation research doc at
-   `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`: read the faerrin source + the sub-plan,
-   **verify claims against the actual repos** (resolve real config/secrets, load real ontology, inspect
+   `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`: read the sub-plan + any prior art,
+   **verify claims against the actual repo** (resolve real config/secrets, load real ontology, inspect
    real fixtures — don't list "open questions" that are checkable now), and call out decisions to revisit
    before speccing.
 2. **Spec** — author the NLSpec with **`octo:spec`** → `thoughts/astra/specs/<NNNN>-<subsystem>-spec.md`,
@@ -46,8 +45,8 @@ Each subsystem moves through three gates, leaving a paper trail in `thoughts/`:
 3. **Implement** — drive the build with **`octo:embrace`** against that spec; wire telemetry from day one,
    reproduce CI lanes locally before pushing, then update the memory (`thoughts/shared/memory/`) with the
    load-bearing gotchas. Build the spec's scope **in full** — don't quietly collapse or defer pieces to fit
-   a budget; surface the trade-off and ask (only spec-sanctioned deferrals are OK). And **port faerrin's
-   existing implementation** rather than reinventing it — grep faerrin first.
+   a budget; surface the trade-off and ask (only spec-sanctioned deferrals are OK). And **reuse existing
+   astra patterns** — mirror the nearest already-built subsystem rather than reinventing.
 
 **Version control cadence (not "commit only when asked"):** commit each CI-green slice with a Conventional
 Commit message as you go, and **push when a chunk/subsystem is done** — after reproducing the CI lanes
@@ -114,7 +113,7 @@ dagster/     # Dagster definitions (loads each pipeline app's assets; schedules/
 deploy/      # docker-compose.yml (Dagster + SigNoz + services), otel-collector.yaml, SOPS
 sites.caddyfile  # host-edge config for the shared reverse proxy; `just caddy-reload`
 .github/     # CI workflow + composite setup-{uv,pnpm} actions
-thoughts/    # research + per-subsystem plans (carried from faerrin)
+thoughts/    # research + per-subsystem plans + specs + memory
 dist/        # all site-gen output (gitignored), served by Caddy
 ```
 

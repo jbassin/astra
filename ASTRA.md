@@ -1,6 +1,6 @@
 # astra
 
-`astra` is the next version of the [faerrin](/ruby/data/experiments/faerrin) repo, with a focus on consolidating our technologies, removing redundancies, improving workflow and visibility, and overall improvements now that we have a much better picture of what the repo's functionality is.
+`astra` is the successor to the (now-decommissioned) faerrin repo, with a focus on consolidating our technologies, removing redundancies, improving workflow and visibility, and overall improvements now that we have a much better picture of what the repo's functionality is.
 
 The general breakdown is as follows (this doesn't necessarily map to specific directories, just a breakdown of what we expect to want):
   - dist: somewhere that any site generation ouputs to.

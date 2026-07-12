@@ -9,10 +9,10 @@ and ship work here" companion.** Read both.
 
 ## 1. What astra is (orient first)
 
-astra is a **re-architecture of [faerrin](/ruby/data/experiments/faerrin)** — a **polyglot monorepo**:
-Python (data + LLM, managed by **uv**) and TypeScript (web, managed by **pnpm**), two toolchains, no third
-language. It is a **port, not a greenfield**: most subsystems have an existing faerrin implementation that
-should be lifted/ported, not reinvented.
+astra is the campaign's live stack — a **polyglot monorepo**: Python (data + LLM, managed by **uv**) and
+TypeScript (web, managed by **pnpm**), two toolchains, no third language. It began as a re-architecture of
+its predecessor (faerrin, since decommissioned and deleted); that migration is long complete, and new work
+builds on astra's own established subsystems and patterns.
 
 **Read order before touching a subsystem:**
 1. `ASTRA.md` — product vision.
@@ -22,12 +22,10 @@ should be lifted/ported, not reinvented.
 4. `thoughts/shared/memory/MEMORY.md` + the memories it indexes — accumulated facts + feedback.
 5. The subsystem's **sub-plan** (`thoughts/astra/plans/NNNN-*.md`), **spec** (`thoughts/astra/specs/`),
    and **pre-impl thoughts** (`thoughts/shared/research/`) if they exist.
-6. The faerrin source you're porting (grep faerrin **first** — see §3).
 
-**Migration status (2026-06-20):** Phases 0–3 COMPLETE (substrate + shared libs + the full pipeline:
-scribe → linguist → akasha-backend → mouthpiece-backend). Phase 4 (services: weal, orator) + Phase 5
-(frontends: strider → akasha-fe, mouthpiece-fe, vellum-fe) are next and parallelize. strider (0014) is
-in progress (scaffold shipped). See the spine memory for the live status.
+**Migration status:** COMPLETE (2026-06-23, Phases 0–6). astra is the live stack — every public host
+serves, the pipeline + bots run with SigNoz telemetry, all data migrated. See the spine memory
+([[astra-migration-research]]) and `thoughts/shared/RESUME.md` for what's current.
 
 ---
 
@@ -35,8 +33,8 @@ in progress (scaffold shipped). See the spine memory for the live status.
 
 Every subsystem moves through three gates, each leaving a doc in `thoughts/`:
 
-1. **Scope** → `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`. Read the faerrin source +
-   the sub-plan, **verify every claim against the actual repos** (resolve real config/secrets, load real
+1. **Scope** → `thoughts/shared/research/<date>-<subsystem>-<NNNN>-thoughts.md`. Read the sub-plan + any
+   prior art, **verify every claim against the actual repo** (resolve real config/secrets, load real
    ontology, inspect real fixtures — don't list "open questions" that are checkable now), and surface the
    decisions to confirm before speccing.
 2. **Spec** → `thoughts/astra/specs/<NNNN>-<subsystem>-spec.md` via `octo:spec`. Match the format of an
@@ -54,9 +52,9 @@ The whole flow can be driven by an agent; the artifacts are the durable record.
 These are the failure modes that have actually bitten. They're also in `thoughts/shared/memory/` as
 feedback memories ([[verify-before-acting]], [[no-silent-scope-cuts]]).
 
-- **Port faerrin; don't reinvent.** astra is a port. For any derivation/transform/algorithm, **grep
-  faerrin first** and lift the existing function (parity is the point). Example: folder-index page titles
-  → faerrin's `folderIndexName` (`pkg/content/scripts/lib/folder-index.ts`), not a bespoke helper.
+- **Reuse what exists; don't reinvent.** For any derivation/transform/algorithm, check whether an
+  already-built astra subsystem (or lib) has it and mirror the nearest precedent — bespoke parallel
+  helpers drift and diverge.
 - **Verify before acting.** Don't act on a default or assumption when the truth is checkable. Read a
   skill/command's docs before running it; resolve real config; inspect the real corpus. "I assumed the
   flat-basename world" is how 45 folder-note pages silently broke.
@@ -229,7 +227,7 @@ Four non-overlapping concerns; **SigNoz/OTel is the single pane across all of th
 
 ## 9. Memory & docs (project-local — astra owns its own)
 
-Memory lives **in this repo** at `thoughts/shared/memory/`, not in `~/.claude` or faerrin. One fact per
+Memory lives **in this repo** at `thoughts/shared/memory/`, not in `~/.claude`. One fact per
 file (frontmatter + body), with a one-line pointer in `MEMORY.md` (auto-loaded each session). Types:
 `user` / `feedback` (how to work — include the why + how-to-apply) / `project` / `reference`. When you
 finish a subsystem, **add its load-bearing gotchas to the spine memory** and write any new feedback
@@ -273,7 +271,6 @@ dist/        # site build output (gitignored)
 | The plan / decisions ledger | `thoughts/astra/plans/0000-astra-migration-roadmap.md` |
 | A subsystem's contract | `thoughts/astra/specs/NNNN-*-spec.md` |
 | Why a decision was made | the roadmap decisions table + the spec + the spine memory |
-| The faerrin source to port | `/ruby/data/experiments/faerrin/pkg/<name>` |
 | How an already-built app is structured | `apps/scribe`, `apps/linguist`, `apps/mouthpiece-backend`, `apps/strider` |
 | Accumulated facts + feedback | `thoughts/shared/memory/` (indexed by `MEMORY.md`) |
 | Observability | the `signoz_*` MCP tools ([[signoz-mcp]]), not curl/clickhouse |

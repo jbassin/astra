@@ -37,7 +37,7 @@ This is the only part that goes stale; it must be exact.
 - **Check for an existing file first** and update it rather than duplicating. Link related memories with
   `[[name]]`.
 - Add/refresh the **one-line pointer in `MEMORY.md`** (`- [Title](file.md) — hook`). Never put memory
-  body in `MEMORY.md`; never write astra memory to faerrin or `~/.claude`.
+  body in `MEMORY.md`; never write astra memory to `~/.claude`.
 - Don't record what the repo already encodes (code structure, git history, CLAUDE.md) — capture what was
   non-obvious.
 

@@ -20,7 +20,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ## How to work (hard rules — see the feedback memories)
 
-- **Port faerrin; don't reinvent** — grep `/ruby/data/experiments/faerrin` FIRST for any logic and lift it.
+- **Reuse what exists; don't reinvent** — mirror the nearest already-built astra subsystem/lib for any logic.
 - **Verify before acting** — check the real repo/config/source; don't assume or run on a default.
 - **Build the spec's scope in full; never silently collapse/defer** to fit budget — surface the trade-off
   and ask. Only defer what the spec explicitly sanctions.
