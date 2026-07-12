@@ -233,7 +233,7 @@ export function buildMcpServer(
   // module.json), and this server-side McpServer version travels with a real MCP
   // client's own connection/capability negotiation. 0028 D28-7: 0.3.0 -> 0.4.0
   // alongside module.json, landing in this one S3 code slice.
-  const server = new McpServer({ name: "astra-portal", version: "0.4.1" });
+  const server = new McpServer({ name: "astra-portal", version: "0.4.2" });
 
   // bridge-status is in PLAYER_TOOL_NAMES, so it's always registered regardless of
   // scope — no filter needed here (contrast registerBridgeTool's guard below).

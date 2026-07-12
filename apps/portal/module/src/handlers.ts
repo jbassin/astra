@@ -1635,15 +1635,25 @@ function buildSpells(
     const tradition = (esys.tradition as Record<string, unknown> | undefined)?.value;
     const preparedType = (esys.prepared as Record<string, unknown> | undefined)?.value;
     // The entry DC is DERIVED — the stored source's `spelldc.dc` is 0 for a prepared
-    // caster ("DC 0" rendered at the 0028 S4 live gate); pf2e computes the real value
-    // onto the LIVE embedded entry (scope doc D28-2 appendix, pf2e.mjs ~:58730).
-    // Prefer the live embedded item, fall back to source for tests/edge cases.
+    // caster ("DC 0" rendered at the 0028 S4 live gate), and so is the LIVE embedded
+    // entry's own system tree (pf2e derives the real value onto the entry's
+    // `statistic` class instance, not its system data — second S4 live find). The
+    // reliable live home is the ACTOR-level `system.attributes.spellDC.value` (the
+    // D28-2 verified path, pf2e.mjs ~:58730). Preference: live embedded entry (in
+    // case a future pf2e writes it back) → live actor spellDC → stored source.
     const liveEsys = doc.items?.get(String(entry._id ?? ""))?.system as
       | Record<string, unknown>
       | undefined;
-    const liveDc = (liveEsys?.spelldc as Record<string, unknown> | undefined)?.dc;
+    const liveEntryDc = (liveEsys?.spelldc as Record<string, unknown> | undefined)?.dc;
+    const actorAttributes = (doc.system?.attributes ?? {}) as Record<string, unknown>;
+    const actorSpellDc = (actorAttributes.spellDC as Record<string, unknown> | undefined)?.value;
     const sourceDc = (esys.spelldc as Record<string, unknown> | undefined)?.dc;
-    const dc = typeof liveDc === "number" && liveDc > 0 ? liveDc : sourceDc;
+    const dc =
+      typeof liveEntryDc === "number" && liveEntryDc > 0
+        ? liveEntryDc
+        : typeof actorSpellDc === "number" && actorSpellDc > 0
+          ? actorSpellDc
+          : sourceDc;
     const slotsObj = (esys.slots ?? {}) as Record<string, unknown>;
 
     const rankGroups = new Map<number, PlayerSpellRow[]>();

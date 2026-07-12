@@ -2290,6 +2290,23 @@ describe("portal-module 0028 S2 — query-party / query-player (Foundry-free)", 
       const target = result.entries.find((e) => e.entryName === String(entry?.name));
       expect(target?.dc).toBe(26);
     });
+
+    it("spells entry DC falls back to the ACTOR-level live spellDC when the live entry's is also 0", async () => {
+      // Second S4 live find: the live embedded entry's system.spelldc.dc is ALSO 0 —
+      // pf2e derives the DC onto the entry's `statistic` class instance, not its
+      // system tree. The actor-level system.attributes.spellDC.value (D28-2 verified
+      // path) is the reliable live home.
+      const argyleDoc = fixtureActorDoc("argyle", {
+        attributes: { spellDC: { value: 24 } },
+      });
+      stubFoundry(true, { actors: [argyleDoc] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        name: "Argyle",
+        section: "spells",
+      })) as { entries: Array<{ dc?: number }> };
+      expect(result.entries.some((e) => e.dc === 24)).toBe(true);
+    });
   });
 
   describe("query-player resolution + predicate (D28-4/D28-13)", () => {
