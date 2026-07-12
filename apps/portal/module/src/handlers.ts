@@ -69,6 +69,7 @@ import {
   QueryRollsParams,
   type QueryRollsResult,
   type RollDieRow,
+  type RollModifierRow,
   type RollRow,
   SearchCompendiumParams,
   type SearchCompendiumResult,
@@ -2312,6 +2313,45 @@ function deriveCheckNameFromFlavor(flavor: string | undefined): string | undefin
   return stripped.length > 120 ? `${stripped.slice(0, 120)}…` : stripped;
 }
 
+/** Defensive cap on `RollRow.modifiers` — a pathological message (e.g. a
+ * synthetic/malicious flag payload) can't bloat a row past this many entries. */
+const MAX_ROLL_MODIFIERS = 12;
+
+/** Player-feedback fast-follow to 0028 — the roll modifier breakdown (e.g. an
+ * occultism check's intelligence/proficiency/item/status/circumstance bonuses).
+ * Reads `flags.pf2e.modifiers`, an array of serialized `ModifierPF2e#toObject()`
+ * objects (verified against the live container's `pf2e.mjs`: the class at
+ * `pf2e.mjs:43599` declares `label`/`modifier`/`type`/`enabled`/`ignored` as own
+ * fields, `toObject()` at `:43696` includes all of them; the serialization site
+ * that writes this exact array onto the chat message is `pf2e.mjs:24070`,
+ * `modifiers: check.modifiers.map((m) => m.toObject())`). Filtered to the
+ * **enabled AND non-ignored** subset — the same breakdown pf2e's own chat card
+ * shows (mirrors an existing in-repo pf2e usage at `pf2e.mjs:70134`:
+ * `modifiers.filter((modifier) => modifier.enabled)`, extended here with the
+ * `ignored` prong since `applyAdjustments` can independently set `ignored: true`
+ * on an otherwise-enabled modifier, e.g. a suppressed adjustment). Fail-soft:
+ * skips any entry missing a string `label`/numeric `modifier`, never throws;
+ * `undefined` (not `[]`) when the message carries no modifiers flag at all — a
+ * plain `/roll` or an older pf2e message shape. */
+function buildRollModifiers(pf2e: Record<string, unknown>): RollModifierRow[] | undefined {
+  const raw = pf2e.modifiers;
+  if (!Array.isArray(raw)) return undefined;
+  const rows: RollModifierRow[] = [];
+  for (const entry of raw) {
+    if (rows.length >= MAX_ROLL_MODIFIERS) break;
+    if (!entry || typeof entry !== "object") continue;
+    const m = entry as Record<string, unknown>;
+    if (m.enabled !== true || m.ignored === true) continue;
+    if (typeof m.label !== "string" || typeof m.modifier !== "number") continue;
+    rows.push({
+      label: m.label,
+      value: m.modifier,
+      type: typeof m.type === "string" ? m.type : undefined,
+    });
+  }
+  return rows.length > 0 ? rows : undefined;
+}
+
 /** Builds one `query-rolls` row from a qualifying `ChatMessage` — `undefined` when
  * the message's first roll doesn't parse (skipped, never fails the whole page).
  * `originItemName` resolves `flags.pf2e.origin.uuid` (verified `pf2e.mjs`'s
@@ -2359,6 +2399,7 @@ async function buildRollRow(
     total: parsedRoll.total ?? 0,
     dice: parsedRoll.dice,
     originItemName,
+    modifiers: buildRollModifiers(pf2e),
   };
 }
 

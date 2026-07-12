@@ -3416,6 +3416,126 @@ describe("portal-module 0028 S3 — query-rolls (D28-3/D28-10/D28-12, Foundry-fr
     });
   });
 
+  describe("player-feedback fast-follow — roll modifier breakdown (flags.pf2e.modifiers)", () => {
+    /** A realistic occultism-check modifiers array (the players' cited example),
+     * mixed enabled/disabled/ignored — shaped like the live `ModifierPF2e#
+     * toObject()` output verified against the container's `pf2e.mjs`. */
+    const OCCULTISM_MODIFIERS = [
+      {
+        slug: "int",
+        label: "Intelligence",
+        modifier: 4,
+        type: "ability",
+        enabled: true,
+        ignored: false,
+      },
+      {
+        slug: "occultism",
+        label: "Master Proficiency",
+        modifier: 13,
+        type: "proficiency",
+        enabled: true,
+        ignored: false,
+      },
+      {
+        slug: "pendant-of-the-occult",
+        label: "Pendant of the Occult",
+        modifier: 1,
+        type: "item",
+        enabled: true,
+        ignored: false,
+      },
+      {
+        slug: "guidance",
+        label: "Guidance",
+        modifier: 1,
+        type: "status",
+        enabled: true,
+        ignored: false,
+      },
+      {
+        slug: "aid",
+        label: "Aid",
+        modifier: 1,
+        type: "circumstance",
+        enabled: true,
+        ignored: false,
+      },
+      // Disabled (predicate failed) — must NOT appear in the row.
+      {
+        slug: "flanking",
+        label: "Flanking",
+        modifier: 2,
+        type: "circumstance",
+        enabled: false,
+        ignored: false,
+      },
+      // Enabled but ignored (a suppressed adjustment) — must NOT appear either.
+      {
+        slug: "suppressed",
+        label: "Suppressed Bonus",
+        modifier: 5,
+        type: "untyped",
+        enabled: true,
+        ignored: true,
+      },
+    ];
+
+    it("filters to the enabled, non-ignored subset with label+value (and drops disabled/ignored entries)", async () => {
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { modifierName: "Occultism", modifiers: OCCULTISM_MODIFIERS } },
+      });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ modifiers?: Array<{ label: string; value: number; type?: string }> }>;
+      };
+      expect(result.rows[0]?.modifiers).toEqual([
+        { label: "Intelligence", value: 4, type: "ability" },
+        { label: "Master Proficiency", value: 13, type: "proficiency" },
+        { label: "Pendant of the Occult", value: 1, type: "item" },
+        { label: "Guidance", value: 1, type: "status" },
+        { label: "Aid", value: 1, type: "circumstance" },
+      ]);
+    });
+
+    it("omits the modifiers field entirely when the message carries no modifiers flag", async () => {
+      const msg = fakeMessage({ id: "m1", timestamp: 1000, rolls: [PUBLIC_CHECK_ROLL] });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ modifiers?: unknown }>;
+      };
+      expect(result.rows[0]?.modifiers).toBeUndefined();
+    });
+
+    it("caps at 12 enabled modifiers, defensively", async () => {
+      const many = Array.from({ length: 20 }, (_, i) => ({
+        slug: `mod-${i}`,
+        label: `Modifier ${i}`,
+        modifier: 1,
+        type: "untyped",
+        enabled: true,
+        ignored: false,
+      }));
+      const msg = fakeMessage({
+        id: "m1",
+        timestamp: 1000,
+        rolls: [PUBLIC_CHECK_ROLL],
+        flags: { pf2e: { modifiers: many } },
+      });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ modifiers?: unknown[] }>;
+      };
+      expect(result.rows[0]?.modifiers).toHaveLength(12);
+    });
+  });
+
   describe("filters compose (actor ∧ type ∧ outcome ∧ time window)", () => {
     function taggedMessage(
       id: string,

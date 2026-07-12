@@ -157,6 +157,30 @@ function titleCase(slug: string): string {
   return slug.length > 0 ? slug.charAt(0).toUpperCase() + slug.slice(1) : slug;
 }
 
+/** pf2e's fixed 0-4 proficiency-rank taxonomy (player feedback fast-follow — the
+ * wire already carries the bare number; players asked for the name too). */
+const PF2E_PROFICIENCY_RANK_NAMES: Record<number, string> = {
+  0: "Untrained",
+  1: "Trained",
+  2: "Expert",
+  3: "Master",
+  4: "Legendary",
+};
+
+/** Rank number -> display name, `undefined` for anything outside 0-4 (defensive —
+ * pf2e's rank domain is closed, but this never throws on an unexpected value). */
+function rankName(rank: number | undefined): string | undefined {
+  return rank === undefined ? undefined : PF2E_PROFICIENCY_RANK_NAMES[rank];
+}
+
+/** Skills-table rank cell: name AND number together, e.g. "Expert (2)" — falls
+ * back to the bare number for an out-of-range rank, "—" when absent entirely. */
+function formatRank(rank: number | undefined): string {
+  if (rank === undefined) return "—";
+  const name = rankName(rank);
+  return name ? `${name} (${rank})` : String(rank);
+}
+
 function renderPlayerSummary(s: PlayerSummarySection): string {
   const lines = [`# ${s.name}\n`];
   const bits: string[] = [];
@@ -197,7 +221,10 @@ function renderPlayerStats(s: PlayerStatsSection): string {
     lines.push(`- ${key.toUpperCase()}: ${mod >= 0 ? "+" : ""}${mod}`);
   }
   lines.push("");
-  const classDcRank = s.classDC.rank !== undefined ? ` (rank ${s.classDC.rank})` : "";
+  const classDcRank =
+    s.classDC.rank !== undefined
+      ? ` (${rankName(s.classDC.rank) ?? `rank ${s.classDC.rank}`})`
+      : "";
   lines.push(`- Class DC: ${fmtNum(s.classDC.value)}${classDcRank}`);
   lines.push(`- Spell DC: ${fmtNum(s.spellDC.value)}`);
   if (s.warnings.length > 0) {
@@ -215,7 +242,7 @@ function renderPlayerSkills(s: PlayerSkillsSection): string {
   for (const skill of s.skills) {
     const label = (skill.label ?? skill.slug) + (skill.lore ? " (lore)" : "");
     lines.push(
-      `| ${label} | ${fmtNum(skill.rank)} | ${fmtNum(skill.value)} | ${fmtNum(skill.dc)} |`,
+      `| ${label} | ${formatRank(skill.rank)} | ${fmtNum(skill.value)} | ${fmtNum(skill.dc)} |`,
     );
   }
   return lines.join("\n").trim();
@@ -500,23 +527,53 @@ function renderOutcome(row: RollRow): string {
   return `${label[row.outcome] ?? row.outcome}${dc}`;
 }
 
-export function renderQueryRolls(result: QueryRollsResult): string {
+/** Player-feedback fast-follow to 0028 — the compact modifier-breakdown cell, e.g.
+ * "Intelligence +4 · Master Proficiency +13 · Pendant of the Occult +1 ·
+ * Guidance +1 · Aid +1". Empty string (not "—") when the row has no modifiers, so
+ * an all-empty column collapses cleanly (see the `showBreakdown` gate below). */
+function renderModifiers(row: RollRow): string {
+  if (!row.modifiers || row.modifiers.length === 0) return "";
+  return row.modifiers.map((m) => `${m.label} ${m.value >= 0 ? "+" : ""}${m.value}`).join(" · ");
+}
+
+/** Reads `query-rolls`' `format` param (player-feedback fast-follow) — a purely
+ * server-side presentation switch (D28-6's split: the module's wire shape never
+ * changes). Anything other than the literal string "json" renders markdown, the
+ * unchanged default. */
+function extractRollsFormat(params: unknown): "markdown" | "json" {
+  const p = params as { format?: unknown } | null;
+  return p?.format === "json" ? "json" : "markdown";
+}
+
+export function renderQueryRolls(result: QueryRollsResult, params?: unknown): string {
+  if (extractRollsFormat(params) === "json") return JSON.stringify(result, null, 2);
+
   const lines = ["# Roll History\n"];
   if (result.rows.length === 0) {
     lines.push("_No matching public rolls found._");
   } else {
-    lines.push("| Time | Speaker | Check | Type | Outcome | Formula → Total | Dice |");
-    lines.push("| --- | --- | --- | --- | --- | --- | --- |");
+    const showBreakdown = result.rows.some((r) => r.modifiers && r.modifiers.length > 0);
+    const header = ["Time", "Speaker", "Check", "Type", "Outcome", "Formula → Total", "Dice"];
+    if (showBreakdown) header.push("Breakdown");
+    lines.push(`| ${header.join(" | ")} |`);
+    lines.push(`| ${header.map(() => "---").join(" | ")} |`);
     for (const row of result.rows) {
       const time = new Date(row.timestamp).toISOString();
       const speaker = row.speakerAlias ?? "—";
       const check = [row.checkName, row.originItemName ? `(${row.originItemName})` : undefined]
         .filter(Boolean)
         .join(" ");
-      lines.push(
-        `| ${time} | ${speaker} | ${check || "—"} | ${row.rollType} | ${renderOutcome(row)} | ` +
-          `${row.formula} → ${row.total} | ${renderDice(row)} |`,
-      );
+      const cells = [
+        time,
+        speaker,
+        check || "—",
+        row.rollType,
+        renderOutcome(row),
+        `${row.formula} → ${row.total}`,
+        renderDice(row),
+      ];
+      if (showBreakdown) cells.push(renderModifiers(row));
+      lines.push(`| ${cells.join(" | ")} |`);
     }
   }
   lines.push("");

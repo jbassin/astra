@@ -232,8 +232,10 @@ export function buildMcpServer(
   // update-check compares module.json's version string (bumped in lockstep,
   // module.json), and this server-side McpServer version travels with a real MCP
   // client's own connection/capability negotiation. 0028 D28-7: 0.3.0 -> 0.4.0
-  // alongside module.json, landing in this one S3 code slice.
-  const server = new McpServer({ name: "astra-portal", version: "0.4.2" });
+  // alongside module.json, landing in that S3 code slice. 0028 player-feedback
+  // fast-follow (roll-modifier breakdown touches the module): 0.4.2 -> 0.4.3,
+  // module.json in lockstep.
+  const server = new McpServer({ name: "astra-portal", version: "0.4.3" });
 
   // bridge-status is in PLAYER_TOOL_NAMES, so it's always registered regardless of
   // scope — no filter needed here (contrast registerBridgeTool's guard below).
@@ -437,10 +439,14 @@ export function buildMcpServer(
         "Only PUBLIC rolls ever appear (whispered/blind/GM-secret rolls are filtered out " +
         "unconditionally, not a param); filters actor/type/outcome/since/until compose. Each " +
         "row carries the check name, formula → total, degree of success, DC (only when it was " +
-        "player-visible), and per-die results. Paginate with the previous call's nextCursor.",
+        "player-visible), per-die results, and — when present — the enabled modifier " +
+        "breakdown (ability/proficiency/item/status/circumstance bonuses). Paginate with the " +
+        'previous call\'s nextCursor. Set format="json" for the typed rows verbatim instead ' +
+        "of a markdown table.",
       paramsSchema: QueryRollsParams,
       method: "portal.query-rolls",
-      render: (result) => renderQueryRolls(result as Parameters<typeof renderQueryRolls>[0]),
+      render: (result, params) =>
+        renderQueryRolls(result as Parameters<typeof renderQueryRolls>[0], params),
     },
     auth,
   );

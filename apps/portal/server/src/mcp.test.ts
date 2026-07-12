@@ -269,7 +269,7 @@ describe("the /mcp Streamable-HTTP surface (spec 0023 S2 — Foundry-free)", () 
       "execute-macro": ["macroId"],
       "query-player": ["name", "uuid", "section", "entry", "rank"],
       "query-item": ["uuid", "name", "limit"],
-      "query-rolls": ["actor", "type", "outcome", "since", "until", "cursor", "limit"],
+      "query-rolls": ["actor", "type", "outcome", "since", "until", "cursor", "limit", "format"],
     };
     for (const [tool, fields] of Object.entries(newToolFields)) {
       const properties = schemaOf(tool).properties ?? {};
@@ -1149,6 +1149,78 @@ describe("0028 S3 — query-item / query-rolls (markdown rendering, Foundry-free
     expect(content.text).toContain("1d20+7 → 21");
     expect(content.text).toContain("Success (DC 18)");
     expect(content.text).toContain("d20[14]");
+
+    await client.close();
+    mod.close();
+  });
+
+  it('query-rolls format="json" returns parseable JSON whose rows match the bridge result verbatim (player feedback fast-follow)', async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    const bridgeResult = {
+      rows: [
+        {
+          id: "m1",
+          timestamp: 1_752_000_000_000,
+          speakerAlias: "Anzu",
+          checkName: "Occultism",
+          rollType: "skill-check",
+          outcome: "success",
+          formula: "1d20+20",
+          total: 27,
+          dice: [{ faces: 20, results: [{ result: 7 }] }],
+          modifiers: [
+            { label: "Intelligence", value: 4, type: "ability" },
+            { label: "Master Proficiency", value: 13, type: "proficiency" },
+          ],
+        },
+      ],
+      totalMessages: 1,
+      hasMore: false,
+    };
+    mod.onQuery((q) => {
+      expect(q.method).toBe("portal.query-rolls");
+      expect(q.params).toMatchObject({ format: "json" });
+      mod.respond(q.id, bridgeResult);
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({
+      name: "query-rolls",
+      arguments: { format: "json" },
+    });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(() => JSON.parse(content.text)).not.toThrow();
+    expect(JSON.parse(content.text)).toEqual(bridgeResult);
+
+    await client.close();
+    mod.close();
+  });
+
+  it("query-rolls stays markdown by default (format omitted)", async () => {
+    const wsUrl = `ws://127.0.0.1:${handle.port}${BRIDGE_WS_PATH}`;
+    const mod = new FakeModule(wsUrl);
+    await mod.ready();
+    mod.onQuery((q) => {
+      mod.respond(q.id, {
+        rows: [
+          { id: "m1", timestamp: 1000, rollType: "roll", formula: "1d20", total: 12, dice: [] },
+        ],
+        totalMessages: 1,
+        hasMore: false,
+      });
+    });
+
+    const client = await clientWith(MCP_API_KEY);
+    const result = await client.callTool({ name: "query-rolls", arguments: {} });
+    expect(result.isError).toBeFalsy();
+    const [content] = result.content as Array<{ type: "text"; text: string }>;
+    if (!content) throw new Error("unreachable — asserted above");
+    expect(content.text).toContain("# Roll History");
+    expect(content.text).not.toMatch(/^\s*[{[]/);
 
     await client.close();
     mod.close();

@@ -112,5 +112,6 @@ export {
   RollDegreeOutcome,
   RollDieResult,
   RollDieRow,
+  RollModifierRow,
   RollRow,
 } from "./tools";

@@ -1258,6 +1258,31 @@ export const RollDieRow = z
   .strict();
 export type RollDieRow = z.infer<typeof RollDieRow>;
 
+/** One enabled, non-ignored `flags.pf2e.modifiers` entry (player-feedback fast-
+ * follow to 0028) — a single line of the modifier breakdown players asked to see
+ * (e.g. an occultism check's intelligence/proficiency/item/status/circumstance
+ * bonuses). Field names verified against the live container's `pf2e.mjs`
+ * `ModifierPF2e#toObject()` (~:43698-43701: `label`, `modifier`, `type`, `enabled`,
+ * `ignored`, ...) and the serialization site that writes `flags.pf2e.modifiers`
+ * (~:24070: `check.modifiers.map((m) => m.toObject())`) — see the module's
+ * `buildRollModifiers` for the exact filter. */
+export const RollModifierRow = z
+  .object({
+    label: z.string(),
+    value: z
+      .number()
+      .describe("Signed numeric contribution (ModifierPF2e#modifier — never re-derived)."),
+    type: z
+      .string()
+      .optional()
+      .describe(
+        'pf2e modifier type, e.g. "ability", "proficiency", "item", "status", "circumstance", ' +
+          '"untyped", "potency".',
+      ),
+  })
+  .strict();
+export type RollModifierRow = z.infer<typeof RollModifierRow>;
+
 /** D28-12's compact per-message roll row, parsed from the stored serialized-Roll
  * JSON — never re-evaluated. */
 export const RollRow = z
@@ -1285,6 +1310,15 @@ export const RollRow = z
       .string()
       .optional()
       .describe("The item this roll originated from (a strike, spell, etc.), when resolvable."),
+    modifiers: z
+      .array(RollModifierRow)
+      .optional()
+      .describe(
+        "The check's enabled, non-ignored flags.pf2e.modifiers breakdown (e.g. ability/" +
+          "proficiency/item/status/circumstance bonuses), capped defensively at 12 entries. " +
+          "Absent when the message carries no modifiers flag (a plain /roll, or an older pf2e " +
+          "message shape).",
+      ),
   })
   .strict();
 export type RollRow = z.infer<typeof RollRow>;
@@ -1338,6 +1372,15 @@ export const QueryRollsParams = z
       .max(100)
       .optional()
       .describe("Max rows per page (default 20, max 100)."),
+    format: z
+      .enum(["markdown", "json"])
+      .optional()
+      .describe(
+        'Output shape for the response. "markdown" (default) renders a human-readable table ' +
+          'for chat/LLM consumption. "json" returns the typed rows verbatim (pretty-printed) ' +
+          "for data analysis/scripting — a server-side presentation switch only, the module's " +
+          "wire shape is unaffected.",
+      ),
   })
   .strict();
 export type QueryRollsParams = z.infer<typeof QueryRollsParams>;

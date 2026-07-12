@@ -295,6 +295,22 @@ describe("renderQueryPlayer — summary/stats/skills/inventory/notes", () => {
     expect(md).toContain("WIS: +4");
     expect(md).toContain("Spell DC: —");
     expect(md).toContain("1 derived field(s) could not be read");
+    // Player feedback fast-follow: the rank NAME alongside the number.
+    expect(md).toContain("Class DC: 27 (Master)");
+  });
+
+  it("stats — an out-of-range classDC.rank falls back to the bare number", () => {
+    const s: PlayerStatsSection = {
+      section: "stats",
+      perception: { value: undefined, dc: undefined },
+      saves: [],
+      abilityMods: {},
+      classDC: { value: 10, rank: 9 },
+      spellDC: { value: undefined },
+      warnings: [],
+    };
+    const md = renderQueryPlayer(s, {});
+    expect(md).toContain("Class DC: 10 (rank 9)");
   });
 
   it("skills", () => {
@@ -308,6 +324,9 @@ describe("renderQueryPlayer — summary/stats/skills/inventory/notes", () => {
     const md = renderQueryPlayer(s, {});
     expect(md).toContain("Religion");
     expect(md).toContain("Scribing (lore)");
+    // Player feedback fast-follow: skills show BOTH the rank name and the number.
+    expect(md).toContain("Master (3)");
+    expect(md).toContain("Expert (2)");
   });
 
   it("inventory", () => {
@@ -607,5 +626,94 @@ describe("renderQueryRolls (0028 S3, D28-3/D28-10/D28-12)", () => {
   it("renders a 'no matching rolls' placeholder for an empty page", () => {
     const md = renderQueryRolls({ rows: [], totalMessages: 0, hasMore: false });
     expect(md).toContain("No matching public rolls found");
+  });
+
+  it("appends a compact modifier breakdown column when a row carries modifiers (player feedback)", () => {
+    const result: QueryRollsResult = {
+      rows: [
+        {
+          id: "m1",
+          timestamp: 1000,
+          speakerAlias: "Anzu",
+          checkName: "Occultism",
+          rollType: "skill-check",
+          formula: "1d20+20",
+          total: 27,
+          dice: [],
+          modifiers: [
+            { label: "Intelligence", value: 4, type: "ability" },
+            { label: "Master Proficiency", value: 13, type: "proficiency" },
+            { label: "Pendant of the Occult", value: 1, type: "item" },
+            { label: "Guidance", value: 1, type: "status" },
+            { label: "Aid", value: 1, type: "circumstance" },
+          ],
+        },
+      ],
+      totalMessages: 1,
+      hasMore: false,
+    };
+    const md = renderQueryRolls(result);
+    expect(md).toContain("Breakdown");
+    expect(md).toContain(
+      "Intelligence +4 · Master Proficiency +13 · Pendant of the Occult +1 · Guidance +1 · Aid +1",
+    );
+  });
+
+  it("omits the Breakdown column entirely when no row carries modifiers", () => {
+    const result: QueryRollsResult = {
+      rows: [{ id: "m1", timestamp: 1000, rollType: "roll", formula: "1d20", total: 12, dice: [] }],
+      totalMessages: 1,
+      hasMore: false,
+    };
+    const md = renderQueryRolls(result);
+    expect(md).not.toContain("Breakdown");
+  });
+
+  it("renders a negative modifier with its sign", () => {
+    const result: QueryRollsResult = {
+      rows: [
+        {
+          id: "m1",
+          timestamp: 1000,
+          rollType: "skill-check",
+          formula: "1d20-2",
+          total: 10,
+          dice: [],
+          modifiers: [{ label: "Enfeebled", value: -2, type: "status" }],
+        },
+      ],
+      totalMessages: 1,
+      hasMore: false,
+    };
+    const md = renderQueryRolls(result);
+    expect(md).toContain("Enfeebled -2");
+  });
+
+  it('format="json" returns the typed result verbatim as pretty-printed JSON, not markdown', () => {
+    const result: QueryRollsResult = {
+      rows: [
+        {
+          id: "m1",
+          timestamp: 1000,
+          rollType: "skill-check",
+          formula: "1d20+7",
+          total: 21,
+          dice: [{ faces: 20, results: [{ result: 14 }] }],
+        },
+      ],
+      totalMessages: 1,
+      hasMore: false,
+    };
+    const md = renderQueryRolls(result, { format: "markdown" });
+    expect(md).toContain("# Roll History");
+
+    const json = renderQueryRolls(result, { format: "json" });
+    expect(json).not.toContain("# Roll History");
+    expect(JSON.parse(json)).toEqual(result);
+  });
+
+  it("format is optional — an undefined params argument still renders markdown (back-compat)", () => {
+    const md = renderQueryRolls({ rows: [], totalMessages: 0, hasMore: false });
+    expect(md).toContain("# Roll History");
   });
 });
