@@ -3,7 +3,8 @@
 ``session_noun_facts`` (Phase 2) mirrors chronicle's ``session_episode_summary``: it builds the
 per-session facts and atomic-writes ``facts/<date>.json``, skipping non-faerrin / unmatched /
 excluded sessions. ``session_page_proposals`` (Phase 3) runs downstream — it reads the committed
-facts, drafts house-voice prose, and emits ``proposals/<date>/{manifest.kdl,<id>.vellum}``. Phase 2
+facts, groups/places them, and emits ``proposals/<date>/{manifest.kdl,<id>.vellum}`` (the human
+writes every body in the review surface, 0020 facts-only rework — zero LLM calls here). Phase 2
 owns a heartwood-local dynamic partitions def (it never re-registers linguist's, to avoid
 cross-code-location coupling); the sensor/schedule auto-wiring is Phase 5. The root
 ``dagster/definitions.py`` imports these assets into the shared code location (where
@@ -44,7 +45,7 @@ def session_noun_facts(context: dg.AssetExecutionContext) -> dg.MaterializeResul
     group_name="heartwood",
 )
 def session_page_proposals(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
-    """Draft one session's page proposals → committed ``proposals/<date>/`` change-set."""
+    """Stage one session's page proposals → committed ``proposals/<date>/`` change-set."""
     date = context.partition_key
     change_set = build_session_proposals(date)
     if change_set is None:
@@ -59,8 +60,6 @@ def session_page_proposals(context: dg.AssetExecutionContext) -> dg.MaterializeR
             "rewrites": sum(1 for p in m.proposals if p.op == "rewrite"),
             "unplaced": len(m.unplaced),
             "skipped": len(m.skipped),
-            "conflicts": sum(len(p.conflicts) for p in m.proposals),
-            "lints": sum(len(p.lints) for p in m.proposals),
         }
     )
 

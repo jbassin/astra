@@ -12,14 +12,7 @@ from typing import Any
 
 from astra_config.kdl import snake
 
-from .models import (
-    PageProposal,
-    ProposalManifest,
-    RegistryAddition,
-    SkippedPage,
-    UnplacedFact,
-    VoiceWarning,
-)
+from .models import PageProposal, ProposalManifest, RegistryAddition, SkippedPage, UnplacedFact
 
 
 def _kdl_str(s: str) -> str:
@@ -48,12 +41,6 @@ def serialize_manifest(m: ProposalManifest) -> str:
         lines.append(page)
         for claim in p.fact_claims:
             lines.append(f"        fact {_kdl_str(claim)}")
-        for c in p.conflicts:
-            lines.append(f"        conflict {_kdl_str(c)}")
-        for w in p.lints:
-            lines.append(
-                f"        lint {_kdl_str(w.type)}{_prop('message', w.message)}{_prop('hit', w.hit)}"
-            )
         lines.append("    }")
 
     for u in m.unplaced:
@@ -110,16 +97,6 @@ def parse_manifest(text: str) -> ProposalManifest:
                     page_type=pp["page_type"],
                     body_file=body,
                     fact_claims=[_arg(c) for c in node.children if c.name == "fact"],
-                    conflicts=[_arg(c) for c in node.children if c.name == "conflict"],
-                    lints=[
-                        VoiceWarning(
-                            type=c.args[0],
-                            message=str(_props(c)["message"]),
-                            hit=(str(_props(c)["hit"]) if "hit" in _props(c) else None),
-                        )
-                        for c in node.children
-                        if c.name == "lint"
-                    ],
                     placement_note=(str(pp["placement_note"]) if "placement_note" in pp else None),
                 )
             )

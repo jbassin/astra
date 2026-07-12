@@ -9,7 +9,7 @@ from __future__ import annotations
 from astra_heartwood.models import ResolvedFact, SessionFacts
 from astra_heartwood.proposer.corpus import read_page_text
 from astra_heartwood.proposer.group import build_proposals, load_facts, place, slugify
-from astra_heartwood.proposer.lint import detect_page_type
+from astra_heartwood.proposer.page_type import detect_page_type
 from astra_ontology import EntityRef
 
 DATE = "2025-8-28"

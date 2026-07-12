@@ -1,31 +1,25 @@
-"""Phase-3 S4/hardening — .vellum assembly (spec §9, P3.9-revised).
+"""0020 facts-only rework (spec §9, FO-12) — ``.vellum`` starting-body assembly.
 
-A rewrite is preserve-and-append: the existing frontmatter AND body are kept verbatim and the
-drafted passage is appended after them (no full-body replace → no POV flip / content loss). A
-create gets fresh session-dated frontmatter.
+A ``create`` gets a fresh frontmatter skeleton with an empty body; a ``rewrite`` gets the live
+corpus page copied byte-for-byte (verbatim — no synthesis of any kind, the human writes into it).
 """
 
 from __future__ import annotations
 
-from astra_heartwood.proposer.assemble import assemble_vellum
+from astra_heartwood.proposer.assemble import rewrite_vellum, skeleton_vellum
 
 EXISTING = "---\ntags:\n  - Research\ndate: 2026-06-06T22:12:21-04:00\n---\n\nOld body prose.\n"
 
 
-def test_rewrite_preserves_existing_body_and_appends() -> None:
-    out = assemble_vellum("New appended passage.", existing_text=EXISTING, date="2025-8-28")
-    # The exact frontmatter block AND the existing body survive; the new passage follows them.
-    assert out.startswith("---\ntags:\n  - Research\ndate: 2026-06-06T22:12:21-04:00\n---\n")
-    assert "Old body prose." in out
-    assert out.index("Old body prose.") < out.index("New appended passage.")
+def test_skeleton_vellum_is_frontmatter_only_dated_to_session() -> None:
+    assert skeleton_vellum("2025-8-28") == "---\ndate: 2025-8-28\ntags: []\n---\n\n"
 
 
-def test_create_emits_minimal_frontmatter_dated_to_session() -> None:
-    out = assemble_vellum("A fresh stub.", date="2025-8-28")
-    assert out == "---\ndate: 2025-8-28\ntags: []\n---\n\nA fresh stub.\n"
+def test_rewrite_vellum_is_byte_identical_to_the_source() -> None:
+    assert rewrite_vellum(EXISTING) == EXISTING
 
 
-def test_rewrite_without_frontmatter_keeps_and_appends() -> None:
-    out = assemble_vellum("Body.", existing_text="Just prose, no frontmatter.", date="2025-8-28")
-    assert out.startswith("---\ndate: 2025-8-28\n")
-    assert "Just prose, no frontmatter." in out and "Body." in out
+def test_rewrite_vellum_passthrough_survives_frontmatterless_text() -> None:
+    # verbatim means verbatim — no frontmatter-synthesize branch, even for a page with none.
+    plain = "Just prose, no frontmatter.\n"
+    assert rewrite_vellum(plain) == plain

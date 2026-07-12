@@ -1,29 +1,19 @@
-"""Assemble a ``.vellum`` body per proposal (spec §9, P3.9-revised).
+"""Assemble a ``.vellum`` starting body per proposal (spec §9, FO-12).
 
-A ``create`` gets minimal new frontmatter (``date``/``tags: []``, mirroring the corpus). A
-``rewrite`` is **preserve-and-append** (the rewrite-hardening pass — the acceptance run showed a
-full-body replace systematically flattens POV and drops the human's prose): the existing file's
-frontmatter AND body are kept verbatim and the drafted passage is appended after them, so the diff
-is purely additive and the human keeps the pen (§12). Pure text.
+Facts-only (0020 rework — the machine no longer writes prose, FO-1): a ``create`` gets a fresh
+frontmatter skeleton with an empty body; a ``rewrite`` gets the live corpus page copied
+byte-for-byte, unchanged (verbatim passthrough — the human writes into it in the review surface's
+editor). Pure text, no synthesis of any kind.
 """
 
 from __future__ import annotations
 
-from .corpus import split_frontmatter
+
+def skeleton_vellum(date: str) -> str:
+    """A create's starting ``.vellum`` text: fresh session-dated frontmatter, empty body (FO-2)."""
+    return f"---\ndate: {date}\ntags: []\n---\n\n"
 
 
-def assemble_vellum(passage: str, *, existing_text: str | None = None, date: str = "") -> str:
-    """Build the full ``.vellum`` file text for one proposal.
-
-    ``existing_text`` (the rewrite target's full file) → its frontmatter + body are preserved and
-    ``passage`` is appended; None (a create) → fresh minimal frontmatter + the passage as the body.
-    """
-    prose = passage.strip()
-    if existing_text is not None:
-        frontmatter, existing_body = split_frontmatter(existing_text)
-        kept = (existing_body if frontmatter else existing_text).strip()
-        combined = f"{kept}\n\n{prose}" if prose else kept
-        if frontmatter:
-            return f"{frontmatter.rstrip()}\n\n{combined}\n"
-        return f"---\ndate: {date}\ntags: []\n---\n\n{combined}\n"
-    return f"---\ndate: {date}\ntags: []\n---\n\n{prose}\n"
+def rewrite_vellum(existing_text: str) -> str:
+    """A rewrite's starting ``.vellum`` text: the live corpus page, byte-identical (FO-2/FO-12)."""
+    return existing_text

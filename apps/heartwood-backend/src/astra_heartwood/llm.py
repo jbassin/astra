@@ -1,19 +1,16 @@
-"""The shared LLM seam — the injectable client protocols + the real client/model.
+"""The shared LLM seam — the injectable client protocol + the real client/model.
 
-Stages 1–2.5 (filter / extract / refine) classify via ``call_structured``; Phase-3's prose
-proposer drafts via ``call_text`` (P3.5 — prose must not be tool-JSON-shaped). Both protocols are
-the slice of ``LiteLLMClient`` each stage uses, so every stage stays Dagster-free and unit-tests
-with a stub (no key, no network) — mirroring chronicle's ``chronicle_llm``.
+Stages 1–2.5 (filter / extract / refine) classify via ``call_structured``. The slice of
+``LiteLLMClient`` this stage uses lets it stay Dagster-free and unit-test with a stub (no key, no
+network) — mirroring chronicle's ``chronicle_llm``. The proposer (downstream of these stages)
+makes zero LLM calls (0020 facts-only rework, FO-1) — it has no client seam of its own.
 """
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Protocol, TypeVar
+from typing import Protocol, TypeVar
 
 from pydantic import BaseModel
-
-if TYPE_CHECKING:
-    from astra_llm import TextRequest
 
 _T = TypeVar("_T", bound=BaseModel)
 
@@ -34,22 +31,8 @@ class StructuredClient(Protocol):
     ) -> _T: ...
 
 
-class TextClient(Protocol):
-    """The slice of ``LiteLLMClient`` the prose proposer uses (free-text drafting, P3.5)."""
-
-    def call_text(self, req: TextRequest) -> str: ...
-
-
 def real_client() -> StructuredClient:
     """Build the real client, resolving the OpenRouter key into the env first."""
-    from astra_llm import LiteLLMClient, ensure_openrouter_env
-
-    ensure_openrouter_env()
-    return LiteLLMClient()
-
-
-def real_text_client() -> TextClient:
-    """The real client typed for free-text drafting (resolves the OpenRouter key first)."""
     from astra_llm import LiteLLMClient, ensure_openrouter_env
 
     ensure_openrouter_env()

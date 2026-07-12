@@ -4,8 +4,8 @@ Buckets each ``ResolvedFact`` by destination (resolved+page → rewrite; resolve
 unknown → create; ambiguous → unplaced), collapses many facts into one ``PageProposal``,
 places new pages by kind (flagging folder-less / link-less cases rather than mis-placing —
 faerrin "wrong-page" is worse than a flagged path), and assigns each proposal a stable,
-collision-free id-slug. No LLM: the novelty/conflict gating (P3.15/P3.17) is the draft stage's
-job (S3/S4); here a non-prose existing page is skipped-with-note (P3.10) and the rest pass through.
+collision-free id-slug. No LLM: a non-prose existing page is skipped-with-note (P3.10) and the
+rest pass through — the novelty/conflict gates (P3.15/P3.17) died with drafting (0020 rework).
 """
 
 from __future__ import annotations
@@ -17,7 +17,6 @@ from dataclasses import dataclass, field
 
 from ..models import SessionFacts
 from .corpus import FACTS_DIR, read_page_text
-from .lint import NON_PROSE_TYPES, detect_page_type
 from .models import (
     EntityKind,
     PageProposal,
@@ -27,6 +26,7 @@ from .models import (
     SkippedPage,
     UnplacedFact,
 )
+from .page_type import NON_PROSE_TYPES, detect_page_type
 
 #: A pseudo-folder marking a path the human must resolve (kind=item/None has no corpus home).
 NEEDS_PLACEMENT = "needs-placement"
@@ -104,7 +104,11 @@ class _Bucket:
 
 
 def _provisional_page_type(n_claims: int) -> PageType:
-    """A new page's provisional type before drafting (P3.11: thin entity → stub)."""
+    """A new page's page-type, by claim count (P3.11: thin entity → stub).
+
+    This is now the FINAL type (0020 facts-only rework — there is no post-draft re-detection to
+    refine it); it only gates which existing pages a rewrite may target (P3.10).
+    """
     return "stub" if n_claims <= 1 else "lore"
 
 

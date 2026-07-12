@@ -1,10 +1,9 @@
-"""The Phase-3 prose proposer (spec ``0020-heartwood-phase3-proposer``).
+"""The proposer (spec ``0020-heartwood-facts-only-rework``; supersedes the retired
+``0020-heartwood-phase3-proposer`` drafting design).
 
-Downstream of the Phase-2 facts: group resolved facts into target akasha pages, draft
-house-voice prose per page (``call_text`` + tell-lint + bounded revise), and emit a
-committed, reviewable change-set (``proposals/<date>/{manifest.kdl, <id>.vellum}``).
-Read-only — no corpus writes, no review surface, no deploy (those are Phase 4).
-
-Built slice-by-slice; S1 lands the pure-code spine (models, grouping/placement, KDL
-manifest I/O, page-type detection) with no LLM in the loop.
+Downstream of the Phase-2 facts: group resolved facts into target akasha pages, stage a
+starting ``.vellum`` per page (a fresh skeleton for a create, the live page verbatim for a
+rewrite — zero LLM calls, FO-1), and emit a committed, reviewable change-set
+(``proposals/<date>/{manifest.kdl, <id>.vellum}``). Read-only — no corpus writes. The human
+writes every body in the review surface's editor (Phase 4); this package only stages facts.
 """

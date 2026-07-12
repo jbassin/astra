@@ -13,16 +13,9 @@ from typing import Literal
 from astra_ontology import EntityKind, ResolveStatus
 from pydantic import BaseModel, ConfigDict
 
-#: The page-type a body presents as — gates which tell-lints apply (§8) and which existing
-#: pages may be rewritten (only ``lore``/``stub``; the rest are non-prose, P3.10).
+#: The page-type a body presents as — gates which existing pages may be rewritten (only
+#: ``lore``/``stub``; the rest are non-prose, P3.10).
 PageType = Literal["lore", "stub", "deity-statblock", "timeline", "flavor-pre"]
-
-#: The machine tell-lint warning kinds (ported from faerrin ``voice-warnings.ts``, §8;
-#: ``pov_shift`` added in the rewrite-hardening pass — an appended passage whose point of view
-#: drifts from the page it amends, P3.9-revised).
-WarningType = Literal[
-    "encyclopedia_opener", "it_is_template", "intensifier", "broken_wikilink", "empty", "pov_shift"
-]
 
 #: A new page vs a merged rewrite of an existing one.
 ProposalOp = Literal["create", "rewrite"]
@@ -30,15 +23,6 @@ ProposalOp = Literal["create", "rewrite"]
 
 class _Base(BaseModel):
     model_config = ConfigDict(extra="forbid")
-
-
-class VoiceWarning(_Base):
-    """One residual tell-lint hit, surfaced to the human (warnings never hard-block — faerrin)."""
-
-    type: WarningType
-    message: str  # human-readable, ported from faerrin voice-warnings.ts
-    # the offending token/phrase, when applicable (intensifier, broken target):
-    hit: str | None = None
 
 
 class PageProposal(_Base):
@@ -50,13 +34,10 @@ class PageProposal(_Base):
     canonical: str  # the resolved/registry canonical name (or the raw subject if unknown)
     kind: EntityKind | None = None
     status: ResolveStatus  # resolved | unknown (ambiguous never reaches a proposal → unplaced)
-    page_type: PageType  # for lint suppression (§8); provisional on a create until drafted
+    page_type: PageType  # the grouping stage's provisional type (§8); the human writes the body
     body_file: str  # sibling rel path "<id>.vellum"
-    # the NEW cited claims this page asserts (grounding set; novelty-gated in S3/S4):
+    # the cited claims this page asserts — what the human writes the body FROM (0020 facts-only):
     fact_claims: list[str]
-    # cited claims that CONTRADICT the existing body — flagged, not merged (P3.17):
-    conflicts: list[str] = []
-    lints: list[VoiceWarning] = []  # residual warnings after the revise pass (empty = clean)
     # why this path (esp. low-confidence/folder-less placement, §6):
     placement_note: str | None = None
 
@@ -70,11 +51,14 @@ class UnplacedFact(_Base):
 
 
 class SkippedPage(_Base):
-    """A resolved page we did NOT rewrite — auditable, never silent (P3.10/P3.15)."""
+    """A resolved page we did NOT rewrite — auditable, never silent (P3.10).
+
+    The LLM-only "already-known" novelty gate (P3.15) died with drafting (0020 facts-only
+    rework) — only the deity/timeline/flavor-pre non-prose skip survives.
+    """
 
     target_path: str
-    # all facts already stated | deity/timeline/flavor-pre:
-    reason: Literal["already-known", "non-prose-page"]
+    reason: Literal["non-prose-page"]
 
 
 class RegistryAddition(_Base):
@@ -93,7 +77,7 @@ class ProposalManifest(_Base):
     world: str  # "faerrin"
     proposals: list[PageProposal] = []
     unplaced: list[UnplacedFact] = []
-    skipped: list[SkippedPage] = []  # rewrites declined as redundant/non-prose (P3.10/P3.15)
+    skipped: list[SkippedPage] = []  # rewrites declined as non-prose (P3.10)
     registry_additions: list[RegistryAddition] = []
 
 
@@ -107,6 +91,4 @@ __all__ = [
     "ResolveStatus",
     "SkippedPage",
     "UnplacedFact",
-    "VoiceWarning",
-    "WarningType",
 ]

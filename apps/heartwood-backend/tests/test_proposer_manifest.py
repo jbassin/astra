@@ -1,8 +1,9 @@
 """Phase-3 S1 — the KDL manifest round-trips (spec §5/§9).
 
 ``ProposalManifest`` → ``manifest.kdl`` text → re-parse → equal, exercising every node kind
-(rewrite page with conflicts + lints, flagged create, unplaced, both skip reasons, registry-add)
-plus non-ASCII and the empty manifest. Mirrors Phase-2's JSON round-trip gate.
+(rewrite page, flagged create, unplaced, the non-prose skip reason, registry-add) plus non-ASCII
+and the empty manifest. Mirrors Phase-2's JSON round-trip gate. The ``lint``/``conflict`` child
+nodes and the LLM-only ``already-known`` skip reason died with drafting (0020 facts-only rework).
 """
 
 from __future__ import annotations
@@ -14,7 +15,6 @@ from astra_heartwood.proposer.models import (
     RegistryAddition,
     SkippedPage,
     UnplacedFact,
-    VoiceWarning,
 )
 
 
@@ -36,13 +36,6 @@ def _full_manifest() -> ProposalManifest:
                 fact_claims=[
                     "Iconoclasm provides free food and housing.",
                     'It runs out of the "Sin and Tonic".',
-                ],
-                conflicts=["Iconoclasm functions as an orphanage."],
-                lints=[
-                    VoiceWarning(
-                        type="intensifier", message="Filler intensifier: numerous.", hit="numerous"
-                    ),
-                    VoiceWarning(type="empty", message="No prose.", hit=None),
                 ],
             ),
             PageProposal(
@@ -77,8 +70,8 @@ def _full_manifest() -> ProposalManifest:
             )
         ],
         skipped=[
-            SkippedPage(target_path="Geography/Sin and Tonic/index", reason="already-known"),
             SkippedPage(target_path="Divinity/Outer Gods/Eternal Pulse", reason="non-prose-page"),
+            SkippedPage(target_path="Divinity/Outer Gods/The Compelled", reason="non-prose-page"),
         ],
         registry_additions=[
             RegistryAddition(
