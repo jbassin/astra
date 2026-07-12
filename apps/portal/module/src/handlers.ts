@@ -1523,9 +1523,20 @@ function buildSummary(
   const level = (details.level as Record<string, unknown> | undefined)?.value;
   const xp = details.xp as Record<string, unknown> | undefined;
   const hp = attributes.hp as Record<string, unknown> | undefined;
-  const heroPoints = resources.heroPoints as Record<string, unknown> | undefined;
+  // Hero points come from the STORED source, never the live prepared actor — they
+  // are GM-awarded meta-currency persisted in source data ({value, max} both stored,
+  // verified in the live fixture), and pf2e's data preparation leaves the live
+  // `system.resources.heroPoints` zeroed (0/0 rendered at the 0028 S4 live gate while
+  // the source said 1/3). The exact mirror image of hp.max (derived-only, live-only).
+  const sourceResources = ((raw.system as Record<string, unknown> | undefined)?.resources ??
+    resources) as Record<string, unknown>;
+  const heroPoints = sourceResources.heroPoints as Record<string, unknown> | undefined;
   const languages = (details.languages as Record<string, unknown> | undefined)?.value;
-  const master = (system.master as Record<string, unknown> | undefined)?.id;
+  const masterId = (system.master as Record<string, unknown> | undefined)?.id;
+  // Resolve the master's NAME like the party companion row does — an id is useless
+  // to a player-facing render (S4 live-gate find).
+  const master =
+    typeof masterId === "string" ? (game.actors.get(masterId)?.name ?? masterId) : undefined;
 
   return {
     section: "summary",
@@ -1599,6 +1610,7 @@ function findSlotState(
  * markdown cap and its group-summary fallback are entirely server-side (D28-6: the
  * module stays dumb, it never measures or truncates markdown). */
 function buildSpells(
+  doc: FoundryDocumentLike,
   raw: Record<string, unknown>,
   entryFilter: string | undefined,
   rankFilter: number | undefined,
@@ -1622,7 +1634,16 @@ function buildSpells(
     const esys = (entry.system ?? {}) as Record<string, unknown>;
     const tradition = (esys.tradition as Record<string, unknown> | undefined)?.value;
     const preparedType = (esys.prepared as Record<string, unknown> | undefined)?.value;
-    const dc = (esys.spelldc as Record<string, unknown> | undefined)?.dc;
+    // The entry DC is DERIVED — the stored source's `spelldc.dc` is 0 for a prepared
+    // caster ("DC 0" rendered at the 0028 S4 live gate); pf2e computes the real value
+    // onto the LIVE embedded entry (scope doc D28-2 appendix, pf2e.mjs ~:58730).
+    // Prefer the live embedded item, fall back to source for tests/edge cases.
+    const liveEsys = doc.items?.get(String(entry._id ?? ""))?.system as
+      | Record<string, unknown>
+      | undefined;
+    const liveDc = (liveEsys?.spelldc as Record<string, unknown> | undefined)?.dc;
+    const sourceDc = (esys.spelldc as Record<string, unknown> | undefined)?.dc;
+    const dc = typeof liveDc === "number" && liveDc > 0 ? liveDc : sourceDc;
     const slotsObj = (esys.slots ?? {}) as Record<string, unknown>;
 
     const rankGroups = new Map<number, PlayerSpellRow[]>();
@@ -1846,7 +1867,7 @@ async function handleQueryPlayer(rawParams: unknown): Promise<QueryPlayerResult>
     case "skills":
       return buildSkills(doc);
     case "spells":
-      return buildSpells(raw, params.entry, params.rank);
+      return buildSpells(doc, raw, params.entry, params.rank);
     case "feats":
       return buildFeats(raw);
     case "inventory":
@@ -2231,11 +2252,22 @@ interface ParsedRollJson {
  * `evaluated===true` roll, but this module never trusts stored data blindly)
  * returns `undefined` rather than throwing — the caller skips that roll's row. */
 function parseRollJson(
-  text: string,
+  roll: unknown,
 ): { formula?: string; total?: number; dice: RollDieRow[] } | undefined {
   let parsed: ParsedRollJson;
   try {
-    parsed = JSON.parse(text) as ParsedRollJson;
+    if (typeof roll === "string") {
+      parsed = JSON.parse(roll) as ParsedRollJson;
+    } else if (roll !== null && typeof roll === "object") {
+      // LIVE `game.messages` documents hydrate `rolls` into Roll INSTANCES — the
+      // serialized-JSON-strings shape exists only in stored source data (found at the
+      // 0028 S4 live gate: every page row silently failed to build). Round-tripping
+      // through JSON.stringify invokes the instances' own toJSON() recursively,
+      // producing exactly the stored shape either way.
+      parsed = JSON.parse(JSON.stringify(roll)) as ParsedRollJson;
+    } else {
+      return undefined;
+    }
   } catch {
     return undefined;
   }

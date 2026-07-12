@@ -72,6 +72,11 @@ interface FoundryDocumentLike {
    * `query-player`'s own path-reader treats an absent/wrong-shaped path as "unknown"
    * fail-soft, never a throw (D28-2 Risks: pf2e-internal paths can drift). */
   readonly system?: Record<string, unknown>;
+  /** An Actor's LIVE embedded-items collection (real Foundry: an `EmbeddedCollection`;
+   * only `.get()` is typed — only-what-we-touch policy). 0028 S4 fix: `buildSpells`
+   * reads a spellcasting entry's DERIVED `spelldc.dc` off the live embedded item
+   * (the stored source's is 0 for a prepared caster). Absent on non-Actor documents. */
+  readonly items?: { get(id: string): FoundryDocumentLike | undefined };
   toObject(): Record<string, unknown>;
 }
 
@@ -272,7 +277,10 @@ interface FoundryChatMessage {
   /** Empty = public (`ChatMessage.applyRollMode`, `chat-message.mjs:152-168`). */
   readonly whisper: string[];
   readonly blind: boolean;
-  readonly rolls: string[];
+  /** STORED source data carries serialized-Roll JSON strings; a LIVE `game.messages`
+   * document hydrates them into Roll INSTANCES (objects whose `toJSON()` restores the
+   * stored shape) — 0028 S4 live-gate find. `parseRollJson` accepts both. */
+  readonly rolls: ReadonlyArray<string | object>;
   readonly flavor?: string;
   readonly flags?: Record<string, unknown>;
 }

@@ -2222,6 +2222,76 @@ describe("portal-module 0028 S2 — query-party / query-player (Foundry-free)", 
     });
   });
 
+  describe("S4 live-gate regressions: source-vs-live field ownership", () => {
+    it("summary hero points come from the STORED source, not the zeroed live tree", async () => {
+      // pf2e's data preparation leaves live system.resources.heroPoints at 0/0 —
+      // hero points are GM-awarded meta-currency stored in source ({1,3} in the
+      // fixture). Rendered 0/0 live at the S4 gate while the party row said 1/3.
+      const argyleDoc = fixtureActorDoc("argyle", {
+        resources: { heroPoints: { value: 0, max: 0 } },
+      });
+      stubFoundry(true, { actors: [argyleDoc] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        name: "Argyle",
+        section: "summary",
+      })) as { heroPoints?: { value: number; max: number } };
+      expect(result.heroPoints).toEqual({ value: 1, max: 3 });
+    });
+
+    it("summary master resolves to the master's NAME like the party companion row", async () => {
+      const othelloDoc = fixtureActorDoc("othello");
+      const raw = othelloDoc.toObject();
+      const masterId = String(
+        ((raw.system as Record<string, unknown>).master as Record<string, unknown>).id,
+      );
+      const anzu = fakeDoc({
+        id: masterId,
+        uuid: `Actor.${masterId}`,
+        name: "Anzu",
+        documentName: "Actor",
+        type: "character",
+      });
+      stubFoundry(true, { actors: [othelloDoc, anzu] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        name: "Othello",
+        section: "summary",
+      })) as { master?: string };
+      expect(result.master).toBe("Anzu");
+    });
+
+    it("spells entry DC prefers the LIVE embedded entry's derived spelldc.dc over source 0", async () => {
+      const argyleDoc = fixtureActorDoc("argyle");
+      const raw = argyleDoc.toObject();
+      const items = raw.items as Array<Record<string, unknown>>;
+      const entry = items.find((i) => i.type === "spellcastingEntry");
+      const entryId = String(entry?._id);
+      const liveEntry = {
+        ...fakeDoc({
+          id: entryId,
+          uuid: `Actor.${argyleDoc.id}.Item.${entryId}`,
+          name: String(entry?.name),
+          documentName: "Item",
+          type: "spellcastingEntry",
+        }),
+        system: { spelldc: { dc: 26 } },
+      };
+      const docWithItems = {
+        ...argyleDoc,
+        items: { get: (id: string) => (id === entryId ? liveEntry : undefined) },
+      };
+      stubFoundry(true, { actors: [docWithItems] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-player", {
+        name: "Argyle",
+        section: "spells",
+      })) as { entries: Array<{ entryName: string; dc?: number }> };
+      const target = result.entries.find((e) => e.entryName === String(entry?.name));
+      expect(target?.dc).toBe(26);
+    });
+  });
+
   describe("query-player resolution + predicate (D28-4/D28-13)", () => {
     it("resolves by uuid", async () => {
       const argyleDoc = fixtureActorDoc("argyle");
@@ -3085,7 +3155,7 @@ describe("portal-module 0028 S3 — query-rolls (D28-3/D28-10/D28-12, Foundry-fr
     whisper?: string[];
     blind?: boolean;
     speaker?: { actor?: string; alias?: string };
-    rolls?: string[];
+    rolls?: Array<string | object>;
     flavor?: string;
     flags?: Record<string, unknown>;
   }): FoundryChatMessage {
@@ -3105,6 +3175,33 @@ describe("portal-module 0028 S3 — query-rolls (D28-3/D28-10/D28-12, Foundry-fr
     formula: "1d20+7",
     total: 21,
     dice: [{ faces: 20, results: [{ result: 14 }] }],
+  });
+
+  describe("S4 live-gate regression: hydrated Roll instances (not JSON strings)", () => {
+    it("builds a row from a LIVE message whose rolls[] are Roll INSTANCES", async () => {
+      // Live `game.messages` documents hydrate `rolls` into Roll instances whose
+      // toJSON() restores the stored shape — found live at the 0028 S4 gate, where
+      // every page row silently failed to build (rows=0, hasMore=true).
+      const instance = {
+        toJSON: () =>
+          JSON.parse(
+            fakeRollJson({
+              formula: "1d20+5",
+              total: 19,
+              dice: [{ faces: 20, results: [{ result: 14 }] }],
+            }),
+          ) as object,
+      };
+      const msg = fakeMessage({ id: "live1", timestamp: 1000, rolls: [instance] });
+      stubFoundry(true, { messages: [msg] });
+      registerHandlers();
+      const result = (await dispatchQuery("portal.query-rolls", {})) as {
+        rows: Array<{ formula: string; total: number }>;
+      };
+      expect(result.rows).toHaveLength(1);
+      expect(result.rows[0]?.formula).toBe("1d20+5");
+      expect(result.rows[0]?.total).toBe(19);
+    });
   });
 
   describe("D28-3 privacy filter (public-only, non-negotiable)", () => {
