@@ -1,5 +1,10 @@
 # 0020 — heartwood Phase 3 (prose proposer, read-only) — NLSpec
 
+> **⚠ SUPERSEDED IN PART (2026-07-12):** the LLM drafting half of this spec (draft/voice/
+> tell-lint/revise, the novelty + conflict gates P3.15/P3.17) was RETIRED by the facts-only
+> rework — see `0020-heartwood-facts-only-rework-spec.md` (COMPLETE). The grouping/placement/
+> manifest machinery and the faerrin voice lessons recorded here remain historical context.
+
 - **Status:** **DONE** (2026-06-28). All 5 slices built + pushed (`f9e3ce0` S1 … `e3a57f8` S5); live acceptance
   on `2025-8-28` (`0dfb6e0`). Stakeholder §11 read = "pass creates, harden rewrites" → **P3.9 revised from
   full-body-replace to PRESERVE-AND-APPEND** (`9c1bbd8`, + a deterministic `pov_shift` warning) and the

@@ -1,7 +1,16 @@
 # 0020 — heartwood facts-only rework (retire LLM drafting) — NLSpec
 
-**Status:** SPEC — adversarially reviewed (2 blockers + 6 minors found and FOLDED IN, 2026-07-12);
-ready to implement.
+**Status:** COMPLETE (2026-07-12) — S1 `f3a834b` (backend, −1050 lines) · S2 `3eb306c` (frontend +
+regenerated change-set: 58 pages / 39 create / 19 rewrite / 0 skipped, creates skeleton-exact, all
+19 rewrite bodies byte-identical) · S3 deployed (`just up`) + live gate PASSED: SSR facts-first
+(58 cards, 39 empty-state placeholders, zero lint/conflict markup), the §7.4 guard/flush/persist
+sequence proven live via Playwright 7/7 (incl. the B2 write→tab-switch→approve flush) then
+prove-and-reverted, `reviewState`/apply contract diff-free, SigNoz `astra.heartwood-frontend`
+0-error + `heartwood.writeProposalBody` span + the `body_edits{outcome=ok}` series born at the
+save. Adversarially reviewed pre-build (2 blockers + 6 minors folded in). Orchestrator review
+added one fix beyond the spec: the editor reseeds from the live buffer on remount
+(`ProposalCard` `initialSource={source}`) — reseeding from the stale `body` prop would have let a
+post-tab-switch keystroke debounce-save over the human's flushed edits.
 **Scope doc:** `thoughts/shared/research/2026-07-12-heartwood-0020-facts-only-rework-thoughts.md`
 (3-agent analysis verified against HEAD `634679e`; all stakeholder forks resolved 2026-07-12).
 **Supersedes in part:** `0020-heartwood-phase3-proposer-spec.md` (the drafting half) and amends

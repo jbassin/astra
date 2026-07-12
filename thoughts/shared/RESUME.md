@@ -36,7 +36,34 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-11 evening — 0028 COMPLETE; 0027 CLOSED)
+## Current state — UPDATE THIS SECTION (as of 2026-07-12 — heartwood facts-only rework COMPLETE + LIVE)
+
+> **✅ heartwood 0020 FACTS-ONLY REWORK — COMPLETE, scope→spec→build→deploy→live-gate in one
+> session.** Stakeholder redirect: the machine must NOT write wiki prose — review cards show only
+> the extracted FACTS and the human authors every body in the in-browser editor. Docs commits
+> `adc63ac` (scope) + `88fb0e6` (spec, adversarially reviewed — 2 blockers folded in) · S1
+> `f3a834b` (backend: `draft.py`/`voice.py` deleted, `lint.py`→`page_type.py`, zero LLM calls,
+> manifest drops lint/conflict nodes) · S2 `3eb306c` (frontend facts-first + guards + regenerated
+> `2025-8-28`: **58 pages — 39 create / 19 rewrite, 0 skipped**; creates skeleton-exact, all 19
+> rewrite bodies byte-identical to the corpus) · S3 deployed via `just up` + live gate PASSED
+> (SSR facts-first on all 58 cards; Playwright 7/7: approve guards, the B2 flush-on-unmount race
+> closed, decision persisted to `review.kdl` + survived reload — then prove-and-reverted, the
+> change-set is PRISTINE). Spec `thoughts/astra/specs/0020-heartwood-facts-only-rework-spec.md`
+> status COMPLETE; **[[heartwood-0020-gotchas]] has the rework section** (the debounced-save race
+> + the remount-reseed sibling, the `astra.heartwood-frontend` SigNoz name, the
+> subagent-restarted-timer incident).
+> - **▶ NEXT: the D1 content acceptance, now human-penned** — Josh writes ≥1 create + ≥1 rewrite
+>   from the staged facts at `https://heartwood.iridi.cc/review/2025-8-28`, approves them, then
+>   `just heartwood-apply 2025-8-28` → verify live on akasha. Phase 5 (backfill ~40 sessions,
+>   extraction-cost-only now + automation) stays gated behind it.
+> - Other open items unchanged: webhook rotation, Class-A alerting breadth, scribe ASR cost
+>   telemetry.
+
+---
+
+### Previous section (2026-07-11) — 0028 COMPLETE; 0027 CLOSED (superseded above)
+
+## (was) Current state (as of 2026-07-11 evening — 0028 COMPLETE; 0027 CLOSED)
 
 > **✅ portal-player (0028) — COMPLETE, scope→spec→build→deploy→live-gate in two days, gate
 > A–H PASSED 2026-07-11 with the stakeholder.** S1 `8655edb` · S2 `a889034` · S3 `a59d53c` ·

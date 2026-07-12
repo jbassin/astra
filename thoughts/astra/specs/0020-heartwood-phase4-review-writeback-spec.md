@@ -1,5 +1,11 @@
 # 0020 — heartwood Phase 4 (review surface + write-back) — NLSpec
 
+> **⚠ AMENDED (2026-07-12)** by `0020-heartwood-facts-only-rework-spec.md` (COMPLETE): cards are
+> facts-first and the HUMAN writes every body (creates open on a skeleton, rewrites on the live
+> page verbatim); Approve is gated on placement ∧ persisted save ∧ real content; the conflict UI
+> and manifest lint/conflict nodes are gone (the review.kdl contract kept `conflict-res`). The
+> §11 content acceptance below still stands, now on human-written bodies.
+
 - **Status:** **BUILT + SURFACE LIVE** (2026-06-28) — all 6 slices implemented, CI-green, committed + pushed
   (`7484900` S1 … `142af2e`/`db42c1a` S5); the review surface is live on `https://heartwood.iridi.cc`
   (`astra.heartwood` 0-error SSR spans in SigNoz). The adversarial pass's 3 blockers + 4 edge-cases (§15) were

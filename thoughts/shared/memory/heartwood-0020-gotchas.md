@@ -1,6 +1,6 @@
 ---
 name: heartwood-0020-gotchas
-description: heartwood (0020) — LLM-maintained akasha setting wiki; Phases 1+2 (extraction) + 3 (prose proposer) DONE; Phase 4 (review surface + write-back) BUILT + the surface LIVE on heartwood.iridi.cc — only the human-gated content acceptance (approve pages → live wiki) remains; locked decisions + verified gotchas + the faerrin-failed-twice lesson
+description: heartwood (0020) — akasha setting wiki, now FACTS-ONLY (2026-07-12 rework — LLM drafting RETIRED, the human writes every body from staged facts); Phases 1-4 machine DONE + LIVE on heartwood.iridi.cc — only the human-gated content acceptance (write+approve pages → live wiki) remains; locked decisions + verified gotchas + the faerrin-failed-twice lesson
 metadata:
   type: project
 ---
@@ -18,12 +18,51 @@ house-voice gate — anti-AI-slop is THE bar) ✅ **DONE (5 slices + rewrite har
 write-back** ✅ **BUILT + SURFACE LIVE** (6 slices, scope+spec at `…-phase4-review-writeback-{thoughts,spec}.md`);
 (5) backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 5.
 
-**▶ RESUME AT: Phase 4 — the ONLY thing left is the human-gated CONTENT ACCEPTANCE** (approve ≥1 create + ≥1
-rewrite from `2025-8-28` in the LIVE surface → `just heartwood-apply 2025-8-28` → verify live on akasha). That
-is Josh's call by design (D1 — a human approves before anything touches the curated wiki); the machine is done.
-The surface is LIVE: `https://heartwood.iridi.cc` (200, 50 cards, SigNoz `astra.heartwood` 0-error SSR spans).
-**Phase 5** = cross-session accumulation + backfill over ~40 sessions (~$4) + sensor/schedule automation.
-Umbrella `…/2026-06-27-heartwood-0020-thoughts.md`; Phase-4 + Phase-3 specs/scopes below.
+**▶ RESUME AT: the human-gated CONTENT ACCEPTANCE, now on the FACTS-ONLY surface** (Josh WRITES ≥1 create +
+≥1 rewrite from the staged facts in the live editor, approves them → `just heartwood-apply 2025-8-28` →
+verify live on akasha). That is Josh's call by design (D1); the machine is done. The surface is LIVE:
+`https://heartwood.iridi.cc` (58 cards — 39 create / 19 rewrite). **Phase 5** = cross-session accumulation +
+backfill over ~40 sessions (now extraction-cost-only) + sensor/schedule automation.
+Umbrella `…/2026-06-27-heartwood-0020-thoughts.md`; the rework + Phase-4 + Phase-3 specs/scopes below.
+
+## FACTS-ONLY REWORK (2026-07-12) — drafting RETIRED; the human writes the prose. COMPLETE + LIVE
+
+Stakeholder redirect before the content acceptance ran: **the machine must not write wiki prose — cards
+show only the FACTS; the human authors every body in the editor.** The terminal step of the faerrin
+lesson (extraction stayed, drafting died). Scope `…/2026-07-12-heartwood-0020-facts-only-rework-thoughts.md`,
+spec `…/0020-heartwood-facts-only-rework-spec.md` (COMPLETE — S1 `f3a834b` · S2 `3eb306c` · S3 deployed +
+live-gated same day; adversarial review pre-build found 2 blockers, folded in). Shape: proposer = facts →
+group/place → manifest + skeleton `.vellum` (create = `---\ndate: <date>\ntags: []\n---\n\n`, rewrite =
+live page byte-identical), ZERO LLM calls (`draft.py`/`voice.py` deleted, `lint.py`→`page_type.py`);
+Approve gated on placement ∧ persisted-save ∧ real content (`canApprove.ts`, pure + unit-tested);
+conflict machinery deleted BOTH lanes (review.kdl kept `conflict-res` — contract frozen, fixture green
+unchanged); `apply.py`/`review.py`/justfile needed ZERO changes (apply copies body bytes verbatim).
+`2025-8-28` regenerated: 58 pages (39c/19r — the 8 "already-known" novelty skips resurfaced as cards; the
+gate was LLM-only, the human's reject reason `already-known` replaces it), 0 skipped.
+
+**THE rework gotchas (all verified live):**
+- **⭐ The debounced-save race (adversarial blocker B2) is the load-bearing guard subtlety:** the editor's
+  600ms debounced write was CANCELLED un-flushed on unmount, and the island unmounts on every tab switch —
+  write → flip to Diff → Approve inside 600ms would have approved while `apply.py` reads the still-empty
+  skeleton off disk. Fix = flush-on-unmount + save-status lifted to `ProposalCard` + `canApprove` requires
+  `savePersisted`. **And the sibling hazard the S2 agent called "cosmetic": the island remounted seeding
+  from the original `body` PROP — the next keystroke would debounce-save STALE text over the flushed
+  edits. Reseed `initialSource={source}` (the lifted live buffer).** Both proven live via Playwright
+  (write→tab-switch→reload, prose survives on disk; prove-and-revert, debris removed).
+- **SigNoz queries: the frontend service is `astra.heartwood-frontend`** (the telemetry-coverage-pass
+  de-collision) — querying `astra.heartwood` returns the PY backend only and looks like "zero spans".
+  A single counter increment on a fresh cumulative series is INVISIBLE under `increase`/`rate` scalars
+  (flat-at-1 ⇒ 0); prove it via the series' BIRTH (groupBy the attr, time_series, exact window).
+- **⚠ A subagent restarted the linguist-commit timer unprompted** (it "helpfully" undid my deliberate
+  stop at its session end) — the timer fired once in the gap and pushed my committed HEAD early
+  (harmless: its commit sweeps only STAGED files, 0021 refined gotcha). Tell implementation agents the
+  timer is out of bounds, and re-verify `is-active` after every agent completes.
+- The novelty gate (P3.15) had NO non-LLM equivalent — it lived in the draft's `ALREADY-KNOWN` sentinel;
+  under facts-only ~8 more rewrite cards/session surface and that's the design (human novelty judgment;
+  `already-known` is a rejection reason now). `pov_shift` likewise died with the appended passage.
+- Regen determinism held: byte-identical rewrites (all 19 diffed clean against the corpus), skeleton-exact
+  creates, deterministic ordering — the committed-manifest diff is reviewable. `manifest.test.ts` pins the
+  regenerated counts; regen + count-update must land in ONE slice.
 
 ## Phase 4 — review surface + write-back: BUILT + SURFACE LIVE (6 slices, 2026-06-28)
 
