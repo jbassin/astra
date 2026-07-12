@@ -1,5 +1,5 @@
 proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
-    page "Bestiary/Augers" op="create" canonical="Augers" kind="creature" status="unknown" page-type="lore" body="bestiary-augers.vellum" {
+    page "Bestiary/Augers" op="create" canonical="Augers" kind="creature" status="unknown" page-type="stub" body="bestiary-augers.vellum" {
         fact "Augers are creatures created through a divination ritual; feeding them improves the divination."
     }
     page "Bestiary/Tywelwyn" op="create" canonical="Tywelwyn" kind="creature" status="resolved" page-type="lore" body="bestiary-tywelwyn.vellum" {
@@ -12,8 +12,11 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "A proboscis grows from an Ugathal's featureless face to drain blood from victims."
         fact "Ugathals do not feel pain and their bodies lose form when damaged; their flesh is stringy with no blood inside, just more flesh."
     }
-    page "Bestiary/goblinoid" op="create" canonical="goblinoid" kind="creature" status="unknown" page-type="lore" body="bestiary-goblinoid.vellum" {
+    page "Bestiary/goblinoid" op="create" canonical="goblinoid" kind="creature" status="unknown" page-type="stub" body="bestiary-goblinoid.vellum" {
         fact "Goblinoids in this area of the city work in factories and wear workman's attire."
+    }
+    page "Geography/Austrene/index" op="rewrite" canonical="Austrene" kind="place" status="resolved" page-type="lore" body="geography-austrene-index.vellum" {
+        fact "Austrene is a country where Belvedere is located."
     }
     page "Geography/Black and White/index" op="rewrite" canonical="Black and White" kind="place" status="resolved" page-type="lore" body="geography-black-and-white-index.vellum" {
         fact "Black and White is an organization that issues badges."
@@ -34,13 +37,21 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "Sableclutch is a junkyard that gives jobs to anyone willing to do them."
         fact "Sableclutch contains a giant crusher."
     }
-    page "Geography/Fifth Ave/index" op="create" canonical="Fifth Ave" kind="place" status="unknown" page-type="lore" body="geography-fifth-ave-index.vellum" {
+    page "Geography/Calaria/Hallia/index" op="rewrite" canonical="Hallia" kind="place" status="resolved" page-type="lore" body="geography-calaria-hallia-index.vellum" {
+        fact "Hallia is a city with multiple districts and a tram/trolley public transit system."
+        fact "Strong magic in Hallia prevents travel between districts without using the public transit system."
+        fact "Hallia has three police organizations that offer bounties for outstanding warrants."
+        fact "Hallia is a city with a river running through it."
+        fact "Hallia has public transportation including trams."
+        fact "Hallia is built across different strata or levels along a horizon."
+    }
+    page "Geography/Fifth Ave/index" op="create" canonical="Fifth Ave" kind="place" status="unknown" page-type="stub" body="geography-fifth-ave-index.vellum" {
         fact "Fifth Ave is a street with upscale jewelry shops and high-end residential areas on the east side of a city."
     }
     page "Geography/Færrin" op="rewrite" canonical="Færrin" kind="place" status="resolved" page-type="lore" body="geography-frrin.vellum" {
         fact "Færrin is a place associated with pug people."
     }
-    page "Geography/Masque District/index" op="create" canonical="Masque District" kind="place" status="resolved" page-type="lore" body="geography-masque-district-index.vellum" {
+    page "Geography/Masque District/index" op="create" canonical="Masque District" kind="place" status="resolved" page-type="stub" body="geography-masque-district-index.vellum" {
         fact "The Masque District is a district in the city where tourists stay and where hotels are located."
     }
     page "Geography/The Undertable/index" op="create" canonical="The Undertable" kind="place" status="unknown" page-type="lore" body="geography-the-undertable-index.vellum" {
@@ -51,7 +62,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     page "Geography/starward/index" op="create" canonical="starward" kind="place" status="resolved" page-type="lore" body="geography-starward-index.vellum" {
         fact "Starward is an area down the horizon in Hallia that is seedier and less well-maintained than the central areas."
         fact "Starward was built up with buildings expecting a boom from the tram line that never materialized, and has not been maintained over the past few decades."
-        lint "broken_wikilink" message="Wikilink target not found: tram. Check the page exists (or create it)." hit="tram"
     }
     page "Org/Belvedere" op="rewrite" canonical="Belvedere" kind="org" status="resolved" page-type="lore" body="org-belvedere.vellum" {
         fact "Belvedere has more Fanes than most places, and hearts exist more frequently there as part of the hierarchy."
@@ -71,14 +81,32 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "The Chorath is a restaurant and city-rating guide similar to the Michelin Guide, produced by Chorath."
         fact "Cities must pay the Chorath to come and evaluate them."
     }
-    page "Org/Church of Riostad/index" op="create" canonical="Church of Riostad" kind="org" status="unknown" page-type="lore" body="org-church-of-riostad-index.vellum" {
+    page "Org/Church of Riostad/index" op="create" canonical="Church of Riostad" kind="org" status="unknown" page-type="stub" body="org-church-of-riostad-index.vellum" {
         fact "The Church of Riostad is a religious organization."
+    }
+    page "Org/Concordia" op="rewrite" canonical="Concordia" kind="org" status="resolved" page-type="lore" body="org-concordia.vellum" {
+        fact "Concordia is a major conglomerate comparable to LG, GE, or Samsung that manufactures appliances and home-facing products."
+        fact "Concordia works to ensure all consumer-facing hearts have consistent branding."
+    }
+    page "Org/Iconoclasm/People/Dura Oil-Drinker" op="rewrite" canonical="Dura Oil-Drinker" kind="person" status="resolved" page-type="lore" body="org-iconoclasm-people-dura-oil-drinker.vellum" {
+        fact "Dura Oil-Drinker is a mechanic."
+    }
+    page "Org/Iconoclasm/People/Gin Soaked Rag" op="rewrite" canonical="Gin Soaked Rag" kind="person" status="resolved" page-type="lore" body="org-iconoclasm-people-gin-soaked-rag.vellum" {
+        fact "Gin Soaked Rag is the heart of the Sin and Tonic."
+        fact "Gin Soaked Rag appears as a suit vest and dress pants with a twisted-up dish rag for a head."
+        fact "Gin Soaked Rag works the bar and cooks at the Sin and Tonic, though it has not mastered cooking human food as well as Illmari Vaino has."
+    }
+    page "Org/Iconoclasm/People/Illmari Vaino" op="rewrite" canonical="Illmari Vaino" kind="person" status="resolved" page-type="lore" body="org-iconoclasm-people-illmari-vaino.vellum" {
+        fact "Illmari Vaino is the founder of Iconoclasm."
     }
     page "Org/Iconoclasm/index" op="rewrite" canonical="Iconoclasm" kind="org" status="resolved" page-type="lore" body="org-iconoclasm-index.vellum" {
         fact "Iconoclasm is a religious organization that functions as an orphanage."
         fact "Iconoclasm was founded by Illmari Vaino."
         fact "Iconoclasm is subject to rumors that it employs children."
         fact "Iconoclasm is an organization with which Johnny is affiliated."
+    }
+    page "Org/Prime Meridian/index" op="rewrite" canonical="Prime Meridian" kind="org" status="resolved" page-type="lore" body="org-prime-meridian-index.vellum" {
+        fact "Prime Meridian Meridian, also called Zero, is a wealthy area of the city where residents can afford cars and public transit does not reach."
     }
     page "Org/Pyrelight/index" op="rewrite" canonical="Pyrelight" kind="org" status="resolved" page-type="lore" body="org-pyrelight-index.vellum" {
         fact "Pyrelight is associated with Embercall Industries, which is the commercial name used on bills of materials."
@@ -88,6 +116,10 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     }
     page "Org/Roundhat Gang/index" op="rewrite" canonical="Roundhat Gang" kind="org" status="resolved" page-type="lore" body="org-roundhat-gang-index.vellum" {
         fact "The Roundhat Gang runs a roller rink."
+    }
+    page "Org/RunGunners/index" op="rewrite" canonical="RunGunners" kind="org" status="resolved" page-type="lore" body="org-rungunners-index.vellum" {
+        fact "The RunGunners are a famous group of mercenaries and guns for hire."
+        fact "The RunGunners possess a city in the middle of a desert sustained as one large Fane maintained by many hearts with different personalities that clash constantly."
     }
     page "Org/Scale/index" op="create" canonical="Scale" kind="org" status="resolved" page-type="lore" body="org-scale-index.vellum" {
         fact "Scale is an organization that empowers arbiters to perform bounty hunting."
@@ -119,7 +151,7 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "Anzu has a bird companion."
         fact "Anzu keeps a creature named Othello on their shoulder."
     }
-    page "Org/Unsorted/People/Arctos" op="create" canonical="Arctos" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-arctos.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+    page "Org/Unsorted/People/Arctos" op="create" canonical="Arctos" kind="person" status="resolved" page-type="stub" body="org-unsorted-people-arctos.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Arctos are people empowered by the Scale to perform bounty hunting."
     }
     page "Org/Unsorted/People/Argyle" op="create" canonical="Argyle" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-argyle.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
@@ -157,21 +189,20 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "Copperjaw has an office set up in a converted storage container near the front of his scrapyard."
         fact "Copperjaw crafted the contents of the metal suitcase."
     }
-    page "Org/Unsorted/People/Elias" op="create" canonical="Elias" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-elias.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+    page "Org/Unsorted/People/Elias" op="create" canonical="Elias" kind="person" status="unknown" page-type="stub" body="org-unsorted-people-elias.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Elias is a dwarf who serves as quartermaster."
     }
-    page "Org/Unsorted/People/Johnny" op="create" canonical="Johnny" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-johnny.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+    page "Org/Unsorted/People/Johnny" op="create" canonical="Johnny" kind="person" status="resolved" page-type="stub" body="org-unsorted-people-johnny.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Smiler at the Undertable serves as Johnny's trusted supplier for weapons and armor."
-        lint "broken_wikilink" message="Wikilink target not found: Smiler at the Undertable. Check the page exists (or create it)." hit="Smiler at the Undertable"
     }
     page "Org/Unsorted/People/Mutagen" op="create" canonical="Mutagen" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-mutagen.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Mutagen is a Blackline officer who cannot speak, having lost his voice in an accident during a scuffle."
         fact "Mutagen is the partner of Officer Smith."
     }
-    page "Org/Unsorted/People/Officer Smith" op="create" canonical="Officer Smith" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-officer-smith.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+    page "Org/Unsorted/People/Officer Smith" op="create" canonical="Officer Smith" kind="person" status="unknown" page-type="stub" body="org-unsorted-people-officer-smith.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Officer Smith is a human Blackline officer in his late forties."
     }
-    page "Org/Unsorted/People/Patchwork Prince" op="create" canonical="Patchwork Prince" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-patchwork-prince.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
+    page "Org/Unsorted/People/Patchwork Prince" op="create" canonical="Patchwork Prince" kind="person" status="unknown" page-type="stub" body="org-unsorted-people-patchwork-prince.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "The Patchwork Prince is a major antagonist, described as an old, defenseless man."
     }
     page "Org/Unsorted/People/Smiler" op="create" canonical="Smiler" kind="person" status="resolved" page-type="lore" body="org-unsorted-people-smiler.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
@@ -180,7 +211,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "Smiler wears a stained white tee, multiple yellowish metal bands on his arms, flare gauges with gems in his ears, and has a braided tail and beard with gems throughout."
         fact "Smiler is acquainted with Johnny, who has dealt with him before."
         fact "Smiler works at a pawn shop."
-        lint "broken_wikilink" message="Wikilink target not found: Undertable. Check the page exists (or create it)." hit="Undertable"
     }
     page "Org/Unsorted/People/Tanner" op="create" canonical="Tanner" kind="person" status="unknown" page-type="lore" body="org-unsorted-people-tanner.vellum" placement-note="person→org link not in the fact rows; under Org/Unsorted — human to place (§6)" {
         fact "Tanner is incredibly light in weight."
@@ -190,7 +220,7 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "Tywelwyn's are two people who are particularly good at crafting but do not run a store."
         fact "One of Tywelwyn's twins is male."
     }
-    page "Phenomena/Embercall" op="create" canonical="Embercall" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-embercall.vellum" {
+    page "Phenomena/Embercall" op="create" canonical="Embercall" kind="phenomenon" status="resolved" page-type="stub" body="phenomena-embercall.vellum" {
         fact "Embercall is a signal or song that a radar dish may receive; the dish could potentially be tuned away from Embercall to receive the Voidsong instead."
     }
     page "Phenomena/Fane" op="create" canonical="Fane" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-fane.vellum" {
@@ -202,20 +232,19 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
     page "Phenomena/Harmony/Voidsong" op="rewrite" canonical="Voidsong" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-harmony-voidsong.vellum" {
         fact "The Voidsong is a signal that a radar dish could be tuned to receive."
     }
-    page "Phenomena/Zorbon" op="create" canonical="Zorbon" kind="phenomenon" status="resolved" page-type="lore" body="phenomena-zorbon.vellum" {
+    page "Phenomena/Zorbon" op="create" canonical="Zorbon" kind="phenomenon" status="resolved" page-type="stub" body="phenomena-zorbon.vellum" {
         fact "Zorbon is a phenomenon involving mushrooms believed to be present in radio broadcasts and food; tinfoil hats are thought to protect against it."
     }
-    page "Phenomena/slides" op="create" canonical="slides" kind="phenomenon" status="unknown" page-type="lore" body="phenomena-slides.vellum" {
+    page "Phenomena/slides" op="create" canonical="slides" kind="phenomenon" status="unknown" page-type="stub" body="phenomena-slides.vellum" {
         fact "Slides are a travel technology that allows movement to locations outside city limits; their use is restricted within city limits for security reasons."
-        lint "broken_wikilink" message="Wikilink target not found: city walls. Check the page exists (or create it)." hit="city walls"
     }
-    page "needs-placement/Aaron Cross" op="create" canonical="Aaron Cross" status="unknown" page-type="lore" body="needs-placement-aaron-cross.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+    page "needs-placement/Aaron Cross" op="create" canonical="Aaron Cross" status="unknown" page-type="stub" body="needs-placement-aaron-cross.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
         fact "Aaron Cross is Argyle's parent and an operative of the Scale."
     }
-    page "needs-placement/Helmstier" op="create" canonical="Helmstier" status="unknown" page-type="lore" body="needs-placement-helmstier.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+    page "needs-placement/Helmstier" op="create" canonical="Helmstier" status="unknown" page-type="stub" body="needs-placement-helmstier.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
         fact "Helmstier is a small town in the mountains on the border between two countries."
     }
-    page "needs-placement/Joran Davinrock" op="create" canonical="Joran Davinrock" status="unknown" page-type="lore" body="needs-placement-joran-davinrock.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+    page "needs-placement/Joran Davinrock" op="create" canonical="Joran Davinrock" status="unknown" page-type="stub" body="needs-placement-joran-davinrock.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
         fact "Joran Davinrock is Argyle's parent and an operative of the Scale."
     }
     page "needs-placement/Sentience Distributor" op="create" canonical="Sentience Distributor" kind="item" status="unknown" page-type="lore" body="needs-placement-sentience-distributor.vellum" placement-note="kind=item has no corpus folder; human to place (§6)" {
@@ -226,7 +255,7 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         fact "The Last Stop is a bar in Helmstier run by a half-elven barkeep."
         fact "The Last Stop's name is a multifaceted joke: it is the last stop of the night, and the last stop on the border before entering or leaving the country."
     }
-    page "needs-placement/the Heart" op="create" canonical="the Heart" status="resolved" page-type="lore" body="needs-placement-the-heart.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
+    page "needs-placement/the Heart" op="create" canonical="the Heart" status="resolved" page-type="stub" body="needs-placement-the-heart.vellum" placement-note="kind is unknown; human to classify + place (§6)" {
         fact "The Heart is a deity or group of deities with many churches in Sableclutch."
     }
     unplaced subject="Embercall Industries" claim="Embercall Industries is the business name associated with Pyrelight, used on bills of materials." {
@@ -264,14 +293,6 @@ proposal "2025-8-28" show="through-a-song-darkly" world="faerrin" {
         candidate "Fort DC" score="0.4252380952380952"
         candidate "Yeenut" score="0.4083333333333333"
     }
-    skipped target-path="Geography/Austrene/index" reason="already-known"
-    skipped target-path="Geography/Calaria/Hallia/index" reason="already-known"
-    skipped target-path="Org/Concordia" reason="already-known"
-    skipped target-path="Org/Iconoclasm/People/Dura Oil-Drinker" reason="already-known"
-    skipped target-path="Org/Iconoclasm/People/Gin Soaked Rag" reason="already-known"
-    skipped target-path="Org/Iconoclasm/People/Illmari Vaino" reason="already-known"
-    skipped target-path="Org/Prime Meridian/index" reason="already-known"
-    skipped target-path="Org/RunGunners/index" reason="already-known"
     registry-add canonical="Aaron Cross" suggested-path="needs-placement/Aaron Cross"
     registry-add canonical="Augers" kind="creature" suggested-path="Bestiary/Augers"
     registry-add canonical="Blackline" kind="org" suggested-path="Org/Blackline/index"

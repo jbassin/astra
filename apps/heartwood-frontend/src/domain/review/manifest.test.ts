@@ -22,13 +22,12 @@ describe("parseManifest (2025-8-28 fixture)", () => {
   });
 
   it("reads every node kind at the right count", () => {
-    expect(m.proposals).toHaveLength(50);
+    expect(m.proposals).toHaveLength(58);
     expect(m.proposals.filter((p) => p.op === "create")).toHaveLength(39);
-    expect(m.proposals.filter((p) => p.op === "rewrite")).toHaveLength(11);
+    expect(m.proposals.filter((p) => p.op === "rewrite")).toHaveLength(19);
     expect(m.unplaced).toHaveLength(5);
-    expect(m.skipped).toHaveLength(8);
+    expect(m.skipped).toHaveLength(0);
     expect(m.registryAdditions).toHaveLength(17);
-    expect(m.proposals.flatMap((p) => p.lints)).toHaveLength(4);
   });
 
   it("maps kebab-case props to camelCase fields", () => {
@@ -53,13 +52,6 @@ describe("parseManifest (2025-8-28 fixture)", () => {
     const [name, score] = u?.candidates[0] ?? ["", Number.NaN];
     expect(typeof name).toBe("string");
     expect(Number.isFinite(score)).toBe(true);
-  });
-
-  it("reads a broken_wikilink lint with its hit", () => {
-    const lints = m.proposals.flatMap((p) => p.lints);
-    const broken = lints.find((l) => l.type === "broken_wikilink");
-    expect(broken).toBeDefined();
-    expect(broken?.hit).toBeTruthy();
   });
 
   it("reads registry additions with suggested-path → suggestedPath", () => {

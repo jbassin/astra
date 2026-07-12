@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { canApprove } from "@/domain/review/canApprove";
 import type { PageProposal } from "@/domain/review/manifest";
 import type { Decision } from "@/domain/review/reviewState";
 import { setDecision } from "@/serverFns/writeDecision";
@@ -20,18 +21,24 @@ type DecState = "pending" | "approved" | "rejected" | "deferred";
 
 // The decide controls for one proposal (P4.3). approve / reject(tagged) / defer →
 // review.kdl. For a `create` (esp. a needs-placement one) the target-path is editable
-// (P4.9 — the human places it); approve is blocked until it leaves needs-placement/ and
-// any conflicts are resolved (P4.10). committed-at is never set here (apply's job).
+// (P4.9 — the human places it); approve is blocked until it leaves needs-placement/, the
+// editor's last write has landed on disk, and the body carries real human-authored
+// content (FO-5/FO-10's `canApprove` — see domain/review/canApprove.ts). committed-at is
+// never set here (apply's job).
 export function DecisionFooter({
   proposal,
   date,
   initial,
-  conflictsResolved,
+  source,
+  corpusBody,
+  savePersisted,
 }: {
   proposal: PageProposal;
   date: string;
   initial: Decision | undefined;
-  conflictsResolved: boolean;
+  source: string;
+  corpusBody: string | null;
+  savePersisted: boolean;
 }) {
   const [state, setState] = useState<DecState>(initial?.state ?? "pending");
   const [targetPath, setTargetPath] = useState(initial?.targetPath ?? proposal.targetPath);
@@ -39,10 +46,16 @@ export function DecisionFooter({
   const [pending, setPending] = useState(false);
 
   const needsPlacement = targetPath.startsWith("needs-placement/") || targetPath.trim() === "";
-  const canApprove = conflictsResolved && !needsPlacement;
+  const approveOk = canApprove({
+    op: proposal.op,
+    needsPlacement,
+    savePersisted,
+    source,
+    corpusBody,
+  });
 
   async function decide(next: DecState) {
-    if (next === "approved" && !canApprove) return;
+    if (next === "approved" && !approveOk) return;
     setState(next);
     setPending(true);
     try {
@@ -86,14 +99,18 @@ export function DecisionFooter({
         <button
           type="button"
           className="pc-approve"
-          disabled={!canApprove || pending}
+          disabled={!approveOk || pending}
           onClick={() => decide("approved")}
           title={
             needsPlacement
               ? "Place the page first"
-              : !conflictsResolved
-                ? "Resolve conflicts first"
-                : "Approve"
+              : !savePersisted
+                ? "Waiting for the last edit to save"
+                : !approveOk
+                  ? proposal.op === "create"
+                    ? "Write the page first"
+                    : "No changes to apply"
+                  : "Approve"
           }
         >
           Approve

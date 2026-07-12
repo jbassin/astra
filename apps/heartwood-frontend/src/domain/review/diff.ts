@@ -1,8 +1,8 @@
 // A minimal line diff for the Diff tab: proposed `.vellum` vs the current corpus body.
-// For a `rewrite` the proposed body is the existing body verbatim + an appended passage
-// (P3.9 preserve-and-append), so the diff is additive by construction; for a `create`
-// it's all-added (corpus side empty). LCS-based so an in-editor human edit also diffs
-// sensibly.
+// Under the 0020 facts-only rework a `rewrite` starts byte-identical to the corpus page
+// (the human authors every change from there), so the diff opens at zero and grows with
+// whatever the human edits; a `create` starts empty, so its diff is all-added (corpus
+// side empty). LCS-based so an in-editor human edit also diffs sensibly.
 
 export type DiffRow = { type: "ctx" | "add" | "del"; text: string };
 

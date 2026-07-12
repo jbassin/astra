@@ -239,36 +239,33 @@ a:hover {
   font-size: 0.85rem;
   margin-bottom: 0.75rem;
 }
-.pc-facts,
-.pc-conflicts,
-.pc-lints {
-  margin-bottom: 1rem;
+/* --- facts (0020 facts-only rework: primary content, the human writes FROM these) --- */
+.pc-facts {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--color-rule);
+  border-radius: 0.5rem;
+  background-color: var(--color-elevated);
   font-size: 0.85rem;
 }
-.pc-facts h3,
-.pc-conflicts h3 {
-  color: var(--color-ink-dim);
-  font-size: 0.72rem;
+.pc-facts h3 {
+  color: var(--color-accent);
+  font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
 }
-.pc-facts ul,
-.pc-conflicts ul {
+.pc-facts ul {
   padding-left: 1.1rem;
   list-style: disc;
-  color: var(--color-ink-dim);
+  color: var(--color-ink);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
 }
-.pc-conflicts {
-  color: var(--color-accent-amber);
-}
-.pc-lint {
+.pc-facts-empty {
   color: var(--color-ink-faint);
-  font-size: 0.8rem;
-}
-.pc-lint-type {
-  font-family: var(--font-mono), monospace;
-  color: var(--color-accent-amber);
+  font-style: italic;
 }
 .pc-reading,
 .pc-edit,
@@ -276,6 +273,11 @@ a:hover {
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px dashed var(--color-rule);
+}
+.pc-reading-empty {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.8rem;
+  color: var(--color-ink-dim);
 }
 
 /* --- proposal tabs --- */
@@ -423,7 +425,6 @@ a:hover {
 }
 .pc-actions button,
 .pc-actions select,
-.conflict-actions button,
 .registry-actions button {
   font-family: var(--font-mono), monospace;
   font-size: 0.75rem;
@@ -460,39 +461,6 @@ a:hover {
 }
 .pc-decision-deferred {
   color: var(--color-accent-amber);
-}
-
-/* --- conflict cards --- */
-.conflict-card {
-  border: 1px solid var(--color-accent-amber);
-  border-radius: 0.4rem;
-  padding: 0.6rem 0.8rem;
-  margin-bottom: 0.5rem;
-  background-color: color-mix(in oklab, var(--color-accent-amber) 6%, transparent);
-}
-.conflict-claim {
-  font-size: 0.85rem;
-  margin-bottom: 0.4rem;
-}
-.conflict-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-.conflict-actions button.active {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-.conflict-open {
-  color: var(--color-accent-amber);
-  font-size: 0.72rem;
-}
-.conflict-state {
-  color: var(--color-ink-faint);
-  font-size: 0.72rem;
-}
-.conflict-accepted {
-  border-color: var(--color-accent);
 }
 
 /* --- registry rows --- */

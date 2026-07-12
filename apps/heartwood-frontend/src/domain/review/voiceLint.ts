@@ -1,13 +1,21 @@
-// The live tell-lint — a TS mirror of the backend proposer/lint.py (faerrin
-// voice-warnings.ts + page-type.ts), so a human's edits stay checked as they type.
-// Warnings only, NEVER a hard gate (faerrin's load-bearing principle — the human is
-// the gate). The authoritative lints are the backend's (shown statically on the card);
-// this re-runs the self-contained prose-cadence tells + empty live, page-type-aware
+// The live tell-lint — calibration inherited from the retired proposer tell-lint
+// (0020 facts-only rework; formerly proposer/lint.py, deleted at S1), so a human's
+// edits stay checked as they type. Warnings only, NEVER a hard gate (faerrin's
+// load-bearing principle — the human is the gate). Since the proposer no longer emits
+// its own lints (the facts-only rework retired drafting entirely), this live pass is
+// now the ONLY lint surface: self-contained prose-cadence tells + empty, page-type-aware
 // (P4.17). broken_wikilink runs only when a known-page set is supplied (the snapshot
 // slug set ∪ in-batch creates); name-form links are checked by stem (akasha crossref),
 // since the registry resolve() is a backend-only concern.
 
-import type { VoiceWarning } from "./manifest";
+import { z } from "zod";
+
+export const VoiceWarningSchema = z.object({
+  type: z.string(),
+  message: z.string(),
+  hit: z.string().nullable(),
+});
+export type VoiceWarning = z.infer<typeof VoiceWarningSchema>;
 
 export type PageType = "lore" | "stub" | "deity-statblock" | "timeline" | "flavor-pre";
 

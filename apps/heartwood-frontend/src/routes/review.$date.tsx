@@ -3,7 +3,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { RegistryPanel, SkippedPanel, UnplacedPanel } from "@/domain/components/AuditPanels";
 import { ProposalCard } from "@/domain/components/ProposalCard";
 import type { PageProposal } from "@/domain/review/manifest";
-import type { ConflictResolution, Decision } from "@/domain/review/reviewState";
+import type { Decision } from "@/domain/review/reviewState";
 import { loadReview } from "@/serverFns/loadReview";
 
 // One session's change-set as PR-style cards. S2 is read-only — render every proposed
@@ -40,9 +40,6 @@ function ReviewComponent() {
             date={manifest.date}
             knownPages={knownPages}
             decision={decisionById.get(p.id)}
-            conflictRes={review.conflictResolutions.filter(
-              (c: ConflictResolution) => c.pageId === p.id,
-            )}
           />
         ))}
       </section>

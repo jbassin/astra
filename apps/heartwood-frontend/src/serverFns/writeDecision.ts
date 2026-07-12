@@ -1,7 +1,9 @@
-// The decision write fns (P4.3): approve/edit/reject/defer a proposal, adjudicate a
-// conflict, approve a registry addition — each upserts review.kdl (read-modify-atomic-
-// write). Server-side only. NEVER sets committed-at (that's `just heartwood-apply`'s
-// alone, the idempotence stamp). No auth (D5) — the dangerous write-BACK is host-gated.
+// The decision write fns (P4.3): approve/edit/reject/defer a proposal, approve a
+// registry addition — each upserts review.kdl (read-modify-atomic-write). Server-side
+// only. NEVER sets committed-at (that's `just heartwood-apply`'s alone, the idempotence
+// stamp). No auth (D5) — the dangerous write-BACK is host-gated. (FO-6: conflict
+// adjudication is retired — `upsertConflictResolution` stays in reviewState.ts for the
+// `review.kdl` cross-language contract, it just never gets called by the UI anymore.)
 
 import { getLogger, getTracer, lazyCounter } from "@astra/observe";
 import { SpanStatusCode } from "@opentelemetry/api";
@@ -9,14 +11,12 @@ import { createServerFn } from "@tanstack/react-start";
 
 import { readReviewStateText, writeReviewStateText } from "@/domain/review/fs";
 import {
-  type ConflictResolution,
   type Decision,
   emptyReviewState,
   parseReviewState,
   type RegistryDecision,
   type ReviewState,
   serializeReviewState,
-  upsertConflictResolution,
   upsertDecision,
   upsertRegistryDecision,
 } from "@/domain/review/reviewState";
@@ -76,46 +76,6 @@ export const setDecision = createServerFn({ method: "POST" })
             log.emit({
               severityText: "INFO",
               body: `review ${data.date}: proposal ${data.id} → ${data.state}`,
-            });
-            return result;
-          } catch (err) {
-            span.setStatus({ code: SpanStatusCode.ERROR, message: String(err) });
-            throw err;
-          } finally {
-            span.end();
-          }
-        },
-      ),
-  );
-
-export interface SetConflictInput {
-  date: string;
-  pageId: string;
-  claim: string;
-  resolution: "accepted" | "rejected";
-}
-
-export const setConflictResolution = createServerFn({ method: "POST" })
-  .validator((input: SetConflictInput) => input)
-  .handler(
-    ({ data }): ReviewState =>
-      tracer.startActiveSpan(
-        "heartwood.setConflictResolution",
-        { attributes: { "heartwood.date": data.date, "heartwood.page_id": data.pageId } },
-        (span) => {
-          try {
-            const c: ConflictResolution = {
-              pageId: data.pageId,
-              claim: data.claim,
-              resolution: data.resolution,
-            };
-            const result = persist(
-              upsertConflictResolution(load(data.date), c, new Date().toISOString()),
-            );
-            decisionCounter.add(1, { type: "conflict", state: data.resolution });
-            log.emit({
-              severityText: "INFO",
-              body: `review ${data.date}: conflict on ${data.pageId} → ${data.resolution}`,
             });
             return result;
           } catch (err) {

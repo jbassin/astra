@@ -37,7 +37,9 @@ export function SkippedPanel({ skipped }: { skipped: SkippedPage[] }) {
   return (
     <section className="audit-panel">
       <h2>Skipped pages ({skipped.length})</h2>
-      <p className="audit-note">Resolved pages not rewritten — already-known or non-prose.</p>
+      <p className="audit-note">
+        Resolved pages not rewritten — non-prose (stat-blocks, timelines, flavor text).
+      </p>
       <ul className="audit-list">
         {skipped.map((s) => (
           <li key={s.targetPath}>

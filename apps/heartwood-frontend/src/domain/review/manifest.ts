@@ -15,12 +15,6 @@ export const ProposalOp = z.enum(["create", "rewrite"]);
 export const ResolveStatus = z.enum(["resolved", "unknown"]);
 export const PageType = z.enum(["lore", "stub", "deity-statblock", "timeline", "flavor-pre"]);
 
-export const VoiceWarningSchema = z.object({
-  type: z.string(),
-  message: z.string(),
-  hit: z.string().nullable(),
-});
-
 export const PageProposalSchema = z.object({
   id: z.string(),
   op: ProposalOp,
@@ -31,8 +25,6 @@ export const PageProposalSchema = z.object({
   pageType: PageType,
   bodyFile: z.string(),
   facts: z.array(z.string()),
-  conflicts: z.array(z.string()),
-  lints: z.array(VoiceWarningSchema),
   placementNote: z.string().nullable(),
 });
 
@@ -44,7 +36,7 @@ export const UnplacedFactSchema = z.object({
 
 export const SkippedPageSchema = z.object({
   targetPath: z.string(),
-  reason: z.enum(["already-known", "non-prose-page"]),
+  reason: z.enum(["non-prose-page"]),
 });
 
 export const RegistryAdditionSchema = z.object({
@@ -63,7 +55,6 @@ export const ProposalManifestSchema = z.object({
   registryAdditions: z.array(RegistryAdditionSchema),
 });
 
-export type VoiceWarning = z.infer<typeof VoiceWarningSchema>;
 export type PageProposal = z.infer<typeof PageProposalSchema>;
 export type UnplacedFact = z.infer<typeof UnplacedFactSchema>;
 export type SkippedPage = z.infer<typeof SkippedPageSchema>;
@@ -135,15 +126,6 @@ export function parseManifest(text: string): ProposalManifest {
         facts: children(node)
           .filter((c) => c.name.name === "fact")
           .map(arg0),
-        conflicts: children(node)
-          .filter((c) => c.name.name === "conflict")
-          .map(arg0),
-        lints: children(node)
-          .filter((c) => c.name.name === "lint")
-          .map((c) => {
-            const lp = props(c);
-            return { type: arg0(c), message: strProp(lp, "message"), hit: optProp(lp, "hit") };
-          }),
         placementNote: optProp(p, "placement-note"),
       });
     } else if (name === "unplaced") {

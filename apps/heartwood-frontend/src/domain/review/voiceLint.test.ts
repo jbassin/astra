@@ -2,8 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import { detectPageType, voiceLint } from "./voiceLint";
 
-// Mirrors the backend proposer/lint.py calibration: the BAD slop archetype trips the
-// prose tells; the GOOD voice + a terse stub stay clean; page-type gates the tells.
+// Calibration inherited from the retired proposer tell-lint (0020 facts-only rework):
+// the BAD slop archetype trips the prose tells; the GOOD voice + a terse stub stay
+// clean; page-type gates the tells.
 const BAD = "Sableclutch is a large scrapyard. It is an expansive site with numerous workers.";
 const GOOD =
   "Down where Hallia gives up on itself, Sableclutch swallows what the city throws away — and pays anyone willing to climb in after it.";
