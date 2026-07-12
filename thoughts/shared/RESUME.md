@@ -36,37 +36,24 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `a59d53c`, 2026-07-11 — 0028 S1–S3 BUILT; 0027 CLOSED)
+## Current state — UPDATE THIS SECTION (as of 2026-07-11 evening — 0028 COMPLETE; 0027 CLOSED)
 
-> **▶ portal-player (0028) — S1 `8655edb` (key + scope machinery) · S2 `a889034` (query-party +
-> query-player + markdown renderer) · S3 `a59d53c` (query-item + query-rolls + 0.4.0 lockstep +
-> D28-14 skew fix) ALL BUILT, CI-green + pushed (S1/S2 GHA green, S3 queued at checkpoint);
-> ▶ RESUME AT: S4 — deploy + live gate A–H, NEEDS THE STAKEHOLDER.** S4 runbook (spec order is
-> load-bearing): (1) mint `sops set … portal_player_api_key` **BEFORE** any portal redeploy —
-> the key is `requireSecret` at startup, portal-server won't boot without it; (2) "deploy it" →
-> `just up`; (3) GM updates the module to **0.4.0** + F5s any human tab; (4) **restart
-> `astra-portal-headless`** so the headless session picks up 0.4.0; (5) existing GM MCP sessions
-> `/mcp`-reconnect (tool-list snapshot); (6) the A–H gate incl. staging a GM-hidden world item
-> for F (no vacuous pass) + recording `totalMessages` (the §Risks probe). Player onboarding
-> one-liner lands in the memory at S4 (H).
-> - **Build findings (recorded in spec status + scope-doc appendices):** the D28-11 12k cap
->   fires on the REAL Argyle spells render (12,215 → group-summary fallback 3,053); D28-2
->   derived paths + pf2e biography-visibility paths + pack-ownership shape all confirmed against
->   the live container `pf2e.mjs`/`system.json` (67/94 packs ship `PLAYER:"LIMITED"` — the
->   D28-5 gate excludes them); an S2-amendment **biography GM-visibility gate on `notes`**
->   shipped in S3 (orchestrator adversarial find, same class as B1/B2); skill totals live in
->   the `skills` section (not `stats`) per the D28-11 enum — acceptance D eyeballs both.
-> - Live-derived fixtures committed (`apps/portal/module/tests/fixtures/{argyle,party,othello}
->   .json`, captured read-only through the bridge 2026-07-11 — the headless Portal session
->   serving them proves 0027 in production).
->
-> _(Original 0028 shape, still accurate:)_ A read-only tool subset for the stakeholder's players
-> behind a NEW static API key (`portal_player_api_key`): when that key authenticates `/mcp`,
-> exactly five tools are visible — `bridge-status` + `query-rolls` (paginated/filterable public
-> roll history) + `query-party` + `query-player` (sectioned sheets — live PCs measure 166–579 KB,
-> items[] is 97–99% of bytes) + `query-item`; results render as **markdown at the server** (module
-> wire stays typed JSON). Players use Claude Code — **static key only, OAuth untouched**
-> (stakeholder decision).
+> **✅ portal-player (0028) — COMPLETE, scope→spec→build→deploy→live-gate in two days, gate
+> A–H PASSED 2026-07-11 with the stakeholder.** S1 `8655edb` · S2 `a889034` · S3 `a59d53c` ·
+> live-gate fixes 0.4.1 + 0.4.2 (deployed, module updated by the GM via Foundry UI). The
+> player key exposes exactly 5 read-only tools on `/mcp`; markdown at the server; spec
+> `thoughts/astra/specs/0028-portal-player-spec.md` status COMPLETE carries the full gate
+> record; **[[portal-player-0028-gotchas]] is THE reference** (the source-vs-live field-
+> ownership catalog — hydrated Roll instances / heroPoints source-only / actor-level spell
+> DC — the env-name crash-loop, the F non-vacuous exclusion proof, onboarding + rotation
+> recipes).
+> - **Player onboarding:** `claude mcp add --transport http portal-player
+>   https://portal.iridi.cc/mcp --header "Authorization: Bearer <portal_player_api_key>"`
+>   (key in SOPS; it transited chat 2026-07-11 stakeholder-sanctioned — rotate anytime via
+>   `sops set` + `just up`).
+> - **▶ NEXT: nothing code-in-flight.** Long-standing open items unchanged: heartwood Phase-4
+>   content acceptance (stakeholder-paused); nice-to-haves (webhook rotation, Class-A alerting
+>   breadth, scribe ASR cost telemetry, feats summary-default symmetry if ever wanted).
 > - **Scope doc:** `thoughts/shared/research/2026-07-11-portal-player-0028-thoughts.md` — verified
 >   vs repo (per-request McpServer ⇒ per-key tool scope = cheap conditional in the `mcp.ts:499-512`
 >   auth branch; 8-file key plumbing; zero Dockerfile ripple), vs the live world (party actor +

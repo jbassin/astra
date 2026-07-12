@@ -1,7 +1,19 @@
 # NLSpec 0028 — portal-player: a read-only, player-keyed portal tool subset
 
-**Status:** IN PROGRESS (2026-07-11) — **S1 `8655edb` · S2 `a889034` · S3 `a59d53c` BUILT,
-  CI-green + pushed; ▶ S4 (deploy + live gate A–H) pending a stakeholder session.** S2/S3
+**Status:** COMPLETE (2026-07-11) — **S1 `8655edb` · S2 `a889034` · S3 `a59d53c` + S4 run
+  same day with the stakeholder: key minted, deployed (0.4.2 lockstep live), live gate A–H
+  PASSED.** Gate results: B exact-5/exact-22/401+discovery from a real client; C roster
+  matches the live party; D all 7 sections both PCs + typed refusals (derived values AC 25 /
+  Perc 16 / F15 R11 W17 / spell DC 24 presented to the GM); E real roll pages w/ outcomes +
+  visible DCs, filters + cursor walk, totalMessages=2454 recorded (whisper-absence: S3
+  fixture backstop per spec); F NON-vacuous — 7 real `ownership.default=0` world items absent
+  / 3 visible present (boundary exact) + the LIMITED-bestiary pack gate proven live; G
+  `auth="player-key"` on all query spans, zero `portal.audit.*` from reads, zero key material
+  in logs; H docs + memory ([[portal-player-0028-gotchas]]). **Four live-gate fixes shipped
+  (0.4.1/0.4.2): hydrated-Roll-instances parse, heroPoints from source, actor-level spell-DC
+  fallback, master-name resolution — plus the compose env-name crash (SOPS-key-upper-cased,
+  not the kdl field name). D28-11 amended post-S3: unfiltered spells ALWAYS group-summary.**
+  S2/S3
   build notes: the D28-11 12k cap fires for real on Argyle's spells (12,215 → 3,053 fallback);
   D28-2 paths + pf2e biography visibility paths + pack-ownership shape all confirmed against
   the live container source (recorded in the scope doc's S2/S3 appendices); the S2 amendment
