@@ -28,8 +28,12 @@ D29-3; `corpus/report.{json,md}` is THE acceptance artifact.
 **▶ NEXT: stakeholder review of `apps/codex/data/corpus/report.md` (the P1 exit gate)**, esp.
 the **9 both-source categories <50% joined (spec §6 STOP condition — re-decide join keys with
 Josh BEFORE P2, no fuzzy-matching):** `domain` 0% (systematic: Foundry "X Domain" vs AoN "X" —
-one new normalization rule would fix it); `armor` 18%/`weapon` 27%/`shield` 14% (Foundry ships
-named tiered magic-item variants AoN doesn't split); `class-feature` 41%/`creature-ability` 9%
+one new normalization rule would fix it); `armor` 18%/`weapon` 27%/`shield` 14% (**2026-07-13 review CORRECTED the cause: NOT
+"AoN doesn't split tiers" — AoN splits them fine but files magic weapons/armor/shields under its
+`equipment` category while categoryMap routes Foundry docs to weapon/armor/shield, so the
+category-scoped join never compares them; measured full-set: weapon 634/715 + 33 tier-strip,
+armor 142/165 + 9, shield 96/102 + 5 unjoined-F have exact same-slug AoN `equipment` entities →
+category-equivalence join projects ≈95/93/99%**); `class-feature` 41%/`creature-ability` 9%
 (granularity mismatch — AoN generic names vs Foundry per-creature docs); `hazard` 43%,
 `action` 44% (AoN glossary fragments), `warfare-army` 32%. Creature overall 57.6% despite the
 dragon-family proof (raw 13.8% → **98.1%** post-normalization); spells 91.7%.
