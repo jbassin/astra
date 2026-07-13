@@ -603,13 +603,10 @@ export function runJoin(input: RunJoinInput): JoinResult {
     }
   }
 
-  const deps: JoinDeps = {
-    aonMarkdownById: input.aonMarkdownById,
-    resolveLink: createLinkResolver(input.linkTable, report),
-    report,
-  };
-
   // ---- pass 1: match ----
+  // Runs BEFORE the link resolver is built (S5d): the resolver needs to know
+  // which AoN docs the join CONSUMED so it can repoint inbound links to
+  // those docs at their merged entity's id — see `repointByAonId` below.
   const matchByFoundryId = new Map<string, MatchResult>();
   for (const [preId, entity] of input.foundryEntities) {
     const m = matchFoundryEntity(entity, aonSlugIndex, aliasMap, aonMetaById);
@@ -641,6 +638,37 @@ export function runJoin(input: RunJoinInput): JoinResult {
     baseIdByAonId.set(aonId, base.id);
     for (const e of entities) if (e.id !== base.id) variantOfByPreId.set(e.id, base.id);
   }
+
+  // S5d: the cross-category-merge link repoint map (aonId -> the consuming
+  // Foundry entity's id), consumed by `createLinkResolver`. A merged AoN
+  // doc's own pre-join id (`{category}/{slug}`) stops naming a corpus entity
+  // the moment the merge lands on a Foundry id that differs — every D29-15
+  // cross-category equivalence match by construction, plus qualifier-reorder
+  // and alias matches within one category. Inbound markdown links to such a
+  // doc's url would otherwise resolve to the dead id (→ brokenRef at pass-5)
+  // or, silently worse, to a same-slug legacy twin that still owns the id
+  // string (the real, verified Accursed Staff mislink: the merged remaster
+  // doc at url ID 2244 and its legacy twin at url ID 4778 both collapse to
+  // `equipment/accursed-staff`). Keyed on aonId — URL-level provenance the
+  // crossref node itself never carries — so resolution-time is the ONLY
+  // point in the pipeline this can be fixed precisely (pass-5 patch-time
+  // rewriting sees just the ambiguous string). The repoint target is the
+  // base's PRE-collision id: by construction (pass 3) a Foundry-origin
+  // merged draft keeps that exact id as its finalId unless it loses a
+  // collision, in which case pass-5's existing documented plain-crossref
+  // limitation applies unchanged.
+  const repointByAonId = new Map<string, string>();
+  for (const [aonId, basePreId] of baseIdByAonId) {
+    const meta = aonMetaById.get(aonId);
+    if (!meta) throw new Error(`runJoin: unreachable — no meta for matched aonId "${aonId}"`);
+    if (`${meta.category}/${meta.slug}` !== basePreId) repointByAonId.set(aonId, basePreId);
+  }
+
+  const deps: JoinDeps = {
+    aonMarkdownById: input.aonMarkdownById,
+    resolveLink: createLinkResolver(input.linkTable, report, repointByAonId),
+    report,
+  };
 
   // ---- pass 2: drafts ----
   const categoryStats = new Map<string, CategoryStat>();

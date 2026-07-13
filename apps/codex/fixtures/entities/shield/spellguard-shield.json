@@ -6,7 +6,7 @@
         {
           "display": "Spellguard Shield",
           "kind": "crossref",
-          "targetId": "equipment/spellguard-shield"
+          "targetId": "shield/spellguard-shield"
         }
       ],
       "kind": "heading",

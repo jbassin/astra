@@ -63,8 +63,8 @@
         },
         {
           "display": "Munitions Master",
-          "kind": "brokenRef",
-          "target": "archetype/munitions-master"
+          "kind": "crossref",
+          "targetId": "archetype/munitions-master-class-archetype"
         },
         {
           "content": " archetype.",

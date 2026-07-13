@@ -63,8 +63,8 @@
         },
         {
           "display": "Palatine Detectives",
-          "kind": "brokenRef",
-          "target": "archetype/palatine-detective"
+          "kind": "crossref",
+          "targetId": "archetype/palatine-detective-class-archetype"
         }
       ],
       "kind": "paragraph"

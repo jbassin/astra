@@ -36,6 +36,7 @@ describe("buildAonLinkTable: unique urls", () => {
     expect(table.byUrl.get("/spells.aspx?id=180")).toEqual({
       codexId: "spell/magic-missile",
       name: "Magic Missile",
+      aonId: "spell-180",
     });
   });
 });
@@ -66,6 +67,7 @@ describe("buildAonLinkTable: the tiered-variant collision (real Scroll-family sh
     expect(table.byUrl.get("/equipment.aspx?id=640")).toEqual({
       codexId: "equipment/scroll",
       name: "Scroll",
+      aonId: "equipment-640",
     });
     // Collision is reported (informational) but NOT ambiguous — the exact-id
     // rule cleanly picked one winner.
@@ -93,6 +95,7 @@ describe("buildAonLinkTable: the sidebar-demotion collision (real archetype+side
     expect(table.byUrl.get("/archetypes.aspx?id=187")).toEqual({
       codexId: "archetype/alter-ego",
       name: "Alter Ego",
+      aonId: "archetype-187",
     });
   });
 });
@@ -118,6 +121,7 @@ describe("buildAonLinkTable: the genuinely ambiguous collision (real bloodline/d
     expect(table.byUrl.get("/bloodlines.aspx?id=23")).toEqual({
       codexId: "bloodline/draconic",
       name: "Draconic",
+      aonId: "bloodline-23",
     });
     const ambiguous = reports.find((r) => r.cls === "duplicateUrlAmbiguous");
     expect(ambiguous).toBeDefined();
@@ -137,6 +141,7 @@ describe("buildAonLinkTable: the genuinely ambiguous collision (real bloodline/d
     expect(table.byUrl.get("/traits.aspx")).toEqual({
       codexId: "category-page/traits-b",
       name: "Traits",
+      aonId: "category-page-101",
     });
     expect(reports.some((r) => r.cls === "duplicateUrlAmbiguous")).toBe(true);
   });
@@ -246,5 +251,87 @@ describe("createLinkResolver", () => {
       marks: { bold: false, italic: false, superscript: false },
     });
     expect(reports.some((r) => r.cls === "externalLinkDropped")).toBe(true);
+  });
+});
+
+describe("createLinkResolver: S5d repointByAonId (cross-category merge links)", () => {
+  // The real, verified Accursed Staff shape: the remaster AoN equipment doc
+  // (url ID 2244) was consumed by the Foundry weapon entity; its legacy twin
+  // (url ID 4778) stayed an AoN-only entity — and BOTH urls collapse to the
+  // same `equipment/accursed-staff` codexId string, so only the winner's
+  // aonId can route them differently.
+  const table = buildAonLinkTable(
+    [
+      doc(
+        "equipment-2244",
+        "equipment",
+        "accursed-staff",
+        "Accursed Staff",
+        "/Equipment.aspx?ID=2244",
+      ),
+      doc(
+        "equipment-4778",
+        "equipment",
+        "accursed-staff",
+        "Accursed Staff",
+        "/Equipment.aspx?ID=4778",
+      ),
+    ],
+    () => {},
+  );
+  const repoint = new Map([["equipment-2244", "weapon/accursed-staff"]]);
+
+  it("a link to the CONSUMED doc's url resolves to the merged entity's id and is report-counted", () => {
+    const { reports, report } = makeReports();
+    const resolveLink = createLinkResolver(table, report, repoint);
+    expect(resolveLink("/Equipment.aspx?ID=2244", "Accursed Staff")).toEqual({
+      kind: "crossref",
+      targetId: "weapon/accursed-staff",
+      display: "Accursed Staff",
+    });
+    expect(reports).toEqual([
+      {
+        cls: "crossCategoryLinkRepointed",
+        detail: "equipment/accursed-staff (equipment-2244) -> weapon/accursed-staff",
+      },
+    ]);
+  });
+
+  it("a link to the legacy TWIN's url still resolves to the twin, never repointed (url-level precision)", () => {
+    const { reports, report } = makeReports();
+    const resolveLink = createLinkResolver(table, report, repoint);
+    expect(resolveLink("/Equipment.aspx?ID=4778", "Accursed Staff")).toEqual({
+      kind: "crossref",
+      targetId: "equipment/accursed-staff",
+      display: "Accursed Staff",
+    });
+    expect(reports).toEqual([]);
+  });
+
+  it("a SAME-category repoint (qualifier-reorder merge) is counted under mergedLinkRepointed", () => {
+    const dragonTable = buildAonLinkTable(
+      [
+        doc(
+          "creature-2933",
+          "creature",
+          "adult-adamantine-dragon",
+          "Adult Adamantine Dragon",
+          "/Monsters.aspx?ID=2933",
+        ),
+      ],
+      () => {},
+    );
+    const { reports, report } = makeReports();
+    const resolveLink = createLinkResolver(
+      dragonTable,
+      report,
+      new Map([["creature-2933", "creature/adamantine-dragon-adult"]]),
+    );
+    expect(resolveLink("/Monsters.aspx?ID=2933", "Adult Adamantine Dragon")).toEqual({
+      kind: "crossref",
+      targetId: "creature/adamantine-dragon-adult",
+      display: "Adult Adamantine Dragon",
+    });
+    expect(reports.map((r) => r.cls)).toEqual(["mergedLinkRepointed"]);
   });
 });

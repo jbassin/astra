@@ -92,13 +92,28 @@ import type { AonDocMeta } from "./aonFacets";
 export type LinkTableDoc = Pick<AonDocMeta, "aonId" | "category" | "slug" | "aonUrl" | "name">;
 
 export type LinkTableReportClass = "duplicateUrlCollision" | "duplicateUrlAmbiguous";
-export type LinkResolverReportClass = "aonBrokenLink" | "externalLinkDropped";
+export type LinkResolverReportClass =
+  | "aonBrokenLink"
+  | "externalLinkDropped"
+  | "crossCategoryLinkRepointed"
+  | "mergedLinkRepointed";
 
 export type ReportFn<Cls extends string = string> = (cls: Cls, detail: string) => void;
 
 export interface AonLinkEntry {
   readonly codexId: string;
   readonly name: string;
+  /** The winner doc's own raw AoN `_id` (S5d) — what lets a join-time
+   * resolver repoint a link to a CONSUMED (merged-into-Foundry) doc at its
+   * merged entity's id with URL-level precision: `codexId` alone is the
+   * ambiguous `{category}/{slug}` string, which a same-slug legacy twin at a
+   * DIFFERENT url can also legitimately own (the real Accursed Staff case —
+   * inbound links to url ID 2244, the consumed remaster doc, must reach
+   * `weapon/accursed-staff`, while links to url ID 4778, the legacy twin,
+   * must keep reaching `equipment/accursed-staff`; only the winner's aonId
+   * can tell those two urls apart once both collapse to the same
+   * `{category}/{slug}` string). */
+  readonly aonId: string;
 }
 
 /** `byUrl` is keyed on the NORMALIZED form (`normalizeUrlKey`) of every
@@ -252,7 +267,11 @@ export function buildAonLinkTable(
   const byUrl = new Map<string, AonLinkEntry>();
   for (const [key, group] of groups) {
     const winner = pickCanonical(key, group, report);
-    byUrl.set(key, { codexId: `${winner.category}/${winner.slug}`, name: winner.name });
+    byUrl.set(key, {
+      codexId: `${winner.category}/${winner.slug}`,
+      name: winner.name,
+      aonId: winner.aonId,
+    });
   }
   return { byUrl };
 }
@@ -272,10 +291,30 @@ const NO_MARKS = { bold: false, italic: false, superscript: false };
  * that looks external (`http(s)://` or no `.aspx` at all — codex hosts no
  * outbound link policy in P1, spec D29-7) → a plain `text` node carrying just
  * the link's display text (report class `externalLinkDropped`).
+ *
+ * **`repointByAonId` (optional, S5d)** — the join-time cross-category-merge
+ * link fix. When the join consumes an AoN doc into a Foundry entity whose id
+ * differs from the doc's own `{category}/{slug}` (a D29-15 cross-category
+ * merge like equipment→weapon, or a qualifier-reorder/alias merge), the
+ * doc's pre-join id no longer names a corpus entity — so a link resolved to
+ * it would either die as a `brokenRef` at pass-5 patching or, WORSE,
+ * silently reach a same-slug legacy twin that still owns that id string
+ * (report-invisible mislink, verified live on Accursed Staff). The map is
+ * keyed on the winner's `aonId` (URL-level provenance — the one identifier
+ * that distinguishes the consumed doc's url from the twin's) and rewrites
+ * the crossref target to the merged entity's id at RESOLUTION time; pass-5
+ * patch-time rewriting cannot fix this because a crossref node only carries
+ * the ambiguous `{category}/{slug}` string. Every repoint is report-counted:
+ * `crossCategoryLinkRepointed` when the category segment changed (the
+ * D29-15 equivalence merges), `mergedLinkRepointed` when only the slug did
+ * (qualifier-reorder/alias merges — pre-P1.5 these were already brokenRef,
+ * so repointing them is a strict improvement, counted separately for a
+ * clean audit).
  */
 export function createLinkResolver(
   table: AonLinkTable,
   report: ReportFn<LinkResolverReportClass>,
+  repointByAonId?: ReadonlyMap<string, string>,
 ): ResolveLinkFn {
   return (href: string, display: string): InlineNode => {
     if (looksExternal(href)) {
@@ -285,6 +324,16 @@ export function createLinkResolver(
     const key = normalizeUrlKey(href);
     const entry = table.byUrl.get(key);
     if (entry) {
+      const repointed = repointByAonId?.get(entry.aonId);
+      if (repointed !== undefined && repointed !== entry.codexId) {
+        const fromCategory = entry.codexId.split("/")[0];
+        const toCategory = repointed.split("/")[0];
+        report(
+          fromCategory === toCategory ? "mergedLinkRepointed" : "crossCategoryLinkRepointed",
+          `${entry.codexId} (${entry.aonId}) -> ${repointed}`,
+        );
+        return { kind: "crossref", targetId: repointed, display };
+      }
       return { kind: "crossref", targetId: entry.codexId, display };
     }
     report("aonBrokenLink", href.trim());

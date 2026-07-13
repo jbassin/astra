@@ -5,8 +5,8 @@
       "children": [
         {
           "display": "Camoflage Coat",
-          "kind": "brokenRef",
-          "target": "feat/camoflage-coat"
+          "kind": "crossref",
+          "targetId": "feat/camouflage-coat"
         }
       ],
       "kind": "heading",

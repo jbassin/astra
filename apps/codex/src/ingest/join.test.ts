@@ -8,7 +8,8 @@ import type { CodexEntity } from "../schema/entity";
 import type { BlockNode, CodexNode } from "../schema/nodes";
 import type { AonHit, AonDocMeta } from "./aonFacets";
 import { extractAonMeta } from "./aonFacets";
-import type { AonLinkTable } from "./aonLinkTable";
+import { buildAonLinkTable, type AonLinkTable } from "./aonLinkTable";
+import { applyAonPrimaryDrop } from "./drop";
 import {
   buildAliasMap,
   domainCandidates,
@@ -414,6 +415,146 @@ describe("runJoin: D29-15(6) tier-parenthetical fold via the weapon/armor/shield
     const variant = result.entities.find((e) => e.id === "weapon/bracers-of-armor-greater");
     expect(variant?.variantOf).toBe("weapon/bracers-of-armor");
     expect(variant?.aonUrl).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// S5d: inbound-link repointing across cross-category merges
+// ---------------------------------------------------------------------------
+
+describe("runJoin: S5d — inbound AoN links repoint across cross-category merges", () => {
+  // The real, verified Accursed Staff shape (the S5d brief): the remaster
+  // AoN `equipment` doc (url ID 2244) merges into the Foundry `weapon`
+  // entity; its legacy twin (url ID 4778, SAME category+slug, different url)
+  // stays an AoN-only entity that still owns the `equipment/accursed-staff`
+  // id string — so a patch-time string rewrite could never route the two
+  // urls differently; only the resolution-time aonId-keyed repoint can.
+  const foundryStaff = entity({
+    id: "weapon/accursed-staff",
+    category: "weapon",
+    slug: "accursed-staff",
+    name: "Accursed Staff",
+    edition: "remaster",
+  });
+  const remasterMeta = meta({
+    aonId: "equipment-2244",
+    category: "equipment",
+    name: "Accursed Staff",
+    slug: "accursed-staff",
+    aonUrl: "/Equipment.aspx?ID=2244",
+    edition: "remaster",
+    hasMarkdown: true,
+  });
+  const legacyMeta = meta({
+    aonId: "equipment-4778",
+    category: "equipment",
+    name: "Accursed Staff",
+    slug: "accursed-staff",
+    aonUrl: "/Equipment.aspx?ID=4778",
+    edition: "legacy",
+    hasMarkdown: true,
+  });
+  // An unrelated AoN-only spell whose markdown links to BOTH urls plus one
+  // genuinely absent url.
+  const linkerMeta = meta({
+    aonId: "spell-1",
+    category: "spell",
+    name: "Linker",
+    slug: "linker",
+    aonUrl: "/Spells.aspx?ID=1",
+    hasMarkdown: true,
+  });
+  const allMetas = [remasterMeta, legacyMeta, linkerMeta];
+  const linkTable = buildAonLinkTable(
+    allMetas.map((m) => ({
+      aonId: m.aonId,
+      category: m.category,
+      slug: m.slug,
+      aonUrl: m.aonUrl,
+      name: m.name,
+    })),
+    noopReport,
+  );
+  const aonMarkdownById = new Map([
+    // The merged doc's own body self-links to its own url (the real
+    // Accursed Staff markdown does exactly this in its <title>).
+    ["equipment-2244", "See [Accursed Staff](/Equipment.aspx?ID=2244)."],
+    ["equipment-4778", "Legacy text."],
+    [
+      "spell-1",
+      "Links: [merged](/Equipment.aspx?ID=2244) [twin](/Equipment.aspx?ID=4778) [absent](/Equipment.aspx?ID=9999).",
+    ],
+  ]);
+
+  function crossrefTargets(e: CodexEntity | undefined): string[] {
+    const targets: string[] = [];
+    function walk(nodes: readonly CodexNode[]): void {
+      for (const n of nodes) {
+        if (n.kind === "crossref") targets.push(n.targetId);
+        if ("children" in n && Array.isArray(n.children)) walk(n.children as CodexNode[]);
+        if (n.kind === "list") for (const item of n.items) walk(item);
+      }
+    }
+    if (e) walk(e.body);
+    return targets;
+  }
+
+  function brokenRefTargets(e: CodexEntity | undefined): string[] {
+    const targets: string[] = [];
+    function walk(nodes: readonly CodexNode[]): void {
+      for (const n of nodes) {
+        if (n.kind === "brokenRef") targets.push(n.target);
+        if ("children" in n && Array.isArray(n.children)) walk(n.children as CodexNode[]);
+      }
+    }
+    if (e) walk(e.body);
+    return targets;
+  }
+
+  const { reports, report } = collector();
+  const result = runJoin(
+    runInput({
+      foundryEntities: new Map([[foundryStaff.id, foundryStaff]]),
+      aonMetas: allMetas,
+      aonMarkdownById,
+      linkTable,
+      report,
+    }),
+  );
+
+  it("(a) an inbound link to the cross-category-merged doc's url resolves to the merged entity's FINAL id", () => {
+    const linker = result.entities.find((e) => e.id === "spell/linker");
+    expect(crossrefTargets(linker)).toContain("weapon/accursed-staff");
+    expect(reports.some((r) => r.cls === "crossCategoryLinkRepointed")).toBe(true);
+  });
+
+  it("(b) the legacy-twin silent-mislink case: the merged entity's own self-link reaches ITSELF, and a link to the twin's url reaches the twin", () => {
+    const merged = result.entities.find((e) => e.id === "weapon/accursed-staff");
+    expect(merged?.aonUrl).toBe("/Equipment.aspx?ID=2244");
+    // The self-link inside the merged doc's own parsed body must point back
+    // at the merged entity — NOT at the legacy twin that still owns the
+    // `equipment/accursed-staff` id string (the report-invisible mislink).
+    expect(crossrefTargets(merged)).toEqual(["weapon/accursed-staff"]);
+
+    const linker = result.entities.find((e) => e.id === "spell/linker");
+    expect(crossrefTargets(linker)).toContain("equipment/accursed-staff"); // the twin, via ITS url
+    const twin = result.entities.find((e) => e.id === "equipment/accursed-staff");
+    expect(twin?.proseOnly).toBe(true);
+    expect(twin?.edition).toBe("legacy");
+  });
+
+  it("(c) a link to a genuinely absent doc still downgrades to brokenRef", () => {
+    const linker = result.entities.find((e) => e.id === "spell/linker");
+    expect(brokenRefTargets(linker)).toEqual(["/Equipment.aspx?ID=9999"]);
+    expect(reports.some((r) => r.cls === "aonBrokenLink")).toBe(true);
+  });
+
+  it("the D29-14 drop pass reconciliation accepts the repointed ids (merged entities are kept, so repointed crossrefs survive)", () => {
+    const dropResult = applyAonPrimaryDrop(result.entities, report);
+    const linker = dropResult.keptEntities.find((e) => e.id === "spell/linker");
+    expect(crossrefTargets(linker)).toContain("weapon/accursed-staff");
+    expect(crossrefTargets(linker)).toContain("equipment/accursed-staff");
+    expect(reports.some((r) => r.cls === "postDropBrokenRef")).toBe(false);
   });
 });
 

@@ -333,7 +333,7 @@
         {
           "display": "Change",
           "kind": "crossref",
-          "targetId": "domain/change"
+          "targetId": "domain/change-domain"
         },
         {
           "content": ", ",
@@ -347,7 +347,7 @@
         {
           "display": "Fate",
           "kind": "crossref",
-          "targetId": "domain/fate"
+          "targetId": "domain/fate-domain"
         },
         {
           "content": ", ",
@@ -360,8 +360,8 @@
         },
         {
           "display": "Nothingness",
-          "kind": "brokenRef",
-          "target": "domain/nothingness"
+          "kind": "crossref",
+          "targetId": "domain/nothingness-domain"
         },
         {
           "content": ", ",
@@ -375,7 +375,7 @@
         {
           "display": "Time",
           "kind": "crossref",
-          "targetId": "domain/time"
+          "targetId": "domain/time-domain"
         }
       ],
       "kind": "paragraph"

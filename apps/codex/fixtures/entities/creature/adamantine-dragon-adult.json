@@ -5,8 +5,8 @@
       "children": [
         {
           "display": "Adult Adamantine Dragon",
-          "kind": "brokenRef",
-          "target": "creature/adult-adamantine-dragon"
+          "kind": "crossref",
+          "targetId": "creature/adamantine-dragon-adult"
         }
       ],
       "kind": "heading",
@@ -101,8 +101,8 @@
       "children": [
         {
           "display": "Adult Adamantine Dragon",
-          "kind": "brokenRef",
-          "target": "creature/adult-adamantine-dragon"
+          "kind": "crossref",
+          "targetId": "creature/adamantine-dragon-adult"
         }
       ],
       "kind": "heading",
