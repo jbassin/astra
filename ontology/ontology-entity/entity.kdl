@@ -146,6 +146,9 @@ entity "Atum" {
     alias "Adam"
     source "defs"
 }
+entity "Auger" kind="creature" page="Bestiary/Auger" {
+    source "akasha"
+}
 entity "Aurideon" kind="place" page="Geography/Calaria/Hallia/Aurideon/index" {
     alias "Iridiu[mn]"
     alias "Oridia[mn]"
@@ -1455,13 +1458,14 @@ entity "Tywelwyn's" {
     alias "Twelwins"
     source "defs"
 }
-entity "Ugathal" {
+entity "Ugathal" kind="creature" page="Bestiary/Ugathal" {
     alias "Ugothal"
     alias "Oogathal"
     alias "Ugathol"
     alias "Ugithul"
     alias "Ukathal"
     alias "Ukathals"
+    source "akasha"
     source "defs"
 }
 entity "Vaino" {
