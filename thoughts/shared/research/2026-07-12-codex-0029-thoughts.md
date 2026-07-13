@@ -30,9 +30,10 @@ Elasticsearch index (prose, citations, rules/sidebar text).
 
 - **Port: 10374 is next free** (10373 = portal-headless, `config.kdl:289`; nothing above it).
 - **Layout: `apps/codex`, single flat pnpm member** (`package.json` manifest → pnpm lane;
-  matched by the existing `apps/*` glob — no `pnpm-workspace.yaml` edit, no uv `exclude`
-  needed; those were only required for portal's *nested* members). No empty-dir pre-creation
-  (uv gotcha n/a — flat member created with its manifest).
+  matched by the existing `apps/*` glob — no `pnpm-workspace.yaml` edit). **⚠ Corrected during
+  spec:** a uv `exclude` edit IS needed — `pyproject.toml:11` explicitly lists every TS app
+  ("Add each new TS app here"); the original claim that only nested members need it was wrong.
+  No empty-dir pre-creation (uv gotcha n/a — flat member created with its manifest).
 - **Dockerfile ripple: 21 sibling `COPY apps/...` lines** per frontend Dockerfile
   (counted in `apps/akasha-frontend/Dockerfile`) — adding the member touches every TS sibling
   Dockerfile, the known manifest-COPY ripple. Budget a slice-sized chore for it.

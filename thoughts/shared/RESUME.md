@@ -38,9 +38,20 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ## Current state — UPDATE THIS SECTION (as of 2026-07-12 evening — codex (0029) SCOPED; heartwood ON HOLD)
 
-> **▶ codex (0029) — a public PF2e reference site (`codex.iridi.cc`) — VIABILITY GREEN + SCOPED
-> same day; NEXT: `octo:spec` → `thoughts/astra/specs/0029-codex-spec.md`.** AoN's content
-> breadth × 5etools' structure × gothic styling, on the strider/site-kit SSR template.
+> **▶ codex (0029) — a public-but-noindexed PF2e reference site (`codex.iridi.cc`) — VIABILITY
+> GREEN + SCOPED + **P1 SPEC FINAL** same day; NEXT: `octo:embrace` S1 against
+> `thoughts/astra/specs/0029-codex-p1-ingest-spec.md`.** AoN's content breadth × 5etools'
+> structure × gothic styling, on the strider/site-kit SSR template. **Per-phase specs by
+> design** (heartwood precedent) — P2+ get specced against the real corpus P1 produces.
+> - **P1 spec (ingest + canonical corpus, D29-1..13, 4 slices S1–S4): adversarially reviewed —
+>   8 blockers + 6 minors ALL folded in.** The blockers that would have bitten mid-build:
+>   shared-slug legacy/remaster pairs (two "Heal"s) clobbering one file → `<slug>@legacy`
+>   identity; `@Localize` keys majority-resolving in `re-en.json` (fetch ALL `static/lang/`);
+>   four inline-roll forms not one; depth-aware bracket grammar (94% of `@Damage` is nested);
+>   license fallback book-table for AoN-only/journal content; JournalEntry `pages[]` identity
+>   (merge-by-slug into Item entities); the creature qualifier-reorder join normalization
+>   (raw hit-rate ~70% vs spells 99%); CodexNode union widened (divider/aside/inlineRoll/
+>   inlineAction/blockquote; images dropped; columns flattened).
 > - **Docs:** viability `thoughts/shared/research/2026-07-12-codex-0029-viability-thoughts.md`
 >   (5 research agents: AoN ES probe, licensing, foundryvtt/pf2e clone inventory, 5etools
 >   analysis, stack fit) + scope `…/2026-07-12-codex-0029-thoughts.md` (repo + live-data facts
