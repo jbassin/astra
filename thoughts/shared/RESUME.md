@@ -36,7 +36,38 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `8d66293`, 2026-07-13 — codex (0029) P1 INGEST BUILT S1–S4; ▶ stakeholder report review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `defd586`, 2026-07-13 — codex (0029) P1 COMPLETE incl. P1.5; exit gate CLOSED; ▶ spec P2; heartwood ON HOLD)
+
+> **✅ codex (0029) P1 — COMPLETE incl. the P1.5 AoN-primary rework; EXIT GATE CLOSED
+> 2026-07-13.** The stakeholder reviewed the transform report (published as a Claude artifact,
+> `codex-p1-report-review`) and re-decided the corpus policy live → spec **§8 addendum
+> `12ea536` (D29-14..18)**: **AoN-primary** — keep every AoN-only + merged entity; equivalence
+> joins ({weapon,armor,shield}↔equipment · class-feature↔27 class-subsystem cats ·
+> action↔{relic,tactic,feat} level-guarded · spell↔ritual · domain "X Domain"→"X"); drop every
+> other Foundry-only entity incl. the four Foundry-only categories (2,233 dropped) **except the
+> creature/hazard carve-out** (2,242+660 kept). Built same day by the staff-orchestrator +
+> sonnet engineer: **S5a `eadb218`** (url-duplicate dedup, 982 docs — all equipment/item-bonus
+> ES parent-child duplicates) · **S5b `7ccc5c5`** (equivalence joins + normalizations) ·
+> **S5c `0210b1c`** (drop pass + report drop-accounting + fixture regen) · **S5d `defd586`**
+> (orchestrator-review fix: resolution-time link repoint — joinBrokenRef 890→2,634→**0**,
+> 6,616 repoints incl. the legacy-twin silent-mislink).
+> - **Corpus now: 46,326 entities / 627.7 MB.** domain 100% / weapon 95.2% / armor 90.6% /
+>   shield 99.2% / spell 99.7%; STOP residue = only the 3 accepted-asymmetry categories
+>   (creature-ability 9%, hazard 42.8%, warfare-army 31.8% — measured zero-AoN-counterpart).
+>   550 hermetic tests; determinism 3×; both CI lanes green; all pushed.
+> - **▶ NEXT: `octo:spec` P2 (entity pages) against the REAL post-P1.5 corpus.** P2 inputs to
+>   carry: the post-drop category set (boon/pfs-boon/kingdom-feature/effect gone), postDrop
+>   broken residue (530+40, report-visible), 1,830 residual collisions, D29-16's accepted
+>   naming narrowing (domain pages titled "X Domain"), license unknown=235 still to trace.
+> - **[[codex-0029-gotchas]] carries the P1.5 section** (raw-NUL-bytes-make-source-git-binary,
+>   resolution-time-not-patch-time link repoint, post-drop reconciliation, the empirically
+>   REFUTED creature dedup theory, the timer-pushes-main find).
+> - heartwood still ⏸ ON HOLD (unchanged below); other open items unchanged (webhook rotation,
+>   Class-A alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-13, earlier same day) — P1 S1–S4 built, pre-review (superseded above)
 
 > **▶ codex (0029) P1 — ALL FOUR SLICES BUILT + PUSHED in one overnight run** (staff-orchestrator
 > + sonnet engineers, one reviewed commit per slice): S1 `108571d` (member scaffold + both real
