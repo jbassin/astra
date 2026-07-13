@@ -69,6 +69,10 @@ describe("@astra/config", () => {
     expect(cfg.portalHeadless.world).toBe("faerrin");
     expect(cfg.portalHeadless.gmUsername).toBe("Portal");
     expect(cfg.portalHeadless.reloadIntervalHours).toBe(24);
+    expect(cfg.codex.serviceName).toBe("astra.codex");
+    expect(cfg.codex.port).toBe(10374);
+    expect(cfg.codex.publicOrigin).toBe("https://codex.iridi.cc");
+    expect(cfg.codex.dataPath).toBe("/ruby/data/experiments/astra/apps/codex/data");
   });
 
   test("secret fields are lazy refs, not plaintext", () => {

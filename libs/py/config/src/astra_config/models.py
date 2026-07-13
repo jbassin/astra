@@ -236,6 +236,18 @@ class PortalHeadlessConfig(_Base):
     reload_interval_hours: int = 24  # D27-10 slow-leak insurance knob; 0 disables it
 
 
+class CodexConfig(_Base):
+    # The PF2e reference site (0029) — a public-but-noindexed build-time ingest +
+    # SSR frontend on the strider template (Decision I), sibling of portal-headless
+    # (flat package, no browser RUM surface yet). service_name + port are the single
+    # source for the server bind; no PORT env. data_path is the gitignored corpus
+    # dir the ingest pipeline writes to.
+    service_name: str = "astra.codex"
+    port: int = 10374
+    public_origin: str = "https://codex.iridi.cc"
+    data_path: str = "/ruby/data/experiments/astra/apps/codex/data"
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -260,4 +272,5 @@ class Config(_Base):
     heartwood: HeartwoodConfig = Field(default_factory=HeartwoodConfig)
     portal: PortalConfig = Field(default_factory=PortalConfig)
     portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
+    codex: CodexConfig = Field(default_factory=CodexConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

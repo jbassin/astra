@@ -20,6 +20,7 @@ WORKDIR /repo
 # --frozen-lockfile. (Add a new app's manifest here too; libs/ts is copied wholesale.)
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/akasha-frontend/package.json apps/akasha-frontend/
+COPY apps/codex/package.json apps/codex/
 COPY apps/harrow/package.json apps/harrow/
 COPY apps/heartwood-frontend/package.json apps/heartwood-frontend/
 COPY apps/ledger/package.json apps/ledger/

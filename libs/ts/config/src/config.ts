@@ -261,6 +261,20 @@ const PortalHeadless = z
   })
   .strict();
 
+// The PF2e reference site (0029) — a public-but-noindexed build-time ingest + SSR
+// frontend on the strider template (Decision I), sibling of portal-headless (flat
+// package, no browser RUM surface yet). serviceName + port are the single source
+// for the server bind; no PORT env. dataPath is the gitignored corpus dir the
+// ingest pipeline writes to. (config-single-source)
+const Codex = z
+  .object({
+    serviceName: z.string().default("astra.codex"),
+    port: z.number().default(10374),
+    publicOrigin: z.string().default("https://codex.iridi.cc"),
+    dataPath: z.string().default("/ruby/data/experiments/astra/apps/codex/data"),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -296,6 +310,7 @@ export const ConfigSchema = z
     heartwood: Heartwood.default(() => Heartwood.parse({})),
     portal: Portal.default(() => Portal.parse({})),
     portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
+    codex: Codex.default(() => Codex.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

@@ -111,7 +111,8 @@
     "**/routeTree.gen.ts",
     "**/src/generated/**",
     "**/public/**",
-    "**/*.sdPlugin/**"
+    "**/*.sdPlugin/**",
+    "**/codex/data/**"
   ],
   "overrides": [
     // --- 13 blocks ported 1:1 from biome.json's `overrides` (same file globs) ---

@@ -1,0 +1,20 @@
+{
+  "name": "@astra/codex",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc --noEmit",
+    "fetch:aon": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-aon.ts",
+    "fetch:foundry": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-foundry.ts"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.9"
+  }
+}

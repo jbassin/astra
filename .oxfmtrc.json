@@ -23,6 +23,7 @@
     "**/routeTree.gen.ts",
     "**/src/generated/**",
     "**/public/**",
-    "**/*.sdPlugin/**"
+    "**/*.sdPlugin/**",
+    "**/codex/data/**"
   ]
 }

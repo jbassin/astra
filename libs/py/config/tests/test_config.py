@@ -63,6 +63,10 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.portal_headless.world == "faerrin"
     assert cfg.portal_headless.gm_username == "Portal"
     assert cfg.portal_headless.reload_interval_hours == 24
+    assert cfg.codex.service_name == "astra.codex"
+    assert cfg.codex.port == 10374
+    assert cfg.codex.public_origin == "https://codex.iridi.cc"
+    assert cfg.codex.data_path == "/ruby/data/experiments/astra/apps/codex/data"
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:

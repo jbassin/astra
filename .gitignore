@@ -62,6 +62,10 @@ apps/linguist/data/*.candidates.json
 apps/scribe/incoming/
 apps/scribe/data/
 
+# codex runtime data — the fetched PF2e corpus (foundryvtt/pf2e packs + AoN ES
+# docs); build-time ingest output, not source, and re-fetchable.
+apps/codex/data/
+
 # Pipeline output dirs bind-mounted into the Dagster services (deploy/docker-compose).
 # Keep the dir (a .gitkeep so the bind-mount source exists on clone), ignore the live
 # pipeline writes. (linguist/transcripts + linguist/data keep their committed historical

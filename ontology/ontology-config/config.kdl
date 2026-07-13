@@ -298,6 +298,18 @@ portal-headless {
     reload-interval-hours 24
 }
 
+codex {
+    // The PF2e reference site (0029) — a public-but-noindexed build-time ingest +
+    // SSR frontend on the strider template (Decision I), sibling of portal-headless
+    // (flat package, no browser RUM surface yet). Same config-single-source contract:
+    // the server binds this port; no PORT env. Behind Caddy at codex.iridi.cc → host
+    // 10374. data-path is the gitignored corpus dir the ingest pipeline writes to.
+    service-name "astra.codex"
+    port 10374
+    public-origin "https://codex.iridi.cc"
+    data-path "/ruby/data/experiments/astra/apps/codex/data"
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }
