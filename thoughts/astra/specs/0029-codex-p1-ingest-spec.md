@@ -10,7 +10,10 @@ that file); no seventh `@Tag[` form exists in the packs; the Magic Missile↔For
 resolves live; 21-line Dockerfile ripple + uv-exclude + port 10374 all confirmed.
 **2026-07-13: S1–S4 BUILT (`108571d`/`40b2447`/`8465625`/`8d66293`); exit-gate review RAN —
 STOP resolved via the §8 P1.5 addendum (D29-14..18: AoN-primary corpus, equivalence joins,
-creature/hazard carve-out). ▶ RESUME AT: S5 (P1.5, transform-only) per §8.**
+creature/hazard carve-out). S5a–S5d BUILT (`eadb218`/`7ccc5c5`/`0210b1c`/`defd586`); exit gate
+CLOSED 2026-07-13.**
+**2026-07-13 (later): §9 P1.6 addendum added during P2 speccing (D29-19..21: npc-only creature
+import, statblock extraction, index-clobber fix) — slice S6, transform-only, prerequisite to P2.**
 **Scope doc:** `thoughts/shared/research/2026-07-12-codex-0029-thoughts.md` (decisions C-1..C-8
 all stakeholder-resolved; repo + live-data facts verified there — this spec doesn't re-derive
 them). **Viability:** `…/2026-07-12-codex-0029-viability-thoughts.md`.
@@ -339,3 +342,62 @@ equivalence join, the drop pass, and the dedup. **Acceptance:** refreshed report
 ≈100%, weapon/armor/shield ≥90% joined; zero same-url phantom collisions; corpus ≈47k; the drop
 table matches the D29-14 ledger; both CI lanes green. Exit = quick stakeholder re-review of the
 refreshed report headline (not a full gate).
+
+## 9. P1.6 addendum (2026-07-13) — statblock extraction + npc-only import (P2 prerequisite)
+
+Added during P2 speccing (`0029-codex-p2-entity-pages-spec.md`), stakeholder-resolved same day.
+The P2 corpus inspection found the P1 corpus cannot feed the scope doc's imagined statblock
+render (StrikeLine / AC-save line / spell DC): facets carry only
+`hp/ac/saves/perception/size`; embedded `melee` items have EMPTY bodies (no to-hit, no damage —
+the schema has no fields for them); the D29-17 carve-out creatures (2,716 post-emit) have empty
+`body` entirely. Verified against the snapshots: the numbers ARE static in the NPC pack docs
+(`system.attributes.{ac,hp,speed,immunities,resistances,weaknesses}`, `system.saves.*`,
+`system.abilities.*.mod`, `system.perception.{mod,senses}`, `system.skills.*.base`,
+`system.details.languages`; melee items: `system.bonus.value` + `system.damageRolls`;
+spellcastingEntry: `system.spelldc.{dc,value}` + tradition; hazards additionally
+`system.attributes.{hardness,stealth}`, `system.details.{disable,routine,reset,isComplex}` —
+disable/routine/reset are enricher HTML, parsed via the existing `foundryHtml` path, NOT
+scalars). P1.6 is **transform-only** — snapshots untouched, no re-fetch.
+
+**D29-19 — npc-only creature import (stakeholder, 2026-07-13).** The Foundry actor ingest for
+the `creature` category takes ONLY top-level `type: "npc"` docs (6,325 verified). `type:
+"character"` actors — the `iconics` per-level pregens, `paizo-pregens`, and 14 Kingmaker
+companion builds (~80–150 docs; exact count report-visible) — are EXCLUDED: they are PC builds
+whose AC/HP/saves are runtime-derived by the pf2e system (the 0028 source-vs-live finding), not
+statable from source. Report gains an `excludedActors` count; the D29-17 carve-out and all join
+accounting re-measure downstream. (This also removes most of the 135 `source.book: "unknown"`
+creatures — pregens with no publication field.)
+
+**D29-20 — statblock extraction into a typed `stats` field (schemaVersion 1→2).** CodexEntity
+gains optional **`stats?: CreatureStats | HazardStats`** (discriminated; NOT stuffed into
+`facets` — facets stay flat scalars for P3 filtering): CreatureStats = speeds (base +
+typed others), abilityMods, senses, languages, immunities/resistances/weaknesses, skills;
+HazardStats = hardness, stealth (value + parsed details), isComplex, disable/routine/reset as
+`BlockNode[]`. **EmbeddedItem gains optional `attackBonus`, `damage: string[]` (flattened
+damageRolls, e.g. `"3d12+15 piercing"`), `dc`, `attack`, `tradition`** (strike items are
+Foundry item type `melee` — which covers ranged NPC strikes; presentation derives from traits).
+Hazard also gains the creature-style named facets (`ac/hp/saves` — verified present in hazard
+docs; currently generic-catchall). Extraction is deterministic field mapping, zero heuristics.
+
+**D29-21 — index-clobber fix + fixture indexes (+ fixture manifest, per P2 adversarial B4).**
+The per-category index moves
+`corpus/<category>/index.json` → **`corpus/<category>/_index.json`** (sluggify can never emit a
+leading underscore, so the collision class dies): the two real `index`-slug entities
+(`ancestry/index`, `archetype/index`) — currently CLOBBERED by the category index (corpus has
+46,324 files, not the manifest's 46,326) — get their files back, and manifest counts must now
+reconcile exactly against `find | wc`. `extract-fixture.ts` additionally emits
+`fixtures/entities/<category>/_index.json` (fixture-scoped rows) **and a fixture-scoped
+`fixtures/entities/manifest.json`** (fixture categoryCounts — P2's `categories()` +
+traversal-guard allowlist derive from the manifest, so the fixture corpus must carry one) so
+P2's ssrSmoke/route tests run against the fixture corpus with zero `data/` reads.
+
+**Slice S6 (transform-only, ~S5b-sized).** Parser fields + schema (`stats`, EmbeddedItem
+extensions, schemaVersion 2) + npc filter + `_index.json` rename + fixture regen (incl. fixture
+indexes + a statblock-bearing dragon + a complex hazard in the parser subset) + report sections
+(`excludedActors`, per-field extraction coverage %) + full re-transform + determinism 3×.
+**Acceptance:** red-dragon-adult entity carries jaws `+29` / `3d12+15 piercing` + `2d6 fire`,
+spell DC 35, fly 150; a complex hazard carries hardness/stealth/disable/routine; **no creature
+entity carries Foundry-character-derived `embeddedItems`/`stats`/facets — note the ~14
+AoN-joined pregen twins (e.g. `creature/amiri-level-1`, aonUrl `NPCs.aspx?ID=2388`) correctly
+PERSIST as AoN-only pages per D29-14(a) (D29-19 narrows the Foundry import, it does not drop
+AoN docs; P2 adversarial B5)**; file count == manifest count exactly; both CI lanes green.
