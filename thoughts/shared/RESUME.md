@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-12 evening — codex (0029) SCOPED; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `ae52606`, 2026-07-12 evening — codex (0029) P1 SPEC FINAL, resume at S1; heartwood ON HOLD)
 
 > **▶ codex (0029) — a public-but-noindexed PF2e reference site (`codex.iridi.cc`) — VIABILITY
 > GREEN + SCOPED + **P1 SPEC FINAL** same day; NEXT: `octo:embrace` S1 against
