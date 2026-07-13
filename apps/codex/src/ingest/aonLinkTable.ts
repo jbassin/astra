@@ -146,8 +146,16 @@ export function looksExternal(href: string): boolean {
 
 /** Pulls the `?ID=`/`&ID=` numeric query value out of an (already
  * lowercased-safe, case-insensitive-matched) url, or `undefined` when the url
- * has none (the bare category-overview pages, e.g. `/Traits.aspx`). */
-function urlQueryId(url: string): string | undefined {
+ * has none (the bare category-overview pages, e.g. `/Traits.aspx`). Exported
+ * for `aonDedup.ts` (D29-18), which reuses the EXACT same "does
+ * `{category}-{urlQueryId}` reconstruct this doc's own `_id`" rule to pick the
+ * canonical member of a same-category+slug+url+edition duplicate group — the
+ * real 2026-07-13 snapshot's "parent doc + its own base-tier child doc share
+ * one name" shape (`equipment-4778`/`equipment-4778-4291`, both "Accursed
+ * Staff") is structurally the SAME phenomenon this function already resolves
+ * for the url→codex-id link table, just applied one step earlier in the
+ * pipeline. */
+export function urlQueryId(url: string): string | undefined {
   const match = /[?&]id=(\d+)\b/i.exec(url);
   return match?.[1];
 }

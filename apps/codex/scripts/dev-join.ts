@@ -23,6 +23,7 @@ import { join } from "node:path";
 
 import { loadConfig } from "@astra/config";
 
+import { dedupeAonMetas } from "../src/ingest/aonDedup";
 import {
   type AonHit,
   type AonDocMeta,
@@ -348,7 +349,15 @@ function main(): void {
     process.exit(1);
   }
 
-  const linkTableDocs: LinkTableDoc[] = aon.metas.map((m) => ({
+  // D29-18: same dedup transform.ts runs, kept in sync here so this dev
+  // report reflects the real pipeline (not a stale pre-P1.5 picture).
+  const dedupedMetas = dedupeAonMetas(aon.metas, report);
+  const keptAonIds = new Set(dedupedMetas.map((m) => m.aonId));
+  const dedupedMarkdownById = new Map(
+    [...aon.markdownById].filter(([aonId]) => keptAonIds.has(aonId)),
+  );
+
+  const linkTableDocs: LinkTableDoc[] = dedupedMetas.map((m) => ({
     aonId: m.aonId,
     category: m.category,
     slug: m.slug,
@@ -363,8 +372,8 @@ function main(): void {
   console.log("\nRunning the S4 join...");
   const result = runJoin({
     foundryEntities: foundry.entities,
-    aonMetas: aon.metas,
-    aonMarkdownById: aon.markdownById,
+    aonMetas: dedupedMetas,
+    aonMarkdownById: dedupedMarkdownById,
     linkTable,
     remasterRedirects: foundry.redirects,
     aliasesFile,
@@ -373,7 +382,7 @@ function main(): void {
   });
   console.log(`  ${result.entities.length} final entities.`);
 
-  measureDragonFamily(foundry.entities, aon.metas);
+  measureDragonFamily(foundry.entities, dedupedMetas);
 
   console.log("\n=== Spell join rate ===");
   const spellStat = result.categoryStats.find((c) => c.category === "spell");

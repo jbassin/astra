@@ -26,6 +26,7 @@ import { pathToFileURL } from "node:url";
 
 import { loadConfig } from "@astra/config";
 
+import { dedupeAonMetas } from "../src/ingest/aonDedup";
 import {
   type AonHit,
   type AonDocMeta,
@@ -348,7 +349,17 @@ export function runTransform(paths: TransformPaths): TransformResult {
 
   if (hardFailures.length > 0) return { hardFailures };
 
-  const linkTableDocs: LinkTableDoc[] = aon.metas.map((m) => ({
+  // D29-18: collapse same-(category,slug,aonUrl,edition) duplicate AoN docs
+  // to one deterministic winner BEFORE the link table / join ever see them —
+  // see aonDedup.ts's file header for why (kills the phantom `-N` residual
+  // collisions duplicate ES entries would otherwise mint).
+  const dedupedMetas = dedupeAonMetas(aon.metas, report);
+  const keptAonIds = new Set(dedupedMetas.map((m) => m.aonId));
+  const dedupedMarkdownById = new Map(
+    [...aon.markdownById].filter(([aonId]) => keptAonIds.has(aonId)),
+  );
+
+  const linkTableDocs: LinkTableDoc[] = dedupedMetas.map((m) => ({
     aonId: m.aonId,
     category: m.category,
     slug: m.slug,
@@ -359,8 +370,8 @@ export function runTransform(paths: TransformPaths): TransformResult {
 
   const joinResult = runJoin({
     foundryEntities: foundry.entities,
-    aonMetas: aon.metas,
-    aonMarkdownById: aon.markdownById,
+    aonMetas: dedupedMetas,
+    aonMarkdownById: dedupedMarkdownById,
     linkTable,
     remasterRedirects: foundry.redirects,
     aliasesFile: paths.aliasesFile,
@@ -380,6 +391,10 @@ export function runTransform(paths: TransformPaths): TransformResult {
     hardFailureCount: hardFailures.length,
     join: joinResult,
     foundrySnapshotDocCount: foundry.entities.size,
+    // Deliberately the RAW extracted count (pre-D29-18-dedup) — matches
+    // `foundrySnapshotDocCount`'s own "how big was the snapshot" framing;
+    // the dedup's own removal count is separately visible via the
+    // `aonUrlDuplicateCollapsed` report class (Report-class counts table).
     aonSnapshotDocCount: aon.metas.length,
     sizeTotals: {
       corpusBytes: emitResult.corpusBytes,
