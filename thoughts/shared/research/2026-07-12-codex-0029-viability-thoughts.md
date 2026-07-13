@@ -1,7 +1,7 @@
 # codex (0029) — PF2e reference site: viability check
 
-**Date:** 2026-07-12 · **Status:** VIABILITY ASSESSED — verdict GREEN with decisions pending;
-NOT yet scoped/specced · **Stakeholder ask:** a static-feeling website for quickly looking up
+**Date:** 2026-07-12 · **Status:** VIABILITY ASSESSED — verdict GREEN; all 5 pre-scope
+decisions RESOLVED by the stakeholder same day (§6); NOT yet scoped/specced · **Stakeholder ask:** a static-feeling website for quickly looking up
 Pathfinder 2e info — the content breadth of Archives of Nethys (2e.aonprd.com), the data/UX
 structure of 5e.tools, styled with gothic/vellum. Explicitly flagged as very large; this doc is
 the pre-scope viability check (5 parallel research agents, 2026-07-12).
@@ -162,15 +162,26 @@ public-legal path.
    pages from the AoN overlay. Medium, deferrable.
 5. **P5 — deploy:** Compose unit + Caddy + wildcard cert; smallest phase, fully paved.
 
-## 6. Decisions to resolve BEFORE scoping (stakeholder)
+## 6. Pre-scope decisions — ALL RESOLVED (stakeholder, 2026-07-12)
 
-1. **Audience/exposure:** personal-use vs public free site — sets the whole legal posture.
-2. **Content tier:** ORC/OGL-mechanics-only (genericized nouns) vs CUP gray-tier (Golarion
-   nouns + flavor, like Pf2eTools/Wanderer's Guide) vs full AoN mirror (not recommended).
-3. **Primary corpus:** hybrid (recommended) vs AoN-only vs Foundry-only.
-4. **Remaster stance:** remaster-primary with legacy toggle (5etools-style) vs remaster-only.
-5. **Scope of v1:** which categories (the 5etools lesson: monsters+spells+feats+items+
-   conditions/actions/traits cover most lookups; the ~70 long-tail categories can wait).
+1. **Audience/exposure — RESOLVED: personal/party only.** Served on the edge but for Josh +
+   the table (obscure/unlisted or auth-gated — the exact mechanism is a scoping question).
+   Legal exposure is negligible at this tier, which de-risks decisions 2 and 5.
+2. **Content tier — RESOLVED: CUP gray tier.** Full mechanical content WITH Golarion proper
+   nouns, deities, and statblock flavor (the Pf2eTools/Wanderer's Guide posture). Mitigations
+   still apply: free, no endorsement claims, no wholesale AP narrative reproduction.
+3. **Primary corpus — RESOLVED: hybrid.** foundryvtt/pf2e packs = structured mechanical source
+   of truth; AoN ES = prose/citation/lore overlay, joined on slug + `remaster_id`. Two
+   transforms to build; both grammars are cataloged in §1.
+4. **Remaster stance — RESOLVED: remaster-primary + legacy toggle** (the 5etools 2014/2024
+   pattern). Legacy↔remaster pairs modeled via AoN `remaster_id` + the Foundry
+   `remaster-changes` journal redirect table.
+5. **v1 scope — RESOLVED: ALL categories** — core lookup set (monsters/spells/feats/items/
+   conditions/actions/traits) + character-build set (ancestries/heritages/backgrounds/classes/
+   archetypes/deities) + GM set (hazards/vehicles/relics/rituals/creature families/familiars/
+   companions) + **rules & lore prose**. Full breadth in v1 — nothing deferred. Sizing
+   consequence: the P4 prose layer is NOT deferrable; the AoN overlay transform is in-scope
+   from the start, and P1 (corpus + canonical schema) grows accordingly.
 
 ## Sources (agent reports, 2026-07-12)
 
