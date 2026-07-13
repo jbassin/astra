@@ -179,8 +179,11 @@ heartwood-apply date:
       libs/ts/vellum-lang/scripts/validate-corpus.ts --dir apps/akasha-backend/content
     echo "heartwood-apply: regenerating the akasha snapshot…"
     OTEL_SDK_DISABLED=true uv run akasha-snapshot
+    # The whole proposals/<date> dir, not just review.kdl: the facts-only rework made the
+    # proposal .vellum bodies HUMAN-edited (the editor saves them to disk) — leaving them
+    # unstaged aborts the rebase below with "cannot rebase: You have unstaged changes".
     git add apps/akasha-backend/content apps/akasha-backend/snapshot/akasha-snapshot.json \
-            ontology/ontology-entity/entity.kdl "apps/heartwood-backend/proposals/{{date}}/review.kdl"
+            ontology/ontology-entity/entity.kdl "apps/heartwood-backend/proposals/{{date}}"
     if git diff --cached --quiet; then
       echo "heartwood-apply: nothing approved/changed for {{date}} — done."
       exit 0
