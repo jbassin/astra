@@ -45,8 +45,9 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 >   (5 research agents: AoN ES probe, licensing, foundryvtt/pf2e clone inventory, 5etools
 >   analysis, stack fit) + scope `…/2026-07-12-codex-0029-thoughts.md` (repo + live-data facts
 >   verified; decisions ledger C-1..C-8 ALL RESOLVED).
-> - **Key decisions:** PUBLIC free site (C-1, revised from party-only — CUP mitigations are hard
->   requirements); CUP gray tier w/ Golarion nouns (C-2); HYBRID corpus — foundryvtt/pf2e packs
+> - **Key decisions:** publicly reachable but NOINDEX'd, personal-use posture, no CUP-mitigation
+>   requirements (C-1, revised twice — robots.txt + X-Robots-Tag + no ledger card); CUP gray
+>   tier w/ Golarion nouns (C-2); HYBRID corpus — foundryvtt/pf2e packs
 >   = mechanics truth, AoN ES = prose/citations overlay, join on slug (C-3); remaster-primary +
 >   legacy toggle (C-4); v1 = ALL categories incl. rules/sidebar prose (C-5); corpus gitignored
 >   + committed CI fixture (C-6); ingest = TS scripts in `apps/codex`, `just codex-refresh`, no

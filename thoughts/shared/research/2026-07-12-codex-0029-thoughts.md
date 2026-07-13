@@ -17,7 +17,7 @@ Elasticsearch index (prose, citations, rules/sidebar text).
 
 | # | Decision | Resolution |
 |---|---|---|
-| C-1 | Exposure | **PUBLIC free site** — *revised during scoping* from the viability answer "personal/party only" (chosen over basic_auth/obscure-subdomain when the access-gate mechanics were put to him). Consequence: the CUP mitigations are now hard requirements — free, no ads/paywall, no Paizo-endorsement claims, no wholesale AP narrative, no AoN presentation mirroring. |
+| C-1 | Exposure | **Publicly reachable, personal-use posture, NOT search-indexed** — *revised twice during scoping* (party-only → public → this). Stakeholder call 2026-07-12: no CUP-mitigation requirements; the site is for personal use, just without an auth gate. **The one build requirement this adds: noindex** — `robots.txt` (Disallow all) + `X-Robots-Tag: noindex` at the Caddy block + no sitemap; keep it off the ledger landing-page card grid. (For the record: noindex affects discoverability, not legal status — accepted; the practical delta is near-zero since the site is free anyway and neither corpus contains AP narrative prose, the one risky tier.) |
 | C-2 | Content tier | **CUP gray tier** — full Golarion proper nouns, deities, statblock flavor (the Pf2eTools/Wanderer's Guide posture, years of precedent). |
 | C-3 | Corpus | **Hybrid** — Foundry packs = mechanical source of truth; AoN ES = prose/citation/rules overlay. Join on sluggified name + category map + AoN `remaster_id`. |
 | C-4 | Remaster | **Remaster-primary + legacy toggle** (5etools 2014/2024 pattern); pairs via AoN `remaster_id` + Foundry's `remaster-changes` redirect journal. |
@@ -130,9 +130,10 @@ legacyPair?, facets{...per-category}, body: TypedNode[] | html, crossrefs[], aon
   transform hard-fails on unknown `@Tag` forms (report, don't guess); refresh is deliberate.
 - **Join residue volume unknown** until P1 runs the real corpora — if slug matching misses at
   scale (>few %), the exceptions file grows or the join needs fuzzy assist; budgeted inside P1.
-- **Public exposure (C-1)** — the CUP mitigations are requirements now; also keep the AoN
-  `markdown` field as *transform input only* (render from canonical schema, never mirror AoN's
-  rendered presentation), and show per-entity source citations (community norm).
+- **Public exposure (C-1)** — personal-use posture, noindex; no CUP-mitigation requirements
+  (stakeholder call). Still keep the AoN `markdown` field as *transform input only* (render
+  from the canonical schema — it's the better engineering anyway) and show per-entity source
+  citations (useful at the table, and the community norm).
 - **Corpus in the image** — full corpus (~100-200 MB canonical) baked via COPY would bloat the
   image; prefer the artifacts/ bind-mount pattern (mouthpiece episodes precedent) with the
   sharded corpus read at SSR time (transcript-pattern reads are per-entity, small). Spec pins
