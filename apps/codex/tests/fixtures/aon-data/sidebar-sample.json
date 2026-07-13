@@ -1,0 +1,20 @@
+{
+  "_id": "sidebar-1675",
+  "_source": {
+    "id": "sidebar-1675",
+    "category": "sidebar",
+    "name": "A Place Undersea",
+    "url": "/Ancestries.aspx?ID=41",
+    "rarity": null,
+    "primary_source": "Azarketi Ancestry Web Supplement",
+    "primary_source_raw": "Azarketi Ancestry Web Supplement pg. 2",
+    "release_date": "2021-02-24",
+    "source": [
+      "Azarketi Ancestry Web Supplement"
+    ],
+    "source_raw": [
+      "Azarketi Ancestry Web Supplement pg. 2"
+    ],
+    "markdown": "<title level=\"1\" right=\"Sidebar\">[A Place Undersea](/Ancestries.aspx?ID=41)</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Azarketi Ancestry Web Supplement](/Sources.aspx?ID=76) pg. 2\r\n\r\n**Parent page*"
+  }
+}

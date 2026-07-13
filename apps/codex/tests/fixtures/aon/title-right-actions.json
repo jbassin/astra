@@ -1,0 +1,6 @@
+{
+  "category": "action",
+  "id": "action-1140",
+  "name": "",
+  "markdown": "**Activate** <actions string=\"Reaction\" />  ;  **Frequency** once per hour; **Trigger** You succeed or critically succeed at a saving throw against a mental effect that would make you confused, controlled, frightened, or stupefied;  **Effect** Empowered by your determination, your ancestors protect you and your nearby allies. For 1 minute, you and each of your allies within 30 feet gains a +1 status bonus to saving throws against mental effects that would make you confused, controlled, frightened, or stupefied."
+}

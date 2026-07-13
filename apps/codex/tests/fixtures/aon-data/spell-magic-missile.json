@@ -1,0 +1,29 @@
+{
+  "_id": "spell-180",
+  "_source": {
+    "id": "spell-180",
+    "category": "spell",
+    "name": "Magic Missile",
+    "url": "/Spells.aspx?ID=180",
+    "rarity": "common",
+    "primary_source": "Core Rulebook",
+    "primary_source_raw": "Core Rulebook pg. 349",
+    "release_date": "2019-08-01",
+    "source": [
+      "Core Rulebook"
+    ],
+    "source_raw": [
+      "Core Rulebook pg. 349"
+    ],
+    "markdown": "<title level=\"1\" right=\"Spell 1\" pfs=\"Standard\">\r\n[Magic Missile](/Spells.aspx?ID=180)\r\n<actions string=\"Single Action to Three Actions\" />\r\n</title>\n\n<traits>\r\n<trait label=\"Evocation\" url=\"/Traits.a",
+    "level": 1,
+    "trait": [
+      "Evocation",
+      "Force"
+    ],
+    "remaster_id": [
+      "spell-1536"
+    ],
+    "legacy_id": null
+  }
+}

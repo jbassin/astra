@@ -1,0 +1,20 @@
+{
+  "_id": "article-98",
+  "_source": {
+    "id": "article-98",
+    "category": "article",
+    "name": "A History of Secrets",
+    "url": "/Articles.aspx?ID=98",
+    "rarity": "common",
+    "primary_source": "Pathfinder #206: Bring the House Down",
+    "primary_source_raw": "Pathfinder #206: Bring the House Down pg. 74",
+    "release_date": "2024-09-15",
+    "source": [
+      "Pathfinder #206: Bring the House Down"
+    ],
+    "source_raw": [
+      "Pathfinder #206: Bring the House Down pg. 74"
+    ],
+    "markdown": "<title level=\"1\" right=\"Setting Article\" pfs=\"\">[A History of Secrets](/Articles.aspx?ID=98)</title>\r\n\r\n**Source** [Pathfinder #206: Bring the House Down](/Sources.aspx?ID=247) pg. 74\n\n[Norgorber](/De"
+  }
+}

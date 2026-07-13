@@ -1,0 +1,31 @@
+{
+  "_id": "spell-148",
+  "_source": {
+    "id": "spell-148",
+    "category": "spell",
+    "name": "Heal",
+    "url": "/Spells.aspx?ID=148",
+    "rarity": "common",
+    "primary_source": "Core Rulebook",
+    "primary_source_raw": "Core Rulebook pg. 343",
+    "release_date": "2019-08-01",
+    "source": [
+      "Core Rulebook"
+    ],
+    "source_raw": [
+      "Core Rulebook pg. 343"
+    ],
+    "markdown": "<title level=\"1\" right=\"Spell 1\" pfs=\"Standard\">\r\n[Heal](/Spells.aspx?ID=148)\r\n<actions string=\"Single Action to Three Actions\" />\r\n</title>\n\n<traits>\r\n<trait label=\"Healing\" url=\"/Traits.aspx?ID=89\" ",
+    "level": 1,
+    "trait": [
+      "Healing",
+      "Necromancy",
+      "Positive",
+      "Vitality"
+    ],
+    "remaster_id": [
+      "spell-1554"
+    ],
+    "legacy_id": null
+  }
+}
