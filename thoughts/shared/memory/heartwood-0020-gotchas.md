@@ -1,6 +1,6 @@
 ---
 name: heartwood-0020-gotchas
-description: heartwood (0020) — akasha setting wiki, now FACTS-ONLY (2026-07-12 rework — LLM drafting RETIRED, the human writes every body from staged facts); Phases 1-4 machine DONE + LIVE on heartwood.iridi.cc — only the human-gated content acceptance (write+approve pages → live wiki) remains; locked decisions + verified gotchas + the faerrin-failed-twice lesson
+description: heartwood (0020) — akasha setting wiki, FACTS-ONLY (LLM drafting RETIRED, the human writes every body); 2026-07-12 the FIRST REAL APPLY ran (2 human-penned creates LIVE on akasha — D1 create-half proven) then the stakeholder put heartwood ON HOLD; D1 rewrite-half + Phase 5 pend resumption; locked decisions + verified gotchas + the faerrin-failed-twice lesson
 metadata:
   type: project
 ---
@@ -18,11 +18,23 @@ house-voice gate — anti-AI-slop is THE bar) ✅ **DONE (5 slices + rewrite har
 write-back** ✅ **BUILT + SURFACE LIVE** (6 slices, scope+spec at `…-phase4-review-writeback-{thoughts,spec}.md`);
 (5) backfill/automation. **Human-gated through Phase 4**; steady-state automation deferred until Phase 5.
 
-**▶ RESUME AT: the human-gated CONTENT ACCEPTANCE, now on the FACTS-ONLY surface** (Josh WRITES ≥1 create +
-≥1 rewrite from the staged facts in the live editor, approves them → `just heartwood-apply 2025-8-28` →
-verify live on akasha). That is Josh's call by design (D1); the machine is done. The surface is LIVE:
-`https://heartwood.iridi.cc` (58 cards — 39 create / 19 rewrite). **Phase 5** = cross-session accumulation +
-backfill over ~40 sessions (now extraction-cost-only) + sensor/schedule automation.
+**⏸ ON HOLD (stakeholder call 2026-07-12) after the FIRST REAL APPLY.** Josh reviewed 11/58 cards
+(2 approved / 9 rejected — reasons: hallucinated ×3, already-known ×3, out-of-voice ×2, not-canon ×1),
+hand-wrote both bodies, and `just heartwood-apply 2025-8-28` wrote **`Bestiary/Auger` + `Bestiary/Ugathal`
+live** (`fd6e47e`; corpus 123 pages validate clean; akasha URLs are CASE-PRESERVED paths —
+`/Bestiary/Auger`, not `/bestiary/auger`). **▶ WHEN RESUMING: the D1 rewrite-half is still open** — 0 of
+the 19 rewrite cards approved, 47/58 undecided at `heartwood.iridi.cc/review/2025-8-28`; `apply.py` skips
+undecided + stamps `committed-at` (idempotent) so approve ≥1 rewrite → re-run apply closes D1. **Phase 5**
+(cross-session accumulation + ~40-session backfill, extraction-cost-only + automation) stays gated behind it.
+
+**THE first-real-apply gotcha (FIXED `ebdef37`):** the recipe's path-scoped `git add` staged only
+`review.kdl` — but facts-only made the proposal `.vellum` bodies HUMAN-edited, so they sat unstaged and
+aborted the recipe's rebase step ("cannot rebase: You have unstaged changes") AFTER the write-back commit
+landed. Recipe now stages the whole `proposals/<date>` dir. (Recovery: amend the unpushed write-back
+commit with the bodies → rebase → push → manual `docker compose up -d --build akasha-frontend`.) The
+review surface also lets the human RETARGET placement — the Augers card landed as `Bestiary/Auger`
+(singular), decision `target-path` wins over the manifest path.
+
 Umbrella `…/2026-06-27-heartwood-0020-thoughts.md`; the rework + Phase-4 + Phase-3 specs/scopes below.
 
 ## FACTS-ONLY REWORK (2026-07-12) — drafting RETIRED; the human writes the prose. COMPLETE + LIVE

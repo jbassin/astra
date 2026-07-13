@@ -36,7 +36,31 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-12 — heartwood facts-only rework COMPLETE + LIVE)
+## Current state — UPDATE THIS SECTION (as of 2026-07-12 evening — heartwood ON HOLD after the first real apply)
+
+> **⏸ heartwood 0020 — ON HOLD (stakeholder call, 2026-07-12), with the D1 create-half PROVEN
+> LIVE.** Josh worked the review surface for real: 11/58 cards decided (2 approved / 9 rejected
+> w/ reasons), hand-wrote both bodies in the editor, and `just heartwood-apply 2025-8-28` ran —
+> **`fd6e47e` wrote `Bestiary/Auger` + `Bestiary/Ugathal` into the corpus (123 pages validate
+> clean, snapshot regenerated) and both render live at `akasha.iridi.cc/Bestiary/{Auger,Ugathal}`**
+> (case-preserved path URLs; SSR HTML grep-verified through the edge; akasha-frontend rebuilt).
+> - **First-real-apply bug found + FIXED (`ebdef37`):** the recipe's path-scoped `git add` staged
+>   only `review.kdl`, not the now-human-edited proposal `.vellum` bodies → the unstaged edits
+>   aborted the rebase step mid-recipe ("cannot rebase: You have unstaged changes"). Recipe now
+>   stages the whole `proposals/<date>` dir. Recovery was: fold the bodies into the write-back
+>   commit (amend, was unpushed) → rebase → push → manual `docker compose up -d --build
+>   akasha-frontend`.
+> - **▶ WHEN RESUMING heartwood:** the D1 **rewrite-half is still open** — 0 rewrites approved
+>   (19 rewrite cards exist), 47/58 cards undecided at
+>   `https://heartwood.iridi.cc/review/2025-8-28`. `apply.py` skips undecided cards and stamps
+>   `committed-at` (idempotent), so approve ≥1 rewrite → re-run `just heartwood-apply 2025-8-28`
+>   closes D1. Phase 5 (backfill ~40 sessions + automation) stays gated behind that.
+> - **▶ NEXT: nothing code-in-flight.** Other open items unchanged: webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry.
+
+---
+
+### Previous section (2026-07-12, same day) — facts-only rework COMPLETE (superseded above)
 
 > **✅ heartwood 0020 FACTS-ONLY REWORK — COMPLETE, scope→spec→build→deploy→live-gate in one
 > session.** Stakeholder redirect: the machine must NOT write wiki prose — review cards show only
