@@ -1,0 +1,13 @@
+review "2025-8-28" updated-at="2026-07-12T21:39:18.820908-04:00" {
+    decision id="bestiary-augers" state="approved" target-path="Bestiary/Auger" decided-at="2026-07-12T18:59:53.720Z" committed-at="2026-07-12T21:39:18.820908-04:00"
+    decision id="bestiary-goblinoid" state="rejected" target-path="Bestiary/goblinoid" rejection-reason="out-of-voice" decided-at="2026-07-12T19:02:37.302Z"
+    decision id="bestiary-tywelwyn" state="rejected" target-path="Bestiary/Tywelwyn" rejection-reason="hallucinated" decided-at="2026-07-12T19:00:10.813Z"
+    decision id="bestiary-ugathal" state="approved" target-path="Bestiary/Ugathal" decided-at="2026-07-12T19:02:25.662Z" committed-at="2026-07-12T21:39:18.820908-04:00"
+    decision id="geography-austrene-index" state="rejected" rejection-reason="already-known" decided-at="2026-07-12T19:02:46.212Z"
+    decision id="geography-black-and-white-index" state="rejected" rejection-reason="hallucinated" decided-at="2026-07-12T19:03:01.881Z"
+    decision id="geography-calaria-hallia-index" state="rejected" rejection-reason="already-known" decided-at="2026-07-12T19:03:30.960Z"
+    decision id="geography-calaria-hallia-sableclutch-index" state="rejected" rejection-reason="out-of-voice" decided-at="2026-07-12T19:03:19.131Z"
+    decision id="geography-calaria-hallia-sableclutch-sin-and-tonic" state="rejected" rejection-reason="already-known" decided-at="2026-07-12T19:03:08.752Z"
+    decision id="geography-fifth-ave-index" state="rejected" target-path="Geography/Fifth Ave/index" rejection-reason="not-canon" decided-at="2026-07-12T19:03:36.952Z"
+    decision id="geography-frrin" state="rejected" rejection-reason="hallucinated" decided-at="2026-07-12T19:03:46.042Z"
+}

@@ -2096,6 +2096,34 @@
   ],
   "pages": [
     {
+      "crossrefs": [],
+      "date": "2025-08-28T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-08-28T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Auger"
+    },
+    {
+      "crossrefs": [],
+      "date": "2025-08-28T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2025-08-28T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Bestiary/Ugathal"
+    },
+    {
       "crossrefs": [
         {
           "alias": "Hallia",
