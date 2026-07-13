@@ -1,0 +1,511 @@
+{
+  "aonUrl": "/SetRelics.aspx?ID=7",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Seer's Array",
+          "kind": "crossref",
+          "targetId": "set-relic/seers-array"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Set Relic"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Treasure Vault (Remastered)",
+          "kind": "crossref",
+          "targetId": "source/treasure-vault-remastered"
+        },
+        {
+          "content": " pg. 202",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Aspects",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Mind and Time",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Diviners through the ages have employed a variety of tools to glimpse the future, but one who assembles five pieces of a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "seer's array",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": true,
+            "superscript": false
+          }
+        },
+        {
+          "content": " gains strong second sight. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Seer's arrays",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": true,
+            "superscript": false
+          }
+        },
+        {
+          "content": " can be found across Golarion, from the caravans of Varisian harrowers to the scale diviners at the court of the Dragon King of Xa Hoi. A diviner who wears the array is bound to be sought after for counsel, and those who consult such farsighted individuals do well to heed any advice given.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Set Items",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": ": ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Pendant of the Occult",
+          "kind": "crossref",
+          "targetId": "equipment/pendant-of-the-occult"
+        },
+        {
+          "content": " (level 3), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Staff of the Unblinking Eye",
+          "kind": "crossref",
+          "targetId": "equipment/staff-of-the-unblinking-eye"
+        },
+        {
+          "content": " (level 6), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Clarity Goggles (Lesser)",
+          "kind": "crossref",
+          "targetId": "equipment/clarity-goggles"
+        },
+        {
+          "content": " (level 8), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Crystal Ball (Clear Quartz)",
+          "kind": "crossref",
+          "targetId": "equipment/crystal-ball"
+        },
+        {
+          "content": " (level 14), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Amulet of the Third Eye",
+          "kind": "crossref",
+          "targetId": "equipment/amulet-of-the-third-eye"
+        },
+        {
+          "content": " (level 17)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Gifts",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": ": The set grants the following gifts.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "items": [
+        [
+          {
+            "content": "1: ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Recalculate",
+            "kind": "crossref",
+            "targetId": "relic/recalculate"
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "2: ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Borrow Time",
+            "kind": "crossref",
+            "targetId": "relic/borrow-time"
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "3: ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Time Jump",
+            "kind": "crossref",
+            "targetId": "relic/time-jump"
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "4: ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Precognition",
+            "kind": "crossref",
+            "targetId": "relic/precognition"
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "5: ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Time Reversal",
+            "kind": "crossref",
+            "targetId": "relic/time-reversal"
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Collective Features",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": ": The set grants the following features. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "items": [
+        [
+          {
+            "content": "Two Items",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": true,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": The circumstance bonus from recalculate increases by 1.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Three Items",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": true,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": Creatures become temporarily immune to the relic's borrow time gift for 1 hour.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Four Items",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": true,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": You can use the relic's time jump once per hour. For each use after the first in a given day, you must attempt a flat check with a DC of 9 + the number of times you've used the gift that day. If you fail, you can still complete the time jump, but after that the gift is no longer available until you next complete your daily preparations. You can roll the flat check before using the gift and decide not to do so after seeing the roll. However, any failure applies to the next use of the gift that day, making your next use your last that day.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Five Items",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": true,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": You can use the relic's precognition once per hour. Each use after the first requires a flat check like for time jump at four items, but this flat check affects your use of precognition.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    }
+  ],
+  "category": "set-relic",
+  "edition": "legacy",
+  "facets": {},
+  "id": "set-relic/seers-array-2",
+  "name": "Seer's Array",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "seers-array",
+  "source": {
+    "book": "Treasure Vault (Remastered)",
+    "license": "ORC",
+    "page": 202
+  },
+  "traits": [
+    "Relic"
+  ]
+}

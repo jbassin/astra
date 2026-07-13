@@ -1,0 +1,19 @@
+{
+  "body": [],
+  "category": "hazard",
+  "edition": "remaster",
+  "facets": {
+    "hp": 0,
+    "size": "lg"
+  },
+  "id": "hazard/meteor-shower",
+  "level": 19,
+  "name": "Meteor Shower",
+  "rarity": "common",
+  "slug": "meteor-shower",
+  "source": {
+    "book": "Pathfinder #221: Into the Apocalypse Archive",
+    "license": "ORC"
+  },
+  "traits": []
+}

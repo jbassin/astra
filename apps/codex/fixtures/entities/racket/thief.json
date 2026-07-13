@@ -1,0 +1,141 @@
+{
+  "aonUrl": "/Rackets.aspx?ID=9",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Thief",
+          "kind": "crossref",
+          "targetId": "racket/thief"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Rogue Racket "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core",
+          "kind": "crossref",
+          "targetId": "source/player-core"
+        },
+        {
+          "content": " pg. 167",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Nothing beats the thrill of taking something that belongs to someone else, especially if you can do so completely unnoticed. You might be a pickpocket working the streets, a cat burglar sneaking through windows, or even a consultant, testing clients’ vaults for openings.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " When a fight breaks out, you prefer swift, lightweight weapons, and you strike where it hurts. When you attack with a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "finesse",
+          "kind": "crossref",
+          "targetId": "trait/finesse"
+        },
+        {
+          "content": " melee weapon or finesse melee unarmed attack, you can add your Dexterity modifier to damage rolls instead of your Strength modifier.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " You are trained in ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Thievery",
+          "kind": "crossref",
+          "targetId": "skill/thievery"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "racket",
+  "edition": "remaster",
+  "facets": {},
+  "id": "racket/thief",
+  "legacyOf": [
+    "racket/thief@legacy"
+  ],
+  "name": "Thief",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "thief",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 167
+  },
+  "traits": []
+}

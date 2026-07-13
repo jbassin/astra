@@ -1,0 +1,343 @@
+{
+  "aonUrl": "/Spells.aspx?ID=1554",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Heal",
+          "kind": "crossref",
+          "targetId": "spell/heal"
+        },
+        {
+          "cost": "Single Action to Three Actions",
+          "kind": "actionGlyph"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Spell 1"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core",
+          "kind": "crossref",
+          "targetId": "source/player-core"
+        },
+        {
+          "content": " pg. 335",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Traditions",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Divine",
+          "kind": "crossref",
+          "targetId": "tradition/divine"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Primal",
+          "kind": "crossref",
+          "targetId": "tradition/primal"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Bloodline",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Angelic",
+          "kind": "crossref",
+          "targetId": "bloodline/angelic"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Range",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " varies",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Target",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 1 willing living creature or 1 undead creature",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "You channel vital energy to heal the living or damage the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "undead",
+          "kind": "crossref",
+          "targetId": "trait/undead"
+        },
+        {
+          "content": ". If the target is a willing living creature, you restore 1d8 Hit Points. If the target is undead, you deal that amount of vitality damage to it, and it gets a basic Fortitude save. The number of actions you spend when Casting this Spell determines its targets, range, area, and other parameters.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " The spell has a range of touch.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Two Actions",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "concentrate",
+          "kind": "crossref",
+          "targetId": "trait/concentrate"
+        },
+        {
+          "content": ") The spell has a range of 30 feet. If you're healing a living creature, increase the Hit Points restored by 8.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Three Actions",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "concentrate",
+          "kind": "crossref",
+          "targetId": "trait/concentrate"
+        },
+        {
+          "content": ") You disperse vital energy in a 30-foot emanation. This targets all living and undead creatures in the burst.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Heightened (+1)",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The amount of healing or damage increases by 1d8, and the extra healing for the 2-action version increases by 8.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "spell",
+  "edition": "remaster",
+  "facets": {
+    "castTime": "1 to 3",
+    "defense": "basic Fortitude",
+    "featLevel": 1,
+    "range": "varies",
+    "rank": 1,
+    "traditions": [
+      "divine",
+      "primal"
+    ]
+  },
+  "id": "spell/heal",
+  "legacyOf": [
+    "spell/heal@legacy"
+  ],
+  "level": 1,
+  "name": "Heal",
+  "rarity": "common",
+  "slug": "heal",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 335
+  },
+  "traits": [
+    "healing",
+    "manipulate",
+    "vitality"
+  ]
+}

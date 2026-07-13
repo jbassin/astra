@@ -1,0 +1,10 @@
+{
+  "_description": "Trimmed for the CI fixture (D29-11) — a subset of the committed apps/codex/join-aliases.json covering exactly the one alias this fixture's raw docs can exercise (camouflage-coat). See the real file for the full hand-curated list.",
+  "aliases": [
+    {
+      "aonId": "feat-5337",
+      "foundryId": "feat/camouflage-coat",
+      "note": "AoN 'Camoflage Coat' (missing u) vs Foundry 'Camouflage Coat' — level 13 on both sides, Howl of the Wild."
+    }
+  ]
+}

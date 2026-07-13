@@ -1,0 +1,148 @@
+{
+  "aonUrl": "/Familiars.aspx?ID=39&Specific=true",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Poppet",
+          "kind": "crossref",
+          "targetId": "familiar-specific/poppet"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Specific Familiar "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core 2",
+          "kind": "crossref",
+          "targetId": "source/player-core-2"
+        },
+        {
+          "content": " pg. 171",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Required Number of Abilities",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 1",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Granted Abilities",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Construct",
+          "kind": "crossref",
+          "targetId": "familiar-ability/construct"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Endlessly modifiable, poppet familiars made of wood and wicker are among the most basic construct familiars available to Pathfinder agents across the globe.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "familiar-ability/flammable"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "familiar-specific",
+  "edition": "remaster",
+  "facets": {},
+  "id": "familiar-specific/poppet",
+  "legacyOf": [
+    "familiar-specific/poppet@legacy"
+  ],
+  "name": "Poppet",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "poppet",
+  "source": {
+    "book": "Player Core 2",
+    "license": "ORC",
+    "page": 171
+  },
+  "traits": [
+    "Construct"
+  ]
+}

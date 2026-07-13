@@ -1,0 +1,163 @@
+{
+  "aonUrl": "/MythicCallings.aspx?ID=9",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Sage's Calling",
+          "kind": "crossref",
+          "targetId": "mythic-calling/sages-calling"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Mythic Calling "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "War of Immortals",
+          "kind": "crossref",
+          "targetId": "source/war-of-immortals"
+        },
+        {
+          "content": " pg. 80",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You’re already an archive of knowledge, but you’re driven to learn more with an unquenchable passion that might never be sated. When you attempt to ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Recall Knowledge",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": ", you can spend a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Mythic Point",
+          "kind": "crossref",
+          "targetId": "rules/mythic-rules"
+        },
+        {
+          "content": " to attempt the check at mythic proficiency. The first time each day that you critically succeed on a Recall Knowledge check against an enemy creature, you regain a Mythic Point.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Edicts",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " preserve your knowledge for future generations, seek out lost knowledge in dangerous or forgotten places",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Anathema",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " destroy books or other repositories of knowledge, lie to hide knowledge from the world",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "mythic-calling",
+  "edition": "remaster",
+  "facets": {},
+  "id": "mythic-calling/sages-calling",
+  "name": "Sage's Calling",
+  "proseOnly": true,
+  "rarity": "uncommon",
+  "slug": "sages-calling",
+  "source": {
+    "book": "War of Immortals",
+    "license": "ORC",
+    "page": 80
+  },
+  "traits": [
+    "Calling",
+    "Mythic",
+    "Uncommon"
+  ]
+}

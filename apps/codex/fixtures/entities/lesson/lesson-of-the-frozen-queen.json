@@ -1,0 +1,135 @@
+{
+  "aonUrl": "/Lessons.aspx?ID=11",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Lesson of the Frozen Queen",
+          "kind": "crossref",
+          "targetId": "lesson/lesson-of-the-frozen-queen"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Witch Lesson "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Legends",
+          "kind": "crossref",
+          "targetId": "source/legends"
+        },
+        {
+          "content": " pg. 32",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Lesson Type",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Major",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You gain the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Glacial Heart",
+          "kind": "crossref",
+          "targetId": "spell/glacial-heart"
+        },
+        {
+          "content": " hex, and your familiar learns ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Wall of Ice",
+          "kind": "crossref",
+          "targetId": "spell/wall-of-ice"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "lesson",
+  "edition": "legacy",
+  "facets": {},
+  "id": "lesson/lesson-of-the-frozen-queen",
+  "name": "Lesson of the Frozen Queen",
+  "proseOnly": true,
+  "rarity": "rare",
+  "slug": "lesson-of-the-frozen-queen",
+  "source": {
+    "book": "Legends",
+    "license": "OGL",
+    "page": 32
+  },
+  "traits": [
+    "Rare"
+  ]
+}

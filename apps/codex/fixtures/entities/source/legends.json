@@ -1,0 +1,117 @@
+{
+  "aonUrl": "/Sources.aspx?ID=40",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Legends",
+          "kind": "crossref",
+          "targetId": "source/legends"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Source"
+    },
+    {
+      "children": [
+        {
+          "content": "Product Page",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "paizo.com",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Release Date",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "2020-07-30",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Product Line",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Lost Omens",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "source",
+  "edition": "legacy",
+  "facets": {},
+  "id": "source/legends",
+  "name": "Legends",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "legends",
+  "source": {
+    "book": "Legends",
+    "license": "OGL"
+  },
+  "traits": []
+}

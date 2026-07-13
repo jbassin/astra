@@ -1,0 +1,460 @@
+{
+  "aonUrl": "/ClassKits.aspx?ID=11",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Sorcerer Kit",
+          "kind": "brokenRef",
+          "target": "/Classes.aspx?Class=11"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Class Kit"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 289",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Price",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 2 gp, 3 sp, 2 cp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Money Left Over",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 12 gp, 6 sp, 8 cp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Bulk",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 1, 6 light",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Weapons",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Dagger",
+          "kind": "crossref",
+          "targetId": "weapon/dagger"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Sling",
+          "kind": "crossref",
+          "targetId": "weapon/sling"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "20 sling bullets",
+          "kind": "crossref",
+          "targetId": "weapon/sling-bullets"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Gear",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Adventurer's Pack",
+          "kind": "crossref",
+          "targetId": "equipment/adventurers-pack"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "2 sets of caltrops",
+          "kind": "crossref",
+          "targetId": "equipment/caltrops"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Class Kits",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 289",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "If you want to quickly decide how to spend your starting money on what your class needs, start with one of these kits. Note than an ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "adventurer’s pack",
+          "kind": "crossref",
+          "targetId": "equipment/adventurers-pack"
+        },
+        {
+          "content": ", which is included in each kit, contains a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "backpack",
+          "kind": "crossref",
+          "targetId": "equipment/backpack"
+        },
+        {
+          "content": ", a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "bedroll",
+          "kind": "crossref",
+          "targetId": "equipment/bedroll"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "10 pieces of chalk",
+          "kind": "crossref",
+          "targetId": "equipment/chalk"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "flint and steel",
+          "kind": "crossref",
+          "targetId": "equipment/flint-and-steel"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "50 feet of rope",
+          "kind": "crossref",
+          "targetId": "equipment/rope"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "2 weeks’ rations",
+          "kind": "crossref",
+          "targetId": "equipment/rations"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "soap",
+          "kind": "crossref",
+          "targetId": "equipment/soap"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "5 torches",
+          "kind": "crossref",
+          "targetId": "equipment/torch"
+        },
+        {
+          "content": ", and a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "waterskin",
+          "kind": "crossref",
+          "targetId": "equipment/waterskin"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Click here for the full rules on Class Kits",
+          "kind": "crossref",
+          "targetId": "rules/class-kits"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-kit",
+  "edition": "legacy",
+  "facets": {},
+  "id": "class-kit/sorcerer-kit-2",
+  "name": "Sorcerer Kit",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "sorcerer-kit",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 289
+  },
+  "traits": []
+}

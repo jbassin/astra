@@ -1,0 +1,22 @@
+{
+  "body": [],
+  "category": "equipment",
+  "edition": "remaster",
+  "facets": {
+    "bulk": 0,
+    "featLevel": 0,
+    "itemCategory": "gem",
+    "price": "5 gp",
+    "rank": 0
+  },
+  "id": "equipment/jet",
+  "level": 0,
+  "name": "Jet",
+  "rarity": "common",
+  "slug": "jet",
+  "source": {
+    "book": "Pathfinder GM Core",
+    "license": "ORC"
+  },
+  "traits": []
+}

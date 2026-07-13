@@ -1,0 +1,97 @@
+{
+  "aonUrl": "/Epithets.aspx?ID=1",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "The Brave",
+          "kind": "crossref",
+          "targetId": "epithet/the-brave"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Exemplar Root Epithet 3"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "War of Immortals",
+          "kind": "crossref",
+          "targetId": "source/war-of-immortals"
+        },
+        {
+          "content": " pg. 31",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Your deeds show fearlessness: when a beast surfaces, you're there to fight it; when someone's lost in the dark, you're first to the rescue. You're trained in ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Athletics",
+          "kind": "crossref",
+          "targetId": "skill/athletics"
+        },
+        {
+          "content": ". After you Spark Transcendence, your body carries you forward, allowing you to Stride up to half your Speed in a straight line toward one enemy of your choice as a free action. Once you have used this ability on a given enemy, you can't use it against that enemy again for 10 minutes.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "epithet",
+  "edition": "remaster",
+  "facets": {},
+  "id": "epithet/the-brave",
+  "level": 3,
+  "name": "The Brave",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "the-brave",
+  "source": {
+    "book": "War of Immortals",
+    "license": "ORC",
+    "page": 31
+  },
+  "traits": []
+}

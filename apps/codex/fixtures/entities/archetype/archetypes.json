@@ -1,0 +1,15 @@
+{
+  "body": [],
+  "category": "archetype",
+  "edition": "legacy",
+  "facets": {},
+  "id": "archetype/archetypes",
+  "name": "Archetypes",
+  "proseOnly": true,
+  "slug": "archetypes",
+  "source": {
+    "book": "Foundry Journal: Archetypes",
+    "license": "unknown"
+  },
+  "traits": []
+}

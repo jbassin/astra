@@ -178,24 +178,38 @@ function extractActionCost(system: RawSystem | undefined): string | undefined {
   return actionType;
 }
 
+/**
+ * S4 emit-gate finding (real corpus, not caught by any S2/S3 unit fixture): a
+ * real minority of docs carry an explicit JSON `null` for a field this module
+ * otherwise treats as "absent" (`system.category`, `system.attributes.ac.value`,
+ * a hazard's AC, ...) — a bare `!== undefined` check let those literal
+ * `null`s through into a non-nullable-typed `Facets` field, failing
+ * `CodexEntitySchema.parse` at emit time (acceptance C's 100%-Zod-valid gate
+ * is the FIRST real runtime validation of a full `CodexEntity`, so this is
+ * exactly the kind of drift it exists to catch). A type-guard narrows the
+ * same optional-chain expression the same way `!== undefined` did, so every
+ * call site below is a mechanical swap, not a logic change. */
+function present<T>(v: T | null | undefined): v is T {
+  return v !== null && v !== undefined;
+}
+
 function extractFacets(system: RawSystem | undefined): Facets {
   const facets: Facets = {};
 
   // creature (Actor)
-  if (system?.attributes?.hp?.max !== undefined) facets.hp = system.attributes.hp.max;
-  if (system?.attributes?.ac?.value !== undefined) facets.ac = system.attributes.ac.value;
-  if (system?.saves?.fortitude?.value !== undefined)
-    facets.fortitudeSave = system.saves.fortitude.value;
-  if (system?.saves?.reflex?.value !== undefined) facets.reflexSave = system.saves.reflex.value;
-  if (system?.saves?.will?.value !== undefined) facets.willSave = system.saves.will.value;
-  if (system?.perception?.mod !== undefined) facets.perception = system.perception.mod;
-  if (system?.traits?.size?.value !== undefined) facets.size = system.traits.size.value;
+  if (present(system?.attributes?.hp?.max)) facets.hp = system.attributes.hp.max;
+  if (present(system?.attributes?.ac?.value)) facets.ac = system.attributes.ac.value;
+  if (present(system?.saves?.fortitude?.value)) facets.fortitudeSave = system.saves.fortitude.value;
+  if (present(system?.saves?.reflex?.value)) facets.reflexSave = system.saves.reflex.value;
+  if (present(system?.saves?.will?.value)) facets.willSave = system.saves.will.value;
+  if (present(system?.perception?.mod)) facets.perception = system.perception.mod;
+  if (present(system?.traits?.size?.value)) facets.size = system.traits.size.value;
 
   // spell
-  if (system?.level?.value !== undefined) facets.rank = system.level.value;
-  if (system?.traits?.traditions !== undefined) facets.traditions = system.traits.traditions;
-  if (system?.time?.value !== undefined) facets.castTime = system.time.value;
-  if (system?.range?.value !== undefined) facets.range = system.range.value;
+  if (present(system?.level?.value)) facets.rank = system.level.value;
+  if (present(system?.traits?.traditions)) facets.traditions = system.traits.traditions;
+  if (present(system?.time?.value)) facets.castTime = system.time.value;
+  if (present(system?.range?.value)) facets.range = system.range.value;
   const area = formatArea(system?.area);
   if (area !== undefined) facets.area = area;
   const duration = formatDuration(system?.duration);
@@ -206,13 +220,13 @@ function extractFacets(system: RawSystem | undefined): Facets {
   // equipment family
   const price = formatPrice(system?.price);
   if (price !== undefined) facets.price = price;
-  if (system?.bulk?.value !== undefined) facets.bulk = system.bulk.value;
-  if (system?.usage?.value !== undefined) facets.usage = system.usage.value;
-  if (system?.category !== undefined) facets.itemCategory = system.category;
+  if (present(system?.bulk?.value)) facets.bulk = system.bulk.value;
+  if (present(system?.usage?.value)) facets.usage = system.usage.value;
+  if (present(system?.category)) facets.itemCategory = system.category;
 
   // feat
-  if (system?.level?.value !== undefined) facets.featLevel = system.level.value;
-  if (system?.prerequisites?.value !== undefined) {
+  if (present(system?.level?.value)) facets.featLevel = system.level.value;
+  if (present(system?.prerequisites?.value)) {
     facets.prerequisites = system.prerequisites.value
       .map((p) => p.value)
       .filter((v): v is string => v !== undefined);
@@ -236,7 +250,7 @@ function assembleEmbeddedItem(item: RawFoundryDoc, ctx: EnricherContext): Embedd
     name: item.name,
     slug: sluggify(item.name),
     type: item.type ?? "unknown",
-    ...(level !== undefined ? { level } : {}),
+    ...(present(level) ? { level } : {}),
     ...(actionCost !== undefined ? { actionCost } : {}),
     traits: item.system?.traits?.value ?? [],
     body,
@@ -313,9 +327,9 @@ export function assembleFoundryEntity(
     name: doc.name,
     edition,
     source,
-    ...(level !== undefined ? { level } : {}),
+    ...(present(level) ? { level } : {}),
     traits: doc.system?.traits?.value ?? [],
-    ...(doc.system?.traits?.rarity !== undefined ? { rarity: doc.system.traits.rarity } : {}),
+    ...(present(doc.system?.traits?.rarity) ? { rarity: doc.system.traits.rarity } : {}),
     body,
     facets: extractFacets(doc.system),
     ...(embeddedItems !== undefined ? { embeddedItems } : {}),

@@ -1,0 +1,38 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "This magically reinforced wooden shield is made by skilled Ekujae mages, who've developed unique spells for reinforcing wood collected from their forests. Each shield is embossed with the signatures of the mage and artisan who crafted it.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "shield",
+  "edition": "legacy",
+  "facets": {
+    "bulk": 1,
+    "featLevel": 4,
+    "price": "85 gp",
+    "rank": 4
+  },
+  "id": "shield/wovenwood-shield-minor",
+  "level": 4,
+  "name": "Wovenwood Shield (Minor)",
+  "rarity": "uncommon",
+  "slug": "wovenwood-shield-minor",
+  "source": {
+    "book": "Pathfinder Lost Omens The Grand Bazaar",
+    "license": "OGL"
+  },
+  "traits": [
+    "magical"
+  ]
+}

@@ -1,0 +1,303 @@
+{
+  "aonUrl": "/Elements.aspx?ID=1",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Air",
+          "kind": "crossref",
+          "targetId": "element/air"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Kineticist Element "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Rage of Elements",
+          "kind": "crossref",
+          "targetId": "source/rage-of-elements"
+        },
+        {
+          "content": " pg. 14",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Impulse Feats",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "display": "Click here",
+          "kind": "brokenRef",
+          "target": "/Feats.aspx?Traits=504&include-traits=air%3Bimpulse&sort=level-asc%2Cname-asc&display=full"
+        },
+        {
+          "content": " for a pre-filtered list of all Air impulse feats.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Elemental Blast",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 1"
+    },
+    {
+      "children": [
+        {
+          "content": "1d6 electricity or slashing, 60 feet",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Impulse Junction (Single Gate)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 1"
+    },
+    {
+      "children": [
+        {
+          "content": "Before or after the other effects of the impulse, you can either Stride up to half your Speed or Step. If you have a fly Speed, you can Fly up to half your fly Speed instead.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Gate Junction",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 5"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Blast",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Push",
+          "kind": "crossref",
+          "targetId": "rules/forced-movement"
+        },
+        {
+          "content": " the target up to 10 feet.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Elemental Resistance",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " air, electricity",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Aura Junction",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You and any ally that starts its turn in the aura gets a +10-foot status bonus to land Speed until the end of that turn, and to fly Speed if applicable.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Skill Junction",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Stealth",
+          "kind": "crossref",
+          "targetId": "skill/stealth"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Experienced Smuggler",
+          "kind": "crossref",
+          "targetId": "feat/experienced-smuggler"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "element",
+  "edition": "legacy",
+  "facets": {},
+  "id": "element/air",
+  "name": "Air",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "air",
+  "source": {
+    "book": "Rage of Elements",
+    "license": "OGL",
+    "page": 14
+  },
+  "traits": []
+}

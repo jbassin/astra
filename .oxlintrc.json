@@ -112,7 +112,8 @@
     "**/src/generated/**",
     "**/public/**",
     "**/*.sdPlugin/**",
-    "**/codex/data/**"
+    "**/codex/data/**",
+    "**/codex/fixtures/**"
   ],
   "overrides": [
     // --- 13 blocks ported 1:1 from biome.json's `overrides` (same file globs) ---

@@ -1,0 +1,68 @@
+{
+  "aonUrl": "/Articles.aspx?ID=121",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Living Legends",
+          "kind": "crossref",
+          "targetId": "article/living-legends"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Setting Article"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " [Pathfinder #218: Titanbane ](/Sources.aspx?ID=274) pg. 63",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Explore exciting mythic options for your newly minted hero-gods as their legends grow!",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "article",
+  "edition": "remaster",
+  "facets": {},
+  "id": "article/living-legends",
+  "name": "Living Legends",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "living-legends",
+  "source": {
+    "book": "Pathfinder #218: Titanbane",
+    "license": "ORC",
+    "page": 63
+  },
+  "traits": []
+}

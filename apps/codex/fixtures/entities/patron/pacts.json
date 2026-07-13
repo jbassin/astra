@@ -1,0 +1,199 @@
+{
+  "aonUrl": "/Patrons.aspx?ID=11",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Pacts",
+          "kind": "crossref",
+          "targetId": "patron/pacts"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Witch Patron Theme "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Dark Archive",
+          "kind": "crossref",
+          "targetId": "source/dark-archive"
+        },
+        {
+          "content": " pg. 159",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Your patron deals only in promises and bargains, and no lesson is ever given for free.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Spell List",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Occult",
+          "kind": "crossref",
+          "targetId": "tradition/occult"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Patron Skill",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Occultism",
+          "kind": "crossref",
+          "targetId": "skill/occultism"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Hex Cantrip",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Pact Broker",
+          "kind": "crossref",
+          "targetId": "spell/pact-broker"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Granted Spell",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Command",
+          "kind": "crossref",
+          "targetId": "spell/command"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "patron",
+  "edition": "legacy",
+  "facets": {},
+  "id": "patron/pacts",
+  "name": "Pacts",
+  "proseOnly": true,
+  "rarity": "rare",
+  "remasteredAs": [
+    "patron/the-unseen-broker-2"
+  ],
+  "slug": "pacts",
+  "source": {
+    "book": "Dark Archive",
+    "license": "OGL",
+    "page": 159
+  },
+  "traits": [
+    "Rare"
+  ]
+}

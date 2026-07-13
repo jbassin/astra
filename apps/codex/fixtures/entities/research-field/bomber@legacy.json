@@ -1,0 +1,291 @@
+{
+  "aonUrl": "/ResearchFields.aspx?ID=1",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Bomber",
+          "kind": "crossref",
+          "targetId": "research-field/bomber"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Alchemist Research Field "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 73",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You specialize in explosions and other violent alchemical reactions. You start with the formulas for two common 1st-level ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "alchemical bombs",
+          "kind": "crossref",
+          "targetId": "category-page/alchemical-bombs"
+        },
+        {
+          "content": ", in addition to your other formulas.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " When throwing an alchemical bomb with the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "splash",
+          "kind": "crossref",
+          "targetId": "trait/splash"
+        },
+        {
+          "content": " trait, you can deal splash damage to only your primary target instead of the usual splash area.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Field Discovery",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 5"
+    },
+    {
+      "children": [
+        {
+          "content": "When using advanced alchemy to make bombs during your daily preparations, you can use a batch of reagents to create any three bombs instead of just two of the same bomb.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perpetual Infusions",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 7"
+    },
+    {
+      "children": [
+        {
+          "content": "Choose two 1st-level bombs.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perpetual Potency",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 11"
+    },
+    {
+      "children": [
+        {
+          "content": "Choose two 3rd-level or lower bombs.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Greater Field Discovery",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 13"
+    },
+    {
+      "children": [
+        {
+          "content": "You can increase the splash on your bombs to damage creatures within 10 feet, or 15 feet if you have ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Expanded Splash",
+          "kind": "crossref",
+          "targetId": "feat/expanded-splash"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perpetual Perfection",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 17"
+    },
+    {
+      "children": [
+        {
+          "content": "Choose two 11th-level or lower bombs.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "research-field",
+  "edition": "legacy",
+  "facets": {},
+  "id": "research-field/bomber@legacy",
+  "name": "Bomber",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "research-field/bomber"
+  ],
+  "slug": "bomber",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 73
+  },
+  "traits": []
+}

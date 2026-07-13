@@ -1,0 +1,565 @@
+{
+  "category": "creature",
+  "hits": [
+    {
+      "_id": "creature-2933",
+      "_source": {
+        "ac": 33,
+        "ac_scale": "Moderate",
+        "ac_scale_number": 3,
+        "attack_bonus": [
+          25,
+          25,
+          27,
+          27
+        ],
+        "attack_bonus_scale": [
+          "Moderate",
+          "High"
+        ],
+        "attack_bonus_scale_number": [
+          3,
+          4
+        ],
+        "category": "creature",
+        "charisma": 5,
+        "charisma_scale": "Moderate",
+        "charisma_scale_number": 3,
+        "constitution": 6,
+        "constitution_scale": "Moderate",
+        "constitution_scale_number": 3,
+        "creature_ability": [
+          "Abandon Armor",
+          "Frightful Presence",
+          "Resilient Form",
+          "Adamantine Body",
+          "Avalanche Breath",
+          "Burrowing Pounce",
+          "Draconic Frenzy",
+          "Draconic Momentum",
+          "Rock Tunneler",
+          "Swallow Whole",
+          "Throw Rock"
+        ],
+        "creature_family": "Dragon, Adamantine",
+        "creature_family_markdown": "[Dragon, Adamantine](/MonsterFamilies.aspx?ID=396)",
+        "dexterity": 3,
+        "dexterity_scale": "Low",
+        "dexterity_scale_number": 2,
+        "exclude_from_search": false,
+        "fortitude_save": 25,
+        "fortitude_save_scale": "Moderate",
+        "fortitude_save_scale_number": 3,
+        "hp": 220,
+        "hp_raw": "220",
+        "hp_scale": "Low",
+        "hp_scale_number": 2,
+        "id": "creature-2933",
+        "image": [
+          "/Images/Monsters/Adult_Adamantine_Dragon.webp"
+        ],
+        "immunity": [
+          "paralyzed",
+          "petrified",
+          "sleep"
+        ],
+        "immunity_markdown": "[paralyzed](/Conditions.aspx?ID=85), [petrified](/Conditions.aspx?ID=87), [sleep](/Traits.aspx?ID=696)",
+        "intelligence": 3,
+        "intelligence_scale": "Low",
+        "intelligence_scale_number": 2,
+        "is_standard_ancestry_feat": false,
+        "language": [
+          "Common",
+          "Draconic",
+          "Fey",
+          "Petran",
+          "Sakvroth"
+        ],
+        "language_markdown": "[Common](/Languages.aspx?ID=1), [Draconic](/Languages.aspx?ID=2), [Fey](/Languages.aspx?ID=119), [Petran](/Languages.aspx?ID=109), [Sakvroth](/Languages.aspx?ID=118)",
+        "level": 13,
+        "markdown": "<title level=\"1\" pfs=\"Standard\">[Adult Adamantine Dragon](/Monsters.aspx?ID=2933)</title>\r\n\r\n<row gap=\"medium\">\r\n\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\n\r\nThe powerful adamantine dragons are one of several dragons known as skymetal dragons. The innate magic that flows through these dragons causes them to draw particular metals to their bodies like magnets or, in some cases, naturally grow these skymetals on their bodies. Adamantine dragons begin their lives with tough scales that are naturally replaced with thicker and even tougher adamantine plating as they grow older. Adamantine dragons are typically steadfast and loyal. Once they commit to a certain purpose, changing their minds is nigh impossible.\r\n\r\n<column gap=\"tiny\">\r\n**[Recall Knowledge - Dragon](/Rules.aspx?ID=563)**\r\n([Arcana](/Skills.aspx?ID=35)): DC 31\r\n\r\n**[Unspecific Lore](/Rules.aspx?ID=563)**: DC 29\r\n\r\n**[Specific Lore](/Rules.aspx?ID=563)**: DC 26\r\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n<image src=\"/images/Monsters/Adult_Adamantine_Dragon.webp\" />\r\n</column>\r\n\r\n</row>\r\n\r\n<title level=\"2\" right=\"Creature 13\">[Adult Adamantine Dragon](/Monsters.aspx?ID=2933)</title>\r\n\r\n<traits>\r\n<trait label=\"Huge\" />\r\n<trait label=\"Dragon\" url=\"/Traits.aspx?ID=581\" />\r\n<trait label=\"Primal\" url=\"/Traits.aspx?ID=676\" />\r\n</traits>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Monster Core](/Sources.aspx?ID=221) pg. 109\n\n**Perception** +23; [darkvision](/MonsterAbilities.aspx?ID=59), [scent](/MonsterAbilities.aspx?ID=74) ([imprecise](/Rules.aspx?ID=412)) 60 feet, [tremorsense](/MonsterAbilities.aspx?ID=82) ([imprecise](/Rules.aspx?ID=412)) 90 feet\r\n\r\n**Languages**\r\n[Common](/Languages.aspx?ID=1), [Draconic](/Languages.aspx?ID=2), [Fey](/Languages.aspx?ID=119), [Petran](/Languages.aspx?ID=109), [Sakvroth](/Languages.aspx?ID=118)\r\n\r\n**Skills**\r\n[Acrobatics](/Skills.aspx?ID=1) +22, [Athletics](/Skills.aspx?ID=3) +27, [Intimidation](/Skills.aspx?ID=7) +24, [Mining Lore](/Skills.aspx?ID=8) +24, [Nature](/Skills.aspx?ID=10) +23, [Survival](/Skills.aspx?ID=16) +25\r\n\r\n<row gap=\"medium\">\r\n**Str** +8\r\n\r\n**Dex** +3\r\n\r\n**Con** +6\r\n\r\n**Int** +3\r\n\r\n**Wis** +4\r\n\r\n**Cha** +5\r\n</row>\n\n</column>\r\n\r\n---\r\n\r\n<column gap=\"tiny\">\r\n\r\n<row gap=\"medium\">\r\n**AC** 33 \r\n\r\n**Fort** +25 \r\n\r\n**Ref** +20 \r\n\r\n**Will** +23 \r\n\r\n+2 status to all saves vs. [primal](/Traits.aspx?ID=676)\r\n</row>\r\n\r\n<row gap=\"medium\">\r\n**HP** 220\n\n</row>\r\n\r\n**Immunities**\r\n[paralyzed](/Conditions.aspx?ID=85), [petrified](/Conditions.aspx?ID=87), [sleep](/Traits.aspx?ID=696)\r\n\r\n**Resistances**\r\nphysical 15\n\n(except [adamantine](/Equipment.aspx?ID=374))<br />**Abandon Armor** Once the adamantine dragon is reduced to fewer than half their Hit Points, their resistance is reduced by 10 and they gain a +10 circumstance bonus to their Speeds.<br />**[Frightful Presence](/MonsterAbilities.aspx?ID=64)** ([aura](/Traits.aspx?ID=542), [emotion](/Traits.aspx?ID=590), [fear](/Traits.aspx?ID=598), [mental](/Traits.aspx?ID=647)) 90 feet, DC 30<br />**Resilient Form** <actions string=\"Reaction\" /> **Trigger** The dragon is critically hit with a weapon or unarmed attack; **Effect** The dragon's tough scales ward off deadly attacks. The dragon attempts a DC 17 flat check. On a success, the triggering attack becomes a normal hit.\r\n\r\n</column>\r\n\r\n---\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Speed** 30 feet, burrow 40 feet, fly 150 feet\r\n\r\n**Melee**\r\n<actions string=\"Single Action\" />\r\njaws +27 ([Magical](/Traits.aspx?ID=644), [reach 15 feet](/Traits.aspx?ID=684)),\r\n**Damage** 3d12+14 piercing plus [Improved Grab](/MonsterAbilities.aspx?ID=66)\r\n\r\n**Melee**\r\n<actions string=\"Single Action\" />\r\nclaw +27 ([Agile](/Traits.aspx?ID=526), [Magical](/Traits.aspx?ID=644), [reach 10 feet](/Traits.aspx?ID=684)),\r\n**Damage** 3d8+14 slashing plus [Knockdown](/MonsterAbilities.aspx?ID=46)\r\n\r\n**Melee**\r\n<actions string=\"Single Action\" />\r\ntail +25 ([Magical](/Traits.aspx?ID=644), [reach 20 feet](/Traits.aspx?ID=684)),\r\n**Damage** 3d10+14 bludgeoning\r\n\r\n**Ranged**\r\n<actions string=\"Single Action\" />\r\nrock +25 ([Brutal](/Traits.aspx?ID=249), [range increment 120 feet](/Traits.aspx?ID=248)),\r\n**Damage** 3d8+14 bludgeoning\n\n**Adamantine Body**   The dragon's unarmed melee Strikes are [adamantine](/Equipment.aspx?ID=374).\r\n\r\n**Avalanche Breath** <actions string=\"Two Actions\" /> ([Primal](/Traits.aspx?ID=676)) The dragon belches a mass of boulders that deals 11d8 bludgeoning damage in a 40-foot cone (DC 33 [basic](/Rules.aspx?ID=329) Reflex save). They can't use Avalanche Breath again for 1d4 rounds.\r\n\r\n**Burrowing Pounce** <actions string=\"Three Actions\" />  **Requirements** The dragon is burrowed; **Effect** The dragon [Burrows](/Actions.aspx?ID=2310), then [Leaps](/Actions.aspx?ID=2298) out of the ground, landing at a point within 25 feet. The dragon makes a melee Strike against a creature within reach when they land. If the Strike is a critical hit, the target is knocked [prone](/Conditions.aspx?ID=88).\r\n\r\n**Draconic Frenzy** <actions string=\"Two Actions\" />  The dragon makes two claw Strikes and one tail Strike in any order.\r\n\r\n**Draconic Momentum**   The dragon recharges their Avalanche Breath whenever they score a critical hit with a Strike.\r\n\r\n**Rock Tunneler**   The dragon can burrow through solid stone at a Speed of 20 feet. They can leave a tunnel if they desire, and they usually don't.\r\n\r\n**[Swallow Whole](/MonsterAbilities.aspx?ID=77)** <actions string=\"Single Action\" />  Large, 3d12+7 bludgeoning, Rupture 29\r\n\r\n**[Throw Rock](/MonsterAbilities.aspx?ID=80)** <actions string=\"Single Action\" />  \r\n\r\n</column>\n\n<document level=\"2\" id=\"creature-family-396\" />",
+        "name": "Adult Adamantine Dragon",
+        "npc": false,
+        "perception": 23,
+        "perception_scale": "Moderate",
+        "perception_scale_number": 3,
+        "pfs": "Standard",
+        "primary_source": "Monster Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Monster Core pg. 109",
+        "rarity": "common",
+        "rarity_id": 1,
+        "reflex_save": 20,
+        "reflex_save_scale": "Low",
+        "reflex_save_scale_number": 2,
+        "release_date": "2024-03-27",
+        "resistance": {
+          "bludgeoning": 15,
+          "physical": 15,
+          "piercing": 15,
+          "slashing": 15
+        },
+        "resistance_markdown": "physical 15",
+        "resistance_raw": "physical 15",
+        "search_markdown": "<traits>\r\n<trait label=\"Huge\" />\r\n<trait label=\"Dragon\" url=\"/Traits.aspx?ID=581\" />\r\n<trait label=\"Primal\" url=\"/Traits.aspx?ID=676\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Monster Core](/Sources.aspx?ID=221) pg. 109\r\n\r\n**Creature Family** [Dragon, Adamantine](/MonsterFamilies.aspx?ID=396)\r\n\r\n<row gap=\"medium\">\r\n**HP** 220\r\n\r\n**AC** 33\r\n\r\n**Fort** +25\r\n\r\n**Ref** +20\r\n\r\n**Will** +23\r\n\r\n**Perception** +23\r\n</row>\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nThe powerful adamantine dragons are one of several dragons known as skymetal dragons. The innate magic that flows through these dragons causes them …\r\n</summary>",
+        "sense": " darkvision ,  scent  ( imprecise ) 60 feet,  tremorsense  ( imprecise ) 90 feet",
+        "sense_markdown": "[darkvision](/MonsterAbilities.aspx?ID=59), [scent](/MonsterAbilities.aspx?ID=74) ([imprecise](/Rules.aspx?ID=412)) 60 feet, [tremorsense](/MonsterAbilities.aspx?ID=82) ([imprecise](/Rules.aspx?ID=412)) 90 feet",
+        "size": [
+          "Huge"
+        ],
+        "size_id": [
+          5
+        ],
+        "skill": [
+          "Acrobatics",
+          "Athletics",
+          "Intimidation",
+          "Mining Lore",
+          "Nature",
+          "Survival"
+        ],
+        "skill_markdown": "[Acrobatics](/Skills.aspx?ID=1) +22, [Athletics](/Skills.aspx?ID=3) +27, [Intimidation](/Skills.aspx?ID=7) +24, [Mining Lore](/Skills.aspx?ID=8) +24, [Nature](/Skills.aspx?ID=10) +23, [Survival](/Skills.aspx?ID=16) +25",
+        "skill_mod": {
+          "acrobatics": 22,
+          "athletics": 27,
+          "intimidation": 24,
+          "nature": 23,
+          "survival": 25
+        },
+        "source": [
+          "Monster Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Monster Core](/Sources.aspx?ID=221) pg. 109",
+        "source_raw": [
+          "Monster Core pg. 109"
+        ],
+        "speed": {
+          "burrow": 40,
+          "fly": 150,
+          "land": 30,
+          "max": 150
+        },
+        "speed_markdown": "30 feet, burrow 40 feet, fly 150 feet",
+        "speed_raw": "30 feet, burrow 40 feet, fly 150 feet",
+        "spell_markdown": "",
+        "strength": 8,
+        "strength_scale": "High",
+        "strength_scale_number": 4,
+        "strike_damage_average": [
+          27,
+          27,
+          30,
+          33
+        ],
+        "strike_damage_scale": [
+          "Moderate",
+          "High"
+        ],
+        "strike_damage_scale_number": [
+          3,
+          4
+        ],
+        "strongest_save": [
+          "fort",
+          "fortitude"
+        ],
+        "summary": "The powerful adamantine dragons are one of several dragons known as skymetal dragons. The innate magic that flows through these dragons causes them …",
+        "summary_markdown": "The powerful adamantine dragons are one of several dragons known as skymetal dragons. The innate magic that flows through these dragons causes them …",
+        "text": " Adult Adamantine Dragon The powerful adamantine dragons are one of several dragons known as skymetal dragons. The innate magic that flows through these dragons causes them to draw particular metals to their bodies like magnets or, in some cases, naturally grow these skymetals on their bodies. Adamantine dragons begin their lives with tough scales that are naturally replaced with thicker and even tougher adamantine plating as they grow older. Adamantine dragons are typically steadfast and loyal. Once they commit to a certain purpose, changing their minds is nigh impossible. Recall Knowledge - Dragon (Arcana): DC 31 Unspecific Lore : DC 29 Specific Lore : DC 26 Adult Adamantine Dragon Source Monster Core pg. 109 Perception +23; darkvision, scent (imprecise) 60 feet, tremorsense (imprecise) 90 feet Languages Common, Draconic, Fey, Petran, Sakvroth Skills Acrobatics +22, Athletics +27, Intimidation +24, Mining Lore +24, Nature +23, Survival +25 Str +8 Dex +3 Con +6 Int +3 Wis +4 Cha +5 --- AC 33 Fort +25 Ref +20 Will +23 +2 status to all saves vs. primal HP 220 Immunities paralyzed, petrified, sleep Resistances physical 15 (except adamantine) Abandon Armor Once the adamantine dragon is reduced to fewer than half their Hit Points, their resistance is reduced by 10 and they gain a +10 circumstance bonus to their Speeds. Frightful Presence (aura, emotion, fear, mental) 90 feet, DC 30 Resilient Form Reaction Trigger The dragon is critically hit with a weapon or unarmed attack; Effect The dragon's tough scales ward off deadly attacks. The dragon attempts a DC 17 flat check. On a success, the triggering attack becomes a normal hit. --- Speed 30 feet, burrow 40 feet, fly 150 feet Melee Single Action jaws +27 (Magical, reach 15 feet), Damage 3d12+14 piercing plus Improved Grab Melee Single Action claw +27 (Agile, Magical, reach 10 feet), Damage 3d8+14 slashing plus Knockdown Melee Single Action tail +25 (Magical, reach 20 feet), Damage 3d10+14 bludgeoning Ranged Single Action rock +25 (Brutal, range increment 120 feet), Damage 3d8+14 bludgeoning Adamantine Body The dragon's unarmed melee Strikes are adamantine. Avalanche Breath Two Actions (Primal) The dragon belches a mass of boulders that deals 11d8 bludgeoning damage in a 40-foot cone (DC 33 basic Reflex save). They can't use Avalanche Breath again for 1d4 rounds. Burrowing Pounce Three Actions Requirements The dragon is burrowed; Effect The dragon Burrows, then Leaps out of the ground, landing at a point within 25 feet. The dragon makes a melee Strike against a creature within reach when they land. If the Strike is a critical hit, the target is knocked prone. Draconic Frenzy Two Actions The dragon makes two claw Strikes and one tail Strike in any order. Draconic Momentum The dragon recharges their Avalanche Breath whenever they score a critical hit with a Strike. Rock Tunneler The dragon can burrow through solid stone at a Speed of 20 feet. They can leave a tunnel if they desire, and they usually don't. Swallow Whole Single Action Large, 3d12+7 bludgeoning, Rupture 29 Throw Rock Single Action ",
+        "tradition_markdown": "",
+        "trait": [
+          "Dragon",
+          "Primal",
+          "Huge"
+        ],
+        "trait_group": [
+          "Creature Type",
+          "Tradition",
+          "Monster"
+        ],
+        "trait_markdown": "[Dragon](/Traits.aspx?ID=581), [Primal](/Traits.aspx?ID=676)",
+        "trait_raw": [
+          "Dragon",
+          "Primal"
+        ],
+        "type": "Creature",
+        "url": "/Monsters.aspx?ID=2933",
+        "vision": "Darkvision",
+        "weakest_save": [
+          "ref",
+          "reflex"
+        ],
+        "weakness": {},
+        "will_save": 23,
+        "will_save_scale": "Moderate",
+        "will_save_scale_number": 3,
+        "wisdom": 4,
+        "wisdom_scale": "Low",
+        "wisdom_scale_number": 2
+      },
+      "sort": [
+        "adult adamantine dragon",
+        "/monsters.aspx?id=2933"
+      ]
+    },
+    {
+      "_id": "creature-2182",
+      "_source": {
+        "ac": 20,
+        "ac_scale": "High",
+        "ac_scale_number": 4,
+        "alignment": "N",
+        "attack_bonus": [
+          11,
+          11
+        ],
+        "attack_bonus_scale": [
+          "Moderate"
+        ],
+        "attack_bonus_scale_number": [
+          3
+        ],
+        "category": "creature",
+        "charisma": -2,
+        "charisma_scale": "Low",
+        "charisma_scale_number": 2,
+        "constitution": 2,
+        "constitution_scale": "Low",
+        "constitution_scale_number": 2,
+        "creature_ability": [
+          "Gripping Tentacle"
+        ],
+        "creature_family_markdown": "",
+        "dexterity": 3,
+        "dexterity_scale": "Moderate",
+        "dexterity_scale_number": 3,
+        "exclude_from_search": false,
+        "fortitude_save": 7,
+        "fortitude_save_scale": "Low",
+        "fortitude_save_scale_number": 2,
+        "hp": 35,
+        "hp_raw": "35",
+        "hp_scale": "Low",
+        "hp_scale_number": 2,
+        "id": "creature-2182",
+        "intelligence": -3,
+        "intelligence_scale": "Low",
+        "intelligence_scale_number": 2,
+        "is_standard_ancestry_feat": false,
+        "language": [
+          "Aklo",
+          "(can't speak any language)"
+        ],
+        "language_markdown": "[Aklo](/Languages.aspx?ID=13); (can't speak any language)",
+        "level": 3,
+        "markdown": "<title level=\"1\" pfs=\"\">[Grick](/Monsters.aspx?ID=2182)</title>\r\n\r\n<row gap=\"medium\">\r\n\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\n\r\nThe wormlike gricks terrorize the caverns and tunnels in which it dwells, lying in wait near heavily traveled underground passages or subterranean cities for the chance to reach forth from the darkness and take its prey. Those laid low by a grick are rarely consumed on the spot. Instead, gricks haul back fresh food back to their lair in a tight burrow or high on a cavern ledge, where they consume their spoils in small bites at the gricks' leisure.\n\n The origin of gricks is unknown. Even though these creatures have a rudimentary intelligence, they don't have any social structure to speak of. Most gricks are encountered alone. Even on those occasions when unfortunate travelers meet multiple gricks in small groups, those gricks don't appear to communicate or work together; each instead attacks an individual target and retreats with its prize as soon as it manages to bring down an opponent. Capable predators, gricks also have a strangely weapon-resistant hide that makes them especially dangerous to the unprepared. Many novice adventurers have fallen to grick attacks merely because they couldn't damage these creatures with their non-magical weapons. Those familiar with gricks (especially [dwarves](/Ancestries.aspx?ID=1), [morlocks](/Monsters.aspx?ID=731), and [xulgaths](/MonsterFamilies.aspx?ID=102)) know the best strategy for dealing with them when one lacks access to magic weapons is to fall back and wait for more powerful or magical reinforcements.\n\n Gricks rely on their dark coloration and ability to climb walls to keep them out of sight until they're ready to spring an ambush. On occasions, when food becomes scarce in a particular area, gricks have been known to travel to the surface and roam the wilderness in search of prey, but they make these sojourns almost always out of necessity, lasting only as long as it takes them to find entrances to new subterranean lairs. These creatures prefer darkness and the comfort of a ceiling overhead; they avoid the open sky and go to great lengths to keep the cover of trees, low clouds, or buildings between them and the empty gulf overhead.\n\n Some Darklands societies have tried to recruit gricks as guardians or even beasts of burden, but their intelligence—while middling at best—is more than enough for them to stubbornly resist and even resent attempts at “training.” The best most societies can manage is to keep a grick guardian happy by making sure it remains well-fed and comfortable.\r\n\r\n<column gap=\"tiny\">\r\n**[Recall Knowledge - Aberration](/Rules.aspx?ID=563)**\r\n([Occultism](/Skills.aspx?ID=11)): DC 20\r\n\r\n**[Unspecific Lore](/Rules.aspx?ID=563)**: DC 18\r\n\r\n**[Specific Lore](/Rules.aspx?ID=563)**: DC 15\r\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n\r\n<title level=\"2\" right=\"Creature 3\">[Grick](/Monsters.aspx?ID=2182)</title>\r\n\r\n<traits>\r\n<trait label=\"Uncommon\" url=\"/Traits.aspx?ID=159\" />\r\n<trait label=\"N\" url=\"/Rules.aspx?ID=95\" />\r\n<trait label=\"Medium\" />\r\n<trait label=\"Aberration\" url=\"/Traits.aspx?ID=1\" />\r\n</traits>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Crown of the Kobold King](/Sources.aspx?ID=148) pg. 120, [Pathfinder #157: Devil at the Dreaming Palace](/Sources.aspx?ID=45) pg. 35\n\n**Perception** +8; [darkvision](/MonsterAbilities.aspx?ID=12), [scent](/MonsterAbilities.aspx?ID=33) (imprecise) 30 feet\r\n\r\n**Languages**\r\n[Aklo](/Languages.aspx?ID=13); (can't speak any language)\r\n\r\n**Skills**\r\n[Athletics](/Skills.aspx?ID=3) +9, [Stealth](/Skills.aspx?ID=15) +8\r\n\r\n<row gap=\"medium\">\r\n**Str** +4\r\n\r\n**Dex** +3\r\n\r\n**Con** +2\r\n\r\n**Int** -3\r\n\r\n**Wis** +3\r\n\r\n**Cha** -2\r\n</row>\n\n</column>\r\n\r\n---\r\n\r\n<column gap=\"tiny\">\r\n\r\n<row gap=\"medium\">\r\n**AC** 20 \r\n\r\n**Fort** +7 \r\n\r\n**Ref** +10 \r\n\r\n**Will** +10 \n\n</row>\r\n\r\n<row gap=\"medium\">\r\n**HP** 35\n\n</row>\n\n**Resistances**\r\nphysical 5 (except [magic](/Traits.aspx?ID=103))\n\n**Gripping Tentacle** <actions string=\"Reaction\" /> **Trigger** A creature in the grick's reach uses a [move](/Traits.aspx?ID=114) action or leaves a square during a move action it's using; **Effect** The grick makes a tentacle Strike against the target. If the attack is a critical hit and the trigger was a move action, the grick disrupts that action.\r\n\r\n</column>\r\n\r\n---\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Speed** 25 feet, climb 20 feet\r\n\r\n**Melee**\r\n<actions string=\"Single Action\" />\r\njaws +11,\r\n**Damage** 1d12+6 slashing\r\n\r\n**Melee**\r\n<actions string=\"Single Action\" />\r\ntentacle +11 ([Agile](/Traits.aspx?ID=170)),\r\n**Damage** 1d8+6 bludgeoning\n\n</column>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"/images/Icons/Sidebar_2_AdditionalLore.png\">Jungle Gricks</title>\r\n\r\nThese surface-adapted varieties of the underground grick appear in shades of green. They lurk in the undergrowth of jungles or climb low-hanging branches to drop on unsuspecting prey. Their greater skill at [Stealth](/Skills.aspx?ID=15) checks applies in forested terrain instead of rocky terrain. Jungle gricks are heartier creatures than their underground-dwelling kin; all jungle gricks have the [elite creature adjustments](/Rules.aspx?ID=790) as a result.\r\n</aside>",
+        "name": "Grick",
+        "npc": false,
+        "perception": 8,
+        "perception_scale": "Low",
+        "perception_scale_number": 2,
+        "primary_source": "Crown of the Kobold King",
+        "primary_source_category": "Adventures",
+        "primary_source_group": "Crown of the Kobold King",
+        "primary_source_raw": "Crown of the Kobold King pg. 120",
+        "rarity": "uncommon",
+        "rarity_id": 2,
+        "reflex_save": 10,
+        "reflex_save_scale": "Moderate",
+        "reflex_save_scale_number": 3,
+        "release_date": "2022-10-26",
+        "resistance": {
+          "bludgeoning": 5,
+          "physical": 5,
+          "piercing": 5,
+          "slashing": 5
+        },
+        "resistance_markdown": "physical 5 (except [magic](/Traits.aspx?ID=103))",
+        "resistance_raw": "physical 5 (except  magic )",
+        "search_markdown": "<traits>\r\n<trait label=\"Uncommon\" url=\"/Traits.aspx?ID=159\" />\r\n<trait label=\"N\" url=\"/Rules.aspx?ID=95\" />\r\n<trait label=\"Medium\" />\r\n<trait label=\"Aberration\" url=\"/Traits.aspx?ID=1\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Crown of the Kobold King](/Sources.aspx?ID=148) pg. 120, [Pathfinder #157: Devil at the Dreaming Palace](/Sources.aspx?ID=45) pg. 35\n\n<row gap=\"medium\">\r\n**HP** 35\r\n\r\n**AC** 20\r\n\r\n**Fort** +7\r\n\r\n**Ref** +10\r\n\r\n**Will** +10\r\n\r\n**Perception** +8\r\n</row>\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nThe wormlike gricks terrorize the caverns and tunnels in which it dwells, lying in wait near heavily traveled underground passages or subterranean …\r\n</summary>",
+        "sense": " darkvision ,  scent  (imprecise) 30 feet",
+        "sense_markdown": "[darkvision](/MonsterAbilities.aspx?ID=12), [scent](/MonsterAbilities.aspx?ID=33) (imprecise) 30 feet",
+        "size": [
+          "Medium"
+        ],
+        "size_id": [
+          3
+        ],
+        "skill": [
+          "Athletics",
+          "Stealth"
+        ],
+        "skill_markdown": "[Athletics](/Skills.aspx?ID=3) +9, [Stealth](/Skills.aspx?ID=15) +8",
+        "skill_mod": {
+          "athletics": 9,
+          "stealth": 8
+        },
+        "source": [
+          "Crown of the Kobold King",
+          "Pathfinder #157: Devil at the Dreaming Palace"
+        ],
+        "source_category": [
+          "Adventures",
+          "Adventure Paths"
+        ],
+        "source_group": [
+          "Crown of the Kobold King",
+          "Agents of Edgewatch"
+        ],
+        "source_markdown": "[Crown of the Kobold King](/Sources.aspx?ID=148) pg. 120, [Pathfinder #157: Devil at the Dreaming Palace](/Sources.aspx?ID=45) pg. 35",
+        "source_raw": [
+          "Crown of the Kobold King pg. 120",
+          "Pathfinder #157: Devil at the Dreaming Palace pg. 35"
+        ],
+        "speed": {
+          "climb": 20,
+          "land": 25,
+          "max": 25
+        },
+        "speed_markdown": "25 feet, climb 20 feet",
+        "speed_raw": "25 feet, climb 20 feet",
+        "spell_markdown": "",
+        "spoilers": "Crown of the Kobold King",
+        "stealth": "8",
+        "strength": 4,
+        "strength_scale": "High",
+        "strength_scale_number": 4,
+        "strike_damage_average": [
+          10,
+          12
+        ],
+        "strike_damage_scale": [
+          "Moderate",
+          "High"
+        ],
+        "strike_damage_scale_number": [
+          3,
+          4
+        ],
+        "strongest_save": [
+          "ref",
+          "reflex",
+          "will"
+        ],
+        "summary": "The wormlike gricks terrorize the caverns and tunnels in which it dwells, lying in wait near heavily traveled underground passages or subterranean …",
+        "summary_markdown": "The wormlike gricks terrorize the caverns and tunnels in which it dwells, lying in wait near heavily traveled underground passages or subterranean …",
+        "text": " Grick The wormlike gricks terrorize the caverns and tunnels in which it dwells, lying in wait near heavily traveled underground passages or subterranean cities for the chance to reach forth from the darkness and take its prey. Those laid low by a grick are rarely consumed on the spot. Instead, gricks haul back fresh food back to their lair in a tight burrow or high on a cavern ledge, where they consume their spoils in small bites at the gricks' leisure. The origin of gricks is unknown. Even though these creatures have a rudimentary intelligence, they don't have any social structure to speak of. Most gricks are encountered alone. Even on those occasions when unfortunate travelers meet multiple gricks in small groups, those gricks don't appear to communicate or work together; each instead attacks an individual target and retreats with its prize as soon as it manages to bring down an opponent. Capable predators, gricks also have a strangely weapon-resistant hide that makes them especially dangerous to the unprepared. Many novice adventurers have fallen to grick attacks merely because they couldn't damage these creatures with their non-magical weapons. Those familiar with gricks (especially dwarves, morlocks, and xulgaths) know the best strategy for dealing with them when one lacks access to magic weapons is to fall back and wait for more powerful or magical reinforcements. Gricks rely on their dark coloration and ability to climb walls to keep them out of sight until they're ready to spring an ambush. On occasions, when food becomes scarce in a particular area, gricks have been known to travel to the surface and roam the wilderness in search of prey, but they make these sojourns almost always out of necessity, lasting only as long as it takes them to find entrances to new subterranean lairs. These creatures prefer darkness and the comfort of a ceiling overhead; they avoid the open sky and go to great lengths to keep the cover of trees, low clouds, or buildings between them and the empty gulf overhead. Some Darklands societies have tried to recruit gricks as guardians or even beasts of burden, but their intelligence—while middling at best—is more than enough for them to stubbornly resist and even resent attempts at “training.” The best most societies can manage is to keep a grick guardian happy by making sure it remains well-fed and comfortable. Recall Knowledge - Aberration (Occultism): DC 20 Unspecific Lore : DC 18 Specific Lore : DC 15 Grick Source Crown of the Kobold King pg. 120, Pathfinder #157: Devil at the Dreaming Palace pg. 35 Perception +8; darkvision, scent (imprecise) 30 feet Languages Aklo; (can't speak any language) Skills Athletics +9, Stealth +8 Str +4 Dex +3 Con +2 Int -3 Wis +3 Cha -2 --- AC 20 Fort +7 Ref +10 Will +10 HP 35 Resistances physical 5 (except magic) Gripping Tentacle Reaction Trigger A creature in the grick's reach uses a move action or leaves a square during a move action it's using; Effect The grick makes a tentacle Strike against the target. If the attack is a critical hit and the trigger was a move action, the grick disrupts that action. --- Speed 25 feet, climb 20 feet Melee Single Action jaws +11, Damage 1d12+6 slashing Melee Single Action tentacle +11 (Agile), Damage 1d8+6 bludgeoning Jungle Gricks These surface-adapted varieties of the underground grick appear in shades of green. They lurk in the undergrowth of jungles or climb low-hanging branches to drop on unsuspecting prey. Their greater skill at Stealth checks applies in forested terrain instead of rocky terrain. Jungle gricks are heartier creatures than their underground-dwelling kin; all jungle gricks have the elite creature adjustments as a result. ",
+        "tradition_markdown": "",
+        "trait": [
+          "Aberration",
+          "Uncommon",
+          "N",
+          "Medium"
+        ],
+        "trait_group": [
+          "Creature Type",
+          "Rarity"
+        ],
+        "trait_markdown": "[Aberration](/Traits.aspx?ID=1), [Uncommon](/Traits.aspx?ID=159)",
+        "trait_raw": [
+          "Aberration",
+          "Uncommon"
+        ],
+        "type": "Creature",
+        "url": "/Monsters.aspx?ID=2182",
+        "vision": "Darkvision",
+        "weakest_save": [
+          "fort",
+          "fortitude"
+        ],
+        "weakness": {},
+        "will_save": 10,
+        "will_save_scale": "Moderate",
+        "will_save_scale_number": 3,
+        "wisdom": 3,
+        "wisdom_scale": "Moderate",
+        "wisdom_scale_number": 3
+      },
+      "sort": [
+        "grick",
+        "/monsters.aspx?id=2182"
+      ]
+    },
+    {
+      "_id": "creature-2478",
+      "_source": {
+        "ac": 19,
+        "ac_scale": "High",
+        "ac_scale_number": 4,
+        "alignment": "N",
+        "attack_bonus": [
+          11,
+          12
+        ],
+        "attack_bonus_scale": [
+          "Moderate",
+          "High"
+        ],
+        "attack_bonus_scale_number": [
+          3,
+          4
+        ],
+        "category": "creature",
+        "charisma": -1,
+        "charisma_scale": "Low",
+        "charisma_scale_number": 2,
+        "constitution": 1,
+        "constitution_scale": "Low",
+        "constitution_scale_number": 2,
+        "creature_ability": [
+          "Attack of Opportunity",
+          "Unbalancing Blow",
+          "Vermicular Movement"
+        ],
+        "creature_family_markdown": "",
+        "dexterity": 4,
+        "dexterity_scale": "High",
+        "dexterity_scale_number": 4,
+        "exclude_from_search": true,
+        "fortitude_save": 10,
+        "fortitude_save_scale": "Moderate",
+        "fortitude_save_scale_number": 3,
+        "hp": 40,
+        "hp_raw": "40",
+        "hp_scale": "Low",
+        "hp_scale_number": 2,
+        "id": "creature-2478",
+        "intelligence": -3,
+        "intelligence_scale": "Low",
+        "intelligence_scale_number": 2,
+        "is_standard_ancestry_feat": false,
+        "language": [
+          "Aklo",
+          "(can't speak any language)"
+        ],
+        "language_markdown": "[Aklo](/Languages.aspx?ID=13); (can't speak any language)",
+        "level": 3,
+        "markdown": "<title level=\"1\" pfs=\"\">[Grick](/Monsters.aspx?ID=2478)</title>\r\n\r\n<row gap=\"medium\">\r\n\r\n<column gap=\"medium\" flex=\"1 1 400px\">\n\n<column gap=\"tiny\">\r\n**[Recall Knowledge - Aberration](/Rules.aspx?ID=563)**\r\n([Occultism](/Skills.aspx?ID=11)): DC 18\r\n\r\n**[Unspecific Lore](/Rules.aspx?ID=563)**: DC 16\r\n\r\n**[Specific Lore](/Rules.aspx?ID=563)**: DC 13\r\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n\r\n<title level=\"2\" right=\"Creature 3\">[Grick](/Monsters.aspx?ID=2478)</title>\r\n\r\n<traits>\r\n<trait label=\"N\" url=\"/Rules.aspx?ID=95\" />\r\n<trait label=\"Medium\" />\r\n<trait label=\"Aberration\" url=\"/Traits.aspx?ID=1\" />\r\n</traits>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Pathfinder #157: Devil at the Dreaming Palace](/Sources.aspx?ID=45) pg. 35, [Crown of the Kobold King](/Sources.aspx?ID=148) pg. 120\n\n**Perception** +12; [darkvision](/MonsterAbilities.aspx?ID=12), [scent](/MonsterAbilities.aspx?ID=33) (imprecise) 30 feet\r\n\r\n**Languages**\r\n[Aklo](/Languages.aspx?ID=13); (can't speak any language)\r\n\r\n**Skills**\r\n[Acrobatics](/Skills.aspx?ID=1) +11, [Athletics](/Skills.aspx?ID=3) +10, [Stealth](/Skills.aspx?ID=15) +10, [Survival](/Skills.aspx?ID=16) +8\r\n\r\n<row gap=\"medium\">\r\n**Str** +3\r\n\r\n**Dex** +4\r\n\r\n**Con** +1\r\n\r\n**Int** -3\r\n\r\n**Wis** +3\r\n\r\n**Cha** -1\r\n</row>\n\n</column>\r\n\r\n---\r\n\r\n<column gap=\"tiny\">\r\n\r\n<row gap=\"medium\">\r\n**AC** 19 \r\n\r\n**Fort** +10 \r\n\r\n**Ref** +11 \r\n\r\n**Will** +12 \n\n</row>\r\n\r\n<row gap=\"medium\">\r\n**HP** 40\n\n</row>\n\n**Resistances**\r\nphysical 3 (double resistance vs. non-[magical](/Traits.aspx?ID=103))\n\n**[Attack of Opportunity](/MonsterAbilities.aspx?ID=3)** <actions string=\"Reaction\" /> \r\n\r\n</column>\r\n\r\n---\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Speed** 30 feet, climb 20 feet\r\n\r\n**Melee**\r\n<actions string=\"Single Action\" />\r\njaws +12,\r\n**Damage** 1d8+6 piercing\r\n\r\n**Melee**\r\n<actions string=\"Single Action\" />\r\ntentacle +11 ([Agile](/Traits.aspx?ID=170), [Finesse](/Traits.aspx?ID=179)),\r\n**Damage** 1d6+6 slashing\n\n**Unbalancing Blow**   Any creature a grick critically hits is [flat-footed](/Conditions.aspx?ID=16) against its attacks until the end of the grick's next turn.\r\n\r\n**Vermicular Movement**   When a grick takes a Stride action to move half its Speed or less, that movement doesn't trigger reactions.\r\n\r\n</column>",
+        "name": "Grick",
+        "npc": false,
+        "perception": 12,
+        "perception_scale": "High",
+        "perception_scale_number": 4,
+        "primary_source": "Pathfinder #157: Devil at the Dreaming Palace",
+        "primary_source_category": "Adventure Paths",
+        "primary_source_group": "Agents of Edgewatch",
+        "primary_source_raw": "Pathfinder #157: Devil at the Dreaming Palace pg. 35",
+        "rarity": "common",
+        "rarity_id": 1,
+        "reflex_save": 11,
+        "reflex_save_scale": "Moderate",
+        "reflex_save_scale_number": 3,
+        "release_date": "2020-07-30",
+        "resistance": {
+          "bludgeoning": 3,
+          "physical": 3,
+          "piercing": 3,
+          "slashing": 3
+        },
+        "resistance_markdown": "physical 3 (double resistance vs. non-[magical](/Traits.aspx?ID=103))",
+        "resistance_raw": "physical 3 (double resistance vs. non- magical )",
+        "search_markdown": "<traits>\r\n<trait label=\"N\" url=\"/Rules.aspx?ID=95\" />\r\n<trait label=\"Medium\" />\r\n<trait label=\"Aberration\" url=\"/Traits.aspx?ID=1\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Pathfinder #157: Devil at the Dreaming Palace](/Sources.aspx?ID=45) pg. 35, [Crown of the Kobold King](/Sources.aspx?ID=148) pg. 120\n\n<row gap=\"medium\">\r\n**HP** 40\r\n\r\n**AC** 19\r\n\r\n**Fort** +10\r\n\r\n**Ref** +11\r\n\r\n**Will** +12\r\n\r\n**Perception** +12\r\n</row>\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\n\r\n</summary>",
+        "sense": " darkvision ,  scent  (imprecise) 30 feet",
+        "sense_markdown": "[darkvision](/MonsterAbilities.aspx?ID=12), [scent](/MonsterAbilities.aspx?ID=33) (imprecise) 30 feet",
+        "size": [
+          "Medium"
+        ],
+        "size_id": [
+          3
+        ],
+        "skill": [
+          "Acrobatics",
+          "Athletics",
+          "Stealth",
+          "Survival"
+        ],
+        "skill_markdown": "[Acrobatics](/Skills.aspx?ID=1) +11, [Athletics](/Skills.aspx?ID=3) +10, [Stealth](/Skills.aspx?ID=15) +10, [Survival](/Skills.aspx?ID=16) +8",
+        "skill_mod": {
+          "acrobatics": 11,
+          "athletics": 10,
+          "stealth": 10,
+          "survival": 8
+        },
+        "source": [
+          "Pathfinder #157: Devil at the Dreaming Palace",
+          "Crown of the Kobold King"
+        ],
+        "source_category": [
+          "Adventure Paths",
+          "Adventures"
+        ],
+        "source_group": [
+          "Agents of Edgewatch",
+          "Crown of the Kobold King"
+        ],
+        "source_markdown": "[Pathfinder #157: Devil at the Dreaming Palace](/Sources.aspx?ID=45) pg. 35, [Crown of the Kobold King](/Sources.aspx?ID=148) pg. 120",
+        "source_raw": [
+          "Pathfinder #157: Devil at the Dreaming Palace pg. 35",
+          "Crown of the Kobold King pg. 120"
+        ],
+        "speed": {
+          "climb": 20,
+          "land": 30,
+          "max": 30
+        },
+        "speed_markdown": "30 feet, climb 20 feet",
+        "speed_raw": "30 feet, climb 20 feet",
+        "spell_markdown": "",
+        "stealth": "10",
+        "strength": 3,
+        "strength_scale": "Moderate",
+        "strength_scale_number": 3,
+        "strike_damage_average": [
+          9,
+          10
+        ],
+        "strike_damage_scale": [
+          "Low",
+          "Moderate"
+        ],
+        "strike_damage_scale_number": [
+          2,
+          3
+        ],
+        "strongest_save": [
+          "will"
+        ],
+        "text": " Grick Recall Knowledge - Aberration (Occultism): DC 18 Unspecific Lore : DC 16 Specific Lore : DC 13 Grick Source Pathfinder #157: Devil at the Dreaming Palace pg. 35, Crown of the Kobold King pg. 120 Perception +12; darkvision, scent (imprecise) 30 feet Languages Aklo; (can't speak any language) Skills Acrobatics +11, Athletics +10, Stealth +10, Survival +8 Str +3 Dex +4 Con +1 Int -3 Wis +3 Cha -1 --- AC 19 Fort +10 Ref +11 Will +12 HP 40 Resistances physical 3 (double resistance vs. non-magical) Attack of Opportunity Reaction --- Speed 30 feet, climb 20 feet Melee Single Action jaws +12, Damage 1d8+6 piercing Melee Single Action tentacle +11 (Agile, Finesse), Damage 1d6+6 slashing Unbalancing Blow Any creature a grick critically hits is flat-footed against its attacks until the end of the grick's next turn. Vermicular Movement When a grick takes a Stride action to move half its Speed or less, that movement doesn't trigger reactions. ",
+        "tradition_markdown": "",
+        "trait": [
+          "Aberration",
+          "N",
+          "Medium"
+        ],
+        "trait_group": [
+          "Creature Type"
+        ],
+        "trait_markdown": "[Aberration](/Traits.aspx?ID=1)",
+        "trait_raw": [
+          "Aberration"
+        ],
+        "type": "Creature",
+        "url": "/Monsters.aspx?ID=2478",
+        "vision": "Darkvision",
+        "weakest_save": [
+          "fort",
+          "fortitude"
+        ],
+        "weakness": {},
+        "will_save": 12,
+        "will_save_scale": "High",
+        "will_save_scale_number": 4,
+        "wisdom": 3,
+        "wisdom_scale": "Moderate",
+        "wisdom_scale_number": 3
+      },
+      "sort": [
+        "grick",
+        "/monsters.aspx?id=2478"
+      ]
+    }
+  ]
+}

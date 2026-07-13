@@ -24,6 +24,7 @@
     "**/src/generated/**",
     "**/public/**",
     "**/*.sdPlugin/**",
-    "**/codex/data/**"
+    "**/codex/data/**",
+    "**/codex/fixtures/**"
   ]
 }

@@ -1,0 +1,19 @@
+{
+  "body": [],
+  "category": "warfare-army",
+  "edition": "legacy",
+  "facets": {
+    "hp": 4,
+    "size": "med"
+  },
+  "id": "warfare-army/basic-infantry",
+  "level": 1,
+  "name": "Basic Infantry",
+  "rarity": "common",
+  "slug": "basic-infantry",
+  "source": {
+    "book": "unknown",
+    "license": "unknown"
+  },
+  "traits": []
+}

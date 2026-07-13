@@ -1,0 +1,56 @@
+{
+  "aonUrl": "/Languages.aspx?ID=187",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Thokol",
+          "kind": "crossref",
+          "targetId": "language/thokol"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Language "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " [Pathfinder #218: Titanbane ](/Sources.aspx?ID=274) pg. 72",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "language",
+  "edition": "remaster",
+  "facets": {},
+  "id": "language/thokol",
+  "name": "Thokol",
+  "proseOnly": true,
+  "rarity": "uncommon",
+  "slug": "thokol",
+  "source": {
+    "book": "Pathfinder #218: Titanbane",
+    "license": "ORC",
+    "page": 72
+  },
+  "traits": [
+    "Uncommon"
+  ]
+}

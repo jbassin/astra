@@ -1,0 +1,85 @@
+{
+  "aonUrl": "/Companions.aspx?ID=4&Type=Specialized",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Racer",
+          "kind": "brokenRef",
+          "target": "/Companions.aspx?ID=4&Specialized=true"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Animal Companion Specialization "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 217",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Your companion races. It gains a +10-foot status bonus to its Speed, swim Speed, or fly Speed (your choice). Its proficiency in Fortitude saves increases to legendary, and its Constitution modifier increases by 1.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "animal-companion-specialization",
+  "edition": "legacy",
+  "facets": {},
+  "id": "animal-companion-specialization/racer@legacy",
+  "name": "Racer",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "animal-companion-specialization/racer"
+  ],
+  "slug": "racer",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 217
+  },
+  "traits": []
+}

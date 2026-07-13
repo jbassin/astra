@@ -1,0 +1,124 @@
+{
+  "aonUrl": "/DeityCategories.aspx?ID=40",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Coatl Tribunal",
+          "kind": "crossref",
+          "targetId": "deity-category/coatl-tribunal"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Deity Category "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Divine Mysteries",
+          "kind": "crossref",
+          "targetId": "source/divine-mysteries"
+        },
+        {
+          "content": " pg. 300",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Members",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Cihua Coatl",
+          "kind": "crossref",
+          "targetId": "deity/cihua-coatl"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Pahti Coatl",
+          "kind": "crossref",
+          "targetId": "deity/pahti-coatl"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Tolte Coatl",
+          "kind": "crossref",
+          "targetId": "deity/tolte-coatl"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "deity-category",
+  "edition": "remaster",
+  "facets": {},
+  "id": "deity-category/coatl-tribunal",
+  "name": "Coatl Tribunal",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "coatl-tribunal",
+  "source": {
+    "book": "Divine Mysteries",
+    "license": "ORC",
+    "page": 300
+  },
+  "traits": []
+}

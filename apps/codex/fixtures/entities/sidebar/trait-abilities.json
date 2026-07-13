@@ -1,0 +1,110 @@
+{
+  "aonUrl": "/Rules.aspx?ID=995",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Trait Abilities",
+          "kind": "crossref",
+          "targetId": "rules/building-creatures"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Sidebar"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Gamemastery Guide",
+          "kind": "crossref",
+          "targetId": "source/gamemastery-guide"
+        },
+        {
+          "content": " pg. 56",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Parent page",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " [Building Creatures ](/Rules.aspx?ID=995)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "This section provides the abilities conveyed by certain traits, such as demon, dragon, and undead. You’ll also find abilities typical of creatures with those traits to help guide you as you plan your creatures.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "sidebar",
+  "edition": "legacy",
+  "facets": {},
+  "id": "sidebar/trait-abilities",
+  "name": "Trait Abilities",
+  "proseOnly": true,
+  "remasteredAs": [
+    "rules/building-creatures"
+  ],
+  "slug": "trait-abilities",
+  "source": {
+    "book": "Gamemastery Guide",
+    "license": "OGL",
+    "page": 56
+  },
+  "traits": []
+}

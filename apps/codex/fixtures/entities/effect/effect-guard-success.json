@@ -1,0 +1,33 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "This army gains a +2 item bonus to its AC until the start of your next turn against attacks from the targeted army.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "effect",
+  "edition": "legacy",
+  "facets": {
+    "featLevel": 0,
+    "rank": 0
+  },
+  "id": "effect/effect-guard-success",
+  "level": 0,
+  "name": "Effect: Guard (Success)",
+  "slug": "effect-guard-success",
+  "source": {
+    "book": "unknown",
+    "license": "OGL"
+  },
+  "traits": []
+}

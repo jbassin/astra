@@ -447,8 +447,18 @@ export function parseCheckArg(arg: string): ParsedCheckArg {
     }
     const key = part.slice(0, colonIdx);
     const value = part.slice(colonIdx + 1);
-    if (key === "dc") result.dc = Number(value);
-    else if (key === "traits") {
+    if (key === "dc") {
+      // S4 emit-gate finding (real corpus, e.g. `@Check[crafting|dc:@self.level]`):
+      // an actor-relative DC formula isn't a plain number — `Number(...)` on it
+      // is NaN, which `CheckNode.dc` (a `z.number()`) rejects at emit-time
+      // validation. Same posture `@Damage` already documents for actor-relative
+      // formulas ("display as formula text, no @actor.* evaluation") — kept as
+      // text via the existing `extra` catch-all instead of corrupting the
+      // numeric field.
+      const n = Number(value);
+      if (Number.isNaN(n)) result.extra.dc = value;
+      else result.dc = n;
+    } else if (key === "traits") {
       result.traits = value
         .split(",")
         .map((t) => t.trim())

@@ -1,0 +1,45 @@
+{
+  "_description": "Foundry codex id -> AoN doc id (D29-7). Hand-curated, committed. Populated by investigating REAL unjoined pairs after exact + qualifier-reorder normalization against the 2026-07-13 snapshots — every entry below is a TRUE one-off (a typo/spelling/pluralization divergence between the two independently-maintained corpora for the exact same real-world game element, hand-verified by cross-checking level + source book on both sides), never a systematic pattern (those get a normalization rule in join.ts instead of an alias entry). Extend this file the same way: find a real unjoined pair, verify it's the SAME thing before adding.",
+  "aliases": [
+    {
+      "foundryId": "feat/camouflage-coat",
+      "aonId": "feat-5337",
+      "note": "AoN 'Camoflage Coat' (missing u) vs Foundry 'Camouflage Coat' — level 13 on both sides, Howl of the Wild."
+    },
+    {
+      "foundryId": "feat/faultless-defense",
+      "aonId": "feat-7377",
+      "note": "AoN 'Fautless Defense' (missing l) vs Foundry 'Faultless Defense' — level 14 on both sides, War of Immortals."
+    },
+    {
+      "foundryId": "feat/orators-filibuster",
+      "aonId": "feat-7927",
+      "note": "AoN \"Orator's Fillibuster\" (double l) vs Foundry \"Orator's Filibuster\" — level 8 on both sides, Battlecry!."
+    },
+    {
+      "foundryId": "equipment/commandants-scabbard",
+      "aonId": "equipment-3961",
+      "note": "AoN \"Comandant's Scabbard\" (missing m) vs Foundry \"Commandant's Scabbard\" — level 17 on both sides, Battlecry!."
+    },
+    {
+      "foundryId": "equipment/extendable-pincer",
+      "aonId": "equipment-1148",
+      "note": "AoN 'Extendible Pincer' (-ible) vs Foundry 'Extendable Pincer' (-able) — level 0 on both sides, Guns & Gears (Remastered)."
+    },
+    {
+      "foundryId": "hazard/crystallized-agony",
+      "aonId": "hazard-260",
+      "note": "AoN 'Crystalized Agony' (single l) vs Foundry 'Crystallized Agony' — Pathfinder #184: The Ghouls Hunger, both from the same Blood Lords bestiary pack."
+    },
+    {
+      "foundryId": "spell/discomfiting-whispers",
+      "aonId": "spell-2139",
+      "note": "AoN 'Discomfiting Whisper' (singular) vs Foundry 'Discomfiting Whispers' (plural) — level 1 on both sides, War of Immortals focus spell."
+    },
+    {
+      "foundryId": "spell/vindicators-judgment",
+      "aonId": "spell-2149",
+      "note": "AoN \"Vindicator's Judgement\" (-ge spelling) vs Foundry \"Vindicator's Judgment\" — level 5 on both sides, War of Immortals vindicator archetype focus spell. NOT the same-named level-10 dedication feat (a separate, correctly-joined-by-exact-slug 'feat/vindicators-judgment' entity)."
+    }
+  ]
+}

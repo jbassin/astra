@@ -1,0 +1,174 @@
+{
+  "aonUrl": "/Instincts.aspx?ID=10",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Fury",
+          "kind": "crossref",
+          "targetId": "instinct/fury"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Barbarian Instinct "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core 2",
+          "kind": "crossref",
+          "targetId": "source/player-core-2"
+        },
+        {
+          "content": " pg. 75",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Your rage comes from a deep and purely personal well within you. You use your rage as you choose.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Instinct Ability—Unstoppable Frenzy",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "Increase the additional damage from Rage from 2 to 3. You gain a bonus 1st-level barbarian feat.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Specialization Ability",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 7"
+    },
+    {
+      "children": [
+        {
+          "content": "Increase the additional damage from Rage from 3 to 7. If you have greater weapon specialization, instead increase the additional damage from Rage to 13.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Raging Resistance",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 9"
+    },
+    {
+      "children": [
+        {
+          "content": "You resist physical weapon damage, but not physical damage from other sources (such as unarmed attacks).",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "instinct",
+  "edition": "remaster",
+  "facets": {},
+  "id": "instinct/fury",
+  "legacyOf": [
+    "instinct/fury@legacy"
+  ],
+  "name": "Fury",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "fury",
+  "source": {
+    "book": "Player Core 2",
+    "license": "ORC",
+    "page": 75
+  },
+  "traits": []
+}

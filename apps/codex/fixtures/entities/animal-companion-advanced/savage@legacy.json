@@ -1,0 +1,85 @@
+{
+  "aonUrl": "/Companions.aspx?ID=1&Type=Advancement",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Savage",
+          "kind": "brokenRef",
+          "target": "/Companions.aspx?ID=1&Advanced=true"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Animal Companion Advanced Option "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 214",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "To advance a mature animal companion to a savage animal companion, increase its Strength modifier by 2 and its Dexterity, Constitution, and Wisdom modifiers by 1. It deals 3 additional damage with its unarmed attacks. Increase its proficiency rank in Athletics to expert. It also learns the advanced maneuver for its type. If your companion is Medium or smaller, it grows by one size. Its attacks become magical for the purpose of ignoring resistances.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "animal-companion-advanced",
+  "edition": "legacy",
+  "facets": {},
+  "id": "animal-companion-advanced/savage@legacy",
+  "name": "Savage",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "animal-companion-advanced/savage"
+  ],
+  "slug": "savage",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 214
+  },
+  "traits": []
+}

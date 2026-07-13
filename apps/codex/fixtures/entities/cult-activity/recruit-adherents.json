@@ -1,0 +1,148 @@
+{
+  "aonUrl": "/CultActivities.aspx?ID=4",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Recruit Adherents",
+          "kind": "crossref",
+          "targetId": "cult-activity/recruit-adherents"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Cult Activity"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " [Pathfinder #217: Death Sails a Wine-Dark Sea ](/Sources.aspx?ID=273) pg. 68",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Under your direction, the cult focuses on evangelism and developing its reputation to attract new members. The cult attempts a check against a standard DC of the cult’s level.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The cult’s messaging resonates spectacularly! The cult gains 2d4+4 Recruitment Points.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The cult’s efforts result in a steady stream of new recruits. The cult gains 2d4 Recruitment Points.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The evangelism changes few minds, earning the cult only 1d4 Recruitment Points.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Whether due to pushy apostles, poor messaging, or unintended scandals, recent evangelism disillusions followers. The cult loses 1d4 Recruitment Points.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "cult-activity",
+  "edition": "remaster",
+  "facets": {},
+  "id": "cult-activity/recruit-adherents",
+  "name": "Recruit Adherents",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "recruit-adherents",
+  "source": {
+    "book": "Pathfinder #217: Death Sails a Wine-Dark Sea",
+    "license": "ORC",
+    "page": 68
+  },
+  "traits": []
+}

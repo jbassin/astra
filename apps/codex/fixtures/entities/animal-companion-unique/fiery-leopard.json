@@ -1,0 +1,254 @@
+{
+  "aonUrl": "/AnimalCompanions.aspx?ID=1&Unique=true",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Fiery Leopard",
+          "kind": "brokenRef",
+          "target": "/Companions.aspx?ID=1&Unique=true"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Unique Animal Companion "
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "May contain spoilers from The Fall of Plaguestone",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "The Fall of Plaguestone",
+          "kind": "crossref",
+          "targetId": "source/the-fall-of-plaguestone"
+        },
+        {
+          "content": " pg. 57",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Base Animal Companion",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Cat",
+          "kind": "crossref",
+          "targetId": "animal-companion/cat"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Immunities",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " fire; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Weaknesses",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " cold 5\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Flaming Attacks",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "fire",
+          "kind": "crossref",
+          "targetId": "trait/fire"
+        },
+        {
+          "content": ") The fiery leopard's natural attacks deal 1 fire damage (in addition to the bonus damage dealt to flat-footed targets). This damage increases to 1d4 when the fiery leopard becomes a nimble or savage animal companion.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Fiery Pelt",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "fire",
+          "kind": "crossref",
+          "targetId": "trait/fire"
+        },
+        {
+          "content": ") Creatures that start their turn grappled by the fiery leopard take 1d4 fire damage. Anyone attempting to grapple the fiery leopard takes 1d4 fire damage for each attempt.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Burning Glow",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The fiery leopard sheds dim light in a 10-foot radius which gives it a –2 circumstance penalty on ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Stealth",
+          "kind": "crossref",
+          "targetId": "skill/stealth"
+        },
+        {
+          "content": " checks made at night or in a dark environment.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "animal-companion-unique",
+  "edition": "legacy",
+  "facets": {},
+  "id": "animal-companion-unique/fiery-leopard",
+  "name": "Fiery Leopard",
+  "proseOnly": true,
+  "rarity": "unique",
+  "slug": "fiery-leopard",
+  "source": {
+    "book": "The Fall of Plaguestone",
+    "license": "OGL",
+    "page": 57
+  },
+  "traits": [
+    "Unique"
+  ]
+}

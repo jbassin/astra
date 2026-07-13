@@ -1,0 +1,32 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You descend from fire elementals or bear the mark of the Inner Spheres, and your features illustrate the influence that elemental fire has over you. You gain the naari trait, in addition to the traits from your ancestry. You gain resistance to fire equal to half your level (minimum 1), and you treat environmental heat effects as if they were one step less severe (incredible heat becomes extreme, extreme heat becomes severe, and so on). You can choose from naari feats and feats from your ancestry whenever you gain an ancestry feat.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "heritage",
+  "edition": "legacy",
+  "facets": {},
+  "id": "heritage/naari",
+  "name": "Naari",
+  "rarity": "uncommon",
+  "slug": "naari",
+  "source": {
+    "book": "Pathfinder Lost Omens Ancestry Guide",
+    "license": "OGL"
+  },
+  "traits": [
+    "naari"
+  ]
+}

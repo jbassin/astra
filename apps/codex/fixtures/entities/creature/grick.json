@@ -1,0 +1,1076 @@
+{
+  "aonUrl": "/Monsters.aspx?ID=2182",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Grick",
+          "kind": "crossref",
+          "targetId": "creature/grick"
+        }
+      ],
+      "kind": "heading",
+      "level": 1
+    },
+    {
+      "children": [
+        {
+          "content": "The wormlike gricks terrorize the caverns and tunnels in which it dwells, lying in wait near heavily traveled underground passages or subterranean cities for the chance to reach forth from the darkness and take its prey. Those laid low by a grick are rarely consumed on the spot. Instead, gricks haul back fresh food back to their lair in a tight burrow or high on a cavern ledge, where they consume their spoils in small bites at the gricks' leisure.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " The origin of gricks is unknown. Even though these creatures have a rudimentary intelligence, they don't have any social structure to speak of. Most gricks are encountered alone. Even on those occasions when unfortunate travelers meet multiple gricks in small groups, those gricks don't appear to communicate or work together; each instead attacks an individual target and retreats with its prize as soon as it manages to bring down an opponent. Capable predators, gricks also have a strangely weapon-resistant hide that makes them especially dangerous to the unprepared. Many novice adventurers have fallen to grick attacks merely because they couldn't damage these creatures with their non-magical weapons. Those familiar with gricks (especially ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "dwarves",
+          "kind": "crossref",
+          "targetId": "ancestry/dwarf"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "morlocks",
+          "kind": "crossref",
+          "targetId": "creature/morlock"
+        },
+        {
+          "content": ", and ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "xulgaths",
+          "kind": "crossref",
+          "targetId": "creature-family/xulgath"
+        },
+        {
+          "content": ") know the best strategy for dealing with them when one lacks access to magic weapons is to fall back and wait for more powerful or magical reinforcements.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " Gricks rely on their dark coloration and ability to climb walls to keep them out of sight until they're ready to spring an ambush. On occasions, when food becomes scarce in a particular area, gricks have been known to travel to the surface and roam the wilderness in search of prey, but they make these sojourns almost always out of necessity, lasting only as long as it takes them to find entrances to new subterranean lairs. These creatures prefer darkness and the comfort of a ceiling overhead; they avoid the open sky and go to great lengths to keep the cover of trees, low clouds, or buildings between them and the empty gulf overhead.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " Some Darklands societies have tried to recruit gricks as guardians or even beasts of burden, but their intelligence—while middling at best—is more than enough for them to stubbornly resist and even resent attempts at “training.” The best most societies can manage is to keep a grick guardian happy by making sure it remains well-fed and comfortable.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Recall Knowledge - Aberration",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Occultism",
+          "kind": "crossref",
+          "targetId": "skill/occultism"
+        },
+        {
+          "content": "): DC 20",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Unspecific Lore",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": ": DC 18",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Specific Lore",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": ": DC 15",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Grick",
+          "kind": "crossref",
+          "targetId": "creature/grick"
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Creature 3"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Crown of the Kobold King",
+          "kind": "crossref",
+          "targetId": "source/crown-of-the-kobold-king"
+        },
+        {
+          "content": " pg. 120, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Pathfinder #157: Devil at the Dreaming Palace",
+          "kind": "crossref",
+          "targetId": "source/pathfinder-157-devil-at-the-dreaming-palace"
+        },
+        {
+          "content": " pg. 35",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perception",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +8; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "darkvision",
+          "kind": "crossref",
+          "targetId": "creature-ability/darkvision"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "scent",
+          "kind": "crossref",
+          "targetId": "creature-ability/scent"
+        },
+        {
+          "content": " (imprecise) 30 feet",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Languages",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Aklo",
+          "kind": "crossref",
+          "targetId": "language/aklo"
+        },
+        {
+          "content": "; (can't speak any language)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Skills",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Athletics",
+          "kind": "crossref",
+          "targetId": "skill/athletics"
+        },
+        {
+          "content": " +9, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Stealth",
+          "kind": "crossref",
+          "targetId": "skill/stealth"
+        },
+        {
+          "content": " +8",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Str",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +4",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Dex",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +3",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Con",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +2",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Int",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " -3",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Wis",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +3",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Cha",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " -2",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "AC",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 20 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Fort",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +7 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Ref",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +10 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Will",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +10 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "HP",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 35",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Resistances",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " physical 5 (except ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "magic",
+          "kind": "crossref",
+          "targetId": "trait/magical"
+        },
+        {
+          "content": ")",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Gripping Tentacle",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Reaction",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Trigger",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " A creature in the grick's reach uses a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "move",
+          "kind": "crossref",
+          "targetId": "trait/move"
+        },
+        {
+          "content": " action or leaves a square during a move action it's using; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Effect",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The grick makes a tentacle Strike against the target. If the attack is a critical hit and the trigger was a move action, the grick disrupts that action.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Speed",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 25 feet, climb 20 feet",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " jaws +11, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 1d12+6 slashing",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " tentacle +11 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Agile",
+          "kind": "crossref",
+          "targetId": "trait/agile"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 1d8+6 bludgeoning",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Jungle Gricks",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "These surface-adapted varieties of the underground grick appear in shades of green. They lurk in the undergrowth of jungles or climb low-hanging branches to drop on unsuspecting prey. Their greater skill at ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Stealth",
+              "kind": "crossref",
+              "targetId": "skill/stealth"
+            },
+            {
+              "content": " checks applies in forested terrain instead of rocky terrain. Jungle gricks are heartier creatures than their underground-dwelling kin; all jungle gricks have the ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "elite creature adjustments",
+              "kind": "crossref",
+              "targetId": "rules/elite-adjustment"
+            },
+            {
+              "content": " as a result.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "kind": "aside"
+    }
+  ],
+  "category": "creature",
+  "edition": "legacy",
+  "embeddedItems": [
+    {
+      "body": [],
+      "name": "Jaws",
+      "slug": "jaws",
+      "traits": [
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "body": [],
+      "name": "Tentacle",
+      "slug": "tentacle",
+      "traits": [
+        "agile",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "actionCost": "reaction",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Trigger",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " A creature in the grick's reach uses a move action or leaves a square during a move action it's using",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Effect",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The grick makes a tentacle Strike against the target. If the attack is a critical hit and the trigger was a move action, the grick disrupts that action.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Gripping Tentacle",
+      "slug": "gripping-tentacle",
+      "traits": [],
+      "type": "action"
+    }
+  ],
+  "facets": {
+    "ac": 20,
+    "fortitudeSave": 7,
+    "hp": 35,
+    "perception": 8,
+    "reflexSave": 10,
+    "size": "med",
+    "willSave": 10
+  },
+  "id": "creature/grick",
+  "level": 3,
+  "name": "Grick",
+  "rarity": "uncommon",
+  "slug": "grick",
+  "source": {
+    "book": "Crown of the Kobold King",
+    "license": "OGL",
+    "page": 120
+  },
+  "traits": [
+    "aberration"
+  ]
+}

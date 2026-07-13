@@ -1,0 +1,37 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You have access to the following monsters to summon with the appropriate summoning spells: blood boar, kalavakus, osyluth, and rusalka.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "pfs-boon",
+  "edition": "legacy",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 0,
+    "itemCategory": "pfsboon",
+    "prerequisites": [],
+    "rank": 0
+  },
+  "id": "pfs-boon/aoa-147-boon-b-expanded-summoning",
+  "level": 0,
+  "name": "AoA #147: Boon B - Expanded Summoning",
+  "rarity": "common",
+  "slug": "aoa-147-boon-b-expanded-summoning",
+  "source": {
+    "book": "unknown",
+    "license": "OGL"
+  },
+  "traits": []
+}

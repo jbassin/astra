@@ -1,0 +1,258 @@
+{
+  "aonUrl": "/CampMeals.aspx?ID=12",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Hearty Meal",
+          "kind": "crossref",
+          "targetId": "campsite-meal/hearty-meal"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Campsite Meal 0"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Kingmaker Companion Guide",
+          "kind": "crossref",
+          "targetId": "source/kingmaker-companion-guide"
+        },
+        {
+          "content": " pg. 116",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Recipe Price",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " &mdash; (this recipe is available automatically)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Ingredients",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 4 basic",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Preparation",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " DC 14 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Cooking Lore",
+          "kind": "crossref",
+          "targetId": "skill/lore"
+        },
+        {
+          "content": " or DC 16 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Survival",
+          "kind": "crossref",
+          "targetId": "skill/survival"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Favorite Meal",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The eater recovers an additional amount of Hit Points equal to their level when they rest.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "By taking extra time to prepare a meal, adding extra spices, and supplementing the meal with additional ingredients, you can turn a regular meal into a hearty one. Unlike other special meals, anyone can attempt to cook a hearty meal— no recipe is required.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The meal grants the eater a +1 status bonus to the next 3 saving throws they attempt during the next 24 hours.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The meal grants the eater a +1 status bonus to the next saving throw they attempt during the next 24 hours.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The hearty meal leaves the eater overstuffed. They suffer a –1 status penalty to initiative checks until they rest and begin their daily preparations.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "campsite-meal",
+  "edition": "legacy",
+  "facets": {},
+  "id": "campsite-meal/hearty-meal",
+  "level": 0,
+  "name": "Hearty Meal",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "hearty-meal",
+  "source": {
+    "book": "Kingmaker Companion Guide",
+    "license": "OGL",
+    "page": 116
+  },
+  "traits": [
+    "Meal"
+  ]
+}

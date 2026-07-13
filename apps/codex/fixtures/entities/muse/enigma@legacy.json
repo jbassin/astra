@@ -1,0 +1,155 @@
+{
+  "aonUrl": "/Muses.aspx?ID=1",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Enigma",
+          "kind": "crossref",
+          "targetId": "muse/enigma"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Bard Muse "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 97",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Your muse is a mystery, driving you to uncover the hidden secrets of the multiverse. If your muse is a creature, it might be a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "dragon",
+          "kind": "crossref",
+          "targetId": "trait/dragon"
+        },
+        {
+          "content": " or otherworldly being; if a deity, it might be ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Irori",
+          "kind": "crossref",
+          "targetId": "deity/irori"
+        },
+        {
+          "content": " or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nethys",
+          "kind": "crossref",
+          "targetId": "deity/nethys"
+        },
+        {
+          "content": ". You gain the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Bardic Lore",
+          "kind": "crossref",
+          "targetId": "feat/bardic-lore"
+        },
+        {
+          "content": " feat and add ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "true strike",
+          "kind": "crossref",
+          "targetId": "spell/true-strike"
+        },
+        {
+          "content": " to your spell repertoire.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "muse",
+  "edition": "legacy",
+  "facets": {},
+  "id": "muse/enigma@legacy",
+  "name": "Enigma",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "muse/enigma"
+  ],
+  "slug": "enigma",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 97
+  },
+  "traits": []
+}

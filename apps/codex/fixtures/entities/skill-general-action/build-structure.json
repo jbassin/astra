@@ -1,0 +1,87 @@
+{
+  "aonUrl": "/Skills.aspx?ID=9&General=true",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Build Structure",
+          "kind": "crossref",
+          "targetId": "skill-general-action/build-structure"
+        },
+        {
+          "content": " (Untrained)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "General Skill Action "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Kingmaker Adventure Path",
+          "kind": "crossref",
+          "targetId": "source/kingmaker-adventure-path"
+        },
+        {
+          "content": " pg. 518",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/build-structure"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "skill-general-action",
+  "edition": "legacy",
+  "facets": {},
+  "id": "skill-general-action/build-structure",
+  "name": "Build Structure",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "build-structure",
+  "source": {
+    "book": "Kingmaker Adventure Path",
+    "license": "OGL",
+    "page": 518
+  },
+  "traits": []
+}

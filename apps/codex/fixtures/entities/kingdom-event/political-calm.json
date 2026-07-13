@@ -1,0 +1,216 @@
+{
+  "aonUrl": "/KMEvents.aspx?ID=30",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Political Calm",
+          "kind": "crossref",
+          "targetId": "kingdom-event/political-calm"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Kingdom Event -1"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Kingmaker Adventure Path",
+          "kind": "crossref",
+          "targetId": "source/kingmaker-adventure-path"
+        },
+        {
+          "content": " pg. 562",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Kingdom Skill",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Politics",
+          "kind": "crossref",
+          "targetId": "skill/politics"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Leader",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Ruler",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "A sudden absence of political machinations and distracting intrigue coincides with a rise in public approval for its leaders.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You capitalize upon the public approval with efficiency and speed. Reduce Unrest by 1d6 or reduce one Ruin of your choice by 1. Gain a +2 status bonus to all checks made to resolve events during your next Kingdom turn.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Loyalty is up across the board. Reduce Unrest by 1d4.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The calm is a refreshing change, but people sense it cannot last. Reduce Unrest by 1.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The calm simply hides deeper plotting simmering in the shadows. Increase one Ruin by 1.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "kingdom-event",
+  "edition": "legacy",
+  "facets": {},
+  "id": "kingdom-event/political-calm",
+  "level": -1,
+  "name": "Political Calm",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "political-calm",
+  "source": {
+    "book": "Kingmaker Adventure Path",
+    "license": "OGL",
+    "page": 562
+  },
+  "traits": [
+    "Beneficial"
+  ]
+}

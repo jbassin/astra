@@ -1,0 +1,113 @@
+{
+  "aonUrl": "/Relics.aspx?ID=172",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Linguistic Nexus",
+          "kind": "crossref",
+          "targetId": "relic/linguistic-nexus"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Relic Minor Gift"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "GM Core",
+          "kind": "crossref",
+          "targetId": "source/gm-core"
+        },
+        {
+          "content": " pg. 316",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Aspect",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Mind",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Your relic grants you a powerful neural plasticity, and as a result, you can learn languages more easily. You learn an additional language of your choice for every 2 levels of the relic (minimum 1). You can retrain one of the languages from the relic with only a single week of downtime.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "relic",
+  "edition": "remaster",
+  "facets": {},
+  "id": "relic/linguistic-nexus",
+  "legacyOf": [
+    "relic/linguistic-nexus@legacy"
+  ],
+  "name": "Linguistic Nexus",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "linguistic-nexus",
+  "source": {
+    "book": "GM Core",
+    "license": "ORC",
+    "page": 316
+  },
+  "traits": [
+    "Mental"
+  ]
+}

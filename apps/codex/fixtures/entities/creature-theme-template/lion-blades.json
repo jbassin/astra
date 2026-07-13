@@ -1,0 +1,258 @@
+{
+  "aonUrl": "/NPCThemeTemplates.aspx?ID=9",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Lion Blades",
+          "kind": "crossref",
+          "targetId": "creature-adjustment/vampire"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Creature Theme Template"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Character Guide",
+          "kind": "crossref",
+          "targetId": "source/character-guide"
+        },
+        {
+          "content": " pg. 129",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "The Lion Blades are a secret organization in Taldor, protecting the nation via espionage, intrigue, and infiltration. They creatively use every tool at their disposal.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "items": [
+        [
+          {
+            "content": "1st Level or Higher",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": Add ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Deception",
+            "kind": "crossref",
+            "targetId": "skill/deception"
+          },
+          {
+            "content": " and ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Stealth",
+            "kind": "crossref",
+            "targetId": "skill/stealth"
+          },
+          {
+            "content": " to the creature's skills.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "4th Level or Higher",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": Observers are never granted circumstance bonuses to Perception checks due to the creature ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Impersonating",
+            "kind": "crossref",
+            "targetId": "action/impersonate"
+          },
+          {
+            "content": " a person of a different ancestry, age, and so on, as long as the disguise is appropriate for its size.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "7th Level or Higher",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": The creature gains the ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Lost in the Crowd",
+            "kind": "crossref",
+            "targetId": "feat/lost-in-the-crowd"
+          },
+          {
+            "content": " feat.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "12th Level or Higher",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": The creature gains a +10-foot status bonus to its Speeds.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "17th Level or Higher",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": ": The creature gains the ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Flicker",
+            "kind": "crossref",
+            "targetId": "feat/flicker"
+          },
+          {
+            "content": " feat.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    }
+  ],
+  "category": "creature-theme-template",
+  "edition": "legacy",
+  "facets": {},
+  "id": "creature-theme-template/lion-blades",
+  "name": "Lion Blades",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "lion-blades",
+  "source": {
+    "book": "Character Guide",
+    "license": "OGL",
+    "page": 129
+  },
+  "traits": []
+}

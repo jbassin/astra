@@ -1,0 +1,37 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Non-sapient insects (especially mantises) become hostile against you.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "boon",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 0,
+    "itemCategory": "curse",
+    "prerequisites": [],
+    "rank": 0
+  },
+  "id": "boon/achaekek-minor-curse",
+  "level": 0,
+  "name": "Achaekek - Minor Curse",
+  "rarity": "common",
+  "slug": "achaekek-minor-curse",
+  "source": {
+    "book": "Pathfinder Adventure: Prey for Death",
+    "license": "ORC"
+  },
+  "traits": []
+}

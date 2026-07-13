@@ -1,0 +1,21 @@
+{
+  "body": [],
+  "category": "vehicle",
+  "edition": "remaster",
+  "facets": {
+    "ac": 42,
+    "fortitudeSave": 33,
+    "hp": 415,
+    "size": "grg"
+  },
+  "id": "vehicle/bone-ship",
+  "level": 18,
+  "name": "Bone Ship",
+  "rarity": "rare",
+  "slug": "bone-ship",
+  "source": {
+    "book": "Pathfinder Lost Omens High Seas",
+    "license": "ORC"
+  },
+  "traits": []
+}

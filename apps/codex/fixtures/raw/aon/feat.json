@@ -1,0 +1,65 @@
+{
+  "category": "feat",
+  "hits": [
+    {
+      "_id": "feat-5337",
+      "_source": {
+        "category": "feat",
+        "exclude_from_search": false,
+        "feat": [
+          "Camoflage Coat"
+        ],
+        "feat_markdown": "Camoflage Coat",
+        "id": "feat-5337",
+        "is_standard_ancestry_feat": false,
+        "level": 13,
+        "markdown": "<title\r\n    level=\"1\"\r\n    right=\"Feat 13\"\r\n    pfs=\"Standard\"\r\n>\r\n[Camoflage Coat](/Feats.aspx?ID=5337) <actions string=\"\" />\r\n</title>\n\n<traits>\r\n<trait label=\"Centaur\" url=\"/Traits.aspx?ID=747\" />\r\n</traits>\r\n\r\n<column gap=\"tiny\">\n\n**Source** [Howl of the Wild](/Sources.aspx?ID=226) pg. 33\n\n**Prerequisites**\r\n[Mottle-Coat Centaur](/Heritages.aspx?ID=295) heritage\n\n</column>\r\n\r\n---\r\n\r\nYou've learned to use your natural camouflage to your advantage, enhancing your ability to blend with your surroundings through careful movements and additional markings or attire. In your selected terrain, you can [Hide](/Actions.aspx?ID=2404) or [Sneak](/Actions.aspx?ID=2405) without cover or being concealed.",
+        "name": "Camoflage Coat",
+        "pfs": "Standard",
+        "prerequisite": "Mottle-Coat Centaur heritage",
+        "prerequisite_markdown": "[Mottle-Coat Centaur](/Heritages.aspx?ID=295) heritage",
+        "primary_source": "Howl of the Wild",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Howl of the Wild pg. 33",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2024-05-29",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n<trait label=\"Centaur\" url=\"/Traits.aspx?ID=747\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Howl of the Wild](/Sources.aspx?ID=226) pg. 33\n\n**Prerequisites**\r\n[Mottle-Coat Centaur](/Heritages.aspx?ID=295) heritage\n\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou've learned to use your natural camouflage to your advantage, enhancing your ability to blend with your surroundings through careful movements and additional markings or attire.\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Howl of the Wild"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Howl of the Wild](/Sources.aspx?ID=226) pg. 33",
+        "source_raw": [
+          "Howl of the Wild pg. 33"
+        ],
+        "speed": {},
+        "summary": "You've learned to use your natural camouflage to your advantage, enhancing your ability to blend with your surroundings through careful movements and additional markings or attire.",
+        "summary_markdown": "You've learned to use your natural camouflage to your advantage, enhancing your ability to blend with your surroundings through careful movements and additional markings or attire.",
+        "text": "<title level=\"1\" right=\"Feat 13\" pfs=\"Standard\" > Camoflage Coat Source Howl of the Wild pg. 33 Prerequisites Mottle-Coat Centaur heritage --- You've learned to use your natural camouflage to your advantage, enhancing your ability to blend with your surroundings through careful movements and additional markings or attire. In your selected terrain, you can Hide or Sneak without cover or being concealed.",
+        "trait": [
+          "Centaur"
+        ],
+        "trait_group": [
+          "Monster",
+          "Ancestry"
+        ],
+        "trait_markdown": "[Centaur](/Traits.aspx?ID=747)",
+        "trait_raw": [
+          "Centaur"
+        ],
+        "type": "Feat",
+        "url": "/Feats.aspx?ID=5337",
+        "weakness": {}
+      },
+      "sort": [
+        "camoflage coat",
+        "/feats.aspx?id=5337"
+      ]
+    }
+  ]
+}

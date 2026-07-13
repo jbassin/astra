@@ -8,7 +8,8 @@
     "test": "vitest run",
     "build": "tsc --noEmit",
     "fetch:aon": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-aon.ts",
-    "fetch:foundry": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-foundry.ts"
+    "fetch:foundry": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-foundry.ts",
+    "transform": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/transform.ts"
   },
   "dependencies": {
     "@astra/config": "workspace:*",

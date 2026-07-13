@@ -1,0 +1,85 @@
+{
+  "aonUrl": "/DruidicOrders.aspx?ID=8",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Animal",
+          "kind": "crossref",
+          "targetId": "druidic-order/animal"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Druidic Order "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core",
+          "kind": "crossref",
+          "targetId": "source/player-core"
+        },
+        {
+          "content": " pg. 125",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You have a strong connection to beasts, always feeling like you understood them (and they you) better than your own people. You stand for the animals of nature, a powerful animal companion at your side.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "druidic-order",
+  "edition": "remaster",
+  "facets": {},
+  "id": "druidic-order/animal",
+  "legacyOf": [
+    "druidic-order/animal@legacy"
+  ],
+  "name": "Animal",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "animal",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 125
+  },
+  "traits": []
+}

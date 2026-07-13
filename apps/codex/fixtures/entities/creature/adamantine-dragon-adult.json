@@ -1,0 +1,2820 @@
+{
+  "aonUrl": "/Monsters.aspx?ID=2933",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Adult Adamantine Dragon",
+          "kind": "brokenRef",
+          "target": "creature/adult-adamantine-dragon"
+        }
+      ],
+      "kind": "heading",
+      "level": 1
+    },
+    {
+      "children": [
+        {
+          "content": "The powerful adamantine dragons are one of several dragons known as skymetal dragons. The innate magic that flows through these dragons causes them to draw particular metals to their bodies like magnets or, in some cases, naturally grow these skymetals on their bodies. Adamantine dragons begin their lives with tough scales that are naturally replaced with thicker and even tougher adamantine plating as they grow older. Adamantine dragons are typically steadfast and loyal. Once they commit to a certain purpose, changing their minds is nigh impossible.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Recall Knowledge - Dragon",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Arcana",
+          "kind": "crossref",
+          "targetId": "skill/arcana"
+        },
+        {
+          "content": "): DC 31",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Unspecific Lore",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": ": DC 29",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Specific Lore",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": ": DC 26",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Adult Adamantine Dragon",
+          "kind": "brokenRef",
+          "target": "creature/adult-adamantine-dragon"
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Creature 13"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Monster Core",
+          "kind": "crossref",
+          "targetId": "source/monster-core"
+        },
+        {
+          "content": " pg. 109",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perception",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +23; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "darkvision",
+          "kind": "crossref",
+          "targetId": "creature-ability/darkvision"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "scent",
+          "kind": "crossref",
+          "targetId": "creature-ability/scent"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "imprecise",
+          "kind": "crossref",
+          "targetId": "rules/imprecise-senses"
+        },
+        {
+          "content": ") 60 feet, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "tremorsense",
+          "kind": "crossref",
+          "targetId": "creature-ability/tremorsense"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "imprecise",
+          "kind": "crossref",
+          "targetId": "rules/imprecise-senses"
+        },
+        {
+          "content": ") 90 feet",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Languages",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Common",
+          "kind": "crossref",
+          "targetId": "language/common"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Draconic",
+          "kind": "crossref",
+          "targetId": "language/draconic"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Fey",
+          "kind": "crossref",
+          "targetId": "language/fey"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Petran",
+          "kind": "crossref",
+          "targetId": "language/petran"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Sakvroth",
+          "kind": "crossref",
+          "targetId": "language/sakvroth"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Skills",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Acrobatics",
+          "kind": "crossref",
+          "targetId": "skill/acrobatics"
+        },
+        {
+          "content": " +22, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Athletics",
+          "kind": "crossref",
+          "targetId": "skill/athletics"
+        },
+        {
+          "content": " +27, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Intimidation",
+          "kind": "crossref",
+          "targetId": "skill/intimidation"
+        },
+        {
+          "content": " +24, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Mining Lore",
+          "kind": "crossref",
+          "targetId": "skill/lore"
+        },
+        {
+          "content": " +24, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nature",
+          "kind": "crossref",
+          "targetId": "skill/nature"
+        },
+        {
+          "content": " +23, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Survival",
+          "kind": "crossref",
+          "targetId": "skill/survival"
+        },
+        {
+          "content": " +25",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Str",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +8",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Dex",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +3",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Con",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +6",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Int",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +3",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Wis",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +4",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Cha",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +5",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "AC",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 33 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Fort",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +25 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Ref",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +20 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Will",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +23 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "+2 status to all saves vs. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "primal",
+          "kind": "crossref",
+          "targetId": "trait/primal"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "HP",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 220",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Immunities",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "paralyzed",
+          "kind": "crossref",
+          "targetId": "condition/paralyzed"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "petrified",
+          "kind": "crossref",
+          "targetId": "condition/petrified"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "sleep",
+          "kind": "crossref",
+          "targetId": "trait/sleep"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Resistances",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " physical 15",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "(except ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "adamantine",
+          "kind": "crossref",
+          "targetId": "equipment/adamantine-weapon"
+        },
+        {
+          "content": ")\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Abandon Armor",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Once the adamantine dragon is reduced to fewer than half their Hit Points, their resistance is reduced by 10 and they gain a +10 circumstance bonus to their Speeds.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Frightful Presence",
+          "kind": "crossref",
+          "targetId": "creature-ability/frightful-presence"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "aura",
+          "kind": "crossref",
+          "targetId": "trait/aura"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "emotion",
+          "kind": "crossref",
+          "targetId": "trait/emotion"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "fear",
+          "kind": "crossref",
+          "targetId": "trait/fear"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "mental",
+          "kind": "crossref",
+          "targetId": "trait/mental"
+        },
+        {
+          "content": ") 90 feet, DC 30\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Resilient Form",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Reaction",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Trigger",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The dragon is critically hit with a weapon or unarmed attack; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Effect",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The dragon's tough scales ward off deadly attacks. The dragon attempts a DC 17 flat check. On a success, the triggering attack becomes a normal hit.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Speed",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 30 feet, burrow 40 feet, fly 150 feet",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " jaws +27 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Magical",
+          "kind": "crossref",
+          "targetId": "trait/magical"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "reach 15 feet",
+          "kind": "crossref",
+          "targetId": "trait/reach"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 3d12+14 piercing plus ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Improved Grab",
+          "kind": "crossref",
+          "targetId": "creature-ability/improved-grab-improved-knockdown-or-improved-push"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " claw +27 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Agile",
+          "kind": "crossref",
+          "targetId": "trait/agile"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Magical",
+          "kind": "crossref",
+          "targetId": "trait/magical"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "reach 10 feet",
+          "kind": "crossref",
+          "targetId": "trait/reach"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 3d8+14 slashing plus ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Knockdown",
+          "kind": "crossref",
+          "targetId": "creature-ability/knockdown"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " tail +25 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Magical",
+          "kind": "crossref",
+          "targetId": "trait/magical"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "reach 20 feet",
+          "kind": "crossref",
+          "targetId": "trait/reach"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 3d10+14 bludgeoning",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Ranged",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " rock +25 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Brutal",
+          "kind": "crossref",
+          "targetId": "trait/brutal"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "range increment 120 feet",
+          "kind": "crossref",
+          "targetId": "trait/range"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 3d8+14 bludgeoning",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Adamantine Body",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "   The dragon's unarmed melee Strikes are ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "adamantine",
+          "kind": "crossref",
+          "targetId": "equipment/adamantine-weapon"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Avalanche Breath",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Two Actions",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Primal",
+          "kind": "crossref",
+          "targetId": "trait/primal"
+        },
+        {
+          "content": ") The dragon belches a mass of boulders that deals 11d8 bludgeoning damage in a 40-foot cone (DC 33 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "basic",
+          "kind": "crossref",
+          "targetId": "rules/basic-saving-throws"
+        },
+        {
+          "content": " Reflex save). They can't use Avalanche Breath again for 1d4 rounds.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Burrowing Pounce",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Three Actions",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": "  ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Requirements",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The dragon is burrowed; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Effect",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The dragon ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Burrows",
+          "kind": "crossref",
+          "targetId": "action/burrow"
+        },
+        {
+          "content": ", then ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Leaps",
+          "kind": "crossref",
+          "targetId": "action/leap"
+        },
+        {
+          "content": " out of the ground, landing at a point within 25 feet. The dragon makes a melee Strike against a creature within reach when they land. If the Strike is a critical hit, the target is knocked ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "prone",
+          "kind": "crossref",
+          "targetId": "condition/prone"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Draconic Frenzy",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Two Actions",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": "  The dragon makes two claw Strikes and one tail Strike in any order.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Draconic Momentum",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "   The dragon recharges their Avalanche Breath whenever they score a critical hit with a Strike.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Rock Tunneler",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "   The dragon can burrow through solid stone at a Speed of 20 feet. They can leave a tunnel if they desire, and they usually don't.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Swallow Whole",
+          "kind": "crossref",
+          "targetId": "creature-ability/swallow-whole"
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": "  Large, 3d12+7 bludgeoning, Rupture 29",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Throw Rock",
+          "kind": "crossref",
+          "targetId": "creature-ability/throw-rock"
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": "  ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "creature-family/dragon-adamantine"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "creature",
+  "edition": "remaster",
+  "embeddedItems": [
+    {
+      "body": [],
+      "name": "Jaws",
+      "slug": "jaws",
+      "traits": [
+        "magical",
+        "reach-15",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "body": [],
+      "name": "Claw",
+      "slug": "claw",
+      "traits": [
+        "agile",
+        "magical",
+        "reach-10",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "body": [],
+      "name": "Tail",
+      "slug": "tail",
+      "traits": [
+        "magical",
+        "reach-20"
+      ],
+      "type": "melee"
+    },
+    {
+      "body": [],
+      "name": "Rock",
+      "slug": "rock",
+      "traits": [
+        "brutal"
+      ],
+      "type": "melee"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "Tremorsense allows a monster to feel the vibrations through a solid surface caused by movement. It is an imprecise sense with a limited range (listed in the ability). Tremorsense functions only if the monster is on the same surface as the subject, and only if the subject is moving along (or burrowing through) the surface.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.Tremorsense"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Tremorsense (Imprecise) 90 feet",
+      "slug": "tremorsense-imprecise-90-feet",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [],
+      "name": "+2 Status to All Saves vs. Primal",
+      "slug": "2-status-to-all-saves-vs-primal",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Once the adamantine dragon is reduced to fewer than half their Hit Points, their resistance is reduced by 10 and they gain a +10 circumstance bonus to their Speeds.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Abandon Armor",
+      "slug": "abandon-armor",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "90 feet. ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 30,
+              "extra": {
+                "options": "area-effect,inflicts:frightened"
+              },
+              "kind": "check",
+              "type": "will"
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "A creature that first enters the area must attempt a Will save.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Regardless of the result of the saving throw, the creature is temporarily immune to this monster's Frightful Presence for 1 minute.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "kind": "divider"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Critical Success",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is unaffected by the presence.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Success",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 1",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Failure",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 2",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Critical Failure",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 4",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.FrightfulPresence"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Frightful Presence",
+      "slug": "frightful-presence",
+      "traits": [
+        "aura",
+        "emotion",
+        "fear",
+        "mental"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "reaction",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Trigger",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon is critically hit with a weapon or unarmed attack;",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Effect",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon's tough scales ward off deadly attacks. The dragon attempts a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 17,
+              "kind": "check",
+              "type": "flat"
+            },
+            {
+              "content": ". On a success, the triggering attack becomes a normal hit.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Resilient Form",
+      "slug": "resilient-form",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon's unarmed melee Strikes are adamantine.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Adamantine Body",
+      "slug": "adamantine-body",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "2",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon belches a mass of boulders that deals ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "11d8 bludgeoning",
+              "formula": "11d8[bludgeoning]",
+              "kind": "damage"
+            },
+            {
+              "content": " damage in a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "distance": 40,
+              "kind": "template",
+              "shape": "cone"
+            },
+            {
+              "content": " (",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "basic": true,
+              "dc": 33,
+              "extra": {
+                "options": "area-effect"
+              },
+              "kind": "check",
+              "type": "reflex"
+            },
+            {
+              "content": " save).",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "They can't use Avalanche Breath again for ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "formula": "1d4 #Recharge Avalanche Breath",
+              "kind": "inlineRoll",
+              "label": "1d4 rounds",
+              "rollKind": "gmr"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Avalanche Breath",
+      "slug": "avalanche-breath",
+      "traits": [
+        "primal"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "3",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Requirements",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon is burrowed",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Effect",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon Burrows, then Leaps out of the ground, landing at a point within 25 feet. The dragon makes a melee Strike against a creature within reach when they land. If the Strike is a critical hit, the target is knocked ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Prone",
+              "kind": "crossref",
+              "targetId": "condition/prone"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Burrowing Pounce",
+      "slug": "burrowing-pounce",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "2",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon makes two claw Strikes and one tail Strike in any order.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Draconic Frenzy",
+      "slug": "draconic-frenzy",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon recharges their Avalanche Breath whenever they score a critical hit with a Strike.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Draconic Momentum",
+      "slug": "draconic-momentum",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon can burrow through solid stone at a Speed of 20 feet. They can leave a tunnel if they desire, and they usually don't.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Rock Tunneler",
+      "slug": "rock-tunneler",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Large, ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "3d12+7 bludgeoning",
+              "formula": "(3d12+7)[bludgeoning]",
+              "kind": "damage"
+            },
+            {
+              "content": ", Rupture 29",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "The monster attempts to swallow a creature of the listed size or smaller that it has grabbed or restrained in its jaws or mouth. If a swallowed creature is of the maximum size listed, the monster can't use Swallow Whole again. If the creature is smaller than the maximum, the monster can usually swallow more creatures; the GM determines the maximum. The monster attempts an ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "extra": {
+                        "defense": "reflex"
+                      },
+                      "kind": "check",
+                      "type": "athletics"
+                    },
+                    {
+                      "content": " check opposed by the grabbed creature's Reflex DC. If it succeeds, it swallows the creature. The monster's mouth or jaws no longer grab a creature it has swallowed, so the monster is free to use them to Strike or Grab once again. The monster can't attack creatures it has swallowed.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "A swallowed creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Grabbed",
+                      "kind": "crossref",
+                      "targetId": "condition/grabbed"
+                    },
+                    {
+                      "content": ", is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Slowed 1",
+                      "kind": "crossref",
+                      "targetId": "condition/slowed"
+                    },
+                    {
+                      "content": ", and has to hold its breath or start suffocating. The swallowed creature takes the listed amount of damage when first swallowed and at the end of each of its turns while it's swallowed. If the victim ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Escapes",
+                      "kind": "crossref",
+                      "targetId": "action/escape"
+                    },
+                    {
+                      "content": " this ability's grabbed condition, it exits through the monster's mouth. This frees any other creature grabbed in the monster's mouth or jaws. A swallowed creature can attack the monster that has swallowed it, but only with unarmed attacks or with weapons of light Bulk or less. The swallowing creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Off-Guard",
+                      "kind": "crossref",
+                      "targetId": "condition/off-guard"
+                    },
+                    {
+                      "content": " against the attack. If the monster takes piercing or slashing damage equaling or exceeding the listed Rupture value from a single attack or spell, the swallowed creature cuts itself free. A creature that gets free by either Escaping or cutting itself free can immediately breathe and exits the swallowing monster's space.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "display": "Effect: Engulf and Swallow Whole",
+                      "kind": "brokenRef",
+                      "target": "Compendium.pf2e.bestiary-effects.Item.1cbIe569UD6paXad"
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "If the monster dies, a swallowed creature can be freed by creatures adjacent to the corpse if they spend a combined total of 3 actions cutting the monster open with a weapon or unarmed attack that deals piercing or slashing damage.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.SwallowWhole"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Swallow Whole",
+      "slug": "swallow-whole",
+      "traits": [
+        "attack"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "The monster picks up a rock within reach or retrieves a stowed rock and throws it, making a ranged Strike.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.ThrowRock"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Throw Rock",
+      "slug": "throw-rock",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "Requirements",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The monster's last action was a successful Strike that lists Grab in its damage entry, or the monster has a creature ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Grabbed",
+                      "kind": "crossref",
+                      "targetId": "condition/grabbed"
+                    },
+                    {
+                      "content": " or ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Restrained",
+                      "kind": "crossref",
+                      "targetId": "condition/restrained"
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "kind": "divider"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Effect",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " If used after a Strike, the monster attempts to ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "action": "grapple",
+                      "kind": "inlineAction"
+                    },
+                    {
+                      "content": " the creature using the body part it attacked with. This attempt neither applies nor counts toward the creature's multiple attack penalty.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "The monster can instead use Grab and choose one creature it's grabbing or restraining with an appendage that has Grab to automatically extend that condition to the end of the monster's next turn.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.Grab"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Grab",
+      "slug": "grab",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "Requirements",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The monster's last action was a successful Strike that lists Knockdown in its damage entry",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "kind": "divider"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Effect",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The monster attempts to ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "action": "trip",
+                      "kind": "inlineAction"
+                    },
+                    {
+                      "content": " the creature. This attempt neither applies nor counts toward the monster's multiple attack penalty.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.Knockdown"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Knockdown",
+      "slug": "knockdown",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "body": [],
+      "name": "Mining Lore",
+      "slug": "mining-lore",
+      "traits": [],
+      "type": "lore"
+    }
+  ],
+  "facets": {
+    "ac": 33,
+    "fortitudeSave": 25,
+    "hp": 220,
+    "perception": 23,
+    "reflexSave": 20,
+    "size": "huge",
+    "willSave": 23
+  },
+  "id": "creature/adamantine-dragon-adult",
+  "level": 13,
+  "name": "Adamantine Dragon (Adult)",
+  "rarity": "common",
+  "slug": "adamantine-dragon-adult",
+  "source": {
+    "book": "Monster Core",
+    "license": "ORC",
+    "page": 109
+  },
+  "traits": [
+    "dragon",
+    "primal"
+  ]
+}

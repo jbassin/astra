@@ -1,0 +1,25 @@
+{
+  "body": [],
+  "category": "armor",
+  "edition": "remaster",
+  "facets": {
+    "bulk": 2,
+    "featLevel": 0,
+    "itemCategory": "light-barding",
+    "price": "10 gp",
+    "rank": 0
+  },
+  "id": "armor/light-barding",
+  "level": 0,
+  "name": "Light Barding",
+  "rarity": "common",
+  "slug": "light-barding",
+  "source": {
+    "book": "Pathfinder Player Core",
+    "license": "ORC"
+  },
+  "traits": [
+    "barding",
+    "companion"
+  ]
+}

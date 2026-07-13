@@ -1,0 +1,226 @@
+{
+  "aonUrl": "/ClassSamples.aspx?ID=103",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Student of Thoughts",
+          "kind": "crossref",
+          "targetId": "class-sample/student-of-thoughts"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Class Sample Build"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Dark Archives (Remastered)",
+          "kind": "crossref",
+          "targetId": "source/dark-archives-remastered"
+        },
+        {
+          "content": " pg. 22",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You hear and learn from other minds to grow your knowledge.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": true,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Attributes",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "Intelligence, Wisdom, and Charisma ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Skills",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "display": "Arcana",
+          "kind": "crossref",
+          "targetId": "skill/arcana"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Occultism",
+          "kind": "crossref",
+          "targetId": "skill/occultism"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Society",
+          "kind": "crossref",
+          "targetId": "skill/society"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Higher-Level Feats",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "display": "Mental Balm",
+          "kind": "crossref",
+          "targetId": "feat/mental-balm"
+        },
+        {
+          "content": " (2nd), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Astral Tether",
+          "kind": "crossref",
+          "targetId": "feat/astral-tether"
+        },
+        {
+          "content": " (4th), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Thoughtsense",
+          "kind": "crossref",
+          "targetId": "feat/thoughtsense"
+        },
+        {
+          "content": " (8th)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-sample",
+  "edition": "remaster",
+  "facets": {},
+  "id": "class-sample/student-of-thoughts",
+  "name": "Student of Thoughts",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "student-of-thoughts",
+  "source": {
+    "book": "Dark Archives (Remastered)",
+    "license": "ORC",
+    "page": 22
+  },
+  "traits": []
+}

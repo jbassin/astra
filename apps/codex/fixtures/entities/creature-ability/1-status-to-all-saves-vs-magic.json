@@ -1,0 +1,18 @@
+{
+  "body": [],
+  "category": "creature-ability",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "itemCategory": "defensive"
+  },
+  "id": "creature-ability/1-status-to-all-saves-vs-magic",
+  "name": "+1 Status to All Saves vs. Magic",
+  "rarity": "common",
+  "slug": "1-status-to-all-saves-vs-magic",
+  "source": {
+    "book": "Pathfinder Monster Core",
+    "license": "ORC"
+  },
+  "traits": []
+}

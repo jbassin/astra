@@ -1,0 +1,143 @@
+{
+  "aonUrl": "/MonsterTemplates.aspx?ID=54",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Tengu",
+          "kind": "crossref",
+          "targetId": "creature-adjustment/tengu"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Creature Adjustment "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "NPC Core",
+          "kind": "crossref",
+          "targetId": "source/npc-core"
+        },
+        {
+          "content": " pg. 169",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Tengu traveled from their ancestral home in search of a better life. They love collecting all kinds of things. They often pick up traditions as they travel and integrate them into their own. Most tengu consider their companions to be their most valuable collection. • Replace the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "human",
+          "kind": "crossref",
+          "targetId": "trait/human"
+        },
+        {
+          "content": " trait with the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "tengu",
+          "kind": "crossref",
+          "targetId": "trait/tengu"
+        },
+        {
+          "content": " trait. • Add the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Tengu",
+          "kind": "crossref",
+          "targetId": "language/tengu"
+        },
+        {
+          "content": " language. • Add a beak Strike. It deals damage equal to the creature's lowest melee Strike and has the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "finesse",
+          "kind": "crossref",
+          "targetId": "trait/finesse"
+        },
+        {
+          "content": " trait. • Add the following abilities. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Low-Light Vision",
+          "kind": "crossref",
+          "targetId": "rules/low-light-vision"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "creature-adjustment",
+  "edition": "remaster",
+  "facets": {},
+  "id": "creature-adjustment/tengu",
+  "name": "Tengu",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "tengu",
+  "source": {
+    "book": "NPC Core",
+    "license": "ORC",
+    "page": 169
+  },
+  "traits": []
+}

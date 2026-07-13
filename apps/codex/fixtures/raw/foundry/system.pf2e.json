@@ -1,0 +1,238 @@
+{
+  "packs": [
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Actions",
+      "name": "actionspf2e",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/actions",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Ancestries",
+      "name": "ancestries",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/ancestries",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Backgrounds",
+      "name": "backgrounds",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/backgrounds",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/blue.webp",
+      "flags": {},
+      "label": "Divine Intercessions",
+      "name": "boons-and-curses",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "LIMITED"
+      },
+      "path": "packs/boons-and-curses",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Class Features",
+      "name": "classfeatures",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/class-features",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Classes",
+      "name": "classes",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/classes",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/blue.webp",
+      "flags": {},
+      "label": "Conditions",
+      "name": "conditionitems",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/conditions",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/red.webp",
+      "flags": {},
+      "label": "Crown of the Kobold King",
+      "name": "crown-of-the-kobold-king-bestiary",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "LIMITED"
+      },
+      "path": "packs/crown-of-the-kobold-king-bestiary",
+      "system": "pf2e",
+      "type": "Actor"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Deities",
+      "name": "deities",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/deities",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Equipment",
+      "name": "equipment-srd",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/equipment",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Familiar Abilities",
+      "name": "familiar-abilities",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/familiar-abilities",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Feats",
+      "name": "feats-srd",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/feats",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/red.webp",
+      "flags": {},
+      "label": "Hazards (Rulebooks)",
+      "name": "hazards",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "LIMITED"
+      },
+      "path": "packs/hazards",
+      "system": "pf2e",
+      "type": "Actor"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Heritages",
+      "name": "heritages",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/heritages",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/orange.webp",
+      "flags": {},
+      "label": "PF2e Journals",
+      "name": "journals",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/journals",
+      "system": "pf2e",
+      "type": "JournalEntry"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/red.webp",
+      "flags": {},
+      "label": "Monster Core",
+      "name": "pathfinder-monster-core",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "LIMITED"
+      },
+      "path": "packs/pathfinder-monster-core",
+      "system": "pf2e",
+      "type": "Actor"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/green.webp",
+      "flags": {},
+      "label": "Spells",
+      "name": "spells-srd",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/spells",
+      "system": "pf2e",
+      "type": "Item"
+    },
+    {
+      "banner": "systems/pf2e/assets/compendium-banner/red.webp",
+      "flags": {},
+      "label": "Vehicles",
+      "name": "vehicles",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "OBSERVER"
+      },
+      "path": "packs/vehicles",
+      "system": "pf2e",
+      "type": "Actor"
+    }
+  ]
+}

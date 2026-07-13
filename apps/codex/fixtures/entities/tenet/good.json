@@ -1,0 +1,110 @@
+{
+  "aonUrl": "/Tenets.aspx?ID=1",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Good",
+          "kind": "crossref",
+          "targetId": "tenet/good"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Champion Tenet "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 106",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "items": [
+        [
+          {
+            "content": "You must never perform acts anathema to your deity or willingly commit an evil act, such as murder, torture, or the casting of an ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "evil",
+            "kind": "crossref",
+            "targetId": "trait/evil"
+          },
+          {
+            "content": " spell.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "You must never knowingly harm an innocent, or allow immediate harm to one through inaction when you know you could reasonably prevent it. This tenet doesn't force you to take action against possible harm to innocents at an indefinite time in the future, or to sacrifice your life to protect them.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    }
+  ],
+  "category": "tenet",
+  "edition": "legacy",
+  "facets": {},
+  "id": "tenet/good",
+  "name": "Good",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "good",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 106
+  },
+  "traits": []
+}

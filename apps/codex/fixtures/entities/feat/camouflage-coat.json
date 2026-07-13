@@ -1,0 +1,160 @@
+{
+  "aonUrl": "/Feats.aspx?ID=5337",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Camoflage Coat",
+          "kind": "brokenRef",
+          "target": "feat/camoflage-coat"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Feat 13"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Howl of the Wild",
+          "kind": "crossref",
+          "targetId": "source/howl-of-the-wild"
+        },
+        {
+          "content": " pg. 33",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Prerequisites",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Mottle-Coat Centaur",
+          "kind": "crossref",
+          "targetId": "heritage/mottle-coat-centaur"
+        },
+        {
+          "content": " heritage",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "You've learned to use your natural camouflage to your advantage, enhancing your ability to blend with your surroundings through careful movements and additional markings or attire. In your selected terrain, you can ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Hide",
+          "kind": "crossref",
+          "targetId": "action/hide"
+        },
+        {
+          "content": " or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Sneak",
+          "kind": "crossref",
+          "targetId": "action/sneak"
+        },
+        {
+          "content": " without cover or being concealed.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "feat",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 13,
+    "itemCategory": "ancestry",
+    "prerequisites": [
+      "mottle-coat centaur heritage"
+    ],
+    "rank": 13
+  },
+  "id": "feat/camouflage-coat",
+  "level": 13,
+  "name": "Camouflage Coat",
+  "rarity": "common",
+  "slug": "camouflage-coat",
+  "source": {
+    "book": "Howl of the Wild",
+    "license": "ORC",
+    "page": 33
+  },
+  "traits": [
+    "centaur"
+  ]
+}

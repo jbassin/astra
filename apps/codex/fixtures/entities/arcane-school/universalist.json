@@ -1,0 +1,96 @@
+{
+  "aonUrl": "/ArcaneSchools.aspx?ID=9",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Universalist",
+          "kind": "crossref",
+          "targetId": "arcane-school/universalist"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Wizard Arcane School "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 210",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Instead of specializing narrowly in an arcane school, you can become a universalist wizard—by studying all the schools equally, you devote yourself to understanding the full breadth of the arcane arts. For each level of wizard spell slots you have, you can use ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Drain Bonded Item",
+          "kind": "crossref",
+          "targetId": "action/drain-bonded-item"
+        },
+        {
+          "content": " once per day to recall a spell of that level (instead of using it only once per day in total). You gain an extra wizard class feat, and you add one 1st-level spell of your choice to your spellbook.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "arcane-school",
+  "edition": "legacy",
+  "facets": {},
+  "id": "arcane-school/universalist",
+  "name": "Universalist",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "universalist",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 210
+  },
+  "traits": []
+}

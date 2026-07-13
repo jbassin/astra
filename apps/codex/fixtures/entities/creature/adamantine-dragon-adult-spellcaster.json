@@ -1,0 +1,3160 @@
+{
+  "body": [],
+  "category": "creature",
+  "edition": "remaster",
+  "embeddedItems": [
+    {
+      "body": [],
+      "name": "Primal Prepared Spells",
+      "slug": "primal-prepared-spells",
+      "traits": [],
+      "type": "spellcastingEntry"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The target's body slowly turns into a stone statue. The target must attempt a Fortitude save.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Slowed 1",
+              "kind": "crossref",
+              "targetId": "condition/slowed"
+            },
+            {
+              "content": " for 1 round as stone begins to form on their body.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is slowed 1 and must attempt a Fortitude save at the end of each of its turns; this ongoing save has the incapacitation trait. On a failed save, the slowed condition increases by 1 (or 2 on a critical failure) as stone growths creep across their body. A successful save reduces the slowed condition by 1. When a creature becomes fully unable to act due to the slowed condition from ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "petrify",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": true,
+                "superscript": false
+              }
+            },
+            {
+              "content": ", the spell then ends in a flash of gray light, leaving the target ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Petrified",
+              "kind": "crossref",
+              "targetId": "condition/petrified"
+            },
+            {
+              "content": " permanently as they become a statue. The spell also ends if the slowed condition is removed, which causes the stone to break off harmlessly.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " As failure, but the target is initially ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Slowed 2",
+              "kind": "crossref",
+              "targetId": "condition/slowed"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 6,
+      "name": "Petrify",
+      "slug": "petrify",
+      "traits": [
+        "concentrate",
+        "earth",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Dense, twitching creepers sprout from every surface and fill any bodies of water in the area. Any creature moving on the land, or Climbing or Swimming within the creepers, takes a –10-foot circumstance penalty to its Speeds while in the area. Once per round, you can Sustain the spell to make a vine lash out from any square within the expanse of creepers. This vine has a 15-foot reach. Make a melee spell attack roll against the target; on a success, the vine pulls the target into the creepers and makes it ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Immobilized",
+              "kind": "crossref",
+              "targetId": "condition/immobilized"
+            },
+            {
+              "content": " for 1 round or until the creature Escapes (against your spell DC), whichever comes first.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 6,
+      "name": "Tangling Creepers",
+      "slug": "tangling-creepers",
+      "traits": [
+        "concentrate",
+        "manipulate",
+        "plant",
+        "wood"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You conjure a spike that thrusts up from the earth beneath a target creature, potentially impaling it. The spike is made of cold iron and deals 8d6 piercing damage. The target must attempt a Reflex save.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target dodges the spike and is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is struck by the spike and takes half damage.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is impaled through a leg or another nonvital body part. The creature takes full damage and, if it's standing on solid ground, becomes ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Immobilized",
+              "kind": "crossref",
+              "targetId": "condition/immobilized"
+            },
+            {
+              "content": ". It can attempt to ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Escape",
+              "kind": "crossref",
+              "targetId": "action/escape"
+            },
+            {
+              "content": " (the DC is your spell DC). While it remains impaled, it takes damage from any weakness to cold iron it has at the end of each of its turns.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " As failure, but the creature is impaled through a vital organ or its center of mass, taking double damage, and it is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Off-Guard",
+              "kind": "crossref",
+              "targetId": "condition/off-guard"
+            },
+            {
+              "content": " as long as it's impaled.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (+1)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The damage increases by 2d6.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 5,
+      "name": "Impaling Spike",
+      "slug": "impaling-spike",
+      "traits": [
+        "concentrate",
+        "manipulate",
+        "metal"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You create a visible tunnel through the wall in the chosen area, replacing the area with empty space. If the wall is thicker than 10 feet, the tunnel ends 10 feet in. Even a small layer of metal in the wall prevents this spell from functioning. This spell doesn't reduce the integrity of the structure. When the spell ends, anyone inside the tunnel is shunted to the nearest exit.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (7th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The tunnel can be up to 20 feet deep. The areas of the wall that contain your tunnel's entrance appear completely normal (unless viewed with truesight or a similar effect), despite the tunnel's existence. The tunnel's entrance functions as a solid wall, but you can specify a password or a trigger, allowing creatures to enter freely.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 5,
+      "name": "Magic Passage",
+      "slug": "magic-passage",
+      "traits": [
+        "concentrate",
+        "earth",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You can ask questions of and receive answers from natural or worked stone. While stone is not intelligent, you speak with the natural spirits of the stone, which have a personality colored by the type of stone, as well as by the type of structure the stone is part of, for worked stone. A stone's perspective, perception, and knowledge give it a worldview different enough from a human's that it doesn't consider the same details important. Stones can mostly answer questions about creatures that touched them in the past and what is concealed beneath or behind them.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (6th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The duration is 8 hours.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 5,
+      "name": "Speak with Stones",
+      "slug": "speak-with-stones",
+      "traits": [
+        "concentrate",
+        "earth",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You shape the stone into a rough shape of your choice. The shaping process is too crude to produce intricate parts, fine details, moving pieces, or the like. Any creatures standing atop the stone when you reshape it must each attempt a Reflex save or Acrobatics check.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The creature is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The creature falls ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Prone",
+              "kind": "crossref",
+              "targetId": "condition/prone"
+            },
+            {
+              "content": " atop the stone.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The creature falls off the stone (if applicable) and lands Prone.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 4,
+      "name": "Shape Stone",
+      "slug": "shape-stone",
+      "traits": [
+        "concentrate",
+        "earth",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You repel effects that would hinder a creature or slow its movement. While under this spell's effect, the target ignores effects that would give them a circumstance penalty to Speed. When they attempt to ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Escape",
+              "kind": "crossref",
+              "targetId": "action/escape"
+            },
+            {
+              "content": " an effect that has them ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Immobilized",
+              "kind": "crossref",
+              "targetId": "condition/immobilized"
+            },
+            {
+              "content": ", ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Grabbed",
+              "kind": "crossref",
+              "targetId": "condition/grabbed"
+            },
+            {
+              "content": ", or ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Restrained",
+              "kind": "crossref",
+              "targetId": "condition/restrained"
+            },
+            {
+              "content": ", they automatically succeed unless the effect is magical and of a higher rank than the ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "unfettered movement",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": true,
+                "superscript": false
+              }
+            },
+            {
+              "content": " spell.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "display": "Spell Effect: Unfettered Movement",
+              "kind": "brokenRef",
+              "target": "Compendium.pf2e.spell-effects.Item.Spell Effect: Unfettered Movement"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 4,
+      "name": "Unfettered Movement",
+      "slug": "unfettered-movement",
+      "traits": [
+        "concentrate",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The target transforms into a vaporous state. In this state, the target is amorphous. It loses any item bonus to AC and all other effects and bonuses from armor, and it uses its proficiency modifier for unarmored defense. It gains resistance 8 to physical damage and is immune to precision damage. It can't cast spells, activate items, or use actions that have the attack or manipulate trait. It gains a fly Speed of 10 feet and can slip through tiny cracks. The target can Dismiss the spell.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "display": "Spell Effect: Vapor Form",
+              "kind": "brokenRef",
+              "target": "Compendium.pf2e.spell-effects.Item.Spell Effect: Vapor Form"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 4,
+      "name": "Vapor Form",
+      "slug": "vapor-form",
+      "traits": [
+        "air",
+        "concentrate",
+        "manipulate",
+        "polymorph"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Using the weight of earth, you hamper a target's flight, with effects based on its Fortitude save. If the creature reaches the ground safely, it doesn't take falling damage.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target falls safely up to 120 feet.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target falls safely up to 120 feet. If it hits the ground, it can't Fly, levitate, or otherwise leave the ground for 1 round.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target falls safely up to 120 feet. If it hits the ground, it can't Fly, levitate, or otherwise leave the ground for 1 minute.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 3,
+      "name": "Earthbind",
+      "slug": "earthbind",
+      "traits": [
+        "concentrate",
+        "earth",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You can either transform into a stone or merge with stone. While transformed, you can't move or affect anything outside the stone, but you can cast spells as long as they don't require line of effect beyond the stone. You can Dismiss this spell.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "items": [
+            [
+              {
+                "content": "Merge with Stone",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              },
+              {
+                "content": " The spell's duration is 10 minutes. While casting the spell, you must touch a stone with enough volume to fit you and your possessions or the spell is disrupted. While merged, you can hear, but not see, what's going on outside the stone. If the stone takes damage while you're inside it, you're expelled from the stone and take 10d6 damage. ",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              },
+              {
+                "content": "Magic passage",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": true,
+                  "superscript": false
+                }
+              },
+              {
+                "content": " expels you without dealing damage. The spell ends if you're ever outside the stone.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Turn into a Stone",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              },
+              {
+                "content": " The spell's duration is 8 hours. You become a Large stone. Perception checks don't reveal your true nature, but a successful Nature or Survival check against your spell DC reveals that you appear to be a stone that is strangely new to the area. While in this form, you can observe everything around you, using your normal senses. As a stone, your AC is 23, and only status bonuses, status penalties, circumstance bonuses, and circumstance penalties affect you. Any successes and critical successes you roll on Reflex saves are failures\n",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "kind": "list",
+          "ordered": false
+        }
+      ],
+      "level": 3,
+      "name": "One with Stone",
+      "slug": "one-with-stone",
+      "traits": [
+        "concentrate",
+        "earth",
+        "manipulate",
+        "polymorph"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You dilate the flow of time around the target, slowing its actions.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Slowed 1",
+              "kind": "crossref",
+              "targetId": "condition/slowed"
+            },
+            {
+              "content": " for 1 round.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Slowed 1",
+              "kind": "crossref",
+              "targetId": "condition/slowed"
+            },
+            {
+              "content": " for 1 minute.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Slowed 2",
+              "kind": "crossref",
+              "targetId": "condition/slowed"
+            },
+            {
+              "content": " for 1 minute.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (6th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " You can target up to 10 creatures.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 3,
+      "name": "Slow",
+      "slug": "slow",
+      "traits": [
+        "concentrate",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You create a shroud of darkness that prevents light from penetrating or emanating within the area. Light does not enter the area and any non-magical light sources, such as a torch or lantern, do not emanate any light while inside the area, even if their light radius would extend beyond the darkness. This also suppresses magical light of your darkness spell's rank or lower. Light can't pass through, so creatures in the area can't see outside. From outside, it appears as a globe of pure darkness.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (4th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " Even creatures with darkvision (but not greater darkvision) can barely see through the darkness. They treat targets seen through the darkness as ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Concealed",
+              "kind": "crossref",
+              "targetId": "condition/concealed"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 2,
+      "name": "Darkness",
+      "slug": "darkness",
+      "traits": [
+        "concentrate",
+        "darkness",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "A high-frequency sonic attack shatters a nearby object. You deal 2d10 sonic damage to the object, ignoring the object's Hardness if it is 4 or lower.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (+1)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The damage increases by 1d10, and the Hardness the spell ignores increases by 2.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 2,
+      "name": "Shatter",
+      "slug": "shatter",
+      "traits": [
+        "concentrate",
+        "manipulate",
+        "sonic"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The target can walk on the surface of water and other liquids without falling through. It can go underwater if it wishes, but in that case it must Swim normally. This spell doesn't grant the ability to breathe underwater.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (4th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The spell's range increases to 30 feet, the duration increases to 1 hour, and you can target up to 10 creatures.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 2,
+      "name": "Water Walk",
+      "slug": "water-walk",
+      "traits": [
+        "concentrate",
+        "manipulate",
+        "water"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Trigger",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " A creature within range enters an environment where it can't breathe.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "A bubble of pure air appears around the target's head, allowing it to breathe normally. The effect ends as soon as the target returns to an environment where it can breathe normally.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Air Bubble",
+      "slug": "air-bubble",
+      "traits": [
+        "air",
+        "concentrate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You fling a large glob of acid that immediately detonates, spraying nearby creatures. Creatures in the area take 1d8 acid damage with a basic Reflex save; on a critical failure, the creature also takes ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "1+floor((@item.rank -1)/2) persistent acid",
+              "formula": "(1+floor((@item.rank -1)/2))[persistent,acid]",
+              "kind": "damage"
+            },
+            {
+              "content": " damage.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (+2)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The initial damage increases by 1d8, and the persistent damage on a critical failure increases by 1.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Caustic Blast",
+      "slug": "caustic-blast",
+      "traits": [
+        "acid",
+        "cantrip",
+        "concentrate",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You send out a pulse that registers the presence of magic. You receive no information beyond the presence or absence of magic. You can choose to ignore magic you're fully aware of, such as the magic items and ongoing spells of you and your allies. You detect illusion magic only if that magic's effect has a lower rank than the rank of your ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "detect magic",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": true,
+                "superscript": false
+              }
+            },
+            {
+              "content": " spell. However, items that have an illusion aura but aren't deceptive in appearance (such as an ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Invisibility Potion",
+              "kind": "crossref",
+              "targetId": "equipment/invisibility-potion"
+            },
+            {
+              "content": ") typically are detected normally.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (3rd)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " You learn the rank or level of the most powerful magical effect the spell detects, as determined by the GM.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (4th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " As 3rd rank, but you also pinpoint the source of the highest-rank magic. Like for an imprecise sense, you don't learn the exact location, but can narrow down the source to within a 5-foot cube (or the nearest if larger than that).",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Detect Magic",
+      "slug": "detect-magic",
+      "traits": [
+        "cantrip",
+        "concentrate",
+        "detection",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "In your mind's eye, you magically reorient yourself. You immediately know which direction is north (if it exists at your current location), and you can choose a location you were at within the last 24 hours and learn what direction it lies.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (3rd)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " You can choose a location you were at within the last week.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (7th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " You can choose a location you were at regardless of how long ago you were there.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Know the Way",
+      "slug": "know-the-way",
+      "traits": [
+        "cantrip",
+        "concentrate",
+        "detection",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You harmlessly place your unique magical sigil, which is about 1 square inch in size, on the targeted creature or object. The mark can be visible or invisible, and you can change it from one state to another by using an Interact action to touch the target. The mark can be scrubbed or scraped off with 5 minutes of work. If it's on a creature, it fades naturally over the course of a week. The time before the mark fades increases depending on your heightened level.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (3rd)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The sigil instead fades after 1 month.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (5th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The sigil instead fades after 1 year.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (7th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The sigil never fades.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Sigil",
+      "slug": "sigil",
+      "traits": [
+        "cantrip",
+        "concentrate",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The wind at your back pushes you to find new horizons. You gain a +10-foot status bonus to your Speed.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "display": "Spell Effect: Tailwind",
+              "kind": "brokenRef",
+              "target": "Compendium.pf2e.spell-effects.Item.Spell Effect: Tailwind"
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (2nd)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The duration increases to 8 hours.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "display": "Spell Effect: Tailwind (8 hours)",
+              "kind": "brokenRef",
+              "target": "Compendium.pf2e.spell-effects.Item.Spell Effect: Tailwind (8 hours)"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Tailwind",
+      "slug": "tailwind",
+      "traits": [
+        "air",
+        "concentrate",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "A vine appears from thin air, flicking from your hand and lashing itself to the target. Attempt a spell attack roll against the target.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "display": "Spell Effect: Tangle Vine",
+              "kind": "brokenRef",
+              "target": "Compendium.pf2e.spell-effects.Item.Spell Effect: Tangle Vine"
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target gains the ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Immobilized",
+              "kind": "crossref",
+              "targetId": "condition/immobilized"
+            },
+            {
+              "content": " condition and takes a –10-foot circumstance penalty to its Speeds for 1 round. It can attempt to ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Escape",
+              "kind": "crossref",
+              "targetId": "action/escape"
+            },
+            {
+              "content": " against your spell DC to remove the penalty and the immobilized condition.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target takes a –10-foot circumstance penalty to its Speeds for 1 round. It can attempt to Escape against your spell DC to remove the penalty.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (2nd)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The effects last for 2 rounds.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (4th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The effects last for 1 minute.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Tangle Vine",
+      "slug": "tangle-vine",
+      "traits": [
+        "attack",
+        "cantrip",
+        "concentrate",
+        "manipulate",
+        "plant",
+        "wood"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You obscure the tracks you leave behind. The DC of checks to Track you gains a +4 status bonus or is equal to your spell DC, whichever results in a higher DC.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (2nd)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The duration increases to 8 hours.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Heightened (4th)",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The duration increases to 8 hours. The spell has a range of 20 feet and an area of a 20-foot-emanation, affecting up to 10 creatures of your choice within that area.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Vanishing Tracks",
+      "slug": "vanishing-tracks",
+      "traits": [
+        "concentrate",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [],
+      "name": "Jaws",
+      "slug": "jaws",
+      "traits": [
+        "magical",
+        "reach-15",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "body": [],
+      "name": "Claw",
+      "slug": "claw",
+      "traits": [
+        "agile",
+        "magical",
+        "reach-10",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "body": [],
+      "name": "Tail",
+      "slug": "tail",
+      "traits": [
+        "magical",
+        "reach-20"
+      ],
+      "type": "melee"
+    },
+    {
+      "body": [],
+      "name": "Rock",
+      "slug": "rock",
+      "traits": [
+        "brutal"
+      ],
+      "type": "melee"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "Tremorsense allows a monster to feel the vibrations through a solid surface caused by movement. It is an imprecise sense with a limited range (listed in the ability). Tremorsense functions only if the monster is on the same surface as the subject, and only if the subject is moving along (or burrowing through) the surface.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.Tremorsense"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Tremorsense (Imprecise) 90 feet",
+      "slug": "tremorsense-imprecise-90-feet",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [],
+      "name": "+2 Status to All Saves vs. Primal",
+      "slug": "2-status-to-all-saves-vs-primal",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Once the adamantine dragon is reduced to fewer than half their Hit Points, their resistance is reduced by 10 and they gain a +10 circumstance bonus to their Speeds.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Abandon Armor",
+      "slug": "abandon-armor",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "90 feet. ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 30,
+              "extra": {
+                "options": "area-effect,inflicts:frightened"
+              },
+              "kind": "check",
+              "type": "will"
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "A creature that first enters the area must attempt a Will save.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Regardless of the result of the saving throw, the creature is temporarily immune to this monster's Frightful Presence for 1 minute.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "kind": "divider"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Critical Success",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is unaffected by the presence.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Success",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 1",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Failure",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 2",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Critical Failure",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 4",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.FrightfulPresence"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Frightful Presence",
+      "slug": "frightful-presence",
+      "traits": [
+        "aura",
+        "emotion",
+        "fear",
+        "mental"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "reaction",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Trigger",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon is critically hit with a weapon or unarmed attack;",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Effect",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon's tough scales ward off deadly attacks. The dragon attempts a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 17,
+              "kind": "check",
+              "type": "flat"
+            },
+            {
+              "content": ". On a success, the triggering attack becomes a normal hit.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Resilient Form",
+      "slug": "resilient-form",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon's unarmed melee Strikes are adamantine.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Adamantine Body",
+      "slug": "adamantine-body",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "2",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon belches a mass of boulders that deals ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "11d8 bludgeoning",
+              "formula": "11d8[bludgeoning]",
+              "kind": "damage"
+            },
+            {
+              "content": " damage in a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "distance": 40,
+              "kind": "template",
+              "shape": "cone"
+            },
+            {
+              "content": " (",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "basic": true,
+              "dc": 33,
+              "extra": {
+                "options": "area-effect"
+              },
+              "kind": "check",
+              "type": "reflex"
+            },
+            {
+              "content": " save).",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "They can't use Avalanche Breath again for ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "formula": "1d4 #Recharge Avalanche Breath",
+              "kind": "inlineRoll",
+              "label": "1d4 rounds",
+              "rollKind": "gmr"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Avalanche Breath",
+      "slug": "avalanche-breath",
+      "traits": [
+        "primal"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "3",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Requirements",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon is burrowed",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Effect",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dragon Burrows, then Leaps out of the ground, landing at a point within 25 feet. The dragon makes a melee Strike against a creature within reach when they land. If the Strike is a critical hit, the target is knocked ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Prone",
+              "kind": "crossref",
+              "targetId": "condition/prone"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Burrowing Pounce",
+      "slug": "burrowing-pounce",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dragon can burrow through solid stone at a Speed of 20 feet. They can leave a tunnel if they desire, and they usually don't.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Rock Tunneler",
+      "slug": "rock-tunneler",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Large, ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "3d12+7 bludgeoning",
+              "formula": "(3d12+7)[bludgeoning]",
+              "kind": "damage"
+            },
+            {
+              "content": ", Rupture 29",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "The monster attempts to swallow a creature of the listed size or smaller that it has grabbed or restrained in its jaws or mouth. If a swallowed creature is of the maximum size listed, the monster can't use Swallow Whole again. If the creature is smaller than the maximum, the monster can usually swallow more creatures; the GM determines the maximum. The monster attempts an ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "extra": {
+                        "defense": "reflex"
+                      },
+                      "kind": "check",
+                      "type": "athletics"
+                    },
+                    {
+                      "content": " check opposed by the grabbed creature's Reflex DC. If it succeeds, it swallows the creature. The monster's mouth or jaws no longer grab a creature it has swallowed, so the monster is free to use them to Strike or Grab once again. The monster can't attack creatures it has swallowed.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "A swallowed creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Grabbed",
+                      "kind": "crossref",
+                      "targetId": "condition/grabbed"
+                    },
+                    {
+                      "content": ", is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Slowed 1",
+                      "kind": "crossref",
+                      "targetId": "condition/slowed"
+                    },
+                    {
+                      "content": ", and has to hold its breath or start suffocating. The swallowed creature takes the listed amount of damage when first swallowed and at the end of each of its turns while it's swallowed. If the victim ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Escapes",
+                      "kind": "crossref",
+                      "targetId": "action/escape"
+                    },
+                    {
+                      "content": " this ability's grabbed condition, it exits through the monster's mouth. This frees any other creature grabbed in the monster's mouth or jaws. A swallowed creature can attack the monster that has swallowed it, but only with unarmed attacks or with weapons of light Bulk or less. The swallowing creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Off-Guard",
+                      "kind": "crossref",
+                      "targetId": "condition/off-guard"
+                    },
+                    {
+                      "content": " against the attack. If the monster takes piercing or slashing damage equaling or exceeding the listed Rupture value from a single attack or spell, the swallowed creature cuts itself free. A creature that gets free by either Escaping or cutting itself free can immediately breathe and exits the swallowing monster's space.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "display": "Effect: Engulf and Swallow Whole",
+                      "kind": "brokenRef",
+                      "target": "Compendium.pf2e.bestiary-effects.Item.1cbIe569UD6paXad"
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "If the monster dies, a swallowed creature can be freed by creatures adjacent to the corpse if they spend a combined total of 3 actions cutting the monster open with a weapon or unarmed attack that deals piercing or slashing damage.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.SwallowWhole"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Swallow Whole",
+      "slug": "swallow-whole",
+      "traits": [
+        "attack"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "The monster picks up a rock within reach or retrieves a stowed rock and throws it, making a ranged Strike.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.ThrowRock"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Throw Rock",
+      "slug": "throw-rock",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "Requirements",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The monster's last action was a successful Strike that lists Grab in its damage entry, or the monster has a creature ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Grabbed",
+                      "kind": "crossref",
+                      "targetId": "condition/grabbed"
+                    },
+                    {
+                      "content": " or ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Restrained",
+                      "kind": "crossref",
+                      "targetId": "condition/restrained"
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "kind": "divider"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Effect",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " If used after a Strike, the monster attempts to ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "action": "grapple",
+                      "kind": "inlineAction"
+                    },
+                    {
+                      "content": " the creature using the body part it attacked with. This attempt neither applies nor counts toward the creature's multiple attack penalty.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "The monster can instead use Grab and choose one creature it's grabbing or restraining with an appendage that has Grab to automatically extend that condition to the end of the monster's next turn.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.Grab"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Grab",
+      "slug": "grab",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "Requirements",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The monster's last action was a successful Strike that lists Knockdown in its damage entry",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "kind": "divider"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Effect",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The monster attempts to ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "action": "trip",
+                      "kind": "inlineAction"
+                    },
+                    {
+                      "content": " the creature. This attempt neither applies nor counts toward the monster's multiple attack penalty.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.Knockdown"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Knockdown",
+      "slug": "knockdown",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "body": [],
+      "name": "Mining Lore",
+      "slug": "mining-lore",
+      "traits": [],
+      "type": "lore"
+    }
+  ],
+  "facets": {
+    "ac": 33,
+    "fortitudeSave": 25,
+    "hp": 220,
+    "perception": 23,
+    "reflexSave": 20,
+    "size": "huge",
+    "willSave": 23
+  },
+  "id": "creature/adamantine-dragon-adult-spellcaster",
+  "level": 13,
+  "name": "Adamantine Dragon (Adult, Spellcaster)",
+  "rarity": "common",
+  "slug": "adamantine-dragon-adult-spellcaster",
+  "source": {
+    "book": "Pathfinder Monster Core",
+    "license": "ORC"
+  },
+  "traits": [
+    "dragon",
+    "primal"
+  ],
+  "variantOf": "creature/adamantine-dragon-adult"
+}

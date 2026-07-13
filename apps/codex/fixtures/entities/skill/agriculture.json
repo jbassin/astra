@@ -1,0 +1,201 @@
+{
+  "aonUrl": "/Skills.aspx?ID=18",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Agriculture",
+          "kind": "crossref",
+          "targetId": "skill/agriculture"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Skill "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Kingmaker Adventure Path",
+          "kind": "crossref",
+          "targetId": "source/kingmaker-adventure-path"
+        },
+        {
+          "content": " pg. 522",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Agriculture measures the kingdom's ability to cultivate the land, bringing forth crops, flocks, and livestock.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Agriculture Untrained General Actions",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "items": [
+        [
+          {
+            "display": "Focused Attention",
+            "kind": "crossref",
+            "targetId": "skill-general-action/focused-attention"
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    },
+    {
+      "children": [
+        {
+          "content": "Related Feats",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "To see a list of Feats related to Agriculture, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "click here",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Agriculture Untrained Actions",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/establish-farmland"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/harvest-crops"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "skill",
+  "edition": "legacy",
+  "facets": {},
+  "id": "skill/agriculture",
+  "name": "Agriculture",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "agriculture",
+  "source": {
+    "book": "Kingmaker Adventure Path",
+    "license": "OGL",
+    "page": 522
+  },
+  "traits": []
+}

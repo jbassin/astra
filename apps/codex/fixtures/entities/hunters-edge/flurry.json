@@ -1,0 +1,115 @@
+{
+  "aonUrl": "/HuntersEdge.aspx?ID=4",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Flurry",
+          "kind": "crossref",
+          "targetId": "hunters-edge/flurry"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Ranger Hunter's Edge "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core",
+          "kind": "crossref",
+          "targetId": "source/player-core"
+        },
+        {
+          "content": " pg. 154",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You have trained to unleash a devastating flurry of attacks upon your prey. Your multiple attack penalty for attacks against your hunted prey is –3 (–2 with an agile attack) on your second attack of the turn instead of –5, and –6 (–4 with an agile attack) on your third or subsequent attack of the turn, instead of –10.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Masterful Hunter",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 17"
+    },
+    {
+      "children": [
+        {
+          "content": "You can blend your weapon mastery with skillful targeting to make a series of precise attacks. If you have master proficiency with your weapon, your multiple attack penalty for attacks against your hunted prey is –2 (–1 with an agile weapon) on your second attack of the turn, and –4 (–2 with an agile weapon) on your third and subsequent attacks of the turn.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "hunters-edge",
+  "edition": "remaster",
+  "facets": {},
+  "id": "hunters-edge/flurry",
+  "legacyOf": [
+    "hunters-edge/flurry@legacy"
+  ],
+  "name": "Flurry",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "flurry",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 154
+  },
+  "traits": []
+}

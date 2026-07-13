@@ -169,6 +169,20 @@ interface SequenceOptions {
    * field explicitly allows bare inline arrays (list items, table cells, mark
    * wrappers) — matches the `nodes.test.ts` fixture convention. */
   wrapLooseInline: boolean;
+  /** S4 emit-gate finding (real corpus, `PF2E.NPC.Abilities.Glossary.Engulf`
+   * among others — 139+ real uses): a `<p>` sometimes reopens mid-string with
+   * no `</p>` in between at all (not just the already-handled "unclosed at
+   * end of string" case, `consumeClose`'s own EOF tolerance). Standard HTML5
+   * tag-omission rules treat a `<p>` immediately followed by another `<p>` as
+   * an IMPLICIT close of the first — mirrored here: when set, an OPEN token
+   * matching this name ends the sequence (left UNCONSUMED, same as a real
+   * `stopAt` close) instead of recursing into it as this sequence's own
+   * content. Without this, the reopening `<p>` got parsed as a nested
+   * `paragraph` block sitting inside the OUTER paragraph's `InlineNode[]`
+   * children — a real schema violation only the emit-time zod validation
+   * gate (acceptance C) caught, since no S2 unit fixture exercised this exact
+   * malformed-markup shape. */
+  reopenBoundaryTag?: string;
 }
 
 /**
@@ -216,6 +230,12 @@ function parseSequence(
       return out;
     }
     if (tok.type === "close" && opts.stopAt.has(tok.name)) {
+      flushInline();
+      return out;
+    }
+    if (tok.type === "open" && tok.tag.name === opts.reopenBoundaryTag) {
+      // Implicit close via reopen (see `reopenBoundaryTag`'s doc comment) —
+      // left UNCONSUMED so the caller's own loop sees it as fresh content.
       flushInline();
       return out;
     }
@@ -312,8 +332,16 @@ function parseSequence(
         const children = parseSequence(cursor, ctx, {
           stopAt: new Set(["p"]),
           wrapLooseInline: false,
+          reopenBoundaryTag: "p",
         });
-        consumeClose(cursor, "p");
+        // Only consume a REAL `</p>` when the cursor is actually sitting on
+        // one — `reopenBoundaryTag` above can also end this sequence at an
+        // unconsumed peer `<p>` open (the implicit-close case, no `</p>` to
+        // consume at all); `consumeClose` would wrongly throw on that token,
+        // so it's only called for the ordinary explicit-close path.
+        const next = cursor.peek();
+        if (next !== undefined && next.type === "close" && next.name === "p")
+          consumeClose(cursor, "p");
         out.push({ kind: "paragraph", children: children as InlineNode[] });
         continue;
       }

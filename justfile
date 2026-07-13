@@ -450,6 +450,34 @@ portal-module-install: portal-module-build
     cp apps/portal/module/dist/main.js "$dest/dist/main.js"
     echo "installed portal module -> $dest (restart/refresh Foundry to pick it up)"
 
+# --- codex (0029) ---
+
+# Refresh the codex corpus (D29-4): re-fetch both snapshots, re-transform, print
+# the report summary. A deliberate, diffable event, never implicit in a build —
+# refuses to run if the git index is dirty under apps/codex (the
+# corpus-manifest.json diff must be reviewable alone, the linguist-commit-timer
+# lesson applied here too). Re-downloads ~259 MB (AoN) + the Foundry sparse
+# clone; not cheap, don't run casually.
+codex-refresh:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    if [ -n "$(git status --porcelain -- apps/codex)" ]; then
+      echo "codex-refresh: apps/codex has uncommitted changes — commit or stash first" >&2
+      echo "(the corpus-manifest.json diff from this refresh must be reviewable alone):" >&2
+      git status --porcelain -- apps/codex >&2
+      exit 1
+    fi
+    echo "codex-refresh: fetching Foundry snapshot..."
+    pnpm --filter @astra/codex fetch:foundry
+    echo "codex-refresh: fetching AoN snapshot..."
+    pnpm --filter @astra/codex fetch:aon
+    echo "codex-refresh: running the transform..."
+    pnpm --filter @astra/codex transform
+    echo ""
+    echo "codex-refresh: done. report.md summary:"
+    head -n 40 apps/codex/data/corpus/report.md
+
 # --- Host edge (shared reverse proxy) ---
 
 # The decrypted CF token, exported as {$CF_API_TOKEN} for the caddyfile adapter.

@@ -1,0 +1,249 @@
+{
+  "aonUrl": "/DeviantFeats.aspx?ID=4",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Blight Soul",
+          "kind": "crossref",
+          "targetId": "deviant-ability-classification/blight-soul"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Deviant Ability Classification "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Pathfinder #202: Severed at the Root",
+          "kind": "crossref",
+          "targetId": "source/pathfinder-202-severed-at-the-root"
+        },
+        {
+          "content": " pg. 74",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Whether through planar exploration or unintended catastrophe, you’ve come into close contact with Ayrzul’s Blight and have been forever changed. As the Blight is a realm of invasive rot, pernicious decay, and deadly radiation, so too are you capable of wielding the powers of decay.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Feats",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "feat/release-spores"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "feat/rotten-slurry"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "feat/irradiate"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "feat/unleash-the-blight"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Backlash: Fungal Rot",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "As you use your powers, radioactive molds and fungi consume your flesh, making you look (and feel) like a rotting, walking corpse.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Mild Backlash",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You take damage equal to your level as your body decays.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Moderate Backlash",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You take damage equal to your level and become ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "sickened",
+          "kind": "crossref",
+          "targetId": "condition/sickened"
+        },
+        {
+          "content": " 2.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Severe Backlash",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You take damage equal to twice your level and become sickened 4. You can’t reduce the value of your sickened condition below 1 for 1 hour. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "deviant-ability-classification",
+  "edition": "remaster",
+  "facets": {},
+  "id": "deviant-ability-classification/blight-soul",
+  "name": "Blight Soul",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "blight-soul",
+  "source": {
+    "book": "Pathfinder #202: Severed at the Root",
+    "license": "ORC",
+    "page": 74
+  },
+  "traits": []
+}

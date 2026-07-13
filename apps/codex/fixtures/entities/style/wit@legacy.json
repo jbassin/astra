@@ -1,0 +1,143 @@
+{
+  "aonUrl": "/Styles.aspx?ID=5",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Wit",
+          "kind": "crossref",
+          "targetId": "style/wit"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Swashbuckler Style "
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Advanced Player's Guide",
+          "kind": "crossref",
+          "targetId": "source/advanced-players-guide"
+        },
+        {
+          "content": " pg. 85",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You are friendly, clever, and full of humor, always knowing just what to say in any situation. Your witticisms leave foes unprepared for the skill and speed of your attacks. You are trained in ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Diplomacy",
+          "kind": "crossref",
+          "targetId": "skill/diplomacy"
+        },
+        {
+          "content": " and gain the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Bon Mot",
+          "kind": "crossref",
+          "targetId": "feat/bon-mot"
+        },
+        {
+          "content": " skill feat. You gain panache during an encounter whenever you succeed at a Bon Mot against a foe.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Exemplary Finisher",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "9th"
+    },
+    {
+      "children": [
+        {
+          "content": "The foe takes a –2 circumstance penalty to attack rolls against you until the start of your next turn.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "style",
+  "edition": "legacy",
+  "facets": {},
+  "id": "style/wit@legacy",
+  "name": "Wit",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "style/wit"
+  ],
+  "slug": "wit",
+  "source": {
+    "book": "Advanced Player's Guide",
+    "license": "OGL",
+    "page": 85
+  },
+  "traits": []
+}
