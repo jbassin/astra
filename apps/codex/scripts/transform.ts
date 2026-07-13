@@ -22,6 +22,7 @@
  */
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { pathToFileURL } from "node:url";
 
 import { loadConfig } from "@astra/config";
 
@@ -446,4 +447,11 @@ function main(): void {
   console.log(`\n(full report at ${join(corpusRoot, "report.md")})`);
 }
 
-main();
+// Run only when executed as a CLI — transform.test.ts imports `runTransform`
+// from this module, and an unconditional main() would kick off the REAL
+// host-path transform at import time (ENOENT on any machine without the
+// gitignored data/ — the exact fresh-clone hermeticity D29-12 mandates).
+const invokedPath = process.argv[1];
+if (invokedPath !== undefined && import.meta.url === pathToFileURL(invokedPath).href) {
+  main();
+}
