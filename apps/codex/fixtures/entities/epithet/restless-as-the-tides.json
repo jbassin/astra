@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Relics.aspx?ID=49",
+  "aonUrl": "/Epithets.aspx?ID=11",
   "body": [
     {
       "children": [
         {
-          "display": "Linguistic Nexus",
+          "display": "Restless as the Tides",
           "kind": "crossref",
-          "targetId": "relic/linguistic-nexus"
+          "targetId": "epithet/restless-as-the-tides"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Relic Minor Gift"
+      "meta": "Exemplar Dominion Epithet 7"
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Gamemastery Guide",
+          "display": "War of Immortals",
           "kind": "crossref",
-          "targetId": "source/gamemastery-guide"
+          "targetId": "source/war-of-immortals"
         },
         {
-          "content": " pg. 102",
+          "content": " pg. 33",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,16 +53,21 @@
     {
       "children": [
         {
-          "content": "Aspect",
+          "content": "Your dominion is over the ocean, the great source and ultimate taker of lives. You gain the Energized Spark feat for your choice of water or cold. When you critically succeed on a Strike, water blasts the target and those nearby. This deals bludgeoning splash damage equal to the number of weapon damage dice to the target and all creatures within 10 feet of it. This effect has the ",
           "kind": "text",
           "marks": {
-            "bold": true,
+            "bold": false,
             "italic": false,
             "superscript": false
           }
         },
         {
-          "content": " Mind",
+          "display": "water",
+          "kind": "crossref",
+          "targetId": "trait/water"
+        },
+        {
+          "content": " trait.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -74,12 +79,9 @@
       "kind": "paragraph"
     },
     {
-      "kind": "divider"
-    },
-    {
       "children": [
         {
-          "content": "Your relic grants you a powerful neural plasticity, and as a result, you can learn languages more easily. You learn an additional language of your choice for every 2 levels of the relic (minimum 1). You can retrain one of the languages from the relic with only a single week of downtime.",
+          "content": " When you Spark Transcendence, you can Step, your body carried along by a surging tide. If your transcendence affected an enemy, you can instead move that enemy 5 feet in a direction of your choice unless it succeeds at a Fortitude save against your class DC. If you move an enemy who started out adjacent to you, you can Step into the space it vacated.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -91,24 +93,19 @@
       "kind": "paragraph"
     }
   ],
-  "category": "relic",
-  "edition": "legacy",
+  "category": "epithet",
+  "edition": "remaster",
   "facets": {},
-  "id": "relic/linguistic-nexus",
-  "name": "Linguistic Nexus",
+  "id": "epithet/restless-as-the-tides",
+  "level": 7,
+  "name": "Restless as the Tides",
   "proseOnly": true,
   "rarity": "common",
-  "remasteredAs": [
-    "action/linguistic-nexus"
-  ],
-  "slug": "linguistic-nexus",
+  "slug": "restless-as-the-tides",
   "source": {
-    "book": "Gamemastery Guide",
-    "license": "OGL",
-    "page": 102
+    "book": "War of Immortals",
+    "license": "ORC",
+    "page": 33
   },
-  "traits": [
-    "Divination",
-    "Mental"
-  ]
+  "traits": []
 }

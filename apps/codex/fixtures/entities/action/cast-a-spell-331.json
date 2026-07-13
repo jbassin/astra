@@ -1,0 +1,42 @@
+{
+  "aonUrl": "/Actions.aspx?ID=796",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Activate",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "  Cast a Spell;      ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "action",
+  "edition": "legacy",
+  "facets": {},
+  "id": "action/cast-a-spell-331",
+  "name": "Cast a Spell",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "cast-a-spell",
+  "source": {
+    "book": "Secrets of Magic",
+    "license": "OGL",
+    "page": 168
+  },
+  "traits": []
+}

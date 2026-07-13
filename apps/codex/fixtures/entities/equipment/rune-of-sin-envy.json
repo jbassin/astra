@@ -1,0 +1,42 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "This jagged glyph, the envy Thassilonian rune of sin, reacts to abjuration magic. When you Cast an abjuration Spell, you gain resistance 5 to damage from spells until the start of your next turn. This resistance is increased to 7 against abjuration spells.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "equipment",
+  "edition": "legacy",
+  "facets": {
+    "bulk": 0,
+    "featLevel": 12,
+    "price": "1700 gp",
+    "rank": 12,
+    "usage": "tattooed-on-the-body"
+  },
+  "id": "equipment/rune-of-sin-envy",
+  "level": 12,
+  "name": "Rune of Sin (Envy)",
+  "rarity": "uncommon",
+  "slug": "rune-of-sin-envy",
+  "source": {
+    "book": "Pathfinder Secrets of Magic",
+    "license": "OGL"
+  },
+  "traits": [
+    "arcane",
+    "invested",
+    "tattoo"
+  ],
+  "variantOf": "equipment/rune-of-sin"
+}

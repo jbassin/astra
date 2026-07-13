@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rackets.aspx?ID=3",
+  "aonUrl": "/Domains.aspx?ID=38",
   "body": [
     {
       "children": [
         {
-          "display": "Thief",
+          "display": "Duty",
           "kind": "crossref",
-          "targetId": "racket/thief"
+          "targetId": "domain/duty"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Rogue Racket "
+      "meta": "Domain "
     },
     {
       "children": [
@@ -34,12 +34,26 @@
           }
         },
         {
-          "display": "Core Rulebook",
+          "display": "Pathfinder #148: Fires of the Haunted City",
           "kind": "crossref",
-          "targetId": "source/core-rulebook"
+          "targetId": "source/pathfinder-148-fires-of-the-haunted-city"
         },
         {
-          "content": " pg. 180",
+          "content": " pg. 64, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Divine Mysteries",
+          "kind": "crossref",
+          "targetId": "source/divine-mysteries"
+        },
+        {
+          "content": " pg. 265",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +67,30 @@
     {
       "children": [
         {
-          "content": "Nothing beats the thrill of taking something that belongs to someone else, especially if you can do so completely unnoticed. You might be a pickpocket working the streets, a cat burglar sneaking through windows and escaping via rooftops, or a safecracker breaking into carefully guarded vaults. You might even work as a consultant, testing clients’ defenses by trying to steal something precious.",
+          "content": "Deity",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Domain Spell",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -67,21 +104,16 @@
     {
       "children": [
         {
-          "content": " When a fight breaks out, you prefer swift, lightweight weapons, and you strike where it hurts. When you make a melee Strike with a ",
+          "content": "Advanced Domain Spell",
           "kind": "text",
           "marks": {
-            "bold": false,
+            "bold": true,
             "italic": false,
             "superscript": false
           }
         },
         {
-          "display": "finesse",
-          "kind": "crossref",
-          "targetId": "trait/finesse"
-        },
-        {
-          "content": " weapon or finesse unarmed attack, you can add your Dexterity modifier to the damage roll instead of your Strength modifier.",
+          "content": " ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -95,21 +127,7 @@
     {
       "children": [
         {
-          "content": " You are trained in ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Thievery",
-          "kind": "crossref",
-          "targetId": "skill/thievery"
-        },
-        {
-          "content": ".",
+          "content": "No information provided yet for this domain.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -121,21 +139,18 @@
       "kind": "paragraph"
     }
   ],
-  "category": "racket",
+  "category": "domain",
   "edition": "legacy",
   "facets": {},
-  "id": "racket/thief",
-  "name": "Thief",
+  "id": "domain/duty",
+  "name": "Duty",
   "proseOnly": true,
   "rarity": "common",
-  "remasteredAs": [
-    "class-feature/thief"
-  ],
-  "slug": "thief",
+  "slug": "duty",
   "source": {
-    "book": "Core Rulebook",
+    "book": "Pathfinder #148: Fires of the Haunted City",
     "license": "OGL",
-    "page": 180
+    "page": 64
   },
   "traits": []
 }

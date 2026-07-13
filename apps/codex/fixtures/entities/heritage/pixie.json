@@ -1,0 +1,81 @@
+{
+  "aonUrl": "/Heritages.aspx?ID=145",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Pixie",
+          "kind": "crossref",
+          "targetId": "heritage/pixie"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Heritage"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Ancestry Guide",
+          "kind": "crossref",
+          "targetId": "source/ancestry-guide"
+        },
+        {
+          "content": " pg. 129",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "You are larger than other sprites. Instead of Tiny, your size is Small.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "heritage",
+  "edition": "legacy",
+  "facets": {},
+  "id": "heritage/pixie",
+  "name": "Pixie",
+  "rarity": "common",
+  "slug": "pixie",
+  "source": {
+    "book": "Ancestry Guide",
+    "license": "OGL",
+    "page": 129
+  },
+  "traits": []
+}

@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rackets.aspx?ID=3",
+  "aonUrl": "/Deities.aspx?ID=297",
   "body": [
     {
       "children": [
         {
-          "display": "Thief",
+          "display": "Atheism",
           "kind": "crossref",
-          "targetId": "racket/thief"
+          "targetId": "deity/atheism"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Rogue Racket "
+      "meta": "Deity "
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Core Rulebook",
+          "display": "Divine Mysteries",
           "kind": "crossref",
-          "targetId": "source/core-rulebook"
+          "targetId": "source/divine-mysteries"
         },
         {
-          "content": " pg. 180",
+          "content": " pg. 251",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,7 @@
     {
       "children": [
         {
-          "content": "Nothing beats the thrill of taking something that belongs to someone else, especially if you can do so completely unnoticed. You might be a pickpocket working the streets, a cat burglar sneaking through windows and escaping via rooftops, or a safecracker breaking into carefully guarded vaults. You might even work as a consultant, testing clients’ defenses by trying to steal something precious.",
+          "content": "In a world where the gods demonstrably exist, few people uphold a strictly atheistic or agnostic worldview; that is, a belief that there are no gods, or that the existence of gods is unknowable. However, a good number of people choose not to worship any deities whatsoever. Many do so because of the value they place on freedom—not being beholden to a deity means no limitations, no censure, no anathema, and no strictures. While this decision might sound amoral to some, for atheists, it can be motivated by a desire for autonomy and the right to choose one's own fate.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -67,7 +67,16 @@
     {
       "children": [
         {
-          "content": " When a fight breaks out, you prefer swift, lightweight weapons, and you strike where it hurts. When you make a melee Strike with a ",
+          "content": "Category",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -76,12 +85,26 @@
           }
         },
         {
-          "display": "finesse",
+          "display": "Faiths & Philosophies",
           "kind": "crossref",
-          "targetId": "trait/finesse"
+          "targetId": "deity-category/faiths-philosophies"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Edicts",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
         },
         {
-          "content": " weapon or finesse unarmed attack, you can add your Dexterity modifier to the damage roll instead of your Strength modifier.",
+          "content": " none",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -95,21 +118,16 @@
     {
       "children": [
         {
-          "content": " You are trained in ",
+          "content": "Anathema",
           "kind": "text",
           "marks": {
-            "bold": false,
+            "bold": true,
             "italic": false,
             "superscript": false
           }
         },
         {
-          "display": "Thievery",
-          "kind": "crossref",
-          "targetId": "skill/thievery"
-        },
-        {
-          "content": ".",
+          "content": " none",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -121,21 +139,21 @@
       "kind": "paragraph"
     }
   ],
-  "category": "racket",
-  "edition": "legacy",
+  "category": "deity",
+  "edition": "remaster",
   "facets": {},
-  "id": "racket/thief",
-  "name": "Thief",
+  "id": "deity/atheism",
+  "legacyOf": [
+    "deity/atheism@legacy"
+  ],
+  "name": "Atheism",
   "proseOnly": true,
   "rarity": "common",
-  "remasteredAs": [
-    "class-feature/thief"
-  ],
-  "slug": "thief",
+  "slug": "atheism",
   "source": {
-    "book": "Core Rulebook",
-    "license": "OGL",
-    "page": 180
+    "book": "Divine Mysteries",
+    "license": "ORC",
+    "page": 251
   },
   "traits": []
 }

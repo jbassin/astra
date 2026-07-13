@@ -1,6 +1,19 @@
 {
   "packs": [
     {
+      "banner": "systems/pf2e/assets/compendium-banner/red.webp",
+      "flags": {},
+      "label": "Abomination Vaults",
+      "name": "abomination-vaults-bestiary",
+      "ownership": {
+        "ASSISTANT": "OWNER",
+        "PLAYER": "LIMITED"
+      },
+      "path": "packs/abomination-vaults-bestiary",
+      "system": "pf2e",
+      "type": "Actor"
+    },
+    {
       "banner": "systems/pf2e/assets/compendium-banner/green.webp",
       "flags": {},
       "label": "Actions",

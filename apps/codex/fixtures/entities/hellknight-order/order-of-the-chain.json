@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rituals.aspx?ID=7",
+  "aonUrl": "/HellknightOrders.aspx?ID=1",
   "body": [
     {
       "children": [
         {
-          "display": "Commune with Nature",
+          "display": "Order of the Chain",
           "kind": "crossref",
-          "targetId": "ritual/commune-with-nature"
+          "targetId": "hellknight-order/order-of-the-chain"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Ritual 6"
+      "meta": "Hellknight Order "
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Core Rulebook",
+          "display": "Character Guide",
           "kind": "crossref",
-          "targetId": "source/core-rulebook"
+          "targetId": "source/character-guide"
         },
         {
-          "content": " pg. 410",
+          "content": " pg. 81",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,76 +53,7 @@
     {
       "children": [
         {
-          "content": "Cast",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1 day",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Cost",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " rare incense worth a total value of 60 gp",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Secondary Casters",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Primary Check",
+          "content": "Favored Weapon",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -140,12 +71,17 @@
           }
         },
         {
-          "display": "Nature",
+          "display": "Flail",
           "kind": "crossref",
-          "targetId": "skill/nature"
-        },
+          "targetId": "weapon/flail"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
         {
-          "content": " (master)",
+          "content": "Members of the Order of the Chain are skilled at hunting down and capturing criminals, especially those who dare flee from justice.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -159,7 +95,27 @@
     {
       "children": [
         {
-          "content": "Secondary Checks",
+          "content": " Shackles of Law ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Two Actions",
+          "kind": "actionGlyph"
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Lesser Order Benefit"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -168,7 +124,21 @@
           }
         },
         {
-          "content": " Nature",
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Character Guide",
+          "kind": "crossref",
+          "targetId": "source/character-guide"
+        },
+        {
+          "content": " pg. 81",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -182,7 +152,51 @@
     {
       "children": [
         {
-          "content": "Duration",
+          "content": "You attempt to subdue a target with an attack and a follow-up grab. Make a melee Strike. If it hits and deals damage, you can attempt an ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Athletics",
+          "kind": "crossref",
+          "targetId": "skill/athletics"
+        },
+        {
+          "content": " check to Grapple the creature you hit. If you’re wielding a flail, you can ignore Grapple’s requirement that you have a hand free. Both attacks count toward your multiple attack penalty, but the penalty doesn’t increase until after you’ve made both of them.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " Sturdy Bindings  ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Greater Order Benefit"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -191,7 +205,21 @@
           }
         },
         {
-          "content": " up to 10 minutes",
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Character Guide",
+          "kind": "crossref",
+          "targetId": "source/character-guide"
+        },
+        {
+          "content": " pg. 81",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -203,26 +231,9 @@
       "kind": "paragraph"
     },
     {
-      "kind": "divider"
-    },
-    {
       "children": [
         {
-          "content": "As ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "commune",
-          "kind": "crossref",
-          "targetId": "ritual/commune"
-        },
-        {
-          "content": ", except you contact the primal spirits of nature, which know about animals, beasts, fey, fungi, plants, topography, and natural resources within a 3-mile radius of the ritual’s location.",
+          "content": "Your grapples are incredibly reliable. When you roll a critical failure on a check to Grapple a target, you get a failure instead. In addition, when a creature you have grabbed rolls a failure on its check to Escape, it gets a critical failure instead, and if it rolls a critical success, it gets a success instead.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -234,26 +245,18 @@
       "kind": "paragraph"
     }
   ],
-  "category": "ritual",
+  "category": "hellknight-order",
   "edition": "legacy",
   "facets": {},
-  "id": "ritual/commune-with-nature",
-  "level": 6,
-  "name": "Commune with Nature",
+  "id": "hellknight-order/order-of-the-chain",
+  "name": "Order of the Chain",
   "proseOnly": true,
-  "rarity": "uncommon",
-  "remasteredAs": [
-    "spell/commune"
-  ],
-  "slug": "commune-with-nature",
+  "rarity": "common",
+  "slug": "order-of-the-chain",
   "source": {
-    "book": "Core Rulebook",
+    "book": "Character Guide",
     "license": "OGL",
-    "page": 410
+    "page": 81
   },
-  "traits": [
-    "Divination",
-    "Prediction",
-    "Uncommon"
-  ]
+  "traits": []
 }

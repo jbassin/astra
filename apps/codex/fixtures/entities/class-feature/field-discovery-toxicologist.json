@@ -1,0 +1,40 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You have handled enough poisons to become inured to their effects. You gain poison resistance equal to half your level.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 5,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 5
+  },
+  "id": "class-feature/field-discovery-toxicologist",
+  "level": 5,
+  "name": "Field Discovery (Toxicologist)",
+  "rarity": "common",
+  "slug": "field-discovery-toxicologist",
+  "source": {
+    "book": "Pathfinder Player Core 2",
+    "license": "ORC"
+  },
+  "traits": [
+    "alchemist"
+  ],
+  "variantOf": "class-feature/field-discovery"
+}

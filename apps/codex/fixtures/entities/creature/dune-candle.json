@@ -1,0 +1,308 @@
+{
+  "body": [],
+  "category": "creature",
+  "edition": "legacy",
+  "embeddedItems": [
+    {
+      "body": [],
+      "name": "Flare",
+      "slug": "flare",
+      "traits": [
+        "fire",
+        "magical"
+      ],
+      "type": "melee"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "20 feet. A will-o'-wisp is itself naturally invisible, but glows with a colored light, casting bright light in the aura and making it visible.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Glow",
+      "slug": "glow",
+      "traits": [
+        "aura",
+        "light"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "A will-o'-wisp is immune to all spells except ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Faerie Fire",
+              "kind": "crossref",
+              "targetId": "spell/faerie-fire"
+            },
+            {
+              "content": ", ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Revealing Light",
+              "kind": "crossref",
+              "targetId": "spell/revealing-light"
+            },
+            {
+              "content": ", ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Force Barrage",
+              "kind": "crossref",
+              "targetId": "spell/force-barrage"
+            },
+            {
+              "content": ", and ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Quandary",
+              "kind": "crossref",
+              "targetId": "spell/quandary"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Magic Immunity",
+      "slug": "magic-immunity",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "1",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The dune candle extinguishes its glow, becoming ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Invisible",
+              "kind": "crossref",
+              "targetId": "condition/invisible"
+            },
+            {
+              "content": ". It can end this effect with another use of this action. Its body reflects creatures on fire (but not other fires) while it's invisible.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "As a result, when any creature within 20 feet of the dune candle is taking ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Persistent Fire Damage",
+              "kind": "crossref",
+              "targetId": "condition/persistent-damage"
+            },
+            {
+              "content": ", the dune candle is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Hidden",
+              "kind": "crossref",
+              "targetId": "condition/hidden"
+            },
+            {
+              "content": " to observers rather than ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Undetected",
+              "kind": "crossref",
+              "targetId": "condition/undetected"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Heat Mirage",
+      "slug": "heat-mirage",
+      "traits": [
+        "concentrate"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "A creature damaged by a dune candle's flare Strike must succeed at a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 24,
+              "kind": "check",
+              "type": "fortitude"
+            },
+            {
+              "content": " save or catch on fire, taking ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "1d4 persistent fire",
+              "formula": "1d4[persistent,fire]",
+              "kind": "damage"
+            },
+            {
+              "content": " damage.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "If the creature is already taking persistent fire damage, a failed save increases the persistent fire damage by 1d4.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Light the Living Wick",
+      "slug": "light-the-living-wick",
+      "traits": [
+        "arcane"
+      ],
+      "type": "action"
+    }
+  ],
+  "facets": {
+    "ac": 27,
+    "fortitudeSave": 10,
+    "hp": 50,
+    "perception": 16,
+    "reflexSave": 16,
+    "size": "sm",
+    "willSave": 14
+  },
+  "id": "creature/dune-candle",
+  "level": 6,
+  "name": "Dune Candle",
+  "rarity": "common",
+  "slug": "dune-candle",
+  "source": {
+    "book": "Pathfinder #164: Hands of the Devil",
+    "license": "OGL"
+  },
+  "traits": [
+    "aberration",
+    "air",
+    "chaotic",
+    "evil"
+  ]
+}

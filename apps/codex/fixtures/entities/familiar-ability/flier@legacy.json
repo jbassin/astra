@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/ArcaneThesis.aspx?ID=4",
+  "aonUrl": "/Familiars.aspx?ID=7",
   "body": [
     {
       "children": [
         {
-          "display": "Spell Substitution",
+          "display": "Flier",
           "kind": "crossref",
-          "targetId": "arcane-thesis/spell-substitution"
+          "targetId": "familiar-ability/flier"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Wizard Arcane Thesis "
+      "meta": "Familiar Ability "
     },
     {
       "children": [
@@ -39,7 +39,7 @@
           "targetId": "source/core-rulebook"
         },
         {
-          "content": " pg. 206",
+          "content": " pg. 218",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,16 @@
     {
       "children": [
         {
-          "content": "You don't accept the fact that once spells are prepared, they can't be changed until your next daily preparation, and you have uncovered a shortcut allowing you to substitute new spells for those you originally prepared.",
+          "content": "Ability Type",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Familiar",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -67,7 +76,7 @@
     {
       "children": [
         {
-          "content": " You can spend 10 minutes to empty one of your prepared spell slots and prepare a different spell from your spellbook in its place. If you are interrupted during such a swap, the original spell remains prepared and can still be cast. You can try again to swap out the spell later, but you must start the process over again.",
+          "content": "It gains a fly Speed of 25 feet.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -79,21 +88,21 @@
       "kind": "paragraph"
     }
   ],
-  "category": "arcane-thesis",
+  "category": "familiar-ability",
   "edition": "legacy",
   "facets": {},
-  "id": "arcane-thesis/spell-substitution",
-  "name": "Spell Substitution",
+  "id": "familiar-ability/flier@legacy",
+  "name": "Flier",
   "proseOnly": true,
   "rarity": "common",
   "remasteredAs": [
-    "class-feature/spell-substitution"
+    "familiar-ability/flier"
   ],
-  "slug": "spell-substitution",
+  "slug": "flier",
   "source": {
     "book": "Core Rulebook",
     "license": "OGL",
-    "page": 206
+    "page": 218
   },
   "traits": []
 }

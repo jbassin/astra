@@ -1,5 +1,5 @@
 {
-  "aonUrl": "/HuntersEdge.aspx?ID=4",
+  "aonUrl": "/HuntersEdge.aspx?ID=1",
   "body": [
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Player Core",
+          "display": "Core Rulebook",
           "kind": "crossref",
-          "targetId": "source/player-core"
+          "targetId": "source/core-rulebook"
         },
         {
-          "content": " pg. 154",
+          "content": " pg. 168",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,7 @@
     {
       "children": [
         {
-          "content": "You have trained to unleash a devastating flurry of attacks upon your prey. Your multiple attack penalty for attacks against your hunted prey is –3 (–2 with an agile attack) on your second attack of the turn instead of –5, and –6 (–4 with an agile attack) on your third or subsequent attack of the turn, instead of –10.",
+          "content": "You have trained to unleash a devastating flurry of attacks upon your prey. Your multiple attack penalty for attacks against your hunted prey is –3 (–2 with an agile weapon) on your second attack of the turn instead of –5, and –6 (–4 with an agile weapon) on your third or subsequent attack of the turn, instead of –10.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -96,20 +96,20 @@
     }
   ],
   "category": "hunters-edge",
-  "edition": "remaster",
+  "edition": "legacy",
   "facets": {},
   "id": "hunters-edge/flurry",
-  "legacyOf": [
-    "hunters-edge/flurry@legacy"
-  ],
   "name": "Flurry",
   "proseOnly": true,
   "rarity": "common",
+  "remasteredAs": [
+    "class-feature/flurry"
+  ],
   "slug": "flurry",
   "source": {
-    "book": "Player Core",
-    "license": "ORC",
-    "page": 154
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 168
   },
   "traits": []
 }

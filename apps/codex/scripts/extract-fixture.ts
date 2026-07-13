@@ -12,8 +12,12 @@
  *     out by name: the Heal legacy/remaster shared-slug pair, Magic
  *     Missile→Force Barrage (AoN-only legacy, no shared slug), the
  *     Adamantine Dragon qualifier-reorder + 1:N spellcaster variant, the
- *     Camouflage Coat alias, the Anadi journal-page merge, and a real
- *     residual (non-pair) `-2` collision (Grick). `fixtures/join-aliases.json`
+ *     Camouflage Coat alias, the Anadi journal-page merge, a real
+ *     residual (non-pair) `-2` collision (Grick), and (S5c/D29-14/-17) the
+ *     AoN-primary drop pass itself: a Foundry-only `boon` doc (Desna's
+ *     Major Boon) that must NOT survive into the emitted corpus, and a
+ *     genuine Foundry-only creature (Dune Candle) that must survive it via
+ *     the `creature`/`hazard` carve-out. `fixtures/join-aliases.json`
  *     is the matching trimmed alias file. `runTransform` (`transform.ts`) runs
  *     UNCHANGED against this subset in the CI-hermetic pipeline test.
  *   - `fixtures/entities/<category>/<slug>.json` — canonical-form-ONLY
@@ -85,7 +89,16 @@ const REQUIRED_FOUNDRY_PICKS: readonly FoundryPick[] = [
     relPath: "crown-of-the-kobold-king-bestiary/grick.json",
     reason: "residual (non-pair) -2 collision — real duplicate-name creature",
   },
-  { relPath: "boons-and-curses/desna-major-boon.json", reason: "Foundry-only category (boon)" },
+  {
+    relPath: "boons-and-curses/desna-major-boon.json",
+    reason:
+      "D29-14 AoN-primary drop pass: Foundry-only category (boon) — must NOT survive into the emitted corpus",
+  },
+  {
+    relPath: "abomination-vaults-bestiary/book-2-hands-of-the-devil/dune-candle.json",
+    reason:
+      "D29-17 carve-out: a genuine Foundry-only creature (no AoN counterpart at all) — must SURVIVE the drop pass",
+  },
 ];
 
 const SUPPLEMENTAL_FOUNDRY_PICKS: readonly FoundryPick[] = [
@@ -500,6 +513,15 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   "feat/camouflage-coat",
   "creature/grick",
   "creature/grick-2",
+  // D29-17 carve-out proof point (S5c): a genuine Foundry-only creature that
+  // survives the D29-14 drop pass BECAUSE creature is carved out — see the
+  // coverage-matrix assertion below. NOTE `boon` is deliberately NOT listed
+  // here anymore (S5c): the D29-14 drop pass removes the ENTIRE `boon`
+  // category from the real emitted corpus, so there is no longer a `boon`
+  // entity anywhere to select — `desna-major-boon.json` stays a RAW pick
+  // (proves the pipeline drops it end-to-end, transform.test.ts) but has no
+  // canonical-form counterpart to require here.
+  "creature/dune-candle",
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {
@@ -636,8 +658,23 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   requireEntity("creature/grick", "-2 collision (winner)");
   requireEntity("creature/grick-2", "-2 collision (residual member)");
 
-  const foundryOnly = [...selected.values()].find((r) => r.category === "boon");
-  if (!foundryOnly) problems.push("no Foundry-only-category (boon) entity selected");
+  // S5c/D29-14/-17: the AoN-primary drop pass already ran (this reads the
+  // REAL post-drop emitted corpus) — so a Foundry-only-category entity like
+  // the old `boon` pick can no longer exist ANYWHERE to select (the whole
+  // category is gone). Assert that directly, and require the D29-17
+  // carve-out proof point instead: a genuine Foundry-only CREATURE, which
+  // the drop pass must have kept.
+  for (const droppedCategory of ["boon", "pfs-boon", "kingdom-feature", "effect"]) {
+    if (allRealCategories.has(droppedCategory)) {
+      problems.push(
+        `category "${droppedCategory}" should have been fully removed by the D29-14 drop pass but still has entities in the real corpus`,
+      );
+    }
+  }
+  const carveOut = requireEntity("creature/dune-candle", "D29-17 Foundry-only carve-out");
+  if (carveOut && (carveOut.aonUrl !== undefined || carveOut.proseOnly === true)) {
+    problems.push("creature/dune-candle should be Foundry-only (no aonUrl, not proseOnly)");
+  }
 
   if (problems.length > 0) {
     fail(`coverage matrix FAILED:\n  - ${problems.join("\n  - ")}`);

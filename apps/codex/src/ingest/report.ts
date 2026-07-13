@@ -1,4 +1,5 @@
 import type { CodexEntity } from "../schema/entity";
+import type { DropAccounting } from "./drop";
 import type {
   CategoryStat,
   CollisionReport,
@@ -56,7 +57,20 @@ export interface ReportInput {
    * of in report.md (capped by `buildReportMarkdown`, not here). */
   reportExamples: ReadonlyMap<string, readonly string[]>;
   hardFailureCount: number;
+  /** The PRE-drop join result — `join.categoryStats`/`collisions`/etc. stay
+   * the join-QUALITY measurement (foundryIn/aonIn/exact/normalized/alias/
+   * unjoined lists), unaffected by the D29-14 drop pass, because that's what
+   * the STOP-condition / D29-15/-18 acceptance criteria audit. */
   join: JoinResult;
+  /** S5c/D29-14: the POST-drop entity set actually written to the corpus —
+   * every "final" summary stat (`finalEntityCount`, per-category `finalOut`,
+   * license/edition breakdowns, proseOnly/variant counts) is computed from
+   * THIS, not `join.entities` (which still includes every dropped
+   * Foundry-only entity). */
+  finalEntities: readonly CodexEntity[];
+  /** S5c: the D29-14 drop-accounting section's data (per-category dropped
+   * counts + the D29-17 carve-out kept counts). */
+  dropAccounting: DropAccounting;
   foundrySnapshotDocCount: number;
   aonSnapshotDocCount: number;
   sizeTotals?: SizeTotals;
@@ -125,6 +139,7 @@ export interface ReportJson {
   hardFailureCount: number;
   foundrySnapshotDocCount: number;
   aonSnapshotDocCount: number;
+  /** The POST-drop corpus size (D29-14) — `finalEntities.length`. */
   finalEntityCount: number;
   categories: CategoryJoinJson[];
   collisions: CollisionReport[];
@@ -140,6 +155,8 @@ export interface ReportJson {
   variantCount: number;
   reportCounts: Record<string, number>;
   sizeTotals: SizeTotals;
+  /** S5c/D29-14: the drop-accounting section. */
+  dropAccounting: DropAccounting;
 }
 
 function categoryJson(stat: CategoryStat, finalOut: number): CategoryJoinJson {
@@ -161,7 +178,7 @@ function categoryJson(stat: CategoryStat, finalOut: number): CategoryJoinJson {
 }
 
 export function buildReportJson(input: ReportInput): ReportJson {
-  const finalCounts = computeFinalCategoryCounts(input.join.entities);
+  const finalCounts = computeFinalCategoryCounts(input.finalEntities);
   const categories = input.join.categoryStats
     .map((stat) => categoryJson(stat, finalCounts.get(stat.category) ?? 0))
     .sort((a, b) => a.category.localeCompare(b.category));
@@ -170,7 +187,7 @@ export function buildReportJson(input: ReportInput): ReportJson {
     hardFailureCount: input.hardFailureCount,
     foundrySnapshotDocCount: input.foundrySnapshotDocCount,
     aonSnapshotDocCount: input.aonSnapshotDocCount,
-    finalEntityCount: input.join.entities.length,
+    finalEntityCount: input.finalEntities.length,
     categories,
     collisions: input.join.collisions,
     legacyPairing: {
@@ -179,14 +196,15 @@ export function buildReportJson(input: ReportInput): ReportJson {
     },
     crossrefPatching: input.join.patchStats,
     aliasesApplied: input.join.aliasesApplied,
-    licenseBreakdown: computeLicenseBreakdown(input.join.entities),
-    editionBreakdown: computeEditionBreakdown(input.join.entities),
-    proseOnlyCount: computeProseOnlyCount(input.join.entities),
-    variantCount: computeVariantCount(input.join.entities),
+    licenseBreakdown: computeLicenseBreakdown(input.finalEntities),
+    editionBreakdown: computeEditionBreakdown(input.finalEntities),
+    proseOnlyCount: computeProseOnlyCount(input.finalEntities),
+    variantCount: computeVariantCount(input.finalEntities),
     reportCounts: Object.fromEntries(
       [...input.reportCounts.entries()].sort(([a], [b]) => a.localeCompare(b)),
     ),
     sizeTotals: input.sizeTotals ?? {},
+    dropAccounting: input.dropAccounting,
   };
 }
 
@@ -434,6 +452,32 @@ export function buildReportMarkdown(json: ReportJson): string {
           [[json.sizeTotals.corpusBytes ?? "—", json.sizeTotals.entityFileCount ?? "—"]],
         )
       : "Not measured at this stage — filled in by `emit.ts`.",
+    "",
+  );
+
+  lines.push("## AoN-primary drop pass (D29-14/-17)", "");
+  lines.push(
+    `The corpus keeps every AoN-only entity, every merged entity, every variant of a merged family, and Foundry-only entities in the \`creature\`/\`hazard\` carve-out (D29-17) — every OTHER Foundry-only entity is dropped at emit. **${json.dropAccounting.totalDropped}** entities dropped across ${json.dropAccounting.byCategory.length} categories.`,
+    "",
+  );
+  lines.push("### Dropped, by category", "");
+  lines.push(
+    json.dropAccounting.byCategory.length > 0
+      ? mdTable(
+          ["category", "dropped"],
+          json.dropAccounting.byCategory.map((c) => [c.category, c.dropped]),
+        )
+      : "Nothing dropped.",
+    "",
+  );
+  lines.push("### Carve-out (D29-17) — Foundry-only entities KEPT anyway", "");
+  lines.push(
+    json.dropAccounting.carveOut.length > 0
+      ? mdTable(
+          ["category", "kept (Foundry-only)"],
+          json.dropAccounting.carveOut.map((c) => [c.category, c.kept]),
+        )
+      : "No carve-out entities in this run.",
     "",
   );
 

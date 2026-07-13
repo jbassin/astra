@@ -34,6 +34,7 @@ import {
   extractAonMeta,
 } from "../src/ingest/aonFacets";
 import { buildAonLinkTable, type LinkTableDoc } from "../src/ingest/aonLinkTable";
+import { applyAonPrimaryDrop } from "../src/ingest/drop";
 import {
   emitCorpus,
   writeCanonicalJson,
@@ -379,9 +380,13 @@ export function runTransform(paths: TransformPaths): TransformResult {
     report,
   });
 
+  // D29-14/-17: drop every Foundry-only entity except the creature/hazard
+  // carve-out — S5c, the last P1.5 pass before emit.
+  const dropResult = applyAonPrimaryDrop(joinResult.entities, report);
+
   const emitResult = emitCorpus({
     corpusRoot: paths.corpusRoot,
-    entities: joinResult.entities,
+    entities: dropResult.keptEntities,
     pins: paths.pins,
   });
 
@@ -390,6 +395,8 @@ export function runTransform(paths: TransformPaths): TransformResult {
     reportExamples,
     hardFailureCount: hardFailures.length,
     join: joinResult,
+    finalEntities: dropResult.keptEntities,
+    dropAccounting: dropResult.accounting,
     foundrySnapshotDocCount: foundry.entities.size,
     // Deliberately the RAW extracted count (pre-D29-18-dedup) — matches
     // `foundrySnapshotDocCount`'s own "how big was the snapshot" framing;

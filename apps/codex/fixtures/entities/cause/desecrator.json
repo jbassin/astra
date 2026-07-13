@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Patrons.aspx?ID=11",
+  "aonUrl": "/Causes.aspx?ID=5",
   "body": [
     {
       "children": [
         {
-          "display": "Pacts",
+          "display": "Desecrator",
           "kind": "crossref",
-          "targetId": "patron/pacts"
+          "targetId": "cause/desecrator"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Witch Patron Theme "
+      "meta": "Champion Cause "
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Dark Archive",
+          "display": "Advanced Player's Guide",
           "kind": "crossref",
-          "targetId": "source/dark-archive"
+          "targetId": "source/advanced-players-guide"
         },
         {
-          "content": " pg. 159",
+          "content": " pg. 116",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,93 @@
     {
       "children": [
         {
-          "content": "Your patron deals only in promises and bargains, and no lesson is ever given for free.",
+          "content": "You always take what pleases you, no matter who it hurts, and you spread the influence of evil across all you touch. You gain the Selfish Shield champion's reaction and the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "touch of corruption",
+          "kind": "crossref",
+          "targetId": "spell/touch-of-corruption"
+        },
+        {
+          "content": " devotion spell. After the tenets of evil, add this tenet. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "items": [
+        [
+          {
+            "content": "Subvert or corrupt everything in your path that is pure and good, and sow doubt among those upholding such ideals.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    },
+    {
+      "children": [
+        {
+          "content": "Champion's Reaction",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/selfish-shield-2"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Divine Smite",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 9"
+    },
+    {
+      "children": [
+        {
+          "content": "If your Charisma modifier is +2 or greater, your resistance against the triggering damage equals your Charisma modifier + half your level.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -67,133 +153,49 @@
     {
       "children": [
         {
-          "content": "Spell List",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
+          "content": "Exalt",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
-        {
-          "display": "Occult",
-          "kind": "crossref",
-          "targetId": "tradition/occult"
         }
       ],
-      "kind": "paragraph"
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 11"
     },
     {
       "children": [
         {
-          "content": "Patron Skill",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
+          "content": "When you use Selfish Shield, each enemy within 15 feet of you takes a –1 status penalty to attack rolls against you until the start of your next turn.",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
-        {
-          "display": "Occultism",
-          "kind": "crossref",
-          "targetId": "skill/occultism"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Hex Cantrip",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Pact Broker",
-          "kind": "crossref",
-          "targetId": "spell/pact-broker"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Granted Spell",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Command",
-          "kind": "crossref",
-          "targetId": "spell/command"
         }
       ],
       "kind": "paragraph"
     }
   ],
-  "category": "patron",
+  "category": "cause",
   "edition": "legacy",
   "facets": {},
-  "id": "patron/pacts",
-  "name": "Pacts",
+  "id": "cause/desecrator",
+  "name": "Desecrator",
   "proseOnly": true,
-  "rarity": "rare",
+  "rarity": "common",
   "remasteredAs": [
-    "patron/the-unseen-broker"
+    "class-feature/desecration"
   ],
-  "slug": "pacts",
+  "slug": "desecrator",
   "source": {
-    "book": "Dark Archive",
+    "book": "Advanced Player's Guide",
     "license": "OGL",
-    "page": 159
+    "page": 116
   },
-  "traits": [
-    "Rare"
-  ]
+  "traits": []
 }

@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rituals.aspx?ID=7",
+  "aonUrl": "/ResearchFields.aspx?ID=1",
   "body": [
     {
       "children": [
         {
-          "display": "Commune with Nature",
+          "display": "Bomber",
           "kind": "crossref",
-          "targetId": "ritual/commune-with-nature"
+          "targetId": "research-field/bomber"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Ritual 6"
+      "meta": "Alchemist Research Field "
     },
     {
       "children": [
@@ -39,7 +39,7 @@
           "targetId": "source/core-rulebook"
         },
         {
-          "content": " pg. 410",
+          "content": " pg. 73",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,85 +53,7 @@
     {
       "children": [
         {
-          "content": "Cast",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1 day",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Cost",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " rare incense worth a total value of 60 gp",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Secondary Casters",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Primary Check",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
+          "content": "You specialize in explosions and other violent alchemical reactions. You start with the formulas for two common 1st-level ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -140,12 +62,12 @@
           }
         },
         {
-          "display": "Nature",
+          "display": "alchemical bombs",
           "kind": "crossref",
-          "targetId": "skill/nature"
+          "targetId": "category-page/alchemical-bombs"
         },
         {
-          "content": " (master)",
+          "content": ", in addition to your other formulas.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -159,56 +81,7 @@
     {
       "children": [
         {
-          "content": "Secondary Checks",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Nature",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Duration",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " up to 10 minutes",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
-          "content": "As ",
+          "content": " When throwing an alchemical bomb with the ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -217,12 +90,176 @@
           }
         },
         {
-          "display": "commune",
+          "display": "splash",
           "kind": "crossref",
-          "targetId": "ritual/commune"
+          "targetId": "trait/splash"
         },
         {
-          "content": ", except you contact the primal spirits of nature, which know about animals, beasts, fey, fungi, plants, topography, and natural resources within a 3-mile radius of the ritual’s location.",
+          "content": " trait, you can deal splash damage to only your primary target instead of the usual splash area.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Field Discovery",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 5"
+    },
+    {
+      "children": [
+        {
+          "content": "When using advanced alchemy to make bombs during your daily preparations, you can use a batch of reagents to create any three bombs instead of just two of the same bomb.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perpetual Infusions",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 7"
+    },
+    {
+      "children": [
+        {
+          "content": "Choose two 1st-level bombs.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perpetual Potency",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 11"
+    },
+    {
+      "children": [
+        {
+          "content": "Choose two 3rd-level or lower bombs.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Greater Field Discovery",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 13"
+    },
+    {
+      "children": [
+        {
+          "content": "You can increase the splash on your bombs to damage creatures within 10 feet, or 15 feet if you have ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Expanded Splash",
+          "kind": "crossref",
+          "targetId": "feat/expanded-splash"
+        },
+        {
+          "content": ".",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perpetual Perfection",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 17"
+    },
+    {
+      "children": [
+        {
+          "content": "Choose two 11th-level or lower bombs.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -234,26 +271,21 @@
       "kind": "paragraph"
     }
   ],
-  "category": "ritual",
+  "category": "research-field",
   "edition": "legacy",
   "facets": {},
-  "id": "ritual/commune-with-nature",
-  "level": 6,
-  "name": "Commune with Nature",
+  "id": "research-field/bomber",
+  "name": "Bomber",
   "proseOnly": true,
-  "rarity": "uncommon",
+  "rarity": "common",
   "remasteredAs": [
-    "spell/commune"
+    "class-feature/bomber"
   ],
-  "slug": "commune-with-nature",
+  "slug": "bomber",
   "source": {
     "book": "Core Rulebook",
     "license": "OGL",
-    "page": 410
+    "page": 73
   },
-  "traits": [
-    "Divination",
-    "Prediction",
-    "Uncommon"
-  ]
+  "traits": []
 }

@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rituals.aspx?ID=7",
+  "aonUrl": "/KMWarArmies.aspx?ID=1",
   "body": [
     {
       "children": [
         {
-          "display": "Commune with Nature",
+          "display": "Infantry Army",
           "kind": "crossref",
-          "targetId": "ritual/commune-with-nature"
+          "targetId": "warfare-army/infantry-army"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Ritual 6"
+      "meta": "Warfare Army 1"
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Core Rulebook",
+          "display": "Kingmaker Adventure Path",
           "kind": "crossref",
-          "targetId": "source/core-rulebook"
+          "targetId": "source/kingmaker-adventure-path"
         },
         {
-          "content": " pg. 410",
+          "content": " pg. 570",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,24 @@
     {
       "children": [
         {
-          "content": "Cast",
+          "content": "This is a platoon of armored soldiers armed with melee weapons.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Scouting",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -62,7 +79,7 @@
           }
         },
         {
-          "content": " 1 day",
+          "content": " +7",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -76,7 +93,7 @@
     {
       "children": [
         {
-          "content": "Cost",
+          "content": "Recruitment",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -85,7 +102,7 @@
           }
         },
         {
-          "content": " rare incense worth a total value of 60 gp",
+          "content": " 15",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -99,7 +116,7 @@
     {
       "children": [
         {
-          "content": "Secondary Casters",
+          "content": "Consumption",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -122,7 +139,7 @@
     {
       "children": [
         {
-          "content": "Primary Check",
+          "content": "AC",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -131,21 +148,7 @@
           }
         },
         {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Nature",
-          "kind": "crossref",
-          "targetId": "skill/nature"
-        },
-        {
-          "content": " (master)",
+          "content": " 16",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -159,7 +162,7 @@
     {
       "children": [
         {
-          "content": "Secondary Checks",
+          "content": "Maneuver",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -168,7 +171,7 @@
           }
         },
         {
-          "content": " Nature",
+          "content": " +4 (low)",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -182,7 +185,7 @@
     {
       "children": [
         {
-          "content": "Duration",
+          "content": "Morale",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -191,7 +194,7 @@
           }
         },
         {
-          "content": " up to 10 minutes",
+          "content": " +10 (high)",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -203,26 +206,41 @@
       "kind": "paragraph"
     },
     {
-      "kind": "divider"
-    },
-    {
       "children": [
         {
-          "content": "As ",
+          "content": "HP",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 4 (RT 2)",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
         },
         {
-          "display": "commune",
-          "kind": "crossref",
-          "targetId": "ritual/commune"
-        },
-        {
-          "content": ", except you contact the primal spirits of nature, which know about animals, beasts, fey, fungi, plants, topography, and natural resources within a 3-mile radius of the ritual’s location.",
+          "content": " weapons +9",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -234,26 +252,21 @@
       "kind": "paragraph"
     }
   ],
-  "category": "ritual",
+  "category": "warfare-army",
   "edition": "legacy",
   "facets": {},
-  "id": "ritual/commune-with-nature",
-  "level": 6,
-  "name": "Commune with Nature",
+  "id": "warfare-army/infantry-army",
+  "level": 1,
+  "name": "Infantry Army",
   "proseOnly": true,
-  "rarity": "uncommon",
-  "remasteredAs": [
-    "spell/commune"
-  ],
-  "slug": "commune-with-nature",
+  "rarity": "common",
+  "slug": "infantry-army",
   "source": {
-    "book": "Core Rulebook",
+    "book": "Kingmaker Adventure Path",
     "license": "OGL",
-    "page": 410
+    "page": 570
   },
   "traits": [
-    "Divination",
-    "Prediction",
-    "Uncommon"
+    "Infantry"
   ]
 }

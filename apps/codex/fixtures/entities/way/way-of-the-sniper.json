@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Patrons.aspx?ID=11",
+  "aonUrl": "/Ways.aspx?ID=9",
   "body": [
     {
       "children": [
         {
-          "display": "Pacts",
+          "display": "Way of the Sniper",
           "kind": "crossref",
-          "targetId": "patron/pacts"
+          "targetId": "way/way-of-the-sniper"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Witch Patron Theme "
+      "meta": "Gunslinger Way "
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Dark Archive",
+          "display": "Guns & Gears",
           "kind": "crossref",
-          "targetId": "source/dark-archive"
+          "targetId": "source/guns-gears"
         },
         {
-          "content": " pg. 159",
+          "content": " pg. 109",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,7 @@
     {
       "children": [
         {
-          "content": "Your patron deals only in promises and bargains, and no lesson is ever given for free.",
+          "content": "You practice a style of shooting that relies on unerring accuracy and perfect placement of your first shot. You keep hidden or at a distance, staying out of the fray and bringing unseen death to your foes.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -67,7 +67,7 @@
     {
       "children": [
         {
-          "content": "Spell List",
+          "content": "Way Skill",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -85,9 +85,9 @@
           }
         },
         {
-          "display": "Occult",
+          "display": "Stealth",
           "kind": "crossref",
-          "targetId": "tradition/occult"
+          "targetId": "skill/stealth"
         }
       ],
       "kind": "paragraph"
@@ -95,27 +95,24 @@
     {
       "children": [
         {
-          "content": "Patron Skill",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
+          "content": "Slinger's Reload",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
         {
-          "display": "Occultism",
-          "kind": "crossref",
-          "targetId": "skill/occultism"
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/covered-reload@legacy"
         }
       ],
       "kind": "paragraph"
@@ -123,27 +120,24 @@
     {
       "children": [
         {
-          "content": "Hex Cantrip",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
+          "content": "Initial Deed",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
         {
-          "display": "Pact Broker",
-          "kind": "crossref",
-          "targetId": "spell/pact-broker"
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/one-shot-one-kill@legacy"
         }
       ],
       "kind": "paragraph"
@@ -151,49 +145,68 @@
     {
       "children": [
         {
-          "content": "Granted Spell",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
+          "content": "Advanced Deed",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 9"
+    },
+    {
+      "children": [
         {
-          "display": "Command",
-          "kind": "crossref",
-          "targetId": "spell/command"
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/vital-shot@legacy"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Greater Deed",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Level 15"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/ghost-shot@legacy"
         }
       ],
       "kind": "paragraph"
     }
   ],
-  "category": "patron",
+  "category": "way",
   "edition": "legacy",
   "facets": {},
-  "id": "patron/pacts",
-  "name": "Pacts",
+  "id": "way/way-of-the-sniper",
+  "name": "Way of the Sniper",
   "proseOnly": true,
-  "rarity": "rare",
-  "remasteredAs": [
-    "patron/the-unseen-broker"
-  ],
-  "slug": "pacts",
+  "rarity": "common",
+  "slug": "way-of-the-sniper",
   "source": {
-    "book": "Dark Archive",
+    "book": "Guns & Gears",
     "license": "OGL",
-    "page": 159
+    "page": 109
   },
-  "traits": [
-    "Rare"
-  ]
+  "traits": []
 }

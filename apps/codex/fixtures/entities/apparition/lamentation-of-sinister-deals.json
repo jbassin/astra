@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/ConsciousMinds.aspx?ID=6",
+  "aonUrl": "/Apparitions.aspx?ID=16",
   "body": [
     {
       "children": [
         {
-          "display": "The Unbound Step",
+          "display": "Lamentation of Sinister Deals",
           "kind": "crossref",
-          "targetId": "conscious-mind/the-unbound-step"
+          "targetId": "apparition/lamentation-of-sinister-deals"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Psychic Conscious Mind "
+      "meta": "Animist Apparition "
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Dark Archive",
+          "display": "Pathfinder #223: Hell's Destiny",
           "kind": "crossref",
-          "targetId": "source/dark-archive"
+          "targetId": "source/pathfinder-223-hells-destiny"
         },
         {
-          "content": " pg. 23",
+          "content": " pg. 226",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,21 @@
     {
       "children": [
         {
-          "content": "The mind can flit from thought to thought; why too shouldn't you? You focus on motion in a higher order of spatial dimensions, not just the typical three, allowing for versatile abilities that alter positioning.",
+          "content": "Lamentations of sinister deals linger where mortals sold their integrity, loyalties, or even their souls in pursuit of short-term gain. While some of these apparitions lurk near corrupt courthouses or fey marketplaces, the greatest concentration emanates from Cheliax’s Whisperwood, where Abrogail I penned a baleful bargain with ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Hell",
+          "kind": "crossref",
+          "targetId": "plane/hell"
+        },
+        {
+          "content": ".",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -67,7 +81,58 @@
     {
       "children": [
         {
-          "content": "Granted Spells",
+          "content": "These apparitions coach an animist in crafting their own deals, though the same apparition often harbors an inconsolable fear of a specific contract type, such as ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "infernal contracts",
+          "kind": "crossref",
+          "targetId": "rules/infernal-contracts"
+        },
+        {
+          "content": " or real estate deeds. Some lamentations of sinister deals might actually be damned souls that have narrowly avoided the River of Souls, knowing they’ll be dragged to Hell once they arrive. Theoretically, an animist could earn the apparition’s loyalty if they could unravel whatever contract cursed the apparition in the first place. A lamentation of sinister deals tempts the animist with deals of its own, granting minor wishes with its spirit magic to impart momentary knowledge or power if the animist simply signs on the figurative line.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Apparition Skills",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Legal Lore, Scribing Lore",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Apparition Spells",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -80,6 +145,31 @@
     },
     {
       "items": [
+        [
+          {
+            "content": "Cantrip",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Message",
+            "kind": "crossref",
+            "targetId": "spell/message"
+          }
+        ],
         [
           {
             "content": "1st",
@@ -100,9 +190,9 @@
             }
           },
           {
-            "display": "Thoughtful Gift",
+            "display": "Sure Strike",
             "kind": "crossref",
-            "targetId": "spell/thoughtful-gift"
+            "targetId": "spell/sure-strike"
           }
         ],
         [
@@ -125,9 +215,9 @@
             }
           },
           {
-            "display": "Enlarge",
+            "display": "Blistering Invective",
             "kind": "crossref",
-            "targetId": "spell/enlarge"
+            "targetId": "spell/blistering-invective"
           }
         ],
         [
@@ -150,9 +240,9 @@
             }
           },
           {
-            "display": "Rally Point",
+            "display": "Hypercognition",
             "kind": "crossref",
-            "targetId": "spell/rally-point"
+            "targetId": "spell/hypercognition"
           }
         ],
         [
@@ -175,9 +265,9 @@
             }
           },
           {
-            "display": "Dimension Door",
+            "display": "Honeyed Words",
             "kind": "crossref",
-            "targetId": "spell/dimension-door"
+            "targetId": "spell/honeyed-words"
           }
         ],
         [
@@ -200,9 +290,9 @@
             }
           },
           {
-            "display": "Strange Geometry",
+            "display": "Breath of Life",
             "kind": "crossref",
-            "targetId": "spell/strange-geometry"
+            "targetId": "spell/breath-of-life"
           }
         ],
         [
@@ -225,9 +315,9 @@
             }
           },
           {
-            "display": "Collective Transposition",
+            "display": "Sacred Form",
             "kind": "crossref",
-            "targetId": "spell/collective-transposition"
+            "targetId": "spell/sacred-form"
           }
         ],
         [
@@ -250,9 +340,9 @@
             }
           },
           {
-            "display": "Momentary Recovery",
+            "display": "Contingency",
             "kind": "crossref",
-            "targetId": "spell/momentary-recovery"
+            "targetId": "spell/contingency"
           }
         ],
         [
@@ -275,9 +365,9 @@
             }
           },
           {
-            "display": "Maze",
+            "display": "Moment of Renewal",
             "kind": "crossref",
-            "targetId": "spell/maze"
+            "targetId": "spell/moment-of-renewal"
           }
         ],
         [
@@ -300,9 +390,9 @@
             }
           },
           {
-            "display": "Bilocation",
+            "display": "Resplendent Mansion",
             "kind": "crossref",
-            "targetId": "spell/bilocation"
+            "targetId": "spell/resplendent-mansion"
           }
         ]
       ],
@@ -312,7 +402,7 @@
     {
       "children": [
         {
-          "content": "Standard Psi Cantrips",
+          "content": "Vessel Spell",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -330,23 +420,9 @@
           }
         },
         {
-          "display": "Phase Bolt",
+          "display": "Wish Market",
           "kind": "crossref",
-          "targetId": "spell/phase-bolt"
-        },
-        {
-          "content": " and ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Warp Step",
-          "kind": "crossref",
-          "targetId": "spell/warp-step"
+          "targetId": "spell/wish-market"
         }
       ],
       "kind": "paragraph"
@@ -354,7 +430,7 @@
     {
       "children": [
         {
-          "content": "Surface Psi Cantrip",
+          "content": "Avatar",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -372,17 +448,39 @@
           }
         },
         {
-          "display": "Distortion Lens",
-          "kind": "crossref",
-          "targetId": "spell/distortion-lens"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
+          "content": "Cosmic Notary",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": true,
+            "superscript": false
+          }
+        },
         {
-          "content": "Deeper Psi Cantrip (Level 6)",
+          "content": " Speed 30 feet, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "fly",
+          "kind": "crossref",
+          "targetId": "action/fly"
+        },
+        {
+          "content": " 50 feet; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Melee",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -400,17 +498,80 @@
           }
         },
         {
-          "display": "Ghostly Shift",
-          "kind": "crossref",
-          "targetId": "spell/ghostly-shift"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
         {
-          "content": "Deepest Psi Cantrip (Level 10)",
+          "content": " burning pen (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "agile",
+          "kind": "crossref",
+          "targetId": "trait/agile"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "reach 15 feet",
+          "kind": "crossref",
+          "targetId": "trait/reach"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "versatile fire",
+          "kind": "crossref",
+          "targetId": "trait/versatile"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 6d6+6 piercing; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Ranged",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -428,32 +589,25 @@
           }
         },
         {
-          "display": "Tesseract Tunnel",
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " exacting language (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "fatal d10",
           "kind": "crossref",
-          "targetId": "spell/tesseract-tunnel"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
+          "targetId": "trait/fatal"
+        },
         {
-          "content": "Phase Bolt",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "heading",
-      "level": 2
-    },
-    {
-      "children": [
-        {
-          "content": "Your ",
+          "content": ", ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -462,16 +616,12 @@
           }
         },
         {
-          "content": "phase bolt",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": true,
-            "superscript": false
-          }
+          "display": "mental",
+          "kind": "crossref",
+          "targetId": "trait/mental"
         },
         {
-          "content": " temporarily sends the target's cover out of phase if it hits. On a success, reduce the target's circumstance bonus to AC (if any) by 1 until the beginning of your next turn. Your ",
+          "content": ", ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -480,30 +630,21 @@
           }
         },
         {
-          "content": "phase bolt",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": true,
-            "superscript": false
-          }
+          "display": "range 60 feet",
+          "kind": "crossref",
+          "targetId": "trait/range"
         },
         {
-          "content": " also gains the following amp.",
+          "content": "), ",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
+        },
         {
-          "content": "Amp",
+          "content": "Damage",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -512,183 +653,7 @@
           }
         },
         {
-          "content": " Your bolt leaves phase completely, becoming invisible and intangible until it's already embedded in the target— giving the impression it simply teleported itself into place. The target is ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "flat-footed",
-          "kind": "crossref",
-          "targetId": "condition/flat-footed"
-        },
-        {
-          "content": " against the attack. Additionally, the bolt ignores an amount of Hardness or resistance to piercing damage equal to half the spell's level. On a critical success, the target can't be affected by ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "teleportation",
-          "kind": "crossref",
-          "targetId": "trait/teleportation"
-        },
-        {
-          "content": " effects until the start of your next turn.",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Amp Heightened (+1)",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " The bolt's damage increases by 2d4 instead of 1d4.",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Warp Step",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "heading",
-      "level": 2
-    },
-    {
-      "children": [
-        {
-          "content": "You warp space more compactly, granting you a +10-foot status to your Speed instead of a +5-foot status bonus when you ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": "warp step",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": true,
-            "superscript": false
-          }
-        },
-        {
-          "content": ". The spell also gains the following amp.",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Amp",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Space contracts with hardly a thought, letting you Cast the Spell as a single action.",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Amp Heightened (4th)",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " You twist space so completely you don't need to travel the interposing distance. You can choose to instead teleport to a space within your line of sight and line of effect with a range equal to your double your Speed (after applying the status bonus from ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": "warp step",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": true,
-            "superscript": false
-          }
-        },
-        {
-          "content": "). This grants the spell the ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "teleportation",
-          "kind": "crossref",
-          "targetId": "trait/teleportation"
-        },
-        {
-          "content": " trait.",
+          "content": " 6d6+6 mental",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -700,21 +665,18 @@
       "kind": "paragraph"
     }
   ],
-  "category": "conscious-mind",
-  "edition": "legacy",
+  "category": "apparition",
+  "edition": "remaster",
   "facets": {},
-  "id": "conscious-mind/the-unbound-step",
-  "name": "The Unbound Step",
+  "id": "apparition/lamentation-of-sinister-deals",
+  "name": "Lamentation of Sinister Deals",
   "proseOnly": true,
   "rarity": "common",
-  "remasteredAs": [
-    "class-feature/the-unbound-step"
-  ],
-  "slug": "the-unbound-step",
+  "slug": "lamentation-of-sinister-deals",
   "source": {
-    "book": "Dark Archive",
-    "license": "OGL",
-    "page": 23
+    "book": "Pathfinder #223: Hell's Destiny",
+    "license": "ORC",
+    "page": 226
   },
   "traits": []
 }

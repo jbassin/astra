@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rituals.aspx?ID=7",
+  "aonUrl": "/Equipment.aspx?ID=2826",
   "body": [
     {
       "children": [
         {
-          "display": "Commune with Nature",
+          "display": "Spellguard Shield",
           "kind": "crossref",
-          "targetId": "ritual/commune-with-nature"
+          "targetId": "equipment/spellguard-shield"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Ritual 6"
+      "meta": "Item 6"
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Core Rulebook",
+          "display": "GM Core",
           "kind": "crossref",
-          "targetId": "source/core-rulebook"
+          "targetId": "source/gm-core"
         },
         {
-          "content": " pg. 410",
+          "content": " pg. 234",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,7 @@
     {
       "children": [
         {
-          "content": "Cast",
+          "content": "Price",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -62,7 +62,7 @@
           }
         },
         {
-          "content": " 1 day",
+          "content": " 250 gp",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -76,7 +76,7 @@
     {
       "children": [
         {
-          "content": "Cost",
+          "content": "Usage",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -85,7 +85,7 @@
           }
         },
         {
-          "content": " rare incense worth a total value of 60 gp",
+          "content": " held in 1 hand",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -99,7 +99,7 @@
     {
       "children": [
         {
-          "content": "Secondary Casters",
+          "content": "Bulk",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -122,7 +122,7 @@
     {
       "children": [
         {
-          "content": "Primary Check",
+          "content": "Base Shield",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -140,64 +140,9 @@
           }
         },
         {
-          "display": "Nature",
+          "display": "Steel Shield",
           "kind": "crossref",
-          "targetId": "skill/nature"
-        },
-        {
-          "content": " (master)",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Secondary Checks",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Nature",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Duration",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " up to 10 minutes",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
+          "targetId": "shield/steel-shield"
         }
       ],
       "kind": "paragraph"
@@ -208,21 +153,7 @@
     {
       "children": [
         {
-          "content": "As ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "commune",
-          "kind": "crossref",
-          "targetId": "ritual/commune"
-        },
-        {
-          "content": ", except you contact the primal spirits of nature, which know about animals, beasts, fey, fungi, plants, topography, and natural resources within a 3-mile radius of the ritual’s location.",
+          "content": "This shield bears eldritch glyphs to guard against magic. While you have this steel shield (Hardness 6, HP 24, BT 12) raised, you gain its circumstance bonus to saving throws against spells that target you (as well as to AC), and you can Shield Block spells that target you if you have that action.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -234,26 +165,28 @@
       "kind": "paragraph"
     }
   ],
-  "category": "ritual",
-  "edition": "legacy",
-  "facets": {},
-  "id": "ritual/commune-with-nature",
-  "level": 6,
-  "name": "Commune with Nature",
-  "proseOnly": true,
-  "rarity": "uncommon",
-  "remasteredAs": [
-    "spell/commune"
+  "category": "shield",
+  "edition": "remaster",
+  "facets": {
+    "bulk": 1,
+    "featLevel": 6,
+    "price": "250 gp",
+    "rank": 6
+  },
+  "id": "shield/spellguard-shield",
+  "legacyOf": [
+    "equipment/spellguard-shield"
   ],
-  "slug": "commune-with-nature",
+  "level": 6,
+  "name": "Spellguard Shield",
+  "rarity": "common",
+  "slug": "spellguard-shield",
   "source": {
-    "book": "Core Rulebook",
-    "license": "OGL",
-    "page": 410
+    "book": "GM Core",
+    "license": "ORC",
+    "page": 234
   },
   "traits": [
-    "Divination",
-    "Prediction",
-    "Uncommon"
+    "magical"
   ]
 }

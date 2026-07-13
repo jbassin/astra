@@ -165,8 +165,8 @@
         },
         {
           "display": "Staff of the Unblinking Eye",
-          "kind": "crossref",
-          "targetId": "equipment/staff-of-the-unblinking-eye"
+          "kind": "brokenRef",
+          "target": "equipment/staff-of-the-unblinking-eye"
         },
         {
           "content": " (level 6), ",

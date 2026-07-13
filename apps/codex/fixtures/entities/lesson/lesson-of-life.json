@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rackets.aspx?ID=3",
+  "aonUrl": "/Lessons.aspx?ID=3",
   "body": [
     {
       "children": [
         {
-          "display": "Thief",
+          "display": "Lesson of Life",
           "kind": "crossref",
-          "targetId": "racket/thief"
+          "targetId": "lesson/lesson-of-life"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Rogue Racket "
+      "meta": "Witch Lesson "
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Core Rulebook",
+          "display": "Advanced Player's Guide",
           "kind": "crossref",
-          "targetId": "source/core-rulebook"
+          "targetId": "source/advanced-players-guide"
         },
         {
-          "content": " pg. 180",
+          "content": " pg. 100",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,16 @@
     {
       "children": [
         {
-          "content": "Nothing beats the thrill of taking something that belongs to someone else, especially if you can do so completely unnoticed. You might be a pickpocket working the streets, a cat burglar sneaking through windows and escaping via rooftops, or a safecracker breaking into carefully guarded vaults. You might even work as a consultant, testing clients’ defenses by trying to steal something precious.",
+          "content": "Lesson Type",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Basic",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -67,7 +76,7 @@
     {
       "children": [
         {
-          "content": " When a fight breaks out, you prefer swift, lightweight weapons, and you strike where it hurts. When you make a melee Strike with a ",
+          "content": "You gain the ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -76,26 +85,12 @@
           }
         },
         {
-          "display": "finesse",
+          "display": "Life Boost",
           "kind": "crossref",
-          "targetId": "trait/finesse"
+          "targetId": "spell/life-boost"
         },
         {
-          "content": " weapon or finesse unarmed attack, you can add your Dexterity modifier to the damage roll instead of your Strength modifier.",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": " You are trained in ",
+          "content": " hex, and your familiar learns ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -104,9 +99,9 @@
           }
         },
         {
-          "display": "Thievery",
+          "display": "Spirit Link",
           "kind": "crossref",
-          "targetId": "skill/thievery"
+          "targetId": "spell/spirit-link"
         },
         {
           "content": ".",
@@ -121,21 +116,21 @@
       "kind": "paragraph"
     }
   ],
-  "category": "racket",
+  "category": "lesson",
   "edition": "legacy",
   "facets": {},
-  "id": "racket/thief",
-  "name": "Thief",
+  "id": "lesson/lesson-of-life",
+  "name": "Lesson of Life",
   "proseOnly": true,
   "rarity": "common",
   "remasteredAs": [
-    "class-feature/thief"
+    "class-feature/lesson-of-life"
   ],
-  "slug": "thief",
+  "slug": "lesson-of-life",
   "source": {
-    "book": "Core Rulebook",
+    "book": "Advanced Player's Guide",
     "license": "OGL",
-    "page": 180
+    "page": 100
   },
   "traits": []
 }

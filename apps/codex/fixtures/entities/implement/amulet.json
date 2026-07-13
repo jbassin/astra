@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rituals.aspx?ID=7",
+  "aonUrl": "/Implements.aspx?ID=1",
   "body": [
     {
       "children": [
         {
-          "display": "Commune with Nature",
+          "display": "Amulet",
           "kind": "crossref",
-          "targetId": "ritual/commune-with-nature"
+          "targetId": "implement/amulet"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Ritual 6"
+      "meta": "Thaumaturge Implement "
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Core Rulebook",
+          "display": "Dark Archive",
           "kind": "crossref",
-          "targetId": "source/core-rulebook"
+          "targetId": "source/dark-archive"
         },
         {
-          "content": " pg. 410",
+          "content": " pg. 36",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,16 +53,7 @@
     {
       "children": [
         {
-          "content": "Cast",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1 day",
+          "content": "Amulets are items carried for good luck and protection. Your amulet might be a magical diagram, a religious symbol, a preserved body part such as a rabbit's foot, or a lucky coin. Amulet implements are associated with the harrow suit of shields and the astrological signs of the bridge and the ogre.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -76,16 +67,22 @@
     {
       "children": [
         {
-          "content": "Cost",
+          "content": "Initiate Benefit",
           "kind": "text",
           "marks": {
-            "bold": true,
+            "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
         {
-          "content": " rare incense worth a total value of 60 gp",
+          "content": "The protective aspects of your amulet can shield you and your allies from harm. You gain the Amulet's Abeyance reaction.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -99,16 +96,33 @@
     {
       "children": [
         {
-          "content": "Secondary Casters",
+          "kind": "embed",
+          "resolved": true,
+          "target": "action/amulets-abeyance@legacy"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Adept Benefit",
           "kind": "text",
           "marks": {
-            "bold": true,
+            "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "7th"
+    },
+    {
+      "children": [
         {
-          "content": " 1",
+          "content": "Your amulet offers continued protection. When you use Amulet's Abeyance, you or your ally chooses one type of damage dealt by the triggering attack and gains resistance 5 against that damage type until the start of your next turn. At 15th level, this lingering resistance increases from 5 to 10.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -122,30 +136,23 @@
     {
       "children": [
         {
-          "content": "Primary Check",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
+          "content": "Intensify Benefit",
           "kind": "text",
           "marks": {
             "bold": false,
             "italic": false,
             "superscript": false
           }
-        },
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "9th"
+    },
+    {
+      "children": [
         {
-          "display": "Nature",
-          "kind": "crossref",
-          "targetId": "skill/nature"
-        },
-        {
-          "content": " (master)",
+          "content": "Your amulet repels the creature's attempts to harm you. You gain a +2 status bonus to AC and saves against the target of your Exploit Vulnerability.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -159,16 +166,7 @@
     {
       "children": [
         {
-          "content": "Secondary Checks",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Nature",
+          "content": "Paragon Benefit",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -177,52 +175,14 @@
           }
         }
       ],
-      "kind": "paragraph"
+      "kind": "heading",
+      "level": 2,
+      "meta": "17th"
     },
     {
       "children": [
         {
-          "content": "Duration",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " up to 10 minutes",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
-          "content": "As ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "commune",
-          "kind": "crossref",
-          "targetId": "ritual/commune"
-        },
-        {
-          "content": ", except you contact the primal spirits of nature, which know about animals, beasts, fey, fungi, plants, topography, and natural resources within a 3-mile radius of the ritual’s location.",
+          "content": "Your amulet provides sanctuary even against wide-scale attacks. When you use Amulet's Abeyance, you target yourself and all allies within 15 feet. Each target gains both the initial resistance against the triggering damage and the lingering resistance from your amulet's adept benefit; the allies gain the lingering resistance even if they would not have taken any of the initial triggering damage. If the foe's attack deals multiple damage types, each target can separately choose the damage type to gain lingering resistance against.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -234,26 +194,21 @@
       "kind": "paragraph"
     }
   ],
-  "category": "ritual",
+  "category": "implement",
   "edition": "legacy",
   "facets": {},
-  "id": "ritual/commune-with-nature",
-  "level": 6,
-  "name": "Commune with Nature",
+  "id": "implement/amulet",
+  "name": "Amulet",
   "proseOnly": true,
-  "rarity": "uncommon",
+  "rarity": "common",
   "remasteredAs": [
-    "spell/commune"
+    "class-feature/amulet"
   ],
-  "slug": "commune-with-nature",
+  "slug": "amulet",
   "source": {
-    "book": "Core Rulebook",
+    "book": "Dark Archive",
     "license": "OGL",
-    "page": 410
+    "page": 36
   },
-  "traits": [
-    "Divination",
-    "Prediction",
-    "Uncommon"
-  ]
+  "traits": []
 }

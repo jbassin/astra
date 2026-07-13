@@ -1,0 +1,43 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "A chakri is a small, circular throwing weapon with a sharp outer edge.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "weapon",
+  "edition": "legacy",
+  "facets": {
+    "bulk": 0,
+    "featLevel": 0,
+    "itemCategory": "advanced",
+    "price": "2 cp",
+    "rank": 0,
+    "usage": "held-in-one-hand"
+  },
+  "id": "weapon/chakri-lost-omens",
+  "level": 0,
+  "name": "Chakri (Lost Omens)",
+  "rarity": "uncommon",
+  "slug": "chakri-lost-omens",
+  "source": {
+    "book": "Pathfinder Lost Omens Impossible Lands",
+    "license": "OGL"
+  },
+  "traits": [
+    "agile",
+    "deadly-d8",
+    "thrown"
+  ],
+  "variantOf": "weapon/chakri"
+}

@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rackets.aspx?ID=3",
+  "aonUrl": "/Muses.aspx?ID=1",
   "body": [
     {
       "children": [
         {
-          "display": "Thief",
+          "display": "Enigma",
           "kind": "crossref",
-          "targetId": "racket/thief"
+          "targetId": "muse/enigma"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Rogue Racket "
+      "meta": "Bard Muse "
     },
     {
       "children": [
@@ -39,7 +39,7 @@
           "targetId": "source/core-rulebook"
         },
         {
-          "content": " pg. 180",
+          "content": " pg. 97",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,21 +53,7 @@
     {
       "children": [
         {
-          "content": "Nothing beats the thrill of taking something that belongs to someone else, especially if you can do so completely unnoticed. You might be a pickpocket working the streets, a cat burglar sneaking through windows and escaping via rooftops, or a safecracker breaking into carefully guarded vaults. You might even work as a consultant, testing clients’ defenses by trying to steal something precious.",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": " When a fight breaks out, you prefer swift, lightweight weapons, and you strike where it hurts. When you make a melee Strike with a ",
+          "content": "Your muse is a mystery, driving you to uncover the hidden secrets of the multiverse. If your muse is a creature, it might be a ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -76,26 +62,12 @@
           }
         },
         {
-          "display": "finesse",
+          "display": "dragon",
           "kind": "crossref",
-          "targetId": "trait/finesse"
+          "targetId": "trait/dragon"
         },
         {
-          "content": " weapon or finesse unarmed attack, you can add your Dexterity modifier to the damage roll instead of your Strength modifier.",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": " You are trained in ",
+          "content": " or otherworldly being; if a deity, it might be ",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -104,12 +76,54 @@
           }
         },
         {
-          "display": "Thievery",
+          "display": "Irori",
           "kind": "crossref",
-          "targetId": "skill/thievery"
+          "targetId": "deity/irori"
         },
         {
-          "content": ".",
+          "content": " or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nethys",
+          "kind": "crossref",
+          "targetId": "deity/nethys"
+        },
+        {
+          "content": ". You gain the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Bardic Lore",
+          "kind": "crossref",
+          "targetId": "feat/bardic-lore"
+        },
+        {
+          "content": " feat and add ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "true strike",
+          "kind": "crossref",
+          "targetId": "spell/true-strike"
+        },
+        {
+          "content": " to your spell repertoire.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -121,21 +135,21 @@
       "kind": "paragraph"
     }
   ],
-  "category": "racket",
+  "category": "muse",
   "edition": "legacy",
   "facets": {},
-  "id": "racket/thief",
-  "name": "Thief",
+  "id": "muse/enigma",
+  "name": "Enigma",
   "proseOnly": true,
   "rarity": "common",
   "remasteredAs": [
-    "class-feature/thief"
+    "class-feature/enigma"
   ],
-  "slug": "thief",
+  "slug": "enigma",
   "source": {
     "book": "Core Rulebook",
     "license": "OGL",
-    "page": 180
+    "page": 97
   },
   "traits": []
 }

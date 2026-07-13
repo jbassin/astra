@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { CodexEntity } from "../schema/entity";
+import type { DropAccounting } from "./drop";
 import type { CategoryStat, CollisionReport, JoinResult } from "./join";
 import {
   buildReportJson,
@@ -113,12 +114,16 @@ describe("computeFinalCategoryCounts / license / edition / proseOnly / variant",
   });
 });
 
+const EMPTY_DROP_ACCOUNTING: DropAccounting = { totalDropped: 0, byCategory: [], carveOut: [] };
+
 function baseInput(overrides: Partial<ReportInput>): ReportInput {
   return {
     reportCounts: new Map(),
     reportExamples: new Map(),
     hardFailureCount: 0,
     join: joinResult({}),
+    finalEntities: [],
+    dropAccounting: EMPTY_DROP_ACCOUNTING,
     foundrySnapshotDocCount: 28636,
     aonSnapshotDocCount: 43684,
     ...overrides,
@@ -220,6 +225,55 @@ describe("buildReportJson", () => {
     );
     expect(Object.keys(json.reportCounts)).toEqual(["alpha", "zebra"]);
   });
+
+  it("S5c: final* stats (finalEntityCount, license/edition breakdown, per-category finalOut) come from finalEntities (POST-drop), not join.entities", () => {
+    const preDropOnly = entity({
+      id: "boon/dropped",
+      category: "boon",
+      slug: "dropped",
+      name: "Dropped",
+      source: { book: "unknown", license: "unknown" },
+    });
+    const kept = entity({
+      id: "spell/heal",
+      category: "spell",
+      slug: "heal",
+      name: "Heal",
+      source: { book: "Player Core", license: "ORC" },
+    });
+    const stat: CategoryStat = {
+      category: "boon",
+      foundryTotal: 1,
+      aonTotal: 0,
+      exact: 0,
+      normalized: 0,
+      alias: 0,
+      variants: 0,
+      unjoinedForeign: [{ id: "boon/dropped", name: "Dropped" }],
+      unjoinedAon: [],
+    };
+    const json = buildReportJson(
+      baseInput({
+        join: joinResult({ categoryStats: [stat], entities: [preDropOnly, kept] }),
+        finalEntities: [kept], // "boon/dropped" was dropped before emit
+      }),
+    );
+    expect(json.finalEntityCount).toBe(1);
+    expect(json.licenseBreakdown).toEqual({ ORC: 1 });
+    const boonCat = json.categories.find((c) => c.category === "boon");
+    expect(boonCat?.finalOut).toBe(0); // dropped, so 0 in the POST-drop count
+    expect(boonCat?.foundryIn).toBe(1); // pre-drop join measurement unaffected
+  });
+
+  it("passes dropAccounting through verbatim", () => {
+    const dropAccounting: DropAccounting = {
+      totalDropped: 536,
+      byCategory: [{ category: "boon", dropped: 240 }],
+      carveOut: [{ category: "creature", kept: 2242 }],
+    };
+    const json = buildReportJson(baseInput({ dropAccounting }));
+    expect(json.dropAccounting).toEqual(dropAccounting);
+  });
 });
 
 describe("buildReportMarkdown", () => {
@@ -291,5 +345,34 @@ describe("buildReportMarkdown", () => {
     const json = buildReportJson(baseInput({}));
     const md = buildReportMarkdown(json);
     expect(md).toContain("None applied in this run.");
+  });
+
+  it("S5c: renders the drop-accounting section (per-category drops + carve-out kept counts)", () => {
+    const dropAccounting: DropAccounting = {
+      totalDropped: 536,
+      byCategory: [
+        { category: "boon", dropped: 240 },
+        { category: "pfs-boon", dropped: 157 },
+      ],
+      carveOut: [
+        { category: "creature", kept: 2242 },
+        { category: "hazard", kept: 660 },
+      ],
+    };
+    const json = buildReportJson(baseInput({ dropAccounting }));
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("AoN-primary drop pass");
+    expect(md).toContain("536");
+    expect(md).toContain("boon");
+    expect(md).toContain("240");
+    expect(md).toContain("creature");
+    expect(md).toContain("2242");
+  });
+
+  it("renders 'nothing dropped'/'no carve-out' placeholders when both are empty", () => {
+    const json = buildReportJson(baseInput({}));
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("Nothing dropped.");
+    expect(md).toContain("No carve-out entities in this run.");
   });
 });

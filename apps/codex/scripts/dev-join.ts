@@ -31,6 +31,7 @@ import {
   extractAonMeta,
 } from "../src/ingest/aonFacets";
 import { buildAonLinkTable, type LinkTableDoc } from "../src/ingest/aonLinkTable";
+import { applyAonPrimaryDrop } from "../src/ingest/drop";
 import {
   EnricherGrammarError,
   type EnricherContext,
@@ -380,7 +381,12 @@ function main(): void {
     resolveForeignEmbed: createResolveUuid(foundry.index),
     report,
   });
-  console.log(`  ${result.entities.length} final entities.`);
+  console.log(`  ${result.entities.length} pre-drop entities.`);
+
+  const dropResult = applyAonPrimaryDrop(result.entities, report);
+  console.log(
+    `  ${dropResult.keptEntities.length} final entities (${dropResult.accounting.totalDropped} dropped by the D29-14 AoN-primary pass).`,
+  );
 
   measureDragonFamily(foundry.entities, dedupedMetas);
 
@@ -445,6 +451,8 @@ function main(): void {
     reportExamples,
     hardFailureCount: hardFailures.length,
     join: result,
+    finalEntities: dropResult.keptEntities,
+    dropAccounting: dropResult.accounting,
     foundrySnapshotDocCount: foundry.entities.size,
     aonSnapshotDocCount: aon.metas.length,
   });

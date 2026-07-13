@@ -180,4 +180,31 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     );
     expect(barrage.id).toBe("spell/force-barrage");
   });
+
+  it("S5c/D29-14: the Foundry-only 'boon' category is dropped end-to-end (present in the report's drop-accounting, absent from the emitted corpus)", () => {
+    const corpusRoot = freshCorpusDir();
+    const result = runOnce(corpusRoot);
+    expect(result.hardFailures).toEqual([]);
+    expect(() => readFileSync(join(corpusRoot, "boon", "desna-major-boon.json"), "utf8")).toThrow();
+    const boonDrop = result.reportJson?.dropAccounting.byCategory.find(
+      (c) => c.category === "boon",
+    );
+    expect(boonDrop?.dropped).toBeGreaterThanOrEqual(1);
+  });
+
+  it("S5c/D29-17: a genuine Foundry-only creature (Dune Candle) SURVIVES the drop pass via the creature carve-out", () => {
+    const corpusRoot = freshCorpusDir();
+    const result = runOnce(corpusRoot);
+    expect(result.hardFailures).toEqual([]);
+    const duneCandle = JSON.parse(
+      readFileSync(join(corpusRoot, "creature", "dune-candle.json"), "utf8"),
+    );
+    expect(duneCandle.id).toBe("creature/dune-candle");
+    expect(duneCandle.aonUrl).toBeUndefined();
+    expect(duneCandle.proseOnly).toBeUndefined();
+    const carveOut = result.reportJson?.dropAccounting.carveOut.find(
+      (c) => c.category === "creature",
+    );
+    expect(carveOut?.kept).toBeGreaterThanOrEqual(1);
+  });
 });
