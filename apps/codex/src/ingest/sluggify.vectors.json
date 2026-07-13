@@ -1,0 +1,689 @@
+{
+  "_methodology": [
+    "Ground truth for sluggify(name) === slug pairs, extracted from the real Foundry pf2e-8.3.0 pack snapshot (apps/codex/data/snapshots/foundry/pf2e-8.3.0/packs/pf2e/).",
+    "The snapshot has NO system.slug field anywhere (verified exhaustively: 0/28,636 docs carry a system.slug key, of any value, at the document top level) -- so \"pack docs already carry system.slug\" does not hold for this snapshot literally.",
+    "Ground truth is instead the PACK FILE'S OWN BASENAME: upstream's own extraction tooling (foundryvtt/pf2e's pack build step) names every source JSON file after the document's slug. This was verified exhaustively, not sampled: an exhaustive scan of all 28,636 docs found filename === sluggify(name) for EVERY SINGLE ONE (0 disagreements, 0% disagreement rate) -- see the codex-0029 gotchas memory entry for the full script. No pair required exclusion.",
+    "This file is a small, hand-curated, DETERMINISTIC subset of that exhaustive check: ~90 evenly-strided samples across the whole corpus (sorted file order, every Nth file) plus every tricky-character example the extraction script found (apostrophes, diacritics, parenthesized qualifiers, dashes, ampersands, ellipses, non-breaking hyphens, curly quotes, embedded nicknames, colons, slashes, commas, leading plus signs) -- committed so CI can assert the port without touching the gitignored data/ directory."
+  ],
+  "vectors": [
+    {
+      "name": "(Affinity Ablaze) Arms of Balance: Walking the Cardinal Paths",
+      "slug": "affinity-ablaze-arms-of-balance-walking-the-cardinal-paths",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "(Affinity Ablaze) Biting Roses: Glimpses to Beyond",
+      "slug": "affinity-ablaze-biting-roses-glimpses-to-beyond",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "(Affinity Ablaze) Speakers to the Winds: All is One, One is All",
+      "slug": "affinity-ablaze-speakers-to-the-winds-all-is-one-one-is-all",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "(Affinity Ablaze) Steps of the Sun: Grand Harmony",
+      "slug": "affinity-ablaze-steps-of-the-sun-grand-harmony",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "(Affinity Ablaze) Winter's Roar: Rampaging Glacier Charge",
+      "slug": "affinity-ablaze-winters-roar-rampaging-glacier-charge",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "(Mythic) Reroll",
+      "slug": "mythic-reroll"
+    },
+    {
+      "name": "+1 Status to All Saves vs. Magic",
+      "slug": "1-status-to-all-saves-vs-magic",
+      "note": "leading plus sign / parenthesized number"
+    },
+    {
+      "name": "18th-Level Consumables",
+      "slug": "18th-level-consumables"
+    },
+    {
+      "name": "Administer First Aid - Stabilize: Medicine",
+      "slug": "administer-first-aid-stabilize-medicine",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Administer First Aid - Stop Bleeding: Medicine",
+      "slug": "administer-first-aid-stop-bleeding-medicine",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Advanced Eltha Embercall (9-10)/Eltha Embercall (11-12)",
+      "slug": "advanced-eltha-embercall-9-10-eltha-embercall-11-12",
+      "note": "literal slash in name"
+    },
+    {
+      "name": "Advanced Hallowed Spell",
+      "slug": "advanced-hallowed-spell"
+    },
+    {
+      "name": "Animated Tea Cart",
+      "slug": "animated-tea-cart"
+    },
+    {
+      "name": "Animist & Apparition Spellcasting",
+      "slug": "animist-apparition-spellcasting",
+      "note": "ampersand in name"
+    },
+    {
+      "name": "AoA #150: Boon A - Legacy of Ashes",
+      "slug": "aoa-150-boon-a-legacy-of-ashes"
+    },
+    {
+      "name": "Appraiser’s Eye",
+      "slug": "appraisers-eye",
+      "note": "embedded quoted nickname"
+    },
+    {
+      "name": "Armor Potency (+1)",
+      "slug": "armor-potency-1",
+      "note": "leading plus sign / parenthesized number"
+    },
+    {
+      "name": "Armor Potency (+2)",
+      "slug": "armor-potency-2",
+      "note": "leading plus sign / parenthesized number"
+    },
+    {
+      "name": "Armor Potency (+3)",
+      "slug": "armor-potency-3",
+      "note": "leading plus sign / parenthesized number"
+    },
+    {
+      "name": "Armored Coat",
+      "slug": "armored-coat"
+    },
+    {
+      "name": "Athletics: Arcane Slam",
+      "slug": "athletics-arcane-slam",
+      "note": "colon-separated name"
+    },
+    {
+      "name": "Augury",
+      "slug": "augury"
+    },
+    {
+      "name": "Back to Back",
+      "slug": "back-to-back"
+    },
+    {
+      "name": "Balance: Acrobatics",
+      "slug": "balance-acrobatics",
+      "note": "colon-separated name"
+    },
+    {
+      "name": "Barnacle Barnaby (5-6)",
+      "slug": "barnacle-barnaby-5-6"
+    },
+    {
+      "name": "Beluthus",
+      "slug": "beluthus"
+    },
+    {
+      "name": "Blessed Swiftness",
+      "slug": "blessed-swiftness"
+    },
+    {
+      "name": "Blighted Leaf Leshy",
+      "slug": "blighted-leaf-leshy"
+    },
+    {
+      "name": "Bloodseeker Beak",
+      "slug": "bloodseeker-beak"
+    },
+    {
+      "name": "Bon Mot: Diplomacy",
+      "slug": "bon-mot-diplomacy",
+      "note": "colon-separated name"
+    },
+    {
+      "name": "Boost Modulation",
+      "slug": "boost-modulation"
+    },
+    {
+      "name": "Bshez \"Sand Claws\" Shak",
+      "slug": "bshez-sand-claws-shak",
+      "note": "embedded quoted nickname"
+    },
+    {
+      "name": "Build Workshop (Crafting)",
+      "slug": "build-workshop-crafting",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "Catch Your Name",
+      "slug": "catch-your-name"
+    },
+    {
+      "name": "Charm of the Ordinary",
+      "slug": "charm-of-the-ordinary"
+    },
+    {
+      "name": "Chelaxian Rogue",
+      "slug": "chelaxian-rogue"
+    },
+    {
+      "name": "Cinder Wolf (1-2)",
+      "slug": "cinder-wolf-1-2"
+    },
+    {
+      "name": "Cloak of Waves & Clouds",
+      "slug": "cloak-of-waves-clouds",
+      "note": "ampersand in name"
+    },
+    {
+      "name": "Cobble Together",
+      "slug": "cobble-together"
+    },
+    {
+      "name": "Create a Diversion - Distracting Words: Deception",
+      "slug": "create-a-diversion-distracting-words-deception",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Create a Diversion - Gesture: Deception",
+      "slug": "create-a-diversion-gesture-deception",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Create a Diversion - Trick: Deception",
+      "slug": "create-a-diversion-trick-deception",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Critical Hit Deck #35",
+      "slug": "critical-hit-deck-35"
+    },
+    {
+      "name": "Cry Havoc!",
+      "slug": "cry-havoc",
+      "note": "exclamation mark"
+    },
+    {
+      "name": "Cytillesh",
+      "slug": "cytillesh"
+    },
+    {
+      "name": "De-Animating Gestures (False)",
+      "slug": "de-animating-gestures-false",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "Delight Dragon (Ancient)",
+      "slug": "delight-dragon-ancient"
+    },
+    {
+      "name": "Deny the Traitor's Rebirth",
+      "slug": "deny-the-traitors-rebirth"
+    },
+    {
+      "name": "Disease",
+      "slug": "disease"
+    },
+    {
+      "name": "Divine Living Rune",
+      "slug": "divine-living-rune"
+    },
+    {
+      "name": "Dragon Breath (Dragon Form)",
+      "slug": "dragon-breath-dragon-form",
+      "note": "parenthesized qualifier"
+    },
+    {
+      "name": "Dragon's Blood Puffball",
+      "slug": "dragons-blood-puffball",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Déjà Vu",
+      "slug": "déjà-vu",
+      "note": "diacritic / non-ASCII letter in name"
+    },
+    {
+      "name": "Effect: Aeon Stone (Sprouting)",
+      "slug": "effect-aeon-stone-sprouting"
+    },
+    {
+      "name": "Effect: Apparition's Enhancement",
+      "slug": "effect-apparitions-enhancement"
+    },
+    {
+      "name": "Effect: Deadweight Snare (Failure/Critical Failure)",
+      "slug": "effect-deadweight-snare-failure-critical-failure",
+      "note": "literal slash in name"
+    },
+    {
+      "name": "Effect: Ganzi Resistance",
+      "slug": "effect-ganzi-resistance"
+    },
+    {
+      "name": "Effect: Heaven's Thunder",
+      "slug": "effect-heavens-thunder"
+    },
+    {
+      "name": "Effect: Illuminated Folio",
+      "slug": "effect-illuminated-folio"
+    },
+    {
+      "name": "Effect: Magnificent…!",
+      "slug": "effect-magnificent",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Effect: Rage and Fury",
+      "slug": "effect-rage-and-fury"
+    },
+    {
+      "name": "Effect: Terrain Attunement (Mountain)",
+      "slug": "effect-terrain-attunement-mountain"
+    },
+    {
+      "name": "Effect: Troop Harrowing",
+      "slug": "effect-troop-harrowing"
+    },
+    {
+      "name": "Effect: Tteokguk of Time Advancement",
+      "slug": "effect-tteokguk-of-time-advancement"
+    },
+    {
+      "name": "Eidolon Contact",
+      "slug": "eidolon-contact"
+    },
+    {
+      "name": "Eldritch Flare",
+      "slug": "eldritch-flare"
+    },
+    {
+      "name": "Elemental Bulwark",
+      "slug": "elemental-bulwark"
+    },
+    {
+      "name": "End It!",
+      "slug": "end-it",
+      "note": "exclamation mark"
+    },
+    {
+      "name": "Erastil - Moderate Boon",
+      "slug": "erastil-moderate-boon"
+    },
+    {
+      "name": "Ferocious Charge",
+      "slug": "ferocious-charge"
+    },
+    {
+      "name": "Fire and Iceberg (Greater)",
+      "slug": "fire-and-iceberg-greater"
+    },
+    {
+      "name": "Flame Drake",
+      "slug": "flame-drake"
+    },
+    {
+      "name": "Flensing Slice",
+      "slug": "flensing-slice"
+    },
+    {
+      "name": "For My House!",
+      "slug": "for-my-house",
+      "note": "exclamation mark"
+    },
+    {
+      "name": "For Talmandor! For Freedom!",
+      "slug": "for-talmandor-for-freedom",
+      "note": "exclamation mark"
+    },
+    {
+      "name": "Frog Geyser",
+      "slug": "frog-geyser"
+    },
+    {
+      "name": "Gather Disciples",
+      "slug": "gather-disciples"
+    },
+    {
+      "name": "Giant Flea",
+      "slug": "giant-flea"
+    },
+    {
+      "name": "Gokeki",
+      "slug": "gokeki"
+    },
+    {
+      "name": "Goo Grenade (Greater)",
+      "slug": "goo-grenade-greater"
+    },
+    {
+      "name": "Grace \"The Rhino\" Owano",
+      "slug": "grace-the-rhino-owano",
+      "note": "embedded quoted nickname"
+    },
+    {
+      "name": "Graceful Guidance",
+      "slug": "graceful-guidance"
+    },
+    {
+      "name": "Hezle",
+      "slug": "hezle"
+    },
+    {
+      "name": "Hold Sergeant",
+      "slug": "hold-sergeant"
+    },
+    {
+      "name": "I Defy You!",
+      "slug": "i-defy-you",
+      "note": "exclamation mark"
+    },
+    {
+      "name": "I am the Weapon",
+      "slug": "i-am-the-weapon"
+    },
+    {
+      "name": "Indomitable Keepsake",
+      "slug": "indomitable-keepsake"
+    },
+    {
+      "name": "Infiltrator's Draw",
+      "slug": "infiltrators-draw",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Ixamè",
+      "slug": "ixamè",
+      "note": "diacritic / non-ASCII letter in name"
+    },
+    {
+      "name": "Ixamè's Eye",
+      "slug": "ixamès-eye",
+      "note": "diacritic / non-ASCII letter in name"
+    },
+    {
+      "name": "Jaul's Wolf",
+      "slug": "jauls-wolf",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Jewel‑encrusted gold altar",
+      "slug": "jewel-encrusted-gold-altar",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Keen Flair",
+      "slug": "keen-flair"
+    },
+    {
+      "name": "Kimanéz Luminescent Toadstool",
+      "slug": "kimanéz-luminescent-toadstool",
+      "note": "diacritic / non-ASCII letter in name"
+    },
+    {
+      "name": "Lady's Whisper",
+      "slug": "ladys-whisper",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Life‑size sculpture by an expert",
+      "slug": "life-size-sculpture-by-an-expert",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Lintwerth",
+      "slug": "lintwerth"
+    },
+    {
+      "name": "Lucky Gold",
+      "slug": "lucky-gold"
+    },
+    {
+      "name": "Manananggal",
+      "slug": "manananggal"
+    },
+    {
+      "name": "Mariner’s Mien (Greater)",
+      "slug": "mariners-mien-greater",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Mariner’s Mien (Lesser)",
+      "slug": "mariners-mien-lesser",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Natural Orienteering",
+      "slug": "natural-orienteering"
+    },
+    {
+      "name": "Necrotic Cap (Major)",
+      "slug": "necrotic-cap-major"
+    },
+    {
+      "name": "Nhimbaloth's Cutter",
+      "slug": "nhimbaloths-cutter",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Niyaháat",
+      "slug": "niyaháat",
+      "note": "diacritic / non-ASCII letter in name"
+    },
+    {
+      "name": "Nizca Iricol",
+      "slug": "nizca-iricol"
+    },
+    {
+      "name": "Old Thornbarker",
+      "slug": "old-thornbarker"
+    },
+    {
+      "name": "One Shot, One Kill",
+      "slug": "one-shot-one-kill",
+      "note": "comma-separated name"
+    },
+    {
+      "name": "Original manuscript from a world‑famous author",
+      "slug": "original-manuscript-from-a-world-famous-author",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Oversized Throw",
+      "slug": "oversized-throw"
+    },
+    {
+      "name": "Peerless Form",
+      "slug": "peerless-form"
+    },
+    {
+      "name": "Perform - Acting: Performance",
+      "slug": "perform-acting-performance",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Perform - Comedy: Performance",
+      "slug": "perform-comedy-performance",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Perform - Dance: Performance",
+      "slug": "perform-dance-performance",
+      "note": "literal hyphen/dash in name"
+    },
+    {
+      "name": "Pesh Skin",
+      "slug": "pesh-skin"
+    },
+    {
+      "name": "Phasmadaemon",
+      "slug": "phasmadaemon"
+    },
+    {
+      "name": "Platinum‑framed monocle",
+      "slug": "platinum-framed-monocle",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Pop, Drop, and Lock",
+      "slug": "pop-drop-and-lock",
+      "note": "comma-separated name"
+    },
+    {
+      "name": "Portable Gaming Hall",
+      "slug": "portable-gaming-hall"
+    },
+    {
+      "name": "Press-Ganged (G&G)",
+      "slug": "press-ganged-g-g",
+      "note": "ampersand in name"
+    },
+    {
+      "name": "Primal Summons",
+      "slug": "primal-summons"
+    },
+    {
+      "name": "Ransack the Night",
+      "slug": "ransack-the-night"
+    },
+    {
+      "name": "Ratfolk",
+      "slug": "ratfolk"
+    },
+    {
+      "name": "Razmiran Priest Dedication",
+      "slug": "razmiran-priest-dedication"
+    },
+    {
+      "name": "Ready, Aim, Fire!",
+      "slug": "ready-aim-fire",
+      "note": "comma-separated name"
+    },
+    {
+      "name": "Research",
+      "slug": "research"
+    },
+    {
+      "name": "Retrieval Belt (Major)",
+      "slug": "retrieval-belt-major"
+    },
+    {
+      "name": "Reveal True Name",
+      "slug": "reveal-true-name"
+    },
+    {
+      "name": "Reymenda",
+      "slug": "reymenda"
+    },
+    {
+      "name": "Runelord's Response",
+      "slug": "runelords-response",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Shacklebreaker (Greater)",
+      "slug": "shacklebreaker-greater"
+    },
+    {
+      "name": "Shared Warding",
+      "slug": "shared-warding"
+    },
+    {
+      "name": "Sié Goluo",
+      "slug": "sié-goluo",
+      "note": "diacritic / non-ASCII letter in name"
+    },
+    {
+      "name": "Soulbound Doll (Neutral Good)",
+      "slug": "soulbound-doll-neutral-good"
+    },
+    {
+      "name": "Spell Echo Shot",
+      "slug": "spell-echo-shot"
+    },
+    {
+      "name": "Spell Effect: Enduring Might",
+      "slug": "spell-effect-enduring-might"
+    },
+    {
+      "name": "Spell Effect: Vital Luminance",
+      "slug": "spell-effect-vital-luminance"
+    },
+    {
+      "name": "Spirit's Mercy",
+      "slug": "spirits-mercy",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Splendid lyre of world‑famous lyrist",
+      "slug": "splendid-lyre-of-world-famous-lyrist",
+      "note": "non-ASCII punctuation (ellipsis, non-breaking hyphen, curly quote)"
+    },
+    {
+      "name": "Strike, Breathe, Rend",
+      "slug": "strike-breathe-rend",
+      "note": "comma-separated name"
+    },
+    {
+      "name": "Stylish Combatant",
+      "slug": "stylish-combatant"
+    },
+    {
+      "name": "Suit of Armoire",
+      "slug": "suit-of-armoire"
+    },
+    {
+      "name": "Threefold Aspect",
+      "slug": "threefold-aspect"
+    },
+    {
+      "name": "Tombstone Door",
+      "slug": "tombstone-door"
+    },
+    {
+      "name": "Towering sculpture by a master",
+      "slug": "towering-sculpture-by-a-master"
+    },
+    {
+      "name": "Twist the Knife",
+      "slug": "twist-the-knife"
+    },
+    {
+      "name": "Viper",
+      "slug": "viper"
+    },
+    {
+      "name": "Wand of Pernicious Poison (6th-Rank)",
+      "slug": "wand-of-pernicious-poison-6th-rank"
+    },
+    {
+      "name": "Watchful Halfling",
+      "slug": "watchful-halfling"
+    },
+    {
+      "name": "Weapon Potency (+1)",
+      "slug": "weapon-potency-1",
+      "note": "leading plus sign / parenthesized number"
+    },
+    {
+      "name": "Will-o'-the-Deep",
+      "slug": "will-o-the-deep",
+      "note": "apostrophe in name"
+    },
+    {
+      "name": "Xoxren Killiani",
+      "slug": "xoxren-killiani"
+    },
+    {
+      "name": "Yellow Musk Brute",
+      "slug": "yellow-musk-brute"
+    },
+    {
+      "name": "Zungur",
+      "slug": "zungur"
+    }
+  ]
+}
