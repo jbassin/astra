@@ -164,9 +164,10 @@ public-legal path.
 
 ## 6. Pre-scope decisions — ALL RESOLVED (stakeholder, 2026-07-12)
 
-1. **Audience/exposure — RESOLVED: personal/party only.** Served on the edge but for Josh +
-   the table (obscure/unlisted or auth-gated — the exact mechanism is a scoping question).
-   Legal exposure is negligible at this tier, which de-risks decisions 2 and 5.
+1. **Audience/exposure — RESOLVED: personal/party only. ⚠ REVISED during scoping (same day)
+   to PUBLIC free site** — when the access-gate mechanics were put to the stakeholder he chose
+   "just make it public" over basic_auth/obscure-subdomain. See the scoping doc's C-1; the CUP
+   mitigations are hard requirements now.
 2. **Content tier — RESOLVED: CUP gray tier.** Full mechanical content WITH Golarion proper
    nouns, deities, and statblock flavor (the Pf2eTools/Wanderer's Guide posture). Mitigations
    still apply: free, no endorsement claims, no wholesale AP narrative reproduction.

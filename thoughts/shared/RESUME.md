@@ -36,7 +36,31 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-12 evening — heartwood ON HOLD after the first real apply)
+## Current state — UPDATE THIS SECTION (as of 2026-07-12 evening — codex (0029) SCOPED; heartwood ON HOLD)
+
+> **▶ codex (0029) — a public PF2e reference site (`codex.iridi.cc`) — VIABILITY GREEN + SCOPED
+> same day; NEXT: `octo:spec` → `thoughts/astra/specs/0029-codex-spec.md`.** AoN's content
+> breadth × 5etools' structure × gothic styling, on the strider/site-kit SSR template.
+> - **Docs:** viability `thoughts/shared/research/2026-07-12-codex-0029-viability-thoughts.md`
+>   (5 research agents: AoN ES probe, licensing, foundryvtt/pf2e clone inventory, 5etools
+>   analysis, stack fit) + scope `…/2026-07-12-codex-0029-thoughts.md` (repo + live-data facts
+>   verified; decisions ledger C-1..C-8 ALL RESOLVED).
+> - **Key decisions:** PUBLIC free site (C-1, revised from party-only — CUP mitigations are hard
+>   requirements); CUP gray tier w/ Golarion nouns (C-2); HYBRID corpus — foundryvtt/pf2e packs
+>   = mechanics truth, AoN ES = prose/citations overlay, join on slug (C-3); remaster-primary +
+>   legacy toggle (C-4); v1 = ALL categories incl. rules/sidebar prose (C-5); corpus gitignored
+>   + committed CI fixture (C-6); ingest = TS scripts in `apps/codex`, `just codex-refresh`, no
+>   Dagster (C-7); no auth gate (C-8).
+> - **Verified:** port **10374**; flat `apps/codex` member (no workspace/uv edits); 21-sibling
+>   Dockerfile ripple; AoN ES live, ~226 MB raw projected, `rules`/`sidebar` full-text w/
+>   breadcrumbs but `article` = citation STUBS (the lore layer = rules+sidebars, AP gazetteer
+>   prose was never available); Foundry enricher census + the UUID pack-name-map gotcha.
+> - **Phases:** P1 ingest+canonical corpus (L, the real project) → P2 entity pages (M) → P3
+>   faceted browse+search (M) → P4 rules browser (S-M) → P5 deploy (S).
+
+---
+
+### Previous section (2026-07-12, same day) — heartwood ON HOLD after the first real apply (still current for heartwood)
 
 > **⏸ heartwood 0020 — ON HOLD (stakeholder call, 2026-07-12), with the D1 create-half PROVEN
 > LIVE.** Josh worked the review surface for real: 11/58 cards decided (2 approved / 9 rejected
