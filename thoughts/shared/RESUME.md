@@ -36,39 +36,43 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `ae52606`, 2026-07-12 evening — codex (0029) P1 SPEC FINAL, resume at S1; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `8d66293`, 2026-07-13 — codex (0029) P1 INGEST BUILT S1–S4; ▶ stakeholder report review; heartwood ON HOLD)
 
-> **▶ codex (0029) — a public-but-noindexed PF2e reference site (`codex.iridi.cc`) — VIABILITY
-> GREEN + SCOPED + **P1 SPEC FINAL** same day; NEXT: `octo:embrace` S1 against
-> `thoughts/astra/specs/0029-codex-p1-ingest-spec.md`.** AoN's content breadth × 5etools'
-> structure × gothic styling, on the strider/site-kit SSR template. **Per-phase specs by
-> design** (heartwood precedent) — P2+ get specced against the real corpus P1 produces.
-> - **P1 spec (ingest + canonical corpus, D29-1..13, 4 slices S1–S4): adversarially reviewed —
->   8 blockers + 6 minors ALL folded in.** The blockers that would have bitten mid-build:
->   shared-slug legacy/remaster pairs (two "Heal"s) clobbering one file → `<slug>@legacy`
->   identity; `@Localize` keys majority-resolving in `re-en.json` (fetch ALL `static/lang/`);
->   four inline-roll forms not one; depth-aware bracket grammar (94% of `@Damage` is nested);
->   license fallback book-table for AoN-only/journal content; JournalEntry `pages[]` identity
->   (merge-by-slug into Item entities); the creature qualifier-reorder join normalization
->   (raw hit-rate ~70% vs spells 99%); CodexNode union widened (divider/aside/inlineRoll/
->   inlineAction/blockquote; images dropped; columns flattened).
-> - **Docs:** viability `thoughts/shared/research/2026-07-12-codex-0029-viability-thoughts.md`
->   (5 research agents: AoN ES probe, licensing, foundryvtt/pf2e clone inventory, 5etools
->   analysis, stack fit) + scope `…/2026-07-12-codex-0029-thoughts.md` (repo + live-data facts
->   verified; decisions ledger C-1..C-8 ALL RESOLVED).
-> - **Key decisions:** publicly reachable but NOINDEX'd, personal-use posture, no CUP-mitigation
->   requirements (C-1, revised twice — robots.txt + X-Robots-Tag + no ledger card); CUP gray
->   tier w/ Golarion nouns (C-2); HYBRID corpus — foundryvtt/pf2e packs
->   = mechanics truth, AoN ES = prose/citations overlay, join on slug (C-3); remaster-primary +
->   legacy toggle (C-4); v1 = ALL categories incl. rules/sidebar prose (C-5); corpus gitignored
->   + committed CI fixture (C-6); ingest = TS scripts in `apps/codex`, `just codex-refresh`, no
->   Dagster (C-7); no auth gate (C-8).
-> - **Verified:** port **10374**; flat `apps/codex` member (no workspace/uv edits); 21-sibling
->   Dockerfile ripple; AoN ES live, ~226 MB raw projected, `rules`/`sidebar` full-text w/
->   breadcrumbs but `article` = citation STUBS (the lore layer = rules+sidebars, AP gazetteer
->   prose was never available); Foundry enricher census + the UUID pack-name-map gotcha.
-> - **Phases:** P1 ingest+canonical corpus (L, the real project) → P2 entity pages (M) → P3
->   faceted browse+search (M) → P4 rules browser (S-M) → P5 deploy (S).
+> **▶ codex (0029) P1 — ALL FOUR SLICES BUILT + PUSHED in one overnight run** (staff-orchestrator
+> + sonnet engineers, one reviewed commit per slice): S1 `108571d` (member scaffold + both real
+> snapshots — AoN 43,684 docs/93 cats, Foundry 28,636 @ pf2e-8.3.0, counts+hashes pinned in
+> `corpus-manifest.json`) · S2 `40b2447` (CodexNode/CodexEntity schema, sluggify port
+> 28,636/28,636 agreement, enricher grammar + HTML parser, assembly + journals — 25,781 entities,
+> zero unknown-markup) · S3 `8465625` (AoN markup grammar 29 tags, url→id link table, 243-book
+> licenseMap w/ ZERO unknown residue, facets — 43,631 metas, zero hard failures) · S4 `8d66293`
+> (join + deterministic emit + report + 1.8 MB asserted-coverage fixture + `just codex-refresh` +
+> README). Plus `98bbef9` fix(ontology): pre-existing red main (heartwood apply hadn't re-seeded
+> entity.kdl). 503 hermetic tests; both CI lanes green; determinism gate proven (3 runs).
+> - **Corpus: 50,952 entities / 97 categories / 656 MB** (spec estimated 100–200 MB — feed the
+>   real number into P5's COPY-vs-bind-mount decision). Transform 15.4 s.
+> - **▶ P1 EXIT GATE (the only open item): stakeholder review of
+>   `apps/codex/data/corpus/report.md`** — headline: **9 both-source categories sit <50% joined
+>   (spec §6 STOP: re-decide join keys with Josh BEFORE P2, no fuzzy-matching)** — `domain` 0%
+>   (Foundry "X Domain" vs AoN "X", one systematic rule would fix), armor 18%/weapon 27%/
+>   shield 14% (Foundry named tiered variants AoN doesn't split), class-feature 41%/
+>   creature-ability 9% (granularity mismatch), hazard 43%, action 44%, warfare-army 32%.
+>   Dragons prove the D29-7 normalization (13.8%→98.1%); spells 91.7%; creature overall 57.6%.
+>   Also flagged: 2,494 residual `-2` collisions partly an AoN slug-index dedup artifact;
+>   S2 excluded the `criticaldeck` journal pack beyond D29-8's literal list (same rationale).
+> - **After the review:** `octo:spec` P2 (entity pages) against the REAL corpus; the
+>   [[codex-0029-gotchas]] memory carries every load-bearing find (no-system.slug/basename-is-
+>   slug, non-unique AoN urls, the "(Remastered)" licenseMap override, crossref-vs-embed
+>   disambiguation limit, the 3 emit-gate bug catches).
+> - **Acceptance H note:** `just codex-refresh` ran end-to-end post-commit — the resulting diff
+>   was ONLY the two `fetchedAt` timestamps (both re-fetches byte-identical: pinned tag stable,
+>   AoN un-drifted in 11 h) — reverted rather than committing timestamp churn.
+> - **Docs (unchanged):** spec `thoughts/astra/specs/0029-codex-p1-ingest-spec.md` (D29-1..13);
+>   viability `thoughts/shared/research/2026-07-12-codex-0029-viability-thoughts.md` + scope
+>   `…/2026-07-12-codex-0029-thoughts.md` (decisions C-1..C-8: public-but-noindexed, CUP gray
+>   tier, hybrid corpus, remaster-primary + legacy toggle, all categories, gitignored corpus +
+>   committed fixture, TS ingest no Dagster, no auth gate).
+> - **Phases:** P1 ingest ✅ (pending report review) → P2 entity pages (M) → P3 faceted
+>   browse+search (M) → P4 rules browser (S-M) → P5 deploy (S).
 
 ---
 
