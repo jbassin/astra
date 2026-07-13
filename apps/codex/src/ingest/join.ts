@@ -112,6 +112,138 @@ export function qualifierCandidates(name: string): string[] {
 }
 
 // ---------------------------------------------------------------------------
+// D29-15's domain "X Domain" -> "X" normalization
+// ---------------------------------------------------------------------------
+
+const DOMAIN_SUFFIX_RE = /^(.*\S)\s+Domain$/i;
+
+/**
+ * Foundry's `domains` journal pages are literally named "X Domain" (e.g.
+ * "Air Domain", "Abomination Domain" — verified against the real
+ * `journals/domains.json`); AoN's own `domain` category names the SAME
+ * concept just "X" ("Air", "Abomination"). D29-15(1): strip the trailing
+ * " Domain" suffix (case-insensitive — matches this repo's other
+ * normalization functions' posture) and try the bare base as a candidate.
+ * Returns `[]` for a name with no trailing " Domain" (every other category —
+ * this is deliberately narrow, not a general suffix-strip).
+ */
+export function domainCandidates(name: string): string[] {
+  const m = DOMAIN_SUFFIX_RE.exec(name.trim());
+  if (!m) return [];
+  const base = m[1];
+  if (base === undefined || base.length === 0) return [];
+  return [sluggify(base)];
+}
+
+// ---------------------------------------------------------------------------
+// D29-15/-16: join-time category equivalence (the P1.5 STOP-condition fix)
+// ---------------------------------------------------------------------------
+
+/**
+ * One equivalence rule: search AoN's `category` in addition to the Foundry
+ * entity's own category. `requireLevelAgreement` (D29-15(4)) restricts the
+ * rule to the EXACT-match tier only (skips the qualifier-reorder normalized
+ * tier — "name agreement" here means the slug match came from a literal,
+ * un-reordered name, not a creature-style qualifier permutation) and adds a
+ * level cross-check: reject the match when BOTH sides carry a `level` and
+ * they disagree (same posture as `mergeJoined`'s own soft `levelMismatch`
+ * cross-checks the `join-aliases.json` entries document by hand — "level N on
+ * both sides" — mirrored here as an automated guard because action/feat/
+ * tactic/relic name collisions are a real, systematic risk: a feat and the
+ * action it grants are commonly given the exact same name).
+ */
+export interface EquivalenceRule {
+  readonly category: string;
+  readonly requireLevelAgreement?: boolean;
+}
+
+/**
+ * D29-15(3): class-feature ↔ the AoN class-subsystem categories. The 8
+ * named in the spec (ikon/lesson/epithet/arcane-school/bloodline/doctrine/
+ * instinct/mystery) plus the real siblings this slice found by running every
+ * one of AoN's 93 categories' slugs against the full 841-doc real
+ * `class-features` Foundry pack (measured, not guessed — see this slice's
+ * commit message for the counts): patron, mythic-calling, apparition,
+ * implement, hybrid-study, cause, hellknight-order, racket, style, way,
+ * muse, arcane-thesis, research-field, subconscious-mind, conscious-mind,
+ * practice, hunters-edge, innovation, tenet. Deliberately excludes every
+ * category that ALSO produced a slug hit but is not a class-subsystem
+ * category in kind (action/feat/creature/spell/trait/rules/archetype/
+ * category-page/sidebar/class-sample/…) — those hits are coincidental
+ * short-name collisions (e.g. a class feature and an unrelated spell both
+ * named "Fireball"), not the pattern D29-15(3) describes; widening to them
+ * would risk real wrong-joins, not just missed ones. `bloodline` is kept
+ * despite scoring ZERO real hits (Foundry names bloodline picks
+ * "Bloodline: Draconic", colon-prefixed — a form neither `qualifierCandidates`
+ * nor `domainCandidates` normalizes, and D29-15 doesn't ask for a new
+ * normalization form) — it's still spec-named, so still tried; the 0-hit
+ * outcome is real and report-visible, not silently swallowed.
+ */
+const CLASS_SUBSYSTEM_CATEGORIES: readonly string[] = [
+  "ikon",
+  "lesson",
+  "epithet",
+  "arcane-school",
+  "bloodline",
+  "doctrine",
+  "instinct",
+  "mystery",
+  "patron",
+  "mythic-calling",
+  "apparition",
+  "implement",
+  "hybrid-study",
+  "cause",
+  "hellknight-order",
+  "racket",
+  "style",
+  "way",
+  "muse",
+  "arcane-thesis",
+  "research-field",
+  "subconscious-mind",
+  "conscious-mind",
+  "practice",
+  "hunters-edge",
+  "innovation",
+  "tenet",
+];
+
+/**
+ * D29-15's full equivalence table, keyed on the FOUNDRY entity's own
+ * category (one-directional — an AoN `equipment`/`ritual`/`feat` doc that
+ * ISN'T consumed by one of these cross-category matches still becomes its
+ * own AoN-only entity in its own category, D29-7's third entity class, so
+ * nothing is lost by not also widening the reverse direction).
+ *   (2) weapon/armor/shield ↔ equipment — AoN files magic weapons/armor/
+ *       shields under its `equipment` category (categoryMap-vs-AoN mismatch,
+ *       not a tier-splitting problem, per the P1.5 review finding).
+ *   (3) class-feature ↔ the class-subsystem categories, see above.
+ *   (4) action ↔ relic/tactic/feat, WITH the level-agreement guard.
+ *   (5) spell ↔ ritual — Foundry files rituals inside its `spells` pack.
+ */
+export const CATEGORY_EQUIVALENCE: ReadonlyMap<string, readonly EquivalenceRule[]> = new Map([
+  ["weapon", [{ category: "equipment" }]],
+  ["armor", [{ category: "equipment" }]],
+  ["shield", [{ category: "equipment" }]],
+  ["spell", [{ category: "ritual" }]],
+  ["class-feature", CLASS_SUBSYSTEM_CATEGORIES.map((category) => ({ category }))],
+  [
+    "action",
+    [
+      { category: "relic", requireLevelAgreement: true },
+      { category: "tactic", requireLevelAgreement: true },
+      { category: "feat", requireLevelAgreement: true },
+    ],
+  ],
+]);
+
+function levelsAgree(a: number | undefined, b: number | undefined): boolean {
+  if (a === undefined || b === undefined) return true; // best-effort — can't disagree if either side is silent
+  return a === b;
+}
+
+// ---------------------------------------------------------------------------
 // matching
 // ---------------------------------------------------------------------------
 
@@ -123,23 +255,49 @@ export interface MatchResult {
 }
 
 /**
- * Matches one Foundry entity against the AoN metas in its OWN category (D29-7:
- * "within each codex category"), in the 3-tier order: exact slug, then
- * qualifier-reorder normalization, then `join-aliases.json`. `aonSlugIndex` is
- * keyed on `${category}/${slug}`.
+ * Matches one Foundry entity against the AoN metas in its own category PLUS
+ * (D29-15) any category `CATEGORY_EQUIVALENCE` names for it, in strict
+ * priority order: EXACT slug (own category, then each equivalence category
+ * in table order) BEFORE any NORMALIZED (qualifier-reorder / domain-suffix)
+ * candidate is tried (own category, then each non-guarded equivalence
+ * category) — this is what makes D29-15(6)'s tier-parenthetical fold work
+ * for free: `qualifierCandidates`'s own bare-base candidate already matches
+ * a base item's plain AoN doc once weapon/armor/shield can see the
+ * `equipment` category, so a Foundry `"X (Greater)"` tier variant that has
+ * NO exact AoN doc of its own naturally falls through to `variantOf` the
+ * base via the SAME 1:N grouping `runJoin` already does for creatures — no
+ * new machinery needed here. THEN `join-aliases.json` (unchanged, own
+ * category only — no alias has ever needed a cross-category target).
+ * `aonSlugIndex` is keyed on `${category}/${slug}` across ALL AoN
+ * categories (not scoped to the entity's own), so trying a different
+ * category prefix is just a different map lookup.
  */
 export function matchFoundryEntity(
-  entity: Pick<CodexEntity, "id" | "category" | "slug" | "name">,
+  entity: Pick<CodexEntity, "id" | "category" | "slug" | "name" | "level">,
   aonSlugIndex: ReadonlyMap<string, AonDocMeta>,
   aliasMap: ReadonlyMap<string, string>,
   aonMetaById: ReadonlyMap<string, AonDocMeta>,
 ): MatchResult | undefined {
-  const exact = aonSlugIndex.get(`${entity.category}/${entity.slug}`);
-  if (exact) return { aonId: exact.aonId, via: "exact" };
+  const equivRules = CATEGORY_EQUIVALENCE.get(entity.category) ?? [];
+  const rules: readonly EquivalenceRule[] = [{ category: entity.category }, ...equivRules];
 
-  for (const candidateSlug of qualifierCandidates(entity.name)) {
-    const hit = aonSlugIndex.get(`${entity.category}/${candidateSlug}`);
-    if (hit) return { aonId: hit.aonId, via: "normalized" };
+  for (const rule of rules) {
+    const hit = aonSlugIndex.get(`${rule.category}/${entity.slug}`);
+    if (hit && (!rule.requireLevelAgreement || levelsAgree(entity.level, hit.level))) {
+      return { aonId: hit.aonId, via: "exact" };
+    }
+  }
+
+  const normalizedCandidates = [
+    ...qualifierCandidates(entity.name),
+    ...(entity.category === "domain" ? domainCandidates(entity.name) : []),
+  ];
+  for (const rule of rules) {
+    if (rule.requireLevelAgreement) continue; // exact-only for these pairs (D29-15(4))
+    for (const candidateSlug of normalizedCandidates) {
+      const hit = aonSlugIndex.get(`${rule.category}/${candidateSlug}`);
+      if (hit) return { aonId: hit.aonId, via: "normalized" };
+    }
   }
 
   const aliasAonId = aliasMap.get(entity.id);
@@ -208,6 +366,20 @@ export interface JoinDeps {
  * to AoN's book-table license when Foundry's is `"unknown"`. `loreBody`
  * (journal-derived) is untouched — a separate field entirely, unaffected by
  * which side "wins" `body`.
+ *
+ * **D29-16 (new): identity on a CROSS-CATEGORY merge** (`meta.category !==
+ * foundryEntity.category` — i.e. this pair only matched via
+ * `CATEGORY_EQUIVALENCE`, D29-15). `id`/`category`/URL keep Foundry's finer
+ * category untouched (already true by construction — this function never
+ * touches `foundryEntity.id`/`.category`, only spreads them through), but
+ * the entity's `name` switches to AoN's (`meta.name`, "the AoN NAME wins on
+ * merged entities" — AoN is the source-of-truth prose corpus, and a
+ * cross-category pair is exactly the case where the two sides' naming
+ * conventions can genuinely diverge, e.g. a Foundry weapon entity merged
+ * against its AoN `equipment` doc). A SAME-category match (the D29-7
+ * majority case) is unaffected — `name` stays Foundry's, matching S4's
+ * original, unchanged behavior; this is deliberately scoped to the NEW
+ * cross-category case only, not a blanket rename of every joined entity.
  */
 export function mergeJoined(
   foundryEntity: CodexEntity,
@@ -268,7 +440,21 @@ export function mergeJoined(
     deps.report("traitsMismatch", foundryEntity.id);
   }
 
-  return { ...foundryEntity, source, body, aonUrl: meta.aonUrl };
+  const crossCategory = meta.category !== foundryEntity.category;
+  if (crossCategory) {
+    deps.report(
+      "crossCategoryMerge",
+      `${foundryEntity.id} (foundry="${foundryEntity.category}") <- ${meta.aonId} (aon="${meta.category}")`,
+    );
+  }
+
+  return {
+    ...foundryEntity,
+    source,
+    body,
+    aonUrl: meta.aonUrl,
+    ...(crossCategory ? { name: meta.name } : {}),
+  };
 }
 
 /** AoN-only entity (D29-7's third class): no Foundry counterpart at all —

@@ -11,6 +11,7 @@ import { extractAonMeta } from "./aonFacets";
 import type { AonLinkTable } from "./aonLinkTable";
 import {
   buildAliasMap,
+  domainCandidates,
   matchFoundryEntity,
   mergeJoined,
   pickVariantBase,
@@ -117,6 +118,302 @@ describe("qualifierCandidates", () => {
 
   it("no trailing parenthetical -> no candidates", () => {
     expect(qualifierCandidates("Magic Missile")).toEqual([]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// domainCandidates (D29-15(1))
+// ---------------------------------------------------------------------------
+
+describe("domainCandidates", () => {
+  it("strips a trailing ' Domain' suffix", () => {
+    expect(domainCandidates("Air Domain")).toEqual(["air"]);
+    expect(domainCandidates("Abomination Domain")).toEqual(["abomination"]);
+  });
+
+  it("is case-insensitive on the suffix", () => {
+    expect(domainCandidates("Air domain")).toEqual(["air"]);
+  });
+
+  it("no trailing ' Domain' -> no candidates", () => {
+    expect(domainCandidates("Air")).toEqual([]);
+    expect(domainCandidates("Domain")).toEqual([]); // no base left
+  });
+});
+
+// ---------------------------------------------------------------------------
+// D29-15/-16: category equivalence (P1.5 — the STOP-condition fix)
+// ---------------------------------------------------------------------------
+
+describe("matchFoundryEntity: D29-15 category equivalence", () => {
+  it("weapon exact-matches an AoN doc filed under 'equipment' (D29-15(2))", () => {
+    const foundryWeapon = entity({
+      id: "weapon/drake-rifle",
+      category: "weapon",
+      slug: "drake-rifle",
+      name: "Drake Rifle",
+    });
+    const equipmentMeta = meta({
+      aonId: "equipment-9001",
+      category: "equipment",
+      name: "Drake Rifle",
+      slug: "drake-rifle",
+    });
+    const aonSlugIndex = new Map([["equipment/drake-rifle", equipmentMeta]]);
+    const result = matchFoundryEntity(foundryWeapon, aonSlugIndex, new Map(), new Map());
+    expect(result).toEqual({ aonId: "equipment-9001", via: "exact" });
+  });
+
+  it("armor and shield also reach 'equipment'", () => {
+    const armorMeta = meta({
+      aonId: "equipment-1",
+      category: "equipment",
+      name: "Full Plate",
+      slug: "full-plate",
+    });
+    const shieldMeta = meta({
+      aonId: "equipment-2",
+      category: "equipment",
+      name: "Tower Shield",
+      slug: "tower-shield",
+    });
+    const aonSlugIndex = new Map([
+      ["equipment/full-plate", armorMeta],
+      ["equipment/tower-shield", shieldMeta],
+    ]);
+    expect(
+      matchFoundryEntity(
+        entity({
+          id: "armor/full-plate",
+          category: "armor",
+          slug: "full-plate",
+          name: "Full Plate",
+        }),
+        aonSlugIndex,
+        new Map(),
+        new Map(),
+      ),
+    ).toEqual({ aonId: "equipment-1", via: "exact" });
+    expect(
+      matchFoundryEntity(
+        entity({
+          id: "shield/tower-shield",
+          category: "shield",
+          slug: "tower-shield",
+          name: "Tower Shield",
+        }),
+        aonSlugIndex,
+        new Map(),
+        new Map(),
+      ),
+    ).toEqual({ aonId: "equipment-2", via: "exact" });
+  });
+
+  it("a weapon's own category still wins over the equipment equivalence when both exist", () => {
+    const ownCategoryMeta = meta({
+      aonId: "weapon-1",
+      category: "weapon",
+      name: "Drake Rifle",
+      slug: "drake-rifle",
+    });
+    const equipmentMeta = meta({
+      aonId: "equipment-9001",
+      category: "equipment",
+      name: "Drake Rifle",
+      slug: "drake-rifle",
+    });
+    const aonSlugIndex = new Map([
+      ["weapon/drake-rifle", ownCategoryMeta],
+      ["equipment/drake-rifle", equipmentMeta],
+    ]);
+    const result = matchFoundryEntity(
+      entity({
+        id: "weapon/drake-rifle",
+        category: "weapon",
+        slug: "drake-rifle",
+        name: "Drake Rifle",
+      }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(result).toEqual({ aonId: "weapon-1", via: "exact" });
+  });
+
+  it("class-feature reaches a class-subsystem category (ikon)", () => {
+    const ikonMeta = meta({ aonId: "ikon-1", category: "ikon", name: "Sword", slug: "sword" });
+    const aonSlugIndex = new Map([["ikon/sword", ikonMeta]]);
+    const result = matchFoundryEntity(
+      entity({
+        id: "class-feature/sword",
+        category: "class-feature",
+        slug: "sword",
+        name: "Sword",
+      }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(result).toEqual({ aonId: "ikon-1", via: "exact" });
+  });
+
+  it("spell reaches the ritual category", () => {
+    const ritualMeta = meta({
+      aonId: "ritual-1",
+      category: "ritual",
+      name: "Atone",
+      slug: "atone",
+    });
+    const aonSlugIndex = new Map([["ritual/atone", ritualMeta]]);
+    const result = matchFoundryEntity(
+      entity({ id: "spell/atone", category: "spell", slug: "atone", name: "Atone" }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(result).toEqual({ aonId: "ritual-1", via: "exact" });
+  });
+
+  it("domain 'X Domain' matches AoN's bare 'X' via the normalized tier", () => {
+    const domainMeta = meta({ aonId: "domain-1", category: "domain", name: "Air", slug: "air" });
+    const aonSlugIndex = new Map([["domain/air", domainMeta]]);
+    const result = matchFoundryEntity(
+      entity({
+        id: "domain/air-domain",
+        category: "domain",
+        slug: "air-domain",
+        name: "Air Domain",
+      }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(result).toEqual({ aonId: "domain-1", via: "normalized" });
+  });
+
+  it("action ↔ feat/tactic/relic: matches when levels agree (or either side is silent)", () => {
+    const featMeta = meta({
+      aonId: "feat-1",
+      category: "feat",
+      name: "Assurance",
+      slug: "assurance",
+      level: 1,
+    });
+    const aonSlugIndex = new Map([["feat/assurance", featMeta]]);
+    const withMatchingLevel = matchFoundryEntity(
+      entity({
+        id: "action/assurance",
+        category: "action",
+        slug: "assurance",
+        name: "Assurance",
+        level: 1,
+      }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(withMatchingLevel).toEqual({ aonId: "feat-1", via: "exact" });
+
+    const withNoFoundryLevel = matchFoundryEntity(
+      entity({ id: "action/assurance", category: "action", slug: "assurance", name: "Assurance" }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(withNoFoundryLevel).toEqual({ aonId: "feat-1", via: "exact" });
+  });
+
+  it("action ↔ feat/tactic/relic guard: REJECTS the match when both sides carry a DIFFERENT level (same-name twins)", () => {
+    const featMeta = meta({
+      aonId: "feat-1",
+      category: "feat",
+      name: "Assurance",
+      slug: "assurance",
+      level: 7, // a level-7 FEAT that happens to share the name of a level-1 action
+    });
+    const aonSlugIndex = new Map([["feat/assurance", featMeta]]);
+    const result = matchFoundryEntity(
+      entity({
+        id: "action/assurance",
+        category: "action",
+        slug: "assurance",
+        name: "Assurance",
+        level: 1,
+      }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(result).toBeUndefined();
+  });
+
+  it("action ↔ feat/tactic/relic guard: exact-only — a name needing qualifier-reorder does NOT reach these categories", () => {
+    // The guard skips the normalized tier entirely for requireLevelAgreement
+    // rules, even when the levels would agree.
+    const relicMeta = meta({
+      aonId: "relic-1",
+      category: "relic",
+      name: "Blessed Blade (Minor)",
+      slug: "blessed-blade-minor",
+      level: 5,
+    });
+    const aonSlugIndex = new Map([["relic/minor-blessed-blade", relicMeta]]);
+    const result = matchFoundryEntity(
+      entity({
+        id: "action/blessed-blade",
+        category: "action",
+        slug: "blessed-blade",
+        name: "Blessed Blade (Minor)",
+        level: 5,
+      }),
+      aonSlugIndex,
+      new Map(),
+      new Map(),
+    );
+    expect(result).toBeUndefined();
+  });
+});
+
+describe("runJoin: D29-15(6) tier-parenthetical fold via the weapon/armor/shield -> equipment equivalence", () => {
+  const base = entity({
+    id: "weapon/bracers-of-armor",
+    category: "weapon",
+    slug: "bracers-of-armor",
+    name: "Bracers of Armor",
+  });
+  const greater = entity({
+    id: "weapon/bracers-of-armor-greater",
+    category: "weapon",
+    slug: "bracers-of-armor-greater",
+    name: "Bracers of Armor (Greater)",
+  });
+  const aonBase = meta({
+    aonId: "equipment-500",
+    category: "equipment",
+    name: "Bracers of Armor",
+    slug: "bracers-of-armor",
+  });
+
+  const result = runJoin(
+    runInput({
+      foundryEntities: new Map([
+        [base.id, base],
+        [greater.id, greater],
+      ]),
+      aonMetas: [aonBase],
+    }),
+  );
+
+  it("the base joins directly (exact, via the equipment equivalence)", () => {
+    const joined = result.entities.find((e) => e.id === "weapon/bracers-of-armor");
+    expect(joined?.aonUrl).toBe(aonBase.aonUrl);
+    expect(joined?.variantOf).toBeUndefined();
+  });
+
+  it("the tier variant (no AoN doc of its own) becomes variantOf the base via the existing 1:N machinery", () => {
+    const variant = result.entities.find((e) => e.id === "weapon/bracers-of-armor-greater");
+    expect(variant?.variantOf).toBe("weapon/bracers-of-armor");
+    expect(variant?.aonUrl).toBeUndefined();
   });
 });
 
@@ -602,6 +899,49 @@ describe("mergeJoined: field ownership (D29-7)", () => {
     expect(reports.some((r) => r.cls === "levelMismatch")).toBe(true);
     expect(reports.some((r) => r.cls === "rarityMismatch")).toBe(true);
     expect(reports.some((r) => r.cls === "traitsMismatch")).toBe(true);
+  });
+
+  it("D29-16: a CROSS-CATEGORY merge (e.g. weapon <- equipment) takes the AoN name, keeps Foundry's id/category", () => {
+    const foundryWeapon = entity({
+      id: "weapon/drake-rifle",
+      category: "weapon",
+      slug: "drake-rifle",
+      name: "Drake Rifle (Foundry Name)",
+    });
+    const equipmentMeta = meta({
+      aonId: "equipment-9001",
+      category: "equipment",
+      name: "Drake Rifle",
+      slug: "drake-rifle",
+    });
+    const { reports, report } = collector();
+    const merged = mergeJoined(foundryWeapon, equipmentMeta, {
+      aonMarkdownById: new Map(),
+      resolveLink: () => ({
+        kind: "text",
+        content: "x",
+        marks: { bold: false, italic: false, superscript: false },
+      }),
+      report,
+    });
+    expect(merged.name).toBe("Drake Rifle"); // AoN name wins
+    expect(merged.id).toBe("weapon/drake-rifle"); // Foundry's finer category/id unchanged
+    expect(merged.category).toBe("weapon");
+    expect(reports.some((r) => r.cls === "crossCategoryMerge")).toBe(true);
+  });
+
+  it("a SAME-category merge keeps the Foundry name (unchanged S4 behavior)", () => {
+    const foundryFireball = entity({ ...foundryEnt, name: "Fireball (Foundry Name)" });
+    const merged = mergeJoined(foundryFireball, aonFireball, {
+      aonMarkdownById: new Map(),
+      resolveLink: () => ({
+        kind: "text",
+        content: "x",
+        marks: { bold: false, italic: false, superscript: false },
+      }),
+      report: noopReport,
+    });
+    expect(merged.name).toBe("Fireball (Foundry Name)");
   });
 });
 
