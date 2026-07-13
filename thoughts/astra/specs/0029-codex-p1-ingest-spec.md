@@ -8,7 +8,9 @@ minors M9–M14 inline). Reviewer also VERIFIED: `search_after` works on `name.k
 (not `_id`); `sluggify` portable from `src/util/misc.ts` (NOT in the sparse clone — port pulls
 that file); no seventh `@Tag[` form exists in the packs; the Magic Missile↔Force Barrage pair
 resolves live; 21-line Dockerfile ripple + uv-exclude + port 10374 all confirmed.
-**▶ RESUME AT: implementation S1** (`octo:embrace` against this spec).
+**2026-07-13: S1–S4 BUILT (`108571d`/`40b2447`/`8465625`/`8d66293`); exit-gate review RAN —
+STOP resolved via the §8 P1.5 addendum (D29-14..18: AoN-primary corpus, equivalence joins,
+creature/hazard carve-out). ▶ RESUME AT: S5 (P1.5, transform-only) per §8.**
 **Scope doc:** `thoughts/shared/research/2026-07-12-codex-0029-thoughts.md` (decisions C-1..C-8
 all stakeholder-resolved; repo + live-data facts verified there — this spec doesn't re-derive
 them). **Viability:** `…/2026-07-12-codex-0029-viability-thoughts.md`.
@@ -277,3 +279,63 @@ what hard-fails mean).
 Rendering of any kind (P2); facet UI + Pagefind (P3); rules-tree UX (P4); compose/caddy/deploy
 + noindex headers (P5); scheduled/automated refresh (post-v1, if ever); Starfinder packs
 (`sf2e` tree in the same repo — explicitly not fetched); non-English locales.
+
+## 8. P1.5 addendum (2026-07-13) — exit-gate outcome: the AoN-primary corpus policy
+
+The §6 STOP condition triggered on 9 categories; the 2026-07-13 stakeholder review measured the
+causes against the real corpus and resolved the join keys below. **P1.5 is transform-only** —
+snapshots untouched, no re-fetch (`pnpm --filter @astra/codex transform`).
+
+**Review findings the decisions rest on (measured over FULL unjoined sets — do not re-derive):**
+- weapon/armor/shield misses are a **category-map mismatch, NOT tier-splitting** (AoN splits
+  tiers fine; it files magic weapons/armor/shields under its `equipment` category while
+  categoryMap routes Foundry docs to weapon/armor/shield, so the category-scoped join never
+  compares them): 634/715, 142/165, 96/102 unjoined-F have exact same-slug AoN `equipment`
+  counterparts (+33/9/5 more via tier-strip).
+- domain: 61/61 join after normalizing Foundry "X Domain" → "X".
+- class-feature: 219/493 exact same-slug in AoN's bespoke class categories (ikon 21, lesson 18,
+  epithet 17, arcane-school, bloodline, doctrine, instinct, mystery, …); action: 105/401
+  (relic 46, tactic 37, feat 17).
+- spell's 149 unjoined-F are largely **rituals** (Atone, Astral Projection, Animate Object) —
+  Foundry files rituals in its spells pack; AoN has a `ritual` category (201 docs, Foundry-empty).
+- creature-ability 485/488, hazard 671/675, warfare-army 15/15 have NO AoN counterpart anywhere
+  in the corpus — genuine source asymmetry, nothing to join.
+- Phantom collisions exist: `equipment/accursed-staff-3`/`-4` share aonUrl ID 4778 — duplicate
+  AoN docs minting `-N` suffixes (S3 one-winner residue). Part of creature's 2,242 unjoined-F
+  is suspected to be the same artifact (join candidates lost to the slug-index one-winner pick).
+
+**D29-14 — AoN-primary corpus (supersedes the keep-everything default).** The corpus keeps:
+(a) every AoN-only entity, (b) every merged entity, (c) Foundry-only entities ONLY in
+`creature` and `hazard` (D29-17). ALL other Foundry-only entities are dropped at emit —
+including the four Foundry-only categories (`boon` 240, `pfs-boon` 157, `kingdom-feature` 115,
+`effect` 24). Projected ≈47.2k entities.
+
+**D29-15 — join equivalence + normalization (BEFORE the drop; all deterministic; fuzzy
+matching stays banned).** (1) domain "X Domain"→"X"; (2) {weapon, armor, shield} ↔ `equipment`
+category-equivalence; (3) class-feature ↔ the AoN class-subsystem categories (ikon, lesson,
+epithet, arcane-school, bloodline, doctrine, instinct, mystery + siblings found in the data);
+(4) action ↔ {relic, tactic, feat} — these cross-category matches REQUIRE a level/name
+agreement guard (same-name feat/action twins are plausible); (5) spell ↔ `ritual`;
+(6) tier-parenthetical fold: "X (Greater)" joins its exact AoN doc when it exists, else
+variantOf the base per the existing machinery.
+
+**D29-16 — merged-entity identity: Foundry's finer category wins** (weapon/armor/shield etc.
+over equipment) for id + URL; `equipment` keeps only what stays AoN-only. The AoN NAME wins on
+merged entities (source of truth); D29-7 pairing/edition rules unchanged.
+
+**D29-17 — creature/hazard carve-out.** Foundry-only creatures (≈2,242) and hazards (≈660) are
+KEPT — AP content readers look up that AoN doesn't index. Everything else Foundry-only drops.
+
+**D29-18 — AoN url-duplicate dedup (prerequisite to the drop).** Collapse same
+category+slug+aonUrl(+edition) AoN docs to one deterministic winner before join (kills the
+phantom `-N` collisions), and trace the creature unjoined set for join candidates lost to the
+S3 slug-index one-winner pick — no real AoN doc may be silently unavailable to the join.
+Re-measure creature's rate in the refreshed report.
+
+**Slice S5 (transform-only).** Report gains a **drop-accounting section** (per-category dropped
+counts + carve-out kept counts, so D29-14 is auditable). Fixture + report assertions updated to
+the new policy; determinism gate re-proven (3 runs, `diff -r`); the test suite extends to cover
+equivalence join, the drop pass, and the dedup. **Acceptance:** refreshed report shows domain
+≈100%, weapon/armor/shield ≥90% joined; zero same-url phantom collisions; corpus ≈47k; the drop
+table matches the D29-14 ledger; both CI lanes green. Exit = quick stakeholder re-review of the
+refreshed report headline (not a full gate).
