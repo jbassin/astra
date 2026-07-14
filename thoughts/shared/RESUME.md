@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-14 — codex (0029) P4 SPEC FINAL; H deferred → folds into P4's exit gate; ▶ `octo:embrace` P4 S1; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `b5a15e6`, 2026-07-14 — codex (0029) P4 SPEC FINAL; H deferred → folds into P4's exit gate; ▶ `octo:embrace` P4 S1; heartwood ON HOLD)
 
 > **✅ codex (0029) P4 (rules/lore browser) — SPEC FINAL**
 > (`thoughts/astra/specs/0029-codex-p4-rules-browser-spec.md`, D29-39..45; staff-orchestrator
