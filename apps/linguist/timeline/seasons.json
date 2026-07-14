@@ -7,36 +7,36 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Delivery Boys",
-          "arc_summary": "The newly formed party takes courier jobs and investigates mounting threats in Hallia — Ugathul imposters, the Pyrelight gang's radar dishes, and Grayson's necromantic Fane hidden deep beneath the city. The arc culminates in the party escaping Grayson's manor with explosive evidence of his psyche-manipulation experiments.",
+          "title": "Blood and Badges",
+          "arc_summary": "The party forms in Hallia, takes courier jobs, and stumbles into a conspiracy of Ugathul infiltrators, illegal augury, and necromantic experiments — culminating in a devastating near-total party kill at the Crowded Flea while ambushing the Roundhat Gang.",
           "episode_dates": [
             "2025-8-28",
             "2025-10-20",
             "2025-10-27",
             "2025-11-4",
             "2025-11-11",
-            "2025-11-18"
+            "2025-11-18",
+            "2025-12-2"
           ]
         },
         {
           "number": 2,
           "title": "The Black and White",
-          "arc_summary": "A devastating total party kill at the Crowded Flea sends three members through death and back, guided by the entity Aut. The party exacts revenge on Hlarf and Tywelwyn Leatherhide, ultimately uncovering that six Thessian gods are using a radar dish network to crack the Firmament and reach Færrin.",
+          "arc_summary": "Surviving the TPK through the void between life and death, the party meets the entity Aut, is resurrected at a cost, and pursues vengeance against Hlarf and Tywelwyn Leatherhide — killing both and uncovering a cosmic conspiracy of six gods attempting to crack the Firmament via radar dishes.",
           "episode_dates": [
-            "2025-12-2",
             "2025-12-9",
             "2025-12-16",
             "2025-12-23",
-            "2025-12-30"
+            "2025-12-30",
+            "2026-1-6",
+            "2026-1-13"
           ]
         },
         {
           "number": 3,
-          "title": "The Keystone Hunt",
-          "arc_summary": "The party reports their discoveries to the Inquisition, rescues Anaïs from a rival cosmic entity's trap, and learns of the cosmic Narrative. They compete in a deadly pilgrimage scavenger hunt at Ragged Roost, solving puzzles and trading stolen art to secure Keystone 14 from the Heart Rapid Connection.",
+          "title": "The Pilgrimage",
+          "arc_summary": "The party attends a mysterious pilgrimage gathering at Ragged Roost, competes in gladiatorial trials and scavenger puzzles to earn a keystone, and trades a stolen Kellan Quinn painting to a Heart for passage aboard a colossal Strider bound for the Void Side Wall.",
           "episode_dates": [
-            "2026-1-6",
-            "2026-1-13",
             "2026-1-20",
             "2026-1-27",
             "2026-2-3",
@@ -48,7 +48,7 @@
         {
           "number": 4,
           "title": "Cracks in the Firmament",
-          "arc_summary": "During months of downtime, Argyle returns in half-alive form, and the party descends into Hallia's sewers to discover a hairline fracture in reality itself — a secret research operation engineering a harmony to shatter the Firmament, funded by Grayson and sanctioned by the Prime Minister. The party bombs the facility, collapsing Teller's Run underground.",
+          "arc_summary": "Argyle returns from the dead in divided form, the party enters extended downtime, and a sewer expedition beneath Teller's Run reveals a fracture in reality where an imprisoned god looms — leading the party to bomb the research operation and flee as ash rains over the city.",
           "episode_dates": [
             "2026-3-9",
             "2026-3-16",
@@ -59,8 +59,8 @@
         },
         {
           "number": 5,
-          "title": "The Strider",
-          "arc_summary": "The party boards a colossal arachnid Strider city on a voidward pilgrimage, forging a heart-Fane of their own while navigating deadly faction politics, weekly energy tithes, and shifting alliances among nineteen rival organizations. The arc culminates in a deep descent through the Undercroft to awaken an ancient Machine God and purge the Strider of Herald cultists.",
+          "title": "Aboard the Providence",
+          "arc_summary": "The party embarks on the Strider pilgrimage, creates their own Fane-heart named Eerie, builds a coalition of allied factions, and survives the devastating weekly tithe of Voidsong energy that wrings a weaker faction to death and unleashes void portals onto the Strider.",
           "episode_dates": [
             "2026-5-7",
             "2026-5-11",
@@ -68,10 +68,18 @@
             "2026-5-25",
             "2026-6-1",
             "2026-6-8",
-            "2026-6-18",
+            "2026-6-18"
+          ]
+        },
+        {
+          "number": 6,
+          "title": "Heart of the Spider",
+          "arc_summary": "The party descends deep into the Strider's Undercroft to recover a stolen artifact, battling through mongrel folk and spider cultists of Herald, ultimately awakening an ancient Machine God and forging an alliance to purge the Strider of remaining cultists.",
+          "episode_dates": [
             "2026-6-22",
             "2026-6-29",
-            "2026-7-6"
+            "2026-7-6",
+            "2026-7-13"
           ]
         }
       ]
@@ -98,8 +106,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Fall of the Terror and the Descent into the Joker World",
-          "arc_summary": "The 8th-grade heroes of Cagley Middle slay the shadow-demon Terror of Cagley in its lair beneath Mt. Cagley, ending Noah's one-shot. The session then pivots to Josh's new Scale one-shot, as four high-ranking operatives are dispatched to a shattered Joker World and descend into a demon-infested chasm.",
+          "title": "The Fall of the Terror",
+          "arc_summary": "The 8th-grade heroes of Cagley Middle descend into the Terror of Cagley's lair and slay the shadow demon, saving their town — and a new team of high-ranking Scale operatives is dispatched to a shattered Joker World to investigate a mysterious slip-shielded structure.",
           "episode_dates": [
             "2025-6-9"
           ]
@@ -107,7 +115,7 @@
         {
           "number": 2,
           "title": "The Quorum and the Voice of Many",
-          "arc_summary": "The Judges' Jocks breach the black-metal Quorum, solve its fiendish puzzles, and fight through Sigzilheight's forces to discover and liberate Voice of Many — a trapped divine heart and grandchild of the Judge — before escaping back to Scale headquarters.",
+          "arc_summary": "The Scale team infiltrates the fiend-built Quorum structure, battles through its demonic defenders, and descends through a bloodfall portal to rescue Voice of Many — a trapped divine entity and heir to the Judge — fighting a desperate defense to free it and escape back to headquarters.",
           "episode_dates": [
             "2025-6-16",
             "2025-6-23"
@@ -122,11 +130,18 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Husk Murders",
-          "arc_summary": "Convox detectives Cedric, Krod, and Andros investigate a wave of huskification murders tied to a mysterious fey stone, tracing leads from the logging town of Wrenford deep into the Verdant Expanse where they battle fey courtiers, and back to Hallia where they discover the Gloaming Codex — a ritual book that pulls them into its pages.",
+          "title": "The Verdant Expanse",
+          "arc_summary": "Convox detectives travel to the logging town of Wrenford to investigate husk-murders linked to a mysterious visitor, then follow a feyrock necklace deep into the mile-tall Verdant Expanse where they battle fey creatures, rescue a lost child, and defeat a fey court — only to learn the huskification curse continues unabated.",
           "episode_dates": [
             "2025-9-11",
-            "2025-9-18",
+            "2025-9-18"
+          ]
+        },
+        {
+          "number": 2,
+          "title": "The Gloaming Codex",
+          "arc_summary": "The investigation shifts back to the city as the convox traces fey stone through a jeweler's conference to a ritual murder scene, where they discover the Gloaming Codex — a book that pulls the entire party into its pages to fight for survival against carnivorous ink and cursed thoughts.",
+          "episode_dates": [
             "2025-9-25"
           ]
         }
@@ -154,17 +169,10 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Everdawn Drift",
-          "arc_summary": "Three Sedecium agents investigate an unpowered orbital station half-sunk in the slip, where they free a tortured ship AI, rotate the station back into real space, fight off slip-fiends, and uncover that the Thessian Esoterica recently accessed observatory records of a massive magical spike near the Astra's core.",
+          "title": "Season 1",
+          "arc_summary": "The Sedecium fire team of Old Man Scrazzy, Lieutenant Foral, and Ozzie undertakes perilous missions across the slip — investigating a derelict orbital station to uncover the Thessian Esoterica's interest in a massive magical spike near the Astra's core, and then raiding the divine essence of a freshly-killed god before the God Eater Harrow can consume it entirely.",
           "episode_dates": [
-            "2026-4-6"
-          ]
-        },
-        {
-          "number": 2,
-          "title": "One Last Job: Stealing from a Dead God",
-          "arc_summary": "Pulled from retirement for a single high-stakes raid, the fire team descends through the Slip onto the corpse of the freshly-killed Thessian 'Tithe,' solving a time-acceleration puzzle and fighting through a spider temple to plant a beacon — becoming the first and only team to successfully steal divine essence before the God Eater Harrow consumes it all.",
-          "episode_dates": [
+            "2026-4-6",
             "2026-4-27"
           ]
         }
@@ -186,5 +194,5 @@
       ]
     }
   ],
-  "inputs_hash": "095c2bfc3f5024dad63e5b9e4ac56cd69c442ae9af9f650b964d41cec1ba40f4"
+  "inputs_hash": "ac95c04119106245ef38fc544a92e96c41485a841bd282bf0703fa881198de36"
 }
