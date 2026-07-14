@@ -2,6 +2,8 @@
 import { createRootRoute, HeadContent, Link, Outlet, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
 
+import { setLegacyToggle, useLegacyToggle } from "@/domain/browse/legacyToggle";
+
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
 import "@astra/gothic/theme.css";
@@ -55,6 +57,7 @@ function RootComponent() {
             codex
           </Link>
           <span className="site-tagline">a Pathfinder 2e reference</span>
+          <LegacyToggleControl />
         </header>
         <Outlet />
         <footer className="site-foot">
@@ -63,5 +66,23 @@ function RootComponent() {
         <Scripts />
       </body>
     </html>
+  );
+}
+
+/**
+ * D29-35 — the site-wide legacy toggle's header control. Hidden-by-default
+ * posture: it's a small, low-emphasis control (not a prominent banner) since
+ * superseded content is the exception, not the norm. `legacyToggle.ts` owns
+ * the actual precedence/persistence logic (module-eval-time URL-wins-on-
+ * load seed, `localStorage` persistence) — this component only reads/writes
+ * the live value.
+ */
+function LegacyToggleControl() {
+  const legacy = useLegacyToggle();
+  return (
+    <label className="site-legacy-toggle">
+      <input type="checkbox" checked={legacy} onChange={(e) => setLegacyToggle(e.target.checked)} />
+      <span>Show legacy (pre-remaster)</span>
+    </label>
   );
 }

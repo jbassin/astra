@@ -30,6 +30,29 @@ build green. One orchestrator review fix: statsText gated to creature/hazard at 
 call site (post-S1 gap facets put hp/size on ancestry/class/vehicle — unconditional call indexed
 spurious stat fragments); index rebuilt post-fix. Codex 979 tests; both lanes green.
 
+**Gate amendment (stakeholder, 2026-07-14):** the S3 stakeholder review (browse surface +
+folded-in P2-H) is DEFERRED — he's unavailable at S3-complete; it no longer gates S4. All
+stakeholder review consolidates into ONE post-S5 session covering acceptance H in full: browse
+surface + P2-H spot-set (M7/M11 expected behaviors) + search surface. S3→S4→S5 proceed on the
+orchestrator's technical gates alone.
+
+S3 BUILT 2026-07-14 (faceted browse, D29-32/35 in full). Technical gates: big-12 spot-set all
+proven live against the real corpus (feat actionCost=reaction 445; trait tri-state clicked
+6,171→272→5,899→6,171; creature family+level+humanized sizes; equipment per-10 price (Candle);
+spell traditions; hazard reuses FacetPanel; /rules core-only w/ level correctly hidden); URL
+round-trip in a fresh context incl. legacy=1; hostile params ignored; zero hydration/console
+errors on the 4-page sweep; hermeticity 1,126 tests green with data/ away; both lanes green;
+client-bundle byte-search 0 hits. **Perf (gate F): feat full response 4.49 MB raw / 465 KB gz
+(the accepted P2 D29-27 weight class — spec's 2.05 MB figure was the bare _index.json only),
+filter-interaction 61 ms, applyFilters ~2 ms — content-visibility alone suffices, no
+incremental-reveal, NO creature-saves trim (orchestrator: not warranted).** Two real-corpus
+finds folded in: (1) comma-bearing facet values (creature.family "Dragon, Black" ×380,
+source.book ×240) shredded by naive CSV split → backslash-escaped codec, byte-identical for
+all spec-literal examples; (2) SSR legacy-flash — first render must read search.legacy
+isomorphically (live-toggle server snapshot is always false), live toggle takes over
+post-hydration only. Plus: jsdom stays per-file (@vitest-environment docblock) — a global
+jsdom default breaks sluggify.test.ts under vp's concurrent run.
+
 **Status:** FINAL (2026-07-14) — authored against the REAL post-P1.6 corpus (46,192 entities /
 88 categories, measured this session). Stakeholder decisions batched + resolved 2026-07-14
 (facet depth, search UX shape, legacy default, listing payload strategy, extractor-gap

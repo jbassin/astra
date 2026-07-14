@@ -1,42 +1,23 @@
-// S3 (D29-27) — the `/{category}` A–Z listing's pure core, split the same way
-// `entityPageData.ts` is (see that file's own comment on why the split matters:
-// nothing under `src/routes/` imports this directly, only `corpusFns.ts` and this
-// app's own tests do).
+// S3 (D29-27, superseded by D29-35) — the `/{category}` faceted listing's pure
+// core, split the same way `entityPageData.ts` is (see that file's own comment
+// on why the split matters: nothing under `src/routes/` imports this directly,
+// only `corpusFns.ts` and this app's own tests do).
 //
-// M6 weight measurement (spec §6 risk / D29-27): a listing row does NOT render
-// `traits` (D29-27's field list is "name -> link, level, rarity, source book,
-// edition pill") — `ListingRow` below drops it from `IndexRow`, so the loader
-// payload TanStack Start dehydrates into `window.$_TSR` carries only what the
-// page actually renders, not the full `IndexRow` (the sanctioned "trim the
-// loader payload to rendered fields" fallback, done proactively rather than
-// waiting to see if the feat listing measures badly).
+// P3 S3 (D29-35): the P2 `ListingRow` trim (name/level/rarity/source/edition
+// only, no `traits`/`facets`/`superseded`) is DEAD — "the /{category} loader
+// ships the FULL enriched row set (loses P2's ListingRow trim — rows now =
+// IndexRow incl. facets/traits/superseded)". The filter engine needs every
+// field on every row (traits for tri-state, facets for the derived-facet
+// panel, superseded for the legacy toggle) to run client-side at all, so this
+// module is now a thin sort-and-shape-null wrapper over `reader.index()`
+// rather than a field-dropping projection.
 
-import type { Edition, IndexRow, Source } from "../schema/entity";
+import type { IndexRow } from "../schema/entity";
 import { CorpusNotFoundError, type CorpusReader } from "./corpusFs";
-
-export interface ListingRow {
-  id: string;
-  name: string;
-  level?: number;
-  rarity?: string;
-  source: Source;
-  edition: Edition;
-}
 
 export interface CategoryListingData {
   category: string;
-  rows: ListingRow[];
-}
-
-function toListingRow(row: IndexRow): ListingRow {
-  return {
-    id: row.id,
-    name: row.name,
-    ...(row.level !== undefined ? { level: row.level } : {}),
-    ...(row.rarity !== undefined ? { rarity: row.rarity } : {}),
-    source: row.source,
-    edition: row.edition,
-  };
+  rows: IndexRow[];
 }
 
 /** `null` for an unknown category (`CorpusNotFoundError`, D29-23's guard) — same
@@ -54,6 +35,10 @@ export function resolveCategoryListing(
     if (err instanceof CorpusNotFoundError) return null;
     throw err;
   }
+  // A-Z by name — the filter engine re-sorts (name/level) over whatever's
+  // actually VISIBLE after filtering; this base ordering just keeps the
+  // unfiltered payload deterministic (matches the emit-time / D29-27
+  // precedent) rather than leaving it in on-disk `_index.json` order.
   const sorted = [...rows].sort((a, b) => a.name.localeCompare(b.name));
-  return { category, rows: sorted.map(toListingRow) };
+  return { category, rows: sorted };
 }

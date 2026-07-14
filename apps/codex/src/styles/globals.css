@@ -250,7 +250,7 @@ a:hover {
   margin-top: 1.5rem;
 }
 
-/* --- S3: the throwaway category directory (`/`) + A-Z listing (`/{category}`) --- */
+/* --- P2 S3: the category directory (`/`, unchanged by P3) --- */
 .codex-directory-total {
   color: var(--color-ink-dim);
   font-size: 0.9rem;
@@ -275,6 +275,14 @@ a:hover {
   font-size: 0.78rem;
 }
 
+/* --- P3 S3: the faceted `/{category}` browse listing (replaces the P2
+   throwaway A-Z page — D29-35) --- */
+.wrap-wide {
+  width: 100%;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 8vw, 5rem);
+}
 .codex-listing-header {
   padding-bottom: 0.75rem;
   border-bottom: 1px solid var(--color-rule);
@@ -288,7 +296,149 @@ a:hover {
 .codex-listing-count {
   color: var(--color-ink-dim);
   font-size: 0.85rem;
+  margin-top: 0.25rem;
 }
+.codex-listing-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+.codex-listing-controls input[type="search"] {
+  max-width: 16rem;
+}
+.codex-sort-control {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: var(--color-ink-dim);
+}
+.codex-sort-control select {
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 1px;
+  padding: 0.25rem 0.4rem;
+  font-family: var(--font-body), serif;
+}
+
+/* two-column layout: facet panel + results */
+.codex-browse-layout {
+  display: grid;
+  grid-template-columns: 16rem 1fr;
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+}
+@media (max-width: 56rem) {
+  .codex-browse-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.codex-facet-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  position: sticky;
+  top: 1rem;
+}
+.codex-facet-section {
+  border-bottom: 1px solid var(--color-rule);
+  padding-bottom: 0.9rem;
+}
+.codex-facet-title {
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+  margin-bottom: 0.5rem;
+}
+.codex-facet-options {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+.codex-facet-option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.codex-facet-option-label {
+  flex: 1;
+  text-transform: capitalize;
+}
+.codex-facet-option-count {
+  color: var(--color-ink-faint);
+  font-size: 0.75rem;
+}
+.codex-facet-missing {
+  color: var(--color-ink-faint);
+  font-size: 0.75rem;
+  font-style: italic;
+  margin-top: 0.15rem;
+}
+
+.codex-facet-range-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.codex-facet-range-inputs input {
+  width: 5rem;
+}
+.codex-facet-range-sep {
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
+}
+.codex-facet-has-value {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  color: var(--color-ink-dim);
+  margin-top: 0.4rem;
+}
+
+.codex-trait-chips {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  max-height: 14rem;
+  overflow-y: auto;
+}
+.codex-trait-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: capitalize;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-rule);
+  color: var(--color-ink-dim);
+  background: transparent;
+  cursor: pointer;
+}
+.codex-trait-chip-include {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+.codex-trait-chip-exclude {
+  border-color: var(--color-accent-amber);
+  color: var(--color-accent-amber);
+  text-decoration: line-through;
+}
+
 .codex-listing-alpha {
   display: flex;
   flex-wrap: wrap;
@@ -306,12 +456,20 @@ a:hover {
 }
 .codex-listing-letter {
   margin-top: 1.25rem;
+  /* D29-35 perf guard (the sanctioned no-new-dependency fallback for a
+     long letter-grouped list): browsers skip layout/paint for off-screen
+     sections, without a virtualization library. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
 }
 .codex-listing-rows {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+}
+.codex-listing-rows-flat {
+  margin-top: 0.5rem;
 }
 .codex-listing-row {
   display: flex;
@@ -325,11 +483,41 @@ a:hover {
   font-weight: 600;
   min-width: 12rem;
 }
+.codex-listing-collision {
+  font-weight: 400;
+  color: var(--color-ink-faint);
+  font-size: 0.85em;
+}
 .codex-listing-level,
 .codex-listing-rarity,
 .codex-listing-source {
   color: var(--color-ink-dim);
   font-size: 0.82rem;
+}
+.codex-listing-empty-category {
+  color: var(--color-ink-dim);
+  padding: 2rem 0;
+}
+
+/* --- D29-35/M6: the shared filtered-to-zero empty state (browse + /search) --- */
+.codex-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 2.5rem 0;
+  color: var(--color-ink-dim);
+}
+
+/* --- D29-35: the site-wide legacy toggle (header control, __root.tsx) --- */
+.site-legacy-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--color-ink-faint);
+  cursor: pointer;
 }
 
 /* --- Popover hover-preview card (D29-28, ported from akasha-frontend) --- */

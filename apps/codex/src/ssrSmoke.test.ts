@@ -138,3 +138,127 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
     expect(status).toBe(404);
   });
 });
+
+/**
+ * D29-37 — the faceted `/{category}` browse route, over the same
+ * fixture-fallback corpus. Small, hand-countable fixture rows (spell: 4 rows,
+ * 2 superseded; feat: 1 row) let every fixture entity be checked by NAME/
+ * PRESENCE rather than a total-row count — this environment happens to have
+ * a real corpus checked out too (`data/corpus/`, `corpusFs.ts`'s own
+ * "real root when present" precedence), and the fixture rows are themselves
+ * a verbatim sample OF that real corpus (`feat/camouflage-coat`,
+ * `creature/grick`, `spell/magic-missile`, ... all cross-checked identical
+ * in both), so a presence/absence assertion holds true whichever root is
+ * actually being served — CI (fixture-only) and this environment (real
+ * corpus, real data present) alike. The REAL-corpus spot-set proper (feat
+ * actionCost=reaction, creature family+level+humanized size, equipment
+ * per-10 price, spell tradition+rank, hazard-reuses-creature-panel, a
+ * facet-less long-tail category, real click-to-settled-DOM latency) is
+ * proven separately against the live 46,192-entity corpus via a headless
+ * browser (see the P3 S3 session report) — this suite is CI's hermetic,
+ * deterministic, corpus-size-agnostic gate.
+ */
+/** Whether `id` was actually SSR-RENDERED as a visible listing row (its
+ * `<a href="/{id}" class="codex-listing-name">` anchor is present) —
+ * distinct from a plain `html.includes(name)`, which is nearly VACUOUS for
+ * a browse page: the loader ships the FULL row set (D29-35), so TanStack
+ * Start's `window.$_TSR` dehydration payload embeds EVERY row's name
+ * regardless of which rows a facet filter actually narrowed to (verified —
+ * `Camouflage Coat` appears in `/feat?f.actionCost=reaction`'s raw HTML via
+ * the dehydrated JSON blob alone, `id:"feat/camouflage-coat"`, even though
+ * it's genuinely filtered OUT of the rendered `<ul>`). The href-anchor
+ * pattern only exists for a row React actually rendered. */
+function rendersRow(html: string, id: string): boolean {
+  return html.includes(`href="/${id}"`);
+}
+
+describe("$category/ browse route (D29-35 tier 3)", () => {
+  it("renders the FULL enriched row set (facets/traits survive the loader — the dead P2 trim)", async () => {
+    const { status, html } = await get("/feat");
+    expect(status).toBe(200);
+    expect(rendersRow(html, "feat/camouflage-coat")).toBe(true);
+    // the facet panel renders itemCategory's option, derived from `facets`
+    // (`itemCategory` has no facetDefs labelMap — its raw lowercase value
+    // renders as-is, unlike `size`/`actionCost`).
+    expect(html).toContain("codex-facet-panel");
+    expect(html).toContain('class="codex-facet-option-label">ancestry<');
+  });
+
+  it("a derived enum facet filter narrows correctly", async () => {
+    const { html } = await get("/feat?f.actionCost=passive");
+    expect(rendersRow(html, "feat/camouflage-coat")).toBe(true);
+    const { html: htmlNoMatch } = await get("/feat?f.actionCost=reaction");
+    expect(rendersRow(htmlNoMatch, "feat/camouflage-coat")).toBe(false);
+  });
+
+  it("legacy=1 behavior: superseded rows hidden by default, shown under the toggle", async () => {
+    const off = await get("/spell");
+    expect(off.status).toBe(200);
+    // Magic Missile is superseded (a classic legacy-only spell in both the
+    // fixture and the real corpus) -> absent from the default RENDERED view
+    // (still present in the dehydration blob, hence the href-anchor check).
+    expect(rendersRow(off.html, "spell/magic-missile")).toBe(false);
+
+    // legacy=1 canonicalizes (307) to legacy=true — the D29-35 URL round trip.
+    const rawRes = await get("/spell?legacy=1");
+    // `get()` doesn't auto-follow redirects — assert the redirect status,
+    // then the canonical target explicitly.
+    expect([200, 307]).toContain(rawRes.status);
+    const on = await get("/spell?legacy=true");
+    expect(on.status).toBe(200);
+    expect(rendersRow(on.html, "spell/magic-missile")).toBe(true);
+  });
+
+  it("a comma-bearing enum value round-trips through the URL codec (the real-corpus family/book bug's fixture-corpus regression guard)", async () => {
+    // Backslash-escaped comma, as `filterStateToSearch` itself would encode
+    // it — see `urlState.ts`'s own comment on why a bare `,` is ambiguous
+    // with the csv-list separator.
+    const { status, html } = await get(
+      `/creature?${new URLSearchParams({ "f.family": "Dragon\\, Adamantine" }).toString()}`,
+    );
+    expect(status).toBe(200);
+    expect(rendersRow(html, "creature/adamantine-dragon-adult")).toBe(true);
+  });
+
+  it("trait tri-state include+exclude simultaneously", async () => {
+    // "Ixamè" is dragon-tagged WITHOUT primal; "Adamantine Dragon (Adult)"
+    // is dragon-tagged WITH primal — traits=dragon,-primal must render the
+    // former and exclude the latter, regardless of what else the active
+    // corpus root also happens to tag "dragon".
+    const { status, html } = await get("/creature?traits=dragon,-primal");
+    expect(status).toBe(200);
+    expect(rendersRow(html, "creature/ixamè")).toBe(true);
+    expect(rendersRow(html, "creature/adamantine-dragon-adult")).toBe(false);
+  });
+
+  it("collision disambiguation: two visible rows sharing a name get source.book appended", async () => {
+    // Fixture (and real-corpus) "Grick" / "Grick-2" are both
+    // superseded:false and both named "Grick" — a real collision under the
+    // default (legacy-off) view.
+    const { status, html } = await get(
+      `/creature?${new URLSearchParams({ q: "Grick" }).toString()}`,
+    );
+    expect(status).toBe(200);
+    expect(rendersRow(html, "creature/grick")).toBe(true);
+    expect(rendersRow(html, "creature/grick-2")).toBe(true);
+    expect(html).toContain("Crown of the Kobold King");
+    expect(html).toContain("Pathfinder #157");
+  });
+
+  it("sort=level places the '—' (no-level) bucket last and hides letter anchors", async () => {
+    const { status, html } = await get("/creature?sort=level&legacy=true");
+    expect(status).toBe(200);
+    expect(html).not.toContain("Jump to letter");
+  });
+
+  it("404s for an unknown category exactly as the entity route does", async () => {
+    const { status } = await get("/not-a-real-category");
+    expect(status).toBe(404);
+  });
+
+  it("noindex meta is present on the browse route's SSR HTML too", async () => {
+    const { html } = await get("/feat");
+    expect(html).toContain('name="robots"');
+    expect(html).toContain('content="noindex"');
+  });
+});
