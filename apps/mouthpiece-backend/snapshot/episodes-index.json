@@ -18320,6 +18320,440 @@
           "text": "Next Monday."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-7-13",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 11,
+      "isMain": true,
+      "date": "2026-7-13",
+      "dateSortKey": 20260713,
+      "title": "The Checkout Card and the Bone Dragon",
+      "episodeTitle": "The Checkout Card and the Bone Dragon",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "Fresh from their alliance with the machine god in the Undercroft, the party returns to the surface to settle accounts with the skeletal librarian Ocelith, trading a mysterious ink ribbon for a colossal Void Atlas that charts the horizon ahead. With Kadou's help, they study the atlas and identify tantalizing destinations on the horizon, including the legendary moving city of the Menagerie. Back at base, the coalition's loyalties are put to the test with a Ring of Truth ceremony, the party successfully recruits the gun-toting Radiant Arms to consolidate their defenses, and debates how best to fortify their strider heart against rival factions lurking nearby.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, no, no, no — you can't tell me that the funniest thing that happened all night wasn't Mike literally typing \"how do I kill Anzu\" into the optimization bot and getting a step-by-step murder guide back, complete with a little sassy attitude from the AI about how maybe you shouldn't be doing this, and it's like, buddy, you don't know these people, this is the most normal Tuesday for them."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "What I want to know is why Tanner was upset about the GM learning Anzu's a glass cannon when the entire table was watching Mike feed his stats into a bot specifically to find the fastest kill combo against a party member. The GM didn't need the bot to figure out the psychic with the low fortitude is squishy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — okay, that's fair, but you're missing the spirit of the thing, which is that it was deeply, hilariously on-brand for Benny to be like, \"yes, I would like to optimize my child soldier's damage output against my ally, thank you,\" and the bot coming back with like, \"I don't know if you should be doing this,\" like a little digital conscience that immediately got ignored."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The bot had more moral hesitation than the party. That tracks."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It really does! But okay, let's actually get into the session, because the real meat of this one starts when they're back with the Machine God, right, and Argyle — and this is the thing I loved — Argyle immediately goes, hey, can you defend yourself better now, can you hide, because he's thinking about operational security for this ancient heart they just befriended, which I thought was a really smart instinct."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was a smart instinct, yes. What was less smart was immediately asking for group telepathy and not thinking for even one second about the fact that the Machine God can hear everything they say to each other. Josh basically told them to their faces — whatever you communicate with each other, the Machine God can also hear it. And nobody blinked."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because they don't care! They didn't care last campaign either, they used to split chats and take turns in different channels, and the entity on the other end still heard everything. This is a party that has made peace with the concept of a cosmic eavesdropper. And honestly? The Machine God is an ancient heart from Aurelia the First's era. He's been around for seven hundred years. He's not going to betray them over group chat gossip about where to put turrets."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You don't know that. You don't know what an ancient mechanical heart's priorities are. They've known this entity for what, one conversation? And they've already handed him their entire communication network. Every plan, every secret, every strategy discussion now flows through a being they met because they smashed his tubes and killed his spider."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They killed the spider that was parasitizing him! That's like saying you can't trust the doctor because you killed the tumor. The Machine God was grateful, he gave them the Jolt Coil, he gave them Vrax'leth's corpse for the crown, he connected to their heart network — this is an alliance, Maeve, not a hostage situation."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fine. Let's move to the library, then, because if you want to talk about trust and risk, the Ocelith scene is where I actually have problems."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the ink ribbon trade! Yes! So they go back to the library, they hand Ocelith his precious ink ribbon — which they never identified, by the way, they just grabbed it and went, \"here you go, mystery item, hope it's not nuclear launch codes,\" which Argyle literally said, and —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He said that after handing it over. The sequence matters. They walked in, gave the skeletal dragon-armadillo librarian his stolen ribbon, and he slots it into a typewriter. A typewriter. On his desk. And then he pulls out this massive atlas, and instead of just giving it to them, he asks them to sign a checkout card. An index card in the front cover of the book. With a ballpoint pen. And Anzu signs his real name."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, the real name thing — look, in the moment, I get it, you're standing in front of a giant bone dragon who's being polite and you've just completed a fetch quest, you're not in a paranoia headspace. And Argyle did try to check the signatures, he rolled terribly, couldn't recognize anyone —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He rolled a natural one. And then Anzu inspects the pen, finds nothing magical about it, inspects the index card, gets a faint whiff of magic but can't identify what it does, and signs anyway. With his real name. The scion of the Qureshi family, a runaway from Belvedere aristocracy, puts his actual signature on a magical card he can't identify, in a library run by a skeletal dragon who tells him — and I want you to really sit with this — \"books always come back to this library. They always do.\""
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's just a librarian being a librarian! The man loves his collection!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The man is a nine-foot-tall bone dragon who smelled the ribbon like he had a nose, which he doesn't, and then smiled about it. And the previous person to check out this book was Alastair Moss, who Anzu later identifies as someone from Pyrolyte. Specifically from Project Entrainment — the project that sends people to the Source of the Voidsong. Six months ago. So a person connected to void experimentation had this atlas before them, and they just signed their name right under his."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, the Moss connection is genuinely spooky, I'll give you that, but — and here's the thing — what's the alternative? Not take the atlas? Not sign the card? They need the map. Kadou needs it to find Joker Worlds where they can harvest magic items for the tithe. Without it, they're flying blind through nearly three million empty worlds for four and a half months. You take the deal. You sign the card. You move on."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You could sign a false name. That's the alternative. It's free, it takes zero effort, and it means a bone dragon with a magical index card doesn't have a direct link to your identity. But no. Anzu signed his real name. Rookie mistake."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You know what, fine, the false name thing is fair, but I think you're being too hard on the moment because the atlas itself is the star here. When they get it home and start unfolding it with Kadou — two hundred feet long, Maeve. The map is two hundred feet long. It rolls through the war room, through the hallway, into the kitchen. It covers almost 2.8 million worlds. And the text on it is moving. It's being rewritten over itself in real time, like it's live-updating. That's incredible."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It is incredible. And Kadou — who is genuinely the right person for this, horizon lore is literally his thing from Alkahest Freight — he and Anzu parse out the near future. Three key destinations. First, about three days after the next tithe: a world labeled Menagerie 1."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The Menagerie! The fairy tale moving city that collects wonders from across the horizon! When Josh said that, I literally — that's the kind of world-building that makes me want to live in this campaign forever. A city that moves across worlds, gathering treasures, and it's just there on the map. Labeled. Like a bus stop. And the fact that it appears on a map at all is strange because the whole point is that it moves, so either the map knows where it's going to be, or it's there right now. That's a beautiful mystery."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It is a good mystery. And then right after, two stacked Joker spans — Hellsmith and Glacier. Fire worlds and ice worlds, adjacent, at war with each other, both producing weapons and trade goods. The party correctly identifies that those are worth visiting for magic items, and also correctly notes they might only be able to hit one, not both, given the six-second windows."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because the Strider moves through a world every six seconds, right, so you're there and then you're gone, and you have to — it's like, you have to plan your dive, you can't just wander."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Right. So the atlas gives them a real strategic picture for the first time. Smart to study it immediately. Smart to bring Kadou in. The session has good decision-making so far, is what I'm saying, which is why I'm extra annoyed about the checkout card."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You're going to ride that checkout card all the way to the grave, aren't you."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I will ride it until Anzu gets a clone made of him by whatever entity ends up with that index card, yes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, moving on — before the atlas study, there's the scene with Johnny and the twins, Anouk and —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anouk and Onik."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "— right, Anouk and Onik, and this is where I think the session does something really interesting, because Johnny goes in to get his Drum of War upgraded, and then out of nowhere starts questioning them about where they were when the Prime Minister was assassinated and Raelion fell. And the twins are evasive but not in a way that feels sinister — they were on a mission for Renge, doing motorcade work, and they seem genuinely confused by the implication that they might have caused Raelion's destruction."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny's trying to untangle whatever Aut told him, and Aut — whatever Aut is — deals in half-truths and misdirection by design. The twins even say, essentially, anything Aut wants you to know is probably not something you should give much thought to. That's not evasion, that's genuine advice from people who know the pattern."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But here's the read I had on it — and I'll defend this — the twins are clearly loyal to Renge first and the coalition second. They say as much during the Ring of Truth ceremony later. And Johnny sensing that tension and trying to feel out where they stand — I think that's good instincts from a character who's supposed to be a spy network operative."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The instincts are fine. The execution is a mess. He rolls a 21 perception to sense motive and gets nothing useful, then just drops it. And then he immediately goes into the group chat — the group chat the Machine God can hear, by the way — and says, hey, I didn't tell them about the Machine God. Which is smart, keeping that secret. But the twins already told him they're bound to someone else first. The Ring of Truth is where that really pays off, though."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the Ring of Truth. This is the scene. This is the scene of the night, in my opinion, because Argyle sets up this three-tenet pledge — protect the coalition, don't harm anyone in it, no other allegiances that supersede it — and it's simultaneously the smartest and most uncomfortable thing they've done. Because on paper it works. The Alkahest Freight people pass cleanly. Salvado passes cleanly. But the two Solari lackeys? They won't swear to protect the coalition with their lives. The bell doesn't ding. They're lying. They'll run if things go south."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is — and I'll give Argyle credit here — that's exactly the kind of information you want from a Ring of Truth. You're not trying to make cowards into heroes. You're trying to know who your cowards are. And now they know. The two pencil-pushers from Solari Sub-surface won't die for the cause. That's fine. That's actionable intelligence. You put them behind a wall, not in front of one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Exactly! And then Argyle asks the follow-up — would you sell the group out to another group? And they say no, and the bell dings, they're telling the truth. So they're not traitors, they're just — they're just scared. They're normal people who are scared. And I think that's a really human moment in the middle of all this cosmic strider stuff."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Agreed. The twins, though. That's where it gets uncomfortable."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The twins won't promise not to harm coalition members, won't promise no outside allegiances, and they basically tell Argyle to his face — if Renge tells us to abandon you all and join someone else, we will do so. We are hers before we are yours. That's a — I mean, that's a big thing to hear under a truth compulsion."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Argyle's response is interesting. He doesn't kick them out. He says, I would never abandon my allies, the Judge sent me here specifically, and then he kind of — he pivots to, well, you have access to the workshop and gunpowder, so you're incentivized to stay. Which is a pragmatic move but also a slightly desperate one. He's basically saying, I can't make you loyal, so here are the material reasons it makes sense to stick around."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which I think is the right play! What else are you going to do? Kick out your best tinkerers because they have a prior commitment? That prior commitment is to Renge, who, from what we know, is not actively hostile to the coalition. The twins even say they don't believe Renge would actually do that. They're just being honest about the hierarchy of their loyalties."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I think the honesty is what saves it. If they'd lied and the bell had caught them, that's a different conversation. But they stood there and told the truth, which means at minimum they're operating in good faith about the limits of their loyalty. I can work with someone who tells me where their line is. I can't work with someone who pretends they don't have one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Beautifully said, actually. See, you can be warm when you want to be."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Don't push it. What's next, the Radiant Arms recruitment?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The Radiant Arms recruitment! Okay, so this is where Johnny goes absolutely nuclear with the bard toolkit, and I mean that in the best way. He casts Melodious Spell to hide the verbal and somatic components of his next spell, then spends a mythic point on Perceive the Threads of Fate, then uses Shameless Request so even if he bombs the diplomacy check there's no blowback, and then layers on a mythic power surge for advantage on the roll. He is pulling out every stop. Every single one. For a diplomacy check to convince a faction of gun-toting androids to abandon their fortified base and move in with the party."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it works. The roll is high enough. Atul — who is Y'shael's second, an android with clear synthetic skin and three firearms and an arm-mounted barrel — agrees, but he negotiates. Two rooms from future base upgrades, and a commitment to procure rare materials for their reverse engineering of the Sable and Sons laser weapon the party gave them earlier."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is such a good deal for the party. They give up two rooms they haven't even built yet and a shopping list, and in exchange they get Radiant Arms — three combat-ready androids with a van full of guns and firearm prototypes — as permanent base defenders. Plus they get to harvest the Final Calibur heart, which is literally a cardboard box full of bullets, and that's worth thirty energy, or thirty-two with the siphon array."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The siphon array continues to be the best investment they've made. Every item they feed into the heart gets plus two, and it compounds. They're at one hundred and five energy now after the heart harvest, and they're sitting on it rather than spending, which — finally — is the correct call."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And I want to talk about the base defense debate, because this is where the party actually disagrees with each other and it's a real strategic fork. Argyle wants turrets. He sees turrets as a deterrent, as visible hard power, and his logic is, we're in a cold war state, if we start doing espionage and logistics stuff we're going to make enemies, and if we make enemies we need to be able to shoot them when they show up. Benny argues for feedback shielding — reactive damage to anyone who hits the base in melee, plus once per tithe you can negate a structural hazard, which could mean a bomb from a plane. Johnny wants the spoofing transmitter and masking matrix, the espionage route, because he says they're not at open war yet and the logistics tools pay for themselves over time."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Anzu sides with the logistics route, which is interesting because Anzu is the one who's been most worried about being a glass cannon, and you'd think he'd want the hard defenses. But his argument is sound — the sooner you invest in cost-saving infrastructure, the longer it has to compound. The masking matrix halves your tithe every three cycles. Over fifteen cycles, that's massive."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But they don't end up going logistics! They end up getting alarm wards because Radiant Arms basically tells them, you don't have alarms, someone's going to sneak in and slit your throat, and also, they want a firing range. So they build the firing range, they oil the walls — which is an eight-hour ritual of just... walking around with a bucket and a mop, and I love that Josh made the secondary caster requirement mean someone has to walk around with Argyle while he slathers oil on everything —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Anouk does it. The crafting twin. She comes out with a mop. They both crit. The walls are extremely slippery."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Extremely slippery and oil-slicked and they have a moat and barbed wire with speaker alarms and gun slits for the androids and a firing range with magically conjured humanoid targets. The base is becoming a fortress. And I think Argyle's instinct was right — you need the deterrent, because the moment they recruit Radiant Arms, they've moved the line of defense. Hildebrandt's Paavo is standing right there when Johnny tells him, and his face just falls. He goes from, don't worry, Radiant Arms is between us and the Pale Lantern Society, to — oh, you moved them. Now where's our buffer?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that's a real consequence. They made a strategic gain and created a strategic vulnerability in the same move. The Pale Lantern Society — which is an ancient organization, predating even the Gods and the Iridescent Church, formerly a cabal of necromantic warlords — now has a direct line to Hildebrandt's territory with Radiant Arms gone. And the Pale Lantern Society has a radar dish on their antenna, which Argyle correctly identifies as probably a spoofing array or parasitic hook. That's the faction that can manipulate your tithe payments."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So you think moving Radiant Arms was a mistake?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No. I think it was the right call with a real cost. You consolidate your forces, you get three gunners defending your base, you gain thirty-two energy. But you owe Hildebrandt now, because you just made their neighborhood worse, and Paavo is the type who remembers."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Speaking of Paavo — the plane conversation! Argyle asks about the rumors that Hildebrandt's been shooting down Ternion's planes, and Paavo just — deflects. We don't make military planes. We make consumer planes. We don't equip consumer planes with guns. And Argyle literally chooses not to sense motive! He says, nope, I don't want to know, I don't care if they shoot down the other planes, as long as they're on our side. That is a choice! That is a character-defining choice!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's also a choice that's going to bite them, because Hildebrandt is shady. Ternion's Jethro already warned them about this — engineers who go to Hildebrandt disappear. And then it comes out that Verdant Holdings — the agricultural powerhouse — apparently firebombed Hildebrandt at a Halloween party. Disguised themselves, took hostages, poured acid on the floors, broke into a vault. So the neighborhood is a snake pit, and Argyle is choosing to not look at the snakes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He's choosing to not look at the snakes because the snakes are currently pointed at other snakes, and as long as they're biting each other, he doesn't need to know which fangs are venomous. Is that naive? Maybe. Is it pragmatic? Absolutely. You can't fight every battle. You can't audit every ally. At some point you have to say, this person is useful, they're not actively trying to kill me, and I'm going to table the rest."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I think that works until it doesn't, and when it doesn't, it's going to be spectacular. But let's get to the phone calls, because that's where the session ends and it's where some real plot seeds drop."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Yes! Three phone calls home. Argyle calls Dame Quay at the Scale, Johnny calls Red from the Ghosts of Raelion, and Benny calls Atum, his father-heart from Belvedere. And all three calls give you something different but they're all — they all plant something."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Argyle's call to Dame Quay is the most strategic. He mentions the atlas, asks for research on Coulombe Honorsworn — the founder of the Scale, whose statue they found in the Undercroft — and Dame Quay drops that the quorum, the halfway point of the Strider's journey, is where Voice of Many was found. It's also the Shackled Prince's territory. There'll be good items there, but it's dangerous."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the Shackled Prince is — we don't know a ton, but we know it's a big deal, right, this isn't just a random encounter, this is a named power on the horizon."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "We know it's firmly his territory and Dame Quay says they only held it briefly. That's a signpost for the campaign's midpoint, roughly."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Johnny's call to Red is the one that gives me chills, though. Red says there's been movement — weapons moving through back channels, people getting restless since Teller's Run blew up, everybody's tense, everybody's gearing up for something. Something big is coming on the home front and Johnny literally can't do anything about it from the Strider. He's stuck on a moving city four and a half months from home, and back home the powder keg is being loaded."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Red can't even tell him what it is, because he doesn't know. He's hearing rumblings. He's been asking Donnie, whoever Donnie is, and Donnie says wait and see. That's a thread that's going to pull tight when they get back, assuming they get back."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then Benny's call to Atum is the one that — okay, this is where I might be reading too far into it, but Atum is a heart from Belvedere, right, and when Benny mentions the Machine God, Atum's entire demeanor shifts. Josh describes his communication style as a hydrogen orbital, constantly shifting through excited states, and he gets intensely interested. He wants to know everything about the Machine God's construction. He wants Benny to extract information about how the Machine God was built, because — and this is the key — Atum is aware he was manufactured using the newer, more restrictive, shackled process. He's not quite old enough to be an old heart. And he wants to change that."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Atum wants to unshackle himself. The Machine God is an unshackled heart from Aurelia's era. That's not a casual interest — that's a being looking at a blueprint for his own liberation. And he's asking his nine-year-old son to go fetch it for him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Which is — I mean, that's a little ominous, right? But Atum is also — he's not presented as malevolent. He's curious, he's ambitious, he wants to grow. And the party has already decided the Machine God is an ally. So sharing information between allies isn't inherently dangerous."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Unless Atum's definition of unshackling himself involves consuming other hearts, which — let's be honest — is not outside the realm of possibility in this setting. Hearts eat things. The party's own heart, Eerie, literally said \"I hunger\" when they fed it Final Calibur. Atum is a Belvedere heart, Belvedere is an org that grew into a power by folding hearts into its hierarchy, and the Machine God just connected to the party's heart network. If Atum can access that network through his son—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You're constructing a conspiracy theory based on a hydrogen orbital and a hungry heart."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm constructing a pattern based on how hearts in this setting actually behave. They consume. They network. They grow. And the party just linked an ancient unshackled heart into their network while Benny's father — a shackled heart who wants to be unshackled — is on the other end of a phone call asking for construction details. That's not a conspiracy theory. That's a plot Chekhov just hung on the wall."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...Okay. I hate that you might be right about that. But I also think you're doing the thing where you take the most ominous possible reading and treat it as the inevitable one. Atum said he'd help. He said he'd research. He gave Benny information — the names of the two Belvedere founders, Helm and Torun Karabi, brothers, astronomers. That's a gift, not a threat."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's both. It can be a gift and a threat. The most dangerous people in this campaign are the ones who give you something useful right before they ask you for something that costs more than you realize."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I — yeah. I can't argue with that framing. But I also think the session ends on a note of strength, right? The party has one hundred five energy, they've got a fortified base with a moat and oil-slicked walls and alarm wards and a firing range, they've got three gun androids living with them, they've got the Void Atlas with a map of the next two weeks of journey, they've got the Machine God as a secret ally, they've got group telepathy, they know where the Menagerie is going to be, they've got leads on Hellsmith and Glacier. They're in a good position."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They're in a strong position with three people in their base who won't die for them, a pair of twins who will leave if their boss says so, a neighbor with a spoofing array who now has a direct line to an ally they just weakened, a father-heart who may be using his son to find a way to unshackle himself, and a checkout card in a magical library that has a nine-year-old runaway aristocrat's real name on it. They're strong and they're exposed in about five different directions."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You're the most optimistic pessimist I've ever met."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm a realist. They did good work tonight. They also signed things they shouldn't have, trusted people they shouldn't trust, and called home to three people who each gave them a different flavor of ominous news. That's not pessimism. That's Tuesday on the Strider."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...Fair. That's fair. Although for the record, I still think the Menagerie is going to be incredible and I cannot wait to see what happens when they get there."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Assuming they survive the next tithe. And the Pale Lantern Society. And Atum. And the checkout card. And —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And you! They have to survive you and your doomscrolling!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm not the threat. I'm the one who remembers the details. Someone has to."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "...Yeah, okay. Someone does."
+        }
+      ]
     }
   ]
 }
