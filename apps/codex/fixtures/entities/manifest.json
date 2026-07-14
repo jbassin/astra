@@ -31,7 +31,7 @@
     "class-sample": 1,
     "condition": 1,
     "conscious-mind": 1,
-    "creature": 5,
+    "creature": 6,
     "creature-ability": 1,
     "creature-adjustment": 1,
     "creature-family": 1,
@@ -103,6 +103,6 @@
     "tag": "fixture"
   },
   "schemaVersion": 2,
-  "totalEntityCount": 98,
-  "totalSizeBytes": 898396
+  "totalEntityCount": 99,
+  "totalSizeBytes": 958360
 }

@@ -78,5 +78,23 @@
       "N",
       "Medium"
     ]
+  },
+  {
+    "edition": "legacy",
+    "id": "creature/ixamè",
+    "level": 10,
+    "name": "Ixamè",
+    "rarity": "unique",
+    "source": {
+      "book": "Pathfinder #171: Hurricane's Howl",
+      "license": "OGL",
+      "page": 22
+    },
+    "traits": [
+      "air",
+      "dragon",
+      "elemental",
+      "undead"
+    ]
   }
 ]

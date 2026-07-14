@@ -581,6 +581,11 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   "action/pursue-a-lead-2",
   "action/clue-in-2",
   "action/devise-a-stratagem@legacy",
+  // P2 S2 (D29-22 adversarial): a non-ASCII real slug — proves the router's
+  // `pathParamsAllowedCharacters`-free default already round-trips non-ASCII
+  // path segments end to end (encode/decode), a genuine full creature
+  // statblock (not a stub), verified against the real corpus.
+  "creature/ixamè",
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {

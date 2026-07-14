@@ -4,11 +4,14 @@
     "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
     "jsx": "react-jsx",
-    // P2 (S1) needs a real client-bundle stance even though codex has no vite build
-    // yet (S2): server-only imports must stay out of anything a future client
-    // bundle would pull in, same frontend-lane override as apps/ledger's tsconfig.
+    // Frontend-lane override (same as apps/ledger/heartwood-frontend): server-only
+    // imports must stay out of anything the client bundle pulls in.
     "verbatimModuleSyntax": false,
-    "types": ["node", "react", "react-dom"]
+    "types": ["node", "react", "react-dom", "vite/client"],
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src", "scripts"]
+  "include": ["src", "scripts", "vite.config.ts"],
+  "exclude": ["node_modules", "dist", ".output", ".nitro"]
 }

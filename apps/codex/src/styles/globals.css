@@ -1,0 +1,251 @@
+/* codex's page shell, on gothic. gothic's theme.css (imported in __root) provides
+ * the tokens (--color-void/panel/ink/accent/…, --font-display/body/mono) + Tailwind;
+ * this file owns codex's structure (masthead/footer/wrap/hero) + the render layer's
+ * OWN classnames (`entityPage.tsx`/`statblock.tsx`/`facetHeader.tsx`/`nodes.tsx`
+ * already emit `codex-*`/`gothic-card-*` classes — S1 built those page components
+ * frontend-free, so this is the first slice any of them get real styling).
+ *
+ * THE cross-cutting gotcha ([[gothic-frontend-design-polish]]): an UNLAYERED
+ * `*{margin:0;padding:0}` reset outranks gothic's `@layer components` and silently
+ * zeroes any gothic-rendered padding/margins. Wrap the reset in `@layer base` so
+ * gothic's component layer wins. */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+}
+
+html,
+body {
+  height: 100%;
+}
+html {
+  background-color: var(--color-void);
+}
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  color: var(--color-ink);
+  font-family: var(--font-body), serif;
+  font-size: 18px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* --- masthead / footer (shell, in __root) --- */
+.site-head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1.25rem clamp(1rem, 4vw, 3rem);
+  border-bottom: 1px solid var(--color-rule);
+}
+.site-brand {
+  color: var(--color-ink);
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.site-brand:hover {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+.site-tagline {
+  color: var(--color-ink-dim);
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+}
+.site-foot {
+  margin-top: auto;
+  padding: 1.5rem clamp(1rem, 4vw, 3rem);
+  border-top: 1px solid var(--color-rule);
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
+}
+
+/* --- page wrap + the placeholder index hero --- */
+.wrap {
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
+}
+.hero-title {
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: clamp(2rem, 6vw, 3rem);
+  font-weight: 600;
+}
+.hero-lede {
+  margin-top: 1rem;
+  max-width: 40rem;
+  color: var(--color-ink-dim);
+}
+.hero-lede code {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.9em;
+}
+
+/* --- router boundaries (from router.tsx) --- */
+.route-boundary,
+.center {
+  width: 100%;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) 1.5rem;
+  text-align: center;
+}
+
+/* --- the entity page (S1's render-layer classnames, first styled here) --- */
+.codex-entity-page {
+  width: 100%;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 8vw, 5rem);
+}
+.codex-entity-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: 1.25rem;
+}
+.codex-entity-name {
+  width: 100%;
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  font-weight: 600;
+}
+.codex-entity-level {
+  color: var(--color-ink-dim);
+  font-size: 0.6em;
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+.codex-trait-pills {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+.codex-edition-pill {
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-rule);
+  color: var(--color-ink-dim);
+}
+.codex-edition-remaster {
+  color: var(--color-accent-amber);
+  border-color: var(--color-accent-amber);
+}
+.codex-rarity {
+  font-size: 0.85rem;
+  color: var(--color-ink-dim);
+  text-transform: capitalize;
+}
+.codex-citation {
+  font-size: 0.85rem;
+  color: var(--color-ink-faint);
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+}
+.codex-license-badge {
+  font-size: 0.68rem;
+  letter-spacing: 0.05em;
+  padding: 0.05rem 0.4rem;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-rule);
+}
+.codex-aon-link {
+  font-size: 0.8rem;
+}
+.codex-edition-banner {
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.4rem;
+  background-color: var(--color-elevated);
+  font-size: 0.85rem;
+}
+
+.codex-statblock {
+  margin-bottom: 1.25rem;
+}
+.codex-stat-row {
+  padding: 0.15rem 0;
+}
+.codex-stat-label {
+  font-weight: 600;
+  color: var(--color-accent-amber);
+}
+.codex-embedded-items {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.codex-strike,
+.codex-ability,
+.codex-spellcasting-entry {
+  padding: 0.5rem 0;
+  border-top: 1px solid var(--color-rule);
+}
+
+.codex-content p {
+  margin: 0.75rem 0;
+}
+.codex-content ul,
+.codex-content ol {
+  margin: 0.75rem 0 0.75rem 1.5rem;
+}
+.codex-heading {
+  margin: 1.25rem 0 0.5rem;
+  font-family: var(--font-display), var(--font-mono), monospace;
+}
+.codex-heading-meta {
+  float: right;
+  font-size: 0.75em;
+  color: var(--color-ink-dim);
+  font-weight: 400;
+}
+.codex-aside {
+  margin: 1rem 0;
+}
+.codex-embed-card {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.75rem;
+  border-left: 2px solid var(--color-accent-amber);
+  background-color: var(--color-elevated);
+}
+.codex-embed-source-link {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
+  color: var(--color-ink-faint);
+}
+.codex-broken-ref {
+  color: var(--color-ink-faint);
+  font-style: italic;
+}
+.codex-lore {
+  margin-top: 1.5rem;
+}

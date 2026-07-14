@@ -262,7 +262,8 @@
         "**/ledger/src/routes/__root.tsx",
         "**/harrow/src/routes/__root.tsx",
         "**/mouthpiece-frontend/src/routes/__root.tsx",
-        "**/heartwood-frontend/src/routes/__root.tsx"
+        "**/heartwood-frontend/src/routes/__root.tsx",
+        "**/codex/src/routes/__root.tsx"
       ],
       "rules": { "no-danger": "off" }
     },

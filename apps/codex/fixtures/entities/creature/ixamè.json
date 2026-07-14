@@ -1,0 +1,2506 @@
+{
+  "aonUrl": "/Monsters.aspx?ID=1682",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Ixamè",
+          "kind": "crossref",
+          "targetId": "creature/ixamè"
+        }
+      ],
+      "kind": "heading",
+      "level": 1
+    },
+    {
+      "children": [
+        {
+          "display": "Recall Knowledge - Dragon",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Arcana",
+          "kind": "crossref",
+          "targetId": "skill/arcana"
+        },
+        {
+          "content": "): DC 37",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Recall Knowledge - Elemental",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Arcana",
+          "kind": "crossref",
+          "targetId": "skill/arcana"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nature",
+          "kind": "crossref",
+          "targetId": "skill/nature"
+        },
+        {
+          "content": "): DC 37",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Recall Knowledge - Undead",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Religion",
+          "kind": "crossref",
+          "targetId": "skill/religion"
+        },
+        {
+          "content": "): DC 37",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Unspecific Lore",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": ": DC 35",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Specific Lore",
+          "kind": "crossref",
+          "targetId": "rules/recall-knowledge"
+        },
+        {
+          "content": ": DC 32",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Ixamè",
+          "kind": "crossref",
+          "targetId": "creature/ixamè"
+        }
+      ],
+      "kind": "heading",
+      "level": 2,
+      "meta": "Creature 10"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Pathfinder #171: Hurricane's Howl",
+          "kind": "crossref",
+          "targetId": "source/pathfinder-171-hurricanes-howl"
+        },
+        {
+          "content": " pg. 22",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Perception",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +22; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "darkvision",
+          "kind": "crossref",
+          "targetId": "creature-ability/darkvision"
+        },
+        {
+          "content": ", mist vision, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "scent",
+          "kind": "crossref",
+          "targetId": "creature-ability/scent"
+        },
+        {
+          "content": " (imprecise) 60 feet",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Languages",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Auran",
+          "kind": "crossref",
+          "targetId": "language/auran"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Common",
+          "kind": "crossref",
+          "targetId": "language/common"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Draconic",
+          "kind": "crossref",
+          "targetId": "language/draconic"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Skills",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Acrobatics",
+          "kind": "crossref",
+          "targetId": "skill/acrobatics"
+        },
+        {
+          "content": " +20, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Athletics",
+          "kind": "crossref",
+          "targetId": "skill/athletics"
+        },
+        {
+          "content": " +21, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Deception",
+          "kind": "crossref",
+          "targetId": "skill/deception"
+        },
+        {
+          "content": " +20, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Diplomacy",
+          "kind": "crossref",
+          "targetId": "skill/diplomacy"
+        },
+        {
+          "content": " +18, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Intimidation",
+          "kind": "crossref",
+          "targetId": "skill/intimidation"
+        },
+        {
+          "content": " +22, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nature",
+          "kind": "crossref",
+          "targetId": "skill/nature"
+        },
+        {
+          "content": " +18, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Stealth",
+          "kind": "crossref",
+          "targetId": "skill/stealth"
+        },
+        {
+          "content": " +18, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Survival",
+          "kind": "crossref",
+          "targetId": "skill/survival"
+        },
+        {
+          "content": " +16",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Str",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +7",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Dex",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +2",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Con",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +5",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Int",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +2",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Wis",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +4",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Cha",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +4",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Mist Vision",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Fog and mist don't impair a cloud dragon's vision; Ixamè ignores the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "concealed",
+          "kind": "crossref",
+          "targetId": "condition/concealed"
+        },
+        {
+          "content": " condition from fog and mist.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "AC",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 30 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Fort",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +21 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Ref",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +18 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Will",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +20 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "HP",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 175 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "negative healing",
+          "kind": "crossref",
+          "targetId": "creature-ability/negative-healing"
+        },
+        {
+          "content": ")",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Immunities",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "electricity",
+          "kind": "crossref",
+          "targetId": "trait/electricity"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "paralyzed",
+          "kind": "crossref",
+          "targetId": "condition/paralyzed"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "poison",
+          "kind": "crossref",
+          "targetId": "trait/poison"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "sleep",
+          "kind": "crossref",
+          "targetId": "trait/sleep"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "display": "Frightful Presence",
+          "kind": "crossref",
+          "targetId": "creature-ability/frightful-presence"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "aura",
+          "kind": "crossref",
+          "targetId": "trait/aura"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "emotion",
+          "kind": "crossref",
+          "targetId": "trait/emotion"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "fear",
+          "kind": "crossref",
+          "targetId": "trait/fear"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "mental",
+          "kind": "crossref",
+          "targetId": "trait/mental"
+        },
+        {
+          "content": ") 90 feet, DC 26\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Deflecting Cloud",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Reaction",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Trigger",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Ixamè is the target of a ranged attack; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Requirements",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Ixamè is aware of the attack and has a free wing; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Effect",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Ixamè rapidly flexes one of her wings and creates a billowing cloud of mist. She is treated as if she were ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "hidden",
+          "kind": "crossref",
+          "targetId": "condition/hidden"
+        },
+        {
+          "content": " for the purposes of resolving the triggering attack, so normally the attacker must succeed at a DC 11 flat check to target her. Ixamè also gains a +4 circumstance bonus to AC against the triggering attack.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Speed",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 40 feet, fly 140 feet; cloud walk",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " jaws +23 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Poison",
+          "kind": "crossref",
+          "targetId": "trait/poison"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "reach 10 feet",
+          "kind": "crossref",
+          "targetId": "trait/reach"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 2d10+13 piercing plus 1d12 poison",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " claw +23 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Agile",
+          "kind": "crossref",
+          "targetId": "trait/agile"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 2d8+13 slashing",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " tail +21 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "reach 15 feet",
+          "kind": "crossref",
+          "targetId": "trait/reach"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 2d12+13 bludgeoning",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Melee",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " horn +21 (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "deadly d8",
+          "kind": "crossref",
+          "targetId": "trait/deadly"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "reach 10 feet",
+          "kind": "crossref",
+          "targetId": "trait/reach"
+        },
+        {
+          "content": "), ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Damage",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 1d12+11 piercing",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Primal Innate Spells",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " DC 29",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "items": [
+        [
+          {
+            "content": "1st",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Gust of Wind",
+            "kind": "crossref",
+            "targetId": "spell/gust-of-wind"
+          },
+          {
+            "content": " (at will)",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "2nd",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Obscuring Mist",
+            "kind": "crossref",
+            "targetId": "spell/obscuring-mist"
+          }
+        ]
+      ],
+      "kind": "list",
+      "ordered": false
+    },
+    {
+      "children": [
+        {
+          "content": "Breath Weapon",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Two Actions",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Evocation",
+          "kind": "crossref",
+          "targetId": "trait/evocation"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Poison",
+          "kind": "crossref",
+          "targetId": "trait/poison"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Primal",
+          "kind": "crossref",
+          "targetId": "trait/primal"
+        },
+        {
+          "content": ") Ixamè breathes a cloud of poison like that emitted from Terwa Lake that deals 11d6 poison damage in a 40- foot cone (DC 29 ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "basic",
+          "kind": "crossref",
+          "targetId": "rules/basic-saving-throws"
+        },
+        {
+          "content": " Reflex save). She can't use Breath Weapon again for 1d4 rounds.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Cloud Walk",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "   Ixamè can tread on clouds or fog as though on solid ground.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Draconic Frenzy",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Two Actions",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": "  Ixamè makes two claw Strikes and one horn Strike in any order.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Draconic Momentum",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "   Ixamè recharges her Breath Weapon whenever she scores a critical hit when making a Strike.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "creature",
+  "edition": "legacy",
+  "embeddedItems": [
+    {
+      "attack": 21,
+      "body": [],
+      "dc": 29,
+      "name": "Primal Innate Spells",
+      "slug": "primal-innate-spells",
+      "tradition": "divine",
+      "traits": [],
+      "type": "spellcastingEntry"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "You call forth a cloud of mist. All creatures within the mist become ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Concealed",
+              "kind": "crossref",
+              "targetId": "condition/concealed"
+            },
+            {
+              "content": ", and all creatures outside the mist become Concealed to creatures within it. You can Dismiss the cloud.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 2,
+      "name": "Obscuring Mist",
+      "slug": "obscuring-mist",
+      "traits": [
+        "concentrate",
+        "manipulate",
+        "water"
+      ],
+      "type": "spell"
+    },
+    {
+      "body": [
+        {
+          "children": [
+            {
+              "content": "A violent wind issues forth from your palm, blowing from the point where you are when you cast the spell to the line's opposite end. The wind extinguishes small non-magical fires, disperses fog and mist, blows objects of light Bulk or less around, and pushes larger objects. Large or smaller creatures in the area must attempt a Fortitude save. Large or smaller creatures that later move into the gust must attempt the save on entering.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The creature is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The creature can't move against the wind.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The creature is knocked ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Prone",
+              "kind": "crossref",
+              "targetId": "condition/prone"
+            },
+            {
+              "content": ". If it was flying, it suffers the effects of critical failure instead.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The creature is pushed 30 feet in the wind's direction, knocked Prone, and takes 2d6 bludgeoning damage.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "level": 1,
+      "name": "Gust of Wind (At Will)",
+      "slug": "gust-of-wind-at-will",
+      "traits": [
+        "air",
+        "concentrate",
+        "manipulate"
+      ],
+      "type": "spell"
+    },
+    {
+      "attackBonus": 23,
+      "body": [],
+      "damage": [
+        "2d10+13 piercing",
+        "1d12 poison"
+      ],
+      "name": "Jaws",
+      "slug": "jaws",
+      "traits": [
+        "poison",
+        "reach-10",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "attackBonus": 23,
+      "body": [],
+      "damage": [
+        "2d8+13 slashing"
+      ],
+      "name": "Claw",
+      "slug": "claw",
+      "traits": [
+        "agile",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "attackBonus": 21,
+      "body": [],
+      "damage": [
+        "2d12+13 bludgeoning"
+      ],
+      "name": "Tail",
+      "slug": "tail",
+      "traits": [
+        "reach-15"
+      ],
+      "type": "melee"
+    },
+    {
+      "attackBonus": 21,
+      "body": [],
+      "damage": [
+        "1d12+11 piercing"
+      ],
+      "name": "Horn",
+      "slug": "horn",
+      "traits": [
+        "deadly-d8",
+        "reach-10",
+        "unarmed"
+      ],
+      "type": "melee"
+    },
+    {
+      "actionCost": "reaction",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Trigger",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " Ixamè is the target of a ranged attack",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Requirements",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " Ixamè is aware of the attack and has a free wing",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Effect",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " Ixamè rapidly flexes one of her wings and creates a billowing cloud of mist. She is treated as if she were ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Hidden",
+              "kind": "crossref",
+              "targetId": "condition/hidden"
+            },
+            {
+              "content": " for the purposes of resolving the triggering attack, so normally the attacker must succeed at a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 11,
+              "kind": "check",
+              "type": "flat"
+            },
+            {
+              "content": " to target her.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Ixamè also gains a +4 circumstance bonus to AC against the triggering attack.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Deflecting Cloud",
+      "slug": "deflecting-cloud",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "90 feet. ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 26,
+              "extra": {
+                "options": "area-effect,inflicts:frightened"
+              },
+              "kind": "check",
+              "type": "will"
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "A creature that first enters the area must attempt a Will save.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Regardless of the result of the saving throw, the creature is temporarily immune to this monster's Frightful Presence for 1 minute.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "kind": "divider"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Critical Success",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is unaffected by the presence.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Success",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 1",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Failure",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 2",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                },
+                {
+                  "children": [
+                    {
+                      "content": "Critical Failure",
+                      "kind": "text",
+                      "marks": {
+                        "bold": true,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "content": " The creature is ",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    },
+                    {
+                      "display": "Frightened 4",
+                      "kind": "crossref",
+                      "targetId": "condition/frightened"
+                    },
+                    {
+                      "content": ".",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.FrightfulPresence"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Frightful Presence",
+      "slug": "frightful-presence",
+      "traits": [
+        "aura",
+        "emotion",
+        "fear",
+        "mental"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Fog and mist don't impair a cloud dragon's vision; Ixamè ignores the ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Concealed",
+              "kind": "crossref",
+              "targetId": "condition/concealed"
+            },
+            {
+              "content": " condition from fog and mist.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Mist Vision",
+      "slug": "mist-vision",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [
+                    {
+                      "content": "A creature with void healing draws health from void energy rather than vitality energy. It is damaged by vitality damage and is not healed by vitality healing effects. It does not take void damage, and it is healed by void effects that heal undead.",
+                      "kind": "text",
+                      "marks": {
+                        "bold": false,
+                        "italic": false,
+                        "superscript": false
+                      }
+                    }
+                  ],
+                  "kind": "paragraph"
+                }
+              ],
+              "kind": "localizedBoilerplate",
+              "sourceKey": "PF2E.NPC.Abilities.Glossary.NegativeHealing"
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Void Healing",
+      "slug": "void-healing",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "2",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Ixamè breathes a cloud of poison like that emitted from Terwa Lake that deals ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "11d6 poison",
+              "formula": "11d6[poison]",
+              "kind": "damage"
+            },
+            {
+              "content": " damage in a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "distance": 40,
+              "kind": "template",
+              "shape": "cone"
+            },
+            {
+              "content": " (",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "basic": true,
+              "dc": 29,
+              "extra": {
+                "options": "area-effect"
+              },
+              "kind": "check",
+              "type": "reflex"
+            },
+            {
+              "content": " save).",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "She can't use Breath Weapon again for ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "formula": "1d4 #Recharge Breath Weapon",
+              "kind": "inlineRoll",
+              "label": "1d4 rounds",
+              "rollKind": "gmr"
+            },
+            {
+              "content": ".",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Breath Weapon",
+      "slug": "breath-weapon",
+      "traits": [
+        "poison",
+        "primal"
+      ],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Ixamè can tread on clouds or fog as though on solid ground.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Cloud Walk",
+      "slug": "cloud-walk",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "2",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Ixamè makes two claw Strikes and one horn Strike in any order.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Draconic Frenzy",
+      "slug": "draconic-frenzy",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Ixamè recharges her Breath Weapon whenever she scores a critical hit when making a Strike.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Draconic Momentum",
+      "slug": "draconic-momentum",
+      "traits": [],
+      "type": "action"
+    }
+  ],
+  "facets": {
+    "ac": 30,
+    "fortitudeSave": 21,
+    "hp": 175,
+    "perception": 22,
+    "reflexSave": 18,
+    "size": "lg",
+    "willSave": 20
+  },
+  "id": "creature/ixamè",
+  "level": 10,
+  "name": "Ixamè",
+  "rarity": "unique",
+  "slug": "ixamè",
+  "source": {
+    "book": "Pathfinder #171: Hurricane's Howl",
+    "license": "OGL",
+    "page": 22
+  },
+  "stats": {
+    "abilityMods": {
+      "cha": 4,
+      "con": 5,
+      "dex": 2,
+      "int": 2,
+      "str": 7,
+      "wis": 4
+    },
+    "immunities": [
+      "bleed",
+      "electricity",
+      "paralyzed",
+      "poison",
+      "sleep"
+    ],
+    "kind": "creature",
+    "languages": [
+      "common",
+      "draconic",
+      "sussuran"
+    ],
+    "senses": {
+      "details": "mist vision",
+      "list": [
+        {
+          "type": "darkvision"
+        },
+        {
+          "acuity": "imprecise",
+          "range": 60,
+          "type": "scent"
+        }
+      ],
+      "mod": 22
+    },
+    "skills": {
+      "acrobatics": 20,
+      "athletics": 21,
+      "deception": 20,
+      "diplomacy": 18,
+      "intimidation": 22,
+      "nature": 18,
+      "stealth": 18,
+      "survival": 16
+    },
+    "speeds": {
+      "base": 40,
+      "other": [
+        {
+          "type": "fly",
+          "value": 140
+        }
+      ]
+    }
+  },
+  "traits": [
+    "air",
+    "dragon",
+    "elemental",
+    "undead"
+  ]
+}
