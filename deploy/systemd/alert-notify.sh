@@ -159,6 +159,15 @@ clear_recovered_failures() {
 # --- liveness checks (each echoes a reason on failure, returns non-zero) ---
 
 check_mount() {
+  # A vanished mount is invisible to the responsiveness probe: `ls` on the bare (empty)
+  # underlying directory succeeds instantly, so the 2026-07-13 incident — daemon alive but
+  # mount gone — kept every signal green while ingest was blind and craig-sync nullglobbed
+  # "0 new" forever. Require an actual fuse-fstype mount above DRIVE_MOUNT first (mountinfo
+  # read — never stats the path, safe even when wedged).
+  if [ -z "$(find_fuse_mount)" ]; then
+    echo "no FUSE mount above '$DRIVE_MOUNT' — Drive is unmounted, pipeline ingest is blind (fix: sudo systemctl restart gdrive.service)"
+    return 1
+  fi
   if run_bounded 20 bash -c 'ls "$1" >/dev/null 2>&1' _ "$DRIVE_MOUNT"; then return 0; fi
   echo "Drive mount '$DRIVE_MOUNT' unresponsive (>20s) — FUSE front door may be wedged (pipeline ingest stalled)"
   return 1
