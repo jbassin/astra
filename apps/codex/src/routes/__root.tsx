@@ -3,6 +3,7 @@ import { createRootRoute, HeadContent, Link, Outlet, Scripts } from "@tanstack/r
 import { useEffect } from "react";
 
 import { setLegacyToggle, useLegacyToggle } from "@/domain/browse/legacyToggle";
+import { Omnibar } from "@/domain/search/Omnibar";
 
 import "@fontsource/ibm-plex-mono/400.css";
 import "@fontsource/ibm-plex-mono/500.css";
@@ -57,6 +58,8 @@ function RootComponent() {
             codex
           </Link>
           <span className="site-tagline">a Pathfinder 2e reference</span>
+          {/* D29-36 — the header search omnibar, present on every page. */}
+          <Omnibar />
           <LegacyToggleControl />
         </header>
         <Outlet />

@@ -53,6 +53,26 @@ isomorphically (live-toggle server snapshot is always false), live toggle takes 
 post-hydration only. Plus: jsdom stays per-file (@vitest-environment docblock) — a global
 jsdom default breaks sluggify.test.ts under vp's concurrent run.
 
+S4 BUILT 2026-07-14 (search UI, D29-36 in full). Gate E evidence: "red dragon" → correct top
+hits; "counteract" == "counterac" top-8 byte-identical (prefix fallback proven); grouped
+type-ahead on "drago"; /search filter panel narrows (dragon 1,172→501 by category; level
+discrete multi-select); superseded hidden/shown by toggle ("magic missile" legacy case);
+shared empty state + clear; no-JS SSR notice; keyboard flow full (Ctrl/Cmd-K, arrows, Enter
+both modes, Esc); cold-start transfer **594 KB** (≤ ~600 KB target); zero hydration errors;
+telemetry proven by local OTLP smoke (codex.search {surface} counted — SigNoz check at S5).
+**Recorded deviations (orchestrator-accepted):** (1) `codex.search` is a SERVER counter behind
+a fire-and-forget serverFn — no browser MeterProvider exists anywhere in astra
+(@astra/observe/web wires traces only); every repo lazyCounter site is server-side; a browser
+meter would need new deps or a libs/ts/observe edit, out of scope. (2) .oxlintrc.json gains
+SearchPage.tsx in the existing no-danger exemption (the akasha pagefind-excerpt precedent).
+(3) **Weighting revisited per D29-34 and REVERTED:** meta.title carries no ranking weight in
+the addCustomRecord path; weight-span injection didn't move `/spell/heal` at 46k scale AND
+leaked raw attribute text into excerpts — single-common-word name queries ("heal") remain a
+documented Pagefind TF-ranking limitation (STAKEHOLDER REVIEW ITEM at the final gate);
+distinctive names rank correctly. (4) **Real S2 bug found+fixed:** Pagefind writeFiles is NOT
+idempotent against a pre-existing outDir (stale hashed fragments accumulate per re-run) —
+build-search now rm-rf's before write; index cleanly rebuilt, 46,192 pages exact.
+
 **Status:** FINAL (2026-07-14) — authored against the REAL post-P1.6 corpus (46,192 entities /
 88 categories, measured this session). Stakeholder decisions batched + resolved 2026-07-14
 (facet depth, search UX shape, legacy default, listing payload strategy, extractor-gap

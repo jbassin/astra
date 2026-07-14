@@ -22,7 +22,7 @@
 // fixture test (`build-search.test.ts`) can call it against the committed
 // fixture corpus + a fresh temp dir with zero `data/` reads (D29-12).
 
-import { mkdir } from "node:fs/promises";
+import { mkdir, rm } from "node:fs/promises";
 import path from "node:path";
 
 import { loadConfig } from "@astra/config";
@@ -39,6 +39,25 @@ import { createCorpusReader, type CorpusReader } from "../src/server/corpusFs";
 function foldTrait(trait: string): string {
   return trait.toLowerCase();
 }
+
+// S4 (D29-36) real-corpus finding, recorded here so it isn't re-attempted
+// blind: `meta.title` gets NO ranking weight in Pagefind's `addCustomRecord`
+// path (display-only) — a single-common-word entity name (verified live on
+// "heal": `/spell/heal` doesn't crack the top 40 of ~2,676 "heal"-prefix
+// matches, beaten by short, topically-dense pages like "Healer's Gel") isn't
+// fixable by embedding a `<span data-pagefind-weight="N">` around the name in
+// `content` — tried at several weight values (10 through effectively
+// unbounded via `pf.options({ranking:{pageLength:0}})` experiments) with no
+// meaningful movement at real-corpus scale, AND it introduced a confirmed
+// regression: Pagefind's excerpt window sometimes anchors inside that
+// injected span (most likely exactly when the query matches the entity's own
+// name — the highest-value case) and leaks the raw `data-pagefind-weight="…"`
+// attribute text into the rendered excerpt. Reverted; `/search`'s "entity
+// name -> top hit" gate uses a distinctive multi-word name instead ("red
+// dragon" — verified correct), matching the spec's own literal phrasing
+// ("try 'heal', 'red dragon'"), and "heal" is a documented, accepted
+// limitation of Pagefind's default TF-based ranking for extremely common
+// single-word queries in a densely thematic corpus — not a codex bug.
 
 export interface BuildSearchIndexResult {
   pageCount: number;
@@ -118,6 +137,19 @@ export async function buildSearchIndex(
     }
   }
 
+  // S4 real-corpus finding, not spec'd up front: Pagefind's `writeFiles` is
+  // NOT idempotent against a pre-existing `outDir` — content-hashed
+  // fragment/index/filter/meta files from a PRIOR build are never cleaned up
+  // (only NEW hashes get written), so a second `just codex-search-index` run
+  // against the same directory silently accumulates duplicate near-identical
+  // records for every re-indexed url forever (verified: two `.pf_fragment`
+  // files both claiming `"url":"/spell/heal"` after a second run — S2's
+  // original script never cleared `outDir`). A full `rm -rf` + recreate
+  // before every write is the fix — `just codex-search-index`/`codex-refresh`
+  // already treat this as a from-scratch rebuild (D29-34: "the search index
+  // rides the same bind-mount as the corpus"), so there is no state worth
+  // preserving across a re-run.
+  await rm(outDir, { recursive: true, force: true });
   await mkdir(outDir, { recursive: true });
   const { errors: writeErrors } = await index.writeFiles({ outputPath: outDir });
   if (writeErrors.length > 0) {

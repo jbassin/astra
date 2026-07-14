@@ -158,7 +158,11 @@ export function encodeRangeParam(filter: RangeFilter): string | undefined {
 // `f.actionCost=1,reaction` examples (none of those tokens contain a `,`).
 // ---------------------------------------------------------------------------
 
-function splitCsv(raw: string): string[] {
+// Exported (P3 S4, D29-36) so `domain/search/searchUrlState.ts` reuses the
+// SAME comma-escaping — not a re-implementation — for the `/search` route's
+// own CSV-multi-select params (category/rarity/edition/level/traits): purely
+// additive, no behavior change to this module's own callers.
+export function splitCsv(raw: string): string[] {
   const tokens: string[] = [];
   let current = "";
   for (let i = 0; i < raw.length; i++) {
@@ -181,7 +185,7 @@ function escapeCsvToken(value: string): string {
   return value.replace(/\\/g, "\\\\").replace(/,/g, "\\,");
 }
 
-function joinCsv(values: readonly string[]): string {
+export function joinCsv(values: readonly string[]): string {
   return values.map(escapeCsvToken).join(",");
 }
 

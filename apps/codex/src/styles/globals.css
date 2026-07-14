@@ -514,10 +514,169 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  margin-left: auto;
   font-size: 0.78rem;
   color: var(--color-ink-faint);
   cursor: pointer;
+}
+
+/* --- P3 S4 (D29-36): the header omnibar --- */
+.codex-omnibar {
+  position: relative;
+  margin-left: auto;
+  width: clamp(12rem, 24vw, 20rem);
+}
+.codex-omnibar-input {
+  width: 100%;
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 1px;
+  padding: 0.35rem 0.6rem;
+  font-family: var(--font-body), serif;
+  font-size: 0.85rem;
+}
+.codex-omnibar-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+.codex-omnibar-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.codex-omnibar-dropdown {
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  right: 0;
+  z-index: 20;
+  width: max(100%, 22rem);
+  max-height: 28rem;
+  overflow-y: auto;
+  background-color: var(--color-elevated);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.3rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+  padding: 0.5rem 0;
+}
+.codex-omnibar-empty {
+  padding: 0.75rem 1rem;
+  color: var(--color-ink-dim);
+  font-size: 0.85rem;
+}
+.codex-omnibar-group {
+  padding: 0.35rem 0;
+}
+.codex-omnibar-group-title {
+  padding: 0.15rem 1rem;
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+}
+.codex-omnibar-group ul {
+  list-style: none;
+}
+.codex-omnibar-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  padding: 0.35rem 1rem;
+  color: var(--color-ink);
+  font-size: 0.85rem;
+}
+.codex-omnibar-row:hover,
+.codex-omnibar-row-active {
+  background-color: var(--color-hover);
+  text-decoration: none;
+}
+.codex-omnibar-row-name {
+  font-weight: 600;
+  flex: 1;
+}
+.codex-omnibar-all-results {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.5rem 1rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid var(--color-rule);
+  background: transparent;
+  color: var(--color-accent);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.codex-omnibar-all-results:hover,
+.codex-omnibar-all-results.codex-omnibar-row-active {
+  background-color: var(--color-hover);
+}
+
+/* --- P3 S4 (D29-36): the `/search` page --- */
+.codex-search-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.codex-search-query {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.codex-search-query-label {
+  font-size: 0.78rem;
+  color: var(--color-ink-dim);
+}
+.codex-search-query input {
+  width: 100%;
+  max-width: 32rem;
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 1px;
+  padding: 0.5rem 0.75rem;
+  font-family: var(--font-body), serif;
+  font-size: 1rem;
+}
+.codex-search-status {
+  color: var(--color-ink-dim);
+  padding: 1.5rem 0;
+}
+.codex-search-results {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+.codex-search-result {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+.codex-search-excerpt {
+  flex-basis: 100%;
+  margin-top: 0.15rem;
+  color: var(--color-ink-dim);
+  font-size: 0.85rem;
+}
+.codex-search-excerpt mark {
+  background-color: color-mix(in srgb, var(--color-accent-amber) 35%, transparent);
+  color: inherit;
+}
+.codex-search-load-more {
+  margin-top: 1rem;
+  background: transparent;
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 1px;
+  padding: 0.4rem 0.9rem;
+  color: var(--color-ink);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+.codex-search-load-more:hover {
+  background-color: var(--color-hover);
 }
 
 /* --- Popover hover-preview card (D29-28, ported from akasha-frontend) --- */
