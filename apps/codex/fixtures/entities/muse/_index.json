@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "muse/enigma",
-    "name": "Enigma",
-    "rarity": "common",
-    "source": {
-      "book": "Core Rulebook",
-      "license": "OGL",
-      "page": 97
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"muse/enigma","name":"Enigma","rarity":"common","source":{"book":"Core Rulebook","license":"OGL","page":97},"superseded":true,"traits":[]}]

@@ -1,16 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "animal-companion-unique/fiery-leopard",
-    "name": "Fiery Leopard",
-    "rarity": "unique",
-    "source": {
-      "book": "The Fall of Plaguestone",
-      "license": "OGL",
-      "page": 57
-    },
-    "traits": [
-      "Unique"
-    ]
-  }
-]
+[{"edition":"legacy","id":"animal-companion-unique/fiery-leopard","name":"Fiery Leopard","rarity":"unique","source":{"book":"The Fall of Plaguestone","license":"OGL","page":57},"superseded":false,"traits":["Unique"]}]

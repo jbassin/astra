@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "skill-general-action/build-structure",
-    "name": "Build Structure",
-    "rarity": "common",
-    "source": {
-      "book": "Kingmaker Adventure Path",
-      "license": "OGL",
-      "page": 518
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"skill-general-action/build-structure","name":"Build Structure","rarity":"common","source":{"book":"Kingmaker Adventure Path","license":"OGL","page":518},"superseded":false,"traits":[]}]

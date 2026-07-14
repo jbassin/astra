@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "class-sample/student-of-thoughts",
-    "name": "Student of Thoughts",
-    "rarity": "common",
-    "source": {
-      "book": "Dark Archives (Remastered)",
-      "license": "ORC",
-      "page": 22
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","id":"class-sample/student-of-thoughts","name":"Student of Thoughts","rarity":"common","source":{"book":"Dark Archives (Remastered)","license":"ORC","page":22},"superseded":false,"traits":[]}]

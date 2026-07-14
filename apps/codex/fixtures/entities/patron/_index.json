@@ -1,16 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "patron/pacts",
-    "name": "Pacts",
-    "rarity": "rare",
-    "source": {
-      "book": "Dark Archive",
-      "license": "OGL",
-      "page": 159
-    },
-    "traits": [
-      "Rare"
-    ]
-  }
-]
+[{"edition":"legacy","id":"patron/pacts","name":"Pacts","rarity":"rare","source":{"book":"Dark Archive","license":"OGL","page":159},"superseded":true,"traits":["Rare"]}]

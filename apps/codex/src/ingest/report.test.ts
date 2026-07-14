@@ -10,10 +10,13 @@ import {
   computeCreatureStatsCoverage,
   computeEditionBreakdown,
   computeEmbeddedItemStatsCoverage,
+  computeFacetCoverage,
+  computeFamilyCoverage,
   computeFinalCategoryCounts,
   computeHazardStatsCoverage,
   computeLicenseBreakdown,
   computeProseOnlyCount,
+  computeSupersededBreakdown,
   computeVariantCount,
   type ReportInput,
 } from "./report";
@@ -508,5 +511,203 @@ describe("P1.6 (D29-19/-20): stats + embedded-item field coverage", () => {
       pct: 100,
     });
     expect(coverage.find((r) => r.field === "spellcastingEntry.tradition")?.count).toBe(1);
+  });
+});
+
+describe("P3 S1 (D29-32/-33): facet coverage / family coverage / superseded breakdown", () => {
+  describe("computeFacetCoverage", () => {
+    it("computes coverage% + cardinality per key, one row per (category, key) pair actually present", () => {
+      const entities: CodexEntity[] = [
+        entity({
+          id: "feat/a",
+          category: "feat",
+          slug: "a",
+          name: "A",
+          facets: { actionCost: "1", itemCategory: "general" },
+        }),
+        entity({
+          id: "feat/b",
+          category: "feat",
+          slug: "b",
+          name: "B",
+          facets: { actionCost: "2" },
+        }),
+        entity({ id: "feat/c", category: "feat", slug: "c", name: "C" }), // no facets at all
+      ];
+      const coverage = computeFacetCoverage(entities);
+      const actionCost = coverage.find((r) => r.category === "feat" && r.key === "actionCost");
+      expect(actionCost).toEqual({
+        category: "feat",
+        key: "actionCost",
+        count: 2,
+        ofTotal: 3,
+        pct: 66.7,
+        cardinality: 2, // "1" and "2"
+        shipped: true, // facetKeys.ts allowlists feat.actionCost
+      });
+      const itemCategory = coverage.find((r) => r.category === "feat" && r.key === "itemCategory");
+      expect(itemCategory?.count).toBe(1);
+      expect(itemCategory?.shipped).toBe(true);
+    });
+
+    it("marks a candidate NOT in facetKeys.ts as shipped: false (a dropped classifier candidate)", () => {
+      const entities: CodexEntity[] = [
+        entity({
+          id: "spell/heal",
+          category: "spell",
+          slug: "heal",
+          name: "Heal",
+          facets: { rank: 1 }, // spell's "rank" is deliberately excluded (spillover-equivalent)
+        }),
+      ];
+      const coverage = computeFacetCoverage(entities);
+      const rank = coverage.find((r) => r.category === "spell" && r.key === "rank");
+      expect(rank?.shipped).toBe(false);
+    });
+
+    it("counts array-facet cardinality by distinct ELEMENT, not distinct array", () => {
+      const entities: CodexEntity[] = [
+        entity({
+          id: "spell/a",
+          category: "spell",
+          slug: "a",
+          name: "A",
+          facets: { traditions: ["divine", "primal"] },
+        }),
+        entity({
+          id: "spell/b",
+          category: "spell",
+          slug: "b",
+          name: "B",
+          facets: { traditions: ["divine"] },
+        }),
+      ];
+      const coverage = computeFacetCoverage(entities);
+      const traditions = coverage.find((r) => r.category === "spell" && r.key === "traditions");
+      expect(traditions?.count).toBe(2); // 2 entities carry the key
+      expect(traditions?.cardinality).toBe(2); // "divine" + "primal", not 2 distinct arrays
+    });
+
+    it("skips a category with zero facets entirely (the 73-category long tail)", () => {
+      const entities: CodexEntity[] = [
+        entity({ id: "trait/magical", category: "trait", slug: "magical", name: "Magical" }),
+      ];
+      expect(computeFacetCoverage(entities)).toEqual([]);
+    });
+  });
+
+  describe("computeFamilyCoverage", () => {
+    it("measures family coverage over ALL creature entities, not just AoN-derived ones", () => {
+      const entities: CodexEntity[] = [
+        entity({
+          id: "creature/a",
+          category: "creature",
+          slug: "a",
+          name: "A",
+          facets: { family: "Demon" },
+        }),
+        entity({
+          id: "creature/b",
+          category: "creature",
+          slug: "b",
+          name: "B",
+          facets: { family: "Demon" },
+        }),
+        entity({ id: "creature/c", category: "creature", slug: "c", name: "C" }), // no family
+        entity({ id: "spell/heal", category: "spell", slug: "heal", name: "Heal" }), // wrong category
+      ];
+      expect(computeFamilyCoverage(entities)).toEqual({
+        count: 2,
+        ofTotal: 3,
+        pct: 66.7,
+        distinctFamilies: 1,
+      });
+    });
+
+    it("returns 0/0/0% when there are no creature entities at all", () => {
+      expect(computeFamilyCoverage([])).toEqual({
+        count: 0,
+        ofTotal: 0,
+        pct: 0,
+        distinctFamilies: 0,
+      });
+    });
+  });
+
+  describe("computeSupersededBreakdown", () => {
+    it("counts remasteredAs-non-empty entities, split by their OWN edition", () => {
+      const entities: CodexEntity[] = [
+        entity({
+          id: "spell/heal@legacy",
+          category: "spell",
+          slug: "heal",
+          name: "Heal",
+          edition: "legacy",
+          remasteredAs: ["spell/heal"],
+        }),
+        entity({
+          id: "spell/anomaly",
+          category: "spell",
+          slug: "anomaly",
+          name: "Anomaly",
+          edition: "remaster",
+          remasteredAs: ["spell/something-else"],
+        }),
+        entity({
+          id: "spell/never-remastered",
+          category: "spell",
+          slug: "never-remastered",
+          name: "Never Remastered",
+          edition: "legacy", // NOT superseded — edition alone is not the predicate
+        }),
+      ];
+      expect(computeSupersededBreakdown(entities)).toEqual({
+        total: 2,
+        legacyEdition: 1,
+        remasterEdition: 1,
+      });
+    });
+  });
+
+  it("buildReportJson/buildReportMarkdown wire facetCoverage/familyCoverage/supersededBreakdown through", () => {
+    const entities: CodexEntity[] = [
+      entity({
+        id: "feat/a",
+        category: "feat",
+        slug: "a",
+        name: "A",
+        facets: { actionCost: "1", itemCategory: "general" },
+      }),
+      entity({
+        id: "creature/a",
+        category: "creature",
+        slug: "a",
+        name: "A",
+        facets: { family: "Demon" },
+      }),
+      entity({
+        id: "spell/heal@legacy",
+        category: "spell",
+        slug: "heal",
+        name: "Heal",
+        edition: "legacy",
+        remasteredAs: ["spell/heal"],
+      }),
+    ];
+    const json = buildReportJson(baseInput({ finalEntities: entities }));
+    expect(json.facetCoverage.some((r) => r.category === "feat" && r.key === "actionCost")).toBe(
+      true,
+    );
+    expect(json.familyCoverage).toEqual({
+      count: 1,
+      ofTotal: 1,
+      pct: 100,
+      distinctFamilies: 1,
+    });
+    expect(json.supersededBreakdown).toEqual({ total: 1, legacyEdition: 1, remasterEdition: 0 });
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("Facet coverage");
+    expect(md).toContain("creature.family");
+    expect(md).toContain("superseded");
   });
 });

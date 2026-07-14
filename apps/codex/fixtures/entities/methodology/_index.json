@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "methodology/esoterica",
-    "name": "Esoterica",
-    "rarity": "common",
-    "source": {
-      "book": "Divine Mysteries",
-      "license": "ORC",
-      "page": 288
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","id":"methodology/esoterica","name":"Esoterica","rarity":"common","source":{"book":"Divine Mysteries","license":"ORC","page":288},"superseded":false,"traits":[]}]

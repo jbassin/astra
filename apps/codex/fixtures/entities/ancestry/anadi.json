@@ -990,7 +990,11 @@
   ],
   "category": "ancestry",
   "edition": "legacy",
-  "facets": {},
+  "facets": {
+    "hp": 8,
+    "size": "med",
+    "speed": 25
+  },
   "id": "ancestry/anadi",
   "loreBody": [
     {

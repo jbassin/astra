@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "armor-group/plate",
-    "name": "Plate",
-    "rarity": "common",
-    "source": {
-      "book": "Player Core",
-      "license": "ORC",
-      "page": 272
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","id":"armor-group/plate","name":"Plate","rarity":"common","source":{"book":"Player Core","license":"ORC","page":272},"superseded":false,"traits":[]}]

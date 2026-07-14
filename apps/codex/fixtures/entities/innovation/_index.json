@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "innovation/light-mortar",
-    "name": "Light Mortar",
-    "rarity": "common",
-    "source": {
-      "book": "Battlecry!",
-      "license": "ORC",
-      "page": 64
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","id":"innovation/light-mortar","name":"Light Mortar","rarity":"common","source":{"book":"Battlecry!","license":"ORC","page":64},"superseded":false,"traits":[]}]

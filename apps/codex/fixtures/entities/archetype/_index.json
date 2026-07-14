@@ -1,12 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "archetype/index",
-    "name": "Index",
-    "source": {
-      "book": "Foundry Journal: Archetypes",
-      "license": "unknown"
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"archetype/index","name":"Index","source":{"book":"Foundry Journal: Archetypes","license":"unknown"},"superseded":false,"traits":[]}]

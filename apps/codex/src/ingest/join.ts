@@ -454,6 +454,15 @@ export function mergeJoined(
     body,
     aonUrl: meta.aonUrl,
     ...(crossCategory ? { name: meta.name } : {}),
+    // D29-33b: creature family is AoN-owned (Foundry has no equivalent
+    // field), so it's added on top of Foundry's otherwise-untouched facets
+    // object rather than folded into the "Foundry wins mechanics" rule above
+    // — `meta.family` is only ever set for `category === "creature"`
+    // (`aonFacets.ts`'s `extractFamily`), so this is a no-op for every other
+    // category.
+    ...(meta.family !== undefined
+      ? { facets: { ...foundryEntity.facets, family: meta.family } }
+      : {}),
   };
 }
 
@@ -486,7 +495,9 @@ function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
     aonUrl: meta.aonUrl,
     body,
     proseOnly: true,
-    facets: {},
+    // D29-33b: an AoN-only creature still carries its own family (the field
+    // never depends on a Foundry counterpart existing).
+    facets: meta.family !== undefined ? { family: meta.family } : {},
   };
 }
 

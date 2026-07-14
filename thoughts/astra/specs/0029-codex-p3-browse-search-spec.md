@@ -1,5 +1,21 @@
 # 0029 — codex P3: faceted browse + search — spec
 
+**Build record:** S1 BUILT 2026-07-14 (emit extensions, D29-33 a–e in full). Gate A results:
+determinism 3× byte-identical; file count 46,192 == manifest; **superseded = 11,012 exactly**
+(10,970 legacy + 42 remaster, cross-checked emitted-rows vs independent `remasteredAs` scan);
+feat actionCost 70.5%/6 (anchor exact); family coverage 36.6% (2,672/7,296, 467 distinct);
+spillover keys 0 hits across all rows; all 6 gap-category candidates passed the classifier
+(ancestry hp/size/speed 50.5%, class hp/keyAbility 55.1%, background trainedSkills 80.1%/16,
+condition valued 42.9%, heritage ancestrySlug 70.2%/50); classifier-derived extras pinned:
+armor=[itemCategory,bulk,price], shield=[bulk,price], creature-ability=[actionCost,itemCategory],
+vehicle=[ac,fortitudeSave,hp,size], warfare-army=[hp]; equipment.itemCategory FAILED (21.5%),
+familiar-ability core-only (38.2%). **Acceptance-A envelope deviation, ACCEPTED (orchestrator):
+compact indexes = 11.31 MB raw / 1.19 MB gz vs the ≤10.5 MB envelope** — the 10.23 MB was
+measured before the spec-mandated required `superseded` boolean (+0.83 MB) and before the gap
+categories + family existed; gz is within ~5% of the 1.12 MB estimate; the §6 sanctioned trim
+(drop creature/hazard per-row saves) stays available at S3's page-weight measurement. Codex
+suite 961 tests; both repo lanes reproduced green.
+
 **Status:** FINAL (2026-07-14) — authored against the REAL post-P1.6 corpus (46,192 entities /
 88 categories, measured this session). Stakeholder decisions batched + resolved 2026-07-14
 (facet depth, search UX shape, legacy default, listing payload strategy, extractor-gap

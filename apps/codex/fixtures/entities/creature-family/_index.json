@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "creature-family/hellbound-creature",
-    "name": "Hellbound Creature",
-    "rarity": "common",
-    "source": {
-      "book": "Monster Core 2",
-      "license": "ORC",
-      "page": 98
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","id":"creature-family/hellbound-creature","name":"Hellbound Creature","rarity":"common","source":{"book":"Monster Core 2","license":"ORC","page":98},"superseded":false,"traits":[]}]

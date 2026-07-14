@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "domain/duty",
-    "name": "Duty",
-    "rarity": "common",
-    "source": {
-      "book": "Pathfinder #148: Fires of the Haunted City",
-      "license": "OGL",
-      "page": 64
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"domain/duty","name":"Duty","rarity":"common","source":{"book":"Pathfinder #148: Fires of the Haunted City","license":"OGL","page":64},"superseded":false,"traits":[]}]

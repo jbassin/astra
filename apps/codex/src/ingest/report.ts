@@ -1,4 +1,5 @@
 import type { CodexEntity, CreatureStats, HazardStats } from "../schema/entity";
+import { facetKeysFor } from "../schema/facetKeys";
 import type { DropAccounting } from "./drop";
 import type {
   CategoryStat,
@@ -237,6 +238,127 @@ export function computeStatsCoverage(entities: readonly CodexEntity[]): StatsCov
 }
 
 // ---------------------------------------------------------------------------
+// P3 S1 (D29-32/-33): facet-coverage section — per-category, per-key
+// coverage/cardinality over the FINAL (post-drop) corpus, for EVERY key any
+// entity in that category actually carries in `facets` (not just the ones
+// `facetKeys.ts` shipped) — so a candidate the classifier DROPPED (e.g.
+// `equipment.itemCategory`, `familiar-ability.actionCost`) is just as
+// visible here as one it kept (`shipped: true`), per D29-33a's "no silent
+// junk facets" guard: a fail is a correct, visible outcome, not a miss.
+// ---------------------------------------------------------------------------
+
+export interface FacetCoverageRow {
+  category: string;
+  key: string;
+  count: number;
+  ofTotal: number;
+  pct: number;
+  cardinality: number;
+  /** Whether `key` is in `facetKeys.ts`'s allowlist for `category` (i.e.
+   * ships on `IndexRow.facets`) — `false` means the classifier dropped it
+   * (still present in the per-entity `facets` page-detail field). */
+  shipped: boolean;
+}
+
+/** Distinct-VALUE count — for an array-valued facet (e.g. `traditions`),
+ * counts distinct ELEMENTS across every entity, not distinct arrays (matches
+ * how the classifier + the browse-facet option list both think about
+ * cardinality: "how many selectable values", not "how many unique
+ * combinations"). */
+function cardinalityOf(values: readonly unknown[]): number {
+  const seen = new Set<string>();
+  for (const v of values) {
+    if (Array.isArray(v)) {
+      for (const item of v) seen.add(JSON.stringify(item));
+    } else {
+      seen.add(JSON.stringify(v));
+    }
+  }
+  return seen.size;
+}
+
+export function computeFacetCoverage(entities: readonly CodexEntity[]): FacetCoverageRow[] {
+  const byCategory = new Map<string, CodexEntity[]>();
+  for (const e of entities) {
+    const arr = byCategory.get(e.category) ?? [];
+    arr.push(e);
+    byCategory.set(e.category, arr);
+  }
+
+  const rows: FacetCoverageRow[] = [];
+  for (const [category, categoryEntities] of byCategory) {
+    const total = categoryEntities.length;
+    const valuesByKey = new Map<string, unknown[]>();
+    for (const e of categoryEntities) {
+      for (const [key, value] of Object.entries(e.facets)) {
+        const arr = valuesByKey.get(key) ?? [];
+        arr.push(value);
+        valuesByKey.set(key, arr);
+      }
+    }
+    if (valuesByKey.size === 0) continue; // 73/88 categories carry no facets at all
+    const shippedKeys = new Set<string>(facetKeysFor(category));
+    for (const [key, values] of valuesByKey) {
+      rows.push({
+        category,
+        key,
+        count: values.length,
+        ofTotal: total,
+        pct: total > 0 ? Math.round((values.length / total) * 1000) / 10 : 0,
+        cardinality: cardinalityOf(values),
+        shipped: shippedKeys.has(key),
+      });
+    }
+  }
+  return rows.sort((a, b) => a.category.localeCompare(b.category) || a.key.localeCompare(b.key));
+}
+
+export interface FamilyCoverage {
+  count: number;
+  ofTotal: number;
+  pct: number;
+  distinctFamilies: number;
+}
+
+/** D29-33b: `creature.facets.family` coverage — measured over ALL final
+ * `creature` entities (not just AoN-derived ones), so the denominator
+ * matches every other coverage figure in this report. Ships in
+ * `facetKeys.ts` regardless of this number (a stakeholder-sanctioned
+ * navigational facet, not classifier-gated). */
+export function computeFamilyCoverage(entities: readonly CodexEntity[]): FamilyCoverage {
+  const creatures = entities.filter((e) => e.category === "creature");
+  const withFamily = creatures.filter((e) => e.facets.family !== undefined);
+  const distinctFamilies = new Set(withFamily.map((e) => e.facets.family)).size;
+  return {
+    count: withFamily.length,
+    ofTotal: creatures.length,
+    pct: creatures.length > 0 ? Math.round((withFamily.length / creatures.length) * 1000) / 10 : 0,
+    distinctFamilies,
+  };
+}
+
+export interface SupersededBreakdown {
+  total: number;
+  legacyEdition: number;
+  remasterEdition: number;
+}
+
+/** D29-33c: the `IndexRow.superseded` predicate's own count, broken down by
+ * `edition` — cross-checked (adversarial B2) against an independent scan of
+ * `remasteredAs` non-empty across entity files in this slice's own
+ * verification, not by this function (this IS that scan, applied to
+ * `finalEntities` — the emitted `_index.json` rows are `toIndexRow`'s
+ * projection of the exact same entities). */
+export function computeSupersededBreakdown(entities: readonly CodexEntity[]): SupersededBreakdown {
+  const superseded = entities.filter((e) => (e.remasteredAs?.length ?? 0) > 0);
+  return {
+    total: superseded.length,
+    legacyEdition: superseded.filter((e) => e.edition === "legacy").length,
+    remasterEdition: superseded.filter((e) => e.edition === "remaster").length,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // report.json
 // ---------------------------------------------------------------------------
 
@@ -282,6 +404,14 @@ export interface ReportJson {
   excludedActorsCount: number;
   /** D29-20 (P1.6): per-field extraction coverage % over the final corpus. */
   statsCoverage: StatsCoverage;
+  /** P3 S1 (D29-32/-33): per-category, per-key facet coverage/cardinality —
+   * every candidate the classifier considered, shipped or dropped. */
+  facetCoverage: FacetCoverageRow[];
+  /** D29-33b: `creature.family` coverage (ships regardless of the number). */
+  familyCoverage: FamilyCoverage;
+  /** D29-33c: the `superseded` predicate's count, by edition (adversarial
+   * B2's 10,970 legacy + 42 remaster = 11,012 pin). */
+  supersededBreakdown: SupersededBreakdown;
 }
 
 function categoryJson(stat: CategoryStat, finalOut: number): CategoryJoinJson {
@@ -332,6 +462,9 @@ export function buildReportJson(input: ReportInput): ReportJson {
     dropAccounting: input.dropAccounting,
     excludedActorsCount: input.reportCounts.get("excludedActors") ?? 0,
     statsCoverage: computeStatsCoverage(input.finalEntities),
+    facetCoverage: computeFacetCoverage(input.finalEntities),
+    familyCoverage: computeFamilyCoverage(input.finalEntities),
+    supersededBreakdown: computeSupersededBreakdown(input.finalEntities),
   };
 }
 
@@ -630,6 +763,48 @@ export function buildReportMarkdown(json: ReportJson): string {
   coverageTable("CreatureStats fields (creature category)", json.statsCoverage.creature);
   coverageTable("HazardStats fields (hazard category)", json.statsCoverage.hazard);
   coverageTable("EmbeddedItem strike/spellcasting fields", json.statsCoverage.embeddedItems);
+
+  lines.push("## Facet coverage (P3 S1 — D29-32/-33)", "");
+  lines.push(
+    "Per-category, per-key coverage/cardinality for every `facets` key ANY entity in that category carries — `shipped=yes` means `facetKeys.ts` allowlists it onto `IndexRow.facets` (the classifier: coverage ≥40% and cardinality in the soft 2..~60 range); `shipped=no` is a candidate the classifier dropped — it still round-trips into the per-entity `facets` field (page detail), just never a browse/search filter. `SPILLOVER_FACET_KEYS` (`featLevel`/`rank`, proven exact `level` duplicates) are banned from every allowlist regardless of their own coverage/cardinality below.",
+    "",
+  );
+  lines.push(
+    mdTable(
+      ["category", "key", "shipped", "count", "of", "pct", "cardinality"],
+      json.facetCoverage.map((r) => [
+        r.category,
+        r.key,
+        r.shipped ? "yes" : "no",
+        r.count,
+        r.ofTotal,
+        `${r.pct}%`,
+        r.cardinality,
+      ]),
+    ),
+    "",
+  );
+  lines.push("### `creature.family` coverage (D29-33b)", "");
+  lines.push(
+    `**${json.familyCoverage.count}** of **${json.familyCoverage.ofTotal}** final creature entities (**${json.familyCoverage.pct}%**) carry a \`family\` value — **${json.familyCoverage.distinctFamilies}** distinct families. Ships in \`facetKeys.ts\` regardless of this number (a stakeholder-sanctioned navigational facet, D29-33b) — the gap is real, not an extraction miss: AoN's own \`creature_family_markdown\` is empty on the remaining docs, and Foundry-only/variant creatures have no AoN meta to populate it from at all.`,
+    "",
+  );
+  lines.push("### `superseded` breakdown (D29-33c)", "");
+  lines.push(
+    mdTable(
+      ["total superseded", "legacy edition", "remaster edition"],
+      [
+        [
+          json.supersededBreakdown.total,
+          json.supersededBreakdown.legacyEdition,
+          json.supersededBreakdown.remasterEdition,
+        ],
+      ],
+    ),
+    "",
+    'Predicate: `remasteredAs` non-empty — NOT `edition === "legacy"` (which would wrongly hide never-remastered content). The 42 remaster-edition members are the same-edition pairing anomalies (`legacyPairSameEdition`) whose `remasteredAs` still points somewhere real.',
+    "",
+  );
 
   return lines.join("\n");
 }

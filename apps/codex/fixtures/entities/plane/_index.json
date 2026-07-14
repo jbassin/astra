@@ -1,17 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "plane/the-harrow-court",
-    "name": "The Harrow Court",
-    "rarity": "common",
-    "source": {
-      "book": "Pathfinder #190: The Choosing",
-      "license": "OGL",
-      "page": 71
-    },
-    "traits": [
-      "Finite",
-      "N"
-    ]
-  }
-]
+[{"edition":"legacy","id":"plane/the-harrow-court","name":"The Harrow Court","rarity":"common","source":{"book":"Pathfinder #190: The Choosing","license":"OGL","page":71},"superseded":false,"traits":["Finite","N"]}]

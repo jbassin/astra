@@ -146,6 +146,40 @@ interface RawSystem {
   /** D29-20/P1.6 (`spellcastingEntry`-typed embedded item). */
   spelldc?: { dc?: number; value?: number };
   tradition?: { value?: string };
+
+  // ---- P3 S1 (D29-33a): the 5 extractor-gap categories. These raw field
+  // NAMES are not guaranteed structurally unique across categories the way
+  // e.g. `price`/`bulk` are — `extractGapFacets` below gates every read on
+  // `category` before touching them (see that function's own comment). ----
+  /** ancestry Item `system.hp` — a bare number (verified on Tengu: `"hp":
+   * 6` at the system root), NOT the nested Actor `attributes.hp.max` path
+   * `hp`'s existing generic read above targets. */
+  hp?: number;
+  /** ancestry Item `system.size` — a bare string (verified on Tengu:
+   * `"size": "med"`), NOT the nested Actor `traits.size.value` path. */
+  size?: string;
+  /** ancestry Item `system.speed` — a bare number (verified on Tengu:
+   * `"speed": 25`), distinct from the Actor `attributes.speed` object the
+   * `RawSpeed`/`extractSpeeds` stats path reads. */
+  speed?: number;
+  /** class Item `system.keyAbility.value` (verified on Swashbuckler `["dex"]`,
+   * Champion `["dex","str"]`, Psychic `[]`). */
+  keyAbility?: { value?: string[] };
+  /** background Item `system.trainedSkills` — `.value` is the fixed
+   * skill-slug list (read); `.lore` is free-text background flavor (e.g.
+   * "Academia Lore") — real, typed here for shape-fidelity, but
+   * deliberately NOT read by `extractGapFacets` (near-1:1 cardinality,
+   * would fail the classifier). */
+  trainedSkills?: { value?: string[]; lore?: string[] };
+  /** condition Item `system.value` — `.isValued` is read; `.value` (the
+   * numeric magnitude itself, e.g. clumsy 1/2/3) is real, typed for
+   * shape-fidelity, but out of this slice's scope (a per-condition numeric
+   * range, not a flat facet). */
+  value?: { isValued?: boolean; value?: number | null };
+  /** heritage Item `system.ancestry` — `.slug` is read; `.name`/`.uuid` are
+   * real (typed for shape-fidelity) but redundant with the slug for facet
+   * purposes. */
+  ancestry?: { name?: string; slug?: string; uuid?: string };
 }
 
 export interface RawFoundryDoc {
@@ -269,8 +303,58 @@ function present<T>(v: T | null | undefined): v is T {
   return v !== null && v !== undefined;
 }
 
-function extractFacets(system: RawSystem | undefined): Facets {
-  const facets: Facets = {};
+/**
+ * P3 S1 (D29-33a): the 5 extractor-gap categories — ancestry (hp/size/speed),
+ * class (keyAbility/hp), background (trainedSkills), condition (the
+ * value-bearing flag), heritage (ancestry linkage). CATEGORY-GATED (unlike
+ * `extractFacets`'s field-presence-driven posture above) because these raw
+ * field names aren't provably unique across every one of the corpus's other
+ * ~85 categories the way `price`/`bulk`/`usage` are (verified only for these
+ * 5's own doc shapes) — gating on `category` is what keeps a same-named
+ * field on some unrelated category's doc from silently becoming a bogus
+ * facet. Every candidate here still ships into `entity.facets` regardless of
+ * whether it clears `facetKeys.ts`'s classifier (report.md's facet-coverage
+ * section records the measured outcome; a failing candidate stays
+ * page-detail-only, never a browse/search filter, per D29-33a's "no silent
+ * junk facets" guard).
+ */
+function extractGapFacets(category: string, system: RawSystem | undefined): Facets {
+  switch (category) {
+    case "ancestry": {
+      const facets: Facets = {};
+      if (present(system?.hp)) facets.hp = system.hp;
+      if (present(system?.size)) facets.size = system.size;
+      if (present(system?.speed)) facets.speed = system.speed;
+      return facets;
+    }
+    case "class": {
+      const facets: Facets = {};
+      if (present(system?.hp)) facets.hp = system.hp;
+      if (present(system?.keyAbility?.value)) facets.keyAbility = system.keyAbility.value;
+      return facets;
+    }
+    case "background": {
+      const facets: Facets = {};
+      if (present(system?.trainedSkills?.value)) facets.trainedSkills = system.trainedSkills.value;
+      return facets;
+    }
+    case "condition": {
+      const facets: Facets = {};
+      if (present(system?.value?.isValued)) facets.valued = system.value.isValued;
+      return facets;
+    }
+    case "heritage": {
+      const facets: Facets = {};
+      if (present(system?.ancestry?.slug)) facets.ancestrySlug = system.ancestry.slug;
+      return facets;
+    }
+    default:
+      return {};
+  }
+}
+
+function extractFacets(system: RawSystem | undefined, category: string): Facets {
+  const facets: Facets = { ...extractGapFacets(category, system) };
 
   // creature (Actor)
   if (present(system?.attributes?.hp?.max)) facets.hp = system.attributes.hp.max;
@@ -699,7 +783,7 @@ export function assembleFoundryEntity(
     traits: doc.system?.traits?.value ?? [],
     ...(present(doc.system?.traits?.rarity) ? { rarity: doc.system.traits.rarity } : {}),
     body,
-    facets: extractFacets(doc.system),
+    facets: extractFacets(doc.system, decision.category),
     ...(embeddedItems !== undefined ? { embeddedItems } : {}),
     ...(stats !== undefined ? { stats } : {}),
   };

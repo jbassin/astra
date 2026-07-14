@@ -3,6 +3,7 @@ import { join } from "node:path";
 
 import { CodexEntitySchema, IndexRowSchema, toIndexRow } from "../schema/entity";
 import type { CodexEntity } from "../schema/entity";
+import { facetKeysFor } from "../schema/facetKeys";
 
 /**
  * D29-3: the deterministic corpus writer — S4's `emit.ts` (spec §3/§4 S4, this
@@ -81,6 +82,24 @@ export function canonicalJson(value: unknown): string {
  * `report.ts`'s "same division of labor as emit.ts" note). */
 export function writeCanonicalJson(path: string, value: unknown): number {
   const content = canonicalJson(value);
+  writeFileSync(path, content);
+  return Buffer.byteLength(content);
+}
+
+/** D29-33d (P3 S1): sorted-keys, NO-indentation, trailing-LF JSON —
+ * `_index.json`'s own serializer (switched off pretty-printed `canonicalJson`
+ * this slice, ~31% smaller for free, measured). Determinism (sorted keys) is
+ * preserved identically to `canonicalJson`; only the whitespace differs.
+ * Entity files stay on `canonicalJson` — this is `_index.json`-only, no
+ * 46k-file churn. */
+export function canonicalJsonCompact(value: unknown): string {
+  return `${JSON.stringify(sortKeysDeep(value))}\n`;
+}
+
+/** Writes `value` through `canonicalJsonCompact` — same byte-length-return
+ * contract as `writeCanonicalJson`. */
+export function writeCanonicalJsonCompact(path: string, value: unknown): number {
+  const content = canonicalJsonCompact(value);
   writeFileSync(path, content);
   return Buffer.byteLength(content);
 }
@@ -220,9 +239,9 @@ export function emitCorpus(input: EmitCorpusInput): EmitCorpusResult {
       const slugPart = entityFileSlug(validated);
       corpusBytes += writeCanonicalJson(join(categoryDir, `${slugPart}.json`), validated);
       entityFileCount += 1;
-      indexRows.push(IndexRowSchema.parse(toIndexRow(validated)));
+      indexRows.push(IndexRowSchema.parse(toIndexRow(validated, facetKeysFor(category))));
     }
-    corpusBytes += writeCanonicalJson(join(categoryDir, "_index.json"), indexRows);
+    corpusBytes += writeCanonicalJsonCompact(join(categoryDir, "_index.json"), indexRows);
   }
 
   const manifest: CorpusOutputManifest = {

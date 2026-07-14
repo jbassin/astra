@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "creature-theme-template/lion-blades",
-    "name": "Lion Blades",
-    "rarity": "common",
-    "source": {
-      "book": "Character Guide",
-      "license": "OGL",
-      "page": 129
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"creature-theme-template/lion-blades","name":"Lion Blades","rarity":"common","source":{"book":"Character Guide","license":"OGL","page":129},"superseded":false,"traits":[]}]

@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "cult-activity/recruit-adherents",
-    "name": "Recruit Adherents",
-    "rarity": "common",
-    "source": {
-      "book": "Pathfinder #217: Death Sails a Wine-Dark Sea",
-      "license": "ORC",
-      "page": 68
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","id":"cult-activity/recruit-adherents","name":"Recruit Adherents","rarity":"common","source":{"book":"Pathfinder #217: Death Sails a Wine-Dark Sea","license":"ORC","page":68},"superseded":false,"traits":[]}]

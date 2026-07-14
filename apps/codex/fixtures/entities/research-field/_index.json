@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "research-field/bomber",
-    "name": "Bomber",
-    "rarity": "common",
-    "source": {
-      "book": "Core Rulebook",
-      "license": "OGL",
-      "page": 73
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"research-field/bomber","name":"Bomber","rarity":"common","source":{"book":"Core Rulebook","license":"OGL","page":73},"superseded":true,"traits":[]}]

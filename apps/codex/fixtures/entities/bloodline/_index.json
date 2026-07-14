@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "bloodline/angelic@legacy",
-    "name": "Angelic",
-    "rarity": "common",
-    "source": {
-      "book": "Core Rulebook",
-      "license": "OGL",
-      "page": 195
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"bloodline/angelic@legacy","name":"Angelic","rarity":"common","source":{"book":"Core Rulebook","license":"OGL","page":195},"superseded":true,"traits":[]}]

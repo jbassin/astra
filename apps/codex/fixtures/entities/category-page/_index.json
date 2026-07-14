@@ -1,13 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "category-page/creature-templates",
-    "name": "Creature Templates",
-    "rarity": "common",
-    "source": {
-      "book": "Bestiary",
-      "license": "OGL"
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"category-page/creature-templates","name":"Creature Templates","rarity":"common","source":{"book":"Bestiary","license":"OGL"},"superseded":false,"traits":[]}]

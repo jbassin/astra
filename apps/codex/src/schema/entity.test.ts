@@ -287,9 +287,9 @@ describe("Facets: typed fields + catchall passthrough", () => {
 });
 
 describe("toIndexRow (D29-3 slim facet row)", () => {
-  it("carries id/name/level/traits/rarity/source/edition and drops body/facets", () => {
+  it("carries id/name/level/traits/rarity/source/edition/superseded and drops body", () => {
     const entity = baseEntity({ level: 1, rarity: "common" });
-    const row = toIndexRow(entity);
+    const row = toIndexRow(entity, []);
     expect(row).toEqual({
       id: "spell/heal",
       name: "Heal",
@@ -298,13 +298,61 @@ describe("toIndexRow (D29-3 slim facet row)", () => {
       rarity: "common",
       source: { book: "Player Core", license: "ORC" },
       edition: "remaster",
+      superseded: false,
     });
     expect(row).not.toHaveProperty("body");
-    expect(row).not.toHaveProperty("facets");
   });
 
-  it("omits level/rarity when absent rather than emitting undefined keys", () => {
-    const row = toIndexRow(baseEntity());
-    expect(Object.keys(row).sort()).toEqual(["edition", "id", "name", "source", "traits"]);
+  it("omits level/rarity/facets when absent rather than emitting undefined keys", () => {
+    const row = toIndexRow(baseEntity(), []);
+    expect(Object.keys(row).sort()).toEqual([
+      "edition",
+      "id",
+      "name",
+      "source",
+      "superseded",
+      "traits",
+    ]);
+  });
+
+  describe("D29-33c: facets trimmed to the allowlist", () => {
+    it("omits `facets` entirely when the allowlist doesn't match anything on the entity", () => {
+      const entity = baseEntity({ facets: { rank: 1, traditions: ["divine", "primal"] } });
+      const row = toIndexRow(entity, ["actionCost"]); // spell never carries actionCost
+      expect(row).not.toHaveProperty("facets");
+    });
+
+    it("keeps only the allowlisted keys the entity actually carries a value for", () => {
+      const entity = baseEntity({
+        category: "spell",
+        facets: { rank: 1, traditions: ["divine", "primal"], castTime: "1" },
+      });
+      const row = toIndexRow(entity, ["traditions", "castTime", "range"]);
+      expect(row.facets).toEqual({ traditions: ["divine", "primal"], castTime: "1" });
+    });
+  });
+
+  describe("D29-33c: superseded (remasteredAs non-empty, NOT edition === legacy)", () => {
+    it("is false when remasteredAs is absent", () => {
+      expect(toIndexRow(baseEntity(), []).superseded).toBe(false);
+    });
+
+    it("is true when remasteredAs is a non-empty array", () => {
+      const entity = baseEntity({
+        edition: "legacy",
+        remasteredAs: ["spell/heal"],
+      });
+      expect(toIndexRow(entity, []).superseded).toBe(true);
+    });
+
+    it("is false for a never-remastered legacy entity (edition alone is NOT the predicate)", () => {
+      const entity = baseEntity({ edition: "legacy", remasteredAs: undefined });
+      expect(toIndexRow(entity, []).superseded).toBe(false);
+    });
+
+    it("is true for a remaster-edition anomaly member (the 42 remaster+remasteredAs rows)", () => {
+      const entity = baseEntity({ edition: "remaster", remasteredAs: ["spell/some-other"] });
+      expect(toIndexRow(entity, []).superseded).toBe(true);
+    });
   });
 });

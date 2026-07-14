@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "heritage/pixie",
-    "name": "Pixie",
-    "rarity": "common",
-    "source": {
-      "book": "Ancestry Guide",
-      "license": "OGL",
-      "page": 129
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","facets":{"ancestrySlug":"sprite"},"id":"heritage/pixie","name":"Pixie","rarity":"common","source":{"book":"Ancestry Guide","license":"OGL","page":129},"superseded":false,"traits":[]}]

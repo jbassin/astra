@@ -74,6 +74,64 @@ describe("extractAonMeta: real fixture — creature family with level + traits",
   });
 });
 
+describe("extractAonMeta: D29-33b creature family (creature_family_markdown)", () => {
+  function creatureHit(creatureFamilyMarkdown: unknown): AonHit {
+    return {
+      _id: "creature-9000",
+      _source: {
+        name: "Synthetic Wyrm",
+        url: "/Monsters.aspx?ID=9000",
+        release_date: "2020-01-01",
+        primary_source: "Bestiary",
+        creature_family_markdown: creatureFamilyMarkdown,
+      },
+    };
+  }
+
+  it("extracts the display name out of the markdown-link form", () => {
+    const meta = extractAonMeta("creature", creatureHit("[Demon](/MonsterFamilies.aspx?ID=28)"));
+    expect(meta.family).toBe("Demon");
+  });
+
+  it("extracts a comma-bearing family name (e.g. 'Elemental, Water')", () => {
+    const meta = extractAonMeta(
+      "creature",
+      creatureHit("[Elemental, Water](/MonsterFamilies.aspx?ID=343)"),
+    );
+    expect(meta.family).toBe("Elemental, Water");
+  });
+
+  it("leaves family undefined when creature_family_markdown is empty (the common case, 43% of real docs)", () => {
+    const meta = extractAonMeta("creature", creatureHit(""));
+    expect(meta.family).toBeUndefined();
+  });
+
+  it("leaves family undefined when creature_family_markdown is absent", () => {
+    const meta = extractAonMeta("creature", creatureHit(undefined));
+    expect(meta.family).toBeUndefined();
+  });
+
+  it("fails soft (undefined, not a throw) on a malformed markdown-link value", () => {
+    const meta = extractAonMeta("creature", creatureHit("not a markdown link"));
+    expect(meta.family).toBeUndefined();
+  });
+
+  it("never extracts family for a non-creature category, even with the same raw field present", () => {
+    const hit: AonHit = {
+      _id: "hazard-9000",
+      _source: {
+        name: "Synthetic Trap",
+        url: "/Hazards.aspx?ID=9000",
+        release_date: "2020-01-01",
+        primary_source: "Bestiary",
+        creature_family_markdown: "[Demon](/MonsterFamilies.aspx?ID=28)",
+      },
+    };
+    const meta = extractAonMeta("hazard", hit);
+    expect(meta.family).toBeUndefined();
+  });
+});
+
 describe("extractAonMeta: real fixture — rules family with breadcrumbs", () => {
   it("carries breadcrumbs (the P4 rules-tree input) and no level/traits", () => {
     const meta = extractAonMeta("rules", readFixture("rules-sample"));

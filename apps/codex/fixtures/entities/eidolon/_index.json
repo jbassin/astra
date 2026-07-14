@@ -1,17 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "eidolon/beast",
-    "name": "Beast",
-    "rarity": "common",
-    "source": {
-      "book": "Secrets of Magic",
-      "license": "OGL",
-      "page": 61
-    },
-    "traits": [
-      "Beast",
-      "Eidolon"
-    ]
-  }
-]
+[{"edition":"legacy","id":"eidolon/beast","name":"Beast","rarity":"common","source":{"book":"Secrets of Magic","license":"OGL","page":61},"superseded":false,"traits":["Beast","Eidolon"]}]

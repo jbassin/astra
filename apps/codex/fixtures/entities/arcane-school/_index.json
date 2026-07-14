@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "arcane-school/universalist",
-    "name": "Universalist",
-    "rarity": "common",
-    "source": {
-      "book": "Core Rulebook",
-      "license": "OGL",
-      "page": 210
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"arcane-school/universalist","name":"Universalist","rarity":"common","source":{"book":"Core Rulebook","license":"OGL","page":210},"superseded":false,"traits":[]}]

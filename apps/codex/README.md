@@ -92,11 +92,14 @@ corpus/
     <slug>.json          one file per entity (the P2 lazy-load unit)
     <slug>@legacy.json    the legacy half of a shared-slug remaster pair (D29-1)
     _index.json          slim facet rows for the whole category (id/name/level/traits/
-                          rarity/source/edition — NO body), sorted by id. The leading
-                          underscore is load-bearing (D29-21): sluggify() can never
-                          emit one, so this file can never clobber a real entity slug
-                          (the old plain index.json ate the two real `index`-slug
-                          entities, ancestry/index + archetype/index)
+                          rarity/source/edition/superseded + a per-category-allowlisted
+                          `facets` subset, D29-33c — NO body), sorted by id, COMPACT
+                          JSON (no indentation, D29-33d — ~31% smaller; still key-sorted
+                          + trailing LF, same determinism guarantee as every other
+                          corpus file). The leading underscore is load-bearing (D29-21):
+                          sluggify() can never emit one, so this file can never clobber
+                          a real entity slug (the old plain index.json ate the two real
+                          `index`-slug entities, ancestry/index + archetype/index)
   manifest.json           schemaVersion + the D29-4 source pins + final per-category
                           counts + total size (NOT the same file as the committed
                           apps/codex/corpus-manifest.json one level up — that one pins
@@ -125,9 +128,11 @@ corpus/
   broken field is omitted and counted as `hazardStatsHtmlFailed` — entity `body`
   parsing keeps its hard-fail posture.
 
-Every file is written through one canonical serializer (`emit.ts`'s `canonicalJson`):
-object keys sorted recursively (codepoint order), 2-space indent, trailing LF. Two full
-transform runs over the same snapshots produce a **byte-identical** `corpus/` tree —
+Every file is written through one of two canonical serializers, both key-sorted
+(codepoint order, recursively) with a trailing LF: `canonicalJson` (2-space indent) for
+every entity file + `manifest.json` + the reports, and `canonicalJsonCompact` (no
+indentation, D29-33d) for `_index.json` only. Two full transform runs over the same
+snapshots produce a **byte-identical** `corpus/` tree —
 verify with `diff -r` after copying a run aside. `emit.ts` wipes `corpus/` before every
 write, so a stale file from a category/entity that no longer exists can't survive a
 re-transform.

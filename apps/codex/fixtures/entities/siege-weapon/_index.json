@@ -1,18 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "siege-weapon/door-ram",
-    "level": 2,
-    "name": "Door Ram",
-    "rarity": "uncommon",
-    "source": {
-      "book": "Guns & Gears (Remastered)",
-      "license": "ORC",
-      "page": 75
-    },
-    "traits": [
-      "Portable",
-      "Uncommon"
-    ]
-  }
-]
+[{"edition":"remaster","id":"siege-weapon/door-ram","level":2,"name":"Door Ram","rarity":"uncommon","source":{"book":"Guns & Gears (Remastered)","license":"ORC","page":75},"superseded":false,"traits":["Portable","Uncommon"]}]

@@ -1,17 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "warfare-army/infantry-army",
-    "level": 1,
-    "name": "Infantry Army",
-    "rarity": "common",
-    "source": {
-      "book": "Kingmaker Adventure Path",
-      "license": "OGL",
-      "page": 570
-    },
-    "traits": [
-      "Infantry"
-    ]
-  }
-]
+[{"edition":"legacy","id":"warfare-army/infantry-army","level":1,"name":"Infantry Army","rarity":"common","source":{"book":"Kingmaker Adventure Path","license":"OGL","page":570},"superseded":false,"traits":["Infantry"]}]

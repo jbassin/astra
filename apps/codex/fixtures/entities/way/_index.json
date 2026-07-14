@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "way/way-of-the-sniper",
-    "name": "Way of the Sniper",
-    "rarity": "common",
-    "source": {
-      "book": "Guns & Gears",
-      "license": "OGL",
-      "page": 109
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"way/way-of-the-sniper","name":"Way of the Sniper","rarity":"common","source":{"book":"Guns & Gears","license":"OGL","page":109},"superseded":false,"traits":[]}]

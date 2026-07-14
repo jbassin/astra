@@ -1,15 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "vehicle/sky-chariot-light",
-    "level": 7,
-    "name": "Sky Chariot (Light)",
-    "rarity": "uncommon",
-    "source": {
-      "book": "GM Core",
-      "license": "ORC",
-      "page": 214
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","facets":{"ac":20,"fortitudeSave":14,"hp":80,"size":"lg"},"id":"vehicle/sky-chariot-light","level":7,"name":"Sky Chariot (Light)","rarity":"uncommon","source":{"book":"GM Core","license":"ORC","page":214},"superseded":false,"traits":[]}]

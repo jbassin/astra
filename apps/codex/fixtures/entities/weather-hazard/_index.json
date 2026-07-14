@@ -1,17 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "weather-hazard/fog",
-    "level": 0,
-    "name": "Fog",
-    "rarity": "common",
-    "source": {
-      "book": "Kingmaker Companion Guide",
-      "license": "OGL",
-      "page": 123
-    },
-    "traits": [
-      "Weather"
-    ]
-  }
-]
+[{"edition":"legacy","id":"weather-hazard/fog","level":0,"name":"Fog","rarity":"common","source":{"book":"Kingmaker Companion Guide","license":"OGL","page":123},"superseded":false,"traits":["Weather"]}]

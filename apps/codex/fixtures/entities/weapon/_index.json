@@ -1,18 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "weapon/chakri-lost-omens",
-    "level": 0,
-    "name": "Chakri (Lost Omens)",
-    "rarity": "uncommon",
-    "source": {
-      "book": "Pathfinder Lost Omens Impossible Lands",
-      "license": "OGL"
-    },
-    "traits": [
-      "agile",
-      "deadly-d8",
-      "thrown"
-    ]
-  }
-]
+[{"edition":"legacy","facets":{"bulk":0,"itemCategory":"advanced","price":"2 cp","usage":"held-in-one-hand"},"id":"weapon/chakri-lost-omens","level":0,"name":"Chakri (Lost Omens)","rarity":"uncommon","source":{"book":"Pathfinder Lost Omens Impossible Lands","license":"OGL"},"superseded":false,"traits":["agile","deadly-d8","thrown"]}]

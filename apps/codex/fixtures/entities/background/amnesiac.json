@@ -81,7 +81,9 @@
   ],
   "category": "background",
   "edition": "remaster",
-  "facets": {},
+  "facets": {
+    "trainedSkills": []
+  },
   "id": "background/amnesiac",
   "legacyOf": [
     "background/amnesiac@legacy"

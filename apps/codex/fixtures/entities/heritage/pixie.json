@@ -67,7 +67,9 @@
   ],
   "category": "heritage",
   "edition": "legacy",
-  "facets": {},
+  "facets": {
+    "ancestrySlug": "sprite"
+  },
   "id": "heritage/pixie",
   "name": "Pixie",
   "rarity": "common",

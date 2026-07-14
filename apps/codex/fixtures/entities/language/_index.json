@@ -1,16 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "language/thokol",
-    "name": "Thokol",
-    "rarity": "uncommon",
-    "source": {
-      "book": "Pathfinder #218: Titanbane",
-      "license": "ORC",
-      "page": 72
-    },
-    "traits": [
-      "Uncommon"
-    ]
-  }
-]
+[{"edition":"remaster","id":"language/thokol","name":"Thokol","rarity":"uncommon","source":{"book":"Pathfinder #218: Titanbane","license":"ORC","page":72},"superseded":false,"traits":["Uncommon"]}]

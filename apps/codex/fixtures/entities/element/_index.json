@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "element/air",
-    "name": "Air",
-    "rarity": "common",
-    "source": {
-      "book": "Rage of Elements",
-      "license": "OGL",
-      "page": 14
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"element/air","name":"Air","rarity":"common","source":{"book":"Rage of Elements","license":"OGL","page":14},"superseded":false,"traits":[]}]

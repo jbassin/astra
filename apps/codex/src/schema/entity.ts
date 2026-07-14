@@ -141,6 +141,34 @@ export const FacetsSchema = z
     featLevel: z.number().int().nonnegative().optional(),
     prerequisites: z.array(z.string()).optional(),
     actionCost: z.string().optional(), // e.g. "1", "2", "3", "reaction", "free", "passive"
+
+    // P3 S1 (D29-33a) — the 5 extractor-gap categories. Category-gated
+    // extraction (`foundryEntities.ts`'s `extractFacets`, unlike the
+    // field-presence-driven fields above) since these raw field NAMES are not
+    // guaranteed unique across categories the way e.g. `system.price`/
+    // `system.bulk` are — see that function's own comment.
+    /** ancestry Item `system.speed` (a bare number — NOT the nested Actor
+     * `speeds` shape `stats.speeds` holds for creature/hazard). `hp`/`size`
+     * reuse the named fields above (ancestry's `system.hp`/`system.size` are
+     * ALSO bare, unlike the Actor `attributes.hp.max`/`traits.size.value`
+     * paths — verified on Tengu). */
+    speed: z.number().optional(),
+    /** class Item `system.keyAbility.value` (verified on Swashbuckler/
+     * Champion/Psychic — 0-2 elements; kept even when the raw array is empty,
+     * matching `traditions`'s own "present, not non-empty" convention). */
+    keyAbility: z.array(z.string()).optional(),
+    /** background Item `system.trainedSkills.value` — the fixed skill-slug
+     * list only (`.lore` is free-text per-background flavor text, e.g.
+     * "Academia Lore" — high cardinality, excluded, verified on the real
+     * corpus). */
+    trainedSkills: z.array(z.string()).optional(),
+    /** condition Item `system.value.isValued` — whether the condition tracks
+     * a numeric value (e.g. clumsy/frightened) vs. a flat flag (e.g.
+     * controlled/helpful), verified across the real condition pack. */
+    valued: z.boolean().optional(),
+    /** heritage Item `system.ancestry.slug` — the parent ancestry's slug
+     * (verified on Thickskin Tripkee: `{name:"Tripkee",slug:"tripkee",...}`). */
+    ancestrySlug: z.string().optional(),
   })
   .catchall(FacetValue);
 export type Facets = z.infer<typeof FacetsSchema>;
@@ -352,6 +380,16 @@ export type CodexEntity = z.infer<typeof CodexEntitySchema>;
 
 // ---------------------------------------------------------------------------
 // IndexRow (D29-3: the slim per-category facet row, NO body)
+//
+// P3 S1 (D29-33c) widening: `facets` (trimmed to the calling category's
+// `facetKeys.ts` allowlist — 73 categories emit none, so the key is OMITTED
+// entirely rather than an empty object, same "absent, never a defaulted
+// empty" convention every other optional field on this row already follows)
+// and `superseded` (required — the site-wide legacy-toggle predicate,
+// `remasteredAs` non-empty, NOT `edition === "legacy"`, which would wrongly
+// hide never-remastered content). Additive — schemaVersion stays 2 per the
+// entity.ts precedent (a new optional/required-but-derived field, no
+// existing field reshaped).
 // ---------------------------------------------------------------------------
 
 export const IndexRowSchema = z
@@ -363,11 +401,30 @@ export const IndexRowSchema = z
     rarity: z.string().optional(),
     source: SourceSchema,
     edition: EditionSchema,
+    facets: FacetsSchema.optional(),
+    superseded: z.boolean(),
   })
   .strict();
 export type IndexRow = z.infer<typeof IndexRowSchema>;
 
-export function toIndexRow(entity: CodexEntity): IndexRow {
+/**
+ * `allowedFacetKeys` is the calling category's `facetKeys.ts` allowlist
+ * (`facetKeysFor(entity.category)`, `src/schema/facetKeys.ts`) — passed in
+ * rather than looked up here so `entity.ts` never imports `facetKeys.ts`
+ * (that module itself types its allowlist against `Facets`'s keys, `keyof
+ * Facets` — importing it back from here would cycle). Only keys the entity
+ * actually carries a value for land in the trimmed object (never an
+ * `undefined`-valued key); the whole `facets` property is omitted when the
+ * trimmed object would be empty (the common case — 73/88 categories).
+ */
+export function toIndexRow(entity: CodexEntity, allowedFacetKeys: readonly string[]): IndexRow {
+  const sourceFacets: Record<string, unknown> = entity.facets;
+  const trimmedFacets: Record<string, unknown> = {};
+  for (const key of allowedFacetKeys) {
+    const value = sourceFacets[key];
+    if (value !== undefined) trimmedFacets[key] = value;
+  }
+  const hasFacets = Object.keys(trimmedFacets).length > 0;
   return {
     id: entity.id,
     name: entity.name,
@@ -376,6 +433,8 @@ export function toIndexRow(entity: CodexEntity): IndexRow {
     ...(entity.rarity !== undefined ? { rarity: entity.rarity } : {}),
     source: entity.source,
     edition: entity.edition,
+    ...(hasFacets ? { facets: trimmedFacets as Facets } : {}),
+    superseded: (entity.remasteredAs?.length ?? 0) > 0,
   };
 }
 

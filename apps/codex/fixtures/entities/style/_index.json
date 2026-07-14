@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "style/wit",
-    "name": "Wit",
-    "rarity": "common",
-    "source": {
-      "book": "Advanced Player's Guide",
-      "license": "OGL",
-      "page": 85
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"style/wit","name":"Wit","rarity":"common","source":{"book":"Advanced Player's Guide","license":"OGL","page":85},"superseded":true,"traits":[]}]

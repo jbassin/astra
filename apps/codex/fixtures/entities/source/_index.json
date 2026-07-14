@@ -1,13 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "source/legends",
-    "name": "Legends",
-    "rarity": "common",
-    "source": {
-      "book": "Legends",
-      "license": "OGL"
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"source/legends","name":"Legends","rarity":"common","source":{"book":"Legends","license":"OGL"},"superseded":false,"traits":[]}]

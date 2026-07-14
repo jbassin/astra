@@ -184,6 +184,15 @@ export const AonDocMetaSchema = z
      * `loreBody`/`proseOnly`). */
     breadcrumbs: z.array(z.string()).min(1).optional(),
     hasMarkdown: z.boolean(),
+    /** D29-33b (P3 S1): `creature`-category only — the display text mined
+     * out of `creature_family_markdown`'s `"[Name](/MonsterFamilies.aspx?ID=…)"`
+     * markdown-link form (verified: all 2,672 non-empty real occurrences
+     * match this exact shape). `join.ts` populates `CodexEntity.facets.family`
+     * from this at merge/AoN-only-build time; absent for every other
+     * category and for the ~43% of creature docs with an empty
+     * `creature_family_markdown` (no family grouping at all — a real,
+     * measured gap, not an extraction miss). */
+    family: z.string().min(1).optional(),
   })
   .strict();
 export type AonDocMeta = z.infer<typeof AonDocMetaSchema>;
@@ -251,6 +260,29 @@ function deriveEdition(remasterId: string[], legacyId: string[], releaseDate: st
 }
 
 // ---------------------------------------------------------------------------
+// D29-33b: creature family (from `creature_family_markdown`)
+// ---------------------------------------------------------------------------
+
+const FAMILY_MARKDOWN_RE = /^\[([^[\]]+)\]\([^()]+\)$/;
+
+/**
+ * `creature`-category only — mines the display text out of AoN's
+ * `"[Name](/MonsterFamilies.aspx?ID=…)"` markdown-link field. Fails SOFT
+ * (returns `undefined`) rather than hard-failing the whole doc on a
+ * malformed value — this is a presentation/navigational facet, not
+ * load-bearing identity data, matching `foundryEntities.ts`'s
+ * `formatPrice`/`formatArea`-style facet helpers rather than the body-parse
+ * hard-fail posture (D29-6/the README's "what a hard-fail means").
+ */
+function extractFamily(category: string, raw: unknown): string | undefined {
+  if (category !== "creature") return undefined;
+  const markdown = readString(raw);
+  if (markdown === undefined || markdown.trim().length === 0) return undefined;
+  const match = FAMILY_MARKDOWN_RE.exec(markdown.trim());
+  return match?.[1];
+}
+
+// ---------------------------------------------------------------------------
 // extraction
 // ---------------------------------------------------------------------------
 
@@ -282,6 +314,7 @@ export function extractAonMeta(category: string, hit: AonHit): AonDocMeta {
   const level = readNumber(src.level);
   const rarity = readString(src.rarity);
   const markdown = readString(src.markdown);
+  const family = extractFamily(category, src.creature_family_markdown);
 
   const meta: AonDocMeta = {
     aonId: hit._id,
@@ -300,6 +333,7 @@ export function extractAonMeta(category: string, hit: AonHit): AonDocMeta {
     ...(level !== undefined ? { level } : {}),
     ...(rarity !== undefined ? { rarity } : {}),
     ...(breadcrumbs.length > 0 ? { breadcrumbs } : {}),
+    ...(family !== undefined ? { family } : {}),
   };
 
   return AonDocMetaSchema.parse(meta);

@@ -1,17 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "campsite-meal/hearty-meal",
-    "level": 0,
-    "name": "Hearty Meal",
-    "rarity": "common",
-    "source": {
-      "book": "Kingmaker Companion Guide",
-      "license": "OGL",
-      "page": 116
-    },
-    "traits": [
-      "Meal"
-    ]
-  }
-]
+[{"edition":"legacy","id":"campsite-meal/hearty-meal","level":0,"name":"Hearty Meal","rarity":"common","source":{"book":"Kingmaker Companion Guide","license":"OGL","page":116},"superseded":false,"traits":["Meal"]}]

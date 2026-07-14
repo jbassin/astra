@@ -48,7 +48,7 @@ import { join } from "node:path";
 
 import { loadConfig } from "@astra/config";
 
-import { CORPUS_SCHEMA_VERSION, canonicalJson } from "../src/ingest/emit";
+import { CORPUS_SCHEMA_VERSION, canonicalJson, canonicalJsonCompact } from "../src/ingest/emit";
 import { mergeLocalizeMaps } from "../src/ingest/enrichers";
 import {
   CodexEntitySchema,
@@ -56,6 +56,7 @@ import {
   toIndexRow,
   type CodexEntity,
 } from "../src/schema/entity";
+import { facetKeysFor } from "../src/schema/facetKeys";
 import { parseManifest } from "../src/schema/manifest";
 import type { CodexNode } from "../src/schema/nodes";
 
@@ -693,8 +694,8 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
     fixtureCategoryCounts[category] = entities.length;
     const rows = [...entities]
       .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
-      .map((e) => IndexRowSchema.parse(toIndexRow(e)));
-    const content = canonicalJson(rows);
+      .map((e) => IndexRowSchema.parse(toIndexRow(e, facetKeysFor(category))));
+    const content = canonicalJsonCompact(rows);
     writeFileSync(join(entitiesDestRoot, category, "_index.json"), content);
     bytesUsed += Buffer.byteLength(content);
   }

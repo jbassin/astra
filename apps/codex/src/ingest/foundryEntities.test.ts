@@ -526,3 +526,193 @@ describe("assembleFoundryEntity: excluded pack/type returns undefined", () => {
     expect(entity).toBeUndefined();
   });
 });
+
+describe("assembleFoundryEntity: P3 S1 (D29-33a) — the 5 extractor-gap categories", () => {
+  it("ancestry: extracts hp/size/speed off the bare system.hp/size/speed fields (verified on Tengu)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "ancestries",
+      docClass: "Item",
+      basename: "tengu",
+      doc: {
+        _id: "ancID0000000001",
+        name: "Tengu",
+        type: "ancestry",
+        system: {
+          description: { value: "<p>Survivalists.</p>" },
+          publication: { license: "ORC", remaster: true, title: "Pathfinder Player Core 2" },
+          traits: { rarity: "uncommon", value: ["humanoid", "tengu"] },
+          hp: 6,
+          size: "med",
+          speed: 25,
+        },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("ancestry");
+    expect(entity?.facets).toEqual({ hp: 6, size: "med", speed: 25 });
+  });
+
+  it("ancestry: omits hp/size/speed when the doc has none of them (proseOnly-shaped Foundry doc)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "ancestries",
+      docClass: "Item",
+      basename: "bare",
+      doc: {
+        _id: "ancID0000000002",
+        name: "Bare Ancestry",
+        type: "ancestry",
+        system: { description: { value: "" } },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.facets).toEqual({});
+  });
+
+  it("class: extracts hp + keyAbility.value off system.hp/keyAbility (verified on Swashbuckler/Champion)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "classes",
+      docClass: "Item",
+      basename: "champion",
+      doc: {
+        _id: "clsID0000000001",
+        name: "Champion",
+        type: "class",
+        system: {
+          description: { value: "<p>A holy warrior.</p>" },
+          publication: { license: "ORC", remaster: true, title: "Pathfinder Player Core" },
+          hp: 10,
+          keyAbility: { value: ["dex", "str"] },
+        },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("class");
+    expect(entity?.facets).toEqual({ hp: 10, keyAbility: ["dex", "str"] });
+  });
+
+  it("class: keeps an empty keyAbility.value array (present, not non-empty — Psychic's real shape)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "classes",
+      docClass: "Item",
+      basename: "psychic",
+      doc: {
+        _id: "clsID0000000002",
+        name: "Psychic",
+        type: "class",
+        system: { description: { value: "" }, hp: 6, keyAbility: { value: [] } },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.facets).toEqual({ hp: 6, keyAbility: [] });
+  });
+
+  it("background: extracts trainedSkills.value only (not the free-text .lore skill name)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "backgrounds",
+      docClass: "Item",
+      basename: "acolyte",
+      doc: {
+        _id: "bgID00000000001",
+        name: "Acolyte",
+        type: "background",
+        system: {
+          description: { value: "" },
+          trainedSkills: { lore: ["Scribing Lore"], value: ["religion"] },
+        },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("background");
+    expect(entity?.facets).toEqual({ trainedSkills: ["religion"] });
+  });
+
+  it("condition: extracts valued from system.value.isValued (true for a numeric condition)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "conditions",
+      docClass: "Item",
+      basename: "clumsy",
+      doc: {
+        _id: "conID0000000001",
+        name: "Clumsy",
+        type: "condition",
+        system: { description: { value: "" }, value: { isValued: true, value: 1 } },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("condition");
+    expect(entity?.facets).toEqual({ valued: true });
+  });
+
+  it("condition: extracts valued: false for a flat-flag condition (e.g. Controlled)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "conditions",
+      docClass: "Item",
+      basename: "controlled",
+      doc: {
+        _id: "conID0000000002",
+        name: "Controlled",
+        type: "condition",
+        system: { description: { value: "" }, value: { isValued: false, value: null } },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.facets).toEqual({ valued: false });
+  });
+
+  it("heritage: extracts ancestrySlug off system.ancestry.slug (verified on Thickskin Tripkee)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "heritages",
+      docClass: "Item",
+      basename: "thickskin-tripkee",
+      doc: {
+        _id: "herID0000000001",
+        name: "Thickskin Tripkee",
+        type: "heritage",
+        system: {
+          description: { value: "" },
+          ancestry: { name: "Tripkee", slug: "tripkee", uuid: "Compendium.pf2e.ancestries.Item.x" },
+        },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("heritage");
+    expect(entity?.facets).toEqual({ ancestrySlug: "tripkee" });
+  });
+
+  it("gap extraction is category-gated: a bare system.hp on a non-ancestry/class doc is NOT promoted to a facet", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "feats",
+      docClass: "Item",
+      basename: "some-feat",
+      doc: {
+        _id: "featID000000001",
+        name: "Some Feat",
+        type: "feat",
+        // `hp` here is deliberately synthetic/nonsensical for a feat doc — this
+        // proves the category gate, not a real Foundry shape.
+        system: { description: { value: "" }, level: { value: 1 }, hp: 999 },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("feat");
+    expect(entity?.facets).not.toHaveProperty("hp");
+  });
+});

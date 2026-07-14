@@ -1087,6 +1087,88 @@ describe("mergeJoined: field ownership (D29-7)", () => {
 });
 
 // ---------------------------------------------------------------------------
+// D29-33b: creature family, populated from the AoN meta at merge/AoN-only-build
+// ---------------------------------------------------------------------------
+
+describe("mergeJoined: D29-33b creature family", () => {
+  const foundryDragon = entity({
+    id: "creature/red-dragon",
+    category: "creature",
+    slug: "red-dragon",
+    name: "Red Dragon",
+    facets: { hp: 100, size: "lg" }, // Foundry-owned mechanics facets
+  });
+
+  it("adds facets.family on top of Foundry's own facets (does not replace them)", () => {
+    const dragonMeta = meta({
+      aonId: "creature-9002",
+      category: "creature",
+      name: "Red Dragon",
+      slug: "red-dragon",
+      family: "Dragon",
+    });
+    const merged = mergeJoined(foundryDragon, dragonMeta, {
+      aonMarkdownById: new Map(),
+      resolveLink: () => ({
+        kind: "text",
+        content: "x",
+        marks: { bold: false, italic: false, superscript: false },
+      }),
+      report: noopReport,
+    });
+    expect(merged.facets).toEqual({ hp: 100, size: "lg", family: "Dragon" });
+  });
+
+  it("leaves facets untouched (no `family` key at all) when the AoN meta has none", () => {
+    const noFamilyMeta = meta({
+      aonId: "creature-9003",
+      category: "creature",
+      name: "Red Dragon",
+      slug: "red-dragon",
+    });
+    const merged = mergeJoined(foundryDragon, noFamilyMeta, {
+      aonMarkdownById: new Map(),
+      resolveLink: () => ({
+        kind: "text",
+        content: "x",
+        marks: { bold: false, italic: false, superscript: false },
+      }),
+      report: noopReport,
+    });
+    expect(merged.facets).toEqual({ hp: 100, size: "lg" });
+    expect(merged.facets).not.toHaveProperty("family");
+  });
+});
+
+describe("runJoin: D29-33b creature family on an AoN-only entity", () => {
+  it("populates facets.family on a proseOnly creature with no Foundry counterpart", () => {
+    const aonOnlyDragon = meta({
+      aonId: "creature-9004",
+      category: "creature",
+      name: "Ancient Void Dragon",
+      slug: "ancient-void-dragon",
+      family: "Dragon",
+    });
+    const result = runJoin(runInput({ aonMetas: [aonOnlyDragon] }));
+    const dragon = result.entities.find((e) => e.id === "creature/ancient-void-dragon");
+    expect(dragon?.proseOnly).toBe(true);
+    expect(dragon?.facets).toEqual({ family: "Dragon" });
+  });
+
+  it("emits facets: {} (not {family: undefined}) when the AoN-only creature has no family", () => {
+    const aonOnlyDragon = meta({
+      aonId: "creature-9005",
+      category: "creature",
+      name: "Plain Wyrm",
+      slug: "plain-wyrm",
+    });
+    const result = runJoin(runInput({ aonMetas: [aonOnlyDragon] }));
+    const wyrm = result.entities.find((e) => e.id === "creature/plain-wyrm");
+    expect(wyrm?.facets).toEqual({});
+  });
+});
+
+// ---------------------------------------------------------------------------
 // pickVariantBase
 // ---------------------------------------------------------------------------
 

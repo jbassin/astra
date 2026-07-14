@@ -1,18 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "animal-companion/ape",
-    "level": 1,
-    "name": "Ape",
-    "rarity": "common",
-    "source": {
-      "book": "Player Core",
-      "license": "ORC",
-      "page": 206
-    },
-    "traits": [
-      "Animal",
-      "Minion"
-    ]
-  }
-]
+[{"edition":"remaster","id":"animal-companion/ape","level":1,"name":"Ape","rarity":"common","source":{"book":"Player Core","license":"ORC","page":206},"superseded":false,"traits":["Animal","Minion"]}]

@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "remaster",
-    "id": "instinct/fury",
-    "name": "Fury",
-    "rarity": "common",
-    "source": {
-      "book": "Player Core 2",
-      "license": "ORC",
-      "page": 75
-    },
-    "traits": []
-  }
-]
+[{"edition":"remaster","id":"instinct/fury","name":"Fury","rarity":"common","source":{"book":"Player Core 2","license":"ORC","page":75},"superseded":false,"traits":[]}]

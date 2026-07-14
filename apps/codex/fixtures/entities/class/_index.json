@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "class/investigator@legacy",
-    "name": "Investigator",
-    "rarity": "common",
-    "source": {
-      "book": "Advanced Player's Guide",
-      "license": "OGL",
-      "page": 54
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"class/investigator@legacy","name":"Investigator","rarity":"common","source":{"book":"Advanced Player's Guide","license":"OGL","page":54},"superseded":true,"traits":[]}]

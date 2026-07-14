@@ -1,14 +1,1 @@
-[
-  {
-    "edition": "legacy",
-    "id": "skill/agriculture",
-    "name": "Agriculture",
-    "rarity": "common",
-    "source": {
-      "book": "Kingmaker Adventure Path",
-      "license": "OGL",
-      "page": 522
-    },
-    "traits": []
-  }
-]
+[{"edition":"legacy","id":"skill/agriculture","name":"Agriculture","rarity":"common","source":{"book":"Kingmaker Adventure Path","license":"OGL","page":522},"superseded":false,"traits":[]}]
