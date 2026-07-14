@@ -1,8 +1,21 @@
 # 0029 — codex P2: entity pages — NLSpec
 
-**Status:** FINAL (2026-07-13) — authored against the REAL post-P1.5 corpus (46,326 entities /
-627.7 MB, inspected this session), per the phase plan's "P2+ get specced against the real
-corpus". Stakeholder decisions batched + resolved 2026-07-13 (URL scheme, statblock ambition,
+**Status:** BUILT (2026-07-14) — all four slices committed + pushed same-day by the
+staff-orchestrator + sonnet engineers, one reviewed commit per slice: **S6 `b174b15`** (P1.6
+transform addendum, D29-19..21) · **S1 `031a7fb`** (total render layer + 6 goldens, D29-24..26)
+· **S2 `72f224e`** (scaffold + corpus reader + entity routes, D29-22/23/30/31) · **S3
+`c9d1d3b`** (listings + Popover tooltips + acceptance sweep, D29-27/28). **Acceptance A–G all
+met with recorded evidence (see the S3 commit message + [[codex-0029-gotchas]]); ▶ H (the
+stakeholder review of rendered pages) is the ONLY open item — the §5 C spot-set renders on
+`pnpm dev`/`pnpm start` in `apps/codex` against the real corpus.** Post-S6 corpus: **46,192
+entities** (−134 pregens); `blockquote` is corpus-extinct (17-of-18 kinds at corpus level; the
+renderer stays total, unit-covered synthetically). Process deviation, orchestrator-sanctioned
+under the autonomous-run directive: the S1 mid-gate "stakeholder eyeballs the goldens before
+S2" was replaced by an orchestrator review; the goldens + the M7/M11 expected behaviors fold
+into H instead.
+_(Original status line:)_ FINAL (2026-07-13) — authored against the REAL post-P1.5 corpus
+(46,326 entities / 627.7 MB, inspected this session), per the phase plan's "P2+ get specced
+against the real corpus". Stakeholder decisions batched + resolved 2026-07-13 (URL scheme, statblock ambition,
 delivery shape, tooltip scope — recorded as D29-19 + D29-22/26/27/28 below).
 **Adversarially reviewed same day: 5 blockers + 7 minors, ALL folded in** (B1 actionGlyph
 vocabulary — the corpus speaks AoN long forms `normalizeActionCost` can't parse; B2

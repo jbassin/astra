@@ -36,7 +36,44 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `defd586`, 2026-07-13 — codex (0029) P1 COMPLETE incl. P1.5; exit gate CLOSED; ▶ spec P2; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `c9d1d3b`, 2026-07-14 — codex (0029) P2 BUILT, all 4 slices; ▶ acceptance H = stakeholder page review; heartwood ON HOLD)
+
+> **✅ codex (0029) P2 (entity pages) — ALL FOUR SLICES BUILT + PUSHED in one autonomous
+> overnight run** (staff-orchestrator + sonnet engineers, one reviewed commit per slice;
+> spec `thoughts/astra/specs/0029-codex-p2-entity-pages-spec.md` status → BUILT):
+> **S6 `b174b15`** (P1.6 transform addendum D29-19..21: npc-only import, 150 pregens excluded;
+> typed `stats` + strike/spellcasting EmbeddedItem fields, schemaVersion 2; `_index.json`
+> rename rescuing `ancestry/index`+`archetype/index` — corpus now **46,192** files == manifest
+> exactly; determinism 3×) · **S1 `031a7fb`** (total 18-kind CodexNode→React renderer + B1
+> glyph shim + B2 block-in-`<p>` guard + embed inlining + statblock/facet/citation/edition
+> components; 88-category totality test + 6 byte-exact goldens) · **S2 `72f224e`** (strider
+> shell + D29-23 corpus reader w/ traversal guard + fixture fail-soft; `/{category}/{slug}`
+> routes w/ `@legacy`/non-ASCII round-trip; real-corpus SSR proven incl. summoner M7) ·
+> **S3 `c9d1d3b`** (throwaway `/` + `/{category}` listings, feat = 4.44 MB ≈ spec estimate;
+> akasha Popover port; **acceptance A–G all met with evidence** — all-88-category row-count
+> loop, Playwright hover + zero hydration errors, real SigNoz `astra.codex` spans,
+> hermeticity gate). Codex member: 909 tests; repo 1,937; both lanes green; all pushed.
+> - **▶ NEXT: acceptance H — stakeholder review of the rendered pages** (`pnpm dev` or
+>   `pnpm start` in `apps/codex` against the real corpus; the §5 C spot-set:
+>   `creature/red-dragon-adult`, a carve-out creature, `spell/heal(@legacy)`,
+>   `class/summoner`, `rules/counteracting`, `creature/ixamè`, `ancestry/index`, the
+>   brokenRef `warfare-army/tiger-lord-berserkers` page). **Two flagged expected behaviors
+>   to eyeball (spec M7/M11): embed second layer renders as links, and AoN-joined creatures
+>   show statblock twice (structured header + AoN prose)** — if he wants dedup that's a
+>   follow-up decision. After H sign-off: `octo:spec` P3 (faceted browse+search).
+> - Post-S6 facts P3 must carry: corpus 46,192; `blockquote` corpus-extinct (fixture asserts
+>   extinction both ways); one upstream-typo fail-soft (`hazardStatsHtmlFailed=1`).
+> - [[codex-0029-gotchas]] carries the full P2 section (client-bundle leak class, built-server
+>   fixture-root marker-walk, per-request-Zod spec deviation caught in review, the
+>   inlineAction cost-map correction, session-limit/API-error agent resumes).
+> - heartwood still ⏸ ON HOLD (unchanged below); other open items unchanged (webhook
+>   rotation, Class-A alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-13) — P1 COMPLETE incl. P1.5; exit gate CLOSED (superseded above)
+
+## (was) Current state (as of `defd586`, 2026-07-13 — codex (0029) P1 COMPLETE incl. P1.5; exit gate CLOSED; ▶ spec P2; heartwood ON HOLD)
 
 > **✅ codex (0029) P1 — COMPLETE incl. the P1.5 AoN-primary rework; EXIT GATE CLOSED
 > 2026-07-13.** The stakeholder reviewed the transform report (published as a Claude artifact,
