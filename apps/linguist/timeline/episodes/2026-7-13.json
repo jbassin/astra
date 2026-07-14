@@ -1,0 +1,75 @@
+{
+  "date": "2026-7-13",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Strider Accords: Loyalty Oaths, Void Atlases, and a Box of Bullets",
+    "synopsis": "Fresh off their alliance with the Machine God, the party returns to the surface, delivers the ink ribbon to Ocelith, and receives the Void Atlas — discovering a previous borrower linked to Pyrolyte. After studying the atlas for upcoming Joker Worlds, they hold a Ring of Truth loyalty ceremony for the coalition, recruit Radiant Arms to merge into their base, install new defenses, and phone home to allies who hint at rising tensions and mysterious developments back in Calaria.",
+    "key_beats": [
+      "Machine God grants the party group telepathy and confirms he can defend himself; the party leaves the Forsaken Sector and returns to the surface unaccosted, the spiders having died with Fraxolith.",
+      "The party delivers the ink ribbon to Ocelith at the Harlequin library and receives the Void Atlas; Anzu signs the checkout card and discovers the previous borrower was Alastair Moss of Pyrolyte (Project Entrainment), six months prior.",
+      "Johnny asks the twins (Anaïs and Onik) about the Prime Minister's assassination and upgrades his Drums of War to the greater version for 370 gold.",
+      "Anzu and Kadou spend the evening studying the massive fold-out Void Atlas (~2.8 million worlds), identifying three upcoming points of interest: the mythical Menagerie 1, and the warring joker spans of Hellsmith and Glacier.",
+      "Argyle casts Augury about returning to kill Ocelith (gets no result), then attempts to train the Solari Sub-surface members in basic combat — Salvado is enthusiastic, the two lackeys comply out of fear.",
+      "Anzu sends Othello to scout Prime Meridian: no siphon array there, but one is visible nearby; the party debates base upgrade priorities (turrets vs. feedback shield vs. logistics/espionage) and decides to hold energy.",
+      "Ring of Truth ceremony: Alkahest Freight pledges fully; Solari lackeys won't pledge to protect the coalition with their lives; Anaïs and Onik refuse to pledge no-harm or no-outside-allegiance, citing loyalty to Renge above the coalition.",
+      "Argyle and Anouk successfully oil-slick the exterior walls (critical success, +10 to climb DC); the party visits Radiant Arms and Johnny — using Melodious Spell, Mythic Perceive the Threads of Fate, and a shameless request (35 diplomacy) — convinces Atul and Ichel to merge into the Coalition in exchange for two future upgrade rooms and help procuring rare materials.",
+      "Radiant Arms' Fane is collapsed; the heart (a box of bullets) yields 32 energy (30 + 2 from siphon array); the party feeds the crushing rune, fortress shield, and papers of perfection to Eerie, reaching 105 total energy; Alarm Wards are installed and a firing range room is built for Radiant Arms.",
+      "Phone calls home: Dame Quay tells Argyle the party is roughly halfway to the Quorum (where Voice of Many was found, still Shackled Prince territory); Red warns Johnny that weapons are moving through back channels and tension is rising; Atum is intensely interested in the Machine God and urges Benny to extract information about its construction.",
+      "The party gives two Papers of Perfection to Hildebrandt (Paavo) to cover their tithe obligations; the next expected tithe is 27 energy, and the Coalition sits comfortably at 105 energy with new defenses and allies."
+    ],
+    "characters_present": [
+      "Benny",
+      "Argyle",
+      "Anzu",
+      "Johnny",
+      "Machine God (Heart Stealer)",
+      "Ocelith",
+      "Anaïs",
+      "Onik",
+      "Kadou Flock",
+      "Salvado",
+      "Solari Lackeys",
+      "Atul",
+      "Ichel",
+      "Paavo (Hildebrandt)",
+      "Dame Quay",
+      "Red",
+      "Atum",
+      "Eerie (the Heart)"
+    ],
+    "locations": [
+      "The Undercroft",
+      "Forsaken Sector",
+      "Harlequin Library/Church",
+      "Coalition Base (Strider)",
+      "Radiant Arms Base (Hildebrandt's Fane)"
+    ],
+    "factions": [
+      "The Coalition",
+      "Radiant Arms",
+      "Hildebrandt",
+      "Prime Meridian",
+      "Solari Sub-surface",
+      "Alkahest Freight",
+      "Pale Lantern Society",
+      "The Scale",
+      "Iconoclasm",
+      "Pyrolyte",
+      "Ternion"
+    ],
+    "items": [
+      "Void Atlas",
+      "Ink Ribbon",
+      "Jolt Coil",
+      "Usurper's Crown (consumed by heart)",
+      "Papers of Perfection",
+      "Crushing Rune (consumed by heart)",
+      "Fortress Shield (consumed by heart)",
+      "Greater Drums of War (upgraded)",
+      "Alarm Wards (installed)",
+      "Oil-Slicked Walls (installed)",
+      "Firing Range (built for Radiant Arms)"
+    ],
+    "cliffhanger": "Anzu is about to meet with Yao of the Protectorate to discuss the Voidsong's origins, while Red warns that something big is brewing back home with increased weapons movement through back channels."
+  }
+}
