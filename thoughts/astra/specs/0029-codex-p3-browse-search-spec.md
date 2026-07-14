@@ -73,6 +73,22 @@ distinctive names rank correctly. (4) **Real S2 bug found+fixed:** Pagefind writ
 idempotent against a pre-existing outDir (stale hashed fragments accumulate per re-run) —
 build-search now rm-rf's before write; index cleanly rebuilt, 46,192 pages exact.
 
+S5 BUILT 2026-07-14 (acceptance sweep + docs). Consolidated Playwright pass at HEAD: every §5
+check PASS (table in the S5 commit). **Two REAL hydration bugs found at HEAD and fixed:** (1)
+a resolved depth-0 embed inline in prose rendered `<p><div class=codex-embed-card>` — invalid
+nesting → hydration tree regen (repro: creature/red-dragon-adult); the B2 paragraph guard now
+consults `embedRendersAsBlock`; (2) the dark-theme FOUC script targets `<html>` but
+`suppressHydrationWarning` was only on `<body>` — every page load logged a mismatch. Gate G
+telemetry method = **local OTLP smoke** via the host-published collector port (in-cluster
+hostname unresolvable from host); the live SigNoz check lands at P5 deploy. Hermeticity: both
+lanes green with data/ renamed OUT of the tree (an in-tree rename false-fails lint on vendored
+sources). §5-F complete. README current.
+
+**PHASE STATUS: S1–S5 BUILT, all pushed (2026-07-14). Acceptance A–G met with recorded
+evidence. OPEN: H — the consolidated stakeholder review (browse + folded-in P2-H spot-set
+incl. M7/M11 expected behaviors + search surface incl. the heal-ranking limitation), deferred
+by the stakeholder to post-implementation. Exit = H sign-off → `octo:spec` P4.**
+
 **Status:** FINAL (2026-07-14) — authored against the REAL post-P1.6 corpus (46,192 entities /
 88 categories, measured this session). Stakeholder decisions batched + resolved 2026-07-14
 (facet depth, search UX shape, legacy default, listing payload strategy, extractor-gap

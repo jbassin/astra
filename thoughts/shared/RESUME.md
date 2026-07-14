@@ -36,7 +36,44 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `242ee0c`, 2026-07-14 — codex (0029) P3 SPEC FINAL; ▶ `octo:embrace` P3 S1; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of 2026-07-14 — codex (0029) P3 BUILT S1–S5; ▶ acceptance H = consolidated stakeholder review; heartwood ON HOLD)
+
+> **✅ codex (0029) P3 (faceted browse + search) — ALL FIVE SLICES BUILT + PUSHED same-day**
+> (staff-orchestrator + sonnet engineers, one reviewed commit per slice; spec
+> `thoughts/astra/specs/0029-codex-p3-browse-search-spec.md` build record carries per-gate
+> evidence): **S1** emit extensions (facetKeys allowlist, 5-cat extractor gap all-pass,
+> creature.family 36.6%/467, IndexRow facets+superseded == 11,012 exact, compact indexes;
+> envelope 11.31 MB accepted — spec's pin predated required `superseded`+gap facets) ·
+> **S2** Pagefind index (46,192 pages exact, 3.94 GB RSS → host-only confirmed;
+> `/pagefind/` staticMount fail-soft proven; **D29-36 CLOSED: traits filter KEPT, 176 KB**) ·
+> **S3** faceted browse (filter engine w/ D29-32 missing-key semantics, URL codec —
+> comma-escaping find, legacy toggle w/ M4 + SSR-flash fix; feat 4.49 MB/465 KB gz accepted,
+> 61 ms interaction, no trim) · **S4** omnibar + `/search` (cold-start 594 KB; keyboard flow;
+> server-side codex.search counter — no browser MeterProvider exists, recorded deviation;
+> **writeFiles-not-idempotent bug found+fixed, index rebuilt clean**; heal = accepted
+> Pagefind TF limitation, weighting tried+reverted per D29-34) · **S5** consolidated sweep
+> (every §5 check PASS; **two real at-HEAD hydration bugs found+fixed** — block embed-card
+> in `<p>`, suppressHydrationWarning missing on `<html>`; hermeticity both lanes; README
+> current). Codex 1,160 tests; both lanes green; all pushed.
+> - **▶ NEXT: acceptance H — ONE consolidated stakeholder review** (stakeholder deferred it
+>   past implementation, gate amendment in the spec): browse surface + the P2-H spot-set
+>   (`creature/red-dragon-adult`, a carve-out creature, `spell/heal@legacy`,
+>   `class/summoner`, `rules/counteracting`, `creature/ixamè`, `ancestry/index`,
+>   `warfare-army/tiger-lord-berserkers`; M7 links-not-inlined + M11 statblock-twice are
+>   EXPECTED) + search surface (flag: single-common-word "heal" doesn't top-rank —
+>   documented Pagefind TF limitation). Run `pnpm build` + start in `apps/codex` (vite dev
+>   does NOT serve /pagefind). After H sign-off: `octo:spec` P4 (rules browser).
+> - [[codex-0029-gotchas]] carries the full P3-build section (writeFiles non-idempotent,
+>   title-no-ranking-weight, comma-CSV codec, SSR legacy-flash + module-eval seed, the two
+>   hydration classes, statsText gating, server-side RUM counter, hermeticity rename-out).
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-14, earlier same day) — P3 SPEC FINAL (superseded above)
+
+## (was) Current state (as of `242ee0c`, 2026-07-14 — codex (0029) P3 SPEC FINAL; ▶ `octo:embrace` P3 S1; heartwood ON HOLD)
 
 > **✅ codex (0029) P3 (faceted browse + search) — SPEC FINAL `242ee0c`**
 > (`thoughts/astra/specs/0029-codex-p3-browse-search-spec.md`, D29-32..38; staff-orchestrator
