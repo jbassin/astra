@@ -569,6 +569,18 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   // D29-20 (P1.6): a statblock-bearing complex hazard (isComplex + disable +
   // routine + hardness/stealth in `stats`).
   "hazard/gravehall-trap",
+  // P2 S1 (D29-25): the `class` category's own coverage pick
+  // (`class/investigator@legacy`, chosen as the smallest-file representative)
+  // carries 3 real `embed` nodes in its body, all targeting these 3 `action`
+  // docs — required so the S1 class golden proves real depth-1 embed
+  // inlining (not just a synthetic unit-test chain). None of the three
+  // themselves embed anything further (verified against the real corpus), so
+  // this fixture does NOT also exercise the M7 "second-layer renders as a
+  // link" case on a real entity — that's covered by a dedicated synthetic
+  // unit test instead (see nodes.test.tsx's cycle/depth-guard cases).
+  "action/pursue-a-lead-2",
+  "action/clue-in-2",
+  "action/devise-a-stratagem@legacy",
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {

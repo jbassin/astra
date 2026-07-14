@@ -1,0 +1,203 @@
+{
+  "aonUrl": "/Actions.aspx?ID=546",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Devise a Stratagem",
+          "kind": "crossref",
+          "targetId": "action/devise-a-stratagem"
+        },
+        {
+          "cost": "Single Action",
+          "kind": "actionGlyph"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Action"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Advanced Player's Guide",
+          "kind": "crossref",
+          "targetId": "source/advanced-players-guide"
+        },
+        {
+          "content": " pg. 56",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Frequency",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " once per round",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "You assess a foe's weaknesses in combat and use them to formulate a plan of attack against your enemy. Choose a creature you can see and roll a d20. If you Strike the chosen creature later this round, you must use the result of the roll you made to Devise a Stratagem for your Strike's attack roll instead of rolling. You make this substitution only for the first Strike you make against the creature this round, not any subsequent attacks.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " When you make this substitution, you can also add your Intelligence modifier to your attack roll instead of your Strength or Dexterity modifier, provided your Strike uses an ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "agile",
+          "kind": "crossref",
+          "targetId": "trait/agile"
+        },
+        {
+          "content": " or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "finesse",
+          "kind": "crossref",
+          "targetId": "trait/finesse"
+        },
+        {
+          "content": " melee weapon, an agile or finesse unarmed attack, a ranged weapon (which must be agile or finesse if it's a melee weapon with the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "thrown",
+          "kind": "crossref",
+          "targetId": "trait/thrown"
+        },
+        {
+          "content": " trait), or a ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "sap",
+          "kind": "crossref",
+          "targetId": "weapon/sap"
+        },
+        {
+          "content": ". ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "If you're aware that the creature you choose is the subject of a lead you're pursuing, you can use this ability as a free action.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "action",
+  "edition": "legacy",
+  "facets": {},
+  "id": "action/devise-a-stratagem@legacy",
+  "name": "Devise a Stratagem",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "action/devise-a-stratagem"
+  ],
+  "slug": "devise-a-stratagem",
+  "source": {
+    "book": "Advanced Player's Guide",
+    "license": "OGL",
+    "page": 56
+  },
+  "traits": [
+    "Concentrate",
+    "Fortune",
+    "Investigator"
+  ]
+}

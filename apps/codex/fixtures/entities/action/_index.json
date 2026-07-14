@@ -1,14 +1,49 @@
 [
   {
     "edition": "legacy",
-    "id": "action/cast-a-spell-331",
-    "name": "Cast a Spell",
+    "id": "action/clue-in-2",
+    "name": "Clue In",
     "rarity": "common",
     "source": {
-      "book": "Secrets of Magic",
+      "book": "Advanced Player's Guide",
       "license": "OGL",
-      "page": 168
+      "page": 56
     },
-    "traits": []
+    "traits": [
+      "Concentrate",
+      "Investigator"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "action/devise-a-stratagem@legacy",
+    "name": "Devise a Stratagem",
+    "rarity": "common",
+    "source": {
+      "book": "Advanced Player's Guide",
+      "license": "OGL",
+      "page": 56
+    },
+    "traits": [
+      "Concentrate",
+      "Fortune",
+      "Investigator"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "action/pursue-a-lead-2",
+    "name": "Pursue a Lead",
+    "rarity": "common",
+    "source": {
+      "book": "Advanced Player's Guide",
+      "license": "OGL",
+      "page": 56
+    },
+    "traits": [
+      "Concentrate",
+      "Exploration",
+      "Investigator"
+    ]
   }
 ]

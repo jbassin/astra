@@ -1,4 +1,14 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "jsx": "react-jsx",
+    // P2 (S1) needs a real client-bundle stance even though codex has no vite build
+    // yet (S2): server-only imports must stay out of anything a future client
+    // bundle would pull in, same frontend-lane override as apps/ledger's tsconfig.
+    "verbatimModuleSyntax": false,
+    "types": ["node", "react", "react-dom"]
+  },
   "include": ["src", "scripts"]
 }

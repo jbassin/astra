@@ -126,6 +126,14 @@
       "rules": { "no-array-index-key": "off" }
     },
     {
+      // codex's `CodexNode` renderer mirrors gothic's `mdastToReact.tsx` shape 1:1
+      // (0029 P2 D29-24) — same stable-order corpus arrays (list items/table
+      // rows-cells), no natural unique id, same justified index-key idiom as the
+      // gothic override immediately above.
+      "files": ["**/codex/src/domain/render/**"],
+      "rules": { "no-array-index-key": "off" }
+    },
+    {
       "files": ["**/akasha-frontend/src/domain/lib/slug.ts"],
       "rules": { "prefer-template": "off" }
     },
