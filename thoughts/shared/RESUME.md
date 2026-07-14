@@ -36,7 +36,46 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `c9d1d3b`, 2026-07-14 — codex (0029) P2 BUILT, all 4 slices; ▶ acceptance H = stakeholder page review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `242ee0c`, 2026-07-14 — codex (0029) P3 SPEC FINAL; ▶ `octo:embrace` P3 S1; heartwood ON HOLD)
+
+> **✅ codex (0029) P3 (faceted browse + search) — SPEC FINAL `242ee0c`**
+> (`thoughts/astra/specs/0029-codex-p3-browse-search-spec.md`, D29-32..38; staff-orchestrator
+> + in-house research agents — no external octo providers on this host, sanctioned fallback).
+> **Empirical basis, not estimates:** a live Pagefind 1.5.2 build over the REAL 46,192-entity
+> corpus (33 s, 49.1 MB bundle, ~470–535 KB cold-start / 35–100 KB warm query, **~3.8 GB
+> native-indexer RSS → index build is HOST-ONLY**, `just codex-search-index`, never
+> CI/Docker); a full-corpus facet-derivation analysis (big-12 facet sets pinned; trait
+> case-fold 1,082→644 mandatory; facets only on Foundry-merged entities; superseded
+> (`remasteredAs`≠∅) = 11,012; level spans -2..28); Pagefind-at-scale literature (filters are
+> string-equality only; prefix fallback ≠ typo tolerance; `addCustomRecord` takes structured
+> filters/meta).
+> - **Stakeholder decisions (batched + resolved 2026-07-14):** 5e.tools-depth facets
+>   everywhere (data-derived) · omnibar + `/search` page · legacy hidden by default behind a
+>   site-wide toggle · full rows client-side, filter locally · extractor gap closed for all 5
+>   categories (background/heritage/ancestry/condition/class) · `creature.family` populated
+>   from AoN.
+> - **Adversarially reviewed, 3 blockers + 5 minors + 4 nits ALL folded:** (B1) TanStack's
+>   default search parser eats a bare `+` via the URLSearchParams convention (verified) →
+>   sigil-free includes / `-` excludes; (B2) superseded = 11,012 measured, not P2's 7,152
+>   legacy-pair figure; (B3) S1 owns a shared `facetKeys.ts` allowlist so emit doesn't depend
+>   on S3's facetDefs. Plus toggle-flap precedence (URL wins on initial load only), collision
+>   disambiguation extended to search surfaces, explicit empty states + sort decision,
+>   StaticMount registered unconditionally (per-request fail-soft).
+> - **▶ NEXT: `octo:embrace` P3 S1** (emit extensions — transform-only, no stakeholder
+>   dependency): facetKeys allowlist, 5-cat extractor gap, family join, IndexRow facets +
+>   superseded, compact `_index.json`, fixture/report regen, determinism 3×. Slices S1–S5;
+>   **P2 acceptance H (page review) folds into P3's S3 stakeholder gate** (M7/M11 expected
+>   behaviors ride along).
+> - [[codex-0029-gotchas]] carries the full P3-spec section (measured Pagefind numbers, the
+>   facet-derivation anchors, the URLSearchParams codec find, the octo-provider fallback).
+> - heartwood still ⏸ ON HOLD (unchanged below); other open items unchanged (webhook
+>   rotation, Class-A alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-14, earlier same day) — P2 BUILT (superseded above)
+
+## (was) Current state (as of `c9d1d3b`, 2026-07-14 — codex (0029) P2 BUILT, all 4 slices; ▶ acceptance H = stakeholder page review; heartwood ON HOLD)
 
 > **✅ codex (0029) P2 (entity pages) — ALL FOUR SLICES BUILT + PUSHED in one autonomous
 > overnight run** (staff-orchestrator + sonnet engineers, one reviewed commit per slice;
