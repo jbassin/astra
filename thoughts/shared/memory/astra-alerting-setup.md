@@ -1,9 +1,29 @@
 ---
 name: astra-alerting-setup
-description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30); watchdog FLAP fixed same day (13ef941, confirmation/hysteresis); Class C flood fixed 2026-07-08 (22ad895, per-unit failure debounce after a 38h FUSE wedge paged 610×); watchdog now AUTO-REMEDIATES a wedged Drive FUSE mount 2026-07-08 (abort conn + fusermount -uz + gdrive.service remounts). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
+description: Stack-wide Discord alerting — BUILT + LIVE + verified (2026-06-30); watchdog FLAP fixed same day (13ef941, confirmation/hysteresis); Class C flood fixed 2026-07-08 (22ad895, per-unit failure debounce after a 38h FUSE wedge paged 610×); watchdog AUTO-REMEDIATES a wedged Drive FUSE mount 2026-07-08 (abort conn + fusermount -uz + gdrive.service remounts); VANISHED-mount blind spot fixed 2026-07-13 (mount gone + daemon alive = all green, ls on the bare dir passes + craig-sync nullglobs "0 new" → check_mount now requires a fuse mount in mountinfo first). Three failure classes: SigNoz error-log rule→discord-ops channel (Class A), host OnFailure handlers (Class C), liveness watchdog (Class B). Webhook in SOPS (may want rotating). Has the load-bearing gotchas.
 metadata:
   type: project
 ---
+
+**UPDATE 2026-07-13 — THE VANISHED-mount blind spot (every signal green while ingest was
+blind).** A third failure mode, complementary to the wedge: the FUSE **mount disappeared from
+the mount table entirely while the ocamlfuse daemon kept running** (consistent with a prior
+conn-abort remediation killing the mount without the daemon exiting → `Restart=always` never
+fired). Nothing paged for days: `check_mount`'s bounded `ls` on the mountpoint succeeds
+instantly against the bare empty underlying dir; `craig-sync` nullglobs an empty dir → exits 0
+logging "0 new" (the known can't-fail-via-missing-dir trap); Class A/C see no failures at all.
+Found only because the 2026-7-13 session recording never appeared — it was sitting in Drive
+the whole time. **Fix: `check_mount` now FIRST requires `find_fuse_mount` (mountinfo read,
+never stats the path) to locate a fuse-fstype mount above `DRIVE_MOUNT`, and pages
+"Drive is unmounted … fix: sudo systemctl restart gdrive.service" when none exists** —
+remediation can't self-heal this case (restarting the SYSTEM-scope gdrive.service needs root;
+the watchdog runs as user), so it's detect-and-page. Script-only change — units ExecStart the
+in-repo path, so no `alert-install` re-run. Test recipe: `XDG_STATE_HOME=<scratch>
+ALERT_DRY_RUN=1 WATCHDOG_CONFIRM_TRIES=1 CRAIG_DROP_DIR=<plain-dir> alert-notify.sh watchdog`
+(the scratch state dir matters — a fake bad run against the REAL state dir would post a
+spurious 🟢 recovery on the next live tick). Diagnosis gotcha: the Claude Code sandbox has its
+own mount namespace (host FUSE mounts invisible in `/proc/mounts`) — verify mount presence
+with `dangerouslyDisableSandbox` or from a real shell.
 
 **UPDATE 2026-07-08 (later) — the wedge recurred; watchdog now AUTO-REMEDIATES it.** The
 ocamlfuse daemon wedged again (kernel conn 54 held 130 unanswered requests; ~20 craig-sync
