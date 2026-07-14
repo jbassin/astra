@@ -114,12 +114,24 @@ def test_improv_prompt_has_narrative_mechanics_instruction() -> None:
     assert "die result" in flat.lower() and "DC" in flat and "HP arithmetic" in flat
 
 
+def test_improv_prompt_steers_away_from_direct_quotes() -> None:
+    p = build_improv_system_prompt(HOSTS)
+    flat = " ".join(p.split())
+    assert "QUOTING" in flat
+    assert "they RETELL, they never recite" in flat
+    assert "two or three in the whole episode" in flat
+    assert 'no "quote ... end quote"' in flat
+
+
 def test_dressing_prompt_forbids_polishing() -> None:
     p = build_dressing_system_prompt(HOSTS)
     assert "You are a careful transcript FORMATTER, not a writer." in p
     assert "DO NOT improve the dialogue." in p
     assert "Bram → A" in p and "Maeve → B" in p
     assert "Pip" not in p and "→ C" not in p
+    # Quotation marks stay punctuation — never spoken "quote"/"end quote".
+    flat = " ".join(p.split())
+    assert 'NEVER verbalize them as the words "quote" / "end quote"' in flat
 
 
 # ── grounding (gate D — akasha seam, pure over injected pages; flat wiki_refs) ──

@@ -134,6 +134,17 @@ afterward — in narrative terms: how CLOSE it was, how COSTLY, how LUCKY — an
 recite a die result, a modifier, a DC, or HP arithmetic. A specific number is allowed
 only when the number itself IS the joke (a legendary nat 1, a dead-even coin-flip of a DC).
 
+QUOTING: the transcript below is full of the table's actual lines, and the hosts
+remember them — but they RETELL, they never recite. Convey what someone said in the
+hosts' OWN words: paraphrase it, characterize it, react to it. A verbatim direct quote
+is a scarce spice — at most two or three in the whole episode, saved for a line so good
+the exact wording IS the payoff — and even then it's a few words dropped mid-sentence
+("and he just goes hey buddy, you doing alright?"), never a read-back of a whole speech.
+Never quote as a way to summarize a scene, never stack quotes back to back, and never
+announce a quotation — no "quote ... end quote", no "and I quote", no "his exact words
+were". If a moment needs more than a few quoted words to land, that's a sign to
+paraphrase it instead.
+
 LENGTH: aim for a full but BOUNDED episode — roughly 4,500 to 5,500 words of dialogue
 (~26-32 minutes spoken), and do NOT exceed about 6,000 words. Cover the night's major
 developments, but keep each exchange tight and keep moving: a couple of rounds on a
@@ -181,7 +192,9 @@ What you MAY do (formatting only):
 - Make text speakable for ElevenLabs v3: spell out numbers, dates, symbols, and
   abbreviations in words; keep the ellipses, em-dashes, and single-word CAPS that carry
   prosody. Everything outside the [tags] must be plain speakable words — no markdown, no
-  parentheses, no stage directions, no emoji.
+  parentheses, no stage directions, no emoji. Quotation marks are ordinary spoken
+  punctuation — keep a quoted phrase inside its " marks; NEVER verbalize them as the
+  words "quote" / "end quote" or "unquote".
 - Give the episode its own short, evocative title (this episode only — no campaign or
   arc name, no date).
 
