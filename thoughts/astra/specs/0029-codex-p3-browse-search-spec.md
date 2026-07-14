@@ -16,6 +16,20 @@ categories + family existed; gz is within ~5% of the 1.12 MB estimate; the §6 s
 (drop creature/hazard per-row saves) stays available at S3's page-weight measurement. Codex
 suite 961 tests; both repo lanes reproduced green.
 
+S2 BUILT 2026-07-14 (search index build + serving, D29-34 in full). Gate B results: real-corpus
+host build 46,192 pages == manifest exact, ~32 s wall (23 s on re-run), peak native-indexer RSS
+**3.94 GB measured** (≈ the 3.8 GB probe); bundle 55.1 MB apparent (~12% over the 49.1 MB probe —
+expected: structured meta/filters + statsText content the bare probe didn't carry); zero add
+errors. **D29-36 traits-filter decision: KEEP** — the traits filter chunk measured **176 KB**
+(edition 105 KB / superseded 104 KB / category 103 KB / rarity 100 KB / level 74 KB; filter dir
+672 KB total), nowhere near the "few MB" drop threshold. Serving proven on the production server
+(staticMounts is createSsrServer-only — `vite dev` does NOT serve mounts, verified empirically;
+S4's dev loop must use build+start for search): /pagefind/* 200s, fail-soft rename→404 with site
+still serving, restore→200 with NO restart. Hermeticity: data/ renamed away → 979/979 tests +
+build green. One orchestrator review fix: statsText gated to creature/hazard at the build-search
+call site (post-S1 gap facets put hp/size on ancestry/class/vehicle — unconditional call indexed
+spurious stat fragments); index rebuilt post-fix. Codex 979 tests; both lanes green.
+
 **Status:** FINAL (2026-07-14) — authored against the REAL post-P1.6 corpus (46,192 entities /
 88 categories, measured this session). Stakeholder decisions batched + resolved 2026-07-14
 (facet depth, search UX shape, legacy default, listing payload strategy, extractor-gap

@@ -35,7 +35,35 @@ Popover island (`src/domain/components/islands/Popover.tsx`), mounted on entity 
   `$category/$slug.tsx` (entity page).
 - **Run it:** `pnpm --filter @astra/codex dev` (real corpus if `data/corpus/` exists, else the
   fixture) / `pnpm --filter @astra/codex build && pnpm --filter @astra/codex start` (production
-  parity, wires `astra.codex` OTel spans via `@astra/site-kit`'s `createSsrServer`).
+  parity, wires `astra.codex` OTel spans via `@astra/site-kit`'s `createSsrServer`). **Note:**
+  `staticMounts` (below) is a `createSsrServer`-only mechanism — `/pagefind/*` only serves under
+  `build && start`, not under plain `vite dev`.
+
+## Search (P3 S2, D29-34)
+
+`apps/codex/scripts/build-search.ts` builds a [Pagefind](https://pagefind.app) index offline from
+the corpus and writes it to `data/search/pagefind/` (sibling of `data/corpus/`, gitignored). It
+walks every entity via the same `createCorpusReader` fs layer the frontend reads through, extracts
+plain text (`collectText`/`statsText`, `src/domain/render/text.ts`) from `body` + `loreBody` +
+the creature/hazard `stats`/`facets` statblock, and calls Pagefind's `addCustomRecord` directly
+with structured `meta` (title/category/level/rarity/edition/book) and `filters`
+(category/rarity/edition/level/superseded/traits — traits case-folded lowercase, corpus data
+itself stays verbatim). `server.ts` serves the bundle at `/pagefind/` via `@astra/site-kit`'s
+`staticMounts` (codex's first use of the mechanism) — registered unconditionally, no startup
+existence check, since a `StaticMount` fails soft per request: `/pagefind/*` 404s until an index
+exists, and a freshly-built index comes online with no server restart.
+
+> ⚠️ **Host-only, ~3.8 GB RSS.** The native Pagefind indexer's peak memory during `writeFiles`
+> over the full ~46,192-entity corpus is ~3.8–4 GB (measured) — this build step must **never**
+> run in CI, a Docker build, or `vite build` (verified: `vp run -r build` only ever invokes
+> `vite build` for codex). Run it on the host via `just codex-search-index`, or as the last step
+> of `just codex-refresh` (transform → search index). A real run takes ~30s and produces a
+> ~50 MB bundle (fragments + index/filter chunks + the Pagefind runtime JS/wasm).
+
+CI's own coverage is hermetic: `scripts/build-search.test.ts` runs the exact same
+`buildSearchIndex()` against the committed fixture corpus into a fresh `os.tmpdir()` dir (never
+`fixtures/` or `data/`) — `pagefind` is a plain npm devDependency, so this needs zero network and
+none of the host-only memory profile above (that only shows up at real-corpus scale).
 
 ## Pipeline shape
 

@@ -480,8 +480,22 @@ codex-refresh:
     echo "codex-refresh: running the transform..."
     pnpm --filter @astra/codex transform
     echo ""
+    echo "codex-refresh: building the search index..."
+    just codex-search-index
+    echo ""
     echo "codex-refresh: done. report.md summary:"
     head -n 40 apps/codex/data/corpus/report.md
+
+# Build the codex Pagefind search index (D29-34) from the current corpus at
+# apps/codex/data/corpus/ into apps/codex/data/search/pagefind/, served at
+# /pagefind/ via server.ts's staticMount. HOST-ONLY — the native Pagefind
+# indexer peaks at ~3.8 GB RSS during writeFiles over the full 46k-entity
+# corpus (measured) — this must NEVER run in CI, a Docker build, or `vite
+# build`; it's a deliberate, standalone, host-run step, same posture as
+# codex-refresh (which calls this after the transform). The server picks up
+# a freshly-built index with no restart (StaticMount fails soft per-request).
+codex-search-index:
+    pnpm --filter @astra/codex search:build
 
 # --- Host edge (shared reverse proxy) ---
 

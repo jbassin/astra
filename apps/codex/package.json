@@ -12,7 +12,8 @@
     "generate:routes": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/generate-routes.ts",
     "fetch:aon": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-aon.ts",
     "fetch:foundry": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/fetch-foundry.ts",
-    "transform": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/transform.ts"
+    "transform": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/transform.ts",
+    "search:build": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/build-search.ts"
   },
   "dependencies": {
     "@astra/config": "workspace:*",
@@ -36,6 +37,7 @@
     "@types/react-dom": "^19.0.0",
     "@vitejs/plugin-react": "^5.2.0",
     "jsdom": "^29.1.1",
+    "pagefind": "^1.5.2",
     "tailwindcss": "^4.3.2",
     "vite": "8.1.3",
     "vitest": "^4.1.9"
