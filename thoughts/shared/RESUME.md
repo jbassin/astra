@@ -36,7 +36,46 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-14 — codex (0029) P3 BUILT S1–S5; ▶ acceptance H = consolidated stakeholder review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of 2026-07-14 — codex (0029) P4 SPEC FINAL; H deferred → folds into P4's exit gate; ▶ `octo:embrace` P4 S1; heartwood ON HOLD)
+
+> **✅ codex (0029) P4 (rules/lore browser) — SPEC FINAL**
+> (`thoughts/astra/specs/0029-codex-p4-rules-browser-spec.md`, D29-39..45; staff-orchestrator
+> + in-house research agents — sanctioned fallback, no external octo providers).
+> **Stakeholder deferred P3 acceptance H again → it now folds into P4's exit gate as ONE
+> consolidated review (P2-H spot-set w/ M7/M11 expected + P3 browse/search incl. the
+> heal-ranking limitation + P4 surfaces).** Stakeholder decisions (batched + resolved
+> 2026-07-14): `/rules` becomes the tree browser (the P3 flat listing for rules dies) ·
+> superseded predicate inside the tree · attached sidebars on ALL categories · `/sources`
+> index + mechanical book-name normalization.
+> - **Empirical basis (two research agents vs the real corpus + raw AoN snapshot):** rules
+>   3,645 (raw breadcrumbs 96%; the 145 absent ARE the roots, ~40 childless; trees scope per
+>   (book, path) across 45 books; parent materializability 99.7%, synthetic nodes pinned at
+>   3); sidebar 689 (host join 689/689, max 7/host; 65 shared-url hosts need the
+>   pickCanonical page-owner rule); source 245 entities + 519 un-normalized `source.book`
+>   strings (276 Foundry-only → an expected ≈253-book "Other" bucket, 5.4% of entities).
+> - **Adversarially reviewed same day: 3 blockers + 9 minors + 3 nits ALL folded. THE find:
+>   AoN `next`/`previous` links are per-level SIBLING chains, NOT a page-turn chain** (0/3,642
+>   hops descend, 780 forks, 986 asymmetries, 106 cross-book) → the tree orders children by
+>   per-sibling-group restricted chain walks; the entity-page pager derives from the tree's
+>   DFS pre-order (NO `readingOrder` entity field); url-keyed P4 joins must go post-identity
+>   `byUrl → aonId → aonIdToFinalId` (the S5d parse-time repoint seam returns pre-collision
+>   ids — wrong for this).
+> - **▶ NEXT: `octo:embrace` P4 S1** (transform-only: breadcrumb thread+normalize,
+>   sibling-group ordering, attachedSidebars reverse-join, book normalize,
+>   `rules-tree.json` + `sources-index.json`, fixture regen incl. complete ancestor chain,
+>   host search-index rebuild). Slices S1–S5; acceptance H = the consolidated review at P4
+>   exit.
+> - [[codex-0029-gotchas]] carries the P4-spec section (the sibling-chain reality, the
+>   parent-resolution fallback + tie-breaks, the shared-host-url disambiguation, the
+>   Treasure Vault (Remastered) edition trap, the "Other" bucket expectation).
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-14, earlier same day) — P3 BUILT (superseded above)
+
+## (was) Current state (as of 2026-07-14 — codex (0029) P3 BUILT S1–S5; ▶ acceptance H = consolidated stakeholder review; heartwood ON HOLD)
 
 > **✅ codex (0029) P3 (faceted browse + search) — ALL FIVE SLICES BUILT + PUSHED same-day**
 > (staff-orchestrator + sonnet engineers, one reviewed commit per slice; spec
