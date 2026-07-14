@@ -253,6 +253,10 @@ def session_episode(context: dg.AssetExecutionContext) -> dg.MaterializeResult:
             (_session_dir(key) / "manifest.json").read_text()
         )
         episode, transcript = assemble_episode(manifest, script, out_dir=_session_dir(key))
+        # Publish sentinel: a flat, gitignored marker at the episodes root, bind-mounted to
+        # the host, where the linguist-commit.path unit watches it (systemd path units are
+        # not recursive, so a write inside the session dir can't trigger anything itself).
+        _atomic_write(_out_root() / ".last-rendered", key)
         _episodes_counter.add(1)
         _log.info("mouthpiece produced episode %s: %s", key, episode.name)
         return dg.MaterializeResult(

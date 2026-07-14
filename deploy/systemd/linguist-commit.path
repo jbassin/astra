@@ -1,0 +1,17 @@
+[Unit]
+Description=Trigger linguist-commit the moment a mouthpiece episode finishes rendering
+Documentation=https://github.com/jbassin/astra
+
+[Path]
+# session_episode atomically writes this flat sentinel (episodes root, bind-mounted from
+# the dagster-code container) after each episode.mp3 lands. Watching the sentinel — not
+# the episodes tree — is deliberate: path units aren't recursive, and the per-session dir
+# fills with intermediates (digest/script/clips) long before the episode is done, so a
+# directory watch would fire mid-run. The 15-min linguist-commit.timer stays enabled as
+# the fallback sweep (transcript-only sessions never render an episode, and a missed
+# inotify event must not strand a publish).
+PathModified=/ruby/data/experiments/astra/apps/mouthpiece-backend/episodes/.last-rendered
+Unit=linguist-commit.service
+
+[Install]
+WantedBy=paths.target

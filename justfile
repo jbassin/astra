@@ -283,10 +283,15 @@ linguist-commit-timer-install:
     set -euo pipefail
     unit_dir="$HOME/.config/systemd/user"
     mkdir -p "$unit_dir"
-    cp deploy/systemd/linguist-commit.service deploy/systemd/linguist-commit.timer "$unit_dir/"
+    cp deploy/systemd/linguist-commit.service deploy/systemd/linguist-commit.timer \
+       deploy/systemd/linguist-commit.path "$unit_dir/"
     systemctl --user daemon-reload
     systemctl --user enable --now linguist-commit.timer
+    # Event-driven publish: fires linguist-commit the moment session_episode writes the
+    # .last-rendered sentinel; the timer above stays on as the fallback sweep.
+    systemctl --user enable --now linguist-commit.path
     echo "installed. timer schedule:"; systemctl --user list-timers linguist-commit.timer --no-pager
+    echo "path unit:"; systemctl --user is-active linguist-commit.path
 
 # Install the stack-wide Discord alerting (idempotent; re-run after editing any unit).
 # Three pieces: (1) the templated OnFailure handler astra-alert@.service — Class C, pages
