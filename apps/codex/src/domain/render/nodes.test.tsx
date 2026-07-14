@@ -25,6 +25,23 @@ function html(nodes: CodexNode[], ctx = baseCtx()): string {
   return renderToStaticMarkup(<>{renderNodes(nodes, ctx)}</>);
 }
 
+/** A minimal `CodexEntity` for embed-resolution fixtures — shared by the B2
+ * paragraph-wrapper guard tests and the D29-25 embed-inlining tests below. */
+function makeEntity(id: string, body: BlockNode[]): CodexEntity {
+  const [category, slug] = id.split("/") as [string, string];
+  return {
+    id,
+    slug,
+    category,
+    name: `Name(${id})`,
+    edition: "remaster",
+    source: { book: "Test Book", license: "ORC" },
+    traits: [],
+    body,
+    facets: {},
+  };
+}
+
 describe("nodes.tsx: per-kind totality (D29-24)", () => {
   it("text: plain / bold / italic / superscript / combined", () => {
     expect(html([text("plain")])).toBe("plain");
@@ -222,6 +239,60 @@ describe("nodes.tsx: B2 adversarial — paragraph-carrying-block-children guard"
     expect(html([{ kind: "paragraph", children: [text("plain")] }])).toBe("<p>plain</p>");
   });
 
+  it("a paragraph carrying a RESOLVED depth-0 embed renders <div>, not <p><div>...</div></p> (S5 real-corpus find, `creature/red-dragon-adult`)", () => {
+    // The exact real shape: a paragraph of prose text with an inline `embed`
+    // to a `creature-family` entry — the embed resolves and inlines a block
+    // `codex-embed-card` div (D29-25), which a naive `<p>` wrapper cannot
+    // legally contain (a hydration mismatch: the browser silently closes the
+    // `<p>` early, diverging from React's expected tree).
+    const family = makeEntity("creature-family/dragon-red", [para(text("Family lore"))]);
+    const resolver = (id: string) => (id === family.id ? family : undefined);
+    const ctx = baseCtx({ resolveEmbed: resolver });
+    const out = html(
+      [
+        {
+          kind: "paragraph",
+          children: [
+            text("This dragon is a member of the "),
+            { kind: "embed", target: family.id, resolved: true, display: "Red Dragon" },
+            text(" family."),
+          ],
+        },
+      ],
+      ctx,
+    );
+    expect(out.startsWith("<div")).toBe(true);
+    expect(out).not.toContain("<p><div");
+    expect(out).not.toMatch(/<p[^>]*>[^<]*<div/);
+    expect(out).toContain("codex-embed-card");
+    expect(out).toContain("Family lore");
+  });
+
+  it("a paragraph carrying an UNRESOLVED or depth>0 embed still renders <p> (no false-positive block promotion)", () => {
+    const out1 = html([
+      {
+        kind: "paragraph",
+        children: [
+          text("See "),
+          { kind: "embed", target: "creature-family/missing", resolved: false, display: "Ghost" },
+        ],
+      },
+    ]);
+    expect(out1.startsWith("<p")).toBe(true);
+
+    // depth > 0: an embed's own body paragraph references another embed —
+    // that inner embed always degrades to an inline link (D29-25 depth cap),
+    // so its containing paragraph must stay <p>.
+    const c = makeEntity("action/c", [para(text("C body"))]);
+    const b = makeEntity("action/b", [
+      para(text("B body "), { kind: "embed", target: c.id, resolved: true, display: "See C" }),
+    ]);
+    const resolver = (id: string) => ({ [b.id]: b, [c.id]: c })[id];
+    const ctx = baseCtx({ resolveEmbed: resolver });
+    const out2 = html([{ kind: "embed", target: b.id, resolved: true, display: "See B" }], ctx);
+    expect(out2).toContain("<p>B body");
+  });
+
   it("a localizedBoilerplate carrying only inline content keeps <p>", () => {
     const out = html([
       {
@@ -236,21 +307,6 @@ describe("nodes.tsx: B2 adversarial — paragraph-carrying-block-children guard"
 });
 
 describe("nodes.tsx: D29-25 embed inlining, depth 1, cycle-guarded", () => {
-  function makeEntity(id: string, body: BlockNode[]): CodexEntity {
-    const [category, slug] = id.split("/") as [string, string];
-    return {
-      id,
-      slug,
-      category,
-      name: `Name(${id})`,
-      edition: "remaster",
-      source: { book: "Test Book", license: "ORC" },
-      traits: [],
-      body,
-      facets: {},
-    };
-  }
-
   it("a resolved top-level embed inlines the target's body, framed with a source link", () => {
     const target = makeEntity("action/pursue-a-lead", [para(text("Pursue body"))]);
     const resolver = (id: string) => (id === target.id ? target : undefined);

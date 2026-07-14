@@ -41,10 +41,15 @@ function RootComponent() {
   }, []);
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Dark-only void theme: force the dark palette before first paint (there
-            is no light branch), pre-hydration so there's no flash. */}
+            is no light branch), pre-hydration so there's no flash. This script sets
+            `saved-theme` on <html> BEFORE React hydrates, so the server-rendered
+            markup (which can't know the attribute yet) always mismatches the live
+            DOM here — the exact case `suppressHydrationWarning` exists for (S5
+            real-corpus find: same reasoning as the `<body>` one below, just missed
+            on `<html>` — the attribute the script actually targets). */}
         <script
           dangerouslySetInnerHTML={{
             __html: `document.documentElement.setAttribute("saved-theme","dark")`,

@@ -78,12 +78,22 @@ const BLOCK_KINDS: ReadonlySet<CodexNode["kind"]> = new Set([
  * own `children` can hold BLOCK nodes (resolved `@Localize` values are block
  * HTML) — a naive `paragraph -> <p>` wrapping one would emit `<p><p>...</p>
  * </p>`, which the browser silently hoists (hydration mismatch class, spec
- * B2). Only `localizedBoilerplate` needs walking here: every other inline
- * kind is a true leaf (no `children` field at all). */
-function paragraphCarriesBlockContent(children: readonly CodexNode[]): boolean {
+ * B2). `localizedBoilerplate` needs walking here; the other INLINE kind that
+ * can render as a BLOCK element is `embed` — a resolved, depth-0, not-yet-
+ * visited embed renders a `<div class="codex-embed-card">` (D29-25,
+ * `renderEmbed` below), so a paragraph carrying one of those must also
+ * become a `<div>` (S5 P3 real-corpus find: `creature/red-dragon-adult`'s
+ * body places a resolved `creature-family` embed inline inside prose text,
+ * producing `<p><div>...</div></p>` — invalid nesting the browser silently
+ * re-parents, a hydration mismatch). Every other inline kind is a true leaf
+ * (no `children` field at all). */
+function paragraphCarriesBlockContent(children: readonly CodexNode[], ctx: RenderCtx): boolean {
   return children.some((child) => {
     if (BLOCK_KINDS.has(child.kind)) return true;
-    if (child.kind === "localizedBoilerplate") return paragraphCarriesBlockContent(child.children);
+    if (child.kind === "localizedBoilerplate") {
+      return paragraphCarriesBlockContent(child.children, ctx);
+    }
+    if (child.kind === "embed") return embedRendersAsBlock(child, ctx);
     return false;
   });
 }
@@ -157,6 +167,19 @@ function embedLink(targetId: string, display: string, key: number): ReactNode {
       {display}
     </a>
   );
+}
+
+/** Whether `renderEmbed` will produce the BLOCK-level `codex-embed-card` div
+ * for this node under this ctx (vs. an inline span/link) — the exact same
+ * three conditions `renderEmbed` checks below, factored out so the B2
+ * paragraph-wrapper guard can ask the question without duplicating (and
+ * risking drifting from) that decision. `resolveEmbed` is an injected, pure,
+ * in-memory lookup (D29-25) — calling it here too is cheap, no I/O. */
+function embedRendersAsBlock(node: Extract<CodexNode, { kind: "embed" }>, ctx: RenderCtx): boolean {
+  if (!node.resolved) return false;
+  if (!ctx.resolveEmbed(node.target)) return false;
+  if (ctx.embedDepth > 0 || ctx.visitedEmbeds.has(node.target)) return false;
+  return true;
 }
 
 function renderEmbed(
@@ -296,7 +319,7 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
 
     // ---- block/structural ----
     case "paragraph": {
-      const Tag = paragraphCarriesBlockContent(node.children) ? "div" : "p";
+      const Tag = paragraphCarriesBlockContent(node.children, ctx) ? "div" : "p";
       return (
         <Tag key={key} className={Tag === "div" ? "codex-content" : undefined}>
           {renderNodes(node.children, ctx)}

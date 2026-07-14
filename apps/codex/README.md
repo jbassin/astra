@@ -17,10 +17,21 @@ the frontend on top, unmodified corpus contract. See
 Every entity lives at `/{category}/{slug}` (the corpus id, verbatim — `/spell/heal`,
 `/creature/red-dragon-adult`, `/spell/heal@legacy`), rendered by one total `CodexNode -> React`
 layer (`src/domain/render/nodes.tsx`) plus bespoke statblock/facet headers for the structured
-category groups (creature/hazard/spell/equipment/feat). `/` is a throwaway category directory
-and `/{category}` a throwaway A-Z listing (P3's faceted browse replaces both — no facet UI,
-pagination, or sort here by design). Crossref + trait-pill hover cards are a ported akasha
-Popover island (`src/domain/components/islands/Popover.tsx`), mounted on entity pages only.
+category groups (creature/hazard/spell/equipment/feat). `/` is the category directory (manifest
+totals, unchanged since P2); `/{category}` is P3's faceted listing (below) — P2's throwaway A-Z
+listing is gone. Crossref + trait-pill hover cards are a ported akasha Popover island
+(`src/domain/components/islands/Popover.tsx`), mounted on entity pages only.
+
+`renderNodes`' one structural gotcha (S5 real-corpus find, fixed): a `paragraph` whose children
+include a RESOLVED, depth-0 `embed` node must render as `<div class="codex-content">`, not `<p>`
+— `renderEmbed` inlines a resolved top-level embed as a block `<div class="codex-embed-card">`
+(D29-25), and `<p>` can't legally contain a `<div>`. The B2 guard (`paragraphCarriesBlockContent`
+in `nodes.tsx`) already handled this for block-carrying `localizedBoilerplate` children; it was
+missing the identical case for `embed` children, which only showed up on entities whose prose
+places an embed inline in running text (e.g. `creature/red-dragon-adult`'s `creature-family`
+reference) — a hydration mismatch the P2/P3 build-slice sweeps never happened to hit until the
+P3 S5 full-corpus Playwright pass. Fixed by asking the SAME question `renderEmbed` asks
+(resolved ∧ depth 0 ∧ not-yet-visited → block) via a shared `embedRendersAsBlock` predicate.
 
 - **`src/server/{corpusFs,corpusFns,entityPageData,directoryData,listingData}.ts`** — the
   corpus read layer: `corpusFs.ts` is the only `node:fs` seam (a `createCorpusReader(rootDir)`
@@ -31,15 +42,65 @@ Popover island (`src/domain/components/islands/Popover.tsx`), mounted on entity 
   `listingData`) as `createServerFn`s the route loaders call.
 - **`src/domain/render/`** — the total node renderer, statblock/facet headers, edition
   banners, trait pills, and the listing/directory presentation components.
-- **`src/routes/`** — `index.tsx` (category directory), `$category/index.tsx` (A-Z listing),
-  `$category/$slug.tsx` (entity page).
+- **`src/routes/`** — `__root.tsx` (header omnibar + legacy toggle, every page), `index.tsx`
+  (category directory), `$category/index.tsx` (P3 faceted listing), `$category/$slug.tsx` (entity
+  page), `search.tsx` (P3 `/search`, below).
 - **Run it:** `pnpm --filter @astra/codex dev` (real corpus if `data/corpus/` exists, else the
   fixture) / `pnpm --filter @astra/codex build && pnpm --filter @astra/codex start` (production
   parity, wires `astra.codex` OTel spans via `@astra/site-kit`'s `createSsrServer`). **Note:**
   `staticMounts` (below) is a `createSsrServer`-only mechanism — `/pagefind/*` only serves under
   `build && start`, not under plain `vite dev`.
 
-## Search (P3 S2, D29-34)
+## Browse (P3 S1/S3, D29-32/33/35)
+
+`/{category}` ships a data-derived facet panel over the FULL enriched row set for that category
+(client-side filtering, no server round-trip per interaction — the corpus's own `_index.json`
+rows already carry everything needed).
+
+- **Facet model, two committed modules.** `src/schema/facetKeys.ts` (S1, transform-owned) is the
+  per-category facet-KEY allowlist — the classifier's verdict on the real corpus baked into a
+  plain data table, imported unchanged by `emit.ts` (which per-category-trims `IndexRow.facets`
+  to exactly this allowlist) and by `src/domain/browse/facetDefs.ts` (S3, UI-owned), which pairs
+  each allowed key with its widget metadata (`{widget: enum|tristate|range, labelMap?, parse?}`).
+  A conformance test (`facetDefs.test.ts`) asserts the two modules' key sets match exactly, every
+  key round-trips against the fixture corpus schema, and label maps are total. The classifier
+  itself: GOOD-FACET = coverage ≥40% ∧ cardinality 2..~60 (soft — `equipment.usage` ships at 116
+  because its top-15 values cover 76%); RANGE-FACET = numeric wide-spread (level/hp/ac/price/
+  bulk/saves/perception); LIST-FACET = short bounded-cardinality arrays (traits, traditions).
+  `featLevel`/`rank` are BANNED spillover keys (proven exact duplicates of `level`). Every
+  category gets the CORE facets (level, rarity, traits, source.book, edition — level hidden where
+  a category has 0% coverage); 15/88 categories additionally carry classifier-derived facets
+  (the pinned big-12 sets — feat/creature/equipment/spell/hazard/weapon/class-feature/action/
+  rules/item-bonus/trait/deity — spec §2 D29-32 lists each set verbatim); the other 73 are
+  core-only. Trait case-folding (1,082 raw strings → 644 distinct) lives at the UI layer only —
+  corpus data stays verbatim, P2 entity pages are untouched.
+- **Filter engine** (`src/domain/browse/filterEngine.ts`) — pure, over rows already in memory:
+  traits are tri-state (AND across includes, NOT across excludes); enum facets are multi-select
+  OR; numeric facets are min/max over parsed values (price parses `pp/gp/sp/cp` → copper, `per 10`
+  divides for per-item value); entities missing a facet key form an implicit "—" bucket (an
+  include-selection drops them, an exclude never matches them, range filters ignore them unless a
+  "has value" bound is set — the per-facet UI reports an "N without data" count). Sort is name
+  (default, letter-anchored A–Z, `content-visibility: auto` per section — no virtualization
+  dependency) or level (ascending, "—" bucket last); nothing else (rarity/source stay filters).
+- **URL codec** (`src/domain/browse/urlState.ts`) — human-readable, round-trip-tested:
+  `?traits=fire,-agile&level=-2..5&rarity=rare,unique&f.actionCost=1,reaction&q=drag&legacy=1`.
+  Core facets are bare keys; derived facets are namespaced `f.<key>`. **Include sigil = no
+  marker; exclude = a leading `-`** — a bare `+` include marker would silently decode to a space
+  (`URLSearchParams`'s `application/x-www-form-urlencoded` convention, which the router's `qss`
+  codec inherits), so there's no include marker at all; no folded trait starts with `-`, so the
+  exclude marker is unambiguous. The codec also tolerates the router's own bare-numeric coercion
+  (`legacy=1` arrives as the number `1`, not the string `"1"`). Unknown params are ignored; the
+  empty state encodes to a clean URL (`{}`).
+- **Legacy toggle** (`src/domain/browse/legacyToggle.ts`) — one module-scope
+  `useSyncExternalStore` value shared by the header control and every browse/`/search` route,
+  persisted to `localStorage` (`codex:legacy`). **Precedence:** the URL's `legacy=1` wins ONLY on
+  the very first document load (seeded at ES-module-eval time, before any component's mount
+  effect can race it); every subsequent client-side navigation preserves the LIVE toggle
+  (internal links never carry a `legacy` param); each route reflects the live value back into its
+  OWN url via a router search replace, so the address bar stays copy-shareable at all times.
+  Listings show "N of M shown"; `/` keeps manifest totals regardless.
+
+## Search (P3 S2/S4, D29-34/36)
 
 `apps/codex/scripts/build-search.ts` builds a [Pagefind](https://pagefind.app) index offline from
 the corpus and writes it to `data/search/pagefind/` (sibling of `data/corpus/`, gitignored). It
@@ -57,8 +118,47 @@ exists, and a freshly-built index comes online with no server restart.
 > over the full ~46,192-entity corpus is ~3.8–4 GB (measured) — this build step must **never**
 > run in CI, a Docker build, or `vite build` (verified: `vp run -r build` only ever invokes
 > `vite build` for codex). Run it on the host via `just codex-search-index`, or as the last step
-> of `just codex-refresh` (transform → search index). A real run takes ~30s and produces a
-> ~50 MB bundle (fragments + index/filter chunks + the Pagefind runtime JS/wasm).
+> of `just codex-refresh` (transform → search index). A real run takes ~25–35s and produces a
+> ~50–55 MB bundle (fragments + index/filter chunks + the Pagefind runtime JS/wasm).
+
+**`buildSearchIndex()` `rm -rf`s `outDir` before every `writeFiles` call.** Pagefind's own
+`writeFiles` is NOT idempotent against a pre-existing output directory — its content-hashed
+fragment/chunk files accumulate across re-runs instead of being replaced, so re-running the build
+without clearing `outDir` first leaves stale hashed files alongside the new ones (an S2 real bug,
+found + fixed the same slice `writeFiles` was wired up — mirrors `emit.ts`'s own long-standing
+"wipe before write" posture for `data/corpus/`).
+
+Two client surfaces share one runtime-loader seam (`src/domain/search/pagefindClient.ts`,
+`loadPagefind()` — a memoized dynamic `import(/* @vite-ignore */ "/pagefind/pagefind.js")`, so a
+visit that already warmed one surface doesn't re-fetch the runtime) and the same shared
+`BrowseEmptyState` (M6) for zero-result rendering:
+
+- **The header omnibar** (`src/domain/search/Omnibar.tsx`) — present on every page, lazy-loads the
+  Pagefind runtime on first focus, 180ms-debounced type-ahead grouped by category (top ~8,
+  rendered straight from result `meta` — no per-keystroke fragment fetch beyond what's shown).
+  Ctrl/Cmd-K focuses; ↑/↓/Enter/Esc drive the dropdown; Enter with nothing highlighted (or the
+  "all results" row) goes to `/search?q=…`.
+- **`/search`** (`src/domain/search/SearchPage.tsx`, mounted client-only inside an SSR shell that
+  serves a `<noscript>` notice — search can't SSR, the index is client-fetched) — a query box plus
+  a Pagefind-`filters()`-sourced facet panel (category/rarity/edition/level/traits), results with
+  Pagefind's own `<mark>`-highlighted excerpts, and the same URL-shareable codec pattern browse
+  uses. The legacy toggle applies as a `superseded:false` Pagefind filter unless legacy is on.
+  Two visible results sharing a display name append their `source.book` inline (the same
+  collision rule D29-35 defines for listings, M5).
+- **Fail-soft**, everywhere: no index built (or the index dir renamed away) → `pagefind.js` 404s →
+  `loadPagefind()` resolves `null` → the omnibar renders disabled with an "index not built" title
+  and `/search` shows the same notice — no restart needed once a real index lands (`StaticMount`
+  re-checks per request).
+
+> **Known ranking limitation (not a codex bug): single common-word name queries.** Pagefind's
+> default TF-based ranking gives `meta.title` no boost in the `addCustomRecord` path — searching
+> `heal` does not surface `/spell/heal` in the top results at 46k-page scale (it loses to shorter,
+> topically-dense pages like "Healer's Gel"). Injecting a `data-pagefind-weight` span around the
+> name was tried and reverted (S4): it didn't move ranking meaningfully at this corpus size, and
+> it leaked the raw weight-attribute text into Pagefind's excerpt window on exactly the query that
+> matters most (the name match itself). Distinctive/multi-word names ("red dragon") rank
+> correctly — that's the acceptance-gate query class this repo tests against; do not re-attempt
+> weight tuning without a new decision.
 
 CI's own coverage is hermetic: `scripts/build-search.test.ts` runs the exact same
 `buildSearchIndex()` against the committed fixture corpus into a fresh `os.tmpdir()` dir (never
