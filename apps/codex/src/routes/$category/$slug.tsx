@@ -1,5 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
+import { Popover } from "@/domain/components/islands/Popover";
 import { EntityPage } from "@/domain/render/entityPage";
 import { rootRenderCtx } from "@/domain/render/nodes";
 import { firstParagraphSummary } from "@/domain/render/text";
@@ -41,5 +42,13 @@ function EntityRouteComponent() {
     resolveEmbed: (targetId) => embeds[targetId],
     knownTraitIds: new Set(knownTraitIds),
   });
-  return <EntityPage entity={entity} ctx={ctx} />;
+  return (
+    <>
+      {/* D29-28: mounted on the entity route ONLY (not the index/listing
+          routes) — hover cards on crossrefs + trait pills, never on an 8k-row
+          listing (spec's own reasoning for restricting the mount point). */}
+      <Popover />
+      <EntityPage entity={entity} ctx={ctx} />
+    </>
+  );
 }

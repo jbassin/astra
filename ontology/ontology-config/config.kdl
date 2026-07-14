@@ -300,10 +300,12 @@ portal-headless {
 
 codex {
     // The PF2e reference site (0029) — a public-but-noindexed build-time ingest +
-    // SSR frontend on the strider template (Decision I), sibling of portal-headless
-    // (flat package, no browser RUM surface yet). Same config-single-source contract:
-    // the server binds this port; no PORT env. Behind Caddy at codex.iridi.cc → host
-    // 10374. data-path is the gitignored corpus dir the ingest pipeline writes to.
+    // SSR frontend on the strider template (Decision I). Same config-single-source
+    // contract: the server binds this port; no PORT env. Behind Caddy at
+    // codex.iridi.cc → host 10374. data-path is the gitignored corpus dir the ingest
+    // pipeline writes to. P2 S3 (D29-30) wired client RUM (src/observe/{rum,
+    // rumConfig}.ts, startRum in __root's mount effect) — it reads the top-level
+    // telemetry.rum-endpoint (above).
     service-name "astra.codex"
     port 10374
     public-origin "https://codex.iridi.cc"

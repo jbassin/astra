@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CategoryIndexRouteImport } from './routes/$category/index'
 import { Route as CategorySlugRouteImport } from './routes/$category/$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CategoryIndexRoute = CategoryIndexRouteImport.update({
+  id: '/$category/',
+  path: '/$category/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
@@ -26,27 +32,31 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$category/$slug': typeof CategorySlugRoute
+  '/$category/': typeof CategoryIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$category/$slug': typeof CategorySlugRoute
+  '/$category': typeof CategoryIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/$category/$slug': typeof CategorySlugRoute
+  '/$category/': typeof CategoryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/$category/$slug'
+  fullPaths: '/' | '/$category/$slug' | '/$category/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/$category/$slug'
-  id: '__root__' | '/' | '/$category/$slug'
+  to: '/' | '/$category/$slug' | '/$category'
+  id: '__root__' | '/' | '/$category/$slug' | '/$category/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CategorySlugRoute: typeof CategorySlugRoute
+  CategoryIndexRoute: typeof CategoryIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$category/': {
+      id: '/$category/'
+      path: '/$category'
+      fullPath: '/$category/'
+      preLoaderRoute: typeof CategoryIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$category/$slug': {
@@ -71,6 +88,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CategorySlugRoute: CategorySlugRoute,
+  CategoryIndexRoute: CategoryIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

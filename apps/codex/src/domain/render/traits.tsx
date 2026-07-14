@@ -1,6 +1,8 @@
 import { TraitPill } from "@astra/gothic";
 import type { ReactElement } from "react";
 
+import { humanizeSlug } from "./text";
+
 /**
  * D29-24: trait pills link to `/trait/{slug}` ONLY when that trait exists in
  * the corpus's `trait` category (907 entities, spec §2) — numeric qualifiers
@@ -23,13 +25,11 @@ export function traitHref(token: string): string {
  * The corpus has no separate trait display-name field on the token itself
  * (only the `trait` category's OWN entities carry a canonical `name`, keyed
  * by the very same slug) — this is a best-effort humanization for the common
- * case, not a canonical-name lookup. */
+ * case, not a canonical-name lookup. Delegates to `text.ts`'s shared
+ * `humanizeSlug` (S3 factored the hyphen-split logic out so the category
+ * directory/listing pages reuse it instead of a second copy). */
 export function humanizeTraitToken(token: string): string {
-  return token
-    .split("-")
-    .filter((part) => part.length > 0)
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
+  return humanizeSlug(token);
 }
 
 export function CodexTraitPill({

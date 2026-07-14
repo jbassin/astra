@@ -249,3 +249,116 @@ a:hover {
 .codex-lore {
   margin-top: 1.5rem;
 }
+
+/* --- S3: the throwaway category directory (`/`) + A-Z listing (`/{category}`) --- */
+.codex-directory-total {
+  color: var(--color-ink-dim);
+  font-size: 0.9rem;
+  margin: 1.5rem 0 0.5rem;
+}
+.codex-directory-group {
+  margin-top: 1.5rem;
+}
+.codex-directory-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1rem;
+}
+.codex-directory-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+.codex-directory-count {
+  color: var(--color-ink-faint);
+  font-size: 0.78rem;
+}
+
+.codex-listing-header {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: 1rem;
+}
+.codex-listing-title {
+  font-family: var(--font-display), var(--font-mono), monospace;
+  font-size: clamp(1.5rem, 4vw, 2rem);
+  font-weight: 600;
+}
+.codex-listing-count {
+  color: var(--color-ink-dim);
+  font-size: 0.85rem;
+}
+.codex-listing-alpha {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1.25rem;
+  position: sticky;
+  top: 0;
+  padding: 0.5rem 0;
+  background-color: var(--color-void);
+  z-index: 1;
+}
+.codex-listing-alpha a {
+  padding: 0.1rem 0.4rem;
+  font-size: 0.85rem;
+}
+.codex-listing-letter {
+  margin-top: 1.25rem;
+}
+.codex-listing-rows {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+.codex-listing-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--color-rule);
+}
+.codex-listing-name {
+  font-weight: 600;
+  min-width: 12rem;
+}
+.codex-listing-level,
+.codex-listing-rarity,
+.codex-listing-source {
+  color: var(--color-ink-dim);
+  font-size: 0.82rem;
+}
+
+/* --- Popover hover-preview card (D29-28, ported from akasha-frontend) --- */
+.popover {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  pointer-events: none;
+}
+.popover.active-popover {
+  visibility: visible;
+  opacity: 1;
+}
+.popover-inner {
+  max-width: 28rem;
+  max-height: 22rem;
+  overflow-y: auto;
+  padding: 1rem 1.25rem;
+  background: var(--color-elevated);
+  border: 1px solid var(--color-rule);
+  border-radius: 0.4rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+  font-size: 0.85rem;
+}
+.popover-inner img {
+  max-width: 100%;
+  height: auto;
+}

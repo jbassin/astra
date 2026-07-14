@@ -26,6 +26,17 @@ describe("createCorpusReader (D29-23)", () => {
     expect(reader.categories()).toBe(reader.categories());
   });
 
+  it("categoryCounts(): every fixture category has a count, keys match categories()", () => {
+    const counts = reader.categoryCounts();
+    expect(Object.keys(counts).sort()).toEqual([...reader.categories()].sort());
+    expect(counts.spell).toBeGreaterThan(0);
+    expect(counts.creature).toBeGreaterThan(0);
+  });
+
+  it("categoryCounts() is cached (same object identity across calls)", () => {
+    expect(reader.categoryCounts()).toBe(reader.categoryCounts());
+  });
+
   it("index(): slim IndexRows for a real category", () => {
     const rows = reader.index("creature");
     expect(rows.length).toBeGreaterThan(0);

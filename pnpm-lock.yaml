@@ -165,6 +165,9 @@ importers:
       '@astra/site-kit':
         specifier: workspace:*
         version: link:../../libs/ts/site-kit
+      '@floating-ui/dom':
+        specifier: ^1.7.6
+        version: 1.7.6
       '@fontsource/ibm-plex-mono':
         specifier: ^5.2.7
         version: 5.2.7

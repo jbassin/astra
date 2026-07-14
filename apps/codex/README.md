@@ -1,11 +1,41 @@
-# codex — the PF2e reference-site ingest pipeline
+# codex — a PF2e reference-site: ingest + SSR frontend
 
-codex builds a canonical, Zod-typed, license-labeled corpus by combining two independently
-maintained Pathfinder 2e sources: the **foundryvtt/pf2e** compendium packs (structured
-mechanics, per-doc license data) and the **Archives of Nethys** Elasticsearch index (prose,
-citations, page numbers). P1 (this ingest) is deliberately frontend-free — it ends with a
-validated, deterministic, sharded corpus + a transform report on disk, not a rendered page.
-See `thoughts/astra/specs/0029-codex-p1-ingest-spec.md` for the full spec.
+codex is a public-but-noindexed Pathfinder 2e reference site (`codex.iridi.cc`, port 10374).
+The member is now **app + ingest**: an **ingest pipeline** (below) that builds a canonical,
+Zod-typed, license-labeled corpus by combining two independently maintained Pathfinder 2e
+sources — the **foundryvtt/pf2e** compendium packs (structured mechanics, per-doc license
+data) and the **Archives of Nethys** Elasticsearch index (prose, citations, page numbers) —
+plus a **TanStack Start SSR frontend** (`src/routes/`, `src/server/`, `src/domain/render/`)
+that reads the emitted corpus from disk at request time and renders it. P1 (the ingest) was
+deliberately frontend-free — it ends with a validated, deterministic, sharded corpus + a
+transform report on disk. P2 (`thoughts/astra/specs/0029-codex-p2-entity-pages-spec.md`) adds
+the frontend on top, unmodified corpus contract. See
+`thoughts/astra/specs/0029-codex-p1-ingest-spec.md` for the ingest spec.
+
+## The frontend (P2)
+
+Every entity lives at `/{category}/{slug}` (the corpus id, verbatim — `/spell/heal`,
+`/creature/red-dragon-adult`, `/spell/heal@legacy`), rendered by one total `CodexNode -> React`
+layer (`src/domain/render/nodes.tsx`) plus bespoke statblock/facet headers for the structured
+category groups (creature/hazard/spell/equipment/feat). `/` is a throwaway category directory
+and `/{category}` a throwaway A-Z listing (P3's faceted browse replaces both — no facet UI,
+pagination, or sort here by design). Crossref + trait-pill hover cards are a ported akasha
+Popover island (`src/domain/components/islands/Popover.tsx`), mounted on entity pages only.
+
+- **`src/server/{corpusFs,corpusFns,entityPageData,directoryData,listingData}.ts`** — the
+  corpus read layer: `corpusFs.ts` is the only `node:fs` seam (a `createCorpusReader(rootDir)`
+  factory), root-resolved from `config.kdl`'s `codex.data-path` with a **fail-soft to the
+  committed `fixtures/entities/` corpus** (loud startup WARN) when the real corpus isn't
+  mounted — this is what makes `pnpm dev`/`pnpm test`/CI hermetic on a fresh clone with zero
+  `data/`. `corpusFns.ts` wraps the pure resolvers (`entityPageData`/`directoryData`/
+  `listingData`) as `createServerFn`s the route loaders call.
+- **`src/domain/render/`** — the total node renderer, statblock/facet headers, edition
+  banners, trait pills, and the listing/directory presentation components.
+- **`src/routes/`** — `index.tsx` (category directory), `$category/index.tsx` (A-Z listing),
+  `$category/$slug.tsx` (entity page).
+- **Run it:** `pnpm --filter @astra/codex dev` (real corpus if `data/corpus/` exists, else the
+  fixture) / `pnpm --filter @astra/codex build && pnpm --filter @astra/codex start` (production
+  parity, wires `astra.codex` OTel spans via `@astra/site-kit`'s `createSsrServer`).
 
 ## Pipeline shape
 

@@ -34,7 +34,7 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
   const group = categoryGroupOf(entity.category);
   return (
     <article
-      className="codex-entity-page"
+      className="codex-entity-page popover-hint"
       data-entity-id={entity.id}
       data-category={entity.category}
     >

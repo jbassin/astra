@@ -11,7 +11,9 @@
 import { createServerFn } from "@tanstack/react-start";
 
 import { getCorpusReader } from "./corpusFs";
+import { type CategoryDirectoryData, resolveCategoryDirectory } from "./directoryData";
 import { type EntityPageData, resolveEntityPageData } from "./entityPageData";
+import { type CategoryListingData, resolveCategoryListing } from "./listingData";
 
 /**
  * The one entity-page server fn the route loader calls. `null` (an unknown
@@ -22,3 +24,16 @@ import { type EntityPageData, resolveEntityPageData } from "./entityPageData";
 export const getEntityPage = createServerFn({ method: "GET" })
   .validator((input: { category: string; slug: string }) => input)
   .handler(({ data }): EntityPageData | null => resolveEntityPageData(getCorpusReader(), data));
+
+/** S3 (D29-27) — the `/` category directory. */
+export const getCategoryDirectory = createServerFn({ method: "GET" }).handler(
+  (): CategoryDirectoryData => resolveCategoryDirectory(getCorpusReader()),
+);
+
+/** S3 (D29-27) — the `/{category}` A–Z listing; `null` (unknown category) ->
+ * the route loader's `notFound()`, same convention as `getEntityPage`. */
+export const getCategoryListing = createServerFn({ method: "GET" })
+  .validator((input: { category: string }) => input)
+  .handler(({ data }): CategoryListingData | null =>
+    resolveCategoryListing(getCorpusReader(), data.category),
+  );

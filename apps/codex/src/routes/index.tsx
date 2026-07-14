@@ -1,14 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-// S2 placeholder (spec D29-27's category directory + A–Z listings are S3): every
-// entity is already reachable directly at `/{category}/{slug}` (D29-22), so this
-// stays a minimal, non-error landing page rather than a hard 404 at "/" until the
-// real listing lands.
+import { CategoryDirectory } from "@/domain/render/listing";
+import { getCategoryDirectory } from "@/server/corpusFns";
+
+/**
+ * D29-27 — the `/` category directory: every category + its corpus count,
+ * grouped by `categoryGroupOf` (S1's own render-group taxonomy). Explicitly
+ * THROWAWAY (spec: "no facet UI, no pagination, no sort options") — P3's
+ * faceted browse replaces this page entirely; it exists only so every category
+ * (and therefore every entity) is reachable by click at the P2 exit gate.
+ */
 export const Route = createFileRoute("/")({
+  loader: () => getCategoryDirectory(),
+  head: () => ({
+    meta: [{ title: "codex — category directory" }],
+  }),
   component: IndexComponent,
 });
 
 function IndexComponent() {
+  const data = Route.useLoaderData();
   return (
     <main className="wrap">
       <h1 className="hero-title">codex</h1>
@@ -17,10 +28,11 @@ function IndexComponent() {
         <code>
           /{"{category}"}/{"{slug}"}
         </code>{" "}
-        — e.g. <a href="/creature/red-dragon-adult">/creature/red-dragon-adult</a> or{" "}
-        <a href="/spell/heal">/spell/heal</a>. A browsable category directory lands in a follow-up
-        slice.
+        — pick a category below, or jump straight to{" "}
+        <a href="/creature/red-dragon-adult">/creature/red-dragon-adult</a> or{" "}
+        <a href="/spell/heal">/spell/heal</a>.
       </p>
+      <CategoryDirectory data={data} />
     </main>
   );
 }

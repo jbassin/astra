@@ -25,6 +25,21 @@ export function humanizeFacetKey(key: string): string {
   return words.map((w) => KEY_OVERRIDES[w.toLowerCase()] ?? capitalize(w)).join(" ");
 }
 
+/** `"reach-15"` -> "Reach 15"; `"creature-ability"` -> "Creature Ability". A plain
+ * hyphen-split humanizer (no camelCase boundary handling, unlike
+ * `humanizeFacetKey` above — trait tokens and corpus `category` strings are
+ * already lowercase-hyphenated, never camelCase) shared by `traits.tsx`
+ * (trait-token display names) and S3's category directory/listing pages
+ * (category display names) so the two don't drift into two copies of the same
+ * five-line function. */
+export function humanizeSlug(slug: string): string {
+  return slug
+    .split("-")
+    .filter((part) => part.length > 0)
+    .map((part) => capitalize(part))
+    .join(" ");
+}
+
 // ---------------------------------------------------------------------------
 // S2: plain-text extraction — the route head/meta `<meta name="description">`
 // needs a plain string, not React nodes, so this is a SEPARATE small total

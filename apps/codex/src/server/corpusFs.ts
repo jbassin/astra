@@ -41,6 +41,11 @@ export interface CorpusReader {
   /** Every category directory name, from `manifest.json`'s `categoryCounts` —
    * cached forever (the corpus is immutable per process). */
   categories(): readonly string[];
+  /** S3 (D29-27 root category directory) — the same `manifest.json`
+   * `categoryCounts` map `categories()` derives its key list from, but with the
+   * counts kept: `{category: entityCount}`. Cached alongside `categoriesCache`
+   * (one manifest read, not two). */
+  categoryCounts(): Readonly<Record<string, number>>;
   /** A category's slim `_index.json` rows — cached forever per category. */
   index(category: string): readonly IndexRow[];
   /** One entity, read + `JSON.parse` fresh per call — no cache, and NO
@@ -88,14 +93,23 @@ function assertValidSlug(slug: string): void {
  */
 export function createCorpusReader(rootDir: string): CorpusReader {
   let categoriesCache: readonly string[] | undefined;
+  let categoryCountsCache: Readonly<Record<string, number>> | undefined;
   const indexCache = new Map<string, readonly IndexRow[]>();
+
+  function readManifest(): CorpusManifestShape {
+    const manifestPath = within(rootDir, "manifest.json");
+    return JSON.parse(readFileSync(manifestPath, "utf8")) as CorpusManifestShape;
+  }
 
   function categories(): readonly string[] {
     if (categoriesCache) return categoriesCache;
-    const manifestPath = within(rootDir, "manifest.json");
-    const manifest = JSON.parse(readFileSync(manifestPath, "utf8")) as CorpusManifestShape;
-    categoriesCache = Object.keys(manifest.categoryCounts).sort();
+    categoriesCache = Object.keys(readManifest().categoryCounts).sort();
     return categoriesCache;
+  }
+
+  function categoryCounts(): Readonly<Record<string, number>> {
+    categoryCountsCache ??= readManifest().categoryCounts;
+    return categoryCountsCache;
   }
 
   function assertKnownCategory(category: string): string {
@@ -110,6 +124,7 @@ export function createCorpusReader(rootDir: string): CorpusReader {
 
   return {
     categories,
+    categoryCounts,
 
     index(category: string): readonly IndexRow[] {
       const cached = indexCache.get(category);
