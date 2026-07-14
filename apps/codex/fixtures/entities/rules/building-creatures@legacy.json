@@ -1,0 +1,966 @@
+{
+  "aonUrl": "/Rules.aspx?ID=995",
+  "attachedSidebars": [
+    "sidebar/base-road-maps-2",
+    "sidebar/building-creatures-overview-2",
+    "sidebar/converting-first-edition-creatures-2",
+    "sidebar/designing-npcs-2",
+    "sidebar/improvising-a-creature-2",
+    "sidebar/reskinning-creatures",
+    "sidebar/trait-abilities"
+  ],
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Building Creatures",
+          "kind": "crossref",
+          "targetId": "rules/building-creatures"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Rules"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Gamemastery Guide",
+          "kind": "crossref",
+          "targetId": "source/gamemastery-guide"
+        },
+        {
+          "content": " pg. 56",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Making your own creatures fleshes out your game world and lets you introduce concepts not yet available in published products like the Bestiary volumes. These guidelines help you customize creatures to your specifications and explore your imagination. From strange beasts to canny political rivals, you have the power to design creatures that fit the narrative needs of your story.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " Creatures aren’t built the same way PCs are. The rules for building them are more flexible, and their statistics are based on benchmark final numbers rather than combining each individual modifier together. This is called top-down design, in which you consider the design process as a whole and select the details that reflect your intended result, rather than building statistics from the bottom up and hoping the finished creature matches your vision.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " This guide provides a step-by-step process to build creatures, but as you get more comfortable with creature creation, you may prefer to use different methods. You could start with one ability you think is cool, or you might look to create a spellcaster of a certain type. There’s no wrong starting place or wrong way to compile and present your creation; some GMs prefer to generate a stat block that is as similar to an official ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Bestiary",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": true,
+            "superscript": false
+          }
+        },
+        {
+          "content": " entry as possible, while others prefer to compile just a brief set of notes.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Base Road Maps",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "You can use the following suggestions to set the baseline when creating your road map. For example, use brute for a big, tough creature like an ogre, and skirmisher for a darting enemy. Each entry is a starting point you can customize as you see fit. Any core statistic that isn’t listed should typically use moderate numbers. You can set ability modifiers and add additional abilities as needed. To make a creature that resembles a character of a certain class, see Class Road maps on page 73.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "Brute",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " low Perception; high or extreme Str modifier, high to moderate Con modifier, low or lower Dex and mental modifiers; moderate or low AC; high Fortitude, low Reflex or Will or both; high HP; high attack bonus and high damage or moderate attack bonus and extreme damage",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "Magical Striker",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " high attack and high damage; moderate to high spell DCs; either a scattering of innate spells or prepared or spontaneous spells up to half the creature’s level (rounded up) minus 1",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "Skill Paragon",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " high or extreme ability modifier matching its best skills; typically high Reflex or Will and low Fortitude; many skills at moderate or high and potentially one or two extreme skills; at least one special ability to use the creature’s skills in combat",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "Skirmisher",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " high Dex modifier; low Fortitude, high Reflex; higher Speed than typical",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "Sniper",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " high Perception; high Dex modifier; low Fortitude, high Reflex; moderate to low HP; ranged Strikes have high attack bonus and damage or moderate attack bonus and extreme damage (melee Strikes are weaker)",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "Soldier",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " high Str modifier; high to extreme AC; high Fortitude; high attack bonus and high damage; Attack of Opportunity or other tactical abilities",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": "Spellcaster",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " high or extreme modifier for the corresponding mental ability; low Fortitude, high Will; low HP; low attack bonus and moderate or low damage; high or extreme spell DCs; prepared or spontaneous spells up to half the creature’s level (rounded up)",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Building Creatures Overview",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "This section details the creature-building process using the following steps. ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "items": [
+            [
+              {
+                "content": "Develop the Concept (page 56)",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              },
+              {
+                "content": " Think about your creature, and make notes you can use in future steps.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Build the Stat Block",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              },
+              {
+                "content": " Pick all the statistics for the creatures, going through the list below.\n Level (page 58)\n Alignment, Size, and Traits (page 58)\n Ability Modifiers (page 59)\n Perception and Senses (page 60)\n Languages (page 60)\n Skills (page 60)\n Items, if necessary (page 61)\n AC (page 61)\n Saving Throws (page 62)\n Hit Points (page 62)\n Immunities, Weaknesses, and Resistances (page 63)\n Speed (page 64)\n Strikes, including their damage (page 64)\n Spells, if necessary (page 65)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Design Abilities (page 67)",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              },
+              {
+                "content": " Create the special abilities your creature can use.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Review Holistically (page 69)",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              },
+              {
+                "content": " Step back, take stock of your creature as a whole, and tweak as needed.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "kind": "list",
+          "ordered": true
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Converting First Edition Creatures",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "If you’re converting creatures from First Edition, you won’t find a direct numerical conversion. Instead, use the original statistics to create your road map, giving a better AC to a creature that had a good AC in First Edition, and so on.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": " Here are the main areas of difference that you’ll want to keep in mind for your conversion. ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "items": [
+            [
+              {
+                "content": "Ability modifiers scale differently, so don’t copy them over exactly. The highest modifiers tend not to get as high in Second Edition. You’ll rarely see a +10 Strength modifier, for example. Creatures also tend to get better low statistics at higher levels than they used to, particularly for Dexterity and Wisdom. This is most evident in high‑level First Edition creatures with awful Dexterity.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Low-Intelligence creatures, particularly animals, tend to have more special actions than they would have in First Edition. This is to make encounters with them more dynamic and distinct. Compare dinosaurs between the editions for good examples.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "When converting spell-like abilities to innate spells, you might need to make some substitutions. Some spells will appear as heightened versions of spells (such as greater dispel magic now being heightened dispel magic), but others will require you to find something different. Also, don’t feel like you need to keep every spell; focus on the most thematic and potent ones. The Spells section on page 65 has more advice on this subject.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Damage reduction has been replaced with two options: resistance to all damage (possibly with exceptions), or more HP and a weakness. Immunities, Weaknesses, and Resistances on page 63 describes the distinction.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "If you want to convert spell resistance, you can give the creature a +1 status bonus to all saves against magic, or +2 if it had abnormally high spell resistance for its level.",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "kind": "list",
+          "ordered": false
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Designing NPCs",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "Sometimes you’ll design a creature that’s meant to have abilities or characteristics similar to those of a PC. Maybe you need a bold champion, a sly rogue master criminal, or a wizened druid elder for your game. You also might need a common baker, who has little combat ability but great skill with dough and an oven. This section provides ways you might modify aspects of the creature-building process to fit those needs.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Improvising a Creature",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "As you get more experienced, you might find that you don’t need to build some creatures in advance. In many cases, especially for simple creatures, you can just select values from the relevant tables on the fly and track its HP. When you do, track which value you used as it came up. For instance, let’s say you’re improvising a 2nd-level kobold soldier. When it’s time for initiative, you decide it has moderate Perception and jot down “Per +8.” Your group’s fighter beats it at initiative and attacks. You decide the soldier has high AC—looking at Table 2–5, you see that’s 18—and add this information to your note. The fighter’s Strike hits, and you select the low end of high HP: 36. Well, now it’s 25. Your note says “Per +8, AC 18, HP 25.” If it gets to take a turn, you can give it a Strike then.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Reskinning Creatures",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "Sometimes you need a creature with abilities that are almost exactly the same as those of a published creature. In that case, it can be more efficient to simply “reskin” the old creature rather than design a new one—that is, to change the description but keep the abilities mostly the same. Occasionally reskinning requires small mechanical adjustments. For instance, a fire cat that has immunity to fire, an aura that deals fire damage, and the ability to light people on fire with its jaws to deal persistent fire damage could be reskinned as a caustic animate tree that has immunity to acid, an aura that deals acid damage, and branch attacks that smear acidic sap on a creature’s body when they hit, dealing persistent acid damage.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "children": [
+            {
+              "content": "Trait Abilities",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "heading",
+          "level": 2
+        },
+        {
+          "children": [
+            {
+              "content": "This section provides the abilities conveyed by certain traits, such as demon, dragon, and undead. You’ll also find abilities typical of creatures with those traits to help guide you as you plan your creatures.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "kind": "aside"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/develop-the-concept@legacy"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/understanding-and-choosing-statistics-3"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/level-5"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/alignment-size-and-traits"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/ability-modifiers-2"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/perception-5"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/languages-6"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/skills-6"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/items@legacy"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/armor-class-4"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/saving-throws-4"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/hit-points-7"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/immunities-weaknesses-and-resistances@legacy"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/speed-6"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/strikes-3"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/spells-3"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/design-abilities@legacy"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/review-holistically"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/trait-abilities@legacy"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "kind": "embed",
+          "resolved": true,
+          "target": "rules/designing-npcs"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "breadcrumbs": [
+    "Chapter 2: Tools"
+  ],
+  "category": "rules",
+  "edition": "legacy",
+  "facets": {},
+  "id": "rules/building-creatures@legacy",
+  "name": "Building Creatures",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "rules/building-creatures"
+  ],
+  "slug": "building-creatures",
+  "source": {
+    "book": "Gamemastery Guide",
+    "license": "OGL",
+    "page": 56
+  },
+  "traits": []
+}

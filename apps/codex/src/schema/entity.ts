@@ -41,8 +41,11 @@ import type { BlockNode } from "./nodes";
 // ---------------------------------------------------------------------------
 
 /** Loose by design — see the file-level comment. Matches both a plain id
- * (`spell/heal`) and a legacy-pair member (`spell/heal@legacy`). */
-const CodexId = z
+ * (`spell/heal`) and a legacy-pair member (`spell/heal@legacy`). Exported
+ * (P4, D29-39) so `src/schema/rulesTree.ts`/`sourcesIndex.ts` share the
+ * repo's single reference convention (adversarial N13) instead of
+ * re-declaring the regex. */
+export const CodexId = z
   .string()
   .min(3)
   .regex(
@@ -374,6 +377,29 @@ export const CodexEntitySchema = z
      * Actor never reaches assembly at all, D29-19; an AoN-only `proseOnly`
      * creature/hazard has no Foundry Actor doc to extract from). */
     stats: StatsSchema.optional(),
+    /** P4 (D29-39): the AoN `breadcrumbs` ancestor-name chain (own name
+     * EXCLUDED, own name is a leaf) — rules-only in practice (the field
+     * mirrors `facets.family`'s "same disease, top-level not facets"
+     * precedent: rules is 100% `proseOnly` so `facets` is always `{}`, and
+     * this is genuinely hierarchical navigation data, not a facet). Threaded
+     * through both `join.ts` construction sites (`buildAonOnlyEntity`/
+     * `mergeJoined`, the `creature.family` P3-S1 precedent) verbatim from
+     * `AonDocMeta.breadcrumbs` (already normalized at extraction,
+     * `aonFacets.ts`'s `normalizeBreadcrumbElement`). Additive/optional — no
+     * schemaVersion bump (same rule as every other optional field on this
+     * type). Consumed only by the P4 `rules-tree.json` builder — `IndexRow`
+     * stays untouched (D29-39: the tree ships as its own artifact). */
+    breadcrumbs: z.array(z.string()).optional(),
+    /** P4 (D29-39): reverse-joined `sidebar`-category entities whose OWN AoN
+     * `url` resolves (via the link table's `pickCanonical` page-owner rule
+     * → aonId → pass-4 `aonIdToFinalId`, a POST-identity step) to THIS
+     * entity as host — set on ANY category (stakeholder: attached sidebars
+     * render on all host categories, not just rules). Ordered by sidebar
+     * name asc, tie-break aonId (sidebars carry no reading order of their
+     * own, 0/694 have next/prev links). Absent when this entity hosts none
+     * (never an empty array, same convention as `loreBody`/`embeddedItems`).
+     * Additive/optional — no schemaVersion bump. */
+    attachedSidebars: z.array(CodexId).optional(),
   })
   .strict();
 export type CodexEntity = z.infer<typeof CodexEntitySchema>;

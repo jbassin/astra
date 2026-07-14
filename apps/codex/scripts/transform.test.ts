@@ -8,6 +8,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import type { JoinAliasesFile } from "../src/ingest/join";
 import { CodexEntitySchema, IndexRowSchema } from "../src/schema/entity";
 import type { CorpusManifest } from "../src/schema/manifest";
+import { RulesTreeFileSchema } from "../src/schema/rulesTree";
+import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
 import { runTransform, type TransformResult } from "./transform";
 
 /**
@@ -159,6 +161,14 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
         const manifest = raw as { schemaVersion?: number; categoryCounts?: unknown };
         expect(manifest.schemaVersion, file).toBe(2);
         expect(typeof manifest.categoryCounts, file).toBe("object");
+      } else if (file.endsWith("/rules-tree.json")) {
+        // P4 (D29-39/D29-44): the fixture-scoped rules tree — its own schema,
+        // not a CodexEntity.
+        expect(() => RulesTreeFileSchema.parse(raw), file).not.toThrow();
+      } else if (file.endsWith("/sources-index.json")) {
+        // P4 (D29-43/D29-44): the fixture-scoped sources index — its own
+        // schema, not a CodexEntity.
+        expect(() => SourcesIndexFileSchema.parse(raw), file).not.toThrow();
       } else {
         expect(() => CodexEntitySchema.parse(raw), file).not.toThrow();
         entityCount++;

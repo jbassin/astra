@@ -33,7 +33,8 @@ import {
   aonSkipReason,
   extractAonMeta,
 } from "../src/ingest/aonFacets";
-import { buildAonLinkTable, type LinkTableDoc } from "../src/ingest/aonLinkTable";
+import { buildAonLinkTable, normalizeUrlKey, type LinkTableDoc } from "../src/ingest/aonLinkTable";
+import { normalizeBookNames } from "../src/ingest/bookNormalize";
 import { applyAonPrimaryDrop } from "../src/ingest/drop";
 import {
   emitCorpus,
@@ -63,6 +64,9 @@ import {
   registerExcludedJournal,
 } from "../src/ingest/journals";
 import { buildReportJson, buildReportMarkdown, type ReportJson } from "../src/ingest/report";
+import { type RulesDocInput, buildRulesTree } from "../src/ingest/rulesTree";
+import { attachSidebars } from "../src/ingest/sidebarAttach";
+import { type AonBookCitation, buildSourcesIndex } from "../src/ingest/sourcesIndexBuild";
 import {
   type ContainingDoc,
   type PackRegistryEntry,
@@ -72,8 +76,10 @@ import {
   buildPackRegistry,
   createResolveUuid,
 } from "../src/ingest/uuidResolve";
-import type { CodexEntity } from "../src/schema/entity";
+import type { CodexEntity, License } from "../src/schema/entity";
 import { parseManifest, type CorpusManifest } from "../src/schema/manifest";
+import { RulesTreeFileSchema } from "../src/schema/rulesTree";
+import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
 import { isKnownPack } from "./categoryMap";
 
 export type ReportFn = (cls: string, detail: string) => void;
@@ -384,18 +390,98 @@ export function runTransform(paths: TransformPaths): TransformResult {
   // carve-out — S5c, the last P1.5 pass before emit.
   const dropResult = applyAonPrimaryDrop(joinResult.entities, report);
 
+  // ---- P4 (D29-39) S1: book-name normalize -> sidebar reverse-join ----
+  // Both passes run BEFORE emit — the corpus on disk (entity files +
+  // `_index.json`) must reflect the normalized book strings and the
+  // `attachedSidebars` field, not just the two new standalone artifacts.
+  const aonBookNames = new Set(dedupedMetas.map((m) => m.primarySource.book));
+  const bookNorm = normalizeBookNames(dropResult.keptEntities, aonBookNames);
+
+  const finalIdToAonId = new Map<string, string>();
+  for (const [aonId, finalId] of joinResult.aonIdToFinalId) finalIdToAonId.set(finalId, aonId);
+
+  const sidebarResult = attachSidebars(
+    bookNorm.entities,
+    linkTable,
+    joinResult.aonIdToFinalId,
+    finalIdToAonId,
+    report,
+  );
+  const finalEntities = sidebarResult.entities;
+
   const emitResult = emitCorpus({
     corpusRoot: paths.corpusRoot,
-    entities: dropResult.keptEntities,
+    entities: finalEntities,
     pins: paths.pins,
   });
+
+  // ---- P4 (D29-39) S1: rules-tree.json ----
+  const aonMetaByAonId = new Map(dedupedMetas.map((m) => [m.aonId, m] as const));
+  const rulesDocs: RulesDocInput[] = [];
+  for (const entity of finalEntities) {
+    if (entity.category !== "rules") continue;
+    const aonId = finalIdToAonId.get(entity.id);
+    const meta = aonId !== undefined ? aonMetaByAonId.get(aonId) : undefined;
+    if (aonId === undefined || meta === undefined) {
+      report("rulesTreeMissingAonMeta", entity.id);
+      continue;
+    }
+    const nextAonId =
+      meta.nextUrl !== undefined
+        ? linkTable.byUrl.get(normalizeUrlKey(meta.nextUrl))?.aonId
+        : undefined;
+    rulesDocs.push({
+      aonId,
+      finalId: entity.id,
+      name: entity.name,
+      book: entity.source.book,
+      edition: entity.edition,
+      breadcrumbs: entity.breadcrumbs ?? [],
+      superseded: (entity.remasteredAs?.length ?? 0) > 0,
+      ...(nextAonId !== undefined ? { nextAonId } : {}),
+    });
+  }
+  const bookSourceLicense = new Map<string, License>();
+  const sourceEntityRefByBook = new Map<string, string>();
+  for (const e of finalEntities) {
+    if (e.category !== "source") continue;
+    bookSourceLicense.set(e.source.book, e.source.license);
+    sourceEntityRefByBook.set(e.source.book, e.id);
+  }
+  const { file: rulesTreeFile, stats: rulesTreeStats } = buildRulesTree(
+    rulesDocs,
+    bookSourceLicense,
+    report,
+  );
+  const validatedRulesTree = RulesTreeFileSchema.parse(rulesTreeFile);
+  writeCanonicalJson(join(paths.corpusRoot, "rules-tree.json"), validatedRulesTree);
+
+  // ---- P4 (D29-43) S1: sources-index.json ----
+  // A plain function (not inlined in `.map()`) — no object-spread appears
+  // inside a map callback (oxlint `no-map-spread`, `aonFacets.ts`'s
+  // `makeCitation` precedent).
+  function toAonCitation(m: AonDocMeta): AonBookCitation {
+    return m.productLine !== undefined
+      ? { book: m.primarySource.book, productLine: m.productLine }
+      : { book: m.primarySource.book };
+  }
+  const aonCitations: AonBookCitation[] = dedupedMetas.map(toAonCitation);
+  const { file: sourcesIndexFile, stats: sourcesIndexStats } = buildSourcesIndex({
+    finalEntities,
+    aonCitations,
+    bookNameMap: bookNorm.bookNameMap,
+    bookSourceLicense,
+    sourceEntityRefByBook,
+  });
+  const validatedSourcesIndex = SourcesIndexFileSchema.parse(sourcesIndexFile);
+  writeCanonicalJson(join(paths.corpusRoot, "sources-index.json"), validatedSourcesIndex);
 
   const reportJson = buildReportJson({
     reportCounts,
     reportExamples,
     hardFailureCount: hardFailures.length,
     join: joinResult,
-    finalEntities: dropResult.keptEntities,
+    finalEntities,
     dropAccounting: dropResult.accounting,
     foundrySnapshotDocCount: foundry.entities.size,
     // Deliberately the RAW extracted count (pre-D29-18-dedup) — matches
@@ -407,6 +493,10 @@ export function runTransform(paths: TransformPaths): TransformResult {
       corpusBytes: emitResult.corpusBytes,
       entityFileCount: emitResult.entityFileCount,
     },
+    bookNormalization: bookNorm,
+    sidebarAttachment: sidebarResult,
+    rulesTree: rulesTreeStats,
+    sourcesIndex: sourcesIndexStats,
   });
   const reportMarkdown = buildReportMarkdown(reportJson);
 

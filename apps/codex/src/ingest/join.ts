@@ -463,6 +463,11 @@ export function mergeJoined(
     ...(meta.family !== undefined
       ? { facets: { ...foundryEntity.facets, family: meta.family } }
       : {}),
+    // P4 (D29-39): the AoN breadcrumb ancestor chain, top-level (NOT
+    // facets — rules is 100% proseOnly, this field exists for the rare
+    // cross-category-merged rules doc, if any, mirroring `family`'s own
+    // "additive, AoN-owned, no Foundry equivalent" posture).
+    ...(meta.breadcrumbs !== undefined ? { breadcrumbs: meta.breadcrumbs } : {}),
   };
 }
 
@@ -498,6 +503,9 @@ function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
     // D29-33b: an AoN-only creature still carries its own family (the field
     // never depends on a Foundry counterpart existing).
     facets: meta.family !== undefined ? { family: meta.family } : {},
+    // P4 (D29-39): rules docs are ~100% AoN-only — this is the primary path
+    // `breadcrumbs` reaches the corpus through.
+    ...(meta.breadcrumbs !== undefined ? { breadcrumbs: meta.breadcrumbs } : {}),
   };
 }
 
@@ -560,6 +568,13 @@ export interface JoinResult {
   patchStats: PatchStats;
   pairingCount: number;
   aliasesApplied: Array<{ foundryId: string; aonId: string; note: string }>;
+  /** P4 (D29-39): pass-4's own aonId -> finalId map, exposed so a POST-join
+   * caller (the P4 rules-tree/sidebar-attachment builders, `transform.ts`)
+   * can do the exact same "byUrl -> aonId -> aonIdToFinalId" post-identity
+   * resolution the spec pins — never the S5d parse-time repoint seam, which
+   * returns pre-collision ids (spec §1's "verified in code" note). Keyed on
+   * the globally-unique aonId, safe regardless of collisions. */
+  aonIdToFinalId: ReadonlyMap<string, string>;
 }
 
 export interface RunJoinInput {
@@ -939,6 +954,7 @@ export function runJoin(input: RunJoinInput): JoinResult {
     patchStats,
     pairingCount,
     aliasesApplied,
+    aonIdToFinalId,
   };
 }
 

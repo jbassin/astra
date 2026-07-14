@@ -1,0 +1,117 @@
+{
+  "books": [
+    {
+      "book": "Player Core",
+      "edition": "remaster",
+      "hiddenWhenLegacyOff": 0,
+      "license": "ORC",
+      "nodes": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "id": "rules/tools-of-play",
+                  "name": "Tools of Play"
+                }
+              ],
+              "name": "What is a Roleplaying Game?"
+            }
+          ],
+          "name": "Chapter 1: Introduction"
+        },
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "id": "rules/counteracting-2",
+                  "name": "Counteracting"
+                }
+              ],
+              "name": "Afflictions"
+            }
+          ],
+          "name": "Chapter 8: Playing the Game"
+        }
+      ]
+    },
+    {
+      "book": "Core Rulebook",
+      "edition": "legacy",
+      "hiddenWhenLegacyOff": 1,
+      "license": "OGL",
+      "nodes": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "id": "rules/counteracting-4",
+                  "name": "Counteracting",
+                  "superseded": true
+                }
+              ],
+              "name": "General Rules"
+            }
+          ],
+          "name": "Chapter 9: Playing the Game"
+        }
+      ]
+    },
+    {
+      "book": "Gamemastery Guide",
+      "edition": "legacy",
+      "hiddenWhenLegacyOff": 3,
+      "license": "OGL",
+      "nodes": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "id": "rules/ability-modifiers-2",
+                  "name": "Ability Modifiers",
+                  "superseded": true
+                }
+              ],
+              "id": "rules/building-creatures@legacy",
+              "name": "Building Creatures",
+              "superseded": true
+            }
+          ],
+          "id": "rules/chapter-2-tools",
+          "name": "Chapter 2: Tools",
+          "superseded": true
+        }
+      ]
+    },
+    {
+      "book": "Treasure Vault",
+      "edition": "legacy",
+      "hiddenWhenLegacyOff": 0,
+      "license": "OGL",
+      "nodes": [
+        {
+          "children": [
+            {
+              "children": [
+                {
+                  "children": [],
+                  "id": "rules/nature-crafting-3",
+                  "name": "Nature Crafting"
+                }
+              ],
+              "name": "Spellguns"
+            }
+          ],
+          "name": "Momentary Magic"
+        }
+      ]
+    }
+  ]
+}

@@ -25,7 +25,7 @@
     "campsite-meal": 1,
     "category-page": 1,
     "cause": 1,
-    "class": 1,
+    "class": 2,
     "class-feature": 1,
     "class-kit": 1,
     "class-sample": 1,
@@ -74,10 +74,10 @@
     "relic": 1,
     "research-field": 1,
     "ritual": 1,
-    "rules": 1,
+    "rules": 7,
     "set-relic": 1,
     "shield": 1,
-    "sidebar": 1,
+    "sidebar": 2,
     "siege-weapon": 1,
     "skill": 1,
     "skill-general-action": 1,
@@ -103,6 +103,6 @@
     "tag": "fixture"
   },
   "schemaVersion": 2,
-  "totalEntityCount": 99,
-  "totalSizeBytes": 953651
+  "totalEntityCount": 107,
+  "totalSizeBytes": 1226621
 }

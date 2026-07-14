@@ -374,8 +374,16 @@ policy, the host-only rebuild note.
 
 - **S1 — transform: tree/order/sidebar/book data (lands first, transform-only).** D29-39
   in full. Gate: determinism 3×; file count == manifest; report pins — breadcrumb
-  coverage 3,500 + 145 roots exact (≈40 childless), **synthetic-node count == 3** (the
-  fallback rule resolves Rules Elements; growth = STOP), per-book sibling-group chain
+  coverage 3,500 + 145 roots exact (≈40 childless), **synthetic-node count == 3**
+  *(AMENDED at S1 build, 2026-07-14: measured == 2 and 2 is CORRECT — the pinned
+  "Divine Mysteries → Gods & Magic" case never materializes: a real breadcrumb-less doc
+  named "Gods & Magic" exists in the Gods & Magic book (`/Rules.aspx?ID=798`) and
+  resolves its 5 children; "Gods & Magic" appears in Divine Mysteries only as PATH
+  CONTEXT inside the Rules Elements children, which the fallback rule resolves to the
+  real root doc. The §1 estimate counted every (book, parent-name) breadcrumb element,
+  a coarser question than immediate-parent resolution. Verified against the raw
+  snapshot by the orchestrator. The 2 = PC2 "Chapter 3: Classes" root + its child
+  "Archetypes". Growth above 2 remains a STOP.)*, per-book sibling-group chain
   coverage reported, sidebar attachment 689/689 with rules == 361 and max-per-host == 7,
   book collapse 519→N with the full mapping table (prefix merges == 23 expected),
   product-line coverage with the "Other" bucket ≈253 books / 2,502 entities, book-level
@@ -490,3 +498,27 @@ Tree state in the URL beyond the current-doc auto-expansion. Re-chaining the pag
 the legacy toggle. Mirroring AoN's raw next/prev links in the pager (DFS-derived — a
 recorded decision, §6). Numeric page-number parsing for ordering (the link chain is
 sibling-scoped only). Hover cards on tree nodes. i18n.
+
+## 8. Build record (grows per slice)
+
+- **S1 (2026-07-14, sonnet engineer + orchestrator review).** All D29-39 deliverables;
+  transform-only. Gate evidence: determinism 3× (`diff -r` empty, two rounds); manifest
+  46,192 unchanged; breadcrumb coverage 3,645 docs → 146 roots (145 real + 1 synthetic),
+  39 childless; **synthetic == 2 (amendment in §4 S1 — pin corrected from 3, verified
+  against the raw snapshot)**; parent tie-breaks = 4 events (exactly the 2 pinned APG
+  duplicate groups × 2 children); fallback hits = the Rules Elements family only;
+  sibling chain coverage 43/45 books 100% (GMG 590/591, PC2 9/10); sidebar attachment
+  689/689, rules == 361, max-per-host == 7; book collapse 519→496, prefix merges == 23
+  (408 entities), case-fold no-op; Other bucket 253 books / 2,502 entities, classified
+  coverage 94.6% of entities (≥90% guard holds); spot-checks green (Treasure Vault
+  (Remastered) → remaster/ORC; all 253 Foundry-only books → license unknown; Dark
+  Archive 29 + Guns & Gears 65 hiddenWhenLegacyOff). Fixture regen carries the full
+  D29-44 composition (chapter-2-tools root → building-creatures@legacy (CRLF-healed) →
+  ability-modifiers-2 depth-3 chain; counteracting-2/-4 path-shift pair; 2 host
+  categories incl. the M8 shared-url shape with the class-feature asserted
+  unattached; source/core-rulebook). Search index rebuilt on host, 46,192 pages ==
+  manifest. Codex tests 1,226; both repo lanes green incl. hermeticity with `data/`
+  out of tree. Notes for S2/S3: DFS pager helper deliberately NOT in S1 (frontend
+  slice territory); fixture `rules-tree.json` sibling order is alphabetical-fallback
+  only (no raw link side-channel survives fixture extraction) — chain-order
+  correctness is proven by `rulesTree.test.ts` unit fixtures.

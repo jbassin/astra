@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { CodexEntity } from "../schema/entity";
+import type { BookNormalizeResult } from "./bookNormalize";
 import type { DropAccounting } from "./drop";
 import type { CategoryStat, CollisionReport, JoinResult } from "./join";
 import {
@@ -20,6 +21,9 @@ import {
   computeVariantCount,
   type ReportInput,
 } from "./report";
+import type { RulesTreeStats } from "./rulesTree";
+import type { SidebarAttachResult } from "./sidebarAttach";
+import type { SourcesIndexStats } from "./sourcesIndexBuild";
 
 function entity(
   overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
@@ -48,9 +52,51 @@ function joinResult(overrides: Partial<JoinResult>): JoinResult {
     },
     pairingCount: 0,
     aliasesApplied: [],
+    aonIdToFinalId: new Map(),
     ...overrides,
   };
 }
+
+const EMPTY_BOOK_NORMALIZATION: BookNormalizeResult = {
+  entities: [],
+  bookNameMap: new Map(),
+  mergeTable: [],
+  distinctBefore: 0,
+  distinctAfter: 0,
+  prefixMergeCount: 0,
+  caseFoldGroupCount: 0,
+};
+
+const EMPTY_SIDEBAR_ATTACHMENT: SidebarAttachResult = {
+  entities: [],
+  sidebarsTotal: 0,
+  sidebarsResolved: 0,
+  byHostCategory: [],
+  maxPerHost: 0,
+  hostsWithSidebars: 0,
+};
+
+const EMPTY_RULES_TREE_STATS: RulesTreeStats = {
+  totalDocs: 0,
+  bookCount: 0,
+  rootCount: 0,
+  childlessRootCount: 0,
+  syntheticCount: 0,
+  parentTieBreakCount: 0,
+  fallbackHits: [],
+  siblingChainCoverage: [],
+};
+
+const EMPTY_SOURCES_INDEX_STATS: SourcesIndexStats = {
+  totalBooks: 0,
+  classifiedBooks: 0,
+  otherBooks: 0,
+  totalEntities: 0,
+  classifiedEntities: 0,
+  otherEntities: 0,
+  classifiedEntityPct: 0,
+  belowNinetyPctGuard: false,
+};
 
 describe("capList", () => {
   it("caps a list and reports the true total", () => {
@@ -132,6 +178,10 @@ function baseInput(overrides: Partial<ReportInput>): ReportInput {
     dropAccounting: EMPTY_DROP_ACCOUNTING,
     foundrySnapshotDocCount: 28636,
     aonSnapshotDocCount: 43684,
+    bookNormalization: EMPTY_BOOK_NORMALIZATION,
+    sidebarAttachment: EMPTY_SIDEBAR_ATTACHMENT,
+    rulesTree: EMPTY_RULES_TREE_STATS,
+    sourcesIndex: EMPTY_SOURCES_INDEX_STATS,
     ...overrides,
   };
 }

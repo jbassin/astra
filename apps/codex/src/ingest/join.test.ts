@@ -1169,6 +1169,89 @@ describe("runJoin: D29-33b creature family on an AoN-only entity", () => {
 });
 
 // ---------------------------------------------------------------------------
+// P4 (D29-39): breadcrumbs threading (the family precedent, top-level not
+// facets) + the exposed aonIdToFinalId map
+// ---------------------------------------------------------------------------
+
+describe("runJoin: P4 (D29-39) breadcrumbs threading", () => {
+  it("threads breadcrumbs onto an AoN-only entity (buildAonOnlyEntity)", () => {
+    const rulesDoc = meta({
+      aonId: "rules-9010",
+      category: "rules",
+      name: "Some Section",
+      slug: "some-section",
+      breadcrumbs: ["Chapter 1", "Intro"],
+    });
+    const result = runJoin(runInput({ aonMetas: [rulesDoc] }));
+    const section = result.entities.find((e) => e.id === "rules/some-section");
+    expect(section?.breadcrumbs).toEqual(["Chapter 1", "Intro"]);
+  });
+
+  it("leaves breadcrumbs absent (never an empty array) when the AoN meta has none", () => {
+    const rulesDoc = meta({
+      aonId: "rules-9011",
+      category: "rules",
+      name: "Root Doc",
+      slug: "root-doc",
+    });
+    const result = runJoin(runInput({ aonMetas: [rulesDoc] }));
+    const root = result.entities.find((e) => e.id === "rules/root-doc");
+    expect(root?.breadcrumbs).toBeUndefined();
+  });
+
+  it("threads breadcrumbs onto a merged (Foundry+AoN) entity too (mergeJoined)", () => {
+    const rulesMeta = meta({
+      aonId: "rules-9012",
+      category: "rules",
+      name: "Merged Section",
+      slug: "merged-section",
+      breadcrumbs: ["Chapter 2"],
+    });
+    const merged = mergeJoined(
+      entity({
+        id: "rules/merged-section",
+        category: "rules",
+        slug: "merged-section",
+        name: "Merged Section",
+      }),
+      rulesMeta,
+      {
+        aonMarkdownById: new Map(),
+        resolveLink: () => ({
+          kind: "text",
+          content: "x",
+          marks: { bold: false, italic: false, superscript: false },
+        }),
+        report: noopReport,
+      },
+    );
+    expect(merged.breadcrumbs).toEqual(["Chapter 2"]);
+  });
+
+  it("exposes aonIdToFinalId keyed on the globally-unique aonId (survives collision suffixing)", () => {
+    const legacy = meta({
+      aonId: "spell-1",
+      category: "spell",
+      name: "Heal",
+      slug: "heal",
+      edition: "legacy",
+      remasterId: ["spell-2"],
+    });
+    const remaster = meta({
+      aonId: "spell-2",
+      category: "spell",
+      name: "Heal",
+      slug: "heal",
+      edition: "remaster",
+      legacyId: ["spell-1"],
+    });
+    const result = runJoin(runInput({ aonMetas: [legacy, remaster] }));
+    expect(result.aonIdToFinalId.get("spell-1")).toBe("spell/heal@legacy");
+    expect(result.aonIdToFinalId.get("spell-2")).toBe("spell/heal");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // pickVariantBase
 // ---------------------------------------------------------------------------
 

@@ -1,17 +1,17 @@
 {
-  "aonUrl": "/Rules.aspx?ID=995",
+  "aonUrl": "/Classes.aspx?ID=16",
   "body": [
     {
       "children": [
         {
-          "display": "Trait Abilities",
+          "display": "Ability Boosts",
           "kind": "crossref",
-          "targetId": "rules/building-creatures"
+          "targetId": "class/witch"
         }
       ],
       "kind": "heading",
       "level": 1,
-      "meta": "Sidebar"
+      "meta": "Class Feature 5"
     },
     {
       "children": [
@@ -34,12 +34,12 @@
           }
         },
         {
-          "display": "Gamemastery Guide",
+          "display": "Advanced Player's Guide",
           "kind": "crossref",
-          "targetId": "source/gamemastery-guide"
+          "targetId": "source/advanced-players-guide"
         },
         {
-          "content": " pg. 56",
+          "content": " pg. 94",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -53,7 +53,7 @@
     {
       "children": [
         {
-          "content": "Parent page",
+          "content": "Class",
           "kind": "text",
           "marks": {
             "bold": true,
@@ -62,7 +62,7 @@
           }
         },
         {
-          "content": " [Building Creatures ](/Rules.aspx?ID=995)",
+          "content": " Witch",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -79,7 +79,7 @@
     {
       "children": [
         {
-          "content": "This section provides the abilities conveyed by certain traits, such as demon, dragon, and undead. You’ll also find abilities typical of creatures with those traits to help guide you as you plan your creatures.",
+          "content": "At 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores above 18. Boosting an ability score increases it by 1 if it's already 18 or above, or by 2 if it starts out below 18.",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -91,20 +91,22 @@
       "kind": "paragraph"
     }
   ],
-  "category": "sidebar",
+  "category": "class-feature",
   "edition": "legacy",
   "facets": {},
-  "id": "sidebar/trait-abilities",
-  "name": "Trait Abilities",
+  "id": "class-feature/ability-boosts-15",
+  "level": 5,
+  "name": "Ability Boosts",
   "proseOnly": true,
+  "rarity": "common",
   "remasteredAs": [
-    "rules/building-creatures"
+    "class/witch"
   ],
-  "slug": "trait-abilities",
+  "slug": "ability-boosts",
   "source": {
-    "book": "Gamemastery Guide",
+    "book": "Advanced Player's Guide",
     "license": "OGL",
-    "page": 56
+    "page": 94
   },
   "traits": []
 }

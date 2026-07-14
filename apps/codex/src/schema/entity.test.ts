@@ -65,6 +65,29 @@ describe("CodexEntity: identity + pairing (D29-1/-7)", () => {
   });
 });
 
+describe("CodexEntity: P4 (D29-39) breadcrumbs + attachedSidebars", () => {
+  it("round-trips breadcrumbs (top-level, not facets)", () => {
+    const entity = baseEntity({
+      category: "rules",
+      breadcrumbs: ["Chapter 2: Tools", "Building Creatures"],
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("leaves breadcrumbs absent on a plain entity (never a defaulted empty array)", () => {
+    const entity = baseEntity();
+    expect(parseCodexEntity(entity).breadcrumbs).toBeUndefined();
+  });
+
+  it("round-trips attachedSidebars (any category, per the stakeholder decision)", () => {
+    const entity = baseEntity({
+      category: "ancestry",
+      attachedSidebars: ["sidebar/a-place-undersea", "sidebar/another-box"],
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+});
+
 describe("CodexEntity: license + prose fields (D29-8/-13)", () => {
   it("allows an unknown license (report-counted residue)", () => {
     const entity = baseEntity({ source: { book: "Some Adventure Path", license: "unknown" } });

@@ -105,6 +105,31 @@ function readStringArray(v: unknown): string[] {
   return Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
 }
 
+/** P4 (D29-39): a `next_link`/`previous_link` raw field is `{label, url}` or
+ * absent — this module only needs the `url` (the sibling-chain edge target;
+ * `label` is display text `join.ts`/the P4 tree builder never needs). */
+function readLinkUrl(v: unknown): string | undefined {
+  if (v === null || typeof v !== "object") return undefined;
+  const url = (v as Record<string, unknown>).url;
+  return typeof url === "string" && url.length > 0 ? url : undefined;
+}
+
+/** P4 (D29-39, spec §1 "data wart"): 192 real GMG "Chapter 2: Tools" child
+ * breadcrumb elements (plus 47 "Building Creatures" ones, 239 dirty elements
+ * total repo-wide) carry embedded `\r`/`\n`/`\t` garbage — an ES indexing
+ * artifact, the same disease `licenseMap.ts`'s `normalizeBookName` already
+ * fixes for `primary_source`. Strips those three control characters entirely
+ * (not just CRLF — spec explicitly calls out tab too), then collapses any
+ * remaining internal whitespace run to a single space and trims. Applied to
+ * EVERY breadcrumb element before it's stored, so the corpus only ever holds
+ * normalized strings — the tree builder never re-normalizes. */
+export function normalizeBreadcrumbElement(raw: string): string {
+  return raw
+    .replace(/[\r\n\t]+/g, "")
+    .trim()
+    .replace(/\s+/g, " ");
+}
+
 /** Defensive normalization for `remaster_id`/`legacy_id`: verified always an
  * array-or-absent across the real snapshot, but accepts a bare scalar too in
  * case a future refresh regresses this (D29-1's own "may be scalar-or-array"
@@ -181,8 +206,23 @@ export const AonDocMetaSchema = z
     legacyId: z.array(z.string()),
     /** `rules`-category only (the P4 tree input) — absent for every other
      * category, never an empty array (same convention as `CodexEntity`'s
-     * `loreBody`/`proseOnly`). */
+     * `loreBody`/`proseOnly`). Every element is already normalized
+     * (`normalizeBreadcrumbElement`, above) at extraction time. */
     breadcrumbs: z.array(z.string()).min(1).optional(),
+    /** P4 (D29-39): the raw AoN `next_link`/`previous_link.url` — per-level
+     * SIBLING chain edges (adversarial B1, NOT page-turn order), consumed
+     * transform-internally only by the P4 rules-tree builder to order a
+     * sibling group; never stored on `CodexEntity` (no `readingOrder`
+     * field). Present whenever the raw doc carries the link (3,642/3,645
+     * real rules docs carry `next_link`, same count minus 3 for `prev`). */
+    nextUrl: z.string().min(1).optional(),
+    prevUrl: z.string().min(1).optional(),
+    /** P4 (D29-39, D29-43): raw AoN `primary_source_category` (e.g.
+     * "Rulebooks", "Lost Omens", "Adventure Paths") — the `/sources`
+     * product-line signal, present on 43,684/43,684 real AoN docs. Consumed
+     * only by the sources-index builder (book-level aggregate), never
+     * stored on `CodexEntity` itself. */
+    productLine: z.string().min(1).optional(),
     hasMarkdown: z.boolean(),
     /** D29-33b (P3 S1): `creature`-category only — the display text mined
      * out of `creature_family_markdown`'s `"[Name](/MonsterFamilies.aspx?ID=…)"`
@@ -310,11 +350,14 @@ export function extractAonMeta(category: string, hit: AonHit): AonDocMeta {
 
   const remasterId = normalizeIdList(src.remaster_id);
   const legacyId = normalizeIdList(src.legacy_id);
-  const breadcrumbs = readStringArray(src.breadcrumbs);
+  const breadcrumbs = readStringArray(src.breadcrumbs).map(normalizeBreadcrumbElement);
   const level = readNumber(src.level);
   const rarity = readString(src.rarity);
   const markdown = readString(src.markdown);
   const family = extractFamily(category, src.creature_family_markdown);
+  const nextUrl = readLinkUrl(src.next_link);
+  const prevUrl = readLinkUrl(src.previous_link);
+  const productLine = readString(src.primary_source_category);
 
   const meta: AonDocMeta = {
     aonId: hit._id,
@@ -334,6 +377,9 @@ export function extractAonMeta(category: string, hit: AonHit): AonDocMeta {
     ...(rarity !== undefined ? { rarity } : {}),
     ...(breadcrumbs.length > 0 ? { breadcrumbs } : {}),
     ...(family !== undefined ? { family } : {}),
+    ...(nextUrl !== undefined ? { nextUrl } : {}),
+    ...(prevUrl !== undefined ? { prevUrl } : {}),
+    ...(productLine !== undefined ? { productLine } : {}),
   };
 
   return AonDocMetaSchema.parse(meta);

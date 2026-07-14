@@ -4,7 +4,13 @@ import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
-import { AonFacetError, AonDocMetaSchema, aonSkipReason, extractAonMeta } from "./aonFacets";
+import {
+  AonFacetError,
+  AonDocMetaSchema,
+  aonSkipReason,
+  extractAonMeta,
+  normalizeBreadcrumbElement,
+} from "./aonFacets";
 import type { AonHit } from "./aonFacets";
 
 const FIXTURES = join(
@@ -139,6 +145,73 @@ describe("extractAonMeta: real fixture — rules family with breadcrumbs", () =>
     expect(meta.level).toBeUndefined();
     expect(meta.traits).toEqual([]);
     expect(meta.license).toBe("ORC"); // War of Immortals, 2024-10-30
+  });
+});
+
+describe("normalizeBreadcrumbElement (P4, D29-39 — the 192 GMG 'Chapter 2: Tools' CRLF elements)", () => {
+  it("strips embedded \\r/\\n/\\t and collapses internal whitespace, matching a clean spelling", () => {
+    expect(normalizeBreadcrumbElement("Chapter 2: Tools\r\n")).toBe("Chapter 2: Tools");
+    expect(normalizeBreadcrumbElement("Chapter 2: Tools")).toBe("Chapter 2: Tools");
+    expect(normalizeBreadcrumbElement("Building  Creatures\r\n")).toBe("Building Creatures");
+    expect(normalizeBreadcrumbElement("A\tB")).toBe("AB");
+    expect(normalizeBreadcrumbElement("  Trim Me  ")).toBe("Trim Me");
+  });
+
+  it("extractAonMeta normalizes every breadcrumb element so a CRLF-dirty and clean doc group under the same key", () => {
+    function hit(breadcrumbs: string[]): AonHit {
+      return {
+        _id: "rules-9001",
+        _source: {
+          name: "X",
+          url: "/Rules.aspx?ID=9001",
+          release_date: "2020-01-01",
+          primary_source: "Core Rulebook",
+          breadcrumbs,
+        },
+      };
+    }
+    const dirty = extractAonMeta("rules", hit(["Chapter 2: Tools\r\n", "Building Creatures\r\n"]));
+    const clean = extractAonMeta("rules", hit(["Chapter 2: Tools", "Building Creatures"]));
+    expect(dirty.breadcrumbs).toEqual(clean.breadcrumbs);
+    expect(dirty.breadcrumbs).toEqual(["Chapter 2: Tools", "Building Creatures"]);
+  });
+});
+
+describe("extractAonMeta: P4 (D29-39) next/previous link + product-line extraction", () => {
+  function ruleHit(overrides: Record<string, unknown>): AonHit {
+    return {
+      _id: "rules-9002",
+      _source: {
+        name: "X",
+        url: "/Rules.aspx?ID=9002",
+        release_date: "2020-01-01",
+        primary_source: "Core Rulebook",
+        ...overrides,
+      },
+    };
+  }
+
+  it("extracts nextUrl/prevUrl from next_link/previous_link.url, ignoring the label", () => {
+    const meta = extractAonMeta(
+      "rules",
+      ruleHit({
+        next_link: { label: "Next Doc", url: "/Rules.aspx?ID=9003" },
+        previous_link: { label: "Prev Doc", url: "/Rules.aspx?ID=9001" },
+      }),
+    );
+    expect(meta.nextUrl).toBe("/Rules.aspx?ID=9003");
+    expect(meta.prevUrl).toBe("/Rules.aspx?ID=9001");
+  });
+
+  it("leaves nextUrl/prevUrl undefined when the raw doc carries neither", () => {
+    const meta = extractAonMeta("rules", ruleHit({}));
+    expect(meta.nextUrl).toBeUndefined();
+    expect(meta.prevUrl).toBeUndefined();
+  });
+
+  it("extracts primary_source_category as productLine", () => {
+    const meta = extractAonMeta("rules", ruleHit({ primary_source_category: "Rulebooks" }));
+    expect(meta.productLine).toBe("Rulebooks");
   });
 });
 

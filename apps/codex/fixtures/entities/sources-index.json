@@ -1,0 +1,275 @@
+{
+  "books": [
+    {
+      "book": "Advanced Player's Guide",
+      "edition": "legacy",
+      "entityCount": 10,
+      "license": "OGL"
+    },
+    {
+      "book": "Ancestry Guide",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Battlecry!",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Bestiary",
+      "edition": "legacy",
+      "entityCount": 2,
+      "license": "OGL"
+    },
+    {
+      "book": "Bestiary 2",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Character Guide",
+      "edition": "legacy",
+      "entityCount": 2,
+      "license": "OGL"
+    },
+    {
+      "book": "Core Rulebook",
+      "edition": "legacy",
+      "entityCount": 20,
+      "license": "OGL",
+      "sourceEntityRef": "source/core-rulebook"
+    },
+    {
+      "book": "Crown of the Kobold King",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Dark Archive",
+      "edition": "legacy",
+      "entityCount": 4,
+      "license": "OGL"
+    },
+    {
+      "book": "Dark Archives (Remastered)",
+      "edition": "remaster",
+      "entityCount": 2,
+      "license": "ORC"
+    },
+    {
+      "book": "Divine Mysteries",
+      "edition": "remaster",
+      "entityCount": 3,
+      "license": "ORC"
+    },
+    {
+      "book": "Draconic Codex",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Foundry Journal: Ancestries",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "unknown"
+    },
+    {
+      "book": "Foundry Journal: Archetypes",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "unknown"
+    },
+    {
+      "book": "Gamemastery Guide",
+      "edition": "legacy",
+      "entityCount": 4,
+      "license": "OGL"
+    },
+    {
+      "book": "GM Core",
+      "edition": "remaster",
+      "entityCount": 3,
+      "license": "ORC"
+    },
+    {
+      "book": "GM's Toolbox: Gravehall",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Guns & Gears",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Guns & Gears (Remastered)",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Howl of the Wild",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Kingmaker Adventure Path",
+      "edition": "legacy",
+      "entityCount": 7,
+      "license": "OGL"
+    },
+    {
+      "book": "Kingmaker Companion Guide",
+      "edition": "legacy",
+      "entityCount": 2,
+      "license": "OGL"
+    },
+    {
+      "book": "Monster Core",
+      "edition": "remaster",
+      "entityCount": 2,
+      "license": "ORC"
+    },
+    {
+      "book": "Monster Core 2",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "NPC Core",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Pathfinder #148: Fires of the Haunted City",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Pathfinder #157: Devil at the Dreaming Palace",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Pathfinder #164: Hands of the Devil",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Pathfinder #171: Hurricane's Howl",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Pathfinder #190: The Choosing",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Pathfinder #199: To Bloom Below the Web",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Pathfinder #202: Severed at the Root",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Pathfinder #217: Death Sails a Wine-Dark Sea",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Pathfinder #218: Titanbane",
+      "edition": "remaster",
+      "entityCount": 3,
+      "license": "ORC"
+    },
+    {
+      "book": "Pathfinder #223: Hell's Destiny",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "Pathfinder Lost Omens Impossible Lands",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "unknown"
+    },
+    {
+      "book": "Player Core",
+      "edition": "remaster",
+      "entityCount": 9,
+      "license": "ORC"
+    },
+    {
+      "book": "Player Core 2",
+      "edition": "remaster",
+      "entityCount": 3,
+      "license": "ORC"
+    },
+    {
+      "book": "Rage of Elements",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Secrets of Magic",
+      "edition": "legacy",
+      "entityCount": 2,
+      "license": "OGL"
+    },
+    {
+      "book": "The Fall of Plaguestone",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "The Mwangi Expanse",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Treasure Vault",
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Treasure Vault (Remastered)",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    },
+    {
+      "book": "War of Immortals",
+      "edition": "remaster",
+      "entityCount": 1,
+      "license": "ORC"
+    }
+  ]
+}

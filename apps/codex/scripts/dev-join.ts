@@ -455,6 +455,46 @@ function main(): void {
     dropAccounting: dropResult.accounting,
     foundrySnapshotDocCount: foundry.entities.size,
     aonSnapshotDocCount: aon.metas.length,
+    // P4 (D29-39): this dev tool predates the S1 rules-tree/sidebar/book-
+    // normalize passes (`transform.ts` is the real orchestrator for those) —
+    // empty stats keep the report shape valid without re-running them here.
+    bookNormalization: {
+      entities: [],
+      bookNameMap: new Map(),
+      mergeTable: [],
+      distinctBefore: 0,
+      distinctAfter: 0,
+      prefixMergeCount: 0,
+      caseFoldGroupCount: 0,
+    },
+    sidebarAttachment: {
+      entities: [],
+      sidebarsTotal: 0,
+      sidebarsResolved: 0,
+      byHostCategory: [],
+      maxPerHost: 0,
+      hostsWithSidebars: 0,
+    },
+    rulesTree: {
+      totalDocs: 0,
+      bookCount: 0,
+      rootCount: 0,
+      childlessRootCount: 0,
+      syntheticCount: 0,
+      parentTieBreakCount: 0,
+      fallbackHits: [],
+      siblingChainCoverage: [],
+    },
+    sourcesIndex: {
+      totalBooks: 0,
+      classifiedBooks: 0,
+      otherBooks: 0,
+      totalEntities: 0,
+      classifiedEntities: 0,
+      otherEntities: 0,
+      classifiedEntityPct: 0,
+      belowNinetyPctGuard: false,
+    },
   });
   const markdown = buildReportMarkdown(reportJson);
 

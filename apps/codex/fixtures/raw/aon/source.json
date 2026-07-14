@@ -1,0 +1,44 @@
+{
+  "category": "source",
+  "hits": [
+    {
+      "_id": "source-1",
+      "_source": {
+        "category": "source",
+        "exclude_from_search": false,
+        "id": "source-1",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Source\">[Core Rulebook](/Sources.aspx?ID=1)</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Product Page** [paizo.com](https://store.paizo.com/pathfinder-core-rulebook/)\r\n\r\n<row>\r\n**Release Date** <date value=\"2019-08-01\" />\r\n</row>\r\n\r\n**Latest Errata** [4.0](https://paizo.com/pathfinder/faq) - 2023-01-03\r\n\r\n**Product Line** Rulebooks\n\n</column>",
+        "name": "Core Rulebook",
+        "primary_source": "Core Rulebook",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Core Rulebook",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2019-08-01",
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Product Page** [paizo.com](https://store.paizo.com/pathfinder-core-rulebook/)\r\n\r\n<row>\r\n**Release Date** <date value=\"2019-08-01\" />\r\n</row>\r\n\r\n**Latest Errata** [4.0](https://paizo.com/pathfinder/faq) - 2023-01-03\r\n\r\n**Product Line** Rulebooks\n\n</additional-info>",
+        "skill_mod": {},
+        "source": [
+          "Core Rulebook"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Core Rulebook](/Sources.aspx?ID=1)",
+        "source_raw": [
+          "Core Rulebook"
+        ],
+        "speed": {},
+        "text": " Core Rulebook Product Page paizo.com Release Date Latest Errata 4.0 - 2023-01-03 Product Line Rulebooks\n",
+        "type": "Source",
+        "url": "/Sources.aspx?ID=1",
+        "weakness": {}
+      },
+      "sort": [
+        "core rulebook",
+        "/sources.aspx?id=1"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "category": "sidebar",
+  "hits": [
+    {
+      "_id": "sidebar-2121",
+      "_source": {
+        "category": "sidebar",
+        "exclude_from_search": false,
+        "id": "sidebar-2121",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "rules-7"
+        ],
+        "markdown": "<title level=\"1\" right=\"Sidebar\">[Dice](/Rules.aspx?ID=2001)</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 6\r\n\r\n**Parent page** [Tools of Play](/Rules.aspx?ID=2001)\r\n\r\n</column>\r\n\r\n---\r\n\r\nPathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in the text, they’re indicated by a “d” followed by the number of sides on the die. Pathfinder uses 4-sided dice (or d4), 6-sided dice (d6), 8-sided dice (d8), 10-sided dice (d10), 12-sided dice (d12), and 20-sided dice (d20). If you need to roll multiple dice, a number before the “d” tells you how many. For example, “4d6” means you should roll four dice, all 6-sided. If a rule asks for d%, you generate a number from 1 to 100 by rolling two 10-sided dice, treating one as the tens place and the other as the ones place.",
+        "name": "Dice",
+        "primary_source": "Player Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Player Core pg. 6",
+        "release_date": "2023-11-15",
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 6\r\n\r\n**Parent page** [Tools of Play](/Rules.aspx?ID=2001)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nPathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Player Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Player Core](/Sources.aspx?ID=216) pg. 6",
+        "source_raw": [
+          "Player Core pg. 6"
+        ],
+        "speed": {},
+        "summary": "Pathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in …",
+        "summary_markdown": "Pathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in …",
+        "text": " Dice Source Player Core pg. 6 Parent page Tools of Play --- Pathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in the text, they’re indicated by a “d” followed by the number of sides on the die. Pathfinder uses 4-sided dice (or d4), 6-sided dice (d6), 8-sided dice (d8), 10-sided dice (d10), 12-sided dice (d12), and 20-sided dice (d20). If you need to roll multiple dice, a number before the “d” tells you how many. For example, “4d6” means you should roll four dice, all 6-sided. If a rule asks for d%, you generate a number from 1 to 100 by rolling two 10-sided dice, treating one as the tens place and the other as the ones place.",
+        "type": "Sidebar",
+        "url": "/Rules.aspx?ID=2001",
+        "weakness": {}
+      },
+      "sort": [
+        "dice",
+        "/rules.aspx?id=2001"
+      ]
+    },
+    {
+      "_id": "sidebar-1046",
+      "_source": {
+        "category": "sidebar",
+        "exclude_from_search": false,
+        "id": "sidebar-1046",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Sidebar\">[In Service to the Unknown](/Classes.aspx?ID=16)</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Advanced Player's Guide](/Sources.aspx?ID=39) pg. 94\r\n\r\n**Parent page** [Witch](/Classes.aspx?ID=16)\r\n\r\n</column>\r\n\r\n---\r\n\r\nA witch's patron is a mysterious entity, rarely known or understood even by the witch in that patron's service. The nature of the relationship between a witch and their patron can serve as details for character development and storytelling. When playing a witch, work with your GM to determine the nature of your patron and how much of that nature you know, both as a player and a character. There are countless ways to handle a witch's patron; the following are just a few approaches you might take.\n\n For a character who truly doesn't know their patron, you might have your GM choose your patron's theme and which lessons your witch learns, as the patron determines what powers to bestow upon you as their emissary—and these can provide clues to your patron's nature. You could instead give your GM a list of lessons you'd like for your character and let the GM choose between them, representing a negotiation between your witch and the patron. In this case, you might choose your patron's theme to indicate which aspect of the patron relates to your character, or let your GM choose the theme. If you want to be fully in control of your abilities, you can choose the lessons you most prefer and let the GM tailor the identity of your patron accordingly.\n\n Another approach is for you to craft the details of your witch's patron yourself. You can then provide those details to the GM to incorporate into a larger narrative or to provide additional flavor and roleplaying context for your character. Your character might still remain ignorant of that patron's identity, even if you as a player know it. Perhaps your character knows the nature of their patron but is cursed to never reveal it to others. You might have willingly sworn a pact to your patron but fear the repercussions should others learn of that pact. Or perhaps you and your patron are entirely forthcoming about your relationship.\n\n Every witch is different, and no story is wrong so long as it's fun and engaging for everyone involved!",
+        "name": "In Service to the Unknown",
+        "primary_source": "Advanced Player's Guide",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Advanced Player's Guide pg. 94",
+        "release_date": "2020-07-30",
+        "remaster_id": [
+          "class-38"
+        ],
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Advanced Player's Guide](/Sources.aspx?ID=39) pg. 94\r\n\r\n**Parent page** [Witch](/Classes.aspx?ID=16)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nA witch's patron is a mysterious entity, rarely known or understood even by the witch in that patron's service. The nature of the relationship …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Advanced Player's Guide"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Advanced Player's Guide](/Sources.aspx?ID=39) pg. 94",
+        "source_raw": [
+          "Advanced Player's Guide pg. 94"
+        ],
+        "speed": {},
+        "summary": "A witch's patron is a mysterious entity, rarely known or understood even by the witch in that patron's service. The nature of the relationship …",
+        "summary_markdown": "A witch's patron is a mysterious entity, rarely known or understood even by the witch in that patron's service. The nature of the relationship …",
+        "text": " In Service to the Unknown Source Advanced Player's Guide pg. 94 Parent page Witch --- A witch's patron is a mysterious entity, rarely known or understood even by the witch in that patron's service. The nature of the relationship between a witch and their patron can serve as details for character development and storytelling. When playing a witch, work with your GM to determine the nature of your patron and how much of that nature you know, both as a player and a character. There are countless ways to handle a witch's patron; the following are just a few approaches you might take. For a character who truly doesn't know their patron, you might have your GM choose your patron's theme and which lessons your witch learns, as the patron determines what powers to bestow upon you as their emissary—and these can provide clues to your patron's nature. You could instead give your GM a list of lessons you'd like for your character and let the GM choose between them, representing a negotiation between your witch and the patron. In this case, you might choose your patron's theme to indicate which aspect of the patron relates to your character, or let your GM choose the theme. If you want to be fully in control of your abilities, you can choose the lessons you most prefer and let the GM tailor the identity of your patron accordingly. Another approach is for you to craft the details of your witch's patron yourself. You can then provide those details to the GM to incorporate into a larger narrative or to provide additional flavor and roleplaying context for your character. Your character might still remain ignorant of that patron's identity, even if you as a player know it. Perhaps your character knows the nature of their patron but is cursed to never reveal it to others. You might have willingly sworn a pact to your patron but fear the repercussions should others learn of that pact. Or perhaps you and your patron are entirely forthcoming about your relationship. Every witch is different, and no story is wrong so long as it's fun and engaging for everyone involved!",
+        "type": "Sidebar",
+        "url": "/Classes.aspx?ID=16",
+        "weakness": {}
+      },
+      "sort": [
+        "in service to the unknown",
+        "/classes.aspx?id=16"
+      ]
+    }
+  ]
+}

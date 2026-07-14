@@ -1,12 +1,12 @@
 {
-  "aonUrl": "/Sources.aspx?ID=40",
+  "aonUrl": "/Sources.aspx?ID=1",
   "body": [
     {
       "children": [
         {
-          "display": "Legends",
+          "display": "Core Rulebook",
           "kind": "crossref",
-          "targetId": "source/legends"
+          "targetId": "source/core-rulebook"
         }
       ],
       "kind": "heading",
@@ -66,7 +66,48 @@
           }
         },
         {
-          "content": "2020-07-30",
+          "content": "2019-08-01",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Latest Errata",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "4.0",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " - 2023-01-03",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -89,7 +130,7 @@
           }
         },
         {
-          "content": " Lost Omens",
+          "content": " Rulebooks",
           "kind": "text",
           "marks": {
             "bold": false,
@@ -104,13 +145,13 @@
   "category": "source",
   "edition": "legacy",
   "facets": {},
-  "id": "source/legends",
-  "name": "Legends",
+  "id": "source/core-rulebook",
+  "name": "Core Rulebook",
   "proseOnly": true,
   "rarity": "common",
-  "slug": "legends",
+  "slug": "core-rulebook",
   "source": {
-    "book": "Legends",
+    "book": "Core Rulebook",
     "license": "OGL"
   },
   "traits": []

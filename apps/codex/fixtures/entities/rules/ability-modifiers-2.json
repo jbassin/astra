@@ -1,0 +1,1757 @@
+{
+  "aonUrl": "/Rules.aspx?ID=1002",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Ability Modifiers",
+          "kind": "crossref",
+          "targetId": "rules/ability-modifiers"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Rules"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Gamemastery Guide",
+          "kind": "crossref",
+          "targetId": "source/gamemastery-guide"
+        },
+        {
+          "content": " pg. 59",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Next, figure out your creature’s ability modifiers, since these will suggest what their other statistics should be. You don’t have to determine the exact numbers, but it’s good to avoid creating creatures whose ability modifiers are at odds with their abilities, like creatures with a terrible Wisdom modifier and very high Perception. Most of the time, you’ll just be using ability modifiers for untrained skills, so they’re useful as a guide but not crucial.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " Table 2–1 shows some benchmarks for your creatures. Use high for the creature’s best ability modifiers, moderate for ones they’re okay at, and low for the rest. If a creature has a truly bad ability, you can go as low as –5. That’s the terrible range for ability modifiers, and doesn’t really change by level. This is most common with animals, which have an Intelligence modifier of –4 (for dogs, dolphins, and such) or –5 (for more instinctual animals like spiders), and for mindless creatures, which have a –5 Intelligence modifier.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " Few creatures use the extreme column. A powerful, dedicated spellcaster might use an extreme spellcasting statistic, or a preternaturally charming creature like a succubus or nymph might have an extreme Charisma modifier. However, the most common way extreme numbers are used is for really big, really strong creatures. This happens with only Large or larger creatures from 1st to 5th level, only Huge or larger creatures from 6th to 9th level, and only Gargantuan creatures from 10th to 15th level. Beyond that level, a creature doesn’t gain an extreme Strength modifier from size alone. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Table 2–1: Ability Modifier Scales",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "content": "Level",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Extreme",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "High",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Moderate",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Low",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "–1",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "—",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+0",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "0",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "—",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+0",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "1",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+1",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+1",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+1",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "11",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "12",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "13",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "14",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "15",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "16",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "17",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "18",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "19",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+11",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "20",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+11",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "21",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+11",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "22",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+11",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "23",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+11",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "24",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+13",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+12",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "+7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    }
+  ],
+  "breadcrumbs": [
+    "Chapter 2: Tools",
+    "Building Creatures"
+  ],
+  "category": "rules",
+  "edition": "legacy",
+  "facets": {},
+  "id": "rules/ability-modifiers-2",
+  "name": "Ability Modifiers",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "rules/attribute-modifiers"
+  ],
+  "slug": "ability-modifiers",
+  "source": {
+    "book": "Gamemastery Guide",
+    "license": "OGL",
+    "page": 59
+  },
+  "traits": []
+}

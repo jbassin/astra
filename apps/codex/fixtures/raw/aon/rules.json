@@ -1,0 +1,342 @@
+{
+  "category": "rules",
+  "hits": [
+    {
+      "_id": "rules-994",
+      "_source": {
+        "category": "rules",
+        "exclude_from_search": false,
+        "id": "rules-994",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Rules\">[Chapter 2: Tools](/Rules.aspx?ID=994)</title>\r\n\r\n**Source** [Gamemastery Guide](/Sources.aspx?ID=22) pg. 55\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\nWhile the Core Rulebook provides all the tools you need to be a Game Master, you may want resources to create original game content, whether it be new items, unique creatures, or a sprawling new world for adventurers to explore.\n\n This chapter provides a variety of tools to help you quickly and easily build your own elements for your game, as well as some special types of rules you can incorporate in your game, such as more hazards and strange magic items. This chapter is organized into the following sections. \n<ul><li>[**Building Creatures](/Rules.aspx?ID=995)** demonstrates a top-down approach for quickly and easily constructing the creatures and NPCs you want or need for any possible situation in your game. </li><li>[**Building Hazards](/Rules.aspx?ID=1043)** gives rules and advice for creating your own brand‑new hazards. </li><li>[**Building Items](/Rules.aspx?ID=1053)** teaches you how to create new pieces of treasure to delight your PCs. </li><li>[**Item Quirks](/Rules.aspx?ID=1083)** introduces simple but memorable quirks that you can use to quickly personalize an item and make its nature seem just as unique and exciting as its special abilities. </li><li>[**Intelligent Items](/Rules.aspx?ID=1084)** includes rules for creating items with a mind of their own that are characters in their own right, as well as several examples to get you started. </li><li>[**Cursed Items](/Rules.aspx?ID=1094)** examines items that have a nasty drawback or might be altogether unpleasant. The section includes specific cursed items and a list of curses you can add to an existing item, akin to a rune. </li><li>[**Relics](/Rules.aspx?ID=1096)** are special magic items that increase in power along with the PCs, and that you and your players work together to build and enhance. </li><li>[**Artifacts](/Rules.aspx?ID=1106)** are the most powerful and story-rich magic items in the game, and can only be destroyed in a specific way. </li><li>[**Gems and Art Objects](/Rules.aspx?ID=1110)** expands the diversity of monetary awards given to PCs and includes 100 sample art objects. </li><li>[**Afflictions](/Rules.aspx?ID=1113)** provides a plethora of curses, diseases, and drugs for use in your games, as well as drug and addiction rules useful in creating your own afflictions. </li><li>[**Building Worlds](/Rules.aspx?ID=1117)** explains how to go about building your own entire world or setting from scratch. This section leads into the next three, which provide tools to help you flesh out the finer details of specific parts of your game world. </li><li>[**Nations](/Rules.aspx?ID=1154)** includes a system to quickly encapsulate a nation in a stat block that contains all the information you need. </li><li>[**Settlements](/Rules.aspx?ID=1157)** covers everything from tiny villages to incredible metropolises. The section explains the settlement’s role in a game and provides a system to describe a settlement in a stat block with all the important information. </li><li>[**Planes](/Rules.aspx?ID=1173)** includes the various planar traits you can use to build your own planes, and explores all the planes of reality in the Age of Lost Omens setting as well.</li></ul> It’s up to you to determine how much of your game you want to customize. Many GMs use the default rules and creatures, and set their adventures on Golarion or another published game world. Other GMs devise and incorporate all-new creatures and places with strange themes that don’t fit in the standard Pathfinder game or world. Unless you’re building your entire game world from scratch, you can usually wait to implement any new rules creation until you think you’ll need it for your next session.\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Building Versus Modifying</title>\r\n\r\nMany times, a small adjustment to an existing creature, item, adventure, or other part of the game can serve you just as well as building something brand new. Before you delve into creating your own new content, ask yourself a few questions. First, does something similar already exist? When answering this question, look beyond the surface level. Maybe you want a 5th-level clawed centipede creature that can make Attacks of Opportunity and that regenerates unless hit by acid or fire damage. It might not look very much like a troll on the surface, but the statistics for a troll are going to get you most or all the way there. Ask yourself what you’ll need to change between your idea and the existing material. This will help you decide between using the original rule with minimal modification, using the original with adjustments, starting with the original as a framework to build your own, or just starting from scratch. Finally, ask yourself how much time you have to prepare the content, what overall impact you expect it to have in your campaign, and how important any discrepancies from existing material are to the core concept. The less important an element is to your game, or the less time you’ll be using it at the table, the more likely you should modify something that already exists.\r\n</aside>\r\n\r\n<document level=\"2\" id=\"rules-995\" />\r\n\r\n<document level=\"2\" id=\"rules-1043\" />\r\n\r\n<document level=\"2\" id=\"rules-1053\" />\r\n\r\n<document level=\"2\" id=\"rules-1083\" />\r\n\r\n<document level=\"2\" id=\"rules-1084\" />\r\n\r\n<document level=\"2\" id=\"rules-1094\" />\r\n\r\n<document level=\"2\" id=\"rules-1096\" />\r\n\r\n<document level=\"2\" id=\"rules-1106\" />\r\n\r\n<document level=\"2\" id=\"rules-1110\" />\r\n\r\n<document level=\"2\" id=\"rules-1113\" />\r\n\r\n<document level=\"2\" id=\"rules-1117\" />\r\n\r\n<document level=\"2\" id=\"rules-1154\" />\r\n\r\n<document level=\"2\" id=\"rules-1157\" />\r\n\r\n<document level=\"2\" id=\"rules-1172\" />",
+        "name": "Chapter 2: Tools",
+        "next_link": {
+          "label": "Chapter 3: Subsystems",
+          "url": "/Rules.aspx?ID=1187"
+        },
+        "previous_link": {
+          "label": "Chapter 1: Gamemastery Basics",
+          "url": "/Rules.aspx?ID=813"
+        },
+        "primary_source": "Gamemastery Guide",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Gamemastery Guide pg. 55",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2020-02-26",
+        "remaster_id": [
+          "rules-2665"
+        ],
+        "remaster_name": [
+          "Chapter 2: Building Games"
+        ],
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Gamemastery Guide](/Sources.aspx?ID=22) pg. 55\n\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nWhile the Core Rulebook provides all the tools you need to be a Game Master, you may want resources to create original game content, whether it be …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Gamemastery Guide"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Gamemastery Guide](/Sources.aspx?ID=22) pg. 55",
+        "source_raw": [
+          "Gamemastery Guide pg. 55"
+        ],
+        "speed": {},
+        "summary": "While the Core Rulebook provides all the tools you need to be a Game Master, you may want resources to create original game content, whether it be …",
+        "summary_markdown": "While the Core Rulebook provides all the tools you need to be a Game Master, you may want resources to create original game content, whether it be …",
+        "text": " Chapter 2: Tools Source Gamemastery Guide pg. 55 While the Core Rulebook provides all the tools you need to be a Game Master, you may want resources to create original game content, whether it be new items, unique creatures, or a sprawling new world for adventurers to explore. This chapter provides a variety of tools to help you quickly and easily build your own elements for your game, as well as some special types of rules you can incorporate in your game, such as more hazards and strange magic items. This chapter is organized into the following sections. Building Creatures demonstrates a top-down approach for quickly and easily constructing the creatures and NPCs you want or need for any possible situation in your game. Building Hazards gives rules and advice for creating your own brand‑new hazards. Building Items teaches you how to create new pieces of treasure to delight your PCs. Item Quirks introduces simple but memorable quirks that you can use to quickly personalize an item and make its nature seem just as unique and exciting as its special abilities. Intelligent Items includes rules for creating items with a mind of their own that are characters in their own right, as well as several examples to get you started. Cursed Items examines items that have a nasty drawback or might be altogether unpleasant. The section includes specific cursed items and a list of curses you can add to an existing item, akin to a rune. Relics are special magic items that increase in power along with the PCs, and that you and your players work together to build and enhance. Artifacts are the most powerful and story-rich magic items in the game, and can only be destroyed in a specific way. Gems and Art Objects expands the diversity of monetary awards given to PCs and includes 100 sample art objects. Afflictions provides a plethora of curses, diseases, and drugs for use in your games, as well as drug and addiction rules useful in creating your own afflictions. Building Worlds explains how to go about building your own entire world or setting from scratch. This section leads into the next three, which provide tools to help you flesh out the finer details of specific parts of your game world. Nations includes a system to quickly encapsulate a nation in a stat block that contains all the information you need. Settlements covers everything from tiny villages to incredible metropolises. The section explains the settlement’s role in a game and provides a system to describe a settlement in a stat block with all the important information. Planes includes the various planar traits you can use to build your own planes, and explores all the planes of reality in the Age of Lost Omens setting as well. It’s up to you to determine how much of your game you want to customize. Many GMs use the default rules and creatures, and set their adventures on Golarion or another published game world. Other GMs devise and incorporate all-new creatures and places with strange themes that don’t fit in the standard Pathfinder game or world. Unless you’re building your entire game world from scratch, you can usually wait to implement any new rules creation until you think you’ll need it for your next session. Building Versus Modifying Many times, a small adjustment to an existing creature, item, adventure, or other part of the game can serve you just as well as building something brand new. Before you delve into creating your own new content, ask yourself a few questions. First, does something similar already exist? When answering this question, look beyond the surface level. Maybe you want a 5th-level clawed centipede creature that can make Attacks of Opportunity and that regenerates unless hit by acid or fire damage. It might not look very much like a troll on the surface, but the statistics for a troll are going to get you most or all the way there. Ask yourself what you’ll need to change between your idea and the existing material. This will help you decide between using the original rule with minimal modification, using the original with adjustments, starting with the original as a framework to build your own, or just starting from scratch. Finally, ask yourself how much time you have to prepare the content, what overall impact you expect it to have in your campaign, and how important any discrepancies from existing material are to the core concept. The less important an element is to your game, or the less time you’ll be using it at the table, the more likely you should modify something that already exists. ",
+        "type": "Rules",
+        "url": "/Rules.aspx?ID=994",
+        "weakness": {}
+      },
+      "sort": [
+        "chapter 2: tools",
+        "/rules.aspx?id=994"
+      ]
+    },
+    {
+      "_id": "rules-995",
+      "_source": {
+        "breadcrumbs": [
+          "Chapter 2: Tools\r\n"
+        ],
+        "category": "rules",
+        "exclude_from_search": false,
+        "id": "rules-995",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Rules\">[Building Creatures](/Rules.aspx?ID=995)</title>\r\n\r\n**Source** [Gamemastery Guide](/Sources.aspx?ID=22) pg. 56\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\nMaking your own creatures fleshes out your game world and lets you introduce concepts not yet available in published products like the Bestiary volumes. These guidelines help you customize creatures to your specifications and explore your imagination. From strange beasts to canny political rivals, you have the power to design creatures that fit the narrative needs of your story.\n\n Creatures aren’t built the same way PCs are. The rules for building them are more flexible, and their statistics are based on benchmark final numbers rather than combining each individual modifier together. This is called top-down design, in which you consider the design process as a whole and select the details that reflect your intended result, rather than building statistics from the bottom up and hoping the finished creature matches your vision.\n\n This guide provides a step-by-step process to build creatures, but as you get more comfortable with creature creation, you may prefer to use different methods. You could start with one ability you think is cool, or you might look to create a spellcaster of a certain type. There’s no wrong starting place or wrong way to compile and present your creation; some GMs prefer to generate a stat block that is as similar to an official _Bestiary_ entry as possible, while others prefer to compile just a brief set of notes.\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Base Road Maps</title>\r\n\r\nYou can use the following suggestions to set the baseline when creating your road map. For example, use brute for a big, tough creature like an ogre, and skirmisher for a darting enemy. Each entry is a starting point you can customize as you see fit. Any core statistic that isn’t listed should typically use moderate numbers. You can set ability modifiers and add additional abilities as needed. To make a creature that resembles a character of a certain class, see Class Road maps on page 73.\n\n **Brute** low Perception; high or extreme Str modifier, high to moderate Con modifier, low or lower Dex and mental modifiers; moderate or low AC; high Fortitude, low Reflex or Will or both; high HP; high attack bonus and high damage or moderate attack bonus and extreme damage\n\n **Magical Striker** high attack and high damage; moderate to high spell DCs; either a scattering of innate spells or prepared or spontaneous spells up to half the creature’s level (rounded up) minus 1\n\n **Skill Paragon** high or extreme ability modifier matching its best skills; typically high Reflex or Will and low Fortitude; many skills at moderate or high and potentially one or two extreme skills; at least one special ability to use the creature’s skills in combat\n\n **Skirmisher** high Dex modifier; low Fortitude, high Reflex; higher Speed than typical\n\n **Sniper** high Perception; high Dex modifier; low Fortitude, high Reflex; moderate to low HP; ranged Strikes have high attack bonus and damage or moderate attack bonus and extreme damage (melee Strikes are weaker)\n\n **Soldier** high Str modifier; high to extreme AC; high Fortitude; high attack bonus and high damage; Attack of Opportunity or other tactical abilities\n\n **Spellcaster** high or extreme modifier for the corresponding mental ability; low Fortitude, high Will; low HP; low attack bonus and moderate or low damage; high or extreme spell DCs; prepared or spontaneous spells up to half the creature’s level (rounded up)\r\n</aside>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Building Creatures Overview</title>\r\n\r\nThis section details the creature-building process using the following steps. <ol><li>**Develop the Concept (page 56)** Think about your creature, and make notes you can use in future steps.</li> <li>**Build the Stat Block** Pick all the statistics for the creatures, going through the list below.<br /> Level (page 58)<br /> Alignment, Size, and Traits (page 58)<br /> Ability Modifiers (page 59)<br /> Perception and Senses (page 60)<br /> Languages (page 60)<br /> Skills (page 60)<br /> Items, if necessary (page 61)<br /> AC (page 61)<br /> Saving Throws (page 62)<br /> Hit Points (page 62)<br /> Immunities, Weaknesses, and Resistances (page 63)<br /> Speed (page 64)<br /> Strikes, including their damage (page 64)<br /> Spells, if necessary (page 65)</li> <li>**Design Abilities (page 67)** Create the special abilities your creature can use.</li> <li>**Review Holistically (page 69)** Step back, take stock of your creature as a whole, and tweak as needed.</li></ol>\r\n</aside>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Converting First Edition Creatures</title>\r\n\r\nIf you’re converting creatures from First Edition, you won’t find a direct numerical conversion. Instead, use the original statistics to create your road map, giving a better AC to a creature that had a good AC in First Edition, and so on.\n\n Here are the main areas of difference that you’ll want to keep in mind for your conversion. \n<ul><li>Ability modifiers scale differently, so don’t copy them over exactly. The highest modifiers tend not to get as high in Second Edition. You’ll rarely see a +10 Strength modifier, for example. Creatures also tend to get better low statistics at higher levels than they used to, particularly for Dexterity and Wisdom. This is most evident in high‑level First Edition creatures with awful Dexterity.</li> <li>Low-Intelligence creatures, particularly animals, tend to have more special actions than they would have in First Edition. This is to make encounters with them more dynamic and distinct. Compare dinosaurs between the editions for good examples.</li> <li>When converting spell-like abilities to innate spells, you might need to make some substitutions. Some spells will appear as heightened versions of spells (such as greater dispel magic now being heightened dispel magic), but others will require you to find something different. Also, don’t feel like you need to keep every spell; focus on the most thematic and potent ones. The Spells section on page 65 has more advice on this subject.</li> <li>Damage reduction has been replaced with two options: resistance to all damage (possibly with exceptions), or more HP and a weakness. Immunities, Weaknesses, and Resistances on page 63 describes the distinction.</li> <li>If you want to convert spell resistance, you can give the creature a +1 status bonus to all saves against magic, or +2 if it had abnormally high spell resistance for its level.</li></ul>\r\n</aside>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Designing NPCs</title>\r\n\r\nSometimes you’ll design a creature that’s meant to have abilities or characteristics similar to those of a PC. Maybe you need a bold champion, a sly rogue master criminal, or a wizened druid elder for your game. You also might need a common baker, who has little combat ability but great skill with dough and an oven. This section provides ways you might modify aspects of the creature-building process to fit those needs.\r\n</aside>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Improvising a Creature</title>\r\n\r\nAs you get more experienced, you might find that you don’t need to build some creatures in advance. In many cases, especially for simple creatures, you can just select values from the relevant tables on the fly and track its HP. When you do, track which value you used as it came up. For instance, let’s say you’re improvising a 2nd-level kobold soldier. When it’s time for initiative, you decide it has moderate Perception and jot down “Per +8.” Your group’s fighter beats it at initiative and attacks. You decide the soldier has high AC—looking at Table 2–5, you see that’s 18—and add this information to your note. The fighter’s Strike hits, and you select the low end of high HP: 36. Well, now it’s 25. Your note says “Per +8, AC 18, HP 25.” If it gets to take a turn, you can give it a Strike then.\r\n</aside>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Reskinning Creatures</title>\r\n\r\nSometimes you need a creature with abilities that are almost exactly the same as those of a published creature. In that case, it can be more efficient to simply “reskin” the old creature rather than design a new one—that is, to change the description but keep the abilities mostly the same. Occasionally reskinning requires small mechanical adjustments. For instance, a fire cat that has immunity to fire, an aura that deals fire damage, and the ability to light people on fire with its jaws to deal persistent fire damage could be reskinned as a caustic animate tree that has immunity to acid, an aura that deals acid damage, and branch attacks that smear acidic sap on a creature’s body when they hit, dealing persistent acid damage.\r\n</aside>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Trait Abilities</title>\r\n\r\nThis section provides the abilities conveyed by certain traits, such as demon, dragon, and undead. You’ll also find abilities typical of creatures with those traits to help guide you as you plan your creatures.\r\n</aside>\r\n\r\n<document level=\"2\" id=\"rules-996\" />\r\n\r\n<document level=\"2\" id=\"rules-997\" />\r\n\r\n<document level=\"2\" id=\"rules-1000\" />\r\n\r\n<document level=\"2\" id=\"rules-1001\" />\r\n\r\n<document level=\"2\" id=\"rules-1002\" />\r\n\r\n<document level=\"2\" id=\"rules-1003\" />\r\n\r\n<document level=\"2\" id=\"rules-1005\" />\r\n\r\n<document level=\"2\" id=\"rules-1006\" />\r\n\r\n<document level=\"2\" id=\"rules-1008\" />\r\n\r\n<document level=\"2\" id=\"rules-1009\" />\r\n\r\n<document level=\"2\" id=\"rules-1011\" />\r\n\r\n<document level=\"2\" id=\"rules-1012\" />\r\n\r\n<document level=\"2\" id=\"rules-1014\" />\r\n\r\n<document level=\"2\" id=\"rules-1015\" />\r\n\r\n<document level=\"2\" id=\"rules-1016\" />\r\n\r\n<document level=\"2\" id=\"rules-1019\" />\r\n\r\n<document level=\"2\" id=\"rules-1024\" />\r\n\r\n<document level=\"2\" id=\"rules-1038\" />\r\n\r\n<document level=\"2\" id=\"rules-1039\" />\r\n\r\n<document level=\"2\" id=\"rules-1040\" />",
+        "name": "Building Creatures",
+        "next_link": {
+          "label": "Building Hazards",
+          "url": "/Rules.aspx?ID=1043"
+        },
+        "previous_link": {
+          "label": "Chapter 1: Gamemastery Basics",
+          "url": "/Rules.aspx?ID=813"
+        },
+        "primary_source": "Gamemastery Guide",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Gamemastery Guide pg. 56",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2020-02-26",
+        "remaster_id": [
+          "rules-2874"
+        ],
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Gamemastery Guide](/Sources.aspx?ID=22) pg. 56\r\n\r\nChapter 2: Tools\r\n\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nMaking your own creatures fleshes out your game world and lets you introduce concepts not yet available in published products like the Bestiary …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Gamemastery Guide"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Gamemastery Guide](/Sources.aspx?ID=22) pg. 56",
+        "source_raw": [
+          "Gamemastery Guide pg. 56"
+        ],
+        "speed": {},
+        "summary": "Making your own creatures fleshes out your game world and lets you introduce concepts not yet available in published products like the Bestiary …",
+        "summary_markdown": "Making your own creatures fleshes out your game world and lets you introduce concepts not yet available in published products like the Bestiary …",
+        "text": " Building Creatures Source Gamemastery Guide pg. 56 Making your own creatures fleshes out your game world and lets you introduce concepts not yet available in published products like the Bestiary volumes. These guidelines help you customize creatures to your specifications and explore your imagination. From strange beasts to canny political rivals, you have the power to design creatures that fit the narrative needs of your story. Creatures aren’t built the same way PCs are. The rules for building them are more flexible, and their statistics are based on benchmark final numbers rather than combining each individual modifier together. This is called top-down design, in which you consider the design process as a whole and select the details that reflect your intended result, rather than building statistics from the bottom up and hoping the finished creature matches your vision. This guide provides a step-by-step process to build creatures, but as you get more comfortable with creature creation, you may prefer to use different methods. You could start with one ability you think is cool, or you might look to create a spellcaster of a certain type. There’s no wrong starting place or wrong way to compile and present your creation; some GMs prefer to generate a stat block that is as similar to an official Bestiary entry as possible, while others prefer to compile just a brief set of notes. Base Road Maps You can use the following suggestions to set the baseline when creating your road map. For example, use brute for a big, tough creature like an ogre, and skirmisher for a darting enemy. Each entry is a starting point you can customize as you see fit. Any core statistic that isn’t listed should typically use moderate numbers. You can set ability modifiers and add additional abilities as needed. To make a creature that resembles a character of a certain class, see Class Road maps on page 73. Brute low Perception; high or extreme Str modifier, high to moderate Con modifier, low or lower Dex and mental modifiers; moderate or low AC; high Fortitude, low Reflex or Will or both; high HP; high attack bonus and high damage or moderate attack bonus and extreme damage Magical Striker high attack and high damage; moderate to high spell DCs; either a scattering of innate spells or prepared or spontaneous spells up to half the creature’s level (rounded up) minus 1 Skill Paragon high or extreme ability modifier matching its best skills; typically high Reflex or Will and low Fortitude; many skills at moderate or high and potentially one or two extreme skills; at least one special ability to use the creature’s skills in combat Skirmisher high Dex modifier; low Fortitude, high Reflex; higher Speed than typical Sniper high Perception; high Dex modifier; low Fortitude, high Reflex; moderate to low HP; ranged Strikes have high attack bonus and damage or moderate attack bonus and extreme damage (melee Strikes are weaker) Soldier high Str modifier; high to extreme AC; high Fortitude; high attack bonus and high damage; Attack of Opportunity or other tactical abilities Spellcaster high or extreme modifier for the corresponding mental ability; low Fortitude, high Will; low HP; low attack bonus and moderate or low damage; high or extreme spell DCs; prepared or spontaneous spells up to half the creature’s level (rounded up) Building Creatures Overview This section details the creature-building process using the following steps. Develop the Concept (page 56) Think about your creature, and make notes you can use in future steps. Build the Stat Block Pick all the statistics for the creatures, going through the list below. Level (page 58) Alignment, Size, and Traits (page 58) Ability Modifiers (page 59) Perception and Senses (page 60) Languages (page 60) Skills (page 60) Items, if necessary (page 61) AC (page 61) Saving Throws (page 62) Hit Points (page 62) Immunities, Weaknesses, and Resistances (page 63) Speed (page 64) Strikes, including their damage (page 64) Spells, if necessary (page 65) Design Abilities (page 67) Create the special abilities your creature can use. Review Holistically (page 69) Step back, take stock of your creature as a whole, and tweak as needed. Converting First Edition Creatures If you’re converting creatures from First Edition, you won’t find a direct numerical conversion. Instead, use the original statistics to create your road map, giving a better AC to a creature that had a good AC in First Edition, and so on. Here are the main areas of difference that you’ll want to keep in mind for your conversion. Ability modifiers scale differently, so don’t copy them over exactly. The highest modifiers tend not to get as high in Second Edition. You’ll rarely see a +10 Strength modifier, for example. Creatures also tend to get better low statistics at higher levels than they used to, particularly for Dexterity and Wisdom. This is most evident in high‑level First Edition creatures with awful Dexterity. Low-Intelligence creatures, particularly animals, tend to have more special actions than they would have in First Edition. This is to make encounters with them more dynamic and distinct. Compare dinosaurs between the editions for good examples. When converting spell-like abilities to innate spells, you might need to make some substitutions. Some spells will appear as heightened versions of spells (such as greater dispel magic now being heightened dispel magic), but others will require you to find something different. Also, don’t feel like you need to keep every spell; focus on the most thematic and potent ones. The Spells section on page 65 has more advice on this subject. Damage reduction has been replaced with two options: resistance to all damage (possibly with exceptions), or more HP and a weakness. Immunities, Weaknesses, and Resistances on page 63 describes the distinction. If you want to convert spell resistance, you can give the creature a +1 status bonus to all saves against magic, or +2 if it had abnormally high spell resistance for its level. Designing NPCs Sometimes you’ll design a creature that’s meant to have abilities or characteristics similar to those of a PC. Maybe you need a bold champion, a sly rogue master criminal, or a wizened druid elder for your game. You also might need a common baker, who has little combat ability but great skill with dough and an oven. This section provides ways you might modify aspects of the creature-building process to fit those needs. Improvising a Creature As you get more experienced, you might find that you don’t need to build some creatures in advance. In many cases, especially for simple creatures, you can just select values from the relevant tables on the fly and track its HP. When you do, track which value you used as it came up. For instance, let’s say you’re improvising a 2nd-level kobold soldier. When it’s time for initiative, you decide it has moderate Perception and jot down “Per +8.” Your group’s fighter beats it at initiative and attacks. You decide the soldier has high AC—looking at Table 2–5, you see that’s 18—and add this information to your note. The fighter’s Strike hits, and you select the low end of high HP: 36. Well, now it’s 25. Your note says “Per +8, AC 18, HP 25.” If it gets to take a turn, you can give it a Strike then. Reskinning Creatures Sometimes you need a creature with abilities that are almost exactly the same as those of a published creature. In that case, it can be more efficient to simply “reskin” the old creature rather than design a new one—that is, to change the description but keep the abilities mostly the same. Occasionally reskinning requires small mechanical adjustments. For instance, a fire cat that has immunity to fire, an aura that deals fire damage, and the ability to light people on fire with its jaws to deal persistent fire damage could be reskinned as a caustic animate tree that has immunity to acid, an aura that deals acid damage, and branch attacks that smear acidic sap on a creature’s body when they hit, dealing persistent acid damage. Trait Abilities This section provides the abilities conveyed by certain traits, such as demon, dragon, and undead. You’ll also find abilities typical of creatures with those traits to help guide you as you plan your creatures. ",
+        "type": "Rules",
+        "url": "/Rules.aspx?ID=995",
+        "weakness": {}
+      },
+      "sort": [
+        "building creatures",
+        "/rules.aspx?id=995"
+      ]
+    },
+    {
+      "_id": "rules-1002",
+      "_source": {
+        "breadcrumbs": [
+          "Chapter 2: Tools\r\n",
+          "Building Creatures\r\n"
+        ],
+        "category": "rules",
+        "exclude_from_search": false,
+        "id": "rules-1002",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Rules\">[Ability Modifiers](/Rules.aspx?ID=1002)</title>\r\n\r\n**Source** [Gamemastery Guide](/Sources.aspx?ID=22) pg. 59\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\nNext, figure out your creature’s ability modifiers, since these will suggest what their other statistics should be. You don’t have to determine the exact numbers, but it’s good to avoid creating creatures whose ability modifiers are at odds with their abilities, like creatures with a terrible Wisdom modifier and very high Perception. Most of the time, you’ll just be using ability modifiers for untrained skills, so they’re useful as a guide but not crucial.\n\n Table 2–1 shows some benchmarks for your creatures. Use high for the creature’s best ability modifiers, moderate for ones they’re okay at, and low for the rest. If a creature has a truly bad ability, you can go as low as –5. That’s the terrible range for ability modifiers, and doesn’t really change by level. This is most common with animals, which have an Intelligence modifier of –4 (for dogs, dolphins, and such) or –5 (for more instinctual animals like spiders), and for mindless creatures, which have a –5 Intelligence modifier.\n\n Few creatures use the extreme column. A powerful, dedicated spellcaster might use an extreme spellcasting statistic, or a preternaturally charming creature like a succubus or nymph might have an extreme Charisma modifier. However, the most common way extreme numbers are used is for really big, really strong creatures. This happens with only Large or larger creatures from 1st to 5th level, only Huge or larger creatures from 6th to 9th level, and only Gargantuan creatures from 10th to 15th level. Beyond that level, a creature doesn’t gain an extreme Strength modifier from size alone. \n\n## Table 2–1: Ability Modifier Scales\n<row gap=\"tiny\">\n<table> <tr><td>**Level**</td><td>**Extreme**</td><td>**High**</td><td>**Moderate**</td><td>**Low**</td></tr> <tr><td>–1</td><td>—</td><td>+3</td><td>+2</td><td>+0</td></tr> <tr><td>0</td><td>—</td><td>+3</td><td>+2</td><td>+0</td></tr> <tr><td>1</td><td>+5</td><td>+4</td><td>+3</td><td>+1</td></tr> <tr><td>2</td><td>+5</td><td>+4</td><td>+3</td><td>+1</td></tr> <tr><td>3</td><td>+5</td><td>+4</td><td>+3</td><td>+1</td></tr> <tr><td>4</td><td>+6</td><td>+5</td><td>+3</td><td>+2</td></tr> <tr><td>5</td><td>+6</td><td>+5</td><td>+4</td><td>+2</td></tr> <tr><td>6</td><td>+7</td><td>+5</td><td>+4</td><td>+2</td></tr> <tr><td>7</td><td>+7</td><td>+6</td><td>+4</td><td>+2</td></tr> <tr><td>8</td><td>+7</td><td>+6</td><td>+4</td><td>+3</td></tr> <tr><td>9</td><td>+7</td><td>+6</td><td>+4</td><td>+3</td></tr> <tr><td>10</td><td>+8</td><td>+7</td><td>+5</td><td>+3</td></tr> <tr><td>11</td><td>+8</td><td>+7</td><td>+5</td><td>+3</td></tr> <tr><td>12</td><td>+8</td><td>+7</td><td>+5</td><td>+4</td></tr> <tr><td>13</td><td>+9</td><td>+8</td><td>+5</td><td>+4</td></tr> <tr><td>14</td><td>+9</td><td>+8</td><td>+5</td><td>+4</td></tr> <tr><td>15</td><td>+9</td><td>+8</td><td>+6</td><td>+4</td></tr> <tr><td>16</td><td>+10</td><td>+9</td><td>+6</td><td>+5</td></tr> <tr><td>17</td><td>+10</td><td>+9</td><td>+6</td><td>+5</td></tr> <tr><td>18</td><td>+10</td><td>+9</td><td>+6</td><td>+5</td></tr> <tr><td>19</td><td>+11</td><td>+10</td><td>+6</td><td>+5</td></tr> <tr><td>20</td><td>+11</td><td>+10</td><td>+7</td><td>+6</td></tr> <tr><td>21</td><td>+11</td><td>+10</td><td>+7</td><td>+6</td></tr> <tr><td>22</td><td>+11</td><td>+10</td><td>+8</td><td>+6</td></tr> <tr><td>23</td><td>+11</td><td>+10</td><td>+8</td><td>+6</td></tr> <tr><td>24</td><td>+13</td><td>+12</td><td>+9</td><td>+7</td></tr> </table></row>\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>",
+        "name": "Ability Modifiers",
+        "next_link": {
+          "label": "Perception",
+          "url": "/Rules.aspx?ID=1003"
+        },
+        "previous_link": {
+          "label": "Alignment, Size, and Traits",
+          "url": "/Rules.aspx?ID=1001"
+        },
+        "primary_source": "Gamemastery Guide",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Gamemastery Guide pg. 59",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2020-02-26",
+        "remaster_id": [
+          "rules-2881"
+        ],
+        "remaster_name": [
+          "Attribute Modifiers"
+        ],
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Gamemastery Guide](/Sources.aspx?ID=22) pg. 59\r\n\r\nChapter 2: Tools\r\n/ Building Creatures\r\n\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nNext, figure out your creature’s ability modifiers, since these will suggest what their other statistics should be. You don’t have to determine the …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Gamemastery Guide"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Gamemastery Guide](/Sources.aspx?ID=22) pg. 59",
+        "source_raw": [
+          "Gamemastery Guide pg. 59"
+        ],
+        "speed": {},
+        "summary": "Next, figure out your creature’s ability modifiers, since these will suggest what their other statistics should be. You don’t have to determine the …",
+        "summary_markdown": "Next, figure out your creature’s ability modifiers, since these will suggest what their other statistics should be. You don’t have to determine the …",
+        "text": " Ability Modifiers Source Gamemastery Guide pg. 59 Next, figure out your creature’s ability modifiers, since these will suggest what their other statistics should be. You don’t have to determine the exact numbers, but it’s good to avoid creating creatures whose ability modifiers are at odds with their abilities, like creatures with a terrible Wisdom modifier and very high Perception. Most of the time, you’ll just be using ability modifiers for untrained skills, so they’re useful as a guide but not crucial. Table 2–1 shows some benchmarks for your creatures. Use high for the creature’s best ability modifiers, moderate for ones they’re okay at, and low for the rest. If a creature has a truly bad ability, you can go as low as –5. That’s the terrible range for ability modifiers, and doesn’t really change by level. This is most common with animals, which have an Intelligence modifier of –4 (for dogs, dolphins, and such) or –5 (for more instinctual animals like spiders), and for mindless creatures, which have a –5 Intelligence modifier. Few creatures use the extreme column. A powerful, dedicated spellcaster might use an extreme spellcasting statistic, or a preternaturally charming creature like a succubus or nymph might have an extreme Charisma modifier. However, the most common way extreme numbers are used is for really big, really strong creatures. This happens with only Large or larger creatures from 1st to 5th level, only Huge or larger creatures from 6th to 9th level, and only Gargantuan creatures from 10th to 15th level. Beyond that level, a creature doesn’t gain an extreme Strength modifier from size alone. ## Table 2–1: Ability Modifier Scales Level Extreme High Moderate Low –1 — +3 +2 +0 0 — +3 +2 +0 1 +5 +4 +3 +1 2 +5 +4 +3 +1 3 +5 +4 +3 +1 4 +6 +5 +3 +2 5 +6 +5 +4 +2 6 +7 +5 +4 +2 7 +7 +6 +4 +2 8 +7 +6 +4 +3 9 +7 +6 +4 +3 10 +8 +7 +5 +3 11 +8 +7 +5 +3 12 +8 +7 +5 +4 13 +9 +8 +5 +4 14 +9 +8 +5 +4 15 +9 +8 +6 +4 16 +10 +9 +6 +5 17 +10 +9 +6 +5 18 +10 +9 +6 +5 19 +11 +10 +6 +5 20 +11 +10 +7 +6 21 +11 +10 +7 +6 22 +11 +10 +8 +6 23 +11 +10 +8 +6 24 +13 +12 +9 +7 ",
+        "type": "Rules",
+        "url": "/Rules.aspx?ID=1002",
+        "weakness": {}
+      },
+      "sort": [
+        "ability modifiers",
+        "/rules.aspx?id=1002"
+      ]
+    },
+    {
+      "_id": "rules-3280",
+      "_source": {
+        "breadcrumbs": [
+          "Chapter 8: Playing the Game",
+          "Afflictions"
+        ],
+        "category": "rules",
+        "exclude_from_search": false,
+        "id": "rules-3280",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "rules-371"
+        ],
+        "markdown": "<title level=\"1\" right=\"Rules\">[Counteracting](/Rules.aspx?ID=3280)</title>\r\n\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 431\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\nSome effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine which defeats the other. Successfully counteracting an effect [disrupts ](/Rules.aspx?ID=2342) it, preventing it from having any effect, unless noted otherwise.\n\nWhen attempting a counteract check, add the relevant skill modifier or other appropriate modifier to your check against the target's DC. If you're counteracting an [affliction](/Rules.aspx?ID=2389), the DC is in the affliction's stat block. If it's a spell, use the caster's DC. The GM can also calculate a DC based on the target effect's level. For spells, the counteract check modifier is your spellcasting attribute modifier plus your spellcasting proficiency bonus, plus any bonuses and penalties that specifically apply to counteract checks.\n\nWhat you can counteract depends on the check result and the target's counteract rank. If an effect is a spell, its rank is the counteract rank. Otherwise, halve its level and round up to determine its counteract rank (minimum counteract rank 0). If an effect's level is unclear and it came from a creature, halve and round up the creature's level.\n\n**Critical Success** Counteract the target if its counteract rank is no more than 3 higher than your effect's counteract rank.<br />**Success** Counteract the target if its counteract rank is no more than 1 higher than your effect's counteract rank.<br />**Failure** Counteract the target if its counteract rank is lower than your effect's counteract rank.<br />**Critical Failure** You fail to counteract the target.<br /><title level=\"2\" noclass=\"true\">Counteract Table</title>This table provides a reference for what an effect can counteract based on its rank and the check result. The first number in each column is the counteract rank at which you can counteract an effect based on your degree of success. The numbers in parentheses are the typical level range corresponding to that rank.\n\n## Counteract\n<row gap=\"tiny\">\n<table><tr><td>**Counteract Rank**</td><td>**Failure**</td><td>**Success**</td><td>**Critical Success**</td></tr><tr><td>0</td><td>—</td><td>1 (1 to 2)</td><td>3 (5 to 6)</td></tr><tr><td>1</td><td>0 (–1 to 0)</td><td>2 (3 to 4)</td><td>4 (7 to 8)</td></tr><tr><td>2</td><td>1 (1 to 2)</td><td>3 (5 to 6)</td><td>5 (9 to 10)</td></tr><tr><td>3</td><td>2 (3 to 4)</td><td>4 (7 to 8)</td><td>6 (11 to 12)</td></tr><tr><td>4</td><td>3 (5 to 6)</td><td>5 (9 to 10)</td><td>7 (13 to 14)</td></tr><tr><td>5</td><td>4 (7 to 8)</td><td>6 (11 to 12)</td><td>8 (15 to 16)</td></tr><tr><td>6</td><td>5 (9 to 10)</td><td>7 (13 to 14)</td><td>9 (17 to 18)</td></tr><tr><td>7</td><td>6 (11 to 12)</td><td>8 (15 to 16)</td><td>10 (19 to 20)</td></tr><tr><td>8</td><td>7 (13 to 14)</td><td>9 (17 to 18)</td><td>11 (21 to 22)</td></tr><tr><td>9</td><td>8 (15 to 16)</td><td>10 (19 to 20)</td><td>12 (23 to 24)</td></tr><tr><td>10</td><td>9 (17 to 18)</td><td>11 (21 to 22)</td><td>13 (25 to 26)</td></tr><tr></tr></table></row>\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>",
+        "name": "Counteracting",
+        "next_link": {
+          "label": "Perception and Detection",
+          "url": "/Rules.aspx?ID=2400"
+        },
+        "previous_link": {
+          "label": "Removing Afflictions",
+          "url": "/Rules.aspx?ID=2399"
+        },
+        "primary_source": "Player Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Player Core pg. 431",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2023-11-15",
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 431\r\n\r\nChapter 8: Playing the Game / Afflictions\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nSome effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Player Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Player Core](/Sources.aspx?ID=216) pg. 431",
+        "source_raw": [
+          "Player Core pg. 431"
+        ],
+        "speed": {},
+        "summary": "Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine …",
+        "summary_markdown": "Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine …",
+        "text": " Counteracting Source Player Core pg. 431 Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine which defeats the other. Successfully counteracting an effect disrupts it, preventing it from having any effect, unless noted otherwise. When attempting a counteract check, add the relevant skill modifier or other appropriate modifier to your check against the target's DC. If you're counteracting an affliction, the DC is in the affliction's stat block. If it's a spell, use the caster's DC. The GM can also calculate a DC based on the target effect's level. For spells, the counteract check modifier is your spellcasting attribute modifier plus your spellcasting proficiency bonus, plus any bonuses and penalties that specifically apply to counteract checks. What you can counteract depends on the check result and the target's counteract rank. If an effect is a spell, its rank is the counteract rank. Otherwise, halve its level and round up to determine its counteract rank (minimum counteract rank 0). If an effect's level is unclear and it came from a creature, halve and round up the creature's level. Critical Success Counteract the target if its counteract rank is no more than 3 higher than your effect's counteract rank. Success Counteract the target if its counteract rank is no more than 1 higher than your effect's counteract rank. Failure Counteract the target if its counteract rank is lower than your effect's counteract rank. Critical Failure You fail to counteract the target. Counteract Table This table provides a reference for what an effect can counteract based on its rank and the check result. The first number in each column is the counteract rank at which you can counteract an effect based on your degree of success. The numbers in parentheses are the typical level range corresponding to that rank. ## Counteract Counteract Rank Failure Success Critical Success 0 — 1 (1 to 2) 3 (5 to 6) 1 0 (–1 to 0) 2 (3 to 4) 4 (7 to 8) 2 1 (1 to 2) 3 (5 to 6) 5 (9 to 10) 3 2 (3 to 4) 4 (7 to 8) 6 (11 to 12) 4 3 (5 to 6) 5 (9 to 10) 7 (13 to 14) 5 4 (7 to 8) 6 (11 to 12) 8 (15 to 16) 6 5 (9 to 10) 7 (13 to 14) 9 (17 to 18) 7 6 (11 to 12) 8 (15 to 16) 10 (19 to 20) 8 7 (13 to 14) 9 (17 to 18) 11 (21 to 22) 9 8 (15 to 16) 10 (19 to 20) 12 (23 to 24) 10 9 (17 to 18) 11 (21 to 22) 13 (25 to 26) ",
+        "type": "Rules",
+        "url": "/Rules.aspx?ID=3280",
+        "weakness": {}
+      },
+      "sort": [
+        "counteracting",
+        "/rules.aspx?id=3280"
+      ]
+    },
+    {
+      "_id": "rules-371",
+      "_source": {
+        "breadcrumbs": [
+          "Chapter 9: Playing the Game",
+          "General Rules"
+        ],
+        "category": "rules",
+        "exclude_from_search": false,
+        "id": "rules-371",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Rules\">[Counteracting](/Rules.aspx?ID=371)</title>\r\n\r\n**Source** [Core Rulebook](/Sources.aspx?ID=1) pg. 458\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\nSome effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine which defeats the other. Successfully counteracting an effect ends it unless noted otherwise.\n\n When attempting a counteract check, add the relevant skill modifier or other appropriate modifier to your check against the target’s DC. If you’re counteracting an affliction, the DC is in the affliction’s stat block. If it’s a spell, use the caster’s DC. The GM can also calculate a DC based on the target effect’s level. For spells, the counteract check modifier is your spellcasting ability modifier plus your spellcasting proficiency bonus, plus any bonuses and penalties that specifically apply to counteract checks. What you can counteract depends on the check result and the target’s level. If an effect is a spell, its level is the counteract level. Otherwise, halve its level and round up to determine its counteract level. If an effect’s level is unclear and it came from a creature, halve and round up the creature’s level. \n\n**Critical Success** Counteract the target if its counteract level is no more than 3 levels higher than your effect’s counteract level.<br /> **Success** Counteract the target if its counteract level is no more than 1 level higher than your effect’s counteract level.<br /> **Failure** Counteract the target if its counteract level is lower than your effect’s counteract level.<br /> **Critical Failure** You fail to counteract the target.\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>",
+        "name": "Counteracting",
+        "next_link": {
+          "label": "Hit Points, Healing, and Dying",
+          "url": "/Rules.aspx?ID=372"
+        },
+        "previous_link": {
+          "label": "Afflictions",
+          "url": "/Rules.aspx?ID=361"
+        },
+        "primary_source": "Core Rulebook",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Core Rulebook pg. 458",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2019-08-01",
+        "remaster_id": [
+          "rules-3280"
+        ],
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Core Rulebook](/Sources.aspx?ID=1) pg. 458\r\n\r\nChapter 9: Playing the Game / General Rules\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nSome effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Core Rulebook"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Core Rulebook](/Sources.aspx?ID=1) pg. 458",
+        "source_raw": [
+          "Core Rulebook pg. 458"
+        ],
+        "speed": {},
+        "summary": "Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine …",
+        "summary_markdown": "Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine …",
+        "text": " Counteracting Source Core Rulebook pg. 458 Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine which defeats the other. Successfully counteracting an effect ends it unless noted otherwise. When attempting a counteract check, add the relevant skill modifier or other appropriate modifier to your check against the target’s DC. If you’re counteracting an affliction, the DC is in the affliction’s stat block. If it’s a spell, use the caster’s DC. The GM can also calculate a DC based on the target effect’s level. For spells, the counteract check modifier is your spellcasting ability modifier plus your spellcasting proficiency bonus, plus any bonuses and penalties that specifically apply to counteract checks. What you can counteract depends on the check result and the target’s level. If an effect is a spell, its level is the counteract level. Otherwise, halve its level and round up to determine its counteract level. If an effect’s level is unclear and it came from a creature, halve and round up the creature’s level. Critical Success Counteract the target if its counteract level is no more than 3 levels higher than your effect’s counteract level. Success Counteract the target if its counteract level is no more than 1 level higher than your effect’s counteract level. Failure Counteract the target if its counteract level is lower than your effect’s counteract level. Critical Failure You fail to counteract the target. ",
+        "type": "Rules",
+        "url": "/Rules.aspx?ID=371",
+        "weakness": {}
+      },
+      "sort": [
+        "counteracting",
+        "/rules.aspx?id=371"
+      ]
+    },
+    {
+      "_id": "rules-2001",
+      "_source": {
+        "breadcrumbs": [
+          "Chapter 1: Introduction",
+          "What is a Roleplaying Game?"
+        ],
+        "category": "rules",
+        "exclude_from_search": false,
+        "id": "rules-2001",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "rules-7"
+        ],
+        "markdown": "<title level=\"1\" right=\"Rules\">[Tools of Play](/Rules.aspx?ID=2001)</title>\r\n\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 6\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\nIn addition to this book, there are a few things you will need to play Pathfinder. These supplies can be found at your local hobby shop or online at **paizo.com**.\n\n**Character Sheet:** Each player will need a character sheet to create their character and to record what happens to them during play. You can find a character sheet in the back of this book and online as a free PDF.\n\n**Dice:** The players and GM will need at least one set of polyhedral dice, although most participants bring their own. Six-sided dice are quite common, but all the dice in the set can be found at hobby game stores or online. See the Dice sidebar for more on the different kinds of dice and how they are discussed in the text.\n\n**Adventure:** Every table needs an adventure to play, whether it's designed by the GM or found in a published resource. You can find a variety of exciting adventures and even entire Adventure Path campaigns at paizo.com.\n\n**Pathfinder Monster Core:** From terrifying dragons to mischievous gremlins, monsters are a common threat that the PCs might face, and each type has its own statistics and abilities. These can be found in the Pathfinder Monster Core, an invaluable book for GMs. Monster statistics can also be found online for free at **paizo.com/prd**.\n\n**Maps and Miniatures:** The chaos of combat can be difficult to imagine, so many groups use maps to represent the battlefield. These maps are marked with a 1-inch grid, and each square represents 5 feet in the game. Miniatures and illustrated tokens called pawns are used to represent the characters and the adversaries they face.\n\n**Additional Accessories:** There are many additional accessories you can add to your game to enhance the experience, including tools that help you track turns in combat, decks of cards for referencing common rules, digital character-creation tools, virtual tabletops for online play, and even background music and sound-effect sets.\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n\r\n<aside>\r\n<title level=\"2\" noclass=\"true\" icon=\"\">Dice</title>\r\n\r\nPathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in the text, they’re indicated by a “d” followed by the number of sides on the die. Pathfinder uses 4-sided dice (or d4), 6-sided dice (d6), 8-sided dice (d8), 10-sided dice (d10), 12-sided dice (d12), and 20-sided dice (d20). If you need to roll multiple dice, a number before the “d” tells you how many. For example, “4d6” means you should roll four dice, all 6-sided. If a rule asks for d%, you generate a number from 1 to 100 by rolling two 10-sided dice, treating one as the tens place and the other as the ones place.\r\n</aside>",
+        "name": "Tools of Play",
+        "next_link": {
+          "label": "Basics of Play",
+          "url": "/Rules.aspx?ID=2002"
+        },
+        "previous_link": {
+          "label": "Gaming Is for All",
+          "url": "/Rules.aspx?ID=2000"
+        },
+        "primary_source": "Player Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Player Core pg. 6",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2023-11-15",
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 6\r\n\r\nChapter 1: Introduction / What is a Roleplaying Game?\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nIn addition to this book, there are a few things you will need to play Pathfinder. These supplies can be found at your local hobby shop or online at  …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Player Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Player Core](/Sources.aspx?ID=216) pg. 6",
+        "source_raw": [
+          "Player Core pg. 6"
+        ],
+        "speed": {},
+        "summary": "In addition to this book, there are a few things you will need to play Pathfinder. These supplies can be found at your local hobby shop or online at  …",
+        "summary_markdown": "In addition to this book, there are a few things you will need to play Pathfinder. These supplies can be found at your local hobby shop or online at  …",
+        "text": " Tools of Play Source Player Core pg. 6 In addition to this book, there are a few things you will need to play Pathfinder. These supplies can be found at your local hobby shop or online at paizo.com . Character Sheet: Each player will need a character sheet to create their character and to record what happens to them during play. You can find a character sheet in the back of this book and online as a free PDF. Dice: The players and GM will need at least one set of polyhedral dice, although most participants bring their own. Six-sided dice are quite common, but all the dice in the set can be found at hobby game stores or online. See the Dice sidebar for more on the different kinds of dice and how they are discussed in the text. Adventure: Every table needs an adventure to play, whether it's designed by the GM or found in a published resource. You can find a variety of exciting adventures and even entire Adventure Path campaigns at paizo.com. Pathfinder Monster Core: From terrifying dragons to mischievous gremlins, monsters are a common threat that the PCs might face, and each type has its own statistics and abilities. These can be found in the Pathfinder Monster Core, an invaluable book for GMs. Monster statistics can also be found online for free at paizo.com/prd . Maps and Miniatures: The chaos of combat can be difficult to imagine, so many groups use maps to represent the battlefield. These maps are marked with a 1-inch grid, and each square represents 5 feet in the game. Miniatures and illustrated tokens called pawns are used to represent the characters and the adversaries they face. Additional Accessories: There are many additional accessories you can add to your game to enhance the experience, including tools that help you track turns in combat, decks of cards for referencing common rules, digital character-creation tools, virtual tabletops for online play, and even background music and sound-effect sets. Dice Pathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in the text, they’re indicated by a “d” followed by the number of sides on the die. Pathfinder uses 4-sided dice (or d4), 6-sided dice (d6), 8-sided dice (d8), 10-sided dice (d10), 12-sided dice (d12), and 20-sided dice (d20). If you need to roll multiple dice, a number before the “d” tells you how many. For example, “4d6” means you should roll four dice, all 6-sided. If a rule asks for d%, you generate a number from 1 to 100 by rolling two 10-sided dice, treating one as the tens place and the other as the ones place. ",
+        "type": "Rules",
+        "url": "/Rules.aspx?ID=2001",
+        "weakness": {}
+      },
+      "sort": [
+        "tools of play",
+        "/rules.aspx?id=2001"
+      ]
+    }
+  ]
+}

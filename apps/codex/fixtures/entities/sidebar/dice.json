@@ -1,0 +1,115 @@
+{
+  "aonUrl": "/Rules.aspx?ID=2001",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Dice",
+          "kind": "crossref",
+          "targetId": "rules/tools-of-play"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Sidebar"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core",
+          "kind": "crossref",
+          "targetId": "source/player-core"
+        },
+        {
+          "content": " pg. 6",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Parent page",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Tools of Play",
+          "kind": "crossref",
+          "targetId": "rules/tools-of-play"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Pathfinder requires a set of polyhedral dice. Each die has a different number of sides—four, six, eight, or more. When these dice are mentioned in the text, they’re indicated by a “d” followed by the number of sides on the die. Pathfinder uses 4-sided dice (or d4), 6-sided dice (d6), 8-sided dice (d8), 10-sided dice (d10), 12-sided dice (d12), and 20-sided dice (d20). If you need to roll multiple dice, a number before the “d” tells you how many. For example, “4d6” means you should roll four dice, all 6-sided. If a rule asks for d%, you generate a number from 1 to 100 by rolling two 10-sided dice, treating one as the tens place and the other as the ones place.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "sidebar",
+  "edition": "remaster",
+  "facets": {},
+  "id": "sidebar/dice",
+  "legacyOf": [
+    "rules/tools-of-play@legacy"
+  ],
+  "name": "Dice",
+  "proseOnly": true,
+  "slug": "dice",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 6
+  },
+  "traits": []
+}

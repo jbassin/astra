@@ -1,0 +1,180 @@
+{
+  "aonUrl": "/Rules.aspx?ID=371",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Counteracting",
+          "kind": "crossref",
+          "targetId": "rules/counteracting"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Rules"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Core Rulebook",
+          "kind": "crossref",
+          "targetId": "source/core-rulebook"
+        },
+        {
+          "content": " pg. 458",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine which defeats the other. Successfully counteracting an effect ends it unless noted otherwise.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " When attempting a counteract check, add the relevant skill modifier or other appropriate modifier to your check against the target’s DC. If you’re counteracting an affliction, the DC is in the affliction’s stat block. If it’s a spell, use the caster’s DC. The GM can also calculate a DC based on the target effect’s level. For spells, the counteract check modifier is your spellcasting ability modifier plus your spellcasting proficiency bonus, plus any bonuses and penalties that specifically apply to counteract checks. What you can counteract depends on the check result and the target’s level. If an effect is a spell, its level is the counteract level. Otherwise, halve its level and round up to determine its counteract level. If an effect’s level is unclear and it came from a creature, halve and round up the creature’s level. ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Counteract the target if its counteract level is no more than 3 levels higher than your effect’s counteract level.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Counteract the target if its counteract level is no more than 1 level higher than your effect’s counteract level.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Counteract the target if its counteract level is lower than your effect’s counteract level.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You fail to counteract the target.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "breadcrumbs": [
+    "Chapter 9: Playing the Game",
+    "General Rules"
+  ],
+  "category": "rules",
+  "edition": "legacy",
+  "facets": {},
+  "id": "rules/counteracting-4",
+  "name": "Counteracting",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "rules/counteracting-2"
+  ],
+  "slug": "counteracting",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 458
+  },
+  "traits": []
+}

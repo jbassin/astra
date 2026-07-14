@@ -1,0 +1,863 @@
+{
+  "aonUrl": "/Rules.aspx?ID=3280",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Counteracting",
+          "kind": "crossref",
+          "targetId": "rules/counteracting"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Rules"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Player Core",
+          "kind": "crossref",
+          "targetId": "source/player-core"
+        },
+        {
+          "content": " pg. 431",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Some effects try to counteract spells, afflictions, conditions, or other effects. Counteract checks compare the power of two forces and determine which defeats the other. Successfully counteracting an effect ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "disrupts",
+          "kind": "crossref",
+          "targetId": "rules/disrupting-actions"
+        },
+        {
+          "content": " it, preventing it from having any effect, unless noted otherwise.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "When attempting a counteract check, add the relevant skill modifier or other appropriate modifier to your check against the target's DC. If you're counteracting an ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "affliction",
+          "kind": "crossref",
+          "targetId": "rules/afflictions"
+        },
+        {
+          "content": ", the DC is in the affliction's stat block. If it's a spell, use the caster's DC. The GM can also calculate a DC based on the target effect's level. For spells, the counteract check modifier is your spellcasting attribute modifier plus your spellcasting proficiency bonus, plus any bonuses and penalties that specifically apply to counteract checks.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "What you can counteract depends on the check result and the target's counteract rank. If an effect is a spell, its rank is the counteract rank. Otherwise, halve its level and round up to determine its counteract rank (minimum counteract rank 0). If an effect's level is unclear and it came from a creature, halve and round up the creature's level.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Counteract the target if its counteract rank is no more than 3 higher than your effect's counteract rank.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Counteract the target if its counteract rank is no more than 1 higher than your effect's counteract rank.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Counteract the target if its counteract rank is lower than your effect's counteract rank.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You fail to counteract the target.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Counteract Table",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "This table provides a reference for what an effect can counteract based on its rank and the check result. The first number in each column is the counteract rank at which you can counteract an effect based on your degree of success. The numbers in parentheses are the typical level range corresponding to that rank.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Counteract",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "content": "Counteract Rank",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Failure",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Success",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "Critical Success",
+                "kind": "text",
+                "marks": {
+                  "bold": true,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "0",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "—",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "1 (1 to 2)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "3 (5 to 6)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "1",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "0 (–1 to 0)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "2 (3 to 4)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "4 (7 to 8)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "2",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "1 (1 to 2)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "3 (5 to 6)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "5 (9 to 10)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "3",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "2 (3 to 4)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "4 (7 to 8)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "6 (11 to 12)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "4",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "3 (5 to 6)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "5 (9 to 10)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "7 (13 to 14)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "5",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "4 (7 to 8)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "6 (11 to 12)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "8 (15 to 16)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "6",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "5 (9 to 10)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "7 (13 to 14)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "9 (17 to 18)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "7",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "6 (11 to 12)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "8 (15 to 16)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "10 (19 to 20)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "8",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "7 (13 to 14)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "9 (17 to 18)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "11 (21 to 22)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "9",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "8 (15 to 16)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "10 (19 to 20)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "12 (23 to 24)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "content": "10",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "9 (17 to 18)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "11 (21 to 22)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "content": "13 (25 to 26)",
+                "kind": "text",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [],
+          "header": false
+        }
+      ]
+    }
+  ],
+  "breadcrumbs": [
+    "Chapter 8: Playing the Game",
+    "Afflictions"
+  ],
+  "category": "rules",
+  "edition": "remaster",
+  "facets": {},
+  "id": "rules/counteracting-2",
+  "legacyOf": [
+    "rules/counteracting-4"
+  ],
+  "name": "Counteracting",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "counteracting",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 431
+  },
+  "traits": []
+}

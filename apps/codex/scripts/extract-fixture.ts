@@ -50,6 +50,8 @@ import { loadConfig } from "@astra/config";
 
 import { CORPUS_SCHEMA_VERSION, canonicalJson, canonicalJsonCompact } from "../src/ingest/emit";
 import { mergeLocalizeMaps } from "../src/ingest/enrichers";
+import { buildRulesTree } from "../src/ingest/rulesTree";
+import { buildSourcesIndex } from "../src/ingest/sourcesIndexBuild";
 import {
   CodexEntitySchema,
   IndexRowSchema,
@@ -59,6 +61,8 @@ import {
 import { facetKeysFor } from "../src/schema/facetKeys";
 import { parseManifest } from "../src/schema/manifest";
 import type { CodexNode } from "../src/schema/nodes";
+import { RulesTreeFileSchema } from "../src/schema/rulesTree";
+import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
 
 const APP_ROOT = join(import.meta.dirname, "..");
 const FIXTURE_ROOT = join(APP_ROOT, "fixtures");
@@ -197,6 +201,59 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
   },
   { category: "ancestry", id: "ancestry-42", reason: "Anadi (journal-merge target, AoN side)" },
   { category: "feat", id: "feat-5337", reason: "Camoflage Coat (alias-join target)" },
+  // P4 (D29-39/D29-44) — the rules-tree/sidebar-attach/sources-index fixture
+  // composition (see the module doc's "part A" note).
+  {
+    category: "rules",
+    id: "rules-994",
+    reason: "P4: 'Chapter 2: Tools' — the depth-3 chain's breadcrumb-less root (GMG)",
+  },
+  {
+    category: "rules",
+    id: "rules-995",
+    reason:
+      "P4: 'Building Creatures' — depth-2 mid node, real CRLF-dirty breadcrumbs (['Chapter 2: Tools\\r\\n'])",
+  },
+  {
+    category: "rules",
+    id: "rules-1002",
+    reason:
+      "P4: 'Ability Modifiers' — depth-3 leaf, COMPLETE ancestor chain, both breadcrumb elements CRLF-dirty",
+  },
+  {
+    category: "rules",
+    id: "rules-3280",
+    reason:
+      "P4: Counteracting (remaster half, Player Core, Chapter 8/Afflictions) — the edition path-shift pair",
+  },
+  {
+    category: "rules",
+    id: "rules-371",
+    reason:
+      "P4: Counteracting (legacy half, Core Rulebook, Chapter 9/General Rules) — DIFFERENT path than its remaster pair",
+  },
+  {
+    category: "rules",
+    id: "rules-2001",
+    reason: "P4: 'Tools of Play' — attached-sidebar host (rules category)",
+  },
+  { category: "sidebar", id: "sidebar-2121", reason: "P4: 'Dice' — attaches to rules-2001's url" },
+  {
+    category: "class",
+    id: "class-16",
+    reason: "P4: Witch (legacy) — the M8 shared-url host (/Classes.aspx?ID=16)",
+  },
+  {
+    category: "class-feature",
+    id: "class-feature-402",
+    reason: "P4: 'Ability Boosts' — shares class-16's url, must NOT itself become a sidebar host",
+  },
+  {
+    category: "sidebar",
+    id: "sidebar-1046",
+    reason: "P4: 'In Service to the Unknown' — attaches to the shared class-16 url (M8 case)",
+  },
+  { category: "source", id: "source-1", reason: "P4: 'Core Rulebook' — the D29-44 source entity" },
 ];
 
 // ---------------------------------------------------------------------------
@@ -579,6 +636,12 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   // this fixture does NOT also exercise the M7 "second-layer renders as a
   // link" case on a real entity — that's covered by a dedicated synthetic
   // unit test instead (see nodes.test.tsx's cycle/depth-guard cases).
+  "class/investigator@legacy",
+  // P2 S1 golden (`rules-nature-crafting.html`) — a real rules-body render
+  // fixture predating P4; the "rules" category's smallest-file auto-pick
+  // used to satisfy this, before P4's own required rules picks (below)
+  // claimed that category's coverage slot.
+  "rules/nature-crafting-3",
   "action/pursue-a-lead-2",
   "action/clue-in-2",
   "action/devise-a-stratagem@legacy",
@@ -587,6 +650,21 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   // path segments end to end (encode/decode), a genuine full creature
   // statblock (not a stub), verified against the real corpus.
   "creature/ixamè",
+  // P4 (D29-39/D29-44) — real ids, verified against the live corpus by
+  // `aonUrl` (not guessed by slug: many same-named rules docs across 45
+  // books collide and push a pick onto a `-N`/`@legacy` suffix, e.g. this
+  // "Ability Modifiers" is `ability-modifiers-2`, not the bare slug).
+  "rules/chapter-2-tools", // depth-3 chain root, breadcrumb-less
+  "rules/building-creatures@legacy", // depth-3 chain mid (CRLF-dirty source, D29-39 heals it)
+  "rules/ability-modifiers-2", // depth-3 chain leaf — COMPLETE ancestor chain present
+  "rules/counteracting-2", // Counteracting remaster half (Player Core, Ch8/Afflictions)
+  "rules/counteracting-4", // Counteracting legacy half (Core Rulebook, Ch9/General Rules) — DIFFERENT path
+  "rules/tools-of-play", // attached-sidebar host (rules category)
+  "sidebar/dice", // attaches to rules/tools-of-play
+  "class/witch@legacy", // the M8 shared-url host (/Classes.aspx?ID=16)
+  "class-feature/ability-boosts-15", // shares the SAME url — must NOT be a sidebar host
+  "sidebar/in-service-to-the-unknown", // attaches to class/witch@legacy (M8 case)
+  "source/core-rulebook", // the D29-44 source entity
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {
@@ -717,6 +795,51 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   writeFileSync(join(entitiesDestRoot, "manifest.json"), fixtureManifestContent);
   bytesUsed += Buffer.byteLength(fixtureManifestContent);
 
+  // P4 (D29-39/D29-44): regenerate `rules-tree.json`/`sources-index.json`
+  // INTO the fixture, built from exactly the selected canonical entities —
+  // so CI route/ssrSmoke tests exercise real shapes hermetically. Degenerate
+  // vs. the real transform in one respect: no raw AoN aonId/next-link side
+  // channel survives into `fixtures/entities/` (only canonical CodexEntity
+  // JSON does), so sibling ordering here falls back to alphabetical (never
+  // asserted chain-order-correct by this fixture — that's `rulesTree.test.ts`'s
+  // job, over hand-crafted fixtures with real chain data). Entity `id` doubles
+  // as a stand-in `aonId` (both unique/deterministic — tie-breaks stay stable).
+  const allSelectedEntities = [...selectedByCategory.values()].flat();
+  const rulesDocs = allSelectedEntities
+    .filter((e) => e.category === "rules")
+    .map((e) => ({
+      aonId: e.id,
+      finalId: e.id,
+      name: e.name,
+      book: e.source.book,
+      edition: e.edition,
+      breadcrumbs: e.breadcrumbs ?? [],
+      superseded: (e.remasteredAs?.length ?? 0) > 0,
+    }));
+  const bookSourceLicense = new Map<string, CodexEntity["source"]["license"]>();
+  const sourceEntityRefByBook = new Map<string, string>();
+  for (const e of allSelectedEntities) {
+    if (e.category !== "source") continue;
+    bookSourceLicense.set(e.source.book, e.source.license);
+    sourceEntityRefByBook.set(e.source.book, e.id);
+  }
+  const noopReport = (): void => {};
+  const { file: fixtureRulesTree } = buildRulesTree(rulesDocs, bookSourceLicense, noopReport);
+  const rulesTreeContent = canonicalJson(RulesTreeFileSchema.parse(fixtureRulesTree));
+  writeFileSync(join(entitiesDestRoot, "rules-tree.json"), rulesTreeContent);
+  bytesUsed += Buffer.byteLength(rulesTreeContent);
+
+  const { file: fixtureSourcesIndex } = buildSourcesIndex({
+    finalEntities: allSelectedEntities,
+    aonCitations: [],
+    bookNameMap: new Map(),
+    bookSourceLicense,
+    sourceEntityRefByBook,
+  });
+  const sourcesIndexContent = canonicalJson(SourcesIndexFileSchema.parse(fixtureSourcesIndex));
+  writeFileSync(join(entitiesDestRoot, "sources-index.json"), sourcesIndexContent);
+  bytesUsed += Buffer.byteLength(sourcesIndexContent);
+
   if (bytesUsed > remainingBudget) {
     fail(
       `canonical-form coverage set is ${bytesUsed} bytes, exceeding the remaining budget of ${remainingBudget} bytes (raw subset already used the rest of the ${BUDGET_BYTES}-byte total)`,
@@ -840,6 +963,53 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   if (carveOut && (carveOut.aonUrl !== undefined || carveOut.proseOnly === true)) {
     problems.push("creature/dune-candle should be Foundry-only (no aonUrl, not proseOnly)");
   }
+
+  // P4 (D29-39/D29-44): the rules-tree/sidebar-attach coverage proof points.
+  const root = requireEntity("rules/chapter-2-tools", "P4 depth-3 chain root");
+  if (root && (root.breadcrumbs?.length ?? 0) > 0) {
+    problems.push("rules/chapter-2-tools should be breadcrumb-less (a tree root)");
+  }
+  const mid = requireEntity("rules/building-creatures@legacy", "P4 depth-3 chain mid");
+  if (mid && mid.breadcrumbs?.[0] !== "Chapter 2: Tools") {
+    problems.push(
+      `rules/building-creatures@legacy.breadcrumbs should be CRLF-healed to ["Chapter 2: Tools"], got ${JSON.stringify(mid.breadcrumbs)}`,
+    );
+  }
+  const leaf = requireEntity("rules/ability-modifiers-2", "P4 depth-3 chain leaf");
+  if (leaf && (leaf.breadcrumbs?.length ?? 0) !== 2) {
+    problems.push("rules/ability-modifiers-2 should carry a 2-element (depth-3) breadcrumb chain");
+  }
+  const counterRemaster = requireEntity("rules/counteracting-2", "P4 edition path-shift pair");
+  const counterLegacy = requireEntity("rules/counteracting-4", "P4 edition path-shift pair");
+  if (
+    counterRemaster &&
+    counterLegacy &&
+    JSON.stringify(counterRemaster.breadcrumbs) === JSON.stringify(counterLegacy.breadcrumbs)
+  ) {
+    problems.push("the Counteracting pair should carry DIFFERENT breadcrumb paths (D29-39)");
+  }
+  const rulesHost = requireEntity("rules/tools-of-play", "P4 attached-sidebar rules host");
+  if (rulesHost && !rulesHost.attachedSidebars?.includes("sidebar/dice")) {
+    problems.push("rules/tools-of-play should have attachedSidebars including sidebar/dice");
+  }
+  requireEntity("sidebar/dice", "P4 attached-sidebar rules host");
+  const classHost = requireEntity("class/witch@legacy", "P4 M8 shared-url host");
+  if (classHost && !classHost.attachedSidebars?.includes("sidebar/in-service-to-the-unknown")) {
+    problems.push(
+      "class/witch@legacy should have attachedSidebars including sidebar/in-service-to-the-unknown",
+    );
+  }
+  const sharedUrlFeature = requireEntity(
+    "class-feature/ability-boosts-15",
+    "P4 M8 shared-url non-host",
+  );
+  if (sharedUrlFeature && sharedUrlFeature.attachedSidebars !== undefined) {
+    problems.push(
+      "class-feature/ability-boosts-15 shares its url with class/witch@legacy and must NOT itself be a sidebar host",
+    );
+  }
+  requireEntity("sidebar/in-service-to-the-unknown", "P4 M8 shared-url case");
+  requireEntity("source/core-rulebook", "P4 source entity");
 
   if (problems.length > 0) {
     fail(`coverage matrix FAILED:\n  - ${problems.join("\n  - ")}`);

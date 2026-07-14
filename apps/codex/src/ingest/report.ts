@@ -1,5 +1,6 @@
 import type { CodexEntity, CreatureStats, HazardStats } from "../schema/entity";
 import { facetKeysFor } from "../schema/facetKeys";
+import type { BookMergeRow, BookNormalizeResult } from "./bookNormalize";
 import type { DropAccounting } from "./drop";
 import type {
   CategoryStat,
@@ -8,6 +9,9 @@ import type {
   PatchStats,
   RedirectCrossCheck,
 } from "./join";
+import type { RulesTreeStats } from "./rulesTree";
+import type { SidebarAttachResult } from "./sidebarAttach";
+import type { SourcesIndexStats } from "./sourcesIndexBuild";
 
 /**
  * D29-3/§3: the transform report — THE P1 acceptance artifact (spec §3, §4 S4's
@@ -75,6 +79,14 @@ export interface ReportInput {
   foundrySnapshotDocCount: number;
   aonSnapshotDocCount: number;
   sizeTotals?: SizeTotals;
+  /** P4 (D29-39) S1: the four new report sections — all four builders'
+   * stats objects, threaded straight through (no re-derivation here, same
+   * "pure builder consumes upstream stats" posture this module already
+   * follows for `join`/`dropAccounting`). */
+  bookNormalization: BookNormalizeResult;
+  sidebarAttachment: SidebarAttachResult;
+  rulesTree: RulesTreeStats;
+  sourcesIndex: SourcesIndexStats;
 }
 
 // ---------------------------------------------------------------------------
@@ -359,6 +371,48 @@ export function computeSupersededBreakdown(entities: readonly CodexEntity[]): Su
 }
 
 // ---------------------------------------------------------------------------
+// P4 (D29-39) S1: report-JSON projections of the four new builders' stats
+// (BookNormalizeResult carries a full `entities[]` array — never put on
+// `report.json`; every other field here is already report-shaped).
+// ---------------------------------------------------------------------------
+
+export interface BookNormalizationJson {
+  distinctBefore: number;
+  distinctAfter: number;
+  prefixMergeCount: number;
+  caseFoldGroupCount: number;
+  mergeTable: BookMergeRow[];
+}
+
+function bookNormalizationJson(r: BookNormalizeResult): BookNormalizationJson {
+  return {
+    distinctBefore: r.distinctBefore,
+    distinctAfter: r.distinctAfter,
+    prefixMergeCount: r.prefixMergeCount,
+    caseFoldGroupCount: r.caseFoldGroupCount,
+    mergeTable: r.mergeTable,
+  };
+}
+
+export interface SidebarAttachmentJson {
+  sidebarsTotal: number;
+  sidebarsResolved: number;
+  byHostCategory: SidebarAttachResult["byHostCategory"];
+  maxPerHost: number;
+  hostsWithSidebars: number;
+}
+
+function sidebarAttachmentJson(r: SidebarAttachResult): SidebarAttachmentJson {
+  return {
+    sidebarsTotal: r.sidebarsTotal,
+    sidebarsResolved: r.sidebarsResolved,
+    byHostCategory: r.byHostCategory,
+    maxPerHost: r.maxPerHost,
+    hostsWithSidebars: r.hostsWithSidebars,
+  };
+}
+
+// ---------------------------------------------------------------------------
 // report.json
 // ---------------------------------------------------------------------------
 
@@ -412,6 +466,14 @@ export interface ReportJson {
   /** D29-33c: the `superseded` predicate's count, by edition (adversarial
    * B2's 10,970 legacy + 42 remaster = 11,012 pin). */
   supersededBreakdown: SupersededBreakdown;
+  /** P4 (D29-39) S1: the mechanical book-name normalization pass. */
+  bookNormalization: BookNormalizationJson;
+  /** P4 (D29-39) S1: the `attachedSidebars` reverse-join. */
+  sidebarAttachment: SidebarAttachmentJson;
+  /** P4 (D29-39) S1: the `rules-tree.json` builder's stats. */
+  rulesTree: RulesTreeStats;
+  /** P4 (D29-43) S1: the `sources-index.json` builder's stats. */
+  sourcesIndex: SourcesIndexStats;
 }
 
 function categoryJson(stat: CategoryStat, finalOut: number): CategoryJoinJson {
@@ -465,6 +527,10 @@ export function buildReportJson(input: ReportInput): ReportJson {
     facetCoverage: computeFacetCoverage(input.finalEntities),
     familyCoverage: computeFamilyCoverage(input.finalEntities),
     supersededBreakdown: computeSupersededBreakdown(input.finalEntities),
+    bookNormalization: bookNormalizationJson(input.bookNormalization),
+    sidebarAttachment: sidebarAttachmentJson(input.sidebarAttachment),
+    rulesTree: input.rulesTree,
+    sourcesIndex: input.sourcesIndex,
   };
 }
 
@@ -789,6 +855,108 @@ export function buildReportMarkdown(json: ReportJson): string {
     `**${json.familyCoverage.count}** of **${json.familyCoverage.ofTotal}** final creature entities (**${json.familyCoverage.pct}%**) carry a \`family\` value — **${json.familyCoverage.distinctFamilies}** distinct families. Ships in \`facetKeys.ts\` regardless of this number (a stakeholder-sanctioned navigational facet, D29-33b) — the gap is real, not an extraction miss: AoN's own \`creature_family_markdown\` is empty on the remaining docs, and Foundry-only/variant creatures have no AoN meta to populate it from at all.`,
     "",
   );
+  lines.push("## Book-name normalization (P4 — D29-39)", "");
+  lines.push(
+    `${json.bookNormalization.distinctBefore} distinct raw \`source.book\` strings collapse to **${json.bookNormalization.distinctAfter}** — ${json.bookNormalization.prefixMergeCount} prefix merges (\`"Pathfinder " + <AoN book>\`), ${json.bookNormalization.caseFoldGroupCount} case-fold groups. Mechanical only — no hand-curated aliases (residual splits accepted).`,
+    "",
+  );
+  lines.push("### Full before→after mapping table", "");
+  lines.push(
+    json.bookNormalization.mergeTable.length > 0
+      ? mdTable(
+          ["from", "to", "entityCount", "kind"],
+          json.bookNormalization.mergeTable.map((r) => [r.from, r.to, r.entityCount, r.kind]),
+        )
+      : "No book strings changed this run.",
+    "",
+  );
+
+  lines.push("## Attached sidebars (P4 — D29-39)", "");
+  lines.push(
+    `${json.sidebarAttachment.sidebarsResolved}/${json.sidebarAttachment.sidebarsTotal} sidebar entities resolved to a living host (via pickCanonical → aonId → aonIdToFinalId); **${json.sidebarAttachment.hostsWithSidebars}** distinct hosts gained ≥1 sidebar; max sidebars on one host: **${json.sidebarAttachment.maxPerHost}**.`,
+    "",
+  );
+  lines.push("### Attachment coverage by host category", "");
+  lines.push(
+    json.sidebarAttachment.byHostCategory.length > 0
+      ? mdTable(
+          ["host category", "sidebars attached"],
+          json.sidebarAttachment.byHostCategory.map((r) => [r.category, r.count]),
+        )
+      : "No sidebars attached.",
+    "",
+  );
+
+  lines.push("## Rules tree (P4 — D29-39)", "");
+  lines.push(
+    `${json.rulesTree.totalDocs} rules docs across **${json.rulesTree.bookCount}** books · **${json.rulesTree.rootCount}** roots (**${json.rulesTree.childlessRootCount}** childless) · **${json.rulesTree.syntheticCount}** synthetic nodes (pinned at 3 — growth is report-visible, not silently accepted) · **${json.rulesTree.parentTieBreakCount}** parent tie-breaks (lowest aonId).`,
+    "",
+  );
+  lines.push(
+    "### Parent-fallback hits (name-only, root-preferring — expect only the Rules Elements family)",
+    "",
+  );
+  lines.push(
+    json.rulesTree.fallbackHits.length > 0
+      ? mdTable(
+          ["book", "parentName", "path", "resolvedTo"],
+          json.rulesTree.fallbackHits.map((h) => [
+            h.book,
+            h.parentName,
+            h.path.join(" > "),
+            h.resolvedTo,
+          ]),
+        )
+      : "No fallback hits this run.",
+    "",
+  );
+  lines.push("### Sibling-group chain coverage, per book", "");
+  lines.push(
+    json.rulesTree.siblingChainCoverage.length > 0
+      ? mdTable(
+          ["book", "groups", "fully chained", "pct"],
+          json.rulesTree.siblingChainCoverage.map((r) => [
+            r.book,
+            r.groups,
+            r.fullyChained,
+            `${r.pct}%`,
+          ]),
+        )
+      : "No sibling groups.",
+    "",
+  );
+
+  lines.push("## Sources index (P4 — D29-43)", "");
+  lines.push(
+    mdTable(
+      [
+        "total books",
+        "classified",
+        "Other",
+        "total entities",
+        "classified entities",
+        "Other entities",
+        "classified %",
+        "<90% guard tripped",
+      ],
+      [
+        [
+          json.sourcesIndex.totalBooks,
+          json.sourcesIndex.classifiedBooks,
+          json.sourcesIndex.otherBooks,
+          json.sourcesIndex.totalEntities,
+          json.sourcesIndex.classifiedEntities,
+          json.sourcesIndex.otherEntities,
+          `${json.sourcesIndex.classifiedEntityPct}%`,
+          json.sourcesIndex.belowNinetyPctGuard ? "YES" : "no",
+        ],
+      ],
+    ),
+    "",
+    'The "Other" bucket (books with zero AoN citations, ~253/5.4% of entities expected) renders last + collapsed at `/sources` — a recorded expectation, not a bug.',
+    "",
+  );
+
   lines.push("### `superseded` breakdown (D29-33c)", "");
   lines.push(
     mdTable(
