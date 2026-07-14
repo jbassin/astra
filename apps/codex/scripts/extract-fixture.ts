@@ -28,6 +28,12 @@
  *     fixture. These are NOT reprocessed by the pipeline test — only
  *     zod-validated as a schema-drift guard (D29-11's "coverage-matrix
  *     canonical entities all parse through CodexEntitySchema").
+ *   - `fixtures/entities/<category>/_index.json` + `fixtures/entities/
+ *     manifest.json` (D29-21, P1.6) — fixture-scoped per-category IndexRows
+ *     and a fixture-scoped corpus manifest (categoryCounts over exactly the
+ *     selected entities), mirroring the real corpus's read surface so P2's
+ *     corpus reader / route tests / ssrSmoke run hermetically against
+ *     `fixtures/entities/` with zero `data/` reads.
  *
  * ASSERTS the full coverage matrix before writing anything (fails loudly,
  * listing exactly what's missing) — this is the mechanism D29-11 requires,
@@ -42,9 +48,14 @@ import { join } from "node:path";
 
 import { loadConfig } from "@astra/config";
 
-import { canonicalJson } from "../src/ingest/emit";
+import { CORPUS_SCHEMA_VERSION, canonicalJson } from "../src/ingest/emit";
 import { mergeLocalizeMaps } from "../src/ingest/enrichers";
-import { CodexEntitySchema, type CodexEntity } from "../src/schema/entity";
+import {
+  CodexEntitySchema,
+  IndexRowSchema,
+  toIndexRow,
+  type CodexEntity,
+} from "../src/schema/entity";
 import { parseManifest } from "../src/schema/manifest";
 import type { CodexNode } from "../src/schema/nodes";
 
@@ -74,11 +85,12 @@ const REQUIRED_FOUNDRY_PICKS: readonly FoundryPick[] = [
   },
   {
     relPath: "pathfinder-monster-core/adamantine-dragon-adult.json",
-    reason: "dragon qualifier-reorder normalization (base)",
+    reason:
+      "dragon qualifier-reorder normalization (base) + P1.6 statblock-bearing dragon (melee bonus/damageRolls/speeds — spec §9's 'red-dragon-adult or equivalent')",
   },
   {
     relPath: "pathfinder-monster-core/adamantine-dragon-adult-spellcaster.json",
-    reason: "dragon 1:N spellcaster variantOf",
+    reason: "dragon 1:N spellcaster variantOf + P1.6 spellcastingEntry spelldc/tradition",
   },
   { relPath: "ancestries/anadi.json", reason: "journal-page merge target (Anadi)" },
   {
@@ -98,6 +110,11 @@ const REQUIRED_FOUNDRY_PICKS: readonly FoundryPick[] = [
     relPath: "abomination-vaults-bestiary/book-2-hands-of-the-devil/dune-candle.json",
     reason:
       "D29-17 carve-out: a genuine Foundry-only creature (no AoN counterpart at all) — must SURVIVE the drop pass",
+  },
+  {
+    relPath: "hazards/gravehall-trap.json",
+    reason:
+      "D29-20 (P1.6): a COMPLEX hazard (isComplex + disable + routine + hardness/stealth) — HazardStats extraction proof; web-lurker-deadfall below stays the simple-hazard grammar pick",
   },
 ];
 
@@ -127,11 +144,15 @@ const JOURNALS_PACK_DIR = "journals";
 
 /** The 7 real journal basenames every transform run reads unconditionally
  * (`EXCLUDED_JOURNAL_BASENAMES` + `JOURNAL_TARGET_CATEGORY`, journals.ts) —
- * trimmed here to keep the fixture small: only the Anadi page (the journal-
- * merge proof point) carries real content; every other page is dropped
- * (`pages: []`), which is a legal, well-formed JournalEntry shape (an empty
- * page list just means "nothing merges/stands-alone from this journal" —
- * `decideJournalPages`/`assembleJournalPages` both handle it fine). */
+ * trimmed here to keep the fixture small: only the pages named in
+ * `JOURNAL_KEPT_PAGES` carry real content (the Anadi journal-merge proof
+ * point, plus — D29-21/P1.6 — the two real "Index" pages whose standalone
+ * entities the old `index.json` category index used to CLOBBER; keeping them
+ * lets the CI pipeline test prove the `_index.json` rescue end-to-end); every
+ * other page is dropped (`pages: []`), which is a legal, well-formed
+ * JournalEntry shape (an empty page list just means "nothing merges/
+ * stands-alone from this journal" — `decideJournalPages`/
+ * `assembleJournalPages` both handle it fine). */
 const JOURNAL_BASENAMES: readonly string[] = [
   "ancestries",
   "archetypes",
@@ -141,7 +162,11 @@ const JOURNAL_BASENAMES: readonly string[] = [
   "hero-point-deck",
   "remaster-changes",
 ];
-const ANADI_PAGE_NAME = "Anadi";
+/** journal basename -> the page names kept (with their real content). */
+const JOURNAL_KEPT_PAGES: Readonly<Record<string, readonly string[]>> = {
+  ancestries: ["Anadi", "Index"],
+  archetypes: ["Index"],
+};
 
 // ---------------------------------------------------------------------------
 // 2. required RAW AoN doc picks
@@ -201,6 +226,20 @@ function fail(message: string): never {
   console.error(`extract-fixture: ${message}`);
   process.exit(1);
 }
+
+/** D29-19 knock-on (P1.6, measured on the real post-S6 corpus): the corpus's
+ * ONLY blockquote nodes — the 8 the P2 spec's §1 census counted — lived in
+ * `paizo-pregens`/`kingmaker-bestiary` `character` docs (pregen flavor
+ * quotes), all of which the npc-only import now excludes; the AoN grammar
+ * maps nothing to blockquote either. The kind is therefore corpus-EXTINCT
+ * and the "every kind >=1" matrix is unsatisfiable for it. Rather than
+ * silently dropping the kind from the matrix, it's allowlisted here and the
+ * extractor ASSERTS the extinction corpus-wide — if a future refresh
+ * reintroduces a blockquote anywhere, that assertion fails and this list
+ * must shrink (the fixture then covers it again automatically). P2's
+ * renderer still unit-covers the kind with a synthetic node (its per-kind
+ * tests never needed a corpus entity). */
+const KNOWN_EXTINCT_KINDS: ReadonlySet<string> = new Set(["blockquote"]);
 
 /** All `CodexNode.kind` values (D29-2's 18-member union — 7 block + 11
  * inline) — the coverage matrix this extractor asserts against. */
@@ -397,11 +436,11 @@ function buildRawFixture(
       name: string;
       pages: Array<{ _id: string; name: string; type?: string; text?: { content?: string } }>;
     };
-    const pages =
-      basename === "ancestries" ? real.pages.filter((p) => p.name === ANADI_PAGE_NAME) : [];
-    if (basename === "ancestries" && pages.length !== 1) {
+    const keptNames = JOURNAL_KEPT_PAGES[basename] ?? [];
+    const pages = real.pages.filter((p) => keptNames.includes(p.name));
+    if (pages.length !== keptNames.length) {
       fail(
-        `expected exactly one "${ANADI_PAGE_NAME}" page in the real ancestries journal, found ${pages.length}`,
+        `expected pages [${keptNames.join(", ")}] in the real "${basename}" journal, found ${pages.length} of ${keptNames.length}`,
       );
     }
     for (const p of pages) if (p.text?.content) rawTexts.push(p.text.content);
@@ -490,7 +529,7 @@ function listCorpusEntities(corpusRoot: string): CorpusEntityRef[] {
     const categoryDir = join(corpusRoot, category);
     if (!statSync(categoryDir).isDirectory()) continue;
     for (const file of readdirSync(categoryDir).sort()) {
-      if (file === "index.json") continue;
+      if (file === "_index.json") continue; // the D29-21 per-category index, not an entity
       const path = join(categoryDir, file);
       out.push({ category, file, path, size: statSync(path).size });
     }
@@ -522,6 +561,14 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   // (proves the pipeline drops it end-to-end, transform.test.ts) but has no
   // canonical-form counterpart to require here.
   "creature/dune-candle",
+  // D29-21 (P1.6): the two real `index`-slug entities the old `index.json`
+  // category index used to clobber — required verbatim so P2's route tests
+  // can prove the rescue against the fixture corpus.
+  "ancestry/index",
+  "archetype/index",
+  // D29-20 (P1.6): a statblock-bearing complex hazard (isComplex + disable +
+  // routine + hardness/stealth in `stats`).
+  "hazard/gravehall-trap",
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {
@@ -574,9 +621,16 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   }
   let covered = kindsCoveredBy(selected.values());
   let missingKinds = ALL_NODE_KINDS.filter((k) => !covered.has(k));
+  /** Kinds that stayed missing AND are allowlisted as corpus-extinct AND whose
+   * extinction the full-corpus scan below actually re-proved (no hit found) —
+   * excused from the coverage matrix, per `KNOWN_EXTINCT_KINDS`'s doc comment. */
+  const provenExtinctKinds = new Set<string>();
   if (missingKinds.length > 0) {
     const bySize = [...all].sort((a, b) => a.size - b.size);
     for (const kind of missingKinds) {
+      // This `find` scans the ENTIRE corpus when there's no hit — so a miss
+      // here IS the extinction proof for an allowlisted kind, and a HIT for
+      // an allowlisted kind means the allowlist is stale (asserted below).
       const hit = bySize.find((ref) => {
         const entity = CodexEntitySchema.parse(readJson(ref.path));
         return collectEntityKinds(entity).has(kind);
@@ -584,14 +638,17 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
       if (hit) {
         const raw = readJson(hit.path) as { id: string };
         selected.set(raw.id, hit);
+      } else if (KNOWN_EXTINCT_KINDS.has(kind)) {
+        provenExtinctKinds.add(kind);
       }
     }
     covered = kindsCoveredBy(selected.values());
-    missingKinds = ALL_NODE_KINDS.filter((k) => !covered.has(k));
+    missingKinds = ALL_NODE_KINDS.filter((k) => !covered.has(k) && !provenExtinctKinds.has(k));
   }
 
   // write the selected set, tracking budget as we go
   let bytesUsed = 0;
+  const selectedByCategory = new Map<string, CodexEntity[]>();
   for (const [, ref] of selected) {
     const entity = CodexEntitySchema.parse(readJson(ref.path));
     const destDir = join(entitiesDestRoot, ref.category);
@@ -599,7 +656,48 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
     const content = canonicalJson(entity);
     writeFileSync(join(destDir, ref.file), content);
     bytesUsed += Buffer.byteLength(content);
+    const arr = selectedByCategory.get(ref.category) ?? [];
+    arr.push(entity);
+    selectedByCategory.set(ref.category, arr);
   }
+
+  // D29-21 (P1.6): the fixture corpus mirrors the real one's read surface —
+  // a fixture-scoped `_index.json` per category (IndexRows over exactly the
+  // fixture-selected entities, sorted by id, same shape `emit.ts` writes) and
+  // a fixture-scoped `manifest.json` (fixture categoryCounts) — so P2's
+  // corpus reader / route tests / ssrSmoke run against `fixtures/entities/`
+  // with zero `data/` reads.
+  const fixtureCategoryCounts: Record<string, number> = {};
+  for (const category of [...selectedByCategory.keys()].sort((a, b) =>
+    a < b ? -1 : a > b ? 1 : 0,
+  )) {
+    const entities = selectedByCategory.get(category);
+    if (!entities) continue; // unreachable — key came from the map itself
+    fixtureCategoryCounts[category] = entities.length;
+    const rows = [...entities]
+      .sort((a, b) => (a.id < b.id ? -1 : a.id > b.id ? 1 : 0))
+      .map((e) => IndexRowSchema.parse(toIndexRow(e)));
+    const content = canonicalJson(rows);
+    writeFileSync(join(entitiesDestRoot, category, "_index.json"), content);
+    bytesUsed += Buffer.byteLength(content);
+  }
+  const fixtureManifest = {
+    schemaVersion: CORPUS_SCHEMA_VERSION,
+    foundry: { tag: "fixture", docCount: 0, sha256: null, fetchedAt: null },
+    aon: {
+      snapshotDate: "fixture",
+      docCount: 0,
+      categoryCounts: {},
+      sha256: null,
+      fetchedAt: null,
+    },
+    categoryCounts: fixtureCategoryCounts,
+    totalEntityCount: selected.size,
+    totalSizeBytes: bytesUsed,
+  };
+  const fixtureManifestContent = canonicalJson(fixtureManifest);
+  writeFileSync(join(entitiesDestRoot, "manifest.json"), fixtureManifestContent);
+  bytesUsed += Buffer.byteLength(fixtureManifestContent);
 
   if (bytesUsed > remainingBudget) {
     fail(
@@ -616,6 +714,16 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   }
   if (missingKinds.length > 0)
     problems.push(`CodexNode kind(s) never covered: ${missingKinds.join(", ")}`);
+  // The extinction allowlist must stay exact BOTH ways: a listed kind that
+  // shows up anywhere in the corpus again must come OFF the list (and the
+  // fixture then covers it via the greedy pass automatically).
+  for (const kind of KNOWN_EXTINCT_KINDS) {
+    if (covered.has(kind)) {
+      problems.push(
+        `kind "${kind}" is allowlisted as corpus-extinct but the corpus carries it again — remove it from KNOWN_EXTINCT_KINDS`,
+      );
+    }
+  }
 
   const selectedEntities = [...selected.values()].map((r) =>
     CodexEntitySchema.parse(readJson(r.path)),
@@ -646,7 +754,46 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   if (dragonVariant && dragonVariant.variantOf !== "creature/adamantine-dragon-adult") {
     problems.push("dragon spellcaster variantOf mismatch");
   }
-  if (dragonBase === undefined) void 0; // already reported above if missing
+  // D29-20 (P1.6): the statblock-bearing dragon must carry CreatureStats +
+  // a melee strike with attackBonus/damage; the spellcaster variant must
+  // carry a spellcastingEntry with dc/tradition.
+  if (dragonBase) {
+    if (dragonBase.stats?.kind !== "creature" || dragonBase.stats.speeds === undefined) {
+      problems.push("creature/adamantine-dragon-adult should carry CreatureStats with speeds");
+    }
+    const jaws = dragonBase.embeddedItems?.find((i) => i.type === "melee" && i.name === "Jaws");
+    if (!jaws || jaws.attackBonus === undefined || jaws.damage === undefined) {
+      problems.push(
+        "creature/adamantine-dragon-adult's Jaws strike should carry attackBonus + damage",
+      );
+    }
+  }
+  if (dragonVariant) {
+    const sc = dragonVariant.embeddedItems?.find((i) => i.type === "spellcastingEntry");
+    if (!sc || sc.dc === undefined || sc.tradition === undefined) {
+      problems.push(
+        "creature/adamantine-dragon-adult-spellcaster should carry a spellcastingEntry with dc + tradition",
+      );
+    }
+  }
+  const complexHazard = requireEntity("hazard/gravehall-trap", "P1.6 complex hazard");
+  if (complexHazard) {
+    const hs = complexHazard.stats?.kind === "hazard" ? complexHazard.stats : undefined;
+    if (
+      !hs ||
+      hs.isComplex !== true ||
+      hs.disable === undefined ||
+      hs.routine === undefined ||
+      hs.stealth === undefined
+    ) {
+      problems.push(
+        "hazard/gravehall-trap should carry HazardStats with isComplex/disable/routine/stealth",
+      );
+    }
+  }
+  // D29-21 (P1.6): the two rescued `index`-slug entities.
+  requireEntity("ancestry/index", "D29-21 index-slug rescue");
+  requireEntity("archetype/index", "D29-21 index-slug rescue");
 
   const alias = requireEntity("feat/camouflage-coat", "alias-driven join");
   if (alias && alias.aonUrl === undefined)
@@ -681,7 +828,13 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   }
 
   console.log(`  categories covered: ${categoriesCovered.size}/${allRealCategories.size}`);
-  console.log(`  CodexNode kinds covered: ${ALL_NODE_KINDS.length}/${ALL_NODE_KINDS.length}`);
+  const extinctNote =
+    provenExtinctKinds.size > 0
+      ? ` (corpus-extinct, proven by full scan: ${[...provenExtinctKinds].join(", ")})`
+      : "";
+  console.log(
+    `  CodexNode kinds covered: ${ALL_NODE_KINDS.length - provenExtinctKinds.size}/${ALL_NODE_KINDS.length}${extinctNote}`,
+  );
   console.log(`  entities selected: ${selected.size}`);
 
   return bytesUsed;

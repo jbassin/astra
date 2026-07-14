@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "conscious-mind/the-unbound-step",
+    "name": "The Unbound Step",
+    "rarity": "common",
+    "source": {
+      "book": "Dark Archive",
+      "license": "OGL",
+      "page": 23
+    },
+    "traits": []
+  }
+]

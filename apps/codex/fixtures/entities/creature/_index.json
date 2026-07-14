@@ -1,0 +1,82 @@
+[
+  {
+    "edition": "remaster",
+    "id": "creature/adamantine-dragon-adult",
+    "level": 13,
+    "name": "Adamantine Dragon (Adult)",
+    "rarity": "common",
+    "source": {
+      "book": "Monster Core",
+      "license": "ORC",
+      "page": 109
+    },
+    "traits": [
+      "dragon",
+      "primal"
+    ]
+  },
+  {
+    "edition": "remaster",
+    "id": "creature/adamantine-dragon-adult-spellcaster",
+    "level": 13,
+    "name": "Adamantine Dragon (Adult, Spellcaster)",
+    "rarity": "common",
+    "source": {
+      "book": "Pathfinder Monster Core",
+      "license": "ORC"
+    },
+    "traits": [
+      "dragon",
+      "primal"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "creature/dune-candle",
+    "level": 6,
+    "name": "Dune Candle",
+    "rarity": "common",
+    "source": {
+      "book": "Pathfinder #164: Hands of the Devil",
+      "license": "OGL"
+    },
+    "traits": [
+      "aberration",
+      "air",
+      "chaotic",
+      "evil"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "creature/grick",
+    "level": 3,
+    "name": "Grick",
+    "rarity": "uncommon",
+    "source": {
+      "book": "Crown of the Kobold King",
+      "license": "OGL",
+      "page": 120
+    },
+    "traits": [
+      "aberration"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "creature/grick-2",
+    "level": 3,
+    "name": "Grick",
+    "rarity": "common",
+    "source": {
+      "book": "Pathfinder #157: Devil at the Dreaming Palace",
+      "license": "OGL",
+      "page": 35
+    },
+    "traits": [
+      "Aberration",
+      "N",
+      "Medium"
+    ]
+  }
+]

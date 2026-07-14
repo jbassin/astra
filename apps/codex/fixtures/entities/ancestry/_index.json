@@ -1,0 +1,27 @@
+[
+  {
+    "edition": "legacy",
+    "id": "ancestry/anadi",
+    "name": "Anadi",
+    "rarity": "rare",
+    "source": {
+      "book": "The Mwangi Expanse",
+      "license": "OGL",
+      "page": 102
+    },
+    "traits": [
+      "anadi",
+      "humanoid"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "ancestry/index",
+    "name": "Index",
+    "source": {
+      "book": "Foundry Journal: Ancestries",
+      "license": "unknown"
+    },
+    "traits": []
+  }
+]

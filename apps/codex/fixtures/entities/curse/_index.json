@@ -1,0 +1,20 @@
+[
+  {
+    "edition": "legacy",
+    "id": "curse/infected-silver@legacy",
+    "level": 13,
+    "name": "Infected Silver",
+    "rarity": "rare",
+    "source": {
+      "book": "Pathfinder #199: To Bloom Below the Web",
+      "license": "ORC",
+      "page": 84
+    },
+    "traits": [
+      "Cursed",
+      "Magical",
+      "Necromancy",
+      "Rare"
+    ]
+  }
+]

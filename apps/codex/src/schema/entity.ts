@@ -8,9 +8,13 @@ import type { BlockNode } from "./nodes";
  * spec §2/§3). One JSON file per entity at `corpus/<category>/<slug>.json`
  * (`<slug>@legacy.json` for the legacy half of a shared-slug remaster pair, D29-1); a
  * slim projection of every entity (`IndexRow`, below) lands in
- * `corpus/<category>/index.json`. `schemaVersion` in `corpus-manifest.json` bumps on
- * ANY breaking change here (a required field added/removed/reshaped, an id-format
- * change) — see `src/schema/manifest.ts`.
+ * `corpus/<category>/_index.json` (D29-21: leading-underscore, `sluggify()` can never
+ * emit one, so this can never collide with a real entity slug). The EMITTED corpus's
+ * own schema generation is `CORPUS_SCHEMA_VERSION` in `src/ingest/emit.ts` (bump
+ * alongside a breaking change here — a required field added/removed/reshaped, an
+ * id-format change) — NOT the committed root `corpus-manifest.json`'s own
+ * `schemaVersion`, a different concept (that one pins upstream FETCH versions, D29-4;
+ * see `src/schema/manifest.ts` and `emit.ts`'s own doc comment on this distinction).
  *
  * Ambiguities resolved while writing this contract:
  *   - `category` is `z.string()`, not a literal enum — the join owns the authoritative
@@ -168,9 +172,135 @@ export const EmbeddedItemSchema = z
     actionCost: z.string().optional(),
     traits: z.array(z.string()),
     body: z.array(BlockNodeSchema),
+    /** D29-20 (P1.6): a `melee`-typed strike item's to-hit bonus
+     * (`system.bonus.value`, e.g. `+29`). Absent for every non-strike item
+     * type. */
+    attackBonus: z.number().optional(),
+    /** D29-20 (P1.6): a `melee`-typed strike item's flattened damage rolls
+     * (`system.damageRolls`, e.g. `["3d12+15 piercing", "2d6 fire"]`) —
+     * `${damage} ${damageType}` per roll, insertion order preserved (the raw
+     * `damageRolls` object's own key order, stable across re-transforms since
+     * it's read verbatim off disk every run). Absent for every non-strike
+     * item type. */
+    damage: z.array(z.string().min(1)).optional(),
+    /** D29-20 (P1.6): a `spellcastingEntry`-typed item's spell DC
+     * (`system.spelldc.dc`). Absent for every other item type. */
+    dc: z.number().optional(),
+    /** D29-20 (P1.6): a `spellcastingEntry`-typed item's spell attack modifier
+     * (`system.spelldc.value`). Absent for every other item type. */
+    attack: z.number().optional(),
+    /** D29-20 (P1.6): a `spellcastingEntry`-typed item's magic tradition
+     * (`system.tradition.value`, e.g. `"arcane"`). Absent for every other item
+     * type. */
+    tradition: z.string().optional(),
   })
   .strict();
 export type EmbeddedItem = z.infer<typeof EmbeddedItemSchema>;
+
+// ---------------------------------------------------------------------------
+// Stats (D29-20, P1.6 addendum, schemaVersion 1->2 — see `src/ingest/emit.ts`'s
+// `CORPUS_SCHEMA_VERSION`) — a typed, discriminated statblock projection for
+// the two structured Actor categories (`creature`/`hazard`). Kept as its OWN
+// top-level field, NOT stuffed into `facets` (whose `.catchall(FacetValue)`
+// only accepts scalars/scalar-arrays, `FacetsSchema`'s own file comment) —
+// every field here is deterministic field mapping off the real Foundry Actor
+// `system.*` shape (verified on `pathfinder-bestiary/red-dragon-adult` +
+// `hazards/gravehall-trap`), never a heuristic. Fields absent in source are
+// OMITTED (never `undefined`-valued keys, never a defaulted zero/empty-array)
+// — same fail-soft convention `foundryEntities.ts`'s `present()` guard
+// already uses everywhere else in this module.
+// ---------------------------------------------------------------------------
+
+const SpeedEntrySchema = z.object({ type: z.string().min(1), value: z.number() }).strict();
+
+const SpeedsSchema = z
+  .object({
+    /** `system.attributes.speed.value` — the creature's base (land/swim-if-
+     * that's-all-it-has) speed. */
+    base: z.number().optional(),
+    /** `system.attributes.speed.otherSpeeds` — typed additional speeds
+     * (`fly`/`swim`/`climb`/`burrow`/...), e.g. `{type:"fly",value:150}`. */
+    other: z.array(SpeedEntrySchema).optional(),
+  })
+  .strict();
+
+const AbilityKey = z.enum(["str", "dex", "con", "int", "wis", "cha"]);
+
+/** `system.abilities.*.mod` — a partial record (a creature is never missing
+ * an ability score in the real corpus, but the schema stays defensive). */
+const AbilityModsSchema = z.partialRecord(AbilityKey, z.number());
+
+const SenseEntrySchema = z
+  .object({
+    type: z.string().min(1),
+    acuity: z.string().optional(),
+    range: z.number().optional(),
+  })
+  .strict();
+
+const SensesSchema = z
+  .object({
+    /** `system.perception.mod`. */
+    mod: z.number().optional(),
+    /** `system.perception.details` — free-text perception note (e.g. "smoke
+     * vision"). */
+    details: z.string().optional(),
+    /** `system.perception.senses` — typed precise/imprecise senses
+     * (darkvision, scent, ...). */
+    list: z.array(SenseEntrySchema).optional(),
+  })
+  .strict();
+
+const TypedValueSchema = z
+  .object({ type: z.string().min(1), value: z.number().optional() })
+  .strict();
+
+export const CreatureStatsSchema = z
+  .object({
+    kind: z.literal("creature"),
+    speeds: SpeedsSchema.optional(),
+    abilityMods: AbilityModsSchema.optional(),
+    senses: SensesSchema.optional(),
+    /** `system.details.languages.value`. */
+    languages: z.array(z.string().min(1)).optional(),
+    /** `system.attributes.immunities[].type`. */
+    immunities: z.array(z.string().min(1)).optional(),
+    /** `system.attributes.resistances[]`. */
+    resistances: z.array(TypedValueSchema).optional(),
+    /** `system.attributes.weaknesses[]`. */
+    weaknesses: z.array(TypedValueSchema).optional(),
+    /** `system.skills.*.base`, keyed on the skill slug (e.g. `"stealth"`). */
+    skills: z.record(z.string(), z.number()).optional(),
+  })
+  .strict();
+export type CreatureStats = z.infer<typeof CreatureStatsSchema>;
+
+export const HazardStatsSchema = z
+  .object({
+    kind: z.literal("hazard"),
+    /** `system.attributes.hardness`. */
+    hardness: z.number().optional(),
+    /** `system.attributes.stealth` — the numeric bonus plus any parsed
+     * free-text/enricher detail (e.g. a `@Check[stealth|dc:23]` note). */
+    stealth: z
+      .object({ value: z.number().optional(), details: z.string().optional() })
+      .strict()
+      .optional(),
+    /** `system.details.isComplex`. */
+    isComplex: z.boolean().optional(),
+    /** `system.details.disable` — enricher HTML, parsed via the existing
+     * `parseFoundryHtml` path (NOT a scalar, D29-20). */
+    disable: z.array(BlockNodeSchema).optional(),
+    /** `system.details.routine` — same treatment as `disable`. */
+    routine: z.array(BlockNodeSchema).optional(),
+    /** `system.details.reset` — same treatment as `disable`. */
+    reset: z.array(BlockNodeSchema).optional(),
+  })
+  .strict();
+export type HazardStats = z.infer<typeof HazardStatsSchema>;
+
+export const StatsSchema = z.discriminatedUnion("kind", [CreatureStatsSchema, HazardStatsSchema]);
+export type Stats = z.infer<typeof StatsSchema>;
 
 // ---------------------------------------------------------------------------
 // CodexEntity
@@ -210,6 +340,12 @@ export const CodexEntitySchema = z
      * categories and for Actors with zero embedded items (never an empty
      * array, same convention as `loreBody`). */
     embeddedItems: z.array(EmbeddedItemSchema).optional(),
+    /** D29-20 (P1.6): a typed statblock projection for `creature`/`hazard`
+     * entities — see `StatsSchema` above. Absent for every other category and
+     * for a creature/hazard with nothing extractable (a `character`-excluded
+     * Actor never reaches assembly at all, D29-19; an AoN-only `proseOnly`
+     * creature/hazard has no Foundry Actor doc to extract from). */
+    stats: StatsSchema.optional(),
   })
   .strict();
 export type CodexEntity = z.infer<typeof CodexEntitySchema>;

@@ -1,5 +1,13 @@
 import { mapCategory } from "../../scripts/categoryMap";
-import type { CodexEntity, EmbeddedItem, Facets, Source } from "../schema/entity";
+import type {
+  CodexEntity,
+  CreatureStats,
+  EmbeddedItem,
+  Facets,
+  HazardStats,
+  Source,
+  Stats,
+} from "../schema/entity";
 import type { BlockNode } from "../schema/nodes";
 import type { EnricherContext } from "./enrichers";
 import { parseFoundryHtml } from "./foundryHtml";
@@ -20,6 +28,15 @@ import { sluggify } from "./sluggify";
  * doesn't exist until S3/S4. Same-slug collisions found here are collected +
  * reported (see `report("slugCollision", ...)`), not resolved — S4's
  * worklist, per the assignment brief.
+ *
+ * P1.6 widening (D29-19/-20, slice S6): `character`-typed Actors are now
+ * EXCLUDED before assembly (D29-19, "npc-only creature import") — see the
+ * exclusion check at the top of `assembleFoundryEntity`. `creature`/`hazard`
+ * entities additionally gain a typed `stats` projection (`extractCreatureStats`/
+ * `extractHazardStats`) and `melee`/`spellcastingEntry` embedded items gain
+ * `attackBonus`/`damage`/`dc`/`attack`/`tradition` (`extractStrikeFields`/
+ * `extractSpellcastingFields`) — schemaVersion 1->2, `src/ingest/emit.ts`'s
+ * `CORPUS_SCHEMA_VERSION`.
  */
 
 // ---------------------------------------------------------------------------
@@ -39,24 +56,73 @@ interface RawTraits {
   traditions?: string[];
 }
 
+/** `system.attributes.speed` (D29-20/P1.6, creature). */
+interface RawSpeed {
+  value?: number;
+  otherSpeeds?: Array<{ type?: string; value?: number }>;
+}
+
+/** `system.attributes.{immunities,resistances,weaknesses}[]` entries (D29-20/
+ * P1.6) — immunities carry only `type`; resistances/weaknesses also carry a
+ * numeric `value`. One shared raw shape covers both (immunities simply never
+ * populate `value`). */
+interface RawTypedValue {
+  type?: string;
+  value?: number;
+}
+
+/** `system.perception` (D29-20/P1.6, creature). */
+interface RawPerception {
+  mod?: number;
+  details?: string;
+  senses?: Array<{ type?: string; acuity?: string; range?: number }>;
+}
+
+/** `system.attributes.stealth` (D29-20/P1.6, hazard). */
+interface RawStealth {
+  value?: number;
+  details?: string;
+}
+
 interface RawSystem {
   description?: { value?: string };
   publication?: RawPublication;
   details?: {
     publication?: RawPublication;
     level?: { value?: number };
+    /** D29-20/P1.6 (hazard): `system.details.languages` doesn't exist —
+     * languages live here only for creatures; kept on the shared `details`
+     * shape since both Actor kinds nest their type-specific fields under it. */
+    languages?: { value?: string[] };
+    /** D29-20/P1.6 (hazard): enricher HTML, parsed via `parseFoundryHtml`
+     * (`foundryEntities.ts`'s `extractHazardStats`), not a scalar. */
+    disable?: string;
+    routine?: string;
+    reset?: string;
+    isComplex?: boolean;
   };
   traits?: RawTraits;
   attributes?: {
     hp?: { max?: number };
     ac?: { value?: number };
+    speed?: RawSpeed;
+    immunities?: RawTypedValue[];
+    resistances?: RawTypedValue[];
+    weaknesses?: RawTypedValue[];
+    /** D29-20/P1.6 (hazard). */
+    hardness?: number;
+    stealth?: RawStealth;
   };
   saves?: {
     fortitude?: { value?: number };
     reflex?: { value?: number };
     will?: { value?: number };
   };
-  perception?: { mod?: number };
+  perception?: RawPerception;
+  /** D29-20/P1.6 (creature): `system.abilities.*.mod`. */
+  abilities?: Partial<Record<"str" | "dex" | "con" | "int" | "wis" | "cha", { mod?: number }>>;
+  /** D29-20/P1.6 (creature): `system.skills.*.base`, keyed on the skill slug. */
+  skills?: Record<string, { base?: number }>;
   level?: { value?: number };
   actionType?: { value?: string };
   actions?: { value?: number | null };
@@ -70,6 +136,16 @@ interface RawSystem {
   area?: { type?: string; value?: number };
   duration?: { value?: string; sustained?: boolean };
   defense?: { save?: { basic?: boolean; statistic?: string } };
+  /** D29-20/P1.6 (`melee`-typed embedded item): `system.bonus.value`. */
+  bonus?: { value?: number };
+  /** D29-20/P1.6 (`melee`-typed embedded item): `system.damageRolls`, an
+   * object keyed on an opaque per-roll id — iteration/`Object.values` order is
+   * the JSON's own on-disk key order, stable across re-transforms (the D-gate
+   * reads the same bytes off disk every run). */
+  damageRolls?: Record<string, { damage?: string; damageType?: string }>;
+  /** D29-20/P1.6 (`spellcastingEntry`-typed embedded item). */
+  spelldc?: { dc?: number; value?: number };
+  tradition?: { value?: string };
 }
 
 export interface RawFoundryDoc {
@@ -238,8 +314,275 @@ function extractFacets(system: RawSystem | undefined): Facets {
 }
 
 // ---------------------------------------------------------------------------
+// stats (D29-20, P1.6 addendum) — deterministic field mapping off the Actor
+// `system.*` shape into the typed `CreatureStats`/`HazardStats` union. Every
+// helper here follows the same convention as `extractFacets` above: absent
+// source field -> absent (never defaulted/never an empty array/object) — see
+// `present()`'s own doc comment for why a bare `!==undefined` isn't enough.
+// ---------------------------------------------------------------------------
+
+function extractSpeeds(speed: RawSpeed | undefined): CreatureStats["speeds"] | undefined {
+  const other = (speed?.otherSpeeds ?? [])
+    .filter((s): s is { type: string; value: number } => present(s.type) && present(s.value))
+    .map((s) => ({ type: s.type, value: s.value }));
+  if (!present(speed?.value) && other.length === 0) return undefined;
+  return {
+    ...(present(speed?.value) ? { base: speed.value } : {}),
+    ...(other.length > 0 ? { other } : {}),
+  };
+}
+
+const ABILITY_KEYS = ["str", "dex", "con", "int", "wis", "cha"] as const;
+
+function extractAbilityMods(
+  abilities: RawSystem["abilities"],
+): CreatureStats["abilityMods"] | undefined {
+  if (!abilities) return undefined;
+  const out: Partial<Record<(typeof ABILITY_KEYS)[number], number>> = {};
+  for (const key of ABILITY_KEYS) {
+    const mod = abilities[key]?.mod;
+    if (present(mod)) out[key] = mod;
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
+function extractSenses(perception: RawPerception | undefined): CreatureStats["senses"] | undefined {
+  const list = (perception?.senses ?? [])
+    .filter((s): s is { type: string; acuity?: string; range?: number } => present(s.type))
+    .map((s) => {
+      const entry: { type: string; acuity?: string; range?: number } = { type: s.type };
+      if (present(s.acuity)) entry.acuity = s.acuity;
+      if (present(s.range)) entry.range = s.range;
+      return entry;
+    });
+  const details =
+    present(perception?.details) && perception.details.length > 0 ? perception.details : undefined;
+  if (!present(perception?.mod) && list.length === 0 && details === undefined) return undefined;
+  return {
+    ...(present(perception?.mod) ? { mod: perception.mod } : {}),
+    ...(details !== undefined ? { details } : {}),
+    ...(list.length > 0 ? { list } : {}),
+  };
+}
+
+function extractLanguages(details: RawSystem["details"]): string[] | undefined {
+  const langs = details?.languages?.value;
+  return langs && langs.length > 0 ? langs : undefined;
+}
+
+function extractImmunities(
+  attributes: RawSystem["attributes"],
+): CreatureStats["immunities"] | undefined {
+  const list = attributes?.immunities;
+  if (!list || list.length === 0) return undefined;
+  const out = list.map((i) => i?.type).filter((t): t is string => present(t));
+  return out.length > 0 ? out : undefined;
+}
+
+function extractTypedValues(
+  list: RawTypedValue[] | undefined,
+): Array<{ type: string; value?: number }> | undefined {
+  if (!list || list.length === 0) return undefined;
+  const out = list
+    .filter((v): v is RawTypedValue & { type: string } => present(v?.type))
+    .map((v) => {
+      const entry: { type: string; value?: number } = { type: v.type };
+      if (present(v.value)) entry.value = v.value;
+      return entry;
+    });
+  return out.length > 0 ? out : undefined;
+}
+
+function extractSkills(skills: RawSystem["skills"]): CreatureStats["skills"] | undefined {
+  if (!skills) return undefined;
+  const out: Record<string, number> = {};
+  for (const [key, value] of Object.entries(skills)) {
+    if (present(value?.base)) out[key] = value.base;
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
+/** Extracts `CreatureStats` from an Actor's `system` — only called for
+ * `category === "creature"` docs (npc/familiar; `character` docs never reach
+ * assembly at all, D29-19). Returns `undefined` when nothing at all is
+ * extractable (e.g. a bare-bones familiar) rather than an all-empty object,
+ * matching `embeddedItems`/`loreBody`'s own "never an empty placeholder"
+ * convention. */
+function extractCreatureStats(system: RawSystem | undefined): CreatureStats | undefined {
+  const speeds = extractSpeeds(system?.attributes?.speed);
+  const abilityMods = extractAbilityMods(system?.abilities);
+  const senses = extractSenses(system?.perception);
+  const languages = extractLanguages(system?.details);
+  const immunities = extractImmunities(system?.attributes);
+  const resistances = extractTypedValues(system?.attributes?.resistances);
+  const weaknesses = extractTypedValues(system?.attributes?.weaknesses);
+  const skills = extractSkills(system?.skills);
+  if (
+    speeds === undefined &&
+    abilityMods === undefined &&
+    senses === undefined &&
+    languages === undefined &&
+    immunities === undefined &&
+    resistances === undefined &&
+    weaknesses === undefined &&
+    skills === undefined
+  ) {
+    return undefined;
+  }
+  return {
+    kind: "creature",
+    ...(speeds !== undefined ? { speeds } : {}),
+    ...(abilityMods !== undefined ? { abilityMods } : {}),
+    ...(senses !== undefined ? { senses } : {}),
+    ...(languages !== undefined ? { languages } : {}),
+    ...(immunities !== undefined ? { immunities } : {}),
+    ...(resistances !== undefined ? { resistances } : {}),
+    ...(weaknesses !== undefined ? { weaknesses } : {}),
+    ...(skills !== undefined ? { skills } : {}),
+  };
+}
+
+/** `disable`/`routine`/`reset` are enricher HTML parsed via the existing
+ * `parseFoundryHtml` path — but fail-SOFT per field (report class
+ * `hazardStatsHtmlFailed`, field omitted), unlike the entity `body` path's
+ * hard-fail posture. Rationale (S6 real-transform finding): exactly one
+ * upstream pack doc (`pfs-season-6-bestiary/6-00/historys-repetition-7-8`)
+ * carries a genuine TYPO in its `disable` field (`@Check[thievery|dc:28
+ * (expert)` — the closing `]` is missing in the published pack), markup that
+ * was never parsed before P1.6 opened these three fields. A hard fail there
+ * would abort the whole transform on data this pipeline can't fix; omitting
+ * the one broken field and counting it keeps the failure loud + report-
+ * visible (spec §5 B's "explicitly allowlisted, report-visible decision")
+ * without weakening the body path's drift tripwire. */
+function parseHazardHtmlSoft(
+  html: string | null | undefined,
+  field: string,
+  ctx: EnricherContext,
+  report: ReportFn,
+): BlockNode[] | undefined {
+  if (!present(html) || html.length === 0) return undefined;
+  try {
+    return parseFoundryHtml(html, ctx);
+  } catch (e) {
+    report("hazardStatsHtmlFailed", `${field}: ${String(e)}`);
+    return undefined;
+  }
+}
+
+/** Extracts `HazardStats` from a hazard Actor's `system` — only called for
+ * `category === "hazard"` docs. `disable`/`routine`/`reset` are enricher HTML
+ * (D29-20: NOT scalars), parsed via the same `parseFoundryHtml(html, ctx)`
+ * path every other body field in this module already uses (fail-soft per
+ * field — see `parseHazardHtmlSoft` above). */
+function extractHazardStats(
+  system: RawSystem | undefined,
+  ctx: EnricherContext,
+  report: ReportFn,
+): HazardStats | undefined {
+  const hardness = present(system?.attributes?.hardness) ? system.attributes.hardness : undefined;
+  const stealthRaw = system?.attributes?.stealth;
+  const stealthDetails =
+    present(stealthRaw?.details) && stealthRaw.details.length > 0 ? stealthRaw.details : undefined;
+  const stealth =
+    present(stealthRaw?.value) || stealthDetails !== undefined
+      ? {
+          ...(present(stealthRaw?.value) ? { value: stealthRaw.value } : {}),
+          ...(stealthDetails !== undefined ? { details: stealthDetails } : {}),
+        }
+      : undefined;
+  // `present()` (not a bare `!== undefined`) throughout — the real corpus
+  // carries literal JSON `null` for routine/disable/reset/isComplex on a
+  // minority of hazard docs (the S4 emit-gate lesson, re-proven live on the
+  // first S6 real-transform run).
+  const isComplex = present(system?.details?.isComplex) ? system.details.isComplex : undefined;
+  const disable = parseHazardHtmlSoft(system?.details?.disable, "disable", ctx, report);
+  const routine = parseHazardHtmlSoft(system?.details?.routine, "routine", ctx, report);
+  const reset = parseHazardHtmlSoft(system?.details?.reset, "reset", ctx, report);
+  if (
+    hardness === undefined &&
+    stealth === undefined &&
+    isComplex === undefined &&
+    disable === undefined &&
+    routine === undefined &&
+    reset === undefined
+  ) {
+    return undefined;
+  }
+  return {
+    kind: "hazard",
+    ...(hardness !== undefined ? { hardness } : {}),
+    ...(stealth !== undefined ? { stealth } : {}),
+    ...(isComplex !== undefined ? { isComplex } : {}),
+    ...(disable !== undefined ? { disable } : {}),
+    ...(routine !== undefined ? { routine } : {}),
+    ...(reset !== undefined ? { reset } : {}),
+  };
+}
+
+function extractStats(
+  category: string,
+  system: RawSystem | undefined,
+  ctx: EnricherContext,
+  report: ReportFn,
+): Stats | undefined {
+  if (category === "creature") return extractCreatureStats(system);
+  if (category === "hazard") return extractHazardStats(system, ctx, report);
+  return undefined;
+}
+
+// ---------------------------------------------------------------------------
 // embedded items (S2 widening, entity.ts's EmbeddedItemSchema)
 // ---------------------------------------------------------------------------
+
+function formatDamageRoll(
+  roll: { damage?: string; damageType?: string } | undefined,
+): string | undefined {
+  if (!present(roll?.damage)) return undefined;
+  return present(roll.damageType) && roll.damageType.length > 0
+    ? `${roll.damage} ${roll.damageType}`
+    : roll.damage;
+}
+
+function extractDamage(damageRolls: RawSystem["damageRolls"]): string[] | undefined {
+  if (!damageRolls) return undefined;
+  // `Object.values` iterates in the object's own insertion order (its keys
+  // here are opaque, non-numeric-looking ids, so no integer-key reordering
+  // applies) — the same order the raw JSON was written in on disk, so this
+  // stays deterministic across re-transforms without an explicit sort.
+  const out = Object.values(damageRolls)
+    .map(formatDamageRoll)
+    .filter((s): s is string => s !== undefined);
+  return out.length > 0 ? out : undefined;
+}
+
+/** D29-20 (P1.6): a `melee`-typed strike item's to-hit bonus + flattened
+ * damage rolls. Absent for every other item type (the source fields simply
+ * don't exist on them). */
+function extractStrikeFields(
+  system: RawSystem | undefined,
+): Pick<EmbeddedItem, "attackBonus" | "damage"> {
+  const attackBonus = present(system?.bonus?.value) ? system.bonus.value : undefined;
+  const damage = extractDamage(system?.damageRolls);
+  return {
+    ...(attackBonus !== undefined ? { attackBonus } : {}),
+    ...(damage !== undefined ? { damage } : {}),
+  };
+}
+
+/** D29-20 (P1.6): a `spellcastingEntry`-typed item's DC/attack/tradition.
+ * Absent for every other item type. */
+function extractSpellcastingFields(
+  system: RawSystem | undefined,
+): Pick<EmbeddedItem, "dc" | "attack" | "tradition"> {
+  const dc = present(system?.spelldc?.dc) ? system.spelldc.dc : undefined;
+  const attack = present(system?.spelldc?.value) ? system.spelldc.value : undefined;
+  const tradition = present(system?.tradition?.value) ? system.tradition.value : undefined;
+  return {
+    ...(dc !== undefined ? { dc } : {}),
+    ...(attack !== undefined ? { attack } : {}),
+    ...(tradition !== undefined ? { tradition } : {}),
+  };
+}
 
 function assembleEmbeddedItem(item: RawFoundryDoc, ctx: EnricherContext): EmbeddedItem {
   const html = item.system?.description?.value ?? "";
@@ -254,6 +597,11 @@ function assembleEmbeddedItem(item: RawFoundryDoc, ctx: EnricherContext): Embedd
     ...(actionCost !== undefined ? { actionCost } : {}),
     traits: item.system?.traits?.value ?? [],
     body,
+    // D29-20: field-presence-driven, not item-type-gated (mirrors
+    // `extractFacets`'s own posture) — a non-strike/non-spellcasting item
+    // simply has none of these raw fields, so the extractors return {}.
+    ...extractStrikeFields(item.system),
+    ...extractSpellcastingFields(item.system),
   };
 }
 
@@ -289,6 +637,24 @@ export function assembleFoundryEntity(
   params: AssembleFoundryEntityParams,
 ): CodexEntity | undefined {
   const { packDir, docClass, basename, doc, ctx, report, seenIds } = params;
+
+  // D29-19 (P1.6, stakeholder): npc-only creature import — `character`-typed
+  // Actors (the `iconics` per-level pregens, `paizo-pregens`, and Kingmaker
+  // companion builds) are PC builds whose AC/HP/saves are runtime-derived by
+  // the pf2e system (the 0028 source-vs-live finding), not statable from
+  // source — excluded here (report-counted `excludedActors`), BEFORE
+  // `categoryMap.ts` ever sees the doc (categoryMap.ts's own `character` ->
+  // `creature` mapping stays documented/tested there for completeness; this
+  // exclusion runs first in the real pipeline so that mapping is never
+  // reached for a live `character` doc). This narrows the FOUNDRY import
+  // only — an AoN-joined pregen twin (e.g. `creature/amiri-level-1`) still
+  // ships as an AoN-only page, D29-14(a); it just never merges with a
+  // Foundry `character` doc anymore.
+  if (docClass === "Actor" && doc.type === "character") {
+    report("excludedActors", `${packDir}/${basename}.json: "${doc.name}"`);
+    return undefined;
+  }
+
   const decision = mapCategory(packDir, doc.type ?? "__NO_TYPE__");
   if (decision.kind === "excluded") return undefined;
 
@@ -320,6 +686,8 @@ export function assembleFoundryEntity(
       ? doc.items.map((item) => assembleEmbeddedItem(item, ctx))
       : undefined;
 
+  const stats = extractStats(decision.category, doc.system, ctx, report);
+
   return {
     id,
     slug,
@@ -333,5 +701,6 @@ export function assembleFoundryEntity(
     body,
     facets: extractFacets(doc.system),
     ...(embeddedItems !== undefined ? { embeddedItems } : {}),
+    ...(stats !== undefined ? { stats } : {}),
   };
 }

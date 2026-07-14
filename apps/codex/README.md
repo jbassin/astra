@@ -51,7 +51,7 @@ must be reviewable on its own (the linguist-commit-timer lesson: never let a gen
 change ride in on top of unrelated in-progress edits). Commit or stash first.
 
 A real run takes well under a minute end to end (~15s for the transform stage alone) and
-produces roughly 50,000 entities / ~650 MB of corpus (gitignored — `data/` never leaves the
+produces roughly 46,000 entities / ~625 MB of corpus (gitignored — `data/` never leaves the
 host; see the corpus layout below).
 
 ## Corpus layout (`data/corpus/`, gitignored)
@@ -61,14 +61,39 @@ corpus/
   <category>/
     <slug>.json          one file per entity (the P2 lazy-load unit)
     <slug>@legacy.json    the legacy half of a shared-slug remaster pair (D29-1)
-    index.json           slim facet rows for the whole category (id/name/level/traits/
-                          rarity/source/edition — NO body), sorted by id
+    _index.json          slim facet rows for the whole category (id/name/level/traits/
+                          rarity/source/edition — NO body), sorted by id. The leading
+                          underscore is load-bearing (D29-21): sluggify() can never
+                          emit one, so this file can never clobber a real entity slug
+                          (the old plain index.json ate the two real `index`-slug
+                          entities, ancestry/index + archetype/index)
   manifest.json           schemaVersion + the D29-4 source pins + final per-category
                           counts + total size (NOT the same file as the committed
                           apps/codex/corpus-manifest.json one level up — that one pins
-                          what to FETCH; this one summarizes what got EMITTED)
+                          what to FETCH; this one summarizes what got EMITTED).
+                          totalEntityCount reconciles EXACTLY against a find|wc over
+                          the entity files (D29-21)
   report.json / report.md the transform report (see below)
 ```
+
+### schemaVersion 2 (P1.6, D29-19/-20/-21)
+
+- **npc-only creature import (D29-19):** `type: "character"` Actors (iconics pregens,
+  paizo-pregens, Kingmaker companions — 150 docs) are excluded before assembly; their
+  AC/HP/saves are runtime-derived by the pf2e system, not statable from source. The
+  ~16 AoN-indexed pregen twins still ship as AoN-only pages (D29-14(a)). Report field:
+  `excludedActorsCount`.
+- **`stats` (D29-20):** `creature`/`hazard` entities carry a typed, discriminated
+  statblock projection — CreatureStats (speeds/abilityMods/senses/languages/
+  immunities/resistances/weaknesses/skills) or HazardStats (hardness/stealth/
+  isComplex + disable/routine/reset as parsed `BlockNode[]`). `EmbeddedItem` gains
+  `attackBonus`/`damage[]` on `melee` strikes and `dc`/`attack`/`tradition` on
+  `spellcastingEntry` items. Extraction is deterministic field mapping; absent source
+  fields are omitted. The report carries per-field extraction coverage tables.
+- One upstream pack typo (`pfs-season-6-bestiary/.../historys-repetition-7-8`, an
+  unterminated `@Check[` in its hazard `disable` field) is handled fail-soft: the one
+  broken field is omitted and counted as `hazardStatsHtmlFailed` — entity `body`
+  parsing keeps its hard-fail posture.
 
 Every file is written through one canonical serializer (`emit.ts`'s `canonicalJson`):
 object keys sorted recursively (codepoint order), 2-space indent, trailing LF. Two full
@@ -150,7 +175,13 @@ fixtures/
   entities/     canonical-form-ONLY entities (no raw source) copied verbatim from a real
                 emitted corpus — one representative per codex category (the smallest
                 entity in that category) plus whatever else is needed to cover every
-                CodexNode kind at least once
+                CodexNode kind at least once (`blockquote` is allowlisted as
+                corpus-extinct post-D29-19 — the only blockquotes lived in the excluded
+                pregen docs — and the extractor re-proves that extinction on every run).
+                Also carries the D29-21 fixture read surface: a per-category
+                `_index.json` (fixture-scoped IndexRows) and a fixture-scoped
+                `manifest.json` (fixture categoryCounts), so P2's corpus reader/route
+                tests/ssrSmoke run hermetically with zero `data/` reads
 ```
 
 `scripts/extract-fixture.ts` builds this from a real emitted corpus (run

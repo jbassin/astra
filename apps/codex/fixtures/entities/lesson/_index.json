@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "lesson/lesson-of-life",
+    "name": "Lesson of Life",
+    "rarity": "common",
+    "source": {
+      "book": "Advanced Player's Guide",
+      "license": "OGL",
+      "page": 100
+    },
+    "traits": []
+  }
+]

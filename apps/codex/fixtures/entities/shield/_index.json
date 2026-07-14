@@ -1,0 +1,17 @@
+[
+  {
+    "edition": "remaster",
+    "id": "shield/spellguard-shield",
+    "level": 6,
+    "name": "Spellguard Shield",
+    "rarity": "common",
+    "source": {
+      "book": "GM Core",
+      "license": "ORC",
+      "page": 234
+    },
+    "traits": [
+      "magical"
+    ]
+  }
+]

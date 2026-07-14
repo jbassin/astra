@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "remaster",
+    "id": "background/amnesiac",
+    "name": "Amnesiac",
+    "rarity": "rare",
+    "source": {
+      "book": "Player Core 2",
+      "license": "ORC",
+      "page": 52
+    },
+    "traits": []
+  }
+]

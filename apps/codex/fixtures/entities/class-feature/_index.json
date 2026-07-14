@@ -1,0 +1,16 @@
+[
+  {
+    "edition": "remaster",
+    "id": "class-feature/field-discovery-toxicologist",
+    "level": 5,
+    "name": "Field Discovery (Toxicologist)",
+    "rarity": "common",
+    "source": {
+      "book": "Pathfinder Player Core 2",
+      "license": "ORC"
+    },
+    "traits": [
+      "alchemist"
+    ]
+  }
+]

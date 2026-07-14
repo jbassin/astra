@@ -15,8 +15,12 @@ import type { CodexEntity } from "../schema/entity";
  *     D29-1's identity resolution applied), never off the bare `slug` field
  *     (which stays the pre-suffix S2 value on a collision member — see
  *     `join.ts`'s `Draft` doc comment).
- *   - `corpus/<category>/index.json` — slim `IndexRow[]` (via `toIndexRow`,
- *     entity.ts) sorted by id.
+ *   - `corpus/<category>/_index.json` — slim `IndexRow[]` (via `toIndexRow`,
+ *     entity.ts) sorted by id. Leading-underscore basename (D29-21, P1.6):
+ *     `sluggify()` can never emit a leading underscore, so this name can never
+ *     collide with a real entity slug — it replaces the earlier plain
+ *     `index.json`, which clobbered the two real `index`-slug entities
+ *     (`ancestry/index`, `archetype/index`).
  *   - `corpus/manifest.json` — schemaVersion + the D29-4 source pins (copied
  *     verbatim from the committed `corpus-manifest.json`, never regenerated
  *     here) + FINAL per-category entity counts + total size. Deliberately
@@ -138,8 +142,14 @@ export interface CorpusOutputManifest {
  * `entity.ts`/`nodes.ts`'s own schemaVersion doc comments on a breaking
  * change (D29-3/D29-4). Kept here (not re-read from `corpus-manifest.json`,
  * whose own `schemaVersion` is the FETCH-manifest's own, a different concept)
- * since `corpus/manifest.json` describes the EMITTED corpus's shape. */
-export const CORPUS_SCHEMA_VERSION = 1;
+ * since `corpus/manifest.json` describes the EMITTED corpus's shape.
+ *
+ * Bumped 1->2 for P1.6 (D29-19/-20/-21, slice S6): the new optional
+ * `CodexEntity.stats` field + `EmbeddedItem`'s new optional strike/
+ * spellcasting fields, the `creature` category's npc-only narrowing, and the
+ * `index.json` -> `_index.json` rename are all corpus-shape changes a P2+
+ * consumer must be able to detect a regen against. */
+export const CORPUS_SCHEMA_VERSION = 2;
 
 export interface EmitCorpusInput {
   /** `<dataPath>/corpus` — wiped and rewritten wholesale on every call. */
@@ -154,7 +164,7 @@ export interface EmitCorpusInput {
 export interface EmitCorpusResult {
   entityFileCount: number;
   /** Total bytes written across every file under `corpusRoot` (entity files +
-   * `index.json`s + `corpus/manifest.json`) — `report.json`/`report.md`
+   * `_index.json`s + `corpus/manifest.json`) — `report.json`/`report.md`
    * aren't included (chicken-and-egg: the report is written by the caller
    * AFTER this returns, using this very number). */
   corpusBytes: number;
@@ -163,7 +173,7 @@ export interface EmitCorpusResult {
 
 /**
  * Wipes `corpusRoot` and writes the full deterministic corpus tree: per-entity
- * files, per-category `index.json`, and `corpus/manifest.json`. Every entity
+ * files, per-category `_index.json`, and `corpus/manifest.json`. Every entity
  * is zod-validated (`CodexEntitySchema.parse`) right before its file is
  * written — acceptance C's "100% Zod-valid" is enforced HERE, not assumed.
  */
@@ -212,7 +222,7 @@ export function emitCorpus(input: EmitCorpusInput): EmitCorpusResult {
       entityFileCount += 1;
       indexRows.push(IndexRowSchema.parse(toIndexRow(validated)));
     }
-    corpusBytes += writeCanonicalJson(join(categoryDir, "index.json"), indexRows);
+    corpusBytes += writeCanonicalJson(join(categoryDir, "_index.json"), indexRows);
   }
 
   const manifest: CorpusOutputManifest = {

@@ -1,0 +1,16 @@
+[
+  {
+    "edition": "remaster",
+    "id": "trait/satyr",
+    "name": "Satyr",
+    "rarity": "common",
+    "source": {
+      "book": "Pathfinder #218: Titanbane",
+      "license": "ORC",
+      "page": 50
+    },
+    "traits": [
+      "Satyr"
+    ]
+  }
+]

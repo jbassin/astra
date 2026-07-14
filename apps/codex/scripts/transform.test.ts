@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 import { afterEach, describe, expect, it } from "vitest";
 
 import type { JoinAliasesFile } from "../src/ingest/join";
-import { CodexEntitySchema } from "../src/schema/entity";
+import { CodexEntitySchema, IndexRowSchema } from "../src/schema/entity";
 import type { CorpusManifest } from "../src/schema/manifest";
 import { runTransform, type TransformResult } from "./transform";
 
@@ -72,7 +72,7 @@ function collectEntityFiles(corpusRoot: string): string[] {
     const categoryDir = join(corpusRoot, category);
     if (!statSync(categoryDir).isDirectory()) continue;
     for (const file of readdirSync(categoryDir).sort()) {
-      if (file === "index.json") continue;
+      if (file === "_index.json") continue; // the D29-21 per-category index, not an entity
       files.push(join(categoryDir, file));
     }
   }
@@ -140,13 +140,49 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     }
   });
 
-  it("the D29-11 coverage-matrix canonical entities all still parse through CodexEntitySchema", () => {
+  it("the D29-11 coverage-matrix canonical entities all still parse through CodexEntitySchema (indexes through IndexRowSchema)", () => {
     const files = collectAllJsonFiles(ENTITIES_DIR);
     expect(files.length).toBeGreaterThan(0);
+    let entityCount = 0;
+    let indexCount = 0;
     for (const file of files) {
       const raw = JSON.parse(readFileSync(file, "utf8"));
-      expect(() => CodexEntitySchema.parse(raw), file).not.toThrow();
+      if (file.endsWith("/_index.json")) {
+        // D29-21: the fixture-scoped per-category index — an IndexRow array.
+        expect(Array.isArray(raw), file).toBe(true);
+        for (const row of raw as unknown[]) {
+          expect(() => IndexRowSchema.parse(row), file).not.toThrow();
+        }
+        indexCount++;
+      } else if (file.endsWith("/manifest.json")) {
+        // D29-21: the fixture-scoped corpus manifest — categoryCounts present.
+        const manifest = raw as { schemaVersion?: number; categoryCounts?: unknown };
+        expect(manifest.schemaVersion, file).toBe(2);
+        expect(typeof manifest.categoryCounts, file).toBe("object");
+      } else {
+        expect(() => CodexEntitySchema.parse(raw), file).not.toThrow();
+        entityCount++;
+      }
     }
+    expect(entityCount).toBeGreaterThan(0);
+    expect(indexCount).toBeGreaterThan(0);
+  });
+
+  it("D29-21: the fixture corpus carries a manifest whose categoryCounts reconcile exactly against its entity files", () => {
+    const manifest = JSON.parse(readFileSync(join(ENTITIES_DIR, "manifest.json"), "utf8")) as {
+      categoryCounts: Record<string, number>;
+      totalEntityCount: number;
+    };
+    const perCategory: Record<string, number> = {};
+    for (const category of readdirSync(ENTITIES_DIR).sort()) {
+      const categoryDir = join(ENTITIES_DIR, category);
+      if (!statSync(categoryDir).isDirectory()) continue;
+      perCategory[category] = readdirSync(categoryDir).filter(
+        (f) => f.endsWith(".json") && f !== "_index.json",
+      ).length;
+    }
+    expect(perCategory).toEqual(manifest.categoryCounts);
+    expect(Object.values(perCategory).reduce((a, b) => a + b, 0)).toBe(manifest.totalEntityCount);
   });
 
   it("spot-check: the Heal legacy/remaster shared-slug pair", () => {
@@ -206,5 +242,104 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       (c) => c.category === "creature",
     );
     expect(carveOut?.kept).toBeGreaterThanOrEqual(1);
+  });
+
+  it("S6/D29-20: the statblock dragon carries CreatureStats + strike attackBonus/damage + spellcaster dc/tradition end-to-end", () => {
+    const corpusRoot = freshCorpusDir();
+    const result = runOnce(corpusRoot);
+    expect(result.hardFailures).toEqual([]);
+
+    const dragon = JSON.parse(
+      readFileSync(join(corpusRoot, "creature", "adamantine-dragon-adult.json"), "utf8"),
+    );
+    expect(dragon.stats?.kind).toBe("creature");
+    expect(dragon.stats?.speeds).toEqual({
+      base: 30,
+      other: [
+        { type: "burrow", value: 40 },
+        { type: "fly", value: 150 },
+      ],
+    });
+    const jaws = dragon.embeddedItems?.find(
+      (i: { name: string; type: string }) => i.type === "melee" && i.name === "Jaws",
+    );
+    expect(jaws?.attackBonus).toBe(27);
+    expect(jaws?.damage).toEqual(["3d12+14 piercing"]);
+
+    const spellcaster = JSON.parse(
+      readFileSync(
+        join(corpusRoot, "creature", "adamantine-dragon-adult-spellcaster.json"),
+        "utf8",
+      ),
+    );
+    const entry = spellcaster.embeddedItems?.find(
+      (i: { type: string }) => i.type === "spellcastingEntry",
+    );
+    expect(entry?.dc).toBe(34);
+    expect(entry?.attack).toBe(27);
+    expect(entry?.tradition).toBe("primal");
+  });
+
+  it("S6/D29-20: the complex hazard (Gravehall Trap) carries HazardStats with isComplex/disable/routine/stealth end-to-end", () => {
+    const corpusRoot = freshCorpusDir();
+    const result = runOnce(corpusRoot);
+    expect(result.hardFailures).toEqual([]);
+    const trap = JSON.parse(
+      readFileSync(join(corpusRoot, "hazard", "gravehall-trap.json"), "utf8"),
+    );
+    expect(trap.stats?.kind).toBe("hazard");
+    expect(trap.stats?.isComplex).toBe(true);
+    expect(trap.stats?.hardness).toBe(0);
+    expect(trap.stats?.stealth).toEqual({ value: 12 });
+    expect(Array.isArray(trap.stats?.disable)).toBe(true);
+    expect(trap.stats?.disable.length).toBeGreaterThan(0);
+    expect(Array.isArray(trap.stats?.routine)).toBe(true);
+    expect(trap.stats?.routine.length).toBeGreaterThan(0);
+    expect(trap.stats?.reset).toBeUndefined(); // empty string in source
+    // Hazards keep the creature-style named facets (D29-20).
+    expect(trap.facets).toMatchObject({ ac: 20, hp: 60, fortitudeSave: 15 });
+  });
+
+  it("S6/D29-21: the per-category index is `_index.json` and the rescued `index`-slug entities coexist with it", () => {
+    const corpusRoot = freshCorpusDir();
+    const result = runOnce(corpusRoot);
+    expect(result.hardFailures).toEqual([]);
+
+    // The category index moved to `_index.json` — no plain `index.json` index
+    // file survives anywhere as an index (an `index.json` present now is a
+    // REAL entity, the exact clobber class D29-21 kills).
+    const spellIndex = JSON.parse(readFileSync(join(corpusRoot, "spell", "_index.json"), "utf8"));
+    expect(Array.isArray(spellIndex)).toBe(true);
+    expect(spellIndex.length).toBeGreaterThan(0);
+
+    const ancestryIndexEntity = JSON.parse(
+      readFileSync(join(corpusRoot, "ancestry", "index.json"), "utf8"),
+    );
+    expect(ancestryIndexEntity.id).toBe("ancestry/index");
+    expect(ancestryIndexEntity.proseOnly).toBe(true);
+    const archetypeIndexEntity = JSON.parse(
+      readFileSync(join(corpusRoot, "archetype", "index.json"), "utf8"),
+    );
+    expect(archetypeIndexEntity.id).toBe("archetype/index");
+
+    // File-count reconciliation (D29-21's "manifest counts reconcile exactly
+    // against find|wc"): entity files == manifest totalEntityCount.
+    const manifest = JSON.parse(readFileSync(join(corpusRoot, "manifest.json"), "utf8"));
+    expect(collectEntityFiles(corpusRoot)).toHaveLength(manifest.totalEntityCount);
+    expect(manifest.schemaVersion).toBe(2);
+  });
+
+  it("S6/D29-19: a character-typed Actor is excluded (excludedActors report class + top-level count)", () => {
+    // The fixture raw subset carries no `character` doc (they're all excluded
+    // content by design) — so this asserts the ZERO case flows through the
+    // report shape correctly; the non-zero case is unit-covered in
+    // foundryEntities.test.ts and proven on the real corpus at the S6 gate.
+    const result = runOnce(freshCorpusDir());
+    expect(result.hardFailures).toEqual([]);
+    expect(result.reportJson?.excludedActorsCount).toBe(0);
+    expect(result.reportJson?.reportCounts.excludedActors).toBeUndefined();
+    // Coverage tables exist and are well-formed.
+    expect(result.reportJson?.statsCoverage.creature.length).toBeGreaterThan(0);
+    expect(result.reportJson?.statsCoverage.hazard.length).toBeGreaterThan(0);
   });
 });

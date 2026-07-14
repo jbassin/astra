@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "subconscious-mind/emotional-acceptance",
+    "name": "Emotional Acceptance",
+    "rarity": "common",
+    "source": {
+      "book": "Dark Archive",
+      "license": "OGL",
+      "page": 15
+    },
+    "traits": []
+  }
+]

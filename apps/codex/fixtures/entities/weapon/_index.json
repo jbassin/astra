@@ -1,0 +1,18 @@
+[
+  {
+    "edition": "legacy",
+    "id": "weapon/chakri-lost-omens",
+    "level": 0,
+    "name": "Chakri (Lost Omens)",
+    "rarity": "uncommon",
+    "source": {
+      "book": "Pathfinder Lost Omens Impossible Lands",
+      "license": "OGL"
+    },
+    "traits": [
+      "agile",
+      "deadly-d8",
+      "thrown"
+    ]
+  }
+]

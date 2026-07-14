@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "creature-ability/at-will-spells@legacy",
+    "name": "At-Will Spells",
+    "rarity": "common",
+    "source": {
+      "book": "Bestiary",
+      "license": "OGL",
+      "page": 342
+    },
+    "traits": []
+  }
+]

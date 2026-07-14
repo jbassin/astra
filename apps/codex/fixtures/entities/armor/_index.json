@@ -1,0 +1,19 @@
+[
+  {
+    "edition": "remaster",
+    "id": "armor/medusa-armor",
+    "level": 14,
+    "name": "Medusa Armor",
+    "rarity": "rare",
+    "source": {
+      "book": "GM Core",
+      "license": "ORC",
+      "page": 306
+    },
+    "traits": [
+      "cursed",
+      "invested",
+      "magical"
+    ]
+  }
+]

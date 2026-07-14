@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "condition/pinned",
+    "name": "Pinned",
+    "rarity": "common",
+    "source": {
+      "book": "Kingmaker Adventure Path",
+      "license": "OGL",
+      "page": 583
+    },
+    "traits": []
+  }
+]

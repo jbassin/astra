@@ -1,0 +1,13 @@
+[
+  {
+    "edition": "legacy",
+    "id": "sidebar/trait-abilities",
+    "name": "Trait Abilities",
+    "source": {
+      "book": "Gamemastery Guide",
+      "license": "OGL",
+      "page": 56
+    },
+    "traits": []
+  }
+]

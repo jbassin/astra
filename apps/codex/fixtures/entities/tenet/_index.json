@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "tenet/good",
+    "name": "Good",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 106
+    },
+    "traits": []
+  }
+]

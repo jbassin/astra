@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "heritage/pixie",
+    "name": "Pixie",
+    "rarity": "common",
+    "source": {
+      "book": "Ancestry Guide",
+      "license": "OGL",
+      "page": 129
+    },
+    "traits": []
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "animal-companion-advanced/savage@legacy",
+    "name": "Savage",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 214
+    },
+    "traits": []
+  }
+]

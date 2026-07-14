@@ -1,0 +1,15 @@
+[
+  {
+    "edition": "remaster",
+    "id": "epithet/restless-as-the-tides",
+    "level": 7,
+    "name": "Restless as the Tides",
+    "rarity": "common",
+    "source": {
+      "book": "War of Immortals",
+      "license": "ORC",
+      "page": 33
+    },
+    "traits": []
+  }
+]

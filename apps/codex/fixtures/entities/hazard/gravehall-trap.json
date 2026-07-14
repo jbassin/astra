@@ -1,0 +1,1132 @@
+{
+  "aonUrl": "/Hazards.aspx?ID=50",
+  "body": [
+    {
+      "children": [
+        {
+          "display": "Gravehall Trap",
+          "kind": "crossref",
+          "targetId": "hazard/gravehall-trap"
+        }
+      ],
+      "kind": "heading",
+      "level": 1,
+      "meta": "Hazard 4"
+    },
+    {
+      "children": [
+        {
+          "content": "Source",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "GM's Toolbox: Gravehall",
+          "kind": "crossref",
+          "targetId": "source/gms-toolbox-gravehall"
+        },
+        {
+          "content": " pg. 1",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Complexity",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " Complex",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "When a living creature crosses the midpoint of the trapped tunnel, necromantic magic partially animates the corpses buried in the walls and ceiling.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Stealth",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +12 (expert)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Disable",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Thievery",
+          "kind": "crossref",
+          "targetId": "skill/thievery"
+        },
+        {
+          "content": " DC 24 (expert) to disrupt the magical trigger before the hazard rolls initiative, or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Religion",
+          "kind": "crossref",
+          "targetId": "skill/religion"
+        },
+        {
+          "content": " DC 18 (trained) to overwhelm the area with positive energy and prevent the hazard from using its routine for 1 round; on the third successful Religion check, the necromantic energies are disrupted and the hazard is destroyed.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "AC",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 20, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Fort",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +15, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Ref",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +8, ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Will",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +14",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "HP",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 60 (BT 30)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Immunities",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "mental",
+          "kind": "crossref",
+          "targetId": "trait/mental"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "poison",
+          "kind": "crossref",
+          "targetId": "trait/poison"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Weaknesses",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " positive 10",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Lunging Dead",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "cost": "Reaction",
+          "kind": "actionGlyph"
+        },
+        {
+          "content": " (",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "divine",
+          "kind": "crossref",
+          "targetId": "trait/divine"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "fear",
+          "kind": "crossref",
+          "targetId": "trait/fear"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "incapacitation",
+          "kind": "crossref",
+          "targetId": "trait/incapacitation"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "mental",
+          "kind": "crossref",
+          "targetId": "trait/mental"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "necromancy",
+          "kind": "crossref",
+          "targetId": "trait/necromancy"
+        },
+        {
+          "content": ") ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Trigger",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " A living creature crosses the midpoint of the tunnel; ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Effect",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The dead reach out from the walls and ceiling, moaning and spewing writhing maggots. Creatures in the room must attempt a DC 21 Will save. The trap then rolls initiative.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The target is unaffected.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The target is ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "frightened 1",
+          "kind": "crossref",
+          "targetId": "condition/frightened"
+        },
+        {
+          "content": ".\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The target is frightened 2. It can't reduce its frightened condition below 1 while in the trap's area.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " As failure, and the target is ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "paralyzed",
+          "kind": "crossref",
+          "targetId": "condition/paralyzed"
+        },
+        {
+          "content": " for 1 round.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Routine",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " (1 action) Undead fists assail all creatures in the hall, dealing 4d6 bludgeoning damage. Creatures in the hall must attempt a DC 21 Reflex save.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The target is unaffected.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The target takes half damage.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The target takes full damage, and its Speeds are reduced by 10 feet (to a minimum of 5 feet) for 1 round.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The target takes double damage and is ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "immobilized",
+          "kind": "crossref",
+          "targetId": "condition/immobilized"
+        },
+        {
+          "content": " for 1 round.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "hazard",
+  "edition": "legacy",
+  "embeddedItems": [
+    {
+      "actionCost": "reaction",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Trigger",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " A living creature crosses the midpoint of the tunnel",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Effect",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The dead reach out from the walls and ceiling, moaning and spewing writhing maggots. Creatures in the room must attempt a ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "dc": 21,
+              "kind": "check",
+              "type": "will"
+            },
+            {
+              "content": " save. The trap then rolls initiative.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "kind": "divider"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is unaffected.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Success",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Frightened",
+              "kind": "crossref",
+              "targetId": "condition/frightened"
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " The target is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Frightened 2",
+              "kind": "crossref",
+              "targetId": "condition/frightened"
+            },
+            {
+              "content": ". It can't reduce its frightened condition below 1 while in the trap's area.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        },
+        {
+          "children": [
+            {
+              "content": "Critical Failure",
+              "kind": "text",
+              "marks": {
+                "bold": true,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "content": " As failure, and the target is ",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            },
+            {
+              "display": "Paralyzed",
+              "kind": "crossref",
+              "targetId": "condition/paralyzed"
+            },
+            {
+              "content": " for 1 round.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Lunging Dead",
+      "slug": "lunging-dead",
+      "traits": [
+        "divine",
+        "fear",
+        "incapacitation",
+        "mental"
+      ],
+      "type": "action"
+    }
+  ],
+  "facets": {
+    "ac": 20,
+    "fortitudeSave": 15,
+    "hp": 60,
+    "reflexSave": 8,
+    "size": "med",
+    "willSave": 14
+  },
+  "id": "hazard/gravehall-trap",
+  "level": 4,
+  "name": "Gravehall Trap",
+  "rarity": "common",
+  "slug": "gravehall-trap",
+  "source": {
+    "book": "GM's Toolbox: Gravehall",
+    "license": "OGL",
+    "page": 1
+  },
+  "stats": {
+    "disable": [
+      {
+        "children": [
+          {
+            "dc": 24,
+            "extra": {
+              "name": "Disrupt Magical Trigger"
+            },
+            "kind": "check",
+            "traits": [
+              "action:disable-a-device"
+            ],
+            "type": "thievery"
+          },
+          {
+            "content": " (expert) to disrupt the magical trigger before the hazard rolls initiative, or ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "dc": 18,
+            "extra": {
+              "name": "Overwhelm the Area with Vitality Energy"
+            },
+            "kind": "check",
+            "type": "religion"
+          },
+          {
+            "content": " (trained) to overwhelm the area with vitality energy and prevent the hazard from using its routine for 1 round; on the third successful Religion check, the necromantic energies are disrupted and the hazard is destroyed.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        "kind": "paragraph"
+      }
+    ],
+    "hardness": 0,
+    "isComplex": true,
+    "kind": "hazard",
+    "routine": [
+      {
+        "children": [
+          {
+            "content": "(1 action) Undead fists assail all creatures in the hall, dealing ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "4d6 bludgeoning",
+            "formula": "4d6[bludgeoning]",
+            "kind": "damage"
+          },
+          {
+            "content": " damage. Creatures in the hall must attempt a ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "dc": 21,
+            "kind": "check",
+            "type": "reflex"
+          },
+          {
+            "content": ".",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        "kind": "paragraph"
+      },
+      {
+        "kind": "divider"
+      },
+      {
+        "children": [
+          {
+            "content": "Critical Success",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " The target is unaffected.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        "kind": "paragraph"
+      },
+      {
+        "children": [
+          {
+            "content": "Success",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " The target takes half damage.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        "kind": "paragraph"
+      },
+      {
+        "children": [
+          {
+            "content": "Failure",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " The target takes full damage, and its Speeds are reduced by 10 feet (to a minimum of 5 feet) for 1 round.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        "kind": "paragraph"
+      },
+      {
+        "children": [
+          {
+            "content": "Critical Failure",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " The target takes double damage and is ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "Immobilized",
+            "kind": "crossref",
+            "targetId": "condition/immobilized"
+          },
+          {
+            "content": " for 1 round.",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        "kind": "paragraph"
+      }
+    ],
+    "stealth": {
+      "value": 12
+    }
+  },
+  "traits": [
+    "magical"
+  ]
+}

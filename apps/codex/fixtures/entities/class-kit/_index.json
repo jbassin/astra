@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "class-kit/sorcerer-kit-2",
+    "name": "Sorcerer Kit",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 289
+    },
+    "traits": []
+  }
+]

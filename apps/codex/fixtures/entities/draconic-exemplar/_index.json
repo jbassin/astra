@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "remaster",
+    "id": "draconic-exemplar/phase",
+    "name": "Phase",
+    "rarity": "common",
+    "source": {
+      "book": "Draconic Codex",
+      "license": "ORC",
+      "page": 206
+    },
+    "traits": []
+  }
+]

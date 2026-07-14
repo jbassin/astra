@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "arcane-thesis/spell-substitution",
+    "name": "Spell Substitution",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 206
+    },
+    "traits": []
+  }
+]

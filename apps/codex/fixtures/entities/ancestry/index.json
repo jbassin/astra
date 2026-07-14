@@ -1,0 +1,749 @@
+{
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Common",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 1
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Dwarf",
+                    "kind": "crossref",
+                    "targetId": "ancestry/dwarf"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Elf",
+                    "kind": "crossref",
+                    "targetId": "ancestry/elf"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Gnome",
+                    "kind": "crossref",
+                    "targetId": "ancestry/gnome"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Goblin",
+                    "kind": "crossref",
+                    "targetId": "ancestry/goblin"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Halfling",
+                    "kind": "crossref",
+                    "targetId": "ancestry/halfling"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Human",
+                    "kind": "crossref",
+                    "targetId": "ancestry/human"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Leshy",
+                    "kind": "crossref",
+                    "targetId": "ancestry/leshy"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Orc",
+                    "kind": "crossref",
+                    "targetId": "ancestry/orc"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Uncommon",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 1
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Athamaru",
+                    "kind": "crossref",
+                    "targetId": "ancestry/athamaru"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Azarketi",
+                    "kind": "crossref",
+                    "targetId": "ancestry/azarketi"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Catfolk",
+                    "kind": "crossref",
+                    "targetId": "ancestry/catfolk"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Centaur",
+                    "kind": "crossref",
+                    "targetId": "ancestry/centaur"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Fetchling",
+                    "kind": "crossref",
+                    "targetId": "ancestry/fetchling"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Hobgoblin",
+                    "kind": "crossref",
+                    "targetId": "ancestry/hobgoblin"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Kholo",
+                    "kind": "crossref",
+                    "targetId": "ancestry/kholo"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Kitsune",
+                    "kind": "crossref",
+                    "targetId": "ancestry/kitsune"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Kobold",
+                    "kind": "crossref",
+                    "targetId": "ancestry/kobold"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Lizardfolk",
+                    "kind": "crossref",
+                    "targetId": "ancestry/lizardfolk"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Merfolk",
+                    "kind": "crossref",
+                    "targetId": "ancestry/merfolk"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Minotaur",
+                    "kind": "crossref",
+                    "targetId": "ancestry/minotaur"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Nagaji",
+                    "kind": "crossref",
+                    "targetId": "ancestry/nagaji"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ratfolk",
+                    "kind": "crossref",
+                    "targetId": "ancestry/ratfolk"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Samsaran",
+                    "kind": "crossref",
+                    "targetId": "ancestry/samsaran"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Tanuki",
+                    "kind": "crossref",
+                    "targetId": "ancestry/tanuki"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Tengu",
+                    "kind": "crossref",
+                    "targetId": "ancestry/tengu"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Tripkee",
+                    "kind": "crossref",
+                    "targetId": "ancestry/tripkee"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Vanara",
+                    "kind": "crossref",
+                    "targetId": "ancestry/vanara"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Wayang",
+                    "kind": "crossref",
+                    "targetId": "ancestry/wayang"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    },
+    {
+      "children": [],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Rare",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 1
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Anadi",
+                    "kind": "crossref",
+                    "targetId": "ancestry/anadi"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Android",
+                    "kind": "crossref",
+                    "targetId": "ancestry/android"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Automaton",
+                    "kind": "crossref",
+                    "targetId": "ancestry/automaton"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Awakened Animal",
+                    "kind": "crossref",
+                    "targetId": "ancestry/awakened-animal"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Conrasu",
+                    "kind": "crossref",
+                    "targetId": "ancestry/conrasu"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Dragonet",
+                    "kind": "crossref",
+                    "targetId": "ancestry/dragonet"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Fleshwarp",
+                    "kind": "crossref",
+                    "targetId": "ancestry/fleshwarp"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Ghoran",
+                    "kind": "crossref",
+                    "targetId": "ancestry/ghoran"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Goloma",
+                    "kind": "crossref",
+                    "targetId": "ancestry/goloma"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Jotunborn",
+                    "kind": "crossref",
+                    "targetId": "ancestry/jotunborn"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Kashrishi",
+                    "kind": "crossref",
+                    "targetId": "ancestry/kashrishi"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Poppet",
+                    "kind": "crossref",
+                    "targetId": "ancestry/poppet"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sarangay",
+                    "kind": "crossref",
+                    "targetId": "ancestry/sarangay"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Shisk",
+                    "kind": "crossref",
+                    "targetId": "ancestry/shisk"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Shoony",
+                    "kind": "crossref",
+                    "targetId": "ancestry/shoony"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Skeleton",
+                    "kind": "crossref",
+                    "targetId": "ancestry/skeleton"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Sprite",
+                    "kind": "crossref",
+                    "targetId": "ancestry/sprite"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Strix",
+                    "kind": "crossref",
+                    "targetId": "ancestry/strix"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Surki",
+                    "kind": "crossref",
+                    "targetId": "ancestry/surki"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Vishkanya",
+                    "kind": "crossref",
+                    "targetId": "ancestry/vishkanya"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        },
+        {
+          "cells": [
+            [
+              {
+                "children": [
+                  {
+                    "display": "Yaksha",
+                    "kind": "crossref",
+                    "targetId": "ancestry/yaksha"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ],
+            [
+              {
+                "children": [
+                  {
+                    "display": "Yaoguai",
+                    "kind": "crossref",
+                    "targetId": "ancestry/yaoguai"
+                  }
+                ],
+                "kind": "paragraph"
+              }
+            ]
+          ],
+          "header": false
+        }
+      ]
+    }
+  ],
+  "category": "ancestry",
+  "edition": "legacy",
+  "facets": {},
+  "id": "ancestry/index",
+  "name": "Index",
+  "proseOnly": true,
+  "slug": "index",
+  "source": {
+    "book": "Foundry Journal: Ancestries",
+    "license": "unknown"
+  },
+  "traits": []
+}

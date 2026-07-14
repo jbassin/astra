@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "remaster",
+    "id": "deity-category/coatl-tribunal",
+    "name": "Coatl Tribunal",
+    "rarity": "common",
+    "source": {
+      "book": "Divine Mysteries",
+      "license": "ORC",
+      "page": 300
+    },
+    "traits": []
+  }
+]

@@ -162,9 +162,14 @@ export const ACTOR_PACKS: ReadonlySet<string> = new Set([
  * these six doc types are the complete set across all 66 Actor packs). */
 export const ACTOR_TYPE_CATEGORY: Readonly<Record<string, string>> = {
   npc: "creature",
-  // Iconics/pregens/Kingmaker PCs are statblock-shaped, same as an npc (iconics
-  // has zero `system.traits`/`publication` — handled as report-counted
-  // "unknown"-license residue in `foundryEntities.ts`, not a mapping concern).
+  // D29-19 (P1.6): `character`-typed Actors (iconics/pregens/Kingmaker PC
+  // builds) are EXCLUDED upstream in `foundryEntities.ts`'s
+  // `assembleFoundryEntity` (their AC/HP/saves are runtime-derived by the
+  // pf2e system, not statable from source — the 0028 finding), so this
+  // mapping is never reached for a live `character` doc. Kept here anyway:
+  // the map stays total over the real (pack,type) census (the drift
+  // tripwire's contract), and `uuidResolve.ts` still indexes these docs as
+  // crossref targets independent of entity assembly.
   character: "creature",
   familiar: "creature",
   hazard: "hazard",

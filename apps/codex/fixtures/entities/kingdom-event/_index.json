@@ -1,0 +1,17 @@
+[
+  {
+    "edition": "legacy",
+    "id": "kingdom-event/political-calm",
+    "level": -1,
+    "name": "Political Calm",
+    "rarity": "common",
+    "source": {
+      "book": "Kingmaker Adventure Path",
+      "license": "OGL",
+      "page": 562
+    },
+    "traits": [
+      "Beneficial"
+    ]
+  }
+]

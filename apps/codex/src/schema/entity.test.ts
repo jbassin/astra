@@ -131,6 +131,111 @@ describe("CodexEntity: embeddedItems (S2 widening, foundryEntities.ts)", () => {
     const bad = { ...baseEntity(), embeddedItems: [{ name: "X" }] };
     expect(() => CodexEntitySchema.parse(bad)).toThrow();
   });
+
+  it("accepts a melee strike item's attackBonus/damage (D29-20/P1.6)", () => {
+    const entity = baseEntity({
+      id: "creature/red-dragon-adult",
+      category: "creature",
+      embeddedItems: [
+        {
+          name: "Jaws",
+          slug: "jaws",
+          type: "melee",
+          traits: ["fire", "magical", "reach-15", "unarmed"],
+          body: [],
+          attackBonus: 29,
+          damage: ["3d12+15 piercing", "2d6 fire"],
+        },
+      ],
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("accepts a spellcastingEntry item's dc/attack/tradition (D29-20/P1.6)", () => {
+    const entity = baseEntity({
+      id: "creature/red-dragon-adult",
+      category: "creature",
+      embeddedItems: [
+        {
+          name: "Arcane Innate Spells",
+          slug: "arcane-innate-spells",
+          type: "spellcastingEntry",
+          traits: [],
+          body: [],
+          dc: 35,
+          attack: 27,
+          tradition: "arcane",
+        },
+      ],
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+});
+
+describe("CodexEntity.stats (D29-20/P1.6, schemaVersion 1->2)", () => {
+  it("accepts a CreatureStats entity with every sub-field populated", () => {
+    const entity = baseEntity({
+      id: "creature/red-dragon-adult",
+      category: "creature",
+      stats: {
+        kind: "creature",
+        speeds: { base: 50, other: [{ type: "fly", value: 150 }] },
+        abilityMods: { str: 7, dex: 3, con: 6, int: 3, wis: 4, cha: 5 },
+        senses: {
+          mod: 26,
+          details: "smoke vision",
+          list: [{ type: "darkvision" }, { type: "scent", acuity: "imprecise", range: 60 }],
+        },
+        languages: ["common", "draconic"],
+        immunities: ["fire", "paralyzed", "sleep"],
+        resistances: [{ type: "cold", value: 15 }],
+        weaknesses: [{ type: "cold", value: 15 }],
+        skills: { stealth: 23, athletics: 29 },
+      },
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("accepts a HazardStats entity with disable/routine/reset as BlockNode[]", () => {
+    const entity = baseEntity({
+      id: "hazard/gravehall-trap",
+      category: "hazard",
+      stats: {
+        kind: "hazard",
+        hardness: 0,
+        stealth: { value: 12, details: "" },
+        isComplex: true,
+        disable: [
+          {
+            kind: "paragraph",
+            children: [
+              {
+                kind: "text",
+                content: "Disrupt the magical trigger.",
+                marks: { bold: false, italic: false, superscript: false },
+              },
+            ],
+          },
+        ],
+        routine: [{ kind: "divider" }],
+      },
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("rejects a stats object mixing creature and hazard fields (discriminated union)", () => {
+    const bad = {
+      ...baseEntity(),
+      stats: { kind: "creature", hardness: 5 },
+    };
+    expect(() => CodexEntitySchema.parse(bad)).toThrow();
+  });
+
+  it("omits stats entirely rather than requiring an empty object", () => {
+    const entity = baseEntity();
+    expect(entity.stats).toBeUndefined();
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
 });
 
 describe("Facets: typed fields + catchall passthrough", () => {

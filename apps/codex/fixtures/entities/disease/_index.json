@@ -1,0 +1,15 @@
+[
+  {
+    "edition": "legacy",
+    "id": "disease/cocytan-filth",
+    "level": 3,
+    "name": "Cocytan Filth",
+    "rarity": "common",
+    "source": {
+      "book": "Bestiary 2",
+      "license": "OGL",
+      "page": 72
+    },
+    "traits": []
+  }
+]

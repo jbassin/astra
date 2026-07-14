@@ -1,0 +1,17 @@
+[
+  {
+    "edition": "legacy",
+    "id": "hazard/gravehall-trap",
+    "level": 4,
+    "name": "Gravehall Trap",
+    "rarity": "common",
+    "source": {
+      "book": "GM's Toolbox: Gravehall",
+      "license": "OGL",
+      "page": 1
+    },
+    "traits": [
+      "magical"
+    ]
+  }
+]

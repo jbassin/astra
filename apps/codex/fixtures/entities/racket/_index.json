@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "racket/thief",
+    "name": "Thief",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 180
+    },
+    "traits": []
+  }
+]

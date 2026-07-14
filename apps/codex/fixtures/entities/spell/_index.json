@@ -1,0 +1,70 @@
+[
+  {
+    "edition": "remaster",
+    "id": "spell/force-barrage",
+    "level": 1,
+    "name": "Force Barrage",
+    "rarity": "common",
+    "source": {
+      "book": "Player Core",
+      "license": "ORC",
+      "page": 332
+    },
+    "traits": [
+      "concentrate",
+      "force",
+      "manipulate"
+    ]
+  },
+  {
+    "edition": "remaster",
+    "id": "spell/heal",
+    "level": 1,
+    "name": "Heal",
+    "rarity": "common",
+    "source": {
+      "book": "Player Core",
+      "license": "ORC",
+      "page": 335
+    },
+    "traits": [
+      "healing",
+      "manipulate",
+      "vitality"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "spell/heal@legacy",
+    "level": 1,
+    "name": "Heal",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 343
+    },
+    "traits": [
+      "Healing",
+      "Necromancy",
+      "Positive",
+      "Vitality"
+    ]
+  },
+  {
+    "edition": "legacy",
+    "id": "spell/magic-missile",
+    "level": 1,
+    "name": "Magic Missile",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 349
+    },
+    "traits": [
+      "Evocation",
+      "Force"
+    ]
+  }
+]

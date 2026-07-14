@@ -1,0 +1,17 @@
+[
+  {
+    "edition": "legacy",
+    "id": "kingdom-structure/rubble",
+    "level": 0,
+    "name": "Rubble",
+    "rarity": "common",
+    "source": {
+      "book": "Kingmaker Adventure Path",
+      "license": "OGL",
+      "page": 550
+    },
+    "traits": [
+      "Yard"
+    ]
+  }
+]

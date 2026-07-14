@@ -977,7 +977,11 @@
   "edition": "legacy",
   "embeddedItems": [
     {
+      "attackBonus": 11,
       "body": [],
+      "damage": [
+        "1d12+6 slashing"
+      ],
       "name": "Jaws",
       "slug": "jaws",
       "traits": [
@@ -986,7 +990,11 @@
       "type": "melee"
     },
     {
+      "attackBonus": 11,
       "body": [],
+      "damage": [
+        "1d8+6 bludgeoning"
+      ],
       "name": "Tentacle",
       "slug": "tentacle",
       "traits": [
@@ -1069,6 +1077,52 @@
     "book": "Crown of the Kobold King",
     "license": "OGL",
     "page": 120
+  },
+  "stats": {
+    "abilityMods": {
+      "cha": -2,
+      "con": 2,
+      "dex": 3,
+      "int": -3,
+      "str": 4,
+      "wis": 3
+    },
+    "kind": "creature",
+    "languages": [
+      "aklo"
+    ],
+    "resistances": [
+      {
+        "type": "physical",
+        "value": 5
+      }
+    ],
+    "senses": {
+      "list": [
+        {
+          "type": "darkvision"
+        },
+        {
+          "acuity": "imprecise",
+          "range": 30,
+          "type": "scent"
+        }
+      ],
+      "mod": 8
+    },
+    "skills": {
+      "athletics": 9,
+      "stealth": 8
+    },
+    "speeds": {
+      "base": 25,
+      "other": [
+        {
+          "type": "climb",
+          "value": 20
+        }
+      ]
+    }
   },
   "traits": [
     "aberration"

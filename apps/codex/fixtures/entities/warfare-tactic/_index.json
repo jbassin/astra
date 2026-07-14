@@ -1,0 +1,18 @@
+[
+  {
+    "edition": "legacy",
+    "id": "warfare-tactic/field-triage",
+    "level": 6,
+    "name": "Field Triage",
+    "rarity": "common",
+    "source": {
+      "book": "Kingmaker Adventure Path",
+      "license": "OGL",
+      "page": 576
+    },
+    "traits": [
+      "Infantry",
+      "Skirmisher"
+    ]
+  }
+]

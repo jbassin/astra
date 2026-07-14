@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "cause/desecrator",
+    "name": "Desecrator",
+    "rarity": "common",
+    "source": {
+      "book": "Advanced Player's Guide",
+      "license": "OGL",
+      "page": 116
+    },
+    "traits": []
+  }
+]

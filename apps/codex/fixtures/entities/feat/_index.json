@@ -1,0 +1,17 @@
+[
+  {
+    "edition": "remaster",
+    "id": "feat/camouflage-coat",
+    "level": 13,
+    "name": "Camouflage Coat",
+    "rarity": "common",
+    "source": {
+      "book": "Howl of the Wild",
+      "license": "ORC",
+      "page": 33
+    },
+    "traits": [
+      "centaur"
+    ]
+  }
+]

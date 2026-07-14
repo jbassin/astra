@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "tradition/occult",
+    "name": "Occult",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 299
+    },
+    "traits": []
+  }
+]

@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "hellknight-order/order-of-the-chain",
+    "name": "Order of the Chain",
+    "rarity": "common",
+    "source": {
+      "book": "Character Guide",
+      "license": "OGL",
+      "page": 81
+    },
+    "traits": []
+  }
+]

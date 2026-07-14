@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "rules/nature-crafting-3",
+    "name": "Nature Crafting",
+    "rarity": "common",
+    "source": {
+      "book": "Treasure Vault",
+      "license": "OGL",
+      "page": 164
+    },
+    "traits": []
+  }
+]

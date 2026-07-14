@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "animal-companion-specialization/racer@legacy",
+    "name": "Racer",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 217
+    },
+    "traits": []
+  }
+]

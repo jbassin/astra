@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "action/cast-a-spell-331",
+    "name": "Cast a Spell",
+    "rarity": "common",
+    "source": {
+      "book": "Secrets of Magic",
+      "license": "OGL",
+      "page": 168
+    },
+    "traits": []
+  }
+]

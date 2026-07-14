@@ -7,8 +7,11 @@ import {
   buildReportJson,
   buildReportMarkdown,
   capList,
+  computeCreatureStatsCoverage,
   computeEditionBreakdown,
+  computeEmbeddedItemStatsCoverage,
   computeFinalCategoryCounts,
+  computeHazardStatsCoverage,
   computeLicenseBreakdown,
   computeProseOnlyCount,
   computeVariantCount,
@@ -374,5 +377,136 @@ describe("buildReportMarkdown", () => {
     const md = buildReportMarkdown(json);
     expect(md).toContain("Nothing dropped.");
     expect(md).toContain("No carve-out entities in this run.");
+  });
+
+  it("D29-19/-20 (P1.6): renders the excludedActors count + the statblock coverage tables", () => {
+    const json = buildReportJson(
+      baseInput({
+        reportCounts: new Map([["excludedActors", 7]]),
+        finalEntities: [
+          entity({
+            id: "creature/dragon",
+            category: "creature",
+            slug: "dragon",
+            name: "Dragon",
+            stats: { kind: "creature", speeds: { base: 40 } },
+          }),
+        ],
+      }),
+    );
+    expect(json.excludedActorsCount).toBe(7);
+    const speedsRow = json.statsCoverage.creature.find((r) => r.field === "speeds");
+    expect(speedsRow).toEqual({ field: "speeds", count: 1, ofTotal: 1, pct: 100 });
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("Statblock extraction");
+    expect(md).toContain("**7**");
+    expect(md).toContain("speeds");
+  });
+});
+
+describe("P1.6 (D29-19/-20): stats + embedded-item field coverage", () => {
+  it("computeCreatureStatsCoverage counts only creature-kind stats, per field", () => {
+    const entities: CodexEntity[] = [
+      entity({
+        id: "creature/a",
+        category: "creature",
+        slug: "a",
+        name: "A",
+        stats: {
+          kind: "creature",
+          speeds: { base: 25 },
+          abilityMods: { str: 4 },
+          languages: ["common"],
+        },
+      }),
+      entity({ id: "creature/b", category: "creature", slug: "b", name: "B" }), // no stats at all
+      entity({ id: "spell/heal", category: "spell", slug: "heal", name: "Heal" }), // wrong category
+    ];
+    const coverage = computeCreatureStatsCoverage(entities);
+    expect(coverage.find((r) => r.field === "speeds")).toEqual({
+      field: "speeds",
+      count: 1,
+      ofTotal: 2, // 2 creature-category entities total, "spell/heal" excluded
+      pct: 50,
+    });
+    expect(coverage.find((r) => r.field === "senses")).toEqual({
+      field: "senses",
+      count: 0,
+      ofTotal: 2,
+      pct: 0,
+    });
+  });
+
+  it("computeHazardStatsCoverage counts only hazard-kind stats, per field", () => {
+    const entities: CodexEntity[] = [
+      entity({
+        id: "hazard/trap",
+        category: "hazard",
+        slug: "trap",
+        name: "Trap",
+        stats: {
+          kind: "hazard",
+          hardness: 0,
+          isComplex: true,
+          disable: [],
+          routine: [],
+        },
+      }),
+    ];
+    const coverage = computeHazardStatsCoverage(entities);
+    expect(coverage.find((r) => r.field === "hardness")?.count).toBe(1);
+    expect(coverage.find((r) => r.field === "isComplex")?.count).toBe(1);
+    expect(coverage.find((r) => r.field === "disable")?.count).toBe(1);
+    expect(coverage.find((r) => r.field === "routine")?.count).toBe(1);
+    expect(coverage.find((r) => r.field === "reset")?.count).toBe(0);
+    expect(coverage.find((r) => r.field === "stealth")?.count).toBe(0);
+  });
+
+  it("computeEmbeddedItemStatsCoverage scans melee/spellcastingEntry items across all entities", () => {
+    const entities: CodexEntity[] = [
+      entity({
+        id: "creature/dragon",
+        category: "creature",
+        slug: "dragon",
+        name: "Dragon",
+        embeddedItems: [
+          {
+            name: "Jaws",
+            slug: "jaws",
+            type: "melee",
+            traits: [],
+            body: [],
+            attackBonus: 29,
+            damage: ["3d12+15 piercing", "2d6 fire"],
+          },
+          { name: "Claw", slug: "claw", type: "melee", traits: [], body: [] }, // no attackBonus/damage
+          {
+            name: "Arcane Innate Spells",
+            slug: "arcane-innate-spells",
+            type: "spellcastingEntry",
+            traits: [],
+            body: [],
+            dc: 35,
+            attack: 27,
+            tradition: "arcane",
+          },
+        ],
+      }),
+    ];
+    const coverage = computeEmbeddedItemStatsCoverage(entities);
+    expect(coverage.find((r) => r.field === "melee.attackBonus")).toEqual({
+      field: "melee.attackBonus",
+      count: 1,
+      ofTotal: 2,
+      pct: 50,
+    });
+    expect(coverage.find((r) => r.field === "melee.damage")?.count).toBe(1);
+    expect(coverage.find((r) => r.field === "spellcastingEntry.dc")).toEqual({
+      field: "spellcastingEntry.dc",
+      count: 1,
+      ofTotal: 1,
+      pct: 100,
+    });
+    expect(coverage.find((r) => r.field === "spellcastingEntry.tradition")?.count).toBe(1);
   });
 });

@@ -1,0 +1,15 @@
+[
+  {
+    "edition": "legacy",
+    "id": "item-bonus/magnifying-glass",
+    "level": 3,
+    "name": "Magnifying Glass",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 290
+    },
+    "traits": []
+  }
+]

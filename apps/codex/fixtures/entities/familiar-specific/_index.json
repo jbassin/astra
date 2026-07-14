@@ -1,0 +1,16 @@
+[
+  {
+    "edition": "remaster",
+    "id": "familiar-specific/poppet",
+    "name": "Poppet",
+    "rarity": "common",
+    "source": {
+      "book": "Player Core 2",
+      "license": "ORC",
+      "page": 171
+    },
+    "traits": [
+      "Construct"
+    ]
+  }
+]

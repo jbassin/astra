@@ -3,8 +3,10 @@ import { z } from "zod";
 /**
  * CodexNode — the P2 renderer contract (D29-2, spec §2/§3). ONE Zod discriminated
  * union over 18 kinds, no `dangerouslySetInnerHTML` of source-derived HTML anywhere
- * downstream. `schemaVersion` in `corpus-manifest.json` bumps on ANY breaking change
- * here (a kind added/removed/reshaped) — see `src/schema/manifest.ts`.
+ * downstream. `CORPUS_SCHEMA_VERSION` (`src/ingest/emit.ts`) bumps on ANY breaking
+ * change here (a kind added/removed/reshaped) — NOT the committed root
+ * `corpus-manifest.json`'s own `schemaVersion` (a different, fetch-pin concept, see
+ * `src/schema/manifest.ts` and `emit.ts`'s own doc comment).
  *
  * Two tiers, both riding the same discriminant field (`kind`) so `CodexNodeSchema`
  * stays a single flat `z.discriminatedUnion`:

@@ -1,4 +1,4 @@
-import type { CodexEntity } from "../schema/entity";
+import type { CodexEntity, CreatureStats, HazardStats } from "../schema/entity";
 import type { DropAccounting } from "./drop";
 import type {
   CategoryStat,
@@ -118,6 +118,125 @@ export function computeVariantCount(entities: readonly CodexEntity[]): number {
 }
 
 // ---------------------------------------------------------------------------
+// P1.6 (D29-19/-20, slice S6): statblock extraction coverage
+//
+// One row per extracted field: how many of the FINAL (post-drop) entities in
+// the relevant population carry it, as a raw count + a percentage. A field's
+// absence is often legitimate (an AoN-only creature/hazard has no Foundry
+// Actor doc to extract from at all; a carve-out creature may genuinely lack a
+// given sub-field in source) — this is a visibility tool for the stakeholder
+// review (spec §9's "per-field extraction coverage %"), not a pass/fail gate.
+// ---------------------------------------------------------------------------
+
+export interface FieldCoverageRow {
+  field: string;
+  count: number;
+  ofTotal: number;
+  pct: number;
+}
+
+function coverageRow(field: string, count: number, ofTotal: number): FieldCoverageRow {
+  return {
+    field,
+    count,
+    ofTotal,
+    pct: ofTotal > 0 ? Math.round((count / ofTotal) * 1000) / 10 : 0,
+  };
+}
+
+function hasCreatureStats(e: CodexEntity): e is CodexEntity & { stats: CreatureStats } {
+  return e.stats?.kind === "creature";
+}
+
+function hasHazardStats(e: CodexEntity): e is CodexEntity & { stats: HazardStats } {
+  return e.stats?.kind === "hazard";
+}
+
+/** Per-field coverage over every `creature` entity in the final corpus
+ * (D29-20's `CreatureStats` fields). */
+export function computeCreatureStatsCoverage(entities: readonly CodexEntity[]): FieldCoverageRow[] {
+  const creatures = entities.filter((e) => e.category === "creature");
+  const total = creatures.length;
+  const fields: Array<[string, (e: CodexEntity) => boolean]> = [
+    ["speeds", (e) => hasCreatureStats(e) && e.stats.speeds !== undefined],
+    ["abilityMods", (e) => hasCreatureStats(e) && e.stats.abilityMods !== undefined],
+    ["senses", (e) => hasCreatureStats(e) && e.stats.senses !== undefined],
+    ["languages", (e) => hasCreatureStats(e) && e.stats.languages !== undefined],
+    ["immunities", (e) => hasCreatureStats(e) && e.stats.immunities !== undefined],
+    ["resistances", (e) => hasCreatureStats(e) && e.stats.resistances !== undefined],
+    ["weaknesses", (e) => hasCreatureStats(e) && e.stats.weaknesses !== undefined],
+    ["skills", (e) => hasCreatureStats(e) && e.stats.skills !== undefined],
+  ];
+  return fields.map(([field, pred]) => coverageRow(field, creatures.filter(pred).length, total));
+}
+
+/** Per-field coverage over every `hazard` entity in the final corpus
+ * (D29-20's `HazardStats` fields). */
+export function computeHazardStatsCoverage(entities: readonly CodexEntity[]): FieldCoverageRow[] {
+  const hazards = entities.filter((e) => e.category === "hazard");
+  const total = hazards.length;
+  const fields: Array<[string, (e: CodexEntity) => boolean]> = [
+    ["hardness", (e) => hasHazardStats(e) && e.stats.hardness !== undefined],
+    ["stealth", (e) => hasHazardStats(e) && e.stats.stealth !== undefined],
+    ["isComplex", (e) => hasHazardStats(e) && e.stats.isComplex !== undefined],
+    ["disable", (e) => hasHazardStats(e) && e.stats.disable !== undefined],
+    ["routine", (e) => hasHazardStats(e) && e.stats.routine !== undefined],
+    ["reset", (e) => hasHazardStats(e) && e.stats.reset !== undefined],
+  ];
+  return fields.map(([field, pred]) => coverageRow(field, hazards.filter(pred).length, total));
+}
+
+/** Per-field coverage over embedded items (not entities) — a `melee`/
+ * `spellcastingEntry` item's own field presence, scanned across every kept
+ * entity's `embeddedItems` (D29-20's strike/spellcasting fields). */
+export function computeEmbeddedItemStatsCoverage(
+  entities: readonly CodexEntity[],
+): FieldCoverageRow[] {
+  const meleeItems = entities.flatMap((e) =>
+    (e.embeddedItems ?? []).filter((i) => i.type === "melee"),
+  );
+  const spellcastingItems = entities.flatMap((e) =>
+    (e.embeddedItems ?? []).filter((i) => i.type === "spellcastingEntry"),
+  );
+  return [
+    coverageRow(
+      "melee.attackBonus",
+      meleeItems.filter((i) => i.attackBonus !== undefined).length,
+      meleeItems.length,
+    ),
+    coverageRow(
+      "melee.damage",
+      meleeItems.filter((i) => i.damage !== undefined).length,
+      meleeItems.length,
+    ),
+    coverageRow(
+      "spellcastingEntry.dc",
+      spellcastingItems.filter((i) => i.dc !== undefined).length,
+      spellcastingItems.length,
+    ),
+    coverageRow(
+      "spellcastingEntry.tradition",
+      spellcastingItems.filter((i) => i.tradition !== undefined).length,
+      spellcastingItems.length,
+    ),
+  ];
+}
+
+export interface StatsCoverage {
+  creature: FieldCoverageRow[];
+  hazard: FieldCoverageRow[];
+  embeddedItems: FieldCoverageRow[];
+}
+
+export function computeStatsCoverage(entities: readonly CodexEntity[]): StatsCoverage {
+  return {
+    creature: computeCreatureStatsCoverage(entities),
+    hazard: computeHazardStatsCoverage(entities),
+    embeddedItems: computeEmbeddedItemStatsCoverage(entities),
+  };
+}
+
+// ---------------------------------------------------------------------------
 // report.json
 // ---------------------------------------------------------------------------
 
@@ -157,6 +276,12 @@ export interface ReportJson {
   sizeTotals: SizeTotals;
   /** S5c/D29-14: the drop-accounting section. */
   dropAccounting: DropAccounting;
+  /** D29-19 (P1.6): `character`-typed Actors excluded before assembly
+   * (`reportCounts.excludedActors` — pulled out to its own top-level field
+   * since spec §9 calls it out by name, not just generic residue). */
+  excludedActorsCount: number;
+  /** D29-20 (P1.6): per-field extraction coverage % over the final corpus. */
+  statsCoverage: StatsCoverage;
 }
 
 function categoryJson(stat: CategoryStat, finalOut: number): CategoryJoinJson {
@@ -205,6 +330,8 @@ export function buildReportJson(input: ReportInput): ReportJson {
     ),
     sizeTotals: input.sizeTotals ?? {},
     dropAccounting: input.dropAccounting,
+    excludedActorsCount: input.reportCounts.get("excludedActors") ?? 0,
+    statsCoverage: computeStatsCoverage(input.finalEntities),
   };
 }
 
@@ -480,6 +607,29 @@ export function buildReportMarkdown(json: ReportJson): string {
       : "No carve-out entities in this run.",
     "",
   );
+
+  lines.push("## Statblock extraction (P1.6 — D29-19/-20/-21)", "");
+  lines.push(
+    `\`character\`-typed Actors excluded before assembly (D29-19 npc-only creature import): **${json.excludedActorsCount}**.`,
+    "",
+  );
+  lines.push(
+    "Per-field extraction coverage %, over the FINAL (post-drop) corpus — absence is often legitimate (an AoN-only creature/hazard has no Foundry Actor doc to extract from at all), so this is a visibility table for review, not a pass/fail gate.",
+    "",
+  );
+  function coverageTable(title: string, rows: FieldCoverageRow[]): void {
+    lines.push(`### ${title}`, "");
+    lines.push(
+      mdTable(
+        ["field", "count", "of", "pct"],
+        rows.map((r) => [r.field, r.count, r.ofTotal, `${r.pct}%`]),
+      ),
+      "",
+    );
+  }
+  coverageTable("CreatureStats fields (creature category)", json.statsCoverage.creature);
+  coverageTable("HazardStats fields (hazard category)", json.statsCoverage.hazard);
+  coverageTable("EmbeddedItem strike/spellcasting fields", json.statsCoverage.embeddedItems);
 
   return lines.join("\n");
 }

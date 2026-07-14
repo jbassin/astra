@@ -1,0 +1,18 @@
+[
+  {
+    "edition": "legacy",
+    "id": "equipment/rune-of-sin-envy",
+    "level": 12,
+    "name": "Rune of Sin (Envy)",
+    "rarity": "uncommon",
+    "source": {
+      "book": "Pathfinder Secrets of Magic",
+      "license": "OGL"
+    },
+    "traits": [
+      "arcane",
+      "invested",
+      "tattoo"
+    ]
+  }
+]

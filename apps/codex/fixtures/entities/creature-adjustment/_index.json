@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "remaster",
+    "id": "creature-adjustment/tengu",
+    "name": "Tengu",
+    "rarity": "common",
+    "source": {
+      "book": "NPC Core",
+      "license": "ORC",
+      "page": 169
+    },
+    "traits": []
+  }
+]

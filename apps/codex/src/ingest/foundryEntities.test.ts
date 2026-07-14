@@ -91,6 +91,195 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
     const dispellingStrike = entity?.embeddedItems?.find((i) => i.name === "Dispelling Strike");
     expect(dispellingStrike?.actionCost).toBe("free");
   });
+
+  it("D29-20 (P1.6): extracts CreatureStats — speeds/abilityMods/senses/languages/immunities/weaknesses/skills; null resistances OMITTED", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "balor",
+      doc: balor,
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+
+    expect(entity?.stats?.kind).toBe("creature");
+    const stats = entity?.stats?.kind === "creature" ? entity.stats : undefined;
+    expect(stats?.speeds).toEqual({ base: 35, other: [{ type: "fly", value: 70 }] });
+    expect(stats?.abilityMods).toEqual({ str: 9, dex: 7, con: 9, int: 6, wis: 6, cha: 8 });
+    expect(stats?.senses).toEqual({ mod: 36, list: [{ type: "darkvision" }] });
+    expect(stats?.languages).toEqual(["chthonian", "draconic", "empyrean"]);
+    expect(stats?.immunities).toEqual(["fire"]);
+    // Balor's raw `system.attributes.resistances` is a literal JSON `null` —
+    // the field must be OMITTED, never a null/empty passthrough (the S4
+    // emit-gate `present()` lesson applied to stats).
+    expect(stats?.resistances).toBeUndefined();
+    expect(stats?.weaknesses).toEqual([
+      { type: "cold", value: 20 },
+      { type: "cold-iron", value: 20 },
+      { type: "holy", value: 20 },
+    ]);
+    expect(stats?.skills).toMatchObject({ athletics: 37, intimidation: 38, stealth: 33 });
+  });
+
+  it("D29-20 (P1.6): melee strike items carry attackBonus + flattened damage; spellcastingEntry carries dc/attack/tradition", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "balor",
+      doc: balor,
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+
+    const longsword = entity?.embeddedItems?.find(
+      (i) => i.name === "Vorpal Cold Iron Silver Longsword",
+    );
+    expect(longsword?.type).toBe("melee");
+    expect(longsword?.attackBonus).toBe(40);
+    expect(longsword?.damage).toEqual(["4d8+17 slashing"]);
+
+    const spellcasting = entity?.embeddedItems?.find((i) => i.name === "Divine Innate Spells");
+    expect(spellcasting?.type).toBe("spellcastingEntry");
+    expect(spellcasting?.dc).toBe(44);
+    expect(spellcasting?.attack).toBe(36);
+    expect(spellcasting?.tradition).toBe("divine");
+
+    // Non-strike/non-spellcasting items gain NONE of the new fields.
+    const decree = entity?.embeddedItems?.find((i) => i.name === "Divine Decree");
+    expect(decree?.attackBonus).toBeUndefined();
+    expect(decree?.damage).toBeUndefined();
+    expect(decree?.dc).toBeUndefined();
+    expect(decree?.tradition).toBeUndefined();
+  });
+});
+
+describe("assembleFoundryEntity: D29-20 (P1.6) HazardStats extraction", () => {
+  function hazardDoc(): RawFoundryDoc {
+    return {
+      _id: "hazID000000001",
+      name: "Test Complex Trap",
+      type: "hazard",
+      system: {
+        details: {
+          publication: { license: "OGL", remaster: false, title: "Core Rulebook" },
+          level: { value: 5 },
+          isComplex: true,
+          disable: "<p>Thievery DC 24 to disrupt the trigger.</p>",
+          routine: "<p>(1 action) The trap deals damage.</p>",
+          reset: "",
+        },
+        attributes: {
+          ac: { value: 20 },
+          hp: { max: 60 },
+          hardness: 12,
+          stealth: { value: 14, details: "" },
+        },
+        saves: {
+          fortitude: { value: 15 },
+          reflex: { value: 8 },
+          will: { value: 14 },
+        },
+      },
+    };
+  }
+
+  it("extracts hardness/stealth/isComplex + disable/routine as BlockNode[]; empty reset OMITTED", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "hazards",
+      docClass: "Actor",
+      basename: "test-complex-trap",
+      doc: hazardDoc(),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+
+    expect(entity?.category).toBe("hazard");
+    expect(entity?.stats?.kind).toBe("hazard");
+    const stats = entity?.stats?.kind === "hazard" ? entity.stats : undefined;
+    expect(stats?.hardness).toBe(12);
+    expect(stats?.stealth).toEqual({ value: 14 }); // empty details string omitted
+    expect(stats?.isComplex).toBe(true);
+    expect(stats?.disable).toEqual([
+      {
+        kind: "paragraph",
+        children: [
+          {
+            kind: "text",
+            content: "Thievery DC 24 to disrupt the trigger.",
+            marks: { bold: false, italic: false, superscript: false },
+          },
+        ],
+      },
+    ]);
+    expect(stats?.routine?.length).toBe(1);
+    expect(stats?.reset).toBeUndefined(); // empty string in source -> omitted
+  });
+
+  it("hazards keep the creature-style named facets (ac/hp/saves) — no longer generic-catchall-only", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "hazards",
+      docClass: "Actor",
+      basename: "test-complex-trap",
+      doc: hazardDoc(),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.facets).toMatchObject({
+      ac: 20,
+      hp: 60,
+      fortitudeSave: 15,
+      reflexSave: 8,
+      willSave: 14,
+    });
+  });
+
+  it("fail-soft: a malformed enricher inside disable/routine/reset omits THAT field + reports hazardStatsHtmlFailed (the historys-repetition upstream-typo class)", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const doc = hazardDoc();
+    // The real pfs-season-6 typo shape: an unterminated @Check[... (missing ]).
+    if (doc.system?.details) {
+      doc.system.details.disable =
+        "<p>@Check[thievery|dc:28 (expert) to pick apart the pebbles</p>";
+    }
+    const entity = assembleFoundryEntity({
+      packDir: "hazards",
+      docClass: "Actor",
+      basename: "test-complex-trap",
+      doc,
+      ctx: makeCtx(),
+      report: (cls, detail) => reports.push({ cls, detail }),
+      seenIds: new Set(),
+    });
+    const stats = entity?.stats?.kind === "hazard" ? entity.stats : undefined;
+    expect(stats?.disable).toBeUndefined(); // the broken field is omitted...
+    expect(stats?.routine?.length).toBe(1); // ...the healthy sibling fields survive
+    expect(stats?.isComplex).toBe(true);
+    expect(reports.some((r) => r.cls === "hazardStatsHtmlFailed")).toBe(true);
+  });
+
+  it("a non-Actor category never gains stats (spell etc.)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "spells",
+      docClass: "Item",
+      basename: "fireball",
+      doc: {
+        _id: "spellID0000001",
+        name: "Fireball",
+        type: "spell",
+        system: {
+          publication: { license: "ORC", remaster: true, title: "Player Core" },
+        },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.stats).toBeUndefined();
+  });
 });
 
 describe("assembleFoundryEntity: equipment fans to weapon/armor/shield per doc type (D29-7)", () => {
@@ -159,8 +348,8 @@ describe("assembleFoundryEntity: equipment fans to weapon/armor/shield per doc t
   });
 });
 
-describe("assembleFoundryEntity: license/edition fallback when publication is missing (D29-13)", () => {
-  it("reports missingPublication and defaults to license unknown / edition legacy", () => {
+describe("assembleFoundryEntity: D29-19 npc-only creature import (P1.6)", () => {
+  it("EXCLUDES a character-typed Actor (iconics pregen) and reports excludedActors", () => {
     const reports: Array<{ cls: string; detail: string }> = [];
     const entity = assembleFoundryEntity({
       packDir: "iconics",
@@ -168,8 +357,75 @@ describe("assembleFoundryEntity: license/edition fallback when publication is mi
       basename: "amiri-level-1",
       doc: {
         _id: "iconicID000001",
-        name: "Amiri, Level 1",
+        name: "Amiri (Level 1)",
         type: "character",
+        system: {},
+      },
+      ctx: makeCtx(),
+      report: (cls, detail) => reports.push({ cls, detail }),
+      seenIds: new Set(),
+    });
+    expect(entity).toBeUndefined();
+    expect(reports).toContainEqual({
+      cls: "excludedActors",
+      detail: 'iconics/amiri-level-1.json: "Amiri (Level 1)"',
+    });
+    // No other residue for an excluded doc — assembly never ran.
+    expect(reports).toHaveLength(1);
+  });
+
+  it("still assembles an npc-typed Actor in the same packs (the D29-19 narrowing is character-only)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "kingmaker-bestiary",
+      docClass: "Actor",
+      basename: "some-npc",
+      doc: {
+        _id: "npcID000000001",
+        name: "Some Npc",
+        type: "npc",
+        system: {
+          details: {
+            publication: { license: "OGL", remaster: false, title: "Kingmaker" },
+          },
+        },
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("creature");
+  });
+
+  it("does NOT exclude a character-typed doc in an Item pack context (Actor-classed only)", () => {
+    // Defensive: no Item pack carries type "character" in the real snapshot —
+    // the guard is scoped to docClass === "Actor" so a hypothetical Item-side
+    // name collision on the type string can never be silently swallowed (it
+    // would hard-fail in categoryMap instead, the correct drift signal).
+    expect(() =>
+      assembleFoundryEntity({
+        packDir: "spells",
+        docClass: "Item",
+        basename: "weird",
+        doc: { _id: "x1", name: "Weird", type: "character", system: {} },
+        ctx: makeCtx(),
+        report: () => undefined,
+        seenIds: new Set(),
+      }),
+    ).toThrow(); // CategoryMapError, not a silent exclusion
+  });
+});
+
+describe("assembleFoundryEntity: license/edition fallback when publication is missing (D29-13)", () => {
+  it("reports missingPublication and defaults to license unknown / edition legacy", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const entity = assembleFoundryEntity({
+      packDir: "npc-gallery",
+      docClass: "Actor",
+      basename: "publicationless-npc",
+      doc: {
+        _id: "npcID000000002",
+        name: "Publicationless Npc",
+        type: "npc",
         system: {},
       },
       ctx: makeCtx(),

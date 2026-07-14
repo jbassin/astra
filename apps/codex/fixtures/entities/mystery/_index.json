@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "remaster",
+    "id": "mystery/time",
+    "name": "Time",
+    "rarity": "common",
+    "source": {
+      "book": "Dark Archives (Remastered)",
+      "license": "ORC",
+      "page": 188
+    },
+    "traits": []
+  }
+]

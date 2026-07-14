@@ -4,9 +4,12 @@
   "edition": "remaster",
   "embeddedItems": [
     {
+      "attack": 27,
       "body": [],
+      "dc": 34,
       "name": "Primal Prepared Spells",
       "slug": "primal-prepared-spells",
+      "tradition": "primal",
       "traits": [],
       "type": "spellcastingEntry"
     },
@@ -2107,7 +2110,11 @@
       "type": "spell"
     },
     {
+      "attackBonus": 27,
       "body": [],
+      "damage": [
+        "3d12+14 piercing"
+      ],
       "name": "Jaws",
       "slug": "jaws",
       "traits": [
@@ -2118,7 +2125,11 @@
       "type": "melee"
     },
     {
+      "attackBonus": 27,
       "body": [],
+      "damage": [
+        "3d8+14 slashing"
+      ],
       "name": "Claw",
       "slug": "claw",
       "traits": [
@@ -2130,7 +2141,11 @@
       "type": "melee"
     },
     {
+      "attackBonus": 25,
       "body": [],
+      "damage": [
+        "3d10+14 bludgeoning"
+      ],
       "name": "Tail",
       "slug": "tail",
       "traits": [
@@ -2140,7 +2155,11 @@
       "type": "melee"
     },
     {
+      "attackBonus": 25,
       "body": [],
+      "damage": [
+        "3d8+14 bludgeoning"
+      ],
       "name": "Rock",
       "slug": "rock",
       "traits": [
@@ -3151,6 +3170,67 @@
   "source": {
     "book": "Pathfinder Monster Core",
     "license": "ORC"
+  },
+  "stats": {
+    "abilityMods": {
+      "cha": 5,
+      "con": 6,
+      "dex": 3,
+      "int": 3,
+      "str": 8,
+      "wis": 4
+    },
+    "immunities": [
+      "paralyzed",
+      "petrified",
+      "sleep"
+    ],
+    "kind": "creature",
+    "languages": [
+      "common",
+      "draconic",
+      "petran",
+      "fey",
+      "sakvroth"
+    ],
+    "senses": {
+      "list": [
+        {
+          "type": "darkvision"
+        },
+        {
+          "acuity": "imprecise",
+          "range": 60,
+          "type": "scent"
+        },
+        {
+          "acuity": "imprecise",
+          "range": 90,
+          "type": "tremorsense"
+        }
+      ],
+      "mod": 23
+    },
+    "skills": {
+      "acrobatics": 22,
+      "athletics": 27,
+      "intimidation": 24,
+      "nature": 23,
+      "survival": 25
+    },
+    "speeds": {
+      "base": 30,
+      "other": [
+        {
+          "type": "burrow",
+          "value": 40
+        },
+        {
+          "type": "fly",
+          "value": 150
+        }
+      ]
+    }
   },
   "traits": [
     "dragon",

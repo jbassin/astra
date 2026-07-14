@@ -1,0 +1,16 @@
+[
+  {
+    "edition": "legacy",
+    "id": "set-relic/seers-array-2",
+    "name": "Seer's Array",
+    "rarity": "common",
+    "source": {
+      "book": "Treasure Vault (Remastered)",
+      "license": "ORC",
+      "page": 202
+    },
+    "traits": [
+      "Relic"
+    ]
+  }
+]

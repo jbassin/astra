@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "implement/amulet",
+    "name": "Amulet",
+    "rarity": "common",
+    "source": {
+      "book": "Dark Archive",
+      "license": "OGL",
+      "page": 36
+    },
+    "traits": []
+  }
+]

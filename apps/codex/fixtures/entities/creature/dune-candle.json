@@ -4,7 +4,11 @@
   "edition": "legacy",
   "embeddedItems": [
     {
+      "attackBonus": 17,
       "body": [],
+      "damage": [
+        "2d4+4 fire"
+      ],
       "name": "Flare",
       "slug": "flare",
       "traits": [
@@ -298,6 +302,44 @@
   "source": {
     "book": "Pathfinder #164: Hands of the Devil",
     "license": "OGL"
+  },
+  "stats": {
+    "abilityMods": {
+      "cha": 2,
+      "con": 0,
+      "dex": 6,
+      "int": 2,
+      "str": -5,
+      "wis": 4
+    },
+    "kind": "creature",
+    "languages": [
+      "aklo",
+      "common"
+    ],
+    "senses": {
+      "list": [
+        {
+          "type": "darkvision"
+        }
+      ],
+      "mod": 16
+    },
+    "skills": {
+      "acrobatics": 18,
+      "deception": 12,
+      "intimidation": 12,
+      "stealth": 16
+    },
+    "speeds": {
+      "base": 0,
+      "other": [
+        {
+          "type": "fly",
+          "value": 50
+        }
+      ]
+    }
   },
   "traits": [
     "aberration",

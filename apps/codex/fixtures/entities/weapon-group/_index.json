@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "remaster",
+    "id": "weapon-group/pick",
+    "name": "Pick",
+    "rarity": "common",
+    "source": {
+      "book": "Player Core",
+      "license": "ORC",
+      "page": 283
+    },
+    "traits": []
+  }
+]

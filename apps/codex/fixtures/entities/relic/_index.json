@@ -1,0 +1,17 @@
+[
+  {
+    "edition": "legacy",
+    "id": "relic/linguistic-nexus",
+    "name": "Linguistic Nexus",
+    "rarity": "common",
+    "source": {
+      "book": "Gamemastery Guide",
+      "license": "OGL",
+      "page": 102
+    },
+    "traits": [
+      "Divination",
+      "Mental"
+    ]
+  }
+]

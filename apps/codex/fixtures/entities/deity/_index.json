@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "remaster",
+    "id": "deity/atheism",
+    "name": "Atheism",
+    "rarity": "common",
+    "source": {
+      "book": "Divine Mysteries",
+      "license": "ORC",
+      "page": 251
+    },
+    "traits": []
+  }
+]

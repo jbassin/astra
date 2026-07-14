@@ -1,0 +1,14 @@
+[
+  {
+    "edition": "legacy",
+    "id": "familiar-ability/flier@legacy",
+    "name": "Flier",
+    "rarity": "common",
+    "source": {
+      "book": "Core Rulebook",
+      "license": "OGL",
+      "page": 218
+    },
+    "traits": []
+  }
+]
