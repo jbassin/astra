@@ -29,6 +29,7 @@ import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactEleme
 import { BrowseEmptyState } from "@/domain/browse/EmptyState";
 import { collidingNames } from "@/domain/browse/filterEngine";
 import { capitalize, humanizeSlug } from "@/domain/render/text";
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
 
 import {
@@ -288,14 +289,17 @@ export function SearchPage({
                     <a href={item.url} className="codex-listing-name">
                       {item.name}
                       {collisions.has(item.name) ? (
-                        <span className="codex-listing-collision"> ({item.book})</span>
+                        <span className="codex-listing-collision" title={item.book}>
+                          {" "}
+                          ({abbreviateBook(item.book) ?? item.book})
+                        </span>
                       ) : null}
                     </a>
                     <span className="codex-listing-source">
                       {humanizeSlug(item.category)}
                       {item.level !== undefined ? ` · Lvl ${item.level}` : ""}
                       {item.rarity !== undefined ? ` · ${capitalize(item.rarity)}` : ""}
-                      {` · ${item.book}`}
+                      <span title={item.book}> · {abbreviateBook(item.book) ?? item.book}</span>
                     </span>
                     <span className={`codex-edition-pill codex-edition-${item.edition}`}>
                       {item.edition === "remaster" ? "Remaster" : "Legacy"}

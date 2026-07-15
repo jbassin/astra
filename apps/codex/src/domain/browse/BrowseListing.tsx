@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
 import type { EntityPageData } from "@/server/entityPageData";
 import { Button, Input, TraitPill } from "@/ui";
@@ -326,7 +327,10 @@ function displayName(
     >
       {row.name}
       {collisions.has(row.name) ? (
-        <span className="codex-listing-collision"> ({row.source.book})</span>
+        <span className="codex-listing-collision" title={row.source.book}>
+          {" "}
+          ({abbreviateBook(row.source.book) ?? row.source.book})
+        </span>
       ) : null}
     </a>
   );
@@ -391,7 +395,9 @@ function ListingRowView({
           <span className="codex-listing-rarity">{capitalize(row.rarity)}</span>
         ) : null}
       </span>
-      <span className="codex-listing-source">{row.source.book}</span>
+      <span className="codex-listing-source" title={row.source.book}>
+        {abbreviateBook(row.source.book) ?? row.source.book}
+      </span>
       <span className={`codex-edition-pill codex-edition-pill-sm codex-edition-${row.edition}`}>
         {row.edition === "remaster" ? "Remaster" : "Legacy"}
       </span>

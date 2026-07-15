@@ -229,7 +229,7 @@ describe("BrowseListing (D29-35)", () => {
     expect(screen.queryByText("Alpha")).toBeNull();
   });
 
-  it("collision disambiguation appends source.book when two visible rows share a name", () => {
+  it("collision disambiguation appends source.book (abbreviation-with-fallback, R10/D29-68) when two visible rows share a name", () => {
     const collidingRows: IndexRow[] = [
       row({ id: "feat/one", name: "Heal", source: { book: "Player Core", license: "ORC" } }),
       row({ id: "feat/two", name: "Heal", source: { book: "Secrets of Magic", license: "OGL" } }),
@@ -244,8 +244,9 @@ describe("BrowseListing (D29-35)", () => {
       />,
     );
     const links = screen.getAllByRole("link").map((el) => el.textContent ?? "");
-    expect(links.some((t) => t.includes("Heal") && t.includes("(Player Core)"))).toBe(true);
-    expect(links.some((t) => t.includes("Heal") && t.includes("(Secrets of Magic)"))).toBe(true);
+    // "Player Core" -> "PC1", "Secrets of Magic" -> "SoM" (the curated map).
+    expect(links.some((t) => t.includes("Heal") && t.includes("(PC1)"))).toBe(true);
+    expect(links.some((t) => t.includes("Heal") && t.includes("(SoM)"))).toBe(true);
   });
 
   it("a range facet with a missing-key row stays visible until the range is actively narrowed", () => {
