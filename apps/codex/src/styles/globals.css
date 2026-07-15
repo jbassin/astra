@@ -1,7 +1,8 @@
 /* codex's page shell — the "Liturgy of the Iridite" parchment system
  * (D29-46, P4.5 S1). `tokens.css` (imported below) provides the tokens
  * (--color-void/ink/accent/…, --font-display/heading/body/condensed); this
- * file owns codex's structure (masthead/footer/wrap/hero) + the render
+ * file owns codex's structure (masthead/wrap/hero — R6/D29-66 deleted the
+ * global footer, no replacement) + the render
  * layer's OWN classnames (`entityPage.tsx`/`statblock.tsx`/`facetHeader.tsx`/
  * `nodes.tsx` emit `codex-*` classes) + the `src/ui/` component styles.
  *
@@ -202,7 +203,7 @@ select:focus-visible,
   );
 }
 
-/* --- masthead / footer (shell, in __root) --- */
+/* --- masthead (shell, in __root) --- */
 .site-head {
   display: flex;
   align-items: center;
@@ -310,18 +311,6 @@ select:focus-visible,
     order: 3;
     flex-basis: 100%;
   }
-}
-
-.site-foot {
-  margin-top: auto;
-  padding: 1.5rem clamp(1rem, 4vw, 3rem);
-  border-top: 1px solid var(--color-gold-rule);
-  color: var(--color-heading-maroon);
-  font-family: var(--font-heading), serif;
-  font-variant-caps: small-caps;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  text-align: center;
 }
 
 /* --- page wrap + the placeholder index hero --- */
@@ -518,7 +507,7 @@ select:focus-visible,
   color: var(--color-ink-dim);
   text-transform: capitalize;
 }
-/* --- P4.5 S5 (D29-50): the citation/footer treatment — font-condensed
+/* --- P4.5 S5 (D29-50): the per-entity citation-line treatment — font-condensed
    (the "mechanical voice" slot, D29-46), same voice as the statblock header
    tag/pill row, no structural change to what it renders (D29-24/citation
    logic untouched). --- */
@@ -629,10 +618,43 @@ select:focus-visible,
 
 .codex-content p {
   margin: 0.75rem 0;
+  /* R2 (D29-64): AoN marks each degree-of-success block with `<br/>`, which
+     ingest deliberately preserves as a literal "\n" inside one `text` node
+     within a single `paragraph` (aonMarkup.ts:69-71) rather than opening a
+     new block — `pre-line` honors that break while still collapsing
+     incidental whitespace runs, so ordinary \n-free paragraphs are
+     unaffected. */
+  white-space: pre-line;
 }
 .codex-content ul,
 .codex-content ol {
   margin: 0.75rem 0 0.75rem 1.5rem;
+}
+/* R1 (D29-63) — gothic's GFM table skin (theme.css:208-219), re-tokenized
+   onto codex's own parchment tokens: hairline borders off `--color-rule`,
+   a header row in the `.codex-heading` small-caps grammar, and the
+   `/sources` zebra-table precedent (D29-50) for alternating rows. The
+   renderer's `<table>` emission (nodes.tsx:384-402) stays classless — this
+   is CSS-only, scoped entirely by the `.codex-content` ancestor. */
+.codex-content table {
+  margin: 0.6rem 0;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.codex-content :is(th, td) {
+  border: 1px solid var(--color-rule);
+  padding: 0.35rem 0.55rem;
+  text-align: left;
+}
+.codex-content th {
+  background-color: var(--color-callout-tan-bg);
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
+}
+.codex-content tbody tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--color-callout-blue-bg) 55%, transparent);
 }
 .codex-heading {
   margin: 1.25rem 0 0.5rem;
