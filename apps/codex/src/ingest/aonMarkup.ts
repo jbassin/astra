@@ -1223,3 +1223,77 @@ export function parseAonMarkdown(markdown: string, ctx: AonParseCtx): BlockNode[
     throw e;
   }
 }
+
+// ---------------------------------------------------------------------------
+// D29-62 (R3, P6): the structural masthead strip
+// ---------------------------------------------------------------------------
+
+/** One collected masthead line: `label` = the bold lead text (trimmed),
+ * `value` = the rest of that paragraph's inline children. */
+export interface MastheadPair {
+  label: string;
+  value: InlineNode[];
+}
+
+export interface MastheadStripResult {
+  /** `body` with the masthead's H1 title + every collected bold-label line
+   * (Source included) + its own trailing divider (when one immediately
+   * follows) removed — everything else untouched, in order. */
+  body: BlockNode[];
+  /** Every collected pair whose label isn't "Source" (already rendered via
+   * `Citation`, D29-24) — absent, never `[]`, when the masthead run
+   * collected zero non-"Source" pairs. */
+  mastheadExtra?: MastheadPair[];
+}
+
+/**
+ * D29-62: strips the AoN masthead's bold-label lines out of `body` and
+ * returns the leftover pairs as `mastheadExtra` — a general STRUCTURAL walk
+ * (no category name, no per-field enumeration, no divider dependency),
+ * verified against real samples spanning spell/feat/equipment/weapon/armor/
+ * shield/ritual/ancestry:
+ *
+ *   1. `body[0]` a level-1 heading (the AoN masthead's own title, duplicating
+ *      `entity.name`) is dropped.
+ *   2. Walk forward while the current node is a `paragraph` whose FIRST child
+ *      is a `text` node with `marks.bold === true` — that's a masthead line
+ *      (`label` = the bold text's own content, trimmed; `value` = every
+ *      other child). Stop at the first node that doesn't match (a `divider`,
+ *      a plain prose paragraph whose first child isn't bold, a heading, a
+ *      list, ...).
+ *   3. If the node immediately after the collected run is a `divider`, drop
+ *      it too (the masthead's own closing rule). If no divider follows (the
+ *      real `ancestry/human` case — an H1 + a bare "Source" paragraph,
+ *      straight into prose), stop cleanly — nothing extra is consumed, so
+ *      the body's own prose survives intact.
+ *
+ * Pure — no report sink: an entity with no masthead shape at all (most
+ * `rules`/`lore` docs, per R3's own scope) simply collects zero pairs and
+ * loses nothing but a possible leading H1.
+ */
+export function stripMasthead(body: readonly BlockNode[]): MastheadStripResult {
+  let rest = body;
+  const first = rest[0];
+  if (first !== undefined && first.kind === "heading" && first.level === 1) {
+    rest = rest.slice(1);
+  }
+
+  const pairs: MastheadPair[] = [];
+  let i = 0;
+  for (; i < rest.length; i++) {
+    const node = rest[i];
+    if (node === undefined || node.kind !== "paragraph") break;
+    const lead = node.children[0];
+    if (lead === undefined || lead.kind !== "text" || !lead.marks.bold) break;
+    pairs.push({ label: lead.content.trim(), value: node.children.slice(1) });
+  }
+
+  let remaining = rest.slice(i);
+  if (remaining[0]?.kind === "divider") remaining = remaining.slice(1);
+
+  const mastheadExtra = pairs.filter((p) => p.label !== "Source");
+  return {
+    body: remaining as BlockNode[],
+    ...(mastheadExtra.length > 0 ? { mastheadExtra } : {}),
+  };
+}

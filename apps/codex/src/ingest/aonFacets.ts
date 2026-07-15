@@ -233,6 +233,20 @@ export const AonDocMetaSchema = z
      * `creature_family_markdown` (no family grouping at all — a real,
      * measured gap, not an extraction miss). */
     family: z.string().min(1).optional(),
+    /** D29-60 (R8, P6): `equipment`-category only — AoN's raw
+     * `item_category`/`item_subcategory` (verified: 36/75 distinct real
+     * values respectively on the `equipment` category file, incl. 323
+     * `"Runes"`-tagged items). Gated to `equipment` the same way `family` is
+     * gated to `creature` — the SAME two fields are trivial, zero-
+     * information constants on the `weapon`/`armor`/`shield` category files
+     * ("Weapons"/"Base Weapons", "Armor"/"Base Armor", "Shields"/"Base
+     * Shields" on 100% of those hits, verified) and extracting them there
+     * would just be dead weight; `join.ts`'s `mergeJoined`/
+     * `buildAonOnlyEntity` fill `CodexEntity.facets.itemCategory`/
+     * `itemSubcategory` from these ONLY when Foundry's own `system.category`
+     * produced no value (D29-60's Foundry-wins-mechanics correction). */
+    itemCategory: z.string().min(1).optional(),
+    itemSubcategory: z.string().min(1).optional(),
   })
   .strict();
 export type AonDocMeta = z.infer<typeof AonDocMetaSchema>;
@@ -323,6 +337,18 @@ function extractFamily(category: string, raw: unknown): string | undefined {
 }
 
 // ---------------------------------------------------------------------------
+// D29-60 (R8, P6): equipment item_category/item_subcategory
+// ---------------------------------------------------------------------------
+
+/** `equipment`-category only — see the `AonDocMeta.itemCategory` field's own
+ * doc comment for why `weapon`/`armor`/`shield` are deliberately excluded
+ * (their own `item_category`/`item_subcategory` are trivial constants). */
+function extractItemCategory(category: string, raw: unknown): string | undefined {
+  if (category !== "equipment") return undefined;
+  return readString(raw);
+}
+
+// ---------------------------------------------------------------------------
 // extraction
 // ---------------------------------------------------------------------------
 
@@ -355,6 +381,8 @@ export function extractAonMeta(category: string, hit: AonHit): AonDocMeta {
   const rarity = readString(src.rarity);
   const markdown = readString(src.markdown);
   const family = extractFamily(category, src.creature_family_markdown);
+  const itemCategory = extractItemCategory(category, src.item_category);
+  const itemSubcategory = extractItemCategory(category, src.item_subcategory);
   const nextUrl = readLinkUrl(src.next_link);
   const prevUrl = readLinkUrl(src.previous_link);
   const productLine = readString(src.primary_source_category);
@@ -377,6 +405,8 @@ export function extractAonMeta(category: string, hit: AonHit): AonDocMeta {
     ...(rarity !== undefined ? { rarity } : {}),
     ...(breadcrumbs.length > 0 ? { breadcrumbs } : {}),
     ...(family !== undefined ? { family } : {}),
+    ...(itemCategory !== undefined ? { itemCategory } : {}),
+    ...(itemSubcategory !== undefined ? { itemSubcategory } : {}),
     ...(nextUrl !== undefined ? { nextUrl } : {}),
     ...(prevUrl !== undefined ? { prevUrl } : {}),
     ...(productLine !== undefined ? { productLine } : {}),

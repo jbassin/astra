@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { BlockNodeSchema } from "./nodes";
+import { BlockNodeSchema, InlineNodeSchema } from "./nodes";
 import type { BlockNode } from "./nodes";
 
 /**
@@ -138,6 +138,11 @@ export const FacetsSchema = z
     hands: z.string().optional(), // e.g. "1", "2" (Foundry usage.hands, when present)
     usage: z.string().optional(), // e.g. "held-in-one-hand", "worn"
     itemCategory: z.string().optional(), // e.g. "martial", "simple", "unarmored"
+    /** D29-60 (R8, P6): AoN's `item_category` fill-gap sibling — `equipment`
+     * corpus category only (`join.ts`'s `mergeJoined`/`buildAonOnlyEntity`),
+     * e.g. "Scrolls", "Alchemical Tools" (AoN's `item_subcategory`, 75
+     * distinct real values on the `equipment` category file, verified). */
+    itemSubcategory: z.string().optional(),
 
     // feat (Foundry Item type "feat" `system.*`; AoN `feat` category — verified on
     // Improvised Repair).
@@ -334,6 +339,29 @@ export const StatsSchema = z.discriminatedUnion("kind", [CreatureStatsSchema, Ha
 export type Stats = z.infer<typeof StatsSchema>;
 
 // ---------------------------------------------------------------------------
+// D29-62 (R3, P6): mastheadExtra — the AoN masthead's non-"Source" bold-label
+// lines the ingest-time structural strip (`aonMarkup.ts`'s `stripMasthead`)
+// pulls out of `body`, re-surfaced by the render layer's facet-header
+// components (`domain/render/facetHeader.tsx`). `value` is `InlineNode[]`
+// (not `CodexNode[]`) because every masthead line is, by construction, one
+// `paragraph`'s inline children after its bold label — never block content;
+// this also lets `mastheadExtra` reuse the SAME `renderNodes`-family
+// renderer the body already uses, so a crossref inside a masthead line
+// (e.g. `ritual/wish`'s `Primary Check [Arcana]`) still renders as a real
+// link. Top-level (not under `facets`) because `FacetsSchema`'s
+// `FacetValue` union can't hold rich inline content (entity.ts's own
+// `FacetsSchema` file comment).
+// ---------------------------------------------------------------------------
+
+export const MastheadExtraEntrySchema = z
+  .object({
+    label: z.string().min(1),
+    value: z.array(InlineNodeSchema),
+  })
+  .strict();
+export type MastheadExtraEntry = z.infer<typeof MastheadExtraEntrySchema>;
+
+// ---------------------------------------------------------------------------
 // CodexEntity
 // ---------------------------------------------------------------------------
 
@@ -400,6 +428,13 @@ export const CodexEntitySchema = z
      * (never an empty array, same convention as `loreBody`/`embeddedItems`).
      * Additive/optional — no schemaVersion bump. */
     attachedSidebars: z.array(CodexId).optional(),
+    /** D29-62 (R3, P6): the AoN masthead's non-"Source" bold-label lines
+     * (Target/Bloodline, AC Bonus/Dex Cap/…, Cost/Primary Check/…) — stripped
+     * out of `body` at ingest time and re-rendered by the facet-header
+     * components. Ordered, preserving masthead order; absent (never `[]`)
+     * when the masthead collected zero non-"Source" pairs (the common case
+     * for e.g. an ordinary feat, whose only masthead line is "Source"). */
+    mastheadExtra: z.array(MastheadExtraEntrySchema).min(1).optional(),
   })
   .strict();
 export type CodexEntity = z.infer<typeof CodexEntitySchema>;

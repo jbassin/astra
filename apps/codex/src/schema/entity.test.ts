@@ -88,6 +88,42 @@ describe("CodexEntity: P4 (D29-39) breadcrumbs + attachedSidebars", () => {
   });
 });
 
+describe("CodexEntity: P6 (D29-60/-62) itemSubcategory + mastheadExtra", () => {
+  it("round-trips facets.itemSubcategory (equipment-only fill-gap field, R8)", () => {
+    const entity = baseEntity({
+      category: "equipment",
+      facets: { itemCategory: "Runes", itemSubcategory: "Weapon Property Runes" },
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("round-trips mastheadExtra (top-level, rich InlineNode value, R3)", () => {
+    const entity = baseEntity({
+      mastheadExtra: [
+        {
+          label: "Target",
+          value: [
+            {
+              kind: "text",
+              content: "1 willing living creature",
+              marks: { bold: false, italic: false, superscript: false },
+            },
+          ],
+        },
+        {
+          label: "Primary Check",
+          value: [{ kind: "crossref", targetId: "trait/arcana", display: "Arcana" }],
+        },
+      ],
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("leaves mastheadExtra absent on a plain entity (never a defaulted empty array)", () => {
+    expect(parseCodexEntity(baseEntity()).mastheadExtra).toBeUndefined();
+  });
+});
+
 describe("CodexEntity: license + prose fields (D29-8/-13)", () => {
   it("allows an unknown license (report-counted residue)", () => {
     const entity = baseEntity({ source: { book: "Some Adventure Path", license: "unknown" } });

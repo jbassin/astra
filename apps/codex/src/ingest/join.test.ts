@@ -941,6 +941,61 @@ describe("runJoin: crossref/embed patching", () => {
     expect(paragraph?.children[0]).toEqual(crossrefNode);
     expect(result.patchStats.brokenAfterPatch).toBe(0);
   });
+
+  // D29-59 (R4) fallout, P6: a real-corpus find while proving zero broken
+  // crossrefs into the R4-moved entities — `hazard/the-power-of-faith`'s
+  // `stats.reset` (D29-20's HazardStats.disable/routine/reset, enricher-HTML
+  // BlockNode[] fields) held a live crossref to `spell/consecrate`, which the
+  // real transform moves to `ritual/consecrate` (D29-59) — and pass 5 never
+  // walked `stats` at all, so it stayed a dangling `crossref`, not even
+  // report-visible. Fixed by extending the same per-draft patch loop to
+  // `stats.disable`/`routine`/`reset` when `stats.kind === "hazard"`.
+  it("also patches HazardStats.disable/routine/reset — a dangling crossref there downgrades to brokenRef, not silently stale", () => {
+    const hazard = entity({
+      id: "hazard/trap",
+      category: "hazard",
+      slug: "trap",
+      name: "Trap",
+      stats: {
+        kind: "hazard",
+        reset: [
+          {
+            kind: "paragraph",
+            children: [
+              { kind: "crossref", targetId: "spell/does-not-exist", display: "Nonexistent" },
+            ],
+          },
+        ],
+      },
+    });
+    const { reports, report } = collector();
+    const result = runJoin(runInput({ foundryEntities: new Map([[hazard.id, hazard]]), report }));
+
+    const patched = result.entities.find((e) => e.id === "hazard/trap");
+    const resetPara =
+      patched?.stats?.kind === "hazard"
+        ? (patched.stats.reset?.[0] as { children: CodexNode[] } | undefined)
+        : undefined;
+    expect(resetPara?.children[0]).toEqual({
+      kind: "brokenRef",
+      target: "spell/does-not-exist",
+      display: "Nonexistent",
+    });
+    expect(reports.some((r) => r.cls === "joinBrokenRef")).toBe(true);
+  });
+
+  it("leaves stats.disable/routine/reset untouched on a non-hazard entity's stats (defensive — creature stats have no such fields anyway)", () => {
+    const creature = entity({
+      id: "creature/beastie",
+      category: "creature",
+      slug: "beastie",
+      name: "Beastie",
+      stats: { kind: "creature" },
+    });
+    const result = runJoin(runInput({ foundryEntities: new Map([[creature.id, creature]]) }));
+    const patched = result.entities.find((e) => e.id === "creature/beastie");
+    expect(patched?.stats).toEqual({ kind: "creature" });
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -1165,6 +1220,311 @@ describe("runJoin: D29-33b creature family on an AoN-only entity", () => {
     const result = runJoin(runInput({ aonMetas: [aonOnlyDragon] }));
     const wyrm = result.entities.find((e) => e.id === "creature/plain-wyrm");
     expect(wyrm?.facets).toEqual({});
+  });
+});
+
+// ---------------------------------------------------------------------------
+// D29-60 (R8, P6): AoN item_category/item_subcategory equipment fill-gap
+// ---------------------------------------------------------------------------
+
+describe("mergeJoined: D29-60 (R8) equipment itemCategory/itemSubcategory fill-gap", () => {
+  const deps = {
+    aonMarkdownById: new Map(),
+    resolveLink: () => ({
+      kind: "text" as const,
+      content: "x",
+      marks: { bold: false, italic: false, superscript: false },
+    }),
+    report: noopReport,
+  };
+
+  it("fills itemCategory/itemSubcategory when Foundry's own system.category is absent", () => {
+    const foundryRune = entity({
+      id: "equipment/greater-striking-rune",
+      category: "equipment",
+      slug: "greater-striking-rune",
+      name: "Greater Striking Rune",
+      facets: { price: "65 gp" }, // no itemCategory — real corpus shape for rune items
+    });
+    const runeMeta = meta({
+      aonId: "equipment-9100",
+      category: "equipment",
+      name: "Greater Striking Rune",
+      slug: "greater-striking-rune",
+      itemCategory: "Runes",
+      itemSubcategory: "Weapon Property Runes",
+    });
+    const merged = mergeJoined(foundryRune, runeMeta, deps);
+    expect(merged.facets).toEqual({
+      price: "65 gp",
+      itemCategory: "Runes",
+      itemSubcategory: "Weapon Property Runes",
+    });
+  });
+
+  it("does NOT overwrite an existing Foundry-derived itemCategory (Foundry-wins-mechanics stays the rule)", () => {
+    const foundryEquipment = entity({
+      id: "equipment/thing",
+      category: "equipment",
+      slug: "thing",
+      name: "Thing",
+      facets: { itemCategory: "foundry-value" },
+    });
+    const equipmentMeta = meta({
+      aonId: "equipment-9101",
+      category: "equipment",
+      name: "Thing",
+      slug: "thing",
+      itemCategory: "Consumables",
+    });
+    const merged = mergeJoined(foundryEquipment, equipmentMeta, deps);
+    expect(merged.facets.itemCategory).toBe("foundry-value");
+  });
+
+  it("does NOT fill weapon/armor/shield (D29-60's corrected scope — their AoN item_category is a trivial constant)", () => {
+    const foundryWeapon = entity({
+      id: "weapon/chakri-lost-omens",
+      category: "weapon",
+      slug: "chakri-lost-omens",
+      name: "Chakri",
+      facets: { itemCategory: "advanced" },
+    });
+    const weaponMeta = meta({
+      aonId: "weapon-9102",
+      category: "weapon",
+      name: "Chakri",
+      slug: "chakri-lost-omens",
+      itemCategory: "Weapons", // AoN's trivial constant, per spec §1.1
+      itemSubcategory: "Base Weapons",
+    });
+    const merged = mergeJoined(foundryWeapon, weaponMeta, deps);
+    expect(merged.facets.itemCategory).toBe("advanced"); // unchanged
+    expect(merged.facets).not.toHaveProperty("itemSubcategory");
+  });
+
+  it("real spot-check shape: weapon/chakri-lost-omens keeps itemCategory 'advanced' even via the cross-category equipment equivalence match", () => {
+    // Mirrors the exact D29-60 §5A gate spot-check, but exercised through the
+    // weapon/armor/shield -> equipment CATEGORY_EQUIVALENCE rule (D29-15(2))
+    // rather than a same-category weapon meta — the fill-gap must stay
+    // scoped to `foundryEntity.category === "equipment"`, never fire for a
+    // cross-category-merged weapon.
+    const foundryWeapon = entity({
+      id: "weapon/chakri-lost-omens",
+      category: "weapon",
+      slug: "chakri-lost-omens",
+      name: "Chakri",
+      facets: { itemCategory: "advanced" },
+    });
+    const equipmentMeta = meta({
+      aonId: "equipment-9103",
+      category: "equipment",
+      name: "Chakri",
+      slug: "chakri-lost-omens",
+      itemCategory: "Weapons",
+    });
+    const merged = mergeJoined(foundryWeapon, equipmentMeta, deps);
+    expect(merged.facets.itemCategory).toBe("advanced");
+  });
+});
+
+describe("runJoin: D29-60 (R8) equipment fill-gap on an AoN-only entity", () => {
+  it("fills itemCategory/itemSubcategory on a proseOnly equipment entity with no Foundry counterpart", () => {
+    const aonOnlyRune = meta({
+      aonId: "equipment-9104",
+      category: "equipment",
+      name: "Fresh Rune",
+      slug: "fresh-rune",
+      itemCategory: "Runes",
+      itemSubcategory: "Armor Property Runes",
+    });
+    const result = runJoin(runInput({ aonMetas: [aonOnlyRune] }));
+    const rune = result.entities.find((e) => e.id === "equipment/fresh-rune");
+    expect(rune?.proseOnly).toBe(true);
+    expect(rune?.facets).toEqual({
+      itemCategory: "Runes",
+      itemSubcategory: "Armor Property Runes",
+    });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// D29-59 (R4, P6): ritual re-categorization — the two required regression
+// patterns (commune many-to-one; shadow-double/simulacrum fresh-slug)
+// ---------------------------------------------------------------------------
+
+describe("runJoin: D29-59 (R4) ritual re-categorization — fresh-slug mover (shadow-double/simulacrum)", () => {
+  const shadowDoubleFoundry = entity({
+    id: "spell/shadow-double",
+    category: "spell",
+    slug: "shadow-double",
+    name: "Shadow Double",
+    edition: "remaster",
+    level: 5,
+  });
+  const shadowDoubleMeta = meta({
+    aonId: "ritual-500",
+    category: "ritual",
+    name: "Shadow Double",
+    slug: "shadow-double",
+    edition: "remaster",
+    legacyId: ["ritual-100"],
+  });
+  const simulacrumMeta = meta({
+    aonId: "ritual-100",
+    category: "ritual",
+    name: "Simulacrum",
+    slug: "simulacrum",
+    edition: "legacy",
+    remasterId: ["ritual-500"],
+  });
+
+  const result = runJoin(
+    runInput({
+      foundryEntities: new Map([["spell/shadow-double", shadowDoubleFoundry]]),
+      aonMetas: [shadowDoubleMeta, simulacrumMeta],
+    }),
+  );
+
+  it("the mover lands at ritual/shadow-double (AoN category, Foundry slug) with NO @legacy sibling", () => {
+    const ids = result.entities.map((e) => e.id).sort();
+    expect(ids).toEqual(["ritual/shadow-double", "ritual/simulacrum"]);
+  });
+
+  it("ritual/shadow-double keeps its moved category + legacyOf points at the unsuffixed ritual/simulacrum", () => {
+    const moved = result.entities.find((e) => e.id === "ritual/shadow-double");
+    expect(moved).toBeDefined();
+    expect(moved?.category).toBe("ritual");
+    expect(moved?.legacyOf).toEqual(["ritual/simulacrum"]);
+    expect(moved?.edition).toBe("remaster");
+  });
+
+  it("ritual/simulacrum stays UNSUFFIXED (no collision — the fresh-slug pattern) and its remasteredAs is repointed to the mover", () => {
+    const simulacrum = result.entities.find((e) => e.id === "ritual/simulacrum");
+    expect(simulacrum).toBeDefined();
+    expect(simulacrum?.proseOnly).toBe(true);
+    expect(simulacrum?.remasteredAs).toEqual(["ritual/shadow-double"]);
+  });
+
+  it("no collision was reported for either id (a naive assume-every-mover-collides implementation would report one)", () => {
+    expect(result.collisions).toEqual([]);
+  });
+});
+
+// D29-59's implementation-time correction: the real 2026-07-13 snapshot has 143
+// movers, not 55 — 87 of them carry NEITHER `legacyOf` NOR `remasterId` at all
+// (single-edition rituals with no legacy/remaster counterpart in the snapshot,
+// e.g. the real `ritual/unbearable-cacophony`). An implementation that only
+// handles paired movers (commune/shadow-double both carry a pairing) fails on
+// 87 of 143 — this is the third required regression case.
+describe("runJoin: D29-59 (R4) ritual re-categorization — pairing-less mover (no legacyOf/remasterId at all)", () => {
+  const cacophonyFoundry = entity({
+    id: "spell/unbearable-cacophony",
+    category: "spell",
+    slug: "unbearable-cacophony",
+    name: "Unbearable Cacophony",
+    edition: "remaster",
+    level: 6,
+  });
+  const cacophonyMeta = meta({
+    aonId: "ritual-900",
+    category: "ritual",
+    name: "Unbearable Cacophony",
+    slug: "unbearable-cacophony",
+    edition: "remaster",
+    // no remasterId, no legacyId — genuinely unpaired, the real shape.
+  });
+
+  const result = runJoin(
+    runInput({
+      foundryEntities: new Map([["spell/unbearable-cacophony", cacophonyFoundry]]),
+      aonMetas: [cacophonyMeta],
+    }),
+  );
+
+  it("moves to ritual/unbearable-cacophony with no collision and no @legacy sibling", () => {
+    expect(result.entities.map((e) => e.id)).toEqual(["ritual/unbearable-cacophony"]);
+    expect(result.collisions).toEqual([]);
+  });
+
+  it("carries neither legacyOf nor remasteredAs (the pairing-less shape)", () => {
+    const cacophony = result.entities.find((e) => e.id === "ritual/unbearable-cacophony");
+    expect(cacophony).toBeDefined();
+    expect(cacophony?.category).toBe("ritual");
+    expect(cacophony?.legacyOf).toBeUndefined();
+    expect(cacophony?.remasteredAs).toBeUndefined();
+  });
+});
+
+describe("runJoin: D29-59 (R4) ritual re-categorization — commune many-to-one collision", () => {
+  const communeFoundry = entity({
+    id: "spell/commune",
+    category: "spell",
+    slug: "commune",
+    name: "Commune",
+    edition: "remaster",
+    level: 4,
+  });
+  const communeMeta = meta({
+    aonId: "ritual-200",
+    category: "ritual",
+    name: "Commune",
+    slug: "commune",
+    edition: "remaster",
+    legacyId: ["ritual-201", "ritual-202"],
+  });
+  const communeLegacyMeta = meta({
+    aonId: "ritual-201",
+    category: "ritual",
+    name: "Commune",
+    slug: "commune", // SAME slug as the mover -> the atone-style @legacy collision
+    edition: "legacy",
+    remasterId: ["ritual-200"],
+  });
+  const communeWithNatureMeta = meta({
+    aonId: "ritual-202",
+    category: "ritual",
+    name: "Commune with Nature",
+    slug: "commune-with-nature", // DIFFERENT slug -> no collision, stays unsuffixed
+    edition: "legacy",
+    remasterId: ["ritual-200"],
+  });
+
+  const result = runJoin(
+    runInput({
+      foundryEntities: new Map([["spell/commune", communeFoundry]]),
+      aonMetas: [communeMeta, communeLegacyMeta, communeWithNatureMeta],
+    }),
+  );
+
+  it("lands as ritual/commune (mover, remaster) + ritual/commune@legacy + ritual/commune-with-nature", () => {
+    const ids = result.entities.map((e) => e.id).sort();
+    expect(ids).toEqual(["ritual/commune", "ritual/commune-with-nature", "ritual/commune@legacy"]);
+  });
+
+  it("ritual/commune (the moved entity) legacyOf lists BOTH legacy halves (the real many-to-one shape)", () => {
+    const commune = result.entities.find((e) => e.id === "ritual/commune");
+    expect(commune).toBeDefined();
+    expect(commune?.category).toBe("ritual");
+    expect(commune?.legacyOf?.sort()).toEqual(
+      ["ritual/commune-with-nature", "ritual/commune@legacy"].sort(),
+    );
+  });
+
+  it("ritual/commune-with-nature's remasteredAs reads exactly ['ritual/commune'] (not the pre-suffix id)", () => {
+    const withNature = result.entities.find((e) => e.id === "ritual/commune-with-nature");
+    expect(withNature?.remasteredAs).toEqual(["ritual/commune"]);
+  });
+
+  it("ritual/commune@legacy's remasteredAs also reads ['ritual/commune']", () => {
+    const legacy = result.entities.find((e) => e.id === "ritual/commune@legacy");
+    expect(legacy?.remasteredAs).toEqual(["ritual/commune"]);
+    expect(legacy?.proseOnly).toBe(true);
+  });
+
+  it("reports the shared-slug legacy pairing collision for ritual/commune", () => {
+    expect(result.collisions).toEqual([
+      expect.objectContaining({ preId: "ritual/commune", kind: "legacyPair" }),
+    ]);
   });
 });
 

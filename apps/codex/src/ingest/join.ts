@@ -1,8 +1,8 @@
-import type { CodexEntity, EmbeddedItem, Edition, Source } from "../schema/entity";
+import type { CodexEntity, EmbeddedItem, Edition, Facets, Source } from "../schema/entity";
 import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
 import type { AonDocMeta } from "./aonFacets";
 import { createLinkResolver, type AonLinkTable, type ResolveLinkFn } from "./aonLinkTable";
-import { parseAonMarkdown } from "./aonMarkup";
+import { parseAonMarkdown, stripMasthead } from "./aonMarkup";
 import type { UuidResolution } from "./enrichers";
 import type { RemasterRedirectEntry } from "./journals";
 import { sluggify } from "./sluggify";
@@ -244,6 +244,27 @@ function levelsAgree(a: number | undefined, b: number | undefined): boolean {
 }
 
 // ---------------------------------------------------------------------------
+// D29-59 (R4, P6): the ritual re-categorization override
+// ---------------------------------------------------------------------------
+
+/**
+ * Detects the ONE targeted exception to D29-16's "id/category keep Foundry's
+ * finer category untouched" posture: a Foundry `"spell"` entity matched
+ * against an AoN doc whose OWN category is `"ritual"` — i.e. matched purely
+ * via `CATEGORY_EQUIVALENCE`'s `spell -> ritual` rule (Foundry files rituals
+ * inside its `spells` pack; every other equivalence rule — weapon/armor/
+ * shield -> equipment, class-feature -> subsystems, action -> relic/tactic/
+ * feat — keeps D29-16's original posture unchanged). When this holds, the
+ * merged entity's identity moves to the AoN category (`ritual/<slug>`)
+ * instead of staying at the Foundry-derived `spell/<slug>` (`runJoin`'s pass
+ * 1/2 below apply the actual override; this predicate is shared by both so
+ * they can never drift out of agreement on which pairs qualify).
+ */
+function isRitualMove(foundryCategory: string, aonCategory: string): boolean {
+  return foundryCategory === "spell" && aonCategory === "ritual";
+}
+
+// ---------------------------------------------------------------------------
 // matching
 // ---------------------------------------------------------------------------
 
@@ -387,10 +408,17 @@ export function mergeJoined(
   deps: JoinDeps,
 ): CodexEntity {
   const markdown = deps.aonMarkdownById.get(meta.aonId);
-  const body: BlockNode[] =
+  // D29-62 (R3): the AoN masthead strip runs on the AoN-markdown-parsed body
+  // ONLY (the masthead's bold-label-lines-before-a-divider shape is an AoN
+  // convention — Foundry HTML bodies, kept verbatim when the AoN doc has no
+  // markdown, never go through it).
+  const parsedMasthead =
     markdown !== undefined && markdown.trim().length > 0
-      ? parseAonMarkdown(markdown, { resolveLink: deps.resolveLink, report: deps.report })
-      : foundryEntity.body;
+      ? stripMasthead(
+          parseAonMarkdown(markdown, { resolveLink: deps.resolveLink, report: deps.report }),
+        )
+      : undefined;
+  const body: BlockNode[] = parsedMasthead ? parsedMasthead.body : foundryEntity.body;
 
   if (
     foundryEntity.source.book !== "unknown" &&
@@ -448,26 +476,49 @@ export function mergeJoined(
     );
   }
 
+  // D29-33b/D29-60: AoN-owned facet fill-ins, computed ONCE into a single
+  // `facets` value — `family` and R8's `itemCategory`/`itemSubcategory`
+  // fill-in used to each be their own `...(cond ? {facets: {...}} : {})`
+  // spread entry in the object literal below; two such entries would have
+  // the SECOND one silently clobber the first's `facets` key entirely
+  // (object-spread, not a merge) the moment both conditions were ever true
+  // on the same entity.
+  let facets: Facets = foundryEntity.facets;
+  if (meta.family !== undefined) facets = { ...facets, family: meta.family };
+  // D29-60 (R8): AoN's item_category/item_subcategory fill Foundry's gap —
+  // Foundry-wins-mechanics stays the rule (never overwrites an existing
+  // Foundry-derived value), scoped to the `equipment` corpus category only
+  // (weapon/armor/shield's own AoN item_category is a trivial "Weapons"/
+  // "Armor"/"Shields" constant, D29-60's corrected design, §1.1).
+  if (foundryEntity.category === "equipment") {
+    if (facets.itemCategory === undefined && meta.itemCategory !== undefined) {
+      facets = { ...facets, itemCategory: meta.itemCategory };
+    }
+    if (facets.itemSubcategory === undefined && meta.itemSubcategory !== undefined) {
+      facets = { ...facets, itemSubcategory: meta.itemSubcategory };
+    }
+  }
+
   return {
     ...foundryEntity,
     source,
     body,
     aonUrl: meta.aonUrl,
     ...(crossCategory ? { name: meta.name } : {}),
-    // D29-33b: creature family is AoN-owned (Foundry has no equivalent
-    // field), so it's added on top of Foundry's otherwise-untouched facets
-    // object rather than folded into the "Foundry wins mechanics" rule above
-    // — `meta.family` is only ever set for `category === "creature"`
-    // (`aonFacets.ts`'s `extractFamily`), so this is a no-op for every other
-    // category.
-    ...(meta.family !== undefined
-      ? { facets: { ...foundryEntity.facets, family: meta.family } }
-      : {}),
+    facets,
     // P4 (D29-39): the AoN breadcrumb ancestor chain, top-level (NOT
     // facets — rules is 100% proseOnly, this field exists for the rare
     // cross-category-merged rules doc, if any, mirroring `family`'s own
     // "additive, AoN-owned, no Foundry equivalent" posture).
     ...(meta.breadcrumbs !== undefined ? { breadcrumbs: meta.breadcrumbs } : {}),
+    // D29-62 (R3): the masthead's non-"Source" bold-label lines, re-surfaced
+    // by the facet-header render components — absent when the AoN doc had
+    // no markdown at all (Foundry body kept verbatim, `parsedMasthead`
+    // `undefined`) or when the masthead run collected zero non-"Source"
+    // pairs (`stripMasthead`'s own "absent, never []" convention).
+    ...(parsedMasthead?.mastheadExtra !== undefined
+      ? { mastheadExtra: parsedMasthead.mastheadExtra }
+      : {}),
   };
 }
 
@@ -479,10 +530,26 @@ export function mergeJoined(
  * `runJoin`). */
 function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
   const markdown = deps.aonMarkdownById.get(meta.aonId);
-  const body: BlockNode[] =
+  const parsedMasthead =
     markdown !== undefined && markdown.trim().length > 0
-      ? parseAonMarkdown(markdown, { resolveLink: deps.resolveLink, report: deps.report })
-      : [];
+      ? stripMasthead(
+          parseAonMarkdown(markdown, { resolveLink: deps.resolveLink, report: deps.report }),
+        )
+      : undefined;
+  const body: BlockNode[] = parsedMasthead ? parsedMasthead.body : [];
+
+  // D29-33b/D29-60: same "family, then equipment item_category/
+  // item_subcategory" fill-in `mergeJoined` computes — see that function's
+  // own comment for why this has to be ONE `facets` value, not two separate
+  // conditional-spread `facets` entries.
+  let facets: Facets = meta.family !== undefined ? { family: meta.family } : {};
+  if (meta.category === "equipment") {
+    if (meta.itemCategory !== undefined) facets = { ...facets, itemCategory: meta.itemCategory };
+    if (meta.itemSubcategory !== undefined) {
+      facets = { ...facets, itemSubcategory: meta.itemSubcategory };
+    }
+  }
+
   return {
     id: `${meta.category}/${meta.slug}`,
     slug: meta.slug,
@@ -502,10 +569,14 @@ function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
     proseOnly: true,
     // D29-33b: an AoN-only creature still carries its own family (the field
     // never depends on a Foundry counterpart existing).
-    facets: meta.family !== undefined ? { family: meta.family } : {},
+    facets,
     // P4 (D29-39): rules docs are ~100% AoN-only — this is the primary path
     // `breadcrumbs` reaches the corpus through.
     ...(meta.breadcrumbs !== undefined ? { breadcrumbs: meta.breadcrumbs } : {}),
+    // D29-62 (R3): see `mergeJoined`'s identical comment.
+    ...(parsedMasthead?.mastheadExtra !== undefined
+      ? { mastheadExtra: parsedMasthead.mastheadExtra }
+      : {}),
   };
 }
 
@@ -528,6 +599,14 @@ interface Draft {
    * two different drafts that share one). Defaults to `preId` until pass 3
    * runs. */
   finalId: string;
+  /** D29-59 (R4): set ONLY on a ritual-move draft (`isRitualMove`) — the
+   * entity's ORIGINAL Foundry-derived pre-join id (`spell/<slug>`), before
+   * the override moved `preId`/`finalId` to `ritual/<slug>`. Every OTHER
+   * pass that resolves a raw Foundry id against this draft (a Foundry
+   * `@Embed` uuid, a same-aonId variant's `variantOf`) still produces the
+   * original `spell/<slug>` string — `foundryFinalIdByPreId` (pass 4) is
+   * registered under BOTH ids so those lookups keep working unchanged. */
+  rawFoundryPreId?: string;
 }
 
 export interface CategoryStat {
@@ -687,6 +766,18 @@ export function runJoin(input: RunJoinInput): JoinResult {
   for (const [aonId, basePreId] of baseIdByAonId) {
     const meta = aonMetaById.get(aonId);
     if (!meta) throw new Error(`runJoin: unreachable — no meta for matched aonId "${aonId}"`);
+    // D29-59 (R4): a ritual-move base's identity lands at the AoN doc's OWN
+    // `{category}/{slug}` (the override below, pass 2) — which is exactly
+    // the "natural" target this map exists to redirect AWAY from for every
+    // OTHER cross-category merge. Skip it here (never register a repoint)
+    // so an inbound AoN markdown link to this doc's url resolves straight to
+    // `ritual/<slug>` via `createLinkResolver`'s own no-repoint default,
+    // instead of being wrongly redirected back to the pre-move
+    // `spell/<slug>`.
+    const baseFoundryEntity = input.foundryEntities.get(basePreId);
+    const ritualMove =
+      baseFoundryEntity !== undefined && isRitualMove(baseFoundryEntity.category, meta.category);
+    if (ritualMove) continue;
     if (`${meta.category}/${meta.slug}` !== basePreId) repointByAonId.set(aonId, basePreId);
   }
 
@@ -728,7 +819,25 @@ export function runJoin(input: RunJoinInput): JoinResult {
       const meta = aonMetaById.get(match.aonId);
       if (!meta) throw new Error(`runJoin: unreachable — no meta for aonId "${match.aonId}"`);
       const merged = mergeJoined(entity, meta, deps);
-      drafts.push({ entity: merged, preId, aonId: match.aonId, origin: "foundry", finalId: preId });
+      // D29-59 (R4): the ritual-move override — the ONE targeted exception
+      // to "a merged draft's preId is the Foundry entity's own id" (see
+      // `isRitualMove`'s own doc comment for the exact matched-via-which-
+      // equivalence-rule test). `rawFoundryPreId` keeps the ORIGINAL
+      // `spell/<slug>` reachable for pass 4's Foundry-uuid/variantOf lookups.
+      const ritualMove = isRitualMove(entity.category, meta.category);
+      const draftPreId = ritualMove ? `${meta.category}/${meta.slug}` : preId;
+      if (ritualMove) {
+        merged.category = meta.category;
+        report("ritualCategoryMove", `${preId} -> ${draftPreId}`);
+      }
+      drafts.push({
+        entity: merged,
+        preId: draftPreId,
+        aonId: match.aonId,
+        origin: "foundry",
+        finalId: draftPreId,
+        ...(ritualMove ? { rawFoundryPreId: preId } : {}),
+      });
       if (match.via === "exact") stat.exact++;
       else if (match.via === "normalized") stat.normalized++;
       else stat.alias++;
@@ -880,11 +989,19 @@ export function runJoin(input: RunJoinInput): JoinResult {
   // duplicate before this module ever saw it); used for `variantOf`
   // resolution (a variant's base is always a Foundry-origin draft) and for
   // Foundry `@Embed` uuid resolution (`resolveForeignEmbed` returns a
-  // Foundry-origin preId, never an AoN one).
+  // Foundry-origin preId, never an AoN one). D29-59: a ritual-move draft is
+  // registered under BOTH its (overridden) `preId` and its
+  // `rawFoundryPreId` — a Foundry `@Embed` targeting the entity by its
+  // ORIGINAL `spell/<slug>` uuid-resolved id, or a same-aonId variant's
+  // `variantOf` (set from the raw `base.id` in pass 1, before the override),
+  // must still resolve to the moved `ritual/<slug>` finalId.
   const foundryFinalIdByPreId = new Map<string, string>();
   for (const d of drafts) {
     if (d.aonId !== undefined) aonIdToFinalId.set(d.aonId, d.finalId);
-    if (d.origin === "foundry") foundryFinalIdByPreId.set(d.preId, d.finalId);
+    if (d.origin === "foundry") {
+      foundryFinalIdByPreId.set(d.preId, d.finalId);
+      if (d.rawFoundryPreId !== undefined) foundryFinalIdByPreId.set(d.rawFoundryPreId, d.finalId);
+    }
   }
 
   let pairingCount = 0;
@@ -943,6 +1060,26 @@ export function runJoin(input: RunJoinInput): JoinResult {
       d.entity.embeddedItems = d.entity.embeddedItems.map((item) =>
         patchEmbeddedItem(item, patchCtx),
       );
+    }
+    // D29-59 (R4) fallout, P6: `HazardStats.disable`/`routine`/`reset`
+    // (D29-20) are BlockNode[] enricher-HTML fields — crossref/embed-bearing
+    // exactly like `body`/`loreBody`, but this pass never walked them before
+    // P6 (nothing had ever renamed or dropped a target a stats block
+    // referenced, so the gap was latent). R4's ritual move is the first
+    // change to actually stale one — a real corpus find, verified by a
+    // full-corpus scan for dangling pre-move ids:
+    // `hazard/the-power-of-faith`'s `stats.reset` links `spell/consecrate`,
+    // which moves to `ritual/consecrate`; left unpatched this stays a live
+    // `crossref` pointing at a dead id, silently (not even report-visible,
+    // since this content was never in the patched set at all). Patched
+    // here, mirroring `body`/`loreBody` exactly.
+    if (d.entity.stats?.kind === "hazard") {
+      const stats = d.entity.stats;
+      if (stats.disable)
+        stats.disable = stats.disable.map((n) => patchNode(n, patchCtx)) as BlockNode[];
+      if (stats.routine)
+        stats.routine = stats.routine.map((n) => patchNode(n, patchCtx)) as BlockNode[];
+      if (stats.reset) stats.reset = stats.reset.map((n) => patchNode(n, patchCtx)) as BlockNode[];
     }
   }
 

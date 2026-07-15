@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
 import { BlockNodeSchema } from "../schema/nodes";
-import { type AonParseCtx, AonMarkupError, parseAonMarkdown } from "./aonMarkup";
+import { type AonParseCtx, AonMarkupError, parseAonMarkdown, stripMasthead } from "./aonMarkup";
 
 // ---------------------------------------------------------------------------
 // helpers — hermetic: fixtures are committed real docs, data/ is never read
@@ -509,5 +509,120 @@ describe("resolveLink contract", () => {
     const ctx: AonParseCtx = { resolveLink: () => broken, report: () => undefined };
     const blocks = parseAonMarkdown("[X](/X.aspx?ID=1)", ctx);
     expect(findAll(blocks, "brokenRef")).toEqual([broken]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// D29-62 (R3, P6): stripMasthead — synthetic node-shape tests, mirroring the
+// real corpus samples verified while writing this pass (spell/heal,
+// armor/breastplate, ancestry/human).
+// ---------------------------------------------------------------------------
+
+function h1(name: string): BlockNode {
+  return {
+    kind: "heading",
+    level: 1,
+    children: [{ kind: "text", content: name, marks: NO_MARKS }],
+  };
+}
+
+const NO_MARKS = { bold: false, italic: false, superscript: false };
+const BOLD_MARKS = { bold: true, italic: false, superscript: false };
+
+/** A masthead-shaped line: `**Label** value...`. */
+function labelLine(label: string, valueText: string): BlockNode {
+  return {
+    kind: "paragraph",
+    children: [
+      { kind: "text", content: label, marks: BOLD_MARKS },
+      { kind: "text", content: ` ${valueText}`, marks: NO_MARKS },
+    ],
+  };
+}
+
+function prose(content: string): BlockNode {
+  return { kind: "paragraph", children: [{ kind: "text", content, marks: NO_MARKS }] };
+}
+
+const divider: BlockNode = { kind: "divider" };
+
+describe("stripMasthead (D29-62)", () => {
+  it("spell/heal shape: H1 + Source/Traditions/Bloodline/Range/Target + divider -> 4 non-Source pairs", () => {
+    const body: BlockNode[] = [
+      h1("Heal"),
+      labelLine("Source", "Player Core"),
+      labelLine("Traditions", "Divine"),
+      labelLine("Bloodline", "Angelic"),
+      labelLine("Range", "varies"),
+      labelLine("Target", "1 willing living creature"),
+      divider,
+      prose("You channel vital energy..."),
+    ];
+    const result = stripMasthead(body);
+    expect(result.body).toEqual([prose("You channel vital energy...")]);
+    expect(result.mastheadExtra?.map((p) => p.label)).toEqual([
+      "Traditions",
+      "Bloodline",
+      "Range",
+      "Target",
+    ]);
+  });
+
+  it("armor/breastplate shape: 10 labeled lines (incl. Source) + divider -> 9 non-Source pairs", () => {
+    const labels = [
+      "Source",
+      "Price",
+      "AC Bonus",
+      "Dex Cap",
+      "Check Penalty",
+      "Speed Penalty",
+      "Strength",
+      "Bulk",
+      "Category",
+      "Group",
+    ];
+    const body: BlockNode[] = [
+      h1("Breastplate"),
+      ...labels.map((l) => labelLine(l, "x")),
+      divider,
+      prose("Though referred to as a breastplate..."),
+    ];
+    const result = stripMasthead(body);
+    expect(result.body).toEqual([prose("Though referred to as a breastplate...")]);
+    expect(result.mastheadExtra).toHaveLength(9);
+    expect(result.mastheadExtra?.[0]?.label).toBe("Price");
+    expect(result.mastheadExtra?.map((p) => p.label)).not.toContain("Source");
+  });
+
+  it("ancestry/human shape: NO divider at all -> only Source is stripped, prose body survives intact", () => {
+    const italicIntro: BlockNode = {
+      kind: "paragraph",
+      children: [
+        { kind: "text", content: "Humans are diverse...", marks: { ...NO_MARKS, italic: true } },
+      ],
+    };
+    const body: BlockNode[] = [
+      h1("Human"),
+      labelLine("Source", "Player Core"),
+      italicIntro,
+      prose("As unpredictable and varied..."),
+    ];
+    const result = stripMasthead(body);
+    expect(result.body).toEqual([italicIntro, prose("As unpredictable and varied...")]);
+    // Every collected pair was "Source" -> mastheadExtra absent, never [].
+    expect(result.mastheadExtra).toBeUndefined();
+  });
+
+  it("a doc with no H1 and no bold-label lines at all is a total no-op", () => {
+    const body: BlockNode[] = [prose("Just prose."), prose("More prose.")];
+    const result = stripMasthead(body);
+    expect(result.body).toEqual(body);
+    expect(result.mastheadExtra).toBeUndefined();
+  });
+
+  it("empty body -> empty body, no throw", () => {
+    const result = stripMasthead([]);
+    expect(result.body).toEqual([]);
+    expect(result.mastheadExtra).toBeUndefined();
   });
 });
