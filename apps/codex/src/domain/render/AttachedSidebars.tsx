@@ -57,7 +57,7 @@ export function AttachedSidebars({
         </p>
       ) : null}
       {visible.map((sidebar) => (
-        <aside key={sidebar.id} className="gothic-card codex-attached-sidebar">
+        <aside key={sidebar.id} className="codex-card codex-attached-sidebar">
           <h3 className="codex-attached-sidebar-title">
             {sidebar.name}
             {sidebar.superseded ? (

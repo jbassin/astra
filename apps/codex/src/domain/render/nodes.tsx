@@ -1,8 +1,8 @@
-import { type ActionCost, ErrorChip } from "@astra/gothic";
 import { Fragment, type ReactNode } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
 import type { CodexNode } from "../../schema/nodes";
+import { type ActionCost, ErrorChip } from "../../ui";
 import { CodexActionGlyph } from "./actionGlyph";
 import { capitalize } from "./text";
 import { CodexTraitPills } from "./traits";
@@ -373,7 +373,7 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
       return <hr key={key} />;
     case "aside":
       return (
-        <div key={key} className="gothic-card gothic-card-inset codex-aside">
+        <div key={key} className="codex-card codex-card-inset codex-aside">
           {renderNodes(node.children, ctx)}
         </div>
       );

@@ -1,5 +1,6 @@
-import { ActionGlyph, type ActionCost, normalizeActionCost } from "@astra/gothic";
 import type { ReactElement } from "react";
+
+import { ActionGlyph, type ActionCost, normalizeActionCost } from "../../ui";
 
 /**
  * D29-24 adversarial B1 — the actionGlyph shim. gothic's `normalizeActionCost`

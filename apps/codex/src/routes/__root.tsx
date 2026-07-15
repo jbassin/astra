@@ -5,9 +5,19 @@ import { useEffect } from "react";
 import { setLegacyToggle, useLegacyToggle } from "@/domain/browse/legacyToggle";
 import { Omnibar } from "@/domain/search/Omnibar";
 
-import "@fontsource/ibm-plex-mono/400.css";
-import "@fontsource/ibm-plex-mono/500.css";
-import "@astra/gothic/theme.css";
+// D29-46 — codex's own self-hosted parchment-system fonts (mirrors the prior
+// `@fontsource/ibm-plex-mono` two-file-per-weight pattern verbatim, now 4
+// families / 8 weight files instead of 1 family / 2 files). Alegreya SC (the
+// style doc's caption face) is deliberately NOT here — deferred, no
+// art-plate/illustration component consumes it yet (D29-46).
+import "@fontsource/cinzel/700.css";
+import "@fontsource/cormorant-sc/600.css";
+import "@fontsource/eb-garamond/400.css";
+import "@fontsource/eb-garamond/400-italic.css";
+import "@fontsource/eb-garamond/600.css";
+import "@fontsource/eb-garamond/700.css";
+import "@fontsource/oswald/500.css";
+import "@fontsource/oswald/700.css";
 import "@/styles/globals.css";
 
 // D29-30: `<meta name="robots" content="noindex">` from day one, in every page's
@@ -41,23 +51,11 @@ function RootComponent() {
   }, []);
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <head>
-        {/* Dark-only void theme: force the dark palette before first paint (there
-            is no light branch), pre-hydration so there's no flash. This script sets
-            `saved-theme` on <html> BEFORE React hydrates, so the server-rendered
-            markup (which can't know the attribute yet) always mismatches the live
-            DOM here — the exact case `suppressHydrationWarning` exists for (S5
-            real-corpus find: same reasoning as the `<body>` one below, just missed
-            on `<html>` — the attribute the script actually targets). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `document.documentElement.setAttribute("saved-theme","dark")`,
-          }}
-        />
         <HeadContent />
       </head>
-      <body suppressHydrationWarning>
+      <body>
         <header className="site-head">
           <Link to="/" className="site-brand">
             codex

@@ -73,7 +73,7 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
       <div className="codex-content codex-body">{renderNodes(entity.body, ctx)}</div>
 
       {entity.loreBody !== undefined ? (
-        <section className="gothic-card gothic-card-prose codex-lore">
+        <section className="codex-card codex-card-prose codex-lore">
           <h2>Lore</h2>
           <div className="codex-content">{renderNodes(entity.loreBody, ctx)}</div>
         </section>

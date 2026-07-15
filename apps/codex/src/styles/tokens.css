@@ -1,0 +1,74 @@
+/**
+ * codex's own design tokens — the "Liturgy of the Iridite" print-sourcebook
+ * parchment system (D29-46, P4.5 S1). Replaces the gothic theme's
+ * void-palette tokens entirely (R6 — codex drops gothic outright; the other
+ * astra frontends are untouched).
+ *
+ * Hex values are the style-tokens doc's own extraction from the 36 reference
+ * pages (`thoughts/shared/research/2026-07-14-codex-0029-p45-style-tokens.md`
+ * §1) — treat them as a strong starting palette, not laser-measured swatches.
+ *
+ * KEPT NAMES, repointed values (the spec's own binding constraint — every
+ * `--color-*`/`--font-*` custom property `globals.css` already consumed
+ * resolves here too, now to parchment values instead of gothic's dark void
+ * ones): `--color-void`, `--color-ink`, `--color-ink-dim`, `--color-ink-faint`,
+ * `--color-accent`, `--color-accent-amber`, `--color-rule`,
+ * `--color-rule-bright`, `--color-elevated`, `--color-hover`, `--font-display`,
+ * `--font-body`. `--font-mono` is RENAMED `--font-condensed` (D29-46 — all 10
+ * `globals.css` call sites repointed in the same rewrite).
+ *
+ * NEW tokens (no gothic equivalent): `--font-heading` (a second display face
+ * for H2/H3 — Cinzel reads too heavy at smaller sizes, style doc §2a), the
+ * named maroon/gold/callout/pill tokens (so a component can reach for the
+ * semantic name directly instead of via the legacy `--color-accent*` alias),
+ * and the web-only link tokens (style doc §4 — not printed in the source).
+ */
+:root {
+  /* --- new semantic tokens (style doc §1) --- */
+  --color-page-bg-alt: #e9e1ce;
+  --color-page-vignette: rgb(0 0 0 / 8%);
+  --color-heading-maroon: #7a2e2c;
+  --color-heading-maroon-dark: #5e211f;
+  --color-gold-rule: #b99b5d;
+  --color-gold-frame: #c2a46d;
+  --color-gold-frame-dark: #8c7038;
+
+  --color-callout-tan-bg: #e7d6b3;
+  --color-callout-tan-border: #3a2e22;
+  --color-callout-blue-bg: #dce7ec;
+  --color-callout-blue-dot: #8fb4c9;
+
+  /* Trait pills — D29-46's disclosed 3-bucket simplification of the style
+     doc's 4-bucket scheme (the doc's 4th "maroon" bucket had no clean PF2e
+     equivalent and is dropped; src/ui/traitBucket.ts is the lookup). */
+  --pill-purple-bg: #552c63;
+  --pill-purple-border: #c9a227;
+  --pill-umber-bg: #4e3a26;
+  --pill-umber-border: #b99b5d;
+  --pill-amber-bg: #a85c1e;
+  --pill-amber-border: #c9a227;
+  --pill-text: #f3e9d2;
+
+  /* Link treatment (web-only invention, style doc §4). */
+  --color-link: #7a2e2c;
+  --color-link-hover: #b99b5d;
+
+  /* --- kept names, parchment values --- */
+  --color-void: #eee7d8; /* page background (was gothic's dark void) */
+  --color-ink: #231f1a;
+  --color-ink-dim: #4a4238;
+  --color-ink-faint: #8a7c63;
+  --color-accent: var(--color-heading-maroon); /* primary interactive accent */
+  --color-accent-amber: var(--color-gold-rule); /* secondary/highlight accent */
+  --color-rule: rgb(185 155 93 / 40%); /* hairline dividers — gold-rule, low opacity */
+  --color-rule-bright: var(--color-gold-frame); /* input borders, stronger dividers */
+  --color-elevated: var(--color-callout-tan-bg); /* raised card/panel/dropdown surface */
+  --color-hover: rgb(220 231 236 / 70%); /* row hover wash — blue-callout tint */
+
+  /* --- type families, self-hosted via @fontsource (see __root.tsx) --- */
+  --font-display: "Cinzel", serif; /* H1 chapter titles only — rare, ceremonial */
+  --font-heading: "Cormorant SC", serif; /* H2/H3 — Cinzel reads too heavy at this size */
+  --font-body: "EB Garamond", serif;
+  --font-condensed: "Oswald", sans-serif; /* renamed from --font-mono (D29-46) — the
+    statblock/omnibar/rules-tree/citation "mechanical voice" slot */
+}

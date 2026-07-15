@@ -1,6 +1,6 @@
-import { TraitPill } from "@astra/gothic";
 import type { ReactElement } from "react";
 
+import { TraitPill } from "../../ui";
 import { humanizeSlug } from "./text";
 
 /**

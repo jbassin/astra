@@ -1,8 +1,8 @@
-import { Input } from "@astra/gothic";
 import type { ReactElement } from "react";
 
 import type { IndexRow } from "@/schema/entity";
 import { facetKeysFor } from "@/schema/facetKeys";
+import { Input } from "@/ui";
 
 import { humanizeFacetKey } from "../render/text";
 import { facetDefFor, labelFor, type FacetDef } from "./facetDefs";

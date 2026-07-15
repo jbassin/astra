@@ -8,10 +8,10 @@
 // SSR-safe two-phase pattern `legacyToggle.ts`'s own header comment and
 // akasha's `Explorer.tsx` both use.
 
-import { Input } from "@astra/gothic";
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 
 import type { RulesTreeBook, TreeNode } from "@/schema/rulesTree";
+import { Input } from "@/ui";
 
 import { computeOpen, filterTreeByQuery, nodeKeyFor, pruneForLegacy } from "./treeModel";
 

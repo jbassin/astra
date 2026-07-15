@@ -1,5 +1,6 @@
-import { Button } from "@astra/gothic";
 import type { ReactElement } from "react";
+
+import { Button } from "@/ui";
 
 /**
  * D29-35 adversarial M6 — a filtered-to-zero listing/search result: an

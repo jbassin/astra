@@ -1,7 +1,7 @@
-import { Input } from "@astra/gothic";
 import { useMemo, useState, type ChangeEvent, type ReactElement } from "react";
 
 import type { IndexRow } from "@/schema/entity";
+import { Input } from "@/ui";
 
 import { capitalize, humanizeSlug } from "../render/text";
 import { BrowseEmptyState } from "./EmptyState";

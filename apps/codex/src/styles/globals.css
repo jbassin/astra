@@ -1,22 +1,24 @@
-/* codex's page shell, on gothic. gothic's theme.css (imported in __root) provides
- * the tokens (--color-void/panel/ink/accent/…, --font-display/body/mono) + Tailwind;
- * this file owns codex's structure (masthead/footer/wrap/hero) + the render layer's
- * OWN classnames (`entityPage.tsx`/`statblock.tsx`/`facetHeader.tsx`/`nodes.tsx`
- * already emit `codex-*`/`gothic-card-*` classes — S1 built those page components
- * frontend-free, so this is the first slice any of them get real styling).
+/* codex's page shell — the "Liturgy of the Iridite" parchment system
+ * (D29-46, P4.5 S1). `tokens.css` (imported below) provides the tokens
+ * (--color-void/ink/accent/…, --font-display/heading/body/condensed); this
+ * file owns codex's structure (masthead/footer/wrap/hero) + the render
+ * layer's OWN classnames (`entityPage.tsx`/`statblock.tsx`/`facetHeader.tsx`/
+ * `nodes.tsx` emit `codex-*` classes) + the `src/ui/` component styles.
  *
- * THE cross-cutting gotcha ([[gothic-frontend-design-polish]]): an UNLAYERED
- * `*{margin:0;padding:0}` reset outranks gothic's `@layer components` and silently
- * zeroes any gothic-rendered padding/margins. Wrap the reset in `@layer base` so
- * gothic's component layer wins. */
-@layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
+ * codex is the FIRST astra frontend to drop the shared gothic design system
+ * outright (R6) — every other frontend keeps gothic's void theme as-is.
+ * There is no more competing Tailwind `@layer components` to out-rank (the
+ * historical reason the reset below was wrapped in `@layer base`), so this
+ * file is plain CSS, no layers, no Tailwind.
+ */
+@import "./tokens.css";
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
@@ -25,6 +27,10 @@ body {
 }
 html {
   background-color: var(--color-void);
+  background-image:
+    radial-gradient(ellipse at center, transparent 55%, var(--color-page-vignette) 100%),
+    linear-gradient(var(--color-void), var(--color-page-bg-alt));
+  background-attachment: fixed;
 }
 body {
   display: flex;
@@ -37,12 +43,163 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* --- links + focus (D29-46 style doc §4 — maroon at rest, gold-rule
+   underline on hover, a gold-frame focus-visible ring in place of the
+   generic browser default so keyboard nav stays in-voice) --- */
 a {
-  color: var(--color-accent);
+  color: var(--color-link);
   text-decoration: none;
 }
 a:hover {
   text-decoration: underline;
+  text-decoration-color: var(--color-link-hover);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-gold-frame);
+  outline-offset: 2px;
+}
+
+/* --- src/ui/ component styles (D29-46) — codex's own drop-in replacements
+   for gothic's Input/Button/TraitPill/ErrorChip, exact prop-signature parity,
+   all-new classnames (no `gothic-*`/Tailwind-utility class ever emitted). --- */
+.codex-ui-input {
+  width: 100%;
+  border-radius: 1px;
+  border: 1px solid var(--color-rule-bright);
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  padding: 0.35rem 0.6rem;
+  font-family: var(--font-body), serif;
+}
+.codex-ui-input::placeholder {
+  color: var(--color-ink-faint);
+}
+.codex-ui-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+
+.codex-ui-button {
+  border-radius: 1px;
+  border: 1px solid var(--color-rule-bright);
+  padding: 0.35rem 0.75rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease-out,
+    color 120ms ease-out;
+}
+.codex-ui-button-solid {
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--pill-text);
+}
+.codex-ui-button-solid:hover {
+  background-color: var(--color-heading-maroon-dark);
+}
+.codex-ui-button-ghost {
+  background-color: transparent;
+  color: var(--color-ink);
+}
+.codex-ui-button-ghost:hover {
+  background-color: var(--color-hover);
+}
+
+/* trait pills — the D29-46 3-bucket color scheme (src/ui/traitBucket.ts):
+   rarity -> amber, tradition/alignment -> purple, everything else -> umber. */
+.codex-ui-pill {
+  display: inline-block;
+  border-radius: 2px;
+  padding: 0.22rem 0.5rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.72rem;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--pill-text);
+  border: 1px solid transparent;
+}
+.codex-ui-pill-purple {
+  background-color: var(--pill-purple-bg);
+  border-color: var(--pill-purple-border);
+}
+.codex-ui-pill-umber {
+  background-color: var(--pill-umber-bg);
+  border-color: var(--pill-umber-border);
+}
+.codex-ui-pill-amber {
+  background-color: var(--pill-amber-bg);
+  border-color: var(--pill-amber-border);
+}
+
+.codex-ui-error-chip {
+  border-radius: 1px;
+  border: 1px solid var(--color-gold-rule);
+  padding: 0 0.25rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.7rem;
+  color: var(--color-heading-maroon);
+}
+
+/* --- codex-card* (S1 — renamed from the old gothic card classnames, all 5
+   emit sites re-pointed): a plain parchment-elevated panel, used for
+   statblocks/prose-asides/embedded-sidebar cards. codex-card-inset
+   (the in-body "aside" node) gets the style doc §3.4 gold double-line
+   notched-corner art-frame treatment — a self-contained CSS-only
+   approximation (an angular chamfer via `clip-path`, not the print book's
+   curved scalloped cutaway) via a border + an inset `::before` echo line. --- */
+.codex-card {
+  border-radius: 2px;
+  border: 1px solid var(--color-rule-bright);
+  background-color: var(--color-elevated);
+  padding: 1rem 1.25rem;
+}
+.codex-card-stat {
+  border-top: 3px solid var(--color-heading-maroon);
+}
+.codex-card-prose {
+  border-top: 3px solid var(--color-gold-rule);
+}
+.codex-card-inset {
+  position: relative;
+  padding: 1.25rem 1.5rem;
+  border: 2px solid var(--color-gold-frame);
+  clip-path: polygon(
+    12px 0,
+    calc(100% - 12px) 0,
+    100% 12px,
+    100% calc(100% - 12px),
+    calc(100% - 12px) 100%,
+    12px 100%,
+    0 calc(100% - 12px),
+    0 12px
+  );
+}
+.codex-card-inset::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  border: 1px solid var(--color-gold-frame-dark);
+  clip-path: polygon(
+    10px 0,
+    calc(100% - 10px) 0,
+    100% 10px,
+    100% calc(100% - 10px),
+    calc(100% - 10px) 100%,
+    10px 100%,
+    0 calc(100% - 10px),
+    0 10px
+  );
 }
 
 /* --- masthead / footer (shell, in __root) --- */
@@ -55,14 +212,15 @@ a:hover {
   border-bottom: 1px solid var(--color-rule);
 }
 .site-brand {
-  color: var(--color-ink);
-  font-family: var(--font-display), var(--font-mono), monospace;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-display), serif;
+  font-variant-caps: small-caps;
   font-size: 1.4rem;
   font-weight: 600;
   letter-spacing: 0.04em;
 }
 .site-brand:hover {
-  color: var(--color-accent);
+  color: var(--color-gold-rule);
   text-decoration: none;
 }
 .site-tagline {
@@ -86,7 +244,9 @@ a:hover {
   padding: clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3rem);
 }
 .hero-title {
-  font-family: var(--font-display), var(--font-mono), monospace;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-display), serif;
+  font-variant-caps: small-caps;
   font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 600;
 }
@@ -96,7 +256,7 @@ a:hover {
   color: var(--color-ink-dim);
 }
 .hero-lede code {
-  font-family: var(--font-mono), monospace;
+  font-family: var(--font-condensed), sans-serif;
   font-size: 0.9em;
 }
 
@@ -128,7 +288,9 @@ a:hover {
 }
 .codex-entity-name {
   width: 100%;
-  font-family: var(--font-display), var(--font-mono), monospace;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 600;
 }
@@ -219,7 +381,9 @@ a:hover {
 }
 .codex-heading {
   margin: 1.25rem 0 0.5rem;
-  font-family: var(--font-display), var(--font-mono), monospace;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
 }
 .codex-heading-meta {
   float: right;
@@ -296,7 +460,9 @@ a:hover {
   margin-bottom: 1rem;
 }
 .codex-listing-title {
-  font-family: var(--font-display), var(--font-mono), monospace;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
   font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 600;
 }
@@ -356,7 +522,7 @@ a:hover {
   padding-bottom: 0.9rem;
 }
 .codex-facet-title {
-  font-family: var(--font-display), var(--font-mono), monospace;
+  font-family: var(--font-condensed), sans-serif;
   font-size: 0.82rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -516,7 +682,8 @@ a:hover {
   color: var(--color-ink-dim);
 }
 
-/* --- D29-35: the site-wide legacy toggle (header control, __root.tsx) --- */
+/* --- D29-35: the site-wide legacy toggle (header control, __root.tsx) —
+   MECHANISM untouched by S1 (D29-48 is a later slice); color values only. --- */
 .site-legacy-toggle {
   display: flex;
   align-items: center;
@@ -561,7 +728,7 @@ a:hover {
   background-color: var(--color-elevated);
   border: 1px solid var(--color-rule);
   border-radius: 0.3rem;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
   padding: 0.5rem 0;
 }
 .codex-omnibar-empty {
@@ -574,7 +741,7 @@ a:hover {
 }
 .codex-omnibar-group-title {
   padding: 0.15rem 1rem;
-  font-family: var(--font-display), var(--font-mono), monospace;
+  font-family: var(--font-condensed), sans-serif;
   font-size: 0.7rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -669,7 +836,7 @@ a:hover {
   font-size: 0.85rem;
 }
 .codex-search-excerpt mark {
-  background-color: color-mix(in srgb, var(--color-accent-amber) 35%, transparent);
+  background-color: color-mix(in srgb, var(--color-accent-amber) 45%, transparent);
   color: inherit;
 }
 .codex-search-load-more {
@@ -918,7 +1085,9 @@ a:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  font-family: var(--font-display), var(--font-mono), monospace;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
   font-size: 1rem;
   margin-bottom: 0.5rem;
 }
@@ -939,7 +1108,9 @@ a:hover {
 }
 .codex-sources-group-summary {
   cursor: pointer;
-  font-family: var(--font-display), var(--font-mono), monospace;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
   font-size: clamp(1.1rem, 3vw, 1.3rem);
   padding: 0.4rem 0;
 }
@@ -1007,7 +1178,7 @@ a:hover {
   background: var(--color-elevated);
   border: 1px solid var(--color-rule);
   border-radius: 0.4rem;
-  box-shadow: 0 8px 24px rgb(0 0 0 / 50%);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
   font-size: 0.85rem;
 }
 .popover-inner img {

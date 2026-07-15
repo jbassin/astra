@@ -103,10 +103,10 @@ describe("nodes.tsx: per-kind totality (D29-24)", () => {
     expect(html([{ kind: "divider" }])).toBe("<hr/>");
   });
 
-  it("aside: inset gothic-card", () => {
+  it("aside: inset codex-card (renamed from the gothic card class, P4.5 S1)", () => {
     const out = html([{ kind: "aside", children: [text("note")] }]);
-    expect(out).toContain("gothic-card");
-    expect(out).toContain("gothic-card-inset");
+    expect(out).toContain("codex-card");
+    expect(out).toContain("codex-card-inset");
     expect(out).toContain("note");
   });
 

@@ -1,7 +1,6 @@
 import path from "node:path";
 
-import { gothicFontsPlugin, loadSiteConfig } from "@astra/site-kit";
-import tailwindcss from "@tailwindcss/vite";
+import { loadSiteConfig } from "@astra/site-kit";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
@@ -24,18 +23,19 @@ const { port } = loadSiteConfig(ROOT).codex;
 // content is the ~625 MB corpus (D29-23) — routes read it from disk at REQUEST time
 // via `src/server/corpusFs.ts`/`corpusFns.ts` (the heartwood-frontend precedent: its
 // review surface is the other codex-shaped app with no build-time content step
-// either). @tailwindcss/vite compiles gothic's theme.css (`@theme` tokens +
-// `@apply`); without it the gothic stylesheet ships raw and every var(--color-*) is
-// undefined.
+// either).
+//
+// P4.5 S1 (D29-46): gothicFontsPlugin + @tailwindcss/vite are GONE along with the
+// gothic dependency itself — both existed solely to serve gothic's theme (the
+// plugin copied gothic's /fonts/* binaries; tailwind compiled theme.css's `@theme`
+// + `@apply`). codex now self-hosts its parchment-system fonts via @fontsource
+// per-weight CSS imports in `__root.tsx` (vite bundles the woff2 files like any
+// other imported asset) and styles itself with plain CSS (`src/styles/tokens.css`
+// + `globals.css`), no Tailwind.
 export default defineConfig({
   server: { port, host: true },
   resolve: {
     alias: { "@": path.resolve(ROOT, "./src") },
   },
-  plugins: [
-    gothicFontsPlugin({ clientOutDir: path.join(ROOT, "dist", "client") }),
-    tailwindcss(),
-    tanstackStart(),
-    viteReact(),
-  ],
+  plugins: [tanstackStart(), viteReact()],
 });

@@ -119,7 +119,7 @@ function SpeedsRow({ entity }: { entity: CodexEntity }): ReactElement | null {
 
 export function CreatureStatblock({ entity }: { entity: CodexEntity }): ReactElement {
   return (
-    <section className="gothic-card gothic-card-stat codex-statblock" data-kind="creature">
+    <section className="codex-card codex-card-stat codex-statblock" data-kind="creature">
       <PerceptionSensesRow entity={entity} />
       <LanguagesRow entity={entity} />
       <SkillsRow entity={entity} />
@@ -151,7 +151,7 @@ export function HazardStatblock({
   }
   if (stats?.hardness !== undefined) parts.push(`Hardness ${stats.hardness}`);
   return (
-    <section className="gothic-card gothic-card-stat codex-statblock" data-kind="hazard">
+    <section className="codex-card codex-card-stat codex-statblock" data-kind="hazard">
       <AcSavesRow facets={entity.facets} />
       {entity.facets.hp !== undefined ? <PlainRow>{`HP ${entity.facets.hp}`}</PlainRow> : null}
       {parts.length > 0 ? <PlainRow>{parts.join(", ")}</PlainRow> : null}
