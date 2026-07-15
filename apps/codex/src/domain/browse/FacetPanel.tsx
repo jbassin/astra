@@ -114,7 +114,7 @@ function RangeInputs({
         <Input
           type="number"
           aria-label="minimum"
-          placeholder={bounds ? String(bounds.min) : "min"}
+          placeholder={bounds ? `${bounds.min}${missingNote}` : `min${missingNote}`}
           title={`Rows without a value are excluded once set${missingNote}`}
           value={value.min ?? ""}
           onChange={(e) => {

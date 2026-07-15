@@ -338,6 +338,18 @@ Continuing the ledger from P5's D29-58:
   `Favored Weapon`/`Damage`/`Type`/`Group`, shield's `Hardness`/`HP (BT)`, ritual's `Cost`/
   `Secondary Casters`/`Primary Check`/`Secondary Checks`/`Target(s)` — all fall out of the SAME
   generic mechanism with zero per-field code).
+  **IMPLEMENTATION-TIME DEVIATION (P6 Track A, `b070592`):** D29-62's literal wording ("appends
+  `mastheadExtra`'s pairs as additional `Part`s") appends unconditionally; built exactly that way
+  first and verified live against 3 real entities, it produces a visible duplicate label wherever a
+  masthead pair's label already names an already-typed `Facets` field the same header renders
+  directly — `spell/heal` showed "Traditions" and "Range" twice, `armor/breastplate` showed "Price"
+  and "Bulk" twice, `feat/camouflage-coat` showed "Prerequisites" twice. Fix (shipped, not deferred):
+  each of the 4 typed headers now tracks the normalized labels its own typed parts already used and
+  filters `mastheadExtra` against that set before appending — deduplicated by label TEXT (case/
+  whitespace/trailing-colon-insensitive), not by field name, so it needs no per-category mapping and
+  generalizes uniformly; fields with no typed-facet counterpart (Bloodline/Target/AC Bonus/Category/
+  Group/Cost/Primary Check/...) are unaffected and still render as new information. Tested: all 4
+  observed collision cases plus the non-colliding fields, both directions.
 - **D29-63 — R1: table CSS.** Port gothic's table rule set (`libs/ts/gothic/src/theme.css:208-219`
   — `.gothic-content table` border-collapse/margin/font-size, `:is(th,td)` border+padding, `th`
   header styling, `tbody tr:nth-child(even)` zebra) into `.codex-content table`/`.codex-content
