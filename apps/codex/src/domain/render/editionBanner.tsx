@@ -26,7 +26,10 @@ function EntityIdLink({ id }: { id: string }): ReactElement {
 export function EditionBanner({ entity }: { entity: CodexEntity }): ReactElement | null {
   if (entity.remasteredAs !== undefined && entity.remasteredAs.length > 0) {
     return (
-      <div className="codex-edition-banner codex-edition-banner-legacy" data-remastered-as="">
+      <div
+        className="codex-callout-blue codex-edition-banner codex-edition-banner-legacy"
+        data-remastered-as=""
+      >
         This is the legacy version.{" "}
         {entity.remasteredAs.map((id, i) => (
           <span key={id}>
@@ -39,7 +42,10 @@ export function EditionBanner({ entity }: { entity: CodexEntity }): ReactElement
   }
   if (entity.legacyOf !== undefined && entity.legacyOf.length > 0) {
     return (
-      <div className="codex-edition-banner codex-edition-banner-remaster" data-legacy-of="">
+      <div
+        className="codex-callout-blue codex-edition-banner codex-edition-banner-remaster"
+        data-legacy-of=""
+      >
         {entity.legacyOf.map((id, i) => (
           <span key={id}>
             {i > 0 ? ", " : ""}

@@ -303,7 +303,7 @@ function SupersededSection({
   return (
     <FacetSection title={state.superseded ? "Including superseded" : "Current edition"}>
       <div className="codex-facet-superseded">
-        <p className="codex-facet-superseded-explainer">
+        <p className="codex-callout-blue codex-facet-superseded-explainer">
           Current edition &mdash; previous-edition content that was never remastered still shows;
           &ldquo;Include superseded&rdquo; reveals replaced versions.
         </p>

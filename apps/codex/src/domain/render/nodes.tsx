@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, type ReactElement, type ReactNode } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
 import type { CodexNode } from "../../schema/nodes";
@@ -158,6 +158,37 @@ function humanizeSlug(slug: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// D29-50 (P4.5 S5) — the tan "in-world artifact" callout ornament (style doc
+// §3.2): a thin double-hairline rule bracketing the box top+bottom, flared
+// into a small inward-pointing chevron at both ends. The corpus's
+// `CodexNode` taxonomy has no flavor-vs-mechanical distinction on `aside`/
+// resolved `embed` nodes (both just render generic block content), so per
+// the spec's own documented fallback BOTH get the tan family here — the
+// blue family (informational notices) is reserved for the edition banner +
+// the facet drawer's superseded explainer (`editionBanner.tsx`/
+// `FacetPanel.tsx`), never this renderer. Rendered as an inline SVG (never a
+// unicode glyph — the spec's explicit binding) so it scales cleanly with the
+// callout's own width via `preserveAspectRatio="none"`.
+// ---------------------------------------------------------------------------
+
+function CalloutTanRule(): ReactElement {
+  return (
+    <svg
+      className="codex-callout-tan-rule"
+      viewBox="0 0 100 6"
+      preserveAspectRatio="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <line x1="6" y1="1.6" x2="94" y2="1.6" />
+      <line x1="6" y1="4.4" x2="94" y2="4.4" />
+      <path d="M6 0 L0.5 3 L6 6" fill="none" />
+      <path d="M94 0 L99.5 3 L94 6" fill="none" />
+    </svg>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // embed inlining (D29-25)
 // ---------------------------------------------------------------------------
 
@@ -217,10 +248,14 @@ function renderEmbed(
   };
   return (
     <div key={key} className="codex-embed-card" data-embed-source={node.target}>
-      {renderNodes(target.body, childCtx)}
-      <a href={`/${node.target}`} className="codex-embed-source-link" data-crossref="">
-        source: {target.name}
-      </a>
+      <CalloutTanRule />
+      <div className="codex-callout-tan-body">
+        {renderNodes(target.body, childCtx)}
+        <a href={`/${node.target}`} className="codex-embed-source-link" data-crossref="">
+          source: {target.name}
+        </a>
+      </div>
+      <CalloutTanRule />
     </div>
   );
 }
@@ -374,7 +409,9 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
     case "aside":
       return (
         <div key={key} className="codex-card codex-card-inset codex-aside">
-          {renderNodes(node.children, ctx)}
+          <CalloutTanRule />
+          <div className="codex-callout-tan-body">{renderNodes(node.children, ctx)}</div>
+          <CalloutTanRule />
         </div>
       );
 

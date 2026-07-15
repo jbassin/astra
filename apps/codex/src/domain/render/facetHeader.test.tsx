@@ -9,6 +9,16 @@ import {
   SpellFacetHeader,
 } from "./facetHeader";
 
+/** P4.5 S5 (D29-50): the header lines now wrap each label in a `<strong>`
+ * (the bold-label/regular-value grammar, style doc §3.8) — a raw-HTML
+ * `toContain("Feat 13")` would fail on the tag boundary between the label
+ * and its value even though the two remain adjacent text. Strip markup
+ * before asserting so these tests check rendered TEXT content, tolerant of
+ * the wrapping tags. */
+function text(html: string): string {
+  return html.replace(/<[^>]+>/g, "");
+}
+
 function entityWith(
   category: string,
   facets: Facets,
@@ -38,7 +48,7 @@ describe("SpellFacetHeader", () => {
       duration: "instantaneous",
       defense: "basic Fortitude",
     });
-    const out = renderToStaticMarkup(<SpellFacetHeader entity={entity} />);
+    const out = text(renderToStaticMarkup(<SpellFacetHeader entity={entity} />));
     expect(out).toContain("Rank 1");
     expect(out).toContain("divine, primal");
     expect(out).toContain("Cast 2");
@@ -48,8 +58,8 @@ describe("SpellFacetHeader", () => {
   });
 
   it("rank 0 renders as Cantrip, not 'Rank 0'", () => {
-    const out = renderToStaticMarkup(
-      <SpellFacetHeader entity={entityWith("spell", { rank: 0 })} />,
+    const out = text(
+      renderToStaticMarkup(<SpellFacetHeader entity={entityWith("spell", { rank: 0 })} />),
     );
     expect(out).toContain("Cantrip");
     expect(out).not.toContain("Rank 0");
@@ -71,7 +81,7 @@ describe("EquipmentFacetHeader", () => {
       rank: 0,
       usage: "held-in-one-hand",
     });
-    const out = renderToStaticMarkup(<EquipmentFacetHeader entity={entity} />);
+    const out = text(renderToStaticMarkup(<EquipmentFacetHeader entity={entity} />));
     expect(out).toContain("Price 2 cp");
     expect(out).toContain("Bulk 0");
     expect(out).toContain("held in one hand");
@@ -81,8 +91,10 @@ describe("EquipmentFacetHeader", () => {
   });
 
   it("hands absent -> no Hands row", () => {
-    const out = renderToStaticMarkup(
-      <EquipmentFacetHeader entity={entityWith("weapon", { price: "1 gp" })} />,
+    const out = text(
+      renderToStaticMarkup(
+        <EquipmentFacetHeader entity={entityWith("weapon", { price: "1 gp" })} />,
+      ),
     );
     expect(out).not.toContain("Hands");
   });
@@ -97,7 +109,7 @@ describe("FeatFacetHeader", () => {
       prerequisites: ["mottle-coat centaur heritage"],
       rank: 13,
     });
-    const out = renderToStaticMarkup(<FeatFacetHeader entity={entity} />);
+    const out = text(renderToStaticMarkup(<FeatFacetHeader entity={entity} />));
     expect(out).toContain("Feat 13");
     expect(out).toContain("mottle-coat centaur heritage");
     // "passive" isn't a real ActionCost -> falls back to plain visible text,
@@ -115,7 +127,7 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
     // The real vehicle/sky-chariot-light shape: creature-named fields
     // populated on a non-creature category are genuine data, NOT spillover.
     const entity = entityWith("vehicle", { ac: 20, fortitudeSave: 14, hp: 80, size: "lg" });
-    const out = renderToStaticMarkup(<GenericFacetLine entity={entity} />);
+    const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} />));
     expect(out).toContain("AC: 20");
     expect(out).toContain("HP: 80");
     expect(out).toContain("Size: lg");
@@ -123,7 +135,7 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
 
   it("excludes featLevel/rank even when present as spillover on a non-feat/non-spell category", () => {
     const entity = entityWith("vehicle", { ac: 20, featLevel: 0, rank: 0 });
-    const out = renderToStaticMarkup(<GenericFacetLine entity={entity} />);
+    const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} />));
     expect(out).toContain("AC: 20");
     expect(out).not.toMatch(/Feat/);
     expect(out).not.toMatch(/Rank/);
@@ -131,7 +143,7 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
 
   it("a catchall (arbitrary AoN-only) field renders humanized", () => {
     const entity = entityWith("ancestry", { sizeId: 2 } as unknown as Facets);
-    const out = renderToStaticMarkup(<GenericFacetLine entity={entity} />);
+    const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} />));
     expect(out).toContain("Size Id: 2");
   });
 

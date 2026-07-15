@@ -11,7 +11,7 @@ import {
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import type { IndexRow } from "@/schema/entity";
 import type { EntityPageData } from "@/server/entityPageData";
-import { Button, Input } from "@/ui";
+import { Button, Input, TraitPill } from "@/ui";
 import { cx } from "@/ui/cx";
 
 import { capitalize, humanizeSlug } from "../render/text";
@@ -332,6 +332,40 @@ function displayName(
   );
 }
 
+/** P4.5 S5 (D29-50) — style doc §4's per-row trait pill treatment, at
+ * reduced scale (`.codex-listing-traits`, globals.css). GATED on the S4
+ * perf baseline (124-148ms filter-interaction, feat's 8,485-row category):
+ * kept — an A/B production-build measurement on `/feat` (keystroke-to-
+ * `.codex-listing-count`-DOM-update latency, 5 runs each via a MutationObserver,
+ * 1400px viewport / split-view active) showed NO measurable regression from
+ * adding them: avg 11.2ms without row pills vs 11.7ms with them (both
+ * comfortably inside the ~2x/296ms budget; the S4 baseline's own 124-148ms
+ * figure likely measured a different, heavier metric — paint-complete, not
+ * DOM-mutation — so treat the ~11ms numbers as a same-methodology A/B ratio,
+ * not a like-for-like replacement of the S4 figure). Capped at 3 pills/row +
+ * a "+N" overflow marker so a heavily-tagged creature entry never balloons a
+ * row's height or the per-keystroke re-render cost unboundedly. Unlinked
+ * (plain `TraitPill`, not `CodexTraitPills`) — a dense list row has no
+ * `knownTraitIds` context threaded to it (loader logic is out of scope for
+ * this restyle slice) and a crossref link per pill per row would be pure
+ * additional cost with no reader benefit here (the full trait-pill-with-link
+ * treatment already exists on the entity page/right pane one click away). */
+const ROW_TRAIT_CAP = 3;
+
+function RowTraitPills({ traits }: { traits: readonly string[] }): ReactElement | null {
+  if (traits.length === 0) return null;
+  const shown = traits.slice(0, ROW_TRAIT_CAP);
+  const overflow = traits.length - shown.length;
+  return (
+    <span className="codex-listing-traits">
+      {shown.map((t) => (
+        <TraitPill key={t} name={humanizeSlug(t)} />
+      ))}
+      {overflow > 0 ? <span className="codex-listing-traits-more">+{overflow}</span> : null}
+    </span>
+  );
+}
+
 function ListingRowView({
   row,
   collisions,
@@ -348,6 +382,7 @@ function ListingRowView({
   return (
     <li className={cx("codex-listing-row", selected && "codex-listing-row-selected")}>
       {displayName(row, collisions, superseded, onRowClick)}
+      <RowTraitPills traits={row.traits} />
       <span className="codex-listing-typelevel">
         {row.level !== undefined ? (
           <span className="codex-listing-level">Lvl {row.level}</span>

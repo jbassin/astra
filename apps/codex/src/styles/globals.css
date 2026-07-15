@@ -447,27 +447,53 @@ select:focus-visible,
   padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 8vw, 5rem);
 }
 .codex-entity-header {
+  margin-bottom: 1.25rem;
+}
+/* --- P4.5 S5 (D29-50): the statblock/feat header row grammar, style doc
+   §3.5 — "Name (left) + type/level tag (right)... full-width thin hairline
+   rule beneath the whole row (not just under the name)." The tag is in
+   `--font-condensed` (the doc's Oswald "mechanical voice" slot, D29-46);
+   the name keeps codex's own established `--font-heading` small-caps voice
+   (used identically for every other H1/H2 in the app) rather than also
+   switching to condensed — restyling the tag alone satisfies the section's
+   binding grammar (name left / tag right / hairline under the row) without
+   forking the site's heading voice for entity titles specifically. --- */
+.codex-entity-title-row {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 0.5rem 0.75rem;
-  padding-bottom: 1rem;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--color-rule);
-  margin-bottom: 1.25rem;
 }
 .codex-entity-name {
-  width: 100%;
   color: var(--color-heading-maroon);
   font-family: var(--font-heading), serif;
   font-variant-caps: small-caps;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 600;
 }
-.codex-entity-level {
+.codex-entity-type-tag {
+  flex: none;
   color: var(--color-ink-dim);
-  font-size: 0.6em;
-  font-weight: 400;
-  margin-left: 0.5rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  padding-bottom: 0.2rem; /* optically align its baseline with the name */
+}
+/* the trait-pill row "immediately below the rule" (style doc §3.5) plus the
+   rest of the entity's identifying metadata (edition/rarity/citation/aon
+   link) — one flex row, wraps freely. */
+.codex-entity-meta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.6rem;
 }
 .codex-trait-pills {
   display: inline-flex;
@@ -492,29 +518,70 @@ select:focus-visible,
   color: var(--color-ink-dim);
   text-transform: capitalize;
 }
+/* --- P4.5 S5 (D29-50): the citation/footer treatment — font-condensed
+   (the "mechanical voice" slot, D29-46), same voice as the statblock header
+   tag/pill row, no structural change to what it renders (D29-24/citation
+   logic untouched). --- */
 .codex-citation {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--color-ink-faint);
+  font-family: var(--font-condensed), sans-serif;
+  letter-spacing: 0.02em;
   display: flex;
   gap: 0.5rem;
   align-items: baseline;
 }
+.codex-citation-book {
+  color: var(--color-ink-dim);
+}
 .codex-license-badge {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
+  font-family: var(--font-condensed), sans-serif;
   letter-spacing: 0.05em;
+  text-transform: uppercase;
   padding: 0.05rem 0.4rem;
   border-radius: 0.25rem;
-  border: 1px solid var(--color-rule);
+  border: 1px solid var(--color-gold-rule);
+  color: var(--color-heading-maroon-dark);
 }
 .codex-aon-link {
   font-size: 0.8rem;
 }
+/* --- P4.5 S5 (D29-50) mapping note: the corpus's `CodexNode` taxonomy has
+   no flavor-vs-mechanical aside distinction (a plain `aside` kind covers
+   both), so per the spec's own fallback the TAN callout family (below,
+   nodes.tsx) covers asides/embeds and the BLUE family covers this banner
+   plus the facet drawer's superseded explainer (`FacetPanel.tsx`) — both
+   "informational notice" surfaces, style doc §3.3: a soft blue-gray field,
+   single hairline border, small filled corner dots (4 background-image
+   radial-gradient layers — a CSS-only equivalent of the print book's
+   corner-dot ornament, no unicode glyphs). --- */
+/* the reusable blue "informational notice" callout — corner dots via 4
+   background-image layers (CSS-only, no unicode glyphs), a single hairline
+   border, the soft blue-gray field. Applied to the edition banner AND the
+   facet drawer's superseded explainer, below. */
+.codex-callout-blue {
+  border-radius: 0.2rem;
+  border: 1px solid var(--color-callout-blue-dot);
+  background-color: var(--color-callout-blue-bg);
+  background-image:
+    radial-gradient(circle, var(--color-callout-blue-dot) 45%, transparent 46%),
+    radial-gradient(circle, var(--color-callout-blue-dot) 45%, transparent 46%),
+    radial-gradient(circle, var(--color-callout-blue-dot) 45%, transparent 46%),
+    radial-gradient(circle, var(--color-callout-blue-dot) 45%, transparent 46%);
+  background-size: 6px 6px;
+  background-repeat: no-repeat;
+  background-position:
+    2px 2px,
+    calc(100% - 2px) 2px,
+    2px calc(100% - 2px),
+    calc(100% - 2px) calc(100% - 2px);
+  color: var(--color-ink);
+}
 .codex-edition-banner {
   width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 0.4rem;
-  background-color: var(--color-elevated);
+  margin-top: 0.6rem;
+  padding: 0.6rem 0.9rem;
   font-size: 0.85rem;
 }
 
@@ -527,6 +594,25 @@ select:focus-visible,
 .codex-stat-label {
   font-weight: 600;
   color: var(--color-accent-amber);
+}
+
+/* --- P4.5 S5 (D29-50): the spell/equipment/feat/generic facet-header line
+   (facetHeader.tsx) — the SAME bold-label/regular-value grammar as the
+   statblock's own `.codex-stat-label` (style doc §3.8: "bold = mechanical
+   label"), one line above the statblock/body, " | "-separated parts. This
+   is the "Feat 13 passive Prerequisites..." line the spec calls out by
+   name — previously plain unlabeled text. */
+.codex-facet-row {
+  padding: 0.35rem 0 0.75rem;
+  font-size: 0.95rem;
+}
+.codex-facet-label {
+  font-weight: 600;
+  color: var(--color-accent-amber);
+}
+.codex-facet-sep {
+  color: var(--color-ink-faint);
+  padding: 0 0.1rem;
 }
 .codex-embedded-items {
   margin-bottom: 1.25rem;
@@ -563,10 +649,33 @@ select:focus-visible,
 .codex-aside {
   margin: 1rem 0;
 }
+/* --- P4.5 S5 (D29-50): the tan "in-world artifact" callout family (style
+   doc §3.2) — `codex-card-inset` (the `aside` node) already carries S1's
+   gold double-line notched-corner ART FRAME (style doc §3.4, kept as-is);
+   `codex-embed-card` is the lighter sibling (no outer frame, same tan field
+   + chevron-rule bracketing) since an inlined embed is a nested reference,
+   not a standalone plate. Both wrap their body in the SAME chevron-flared
+   double-hairline rule (`CalloutTanRule`, nodes.tsx — inline SVG, never a
+   unicode glyph) top and bottom, title/body sitting directly on the tan
+   field with no solid title bar, per the style doc's own note. */
+.codex-callout-tan-rule {
+  display: block;
+  width: 100%;
+  height: 7px;
+  overflow: visible;
+}
+.codex-callout-tan-rule line,
+.codex-callout-tan-rule path {
+  stroke: var(--color-callout-tan-border);
+  stroke-width: 0.8;
+  vector-effect: non-scaling-stroke;
+}
+.codex-callout-tan-body {
+  padding: 0.5rem 0;
+}
 .codex-embed-card {
   margin: 0.75rem 0;
-  padding: 0.5rem 0.75rem;
-  border-left: 2px solid var(--color-accent-amber);
+  padding: 0.5rem 0.9rem;
   background-color: var(--color-elevated);
 }
 .codex-embed-source-link {
@@ -765,6 +874,10 @@ select:focus-visible,
 /* --- P4.5 S4 (D29-49): the filter drawer — a native `<dialog>` wrapping
    the UNMODIFIED `FacetPanel` (still renders its own `<aside>` inside);
    only the container changed. --- */
+/* P4.5 S5 (D29-50): drawer chrome polish — the gold/parchment voice (a
+   maroon top accent bar echoing `.codex-card-stat`'s own convention, a
+   gold-frame border instead of the plain rule-bright one, a slightly
+   heavier/warmer backdrop than the flat black wash). */
 .codex-filter-drawer {
   /* Explicit centering rather than relying on the UA `dialog:modal` default
      (inconsistent across engines once the content approaches viewport
@@ -773,8 +886,9 @@ select:focus-visible,
   position: fixed;
   inset: 0;
   margin: auto;
-  border: 1px solid var(--color-rule-bright);
-  border-radius: 0.4rem;
+  border: 1px solid var(--color-gold-frame);
+  border-top: 4px solid var(--color-heading-maroon);
+  border-radius: 0.3rem;
   padding: 0;
   background-color: var(--color-elevated);
   color: var(--color-ink);
@@ -782,9 +896,10 @@ select:focus-visible,
   max-width: min(28rem, 92vw);
   max-height: 85vh;
   height: fit-content;
+  box-shadow: 0 12px 32px rgb(0 0 0 / 30%);
 }
 .codex-filter-drawer::backdrop {
-  background-color: rgb(0 0 0 / 45%);
+  background-color: rgb(35 31 26 / 55%);
 }
 .codex-filter-drawer-body {
   display: flex;
@@ -866,6 +981,22 @@ select:focus-visible,
   font-size: 0.78rem;
   color: var(--color-ink-dim);
   margin-top: 0.4rem;
+}
+
+/* --- P4.5 S5 (D29-50): the D29-48/M6 superseded-visibility explainer copy
+   (`FacetPanel.tsx`'s `SupersededSection`) — an "informational notice," the
+   BLUE callout family per the spec's own mapping note (`.codex-callout-blue`,
+   shared with the edition banner above). Previously unstyled. --- */
+.codex-facet-superseded {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+.codex-facet-superseded-explainer {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-ink-dim);
 }
 
 .codex-trait-chips {
@@ -975,6 +1106,24 @@ select:focus-visible,
   font-weight: 400;
   color: var(--color-ink-faint);
   font-size: 0.85em;
+}
+/* P4.5 S5 (D29-50): style doc §4's per-row trait pills, reduced scale — the
+ * SAME `.codex-ui-pill` component (`src/ui/TraitPill.tsx`) shrunk down for a
+ * dense list row, capped at 3 + a "+N" overflow marker
+ * (`BrowseListing.tsx`'s `ROW_TRAIT_CAP`). */
+.codex-listing-traits {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+}
+.codex-listing-traits .codex-ui-pill {
+  font-size: 0.6rem;
+  padding: 0.08rem 0.35rem;
+}
+.codex-listing-traits-more {
+  color: var(--color-ink-faint);
+  font-size: 0.68rem;
 }
 /* the condensed "crunch" type/level column (style doc §4) — right-aligned
    per row, pushed to the row's trailing edge. */
@@ -1211,6 +1360,30 @@ select:focus-visible,
   font-size: 0.78rem;
   font-style: italic;
 }
+/* --- P4.5 S5 (D29-50): the `/rules` inline superseded toggle
+   (`routes/rules.tsx`) — previously an unstyled bare `<button>`. Reset to a
+   plain link-in-voice control (maroon, gold-rule underline on hover, same
+   `a`/`a:hover` convention `globals.css` already uses site-wide); the "hide"
+   (widened) state carries no italic/faint styling of its own (it isn't
+   describing hidden content anymore, D29-48's own text). */
+.codex-rules-superseded-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 0.5rem;
+  font: inherit;
+  cursor: pointer;
+  color: var(--color-link);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 120ms ease-out;
+}
+.codex-rules-superseded-toggle:hover {
+  text-decoration-color: var(--color-link-hover);
+}
+.codex-rules-superseded-toggle.codex-rules-hidden-note {
+  color: var(--color-ink-faint);
+}
 .codex-license-unknown {
   color: var(--color-ink-faint);
   border-style: dashed;
@@ -1326,33 +1499,43 @@ select:focus-visible,
   }
 }
 
-/* breadcrumb trail */
+/* --- P4.5 S5 (D29-50): the breadcrumb trail reuses the style doc §3.9
+   "chapter footer" typographic treatment ("CHAPTER N | SECTION TITLE",
+   small-caps maroon) repurposed as a "you are here" trail — position kept
+   (top of the entity, book -> ancestors -> current), literal page numbers
+   dropped (the doc's own "Keep" list). --- */
 .codex-rules-breadcrumb-list {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.85rem;
-  color: var(--color-ink-dim);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
+  letter-spacing: 0.03em;
+  font-size: 0.95rem;
+  color: var(--color-heading-maroon);
 }
 .codex-rules-breadcrumb-item + .codex-rules-breadcrumb-item::before {
   content: "›";
   margin-right: 0.3rem;
-  color: var(--color-ink-faint);
+  color: var(--color-gold-rule);
 }
 .codex-rules-breadcrumb-item a {
-  color: var(--color-ink-dim);
+  color: var(--color-heading-maroon);
 }
 .codex-rules-breadcrumb-item a:hover {
-  color: var(--color-accent);
+  color: var(--color-gold-rule);
+  text-decoration: underline;
+  text-decoration-color: var(--color-link-hover);
 }
 .codex-rules-breadcrumb-synthetic {
   font-style: italic;
+  color: var(--color-ink-dim);
 }
 .codex-rules-breadcrumb-current {
-  color: var(--color-ink);
-  font-weight: 600;
+  color: var(--color-heading-maroon-dark);
+  font-weight: 700;
 }
 
 /* previous/next pager */
@@ -1360,7 +1543,7 @@ select:focus-visible,
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  border-top: 1px solid var(--color-rule);
+  border-top: 1px solid var(--color-gold-rule);
   padding-top: 1rem;
 }
 .codex-rules-pager-slot-next {
@@ -1380,13 +1563,15 @@ select:focus-visible,
   text-decoration: underline;
 }
 .codex-rules-pager-label {
-  font-size: 0.75rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.72rem;
   color: var(--color-ink-faint);
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
 }
 .codex-rules-pager-name {
-  font-size: 0.95rem;
+  font-family: var(--font-heading), serif;
+  font-size: 1rem;
 }
 
 /* --- P4 S4 (D29-42): attached sidebars on a host entity page --- */
@@ -1426,6 +1611,15 @@ select:focus-visible,
   content-visibility: auto;
   contain-intrinsic-size: auto 400px;
 }
+/* P4.5 S5 (D29-50): the style doc §3.10 table convention's "header row" —
+   applied to BOTH the plain `<h2>` group header and the "Other" bucket's
+   `<summary>` disclosure (the two group-header variants
+   `SourcesIndexView.tsx` renders), a bold gold rule directly UNDER the
+   header only, no other border. */
+.codex-sources-group > .codex-heading,
+.codex-sources-group-summary {
+  border-bottom: 2px solid var(--color-gold-rule);
+}
 .codex-sources-group-summary {
   cursor: pointer;
   color: var(--color-heading-maroon);
@@ -1443,13 +1637,18 @@ select:focus-visible,
 .codex-sources-group-body {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
   margin-top: 0.75rem;
 }
+/* P4.5 S5 (D29-50): style doc §3.10 — no cell borders, zebra tint on
+   alternating rows using the callout-blue hue at low opacity, generous
+   vertical padding, left column (book name) bold (kept from P4). */
 .codex-sources-book {
-  padding: 0.6rem 0.85rem;
-  border: 1px solid var(--color-rule);
-  border-radius: 1px;
+  padding: 0.65rem 0.9rem;
+  border: none;
+  border-radius: 0;
+}
+.codex-sources-book:nth-child(even) {
+  background-color: color-mix(in srgb, var(--color-callout-blue-bg) 55%, transparent);
 }
 .codex-sources-book-header {
   display: flex;
