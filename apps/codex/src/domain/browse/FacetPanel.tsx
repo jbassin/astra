@@ -88,6 +88,13 @@ function EnumOptionList({
   );
 }
 
+// P6 R9(b,c) (D29-61): the separate "Must have a value" checkbox is DELETED
+// — a typed min/max bound now implies has-value on its own
+// (`filterEngine.ts`'s bounds-imply-has-value rewrite), so there's no longer
+// a distinct gate for a checkbox to control. The missing-count context that
+// used to sit next to the checkbox is folded straight into the min/max
+// `Input` placeholders themselves (informational, not actionable, once the
+// checkbox is gone) rather than growing a new UI element.
 function RangeInputs({
   value,
   bounds,
@@ -99,6 +106,7 @@ function RangeInputs({
   missing: number;
   onChange: (next: RangeFilter) => void;
 }): ReactElement {
+  const missingNote = missing > 0 ? ` (${missing} without data)` : "";
   return (
     <div className="codex-facet-range">
       <div className="codex-facet-range-inputs">
@@ -106,6 +114,7 @@ function RangeInputs({
           type="number"
           aria-label="minimum"
           placeholder={bounds ? String(bounds.min) : "min"}
+          title={`Rows without a value are excluded once set${missingNote}`}
           value={value.min ?? ""}
           onChange={(e) => {
             const raw = e.target.value;
@@ -116,7 +125,8 @@ function RangeInputs({
         <Input
           type="number"
           aria-label="maximum"
-          placeholder={bounds ? String(bounds.max) : "max"}
+          placeholder={bounds ? `${bounds.max}${missingNote}` : `max${missingNote}`}
+          title={`Rows without a value are excluded once set${missingNote}`}
           value={value.max ?? ""}
           onChange={(e) => {
             const raw = e.target.value;
@@ -124,14 +134,6 @@ function RangeInputs({
           }}
         />
       </div>
-      <label className="codex-facet-has-value">
-        <input
-          type="checkbox"
-          checked={value.hasValue === true}
-          onChange={(e) => onChange({ ...value, hasValue: e.target.checked })}
-        />
-        <span>Must have a value{missing > 0 ? ` (${missing} without data)` : ""}</span>
-      </label>
     </div>
   );
 }

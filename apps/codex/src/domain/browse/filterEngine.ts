@@ -3,22 +3,25 @@
 // UI exists per the spec's own §6 risk callout: "filter-engine correctness
 // with missing keys is the likeliest logic-bug nest").
 //
-// ## Missing-key semantics (D29-32, verbatim from the spec)
+// ## Missing-key semantics (D29-32, revised by P6 R9(b)/D29-61(b))
 //
 // Entities without a facet key form an implicit "—" bucket:
 //   - an ENUM include-selection on that facet drops them (can't match a
 //     specific value they don't carry);
 //   - a TRAIT exclude-selection never drops them (they trivially don't carry
 //     the excluded trait either);
-//   - a RANGE filter (min/max) does NOT drop them by default — narrowing a
-//     slider "ignores" rows with no value for that key — UNLESS the caller
-//     sets `hasValue: true`, an explicit "must carry a value" gate.
+//   - a RANGE filter drops them the moment EITHER `min` or `max` is set
+//     (D29-61(b) — "bounds-imply-has-value": typing a number means "I only
+//     want rows with a number," so bound presence alone is the has-value
+//     signal now). The prior design required a SEPARATE explicit
+//     `has-value: true` gate on top of min/max — that field is gone from
+//     `RangeFilter` entirely, not just unused; a range filter with no bound
+//     at all (`{}`) still passes every row through unfiltered.
 //
 // This is why ProseOnly entities stay visible under ordinary trait/core
-// filtering (traits/level/rarity — level is itself range-shaped, so merely
-// narrowing it doesn't hide a level-less row) and only drop out when a
-// Foundry-only ENUM facet (e.g. creature.size) is actively selected against,
-// or when a range facet's `hasValue` gate is explicitly turned on.
+// filtering (traits/rarity — a NARROWED range facet, incl. level, now DOES
+// hide a value-less row, per the rule above) and only ever stay visible
+// against a range facet when that facet carries no bound at all.
 
 import type { IndexRow } from "@/schema/entity";
 
@@ -31,16 +34,10 @@ import { enumTagsFor, facetDefFor, numericValueFor, type RawFacetValue } from ".
 export interface RangeFilter {
   min?: number;
   max?: number;
-  /** Explicitly require the row to carry a value for this facet at all —
-   * the ONLY way a range filter excludes a missing-key row (D29-32). */
-  hasValue?: boolean;
 }
 
 export function isRangeFilterActive(filter: RangeFilter | undefined): boolean {
-  return (
-    filter !== undefined &&
-    (filter.min !== undefined || filter.max !== undefined || filter.hasValue === true)
-  );
+  return filter !== undefined && (filter.min !== undefined || filter.max !== undefined);
 }
 
 export interface TraitFilter {
@@ -121,12 +118,13 @@ function matchesTraits(row: IndexRow, filter: TraitFilter): boolean {
   return true;
 }
 
-/** `undefined`/`null` (`n`) -> included unless `hasValue` is explicitly set
- * (D29-32's "range filters ignore [missing-key rows] unless the 'has value'
- * bound is set"). A present value still has to clear min/max either way. */
+/** `undefined`/`null` (`n`) -> included only when the filter carries NO
+ * bound at all (D29-61(b): "bounds-imply-has-value" — a missing row is
+ * excluded whenever the filter carries ANY typed bound, `min` or `max`). A
+ * present value still has to clear min/max either way. */
 function matchesRange(n: number | null | undefined, filter: RangeFilter | undefined): boolean {
   if (!filter) return true;
-  if (n === null || n === undefined) return !filter.hasValue;
+  if (n === null || n === undefined) return filter.min === undefined && filter.max === undefined;
   if (filter.min !== undefined && n < filter.min) return false;
   if (filter.max !== undefined && n > filter.max) return false;
   return true;

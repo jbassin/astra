@@ -20,15 +20,20 @@
 // (D29-34's own "one fragment fetch per shown result"). A deliberate,
 // narrower surface than browse's, not an oversight.
 //
-// P4.5 D29-48 (R3's explicit carve-out): search NEVER hides superseded
-// content by default — "search always covers both editions and badges
-// results" — so this module carries NO `legacy`/`superseded` field at all
-// anymore (dead code once the site-wide toggle it used to read was
-// deleted). The ordinary `edition` enum facet (remaster/legacy CONTENT
-// values, sourced from `pagefind.filters()` counts) is unrelated and
-// unchanged.
+// P4.5 D29-48 (R3's original carve-out, now AMENDED by P6 R11/D29-67):
+// search used to NEVER hide superseded content by default — "search always
+// covers both editions and badges results" — so this module carried no
+// `legacy`/`superseded` field at all. D29-67 amends that: `/search` now
+// hides superseded content by default too, matching every other surface
+// (browse/rules/sidebars) — a plain `superseded?: boolean` field is back,
+// decoded the same tolerant way every other route's own `?superseded=`
+// param is (a local `toBool`, same shape as `browse/urlState.ts`'s and
+// `routes/rules.tsx`'s own). The ordinary `edition` enum facet
+// (remaster/legacy CONTENT values, sourced from `pagefind.filters()`
+// counts) is unrelated and unchanged.
 
 import { joinCsv, splitCsv } from "../browse/urlState";
+import { supersededFilter } from "./pagefindClient";
 
 export type SearchPageSearch = {
   q?: string;
@@ -37,7 +42,17 @@ export type SearchPageSearch = {
   edition?: string;
   level?: string;
   traits?: string;
+  /** P6 R11 (D29-67) — the hide-by-default reveal param, `/search`'s own
+   * (there is no `legacy=` back-compat alias to carry here: this field
+   * never existed on `/search` before this amendment, so there is no prior
+   * shared-link shape to stay compatible with — unlike browse/rules's
+   * `legacy`->`superseded` rename). */
+  superseded?: boolean;
 };
+
+function toBool(raw: unknown): boolean {
+  return raw === true || raw === 1 || raw === "1" || raw === "true";
+}
 
 function str(raw: unknown): string {
   if (raw === undefined || raw === null) return "";
@@ -72,12 +87,17 @@ export function validateSearchPageSearch(raw: Record<string, unknown>): SearchPa
     const v = str(raw.traits);
     if (v !== "") out.traits = v;
   }
+  // P6 R11 (D29-67): `?superseded=` decode, tolerant like every other route's
+  // own reader (`toBool` above) — absent/falsy -> omitted (the default-hide
+  // state), never thrown on a malformed value.
+  if ("superseded" in raw && toBool(raw.superseded)) out.superseded = true;
   return out;
 }
 
 /** The panel/query island's live state — plain sets (no tri-state, see the
- * file header). No `superseded`/`legacy` field (P4.5 D29-48 — search never
- * hides superseded content). */
+ * file header). `superseded` (P6 R11/D29-67) is a plain boolean, default
+ * `false` (hide by default), the direct `/search` counterpart of
+ * `BrowseFilterState.superseded`. */
 export interface SearchFilterState {
   query: string;
   category: ReadonlySet<string>;
@@ -85,6 +105,7 @@ export interface SearchFilterState {
   edition: ReadonlySet<string>;
   level: ReadonlySet<string>;
   traits: ReadonlySet<string>;
+  superseded: boolean;
 }
 
 export function emptySearchFilterState(): SearchFilterState {
@@ -95,6 +116,7 @@ export function emptySearchFilterState(): SearchFilterState {
     edition: new Set(),
     level: new Set(),
     traits: new Set(),
+    superseded: false,
   };
 }
 
@@ -120,6 +142,7 @@ export function searchToFilterState(search: SearchPageSearch): SearchFilterState
     edition: decodeSet(search.edition),
     level: decodeSet(search.level),
     traits: decodeSet(search.traits),
+    superseded: search.superseded === true,
   };
 }
 
@@ -136,6 +159,7 @@ export function filterStateToSearch(state: SearchFilterState): SearchPageSearch 
   if (level !== undefined) out.level = level;
   const traits = encodeSet(state.traits);
   if (traits !== undefined) out.traits = traits;
+  if (state.superseded) out.superseded = true;
   return out;
 }
 
@@ -148,7 +172,10 @@ export function isCleanSearchPageSearch(search: SearchPageSearch): boolean {
 /** `true` iff the state carries ANY real search criteria — a query string or
  * at least one filter selection. `/search` uses this to distinguish "nothing
  * to search yet" (a bare page load) from "searched, zero results" (M6's
- * empty state only applies to the latter — see `SearchPage.tsx`). */
+ * empty state only applies to the latter — see `SearchPage.tsx`).
+ * Deliberately does NOT count `superseded` — it's a visibility toggle on an
+ * existing search, not a search criterion of its own; toggling it with no
+ * query/filter selection still has nothing to search for. */
 export function hasAnyCriteria(state: SearchFilterState): boolean {
   return (
     state.query.trim() !== "" ||
@@ -161,10 +188,11 @@ export function hasAnyCriteria(state: SearchFilterState): boolean {
 }
 
 /** The Pagefind `search(term, {filters})` filter object for the current
- * state — one entry per non-empty dimension (OR within the array). P4.5
- * D29-48 (R3): NEVER sets a `superseded` filter — search always covers both
- * editions; the old `if (!state.legacy) out.superseded = ["false"]` line is
- * deleted outright, not renamed. */
+ * state — one entry per non-empty dimension (OR within the array), PLUS the
+ * `superseded` visibility filter (P6 R11/D29-67 amends P4.5 D29-48's "search
+ * always covers both editions" carve-out — `/search` now hides superseded
+ * content by default too, via the same `supersededFilter()` helper every
+ * other surface's wiring already used). */
 export function pagefindFilters(state: SearchFilterState): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   if (state.category.size > 0) out.category = [...state.category];
@@ -172,5 +200,7 @@ export function pagefindFilters(state: SearchFilterState): Record<string, string
   if (state.edition.size > 0) out.edition = [...state.edition];
   if (state.level.size > 0) out.level = [...state.level];
   if (state.traits.size > 0) out.traits = [...state.traits];
+  const superseded = supersededFilter(state.superseded);
+  if (superseded !== undefined) out.superseded = superseded;
   return out;
 }

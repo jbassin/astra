@@ -15,11 +15,14 @@
 // `SearchPageSearch`/`SearchFilterState` shape (not `BrowseSearch` —
 // D29-35 vs D29-36).
 //
-// P4.5 D29-48 (adversarial M1, R3's carve-out): search NEVER hides
-// superseded content by default, so there is no superseded/legacy field
-// here at all anymore — the whole prior two-phase SSR/live-read seam this
-// file used to carry is deleted outright, not adapted, along with the
-// deleted site-wide toggle it read from.
+// P4.5 D29-48 (adversarial M1)'s original R3 carve-out — search NEVER hides
+// superseded content by default — is AMENDED by P6 R11 (D29-67): `/search`
+// now hides superseded content by default too, matching every other
+// surface (browse/rules/sidebars). The filter-area reveal control below
+// (`SupersededSection`) mirrors `domain/browse/FacetPanel.tsx`'s own
+// D29-48 idiom (explainer copy + "Include superseded content" checkbox),
+// wired through `searchUrlState.ts`'s own `superseded` field/`?superseded=`
+// param rather than a re-adaptation of the deleted site-wide toggle.
 
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactElement } from "react";
 
@@ -179,6 +182,16 @@ export function SearchPage({
     });
   }
 
+  // P6 R11 (D29-67) — the reveal control's own setter: `superseded` is a
+  // plain boolean, not a multi-select dimension, so it gets its own tiny
+  // updater rather than being forced through `toggleDimension`'s Set shape.
+  function setSuperseded(next: boolean) {
+    onSearchChange((prev) => {
+      const prevState = searchToFilterState(prev);
+      return filterStateToSearch({ ...prevState, superseded: next });
+    });
+  }
+
   function handleClear() {
     setQueryText("");
     onSearchChange(() => ({}));
@@ -255,6 +268,7 @@ export function SearchPage({
             labelOf={(v) => v}
             onToggle={(v) => toggleDimension("traits", v)}
           />
+          <SupersededSection checked={state.superseded} onToggle={setSuperseded} />
         </aside>
 
         <div className="codex-listing-results">
@@ -348,6 +362,37 @@ function FilterSection({
           </li>
         ))}
       </ul>
+    </section>
+  );
+}
+
+// P6 R11 (D29-67) — the `/search` reveal control, mirroring
+// `domain/browse/FacetPanel.tsx`'s own `SupersededSection` idiom in spirit
+// (explainer copy + "Include superseded content" checkbox, same explicit
+// posture D29-48 established — not a bare "Show legacy" checkbox). A
+// separate, search-owned copy rather than an import: `FacetPanel.tsx`'s
+// version is wired to `BrowseFilterState`/`StateUpdater`, a different shape
+// than this island's own `SearchFilterState`/boolean setter.
+function SupersededSection({
+  checked,
+  onToggle,
+}: {
+  checked: boolean;
+  onToggle: (next: boolean) => void;
+}): ReactElement {
+  return (
+    <section className="codex-facet-section">
+      <h3 className="codex-facet-title">{checked ? "Including superseded" : "Current edition"}</h3>
+      <div className="codex-facet-superseded">
+        <p className="codex-callout-blue codex-facet-superseded-explainer">
+          Current edition &mdash; previous-edition content that was never remastered still shows;
+          &ldquo;Include superseded&rdquo; reveals replaced versions.
+        </p>
+        <label className="codex-facet-option">
+          <input type="checkbox" checked={checked} onChange={(e) => onToggle(e.target.checked)} />
+          <span className="codex-facet-option-label">Include superseded content</span>
+        </label>
+      </div>
     </section>
   );
 }
