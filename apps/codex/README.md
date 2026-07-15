@@ -119,7 +119,9 @@ exists, and a freshly-built index comes online with no server restart.
 > run in CI, a Docker build, or `vite build` (verified: `vp run -r build` only ever invokes
 > `vite build` for codex). Run it on the host via `just codex-search-index`, or as the last step
 > of `just codex-refresh` (transform → search index). A real run takes ~25–35s and produces a
-> ~50–55 MB bundle (fragments + index/filter chunks + the Pagefind runtime JS/wasm).
+> **203 MB** bundle (measured 2026-07-15, P5 sizing pass) — `fragment/` 184 MB (46,192 files,
+> 1:1 with entities), `index/` 18 MB, `filter/` 668 KB (fragments/index/filter chunks + the
+> Pagefind runtime JS/wasm). Corrects an earlier "~50–55 MB" estimate in this doc.
 
 **`buildSearchIndex()` `rm -rf`s `outDir` before every `writeFiles` call.** Pagefind's own
 `writeFiles` is NOT idempotent against a pre-existing output directory — its content-hashed
@@ -339,12 +341,13 @@ The URL param is renamed `legacy` → `superseded` (self-documenting parity with
 `IndexRow.superseded`/Pagefind's own `filters.superseded` key). **Back-compat, decode
 forever, not a deprecation window:** `legacy=1`/`legacy=true` still decodes as an alias for
 `superseded` at every validator that reads it; the encoder emits only `superseded`, so
-shared links naturally migrate on the next in-app navigation. One measured consequence,
-flagged for H rather than silently fixed: an old `?legacy=`-style link now takes a
-pre-existing TanStack Start search-param canonicalization hop — a 307 to the equivalent
-`?superseded=true` URL (confirmed byte-identical to a direct `?superseded=1` hit, modulo the
-per-request loader timestamp embedded in the hydration payload) — rather than serving
-in-place. **Search (Omnibar + `/search`) never hides superseded content by default** (R3's
+shared links naturally migrate on the next in-app navigation. **Correction (P5, D29-53
+scope pass): no HTTP redirect exists anywhere in codex** — an earlier draft of this doc
+claimed a "pre-existing 307" canonicalization hop; there isn't one. The alias decode is
+pure client-side (`src/domain/browse/urlState.ts`): an old `?legacy=`-style link renders
+in-place with `legacy` read as `superseded`, and the encoder simply re-emits `?superseded=`
+on the next in-app navigation (no server round trip, no redirect, no status code involved).
+**Search (Omnibar + `/search`) never hides superseded content by default** (R3's
 explicit carve-out) — verified against the real corpus: `spell/magic-missile` (`edition:
 legacy`, `remasteredAs: ["spell/force-barrage"]`, i.e. superseded) surfaces in a bare
 `?q=magic+missile` search with no param, edition pill visible. `/rules` keeps D29-40's
@@ -632,3 +635,52 @@ what's missing) rather than silently shipping a gap.
 dirs, and asserts zero hard failures, byte-identical output between the two runs, 100%
 Zod-valid entities, the `entities/` coverage set still parsing, and a couple of content
 spot-checks (the Heal pair's cross-links, Magic Missile's license + pairing).
+
+## Deploy (P5, D29-53..57)
+
+Codex ships as an SSR Compose service on the **heartwood-frontend model, not akasha's**:
+`apps/codex/Dockerfile` is corpus-free (D29-54) — the build is already request-time-only
+(D29-31: `vite.config.ts` has no content step, no `src/generated/`), so `docker build` needs
+config.kdl + app source only, and the resulting image is ~3 MB of `dist/` plus the runtime.
+The ~891 MB of corpus + Pagefind data never enters the image.
+
+**Read-only bind mounts, identical path (D29-53).** `config.kdl`'s `codex.data-path` is a
+host-absolute path consumed verbatim both by `pnpm start` on the host and by the container at
+request time, and plain config fields have no env-override mechanism (config-single-source
+forbids a per-environment fork). So the compose unit mounts the two data dirs at the *same*
+path inside the container as on the host — the same convention the Dagster pipeline volumes
+already use (`deploy/docker-compose.yml`), applied to a frontend for the first time:
+
+```
+/ruby/data/experiments/astra/apps/codex/data/corpus:/ruby/data/experiments/astra/apps/codex/data/corpus:ro
+/ruby/data/experiments/astra/apps/codex/data/search:/ruby/data/experiments/astra/apps/codex/data/search:ro
+```
+
+`data/snapshots/` (601 MB, runtime-unreferenced ingest input) and `data/tmp/` deliberately
+stay off the mount list — only the two dirs the running server actually reads.
+
+**The fixture fail-soft, in prod.** If a deploy's mounts are ever missing or a fresh host
+hasn't run `codex-refresh` yet, `corpusFs.ts`'s `resolveCorpusRoot()` falls back to the
+committed 2.1 MB `fixtures/entities/` corpus with a loud one-time `console.warn` — the site
+still serves (small, but correct-shaped), never an error page. A mis-mounted deploy looks
+like: the container is healthy, `/` and category pages 200, but listing counts are tiny (the
+fixture's handful of entities per category, not the real corpus's thousands) and the startup
+logs carry `[codex] no corpus at "..." — falling back to the fixture corpus`. The runtime
+image carries `fixtures/entities/` for exactly this reason (the one content-shaped COPY in
+the Dockerfile) — `findAppRoot()`'s marker-walk needs it reachable above `dist/`.
+
+**Refresh in prod (D29-57).** `just codex-refresh` (host-only, dirty-tree-guarded — see
+above) now ends with a conditional restart: if `astra-codex` is running, it restarts the
+container after the transform + search-index steps complete. `corpusFs.ts` caches the corpus
+per category per-process, so without a restart a live container would keep serving stale
+cached categories alongside freshly-refreshed ones; the Pagefind `/pagefind/*` staticMount
+needs no restart (it fails soft per-request and picks up a freshly-written index
+immediately) but rides along harmlessly. The restart is a no-op (skipped, not an error) when
+`astra-codex` isn't running or Docker isn't available.
+
+**Noindex, three layers (C-1).** (1) SSR HTML always carries `<meta name="robots"
+content="noindex">` (`src/routes/__root.tsx`, ships regardless of deploy). (2)
+`apps/codex/public/robots.txt` (`Disallow: /`, this slice) lands in `dist/client` and serves
+at `/robots.txt` through the existing static path. (3) The edge Caddy stanza sets
+`X-Robots-Tag: noindex` (S2 — `sites.caddyfile`, not part of this slice). No sitemap, ever;
+codex stays off ledger's landing grid by inaction.

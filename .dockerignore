@@ -16,3 +16,7 @@
 **/.ruff_cache
 **/.mypy_cache
 **/.DS_Store
+# codex's gitignored corpus/search data (~1.5 GB) and the artifacts/ bind-mount
+# staging dir — never needed in any build context (D29-54, 0029 P5 S1).
+apps/codex/data
+artifacts

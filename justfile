@@ -485,6 +485,19 @@ codex-refresh:
     echo ""
     echo "codex-refresh: done. report.md summary:"
     head -n 40 apps/codex/data/corpus/report.md
+    echo ""
+    # D29-57: corpusFs.ts caches the corpus per category per-process, so a running
+    # container keeps serving stale categories after a host-side refresh until it
+    # restarts — a restart is the cheap, deterministic flush (the Pagefind
+    # staticMount needs no restart, it's per-request fail-soft). Guarded so a fresh
+    # host / no-docker / not-yet-deployed environment never fails this recipe.
+    echo "codex-refresh: checking for a running astra-codex container (D29-57)..."
+    if command -v docker >/dev/null 2>&1 && [ -n "$(docker ps -q -f name='^astra-codex$' 2>/dev/null || true)" ]; then
+      echo "codex-refresh: astra-codex is running — restarting to flush corpus caches..."
+      (cd deploy && docker compose restart codex)
+    else
+      echo "codex-refresh: astra-codex not running (or docker unavailable) — skipping restart."
+    fi
 
 # Build the codex Pagefind search index (D29-34) from the current corpus at
 # apps/codex/data/corpus/ into apps/codex/data/search/pagefind/, served at

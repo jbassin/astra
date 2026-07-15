@@ -261,6 +261,51 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # --- codex (0029): the PF2e compendium/rules browser — SSR Compose service
+  # (Decision I), on the heartwood-frontend model (not akasha's): nothing
+  # content-shaped is baked into the image — the corpus + Pagefind search index
+  # arrive via read-only bind mounts, request-time reads (D29-31). D29-53: the two
+  # mounts are IDENTICAL host-path==container-path binds, the Dagster
+  # pipeline-volume convention applied to a frontend for the first time — codex's
+  # `codex.data-path` (config.kdl) is a host-absolute path consumed VERBATIM by
+  # both `pnpm start` on the host and this container, and plain config fields have
+  # no env-override mechanism, so identical-path is the only way to satisfy
+  # config-single-source without a per-environment fork. `data/snapshots/` (601 MB,
+  # runtime-unreferenced ingest input) and `data/tmp/` deliberately stay OUT of the
+  # container — only the two narrow dirs below. No `environment:` — no secrets, and
+  # the OTLP endpoint comes from config's in-cluster default. ---
+  codex:
+    build:
+      context: ..
+      dockerfile: apps/codex/Dockerfile
+      args:
+        APP: codex # the one knob in the templated frontend Dockerfile
+    image: astra-codex:local
+    container_name: astra-codex
+    # Node 24 runtime (R3, 0022 S7 — the runtime-exit recipe; build stage also Node 24 + pnpm, 0022 S11).
+    # node:24-slim has global fetch, so the healthcheck below needs no extra deps either.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    user: "1000:1000" # see weal-bot
+    # No PORT env — serviceName/port come from config.kdl (config-single-source);
+    # compose only maps the published host port below.
+    ports:
+      - "10374:10374" # codex SSR (astra range) — also reachable directly
+    # D29-53: identical-path read-only bind mounts (host path == container path).
+    # Both dirs already exist at this stable host path, produced by
+    # `just codex-refresh` outside artifacts/ — no artifacts-init change, no seed
+    # recipe. Fresh-host caveat: Docker auto-creates a missing bind source as root,
+    # which would serve the fixture corpus until `codex-refresh` runs once.
+    volumes:
+      - /ruby/data/experiments/astra/apps/codex/data/corpus:/ruby/data/experiments/astra/apps/codex/data/corpus:ro
+      - /ruby/data/experiments/astra/apps/codex/data/search:/ruby/data/experiments/astra/apps/codex/data/search:ro
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10374/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   # --- mouthpiece-frontend: the podcast read-surface (0012) — SSR Compose service
   # (Decision I), the third 0011-0013 frontend on the strider/akasha template. The
   # episode catalog (snapshot) is baked into the image; the 173 MB of episode audio is

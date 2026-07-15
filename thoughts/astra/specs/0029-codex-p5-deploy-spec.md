@@ -280,4 +280,15 @@ future phase only if H redirects).
 
 ## 8. Build record (grows per slice)
 
-_(empty — filled by the build orchestrator per slice with per-gate evidence)_
+- **S1 (2026-07-15, sonnet engineer + orchestrator review) — image + unit + noindex artifacts,
+  zero live effect.** `.dockerignore` +`apps/codex/data`+`artifacts` · `apps/codex/Dockerfile`
+  (heartwood shape, 17-manifest COPY, the commented fixtures departure) · compose `codex` block
+  (verbatim akasha shape; two D29-53 identical-path `:ro` mounts; no `environment:`) ·
+  `public/robots.txt` · `codex-refresh` D29-57 guarded restart tail · README deploy section +
+  both stale-claim corrections (Pagefind 203 MB; no-307). **Proofs:** `docker build` from repo
+  root succeeded corpus-free · no-mounts run served the FIXTURE corpus (fallback `console.warn`
+  observed, fixture-only `creature/grick` 200) · mounted run served the REAL corpus
+  (`creature/red-dragon-adult` marker ×14, `/spell` listing carries 2,604 + `fireball` which the
+  fixture lacks, `/robots.txt` 200 Disallow-all, zero fallback warns) · lint (oxlint
+  `--threads=4`, the standing OOM workaround) + format + ruff both green · control-char sweep
+  clean · test containers removed. Deviation: none.
