@@ -1,6 +1,17 @@
 # 0029 — codex P6: gate-H feedback round — spec
 
-**Status:** DRAFT (2026-07-15) — pending adversarial review before BUILT.
+**Status:** FINAL (2026-07-15) — **adversarially reviewed ×2 same day** (two independent reviewers,
+a data/transform lens + a tracks/UI lens): **5 blockers + 8 minors/nits, all repo-evidence-verified,
+all folded in.** The blockers: (1) ritual post-move count 114→**113** + the previously undocumented
+**fresh-slug mover** pattern (9 of the 55 movers land on fresh slugs with NO `@legacy` collision —
+now a required regression-test case, D29-59); (2) R9 affected-entity count 8→**10**, ids now named
+(D29-61a); (3) R9(b)'s `hasValue` blast radius escaped Track C's ownership row (`urlState.ts` range
+codec + `activeFilterPills.ts`) — ownership map amended + the `!`-bang URL forever-decode contract
+pinned (D29-61d, D29-71); (4) R10's 7-site wiring had NO data path as spec'd (`sources-index.json`
+is server-only, `/sources`-consumed) — **mechanism changed** to a client-safe pure module (D29-68);
+(5) Track B's all-5-glyph gate was unsatisfiable fixture-only (the fixture corpus has zero
+free-action entities) — gate re-based on a synthetic-cost unit test + Track A's fixture-regen
+selection list widened (D29-65, §4).
 **Scope doc:** `thoughts/shared/research/2026-07-15-codex-0029-p6-feedback-thoughts.md` — 11 items
 (R1–R11), each root-caused against the real repo/corpus by four parallel research agents, all
 decisions stakeholder-RESOLVED via two same-day `AskUserQuestion` rounds. This spec elaborates,
@@ -54,7 +65,7 @@ itself, not just to the scope doc that fed it):
    Making AoN primary would silently clobber that tier data for the ~2,000+ weapon/armor/shield
    entities that already carry it. The rich, genuinely-missing taxonomy (`"Runes"`, `"Consumables"`,
    `"Wands"`, `"Weapon Property Runes"`, …) lives **only** in AoN's own `equipment` category file
-   (verified: 34 distinct `item_category` values there, incl. **323 items tagged `"Runes"`**) — i.e.
+   (verified: 36 distinct `item_category` values there, incl. **323 items tagged `"Runes"`**) — i.e.
    exactly the corpus category (`equipment`, not `weapon`/`armor`/`shield`) where Foundry's
    `system.category` is sparsest (1,572/7,295 = 21.6% coverage today, verified) and AoN's taxonomy is
    richest. **Corrected design (D29-60): restore the repo's own already-documented D29-7 doctrine —
@@ -79,7 +90,7 @@ itself, not just to the scope doc that fed it):
    A full per-category level-coverage sweep (`python3` over every `data/corpus/<cat>/*.json`, all 88
    categories) shows a clean bimodal split: **19 categories at exactly 100%** coverage, **4 more at
    97.7–99.97%** (`equipment` 99.97%, `creature` 99.93%, `curse` 97.83%, `disease` 97.73% — these are
-   the genuine "1-2 items missing a key" gaps R9 targets), and **65 categories at flat 0%** (level is
+   the genuine "1-2 items missing a key" gaps R9 targets), and **64 categories at flat 0%** (level is
    not a concept there — `deity`, `language`, `rules`, …). One category sits in between:
    **`archetype` at 26.06%** (92/353) — most archetypes carry no level at all; defaulting the other
    261 to `0` would fabricate a false "level 0" for a category where level mostly isn't a real
@@ -87,7 +98,7 @@ itself, not just to the scope doc that fed it):
    real-corpus level coverage — reusing the repo's own existing precedent threshold** (`facetKeys.ts`
    already gates `itemCategory`/other facets on "the 40% floor," quoted verbatim in that file's own
    comments) rather than inventing a new one. This yields exactly **23** level-bearing categories
-   (the 19-at-100% + the 4 near-100%), cleanly excluding `archetype` and all 65 zero-coverage
+   (the 19-at-100% + the 4 near-100%), cleanly excluding `archetype` and all 64 zero-coverage
    categories. Full list in §2 D29-61(a).
 4. **R3's masthead-shape survey (mandated by the scope doc before pinning a strip rule) shows the
    naive "strip everything before the first divider" rule is unsafe — one sampled category group has
@@ -144,12 +155,24 @@ Continuing the ledger from P5's D29-58:
   `ritual/commune-with-nature.remasteredAs === ["ritual/commune"]` (the id-rewrite applies to the
   `remasteredAs`/`legacyOf` arrays too, set at pass 4/finalize from the aonId graph using the
   now-overridden finalId — this should fall out of the existing finalize logic automatically once the
-  override lands, but is NOT assumed; §4 S1 pins it as an explicit regression-test case). Ripple:
-  `spell/` 2,604 → **2,549** (verified count, corrects the scope doc's "~2,548"); `ritual/` 58 → 58
-  entities but now spanning both the 2 always-current + 56 restored-current + the pre-existing 56
-  now-`@legacy` legacy twins = **114** ritual entities total post-move (58 + 56 restored — the 56
-  legacy dockets that used to be the WHOLE `ritual/` dir stay, now paired with their restored
-  current-edition siblings). Nav/listing counts, Pagefind rebuild, and the default-hidden-superseded
+  override lands, but is NOT assumed; §4 Track A pins it as an explicit regression-test case).
+  **The SECOND edge pattern (adversarial data-lens blocker, the more common of the two — 9 cases vs
+  the commune pair's 1): fresh-slug movers.** Of the 55 movers, **46 collide same-slug** with an
+  existing ritual file (→ that sibling renames to `@legacy`, the atone worked example), but **9 are
+  renamed-on-remaster movers landing on FRESH slugs with NO `@legacy` collision at all**:
+  `binding-circle`, `collective-memories`, `demonic-pact`, `diabolic-pact`, `fortifying-brew`,
+  `gathering-call`, `phantasmal-custodians`, `planar-servitor`, `shadow-double` — their legacy
+  counterparts keep their OLD names untouched (e.g. `ritual/simulacrum` stays unsuffixed while
+  `spell/shadow-double` moves in as `ritual/shadow-double`). 10 existing ritual slugs receive no
+  incoming mover; +2 never-remastered. **A required regression-test case covers the fresh-slug
+  pattern (`shadow-double`/`simulacrum`) alongside the commune many-to-one case** — an
+  implementation that assumes every mover collides (or that every unsuffixed legacy ritual gains a
+  sibling) fails on 9 of 55. Ripple:
+  `spell/` 2,604 → **2,549** (verified count, corrects the scope doc's "~2,548"); `ritual/` 58 →
+  **113** (adversarially corrected from this spec's first-draft "114" — the count is 58 unchanged
+  existing files + 55 movers; the earlier "56 restored ⇒ 56 legacy twins" model was wrong on both
+  sides, per the collision/fresh-slug breakdown above). Nav/listing counts, Pagefind rebuild, and
+  the default-hidden-superseded
   browse view (which will now show ~58 current rituals, not 2) all fall out of this move with no
   separate code change (they're computed from `category`/`remasteredAs` at read time, not stored
   redundantly).
@@ -167,8 +190,11 @@ Continuing the ledger from P5's D29-58:
   the "Runes" complaint itself (a new `itemSubcategory` UI slot is optional polish, not required for
   the fix; if added, mirrors the itemCategory `Part` pattern verbatim). Ripple: **323** equipment
   entities gain `itemCategory: "Runes"` (verified count from the real AoN `equipment.json` snapshot);
-  the remaining equipment-category entities lacking a Foundry value gain whichever of the 34 real
-  AoN `item_category` values apply (`Consumables`, `Wands`, `Staves`, `Spellhearts`, …).
+  the remaining equipment-category entities lacking a Foundry value gain whichever of the 36 real
+  AoN `item_category` values apply (`Consumables`, `Wands`, `Staves`, `Spellhearts`, … — incl. the
+  legitimate "Weapons"/"Armor"/"Shields" values AoN's `equipment.json` puts on
+  ammunition/accessories, 481/250/232 — expected on the `/equipment` Category facet, flagged for H,
+  not a bug).
 - **D29-61 — R9: level defaults, bounds-imply-hasValue, checkbox removal.** Three parts, landing in
   two DIFFERENT tracks (ingest default in Track A; engine semantics + UI removal in Track C, per
   §4's ownership map — this is the ONE R-item whose implementation spans two tracks, called out
@@ -182,12 +208,12 @@ Continuing the ledger from P5's D29-58:
   forward-safety) plus `equipment`, `creature`, `curse`, `disease` (the 4 genuinely-affected
   categories) — defaults to `0` at ingest (`emit.ts` or wherever `level` is finalized). `archetype`
   (26.06%) and every 0%-coverage category are explicitly EXCLUDED — no default applied, `level`
-  stays `undefined` for them, matching today's behavior exactly. Affects exactly **8** real entities
-  at this snapshot: `equipment/adventurers-pack`, `equipment/cartographers-kit`,
-  `creature/<5 unresolved ids — pinned at implementation from a fresh `level` grep over `creature/`>`,
-  `curse/<2>`, `disease/<1>` (verified counts; exact creature/curse/disease ids are cheap to re-derive
-  at implementation time via the same query used for this spec's own verification, not hand-listed
-  here to avoid staleness against snapshot drift).
+  stays `undefined` for them, matching today's behavior exactly. Affects exactly **10** real
+  entities at this snapshot (adversarially corrected from this spec's first-draft "8" — the
+  first draft's own category sum, 2+5+2+1, already said 10; the reviewers resolved the ids):
+  `equipment/adventurers-pack`, `equipment/cartographers-kit` · `creature/flappy`,
+  `creature/daji-level-5`, `creature/daji-level-3`, `creature/twinsprout`, `creature/daji-level-1` ·
+  `curse/grave-curse`, `curse/grave-curse@legacy` · `disease/addiction`.
   (b) **`filterEngine.ts`'s `matchesRange` (Track C):** currently `if (n === null || n === undefined)
   return !filter.hasValue` (filterEngine.ts:127-130) — a MISSING row passes unless the separate
   `hasValue` checkbox is explicitly checked. New rule: a missing row is excluded whenever the filter
@@ -199,11 +225,25 @@ Continuing the ledger from P5's D29-58:
   (FacetPanel.tsx:128-134) is deleted; its `missing > 0` counter text is folded into the min/max
   `Input` placeholders' existing pattern (no separate UI element needed — the missing-count context
   was informational, not actionable, once the checkbox itself is gone).
+  (d) **The `hasValue` URL-codec contract (adversarial tracks-lens blocker — the removal's blast
+  radius reaches `urlState.ts:163,171`, the range codec's `!` bang suffix, and
+  `activeFilterPills.ts:43`, neither of which the first-draft ownership map assigned to Track C):**
+  the range-param decoder **TOLERATES and IGNORES a trailing `!`** (never errors — it's now
+  redundant, since any typed bound implies has-value under (b)); the encoder **NEVER emits it**.
+  This is the repo's established forever-decode posture (the `?legacy=` alias precedent, P4.5
+  D29-48) applied to the same class of problem: old shared links keep working, the canonical form
+  migrates on the next in-app navigation. `urlState.test.ts` expectations update accordingly
+  (decode-tolerant asserts added, emit asserts drop the bang). Ownership resolution is recorded in
+  D29-71: `urlState.ts`+`urlState.test.ts` move INTO Track C's row (the browse URL codec is
+  semantically C's filter-semantics work), and `activeFilterPills.ts` joins the SHARED C-first
+  rebase set (C makes the one-line `hasValue` removal there; D rebases its abbreviation edits on
+  top).
 - **D29-62 — R3: structural masthead strip + facet-header enrichment (one change, ingest+render
   together, BOTH halves in Track A — one contract, one track; splitting the strip from its
   enrichment across owners would leave an interim state where content is stripped but not yet
   re-surfaced, §4).** Ingest-time
-  strip (not render-skip — chosen because `build-search.ts:89`'s `collectText(entity.body)` walks
+  strip (not render-skip — chosen because `apps/codex/scripts/build-search.ts:89`'s
+  `collectText(entity.body)` walks
   the raw body tree directly for Pagefind excerpts, verified by reading the file; a render-skip
   would leave masthead text leaking into every search excerpt, reproducing the exact duplication bug
   one layer down). Algorithm (general across every category group, needs no per-category field
@@ -290,7 +330,8 @@ Continuing the ledger from P5's D29-58:
   footer-text assertion today (grepped, zero hits) — no test update needed for the deletion itself.
   `EntityPage` goldens (`goldens.test.tsx`) render the bare `<EntityPage>` component via
   `renderToStaticMarkup`, never `__root.tsx`'s layout — confirmed the footer deletion cannot touch
-  any golden.
+  any golden. **Also deletes the orphaned `.site-foot` CSS** (`globals.css:315` + its references at
+  `:205`/`:521`) — same track (B owns both `__root.tsx` and `globals.css`), no dangling dead rules.
 - **D29-67 — R11: search hides superseded by default (amends P4.5's D29-48/R3 carve-out).** Re-add
   `superseded?: boolean` to `SearchPageSearch`/`SearchFilterState`
   (`apps/codex/src/domain/search/searchUrlState.ts:33-40,81-87` — both types currently have neither
@@ -309,36 +350,48 @@ Continuing the ledger from P5's D29-58:
   visibility was). **Never-remastered legacy content is unaffected** (its `superseded` computed
   field is `false` — `(entity.remasteredAs?.length ?? 0) > 0` — so it was never hidden and stays
   visible under the new default too, exactly like every other surface).
-- **D29-68 — R10: source-name abbreviations.** New optional field
-  `abbreviation?: string` on `SourceIndexEntrySchema` (`apps/codex/src/schema/sourcesIndex.ts:37-47`,
-  currently `.strict()` — the new field is added to the schema object, kept optional since a handful
-  of genuinely-uncurateable "Other"-bucket titles may legitimately lack one at ship time).
-  Population, `sourcesIndexBuild.ts`: **two-tier** — (1) a hand-curated map for the **243**
-  AoN-known (`productLine`-carrying) books, keyed on the exact normalized `book` string, community-
-  convention codes (CRB/APG/SoM/G&G/…, curated by an engineer at implementation time, every entry
-  hand-reviewable in one committed file — e.g. `src/ingest/sourceAbbreviations.ts`, a flat
-  `Record<string,string>` — not generated, not inferred); (2) a **stopword-aware title-initialism
-  generator** for the **253** "Other"-bucket books (verified: **145** are `Pathfinder Society
-  Scenario #N-NN: <title>` — corrects the scope doc's "146" by one, re-counted directly off the real
-  `sources-index.json`'s 496 rows — the remaining 108 are numbered APs/Bounties/one-offs), in the
-  stakeholder's named `PS:ATG`-style: product-line-prefix + colon + a stopword-filtered initialism
-  of the title tokens after the `#N-NN:` numbering (dropping `a`/`the`/`of`/`and`/… per the
-  standard stopword list already implicit in the repo's own title-casing/slug conventions
-  elsewhere), with a **map-based override slot** for collisions/ugly auto-generated results (same
-  `sourceAbbreviations.ts` file, so both curation tiers are one artifact) — every generated entry
-  hand-reviewed once at implementation time, not shipped blind. A collision test asserts no two
-  books in the final `sources-index.json` share an `abbreviation` value. **Compact-surface split
-  (pinned exactly, per the scope doc's own instruction):** the **7 distinct rendering components**
-  confirmed via grep to read `source.book` for display (`BrowseListing.tsx` row + collision
-  disambiguator, `FacetPanel.tsx`'s Source `CoreEnumSection`, `activeFilterPills.ts`'s Source pill,
-  `RulesTree.tsx`/`RulesLayout.tsx`'s book section headers/breadcrumb, `Omnibar.tsx`/`SearchPage.tsx`
-  result rows — `SearchPage.tsx`'s inline `· {item.book}` line included) use `abbreviation` when
-  present, falling back to the full `book` string when absent (never a blank). **`citation.tsx`
-  (the entity-page citation line) and `SourcesIndexView.tsx`'s book headings keep the FULL name**
-  (scope doc's own pin) — `citation.tsx` is part of `EntityPage`, so this also means **R10 touches
-  zero entity-page goldens** (verified: none of the 6 flagship golden entities' Citation lines
-  change). `SourcesIndexView` may ADDITIONALLY show the abbreviation as a small secondary label next
-  to the full heading (implementer's call, not required) — the full name stays primary either way.
+- **D29-68 — R10: source-name abbreviations, delivered as a client-safe pure module (MECHANISM
+  CHANGED at adversarial review — the first draft's `sources-index.json` schema-field design had NO
+  data path to 6 of its 7 display sites: the index is server-only, loaded at
+  `corpusFs.ts:202-215` and consumed exclusively by `/sources`; threading `abbreviation` to the
+  listing/pills/rules/search surfaces would have required edits to
+  `src/server/{corpusFns,listingData,rulesTreeData}.ts` + `scripts/build-search.ts` — files no
+  track owns).** The abbreviation is a pure function of the book-name string, so it ships as a
+  **new client-safe pure module `src/domain/sources/abbreviations.ts`** exporting
+  `abbreviateBook(book: string): string | undefined` — imported DIRECTLY by the display components
+  at all 7 sites, zero server/scripts/index plumbing. **`sourcesIndexBuild.ts` and
+  `sourcesIndex.ts` are UNTOUCHED** (no schema field, no build-step change). Inside the module,
+  the curation content is unchanged from the original design: **two-tier** — (1) a hand-curated map
+  for the **243** AoN-known (`productLine`-carrying) books, keyed on the exact normalized `book`
+  string, community-convention codes (CRB/APG/SoM/G&G/…, curated by an engineer at implementation
+  time, every entry hand-reviewable in the one committed module — a flat `Record<string,string>`,
+  not generated, not inferred); (2) a **stopword-aware title-initialism generator** for the **253**
+  "Other"-bucket books (verified: **145** are `Pathfinder Society Scenario #N-NN: <title>` —
+  corrects the scope doc's "146" by one, re-counted directly off the real `sources-index.json`'s
+  496 rows — the remaining 108 are numbered APs/Bounties/one-offs), in the stakeholder's named
+  `PS:ATG`-style: product-line-prefix + colon + a stopword-filtered initialism of the title tokens
+  after the `#N-NN:` numbering, with a **map-based override slot** for collisions/ugly generated
+  results (same module, both tiers one artifact) — every generated entry hand-reviewed once, not
+  shipped blind. `abbreviateBook` returns `undefined` for a book neither tier covers (display
+  falls back to the full name, never a blank). **Collision test:** runs over a **committed fixture
+  of the real 496 book names** (the book NAMES are not gitignored — only the built index is; the
+  fixture is a small test asset) asserting no two books map to the same abbreviation;
+  **Integration re-verifies the fixture still matches the freshly regenerated
+  `sources-index.json`'s book list and fails loudly on drift** (so the fixture can't silently rot
+  against future refreshes). **Accepted cost:** the module ships in the client bundle (~tens of
+  KB for 496 entries + the generator) — recorded as an accepted trade for zero plumbing.
+  **Compact-surface split (pinned exactly, per the scope doc's own instruction):** the **7
+  distinct rendering components** confirmed via grep to read `source.book` for display
+  (`BrowseListing.tsx` row + collision disambiguator, `FacetPanel.tsx`'s Source `CoreEnumSection`,
+  `activeFilterPills.ts`'s Source pill, `RulesTree.tsx`/`RulesLayout.tsx`'s book section
+  headers/breadcrumb, `Omnibar.tsx`/`SearchPage.tsx` result rows — `SearchPage.tsx`'s inline
+  `· {item.book}` line included) call `abbreviateBook` and use its value when present, full name
+  when `undefined`. **`citation.tsx` (the entity-page citation line) and `SourcesIndexView.tsx`'s
+  book headings keep the FULL name** (scope doc's own pin) — `citation.tsx` is part of
+  `EntityPage`, so this also means **R10 touches zero entity-page goldens** (verified: none of the
+  6 flagship golden entities' Citation lines change). `SourcesIndexView` may ADDITIONALLY show the
+  abbreviation as a small secondary label next to the full heading (implementer's call, not
+  required) — the full name stays primary either way.
 - **D29-69 — R7: `2e.iridi.cc` alias stanza.** Mirror `heart.iridi.cc`'s existing pattern
   (`sites.caddyfile:73-76`) exactly: `2e.iridi.cc { import astra_site; header X-Robots-Tag noindex;
   reverse_proxy localhost:10374 }` (the noindex header matches the existing `codex.iridi.cc` stanza's
@@ -378,10 +431,11 @@ Continuing the ledger from P5's D29-58:
     and hand-reviewing the diff once** — never by hand-merging golden HTML.
   - **Pinned merge order: A → B → C → D, then Integration.** A first (C's R9(b) semantics depend on
     A's R9(a) ingest default, §6; A's fixture regen is the base every other track's tests should
-    ultimately run against). C before D because they overlap on three files (`FacetPanel.tsx`,
-    `Omnibar.tsx`, `SearchPage.tsx` — C changes their filter/search logic, D adds abbreviation
-    display to the same components); **D rebases onto the merged A+B+C result before its own
-    merge** and resolves those three files' conflicts as the rebase's explicit job. B is
+    ultimately run against). C before D because they overlap on FOUR files (`FacetPanel.tsx`,
+    `Omnibar.tsx`, `SearchPage.tsx`, `activeFilterPills.ts` — C changes their filter/search logic
+    incl. the one-line `hasValue` removal in the pills helper, D adds abbreviation display to the
+    same components); **D rebases onto the merged A+B+C result before its own merge** and resolves
+    those four files' conflicts as the rebase's explicit charter. B is
     order-insensitive (zero file overlap with anyone) and slots second only for merge-log
     readability.
   - **Each track lands its own conventional commits, CI-green (fixture-only for B/C/D), BEFORE
@@ -392,7 +446,7 @@ Continuing the ledger from P5's D29-58:
 
 | Component | Change |
 |---|---|
-| `apps/codex/src/ingest/join.ts` | R4 ritual-category override (pass 2) + regression test for the commune many-to-one case |
+| `apps/codex/src/ingest/join.ts` | R4 ritual-category override (pass 2) + regression tests for BOTH edge patterns (commune many-to-one; shadow-double/simulacrum fresh-slug) |
 | `apps/codex/src/schema/entity.ts` | + `facets.itemSubcategory` (R8), + top-level `mastheadExtra` (R3) |
 | `apps/codex/src/ingest/foundryEntities.ts` (or the join-time equipment-facet step, whichever owns it) | R8 AoN item_category/subcategory fill-gap threading |
 | `apps/codex/src/ingest/emit.ts` (or wherever `level` is finalized) | R9(a) level→0 default for the 23 level-bearing categories |
@@ -400,15 +454,15 @@ Continuing the ledger from P5's D29-58:
 | `apps/codex/src/domain/render/facetHeader.tsx` | R3 `mastheadExtra` rendering in all 4 header components |
 | `apps/codex/src/styles/globals.css` | R1 table CSS, R2 `white-space: pre-line` |
 | `apps/codex/src/ui/actionGlyph.tsx` | R5 real glyph SVG paths (asset swap, 3 sites) |
-| `apps/codex/src/routes/__root.tsx` | R6 footer deletion |
+| `apps/codex/src/routes/__root.tsx` | R6 footer deletion (+ the orphaned `.site-foot` CSS in `globals.css`) |
 | `apps/codex/src/domain/search/searchUrlState.ts` | R11 `superseded` field re-added |
 | `apps/codex/src/domain/search/Omnibar.tsx`, `SearchPage.tsx` | R11 `supersededFilter()` wired in + reveal control |
 | `apps/codex/src/domain/browse/filterEngine.ts` | R9(b) bounds-imply-hasValue, `hasValue` field removed |
 | `apps/codex/src/domain/browse/FacetPanel.tsx` | R9(c) checkbox removed |
-| `apps/codex/src/schema/sourcesIndex.ts` | R10 `abbreviation` field |
-| `apps/codex/src/ingest/sourcesIndexBuild.ts` | R10 abbreviation population (two-tier) |
-| `apps/codex/src/ingest/sourceAbbreviations.ts` (new) | R10 curated map + generator overrides |
-| `apps/codex/src/domain/browse/BrowseListing.tsx`, `FacetPanel.tsx`, `activeFilterPills.ts`, `domain/rules/{RulesTree,RulesLayout}.tsx`, `domain/search/{Omnibar,SearchPage}.tsx` | R10 abbreviation display wiring (7 sites) |
+| `apps/codex/src/schema/sourcesIndex.ts`, `src/ingest/sourcesIndexBuild.ts` | **UNTOUCHED** (D29-68 mechanism change — no schema field, no build-step change) |
+| `apps/codex/src/domain/sources/abbreviations.ts` (new, client-safe) | R10 `abbreviateBook()` — curated 243-map + PS:ATG generator + overrides + the committed 496-book-name test fixture |
+| `apps/codex/src/domain/browse/urlState.ts` (+ test) | R9(d) `!`-bang decode-tolerant/never-emit codec contract |
+| `apps/codex/src/domain/browse/BrowseListing.tsx`, `FacetPanel.tsx`, `activeFilterPills.ts`, `domain/rules/{RulesTree,RulesLayout}.tsx`, `domain/search/{Omnibar,SearchPage}.tsx` | R10 abbreviation display wiring (7 sites, direct `abbreviateBook` imports) |
 | `apps/codex/fixtures/**` | corpus-shaped fixture regen (Track A: R4/R8/R9 + R3, one regen) |
 | `apps/codex/goldens/*.html` | ONE authoritative regen at Integration (merged HEAD); track-local regens allowed-but-flagged (D29-71) |
 | `sites.caddyfile` | + `2e.iridi.cc` stanza (R7) |
@@ -416,25 +470,27 @@ Continuing the ledger from P5's D29-58:
 
 ## 4. Tracks (4 parallel + 1 serial integration; each track CI-green, committed, conventional — D29-71)
 
-**File-ownership map (binding — one engineer per track, no edits outside the row; the three known
-overlaps are D-rebases-onto-C's-result by construction, D29-71):**
+**File-ownership map (binding — one engineer per track, no edits outside the row; the four known
+overlaps are D-rebases-onto-C's-result by construction, D29-71; amended at adversarial review —
+`urlState.ts` into C, `activeFilterPills.ts` into the shared set, D's row rebuilt around the
+D29-68 mechanism change):**
 
 | Track | Tree | Files owned (exclusive unless noted) |
 |---|---|---|
-| **A** | **main tree** (the only tree with the gitignored `data/{corpus,snapshots,search}`) | `src/ingest/**` EXCEPT `sourcesIndexBuild.ts` + the new `sourceAbbreviations.ts` (Track D's) · `src/schema/**` EXCEPT `sourcesIndex.ts` (Track D's) · `src/domain/render/facetHeader.tsx` · `src/domain/render/entityPage.tsx` · `fixtures/**` · `data/**` (untracked; main-tree-only by construction) |
+| **A** | **main tree** (the only tree with the gitignored `data/{corpus,snapshots,search}`) | `src/ingest/**` · `src/schema/**` (both wholly A's after the D29-68 mechanism change — `sourcesIndex.ts`/`sourcesIndexBuild.ts` are untouched by anyone this phase) · `src/domain/render/facetHeader.tsx` · `src/domain/render/entityPage.tsx` · `fixtures/**` · `data/**` (untracked; main-tree-only by construction) |
 | **B** | worktree (fixture-only) | `src/styles/globals.css` · `src/ui/actionGlyph.tsx` + the new glyph-asset provenance record (D29-65) · `src/routes/__root.tsx` |
-| **C** | worktree (fixture-only) | `src/domain/search/**` (searchUrlState/pagefindClient wiring, Omnibar/SearchPage filter logic) · `src/domain/browse/filterEngine.ts` · `src/domain/browse/FacetPanel.tsx` |
-| **D** | worktree (fixture-only) | `src/schema/sourcesIndex.ts` · `src/ingest/sourcesIndexBuild.ts` · NEW `src/ingest/sourceAbbreviations.ts` · `src/domain/browse/BrowseListing.tsx` · `src/domain/browse/activeFilterPills.ts` · `src/domain/rules/{RulesTree,RulesLayout}.tsx` · **SHARED (rebase-resolved, C-first)**: the R10 display lines in `Omnibar.tsx`/`SearchPage.tsx`/`FacetPanel.tsx` |
+| **C** | worktree (fixture-only) | `src/domain/search/**` (searchUrlState/pagefindClient wiring, Omnibar/SearchPage filter logic) · `src/domain/browse/filterEngine.ts` · `src/domain/browse/FacetPanel.tsx` · `src/domain/browse/urlState.ts` + `urlState.test.ts` (the range codec's `!` bang, D29-61d — moved into C at adversarial review; the browse URL codec is semantically C's filter-semantics work) · the one-line `hasValue` removal in `activeFilterPills.ts` (SHARED, see D's row) |
+| **D** | worktree (fixture-only) | NEW `src/domain/sources/abbreviations.ts` + its test + the committed 496-book-name fixture (D29-68's reviewed mechanism — `sourcesIndex.ts`/`sourcesIndexBuild.ts` are now UNTOUCHED and owned by no track) · `src/domain/browse/BrowseListing.tsx` · `src/domain/rules/{RulesTree,RulesLayout}.tsx` · **SHARED (rebase-resolved, C-first)**: the R10 display lines in `Omnibar.tsx`/`SearchPage.tsx`/`FacetPanel.tsx`/`activeFilterPills.ts` |
 | **INT** | main tree, serial | `goldens/*.html` (authoritative) · `sites.caddyfile` · `apps/codex/README.md` · the merges themselves |
 
 **Corpus/search-index restriction (D29-71, restated where implementers will read it):** only Track
 A and Integration run `transform` or `just codex-search-index` — worktrees have **no `data/`**
 (gitignored; a worktree materializes tracked files only). Tracks B/C/D develop and gate against the
 committed fixture corpus exclusively, which is the SAME hermeticity bar the repo already enforces
-(D29-12; the P4.5 S6 proof that the full suite passes fixture-only). Track D's real
-`sources-index.json` regen therefore happens at Integration's final transform, not in D's worktree
-— D's own gate is unit-level (fixture/synthetic inputs through `buildSourcesIndex`), which is
-sufficient because the abbreviation logic is a pure build-time function of the book list.
+(D29-12; the P4.5 S6 proof that the full suite passes fixture-only). Track D needs no index at all
+under the reviewed D29-68 mechanism (`abbreviateBook` is a pure client-side function; its collision
+test runs over the committed 496-book-name fixture) — Integration's only D-specific duty is the
+fixture-vs-fresh-index drift re-verification (D29-68).
 
 **Golden policy (D29-71, restated):** ONE authoritative golden regen at Integration, at merged
 HEAD. Tracks A and B will each drift goldens (A: masthead strip, all 6; B: glyph swap, the 3
@@ -444,7 +500,8 @@ once and hand-reviews the combined structural diff (masthead-strip + glyph paths
 CSS — and nothing else; anything else in that diff is a regression to chase, not accept).
 
 - **TRACK A — ingest/transform, main tree (D29-59, D29-60, D29-61(a), D29-62).** R4's `join.ts`
-  override + repoint verification + the commune-many-to-one regression test; R8's
+  override + repoint verification + BOTH regression-test cases (the commune many-to-one AND the
+  fresh-slug mover pattern, `shadow-double`/`simulacrum` — D29-59); R8's
   item_category/subcategory fill-gap threading (`equipment` category only) + `itemSubcategory`
   schema field; R9(a)'s level→0 default for the 23 level-bearing categories; R3's structural
   masthead strip + `mastheadExtra` schema field + its rendering in the facet-header components
@@ -453,14 +510,29 @@ CSS — and nothing else; anything else in that diff is a regression to chase, n
   the existing committed snapshots — no re-fetch, nothing upstream changed), determinism proven
   **3×** (three full transform runs, `diff -r` empty pairwise — the P1-established gate,
   `thoughts/shared/memory/codex-0029-gotchas.md`'s own "D-gate 3×" precedent), fixture regen
-  (`scripts/extract-fixture.ts` off the fresh transform), host-only Pagefind rebuild
+  (`scripts/extract-fixture.ts` off the fresh transform) — **whose selection list MUST explicitly
+  pull in: a free-action-cost entity (the current fixture corpus has ZERO — Track B's glyph gate
+  and Integration's checks need a real specimen), the commune many-to-one pair, and a fresh-slug
+  ritual mover (`shadow-double`/`simulacrum`)** — named specimens, mirroring how R1's table
+  samples are named, so the downstream tracks' deferred proofs have real material; then the
+  host-only Pagefind rebuild
   (`just codex-search-index`) last — the R4 category move re-homes several thousand documents'
   index category AND the R3 strip changes every entity's excerpt text, so the index rebuild is
   doubly mandatory. Track-local golden regen allowed + flagged (all 6 will drift from the masthead
-  strip). Gate: `spell/` = 2,549 (not 2,604); `ritual/` = 114; `ritual/commune-with-nature`'s
-  `remasteredAs` reads `["ritual/commune"]`; `equipment/` gains 323 `Runes`-tagged entities and
-  zero weapon/armor/shield entities lose their existing `itemCategory`; the 8 R9-affected entities
-  (§ D29-61a) read `level: 0`; `archetype`'s 261 no-level entities UNCHANGED (still `undefined`);
+  strip). Gate: `spell/` = 2,549 (not 2,604); `ritual/` = **113** (58 unchanged + 55 movers,
+  D29-59's corrected breakdown: 46 same-slug colliders → `@legacy` siblings, 9 fresh-slug movers,
+  10 no-incoming slugs, +2 never-remastered); `ritual/commune-with-nature`'s
+  `remasteredAs` reads `["ritual/commune"]`; `ritual/shadow-double` exists with NO
+  `ritual/shadow-double@legacy` and `ritual/simulacrum` stays unsuffixed (the fresh-slug case);
+  `equipment/` gains 323 `Runes`-tagged entities and
+  zero weapon/armor/shield entities lose their existing `itemCategory`; **the R8 fill-gap will
+  ALSO legitimately surface "Weapons" (481) / "Armor" (250) / "Shields" (232) as `/equipment`
+  Category facet values** (AoN's `equipment.json` tags ammunition/accessories with those
+  category-name values) alongside the separate weapon/armor/shield corpus categories — expected,
+  real signal, not a bug; flagged forward to the H review so it isn't treated as a surprise; the
+  10 R9-affected entities
+  (§ D29-61a, named there) read `level: 0`; `archetype`'s 261 no-level entities UNCHANGED (still
+  `undefined`);
   masthead spot checks — `spell/heal` + `armor/breastplate` (or equivalent) show non-Source
   masthead fields (Target/Bloodline; AC Bonus/Dex Cap/Check Penalty/Speed Penalty/Strength/Group)
   rendered ONCE in the structured facet header, not duplicated in the body, and `ancestry/human`
@@ -470,53 +542,77 @@ CSS — and nothing else; anything else in that diff is a regression to chase, n
 - **TRACK B — render/CSS + glyphs + footer, worktree (D29-63, D29-64, D29-65, D29-66).** R1's
   table CSS + R2's white-space rule (`globals.css`); R5's asset fetch (recorded provenance) +
   outline-to-SVG-path conversion + the 3-site path swap in `src/ui/actionGlyph.tsx`; R6's footer
-  deletion (`__root.tsx`). Track-local golden regen allowed + flagged (the 3 SVG-bearing flagship
+  deletion (`__root.tsx` + the orphaned `.site-foot` CSS at `globals.css:315` and its `:205`/`:521`
+  references — both files are B's). Track-local golden regen allowed + flagged (the 3 SVG-bearing
+  flagship
   goldens — `spell-heal.html`/`class-investigator.html`/`creature-dragon.html`, verified via
   `grep -l "svg\|<path"` — drift from the glyph swap; R1/R2 are pure CSS and R6 never touches
-  `EntityPage`, so nothing else drifts). Gate (fixture-corpus): every `ActionCost` value
-  (`1`/`2`/`3`/`reaction`/`free`) renders the real traced glyph shape (visual spot check, not just
-  "an SVG exists"); `role="img"`/`aria-label`/`<title>` unchanged (accessibility parity); zero
+  `EntityPage`, so nothing else drifts). Gate (fixture-corpus + unit — **the glyph gate is a
+  component UNIT test, adversarially corrected: the fixture corpus has NO free-action entity, so
+  "all 5 costs on fixture entities" was unsatisfiable as first drafted**): a unit test renders
+  `ActionGlyph` with all 5 synthetic `ActionCost` values
+  (`1`/`2`/`3`/`reaction`/`free`) and asserts the real traced glyph shapes (no fixture entity
+  needed), PLUS a visual spot check on whatever costs the fixture corpus does carry;
+  `role="img"`/`aria-label`/`<title>` unchanged (accessibility parity); zero
   prop-signature changes at any of the 4 call sites (`statblock.tsx`, `facetHeader.tsx`,
   `nodes.tsx`, `text.ts`); a fixture table-bearing entity shows a bordered/zebra'd table; a
   fixture degree-of-success entity renders its blocks on separate visual lines; the footer element
-  is wholly gone from `__root.tsx` (grep-provable). The vellum-render PNG rasterization check +
-  real-corpus spot checks (`spell/shining-starlight-attack`, `spell/nightmare`) defer to
+  AND the `.site-foot` rules are wholly gone (grep-provable). The vellum-render PNG rasterization
+  check +
+  real-corpus spot checks (`spell/shining-starlight-attack`, `spell/nightmare`, and a real
+  free-action entity — present in the regenerated fixture per Track A's selection list, and in the
+  real corpus at Integration) defer to
   Integration (no real corpus in the worktree). Must NOT touch: ingest, schema, search, browse
   engine, abbreviations.
-- **TRACK C — search + filter semantics, worktree (D29-61(b,c), D29-67).** R11: `superseded`
+- **TRACK C — search + filter semantics, worktree (D29-61(b,c,d), D29-67).** R11: `superseded`
   field re-added to `SearchPageSearch`/`SearchFilterState`, `supersededFilter()` wired into
   `Omnibar.tsx`/`SearchPage.tsx`'s Pagefind calls, the `/search` reveal control, `?superseded=`
   decode. R9(b): `matchesRange`'s bounds-imply-hasValue rewrite, `hasValue` removed from
   `RangeFilter` entirely. R9(c): the "Must have a value" checkbox deleted from `FacetPanel.tsx`.
+  R9(d): the `urlState.ts` range codec's `!`-bang handling (decode-tolerant forever, never emitted
+  — D29-61d) + `urlState.test.ts` expectation updates; the one-line `hasValue` removal in
+  `activeFilterPills.ts:43` (the shared-set file — C's edit is first, D rebases on top).
   Gate (fixture-corpus + unit): `supersededFilter` merge covered by unit tests over the Pagefind
   filter-object shape (the worktree has no real `/pagefind` bundle — the live "magic missile"
   proof defers to Integration); a fixture browse listing with a typed level bound excludes
   missing-level rows with no checkbox anywhere; the checkbox gone from every `FacetPanel` render
-  (grep + DOM assert); zero `hasValue` references remain (grep-provable); `?superseded=` decode
-  round-trips on `/search`. Must NOT touch: ingest, schema (`searchUrlState`'s own types are C's,
-  `sourcesIndex.ts` is D's), CSS, glyphs, the R10 display lines it will conflict with (that's D's
+  (grep + DOM assert); zero `hasValue` references remain repo-wide incl. `urlState.ts` and
+  `activeFilterPills.ts` (grep-provable — the adversarially-caught escape sites); a URL carrying a
+  legacy `!` bang range param decodes identically to the bang-less form and the encoder never
+  emits one (codec round-trip test); `?superseded=` decode
+  round-trips on `/search`. Must NOT touch: ingest, schema (`searchUrlState`'s own types are C's),
+  CSS, glyphs, the R10 display lines it will conflict with (that's D's
   rebase to resolve, not C's to pre-empt).
-- **TRACK D — abbreviations, worktree (D29-68).** `sourcesIndex.ts`'s `abbreviation` field;
-  `sourcesIndexBuild.ts`'s two-tier population; the new `sourceAbbreviations.ts` (243 hand-curated
-  entries + the PS:ATG-style stopword-aware initialism generator for the 253 "Other" books — 145
-  PS scenarios + 108 numbered APs/Bounties/one-offs, every generated entry hand-reviewed, map
-  overrides for collisions/ugly cases); the collision test; the 7-site display wiring
+- **TRACK D — abbreviations, worktree (D29-68, the reviewed client-safe-module mechanism).** The
+  new `src/domain/sources/abbreviations.ts` — `abbreviateBook(book: string): string | undefined`,
+  the 243-entry hand-curated map + the PS:ATG-style stopword-aware initialism generator for the
+  253 "Other" books (145 PS scenarios + 108 numbered APs/Bounties/one-offs), every generated entry
+  hand-reviewed, map overrides for collisions/ugly cases — plus its test and the committed
+  496-book-name test fixture; the 7-site display wiring
   (`BrowseListing`/`FacetPanel`/`activeFilterPills`/`RulesTree`/`RulesLayout`/`Omnibar`/
-  `SearchPage`) with full-name fallback when `abbreviation` is absent. Gate (fixture/unit): the
-  zero-collision test over the full 496-book list (run against a committed copy of the real book
-  list or the curation file's own keyspace — the book NAMES are not gitignored, only the built
-  index is); curated + generated entries reviewed in one file; compact surfaces render
-  abbreviation-with-fallback; `citation.tsx`/`SourcesIndexView` headings untouched (full name).
-  **D rebases onto merged A+B+C before its own merge** (the three shared files, D29-71). Must NOT
-  touch: filter/search semantics (C's), ingest outside its two named files, CSS, glyphs.
+  `SearchPage`) importing `abbreviateBook` directly, full-name fallback on `undefined`. **NO
+  server/scripts/index plumbing — `sourcesIndex.ts`/`sourcesIndexBuild.ts` untouched (D29-68's
+  reviewed mechanism); the module's ~tens-of-KB client-bundle cost is the recorded accepted
+  trade.** Gate (fixture/unit): the
+  zero-collision test over the committed 496-book-name fixture (book NAMES are not gitignored,
+  only the built index is); curated + generated entries reviewed in one module; compact surfaces
+  render abbreviation-with-fallback; `citation.tsx`/`SourcesIndexView` headings untouched (full
+  name).
+  **D rebases onto merged A+B+C before its own merge** (the FOUR shared files —
+  `FacetPanel.tsx`/`Omnibar.tsx`/`SearchPage.tsx`/`activeFilterPills.ts`, D29-71 — resolving their
+  conflicts is the rebase's explicit charter). Must NOT
+  touch: filter/search semantics (C's), ingest, schema, CSS, glyphs.
 - **INTEGRATION — serial, main tree (D29-69, D29-70; merges per D29-71).** Merge order A → B → C →
   D (D rebasing first). Then, on the merged tree: ONE authoritative golden regen + hand-review
   (per the golden policy above); ONE final corpus regen + 3× determinism re-proof + fixture
   re-extract + `just codex-search-index` (this is the regen whose output actually ships — Track
-  A's own regen was correctness-proving, this one is authoritative at merged HEAD and picks up
-  Track D's real `sources-index.json` abbreviations); the deferred real-corpus proofs from B/C
+  A's own regen was correctness-proving, this one is authoritative at merged HEAD); the D29-68
+  drift re-verification (the committed 496-book-name fixture still matches the freshly
+  regenerated `sources-index.json`'s book list, failing loudly on drift); the deferred
+  real-corpus proofs from B/C
   (vellum-render PNG spot render; `spell/shining-starlight-attack` table + `spell/nightmare`
-  line-break spot checks; the live "magic missile" search proof); full Playwright
+  line-break spot checks; a real free-action entity's glyph; the live "magic missile" search
+  proof); full Playwright
   zero-hydration-error pass across every touched route; fresh weight/perf numbers vs the P4.5 S6
   baselines (a real increase from masthead-enrichment markup + table CSS is expected, reported not
   hidden); telemetry spot-check (local OTLP smoke, SigNoz MCP verification); hermeticity both
@@ -536,12 +632,18 @@ All measurements and smoke checks run against the production build (`pnpm build`
 or the live edge once redeployed) — never `vite dev` (the standing P3 finding, `/pagefind` and
 `staticMounts` aren't served there).
 
-- **A (Track A) — ingest correctness.** R4: `spell/` = 2,549, `ritual/` = 114, the commune many-to-one
-  case verified by id, `ritual/commune`/`ritual/commune@legacy` collision resolved per D29-1's
+- **A (Track A) — ingest correctness.** R4: `spell/` = 2,549, `ritual/` = **113** (D29-59's
+  corrected 46/9/10/+2 breakdown), BOTH edge cases verified by id — the commune many-to-one AND
+  the fresh-slug mover (`ritual/shadow-double` exists with no `@legacy` sibling,
+  `ritual/simulacrum` unsuffixed) — `ritual/commune`/`ritual/commune@legacy` collision resolved
+  per D29-1's
   pattern, zero broken crossrefs into the moved entities (grep/report-provable via the existing
   `brokenRef` report field). R8: 323 `Runes`-tagged equipment entities, zero weapon/armor/shield
-  regressions (spot-checked `weapon/chakri-lost-omens` keeps `itemCategory: "advanced"`). R9(a):
-  the 8 affected entities read `level: 0`; `archetype` and every 0%-coverage category unchanged.
+  regressions (spot-checked `weapon/chakri-lost-omens` keeps `itemCategory: "advanced"`); the
+  expected "Weapons"/"Armor"/"Shields" facet values on `/equipment` (481/250/232 —
+  ammunition/accessories, real signal) noted for H, not treated as a bug. R9(a):
+  the 10 affected entities (named, D29-61a) read `level: 0`; `archetype` and every 0%-coverage
+  category unchanged.
   3× determinism, full Zod validity, `scripts/transform.test.ts` green.
 - **B (Track A render half + Track B CSS; real-corpus proofs at Integration) — R3/R1/R2.** Masthead
   fields render exactly once (no duplication) across the named
@@ -550,18 +652,25 @@ or the live edge once redeployed) — never `vite dev` (the standing P3 finding,
   `ritual/awaken-animal` — the scope doc's own named samples); degree-of-success blocks render on
   separate lines; goldens regenerated once at Integration and reviewed (masthead-strip + CSS +
   glyph diff, not a renderer regression); zero hydration errors.
-- **C (Track B; PNG proof at Integration) — R5.** Real traced glyph shapes render for all 5
-  `ActionCost` values; accessibility
+- **C (Track B; PNG + real-specimen proofs at Integration) — R5.** All 5 `ActionCost` values
+  render the real traced glyph shapes via the synthetic-cost component unit test (the fixture
+  corpus carries no free-action entity — the adversarially-corrected gate basis) plus a real
+  free-action specimen check at Integration; accessibility
   attributes unchanged; vellum-render PNG rasterization spot-checked; the 3 affected flagship
   goldens' diff is SVG path data, nothing else (reviewed within Integration's single regen).
 - **D (Track C; live search proof at Integration) — R9(b,c)/R11.** A default "magic missile" search
   returns zero results; the same query
   widened (reveal control or `?superseded=1`) returns `spell/magic-missile` with its edition pill;
   a level-bound browse filter excludes level-missing rows with no checkbox present anywhere; zero
-  `hasValue` references remain (grep-provable).
+  `hasValue` references remain repo-wide incl. `urlState.ts`/`activeFilterPills.ts`
+  (grep-provable); a `!`-bang-bearing legacy URL decodes identically to its bang-less form and the
+  encoder never emits the bang (D29-61d).
 - **E (Track D + Track B's footer + Integration's edge) — R10/R6/R7.** A compact surface shows an abbreviation for a known book; zero
-  abbreviation collisions across 496 books (test-provable); `citation.tsx`/`/sources` headings show
-  full names; the footer element is entirely absent from rendered HTML (`grep -a`-provable); through
+  abbreviation collisions across the committed 496-book-name fixture (test-provable), and the
+  fixture reconciles exactly against the freshly regenerated `sources-index.json` book list at
+  Integration (loud failure on drift, D29-68); `citation.tsx`/`/sources` headings show
+  full names; the footer element AND the `.site-foot` CSS are entirely absent (`grep -a` on
+  rendered HTML + a source grep); through
   the public edge, `2e.iridi.cc` serves byte-identical SSR content to `codex.iridi.cc`,
   `X-Robots-Tag: noindex` present on both, TLS valid.
 - **F.** Perf/weight recorded fresh, compared against the P4.5 S6 baselines (`/rules`, `/sources`,
@@ -595,18 +704,18 @@ or the live edge once redeployed) — never `vite dev` (the standing P3 finding,
   believed correct (the structural rule doesn't know or care about category), but Track A's gate
   should spot-check at least one entity OUTSIDE the four named groups (a `deity` or `hazard`
   sample) to catch a shape the 8-sample survey didn't anticipate.
-- **The commune/commune-with-nature many-to-one case (§1.2) is the one place R4's "clean move"
-  framing breaks down** — it's real AoN data, not a corpus bug, but it's exactly the kind of edge
-  case a naive per-slug rename would silently mishandle (e.g. an implementation that assumes
-  `remasteredAs.length === 1` for every ritual). Track A's regression test is the guard; if a SECOND
-  many-to-one case exists elsewhere in the 56-entity set that this spec's own verification didn't
-  catch (only the commune pair was found via an explicit duplicate-target scan), the same test
-  pattern generalizes — re-run the same duplicate-target scan at implementation time, not just
-  trust the count found here.
+- **R4's two edge patterns are where a naive per-slug rename silently breaks** — the
+  commune/commune-with-nature many-to-one (1 case: an implementation assuming
+  `remasteredAs.length === 1` fails) and the fresh-slug movers (9 cases, the adversarial review's
+  find: an implementation assuming every mover collides — or that every unsuffixed legacy ritual
+  gains an `@legacy` sibling — fails on 9 of 55). Both are real AoN data, not corpus bugs; Track
+  A's two required regression tests are the guard. If further instances of either pattern exist
+  that neither this spec's scan nor the review caught, the same test shapes generalize — re-run
+  the duplicate-target and fresh-slug scans at implementation time, not just trust the counts.
 - **Corpus fail-soft (carried from P5's own memory, still the #1 deploy risk):** a mis-mounted
   refresh serves the small fixture corpus with a healthy-looking 200 — Integration's gate must
   assert a real-corpus marker (the R4 ritual count is a NEW, phase-specific version of this check —
-  the fixture corpus's own `ritual/` count won't match 114 post-move unless the fixture regen
+  the fixture corpus's own `ritual/` count won't match 113 post-move unless the fixture regen
   actually landed).
 - **Pagefind `writeFiles` non-idempotence (carried):** `build-search.ts:26` already `rm -rf`s
   first — confirmed unchanged — so Track A's and Integration's index rebuilds are each clean, but a
@@ -647,7 +756,8 @@ or the live edge once redeployed) — never `vite dev` (the standing P3 finding,
   merge-time test failure in a B/C/D file as "stale fixture assumption" FIRST, regression second.
 - **R10's curation labor is the phase's real timeline risk, not its code.** 243 hand-curated
   entries + review of ~253 generated ones is real, non-automatable labor; the code-level work
-  (schema field, two-tier population, 7-site wiring, collision test) is Size S on its own — which
+  (the pure module, 7-site wiring, collision test — even smaller after the D29-68 mechanism
+  change removed all server/index plumbing) is Size S on its own — which
   is exactly why R10 got its own dedicated track (D). If Track D's timeline is tight, the scope
   doc sanctions no partial-curation fallback — ship the full 496 or flag the trade-off explicitly
   (per [[no-silent-scope-cuts]]), don't quietly ship a partial map.
@@ -670,4 +780,4 @@ offline, not shipped).
 
 ## 8. Build record
 
-_(Populated per-track + at integration during implementation — empty at DRAFT.)_
+_(Populated per-track + at integration during implementation — empty at FINAL.)_
