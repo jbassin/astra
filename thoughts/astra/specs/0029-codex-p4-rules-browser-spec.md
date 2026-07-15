@@ -1,11 +1,12 @@
 # 0029 — codex P4: rules/lore browser — spec
 
-**Status:** FINAL (2026-07-14) — authored against the REAL corpus (46,192 entities / 88
-categories; rules 3,645 · sidebar 689 · source 245 — measured this session, §1). Stakeholder
-decisions batched + resolved 2026-07-14 (tree surface, legacy semantics, sidebar scope,
-sources scope — recorded as D29-39..43 below). *Process note: no external octo providers on
-this host; research + adversarial review ran on in-house agents (the sanctioned fallback,
-P2/P3 precedent).*
+**Status:** BUILT (2026-07-14) — S1–S5 complete, A–G met with recorded evidence; ▶ H = the
+consolidated stakeholder review (P2-H spot-set + P3 + P4). *(Original spec text below,
+authored against the REAL corpus (46,192 entities / 88 categories; rules 3,645 · sidebar
+689 · source 245 — measured this session, §1). Stakeholder decisions batched + resolved
+2026-07-14 (tree surface, legacy semantics, sidebar scope, sources scope — recorded as
+D29-39..43 below). Process note: no external octo providers on this host; research +
+adversarial review ran on in-house agents (the sanctioned fallback, P2/P3 precedent).)*
 **Adversarially reviewed same day: 3 blockers + 9 minors + 3 nits, ALL folded in.** The
 blockers rewrote the reading-order model: (B1) raw AoN `next`/`previous` links are
 **per-level sibling chains, not a page-turn chain** (0/3,642 next hops descend; 780 fork
@@ -522,3 +523,97 @@ sibling-scoped only). Hover cards on tree nodes. i18n.
   slice territory); fixture `rules-tree.json` sibling order is alphabetical-fallback
   only (no raw link side-channel survives fixture extraction) — chain-order
   correctness is proven by `rulesTree.test.ts` unit fixtures.
+- **S2 (`c9ad9d1`), S3 (`a3184ce`, landed via `b71d3f4` — the linguist-commit timer race, see
+  that commit's marker text), S4 (`65036ba`).** Per-slice gate evidence recorded in each
+  commit message (not duplicated here): S2 — GMG "Chapter 2: Tools" interior chain order
+  exact, 4× Counteracting placed, CRB/PC "Chapter 1" split, 2 synthetic nodes unlinked,
+  `/rules` 393 KB raw / 77 KB gz, zero hydration errors. S3 — Counteracting
+  trails exact (PC Ch7/Spells legacy, PC Ch8/Afflictions remaster), chapter-2-tools next ==
+  first child w/ round-trip, GMG head/tail one-sided, non-rules shell untouched, zero
+  hydration errors, codex tests 1,314. S4 — building-creatures@legacy "all 7 hidden"/7
+  asides at legacy, ancestry/azarketi 7 visible, M8 shared-url owner proven
+  (class/witch@legacy owns, class-feature renders none), `/sidebar/{slug}` standalone
+  intact, comma-book filtered-browse click-through exact, heaviest host page 378,215 B raw
+  / 77,866 B gz, zero hydration errors, codex tests 1,362; both lanes green.
+- **S5 (2026-07-14, sonnet engineer + orchestrator review) — consolidated acceptance sweep +
+  docs.** Real production server (`pnpm build` + `pnpm start`), real 46,192-entity corpus,
+  the repo's pinned Playwright + cached Chromium (vellum-render's install). No fix-forward
+  bugs found (S2–S4's own sweeps already caught and fixed the class of hydration issues P3
+  S5 first found; this pass found zero new ones) — one OPERATIONAL finding, not a product
+  bug: a throwaway local boot script that concatenates a raw `".."` into a `clientDir`
+  string gets 403'd by `send`'s own path-traversal guard even though the path resolves
+  correctly (`send` rejects on the literal substring, not the resolved path) — worth knowing
+  for any future local OTLP/static-asset smoke, fixed in the (deleted) driver script by
+  `path.resolve`-ing the dir first; no source file was affected.
+
+  **A.** Carried from S1 (§8 above) — unchanged, not re-run.
+
+  **B.** Real-corpus tree cases carried from S2 (`c9ad9d1`, §8 above). Fresh at HEAD, live
+  Playwright against the production server: quick-filter "Ability Modifiers" (146 → 19
+  visible nodes, 5 matches, ancestor "Building Creatures" force-open and visible, clearing
+  the filter restores all 146) and collapse-state survives a hard reload (`rules/followers`
+  toggled open → `codex:rulesTree` localStorage records `{"rules/followers":true}` →
+  full page reload → the SSR-safe two-phase seed re-derives it open, `aria-expanded="true"`
+  post-reload) — both PASS, zero hydration errors during the flow.
+
+  **C.** Carried from S3 (`a3184ce`/`b71d3f4`, §8 above) — unchanged, not re-run.
+
+  **D.** Carried from S4 (`65036ba`, §8 above) — unchanged, not re-run.
+
+  **E.** Fresh (no-storage-state) Playwright browser contexts against the production
+  server: (1) `/rules/ability-modifiers-2` deep-linked cold — breadcrumb trail renders
+  (1 `.codex-rules-breadcrumb`), sidebar highlights exactly the current doc
+  (1 `.codex-rules-node-current`), and ≥1 ancestor toggle is force-open via `currentId`
+  alone (`computeOpen`'s `containsCurrent` path — proven independent of `saved`, since the
+  context started with zero localStorage) — 2 ancestor toggles force-open in this case,
+  confirmed BOTH via `ctx.request.get()` raw SSR HTML (no JS at all) and post-hydration.
+  (2) `/rules?legacy=1` in a fresh context: raw SSR HTML (pre-JS `fetch`) has zero `all N
+  hidden` matches and includes "Dark Archive" un-collapsed; post-hydration the live page
+  shows zero `.codex-rules-hidden-note` elements and the Dark Archive section header renders
+  normally — no flash-then-hide. Both PASS.
+
+  **F.** Measured at HEAD (`curl` raw+gz against the production server, real corpus):
+  `/rules` 393,058 B raw / 78,044 B gz (S2's 393 KB/77 KB, reconfirmed unchanged); `/sources`
+  696,918 B raw / 63,869 B gz (new — not previously measured); the heaviest attached-sidebar
+  host, `rules/building-creatures@legacy?legacy=true` (the 7-sidebar host), 378,215 B raw /
+  77,866 B gz (S4's exact figure, reconfirmed unchanged). Tree interaction latency (live
+  Playwright, click-to-DOM-update on 5 distinct root toggles): 43/34/33/32/33 ms, avg
+  35.0 ms — well under any perceptible-lag threshold, no virtualization/trim warranted.
+
+  **G.** Telemetry method (recorded per the acceptance criterion's "record which"): a local
+  OTLP smoke — the production server's endpoint pointed at the host-published collector
+  port, then verified delivery through the `signoz_*` MCP tools (not just a bare
+  collector-log check). `initTelemetry("astra.codex",
+  {endpoint: "http://localhost:10353"})` called explicitly BEFORE `createSsrServer`'s own
+  (config.kdl-default, in-cluster-only, host-unresolvable) `initTelemetry` call — the
+  module-singleton `state` guard in `@astra/observe` makes the first call win — then hit
+  `/rules`, `/rules/ability-modifiers-2`, and `/sources` for real (curl + the Playwright
+  sweep). Verified via the `signoz_*` MCP tools: 64 `astra.codex` spans landed in the last
+  15 minutes, all three routes present with the `SSR ${method} ${pathname}` span-name
+  pattern, `responseStatusCode: 200`/`hasError: false` on every one (`/rules` 28 spans
+  ~19.5–41.7 ms, the entity page 5 spans ~13.2–21.3 ms, `/sources` 3 spans ~112.9–148.8 ms —
+  the 5–10× gap vs the entity/tree pages tracks `/sources`'s own larger response size
+  above). Hermeticity: `apps/codex/data` renamed OUT of tree to `/tmp/codex-data-holdout-p4s5`
+  (system `/tmp`, never an in-tree rename — the P3 memory gotcha) — BOTH lanes green with
+  it absent: TS (`vp run -r typecheck`, `oxlint --type-aware --deny-warnings --threads=4`,
+  `format:check`, `vp run -r test` — codex falls back to the fixture corpus with its own
+  loud startup WARN, 69 files/1,362 tests — `vp run -r build`) and Python (`ruff check`,
+  `ruff format --check`, `ty check`, `pytest`, all green). `data/` restored afterward;
+  `totalEntityCount` 46,192 and `find … | wc -l` both reconciled exact post-restore; codex's
+  own suite re-run once more against the REAL corpus post-restore, still 69 files/1,362
+  tests green. Zero hydration/console errors across the entire S5 sweep (every page above
+  plus `/`, `/rules/chapter-2-tools`, `/rules/tools-of-play`, `/rules/counteracting`,
+  `/rules/counteracting-2`, `/spell/heal`) — one shared console/`pageerror` listener across
+  every context, zero issues collected.
+
+  **README** gains the "Rules browser, attached sidebars, sources index (P4)" section (tree
+  model incl. the sibling-chain-not-page-turn reality, the two new artifacts, breadcrumb +
+  book-name normalization policy, attached-sidebar depth-1 + host-owner-resolution posture,
+  the host-only search-index rebuild note recording that P4's additions are NOT search
+  inputs — no rebuild needed).
+
+  **Left for H (the consolidated stakeholder review):** everything P4 built (tree browser,
+  hierarchy nav, attached sidebars, `/sources`) is now evidence-complete for sign-off
+  alongside the still-pending P2 spot-set (M7/M11 expected) and P3 browse/search (the heal
+  ranking limitation). No open bugs or re-decisions surfaced by S5 — the one operational
+  finding above is tooling-only, not app behavior.

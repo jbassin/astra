@@ -165,6 +165,109 @@ CI's own coverage is hermetic: `scripts/build-search.test.ts` runs the exact sam
 `fixtures/` or `data/`) — `pagefind` is a plain npm devDependency, so this needs zero network and
 none of the host-only memory profile above (that only shows up at real-corpus scale).
 
+## Rules browser, attached sidebars, sources index (P4, D29-39..45)
+
+`/rules` is now a **tree browser** (the P3 faceted flat listing for the `rules` category is
+gone), rules entity pages gain hierarchy navigation (breadcrumb + a sidebar + a page-turn
+pager), every category can render **attached sidebars** on its host pages, and `/sources`
+adds an aggregate book index. One transform slice feeds all four; see
+`thoughts/astra/specs/0029-codex-p4-rules-browser-spec.md` for the full decision record
+(D29-39..45) — this section is the durable "how it works" summary.
+
+### The tree model — sibling chains, not page-turn
+
+AoN ships each rules doc with `breadcrumbs` (its ancestor-name chain) and raw
+`next_link`/`previous_link` fields. **The raw links are NOT a page-turn sequence — they are
+per-level SIBLING chains**, measured empirically: 0/3,642 `next` hops ever descend into a
+subtree, 780 targets are claimed by 2–4 docs at once (always an ancestor/descendant set),
+986 `next`/`prev` pairs are asymmetric, and 106 hops cross book boundaries entirely. Walking
+them naively would resurrect all of that noise into the UI. Instead:
+
+- **Parent resolution** (`src/ingest/rulesTree.ts`): a node's parent = the doc in the SAME
+  book whose `name` matches the parent breadcrumb element AND whose own breadcrumb path is
+  the child's path minus its last element (the path-prefix rule — a single index lookup,
+  since every doc's `breadcrumbs` already IS its full ancestor chain). Where that fails, a
+  name-only fallback within the book prefers a breadcrumb-less (root) doc. Where that also
+  fails, a **synthetic placeholder node** (`id` absent) stands in — pinned at exactly **2** in
+  the real corpus (amended down from the spec's provisional pin of 3 at S1 build time, and
+  verified against the raw snapshot; the report-visible STOP if this count ever grows on a
+  refresh). Any remaining ambiguity (>1 candidate at either step) tie-breaks on lowest
+  `aonId`.
+- **Sibling ordering**: children at every level are ordered by the `next` chain **restricted
+  to that sibling group only** — a link only counts as an edge if its target is another
+  member of the SAME group; the head is the member no other member targets; unchained
+  members sort alphabetically after the chained ones. Cross-level/cross-book raw links are
+  structurally unreachable from this algorithm (they're never even compared).
+- **The entity-page previous/next pager is DFS-derived, not link-derived.** `treeModel.ts`'s
+  `dfsPreOrder` flattens each book's tree in pre-order (root, then children depth-first —
+  the exact order the builder already emits `children` in); the pager is just `arr[i-1]`/
+  `arr[i+1]` around the current node in that flattened array, scoped to one book. This is
+  genuine page-turn navigation — a chaptered node's "next" descends into its own first
+  child — and it's symmetric and one-sided at book ends by construction. **There is
+  deliberately no `readingOrder` entity field anywhere in the corpus** — raw links are
+  consumed transform-internally for sibling ordering only, never persisted, never mirrored
+  in the pager. This is an intentional divergence from AoN's own site navigation (whose raw
+  links skip subtrees, hop books, and can't round-trip) — a re-decision, not a bug, if a
+  future stakeholder wants AoN-mirroring instead.
+
+### Two new corpus artifacts
+
+- **`data/corpus/rules-tree.json`** (`src/schema/rulesTree.ts`) — `{books: [{book, edition,
+  license, hiddenWhenLegacyOff, nodes: TreeNode[]}]}`. `TreeNode = {name, id?, superseded?,
+  children}`; `id` (a `CodexId`) is present for every node backed by a real rules doc, absent
+  for a synthetic node. `hiddenWhenLegacyOff` precomputes the D29-40 "N hidden" legacy-toggle
+  note per book (two real books measure 100% here — Dark Archive 29/29, Guns & Gears 65/65 —
+  their "(Remastered)" twins carry the content; the tree browser renders these as a
+  collapsed "all N hidden" header, never a silently-dropped section). Node arrays are
+  emitted in FINAL order (DFS-ready) — array order is meaningful data here and untouched by
+  `canonicalJson`'s object-key sort.
+- **`data/corpus/sources-index.json`** (`src/schema/sourcesIndex.ts`) — one row per
+  normalized `source.book` string across the WHOLE corpus (not just rules), grouped by AoN
+  `primary_source_category` ("product line"). `productLine` is absent for the ~253-book
+  "Other" bucket (Foundry-only book strings with zero AoN citations — expected, not a gap;
+  renders last and collapsed on `/sources`). `license`/`edition` are the same book-level
+  derivation `rules-tree.json`'s book sections use. `categoryCounts` (`{category: count}`,
+  added at S4) feeds each book row's per-category filtered-browse link with a real count
+  instead of over-counting via the book's total `entityCount`.
+
+### Breadcrumb + book-name normalization policy
+
+Every breadcrumb element is trimmed, stripped of embedded `\r`/`\n`/`\t`, and whitespace-
+collapsed BEFORE any grouping (the real corpus has 192 docs — all Gamemastery Guide
+"Chapter 2: Tools" descendants — carrying a literal `\r\n` inside the raw string; left
+unnormalized, this would fork one tree into two). Book names go through the same mechanical
+normalization (`src/ingest/bookNormalize.ts`): trim/CRLF/whitespace-collapse, case-fold
+dedup (a no-op today, 0 collisions, kept for future-proofing), and a conservative prefix
+rule (`"Pathfinder " + <existing AoN book name>` merges into that name — 23 of 519 raw
+strings, 408 entities). This is **mechanical only, no hand-curated alias map** — residual
+splits among the ~496 post-normalize book strings are an accepted, recorded trade-off, not
+a gap to chase.
+
+### Attached sidebars — depth-1 posture, host-owner resolution
+
+A sidebar's own `url` field IS its host page's AoN url — that's the whole attachment
+mechanism (sidebars carry no `breadcrumbs` and no `next`/`previous` links at all). **65 host
+urls are shared by multiple corpus entities** (a class page's url is also carried by its
+60+ class-feature docs) — attaching by a naive `aonUrl` scan mis-targets the wrong entity at
+scale, so the reverse-join goes through the link table's `pickCanonical` page-owner rule →
+`aonId` → the post-identity `aonIdToFinalId` map (the pre-collision S5d repoint seam is the
+wrong join for this — it returns ids from BEFORE `@legacy`/`-2` suffixing). The host entity
+gains `attachedSidebars?: CodexId[]`, ordered by name then `aonId`. `EntityPage` renders
+these as styled `<aside>` cards after the body, on **every category** — title, full body,
+citation, and a link to the sidebar's own standalone `/sidebar/{slug}` page (which stays
+canonical regardless). **Depth is pinned at exactly 1** — an attached sidebar's own body
+never recurses into further attached sidebars (not a shape the data produces, but the
+renderer guards it anyway); an `embed` reference INSIDE a sidebar's body still resolves
+normally at its own +1 depth (the M7 posture — embeds are a different mechanism from
+attachment and aren't depth-limited by this rule).
+
+### The host-only search-index rebuild note — unchanged by P4
+
+`attachedSidebars` and `breadcrumbs`/the tree/sources artifacts are **not** inputs to
+`scripts/build-search.ts` (it only ever reads `body`/`loreBody`/`stats`/`facets` text off
+each entity) — a P4-only corpus refresh needs no Pagefind rebuild. The host-only,
+~3.8 GB-RSS `just codex-search-index` posture from P3 is untouched.
+
 ## Pipeline shape
 
 ```
