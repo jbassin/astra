@@ -39,8 +39,11 @@ export interface ActiveFilterPill {
 }
 
 function rangeLabel(title: string, filter: RangeFilter): string {
+  // D29-61(b): `RangeFilter` no longer carries a separate `has-value` field —
+  // any typed bound already implies "must have a value" (filterEngine.ts),
+  // so there's no longer a distinct state to append a suffix for here.
   const bounds = `${filter.min ?? "…"}–${filter.max ?? "…"}`;
-  return filter.hasValue ? `${title}: ${bounds} (has value)` : `${title}: ${bounds}`;
+  return `${title}: ${bounds}`;
 }
 
 function enumLabel(

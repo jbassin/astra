@@ -145,10 +145,22 @@ export function validateBrowseSearch(raw: Record<string, unknown>): BrowseSearch
 }
 
 // ---------------------------------------------------------------------------
-// range param encode/decode — `{min}..{max}` with either side omittable, plus
-// an optional trailing `!` marking `hasValue` (D29-32's "has value" gate,
-// e.g. `f.hp=10..100!` or a bare `f.hp=..!`). Fully defensive: any string
-// that doesn't match the shape decodes to `{}` (no filter), never throws.
+// range param encode/decode — `{min}..{max}` with either side omittable.
+// Fully defensive: any string that doesn't match the shape decodes to `{}`
+// (no filter), never throws.
+//
+// P6 D29-61(d) — the `!`-bang forever-decode contract: this param used to
+// carry an optional trailing `!` marking the now-DELETED `has-value` gate
+// (`f.hp=10..100!`/a bare `f.hp=..!`). `RangeFilter` no longer has a
+// `has-value` field at all (D29-61(b) folded that gate into bound presence
+// itself — see `filterEngine.ts`), so the bang is pure legacy syntax now.
+// The decoder still MATCHES and TOLERATES a trailing `!` on any shared link
+// that predates this change (the repo's established `?legacy=` alias
+// posture, P4.5 D29-48, applied to the same class of problem) — it simply
+// carries no meaning anymore and is dropped, never causing a parse failure.
+// The encoder NEVER emits one: the canonical form is bang-less forever, and
+// migrates on the next in-app navigation once a stale link round-trips
+// through `filterStateToSearch`.
 // ---------------------------------------------------------------------------
 
 const RANGE_RE = /^(-?\d+(?:\.\d+)?)?\.\.(-?\d+(?:\.\d+)?)?(!)?$/;
@@ -156,11 +168,10 @@ const RANGE_RE = /^(-?\d+(?:\.\d+)?)?\.\.(-?\d+(?:\.\d+)?)?(!)?$/;
 export function decodeRangeParam(raw: string): RangeFilter {
   const m = RANGE_RE.exec(raw);
   if (!m) return {};
-  const [, minStr, maxStr, bang] = m;
+  const [, minStr, maxStr] = m; // the optional trailing `!` (group 3) is matched-and-ignored, D29-61(d)
   const out: RangeFilter = {};
   if (minStr !== undefined && minStr !== "") out.min = Number(minStr);
   if (maxStr !== undefined && maxStr !== "") out.max = Number(maxStr);
-  if (bang) out.hasValue = true;
   return out;
 }
 
@@ -168,8 +179,7 @@ export function encodeRangeParam(filter: RangeFilter): string | undefined {
   if (!isRangeFilterActive(filter)) return undefined;
   const min = filter.min !== undefined ? String(filter.min) : "";
   const max = filter.max !== undefined ? String(filter.max) : "";
-  const bang = filter.hasValue ? "!" : "";
-  return `${min}..${max}${bang}`;
+  return `${min}..${max}`; // never emits the legacy `!` bang (D29-61(d))
 }
 
 // ---------------------------------------------------------------------------

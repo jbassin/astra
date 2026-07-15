@@ -9,12 +9,14 @@
 // Ctrl/Cmd-K global focus — akasha's own muscle-memory precedent), and the
 // D29-34 fail-soft disabled state when the index isn't built.
 //
-// P4.5 D29-48 (R3's explicit carve-out): search NEVER hides superseded
-// content by default — it covers both editions and badges results — so this
-// component no longer reads any legacy/superseded state at all (the deleted
-// site-wide toggle it used to read is gone; `pagefindClient.ts`'s
-// `supersededFilter` stays defined as a pure helper but is no longer called
-// here).
+// P4.5 D29-48's original R3 carve-out ("search NEVER hides superseded
+// content by default") is AMENDED by P6 R11 (D29-67): the omnibar now hides
+// superseded content by default too, matching every other surface. It has
+// no reveal control of its own (that lives on the full `/search` page,
+// `SearchPage.tsx`) and no URL/facet state to read it from, so it always
+// passes the fixed `supersededFilter(false)` value — `pagefindClient.ts`'s
+// helper, the same one `/search` wires against its own live `superseded`
+// state.
 
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -35,6 +37,7 @@ import { recordSearch } from "@/server/telemetryFns";
 import {
   groupByCategory,
   loadPagefind,
+  supersededFilter,
   toDisplayResult,
   type SearchDisplayResult,
 } from "./pagefindClient";
@@ -76,8 +79,15 @@ export function Omnibar(): ReactElement {
       // search attempt (D29-38). Fire-and-forget: telemetry must never block
       // or fail the actual search UX.
       void recordSearch({ data: { surface: "omnibar" } }).catch(() => undefined);
-      // R3: search never hides superseded content — no filters at all.
-      const res = await pf.search(trimmed, {}).catch(() => null);
+      // R11 (D29-67): always hide superseded content — the omnibar carries
+      // no reveal state of its own, so this is a fixed `false`, never a
+      // live toggle.
+      const supersededFilterValue = supersededFilter(false);
+      const searchOptions =
+        supersededFilterValue !== undefined
+          ? { filters: { superseded: supersededFilterValue } }
+          : {};
+      const res = await pf.search(trimmed, searchOptions).catch(() => null);
       if (!res || token !== tokenRef.current) return;
       const stubs = res.results.slice(0, MAX_RESULTS);
       // One fragment fetch per SHOWN result only (D29-34/-36) — never the

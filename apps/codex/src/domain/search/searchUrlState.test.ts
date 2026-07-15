@@ -37,9 +37,19 @@ describe("validateSearchPageSearch", () => {
     });
   });
 
-  it("a `legacy`/`superseded` param is simply dropped (P4.5 D29-48 — search never hides superseded, so this codec carries no such field at all)", () => {
+  it("a `legacy` param is simply dropped — `/search` never carried a `legacy` alias (D29-67: no prior shared-link shape to stay compatible with)", () => {
     expect(validateSearchPageSearch(parseQuery("?legacy=1"))).toEqual({});
-    expect(validateSearchPageSearch(parseQuery("?superseded=1"))).toEqual({});
+  });
+
+  it("P6 R11 (D29-67): `?superseded=1` decodes to `{ superseded: true }`", () => {
+    expect(validateSearchPageSearch(parseQuery("?superseded=1"))).toEqual({ superseded: true });
+    expect(validateSearchPageSearch(parseQuery("?superseded=true"))).toEqual({ superseded: true });
+  });
+
+  it("a falsy/malformed `?superseded=` value decodes to the absent (default-hide) state", () => {
+    expect(validateSearchPageSearch(parseQuery("?superseded=0"))).toEqual({});
+    expect(validateSearchPageSearch(parseQuery("?superseded=false"))).toEqual({});
+    expect(validateSearchPageSearch(parseQuery("?superseded=banana"))).toEqual({});
   });
 
   it("an unknown top-level param is dropped, never thrown", () => {
@@ -68,10 +78,22 @@ describe("searchToFilterState / filterStateToSearch round trip", () => {
       edition: new Set(["remaster"]),
       level: new Set(["1", "2"]),
       traits: new Set(["fire"]),
+      superseded: false,
     };
     const search = filterStateToSearch(state);
     const back = searchToFilterState(search);
     expect(back).toEqual(state);
+  });
+
+  it("P6 R11 (D29-67): `?superseded=` round-trips both directions", () => {
+    const revealed: SearchFilterState = { ...emptySearchFilterState(), superseded: true };
+    const search = filterStateToSearch(revealed);
+    expect(search).toEqual({ superseded: true });
+    expect(searchToFilterState(search)).toEqual(revealed);
+
+    // the default-hide state encodes to a clean URL — `superseded` is
+    // omitted, never emitted as an explicit `false`.
+    expect(filterStateToSearch(emptySearchFilterState())).toEqual({});
   });
 
   it("a comma-bearing value round-trips via the shared backslash-escape codec", () => {
@@ -104,12 +126,17 @@ describe("hasAnyCriteria", () => {
   });
 });
 
-describe("pagefindFilters (P4.5 D29-48 — search never hides superseded)", () => {
-  it("never sets a superseded filter, even for the empty state", () => {
-    expect(pagefindFilters(emptySearchFilterState())).toEqual({});
+describe("pagefindFilters (P6 R11/D29-67 — search hides superseded by default, amending P4.5 D29-48)", () => {
+  it("the default (empty) state pins the superseded filter to ['false'] — the Pagefind filter-object shape the supersededFilter merge produces", () => {
+    expect(pagefindFilters(emptySearchFilterState())).toEqual({ superseded: ["false"] });
   });
 
-  it("folds every active dimension into one AND-of-OR filter object, with no superseded key", () => {
+  it("state.superseded=true OMITS the superseded key entirely (both editions match)", () => {
+    const state: SearchFilterState = { ...emptySearchFilterState(), superseded: true };
+    expect(pagefindFilters(state)).toEqual({});
+  });
+
+  it("folds every active dimension into one AND-of-OR filter object, plus the default-hide superseded key", () => {
     const state: SearchFilterState = {
       query: "",
       category: new Set(["spell"]),
@@ -117,13 +144,22 @@ describe("pagefindFilters (P4.5 D29-48 — search never hides superseded)", () =
       edition: new Set(),
       level: new Set(["1"]),
       traits: new Set(["fire"]),
+      superseded: false,
     };
     expect(pagefindFilters(state)).toEqual({
       category: ["spell"],
       rarity: ["common", "rare"],
       level: ["1"],
       traits: ["fire"],
+      superseded: ["false"],
     });
+  });
+
+  it("the 'magic missile' shape: default-hide filters pin superseded to ['false'], the widened state omits it — the exact Pagefind filter-object contract the live proof (deferred to Integration) exercises end-to-end", () => {
+    const hidden: SearchFilterState = { ...emptySearchFilterState(), query: "magic missile" };
+    const revealed: SearchFilterState = { ...hidden, superseded: true };
+    expect(pagefindFilters(hidden)).toEqual({ superseded: ["false"] });
+    expect(pagefindFilters(revealed)).toEqual({});
   });
 });
 

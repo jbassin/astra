@@ -89,11 +89,13 @@ export function _resetPagefindClientForTests(): void {
  * boolean: omit the `superseded` filter key entirely when `true` (both
  * editions match, no filtering), else pin it to the single value `"false"`
  * — the exact string `build-search.ts` writes (`filters.superseded =
- * [String(row.superseded)]`). Kept as a standalone pure helper (P4.5
- * D29-48) even though NEITHER of this app's two search surfaces (the
- * Omnibar, `/search`) calls it by default anymore — R3's "search always
- * covers both editions" carve-out means search never hides superseded
- * content, unlike browse/rules/sidebars. */
+ * [String(row.superseded)]`). Originally shipped as a standalone pure
+ * helper (P4.5 D29-48) even though neither search surface called it by
+ * default at the time. P6 R11 (D29-67) AMENDS that carve-out — search now
+ * hides superseded content by default too, matching every other surface —
+ * so both the Omnibar (`Omnibar.tsx`, always-hidden, no reveal control of
+ * its own) and `/search` (`searchUrlState.ts`'s `pagefindFilters`, honoring
+ * the page's own `superseded` state/reveal control) call this helper now. */
 export function supersededFilter(superseded: boolean): string[] | undefined {
   return superseded ? undefined : ["false"];
 }

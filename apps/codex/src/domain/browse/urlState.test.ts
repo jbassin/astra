@@ -111,9 +111,16 @@ describe("urlState: range param decode/encode", () => {
     expect(decodeRangeParam("..5")).toEqual({ max: 5 });
     expect(decodeRangeParam("-2..")).toEqual({ min: -2 });
   });
-  it("decodes the hasValue marker", () => {
-    expect(decodeRangeParam("10..100!")).toEqual({ min: 10, max: 100, hasValue: true });
-    expect(decodeRangeParam("..!")).toEqual({ hasValue: true });
+  // P6 D29-61(d) — the `!`-bang forever-decode contract: `RangeFilter` no
+  // longer has a `has-value` field at all (D29-61(b)), so a trailing `!` on
+  // an old shared link is now pure legacy syntax — TOLERATED (never a parse
+  // failure) and IGNORED (contributes nothing to the decoded filter), never
+  // re-emitted by the encoder.
+  it("tolerates and drops a legacy trailing '!' — it decodes identically to the bang-less form", () => {
+    expect(decodeRangeParam("10..100!")).toEqual({ min: 10, max: 100 });
+    expect(decodeRangeParam("10..100!")).toEqual(decodeRangeParam("10..100"));
+    expect(decodeRangeParam("..!")).toEqual({});
+    expect(decodeRangeParam("..!")).toEqual(decodeRangeParam(".."));
   });
   it("garbage decodes to {} (never throws)", () => {
     expect(decodeRangeParam("not-a-range")).toEqual({});
@@ -124,13 +131,14 @@ describe("urlState: range param decode/encode", () => {
     expect(encodeRangeParam({})).toBeUndefined();
   });
   it("encode/decode round-trips a range filter", () => {
-    const filters: RangeFilter[] = [
-      { min: -2, max: 5 },
-      { min: 10 },
-      { max: 100 },
-      { hasValue: true },
-    ];
+    const filters: RangeFilter[] = [{ min: -2, max: 5 }, { min: 10 }, { max: 100 }];
     for (const f of filters) expect(decodeRangeParam(encodeRangeParam(f) ?? "")).toEqual(f);
+  });
+  it("encodeRangeParam NEVER emits the legacy '!' bang, even from a bang-decoded filter", () => {
+    const decoded = decodeRangeParam("10..100!");
+    const encoded = encodeRangeParam(decoded);
+    expect(encoded).toBe("10..100");
+    expect(encoded?.includes("!")).toBe(false);
   });
 });
 
@@ -342,7 +350,6 @@ function randomState(rand: () => number): BrowseFilterState {
   const level: RangeFilter = {};
   if (rand() < 0.5) level.min = Math.round(rand() * 30) - 2;
   if (rand() < 0.5) level.max = Math.round(rand() * 30) - 2;
-  if (rand() < 0.2) level.hasValue = true;
 
   const facetEnum = new Map<string, Set<string>>();
   for (const key of ENUM_FACET_KEYS) {
@@ -361,8 +368,7 @@ function randomState(rand: () => number): BrowseFilterState {
       const r: RangeFilter = {};
       if (rand() < 0.6) r.min = Math.round(rand() * 200);
       if (rand() < 0.6) r.max = Math.round(rand() * 200) + 200;
-      if (rand() < 0.2) r.hasValue = true;
-      if (r.min !== undefined || r.max !== undefined || r.hasValue) facetRange.set(key, r);
+      if (r.min !== undefined || r.max !== undefined) facetRange.set(key, r);
     }
   }
 

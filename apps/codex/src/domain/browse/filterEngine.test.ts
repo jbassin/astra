@@ -127,32 +127,49 @@ describe("filterEngine: missing-key '—' bucket (the likeliest logic-bug nest)"
     expect(applyFilters(rows, emptyFilterState()).length).toBe(rows.length);
   });
 
-  it("range filter (min/max, no hasValue) IGNORES missing-key rows — they stay visible", () => {
+  it("a range filter with NO bound ('{}') IGNORES missing-key rows — they stay visible", () => {
     const state: BrowseFilterState = {
       ...emptyFilterState(),
-      facetRange: new Map([["hp", { min: 10, max: 100 }]]),
+      facetRange: new Map([["hp", {}]]),
     };
-    // withHp (50) is inside 10..100; withoutHp has no hp at all but is NOT
-    // excluded by the mere presence of a min/max narrowing (D29-32).
     const result = applyFilters(rows, state)
       .map((r) => r.id)
       .sort();
     expect(result).toEqual(["creature/a", "creature/b", "creature/c"]);
   });
 
-  it("range filter with hasValue:true excludes missing-key rows", () => {
+  it("P6 D29-61(b): a typed min/max bound EXCLUDES missing-key rows — bounds imply has-value", () => {
     const state: BrowseFilterState = {
       ...emptyFilterState(),
-      facetRange: new Map([["hp", { hasValue: true }]]),
+      facetRange: new Map([["hp", { min: 10, max: 100 }]]),
+    };
+    // withHp (50) is inside 10..100; withoutHp/withSize have no hp at all
+    // and ARE now excluded by the mere presence of a min/max bound — the
+    // separate `has-value` gate this rule replaces is gone (D29-61(b)).
+    expect(applyFilters(rows, state).map((r) => r.id)).toEqual(["creature/a"]);
+  });
+
+  it("a lone min (no max) also excludes missing-key rows", () => {
+    const state: BrowseFilterState = {
+      ...emptyFilterState(),
+      facetRange: new Map([["hp", { min: 10 }]]),
     };
     expect(applyFilters(rows, state).map((r) => r.id)).toEqual(["creature/a"]);
   });
 
-  it("range filter with hasValue:true AND bounds still enforces the bounds on present values", () => {
+  it("a lone max (no min) also excludes missing-key rows", () => {
+    const state: BrowseFilterState = {
+      ...emptyFilterState(),
+      facetRange: new Map([["hp", { max: 1000 }]]),
+    };
+    expect(applyFilters(rows, state).map((r) => r.id)).toEqual(["creature/a"]);
+  });
+
+  it("bounds still enforce the min/max range on present values, not just presence", () => {
     const outOfRange = row({ id: "creature/d", name: "D", facets: { hp: 5 } });
     const state: BrowseFilterState = {
       ...emptyFilterState(),
-      facetRange: new Map([["hp", { min: 10, max: 100, hasValue: true }]]),
+      facetRange: new Map([["hp", { min: 10, max: 100 }]]),
     };
     expect(applyFilters([...rows, outOfRange], state).map((r) => r.id)).toEqual(["creature/a"]);
   });
@@ -166,10 +183,17 @@ describe("filterEngine: missing-key '—' bucket (the likeliest logic-bug nest)"
     expect(applyFilters([traitless], state)).toEqual([traitless]);
   });
 
-  it("level (core, range-shaped) follows the same ignore-unless-hasValue rule", () => {
+  it("level (core, range-shaped) follows the same bounds-imply-has-value rule (D29-61(b)) — a typed bound excludes a level-missing row", () => {
     const withLevel = row({ id: "feat/a", name: "A", level: 5 });
     const withoutLevel = row({ id: "trait/a", name: "B" });
     const state: BrowseFilterState = { ...emptyFilterState(), level: { min: 0, max: 10 } };
+    expect(applyFilters([withLevel, withoutLevel], state).map((r) => r.id)).toEqual(["feat/a"]);
+  });
+
+  it("level with NO bound set still includes a level-missing row (unfiltered)", () => {
+    const withLevel = row({ id: "feat/a", name: "A", level: 5 });
+    const withoutLevel = row({ id: "trait/a", name: "B" });
+    const state: BrowseFilterState = { ...emptyFilterState(), level: {} };
     expect(
       applyFilters([withLevel, withoutLevel], state)
         .map((r) => r.id)
@@ -388,9 +412,9 @@ describe("filterEngine: emptyFilterState / isEmptyFilterState / isRangeFilterAct
     expect(isRangeFilterActive(undefined)).toBe(false);
   });
 
-  it("isRangeFilterActive is true when any of min/max/hasValue is set", () => {
+  it("isRangeFilterActive is true when either min or max is set (D29-61(b): no separate has-value field anymore)", () => {
     expect(isRangeFilterActive({ min: 1 })).toBe(true);
-    expect(isRangeFilterActive({ hasValue: true })).toBe(true);
+    expect(isRangeFilterActive({ max: 1 })).toBe(true);
   });
 });
 
