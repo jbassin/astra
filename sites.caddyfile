@@ -128,6 +128,17 @@ codex.iridi.cc {
 	reverse_proxy localhost:10374
 }
 
+# 2e.iridi.cc — alias host for codex (same SSR service, port 10374), R7 (0029 P6,
+# D29-66/-71). Mirrors the heart.iridi.cc alias precedent above: same upstream, same
+# noindex posture (still C-1/C-8 — public, no auth, three-layer noindexed; the header
+# here is layer 3, same as codex.iridi.cc's own). (*.iridi.cc wildcard — no manual DNS
+# record; cert mints on first hit, ~20-60s flap, same as every other alias host here.)
+2e.iridi.cc {
+	import astra_site
+	header X-Robots-Tag noindex
+	reverse_proxy localhost:10374
+}
+
 # vellum-frontend — the document-forge editor (0013), the fourth SSR frontend on the
 # strider/akasha template. Two upstreams (D2, mirroring faerrin's old vellum block):
 # /render + /health proxy to the vellum-render service (the PNG render sidecar), so the

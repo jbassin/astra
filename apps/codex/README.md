@@ -684,3 +684,109 @@ content="noindex">` (`src/routes/__root.tsx`, ships regardless of deploy). (2)
 at `/robots.txt` through the existing static path. (3) The edge Caddy stanza sets
 `X-Robots-Tag: noindex` (S2 — `sites.caddyfile`, not part of this slice). No sitemap, ever;
 codex stays off ledger's landing grid by inaction.
+
+## P6 — gate-H feedback round (R1–R11, D29-59..71)
+
+Eleven items across four parallel worktree tracks (A ingest/render main-tree, B CSS+glyphs+
+footer, C search+filter semantics, D abbreviations) + a serial Integration merge — spec
+`0029-codex-p6-feedback-spec.md`. Merge order A→B→C→D (D rebased onto merged A+B+C first,
+D29-71); B's merge conflicted only on the 3 SVG-bearing goldens (both A's masthead-strip and
+B's glyph swap touched them, exactly the golden policy's predicted overlap), C merged clean,
+D's rebase onto the 4 shared files (`Omnibar.tsx`/`SearchPage.tsx`/`FacetPanel.tsx`/
+`activeFilterPills.ts`) was conflict-free (C's and D's hunks were genuinely disjoint as the
+spec predicted). Full `vp run -r typecheck` green across all 32 workspace members immediately
+after the merges — zero cross-track drift.
+
+**R4/R8 corrected numbers, verified at merged HEAD.** One authoritative corpus regen (`pnpm
+transform` against the committed snapshots, no re-fetch), proven deterministic 3× (`diff -r`
+empty pairwise, all three runs), fixture re-extract (byte-identical to Track A's own — no
+other track touches ingest), then the host-only `just codex-search-index` Pagefind rebuild
+(46,192 pages indexed). `manifest.json`: `totalEntityCount` 46,192, `spell/` 2,461, `ritual/`
+201, `equipment/` Runes-tagged 273 — all match the spec's implementation-time-corrected
+figures exactly. The three named R4 regression cases verified by id:
+`ritual/commune-with-nature.remasteredAs === ["ritual/commune"]`; `ritual/shadow-double`
+exists with no `@legacy` sibling and `ritual/simulacrum` stays unsuffixed; `ritual/
+unbearable-cacophony` exists with neither `legacyOf` nor `remasteredAs` (the pairing-less
+case). The 10 named R9(a) entities all read `level: 0`; `archetype`'s 261 no-level entities
+(of 353) unchanged. D29-68 drift re-verification: the committed 496-book-name fixture
+reconciles EXACTLY against the freshly rebuilt `sources-index.json`'s book list (0 missing
+either direction). Full codex suite: 1,533 tests green.
+
+**D29-62 implementation-time deviation (mastheadExtra label dedup, `b070592`, folded into the
+spec's own amendment section).** Appending every collected masthead pair unconditionally (the
+spec's literal wording) produced a visible duplicate label wherever the pair's label already
+named an already-typed `Facets` field the same header renders directly (`spell/heal`'s
+Traditions/Range, `armor/breastplate`'s Price/Bulk, `feat/camouflage-coat`'s Prerequisites,
+all verified live before the fix). Each of the 4 typed headers now tracks its own typed
+parts' normalized labels and filters `mastheadExtra` against that set — deduplicated by label
+TEXT, not field name, so it generalizes without a per-category map. Also fixed at Integration:
+`FacetPanel.tsx`'s `RangeInputs` missing-count note now appears in BOTH the min and max
+placeholders (was max-only), matching the spec's own plural "placeholders" wording.
+
+**Real-corpus proofs (production build, `pnpm build && pnpm start`, deferred from B/C by the
+worktrees having no real corpus).** Tables render bordered/zebra'd on all three named
+specimens (`spell/shining-starlight-attack`, `feat/chromotherapy`, `ritual/awaken-animal`) —
+visually spot-checked via a Playwright screenshot, parchment-tokenized header row + alternating
+row tint. `spell/nightmare`'s degree-of-success block (`Critical Success`/`Success`/`Failure`/
+`Critical Failure`, one `paragraph` node with embedded `\n`s) renders on separate visual lines
+under `white-space: pre-line`. A real free-action specimen (`feat/high-speed-regeneration`,
+the fixture corpus carries none) renders the real traced diamond glyph with
+`role="img"`/`aria-label="free action"`/`<title>` intact. The "magic missile" search proof
+(§5D): default query returns 0 hits (the legacy `spell/magic-missile` hidden); the "Include
+superseded content" checkbox AND the direct `?superseded=1` URL both widen to 1 hit with its
+edition pill. Abbreviations visible on `/spell`'s collision spans with full-name `title`
+hover (`PC2`→"Player Core 2", `LOGM`→"Gods & Magic", etc.). No footer element anywhere
+(`grep -a` + a live DOM count of 0). `ancestry/human`'s no-divider case keeps its full prose
+body intact (masthead-strip algorithm stops cleanly with nothing extra consumed) —
+`armor/breastplate` and `spell/heal` both show every named masthead field exactly once, no
+duplication, confirming the D29-62 dedup fix visually.
+
+**Full sweep.** Playwright zero-hydration/console-error pass across 20 routes spanning every
+touched surface — entity pages (spell/feat/ritual/armor/ancestry/creature), the 3 moved-ritual
+ids incl. the pairing-less mover and its `?legacy=true` alias form, category listings, `/rules`,
+`/sources`, `/search` — zero errors on every route. Weights vs the P4.5 S6 baselines (fresh,
+production build, real corpus): `/rules` 401,753/78,489 (was 401,257/79,339, +0.1%/-1.1%);
+`/sources` 708,792/63,186 (was 705,112/64,978, +0.5%/-2.8%); the heaviest attached-sidebar
+host, `rules/building-creatures?superseded=true`, 382,856/77,892 (was 414,846/80,424 under the
+pre-P6 `@legacy` id, **-7.7%/-3.1%** — a real decrease, the masthead-strip apparently removes
+more from the attached sibling entities' prose than mastheadExtra/table CSS add back);
+`/feat` listing-only 5,874,085/513,087 (was 5,795,488/532,301, +1.4%/-3.6%); `/feat?entry=...`
+5,895,602/518,600 (was 5,814,711/536,873, +1.4%/-3.4%) — every byte figure moves by low single
+digits, several actually shrink (gzip compresses the shortened masthead prose + repeated
+abbreviation strings well); nothing disproportionate. Interaction latency moved more than the
+byte weights: row-click-to-paint (6 sequential clicks on `/feat`, warm) averaged ~116 ms vs the
+baseline's ~59 ms (~2×); filter-interaction (Rarity checkbox, 5 samples) averaged ~164 ms
+(excluding a 294 ms cold sample) vs the baseline's ~111 ms (~1.5×) — real increases, reported
+not hidden, consistent with R10's new per-row abbreviation lookups on every visible row
+(expected per the spec's own §5F note); still same-order-of-magnitude, not a stop condition.
+Measured on a single-process local scratch instance (not behind Caddy) sharing the host with
+other work, so the absolute latencies carry more noise than a clean production measurement —
+the relative direction (real, moderate increase) is the reliable part. Hermeticity, both lanes
+(`data/` renamed out of tree, restored after): TypeScript (`vp run -r test`, codex falls back
+to the fixture corpus with its loud startup WARN, 1,533 tests still green) and Python
+(`uv run pytest`, 360 tests, unaffected) both green with `data/` absent. Telemetry (gate G): a
+local OTLP smoke (`initTelemetry("astra.codex", {endpoint: "http://localhost:10353"})` called
+explicitly before `createSsrServer`'s own init, same method as the P4 S5 precedent) against 7
+of the reworked routes (`/`, `/feat?entry=...`, `/categories`, `/search`, `/rules`,
+`/spell/heal`, `/ritual/awaken-animal`, `/sources`) — all present as `SSR GET <route>` spans
+via the `signoz_*` MCP tools, `responseStatusCode: 200`/`hasError: false` on every one.
+
+**Deploy tail (R7 — `2e.iridi.cc` live edge cutover, flagged per [[flag-paid-live-actions]]).**
+`just up` rebuilt the codex image (no new runtime dependency — the glyph-conversion tool
+stays one-time/offline) and recreated only the `astra-codex` container (every other service
+was a no-op recreate, confirming the image diff was scoped as expected). Deliberately did NOT
+re-run `just codex-refresh` itself for this step — that recipe's `fetch:foundry`/`fetch:aon`
+would re-pull from the network, contradicting the spec's own "no re-fetch, nothing upstream
+changed" corpus-regen posture; the container recreate is a superset of `codex-refresh`'s own
+restart tail (same effect — flushes `corpusFs.ts`'s per-process cache against the already
+host-regenerated `data/corpus`) without the unwanted re-fetch. Exercised for real this time
+(the corpus changed materially, unlike P5's drill-only run) — verified via the real-corpus
+three-pronged assert (marker: `/ritual` = "145 of 145 shown" by default, superseded-hidden
+matching the spec's own H-gate expectation of ~145 current rituals; full-scale: `/ritual?
+superseded=1` = "201 of 201 shown", matching the manifest total exactly; zero fixture-fallback
+warns in `docker logs astra-codex`, never a bare 200) on BOTH `codex.iridi.cc` and the newly
+live `2e.iridi.cc` — byte-identical SSR payload between the two hosts (a diff of the two
+`/ritual` responses differs only in the TanStack Router hydration payload's per-request
+`updatedAt` timestamp, same byte length, same entity data). `sites.caddyfile` gained a
+`2e.iridi.cc` stanza mirroring the `heart.iridi.cc` alias precedent, same noindex
+`X-Robots-Tag`; TLS minted on the wildcard within one ~10s poll.

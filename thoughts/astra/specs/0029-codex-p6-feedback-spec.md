@@ -871,3 +871,53 @@ _(Populated per-track + at integration during implementation — empty at FINAL.
   verified clean (5 sampled raw-doc groups, all trace to the pre-existing `aonDedup` collapse, zero
   missed fills). Proceeding to the fresh transform / 3× determinism / fixture regen / Pagefind
   rebuild / commits per the corrected numbers above.
+- **Track B, 2026-07-15:** R1/R2/R5/R6 built + TS-green in the worktree. The adversarially-corrected
+  glyph gate (synthetic-cost unit test over all 5 `ActionCost` values, the fixture corpus carrying
+  none) passed; the 3 SVG-bearing flagship goldens regenerated locally and flagged, drift confirmed
+  to be glyph path data only. Real-corpus free-action specimen + vellum-render PNG rasterization
+  proof deferred to Integration per plan (no real corpus in the worktree).
+- **Track C, 2026-07-15:** R9(b,c)/R11/D29-61d built + TS-green in the worktree. `hasValue` removed
+  repo-wide incl. the adversarially-caught escape sites (`urlState.ts`'s range codec, `activeFilterPills.ts:43`);
+  the `!`-bang decode-tolerant/never-emit contract unit-tested via a codec round-trip. Live
+  "magic missile" search proof deferred to Integration (no real `/pagefind` bundle in the worktree).
+- **Track D, 2026-07-15:** D29-68 built + TS-green in the worktree. 243 hand-curated + ~253 generated
+  (PS:ATG-style initialism) entries, all hand-reviewed; zero-collision test over the committed
+  496-book-name fixture green. 7-site wiring landed; `sourcesIndex.ts`/`sourcesIndexBuild.ts`
+  untouched per the reviewed D29-68 mechanism. Drift re-verification against a freshly regenerated
+  `sources-index.json` deferred to Integration (mechanism needs the real corpus).
+- **Integration, 2026-07-15:** Merges A→B→C→D (D rebased first) — B conflicted only on the 3
+  SVG-bearing goldens (the golden policy's own predicted overlap), C merged clean, D's rebase onto
+  the 4 shared files was conflict-free (verified-disjoint as spec'd). Full `vp run -r typecheck`
+  green across all 32 members immediately after, zero cross-track drift. ONE authoritative golden
+  regen: 2 files drift (`creature-dragon.html`, `spell-heal.html`), pure SVG path-data diffs. ONE
+  authoritative corpus regen (transform against the committed snapshots, no fetch), 3× determinism
+  proven (`diff -r` empty pairwise all three runs), fixture re-extract byte-identical to Track A's
+  own, host Pagefind rebuild (46,192 pages indexed). Verified against the corrected gate numbers:
+  `spell/` 2,461, `ritual/` 201 (143 movers: 45 same-slug + 98 fresh-slug), `equipment/` Runes 273,
+  the three named R4 regression cases by id, the 10 named R9(a) level:0 entities, archetype's 261
+  no-level entities unchanged. D29-68 drift re-verification: 0 drift, the committed 496-book-name
+  fixture matches the freshly rebuilt `sources-index.json` exactly. Full codex suite: 1,533 tests
+  green. Two review minors folded: D29-62's own amendment section now records the mastheadExtra
+  label-dedup deviation Track A shipped in `b070592`; `FacetPanel.tsx`'s `RangeInputs` missing-count
+  note now appears in both min/max placeholders. Real-corpus proofs (production build): tables
+  bordered/zebra'd on all 3 named specimens; `spell/nightmare`'s degree-of-success block renders on
+  separate lines; a real free-action specimen (`feat/high-speed-regeneration`) renders the traced
+  diamond glyph with accessibility parity intact; the "magic missile" search proof holds (0 hits
+  default, 1 hit + edition pill widened via checkbox or `?superseded=1`); abbreviations visible with
+  full-name hover; zero footer anywhere; `armor/breastplate`/`spell/heal` show every masthead field
+  once (confirming the dedup fix); `ancestry/human`'s no-divider case keeps its body intact. Full
+  sweep: Playwright zero-hydration pass across 20 routes; weights vs the P4.5 S6 baselines move by
+  low single digits (several shrink under gzip), interaction latency moved more (~1.5–2×, real but
+  same-order-of-magnitude, not a stop, attributed to R10's new per-row abbreviation lookups);
+  hermeticity both lanes green with `data/` renamed out of tree; telemetry confirmed via the SigNoz
+  MCP tools (7 reworked routes, healthy `astra.codex` spans, 200/no-error). Both CI lanes reproduced
+  green (`ruff check`/`format --check`/`ty check`/`pytest`; `vp run -r typecheck`/`oxlint
+  --threads=4`/`format:check`/`vp run -r test`/`vp run -r build`; the `routeTree.gen.ts` flap hit
+  `heartwood-frontend` mid-build, restored from HEAD per the standing gotcha). Deploy tail: `just up`
+  recreated only `astra-codex` (no ripple); the container-recreate served as the restart-tail proof
+  (deliberately not re-running `just codex-refresh` itself, which would re-fetch from the network
+  against the spec's own "no re-fetch" corpus posture) — real-corpus three-pronged assert green on
+  both `codex.iridi.cc` and the newly live `2e.iridi.cc` (145/145 default, 201/201 widened, zero
+  fixture-fallback warns, byte-identical SSR payload modulo a per-request hydration timestamp);
+  `2e.iridi.cc` Caddy stanza added (R7, flagged per [[flag-paid-live-actions]] — the live edge
+  go-live for the new hostname), noindex + TLS confirmed on both hosts.
