@@ -69,9 +69,8 @@ function RootComponent() {
           <Omnibar />
         </header>
         <Outlet />
-        <footer className="site-foot">
-          <span>codex — public, unofficial, noindexed</span>
-        </footer>
+        {/* R6 (D29-66) — the global footer is deleted outright, no
+            replacement (stakeholder-accepted zero-global-disclaimer risk). */}
         <Scripts />
       </body>
     </html>
