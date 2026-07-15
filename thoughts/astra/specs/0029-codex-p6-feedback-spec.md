@@ -1,6 +1,9 @@
 # 0029 — codex P6: gate-H feedback round — spec
 
-**Status:** FINAL (2026-07-15) — **adversarially reviewed ×2 same day** (two independent reviewers,
+**Status:** BUILT (2026-07-15, same day as the spec — all 4 parallel tracks + integration landed,
+`codex.iridi.cc` + `2e.iridi.cc` LIVE at `ac1a3cc`; gates A–G met, §8 build record carries the
+per-gate evidence incl. the implementation-time R4/R8 pin corrections; ▶ open: gate H only) —
+was: FINAL (2026-07-15) — **adversarially reviewed ×2 same day** (two independent reviewers,
 a data/transform lens + a tracks/UI lens): **5 blockers + 8 minors/nits, all repo-evidence-verified,
 all folded in.** The blockers: (1) ritual post-move count 114→**113** + the previously undocumented
 **fresh-slug mover** pattern (9 of the 55 movers land on fresh slugs with NO `@legacy` collision —

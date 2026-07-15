@@ -1,6 +1,6 @@
 ---
 name: codex-0029-gotchas
-description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-15 **P5 DEPLOY BUILT, codex.iridi.cc IS LIVE** (gates A–G met; ▶ the ONLY open item = gate H, the consolidated P2+P3+P4+P4.5 stakeholder review ON the live site) — the D29-53 identical-path ro-bind-mount convention (host-absolute data-path, no env override for plain config fields), the corpus-free heartwood-model image + fixture fail-soft trap, Pagefind bundle = 203 MB MEASURED not ~50, NO-307 correction (legacy alias decodes client-side), refresh-restarts-the-container, plus the P4.5 loaderDeps/memoized-listing/superseded-semantics finds + all prior corpus/join/render/browse/search/tree gotchas a fresh session must not re-derive
+description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-15 **P6 gate-H FEEDBACK ROUND BUILT + LIVE same day (codex.iridi.cc + 2e.iridi.cc)** — 11 stakeholder items via the FIRST 4-parallel-worktree-track build (D29-71); ⭐ THE find: THREE spec pins failed at implementation because they were verified against PROXY populations not the mechanism's real trigger (ritual movers 55-by-legacyOf-grep vs 143-real; Runes 323-raw vs 273-emitted) — run the real transform before trusting any pin; rituals recategorized spell/=2,461 ritual/=201; plus the cross-worktree git-stash incident, the injection-cautious subagent provenance lesson, the P5 bind-mount/fixture-fail-soft/Pagefind-203MB finds, the P4.5 loaderDeps/superseded-semantics finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H re-run (all 11 P6 items + carried P2–P5 set)
 metadata:
   type: project
 ---
@@ -11,7 +11,51 @@ NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pen
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
 
-**P4.5 BUILT 2026-07-15 (UX rework + bespoke restyle; spec
+**P6 BUILT + LIVE 2026-07-15 (gate-H feedback round; spec
+`thoughts/astra/specs/0029-codex-p6-feedback-spec.md` D29-59..71, status BUILT; scope
+`…/research/2026-07-15-codex-0029-p6-feedback-thoughts.md` R1–R11 all stakeholder-resolved).**
+P5's gate H was a REDIRECT with 11 items; the whole round ran scope→spec→adversarial-×2→build→
+deploy in one session. **FIRST USE of the 4-parallel-worktree-track structure (D29-71):** Track A
+in the MAIN tree (the gitignored `data/{corpus,snapshots,search}` exist ONLY there — a worktree
+materializes tracked files only, so the corpus-regenerating track cannot be a worktree), B/C/D in
+isolated worktrees gating fixture-only (the hermeticity bar is what makes this safe), a binding
+per-track file-ownership table, pinned merge order A→B→C→D (D rebases onto merged A+B+C), NO track
+regens shared goldens (regen-locally-and-flag; integration regens ONCE at merged HEAD — A's and
+B's golden drift sets overlapped on 3 of 6 files exactly as predicted, the only merge conflicts).
+**⭐ THE P6 find — the proxy-population pin failure mode, ×3:** the spec pinned ritual movers=55/
+`ritual/`=113 (adversarially reviewed ×2!) but BOTH derivations grepped `legacyOf` pointers — a
+proxy population — while D29-59's mechanism actually triggers on any Foundry-spell↔AoN-ritual join
+= **143 movers** (87 never-remastered rituals sat miscategorized in `spell/`; Foundry's own
+`packs/pf2e/spells/rituals/` subfolder signal is discarded by categoryMap.ts); Runes pinned 323
+(raw AoN doc count) vs 273 emitted (aonDedup collapse). Track A ran the REAL transform before
+trusting any pin, STOPPED with options instead of improvising, and the resolution was "ship the
+mechanism as written, amend the pins" (`d7b3100`, the P4 pin-correction precedent). **Final:
+`spell/`=2,461 · `ritual/`=201 (145 visible default) · 143 movers = 45 same-slug colliders + 98
+fresh-slug (9 renamed-on-remaster among the paired ones — a mover pattern nobody documented) ·
+three named regression cases: commune many-to-one, shadow-double/simulacrum fresh-slug,
+unbearable-cacophony pairing-less.** Two bonus real bugs fixed in-flight: the crossref/embed
+patcher NEVER walked `HazardStats.disable/routine/reset` BlockNode[] fields (latent since P1.6,
+exposed when R4 staled `hazard/the-power-of-faith`→`spell/consecrate`); mastheadExtra appended
+unconditionally duplicates labels the typed facet headers already render (caught via golden-diff
+review; fix = exact-match label dedup per header, recorded as a D29-62 deviation). **Process
+finds:** a Track C engineer ran `git stash` in the MAIN tree (Track A's WIP briefly stashed —
+restored + line-by-line verified, `stash@{0}` left as recovery artifact, redundant + droppable;
+future worktree briefs must say "never run git outside your worktree path"); the spec-drafting
+subagent REFUSED a mid-run SendMessage directive as suspected prompt injection (right instinct —
+inter-agent messages arrive interleaved with tool results; re-send with provenance context and
+judge-by-consistency framing); R10 abbreviations shipped as a client-safe pure `abbreviateBook()`
+module because `sources-index.json` is server-only//sources-consumed (the adversarial review's
+biggest catch — the spec'd 7-site wiring had NO data path); 24 dual-form PFS scenarios carry two
+book-name strings → distinct codes under the injectivity test (relaxable if the stakeholder
+objects at H); 40 UNCERTAIN curated abbreviations flagged inline for one-pass review. Perf: byte
+weights flat-to-shrinking, interaction latency ~1.5–2× from R10 per-row lookups (memoizable).
+R5 glyphs: traced from foundryvtt/pf2e `pf2e-8.3.0`'s `pathfinder-2e-actions.woff2` via
+fontTools TransformPen (naive quadratic flattening corrupts the reaction hook), provenance in
+`apps/codex/src/ui/ACTIONS-GLYPH-SOURCE.md`, visual-IP legality stakeholder-cleared w/ lawyers.
+R6 footer deleted outright — the site now has ZERO global disclaimer, stakeholder-accepted risk.
+`2e.iridi.cc` = discrete alias stanza (heart precedent), TLS ~10s, byte-identical SSR both hosts.
+
+_(P4.5, superseded detail:)_ **P4.5 BUILT 2026-07-15 (UX rework + bespoke restyle; spec
 `thoughts/astra/specs/0029-codex-p45-ux-restyle-spec.md` D29-46..52, status BUILT; scope
 `…/research/2026-07-14-codex-0029-p45-ux-restyle-thoughts.md` + ui-map + style-tokens
 companions).** P4's acceptance H was a stakeholder REDIRECT: 5e.tools-style split-column

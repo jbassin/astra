@@ -36,7 +36,58 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `7e3e348`, 2026-07-15 — codex (0029) P5 DEPLOY BUILT S1+S2 same day as its spec; **`codex.iridi.cc` IS LIVE**, gates A–G met; ▶ THE ONLY OPEN ITEM = gate H, the consolidated stakeholder review ON THE LIVE SITE; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `ac1a3cc`, 2026-07-15 — codex (0029) P6 gate-H FEEDBACK ROUND BUILT + LIVE same day: scope→spec→adversarial-×2→4-parallel-worktree-tracks→integration→deploy; `2e.iridi.cc` now ALSO live; ▶ THE ONLY OPEN ITEM = gate H re-run on the live site incl. all 11 P6 items; heartwood ON HOLD)
+
+> **✅ codex (0029) P6 (gate-H feedback round) — SCOPED + SPEC'D + BUILT + LIVE in one session.**
+> P5's gate H ran 2026-07-15 and came back a REDIRECT with 11 items. Four investigation agents
+> verified every item against the real repo/corpus BEFORE stakeholder questions; all 11 decisions
+> R1–R11 resolved in two batched rounds (scope doc
+> `thoughts/shared/research/2026-07-15-codex-0029-p6-feedback-thoughts.md`, commit `c144a07`).
+> Spec `thoughts/astra/specs/0029-codex-p6-feedback-spec.md` D29-59..71, status BUILT — drafted,
+> then **restructured mid-draft into 4 PARALLEL WORKTREE TRACKS + serial integration (D29-71,
+> stakeholder-requested — FIRST USE of this pattern)**, adversarially reviewed ×2 (5 blockers
+> folded, incl. R10 re-mechanized as a client-safe pure `abbreviateBook()` module and the
+> `hasValue` ownership repair), FINAL `1a5c77a`. Build: **Track A** (main tree — sole owner of
+> the gitignored `data/`) `3275748`/`6db063c`/`b070592`/`9088a7e`+amendment `d7b3100` · **Track B**
+> (worktree) `09a949c`/`66854f7` · **Track C** (worktree) `678e107` · **Track D** (worktree,
+> rebased) `7608852` · **Integration** `2429d96`+`ac1a3cc`. All pushed; both hostnames live.
+> - **The 11 items shipped:** R1 table CSS (P4.5 regression) · R2 degree-of-success `pre-line` ·
+>   R3 masthead strip + `mastheadExtra` facet-header absorption (label-dedup deviation recorded) ·
+>   R4 rituals re-categorized — **143 movers, `spell/`=2,461, `ritual/`=201 (145 visible)** ·
+>   R5 exact-traced action glyphs (font sourced from foundryvtt/pf2e `pf2e-8.3.0`, provenance in
+>   `src/ui/ACTIONS-GLYPH-SOURCE.md`; stakeholder cleared the visual-IP legality with lawyers) ·
+>   R6 footer deleted outright (zero-disclaimer risk stakeholder-accepted) · R7 `2e.iridi.cc`
+>   alias stanza live (heart-precedent, TLS ~10s) · R8 rune taxonomy threaded (273 Runes-tagged) ·
+>   R9 level→0 (10 entities) + bounds-imply-hasValue + checkbox removed + `!`-bang forever-decode ·
+>   R10 source abbreviations at 7 sites (496 books, zero-collision; **40 UNCERTAIN entries flagged
+>   inline for stakeholder review**; 24 dual-form PFS scenarios got distinct codes — relaxable at H)
+>   · R11 search hides superseded by default + reveal control.
+> - **⚠️ THE session finds (detail in [[codex-0029-gotchas]]):** THREE spec pins failed at
+>   implementation because they were verified against PROXY populations (ritual movers grepped via
+>   `legacyOf` = 55 vs the mechanism's real trigger = 143 — 87 never-remastered rituals were
+>   sitting miscategorized in `spell/`, Foundry's own `packs/pf2e/spells/rituals/` subfolder signal
+>   is discarded by categoryMap.ts; Runes 323 raw-AoN-docs vs 273 emitted; the reviewer's 113 was
+>   also proxy-derived) — Track A ran the REAL transform before trusting any pin and stopped for a
+>   decision (option "ship the mechanism, amend the pins" chosen, amendment `d7b3100`). Two bonus
+>   real bugs fixed in-flight: the P1.6-latent hazard-stats crossref-patcher gap;
+>   mastheadExtra label-dedup. A Track C engineer ran `git stash` in the MAIN tree mid-incident
+>   (Track A's WIP briefly stashed; restored + verified line-by-line; **`stash@{0}` still exists,
+>   redundant, safe to drop**). The spec-drafting agent refused a mid-run SendMessage directive as
+>   suspected prompt injection (right instinct; needed provenance context to proceed).
+> - **▶ NEXT: gate H — the consolidated stakeholder review at `https://codex.iridi.cc` (or
+>   `https://2e.iridi.cc`)**: every carried P2–P5 item (M7/M11 expected; heal single-common-word
+>   Pagefind limitation) + all 11 P6 items, incl. the R10 UNCERTAIN-abbreviation file read-through
+>   (`apps/codex/src/domain/sources/abbreviations.ts`) and the dual-form PFS-code judgment call.
+>   Sign-off → 0029 COMPLETE; a redirect spawns P7. Perf note for H: interaction latency rose
+>   ~1.5–2× from R10's per-row lookups (byte weights flat/shrank) — watch, memoizable if felt.
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A alerting
+>   breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-15, earlier same day) — P5 DEPLOY BUILT (superseded above; its gate H became the P6 redirect)
+
+## (was) Current state (as of `7e3e348`, 2026-07-15 — codex (0029) P5 DEPLOY BUILT S1+S2 same day as its spec; **`codex.iridi.cc` IS LIVE**, gates A–G met; ▶ THE ONLY OPEN ITEM = gate H, the consolidated stakeholder review ON THE LIVE SITE; heartwood ON HOLD)
 
 > **✅ codex (0029) P5 (deploy) — SPEC'D + BUILT + LIVE in one session** (staff-orchestrator +
 > sonnet engineers; spec `thoughts/astra/specs/0029-codex-p5-deploy-spec.md` D29-53..58, status
