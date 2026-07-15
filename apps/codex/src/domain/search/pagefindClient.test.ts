@@ -36,7 +36,7 @@ describe("loadPagefind (D29-34 fail-soft)", () => {
     _resetPagefindClientForTests();
     // Still resolves to null (the runtime is still absent) — this only
     // proves the module-scope promise was actually cleared, not leaked
-    // across tests (same convention as `legacyToggle.ts`'s own reset).
+    // across tests (a module-scope-reset convention shared across the app).
     const pf = await loadPagefind();
     expect(pf).toBeNull();
   });

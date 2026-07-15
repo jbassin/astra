@@ -4,9 +4,7 @@
 // module rather than re-implemented, so a future comma-bearing filter value
 // — the real-corpus `creature.family`/`source.book` bug that codec's own
 // header documents — gets the fix in exactly one place), tolerant parsing
-// (never throws; unknown params dropped; empty state = clean URL; qss's
-// bare-numeric/boolean coercion accepted the same way `validateBrowseSearch`
-// already does for `legacy`).
+// (never throws; unknown params dropped; empty state = clean URL).
 //
 // Deliberately its OWN, smaller shape though — NOT a reuse of
 // `BrowseSearch`/`validateBrowseSearch` — because `/search`'s filter
@@ -21,6 +19,14 @@
 // defeating the whole "only fetch the shown page of fragments" perf posture
 // (D29-34's own "one fragment fetch per shown result"). A deliberate,
 // narrower surface than browse's, not an oversight.
+//
+// P4.5 D29-48 (R3's explicit carve-out): search NEVER hides superseded
+// content by default — "search always covers both editions and badges
+// results" — so this module carries NO `legacy`/`superseded` field at all
+// anymore (dead code once the site-wide toggle it used to read was
+// deleted). The ordinary `edition` enum facet (remaster/legacy CONTENT
+// values, sourced from `pagefind.filters()` counts) is unrelated and
+// unchanged.
 
 import { joinCsv, splitCsv } from "../browse/urlState";
 
@@ -31,16 +37,11 @@ export type SearchPageSearch = {
   edition?: string;
   level?: string;
   traits?: string;
-  legacy?: boolean;
 };
 
 function str(raw: unknown): string {
   if (raw === undefined || raw === null) return "";
   return typeof raw === "string" ? raw : String(raw);
-}
-
-function toBool(raw: unknown): boolean {
-  return raw === true || raw === 1 || raw === "1" || raw === "true";
 }
 
 /** `validateSearch` proper for `routes/search.tsx` — see the file header for
@@ -71,16 +72,14 @@ export function validateSearchPageSearch(raw: Record<string, unknown>): SearchPa
     const v = str(raw.traits);
     if (v !== "") out.traits = v;
   }
-  if (toBool(raw.legacy)) out.legacy = true;
   return out;
 }
 
 /** The panel/query island's live state — plain sets (no tri-state, see the
- * file header), a `legacy` boolean the ROUTE resolves via the same two-phase
- * SSR/live read `$category/index.tsx` uses (M4), never read from here. */
+ * file header). No `superseded`/`legacy` field (P4.5 D29-48 — search never
+ * hides superseded content). */
 export interface SearchFilterState {
   query: string;
-  legacy: boolean;
   category: ReadonlySet<string>;
   rarity: ReadonlySet<string>;
   edition: ReadonlySet<string>;
@@ -91,7 +90,6 @@ export interface SearchFilterState {
 export function emptySearchFilterState(): SearchFilterState {
   return {
     query: "",
-    legacy: false,
     category: new Set(),
     rarity: new Set(),
     edition: new Set(),
@@ -117,7 +115,6 @@ function encodeSet(set: ReadonlySet<string>): string | undefined {
 export function searchToFilterState(search: SearchPageSearch): SearchFilterState {
   return {
     query: search.q ?? "",
-    legacy: search.legacy === true,
     category: decodeSet(search.category),
     rarity: decodeSet(search.rarity),
     edition: decodeSet(search.edition),
@@ -129,7 +126,6 @@ export function searchToFilterState(search: SearchPageSearch): SearchFilterState
 export function filterStateToSearch(state: SearchFilterState): SearchPageSearch {
   const out: SearchPageSearch = {};
   if (state.query.trim() !== "") out.q = state.query.trim();
-  if (state.legacy) out.legacy = true;
   const category = encodeSet(state.category);
   if (category !== undefined) out.category = category;
   const rarity = encodeSet(state.rarity);
@@ -165,10 +161,10 @@ export function hasAnyCriteria(state: SearchFilterState): boolean {
 }
 
 /** The Pagefind `search(term, {filters})` filter object for the current
- * state — one entry per non-empty dimension (OR within the array), plus
- * `superseded` pinned per the legacy toggle unless it's on (D29-36 M4, same
- * predicate as `pagefindClient.ts`'s `supersededFilter`, inlined here since
- * it also needs the OTHER four dimensions folded into the same object). */
+ * state — one entry per non-empty dimension (OR within the array). P4.5
+ * D29-48 (R3): NEVER sets a `superseded` filter — search always covers both
+ * editions; the old `if (!state.legacy) out.superseded = ["false"]` line is
+ * deleted outright, not renamed. */
 export function pagefindFilters(state: SearchFilterState): Record<string, string[]> {
   const out: Record<string, string[]> = {};
   if (state.category.size > 0) out.category = [...state.category];
@@ -176,6 +172,5 @@ export function pagefindFilters(state: SearchFilterState): Record<string, string
   if (state.edition.size > 0) out.edition = [...state.edition];
   if (state.level.size > 0) out.level = [...state.level];
   if (state.traits.size > 0) out.traits = [...state.traits];
-  if (!state.legacy) out.superseded = ["false"];
   return out;
 }

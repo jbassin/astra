@@ -851,17 +851,6 @@ select:focus-visible,
   color: var(--color-ink-dim);
 }
 
-/* --- D29-35: the site-wide legacy toggle (header control, __root.tsx) —
-   MECHANISM untouched by S1 (D29-48 is a later slice); color values only. --- */
-.site-legacy-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
-  color: var(--color-ink-faint);
-  cursor: pointer;
-}
-
 /* --- P3 S4 (D29-36): the header omnibar --- */
 .codex-omnibar {
   position: relative;

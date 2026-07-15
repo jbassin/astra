@@ -31,21 +31,23 @@ import { type RenderCtx, renderNodes } from "./nodes";
  * reads (measured max 7 sidebars/host, spec's own budget note).
  *
  * **Superseded interplay:** an attached sidebar that is itself `superseded`
- * follows the site-wide legacy predicate — hidden when `legacy` is false,
- * with an "N hidden" note reusing `RulesTree.tsx`'s own microcopy/CSS class
- * (`codex-rules-hidden-note`) rather than inventing a second wording.
+ * follows the host page's own superseded-visibility param (P4.5 D29-48: a
+ * plain per-page URL read, no site-wide toggle) — hidden when `superseded`
+ * is false, with an "N hidden" note reusing `RulesTree.tsx`'s own
+ * microcopy/CSS class (`codex-rules-hidden-note`) rather than inventing a
+ * second wording.
  */
 export function AttachedSidebars({
   sidebars,
-  legacy,
+  superseded,
   ctx,
 }: {
   sidebars: readonly AttachedSidebarView[];
-  legacy: boolean;
+  superseded: boolean;
   ctx: RenderCtx;
 }): ReactElement | null {
   if (sidebars.length === 0) return null;
-  const visible = legacy ? sidebars : sidebars.filter((s) => !s.superseded);
+  const visible = superseded ? sidebars : sidebars.filter((s) => !s.superseded);
   const hiddenCount = sidebars.length - visible.length;
 
   return (

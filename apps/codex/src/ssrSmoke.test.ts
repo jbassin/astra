@@ -61,6 +61,44 @@ async function get(pathAndQuery: string): Promise<{ status: number; html: string
 }
 
 /**
+ * P4.5 D29-48 finding: the pinned router's own search-canonicalization pass
+ * (the SAME pre-existing mechanism the `legacy=1`->`legacy=true` numeric
+ * coercion case already 307-redirected through, before this phase) now ALSO
+ * fires for a `legacy=`-keyed request once `validateBrowseSearch`/
+ * `validateRulesSearch`/`validateEntitySearch` decode it into a
+ * DIFFERENTLY-keyed `superseded` field — the raw `legacy` key has no
+ * matching output key to compare against, so the router redirects to a
+ * canonical URL carrying BOTH keys (`?legacy=true&superseded=true`). Content
+ * is still byte-identical once the (single-hop) redirect is followed — this
+ * helper follows it the same way a browser/`curl -L` would, for the tests
+ * that specifically verify the alias end-to-end. */
+async function getFollow(pathAndQuery: string): Promise<{ status: number; html: string }> {
+  let current = pathAndQuery;
+  for (let hop = 0; hop < 3; hop++) {
+    const res = await ssr.fetch(new Request(`http://localhost${current}`));
+    if (res.status >= 300 && res.status < 400) {
+      const location = res.headers.get("location");
+      if (!location) return { status: res.status, html: await res.text() };
+      current = location;
+      continue;
+    }
+    return { status: res.status, html: await res.text() };
+  }
+  throw new Error(`too many redirects starting from ${pathAndQuery}`);
+}
+
+/** Strips the ONE non-deterministic bit of an otherwise-deterministic SSR
+ * page: TanStack Start's own router-match dehydration payload embeds a
+ * per-request `u:<epoch-ms>` ("updatedAt") timestamp for every matched
+ * route — real, harmless request-time noise, not a content difference. Any
+ * byte-identical comparison across two separately-fetched requests must
+ * normalize this first (found while proving the acceptance-C alias-decode
+ * checks; confirmed nothing else in the dehydration payload varies). */
+function stripVolatile(html: string): string {
+  return html.replace(/u:\d+/g, "u:0");
+}
+
+/**
  * D29-29 tier 3 — route tests over the fixture corpus, run as real HTTP-shaped
  * requests against the same built SSR server the smoke above uses.
  * `resolveEntityPageData`'s own unit tests (`corpusFns.test.ts`) already cover
@@ -201,14 +239,24 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
     // (still present in the dehydration blob, hence the href-anchor check).
     expect(rendersRow(off.html, "spell/magic-missile")).toBe(false);
 
-    // legacy=1 canonicalizes (307) to legacy=true — the D29-35 URL round trip.
+    // legacy=1/legacy=true both alias-decode to `?superseded=1` (P4.5
+    // D29-48) — the pinned router's own search-canonicalization pass 307s
+    // either raw form to a URL carrying the new `superseded` key (see
+    // `getFollow`'s own comment), so this asserts the FINAL landed page.
     const rawRes = await get("/spell?legacy=1");
-    // `get()` doesn't auto-follow redirects — assert the redirect status,
-    // then the canonical target explicitly.
     expect([200, 307]).toContain(rawRes.status);
-    const on = await get("/spell?legacy=true");
+    const on = await getFollow("/spell?legacy=true");
     expect(on.status).toBe(200);
     expect(rendersRow(on.html, "spell/magic-missile")).toBe(true);
+  });
+
+  it("P4.5 D29-48: legacy=true and superseded=1 are the alias-decode pair — byte-identical HTML once redirects settle", async () => {
+    const viaLegacy = await getFollow("/spell?legacy=true");
+    const viaSuperseded = await getFollow("/spell?superseded=1");
+    expect(viaLegacy.status).toBe(200);
+    expect(viaSuperseded.status).toBe(200);
+    expect(stripVolatile(viaLegacy.html)).toBe(stripVolatile(viaSuperseded.html));
+    expect(rendersRow(viaSuperseded.html, "spell/magic-missile")).toBe(true);
   });
 
   it("a comma-bearing enum value round-trips through the URL codec (the real-corpus family/book bug's fixture-corpus regression guard)", async () => {
@@ -248,7 +296,7 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
   });
 
   it("sort=level places the '—' (no-level) bucket last and hides letter anchors", async () => {
-    const { status, html } = await get("/creature?sort=level&legacy=true");
+    const { status, html } = await getFollow("/creature?sort=level&legacy=true");
     expect(status).toBe(200);
     expect(html).not.toContain("Jump to letter");
   });
@@ -301,7 +349,7 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
     // entirely (S4 hermeticity find: the bare-`/rules` form of this assert
     // only ever passed when the REAL corpus — whose GMG root is not
     // superseded — masked the fixture-fallback path).
-    const { html } = await get("/rules?legacy=true");
+    const { html } = await getFollow("/rules?legacy=true");
     expect(html).toContain('href="/rules/chapter-2-tools"');
   });
 
@@ -327,11 +375,32 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
   });
 
   it("legacy=1 (canonicalized to legacy=true) reveals the Core Rulebook section as a normal (non-collapsed) tree, no hidden notes at all", async () => {
-    const on = await get("/rules?legacy=true");
+    const on = await getFollow("/rules?legacy=true");
     expect(on.status).toBe(200);
     expect(on.html).toContain("Chapter 9: Playing the Game");
     expect(on.html).not.toMatch(/all \d+ hidden/);
     expect(on.html).not.toContain("codex-rules-hidden-note");
+  });
+
+  it("P4.5 D29-48: legacy=true and superseded=1 are the alias-decode pair on /rules — byte-identical HTML once redirects settle", async () => {
+    const viaLegacy = await getFollow("/rules?legacy=true");
+    const viaSuperseded = await getFollow("/rules?superseded=1");
+    expect(viaLegacy.status).toBe(200);
+    expect(viaSuperseded.status).toBe(200);
+    expect(stripVolatile(viaLegacy.html)).toBe(stripVolatile(viaSuperseded.html));
+  });
+
+  it("the inline superseded toggle link renders near the quick-filter when content is hidden, and flips to a hide-link once widened", async () => {
+    const off = await get("/rules");
+    expect(off.html).toContain("codex-rules-superseded-toggle");
+    // React interposes `<!-- -->` comment markers around each interpolated
+    // expression (the count, the text runs) — assert the pieces rather than
+    // one contiguous string.
+    expect(off.html).toContain("Show ");
+    expect(off.html).toContain("hidden (superseded)");
+    const on = await getFollow("/rules?superseded=1");
+    expect(on.html).toContain("codex-rules-superseded-toggle");
+    expect(on.html).toContain("Hide superseded");
   });
 
   it("noindex meta is present on the tree browser's SSR HTML too", async () => {
@@ -457,6 +526,14 @@ describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
       expect(status).toBe(200);
       expect(html).not.toContain("data-render-error");
     }
+  });
+
+  it("P4.5 acceptance C spot check: rules/building-creatures@legacy?legacy=true and ?superseded=1 are byte-identical once redirects settle (the P4 acceptance's own fixture)", async () => {
+    const viaLegacy = await getFollow("/rules/building-creatures@legacy?legacy=true");
+    const viaSuperseded = await getFollow("/rules/building-creatures@legacy?superseded=1");
+    expect(viaLegacy.status).toBe(200);
+    expect(viaSuperseded.status).toBe(200);
+    expect(stripVolatile(viaLegacy.html)).toBe(stripVolatile(viaSuperseded.html));
   });
 });
 

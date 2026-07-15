@@ -2,7 +2,7 @@
 //
 // codex's app-wide default is plain "node" (`vitest.config.ts`); this file
 // needs a real DOM + `@testing-library/react`, so it opts into jsdom
-// per-file (same convention as `Omnibar.test.tsx`/`legacyToggle.test.ts`).
+// per-file (same convention as `Omnibar.test.tsx`).
 // `HeaderNav` renders only plain `<a>`/`<button>` — no router hook — so a
 // bare `render()` needs no `RouterProvider` wrapper (unlike `Omnibar`).
 //

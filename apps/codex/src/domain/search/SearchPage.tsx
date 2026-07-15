@@ -11,16 +11,20 @@
 // `pagefind.js`), `domain/browse/filterEngine.collidingNames` (M5, the same
 // rule D29-35 defined for listings) and `domain/browse/EmptyState
 // .BrowseEmptyState` (M6, the literal "same component serves `/search`" the
-// spec calls for). The URL codec (`searchUrlState.ts`) and the legacy-toggle
-// two-phase SSR/live read below are copied from `$category/index.tsx`'s own
-// pattern (not imported — that route's version is typed against
-// `BrowseSearch`, a different shape, D29-35 vs D29-36).
+// spec calls for). The URL codec is `searchUrlState.ts`'s own
+// `SearchPageSearch`/`SearchFilterState` shape (not `BrowseSearch` —
+// D29-35 vs D29-36).
+//
+// P4.5 D29-48 (adversarial M1, R3's carve-out): search NEVER hides
+// superseded content by default, so there is no superseded/legacy field
+// here at all anymore — the whole prior two-phase SSR/live-read seam this
+// file used to carry is deleted outright, not adapted, along with the
+// deleted site-wide toggle it read from.
 
 import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactElement } from "react";
 
 import { BrowseEmptyState } from "@/domain/browse/EmptyState";
 import { collidingNames } from "@/domain/browse/filterEngine";
-import { useLegacyToggle } from "@/domain/browse/legacyToggle";
 import { capitalize, humanizeSlug } from "@/domain/render/text";
 import { recordSearch } from "@/server/telemetryFns";
 
@@ -66,32 +70,7 @@ export function SearchPage({
   search: SearchPageSearch;
   onSearchChange: SearchSearchUpdater;
 }): ReactElement {
-  const liveLegacy = useLegacyToggle();
-
-  // Same M4 two-phase SSR/live read `$category/index.tsx` uses: the FIRST
-  // render (server + matching first client render) must derive `legacy`
-  // from the isomorphic `search.legacy` alone; only after mount does the
-  // live site-wide toggle take over.
-  const [hasHydrated, setHasHydrated] = useState(false);
-  useEffect(() => setHasHydrated(true), []);
-  const effectiveLegacy = hasHydrated ? liveLegacy : search.legacy === true;
-
-  const state = useMemo(
-    () => ({ ...searchToFilterState(search), legacy: effectiveLegacy }),
-    [search, effectiveLegacy],
-  );
-
-  // Reflect the live toggle into THIS route's own URL whenever it changes.
-  useEffect(() => {
-    const currentlyHasLegacyParam = search.legacy === true;
-    if (currentlyHasLegacyParam === effectiveLegacy) return;
-    onSearchChange((prev) => {
-      const next = { ...prev };
-      if (effectiveLegacy) next.legacy = true;
-      else delete next.legacy;
-      return next;
-    });
-  }, [effectiveLegacy, search, onSearchChange]);
+  const state = useMemo(() => searchToFilterState(search), [search]);
 
   const [queryText, setQueryText] = useState(state.query);
 
@@ -160,9 +139,8 @@ export function SearchPage({
         });
     }, DEBOUNCE_MS);
     return () => window.clearTimeout(timerRef.current);
-    // `state` is a fresh object each render (derived from `search` +
-    // `effectiveLegacy` above) — its own dependency already captures every
-    // field that can change.
+    // `state` is a fresh object each render (derived from `search` above) —
+    // its own dependency already captures every field that can change.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [state, pf]);
 
@@ -185,9 +163,7 @@ export function SearchPage({
   function handleQueryChange(e: ChangeEvent<HTMLInputElement>) {
     const next = e.target.value;
     setQueryText(next);
-    onSearchChange((prev) =>
-      filterStateToSearch({ ...searchToFilterState(prev), query: next, legacy: effectiveLegacy }),
-    );
+    onSearchChange((prev) => filterStateToSearch({ ...searchToFilterState(prev), query: next }));
   }
 
   function toggleDimension(
@@ -199,7 +175,7 @@ export function SearchPage({
       const selected = new Set(prevState[dimension]);
       if (selected.has(value)) selected.delete(value);
       else selected.add(value);
-      return filterStateToSearch({ ...prevState, [dimension]: selected, legacy: effectiveLegacy });
+      return filterStateToSearch({ ...prevState, [dimension]: selected });
     });
   }
 

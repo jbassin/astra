@@ -54,8 +54,10 @@ export type SortMode = "name" | "level";
 export interface BrowseFilterState {
   /** Name quick-filter, substring, case-insensitive. */
   query: string;
-  /** Show `superseded` rows too (the site-wide legacy toggle). */
-  legacy: boolean;
+  /** Show `superseded` rows too (P4.5 D29-48: a plain per-page URL read, no
+   * site-wide toggle — see `urlState.ts`'s own header for the `legacy`
+   * back-compat alias). */
+  superseded: boolean;
   sort: SortMode;
   traits: TraitFilter;
   level: RangeFilter;
@@ -71,7 +73,7 @@ export interface BrowseFilterState {
 export function emptyFilterState(): BrowseFilterState {
   return {
     query: "",
-    legacy: false,
+    superseded: false,
     sort: "name",
     traits: { include: new Set(), exclude: new Set() },
     level: {},
@@ -86,7 +88,7 @@ export function emptyFilterState(): BrowseFilterState {
 export function isEmptyFilterState(state: BrowseFilterState): boolean {
   return (
     state.query === "" &&
-    !state.legacy &&
+    !state.superseded &&
     state.sort === "name" &&
     state.traits.include.size === 0 &&
     state.traits.exclude.size === 0 &&
@@ -151,7 +153,7 @@ function rawFacetValue(row: IndexRow, key: string): RawFacetValue | undefined {
 // ---------------------------------------------------------------------------
 
 export function matchesFilterState(row: IndexRow, state: BrowseFilterState): boolean {
-  if (!state.legacy && row.superseded) return false;
+  if (!state.superseded && row.superseded) return false;
   if (
     state.query.trim() !== "" &&
     !row.name.toLowerCase().includes(state.query.trim().toLowerCase())
@@ -425,12 +427,15 @@ export function setSort(state: BrowseFilterState, sort: SortMode): BrowseFilterS
   return { ...state, sort };
 }
 
-export function setLegacyFilter(state: BrowseFilterState, legacy: boolean): BrowseFilterState {
-  return { ...state, legacy };
+export function setSupersededFilter(
+  state: BrowseFilterState,
+  superseded: boolean,
+): BrowseFilterState {
+  return { ...state, superseded };
 }
 
 /** The M6 "clear filters" affordance — back to the clean-URL empty state
- * entirely (sort/legacy included, not just facet selections). */
+ * entirely (sort/superseded included, not just facet selections). */
 export function clearAllFilters(): BrowseFilterState {
   return emptyFilterState();
 }

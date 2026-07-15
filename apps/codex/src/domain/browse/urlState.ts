@@ -1,6 +1,6 @@
 // P3 S3 (D29-35) — the `/{category}` browse URL codec. Human-readable params:
 // `?traits=fire,-agile&level=-2..5&rarity=rare,unique&f.actionCost=1,reaction
-// &q=drag&legacy=1` (derived facet keys namespaced `f.<key>`; core facets
+// &q=drag&superseded=1` (derived facet keys namespaced `f.<key>`; core facets
 // bare). One module, two directions:
 //
 //   - `validateBrowseSearch` — the route's `validateSearch`. Runs on
@@ -14,11 +14,17 @@
 //     a known key never throws — it's just dropped / falls back to the
 //     empty/default state.
 //   - `filterStateToSearch` — state -> the same `BrowseSearch` shape, used to
-//     reflect live filter/legacy state into the address bar (a router search
+//     reflect live filter state into the address bar (a router search
 //     replace) and to build shareable hrefs. The empty state encodes to `{}`
 //     (D29-35 "empty state = clean URL" — `@tanstack/router-core`'s qss
 //     `encode()` already omits `undefined`-valued keys, so an object with
 //     every field `undefined` serializes to no query string at all).
+//
+// P4.5 D29-48: `legacy` was renamed `superseded` (self-documenting parity
+// with `IndexRow.superseded`/Pagefind's own `filters.superseded` key) — a
+// bare `legacy=1`/`legacy=true` still DECODES as an alias forever (every
+// shared link that predates this rename, including P4's own acceptance
+// fixture), but the encoder only ever emits `superseded`.
 //
 // **Include sigil = NO marker; exclude = `-`** (adversarial B1: a bare `+`
 // decodes to a literal space — `URLSearchParams`'s
@@ -51,7 +57,10 @@ export type BrowseSearch = {
   book?: string;
   edition?: string;
   q?: string;
-  legacy?: boolean;
+  /** P4.5 D29-48: renamed from `legacy`. `legacy=1`/`legacy=true` still
+   * DECODES as an alias (see `validateBrowseSearch` below) — forever, not a
+   * deprecation window — but the encoder below only ever emits `superseded`. */
+  superseded?: boolean;
   sort?: string;
 } & Record<string, string | boolean | undefined>;
 
@@ -94,7 +103,17 @@ export function validateBrowseSearch(raw: Record<string, unknown>): BrowseSearch
     const v = str(raw.q);
     if (v !== "") out.q = v;
   }
-  if (toBool(raw.legacy)) out.legacy = true;
+  // P4.5 D29-48: `superseded` is the real param; a bare `legacy=1`/`legacy=
+  // true` link (every shared link before this rename, incl. P4's own
+  // `rules/building-creatures@legacy?legacy=true` acceptance fixture)
+  // decodes as an alias FOREVER, never a deprecation window. `superseded`'s
+  // own PRESENCE (any value, even a falsy one) wins over `legacy` when both
+  // are somehow present in the same query string.
+  if ("superseded" in raw) {
+    if (toBool(raw.superseded)) out.superseded = true;
+  } else if (toBool(raw.legacy)) {
+    out.superseded = true;
+  }
   if (str(raw.sort) === "level") out.sort = "level";
 
   // Derived facet params: only a real `f.<facetKeys.ts key>` name survives —
@@ -253,7 +272,7 @@ export function searchToFilterState(search: BrowseSearch): BrowseFilterState {
 
   return {
     query: search.q ?? "",
-    legacy: search.legacy === true,
+    superseded: search.superseded === true,
     sort: search.sort === "level" ? "level" : "name",
     traits,
     level,
@@ -278,7 +297,7 @@ export function filterStateToSearch(state: BrowseFilterState): BrowseSearch {
   const editionParam = encodeCsvSet(state.edition);
   if (editionParam !== undefined) out.edition = editionParam;
   if (state.query.trim() !== "") out.q = state.query.trim();
-  if (state.legacy) out.legacy = true;
+  if (state.superseded) out.superseded = true;
   if (state.sort === "level") out.sort = "level";
 
   for (const [key, selected] of state.facetEnum) {

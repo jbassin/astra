@@ -1,19 +1,18 @@
 // P4 S2 (D29-40) — the `/rules` tree browser island. Purely a function of
-// `books`/`legacy` (no router/URL awareness of its own — the ROUTE FILE,
-// `routes/rules.tsx`, owns the `legacy` URL<->live-toggle codec, same split
-// `BrowseListing.tsx` uses for its own `legacy` prop). Collapse state is
-// local: a `Map<key, boolean>` seeded EMPTY on first render (server AND the
-// matching first client render — no localStorage access during SSR) and
-// re-derived from the real saved state in a mount effect, the exact
-// SSR-safe two-phase pattern `legacyToggle.ts`'s own header comment and
-// akasha's `Explorer.tsx` both use.
+// `books`/`superseded` (no router/URL awareness of its own — the ROUTE FILE,
+// `routes/rules.tsx`, owns the `superseded` URL codec, P4.5 D29-48's plain
+// per-page read, same split `BrowseListing.tsx` uses for its own `superseded`
+// prop). Collapse state is local: a `Map<key, boolean>` seeded EMPTY on first
+// render (server AND the matching first client render — no localStorage
+// access during SSR) and re-derived from the real saved state in a mount
+// effect, the same SSR-safe two-phase pattern akasha's `Explorer.tsx` uses.
 
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 
 import type { RulesTreeBook, TreeNode } from "@/schema/rulesTree";
 import { Input } from "@/ui";
 
-import { computeOpen, filterTreeByQuery, nodeKeyFor, pruneForLegacy } from "./treeModel";
+import { computeOpen, filterTreeByQuery, nodeKeyFor, pruneForSuperseded } from "./treeModel";
 
 const STORAGE_KEY = "codex:rulesTree";
 
@@ -37,11 +36,11 @@ function persistOpen(map: ReadonlyMap<string, boolean>): void {
 
 export function RulesTree({
   books,
-  legacy,
+  superseded,
   currentId,
 }: {
   books: readonly RulesTreeBook[];
-  legacy: boolean;
+  superseded: boolean;
   /** S3's own use: the entity page currently being viewed, so its book's
    * sidebar auto-expands to it (D29-41). `undefined` on the plain `/rules`
    * browse page (S2) — no node is "current". */
@@ -79,7 +78,7 @@ export function RulesTree({
           <RulesBookSection
             key={book.book}
             book={book}
-            legacy={legacy}
+            superseded={superseded}
             query={query}
             currentId={currentId}
             savedOpen={savedOpen}
@@ -93,40 +92,40 @@ export function RulesTree({
 
 function RulesBookSection({
   book,
-  legacy,
+  superseded,
   query,
   currentId,
   savedOpen,
   onToggle,
 }: {
   book: RulesTreeBook;
-  legacy: boolean;
+  superseded: boolean;
   query: string;
   currentId: string | undefined;
   savedOpen: ReadonlyMap<string, boolean>;
   onToggle: (key: string) => void;
 }): ReactElement {
-  const legacyPruned = useMemo(
-    () => pruneForLegacy(book.nodes, legacy, currentId),
-    [book.nodes, legacy, currentId],
+  const supersededPruned = useMemo(
+    () => pruneForSuperseded(book.nodes, superseded, currentId),
+    [book.nodes, superseded, currentId],
   );
   const queryFiltered = useMemo(
-    () => filterTreeByQuery(legacyPruned, query),
-    [legacyPruned, query],
+    () => filterTreeByQuery(supersededPruned, query),
+    [supersededPruned, query],
   );
   const filterActive = queryFiltered !== null;
-  const visibleNodes = queryFiltered ?? legacyPruned;
+  const visibleNodes = queryFiltered ?? supersededPruned;
 
   const openMap = useMemo(
-    () => computeOpen(book.book, legacyPruned, currentId, savedOpen),
-    [book.book, legacyPruned, currentId, savedOpen],
+    () => computeOpen(book.book, supersededPruned, currentId, savedOpen),
+    [book.book, supersededPruned, currentId, savedOpen],
   );
 
   // D29-40 pinned behavior: a book that's 100% superseded (Dark Archive
-  // 29/29, Guns & Gears 65/65) prunes to an EMPTY root list under
-  // legacy-off — render it as a collapsed "all N hidden" header, never
-  // silently drop the section.
-  const allHidden = !legacy && legacyPruned.length === 0 && book.hiddenWhenLegacyOff > 0;
+  // 29/29, Guns & Gears 65/65) prunes to an EMPTY root list when superseded
+  // content is hidden — render it as a collapsed "all N hidden" header,
+  // never silently drop the section.
+  const allHidden = !superseded && supersededPruned.length === 0 && book.hiddenWhenLegacyOff > 0;
 
   return (
     <section className="codex-rules-book" data-book={book.book}>
@@ -140,7 +139,7 @@ function RulesBookSection({
         >
           {book.license === "unknown" ? "License unknown" : book.license}
         </span>
-        {!legacy && book.hiddenWhenLegacyOff > 0 ? (
+        {!superseded && book.hiddenWhenLegacyOff > 0 ? (
           <span className="codex-rules-hidden-note">
             {allHidden
               ? `all ${book.hiddenWhenLegacyOff} hidden`

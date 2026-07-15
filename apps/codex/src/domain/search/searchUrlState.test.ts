@@ -27,21 +27,19 @@ describe("validateSearchPageSearch", () => {
   });
 
   it("the spec-shaped example round-trips", () => {
-    const raw = parseQuery("?q=heal&category=spell,feat&rarity=common&level=1,2&legacy=1");
+    const raw = parseQuery("?q=heal&category=spell,feat&rarity=common&level=1,2");
     const parsed = validateSearchPageSearch(raw);
     expect(parsed).toEqual({
       q: "heal",
       category: "spell,feat",
       rarity: "common",
       level: "1,2",
-      legacy: true,
     });
   });
 
-  it("qss's bare-numeric coercion for legacy=1 is accepted (arrives as the number 1)", () => {
-    const raw = parseQuery("?legacy=1");
-    expect(raw.legacy).toBe(1); // proves the coercion actually happened
-    expect(validateSearchPageSearch(raw).legacy).toBe(true);
+  it("a `legacy`/`superseded` param is simply dropped (P4.5 D29-48 — search never hides superseded, so this codec carries no such field at all)", () => {
+    expect(validateSearchPageSearch(parseQuery("?legacy=1"))).toEqual({});
+    expect(validateSearchPageSearch(parseQuery("?superseded=1"))).toEqual({});
   });
 
   it("an unknown top-level param is dropped, never thrown", () => {
@@ -65,7 +63,6 @@ describe("searchToFilterState / filterStateToSearch round trip", () => {
   it("a populated state round-trips through the URL shape", () => {
     const state: SearchFilterState = {
       query: "heal",
-      legacy: true,
       category: new Set(["spell", "feat"]),
       rarity: new Set(["common"]),
       edition: new Set(["remaster"]),
@@ -107,20 +104,14 @@ describe("hasAnyCriteria", () => {
   });
 });
 
-describe("pagefindFilters (D29-36 M4)", () => {
-  it("pins superseded=false when legacy is off and no other filters are active", () => {
-    expect(pagefindFilters(emptySearchFilterState())).toEqual({ superseded: ["false"] });
+describe("pagefindFilters (P4.5 D29-48 — search never hides superseded)", () => {
+  it("never sets a superseded filter, even for the empty state", () => {
+    expect(pagefindFilters(emptySearchFilterState())).toEqual({});
   });
 
-  it("omits superseded entirely when legacy is on", () => {
-    const state = { ...emptySearchFilterState(), legacy: true };
-    expect(pagefindFilters(state)).toEqual({});
-  });
-
-  it("folds every active dimension into one AND-of-OR filter object", () => {
+  it("folds every active dimension into one AND-of-OR filter object, with no superseded key", () => {
     const state: SearchFilterState = {
       query: "",
-      legacy: false,
       category: new Set(["spell"]),
       rarity: new Set(["common", "rare"]),
       edition: new Set(),
@@ -132,7 +123,6 @@ describe("pagefindFilters (D29-36 M4)", () => {
       rarity: ["common", "rare"],
       level: ["1"],
       traits: ["fire"],
-      superseded: ["false"],
     });
   });
 });
@@ -142,7 +132,6 @@ describe("validateSearchPageSearch / filterStateToSearch — hostile-input toler
     const raw: Record<string, unknown> = { q: { nested: true }, legacy: "nope", category: 42 };
     expect(() => validateSearchPageSearch(raw)).not.toThrow();
     const parsed = validateSearchPageSearch(raw);
-    expect(parsed.legacy).toBeUndefined();
     expect(parsed.category).toBe("42");
   });
 

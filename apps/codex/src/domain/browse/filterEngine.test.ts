@@ -23,7 +23,7 @@ import {
   rarityValueOf,
   scalarOptionCounts,
   setFacetRange,
-  setLegacyFilter,
+  setSupersededFilter,
   setLevelRange,
   setQuery,
   setSort,
@@ -246,7 +246,7 @@ describe("filterEngine: enum multi-select OR / AND across facets", () => {
   });
 });
 
-describe("filterEngine: legacy toggle + quick filter", () => {
+describe("filterEngine: superseded visibility + quick filter", () => {
   const live = row({ id: "spell/heal", name: "Heal", superseded: false });
   const superseded = row({ id: "spell/heal@legacy", name: "Heal", superseded: true });
   const rows = [live, superseded];
@@ -255,8 +255,8 @@ describe("filterEngine: legacy toggle + quick filter", () => {
     expect(applyFilters(rows, emptyFilterState()).map((r) => r.id)).toEqual(["spell/heal"]);
   });
 
-  it("legacy:true shows superseded rows too", () => {
-    const state: BrowseFilterState = { ...emptyFilterState(), legacy: true };
+  it("superseded: true shows superseded rows too", () => {
+    const state: BrowseFilterState = { ...emptyFilterState(), superseded: true };
     expect(applyFilters(rows, state).length).toBe(2);
   });
 
@@ -372,7 +372,7 @@ describe("filterEngine: emptyFilterState / isEmptyFilterState / isRangeFilterAct
   });
 
   it("any single dimension being set makes it non-empty", () => {
-    expect(isEmptyFilterState({ ...emptyFilterState(), legacy: true })).toBe(false);
+    expect(isEmptyFilterState({ ...emptyFilterState(), superseded: true })).toBe(false);
     expect(isEmptyFilterState({ ...emptyFilterState(), query: "x" })).toBe(false);
     expect(isEmptyFilterState({ ...emptyFilterState(), sort: "level" })).toBe(false);
     expect(
@@ -447,7 +447,7 @@ describe("filterEngine: state-update helpers (FacetPanel's dispatch layer)", () 
     expect(state.facetRange.has("hp")).toBe(false);
   });
 
-  it("setLevelRange / setQuery / setSort / setLegacyFilter set the expected field", () => {
+  it("setLevelRange / setQuery / setSort / setSupersededFilter set the expected field", () => {
     let state = emptyFilterState();
     state = setLevelRange(state, { min: -2, max: 5 });
     expect(state.level).toEqual({ min: -2, max: 5 });
@@ -455,15 +455,15 @@ describe("filterEngine: state-update helpers (FacetPanel's dispatch layer)", () 
     expect(state.query).toBe("drag");
     state = setSort(state, "level");
     expect(state.sort).toBe("level");
-    state = setLegacyFilter(state, true);
-    expect(state.legacy).toBe(true);
+    state = setSupersededFilter(state, true);
+    expect(state.superseded).toBe(true);
   });
 
   it("clearAllFilters resets to the clean empty state regardless of prior state", () => {
     let state = emptyFilterState();
     state = cycleTraitFilter(state, "fire");
     state = setQuery(state, "drag");
-    state = setLegacyFilter(state, true);
+    state = setSupersededFilter(state, true);
     state = setSort(state, "level");
     expect(clearAllFilters()).toEqual(emptyFilterState());
     expect(isEmptyFilterState(clearAllFilters())).toBe(true);

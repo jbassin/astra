@@ -21,12 +21,12 @@ export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFi
 
 /**
  * D29-35 — the faceted `/{category}` listing island. Purely a function of
- * `state`/`rows`/`onStateChange` (no router/URL/legacy-toggle awareness of
- * its own): the ROUTE FILE (`routes/$category/index.tsx`) owns the
- * URL<->state codec and the live legacy-toggle read, so this component
- * stays directly render-testable with a plain `BrowseFilterState` object —
- * same posture as `listing.tsx`'s presentational components over
- * already-fetched data.
+ * `state`/`rows`/`onStateChange` (no router/URL awareness of its own): the
+ * ROUTE FILE (`routes/$category/index.tsx`) owns the URL<->state codec (P4.5
+ * D29-48: a plain per-page `superseded` URL read, no site-wide toggle), so
+ * this component stays directly render-testable with a plain
+ * `BrowseFilterState` object — same posture as `listing.tsx`'s
+ * presentational components over already-fetched data.
  */
 export function BrowseListing({
   category,
@@ -48,8 +48,8 @@ export function BrowseListing({
   const visible = useMemo(() => sortRows(applyFilters(rows, state), state.sort), [rows, state]);
   const collisions = useMemo(() => collidingNames(visible), [visible]);
   const eligibleCount = useMemo(
-    () => (state.legacy ? rows.length : rows.filter((r) => !r.superseded).length),
-    [rows, state.legacy],
+    () => (state.superseded ? rows.length : rows.filter((r) => !r.superseded).length),
+    [rows, state.superseded],
   );
 
   function handleQueryChange(e: ChangeEvent<HTMLInputElement>) {

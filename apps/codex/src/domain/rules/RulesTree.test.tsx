@@ -74,7 +74,7 @@ describe("RulesTree (D29-40)", () => {
   });
 
   it("renders every book name + edition/license pills", () => {
-    render(<RulesTree books={[GMG_LIKE]} legacy={false} />);
+    render(<RulesTree books={[GMG_LIKE]} superseded={false} />);
     expect(screen.getByText("Gamemastery Guide")).not.toBeNull();
     // "Legacy" appears twice: the book-level edition pill AND the root
     // node's own superseded pill (GMG_LIKE's root doc is itself superseded).
@@ -86,26 +86,26 @@ describe("RulesTree (D29-40)", () => {
     render(
       <RulesTree
         books={[book({ book: "Some Foundry-Only Book", license: "unknown" })]}
-        legacy={false}
+        superseded={false}
       />,
     );
     expect(screen.getByText("License unknown")).not.toBeNull();
   });
 
   it("a synthetic (no-id) node renders as plain text, never a link", () => {
-    render(<RulesTree books={[SYNTHETIC_ROOT_BOOK]} legacy={true} />);
+    render(<RulesTree books={[SYNTHETIC_ROOT_BOOK]} superseded={true} />);
     const synthetic = screen.getByText("Chapter 1: Introduction");
     expect(synthetic.tagName).not.toBe("A");
   });
 
   it("a real (id-bearing) node renders as a link to /{category}/{slug}", () => {
-    render(<RulesTree books={[GMG_LIKE]} legacy={true} />);
+    render(<RulesTree books={[GMG_LIKE]} superseded={true} />);
     const link = screen.getByRole("link", { name: "Chapter 2: Tools" });
     expect(link.getAttribute("href")).toBe("/rules/chapter-2-tools");
   });
 
   it("root nodes render collapsed by default (children hidden until toggled)", () => {
-    render(<RulesTree books={[GMG_LIKE]} legacy={true} />);
+    render(<RulesTree books={[GMG_LIKE]} superseded={true} />);
     expect(screen.queryByText("Item Quirks")).toBeNull();
     const toggle = screen.getByRole("button", { name: "Toggle Chapter 2: Tools" });
     fireEvent.click(toggle);
@@ -114,10 +114,10 @@ describe("RulesTree (D29-40)", () => {
   });
 
   it(
-    "legacy=false: a superseded parent survives as a wrapper down to its one " +
+    "superseded=false: a superseded parent survives as a wrapper down to its one " +
       "never-remastered child, but the superseded sibling is pruned",
     () => {
-      render(<RulesTree books={[GMG_LIKE]} legacy={false} />);
+      render(<RulesTree books={[GMG_LIKE]} superseded={false} />);
       // the wrapper root still renders (it's the path to a visible child)
       const toggle = screen.getByRole("button", { name: "Toggle Chapter 2: Tools" });
       fireEvent.click(toggle);
@@ -128,22 +128,22 @@ describe("RulesTree (D29-40)", () => {
   );
 
   it("a fully-superseded book renders as a collapsed 'all N hidden' header, never silently dropped", () => {
-    render(<RulesTree books={[FULLY_HIDDEN_BOOK]} legacy={false} />);
+    render(<RulesTree books={[FULLY_HIDDEN_BOOK]} superseded={false} />);
     expect(screen.getByText("Dark Archive")).not.toBeNull();
     expect(screen.getByText("all 2 hidden")).not.toBeNull();
     expect(screen.queryByText("Root A")).toBeNull();
     expect(screen.queryByText("Root B")).toBeNull();
   });
 
-  it("legacy=true shows the fully-superseded book's normal tree, no hidden note", () => {
-    render(<RulesTree books={[FULLY_HIDDEN_BOOK]} legacy={true} />);
+  it("superseded=true shows the fully-superseded book's normal tree, no hidden note", () => {
+    render(<RulesTree books={[FULLY_HIDDEN_BOOK]} superseded={true} />);
     expect(screen.getByText("Root A")).not.toBeNull();
     expect(screen.getByText("Root B")).not.toBeNull();
     expect(screen.queryByText(/hidden/)).toBeNull();
   });
 
   it("the name quick-filter narrows to matches with their ancestor chain force-open", () => {
-    render(<RulesTree books={[GMG_LIKE]} legacy={true} />);
+    render(<RulesTree books={[GMG_LIKE]} superseded={true} />);
     // not filtered yet -> Item Quirks isn't rendered (collapsed by default)
     expect(screen.queryByText("Item Quirks")).toBeNull();
     const input = screen.getByPlaceholderText("Filter rules by name…");
@@ -155,11 +155,11 @@ describe("RulesTree (D29-40)", () => {
   });
 
   it("collapse state persists across a re-render (localStorage round-trip)", () => {
-    const { unmount } = render(<RulesTree books={[GMG_LIKE]} legacy={true} />);
+    const { unmount } = render(<RulesTree books={[GMG_LIKE]} superseded={true} />);
     fireEvent.click(screen.getByRole("button", { name: "Toggle Chapter 2: Tools" }));
     expect(screen.getByText("Item Quirks")).not.toBeNull();
     unmount();
-    render(<RulesTree books={[GMG_LIKE]} legacy={true} />);
+    render(<RulesTree books={[GMG_LIKE]} superseded={true} />);
     // a fresh mount re-seeds from localStorage in its mount effect
     expect(screen.getByText("Item Quirks")).not.toBeNull();
   });

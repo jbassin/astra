@@ -7,7 +7,7 @@ import {
   dfsPreOrder,
   filterTreeByQuery,
   nodeKeyFor,
-  pruneForLegacy,
+  pruneForSuperseded,
 } from "./treeModel";
 
 function node(overrides: Partial<TreeNode> & Pick<TreeNode, "name">): TreeNode {
@@ -114,20 +114,20 @@ describe("computeOpen (the akasha computeOpen port)", () => {
   });
 });
 
-describe("pruneForLegacy (D29-40 legacy semantics)", () => {
+describe("pruneForSuperseded (D29-40 superseded-visibility semantics)", () => {
   it("legacyOn=true is a no-op (returns every node)", () => {
     const tree: TreeNode[] = [node({ name: "A", id: "rules/a", superseded: true, children: [] })];
-    expect(pruneForLegacy(tree, true)).toEqual(tree);
+    expect(pruneForSuperseded(tree, true)).toEqual(tree);
   });
 
   it("a superseded leaf with no visible descendants is dropped entirely", () => {
     const tree: TreeNode[] = [node({ name: "A", id: "rules/a", superseded: true })];
-    expect(pruneForLegacy(tree, false)).toEqual([]);
+    expect(pruneForSuperseded(tree, false)).toEqual([]);
   });
 
   it("a non-superseded node always survives, regardless of children", () => {
     const tree: TreeNode[] = [node({ name: "A", id: "rules/a" })];
-    expect(pruneForLegacy(tree, false)).toHaveLength(1);
+    expect(pruneForSuperseded(tree, false)).toHaveLength(1);
   });
 
   it(
@@ -149,7 +149,7 @@ describe("pruneForLegacy (D29-40 legacy semantics)", () => {
           ],
         }),
       ];
-      const pruned = pruneForLegacy(tree, false);
+      const pruned = pruneForSuperseded(tree, false);
       expect(pruned).toHaveLength(1);
       expect(pruned[0]?.id).toBe("rules/chapter-2-tools"); // the wrapper survives
       expect(pruned[0]?.children).toHaveLength(1);
@@ -167,7 +167,7 @@ describe("pruneForLegacy (D29-40 legacy semantics)", () => {
       }),
       node({ name: "Root B", id: "rules/root-b", superseded: true }),
     ];
-    expect(pruneForLegacy(tree, false)).toEqual([]);
+    expect(pruneForSuperseded(tree, false)).toEqual([]);
   });
 
   it("a synthetic (no-id) node with no visible descendants is dropped even though it has no `superseded` field of its own", () => {
@@ -177,14 +177,14 @@ describe("pruneForLegacy (D29-40 legacy semantics)", () => {
         children: [node({ name: "Superseded Child", id: "rules/sc", superseded: true })],
       }),
     ];
-    expect(pruneForLegacy(tree, false)).toEqual([]);
+    expect(pruneForSuperseded(tree, false)).toEqual([]);
   });
 
   describe("currentId (S3 — the sidebar 'you are here' guard)", () => {
     it("a superseded childless node matching currentId survives, unlike the plain (no currentId) call", () => {
       const tree: TreeNode[] = [node({ name: "A", id: "rules/a", superseded: true })];
-      expect(pruneForLegacy(tree, false)).toEqual([]); // the S2 baseline: still drops
-      const withCurrent = pruneForLegacy(tree, false, "rules/a");
+      expect(pruneForSuperseded(tree, false)).toEqual([]); // the S2 baseline: still drops
+      const withCurrent = pruneForSuperseded(tree, false, "rules/a");
       expect(withCurrent).toHaveLength(1);
       expect(withCurrent[0]?.id).toBe("rules/a");
     });
@@ -194,7 +194,7 @@ describe("pruneForLegacy (D29-40 legacy semantics)", () => {
         node({ name: "A", id: "rules/a", superseded: true }),
         node({ name: "B", id: "rules/b", superseded: true }),
       ];
-      const pruned = pruneForLegacy(tree, false, "rules/a");
+      const pruned = pruneForSuperseded(tree, false, "rules/a");
       expect(pruned.map((n) => n.id)).toEqual(["rules/a"]);
     });
 
@@ -220,7 +220,7 @@ describe("pruneForLegacy (D29-40 legacy semantics)", () => {
           ],
         }),
       ];
-      const pruned = pruneForLegacy(tree, false, "rules/ability-modifiers-2");
+      const pruned = pruneForSuperseded(tree, false, "rules/ability-modifiers-2");
       expect(pruned[0]?.id).toBe("rules/chapter-2-tools");
       expect(pruned[0]?.children[0]?.id).toBe("rules/building-creatures@legacy");
       expect(pruned[0]?.children[0]?.children[0]?.id).toBe("rules/ability-modifiers-2");

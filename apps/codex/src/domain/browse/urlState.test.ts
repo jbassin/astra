@@ -54,7 +54,7 @@ describe("urlState: the literal D29-35 example query string, via the real router
     const state = searchToFilterState(search);
 
     expect(state.query).toBe("drag");
-    expect(state.legacy).toBe(true);
+    expect(state.superseded).toBe(true);
     expect([...state.traits.include]).toEqual(["fire"]);
     expect([...state.traits.exclude]).toEqual(["agile"]);
     expect(state.level).toEqual({ min: -2, max: 5 });
@@ -255,10 +255,36 @@ describe("urlState: hostile / unknown params never throw", () => {
     expect(validateBrowseSearch({ "f.definitelyNotAFacetKey": "x" })).toEqual({});
   });
 
-  it("legacy falls back to false/absent for any value other than 1/true/'1'/'true'", () => {
-    expect(validateBrowseSearch({ legacy: "yes" }).legacy).toBeUndefined();
-    expect(validateBrowseSearch({ legacy: 0 }).legacy).toBeUndefined();
-    expect(validateBrowseSearch({ legacy: false }).legacy).toBeUndefined();
+  it("legacy/superseded fall back to absent for any value other than 1/true/'1'/'true'", () => {
+    expect(validateBrowseSearch({ legacy: "yes" }).superseded).toBeUndefined();
+    expect(validateBrowseSearch({ legacy: 0 }).superseded).toBeUndefined();
+    expect(validateBrowseSearch({ legacy: false }).superseded).toBeUndefined();
+    expect(validateBrowseSearch({ superseded: "yes" }).superseded).toBeUndefined();
+  });
+
+  describe("P4.5 D29-48: legacy=1/legacy=true decode as a superseded alias, forever", () => {
+    it("legacy=1 decodes to superseded:true", () => {
+      expect(validateBrowseSearch({ legacy: 1 }).superseded).toBe(true);
+    });
+
+    it("legacy=true decodes to superseded:true", () => {
+      expect(validateBrowseSearch({ legacy: true }).superseded).toBe(true);
+    });
+
+    it("superseded=1 decodes to superseded:true directly (the real param, not just the alias)", () => {
+      expect(validateBrowseSearch({ superseded: 1 }).superseded).toBe(true);
+    });
+
+    it("both present: superseded's own presence wins over legacy, even when superseded is falsy", () => {
+      expect(validateBrowseSearch({ superseded: 0, legacy: 1 }).superseded).toBeUndefined();
+      expect(validateBrowseSearch({ superseded: 1, legacy: 0 }).superseded).toBe(true);
+    });
+
+    it("the encoder never emits legacy, only superseded", () => {
+      const search = filterStateToSearch({ ...emptyFilterState(), superseded: true });
+      expect(search).toEqual({ superseded: true });
+      expect("legacy" in search).toBe(false);
+    });
   });
 
   it("sort falls back to name (absent) for any value other than the literal 'level'", () => {
@@ -341,7 +367,7 @@ function randomState(rand: () => number): BrowseFilterState {
 
   return {
     query: rand() < 0.4 ? pick(rand, ["drag", "heal", "fire bolt", ""]) : "",
-    legacy: rand() < 0.3,
+    superseded: rand() < 0.3,
     sort: rand() < 0.3 ? "level" : "name",
     traits: { include, exclude },
     level,
@@ -359,7 +385,7 @@ function randomState(rand: () => number): BrowseFilterState {
 function canon(state: BrowseFilterState): unknown {
   return {
     query: state.query,
-    legacy: state.legacy,
+    superseded: state.superseded,
     sort: state.sort,
     include: [...state.traits.include].sort(),
     exclude: [...state.traits.exclude].sort(),

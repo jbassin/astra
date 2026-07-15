@@ -8,6 +8,13 @@
 // not a second implementation), full keyboard nav (arrows/Enter/Esc,
 // Ctrl/Cmd-K global focus — akasha's own muscle-memory precedent), and the
 // D29-34 fail-soft disabled state when the index isn't built.
+//
+// P4.5 D29-48 (R3's explicit carve-out): search NEVER hides superseded
+// content by default — it covers both editions and badges results — so this
+// component no longer reads any legacy/superseded state at all (the deleted
+// site-wide toggle it used to read is gone; `pagefindClient.ts`'s
+// `supersededFilter` stays defined as a pure helper but is no longer called
+// here).
 
 import { useNavigate } from "@tanstack/react-router";
 import {
@@ -22,14 +29,12 @@ import {
 } from "react";
 
 import { collidingNames } from "@/domain/browse/filterEngine";
-import { useLegacyToggle } from "@/domain/browse/legacyToggle";
 import { humanizeSlug } from "@/domain/render/text";
 import { recordSearch } from "@/server/telemetryFns";
 
 import {
   groupByCategory,
   loadPagefind,
-  supersededFilter,
   toDisplayResult,
   type SearchDisplayResult,
 } from "./pagefindClient";
@@ -38,9 +43,6 @@ const MAX_RESULTS = 8;
 const DEBOUNCE_MS = 180;
 
 export function Omnibar(): ReactElement {
-  const legacy = useLegacyToggle();
-  const legacyRef = useRef(legacy);
-  legacyRef.current = legacy;
   const navigate = useNavigate();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,10 +76,8 @@ export function Omnibar(): ReactElement {
       // search attempt (D29-38). Fire-and-forget: telemetry must never block
       // or fail the actual search UX.
       void recordSearch({ data: { surface: "omnibar" } }).catch(() => undefined);
-      const superseded = supersededFilter(legacyRef.current);
-      const res = await pf
-        .search(trimmed, { filters: superseded ? { superseded } : {} })
-        .catch(() => null);
+      // R3: search never hides superseded content — no filters at all.
+      const res = await pf.search(trimmed, {}).catch(() => null);
       if (!res || token !== tokenRef.current) return;
       const stubs = res.results.slice(0, MAX_RESULTS);
       // One fragment fetch per SHOWN result only (D29-34/-36) — never the

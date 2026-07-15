@@ -2,7 +2,7 @@
 //
 // codex's app-wide default is plain "node" (`vitest.config.ts`); this file
 // needs a real DOM + `@testing-library/react`, so it opts into jsdom
-// per-file (same convention as `legacyToggle.test.ts`).
+// per-file (same convention as `Omnibar.tsx`'s own sibling islands).
 //
 // No mocking of `pagefindClient.loadPagefind` — `/pagefind/pagefind.js`
 // genuinely doesn't exist in this test environment (D29-12: no `data/`, no
@@ -17,8 +17,6 @@ import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-r
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { _resetLegacyToggleForTests } from "@/domain/browse/legacyToggle";
-
 import { Omnibar } from "./Omnibar";
 import { _resetPagefindClientForTests } from "./pagefindClient";
 
@@ -30,11 +28,9 @@ function renderOmnibar() {
 
 describe("Omnibar (D29-36)", () => {
   beforeEach(() => {
-    _resetLegacyToggleForTests();
     _resetPagefindClientForTests();
   });
   afterEach(() => {
-    _resetLegacyToggleForTests();
     _resetPagefindClientForTests();
   });
 

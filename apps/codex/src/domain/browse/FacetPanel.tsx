@@ -20,6 +20,7 @@ import {
   scalarOptionCounts,
   setFacetRange,
   setLevelRange,
+  setSupersededFilter,
   sourceBookValueOf,
   toggleCoreEnumOption,
   toggleFacetEnumOption,
@@ -283,6 +284,43 @@ function TraitsSection({
 }
 
 // ---------------------------------------------------------------------------
+// P4.5 D29-48 (adversarial M6) — the superseded-visibility control. Distinct
+// from `CoreEnumSection`'s own "Edition" (the ordinary remaster/legacy
+// CONTENT facet, `state.edition` — unchanged): this is the boolean
+// hide-by-default toggle (`state.superseded`), the direct replacement for
+// the deleted site-wide header checkbox. The explainer copy ships HERE, in
+// S3, not held back for an H-rejection fallback — a never-remastered legacy
+// row staying visible under the default state reads as a bug without it.
+// ---------------------------------------------------------------------------
+
+function SupersededSection({
+  state,
+  onChange,
+}: {
+  state: BrowseFilterState;
+  onChange: StateUpdater;
+}): ReactElement {
+  return (
+    <FacetSection title={state.superseded ? "Including superseded" : "Current edition"}>
+      <div className="codex-facet-superseded">
+        <p className="codex-facet-superseded-explainer">
+          Current edition &mdash; previous-edition content that was never remastered still shows;
+          &ldquo;Include superseded&rdquo; reveals replaced versions.
+        </p>
+        <label className="codex-facet-option">
+          <input
+            type="checkbox"
+            checked={state.superseded}
+            onChange={(e) => onChange((prev) => setSupersededFilter(prev, e.target.checked))}
+          />
+          <span className="codex-facet-option-label">Include superseded content</span>
+        </label>
+      </div>
+    </FacetSection>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // the panel
 // ---------------------------------------------------------------------------
 
@@ -326,6 +364,7 @@ export function FacetPanel({
         onChange={onChange}
         valueOf={editionValueOf}
       />
+      <SupersededSection state={state} onChange={onChange} />
       {derivedKeys.map((key) => {
         const def = facetDefFor(key) ?? {
           key,

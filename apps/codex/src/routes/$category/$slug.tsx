@@ -1,7 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 
-import { useLegacyToggle } from "@/domain/browse/legacyToggle";
 import { Popover } from "@/domain/components/islands/Popover";
 import { AttachedSidebars } from "@/domain/render/AttachedSidebars";
 import { EntityPage } from "@/domain/render/entityPage";
@@ -19,20 +17,29 @@ import { getEntityPage } from "@/server/corpusFns";
  * a rejected traversal attempt — `corpusFns.ts`'s `CorpusNotFoundError`
  * collapses both to `null`) becomes the template's 404.
  *
- * `legacy` is a P4 S4 addition (D29-42): unlike `RulesLayout`'s own bare
- * `useLegacyToggle()` (D29-41 explicitly punted a URL feature for rules pages,
- * "only `/rules` itself is shareable that way"), an attached-sidebar host can
- * be ANY category — a shared `?legacy=1` link to such a page must SSR with its
- * superseded sidebar visible (the standing SSR-flash gotcha, P3 memory), so
- * this route validates `legacy` the same way `/rules`'s own route does.
+ * `superseded` (P4 S4 D29-42, renamed by P4.5 D29-48): an attached-sidebar
+ * host can be ANY category — a shared `?superseded=1` link to such a page
+ * must SSR with its superseded sidebar visible (the standing SSR-flash
+ * gotcha, P3 memory), so this route validates `superseded` the same way
+ * `/rules`'s own route does (incl. the `legacy=1`/`legacy=true` alias-decode,
+ * forever). P4.5 collapses this to a bare URL read — no live-toggle/
+ * hydration-phase dance — and now also passes the computed value into
+ * `<RulesLayout>` as that component's own `superseded` prop
+ * (adversarial M2: an ADDITION there, not a rename).
  */
 interface EntitySearch {
-  legacy?: boolean;
+  superseded?: boolean;
+}
+
+function toBool(raw: unknown): boolean {
+  return raw === true || raw === 1 || raw === "1" || raw === "true";
 }
 
 function validateEntitySearch(raw: Record<string, unknown>): EntitySearch {
-  const v = raw.legacy;
-  return v === true || v === 1 || v === "1" || v === "true" ? { legacy: true } : {};
+  if ("superseded" in raw) {
+    return toBool(raw.superseded) ? { superseded: true } : {};
+  }
+  return toBool(raw.legacy) ? { superseded: true } : {};
 }
 
 export const Route = createFileRoute("/$category/$slug")({
@@ -61,15 +68,7 @@ export const Route = createFileRoute("/$category/$slug")({
 function EntityRouteComponent() {
   const { entity, embeds, knownTraitIds, rulesNav, attachedSidebars } = Route.useLoaderData();
   const search = Route.useSearch();
-  const liveLegacy = useLegacyToggle();
-
-  // The standing M4 SSR/hydration seam (same as `/rules`'s own route): the
-  // FIRST render — server AND the matching first client render — must derive
-  // `legacy` from the isomorphic `search.legacy` alone; only after mount does
-  // the live site-wide toggle take over.
-  const [hasHydrated, setHasHydrated] = useState(false);
-  useEffect(() => setHasHydrated(true), []);
-  const effectiveLegacy = hasHydrated ? liveLegacy : search.legacy === true;
+  const superseded = search.superseded === true;
 
   const ctx = rootRenderCtx({
     resolveEmbed: (targetId) => embeds[targetId],
@@ -83,7 +82,7 @@ function EntityRouteComponent() {
       <Popover />
       <EntityPage entity={entity} ctx={ctx} />
       {attachedSidebars !== undefined ? (
-        <AttachedSidebars sidebars={attachedSidebars} legacy={effectiveLegacy} ctx={ctx} />
+        <AttachedSidebars sidebars={attachedSidebars} superseded={superseded} ctx={ctx} />
       ) : null}
     </>
   );
@@ -96,7 +95,12 @@ function EntityRouteComponent() {
   // (D29-42) — `page` already includes them either way.
   if (rulesNav !== undefined) {
     return (
-      <RulesLayout entityId={entity.id} entityName={entity.name} nav={rulesNav}>
+      <RulesLayout
+        entityId={entity.id}
+        entityName={entity.name}
+        nav={rulesNav}
+        superseded={superseded}
+      >
         {page}
       </RulesLayout>
     );

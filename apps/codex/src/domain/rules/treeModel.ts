@@ -103,40 +103,42 @@ export function collapsibleKeys(book: string, nodes: readonly TreeNode[]): strin
 }
 
 /**
- * The legacy-toggle predicate, applied as a TREE PRUNE (D29-40's "a branch
- * whose descendants are all hidden collapses to nothing; parents with `id`
- * stay if their own doc is visible"). `legacyOn === true` is a no-op
- * (returns `nodes` unchanged — everything is visible under the toggle).
- * `legacyOn === false`: a node's OWN doc is visible iff it has an `id` and
- * is NOT `superseded`; a node survives iff its own doc is visible OR at
- * least one descendant survives (recursively) — so a `superseded` PARENT
- * whose only never-remastered child is still current (the real corpus's
- * Gamemastery Guide "Chapter 2: Tools" → "Item Quirks" shape: the chapter
- * root is 100% superseded except that one child) still renders as a
- * wrapper down to the visible child, never silently swallowing it. A book
- * whose ENTIRE tree is superseded (Dark Archive, Guns & Gears) prunes to
- * `[]` — the caller (`RulesTree.tsx`) renders that as the "all N hidden"
- * collapsed header, D29-40's own pinned behavior.
+ * The superseded-visibility predicate, applied as a TREE PRUNE (D29-40's "a
+ * branch whose descendants are all hidden collapses to nothing; parents with
+ * `id` stay if their own doc is visible"). P4.5 D29-48 renamed this from
+ * `pruneForLegacy` (a plain per-page URL read now, no site-wide toggle) —
+ * same signature shape, same semantics. `supersededOn === true` is a no-op
+ * (returns `nodes` unchanged — everything is visible). `supersededOn ===
+ * false`: a node's OWN doc is visible iff it has an `id` and is NOT
+ * `superseded`; a node survives iff its own doc is visible OR at least one
+ * descendant survives (recursively) — so a `superseded` PARENT whose only
+ * never-remastered child is still current (the real corpus's Gamemastery
+ * Guide "Chapter 2: Tools" → "Item Quirks" shape: the chapter root is 100%
+ * superseded except that one child) still renders as a wrapper down to the
+ * visible child, never silently swallowing it. A book whose ENTIRE tree is
+ * superseded (Dark Archive, Guns & Gears) prunes to `[]` — the caller
+ * (`RulesTree.tsx`) renders that as the "all N hidden" collapsed header,
+ * D29-40's own pinned behavior.
  *
  * `currentId` (S3, D29-41's tree sidebar) — when given, the node bearing
  * this id is treated as ALWAYS self-visible, regardless of its own
  * `superseded` flag. Without this, a sidebar rendered while standing on a
  * superseded rules page could prune the very node the reader is looking
  * at out of its own sidebar (the entity page itself always renders
- * regardless of the legacy toggle — only listings/sidebars hide superseded
- * content — so the sidebar must never lose track of "you are here").
- * Omitted (the `/rules` browse page's own call, S2) is exactly the old
- * behavior — this parameter is purely additive.
+ * regardless of the superseded-visibility param — only listings/sidebars
+ * hide superseded content — so the sidebar must never lose track of "you
+ * are here"). Omitted (the `/rules` browse page's own call, S2) is exactly
+ * the old behavior — this parameter is purely additive.
  */
-export function pruneForLegacy(
+export function pruneForSuperseded(
   nodes: readonly TreeNode[],
-  legacyOn: boolean,
+  supersededOn: boolean,
   currentId?: string,
 ): TreeNode[] {
-  if (legacyOn) return [...nodes];
+  if (supersededOn) return [...nodes];
   const out: TreeNode[] = [];
   for (const n of nodes) {
-    const children = pruneForLegacy(n.children, false, currentId);
+    const children = pruneForSuperseded(n.children, false, currentId);
     const selfVisible =
       n.id !== undefined &&
       (n.superseded !== true || (currentId !== undefined && n.id === currentId));

@@ -29,8 +29,10 @@ function sidebar(overrides: Partial<AttachedSidebarView> = {}): AttachedSidebarV
 
 const ctx = rootRenderCtx({ resolveEmbed: () => undefined, knownTraitIds: new Set() });
 
-function html(sidebars: readonly AttachedSidebarView[], legacy: boolean): string {
-  return renderToStaticMarkup(<AttachedSidebars sidebars={sidebars} legacy={legacy} ctx={ctx} />);
+function html(sidebars: readonly AttachedSidebarView[], superseded: boolean): string {
+  return renderToStaticMarkup(
+    <AttachedSidebars sidebars={sidebars} superseded={superseded} ctx={ctx} />,
+  );
 }
 
 describe("AttachedSidebars (D29-42)", () => {
@@ -47,20 +49,20 @@ describe("AttachedSidebars (D29-42)", () => {
     expect(out).toContain('href="/sidebar/dice"');
   });
 
-  it("a non-superseded sidebar renders under legacy=false with no hidden note", () => {
+  it("a non-superseded sidebar renders under superseded=false with no hidden note", () => {
     const out = html([sidebar({ superseded: false })], false);
     expect(out).toContain("Dice");
     expect(out).not.toContain("codex-rules-hidden-note");
   });
 
-  it("a superseded sidebar is hidden under legacy=false, with an 'N hidden' note", () => {
+  it("a superseded sidebar is hidden under superseded=false, with an 'N hidden' note", () => {
     const out = html([sidebar({ superseded: true })], false);
     expect(out).not.toContain("Dice");
     expect(out).toContain("codex-rules-hidden-note");
     expect(out).toContain("all 1 hidden");
   });
 
-  it("a superseded sidebar renders under legacy=true, with its own Legacy pill", () => {
+  it("a superseded sidebar renders under superseded=true, with its own Legacy pill", () => {
     const out = html([sidebar({ superseded: true })], true);
     expect(out).toContain("Dice");
     expect(out).toContain("codex-edition-legacy");

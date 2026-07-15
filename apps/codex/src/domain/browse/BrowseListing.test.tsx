@@ -81,13 +81,13 @@ describe("BrowseListing (D29-35)", () => {
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
   });
 
-  it("legacy toggle changes the 'M' denominator (acceptance C)", () => {
+  it("superseded visibility changes the 'M' denominator (acceptance C)", () => {
     const withSuperseded: IndexRow[] = [
       ...ROWS,
       row({ id: "feat/delta", name: "Delta", superseded: true }),
     ];
-    function LegacyHarness({ legacy }: { legacy: boolean }) {
-      const state = { ...emptyFilterState(), legacy };
+    function SupersededHarness({ superseded }: { superseded: boolean }) {
+      const state = { ...emptyFilterState(), superseded };
       return (
         <BrowseListing
           category="feat"
@@ -97,9 +97,9 @@ describe("BrowseListing (D29-35)", () => {
         />
       );
     }
-    const { rerender } = render(<LegacyHarness legacy={false} />);
+    const { rerender } = render(<SupersededHarness superseded={false} />);
     expect(screen.getByText("3 of 3 shown")).not.toBeNull(); // Delta hidden from both N and M
-    rerender(<LegacyHarness legacy={true} />);
+    rerender(<SupersededHarness superseded={true} />);
     expect(screen.getByText("4 of 4 shown")).not.toBeNull();
   });
 

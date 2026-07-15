@@ -1,7 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
 
-import { useLegacyToggle } from "@/domain/browse/legacyToggle";
 import { RulesTree } from "@/domain/rules/RulesTree";
 import { getRulesTree } from "@/server/corpusFns";
 
@@ -15,22 +13,31 @@ import { getRulesTree } from "@/server/corpusFns";
  * own). The `/` directory's `rules` row is untouched — it just links to
  * `/${category}`, which is `/rules` either way, count unchanged.
  *
- * `legacy` is the ONLY url param this route reads — the D29-40 "no facet
+ * `superseded` is the ONLY url param this route reads — the D29-40 "no facet
  * panel, no tree state in the URL beyond the current-doc auto-expansion"
  * scope (§7 out of scope) means the quick-filter/collapse state stay plain
- * component state in `RulesTree.tsx`, not URL-synced. The SSR-safe
- * two-phase legacy read below is copied from `$category/index.tsx`'s own
- * pattern (that route's version is typed against the wider `BrowseSearch`
- * shape, a different concept — traits/level/rarity/book/edition mean
- * nothing on this tree page).
+ * component state in `RulesTree.tsx`, not URL-synced.
+ *
+ * P4.5 D29-48: collapsed to a bare URL read — no live-toggle/hydration-phase/
+ * resync effect at all (there is no second, live, cross-page source of
+ * truth left to reconcile SSR against, since the site-wide toggle mechanism
+ * is deleted outright). `legacy=1`/`legacy=true` still decodes as a
+ * `superseded` alias (every shared link that predates this rename, forever,
+ * not a deprecation window).
  */
 interface RulesSearch {
-  legacy?: boolean;
+  superseded?: boolean;
+}
+
+function toBool(raw: unknown): boolean {
+  return raw === true || raw === 1 || raw === "1" || raw === "true";
 }
 
 function validateRulesSearch(raw: Record<string, unknown>): RulesSearch {
-  const v = raw.legacy;
-  return v === true || v === 1 || v === "1" || v === "true" ? { legacy: true } : {};
+  if ("superseded" in raw) {
+    return toBool(raw.superseded) ? { superseded: true } : {};
+  }
+  return toBool(raw.legacy) ? { superseded: true } : {};
 }
 
 export const Route = createFileRoute("/rules")({
@@ -46,31 +53,44 @@ function RulesRouteComponent() {
   const data = Route.useLoaderData();
   const search = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
-  const liveLegacy = useLegacyToggle();
-
-  // The M4 SSR/hydration seam (same as `$category/index.tsx`/`SearchPage.tsx`):
-  // the FIRST render (server + the matching first client render) must derive
-  // `legacy` from the isomorphic `search.legacy` alone; only after mount does
-  // the live site-wide toggle take over.
-  const [hasHydrated, setHasHydrated] = useState(false);
-  useEffect(() => setHasHydrated(true), []);
-  const effectiveLegacy = hasHydrated ? liveLegacy : search.legacy === true;
-
-  // Reflect the live toggle into this route's own URL whenever it changes,
-  // so `/rules?legacy=1` stays copy-shareable (D29-40 acceptance E).
-  useEffect(() => {
-    const currentlyHasLegacyParam = search.legacy === true;
-    if (currentlyHasLegacyParam === effectiveLegacy) return;
-    void navigate({ search: effectiveLegacy ? { legacy: true } : {}, replace: true });
-  }, [effectiveLegacy, search, navigate]);
+  const superseded = search.superseded === true;
+  const totalHidden = data.books.reduce((n, book) => n + book.hiddenWhenLegacyOff, 0);
 
   return (
     <main className="wrap-wide">
       <header className="codex-listing-header">
         <h1 className="codex-listing-title">Rules</h1>
         <p className="codex-listing-count">{data.books.length} books</p>
+        {/* D29-48's own `/rules` visible control — no facet panel on this
+            page (D29-40 unchanged), so a small inline link toggles the
+            same `?superseded=1` param the drawer's Edition section writes
+            elsewhere. The "Show N hidden" (off) state reuses the per-book
+            "N hidden" note's own CSS class/microcopy convention; once
+            widened, nothing is actually hidden anymore, so the reverse
+            "Hide superseded" link deliberately does NOT carry that class
+            (P4's own acceptance gate asserts zero `codex-rules-hidden-note`
+            elements once every book renders unhidden). */}
+        {totalHidden > 0 ? (
+          superseded ? (
+            <button
+              type="button"
+              className="codex-rules-superseded-toggle"
+              onClick={() => void navigate({ search: {}, replace: true })}
+            >
+              Hide superseded &larr;
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="codex-rules-hidden-note codex-rules-superseded-toggle"
+              onClick={() => void navigate({ search: { superseded: true }, replace: true })}
+            >
+              Show {totalHidden} hidden (superseded) &rarr;
+            </button>
+          )
+        ) : null}
       </header>
-      <RulesTree books={data.books} legacy={effectiveLegacy} />
+      <RulesTree books={data.books} superseded={superseded} />
     </main>
   );
 }

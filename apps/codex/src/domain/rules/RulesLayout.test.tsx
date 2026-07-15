@@ -59,6 +59,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
         entityId="rules/ability-modifiers-2"
         entityName="Ability Modifiers"
         nav={GMG_NAV}
+        superseded={false}
       >
         <div data-testid="page-content">the entity page</div>
       </RulesLayout>,
@@ -72,6 +73,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
         entityId="rules/ability-modifiers-2"
         entityName="Ability Modifiers"
         nav={GMG_NAV}
+        superseded={false}
       >
         <div />
       </RulesLayout>,
@@ -88,6 +90,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
         entityId="rules/ability-modifiers-2"
         entityName="Ability Modifiers"
         nav={GMG_NAV}
+        superseded={false}
       >
         <div />
       </RulesLayout>,
@@ -97,7 +100,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
 
   it(
     "the sidebar keeps the current doc's full ancestor branch visible even though every " +
-      "node on it is superseded and the legacy toggle defaults off (the pruneForLegacy " +
+      "node on it is superseded and superseded-visibility defaults off (the pruneForSuperseded " +
       "currentId guard — a sidebar must never lose 'you are here')",
     () => {
       const { container } = render(
@@ -105,6 +108,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
           entityId="rules/ability-modifiers-2"
           entityName="Ability Modifiers"
           nav={GMG_NAV}
+          superseded={false}
         >
           <div />
         </RulesLayout>,
@@ -127,6 +131,7 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
         entityId="rules/ability-modifiers-2"
         entityName="Ability Modifiers"
         nav={GMG_NAV}
+        superseded={false}
       >
         <div />
       </RulesLayout>,

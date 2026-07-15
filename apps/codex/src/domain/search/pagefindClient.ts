@@ -80,19 +80,22 @@ export function loadPagefind(): Promise<PagefindApi | null> {
 }
 
 /** Test-only reset — the module promise otherwise persists across a test
- * file's whole run (same convention as `legacyToggle.ts`'s own
- * `_resetLegacyToggleForTests`). */
+ * file's whole run (a module-scope-reset convention shared across the app). */
 export function _resetPagefindClientForTests(): void {
   pfPromise = null;
 }
 
-/** The site-wide legacy-toggle predicate (D29-35/-36 M4), translated to a
- * Pagefind filter value: omit the `superseded` filter key entirely when the
- * toggle is ON (both editions match, no filtering), else pin it to the
- * single value `"false"` — the exact string `build-search.ts` writes
- * (`filters.superseded = [String(row.superseded)]`). */
-export function supersededFilter(legacy: boolean): string[] | undefined {
-  return legacy ? undefined : ["false"];
+/** A pure Pagefind-filter-value helper, translating a superseded-visibility
+ * boolean: omit the `superseded` filter key entirely when `true` (both
+ * editions match, no filtering), else pin it to the single value `"false"`
+ * — the exact string `build-search.ts` writes (`filters.superseded =
+ * [String(row.superseded)]`). Kept as a standalone pure helper (P4.5
+ * D29-48) even though NEITHER of this app's two search surfaces (the
+ * Omnibar, `/search`) calls it by default anymore — R3's "search always
+ * covers both editions" carve-out means search never hides superseded
+ * content, unlike browse/rules/sidebars. */
+export function supersededFilter(superseded: boolean): string[] | undefined {
+  return superseded ? undefined : ["false"];
 }
 
 // ---------------------------------------------------------------------------
