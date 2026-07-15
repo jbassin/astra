@@ -62,6 +62,16 @@ export type BrowseSearch = {
    * deprecation window — but the encoder below only ever emits `superseded`. */
   superseded?: boolean;
   sort?: string;
+  /** P4.5 S4 (D29-49) — the split-view selection: the raw corpus id SEGMENT
+   * (identical format to the `/{category}/{slug}` route's own `slug` param,
+   * including `@legacy`/`-N` collision suffixes), never the full
+   * `{category}/{slug}` id. Lives OUTSIDE `BrowseFilterState` on purpose —
+   * it's route/selection state, not a filter — so `filterStateToSearch`
+   * (below) never touches it; every write path that calls
+   * `filterStateToSearch` must resync it back in via `withEntryPreserved`
+   * (adversarial B3) or a facet change would silently deselect the right
+   * pane. */
+  entry?: string;
 } & Record<string, string | boolean | undefined>;
 
 function str(raw: unknown): string {
@@ -115,6 +125,10 @@ export function validateBrowseSearch(raw: Record<string, unknown>): BrowseSearch
     out.superseded = true;
   }
   if (str(raw.sort) === "level") out.sort = "level";
+  if ("entry" in raw) {
+    const v = str(raw.entry);
+    if (v !== "") out.entry = v;
+  }
 
   // Derived facet params: only a real `f.<facetKeys.ts key>` name survives —
   // a genuinely unknown/hostile `f.*` param is dropped, same posture as an
@@ -308,6 +322,27 @@ export function filterStateToSearch(state: BrowseFilterState): BrowseSearch {
     const param = encodeRangeParam(filter);
     if (param !== undefined) out[`f.${key}`] = param;
   }
+  return out;
+}
+
+/**
+ * P4.5 S4 (D29-49, adversarial B3) — the split-view route's OWN
+ * `onStateChange` resync: `filterStateToSearch` rebuilds the search object
+ * from `BrowseFilterState` alone and knows nothing about `entry` (it lives
+ * outside that state, see `BrowseSearch.entry`'s own comment above), so any
+ * facet write/quick-filter keystroke/clear-all would silently strip
+ * `?entry=` and deselect the right pane without this resync. `entry` is
+ * preserved verbatim across every filter-state write, INCLUDING a
+ * `clearAllFilters()` — "Clear all" clears filters, not the split-view
+ * selection. A facet change CAN legitimately filter the selected entry out
+ * of the visible list; that's the fail-soft "not shown under current
+ * filters" case (`BrowseListing.tsx`), never a silent deselect. */
+export function withEntryPreserved(
+  next: BrowseFilterState,
+  currentSearch: BrowseSearch,
+): BrowseSearch {
+  const out = filterStateToSearch(next);
+  if (currentSearch.entry !== undefined) out.entry = currentSearch.entry;
   return out;
 }
 

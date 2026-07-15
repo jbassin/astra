@@ -665,11 +665,59 @@ select:focus-visible,
   padding: 0.25rem 0.4rem;
   font-family: var(--font-body), serif;
 }
+.codex-listing-controls .codex-ui-button {
+  margin-left: auto;
+}
 
-/* two-column layout: facet panel + results */
+/* --- P4.5 S4 (D29-49): the active-filter pill summary row, the drawer's
+   own contents' only always-visible trace now that `FacetPanel` lives
+   inside a dismissible `<dialog>` (below). One pill per active FACET
+   DIMENSION (not per value) plus a bulk "Clear all". --- */
+.codex-active-pills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+.codex-active-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.02em;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-gold-rule);
+  background-color: var(--color-callout-blue-bg);
+  color: var(--color-ink-dim);
+  cursor: pointer;
+}
+.codex-active-pill-remove {
+  color: var(--color-heading-maroon);
+  font-weight: 700;
+}
+.codex-active-pill-clear {
+  font-size: 0.78rem;
+  color: var(--color-link);
+  background: none;
+  border: none;
+  padding: 0.2rem 0.3rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* --- P4.5 S4 (D29-49): the split-column browse layout. Left = the
+   (narrower) listing pane; right = the full entity-render pane for
+   `?entry=`. Below the shared breakpoint the entry pane is CSS-hidden
+   (never React-conditional — see `BrowseListing.tsx`'s own comment on why:
+   an SSR deep link must still contain the full body in the raw HTML
+   regardless of viewport) and row taps fully navigate instead of
+   selecting. --- */
 .codex-browse-layout {
   display: grid;
-  grid-template-columns: 16rem 1fr;
+  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
   gap: clamp(1.25rem, 3vw, 2.5rem);
   align-items: start;
 }
@@ -677,6 +725,77 @@ select:focus-visible,
   .codex-browse-layout {
     grid-template-columns: 1fr;
   }
+  .codex-entry-pane {
+    display: none;
+  }
+}
+
+.codex-listing-pane {
+  min-width: 0;
+}
+
+.codex-entry-pane {
+  position: sticky;
+  top: 1rem;
+  min-width: 0;
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  padding: 0.25rem clamp(0.5rem, 2vw, 1.5rem);
+  border-left: 1px solid var(--color-rule);
+}
+.codex-entry-pane-placeholder,
+.codex-entry-pane-message {
+  color: var(--color-ink-dim);
+  font-style: italic;
+  padding: 1.5rem 0;
+}
+.codex-entry-pane-open-link {
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--color-link);
+}
+.codex-entry-pane-open-link:hover {
+  color: var(--color-link-hover);
+}
+
+/* --- P4.5 S4 (D29-49): the filter drawer — a native `<dialog>` wrapping
+   the UNMODIFIED `FacetPanel` (still renders its own `<aside>` inside);
+   only the container changed. --- */
+.codex-filter-drawer {
+  /* Explicit centering rather than relying on the UA `dialog:modal` default
+     (inconsistent across engines once the content approaches viewport
+     height, verified via a real-browser screenshot — a tall facet list
+     otherwise pins to the top-left instead of centering). */
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 0.4rem;
+  padding: 0;
+  background-color: var(--color-elevated);
+  color: var(--color-ink);
+  width: min(28rem, 92vw);
+  max-width: min(28rem, 92vw);
+  max-height: 85vh;
+  height: fit-content;
+}
+.codex-filter-drawer::backdrop {
+  background-color: rgb(0 0 0 / 45%);
+}
+.codex-filter-drawer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  overflow-y: auto;
+  max-height: 85vh;
+}
+.codex-filter-drawer .codex-facet-panel {
+  position: static;
 }
 
 .codex-facet-panel {
@@ -800,9 +919,16 @@ select:focus-visible,
   margin-top: 1.25rem;
   /* D29-35 perf guard (the sanctioned no-new-dependency fallback for a
      long letter-grouped list): browsers skip layout/paint for off-screen
-     sections, without a virtualization library. */
+     sections, without a virtualization library. P4.5 S4 (adversarial M5)
+     re-tuned 400px -> 640px: the split view's narrower `.codex-listing-pane`
+     column wraps a row's 5 inline fields onto more lines than the old
+     full-width listing did, so the old placeholder under-counted real
+     section heights (scroll-anchor jank on a fast scroll into an
+     off-screen section) — measured against feat's 8,485 rows at the actual
+     split-view column width (~26rem), see the session report for the
+     before/after scroll-stability numbers. */
   content-visibility: auto;
-  contain-intrinsic-size: auto 400px;
+  contain-intrinsic-size: auto 640px;
 }
 .codex-listing-rows {
   list-style: none;
@@ -813,13 +939,33 @@ select:focus-visible,
 .codex-listing-rows-flat {
   margin-top: 0.5rem;
 }
+/* --- P4.5 S4 (D29-49) — style-tokens doc §4 "Faceted list / data-dense
+   view": hairline row separators (kept), a hover wash + gold hairline top/
+   bottom, and a solid selected-row fill with a maroon "bookmark ribbon"
+   left-edge bar. --- */
 .codex-listing-row {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.5rem;
-  padding: 0.3rem 0;
+  padding: 0.3rem 0.5rem 0.3rem 0.6rem;
   border-bottom: 1px solid var(--color-rule);
+  border-top: 1px solid transparent;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+.codex-listing-row:hover {
+  background-color: var(--color-hover);
+  border-top-color: var(--color-gold-rule);
+  border-bottom-color: var(--color-gold-rule);
+}
+.codex-listing-row-selected,
+.codex-listing-row-selected:hover {
+  background-color: var(--color-callout-blue-bg);
+  border-left: 3px solid var(--color-heading-maroon);
+  padding-left: calc(0.6rem - 3px);
 }
 .codex-listing-name {
   font-weight: 600;
@@ -830,11 +976,27 @@ select:focus-visible,
   color: var(--color-ink-faint);
   font-size: 0.85em;
 }
+/* the condensed "crunch" type/level column (style doc §4) — right-aligned
+   per row, pushed to the row's trailing edge. */
+.codex-listing-typelevel {
+  display: inline-flex;
+  gap: 0.5rem;
+  margin-left: auto;
+  font-family: var(--font-condensed), sans-serif;
+  text-align: right;
+}
 .codex-listing-level,
 .codex-listing-rarity,
 .codex-listing-source {
   color: var(--color-ink-dim);
   font-size: 0.82rem;
+}
+/* smaller row-scale pill (style doc §4: "reuse the exact pill component at
+   a slightly smaller scale") — the same edition pill used on the entity
+   page header, just dialed down for a dense list row. */
+.codex-edition-pill-sm {
+  font-size: 0.68rem;
+  padding: 0.05rem 0.4rem;
 }
 .codex-listing-empty-category {
   color: var(--color-ink-dim);

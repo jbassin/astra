@@ -18,6 +18,7 @@ import {
   isCleanSearch,
   searchToFilterState,
   validateBrowseSearch,
+  withEntryPreserved,
   type BrowseSearch,
 } from "./urlState";
 
@@ -445,5 +446,74 @@ describe("urlState: BrowseSearch typing sanity", () => {
     const search: BrowseSearch = { "f.actionCost": "1,reaction" };
     const state = searchToFilterState(search);
     expect(state.facetEnum.get("actionCost")).toEqual(new Set(["1", "reaction"]));
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P4.5 S4 (D29-49) — `?entry=` codec + the B3 preserve-across-facet-write
+// resync (`withEntryPreserved`). Independent of the facet-param codec above
+// (spec's own text: "a new URL-codec round-trip test for `entry`
+// (independent of the facet params, since it's addressed by a plain string,
+// not a Set/Map)").
+// ---------------------------------------------------------------------------
+
+describe("urlState: `entry` codec (P4.5 S4, D29-49)", () => {
+  it("decodes a plain entry param via the real router parser", () => {
+    const raw = parseQuery("?entry=fireball");
+    expect(validateBrowseSearch(raw).entry).toBe("fireball");
+  });
+
+  it("decodes an entry carrying `@legacy`/collision-suffix punctuation verbatim", () => {
+    expect(validateBrowseSearch({ entry: "heal@legacy" }).entry).toBe("heal@legacy");
+    expect(validateBrowseSearch({ entry: "grick-2" }).entry).toBe("grick-2");
+  });
+
+  it("an empty-string entry decodes to absent (same 'empty = absent' convention as every other param)", () => {
+    expect(validateBrowseSearch({ entry: "" }).entry).toBeUndefined();
+  });
+
+  it("no entry key at all -> absent", () => {
+    expect(validateBrowseSearch({}).entry).toBeUndefined();
+  });
+
+  it("round-trips independently of the facet params: entry survives alongside a full facet selection", () => {
+    const raw = parseQuery(
+      "?traits=fire,-agile&level=-2..5&rarity=rare&q=drag&entry=camouflage-coat",
+    );
+    const search = validateBrowseSearch(raw);
+    expect(search.entry).toBe("camouflage-coat");
+    expect(search.traits).toBe("fire,-agile");
+    expect(search.rarity).toBe("rare");
+  });
+
+  it("`filterStateToSearch` alone never emits/preserves `entry` — it lives outside BrowseFilterState entirely", () => {
+    const state = searchToFilterState({ entry: "fireball", traits: "fire" });
+    expect((state as unknown as { entry?: unknown }).entry).toBeUndefined();
+    const reencoded = filterStateToSearch(state);
+    expect(reencoded.entry).toBeUndefined(); // by design — see withEntryPreserved below
+  });
+});
+
+describe("urlState: withEntryPreserved (adversarial B3)", () => {
+  it("preserves `entry` across an ordinary facet-state write", () => {
+    const state = { ...emptyFilterState(), rarity: new Set(["rare"]) };
+    const currentSearch: BrowseSearch = { entry: "fireball" };
+    const out = withEntryPreserved(state, currentSearch);
+    expect(out.entry).toBe("fireball");
+    expect(out.rarity).toBe("rare");
+  });
+
+  it("preserves `entry` across `clearAllFilters()` — 'Clear all' clears filters, not the split-view selection", () => {
+    const cleared = emptyFilterState();
+    const currentSearch: BrowseSearch = { entry: "fireball", rarity: "rare" };
+    const out = withEntryPreserved(cleared, currentSearch);
+    expect(out.entry).toBe("fireball");
+    expect(out.rarity).toBeUndefined();
+  });
+
+  it("no `entry` in the current search -> the resync is a no-op (never manufactures one)", () => {
+    const state = { ...emptyFilterState(), rarity: new Set(["rare"]) };
+    const out = withEntryPreserved(state, {});
+    expect(out.entry).toBeUndefined();
   });
 });

@@ -222,7 +222,14 @@ export type FacetDimension =
   | { kind: "edition" }
   | { kind: "facet"; key: string };
 
-function withoutDimension(state: BrowseFilterState, dim: FacetDimension): BrowseFilterState {
+/**
+ * Also exported (P4.5 S4, D29-49) for `activeFilterPills.ts`'s per-pill
+ * "remove this one dimension" action — the exact same "state minus one
+ * dimension" shape `ambientRows` already needed for facet option counts, so
+ * the pill-removal action reuses it rather than growing a parallel set of
+ * `clearX` helpers.
+ */
+export function withoutDimension(state: BrowseFilterState, dim: FacetDimension): BrowseFilterState {
   switch (dim.kind) {
     case "traits":
       return { ...state, traits: { include: new Set(), exclude: new Set() } };

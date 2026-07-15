@@ -207,9 +207,20 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
  * `Camouflage Coat` appears in `/feat?f.actionCost=reaction`'s raw HTML via
  * the dehydrated JSON blob alone, `id:"feat/camouflage-coat"`, even though
  * it's genuinely filtered OUT of the rendered `<ul>`). The href-anchor
- * pattern only exists for a row React actually rendered. */
+ * pattern only exists for a row React actually rendered.
+ *
+ * P4.5 S4 (D29-49): scoped to the `codex-listing-name` class specifically
+ * (not just a bare `href="/{id}"` substring) — the split view's right pane
+ * now ALSO emits a same-shaped `href="/{id}"` "Open full page" link
+ * (`canonicalHref`, `BrowseListing.tsx`), so an unscoped check would
+ * false-positive on a row that's genuinely filtered OUT of the listing but
+ * still resolves as the selected `?entry=`. Also tolerates an optional
+ * trailing `?superseded=1` (M7 — every row's own href carries it once the
+ * view is widened, `rowHref`'s own comment). */
 function rendersRow(html: string, id: string): boolean {
-  return html.includes(`href="/${id}"`);
+  const escaped = id.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`href="/${escaped}(?:\\?superseded=1)?" class="codex-listing-name"`);
+  return re.test(html);
 }
 
 describe("$category/ browse route (D29-35 tier 3)", () => {
@@ -308,6 +319,73 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
 
   it("noindex meta is present on the browse route's SSR HTML too", async () => {
     const { html } = await get("/feat");
+    expect(html).toContain('name="robots"');
+    expect(html).toContain('content="noindex"');
+  });
+});
+
+/**
+ * P4.5 S4 (D29-49) — the split-column browse's `?entry=` deep link, over the
+ * fixture's single `feat` row (`feat/camouflage-coat`, `actionCost: passive`
+ * — the same fixture the `f.actionCost` narrowing case above already
+ * exercises). This is the acceptance-D curl-provable gate: a fresh,
+ * no-storage-state request must SSR the FULL entity render in the right
+ * pane, not just the listing (the standing SSR-flash class P3's memory
+ * already caught for the legacy toggle).
+ */
+describe("$category/ split-view browse: ?entry= deep link (P4.5 S4, D29-49 tier 3)", () => {
+  it("a fresh deep link SSRs the selected entity's full render server-side, not just the listing row", async () => {
+    const { status, html } = await get("/feat?entry=camouflage-coat");
+    expect(status).toBe(200);
+    // both panes present: the listing (row anchor) AND the entry pane's own
+    // full entity render (its own `codex-entity-page` article + statblock
+    // header), never a client-side-only fetch-after-mount flash.
+    expect(rendersRow(html, "feat/camouflage-coat")).toBe(true);
+    expect(html).toContain("codex-entry-pane");
+    expect(html).toContain("codex-entity-page");
+    expect(html).toContain("Camouflage Coat");
+    expect(html).not.toContain("data-render-error");
+  });
+
+  it("no `?entry=` at all: the entry pane renders the placeholder, no entity body", async () => {
+    const { html } = await get("/feat");
+    expect(html).toContain("codex-entry-pane");
+    expect(html).toContain("Select a row to preview it here.");
+    expect(html).not.toContain("codex-entity-page");
+  });
+
+  it("a genuinely unknown `entry` slug shows the not-found message; the listing still renders normally", async () => {
+    const { status, html } = await get("/feat?entry=totally-not-a-real-feat");
+    expect(status).toBe(200);
+    expect(html).toMatch(/wasn.t found/);
+    expect(rendersRow(html, "feat/camouflage-coat")).toBe(true); // listing unaffected
+  });
+
+  it("an `entry` filtered out by the current facet selection shows the fail-soft message, not a 404 (N3)", async () => {
+    // camouflage-coat is `actionCost: passive` (fixture + real corpus,
+    // proven by the derived-facet-narrows case above) — `f.actionCost=
+    // reaction` filters it OUT of the visible list while it still resolves
+    // fine as an entity.
+    const { status, html } = await get("/feat?entry=camouflage-coat&f.actionCost=reaction");
+    expect(status).toBe(200);
+    expect(html).toMatch(/isn.t shown under the current filters/);
+    expect(rendersRow(html, "feat/camouflage-coat")).toBe(false); // filtered out of the list
+  });
+
+  it("zero hydration/render errors across the split-view deep-link cases", async () => {
+    for (const routePath of [
+      "/feat?entry=camouflage-coat",
+      "/feat?entry=totally-not-a-real-feat",
+      "/feat?entry=camouflage-coat&f.actionCost=reaction",
+    ]) {
+      const { status, html } = await get(routePath);
+      expect(status).toBe(200);
+      expect(html).not.toContain("data-render-error");
+    }
+  });
+
+  it("noindex meta is present on a split-view deep-link page too", async () => {
+    const { html } = await get("/feat?entry=camouflage-coat");
     expect(html).toContain('name="robots"');
     expect(html).toContain('content="noindex"');
   });

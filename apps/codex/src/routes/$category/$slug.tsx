@@ -1,9 +1,6 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
-import { Popover } from "@/domain/components/islands/Popover";
-import { AttachedSidebars } from "@/domain/render/AttachedSidebars";
-import { EntityPage } from "@/domain/render/entityPage";
-import { rootRenderCtx } from "@/domain/render/nodes";
+import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import { firstParagraphSummary } from "@/domain/render/text";
 import { RulesLayout } from "@/domain/rules/RulesLayout";
 import { getEntityPage } from "@/server/corpusFns";
@@ -66,26 +63,16 @@ export const Route = createFileRoute("/$category/$slug")({
 });
 
 function EntityRouteComponent() {
-  const { entity, embeds, knownTraitIds, rulesNav, attachedSidebars } = Route.useLoaderData();
+  const data = Route.useLoaderData();
+  const { entity, rulesNav } = data;
   const search = Route.useSearch();
   const superseded = search.superseded === true;
 
-  const ctx = rootRenderCtx({
-    resolveEmbed: (targetId) => embeds[targetId],
-    knownTraitIds: new Set(knownTraitIds),
-  });
-  const page = (
-    <>
-      {/* D29-28: mounted on the entity route ONLY (not the index/listing
-          routes) — hover cards on crossrefs + trait pills, never on an 8k-row
-          listing (spec's own reasoning for restricting the mount point). */}
-      <Popover />
-      <EntityPage entity={entity} ctx={ctx} />
-      {attachedSidebars !== undefined ? (
-        <AttachedSidebars sidebars={attachedSidebars} superseded={superseded} ctx={ctx} />
-      ) : null}
-    </>
-  );
+  // D29-28: `EntityRenderPane`'s `<Popover/>` mounts here (the entity route)
+  // AND on the split-view right pane (`BrowseListing.tsx`) — never on the
+  // bare listing rows themselves (spec's own reasoning for restricting the
+  // mount point away from an 8k-row list).
+  const page = <EntityRenderPane data={data} superseded={superseded} />;
 
   // P4 S3 (D29-41): the tree sidebar/trail/pager wrap ONLY rules entity
   // pages carrying a resolved `rulesNav` — every other category's page is
