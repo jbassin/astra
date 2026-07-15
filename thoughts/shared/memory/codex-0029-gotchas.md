@@ -1,6 +1,6 @@
 ---
 name: codex-0029-gotchas
-description: codex (0029) — public-but-noindexed PF2e reference site (codex.iridi.cc; bespoke parchment sourcebook style since P4.5, gothic dropped) — 2026-07-15 P4.5 UX rework+restyle BUILT (all 6 slices; P4's H came back a REDIRECT not a sign-off: split-column browse, header nav, landing, superseded-param edition rework, parchment restyle from the stakeholder's own 36-page sourcebook) — ▶ next = acceptance H RE-RUN (P2+P3+P4+P4.5 consolidated) then octo:spec P5 deploy; the loaderDeps/memoized-listing/entry-survival split-view mechanics + R5 superseded-not-edition semantics + all prior corpus/join/render/browse/search/tree gotchas a fresh session must not re-derive
+description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-15 **P5 DEPLOY BUILT, codex.iridi.cc IS LIVE** (gates A–G met; ▶ the ONLY open item = gate H, the consolidated P2+P3+P4+P4.5 stakeholder review ON the live site) — the D29-53 identical-path ro-bind-mount convention (host-absolute data-path, no env override for plain config fields), the corpus-free heartwood-model image + fixture fail-soft trap, Pagefind bundle = 203 MB MEASURED not ~50, NO-307 correction (legacy alias decodes client-side), refresh-restarts-the-container, plus the P4.5 loaderDeps/memoized-listing/superseded-semantics finds + all prior corpus/join/render/browse/search/tree gotchas a fresh session must not re-derive
 metadata:
   type: project
 ---
@@ -28,8 +28,9 @@ resynced through `filterStateToSearch`** (it rebuilds search from BrowseFilterSt
 bug class as the old legacy resync); (3) **R5 semantics: the default-hidden set is
 `superseded`-only, NEVER `edition!=="remaster"`** — never-remastered legacy-edition content
 stays visible (AoN behavior; stakeholder-resolved) — the param is `?superseded=1` with
-`?legacy=` as a forever-decode alias (proven byte-identical; old links take a pre-existing 307
-canonicalization hop, FYI'd at H); (4) search NEVER filters superseded (always-both + Legacy
+`?legacy=` as a forever-decode alias (proven byte-identical; **CORRECTED at P5: NO 307/redirect
+exists anywhere** — the alias decode is pure client-side in `urlState.ts`, old links render
+in-place and the encoder re-emits `superseded` on the next navigation); (4) search NEVER filters superseded (always-both + Legacy
 badges; Pagefind needed NO reindex — superseded+edition were already indexed filters, the swap
 is query-time); (5) killing the site-wide toggle COLLAPSED all four M4 two-phase hydration
 seams (3 routes + SearchPage.tsx) to bare URL reads — no persisted edition preference exists
@@ -43,6 +44,33 @@ repointing gothic's var NAMES to parchment values (globals.css untouched-by-rena
 + gothicFontsPlugin removed from vite.config (existed only for gothic; codex uses zero
 utility classes). Weights for P5: `/rules` 401/79 gz · `/sources` 705/65 · heaviest host
 415/80 · `/` 12/3 · `/feat?entry=` 5.81 MB/537 KB · fonts 70.5 KB.
+
+**P5 DEPLOY BUILT + LIVE 2026-07-15 (spec `thoughts/astra/specs/0029-codex-p5-deploy-spec.md`
+D29-53..58, status BUILT — spec'd, adversarially reviewed (0 blockers), built S1 `dd42b19` + S2
+`7e3e348`, and LIVE on `codex.iridi.cc` in one session; gate H folds the deferred consolidated
+stakeholder review into P5's exit, stakeholder-resolved).** THE P5 finds: (1) **the D29-53
+identical-path bind-mount convention** — `codex.data-path` (config.kdl) is host-absolute and
+consumed VERBATIM at request time in dev and container alike, and plain config fields have NO
+env-override (only SOPS `ref=` secrets do) → mount `data/corpus` + `data/search` at the SAME
+absolute path in-container, `:ro` (Dagster pipeline-volume precedent, first frontend use;
+repointing to a short `/data` would break host-side real-corpus serving); (2) the image is
+**corpus-free on the heartwood model** with ONE departure — runtime `COPY fixtures/` so
+corpusFs's fail-soft works — and the fail-soft is the #1 deploy trap: **a mis-mount serves a
+healthy-looking 2.1 MB fixture site** (one-time console.warn), so any codex deploy check must
+assert a real-corpus marker (dragon page + /spell 2,604), never bare 200s; (3) **Pagefind
+bundle = 203 MB measured** (fragment/ 184 MB, 46,192 files 1:1 with entities; index/ 18 MB) —
+the "~50–55 MB" figure in earlier docs was stale ~4×; total runtime mount ≈ 891 MB, snapshots
+601 MB stay unmounted; (4) **refresh-in-prod**: corpusFs caches listings/tree/sources forever
+per-process (`entity()` uncached) → `codex-refresh` now ends with a guarded
+`docker compose restart codex`; the Pagefind staticMount alone needs NO restart (per-request
+fail-soft, proven live via move-aside → 404 → restore → 200); (5) root `.dockerignore` was
+missing `apps/codex/data` + `artifacts` — 1.5 GB sat in every sibling's build context since P1,
+masked by BuildKit lazy transfer; (6) noindex = THREE layers live (meta since P2 · robots.txt
+in `public/` served via the clientDir fallback, favicon-proven mechanism · plain
+`header X-Robots-Tag noindex` in the Caddy stanza — first X-Robots-Tag/robots.txt in the repo);
+(7) internet scanners found the new host within minutes (404 noise, non-error — expected under
+C-1); the wildcard cert minted in ~20 s. Non-astra host residue surfaced, untouched:
+`nextcloud-app` crash-looping for months.
 
 **P1 BUILT 2026-07-13** (spec `thoughts/astra/specs/0029-codex-p1-ingest-spec.md`, status FINAL →
 all four slices committed same-day by staff-orchestrator + sonnet engineers): S1 `108571d`

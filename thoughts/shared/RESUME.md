@@ -36,7 +36,50 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `157f10b`, 2026-07-15 — codex (0029) P4.5 UX rework + bespoke restyle BUILT S1–S6, A–G met; ▶ acceptance H = THE consolidated stakeholder review re-run (P2+P3+P4+P4.5), then spec P5; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `7e3e348`, 2026-07-15 — codex (0029) P5 DEPLOY BUILT S1+S2 same day as its spec; **`codex.iridi.cc` IS LIVE**, gates A–G met; ▶ THE ONLY OPEN ITEM = gate H, the consolidated stakeholder review ON THE LIVE SITE; heartwood ON HOLD)
+
+> **✅ codex (0029) P5 (deploy) — SPEC'D + BUILT + LIVE in one session** (staff-orchestrator +
+> sonnet engineers; spec `thoughts/astra/specs/0029-codex-p5-deploy-spec.md` D29-53..58, status
+> BUILT, §8 carries per-gate evidence; adversarially reviewed pre-build — 0 blockers). The
+> stakeholder deferred the P4.5 acceptance H re-run and chose to spec/build P5 first, folding
+> **H into P5's exit gate (D29-58)** — one consolidated review of P2+P3+P4+P4.5 on the live
+> site. Slices: **S1 `dd42b19`** (corpus-free image on the heartwood-minimal model + the ONE
+> departure — runtime `COPY fixtures/` for the corpus fail-soft; compose unit w/ the two
+> **D29-53 identical-path `:ro` bind mounts** — `data/corpus` + `data/search`, host path ==
+> container path, the Dagster pipeline-volume convention on a frontend for the first time,
+> because `codex.data-path` is host-absolute + consumed verbatim and plain config fields have
+> no env override; `public/robots.txt`; `.dockerignore` +`apps/codex/data`+`artifacts` — 1.5 GB
+> was silently in every sibling's build context, BuildKit lazy transfer masked it; the
+> `codex-refresh` D29-57 guarded restart tail — corpusFs caches categories forever per-process;
+> README deploy section + two stale-claim corrections) · **S2 `7e3e348`** (`codex.iridi.cc`
+> Caddy stanza — `import astra_site` + plain `header X-Robots-Tag noindex`; `just up` + `just
+> caddy-reload`, cert minted ~20 s via the wildcard; gates A–G all met: real-corpus C proof
+> through the edge — dragon marker + /spell 2,604 + zero fixture-fallback warns; Pagefind 200 +
+> Range/206; Playwright Omnibar "fireball" → 8 links, 0 page errors; noindex all THREE layers
+> live; the F move-aside/restart/dirty-guard drill; `astra.codex` spans in SigNoz incl.
+> `codex.search`, 0 ERROR).
+> - **▶ NEXT: gate H — the consolidated stakeholder review at `https://codex.iridi.cc`**
+>   (D29-58): the P2 spot-set (M7 links-not-inlined + M11 statblock-twice are EXPECTED) + P3
+>   search (single-common-word "heal" ranking = documented limitation) + P4 tree/sidebars/
+>   sources + the five P4.5 items in the parchment skin. Sign-off → 0029 spec COMPLETE (its
+>   product surface is done); a redirect spawns a follow-up phase. **Correction recorded: NO
+>   307 exists** — old `?legacy=` links decode client-side (`urlState.ts`), render in-place.
+> - **Session facts a fresh session needs:** Pagefind bundle is **203 MB measured** (fragment/
+>   184 MB = 46,192 files 1:1 w/ entities), NOT the previously-documented ~50 MB; total runtime
+>   mount ≈ 891 MB, snapshots (601 MB) deliberately unmounted; refresh-in-prod = `just
+>   codex-refresh` (now restarts the container itself); a mis-mount serves the 2.1 MB fixture
+>   site + a one-time `console.warn` (healthy-looking — C's three-prong real-corpus assert is
+>   the guard). Internet scanners found the host within minutes (404 noise, non-error) —
+>   expected under C-1. Pre-existing host residue surfaced, NOT astra: `nextcloud-app`
+>   (non-astra container) has been crash-looping for months.
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A alerting
+>   breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-15, earlier same day) — P4.5 BUILT (superseded above; its H folded into P5's gate)
+
+## (was) Current state (as of `157f10b`, 2026-07-15 — codex (0029) P4.5 UX rework + bespoke restyle BUILT S1–S6, A–G met; ▶ acceptance H = THE consolidated stakeholder review re-run (P2+P3+P4+P4.5), then spec P5; heartwood ON HOLD)
 
 > **✅ codex (0029) P4.5 (UX rework + bespoke sourcebook restyle) — ALL SIX SLICES BUILT +
 > PUSHED** (staff-orchestrator + sonnet engineers, one reviewed commit per slice; spec
