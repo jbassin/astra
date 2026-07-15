@@ -12,6 +12,7 @@ describe("SourcesIndexFileSchema (D29-43)", () => {
           license: "ORC" as const,
           edition: "remaster" as const,
           entityCount: 500,
+          categoryCounts: { spell: 300, feat: 200 },
           sourceEntityRef: "source/player-core",
         },
         {
@@ -19,6 +20,7 @@ describe("SourcesIndexFileSchema (D29-43)", () => {
           license: "unknown" as const,
           edition: "legacy" as const,
           entityCount: 5,
+          categoryCounts: { ancestry: 5 },
         },
       ],
     };
@@ -27,7 +29,23 @@ describe("SourcesIndexFileSchema (D29-43)", () => {
 
   it("rejects extra fields (.strict())", () => {
     const bad = {
-      books: [{ book: "X", license: "unknown", edition: "legacy", entityCount: 0, extra: true }],
+      books: [
+        {
+          book: "X",
+          license: "unknown",
+          edition: "legacy",
+          entityCount: 0,
+          categoryCounts: {},
+          extra: true,
+        },
+      ],
+    };
+    expect(() => SourcesIndexFileSchema.parse(bad)).toThrow();
+  });
+
+  it("rejects a missing categoryCounts (required, not optional)", () => {
+    const bad = {
+      books: [{ book: "X", license: "unknown", edition: "legacy", entityCount: 0 }],
     };
     expect(() => SourcesIndexFileSchema.parse(bad)).toThrow();
   });

@@ -145,6 +145,39 @@ describe("createCorpusReader.rulesTree() failure modes (D29-23 idiom)", () => {
   });
 });
 
+// P4 S4 (D29-43) — `sourcesIndex()` mirrors `rulesTree()`'s own describe
+// blocks above exactly (a sibling artifact, same cache/Zod/failure-mode
+// posture).
+describe("createCorpusReader.sourcesIndex() (D29-43)", () => {
+  const reader = createCorpusReader(fixtureCorpusRoot());
+
+  it("the fixture artifact, real book content", () => {
+    const idx = reader.sourcesIndex();
+    expect(idx.books.length).toBeGreaterThan(0);
+    expect(idx.books.some((b) => b.book === "Player Core")).toBe(true);
+  });
+
+  it("is cached (same object identity across calls)", () => {
+    expect(reader.sourcesIndex()).toBe(reader.sourcesIndex());
+  });
+
+  it("every book validates against SourceIndexEntrySchema shape (categoryCounts present, sums to entityCount)", () => {
+    for (const book of reader.sourcesIndex().books) {
+      expect(["remaster", "legacy"]).toContain(book.edition);
+      expect(["ORC", "OGL", "unknown"]).toContain(book.license);
+      const sum = Object.values(book.categoryCounts).reduce((a, b) => a + b, 0);
+      expect(sum).toBe(book.entityCount);
+    }
+  });
+});
+
+describe("createCorpusReader.sourcesIndex() failure modes (D29-23 idiom)", () => {
+  it("throws CorpusNotFoundError when sources-index.json is missing from the root", () => {
+    const reader = createCorpusReader(`${fixtureCorpusRoot()}/spell`);
+    expect(() => reader.sourcesIndex()).toThrow(CorpusNotFoundError);
+  });
+});
+
 describe("resolveCorpusRoot (D29-23 fail-soft)", () => {
   it("resolves to a corpus root that actually has a manifest.json (real or fixture)", () => {
     const root = resolveCorpusRoot();

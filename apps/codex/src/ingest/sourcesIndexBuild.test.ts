@@ -41,6 +41,25 @@ describe("buildSourcesIndex (D29-43)", () => {
     expect(result.stats.otherBooks).toBe(0);
   });
 
+  it("categoryCounts breaks entityCount down per category (D29-43 P4 S4)", () => {
+    const result = buildSourcesIndex({
+      finalEntities: [
+        entity("spell/a", "Core Rulebook"),
+        entity("spell/b", "Core Rulebook"),
+        entity("feat/c", "Core Rulebook"),
+      ],
+      aonCitations: [],
+      bookNameMap: new Map(),
+      bookSourceLicense: new Map(),
+      sourceEntityRefByBook: new Map(),
+    });
+    const row = result.file.books.find((b) => b.book === "Core Rulebook");
+    expect(row?.categoryCounts).toEqual({ feat: 1, spell: 2 });
+    // the sum of every category's count equals the book's own entityCount.
+    const sum = Object.values(row?.categoryCounts ?? {}).reduce((a, b) => a + b, 0);
+    expect(sum).toBe(row?.entityCount);
+  });
+
   it('a book with zero AoN citations lands in the "Other" bucket (no productLine)', () => {
     const result = buildSourcesIndex({
       finalEntities: [entity("boon/a", "Foundry Journal: Ancestries")],

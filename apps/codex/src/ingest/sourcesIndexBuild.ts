@@ -68,11 +68,19 @@ export function buildSourcesIndex(input: SourcesIndexBuildInput): {
 } {
   const entityCountByBook = new Map<string, number>();
   const editionsByBook = new Map<string, Edition[]>();
+  // P4 S4 (D29-43's "per-category count links into filtered browse"): the
+  // same `finalEntities` pass already used for `entityCountByBook` also
+  // carries `category` on every entity — a book -> category -> count
+  // breakdown, for free, in the same loop.
+  const categoryCountsByBook = new Map<string, Map<string, number>>();
   for (const e of input.finalEntities) {
     entityCountByBook.set(e.source.book, (entityCountByBook.get(e.source.book) ?? 0) + 1);
     const arr = editionsByBook.get(e.source.book) ?? [];
     arr.push(e.edition);
     editionsByBook.set(e.source.book, arr);
+    const categoryCounts = categoryCountsByBook.get(e.source.book) ?? new Map<string, number>();
+    categoryCounts.set(e.category, (categoryCounts.get(e.category) ?? 0) + 1);
+    categoryCountsByBook.set(e.source.book, categoryCounts);
   }
 
   const votesByBook = new Map<string, Map<string, number>>();
@@ -96,12 +104,18 @@ export function buildSourcesIndex(input: SourcesIndexBuildInput): {
       classifiedBooks++;
       classifiedEntities += entityCount;
     }
+    const categoryCounts = Object.fromEntries(
+      [...(categoryCountsByBook.get(book) ?? new Map<string, number>())].sort(([a], [b]) =>
+        a.localeCompare(b),
+      ),
+    );
     books.push({
       book,
       ...(productLine !== undefined ? { productLine } : {}),
       license: deriveBookLicense(book, input.bookSourceLicense.get(book)),
       edition: deriveBookEdition(book, editions),
       entityCount,
+      categoryCounts,
       ...(input.sourceEntityRefByBook.has(book)
         ? { sourceEntityRef: input.sourceEntityRefByBook.get(book) }
         : {}),

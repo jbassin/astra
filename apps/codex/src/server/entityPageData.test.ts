@@ -81,6 +81,69 @@ describe("resolveEntityPageData (D29-23/-25)", () => {
     expect(data?.rulesNav).toBeUndefined();
     expect(Object.hasOwn(data ?? {}, "rulesNav")).toBe(false);
   });
+
+  it("an entity with no attachedSidebars carries no `attachedSidebars` key at all", () => {
+    const data = resolveEntityPageData(reader, { category: "spell", slug: "heal" });
+    expect(data?.attachedSidebars).toBeUndefined();
+    expect(Object.hasOwn(data ?? {}, "attachedSidebars")).toBe(false);
+  });
+});
+
+/**
+ * P4 S4 (D29-42) — the `attachedSidebars` resolution, over the fixture's own
+ * D29-44 shapes: a rules host (`rules/tools-of-play` -> `sidebar/dice`, a
+ * non-superseded sidebar) and the M8 shared-url case
+ * (`class/witch@legacy` -> `sidebar/in-service-to-the-unknown`, itself
+ * SUPERSEDED — the same real-corpus shape the fixture copied verbatim also
+ * happens to prove the fail-soft path: the real corpus's `class/witch@legacy`
+ * carries a SECOND sidebar id, `sidebar/key-terms-38`, that was never
+ * hand-picked into the fixture — it must be skipped, not thrown).
+ */
+describe("resolveEntityPageData attachedSidebars (D29-42)", () => {
+  const reader = createCorpusReader(fixtureCorpusRoot());
+
+  it("resolves a rules host's attached sidebar to its full body/citation", () => {
+    const data = resolveEntityPageData(reader, { category: "rules", slug: "tools-of-play" });
+    expect(data?.attachedSidebars).toHaveLength(1);
+    expect(data?.attachedSidebars?.[0]).toMatchObject({
+      id: "sidebar/dice",
+      name: "Dice",
+      superseded: false,
+    });
+    expect(data?.attachedSidebars?.[0]?.body.length).toBeGreaterThan(0);
+  });
+
+  it("skips an unresolvable attached-sidebar id (fail-soft, never throws) — the real class/witch@legacy shape", () => {
+    const data = resolveEntityPageData(reader, { category: "class", slug: "witch@legacy" });
+    // The real corpus's class/witch@legacy carries 2 attachedSidebars ids;
+    // only one (sidebar/in-service-to-the-unknown) has a fixture file —
+    // sidebar/key-terms-38 must be silently skipped, not thrown.
+    expect(data?.attachedSidebars).toHaveLength(1);
+    expect(data?.attachedSidebars?.[0]?.id).toBe("sidebar/in-service-to-the-unknown");
+  });
+
+  it("marks a superseded attached sidebar's own superseded flag true (the legacy-toggle hide signal)", () => {
+    const data = resolveEntityPageData(reader, { category: "class", slug: "witch@legacy" });
+    expect(data?.attachedSidebars?.[0]?.superseded).toBe(true);
+  });
+
+  it("the M8 shared-url class-feature does NOT itself carry attachedSidebars", () => {
+    const data = resolveEntityPageData(reader, {
+      category: "class-feature",
+      slug: "ability-boosts-15",
+    });
+    expect(data?.attachedSidebars).toBeUndefined();
+  });
+
+  it("a category-page/rules-host sidebar never recurses into a sidebar's OWN attachedSidebars (depth-1 guard)", () => {
+    // sidebar/dice itself is never read as a HOST in this suite — the guard
+    // is structural (resolveAttachedSidebars never inspects the resolved
+    // sidebar's own `attachedSidebars` field at all), proven simply by the
+    // fact that resolving rules/tools-of-play above terminates with exactly
+    // 1 entry, not a deeper chain.
+    const data = resolveEntityPageData(reader, { category: "sidebar", slug: "dice" });
+    expect(data?.attachedSidebars).toBeUndefined();
+  });
 });
 
 /**

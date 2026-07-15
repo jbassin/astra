@@ -294,7 +294,12 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
   });
 
   it("a root doc with an id renders as a link (the CRLF-healed GMG 'Chapter 2: Tools' root)", async () => {
-    const { html } = await get("/rules");
+    // `?legacy=true` — the fixture's GMG "Chapter 2: Tools" root is itself
+    // `superseded`, so under the default legacy-off view it's pruned
+    // entirely (S4 hermeticity find: the bare-`/rules` form of this assert
+    // only ever passed when the REAL corpus — whose GMG root is not
+    // superseded — masked the fixture-fallback path).
+    const { html } = await get("/rules?legacy=true");
     expect(html).toContain('href="/rules/chapter-2-tools"');
   });
 
@@ -450,5 +455,96 @@ describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
       expect(status).toBe(200);
       expect(html).not.toContain("data-render-error");
     }
+  });
+});
+
+/**
+ * P4 S4 (D29-42) — attached sidebars on a host entity page, over the
+ * fixture's own D29-44 shapes (`rules/tools-of-play` -> `sidebar/dice`).
+ */
+describe("attached sidebars on a host entity page (D29-42 tier 3)", () => {
+  it("a host page renders its attached sidebar as a titled aside with a standalone-page link", async () => {
+    const { status, html } = await get("/rules/tools-of-play");
+    expect(status).toBe(200);
+    expect(html).toContain("codex-attached-sidebar");
+    expect(html).toContain(">Dice<");
+    expect(html).toContain('href="/sidebar/dice"');
+    expect(html).not.toContain("data-render-error");
+  });
+
+  it("the M8 shared-url class-feature does NOT render an attached-sidebar section (only the class page owns it)", async () => {
+    const { status, html } = await get("/class-feature/ability-boosts-15");
+    expect(status).toBe(200);
+    expect(html).not.toContain("codex-attached-sidebars");
+  });
+
+  it("a category with no attached sidebars at all renders no attached-sidebars section", async () => {
+    const { html } = await get("/spell/heal");
+    expect(html).not.toContain("codex-attached-sidebars");
+  });
+
+  it("noindex meta is present on a host page with attached sidebars too", async () => {
+    const { html } = await get("/rules/tools-of-play");
+    expect(html).toContain('name="robots"');
+    expect(html).toContain('content="noindex"');
+  });
+});
+
+/**
+ * P4 S4 (D29-43) — `/sources`, over the fixture's own `sources-index.json`
+ * (regenerated with the `categoryCounts` field, S4's additive schema
+ * change — see `sourcesIndexBuild.test.ts` for the pure-function proof).
+ */
+describe("/sources aggregate book index (D29-43 tier 3)", () => {
+  it("200s and renders a group heading + a book row", async () => {
+    const { status, html } = await get("/sources");
+    expect(status).toBe(200);
+    expect(html).toContain("codex-sources-group");
+    expect(html).toContain("codex-sources-book");
+    expect(html).toContain("Core Rulebook");
+  });
+
+  it("an unknown-license Foundry-only book renders an explicit unknown pill, never a blank or guessed OGL", async () => {
+    const { html } = await get("/sources");
+    expect(html).toContain("License unknown");
+  });
+
+  it("the Other bucket renders as a collapsed <details> (no open attribute)", async () => {
+    const { html } = await get("/sources");
+    expect(html).toContain("<details");
+  });
+
+  it("a book with a sourceEntityRef links to its own entity page", async () => {
+    const { html } = await get("/sources");
+    expect(html).toContain('href="/source/core-rulebook"');
+  });
+
+  it("a per-category count links into the filtered browse listing with the book pre-selected", async () => {
+    const { html } = await get("/sources");
+    expect(html).toMatch(/href="\/rules\?book=/);
+  });
+
+  it("noindex meta is present on /sources too", async () => {
+    const { html } = await get("/sources");
+    expect(html).toContain('name="robots"');
+    expect(html).toContain('content="noindex"');
+  });
+
+  it("zero hydration/render errors", async () => {
+    const { html } = await get("/sources");
+    expect(html).not.toContain("data-render-error");
+  });
+});
+
+/**
+ * P4 S4 (D29-43) — the `/` directory keeps its `source` category row AND
+ * gains a distinct "Sources index" entry linking `/sources`.
+ */
+describe("/ directory gains the Sources index entry (D29-43 tier 3)", () => {
+  it("both the source category row and the Sources index link are present", async () => {
+    const { status, html } = await get("/");
+    expect(status).toBe(200);
+    expect(html).toContain('href="/source"'); // the existing P3 category row
+    expect(html).toContain('href="/sources"'); // the new aggregate index entry
   });
 });

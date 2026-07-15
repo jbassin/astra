@@ -9,12 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SourcesRouteImport } from './routes/sources'
 import { Route as SearchRouteImport } from './routes/search'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategoryIndexRouteImport } from './routes/$category/index'
 import { Route as CategorySlugRouteImport } from './routes/$category/$slug'
 
+const SourcesRoute = SourcesRouteImport.update({
+  id: '/sources',
+  path: '/sources',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
@@ -45,6 +51,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/rules': typeof RulesRoute
   '/search': typeof SearchRoute
+  '/sources': typeof SourcesRoute
   '/$category/$slug': typeof CategorySlugRoute
   '/$category/': typeof CategoryIndexRoute
 }
@@ -52,6 +59,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/rules': typeof RulesRoute
   '/search': typeof SearchRoute
+  '/sources': typeof SourcesRoute
   '/$category/$slug': typeof CategorySlugRoute
   '/$category': typeof CategoryIndexRoute
 }
@@ -60,28 +68,45 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/rules': typeof RulesRoute
   '/search': typeof SearchRoute
+  '/sources': typeof SourcesRoute
   '/$category/$slug': typeof CategorySlugRoute
   '/$category/': typeof CategoryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/rules' | '/search' | '/$category/$slug' | '/$category/'
+  fullPaths:
+    '/' | '/rules' | '/search' | '/sources' | '/$category/$slug' | '/$category/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/rules' | '/search' | '/$category/$slug' | '/$category'
+  to:
+    '/' | '/rules' | '/search' | '/sources' | '/$category/$slug' | '/$category'
   id:
-    '__root__' | '/' | '/rules' | '/search' | '/$category/$slug' | '/$category/'
+    | '__root__'
+    | '/'
+    | '/rules'
+    | '/search'
+    | '/sources'
+    | '/$category/$slug'
+    | '/$category/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   RulesRoute: typeof RulesRoute
   SearchRoute: typeof SearchRoute
+  SourcesRoute: typeof SourcesRoute
   CategorySlugRoute: typeof CategorySlugRoute
   CategoryIndexRoute: typeof CategoryIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sources': {
+      id: '/sources'
+      path: '/sources'
+      fullPath: '/sources'
+      preLoaderRoute: typeof SourcesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
@@ -124,6 +149,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   RulesRoute: RulesRoute,
   SearchRoute: SearchRoute,
+  SourcesRoute: SourcesRoute,
   CategorySlugRoute: CategorySlugRoute,
   CategoryIndexRoute: CategoryIndexRoute,
 }

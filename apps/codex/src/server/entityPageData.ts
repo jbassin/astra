@@ -32,6 +32,22 @@ export interface RulesTrailItem {
   id?: string;
 }
 
+/** P4 S4 (D29-42) — an attached-sidebar aside's own resolved data. Only the
+ * fields `AttachedSidebars.tsx` actually renders (title/body/citation/
+ * superseded) — NOT the sidebar's full `CodexEntity` (it carries no facets/
+ * traits/level worth threading through, and re-using `EntityPage` itself for
+ * a sidebar card would risk the recursion this feature explicitly must NOT
+ * have, D29-42's own "render depth 1 only" guard). `superseded` mirrors
+ * every other corpus surface's own `remasteredAs`-non-empty predicate
+ * (`IndexRow.superseded`/`TreeNode.superseded`'s convention). */
+export interface AttachedSidebarView {
+  id: string;
+  name: string;
+  body: CodexEntity["body"];
+  source: CodexEntity["source"];
+  superseded: boolean;
+}
+
 /** P4 S3 (D29-41) — a previous/next pager target. Synthetic nodes are never
  * targets (D29-41: "synthetic nodes ... are skipped by the pager, they have
  * no page") — `id`/`name` always describe a real doc. `superseded` mirrors
@@ -79,6 +95,16 @@ export interface EntityPageData {
    * resolved (a rules doc missing from `rules-tree.json` would be a genuine
    * corpus bug — this fails soft to "no nav" rather than 500ing the page). */
   rulesNav?: RulesNavData;
+  /** P4 S4 (D29-42) — the host entity's own `attachedSidebars` ids, resolved
+   * to full sidebar bodies in THIS same server-side pass (one serverFn, no
+   * second round-trip, mirroring `resolveRulesNav`'s own text) — set on ANY
+   * category (attached sidebars render everywhere, not just rules).
+   * Fail-soft per id (an unresolvable target — e.g. the real corpus's own
+   * `sidebar/key-terms-38` gap on a fixture pick — is skipped with a
+   * console.warn, never a 500); absent entirely (never an empty array) when
+   * the entity has no `attachedSidebars` field OR every id failed to
+   * resolve. */
+  attachedSidebars?: AttachedSidebarView[];
 }
 
 /** Every depth-0 embed target reachable from an entity's own body/loreBody/
@@ -241,5 +267,54 @@ export function resolveEntityPageData(
     }
   }
 
-  return { entity, embeds, knownTraitIds, embedCapHit, ...(rulesNav ? { rulesNav } : {}) };
+  const attachedSidebars = resolveAttachedSidebars(reader, entity);
+
+  return {
+    entity,
+    embeds,
+    knownTraitIds,
+    embedCapHit,
+    ...(rulesNav ? { rulesNav } : {}),
+    ...(attachedSidebars ? { attachedSidebars } : {}),
+  };
+}
+
+/**
+ * P4 S4 (D29-42) — resolves `entity.attachedSidebars` (a list of `CodexId`s,
+ * S1's `sidebarAttach.ts` reverse-join) to their full `AttachedSidebarView`s.
+ * Depth 1 ONLY, by construction: this reads each sidebar's own entity file
+ * once and never looks at ITS `attachedSidebars` field (a sidebar hosting
+ * further sidebars isn't a real corpus shape, 0/689 measured, D29-42's own
+ * "not a thing in the data" — but the guard is structural here regardless,
+ * not a runtime check, so it can't silently regress). Measured max 7
+ * sidebars/host — a plain loop of `reader.entity()` calls needs no
+ * `EMBED_INLINE_CAP`-style cap.
+ */
+function resolveAttachedSidebars(
+  reader: CorpusReader,
+  entity: CodexEntity,
+): AttachedSidebarView[] | undefined {
+  if (entity.attachedSidebars === undefined || entity.attachedSidebars.length === 0) {
+    return undefined;
+  }
+  const resolved: AttachedSidebarView[] = [];
+  for (const sidebarId of entity.attachedSidebars) {
+    const split = splitCodexId(sidebarId);
+    if (!split) continue; // malformed id — same fail-soft posture as an embed target
+    try {
+      const sidebar = reader.entity(split.category, split.slug);
+      resolved.push({
+        id: sidebar.id,
+        name: sidebar.name,
+        body: sidebar.body,
+        source: sidebar.source,
+        superseded: (sidebar.remasteredAs?.length ?? 0) > 0,
+      });
+    } catch (err) {
+      console.warn(
+        `[codex] attached sidebar "${sidebarId}" on ${entity.id} failed to resolve: ${String(err)}`,
+      );
+    }
+  }
+  return resolved.length > 0 ? resolved : undefined;
 }

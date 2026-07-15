@@ -22,6 +22,7 @@ import { loadConfig } from "@astra/config";
 
 import type { CodexEntity, IndexRow } from "../schema/entity";
 import { parseRulesTreeFile, type RulesTreeFile } from "../schema/rulesTree";
+import { parseSourcesIndexFile, type SourcesIndexFile } from "../schema/sourcesIndex";
 
 /** Thrown for both a genuinely-unknown category/slug AND a rejected (malformed /
  * traversal-attempting) one — the traversal guard IS the auth story for the
@@ -68,6 +69,12 @@ export interface CorpusReader {
    * `treeModel.ts`). Throws `CorpusNotFoundError` for a missing/unreadable/
    * schema-invalid file. */
   rulesTree(): RulesTreeFile;
+  /** P4 S4 (D29-43) — `sources-index.json`, a SIBLING of `manifest.json` (the
+   * exact same "one small artifact, cached + Zod-validated once per process"
+   * posture as `rulesTree()` above — see that method's own doc comment for
+   * why per-request Zod is skipped for `entity()` but not here). Throws
+   * `CorpusNotFoundError` for a missing/unreadable/schema-invalid file. */
+  sourcesIndex(): SourcesIndexFile;
 }
 
 /** Resolve `name` under `root`, refusing anything that would escape it (the
@@ -107,6 +114,7 @@ export function createCorpusReader(rootDir: string): CorpusReader {
   let categoryCountsCache: Readonly<Record<string, number>> | undefined;
   const indexCache = new Map<string, readonly IndexRow[]>();
   let rulesTreeCache: RulesTreeFile | undefined;
+  let sourcesIndexCache: SourcesIndexFile | undefined;
 
   function readManifest(): CorpusManifestShape {
     const manifestPath = within(rootDir, "manifest.json");
@@ -188,6 +196,23 @@ export function createCorpusReader(rootDir: string): CorpusReader {
         throw new CorpusNotFoundError(`malformed rules-tree.json: ${String(err)}`);
       }
       return rulesTreeCache;
+    },
+
+    sourcesIndex(): SourcesIndexFile {
+      if (sourcesIndexCache) return sourcesIndexCache;
+      const path = within(rootDir, "sources-index.json");
+      let raw: unknown;
+      try {
+        raw = JSON.parse(readFileSync(path, "utf8"));
+      } catch (err) {
+        throw new CorpusNotFoundError(`unreadable sources-index.json: ${String(err)}`);
+      }
+      try {
+        sourcesIndexCache = parseSourcesIndexFile(raw);
+      } catch (err) {
+        throw new CorpusNotFoundError(`malformed sources-index.json: ${String(err)}`);
+      }
+      return sourcesIndexCache;
     },
   };
 }

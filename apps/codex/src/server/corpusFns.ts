@@ -15,6 +15,7 @@ import { type CategoryDirectoryData, resolveCategoryDirectory } from "./director
 import { type EntityPageData, resolveEntityPageData } from "./entityPageData";
 import { type CategoryListingData, resolveCategoryListing } from "./listingData";
 import { resolveRulesTree, type RulesTreeData } from "./rulesTreeData";
+import { resolveSourcesIndex, type SourcesIndexData } from "./sourcesIndexData";
 
 /**
  * The one entity-page server fn the route loader calls. `null` (an unknown
@@ -45,4 +46,11 @@ export const getCategoryListing = createServerFn({ method: "GET" })
  * "this page doesn't exist" 404. */
 export const getRulesTree = createServerFn({ method: "GET" }).handler(
   (): RulesTreeData => resolveRulesTree(getCorpusReader()),
+);
+
+/** P4 S4 (D29-43) — the `/sources` aggregate index's loader. No `null` case,
+ * same reasoning as `getRulesTree` above (the artifact is always present in
+ * a valid corpus, real or fixture). */
+export const getSourcesIndex = createServerFn({ method: "GET" }).handler(
+  (): SourcesIndexData => resolveSourcesIndex(getCorpusReader()),
 );

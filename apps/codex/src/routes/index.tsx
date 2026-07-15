@@ -32,6 +32,12 @@ function IndexComponent() {
         <a href="/creature/red-dragon-adult">/creature/red-dragon-adult</a> or{" "}
         <a href="/spell/heal">/spell/heal</a>.
       </p>
+      {/* P4 S4 (D29-43): a distinct entry beside the category groups (not
+          inside them — the `source` category row below stays untouched,
+          this links the SEPARATE `/sources` aggregate book index). */}
+      <nav className="codex-directory-extra">
+        <a href="/sources">Sources index →</a>
+      </nav>
       <CategoryDirectory data={data} />
     </main>
   );

@@ -19,6 +19,19 @@ import { CodexId, EditionSchema, LicenseSchema } from "./entity";
  * pill never a guessed OGL). `sourceEntityRef` links to the book's own
  * `source/{slug}` entity page when one exists (245 of the ~C normalized
  * books) — absent for sourceless books (renders without the link, D29-43).
+ *
+ * `categoryCounts` (P4 S4, D29-43's "per-category count links into filtered
+ * browse" deliverable): the SAME `entityCount` total, broken down per
+ * `CodexEntity.category` — `{category: count}`, every key's value ≥ 1 (a
+ * category with zero of this book's entities is simply omitted, never a
+ * `0`-valued key, matching every other "absent, never a defaulted empty"
+ * corpus convention). Additive over the S1-shipped shape — every book has
+ * ≥1 entity (`entityCountByBook`'s own keys, `sourcesIndexBuild.ts`), so
+ * this is never an empty object; kept REQUIRED (not optional) since it's
+ * cheap to compute and never legitimately absent. Feeds each book row's
+ * `/{category}?book=<this book>` link with a real per-category count
+ * instead of `entityCount` (which would over-count for a book spanning
+ * multiple categories).
  */
 
 export const SourceIndexEntrySchema = z
@@ -28,6 +41,7 @@ export const SourceIndexEntrySchema = z
     license: LicenseSchema,
     edition: EditionSchema,
     entityCount: z.number().int().nonnegative(),
+    categoryCounts: z.record(z.string(), z.number().int().positive()),
     sourceEntityRef: CodexId.optional(),
   })
   .strict();
