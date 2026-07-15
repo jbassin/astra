@@ -4,6 +4,8 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
+
 /**
  * SSR render smoke + D29-29 tier 3 route tests, in ONE file sharing ONE
  * `beforeAll` build. (Deliberately not split across two test files: vitest runs
@@ -537,14 +539,81 @@ describe("/sources aggregate book index (D29-43 tier 3)", () => {
 });
 
 /**
- * P4 S4 (D29-43) — the `/` directory keeps its `source` category row AND
- * gains a distinct "Sources index" entry linking `/sources`.
+ * P4 S4 (D29-43) — the `/categories` directory (moved off `/` at P4.5 S2,
+ * D29-47) keeps its `source` category row AND its distinct "Sources index"
+ * entry linking `/sources`.
  */
-describe("/ directory gains the Sources index entry (D29-43 tier 3)", () => {
+describe("/categories directory gains the Sources index entry (D29-43 tier 3)", () => {
   it("both the source category row and the Sources index link are present", async () => {
-    const { status, html } = await get("/");
+    const { status, html } = await get("/categories");
     expect(status).toBe(200);
     expect(html).toContain('href="/source"'); // the existing P3 category row
     expect(html).toContain('href="/sources"'); // the new aggregate index entry
+  });
+
+  it("lists every one of the 88 real corpus categories (D29-47 B)", async () => {
+    const { html } = await get("/categories");
+    const reader = createCorpusReader(fixtureCorpusRoot());
+    const categories = reader.categories();
+    expect(categories.length).toBe(88);
+    for (const category of categories) {
+      expect(html, `/categories is missing href="/${category}"`).toContain(`href="/${category}"`);
+    }
+  });
+});
+
+/**
+ * P4.5 S2 (D29-47) — the R4 landing page: hero brand, the distinct hero
+ * search box, the 8 tiles, and the "browse all categories" link. The old
+ * P2 throwaway "every entity lives at `/{category}/{slug}`" blurb is gone.
+ */
+describe("/ the R4 landing page (D29-47 tier 3)", () => {
+  it("renders the hero search box and NOT the header Omnibar's own input twice", async () => {
+    const { status, html } = await get("/");
+    expect(status).toBe(200);
+    expect(html).toContain("codex-hero-search");
+    // Exactly one `codex-omnibar-input` (the header's) and one distinct hero
+    // input — never two omnibar-classed inputs (adversarial M3).
+    expect(html.split('class="codex-omnibar-input"').length - 1).toBe(1);
+    expect(html).toContain("codex-hero-search-input");
+  });
+
+  it("renders all 8 R4 tiles, linking the right categories", async () => {
+    const { html } = await get("/");
+    for (const href of [
+      "/creature",
+      "/spell",
+      "/feat",
+      "/equipment",
+      "/class",
+      "/ancestry",
+      "/rules",
+      "/sources",
+    ]) {
+      expect(html, `landing tile missing href="${href}"`).toContain(`href="${href}"`);
+    }
+  });
+
+  it("links to the demoted /categories directory, not the old throwaway blurb", async () => {
+    const { html } = await get("/");
+    expect(html).toContain('href="/categories"');
+    expect(html).not.toContain("Every entity lives at");
+  });
+
+  it("the header nav renders on the landing page: every one of the 88 nav categories resolves to a real anchor (no-JS reachability, D29-47 B)", async () => {
+    const { html } = await get("/");
+    expect(html).toContain("codex-header-nav");
+    const reader = createCorpusReader(fixtureCorpusRoot());
+    for (const category of reader.categories()) {
+      expect(html, `nav is missing href="/${category}"`).toContain(`href="/${category}"`);
+    }
+    // the Rules split control's own link + the Sources direct link.
+    expect(html).toContain('href="/rules"');
+    expect(html).toContain('href="/sources"');
+  });
+
+  it("zero hydration/render errors on the landing page", async () => {
+    const { html } = await get("/");
+    expect(html).not.toContain("data-render-error");
   });
 });

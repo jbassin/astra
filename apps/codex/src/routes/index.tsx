@@ -1,44 +1,55 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { CategoryDirectory } from "@/domain/render/listing";
-import { getCategoryDirectory } from "@/server/corpusFns";
+import { HeroSearch } from "@/domain/search/HeroSearch";
 
 /**
- * D29-27 — the `/` category directory: every category + its corpus count,
- * grouped by `categoryGroupOf` (S1's own render-group taxonomy). Explicitly
- * THROWAWAY (spec: "no facet UI, no pagination, no sort options") — P3's
- * faceted browse replaces this page entirely; it exists only so every category
- * (and therefore every entity) is reachable by click at the P2 exit gate.
+ * P4.5 S2 (D29-47, feedback #3/R4) — the real landing page: the eight big
+ * tiles + a front-and-center search box. Replaces the P2 throwaway category
+ * directory that used to live at `/` (moved verbatim to `/categories`,
+ * `categories.tsx` — the "browse all categories" link below points there).
+ * No loader — this page reads nothing off the corpus itself, unlike the old
+ * directory it replaced.
  */
 export const Route = createFileRoute("/")({
-  loader: () => getCategoryDirectory(),
   head: () => ({
-    meta: [{ title: "codex — category directory" }],
+    meta: [{ title: "codex — a Pathfinder 2e reference" }],
   }),
   component: IndexComponent,
 });
 
+/** The 8 R4 tiles, in the spec's own §2 D29-47 order — each a big linked
+ * card in the parchment voice, not a facet UI. */
+const LANDING_TILES: readonly { label: string; href: string }[] = [
+  { label: "Creatures", href: "/creature" },
+  { label: "Spells", href: "/spell" },
+  { label: "Feats", href: "/feat" },
+  { label: "Equipment & Items", href: "/equipment" },
+  { label: "Classes", href: "/class" },
+  { label: "Ancestries & Backgrounds", href: "/ancestry" },
+  { label: "Rules", href: "/rules" },
+  { label: "Sources", href: "/sources" },
+];
+
 function IndexComponent() {
-  const data = Route.useLoaderData();
   return (
-    <main className="wrap">
-      <h1 className="hero-title">codex</h1>
-      <p className="hero-lede">
-        A Pathfinder Second Edition rules &amp; compendium reference. Every entity lives at{" "}
-        <code>
-          /{"{category}"}/{"{slug}"}
-        </code>{" "}
-        — pick a category below, or jump straight to{" "}
-        <a href="/creature/red-dragon-adult">/creature/red-dragon-adult</a> or{" "}
-        <a href="/spell/heal">/spell/heal</a>.
+    <main className="wrap codex-landing">
+      <h1 className="hero-title codex-landing-brand">codex</h1>
+      <p className="hero-lede codex-landing-lede">
+        A Pathfinder Second Edition rules &amp; compendium reference.
       </p>
-      {/* P4 S4 (D29-43): a distinct entry beside the category groups (not
-          inside them — the `source` category row below stays untouched,
-          this links the SEPARATE `/sources` aggregate book index). */}
-      <nav className="codex-directory-extra">
-        <a href="/sources">Sources index →</a>
-      </nav>
-      <CategoryDirectory data={data} />
+      <HeroSearch />
+      <ul className="codex-landing-tiles">
+        {LANDING_TILES.map((tile) => (
+          <li key={tile.href}>
+            <a href={tile.href} className="codex-landing-tile">
+              {tile.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+      <p className="codex-landing-browse-all">
+        <a href="/categories">Browse all categories &rarr;</a>
+      </p>
     </main>
   );
 }

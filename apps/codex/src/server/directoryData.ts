@@ -1,4 +1,6 @@
-// S3 (D29-27) — the root `/` category directory's pure core. Mirrors
+// S3 (D29-27) — the category directory's pure core, served at the demoted
+// `/categories` route since P4.5 S2 (D29-47 — `/` itself is now the R4
+// landing page). Mirrors
 // `entityPageData.ts`'s split: a plain function over an injected `CorpusReader`,
 // directly unit-testable against the fixture corpus with zero
 // createServerFn/Start-runtime machinery, called from `corpusFns.ts`'s thin

@@ -3,6 +3,7 @@ import { createRootRoute, HeadContent, Link, Outlet, Scripts } from "@tanstack/r
 import { useEffect } from "react";
 
 import { setLegacyToggle, useLegacyToggle } from "@/domain/browse/legacyToggle";
+import { HeaderNav } from "@/domain/nav/HeaderNav";
 import { Omnibar } from "@/domain/search/Omnibar";
 
 // D29-46 — codex's own self-hosted parchment-system fonts (mirrors the prior
@@ -60,7 +61,11 @@ function RootComponent() {
           <Link to="/" className="site-brand">
             codex
           </Link>
-          <span className="site-tagline">a Pathfinder 2e reference</span>
+          {/* D29-47 — the global category nav (6 dropdowns + the Rules split
+              control + Sources), replacing the old brand+tagline header.
+              Spans all 88 real corpus categories, `navData.ts` owns the
+              grouping. */}
+          <HeaderNav />
           {/* D29-36 — the header search omnibar, present on every page. */}
           <Omnibar />
           <LegacyToggleControl />

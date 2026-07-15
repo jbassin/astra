@@ -27,7 +27,8 @@ export const getEntityPage = createServerFn({ method: "GET" })
   .validator((input: { category: string; slug: string }) => input)
   .handler(({ data }): EntityPageData | null => resolveEntityPageData(getCorpusReader(), data));
 
-/** S3 (D29-27) — the `/` category directory. */
+/** S3 (D29-27) — the category directory, served at `/categories` since
+ * P4.5 S2 (D29-47). */
 export const getCategoryDirectory = createServerFn({ method: "GET" }).handler(
   (): CategoryDirectoryData => resolveCategoryDirectory(getCorpusReader()),
 );

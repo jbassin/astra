@@ -223,17 +223,105 @@ select:focus-visible,
   color: var(--color-gold-rule);
   text-decoration: none;
 }
-.site-tagline {
-  color: var(--color-ink-dim);
-  font-size: 0.85rem;
-  letter-spacing: 0.04em;
+/* --- P4.5 S2 (D29-47): the global header nav — 6 category dropdowns + the
+   Rules split control + the bare Sources link. Every dropdown panel is
+   ALWAYS rendered (never conditionally mounted) — `:hover` is the no-JS
+   reveal, `.codex-nav-panel-open` is the click/keyboard-driven one JS adds;
+   a JS-disabled client still reaches every category link because the
+   anchors are real and already in the DOM. --- */
+.codex-header-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  flex-wrap: wrap;
 }
+.codex-nav-item {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+}
+.codex-nav-trigger,
+.codex-nav-link,
+.codex-nav-plain-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4rem 0.55rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.codex-nav-trigger:hover,
+.codex-nav-link:hover,
+.codex-nav-plain-link:hover {
+  color: var(--color-heading-maroon);
+  text-decoration: none;
+}
+.codex-nav-item-split {
+  gap: 0;
+}
+.codex-nav-link {
+  padding-right: 0.1rem;
+}
+.codex-nav-caret {
+  padding-left: 0.15rem;
+  padding-right: 0.4rem;
+  font-size: 0.65rem;
+}
+.codex-nav-panel {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 30;
+  min-width: 13rem;
+  max-height: 24rem;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0.4rem 0;
+  background-color: var(--color-elevated);
+  border: 1px solid var(--color-gold-rule);
+  border-radius: 0.2rem;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+}
+.codex-nav-item:hover .codex-nav-panel,
+.codex-nav-panel-open {
+  display: block;
+}
+.codex-nav-panel li a {
+  display: block;
+  padding: 0.3rem 0.9rem;
+  font-family: var(--font-body), serif;
+  font-size: 0.85rem;
+  color: var(--color-ink);
+}
+.codex-nav-panel li a:hover,
+.codex-nav-panel li a:focus-visible {
+  background-color: var(--color-hover);
+  text-decoration: none;
+}
+@media (max-width: 64rem) {
+  .codex-header-nav {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
 .site-foot {
   margin-top: auto;
   padding: 1.5rem clamp(1rem, 4vw, 3rem);
-  border-top: 1px solid var(--color-rule);
-  color: var(--color-ink-faint);
-  font-size: 0.8rem;
+  border-top: 1px solid var(--color-gold-rule);
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-align: center;
 }
 
 /* --- page wrap + the placeholder index hero --- */
@@ -258,6 +346,87 @@ select:focus-visible,
 .hero-lede code {
   font-family: var(--font-condensed), sans-serif;
   font-size: 0.9em;
+}
+
+/* --- P4.5 S2 (D29-47): the R4 landing page — hero brand + the distinct
+   hero search box + the 8 tiles + the quieter "browse all" link. --- */
+.codex-landing {
+  text-align: center;
+  max-width: 60rem;
+}
+.codex-landing-brand {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+}
+.codex-landing-lede {
+  margin-left: auto;
+  margin-right: auto;
+}
+.codex-hero-search {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 2rem auto;
+  max-width: 34rem;
+}
+.codex-hero-search-input {
+  flex: 1;
+  background-color: var(--color-void);
+  color: var(--color-ink);
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 1px;
+  padding: 0.7rem 1rem;
+  font-family: var(--font-body), serif;
+  font-size: 1.05rem;
+}
+.codex-hero-search-input:focus {
+  outline: none;
+  border-color: var(--color-accent);
+}
+.codex-hero-search-button {
+  background-color: var(--color-accent);
+  color: var(--pill-text);
+  border: 1px solid var(--color-accent);
+  border-radius: 1px;
+  padding: 0.7rem 1.25rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.codex-hero-search-button:hover {
+  background-color: var(--color-heading-maroon-dark);
+}
+.codex-landing-tiles {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  gap: 1rem;
+  margin: 2.5rem 0;
+  text-align: left;
+}
+.codex-landing-tile {
+  display: block;
+  padding: 1.25rem 1.5rem;
+  border: 1px solid var(--color-rule-bright);
+  border-top: 3px solid var(--color-heading-maroon);
+  border-radius: 2px;
+  background-color: var(--color-elevated);
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: border-color 120ms ease-out;
+}
+.codex-landing-tile:hover {
+  border-color: var(--color-gold-frame);
+  text-decoration: none;
+  color: var(--color-gold-rule);
+}
+.codex-landing-browse-all {
+  color: var(--color-ink-faint);
+  font-size: 0.9rem;
 }
 
 /* --- router boundaries (from router.tsx) --- */
