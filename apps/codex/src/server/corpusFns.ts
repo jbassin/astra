@@ -14,6 +14,7 @@ import { getCorpusReader } from "./corpusFs";
 import { type CategoryDirectoryData, resolveCategoryDirectory } from "./directoryData";
 import { type EntityPageData, resolveEntityPageData } from "./entityPageData";
 import { type CategoryListingData, resolveCategoryListing } from "./listingData";
+import { resolveRulesTree, type RulesTreeData } from "./rulesTreeData";
 
 /**
  * The one entity-page server fn the route loader calls. `null` (an unknown
@@ -37,3 +38,11 @@ export const getCategoryListing = createServerFn({ method: "GET" })
   .handler(({ data }): CategoryListingData | null =>
     resolveCategoryListing(getCorpusReader(), data.category),
   );
+
+/** P4 S2 (D29-40) — the `/rules` tree browser's loader. No `null` case (the
+ * artifact is always present in a valid corpus, real or fixture) — a
+ * missing/malformed `rules-tree.json` is a genuine server error, not a
+ * "this page doesn't exist" 404. */
+export const getRulesTree = createServerFn({ method: "GET" }).handler(
+  (): RulesTreeData => resolveRulesTree(getCorpusReader()),
+);

@@ -679,6 +679,99 @@ a:hover {
   background-color: var(--color-hover);
 }
 
+/* --- P4 S2 (D29-40): the `/rules` tree browser --- */
+.codex-rules-tree {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+.codex-rules-books {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.codex-rules-book {
+  /* D29-35's `content-visibility: auto` idiom, per-book instead of
+     per-letter — a book section (up to ~600 nodes, Gamemastery Guide) is
+     skipped from layout/paint while off-screen, no virtualization dep. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 400px;
+}
+.codex-rules-book-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.6rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: 0.5rem;
+}
+.codex-rules-book-header .codex-heading {
+  margin: 0;
+  font-size: 1.1rem;
+  flex: 1 0 auto;
+}
+.codex-rules-hidden-note {
+  color: var(--color-ink-faint);
+  font-size: 0.78rem;
+  font-style: italic;
+}
+.codex-license-unknown {
+  color: var(--color-ink-faint);
+  border-style: dashed;
+  font-style: italic;
+}
+.codex-rules-tree-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+.codex-rules-tree-children {
+  margin-left: 1.35rem;
+  margin-top: 0.1rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--color-rule);
+}
+.codex-rules-node-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.15rem 0;
+}
+.codex-rules-toggle {
+  width: 1.1rem;
+  flex: none;
+  background: transparent;
+  border: none;
+  color: var(--color-ink-faint);
+  cursor: pointer;
+  font-size: 0.75rem;
+  text-align: center;
+}
+.codex-rules-toggle:hover {
+  color: var(--color-ink);
+}
+.codex-rules-toggle-spacer {
+  width: 1.1rem;
+  flex: none;
+}
+.codex-rules-node-name {
+  font-size: 0.92rem;
+}
+.codex-rules-node-synthetic {
+  color: var(--color-ink-dim);
+  font-style: italic;
+}
+.codex-rules-node-current > .codex-rules-node-name {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.codex-rules-node-match > .codex-rules-node-name {
+  color: var(--color-accent-amber);
+}
+
 /* --- Popover hover-preview card (D29-28, ported from akasha-frontend) --- */
 .popover {
   position: fixed;

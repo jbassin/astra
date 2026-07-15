@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as RulesRouteImport } from './routes/rules'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CategoryIndexRouteImport } from './routes/$category/index'
 import { Route as CategorySlugRouteImport } from './routes/$category/$slug'
@@ -17,6 +18,11 @@ import { Route as CategorySlugRouteImport } from './routes/$category/$slug'
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RulesRoute = RulesRouteImport.update({
+  id: '/rules',
+  path: '/rules',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/rules': typeof RulesRoute
   '/search': typeof SearchRoute
   '/$category/$slug': typeof CategorySlugRoute
   '/$category/': typeof CategoryIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/rules': typeof RulesRoute
   '/search': typeof SearchRoute
   '/$category/$slug': typeof CategorySlugRoute
   '/$category': typeof CategoryIndexRoute
@@ -50,20 +58,23 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/rules': typeof RulesRoute
   '/search': typeof SearchRoute
   '/$category/$slug': typeof CategorySlugRoute
   '/$category/': typeof CategoryIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/search' | '/$category/$slug' | '/$category/'
+  fullPaths: '/' | '/rules' | '/search' | '/$category/$slug' | '/$category/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/search' | '/$category/$slug' | '/$category'
-  id: '__root__' | '/' | '/search' | '/$category/$slug' | '/$category/'
+  to: '/' | '/rules' | '/search' | '/$category/$slug' | '/$category'
+  id:
+    '__root__' | '/' | '/rules' | '/search' | '/$category/$slug' | '/$category/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RulesRoute: typeof RulesRoute
   SearchRoute: typeof SearchRoute
   CategorySlugRoute: typeof CategorySlugRoute
   CategoryIndexRoute: typeof CategoryIndexRoute
@@ -76,6 +87,13 @@ declare module '@tanstack/react-router' {
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rules': {
+      id: '/rules'
+      path: '/rules'
+      fullPath: '/rules'
+      preLoaderRoute: typeof RulesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -104,6 +122,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RulesRoute: RulesRoute,
   SearchRoute: SearchRoute,
   CategorySlugRoute: CategorySlugRoute,
   CategoryIndexRoute: CategoryIndexRoute,

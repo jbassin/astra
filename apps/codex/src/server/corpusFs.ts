@@ -21,6 +21,7 @@ import { dirname, join, resolve, sep } from "node:path";
 import { loadConfig } from "@astra/config";
 
 import type { CodexEntity, IndexRow } from "../schema/entity";
+import { parseRulesTreeFile, type RulesTreeFile } from "../schema/rulesTree";
 
 /** Thrown for both a genuinely-unknown category/slug AND a rejected (malformed /
  * traversal-attempting) one — the traversal guard IS the auth story for the
@@ -57,6 +58,16 @@ export interface CorpusReader {
    * `CorpusNotFoundError` for an unknown category, a malformed/
    * traversal-attempting slug, a missing file, or a file that isn't JSON. */
   entity(category: string, slug: string): CodexEntity;
+  /** P4 (D29-39/40) — `rules-tree.json`, a SIBLING of `manifest.json` (not
+   * per-category, unlike `index()`). Cached forever after first read, AND
+   * Zod-validated at that first read — unlike `entity()`'s explicit
+   * "no per-request Zod" (a per-request cost argument that doesn't apply
+   * here: this is ONE small artifact parsed ONCE per process, not N reads
+   * per request, so validating it catches a genuinely stale/malformed
+   * artifact before it reaches tree-walk code instead of a 500 deep inside
+   * `treeModel.ts`). Throws `CorpusNotFoundError` for a missing/unreadable/
+   * schema-invalid file. */
+  rulesTree(): RulesTreeFile;
 }
 
 /** Resolve `name` under `root`, refusing anything that would escape it (the
@@ -95,6 +106,7 @@ export function createCorpusReader(rootDir: string): CorpusReader {
   let categoriesCache: readonly string[] | undefined;
   let categoryCountsCache: Readonly<Record<string, number>> | undefined;
   const indexCache = new Map<string, readonly IndexRow[]>();
+  let rulesTreeCache: RulesTreeFile | undefined;
 
   function readManifest(): CorpusManifestShape {
     const manifestPath = within(rootDir, "manifest.json");
@@ -159,6 +171,23 @@ export function createCorpusReader(rootDir: string): CorpusReader {
         // is emit-validated, so this only fires on disk-level damage.
         throw new CorpusNotFoundError(`unreadable entity ${category}/${slug}: ${String(err)}`);
       }
+    },
+
+    rulesTree(): RulesTreeFile {
+      if (rulesTreeCache) return rulesTreeCache;
+      const treePath = within(rootDir, "rules-tree.json");
+      let raw: unknown;
+      try {
+        raw = JSON.parse(readFileSync(treePath, "utf8"));
+      } catch (err) {
+        throw new CorpusNotFoundError(`unreadable rules-tree.json: ${String(err)}`);
+      }
+      try {
+        rulesTreeCache = parseRulesTreeFile(raw);
+      } catch (err) {
+        throw new CorpusNotFoundError(`malformed rules-tree.json: ${String(err)}`);
+      }
+      return rulesTreeCache;
     },
   };
 }

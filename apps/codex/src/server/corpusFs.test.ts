@@ -111,6 +111,38 @@ describe("createCorpusReader (D29-23)", () => {
   it("index(): throws CorpusNotFoundError for an unknown category", () => {
     expect(() => reader.index("not-a-real-category")).toThrow(CorpusNotFoundError);
   });
+
+  // P4 S2 (D29-40): `rules-tree.json` is a SIBLING of `manifest.json`, not
+  // per-category — its own describe block below, mirroring `index()`'s own
+  // case shape (cached, real content, unknown-artifact failure mode).
+  it("rulesTree(): the fixture artifact, real book content", () => {
+    const tree = reader.rulesTree();
+    expect(tree.books.length).toBeGreaterThan(0);
+    expect(tree.books.some((b) => b.book === "Gamemastery Guide")).toBe(true);
+  });
+
+  it("rulesTree() is cached (same object identity across calls)", () => {
+    expect(reader.rulesTree()).toBe(reader.rulesTree());
+  });
+
+  it("rulesTree(): every book validates against RulesTreeBookSchema shape (edition/license/hiddenWhenLegacyOff present)", () => {
+    for (const book of reader.rulesTree().books) {
+      expect(["remaster", "legacy"]).toContain(book.edition);
+      expect(["ORC", "OGL", "unknown"]).toContain(book.license);
+      expect(typeof book.hiddenWhenLegacyOff).toBe("number");
+    }
+  });
+});
+
+describe("createCorpusReader.rulesTree() failure modes (D29-23 idiom)", () => {
+  it("throws CorpusNotFoundError when rules-tree.json is missing from the root", () => {
+    // A root with a manifest.json but no rules-tree.json (any real corpus
+    // category dir works as a stand-in "root" that lacks the artifact —
+    // exercises the same `within()`-guarded read path `entity()`'s own
+    // failure-mode tests use).
+    const reader = createCorpusReader(`${fixtureCorpusRoot()}/spell`);
+    expect(() => reader.rulesTree()).toThrow(CorpusNotFoundError);
+  });
 });
 
 describe("resolveCorpusRoot (D29-23 fail-soft)", () => {

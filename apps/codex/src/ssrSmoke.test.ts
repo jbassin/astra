@@ -262,3 +262,81 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
     expect(html).toContain('content="noindex"');
   });
 });
+
+/**
+ * P4 S2 (D29-40) — the `/rules` tree browser, over the fixture corpus's own
+ * `rules-tree.json` (S1's D29-44 composition: the CRLF-healed GMG
+ * "Chapter 2: Tools" root, the Counteracting path-shift pair, a
+ * breadcrumb-less synthetic root). A static route smoke, same posture as
+ * the `$category/` suite above — the FULL real-corpus interaction gates
+ * (INTERIOR-level ordering, click-to-expand, latency) are proven separately
+ * against the live 46,192-entity corpus (see the session report); this
+ * proves the route itself: static-route precedence over `$category`, the
+ * loader wiring, and root-level SSR content (roots always render — only
+ * their CHILDREN default-collapse, so a deep node's link isn't asserted
+ * here without a real click).
+ */
+describe("/rules tree browser (D29-40 tier 3)", () => {
+  it("200s and out-ranks the $category/ route for the literal 'rules' category", async () => {
+    const { status, html } = await get("/rules");
+    expect(status).toBe(200);
+    // the tree browser's own shell, not `codex-listing-controls`' sort/filter
+    // bar ($category/'s own markup) — proves the STATIC route matched, not
+    // $category with category="rules".
+    expect(html).toContain("codex-rules-tree");
+  });
+
+  it("every fixture book name renders", async () => {
+    const { html } = await get("/rules");
+    for (const book of ["Player Core", "Core Rulebook", "Gamemastery Guide", "Treasure Vault"]) {
+      expect(html).toContain(book);
+    }
+  });
+
+  it("a root doc with an id renders as a link (the CRLF-healed GMG 'Chapter 2: Tools' root)", async () => {
+    const { html } = await get("/rules");
+    expect(html).toContain('href="/rules/chapter-2-tools"');
+  });
+
+  // The next two assertions are written to hold whether this process
+  // resolved the FIXTURE corpus (CI, a fresh clone — D29-23) or a REAL
+  // corpus checked out at `apps/codex/data` (this dev environment,
+  // `corpusFs.test.ts`'s own "either root is a valid outcome" precedent):
+  // the FIXTURE's own synthetic/all-hidden shapes differ in specifics from
+  // the real corpus's (fixture: Player Core's breadcrumb-less "Chapter 1:
+  // Introduction"/Core Rulebook's 1-doc all-superseded chain; real corpus:
+  // Player Core 2's "Chapter 3: Classes"/Dark Archive 29-29 + Guns & Gears
+  // 65-65) — so these assert the STRUCTURAL pattern (a synthetic node's CSS
+  // class; the "all N hidden" wording for SOME N), not a specific book/name,
+  // matching the `$category/` suite's own cross-environment discipline.
+  it("a synthetic (no-id) node renders as plain text, never a link (structural — corpus-agnostic)", async () => {
+    const { html } = await get("/rules");
+    expect(html).toContain("codex-rules-node-synthetic");
+  });
+
+  it("legacy off (default): at least one fully-superseded book renders as an 'all N hidden' collapsed header, never silently dropped", async () => {
+    const { html } = await get("/rules");
+    expect(html).toMatch(/all \d+ hidden/);
+  });
+
+  it("legacy=1 (canonicalized to legacy=true) reveals the Core Rulebook section as a normal (non-collapsed) tree, no hidden notes at all", async () => {
+    const on = await get("/rules?legacy=true");
+    expect(on.status).toBe(200);
+    expect(on.html).toContain("Chapter 9: Playing the Game");
+    expect(on.html).not.toMatch(/all \d+ hidden/);
+    expect(on.html).not.toContain("codex-rules-hidden-note");
+  });
+
+  it("noindex meta is present on the tree browser's SSR HTML too", async () => {
+    const { html } = await get("/rules");
+    expect(html).toContain('name="robots"');
+    expect(html).toContain('content="noindex"');
+  });
+
+  it("/rules/{slug} still falls through to the $category/$slug route (static /rules doesn't shadow it)", async () => {
+    const { status, html } = await get("/rules/tools-of-play");
+    expect(status).toBe(200);
+    expect(html).toContain("Tools of Play");
+    expect(html).not.toContain("codex-rules-tree");
+  });
+});
