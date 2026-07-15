@@ -176,6 +176,52 @@ Continuing the ledger from P5's D29-58:
   browse view (which will now show ~58 current rituals, not 2) all fall out of this move with no
   separate code change (they're computed from `category`/`remasteredAs` at read time, not stored
   redundantly).
+  **IMPLEMENTATION-TIME CORRECTION (P6 Track A, 2026-07-15, against the real committed
+  2026-07-13/pf2e-8.3.0 snapshots — the ABOVE "55 movers / spell 2,549 / ritual 113" figures are
+  WRONG and superseded by this note; kept verbatim above only as the historical record of how the
+  spec arrived at them).** Building the mechanism exactly as described two paragraphs up (override
+  fires whenever `matchFoundryEntity` resolves a Foundry `spell` entity to an AoN doc whose own
+  category is `"ritual"`, full stop) and running it against the real snapshots moves **143** spell
+  entities, not 55 — a **wrong-population bug in the spec's own verification, not an implementation
+  bug**: the adversarial review counted "spell/\* entities carrying `legacyOf` pointing at a
+  ritual/\* id" (a grep over the ALREADY-EMITTED pre-P6 corpus), which only sees movers that ALSO
+  carry an AoN legacy/remaster pairing. The mechanism's real trigger — "matched an AoN ritual doc at
+  all" — is a strictly larger population. Root cause, verified independently against the raw
+  snapshot (not just this module's own output): Foundry's own `pf2e-8.3.0` system snapshot already
+  segregates rituals into their own subfolder, `packs/pf2e/spells/rituals/` (150 files, sibling to
+  `spells/spells/` and `spells/focus/`) — a structural signal `categoryMap.ts` currently discards,
+  flattening every file in the `spells` pack to the one category `"spell"`. Of those 150: **143**
+  slug-match an AoN `ritual`-category doc (via the pre-existing, unmodified-by-P6
+  `CATEGORY_EQUIVALENCE` rule) and move; the remaining **6** (`create-mycoguardian`,
+  `rite-of-cleansing-flame`, `unfettered-mark`, `aspirational-state`, `destroy-mindscape`,
+  `anima-invocation-modified`) match NOTHING at all (no AoN ritual doc, no AoN spell doc) and are
+  already dropped by the pre-existing D29-14 AoN-primary-drop pass, both before and after this
+  phase — verified absent from the corpus under every category; **left as-is, documented residue,
+  out of scope for R4** (per the stakeholder's own P6 direction: extending the trigger to a
+  Foundry-subfolder signal was considered and explicitly declined — these 6 are ambiguous
+  Foundry-only content with no AoN counterpart to source prose/citation from, not a miscategorization
+  R4 is meant to fix). Of the 143 real movers: **56** carry a `legacyOf` (not 55 — one of the 56,
+  `ritual/rune-trap`, has `legacyOf: ["spell/glyph-of-warding"]`, a ritual whose LEGACY counterpart
+  is itself a spell that never moves; the original grep, which searched specifically for "a
+  `ritual/*` id" as the `legacyOf` TARGET, structurally cannot see a mover→spell-target pairing like
+  this one — it's a real, correct, category-agnostic pass-4 resolution, not a new bug) and **87**
+  carry none at all (single-edition rituals with no legacy/remaster counterpart in the snapshot,
+  e.g. `ritual/unbearable-cacophony`, `ritual/divine-keystone`, `ritual/wild-allegiance` — real
+  Foundry `rituals/`-subfolder content, real AoN ritual docs, just never paired). Collision/
+  fresh-slug breakdown, re-run against the real 143-population (the spec's original 46/9 split was
+  computed on the wrong 55-population and does not apply): **45** movers collide same-slug with an
+  existing ritual file (→ that sibling renames to `@legacy`); **98** land on fresh slugs with no
+  collision at all. The pre-existing 58 `ritual/*.json` files' own fates: 45 renamed to `@legacy`
+  (the collision losers) + 11 stay unsuffixed while gaining a `remasteredAs` pointing at a mover
+  (the `simulacrum`/`commune-with-nature` shape) + 2 never-remastered (`rite-of-the-blood-crown`,
+  `wish`, unchanged) = 58, exactly — every pre-existing ritual's fate is now accounted for (the old
+  55-population's "10 no-incoming-mover" bucket is empty at the real 143-population). **Corrected
+  ripple: `spell/` 2,604 → 2,461; `ritual/` 58 → 201** (143 movers + 58 pre-existing, some renamed).
+  **A third named regression-test case is added, alongside the commune many-to-one and
+  shadow-double/simulacrum fresh-slug cases: `ritual/unbearable-cacophony`, a pairing-less mover
+  (no `legacyOf`/`remasteredAs` at all) — an implementation that only handles paired movers fails on
+  87 of 143.** §4 Track A's gate and §5A's gate A below are updated to these corrected numbers; the
+  R8 gate below is also corrected (323 → 273, verified not just asserted — see its own note).
 - **D29-60 — R8: AoN item_category/item_subcategory threading, Foundry-wins (corrected from the
   scope doc's literal AoN-primary wording, §1.1).** New optional schema field
   `facets.itemSubcategory: z.string().optional()` alongside the existing `facets.itemCategory`.
@@ -195,6 +241,17 @@ Continuing the ledger from P5's D29-58:
   legitimate "Weapons"/"Armor"/"Shields" values AoN's `equipment.json` puts on
   ammunition/accessories, 481/250/232 — expected on the `/equipment` Category facet, flagged for H,
   not a bug).
+  **IMPLEMENTATION-TIME CORRECTION (P6 Track A, 2026-07-15):** the **323** figure is the RAW AoN
+  `equipment.json` doc count tagged `item_category: "Runes"` — the FINAL EMITTED corpus (after the
+  pre-existing D29-18 `aonDedup` pass, which collapses same-`(category,slug,url,edition)` duplicate
+  raw docs — real-world Rune items are heavily reprinted/duplicated in the raw ES index, e.g. 4 raw
+  docs for "Advancing" collapsing to 2 kept editions) carries **273** `equipment/*` entities with
+  `itemCategory: "Runes"`, not 323. Verified clean (not asserted): 5 sampled raw doc groups
+  (`advancing`/`advancing-greater`/`aim-aiding`/`anchoring`/`antimagic`, 14 raw docs across them)
+  every one traces to a `aonDedup`-collapsed same-url/edition pair already correctly present in the
+  corpus with `itemCategory: "Runes"` set — zero instances of a doc that should have been filled and
+  wasn't. The fill-gap mechanism itself has zero regressions (weapon/armor/shield untouched,
+  `weapon/chakri-lost-omens` keeps `itemCategory: "advanced"`). §5A gate A is updated to 273.
 - **D29-61 — R9: level defaults, bounds-imply-hasValue, checkbox removal.** Three parts, landing in
   two DIFFERENT tracks (ingest default in Track A; engine semantics + UI removal in Track C, per
   §4's ownership map — this is the ONE R-item whose implementation spans two tracks, called out
@@ -512,19 +569,27 @@ CSS — and nothing else; anything else in that diff is a regression to chase, n
   `thoughts/shared/memory/codex-0029-gotchas.md`'s own "D-gate 3×" precedent), fixture regen
   (`scripts/extract-fixture.ts` off the fresh transform) — **whose selection list MUST explicitly
   pull in: a free-action-cost entity (the current fixture corpus has ZERO — Track B's glyph gate
-  and Integration's checks need a real specimen), the commune many-to-one pair, and a fresh-slug
-  ritual mover (`shadow-double`/`simulacrum`)** — named specimens, mirroring how R1's table
+  and Integration's checks need a real specimen), the commune many-to-one pair, a fresh-slug
+  ritual mover (`shadow-double`/`simulacrum`), and (P6 Track A implementation-time addition, see
+  D29-59's correction note) a pairing-less mover (`ritual/unbearable-cacophony`, no
+  `legacyOf`/`remasteredAs` at all)** — named specimens, mirroring how R1's table
   samples are named, so the downstream tracks' deferred proofs have real material; then the
   host-only Pagefind rebuild
   (`just codex-search-index`) last — the R4 category move re-homes several thousand documents'
   index category AND the R3 strip changes every entity's excerpt text, so the index rebuild is
   doubly mandatory. Track-local golden regen allowed + flagged (all 6 will drift from the masthead
-  strip). Gate: `spell/` = 2,549 (not 2,604); `ritual/` = **113** (58 unchanged + 55 movers,
-  D29-59's corrected breakdown: 46 same-slug colliders → `@legacy` siblings, 9 fresh-slug movers,
-  10 no-incoming slugs, +2 never-remastered); `ritual/commune-with-nature`'s
-  `remasteredAs` reads `["ritual/commune"]`; `ritual/shadow-double` exists with NO
-  `ritual/shadow-double@legacy` and `ritual/simulacrum` stays unsuffixed (the fresh-slug case);
-  `equipment/` gains 323 `Runes`-tagged entities and
+  strip). **Gate (CORRECTED at implementation time, P6 Track A, 2026-07-15 — see D29-59's own
+  correction note for the full derivation; the ORIGINAL "2,549/113/46/9/10/323" numbers below this
+  point were computed against the wrong population and do not hold):** `spell/` = **2,461** (not
+  2,604); `ritual/` = **201** (58 pre-existing + **143** movers — 45 same-slug colliders →
+  `@legacy` siblings, 98 fresh-slug movers; of the 58 pre-existing, 45 renamed to `@legacy`, 11 stay
+  unsuffixed while gaining a `remasteredAs` pairing, 2 stay never-remastered); the THREE named
+  regression cases hold: `ritual/commune-with-nature`'s `remasteredAs` reads `["ritual/commune"]`;
+  `ritual/shadow-double` exists with NO `ritual/shadow-double@legacy` and `ritual/simulacrum` stays
+  unsuffixed (the fresh-slug case); `ritual/unbearable-cacophony` exists with neither `legacyOf` nor
+  `remasteredAs` at all (the pairing-less case); `equipment/` gains **273** (not 323 — the raw AoN
+  doc count before `aonDedup` collapses same-url/edition duplicates, verified clean, D29-60's own
+  correction note) `Runes`-tagged entities and
   zero weapon/armor/shield entities lose their existing `itemCategory`; **the R8 fill-gap will
   ALSO legitimately surface "Weapons" (481) / "Armor" (250) / "Shields" (232) as `/equipment`
   Category facet values** (AoN's `equipment.json` tags ammunition/accessories with those
@@ -632,13 +697,16 @@ All measurements and smoke checks run against the production build (`pnpm build`
 or the live edge once redeployed) — never `vite dev` (the standing P3 finding, `/pagefind` and
 `staticMounts` aren't served there).
 
-- **A (Track A) — ingest correctness.** R4: `spell/` = 2,549, `ritual/` = **113** (D29-59's
-  corrected 46/9/10/+2 breakdown), BOTH edge cases verified by id — the commune many-to-one AND
-  the fresh-slug mover (`ritual/shadow-double` exists with no `@legacy` sibling,
-  `ritual/simulacrum` unsuffixed) — `ritual/commune`/`ritual/commune@legacy` collision resolved
-  per D29-1's
+- **A (Track A) — ingest correctness.** R4 (CORRECTED at implementation time, D29-59's own note):
+  `spell/` = **2,461**, `ritual/` = **201** (143 movers — 45 same-slug colliders + 98 fresh-slug —
+  over the 58 pre-existing files), THREE edge cases verified by id — the commune many-to-one, the
+  fresh-slug mover (`ritual/shadow-double` exists with no `@legacy` sibling,
+  `ritual/simulacrum` unsuffixed), and the pairing-less mover (`ritual/unbearable-cacophony` exists
+  with neither `legacyOf` nor `remasteredAs`) — `ritual/commune`/`ritual/commune@legacy` collision
+  resolved per D29-1's
   pattern, zero broken crossrefs into the moved entities (grep/report-provable via the existing
-  `brokenRef` report field). R8: 323 `Runes`-tagged equipment entities, zero weapon/armor/shield
+  `brokenRef` report field). R8 (CORRECTED, D29-60's own note): **273** `Runes`-tagged equipment
+  entities (not 323 — the raw AoN doc count pre-`aonDedup`, verified clean), zero weapon/armor/shield
   regressions (spot-checked `weapon/chakri-lost-omens` keeps `itemCategory: "advanced"`); the
   expected "Weapons"/"Armor"/"Shields" facet values on `/equipment` (481/250/232 —
   ammunition/accessories, real signal) noted for H, not treated as a bug. R9(a):
@@ -689,7 +757,8 @@ or the live edge once redeployed) — never `vite dev` (the standing P3 finding,
   item from P2 (M7/M11 expected behaviors), P3 (the single-common-word Pagefind limitation,
   documented not a bug), P4/P4.5's surfaces in the parchment skin, P5's deploy posture, AND **all 11
   P6 items** — R1 (tables), R2 (line breaks), R3 (no duplicate masthead + enriched headers), R4
-  (rituals show ~58, not 2), R5 (real glyphs), R6 (no footer), R7 (`2e.iridi.cc` live), R8 (Runes
+  (rituals show ~145 current, not 2 — corrected at implementation time from the spec's original
+  ~58 estimate, D29-59's own note), R5 (real glyphs), R6 (no footer), R7 (`2e.iridi.cc` live), R8 (Runes
   filterable), R9 (level filter behaves), R10 (abbreviations visible), R11 (search hides superseded
   by default). Exit = sign-off → 0029 (if this is the last redirect) or a further feedback round
   (if not) — this spec does not presume which.
@@ -781,3 +850,12 @@ offline, not shipped).
 ## 8. Build record
 
 _(Populated per-track + at integration during implementation — empty at FINAL.)_
+
+- **Track A, 2026-07-15:** R8/R9(a)/R3 built + TS-green (typecheck/lint/format/tests/build) against
+  the real snapshots; R4's mechanism built exactly as D29-59 describes it, which surfaced a
+  wrong-population bug in the spec's OWN verification (55 vs the real 143 movers) — orchestrator
+  decision: OPTION 1, ship the mechanism as-written, amend the pinned numbers (D29-59's own
+  correction note, above, has the full derivation + root cause). R8's 323→273 gap independently
+  verified clean (5 sampled raw-doc groups, all trace to the pre-existing `aonDedup` collapse, zero
+  missed fills). Proceeding to the fresh transform / 3× determinism / fixture regen / Pagefind
+  rebuild / commits per the corrected numbers above.
