@@ -29,6 +29,7 @@
 
 import type { ReactElement, ReactNode } from "react";
 
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { RulesNavData } from "@/server/entityPageData";
 
 import { BreadcrumbTrail } from "./BreadcrumbTrail";
@@ -53,16 +54,19 @@ export function RulesLayout({
   superseded: boolean;
   children: ReactNode;
 }): ReactElement {
+  const bookAbbrev = abbreviateBook(nav.book.book) ?? nav.book.book;
   return (
     <div className="codex-rules-layout">
       <details className="codex-rules-sidebar-disclosure">
-        <summary className="codex-rules-sidebar-summary">{nav.book.book} contents</summary>
+        <summary className="codex-rules-sidebar-summary" title={nav.book.book}>
+          {bookAbbrev} contents
+        </summary>
         <div className="codex-rules-sidebar-body">
           <RulesTree books={[nav.book]} superseded={superseded} currentId={entityId} />
         </div>
       </details>
       <div className="codex-rules-main">
-        <BreadcrumbTrail book={nav.book.book} ancestors={nav.ancestors} currentName={entityName} />
+        <BreadcrumbTrail book={bookAbbrev} ancestors={nav.ancestors} currentName={entityName} />
         {children}
         <ReadingOrderPager prev={nav.prev} next={nav.next} />
       </div>

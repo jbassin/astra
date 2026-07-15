@@ -13,6 +13,7 @@
 // as ordinary, always-on controls in the listing header (`Input`/`select`),
 // never hidden behind the drawer, so they need no separate pill reminder.
 
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { facetKeysFor } from "@/schema/facetKeys";
 
 import { humanizeFacetKey } from "../render/text";
@@ -96,7 +97,9 @@ export function activeFilterPills(
   if (state.sourceBook.size > 0) {
     pills.push({
       key: "sourceBook",
-      label: enumLabel("Source", state.sourceBook, (v) => v),
+      // R10 (D29-68) — abbreviation-with-fallback, same as the FacetPanel
+      // Source section and every other compact-surface site.
+      label: enumLabel("Source", state.sourceBook, (v) => abbreviateBook(v) ?? v),
       onRemove: () => onChange((prev) => withoutDimension(prev, { kind: "sourceBook" })),
     });
   }

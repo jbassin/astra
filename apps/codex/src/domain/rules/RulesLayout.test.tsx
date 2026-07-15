@@ -79,7 +79,11 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
       </RulesLayout>,
     );
     const nav = screen.getByRole("navigation", { name: "Breadcrumb" });
-    expect(nav.textContent).toContain("Gamemastery Guide");
+    // R10 (D29-68) — the book crumb shows the abbreviation-with-fallback
+    // (RulesLayout passes `abbreviateBook(nav.book.book) ?? nav.book.book`
+    // into `BreadcrumbTrail`'s `book` prop); "Gamemastery Guide" curates to
+    // "GMG".
+    expect(nav.textContent).toContain("GMG");
     expect(nav.textContent).toContain("Chapter 2: Tools");
     expect(nav.textContent).toContain("Building Creatures");
   });
@@ -139,6 +143,9 @@ describe("RulesLayout (P4 S3, D29-41)", () => {
     const details = container.querySelector("details.codex-rules-sidebar-disclosure");
     expect(details).not.toBeNull();
     expect(details?.hasAttribute("open")).toBe(false);
-    expect(details?.querySelector("summary")?.textContent).toBe("Gamemastery Guide contents");
+    // R10 (D29-68) — the summary shows the abbreviation, the full name
+    // stays available via `title`.
+    expect(details?.querySelector("summary")?.textContent).toBe("GMG contents");
+    expect(details?.querySelector("summary")?.getAttribute("title")).toBe("Gamemastery Guide");
   });
 });

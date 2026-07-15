@@ -9,6 +9,7 @@
 
 import { useEffect, useMemo, useState, type ReactElement } from "react";
 
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { RulesTreeBook, TreeNode } from "@/schema/rulesTree";
 import { Input } from "@/ui";
 
@@ -130,7 +131,9 @@ function RulesBookSection({
   return (
     <section className="codex-rules-book" data-book={book.book}>
       <header className="codex-rules-book-header">
-        <h2 className="codex-heading">{book.book}</h2>
+        <h2 className="codex-heading" title={book.book}>
+          {abbreviateBook(book.book) ?? book.book}
+        </h2>
         <span className={`codex-edition-pill codex-edition-${book.edition}`}>
           {book.edition === "remaster" ? "Remaster" : "Legacy"}
         </span>

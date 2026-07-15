@@ -32,6 +32,7 @@ import {
 
 import { collidingNames } from "@/domain/browse/filterEngine";
 import { humanizeSlug } from "@/domain/render/text";
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
 
 import {
@@ -226,7 +227,10 @@ export function Omnibar(): ReactElement {
                           <span className="codex-omnibar-row-name">
                             {item.name}
                             {collisions.has(item.name) ? (
-                              <span className="codex-listing-collision"> ({item.book})</span>
+                              <span className="codex-listing-collision" title={item.book}>
+                                {" "}
+                                ({abbreviateBook(item.book) ?? item.book})
+                              </span>
                             ) : null}
                           </span>
                           {item.level !== undefined ? (

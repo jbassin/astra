@@ -73,9 +73,13 @@ describe("RulesTree (D29-40)", () => {
     localStorage.clear();
   });
 
-  it("renders every book name + edition/license pills", () => {
+  it("renders every book name (abbreviation-with-fallback, R10/D29-68) + edition/license pills", () => {
     render(<RulesTree books={[GMG_LIKE]} superseded={false} />);
-    expect(screen.getByText("Gamemastery Guide")).not.toBeNull();
+    // "Gamemastery Guide" curates to "GMG" — the heading shows the
+    // abbreviation, the full name stays available via `title`.
+    const heading = screen.getByText("GMG");
+    expect(heading).not.toBeNull();
+    expect(heading.getAttribute("title")).toBe("Gamemastery Guide");
     // "Legacy" appears twice: the book-level edition pill AND the root
     // node's own superseded pill (GMG_LIKE's root doc is itself superseded).
     expect(screen.getAllByText("Legacy").length).toBeGreaterThanOrEqual(1);
@@ -129,7 +133,8 @@ describe("RulesTree (D29-40)", () => {
 
   it("a fully-superseded book renders as a collapsed 'all N hidden' header, never silently dropped", () => {
     render(<RulesTree books={[FULLY_HIDDEN_BOOK]} superseded={false} />);
-    expect(screen.getByText("Dark Archive")).not.toBeNull();
+    // "Dark Archive" curates to "DA" (R10/D29-68).
+    expect(screen.getByText("DA")).not.toBeNull();
     expect(screen.getByText("all 2 hidden")).not.toBeNull();
     expect(screen.queryByText("Root A")).toBeNull();
     expect(screen.queryByText("Root B")).toBeNull();

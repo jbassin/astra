@@ -1,5 +1,6 @@
 import type { ReactElement } from "react";
 
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
 import { facetKeysFor } from "@/schema/facetKeys";
 import { Input } from "@/ui";
@@ -200,6 +201,7 @@ function CoreEnumSection({
   state,
   onChange,
   valueOf,
+  labelOf,
 }: {
   title: string;
   dimension: CoreEnumDimension;
@@ -207,6 +209,11 @@ function CoreEnumSection({
   state: BrowseFilterState;
   onChange: StateUpdater;
   valueOf: (row: IndexRow) => string | undefined;
+  /** R10 (D29-68) — the Source dimension's own option label wants the
+   * abbreviation-with-fallback treatment; every other `CoreEnumSection`
+   * caller (Rarity, Edition) leaves this unset and keeps the plain
+   * identity label it always had. */
+  labelOf?: (value: string) => string;
 }): ReactElement | null {
   const ambient = ambientRows(rows, state, { kind: dimension });
   const options = scalarOptionCounts(ambient, valueOf);
@@ -217,7 +224,7 @@ function CoreEnumSection({
         options={options}
         selected={selected}
         missing={0}
-        labelOf={(v) => v}
+        labelOf={labelOf ?? ((v) => v)}
         onToggle={(v) => onChange((prev) => toggleCoreEnumOption(prev, dimension, v))}
       />
     </FacetSection>
@@ -357,6 +364,7 @@ export function FacetPanel({
         state={state}
         onChange={onChange}
         valueOf={sourceBookValueOf}
+        labelOf={(v) => abbreviateBook(v) ?? v}
       />
       <CoreEnumSection
         title="Edition"
