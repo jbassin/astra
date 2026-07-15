@@ -106,7 +106,10 @@ function RulesBookSection({
   savedOpen: ReadonlyMap<string, boolean>;
   onToggle: (key: string) => void;
 }): ReactElement {
-  const legacyPruned = useMemo(() => pruneForLegacy(book.nodes, legacy), [book.nodes, legacy]);
+  const legacyPruned = useMemo(
+    () => pruneForLegacy(book.nodes, legacy, currentId),
+    [book.nodes, legacy, currentId],
+  );
   const queryFiltered = useMemo(
     () => filterTreeByQuery(legacyPruned, query),
     [legacyPruned, query],

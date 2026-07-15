@@ -337,6 +337,118 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
     const { status, html } = await get("/rules/tools-of-play");
     expect(status).toBe(200);
     expect(html).toContain("Tools of Play");
-    expect(html).not.toContain("codex-rules-tree");
+    // Proves this is the ENTITY route, not the `/rules` browse page itself —
+    // the browse page's own listing chrome (title + book count) is absent
+    // here even though S3 (below) now ALSO renders a `codex-rules-tree`
+    // (the sidebar reuses that same island, so its class alone no longer
+    // distinguishes the two routes post-S3).
+    expect(html).not.toContain("codex-listing-title");
+    expect(html).toContain("codex-entity-page");
+  });
+});
+
+/**
+ * P4 S3 (D29-41) — the rules entity page's hierarchy navigation: breadcrumb
+ * trail, tree sidebar (`RulesLayout`), and DFS previous/next pager. Over the
+ * fixture `rules-tree.json` the `/rules` suite above already exercises
+ * (S1's D29-44 composition — the CRLF-healed 3-deep GMG chain
+ * `chapter-2-tools` -> `building-creatures@legacy` -> `ability-modifiers-2`,
+ * ALL superseded; the path-shifted Counteracting legacy/remaster pair).
+ *
+ * Same cross-environment discipline as the `/rules` suite above (its own
+ * comment): this dev sandbox happens to have the REAL corpus checked out
+ * too, and `chapter-2-tools`/`building-creatures@legacy`/`ability-modifiers-2`
+ * are all real doc ids that exist in BOTH roots — but the real corpus's
+ * "Chapter 2: Tools" has 14 children and its own GMG book has 6 root
+ * chapters (vs the fixture's 1-child, 1-root shape), so an EXACT prev/next
+ * *target identity* or one-sidedness claim would only hold under the
+ * fixture. What's true under EITHER root (verified against both): the
+ * ancestor chain's real-doc ids and "Building Creatures" is `chapter-2-
+ * tools`'s literal first child (so it's always the DFS `next` immediately
+ * after it) — those two facts anchor this suite; the exhaustive prev/next
+ * one-sidedness/round-trip/synthetic-ancestor claims are proven precisely,
+ * hermetically, and corpus-root-independently against the fixture reader
+ * directly in `entityPageData.test.ts` (D29-23's own "pure derivation
+ * tested against the fixture reader" idiom) — this suite's job is proving
+ * the ROUTE WIRING renders the right markup at all, not re-deriving exact
+ * chain shape.
+ */
+describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
+  it("a root doc (no ancestors) renders its own trail head: book -> self, no ancestor links", async () => {
+    const { html } = await get("/rules/chapter-2-tools");
+    expect(html).toContain("codex-rules-breadcrumb");
+    expect(html).toContain(">Gamemastery Guide<");
+    expect(html).toContain("codex-rules-breadcrumb-current");
+  });
+
+  it("a deep node's trail shows real, LINKED ancestors (the CRLF-healed GMG chain)", async () => {
+    const { html } = await get("/rules/ability-modifiers-2");
+    expect(html).toContain('href="/rules/chapter-2-tools"');
+    expect(html).toContain('href="/rules/building-creatures@legacy"');
+  });
+
+  it("a single deep rules page renders trail + sidebar + pager together (D29-44's own text)", async () => {
+    const { status, html } = await get("/rules/ability-modifiers-2");
+    expect(status).toBe(200);
+    expect(html).toContain("codex-rules-breadcrumb"); // trail
+    expect(html).toContain("codex-rules-sidebar-disclosure"); // sidebar
+    expect(html).toContain("codex-rules-pager"); // pager
+  });
+
+  it("the pager DESCENDS: a chaptered root's own page shows next=its first child, edition-pilled", async () => {
+    const { html } = await get("/rules/chapter-2-tools");
+    expect(html).toContain("codex-rules-pager");
+    // "Building Creatures" is chapter-2-tools's literal first child in BOTH
+    // corpus roots — DFS pre-order visits it immediately, so it's always
+    // the `next` target regardless of how many other children/roots exist.
+    expect(html).toContain("codex-rules-pager-next");
+    const nextSlotIdx = html.indexOf("codex-rules-pager-slot-next");
+    expect(html.slice(nextSlotIdx, nextSlotIdx + 400)).toContain(
+      'href="/rules/building-creatures@legacy"',
+    );
+    // that next target is itself superseded -> renders its own Legacy pill
+    // (the legacy toggle does NOT re-chain the pager, D29-41).
+    expect(html.slice(nextSlotIdx, nextSlotIdx + 400)).toContain("Legacy");
+  });
+
+  it("the tree sidebar renders, scoped to the current book, with the current doc highlighted", async () => {
+    const { html } = await get("/rules/ability-modifiers-2");
+    expect(html).toContain("codex-rules-sidebar-disclosure");
+    expect(html).toContain("codex-rules-node-current");
+    expect(html).toContain(">Ability Modifiers<");
+  });
+
+  it("the sidebar keeps the current doc's ancestor branch even though the whole GMG chain is superseded and legacy defaults off", async () => {
+    const { html } = await get("/rules/ability-modifiers-2");
+    // both ancestor names must appear a SECOND time inside the sidebar tree
+    // (once already in the breadcrumb) — i.e. the branch wasn't pruned away
+    // by the legacy toggle (defaults off) even though every node on the
+    // path, including the current one, is itself `superseded: true`.
+    const buildingCreaturesHits = html.split("Building Creatures").length - 1;
+    expect(buildingCreaturesHits).toBeGreaterThanOrEqual(2);
+  });
+
+  it("non-rules pages are structurally untouched: no rules-layout/sidebar/breadcrumb markup on a spell page", async () => {
+    const { html } = await get("/spell/heal");
+    expect(html).not.toContain("codex-rules-layout");
+    expect(html).not.toContain("codex-rules-sidebar-disclosure");
+    expect(html).not.toContain("codex-rules-breadcrumb");
+    expect(html).not.toContain("codex-rules-pager");
+    // the plain single-column entity shell is exactly what it always was.
+    expect(html).toContain("codex-entity-page");
+  });
+
+  it("zero hydration/render errors on the checked rules pages", async () => {
+    for (const routePath of [
+      "/rules/chapter-2-tools",
+      "/rules/building-creatures@legacy",
+      "/rules/ability-modifiers-2",
+      "/rules/tools-of-play",
+      "/rules/counteracting-2",
+    ]) {
+      const { status, html } = await get(routePath);
+      expect(status).toBe(200);
+      expect(html).not.toContain("data-render-error");
+    }
   });
 });

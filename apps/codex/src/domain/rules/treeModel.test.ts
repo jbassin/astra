@@ -179,6 +179,53 @@ describe("pruneForLegacy (D29-40 legacy semantics)", () => {
     ];
     expect(pruneForLegacy(tree, false)).toEqual([]);
   });
+
+  describe("currentId (S3 — the sidebar 'you are here' guard)", () => {
+    it("a superseded childless node matching currentId survives, unlike the plain (no currentId) call", () => {
+      const tree: TreeNode[] = [node({ name: "A", id: "rules/a", superseded: true })];
+      expect(pruneForLegacy(tree, false)).toEqual([]); // the S2 baseline: still drops
+      const withCurrent = pruneForLegacy(tree, false, "rules/a");
+      expect(withCurrent).toHaveLength(1);
+      expect(withCurrent[0]?.id).toBe("rules/a");
+    });
+
+    it("currentId only rescues the matching node — an unrelated superseded sibling still drops", () => {
+      const tree: TreeNode[] = [
+        node({ name: "A", id: "rules/a", superseded: true }),
+        node({ name: "B", id: "rules/b", superseded: true }),
+      ];
+      const pruned = pruneForLegacy(tree, false, "rules/a");
+      expect(pruned.map((n) => n.id)).toEqual(["rules/a"]);
+    });
+
+    it("currentId rescues a deeply-nested superseded node, keeping its ancestor wrapper chain too", () => {
+      const tree: TreeNode[] = [
+        node({
+          name: "Chapter 2: Tools",
+          id: "rules/chapter-2-tools",
+          superseded: true,
+          children: [
+            node({
+              name: "Building Creatures",
+              id: "rules/building-creatures@legacy",
+              superseded: true,
+              children: [
+                node({
+                  name: "Ability Modifiers",
+                  id: "rules/ability-modifiers-2",
+                  superseded: true,
+                }),
+              ],
+            }),
+          ],
+        }),
+      ];
+      const pruned = pruneForLegacy(tree, false, "rules/ability-modifiers-2");
+      expect(pruned[0]?.id).toBe("rules/chapter-2-tools");
+      expect(pruned[0]?.children[0]?.id).toBe("rules/building-creatures@legacy");
+      expect(pruned[0]?.children[0]?.children[0]?.id).toBe("rules/ability-modifiers-2");
+    });
+  });
 });
 
 describe("filterTreeByQuery (D29-40 name quick-filter)", () => {

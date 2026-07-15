@@ -10,13 +10,53 @@
 // drags its own imports along for the ride. A dedicated, route-unreachable file
 // is what actually keeps `node:fs`/`@astra/config` out.
 import { collectEmbedTargetIds } from "../domain/render/nodes";
+import { dfsPreOrder } from "../domain/rules/treeModel";
 import type { CodexEntity } from "../schema/entity";
+import type { RulesTreeBook, RulesTreeFile, TreeNode } from "../schema/rulesTree";
 import { CorpusNotFoundError, type CorpusReader } from "./corpusFs";
 
 /** Spec §6 risk: "the loader caps inlined targets (e.g. 100/page, report-logged in
  * dev)" — a pathological page (or a future corpus regen) can't make a single
  * request fan out into an unbounded number of file reads. */
 const EMBED_INLINE_CAP = 100;
+
+/** P4 S3 (D29-41) — one ancestor step in a rules entity's breadcrumb trail.
+ * `id` present -> a real doc, rendered as a link; absent -> a synthetic
+ * group node (pinned at exactly 2 in the real corpus, D29-39's amendment),
+ * rendered as plain text. The entity's own book (a plain string, never
+ * linked — books aren't tree nodes) and its own name (already known to the
+ * caller as `entity.name`) are NOT elements of this array; the caller
+ * renders "book › ancestors.map(...) › entity.name". */
+export interface RulesTrailItem {
+  name: string;
+  id?: string;
+}
+
+/** P4 S3 (D29-41) — a previous/next pager target. Synthetic nodes are never
+ * targets (D29-41: "synthetic nodes ... are skipped by the pager, they have
+ * no page") — `id`/`name` always describe a real doc. `superseded` mirrors
+ * `TreeNode.superseded`'s own convention (omitted, never `false`) — the
+ * legacy toggle does NOT re-chain the pager, so a superseded neighbor can
+ * legitimately be the prev/next target; the caller renders its edition pill
+ * from this flag. */
+export interface RulesPagerTarget {
+  id: string;
+  name: string;
+  superseded?: boolean;
+}
+
+/** P4 S3 (D29-41) — everything a rules entity page's trail/sidebar/pager
+ * need, resolved in ONE pass over `rules-tree.json` (no second round trip,
+ * D29-41's own text). `book` is the entity's ENTIRE book section (not just
+ * the ancestor path) — the sidebar (`RulesLayout.tsx`) reuses it verbatim
+ * as `RulesTree`'s `books` prop, scoped to one book, the exact "same tree
+ * island machinery" the spec calls for. */
+export interface RulesNavData {
+  book: RulesTreeBook;
+  ancestors: RulesTrailItem[];
+  prev?: RulesPagerTarget;
+  next?: RulesPagerTarget;
+}
 
 export interface EntityPageData {
   entity: CodexEntity;
@@ -32,6 +72,13 @@ export interface EntityPageData {
   /** True if this entity's own depth-0 embed targets exceeded `EMBED_INLINE_CAP` —
    * surfaced so a dev/S3 polish pass can see it without re-deriving it. */
   embedCapHit: boolean;
+  /** P4 S3 (D29-41) — set ONLY for `entity.category === "rules"` (every other
+   * category's payload is byte-identical to pre-S3, spec's own "only
+   * rules-category entities get trail/pager/sidebar data" text). Absent (not
+   * `undefined`-valued key) when the entity's book/tree position couldn't be
+   * resolved (a rules doc missing from `rules-tree.json` would be a genuine
+   * corpus bug — this fails soft to "no nav" rather than 500ing the page). */
+  rulesNav?: RulesNavData;
 }
 
 /** Every depth-0 embed target reachable from an entity's own body/loreBody/
@@ -56,6 +103,82 @@ function splitCodexId(id: string): { category: string; slug: string } | null {
   const idx = id.indexOf("/");
   if (idx <= 0 || idx === id.length - 1) return null;
   return { category: id.slice(0, idx), slug: id.slice(idx + 1) };
+}
+
+/** Depth-first search for the node bearing `targetId`, returning the full
+ * path from a root DOWN TO AND INCLUDING that node (`path.slice(0, -1)` is
+ * its ancestor chain, root-first) — the "own breadcrumbs already IS its
+ * complete ancestor chain" fact `rulesTree.ts`'s builder relies on means
+ * there's exactly one path to any node, so the first hit is THE hit, no
+ * backtracking-for-ambiguity needed. `null` when `targetId` isn't anywhere
+ * in this book's tree (shouldn't happen for a genuine rules entity — surfaced
+ * to the caller as "no nav" rather than a thrown error). */
+function findNodePath(nodes: readonly TreeNode[], targetId: string): TreeNode[] | null {
+  for (const n of nodes) {
+    if (n.id === targetId) return [n];
+    const inChild = findNodePath(n.children, targetId);
+    if (inChild) return [n, ...inChild];
+  }
+  return null;
+}
+
+function toPagerTarget(n: TreeNode & { id: string }): RulesPagerTarget {
+  const target: RulesPagerTarget = { id: n.id, name: n.name };
+  if (n.superseded === true) target.superseded = true;
+  return target;
+}
+
+function toTrailItem(n: TreeNode): RulesTrailItem {
+  const item: RulesTrailItem = { name: n.name };
+  if (n.id !== undefined) item.id = n.id;
+  return item;
+}
+
+/**
+ * P4 S3 (D29-41) — resolves a rules entity's breadcrumb ancestors + DFS
+ * previous/next pager targets from `rules-tree.json`, in one pass. Pure over
+ * the already-loaded `tree` (no `CorpusReader` — the caller already read it
+ * for `rulesTree()`'s own cache).
+ *
+ * Book scoping: `entity.source.book` is the SAME normalized book string the
+ * S1 tree builder grouped `RulesTreeBook.book` by (both derive from the
+ * post-book-normalize `source.book`, `rulesTree.ts`'s own `RulesDocInput.book`
+ * doc comment) — a direct map lookup, no fuzzy matching.
+ *
+ * Pager derivation (D29-41's DFS pre-order, reusing S2's `dfsPreOrder`):
+ * flatten the book's tree in pre-order, then filter to id-bearing (real doc)
+ * nodes only — synthetic nodes are structurally skipped (D29-41: "synthetic
+ * nodes ... are skipped by the pager") without disturbing relative order,
+ * so `prev`/`next` are simple array-adjacency around the current node's
+ * index in that filtered list. This is symmetric by construction (array
+ * adjacency is its own inverse), never crosses a book boundary (scoped to
+ * one book's `nodes` alone), and is one-sided at the filtered array's ends
+ * — exactly D29-41's three pinned properties. The legacy toggle plays no
+ * part here at all (the full, unpruned tree is walked) — D29-41's "the
+ * legacy toggle does NOT re-chain the pager".
+ */
+export function resolveRulesNav(
+  tree: RulesTreeFile,
+  entity: CodexEntity,
+): RulesNavData | undefined {
+  const book = tree.books.find((b) => b.book === entity.source.book);
+  if (!book) return undefined;
+
+  const path = findNodePath(book.nodes, entity.id);
+  if (!path) return undefined;
+  const ancestors: RulesTrailItem[] = path.slice(0, -1).map((n) => toTrailItem(n));
+
+  const realDocs = dfsPreOrder(book.nodes).filter(
+    (n): n is TreeNode & { id: string } => n.id !== undefined,
+  );
+  const idx = realDocs.findIndex((n) => n.id === entity.id);
+  const prev = idx > 0 ? toPagerTarget(realDocs[idx - 1] as TreeNode & { id: string }) : undefined;
+  const next =
+    idx >= 0 && idx < realDocs.length - 1
+      ? toPagerTarget(realDocs[idx + 1] as TreeNode & { id: string })
+      : undefined;
+
+  return { book, ancestors, ...(prev ? { prev } : {}), ...(next ? { next } : {}) };
 }
 
 /**
@@ -107,5 +230,16 @@ export function resolveEntityPageData(
 
   const knownTraitIds = reader.index("trait").map((row) => row.id);
 
-  return { entity, embeds, knownTraitIds, embedCapHit };
+  let rulesNav: RulesNavData | undefined;
+  if (entity.category === "rules") {
+    try {
+      rulesNav = resolveRulesNav(reader.rulesTree(), entity);
+    } catch (err) {
+      // Fail-soft (D29-23/-25's own posture): a genuinely missing/malformed
+      // `rules-tree.json` shouldn't 500 the entity page, only strip its nav.
+      console.warn(`[codex] failed to resolve rules nav for ${entity.id}: ${String(err)}`);
+    }
+  }
+
+  return { entity, embeds, knownTraitIds, embedCapHit, ...(rulesNav ? { rulesNav } : {}) };
 }

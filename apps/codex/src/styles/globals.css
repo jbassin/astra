@@ -772,6 +772,129 @@ a:hover {
   color: var(--color-accent-amber);
 }
 
+/* --- P4 S3 (D29-41): rules entity-page hierarchy nav (RulesLayout/
+   BreadcrumbTrail/ReadingOrderPager) --- */
+
+/* Two-column layout: the tree sidebar + the (breadcrumb + entity + pager)
+   main column. Reuses `.codex-browse-layout`'s own 56rem breakpoint (D29-41
+   "no new breakpoint system") rather than inventing a second one. */
+.codex-rules-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+}
+.codex-rules-main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Desktop: a native `<details>` disclosure, but always visually open (the
+   summary toggle is only meaningful below the breakpoint) — sticky like
+   codex's other facet/tree sidebar column. */
+.codex-rules-sidebar-disclosure {
+  position: sticky;
+  top: 1rem;
+}
+.codex-rules-sidebar-summary {
+  display: none;
+}
+.codex-rules-sidebar-body {
+  display: block;
+}
+
+@media (max-width: 56rem) {
+  .codex-rules-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Content first — the reader opened this page for the entity, not the
+     tree (mirrors akasha-frontend's own "content first" F6 fix for its
+     Explorer sidebar). */
+  .codex-rules-main {
+    order: 1;
+  }
+  .codex-rules-sidebar-disclosure {
+    order: 2;
+    position: static;
+  }
+  .codex-rules-sidebar-summary {
+    display: list-item;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.5rem 0;
+  }
+  /* Collapsed by default on narrow viewports (no `open` attribute in the
+     server-rendered markup) — the summary click toggles it natively, no JS. */
+  .codex-rules-sidebar-disclosure:not([open]) .codex-rules-sidebar-body {
+    display: none;
+  }
+}
+
+/* breadcrumb trail */
+.codex-rules-breadcrumb-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.85rem;
+  color: var(--color-ink-dim);
+}
+.codex-rules-breadcrumb-item + .codex-rules-breadcrumb-item::before {
+  content: "›";
+  margin-right: 0.3rem;
+  color: var(--color-ink-faint);
+}
+.codex-rules-breadcrumb-item a {
+  color: var(--color-ink-dim);
+}
+.codex-rules-breadcrumb-item a:hover {
+  color: var(--color-accent);
+}
+.codex-rules-breadcrumb-synthetic {
+  font-style: italic;
+}
+.codex-rules-breadcrumb-current {
+  color: var(--color-ink);
+  font-weight: 600;
+}
+
+/* previous/next pager */
+.codex-rules-pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  border-top: 1px solid var(--color-rule);
+  padding-top: 1rem;
+}
+.codex-rules-pager-slot-next {
+  text-align: right;
+}
+.codex-rules-pager-link {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: var(--color-ink);
+}
+.codex-rules-pager-slot-next .codex-rules-pager-link {
+  align-items: flex-end;
+}
+.codex-rules-pager-link:hover .codex-rules-pager-name {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+.codex-rules-pager-label {
+  font-size: 0.75rem;
+  color: var(--color-ink-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.codex-rules-pager-name {
+  font-size: 0.95rem;
+}
+
 /* --- Popover hover-preview card (D29-28, ported from akasha-frontend) --- */
 .popover {
   position: fixed;

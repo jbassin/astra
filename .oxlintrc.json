@@ -134,6 +134,15 @@
       "rules": { "no-array-index-key": "off" }
     },
     {
+      // codex's `BreadcrumbTrail` (0029 P4 S3, D29-41): the rules-tree ancestor
+      // array is server-derived, fixed-shape, never reordered — synthetic
+      // ancestors have no id and generic chapter names recur across books
+      // (D29-39), so index-keying is the same justified idiom as the two
+      // overrides immediately above.
+      "files": ["**/codex/src/domain/rules/BreadcrumbTrail.tsx"],
+      "rules": { "no-array-index-key": "off" }
+    },
+    {
       "files": ["**/akasha-frontend/src/domain/lib/slug.ts"],
       "rules": { "prefer-template": "off" }
     },
