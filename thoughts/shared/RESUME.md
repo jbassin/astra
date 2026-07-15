@@ -36,7 +36,64 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `43caa6c`, 2026-07-14 — codex (0029) P4 BUILT S1–S5, A–G met; ▶ acceptance H = THE consolidated stakeholder review (P2+P3+P4), then spec P5; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `157f10b`, 2026-07-15 — codex (0029) P4.5 UX rework + bespoke restyle BUILT S1–S6, A–G met; ▶ acceptance H = THE consolidated stakeholder review re-run (P2+P3+P4+P4.5), then spec P5; heartwood ON HOLD)
+
+> **✅ codex (0029) P4.5 (UX rework + bespoke sourcebook restyle) — ALL SIX SLICES BUILT +
+> PUSHED** (staff-orchestrator + sonnet engineers, one reviewed commit per slice; spec
+> `thoughts/astra/specs/0029-codex-p45-ux-restyle-spec.md` status → BUILT (2026-07-15), §8
+> build record carries per-gate evidence). **Provenance: P4's acceptance H ran 2026-07-14 and
+> came back a REDIRECT, not a sign-off** — 5 feedback items (split-column browse à la 5e.tools ·
+> header nav w/ categorized dropdowns · real landing page · legacy-checkbox confusion · bespoke
+> style from the stakeholder's own sourcebook, 36 ref pages at `/home/jbassin/style-ref`).
+> Scope doc `thoughts/shared/research/2026-07-14-codex-0029-p45-ux-restyle-thoughts.md` (R1–R6
+> all stakeholder-RESOLVED same day, incl. **R5: default-hidden set stays `superseded`-only,
+> NEVER `edition!=="remaster"`** — never-remastered content stays visible, AoN behavior) + two
+> companion research docs (ui-map, style-tokens). Spec FINAL `b7d3d34` (D29-46..52,
+> adversarially reviewed ×2: 3 blockers + 8 minors + 5 nits folded — THE blockers were all
+> split-view loader mechanics: `loaderDeps` required or the loader never re-runs on row click;
+> memoized listing or every click re-fetches 8,485 rows; `entry` must survive
+> `filterStateToSearch` or facet changes deselect the pane). Slices: **S1 `4831fec`**
+> (parchment tokens under the SAME var names, 4 @fontsource families/8 weights, codex-owned
+> `src/ui/` replacing 5 gothic components, gothic + tailwind plumbing dropped, dark-theme
+> script + both suppressHydrationWarning deleted) · **S2 `a5e448c`** (88/88-category nav IA w/
+> conformance test, split Rules link+caret control, R4 eight-tile landing + distinct hero
+> search — never a 2nd Omnibar, Ctrl+K singleton proven; `/categories` = the demoted
+> directory) · **S3 `28b4392`** (legacyToggle.ts DELETED, all FOUR M4 seams collapsed to bare
+> URL reads incl. SearchPage.tsx, param `legacy`→`superseded` w/ forever-decode alias proven
+> byte-identical, search always-both — "magic missile" w/ Legacy badge and no param; /spell
+> 1,805→2,604 widened) · **S4 `fccee40`** (split view + `<dialog>` drawer + activeFilterPills;
+> deep-link SSRs the right pane pre-JS; zero listing re-fetches on row click; both fail-softs;
+> mobile carries `?superseded=1`; contain-intrinsic-size 400→640px, scroll jump 0px) ·
+> **S5 `8505e17`** (statblock header grammar, tan chevron-hairline vs blue corner-dot callout
+> families, /sources zebra, row pills KEPT at 11.2→11.7ms, drawer chrome; goldens regen 2nd+
+> final time) · **S6 `157f10b`** (A–G sweep: 16-route zero-hydration pass; weights `/rules`
+> 401,257/79,339 · `/sources` 705,112/64,978 · heaviest host 414,846/80,424 · `/` 12,204/2,991
+> · `/feat?entry=` 5.81 MB/537 KB · fonts 70,532 B — all proportionate vs P4 baselines;
+> telemetry via local OTLP → SigNoz MCP on all 6 reworked routes; hermeticity BOTH lanes,
+> 73 files/1,435 tests + py 360). Pagefind index needed NO rebuild (superseded+edition already
+> indexed; query-time swap only).
+> - **▶ NEXT: acceptance H — THE consolidated stakeholder review RE-RUN against the reworked
+>   UI**: P2 spot-set (M7/M11 still expected) + P3 search (heal single-common-word limitation
+>   stands) + P4 surfaces in the new skin + all five P4.5 items. Run `pnpm build` + `pnpm
+>   start` in `apps/codex` (vite dev serves neither /pagefind nor staticMounts). **FYI for H,
+>   not a re-decision:** old `?legacy=` links take a pre-existing 307 canonicalization hop to a
+>   both-params URL (clean target would need Start-level search middleware). After H sign-off:
+>   `octo:spec` P5 (deploy) — fresh weights above are its sizing inputs.
+> - **Session gotchas (detail in [[codex-0029-gotchas]]):** an S1 engineer was killed mid-slice
+>   by a session limit → resumed cleanly via SendMessage on the partial tree; TanStack
+>   `loaderDeps` is load-bearing for any search-param-driven loader (matchId reuse silently
+>   skips re-runs without it); UA `dialog:modal` centering breaks on tall content
+>   (explicit fixed+inset+margin:auto); jsdom lacks `HTMLDialogElement.showModal` (test-only
+>   polyfill); the heartwood-frontend `routeTree.gen.ts` flap recurred ×2 under repo-wide `vp
+>   run` (restore from HEAD, standing gotcha).
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-14) — P4 BUILT (superseded above; its H became the P4.5 redirect)
+
+## (was) Current state (as of `43caa6c`, 2026-07-14 — codex (0029) P4 BUILT S1–S5, A–G met; ▶ acceptance H = THE consolidated stakeholder review (P2+P3+P4), then spec P5; heartwood ON HOLD)
 
 > **✅ codex (0029) P4 (rules/lore browser) — ALL FIVE SLICES BUILT + PUSHED same day as the
 > spec** (staff-orchestrator + sonnet engineers, one reviewed commit per slice; spec

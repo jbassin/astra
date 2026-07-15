@@ -1,6 +1,6 @@
 ---
 name: codex-0029-gotchas
-description: codex (0029) — public-but-noindexed PF2e reference site (codex.iridi.cc, AoN breadth × 5etools structure × gothic) — 2026-07-14 P4 BUILT same-day as its spec (all 5 slices S1–S5, A–G met w/ recorded evidence; synthetic pin CORRECTED 3→2 vs raw snapshot; timer swept a staged slice mid-commit → marker-commit recovery; NUL-byte binary-source gotcha recurred ×2) — ▶ next = acceptance H (ONE consolidated stakeholder review P2+P3+P4) then octo:spec P5 deploy; the verified corpus facts + join/grammar/repoint + render/reader/browse/search + tree/sidebar/sources gotchas a fresh session must not re-derive
+description: codex (0029) — public-but-noindexed PF2e reference site (codex.iridi.cc; bespoke parchment sourcebook style since P4.5, gothic dropped) — 2026-07-15 P4.5 UX rework+restyle BUILT (all 6 slices; P4's H came back a REDIRECT not a sign-off: split-column browse, header nav, landing, superseded-param edition rework, parchment restyle from the stakeholder's own 36-page sourcebook) — ▶ next = acceptance H RE-RUN (P2+P3+P4+P4.5 consolidated) then octo:spec P5 deploy; the loaderDeps/memoized-listing/entry-survival split-view mechanics + R5 superseded-not-edition semantics + all prior corpus/join/render/browse/search/tree gotchas a fresh session must not re-derive
 metadata:
   type: project
 ---
@@ -10,6 +10,39 @@ flat TS member `apps/codex` on the strider/site-kit SSR template, **port 10374**
 NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pending-review** →
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
+
+**P4.5 BUILT 2026-07-15 (UX rework + bespoke restyle; spec
+`thoughts/astra/specs/0029-codex-p45-ux-restyle-spec.md` D29-46..52, status BUILT; scope
+`…/research/2026-07-14-codex-0029-p45-ux-restyle-thoughts.md` + ui-map + style-tokens
+companions).** P4's acceptance H was a stakeholder REDIRECT: 5e.tools-style split-column
+browse, header nav dropdowns, real landing, kill the legacy checkbox, and a **bespoke
+parchment sourcebook style** (the stakeholder's own book, 36 refs at `/home/jbassin/style-ref`
+— gothic dropped from codex ENTIRELY, other astra sites untouched). Slices S1 `4831fec` · S2
+`a5e448c` · S3 `28b4392` · S4 `fccee40` · S5 `8505e17` · S6 `157f10b`. **THE P4.5 gotchas:**
+(1) **TanStack `loaderDeps` is load-bearing** for any search-param-driven loader — without it
+the matchId ignores search params, the router reuses the cached match, and the loader silently
+never re-runs (`?entry=a`→`?entry=b` = stale pane; verified vs router-core 1.171.14); (2) the
+split view needs a **module-memoized category-keyed listing fetch** (pagefindClient idiom) or
+every row click re-fetches the full 8,485-row listing — plus **`entry` must be explicitly
+resynced through `filterStateToSearch`** (it rebuilds search from BrowseFilterState alone; same
+bug class as the old legacy resync); (3) **R5 semantics: the default-hidden set is
+`superseded`-only, NEVER `edition!=="remaster"`** — never-remastered legacy-edition content
+stays visible (AoN behavior; stakeholder-resolved) — the param is `?superseded=1` with
+`?legacy=` as a forever-decode alias (proven byte-identical; old links take a pre-existing 307
+canonicalization hop, FYI'd at H); (4) search NEVER filters superseded (always-both + Legacy
+badges; Pagefind needed NO reindex — superseded+edition were already indexed filters, the swap
+is query-time); (5) killing the site-wide toggle COLLAPSED all four M4 two-phase hydration
+seams (3 routes + SearchPage.tsx) to bare URL reads — no persisted edition preference exists
+anymore, per-page URL is the only truth; (6) UA `dialog:modal` centering breaks on tall
+content (explicit `position:fixed;inset:0;margin:auto`); jsdom lacks
+`HTMLDialogElement.showModal` (test-only polyfill); (7) a session-limit-killed engineer
+resumed CLEANLY via SendMessage on its partial tree (re-read own diffs first); (8) codex owns
+its 5 ui/ components (TraitPill/ActionGlyph/Input/Button/ErrorChip, exact prop parity) + a
+3-bucket traitBucket (rarity→amber, traditions+alignments→purple, else umber) + tokens.css
+repointing gothic's var NAMES to parchment values (globals.css untouched-by-rename); tailwind
++ gothicFontsPlugin removed from vite.config (existed only for gothic; codex uses zero
+utility classes). Weights for P5: `/rules` 401/79 gz · `/sources` 705/65 · heaviest host
+415/80 · `/` 12/3 · `/feat?entry=` 5.81 MB/537 KB · fonts 70.5 KB.
 
 **P1 BUILT 2026-07-13** (spec `thoughts/astra/specs/0029-codex-p1-ingest-spec.md`, status FINAL →
 all four slices committed same-day by staff-orchestrator + sonnet engineers): S1 `108571d`
