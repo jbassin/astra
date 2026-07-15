@@ -268,6 +268,176 @@ attachment and aren't depth-limited by this rule).
 each entity) — a P4-only corpus refresh needs no Pagefind rebuild. The host-only,
 ~3.8 GB-RSS `just codex-search-index` posture from P3 is untouched.
 
+## UX rework + bespoke restyle (P4.5, D29-46..52)
+
+P4.5 is frontend-only — no corpus/transform change (fixtures untouched) — and reworks five
+independent surfaces per stakeholder redirect at P4's exit gate H: the whole visual system,
+global nav + a real landing page, the legacy-toggle mechanism, category browse, and a
+page-surface restyle sweep. See
+`thoughts/astra/specs/0029-codex-p45-ux-restyle-spec.md` (D29-46..52, §8 build record) for
+the full decision ledger.
+
+### Parchment theme, self-hosted fonts, `src/ui/` (S1, D29-46)
+
+codex no longer imports `@astra/gothic` — the dependency and its `theme.css` import are
+gone from `package.json`/`__root.tsx` entirely, replaced by a codex-owned `src/styles/
+tokens.css` (the style-tokens doc's palette, resolved under the SAME `--color-*`/`--font-*`
+names `globals.css` already consumed, now pointing at parchment values instead of
+gothic's dark-void ones) and a new `src/ui/` module (`Input`, `Button`, `TraitPill` +
+`traitBucket.ts`, `ErrorChip`, `ActionGlyph`/`normalizeActionCost` — exact prop-signature
+drop-ins for the five gothic imports they replace). Four self-hosted font families via
+`@fontsource` per-weight CSS imports in `__root.tsx` (mirroring the pre-existing
+`ibm-plex-mono` two-file pattern): Cinzel 700 (`--font-display`, H1 chapter titles),
+Cormorant SC 600 (`--font-heading`, H2/H3), EB Garamond 400/400-italic/600/700
+(`--font-body`), Oswald 500/700 (`--font-condensed` — **`--font-mono` renamed**, repointing
+the app's existing "mechanical voice" slot rather than adding a parallel token; every
+current `var(--font-mono)` call site was already statblock/omnibar/rules-tree/citation UI
+text, never a genuine code block). `@fontsource/ibm-plex-mono` itself is dropped. Alegreya
+SC (the style doc's caption face) is deliberately **not** shipped — no art-plate/
+illustration component exists to consume it; add it if one ever does, not before. The
+dark-theme pre-hydration script and both `suppressHydrationWarning` props on `<html>`/
+`<body>` are deleted outright — parchment is the only theme now, no attribute stamp
+needed. All five `gothic-card*` class sites renamed `codex-card*`.
+
+### Global header nav + landing page (S2, D29-47)
+
+The old brand+tagline+Omnibar header is replaced by a categorized dropdown nav spanning
+**all 88 real corpus categories**, defined once in `src/domain/nav/navData.ts` (Player 39 ·
+Spells 4 · Equipment 13 · GM 15 · Rules 8+1 (direct link + dropdown tail) · Setting 5 ·
+Sources 0 (direct link) · Everything 3 (catch-all) = 88 exact, conformance-tested against
+the real category list). Each dropdown is a disclosure (click or hover-intent, no
+headless-UI dependency) with a real `<details>`/`<summary>`-or-equivalent no-JS
+degradation — every category's plain listing link is reachable with JS disabled. The
+"Rules" nav item is a split control (adversarial M4 — a `<summary>` can't be an `<a>`): a
+plain link to `/rules` plus a separate caret button as its own tab stop opening the
+8-category tail. `/` is now the R4 landing page — eight linked tiles (Creatures, Spells,
+Feats, Equipment & Items, Classes, Ancestries & Backgrounds, Rules, Sources) under a
+front-and-center search box. That hero search is a **distinct** lightweight component
+sharing `pagefindClient.ts`'s memoized runtime-loader promise with the header `<Omnibar>`
+— NOT a second `<Omnibar>` mount, since `Omnibar` registers its own global Ctrl/Cmd-K
+`document` keydown listener per instance and two mounts would race for focus; the hero
+registers no hotkey of its own. The old throwaway category-directory `/` page moves,
+unchanged, to a new demoted route, `/categories` (same `getCategoryDirectory` server fn and
+`CategoryDirectory` component — only the route file moved).
+
+### Edition/legacy rework: `superseded` param + forever-alias (S3, D29-48)
+
+The global legacy toggle — `domain/browse/legacyToggle.ts`'s whole `useSyncExternalStore`
+mechanism, its `codex:legacy` localStorage key, and the module-eval-time URL-wins seed — is
+**deleted outright**, along with every one of its 7 consumer call sites. **No replacement
+global/persisted preference exists** (R3's "one control everywhere" means one *semantics*
+and *default*, not one shared piece of client state): every surface's edition-visibility is
+now a **plain per-page URL read**, default hide-superseded when the param is absent. This
+collapses the old two-phase-hydration reconciliation dance (`hasHydrated`/`liveLegacy`) to a
+bare `search.superseded === true` read at all four sites that carried it — `$category/
+index.tsx`, `$category/$slug.tsx`, `rules.tsx`, and `SearchPage.tsx` (whose block is deleted
+along with the `legacy` field entirely, since search never filters superseded content by
+default). `RulesLayout` gains a genuinely new `superseded` prop (it never had one before —
+it called `useLegacyToggle()` internally).
+
+The URL param is renamed `legacy` → `superseded` (self-documenting parity with
+`IndexRow.superseded`/Pagefind's own `filters.superseded` key). **Back-compat, decode
+forever, not a deprecation window:** `legacy=1`/`legacy=true` still decodes as an alias for
+`superseded` at every validator that reads it; the encoder emits only `superseded`, so
+shared links naturally migrate on the next in-app navigation. One measured consequence,
+flagged for H rather than silently fixed: an old `?legacy=`-style link now takes a
+pre-existing TanStack Start search-param canonicalization hop — a 307 to the equivalent
+`?superseded=true` URL (confirmed byte-identical to a direct `?superseded=1` hit, modulo the
+per-request loader timestamp embedded in the hydration payload) — rather than serving
+in-place. **Search (Omnibar + `/search`) never hides superseded content by default** (R3's
+explicit carve-out) — verified against the real corpus: `spell/magic-missile` (`edition:
+legacy`, `remasteredAs: ["spell/force-barrage"]`, i.e. superseded) surfaces in a bare
+`?q=magic+missile` search with no param, edition pill visible. `/rules` keeps D29-40's
+"no facet panel" stance but gains a small inline "Show N hidden (superseded) →" link next to
+the tree's quick-filter, toggling the URL param directly.
+
+### Split-column browse + filter drawer (S4, D29-49)
+
+Every `/{category}` except `rules` (which keeps P4's dedicated tree browser — its trail/
+sidebar/pager already gives an equivalent context+content experience) is now a
+5e.tools-style split view: the existing always-visible `FacetPanel` `<aside>` moves inside a
+native `<dialog>` filter drawer (zero section-level changes — only the container changed)
+with an active-filter pill summary row above the list; the list itself gains a right pane
+showing the FULL, unmodified `getEntityPage`/`EntityPageData` render for whichever row is
+selected via a new `?entry=<slug>` URL param.
+
+**Loader mechanics, the two folded blockers:** the `/$category/` route declares
+`loaderDeps: ({search}) => ({entry: search.entry})` — without it, TanStack Router treats
+`/feat?entry=a` and `/feat?entry=b` as the same cached match and the loader never re-runs on
+a row click (B1). With `loaderDeps` in place, the loader would naively re-fetch the entire
+category listing (8,485 rows for `feat`) on every click — the fix is `listingClient.ts`'s
+`memoizedListing()`, a module-scoped, category-keyed client cache mirroring
+`pagefindClient.ts`'s own memoized-runtime-loader idiom (B2). **Measured live:** a fresh
+page load's very first client-side loader invocation (which is unavoidably the first row
+click, since that's the first time `loaderDeps` changes) issues exactly one incidental
+`getCategoryListing` fetch alongside its `getEntityPage` fetch — this is the memo's own
+documented "fetch once per page load" contract firing for the first time, not a per-click
+cost; every subsequent row click on the same page load (proven across repeated clicks and a
+facet-state change) issues `getEntityPage` alone. Desktop row clicks intercept navigation
+(`navigate({search: {...search, entry: row.id}})`, a plain push so browser back/forward
+step entry-to-entry — verified live); a facet-state change preserves `entry` verbatim (B3);
+below the 56rem breakpoint, row taps fully navigate to the canonical `/{category}/{slug}`
+instead, carrying `?superseded=1` when the view was widened (M7, verified). Both fail-soft
+branches render server-side, never a 404, with the listing still intact: an `entry` naming
+a real slug the current filters exclude shows "isn't shown under the current filters"; a
+genuinely unknown slug shows "wasn't found in `{category}`." The `contain-intrinsic-size`
+`content-visibility:auto` placeholder was re-tuned `400px → 640px` for the split view's
+narrower list column (a row's fields wrap onto more lines than the old full-width listing),
+verified scroll-stable 40,000px deep into feat's 8,485-row list.
+
+### Restyle sweep (S5, D29-50)
+
+Statblock header rows (name + level tag in `--font-condensed`, the ◈ action-diamond glyph,
+a hairline rule), the trait-pill row, bold-label/regular-value stat lines, the tan/blue
+callout treatment for existing flavor-vs-mechanical asides, and a gold double-line
+notched-corner frame on `codex-card-inset` land across every entity page. `/rules`'
+book-section headers/breadcrumb trail, `/sources`' book-row table (zebra tint, thin gold
+rule under the header), and `/search`+Omnibar's chrome all restyle to the same system;
+listing rows carry the row-pill treatment kept from the S4 perf gate (a production-build
+`/feat` filter-interaction measurement showed no regression from adding it). Citation/footer
+restyle only — no change to what they render.
+
+### S6 acceptance sweep — weights, telemetry, hermeticity
+
+Measured fresh against the production build (`pnpm build && pnpm start`), real 46,192-entity
+corpus, one shared Playwright console/`pageerror` listener across every route the phase
+touched (`/`, `/categories`, `/feat` incl. a real `?entry=`, `/spell` incl.
+`?superseded=1`, a mobile-viewport `/spell`, `/rules` incl. `?superseded=1`, `/rules/
+counteracting`, `/rules/building-creatures@legacy?superseded=1`, `/spell/heal`, the legacy
+`/spell/magic-missile`, `/creature/red-dragon-adult`, `/sources`, `/search`, plus a drawer-
+open + 3-row-click interaction pass on `/feat`) — **zero hydration/console errors.** Weights
+vs the P4 baselines: `/rules` 401,257 B raw / 79,339 B gz (was 393,058/78,044); `/sources`
+705,112/64,978 (was 696,918/63,869); the heaviest attached-sidebar host,
+`rules/building-creatures@legacy?superseded=true` (the canonical form after the
+redirect above), 414,846/80,424 (was 378,215/77,866 under `?legacy=true`) — every increase
+tracks the new fonts/nav chrome/restyle markup, none disproportionate. New this phase: `/`
+(landing) 12,204/2,991 B; `/feat?entry=<slug>` (full split-view response) 5,814,711/536,873
+(the listing alone is 5,795,488/532,301 — the right pane's entity render adds ~19 KB raw);
+first-paint font payload on `/` is 4 woff2 files / 70,532 B total (only the weights actually
+used above the fold — Cinzel 700, Oswald 500, Cormorant SC 600, EB Garamond 400). Row-click-
+to-paint latency (production build, 6 clicks): 324.7 ms cold (first-ever click, includes the
+one-time listing warm-fetch above) then 51.2/49.0/64.5/66.6/64.9 ms warm, avg ~59 ms
+excluding the cold sample. Filter-interaction latency (toggle a Rarity checkbox, 5 samples):
+124.3/109.3/81.9/118.9/121.6 ms, avg 111.2 ms — consistent with S4/S5's own measured range,
+no regression. Tree interaction latency is unchanged from P4 (not re-measured; P4's
+tree/trail/pager mechanics are untouched by this phase).
+
+Telemetry (acceptance G): a local OTLP smoke, same method as P4 S5 — `initTelemetry(
+"astra.codex", {endpoint: "http://localhost:10353"})` called explicitly before
+`createSsrServer`'s own config.kdl-default init (the `@astra/observe` module-singleton
+guard makes the first call win), then real hits to `/`, `/feat?entry=...`, `/categories`,
+`/search`, `/rules`, `/creature?entry=...`. Verified via the `signoz_*` MCP tools: all six
+routes present as `SSR GET <route>` spans, `responseStatusCode: 200`/`hasError: false` on
+every one.
+
+Hermeticity (both lanes, `data/` renamed OUT of tree to system `/tmp`, restored after):
+TypeScript (`vp run -r typecheck`, `oxlint --type-aware --deny-warnings`, `format:check`,
+`vp run -r test` — codex falls back to the fixture corpus with its own loud startup WARN,
+**73 files/1,435 tests**, `vp run -r build`) and Python (`ruff check`, `ruff format --check`,
+`ty check`, `pytest`) both green with `data/` absent. `manifest.json`'s `totalEntityCount`
+(46,192) and a `find`-based recount reconciled exact post-restore; codex's own suite re-run
+once more against the real corpus, still 73 files/1,435 tests green.
+
 ## Pipeline shape
 
 ```

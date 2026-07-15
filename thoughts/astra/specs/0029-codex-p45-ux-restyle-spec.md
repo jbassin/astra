@@ -1,6 +1,7 @@
 # 0029 — codex P4.5: UX rework + bespoke restyle — spec
 
-**Status:** FINAL (2026-07-14) — adversarially reviewed (2 reviewers), 3 blockers + 8 minors + 5 nits folded.
+**Status:** BUILT (2026-07-15) — S1–S6 complete, A–G met with recorded evidence; ▶ H = the
+consolidated stakeholder review re-run.
 **Scope doc:** `thoughts/shared/research/2026-07-14-codex-0029-p45-ux-restyle-thoughts.md` (R1–R6
 resolved same day, §6 slice shape, §7 risks, §8 out-of-scope — all binding; this spec elaborates,
 never contradicts). Companion docs: `2026-07-14-codex-0029-p45-ui-map.md` (current-implementation
@@ -717,5 +718,150 @@ built finer than the flat 7-group scheme). i18n.
 
 ## 8. Build record (grows per slice)
 
-*Empty — this phase has not yet been implemented (`octo:embrace` against this spec is the next
-step after adversarial review).*
+- **S1 (`4831fec`) — parchment theme foundation (D29-46).** New `src/styles/tokens.css`, four
+  self-hosted font families (Cinzel/Cormorant SC/EB Garamond/Oswald, 8 weight files,
+  `--font-mono` repointed to `--font-condensed`), the codex-owned `src/ui/` component set
+  (`Input`/`Button`/`TraitPill`+`traitBucket.ts`/`ErrorChip`/`ActionGlyph`) as exact
+  prop-signature drop-ins for the five gothic imports, `@astra/gothic` dropped from
+  `package.json` and every `gothic-card*` class renamed `codex-card*`, the dark-theme
+  pre-hydration script + both `suppressHydrationWarning` props deleted. Goldens regenerated
+  (first of the phase's two sanctioned regenerations).
+- **S2 (`a5e448c`) — global header nav + landing page (D29-47).** `src/domain/nav/navData.ts`
+  (88-category IA table) + conformance test, `HeaderNav.tsx` (6 dropdowns + the split Rules
+  control), `__root.tsx`'s header swap (legacy toggle RETAINED per D29-47's own instruction,
+  deleted next slice), `/` rewritten to the R4 eight-tile hero + distinct hero search box
+  (sharing `pagefindClient.ts`'s memoized loader, registering no hotkey of its own), new
+  `/categories` (the demoted directory, same `getCategoryDirectory`/`CategoryDirectory`).
+- **S3 (`28b4392`) — edition rework (D29-48).** `legacyToggle.ts` deleted whole + its 7-file
+  blast radius; `legacy`→`superseded` rename across `filterEngine`/`urlState`/`treeModel`/
+  `AttachedSidebars`/`pagefindClient`/`searchUrlState`; the M4 two-phase hydration seam
+  collapsed to a bare URL read at all four sites (`$category/index.tsx`, `$category/$slug.tsx`,
+  `rules.tsx`, `SearchPage.tsx` — the last deletes its whole `hasHydrated`/`liveLegacy` block
+  + the `legacy` field outright, since search never hides superseded by default); `RulesLayout`
+  gains the new `superseded` prop; `legacy=1`/`legacy=true` alias-decodes forever; the `/rules`
+  inline "Show N hidden" link added; the Edition drawer's default-state explainer copy shipped.
+- **S4 (`fccee40`) — split-column browse + filter drawer (D29-49).** `BrowseListing.tsx`'s
+  row-click/breakpoint branch, the `entry` URL param + codec, `loaderDeps` (B1) +
+  `listingClient.ts`'s module-scoped category-keyed memo (B2), the `entry`-preserving
+  facet-mutation resync (B3), the `<dialog>` filter drawer around the unmodified `FacetPanel`,
+  `activeFilterPills`, both fail-soft branches ("not shown under current filters" / "not
+  found"), the `contain-intrinsic-size` re-tune (400px→640px, M5) for the split view's
+  narrower list column.
+- **S5 (`8505e17`) — restyle sweep (D29-50).** Statblock header/trait-pill/stat-line restyle,
+  tan/blue callout treatment, gold-frame notched-corner `codex-card-inset`, `/rules`
+  tree/trail/pager restyle, `/sources` zebra table, `/search`+Omnibar chrome, listing row
+  pills (perf-gated against the S4 baseline — no regression), citation/footer restyle. Goldens
+  regenerated a second time (the phase's other sanctioned regeneration, structural diff this
+  time, not just color).
+- **S6 (2026-07-15, sonnet engineer + orchestrator review) — acceptance sweep.** Real
+  production server (`pnpm build` + `pnpm start`), real 46,192-entity corpus, the repo's
+  pinned Playwright resolved from `apps/vellum-render`'s installed copy (the repo's standing
+  pattern — no new devDependency). One real bug-adjacent finding, not a product bug: my first
+  split-view "real slug" pick (`feat/aasimars-mercy`) turned out to be itself a superseded
+  legacy feat (`remasteredAs: ["feat/celestial-mercy"]`) — its `?entry=` deep link correctly
+  rendered the "isn't shown under the current filters" fail-soft state by design (superseded
+  hidden by default), not a bug; re-picked a genuinely current feat
+  (`feat/a-home-in-every-port`) to prove the SSR-deep-link-renders-the-body case cleanly. No
+  other bugs found or fixed this slice — S1–S5's own gates already covered the surface area.
+
+  **A.** Carried from S1 (§8 above) — zero `@astra/gothic`/`gothic-card` references
+  (grep-provable, re-confirmed at HEAD); goldens reviewed; not re-run structurally.
+
+  **B.** Carried from S2 (§8 above) — 88/88 nav conformance, keyboard/no-JS sweep; not
+  re-run (no route/nav logic touched since).
+
+  **C.** Carried from S3, fresh real-corpus proofs at HEAD: `rules/building-creatures@legacy`
+  under `?legacy=true` vs `?superseded=1` — both take a pre-existing TanStack Start
+  search-param canonicalization 307 to the same final `?superseded=true` URL, confirmed
+  **byte-identical** (414,846 B each, diff only in the per-request loader timestamp embedded
+  in the hydration payload). A search for **"magic missile"** with no param surfaces
+  `spell/magic-missile` (`edition: legacy`, `remasteredAs: ["spell/force-barrage"]`, i.e.
+  superseded) with its edition pill visible — confirmed live via Playwright (client-only
+  `/search` can't be curl-verified). Zero `hasHydrated`/`liveLegacy` occurrences repo-wide
+  (grep-provable). Zero hydration errors.
+
+  **D.** Fresh Playwright proofs against the production server, real corpus: a fresh-context
+  deep link to `/feat?entry=a-home-in-every-port` (a genuinely current, non-superseded feat)
+  SSRs the full entity body pre-JS (`codex-entry-pane-content` present in the raw response,
+  `curl`-verified). Row click updates `?entry=` via a client-side push (no full navigation);
+  browser back restores the prior selection (verified: URL after `goBack()` matches the URL
+  after the first click). **B2 measured precisely:** the very first client-side loader
+  invocation on a fresh page load (unavoidably coincident with the first row click, since
+  that's the first time `loaderDeps` changes) issues one `getCategoryListing` fetch alongside
+  its `getEntityPage` fetch — this is `listingClient.ts`'s own documented "fetch once per page
+  load" memo populating for the first time, not a per-click cost; the 2nd and 3rd row clicks
+  on the SAME page load issue `getEntityPage` alone (fetch-spy-verified via
+  `page.on("request")`, matching `_serverFn` hash IDs). A facet-state change (toggling a
+  Rarity checkbox) preserves `?entry=` verbatim (B3, verified). Mobile viewport (390×844)
+  row tap fully navigates to the canonical `/{category}/{slug}` URL, carrying
+  `?superseded=1` (normalized to `?superseded=true`) when widened (M7, verified). Both
+  fail-soft branches proven server-side: `?entry=` naming a real slug the current filters
+  exclude renders "isn't shown under the current filters" with the listing intact (843 rows
+  still rendered); a genuinely unknown slug renders "wasn't found in feat." with the listing
+  unaffected. Scroll-stability: rapid-scroll to 40,000px deep into feat's 8,485-row list holds
+  position exactly (0 px drift) under the re-tuned `contain-intrinsic-size: auto 640px` (M5).
+
+  **E.** Carried from S5 (§8 above) — goldens reviewed structurally; not re-run (no restyle
+  logic touched since).
+
+  **F.** Measured at HEAD (`curl` raw+gz against the production server, real corpus), vs the
+  P4 baselines: `/rules` 401,257 B raw / 79,339 B gz (was 393,058/78,044, +2.1%/+1.7%);
+  `/sources` 705,112/64,978 (was 696,918/63,869, +1.2%/+1.7%); the heaviest attached-sidebar
+  host, `rules/building-creatures@legacy` at its canonical post-redirect URL
+  (`?superseded=true`), 414,846/80,424 (was 378,215/77,866 under `?legacy=true`, +9.7%/+3.3%)
+  — every increase tracks the new fonts/nav chrome/restyle markup, none disproportionate (no
+  order-of-magnitude jump). New this phase: `/` (landing) 12,204 B raw / 2,991 B gz;
+  `/feat?entry=a-home-in-every-port` (full split-view response) 5,814,711/536,873 (the
+  listing alone, no entry, is 5,795,488/532,301 — the right pane's entity render adds
+  ~19 KB raw / ~4.6 KB gz on top); first-paint font payload on `/` is 4 woff2 files /
+  70,532 B total (only the weights used above the fold: Cinzel 700, Oswald 500, Cormorant SC
+  600, EB Garamond 400 — the other 4 weight files load on demand elsewhere). Row-click-to-
+  paint latency (production build, 6 sequential clicks on `/feat`): 324.7 ms cold (first-ever
+  click, includes the one-time B2 listing warm-fetch) then 51.2/49.0/64.5/66.6/64.9 ms warm,
+  avg ~59 ms excluding the cold sample. Filter-interaction latency (toggling a Rarity
+  checkbox, 5 samples): 124.3/109.3/81.9/118.9/121.6 ms, avg 111.2 ms — consistent with
+  S4/S5's own measured range (61–148 ms), no regression. Tree interaction latency unchanged
+  from P4 (not re-measured — P4's tree/trail/pager mechanics are untouched by this phase).
+
+  **G.** Telemetry method (per the acceptance criterion's "record which"): a local OTLP
+  smoke, the same method P4 S5 used — a throwaway driver script (not committed, deleted after
+  use) calling `initTelemetry("astra.codex", {endpoint: "http://localhost:10353"})`
+  explicitly BEFORE `createSsrServer`'s own config.kdl-default (in-cluster-only) init — the
+  `@astra/observe` module-singleton `state` guard makes the first call win — then real hits
+  to `/`, `/feat?entry=aasimars-mercy`, `/categories`, `/search?q=magic+missile`, `/rules`,
+  `/creature?entry=red-dragon-adult`. Verified via the `signoz_*` MCP tools: all six routes
+  present as `SSR GET <route>` spans in the last 10 minutes, `responseStatusCode: 200` /
+  `hasError: false` on every one (durations ranging ~4.1 ms for `/search` to ~391 ms for a
+  cold `/feat`). Hermeticity: `apps/codex/data` renamed OUT of tree to system `/tmp`
+  (`/tmp/codex-data-holdout-p45s6`, never an in-tree rename) — BOTH lanes green with it
+  absent: TS (`vp run -r typecheck`, `oxlint --type-aware --deny-warnings`, `format:check`,
+  `pnpm --filter @astra/codex test` — codex falls back to the fixture corpus with its own
+  loud startup WARN, **73 files / 1,435 tests** — `vp run -r build`) and Python (`ruff
+  check`, `ruff format --check`, `ty check`, `pytest`, 360 passed, all green). `data/`
+  restored afterward; `manifest.json`'s `totalEntityCount` (46,192) and a `find`-based
+  recount reconciled exact; codex's own suite re-run once more against the REAL corpus,
+  still 73 files / 1,435 tests green. Zero hydration/console errors across the entire S6
+  sweep (`/`, `/categories`, `/feat`, `/feat?entry=...`, `/spell`, `/spell?superseded=1`,
+  `/creature?entry=...&superseded=1`, `/rules`, `/rules?superseded=1`, `/rules/
+  counteracting`, `/rules/building-creatures@legacy?superseded=1`, `/spell/heal`, `/spell/
+  magic-missile`, `/creature/red-dragon-adult`, `/sources`, `/search`, a mobile-viewport
+  `/spell`, plus drawer-open + 3-row-click interactions on `/feat`) — one shared
+  console/`pageerror` listener across every context, zero issues collected. A stray
+  `apps/heartwood-frontend/src/routeTree.gen.ts` flap surfaced mid-sweep from an unrelated
+  `vp run` invocation — restored from HEAD per the standing gotcha, not a codex change.
+
+  **README** gains the "UX rework + bespoke restyle (P4.5)" section (parchment theme/fonts/
+  `src/ui/`, header nav IA + `/categories`, the edition-param rename + forever-alias + the
+  307-canonicalization note, split-view mechanics incl. `loaderDeps`/the memoized-listing
+  B2 nuance/`entry`-preservation, the restyle sweep, the S6 weight/telemetry/hermeticity
+  numbers).
+
+  **Left for H (the consolidated stakeholder review):** everything P2+P3+P4+P4.5 built is
+  now evidence-complete for one sign-off — the carried-forward P2 spot-set (M7
+  links-not-inlined + M11 statblock-twice, still expected), P3's browse/search (the
+  single-common-word Pagefind ranking limitation, still documented, not a bug), P4's
+  surfaces (rules tree, hierarchy nav, attached sidebars, `/sources`) now in the parchment
+  skin, and all five P4.5 rework items (global header nav, the landing page, the
+  edition-facet-only visibility model, split-column browse + filter drawer, the full
+  restyle) — plus the one operational note above (the `?legacy=`→`?superseded=` 307
+  canonicalization hop) for the stakeholder's awareness, not a re-decision request.
