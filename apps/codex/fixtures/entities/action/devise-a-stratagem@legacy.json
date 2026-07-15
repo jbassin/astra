@@ -4,85 +4,6 @@
     {
       "children": [
         {
-          "display": "Devise a Stratagem",
-          "kind": "crossref",
-          "targetId": "action/devise-a-stratagem"
-        },
-        {
-          "cost": "Single Action",
-          "kind": "actionGlyph"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Action"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Advanced Player's Guide",
-          "kind": "crossref",
-          "targetId": "source/advanced-players-guide"
-        },
-        {
-          "content": " pg. 56",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Frequency",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " once per round",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "You assess a foe's weaknesses in combat and use them to formulate a plan of attack against your enemy. Choose a creature you can see and roll a d20. If you Strike the chosen creature later this round, you must use the result of the roll you made to Devise a Stratagem for your Strike's attack roll instead of rolling. You make this substitution only for the first Strike you make against the creature this round, not any subsequent attacks.",
           "kind": "text",
           "marks": {
@@ -183,6 +104,22 @@
   "edition": "legacy",
   "facets": {},
   "id": "action/devise-a-stratagem@legacy",
+  "mastheadExtra": [
+    {
+      "label": "Frequency",
+      "value": [
+        {
+          "content": " once per round",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Devise a Stratagem",
   "proseOnly": true,
   "rarity": "common",

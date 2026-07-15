@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Wit",
-          "kind": "crossref",
-          "targetId": "style/wit"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Swashbuckler Style "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Advanced Player's Guide",
-          "kind": "crossref",
-          "targetId": "source/advanced-players-guide"
-        },
-        {
-          "content": " pg. 85",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "You are friendly, clever, and full of humor, always knowing just what to say in any situation. Your witticisms leave foes unprepared for the skill and speed of your attacks. You are trained in ",
           "kind": "text",
           "marks": {

@@ -4,192 +4,6 @@
     {
       "children": [
         {
-          "display": "Heal",
-          "kind": "crossref",
-          "targetId": "spell/heal"
-        },
-        {
-          "cost": "Single Action to Three Actions",
-          "kind": "actionGlyph"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Spell 1"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 343",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Traditions",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Divine",
-          "kind": "crossref",
-          "targetId": "tradition/divine"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Primal",
-          "kind": "crossref",
-          "targetId": "tradition/primal"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Bloodlines",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Angelic",
-          "kind": "crossref",
-          "targetId": "bloodline/angelic"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Psychopomp",
-          "kind": "crossref",
-          "targetId": "bloodline/psychopomp"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Range",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " varies",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Target",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1 willing living creature or 1 undead",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "You channel positive energy to heal the living or damage the undead. If the target is a willing living creature, you restore 1d8 Hit Points. If the target is undead, you deal that amount of positive damage to it, and it gets a basic Fortitude save. The number of actions you spend when Casting this Spell determines its targets, range, area, and other parameters.",
           "kind": "text",
           "marks": {
@@ -331,6 +145,102 @@
   "facets": {},
   "id": "spell/heal@legacy",
   "level": 1,
+  "mastheadExtra": [
+    {
+      "label": "Traditions",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Divine",
+          "kind": "crossref",
+          "targetId": "tradition/divine"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Primal",
+          "kind": "crossref",
+          "targetId": "tradition/primal"
+        }
+      ]
+    },
+    {
+      "label": "Bloodlines",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Angelic",
+          "kind": "crossref",
+          "targetId": "bloodline/angelic"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Psychopomp",
+          "kind": "crossref",
+          "targetId": "bloodline/psychopomp"
+        }
+      ]
+    },
+    {
+      "label": "Range",
+      "value": [
+        {
+          "content": " varies",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Target",
+      "value": [
+        {
+          "content": " 1 willing living creature or 1 undead",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Heal",
   "proseOnly": true,
   "rarity": "common",

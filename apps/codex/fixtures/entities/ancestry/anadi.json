@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Anadi",
-          "kind": "crossref",
-          "targetId": "ancestry/anadi"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Ancestry"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "The Mwangi Expanse",
-          "kind": "crossref",
-          "targetId": "source/the-mwangi-expanse"
-        },
-        {
-          "content": " pg. 102",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Anadi people are reclusive, sapient spiders who hail from the jungles of southern Garund. Though they act in many ways like natural-born shapeshifters, their twin forms actually stem from carefully developed magic.",
           "kind": "text",
           "marks": {

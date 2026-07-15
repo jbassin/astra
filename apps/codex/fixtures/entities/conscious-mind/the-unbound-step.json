@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "The Unbound Step",
-          "kind": "crossref",
-          "targetId": "conscious-mind/the-unbound-step"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Psychic Conscious Mind "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Dark Archive",
-          "kind": "crossref",
-          "targetId": "source/dark-archive"
-        },
-        {
-          "content": " pg. 23",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "The mind can flit from thought to thought; why too shouldn't you? You focus on motion in a higher order of spatial dimensions, not just the typical three, allowing for versatile abilities that alter positioning.",
           "kind": "text",
           "marks": {

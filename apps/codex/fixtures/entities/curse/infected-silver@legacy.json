@@ -4,78 +4,6 @@
     {
       "children": [
         {
-          "display": "Infected Silver",
-          "kind": "crossref",
-          "targetId": "curse/infected-silver"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Curse 13"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Pathfinder #199: To Bloom Below the Web",
-          "kind": "crossref",
-          "targetId": "source/pathfinder-199-to-bloom-below-the-web"
-        },
-        {
-          "content": " pg. 84",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Usage",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " curses silver item",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "After 1 minute of carrying infected silver, it fuses to you. You become clumsy 1 and remain so as long as the curse persists. As long as you remain cursed, you take a –2 status penalties to all saving throws against mental effects created by nindorus.",
           "kind": "text",
           "marks": {
@@ -93,6 +21,22 @@
   "facets": {},
   "id": "curse/infected-silver@legacy",
   "level": 13,
+  "mastheadExtra": [
+    {
+      "label": "Usage",
+      "value": [
+        {
+          "content": " curses silver item",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Infected Silver",
   "proseOnly": true,
   "rarity": "rare",

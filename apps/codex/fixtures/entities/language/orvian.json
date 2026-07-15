@@ -1,0 +1,19 @@
+{
+  "aonUrl": "/Languages.aspx?ID=120",
+  "body": [],
+  "category": "language",
+  "edition": "legacy",
+  "facets": {},
+  "id": "language/orvian",
+  "name": "Orvian",
+  "proseOnly": true,
+  "rarity": "rare",
+  "slug": "orvian",
+  "source": {
+    "book": "Rage of Elements",
+    "license": "OGL"
+  },
+  "traits": [
+    "Rare"
+  ]
+}

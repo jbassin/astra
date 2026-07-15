@@ -4,78 +4,6 @@
     {
       "children": [
         {
-          "display": "Flier",
-          "kind": "crossref",
-          "targetId": "familiar-ability/flier"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Familiar Ability "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 218",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Ability Type",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Familiar",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "It gains a fly Speed of 25 feet.",
           "kind": "text",
           "marks": {
@@ -92,6 +20,22 @@
   "edition": "legacy",
   "facets": {},
   "id": "familiar-ability/flier@legacy",
+  "mastheadExtra": [
+    {
+      "label": "Ability Type",
+      "value": [
+        {
+          "content": " Familiar",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Flier",
   "proseOnly": true,
   "rarity": "common",

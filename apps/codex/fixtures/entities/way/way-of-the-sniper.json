@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Way of the Sniper",
-          "kind": "crossref",
-          "targetId": "way/way-of-the-sniper"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Gunslinger Way "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Guns & Gears",
-          "kind": "crossref",
-          "targetId": "source/guns-gears"
-        },
-        {
-          "content": " pg. 109",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "You practice a style of shooting that relies on unerring accuracy and perfect placement of your first shot. You keep hidden or at a distance, staying out of the fray and bringing unseen death to your foes.",
           "kind": "text",
           "marks": {

@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Cloistered Cleric",
-          "kind": "crossref",
-          "targetId": "doctrine/cloistered-cleric"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Cleric Doctrine "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 119",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "You are a cleric of the cloth, focusing on divine magic and your connection to your deity’s ",
           "kind": "text",
           "marks": {

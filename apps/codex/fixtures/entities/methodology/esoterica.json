@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Esoterica",
-          "kind": "crossref",
-          "targetId": "methodology/esoterica"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Investigator Methodology "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Divine Mysteries",
-          "kind": "crossref",
-          "targetId": "source/divine-mysteries"
-        },
-        {
-          "content": " pg. 288",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "This methodology can be taken by ",
           "kind": "text",
           "marks": {

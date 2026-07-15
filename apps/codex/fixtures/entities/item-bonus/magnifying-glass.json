@@ -4,104 +4,6 @@
     {
       "children": [
         {
-          "display": "Magnifying Glass",
-          "kind": "crossref",
-          "targetId": "equipment/magnifying-glass"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Item 3"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 290",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Price",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 40 gp",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Hands",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "This quality handheld lens gives you a +1 item bonus to Perception checks to notice minute details of documents, fabric, and the like.",
           "kind": "text",
           "marks": {
@@ -119,6 +21,36 @@
   "facets": {},
   "id": "item-bonus/magnifying-glass",
   "level": 3,
+  "mastheadExtra": [
+    {
+      "label": "Price",
+      "value": [
+        {
+          "content": " 40 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Hands",
+      "value": [
+        {
+          "content": " 1",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Magnifying Glass",
   "proseOnly": true,
   "rarity": "common",

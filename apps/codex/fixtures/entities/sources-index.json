@@ -8,11 +8,12 @@
         "class": 2,
         "class-feature": 1,
         "lesson": 1,
+        "ritual": 1,
         "sidebar": 1,
         "style": 1
       },
       "edition": "legacy",
-      "entityCount": 10,
+      "entityCount": 11,
       "license": "OGL"
     },
     {
@@ -36,11 +37,10 @@
     {
       "book": "Bestiary",
       "categoryCounts": {
-        "category-page": 1,
         "creature-ability": 1
       },
       "edition": "legacy",
-      "entityCount": 2,
+      "entityCount": 1,
       "license": "OGL"
     },
     {
@@ -69,6 +69,7 @@
         "animal-companion-specialization": 1,
         "arcane-school": 1,
         "arcane-thesis": 1,
+        "armor": 1,
         "bloodline": 1,
         "class-kit": 1,
         "doctrine": 1,
@@ -78,7 +79,7 @@
         "muse": 1,
         "racket": 1,
         "research-field": 1,
-        "ritual": 1,
+        "ritual": 2,
         "rules": 1,
         "source": 1,
         "spell": 2,
@@ -86,7 +87,7 @@
         "tradition": 1
       },
       "edition": "legacy",
-      "entityCount": 20,
+      "entityCount": 22,
       "license": "OGL",
       "sourceEntityRef": "source/core-rulebook"
     },
@@ -172,12 +173,10 @@
     {
       "book": "GM Core",
       "categoryCounts": {
-        "armor": 1,
-        "shield": 1,
-        "vehicle": 1
+        "shield": 1
       },
       "edition": "remaster",
-      "entityCount": 3,
+      "entityCount": 1,
       "license": "ORC"
     },
     {
@@ -235,10 +234,11 @@
       "book": "Kingmaker Companion Guide",
       "categoryCounts": {
         "campsite-meal": 1,
+        "trait": 1,
         "weather-hazard": 1
       },
       "edition": "legacy",
-      "entityCount": 2,
+      "entityCount": 3,
       "license": "OGL"
     },
     {
@@ -287,9 +287,27 @@
       "license": "OGL"
     },
     {
+      "book": "Pathfinder #158: Sixty Feet Under",
+      "categoryCounts": {
+        "article": 1
+      },
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
       "book": "Pathfinder #164: Hands of the Devil",
       "categoryCounts": {
         "creature": 1
+      },
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Pathfinder #167: Ready? Fight!",
+      "categoryCounts": {
+        "vehicle": 1
       },
       "edition": "legacy",
       "entityCount": 1,
@@ -341,17 +359,6 @@
       "license": "ORC"
     },
     {
-      "book": "Pathfinder #218: Titanbane",
-      "categoryCounts": {
-        "article": 1,
-        "language": 1,
-        "trait": 1
-      },
-      "edition": "remaster",
-      "entityCount": 3,
-      "license": "ORC"
-    },
-    {
       "book": "Pathfinder #223: Hell's Destiny",
       "categoryCounts": {
         "apparition": 1
@@ -374,14 +381,17 @@
       "categoryCounts": {
         "animal-companion": 1,
         "armor-group": 1,
+        "category-page": 1,
         "druidic-order": 1,
+        "feat": 1,
+        "ritual": 1,
         "rules": 2,
         "sidebar": 1,
         "spell": 2,
         "weapon-group": 1
       },
       "edition": "remaster",
-      "entityCount": 9,
+      "entityCount": 12,
       "license": "ORC"
     },
     {
@@ -389,29 +399,30 @@
       "categoryCounts": {
         "background": 1,
         "familiar-specific": 1,
-        "instinct": 1
+        "instinct": 1,
+        "ritual": 1
       },
       "edition": "remaster",
-      "entityCount": 3,
+      "entityCount": 4,
       "license": "ORC"
     },
     {
       "book": "Rage of Elements",
       "categoryCounts": {
-        "element": 1
+        "element": 1,
+        "language": 1
       },
       "edition": "legacy",
-      "entityCount": 1,
+      "entityCount": 2,
       "license": "OGL"
     },
     {
       "book": "Secrets of Magic",
       "categoryCounts": {
-        "eidolon": 1,
-        "equipment": 1
+        "eidolon": 1
       },
       "edition": "legacy",
-      "entityCount": 2,
+      "entityCount": 1,
       "license": "OGL"
     },
     {
@@ -427,6 +438,15 @@
       "book": "The Mwangi Expanse",
       "categoryCounts": {
         "ancestry": 1
+      },
+      "edition": "legacy",
+      "entityCount": 1,
+      "license": "OGL"
+    },
+    {
+      "book": "Travel Guide",
+      "categoryCounts": {
+        "equipment": 1
       },
       "edition": "legacy",
       "entityCount": 1,
@@ -453,10 +473,11 @@
     {
       "book": "War of Immortals",
       "categoryCounts": {
-        "epithet": 1
+        "epithet": 1,
+        "ritual": 1
       },
       "edition": "remaster",
-      "entityCount": 1,
+      "entityCount": 2,
       "license": "ORC"
     }
   ]

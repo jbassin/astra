@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Light Mortar",
-          "kind": "crossref",
-          "targetId": "innovation/light-mortar"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Inventor Innovation "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Battlecry!",
-          "kind": "crossref",
-          "targetId": "source/battlecry"
-        },
-        {
-          "content": " pg. 64",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Nethys Note: This innovation is a part of the ",
           "kind": "text",
           "marks": {

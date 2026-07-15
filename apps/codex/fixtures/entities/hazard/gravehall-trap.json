@@ -4,78 +4,6 @@
     {
       "children": [
         {
-          "display": "Gravehall Trap",
-          "kind": "crossref",
-          "targetId": "hazard/gravehall-trap"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Hazard 4"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "GM's Toolbox: Gravehall",
-          "kind": "crossref",
-          "targetId": "source/gms-toolbox-gravehall"
-        },
-        {
-          "content": " pg. 1",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Complexity",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Complex",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "When a living creature crosses the midpoint of the trapped tunnel, necromantic magic partially animates the corpses buried in the walls and ceiling.",
           "kind": "text",
           "marks": {
@@ -913,6 +841,22 @@
   },
   "id": "hazard/gravehall-trap",
   "level": 4,
+  "mastheadExtra": [
+    {
+      "label": "Complexity",
+      "value": [
+        {
+          "content": " Complex",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Gravehall Trap",
   "rarity": "common",
   "slug": "gravehall-trap",

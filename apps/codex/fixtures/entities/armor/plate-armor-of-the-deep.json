@@ -1,0 +1,132 @@
+{
+  "aonUrl": "/Equipment.aspx?ID=157",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "This suit of ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "+2 greater resilient ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": true,
+            "superscript": false
+          }
+        },
+        {
+          "display": "full plate",
+          "kind": "crossref",
+          "targetId": "armor/full-plate"
+        },
+        {
+          "content": " is decorated with swirling, ornate motifs of waves and fish scales. While wearing it, you take no Speed reduction or check penalty from armor when Swimming, gain a +2 item bonus to Athletics checks to Swim, can breathe underwater, and can speak Aquan.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "armor",
+  "edition": "legacy",
+  "facets": {
+    "bulk": 4,
+    "featLevel": 15,
+    "itemCategory": "heavy",
+    "price": "6500 gp",
+    "rank": 15
+  },
+  "id": "armor/plate-armor-of-the-deep",
+  "level": 15,
+  "mastheadExtra": [
+    {
+      "label": "Price",
+      "value": [
+        {
+          "content": " 6,500 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Usage",
+      "value": [
+        {
+          "content": " worn armor",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Bulk",
+      "value": [
+        {
+          "content": " 4",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Base Armor",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Full Plate",
+          "kind": "crossref",
+          "targetId": "armor/full-plate"
+        }
+      ]
+    }
+  ],
+  "name": "Plate Armor of the Deep",
+  "rarity": "uncommon",
+  "remasteredAs": [
+    "armor/tideplate"
+  ],
+  "slug": "plate-armor-of-the-deep",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 558
+  },
+  "traits": [
+    "bulwark",
+    "invested",
+    "magical"
+  ]
+}

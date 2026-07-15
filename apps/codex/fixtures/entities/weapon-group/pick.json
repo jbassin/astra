@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Pick",
-          "kind": "crossref",
-          "targetId": "weapon-group/pick"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Weapon Critical Specialization "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Player Core",
-          "kind": "crossref",
-          "targetId": "source/player-core"
-        },
-        {
-          "content": " pg. 283",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "The weapon viciously pierces the target, who takes 2 additional damage per weapon damage die.",
           "kind": "text",
           "marks": {

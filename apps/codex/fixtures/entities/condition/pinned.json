@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Pinned",
-          "kind": "crossref",
-          "targetId": "condition/pinned"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Condition"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Kingmaker Adventure Path",
-          "kind": "crossref",
-          "targetId": "source/kingmaker-adventure-path"
-        },
-        {
-          "content": " pg. 583",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "The army and cannot move freely. It has the outflanked condition and cannot use any maneuver war actions. A pinned army cannot be deployed.",
           "kind": "text",
           "marks": {

@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Lamentation of Sinister Deals",
-          "kind": "crossref",
-          "targetId": "apparition/lamentation-of-sinister-deals"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Animist Apparition "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Pathfinder #223: Hell's Destiny",
-          "kind": "crossref",
-          "targetId": "source/pathfinder-223-hells-destiny"
-        },
-        {
-          "content": " pg. 226",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Lamentations of sinister deals linger where mortals sold their integrity, loyalties, or even their souls in pursuit of short-term gain. While some of these apparitions lurk near corrupt courthouses or fey marketplaces, the greatest concentration emanates from Cheliax’s Whisperwood, where Abrogail I penned a baleful bargain with ",
           "kind": "text",
           "marks": {

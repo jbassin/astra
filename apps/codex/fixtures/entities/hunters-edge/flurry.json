@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Flurry",
-          "kind": "crossref",
-          "targetId": "hunters-edge/flurry"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Ranger Hunter's Edge "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 168",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "You have trained to unleash a devastating flurry of attacks upon your prey. Your multiple attack penalty for attacks against your hunted prey is –3 (–2 with an agile weapon) on your second attack of the turn instead of –5, and –6 (–4 with an agile weapon) on your third or subsequent attack of the turn, instead of –10.",
           "kind": "text",
           "marks": {

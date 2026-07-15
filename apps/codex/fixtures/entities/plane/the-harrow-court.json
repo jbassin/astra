@@ -4,127 +4,6 @@
     {
       "children": [
         {
-          "display": "The Harrow Court",
-          "kind": "crossref",
-          "targetId": "plane/the-harrow-court"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Plane "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Pathfinder #190: The Choosing",
-          "kind": "crossref",
-          "targetId": "source/pathfinder-190-the-choosing"
-        },
-        {
-          "content": " pg. 71",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Category",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Dimensions",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Divinities",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " none",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Native Inhabitants",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " simulacra",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "The Harrow Court appears as an idyllic region that could have been plucked from the heart of Avistan. At the demiplane's center, a fortress known as Harrowheart sits atop a hill, which is in turn surrounded by a village and farmlands. To the north, the farmlands give way to barren deserts, while to the south they decline into a swamp. A vast lake lies to the east, and a dense forest grows in the west, while all around, towering mountains surround the realm, giving it the appearance of being nestled in a single vast valley. The sun rises in the east every morning at 6:00 am and sets in the west every evening at 6:00 pm, splitting time into equal periods of twelve hour days and nights. The sky above appears normal (complete with moon and stars at night) but has an impassible barrier—the edge of the demiplane—at an altitude of 3 miles.",
           "kind": "text",
           "marks": {
@@ -141,6 +20,50 @@
   "edition": "legacy",
   "facets": {},
   "id": "plane/the-harrow-court",
+  "mastheadExtra": [
+    {
+      "label": "Category",
+      "value": [
+        {
+          "content": " Dimensions",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Divinities",
+      "value": [
+        {
+          "content": " none",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Native Inhabitants",
+      "value": [
+        {
+          "content": " simulacra",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "The Harrow Court",
   "proseOnly": true,
   "rarity": "common",

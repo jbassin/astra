@@ -1,1 +1,1 @@
-[{"edition":"remaster","facets":{"ac":20,"fortitudeSave":14,"hp":80,"size":"lg"},"id":"vehicle/sky-chariot-light","level":7,"name":"Sky Chariot (Light)","rarity":"uncommon","source":{"book":"GM Core","license":"ORC","page":214},"superseded":false,"traits":[]}]
+[{"edition":"legacy","id":"vehicle/sky-chariot-light@legacy","level":7,"name":"Sky Chariot, Light","rarity":"uncommon","source":{"book":"Pathfinder #167: Ready? Fight!","license":"OGL","page":73},"superseded":true,"traits":["Uncommon"]}]

@@ -1,0 +1,33 @@
+{
+  "aonUrl": "/Companions.aspx",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Some adventurers travel with loyal allies known as companions.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "category-page",
+  "edition": "remaster",
+  "facets": {},
+  "id": "category-page/companions",
+  "name": "Companions",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "companions",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 206
+  },
+  "traits": []
+}

@@ -4,69 +4,6 @@
     {
       "children": [
         {
-          "display": "Time",
-          "kind": "crossref",
-          "targetId": "mystery/time"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Oracle Mystery "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Dark Archives (Remastered)",
-          "kind": "crossref",
-          "targetId": "source/dark-archives-remastered"
-        },
-        {
-          "content": " pg. 188, ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Divine Mysteries",
-          "kind": "crossref",
-          "targetId": "source/divine-mysteries"
-        },
-        {
-          "content": " pg. 286",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "While initially unmoored by moments, the countless march of milliseconds builds up to drift you further and further out of sync with your natural timeline, often in contradictory directions. You might view this as a blessing, perhaps as a sign you're somehow beyond mortality or you can't be contained within reality's limitations, or you might view it as a cruel curse that causes your life to slip by adrift even as you gain power over time. Many oracles of time are without faith and either come to rely upon their own instincts to survive or turn to strange rituals and forbidden magic in attempts to break free of time's grasp. Those oracles who worship deities most often venerate Pharasma, goddess of fate who sees all possible futures for all who ever lived, or Alseta, goddess of transitions and the passage through time.",
           "kind": "text",
           "marks": {

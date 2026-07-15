@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Ability Modifiers",
-          "kind": "crossref",
-          "targetId": "rules/ability-modifiers"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Rules"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Gamemastery Guide",
-          "kind": "crossref",
-          "targetId": "source/gamemastery-guide"
-        },
-        {
-          "content": " pg. 59",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Next, figure out your creature’s ability modifiers, since these will suggest what their other statistics should be. You don’t have to determine the exact numbers, but it’s good to avoid creating creatures whose ability modifiers are at odds with their abilities, like creatures with a terrible Wisdom modifier and very high Perception. Most of the time, you’ll just be using ability modifiers for untrained skills, so they’re useful as a guide but not crucial.",
           "kind": "text",
           "marks": {

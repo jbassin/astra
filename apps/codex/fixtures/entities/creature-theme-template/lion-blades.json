@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Lion Blades",
-          "kind": "crossref",
-          "targetId": "creature-adjustment/vampire"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Creature Theme Template"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Character Guide",
-          "kind": "crossref",
-          "targetId": "source/character-guide"
-        },
-        {
-          "content": " pg. 129",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "The Lion Blades are a secret organization in Taldor, protecting the nation via espionage, intrigue, and infiltration. They creatively use every tool at their disposal.",
           "kind": "text",
           "marks": {

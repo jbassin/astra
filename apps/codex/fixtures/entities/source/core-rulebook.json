@@ -1,29 +1,14 @@
 {
   "aonUrl": "/Sources.aspx?ID=1",
-  "body": [
+  "body": [],
+  "category": "source",
+  "edition": "legacy",
+  "facets": {},
+  "id": "source/core-rulebook",
+  "mastheadExtra": [
     {
-      "children": [
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Source"
-    },
-    {
-      "children": [
-        {
-          "content": "Product Page",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
+      "label": "Product Page",
+      "value": [
         {
           "content": " ",
           "kind": "text",
@@ -42,20 +27,11 @@
             "superscript": false
           }
         }
-      ],
-      "kind": "paragraph"
+      ]
     },
     {
-      "children": [
-        {
-          "content": "Release Date",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
+      "label": "Release Date",
+      "value": [
         {
           "content": " ",
           "kind": "text",
@@ -74,20 +50,11 @@
             "superscript": false
           }
         }
-      ],
-      "kind": "paragraph"
+      ]
     },
     {
-      "children": [
-        {
-          "content": "Latest Errata",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
+      "label": "Latest Errata",
+      "value": [
         {
           "content": " ",
           "kind": "text",
@@ -115,20 +82,11 @@
             "superscript": false
           }
         }
-      ],
-      "kind": "paragraph"
+      ]
     },
     {
-      "children": [
-        {
-          "content": "Product Line",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
+      "label": "Product Line",
+      "value": [
         {
           "content": " Rulebooks",
           "kind": "text",
@@ -138,14 +96,9 @@
             "superscript": false
           }
         }
-      ],
-      "kind": "paragraph"
+      ]
     }
   ],
-  "category": "source",
-  "edition": "legacy",
-  "facets": {},
-  "id": "source/core-rulebook",
   "name": "Core Rulebook",
   "proseOnly": true,
   "rarity": "common",

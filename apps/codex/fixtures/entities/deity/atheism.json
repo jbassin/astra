@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Atheism",
-          "kind": "crossref",
-          "targetId": "deity/atheism"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Deity "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Divine Mysteries",
-          "kind": "crossref",
-          "targetId": "source/divine-mysteries"
-        },
-        {
-          "content": " pg. 251",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "In a world where the gods demonstrably exist, few people uphold a strictly atheistic or agnostic worldview; that is, a belief that there are no gods, or that the existence of gods is unknowable. However, a good number of people choose not to worship any deities whatsoever. Many do so because of the value they place on freedom—not being beholden to a deity means no limitations, no censure, no anathema, and no strictures. While this decision might sound amoral to some, for atheists, it can be motivated by a desire for autonomy and the right to choose one's own fate.",
           "kind": "text",
           "marks": {

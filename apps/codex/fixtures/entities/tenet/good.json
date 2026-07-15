@@ -2,55 +2,6 @@
   "aonUrl": "/Tenets.aspx?ID=1",
   "body": [
     {
-      "children": [
-        {
-          "display": "Good",
-          "kind": "crossref",
-          "targetId": "tenet/good"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Champion Tenet "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 106",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
       "items": [
         [
           {

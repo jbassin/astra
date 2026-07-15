@@ -4,83 +4,6 @@
     {
       "children": [
         {
-          "display": "Order of the Chain",
-          "kind": "crossref",
-          "targetId": "hellknight-order/order-of-the-chain"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Hellknight Order "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Character Guide",
-          "kind": "crossref",
-          "targetId": "source/character-guide"
-        },
-        {
-          "content": " pg. 81",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Favored Weapon",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Flail",
-          "kind": "crossref",
-          "targetId": "weapon/flail"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Members of the Order of the Chain are skilled at hunting down and capturing criminals, especially those who dare flee from justice.",
           "kind": "text",
           "marks": {
@@ -249,6 +172,27 @@
   "edition": "legacy",
   "facets": {},
   "id": "hellknight-order/order-of-the-chain",
+  "mastheadExtra": [
+    {
+      "label": "Favored Weapon",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Flail",
+          "kind": "crossref",
+          "targetId": "weapon/flail"
+        }
+      ]
+    }
+  ],
   "name": "Order of the Chain",
   "proseOnly": true,
   "rarity": "common",

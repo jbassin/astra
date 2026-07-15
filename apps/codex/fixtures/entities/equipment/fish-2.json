@@ -1,0 +1,21 @@
+{
+  "aonUrl": "/Equipment.aspx?ID=1768",
+  "body": [],
+  "category": "equipment",
+  "edition": "legacy",
+  "facets": {
+    "itemCategory": "Trade Goods"
+  },
+  "id": "equipment/fish-2",
+  "level": 0,
+  "name": "Fish",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "fish",
+  "source": {
+    "book": "Travel Guide",
+    "license": "OGL",
+    "page": 36
+  },
+  "traits": []
+}

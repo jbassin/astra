@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Fog",
-          "kind": "crossref",
-          "targetId": "weather-hazard/fog"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Weather Hazard 0"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Kingmaker Companion Guide",
-          "kind": "crossref",
-          "targetId": "source/kingmaker-companion-guide"
-        },
-        {
-          "content": " pg. 123",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Thick fog rolls in to obscure the landscape.",
           "kind": "text",
           "marks": {

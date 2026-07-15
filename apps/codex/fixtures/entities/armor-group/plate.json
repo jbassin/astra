@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Plate",
-          "kind": "crossref",
-          "targetId": "armor-group/plate"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Armor Specialization "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Player Core",
-          "kind": "crossref",
-          "targetId": "source/player-core"
-        },
-        {
-          "content": " pg. 272",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "The sturdy plate provides no purchase for a cutting edge. You gain resistance to slashing damage equal to 1 + the value of the armor’s potency rune for medium armor, or 2 + the value of the armor’s potency rune for heavy armor.",
           "kind": "text",
           "marks": {

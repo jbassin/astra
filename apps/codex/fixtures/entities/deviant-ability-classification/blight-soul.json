@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Blight Soul",
-          "kind": "crossref",
-          "targetId": "deviant-ability-classification/blight-soul"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Deviant Ability Classification "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Pathfinder #202: Severed at the Root",
-          "kind": "crossref",
-          "targetId": "source/pathfinder-202-severed-at-the-root"
-        },
-        {
-          "content": " pg. 74",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Whether through planar exploration or unintended catastrophe, you’ve come into close contact with Ayrzul’s Blight and have been forever changed. As the Blight is a realm of invasive rot, pernicious decay, and deadly radiation, so too are you capable of wielding the powers of decay.",
           "kind": "text",
           "marks": {

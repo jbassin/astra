@@ -1,0 +1,33 @@
+{
+  "aonUrl": "/Articles.aspx?ID=23",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Discover the land of a thousand gods, Vudra!",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "article",
+  "edition": "legacy",
+  "facets": {},
+  "id": "article/vudra",
+  "name": "Vudra",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "vudra",
+  "source": {
+    "book": "Pathfinder #158: Sixty Feet Under",
+    "license": "OGL",
+    "page": 66
+  },
+  "traits": []
+}

@@ -7,55 +7,6 @@
     {
       "children": [
         {
-          "display": "Tools of Play",
-          "kind": "crossref",
-          "targetId": "rules/tools-of-play"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Rules"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Player Core",
-          "kind": "crossref",
-          "targetId": "source/player-core"
-        },
-        {
-          "content": " pg. 6",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "In addition to this book, there are a few things you will need to play Pathfinder. These supplies can be found at your local hobby shop or online at ",
           "kind": "text",
           "marks": {

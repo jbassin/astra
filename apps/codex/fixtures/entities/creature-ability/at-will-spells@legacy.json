@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "At-Will Spells",
-          "kind": "crossref",
-          "targetId": "creature-ability/at-will-spells"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Creature Ability "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Bestiary",
-          "kind": "crossref",
-          "targetId": "source/bestiary"
-        },
-        {
-          "content": " pg. 342",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "The monster can cast its at-will spells any number of times without using up spell slots.",
           "kind": "text",
           "marks": {

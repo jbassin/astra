@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Emotional Acceptance",
-          "kind": "crossref",
-          "targetId": "subconscious-mind/emotional-acceptance"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Psychic Subconscious Mind "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Dark Archive",
-          "kind": "crossref",
-          "targetId": "source/dark-archive"
-        },
-        {
-          "content": " pg. 15",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "The mind's truths come not in learned words or mathematical formulas but in deeper feelings and sensations. Emotions unlock the door to your power—you might consider your heart the source of your strength, or you might find that the infinite complexity felt in a moment expresses your power more efficiently than any string of mystic words ever could.",
           "kind": "text",
           "marks": {

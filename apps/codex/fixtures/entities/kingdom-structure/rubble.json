@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Rubble",
-          "kind": "crossref",
-          "targetId": "kingdom-structure/rubble"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Kingdom Structure 0"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Kingmaker Adventure Path",
-          "kind": "crossref",
-          "targetId": "source/kingmaker-adventure-path"
-        },
-        {
-          "content": " pg. 550",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "An unsightly heap of rubble fills this lot.",
           "kind": "text",
           "marks": {

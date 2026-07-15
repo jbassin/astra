@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Hellbound Creature",
-          "kind": "crossref",
-          "targetId": "creature-family/hellbound-creature"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Creature Family"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Monster Core 2",
-          "kind": "crossref",
-          "targetId": "source/monster-core-2"
-        },
-        {
-          "content": " pg. 98",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Sadly, there’s no shortage of people willing to trade all they have for the promise of power. Infernal contracts are the most common of such agreements, but powerful devils can offer even greater abilities at the cost of the mortal’s soul and an obligation to advance Hell’s infernal agenda. This mortal becomes a fiend known as a Hellbound creature.",
           "kind": "text",
           "marks": {

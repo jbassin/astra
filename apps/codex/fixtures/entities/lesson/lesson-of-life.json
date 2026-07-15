@@ -4,78 +4,6 @@
     {
       "children": [
         {
-          "display": "Lesson of Life",
-          "kind": "crossref",
-          "targetId": "lesson/lesson-of-life"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Witch Lesson "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Advanced Player's Guide",
-          "kind": "crossref",
-          "targetId": "source/advanced-players-guide"
-        },
-        {
-          "content": " pg. 100",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Lesson Type",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Basic",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "You gain the ",
           "kind": "text",
           "marks": {
@@ -120,6 +48,22 @@
   "edition": "legacy",
   "facets": {},
   "id": "lesson/lesson-of-life",
+  "mastheadExtra": [
+    {
+      "label": "Lesson Type",
+      "value": [
+        {
+          "content": " Basic",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Lesson of Life",
   "proseOnly": true,
   "rarity": "common",

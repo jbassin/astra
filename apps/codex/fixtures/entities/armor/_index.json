@@ -1,1 +1,1 @@
-[{"edition":"remaster","facets":{"bulk":2,"itemCategory":"medium"},"id":"armor/medusa-armor","level":14,"name":"Medusa Armor","rarity":"rare","source":{"book":"GM Core","license":"ORC","page":306},"superseded":false,"traits":["cursed","invested","magical"]}]
+[{"edition":"legacy","facets":{"bulk":4,"itemCategory":"heavy","price":"6500 gp"},"id":"armor/plate-armor-of-the-deep","level":15,"name":"Plate Armor of the Deep","rarity":"uncommon","source":{"book":"Core Rulebook","license":"OGL","page":558},"superseded":true,"traits":["bulwark","invested","magical"]}]

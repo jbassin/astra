@@ -4,17 +4,6 @@
     {
       "children": [
         {
-          "display": "Ixamè",
-          "kind": "crossref",
-          "targetId": "creature/ixamè"
-        }
-      ],
-      "kind": "heading",
-      "level": 1
-    },
-    {
-      "children": [
-        {
           "display": "Recall Knowledge - Dragon",
           "kind": "crossref",
           "targetId": "rules/recall-knowledge"

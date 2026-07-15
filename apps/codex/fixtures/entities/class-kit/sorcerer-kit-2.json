@@ -4,222 +4,6 @@
     {
       "children": [
         {
-          "display": "Sorcerer Kit",
-          "kind": "brokenRef",
-          "target": "/Classes.aspx?Class=11"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Class Kit"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 289",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Price",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 2 gp, 3 sp, 2 cp",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Money Left Over",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 12 gp, 6 sp, 8 cp",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Bulk",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1, 6 light",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Weapons",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Dagger",
-          "kind": "crossref",
-          "targetId": "weapon/dagger"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Sling",
-          "kind": "crossref",
-          "targetId": "weapon/sling"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "20 sling bullets",
-          "kind": "crossref",
-          "targetId": "weapon/sling-bullets"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Gear",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Adventurer's Pack",
-          "kind": "crossref",
-          "targetId": "equipment/adventurers-pack"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "2 sets of caltrops",
-          "kind": "crossref",
-          "targetId": "equipment/caltrops"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Class Kits",
           "kind": "text",
           "marks": {
@@ -447,6 +231,130 @@
   "edition": "legacy",
   "facets": {},
   "id": "class-kit/sorcerer-kit-2",
+  "mastheadExtra": [
+    {
+      "label": "Price",
+      "value": [
+        {
+          "content": " 2 gp, 3 sp, 2 cp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Money Left Over",
+      "value": [
+        {
+          "content": " 12 gp, 6 sp, 8 cp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Bulk",
+      "value": [
+        {
+          "content": " 1, 6 light",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Weapons",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Dagger",
+          "kind": "crossref",
+          "targetId": "weapon/dagger"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Sling",
+          "kind": "crossref",
+          "targetId": "weapon/sling"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "20 sling bullets",
+          "kind": "crossref",
+          "targetId": "weapon/sling-bullets"
+        }
+      ]
+    },
+    {
+      "label": "Gear",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Adventurer's Pack",
+          "kind": "crossref",
+          "targetId": "equipment/adventurers-pack"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "2 sets of caltrops",
+          "kind": "crossref",
+          "targetId": "equipment/caltrops"
+        }
+      ]
+    }
+  ],
   "name": "Sorcerer Kit",
   "proseOnly": true,
   "rarity": "common",

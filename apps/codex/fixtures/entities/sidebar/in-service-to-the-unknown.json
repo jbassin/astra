@@ -4,86 +4,6 @@
     {
       "children": [
         {
-          "display": "In Service to the Unknown",
-          "kind": "crossref",
-          "targetId": "class/witch"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Sidebar"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Advanced Player's Guide",
-          "kind": "crossref",
-          "targetId": "source/advanced-players-guide"
-        },
-        {
-          "content": " pg. 94",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Parent page",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Witch",
-          "kind": "crossref",
-          "targetId": "class/witch"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "A witch's patron is a mysterious entity, rarely known or understood even by the witch in that patron's service. The nature of the relationship between a witch and their patron can serve as details for character development and storytelling. When playing a witch, work with your GM to determine the nature of your patron and how much of that nature you know, both as a player and a character. There are countless ways to handle a witch's patron; the following are just a few approaches you might take.",
           "kind": "text",
           "marks": {
@@ -142,6 +62,27 @@
   "edition": "legacy",
   "facets": {},
   "id": "sidebar/in-service-to-the-unknown",
+  "mastheadExtra": [
+    {
+      "label": "Parent page",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Witch",
+          "kind": "crossref",
+          "targetId": "class/witch"
+        }
+      ]
+    }
+  ],
   "name": "In Service to the Unknown",
   "proseOnly": true,
   "remasteredAs": [

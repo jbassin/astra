@@ -1,0 +1,301 @@
+{
+  "aonUrl": "/Rituals.aspx?ID=37",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You create an illusory duplicate of the target creature by animating ice or snow sculpted in its shape. The simulacrum is a 4th-level creature with no special abilities. If it needs to attempt a roll or use a DC, use the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "moderate number for a monster",
+          "kind": "crossref",
+          "targetId": "rules/building-creatures"
+        },
+        {
+          "content": ", except as noted below. It doesn't have any specific memories from the target, but it can use information about the creature gained from any of the casters to ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Impersonate",
+          "kind": "crossref",
+          "targetId": "action/impersonate"
+        },
+        {
+          "content": " the target. It looks exactly like the target and has a Deception modifier to Impersonate that creature equal to the modifier of the secondary spellcaster who rolled the Deception check, with a +4 status bonus.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": " While it doesn't have any of the original's special abilities, like a dragon's breath weapon, the illusions that make up the simulacrum allow it to appear to use those abilities; they just never seem to have an effect. For instance, against a simulacrum dragon's breath weapon, all creatures in the area seem to critically succeed at their saving throws and take no damage. Creatures can attempt to disbelieve the illusion by attempting a Perception check against the Deception DC of the secondary spellcaster who rolled the Deception check.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Critical Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " You bring the simulacrum to life. It has the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "minion",
+          "kind": "crossref",
+          "targetId": "trait/minion"
+        },
+        {
+          "content": " trait and is under your absolute control. You gain a direct mental link with the simulacrum and can spend an action to command the simulacrum via this link, even at a distance.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Success",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " As a critical success, but there is no special link between you and the simulacrum. You must spend an action to command it verbally or by some other means.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The ritual fails and has no effect.\n ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Critical Failure",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The simulacrum awakens, but it isn't your minion and is hostile to all the casters. It does everything it can to destroy them, but if it can't immediately slay them, the simulacrum tries to escape and plots their demise.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "ritual",
+  "edition": "legacy",
+  "facets": {},
+  "id": "ritual/simulacrum",
+  "level": 4,
+  "mastheadExtra": [
+    {
+      "label": "Cast",
+      "value": [
+        {
+          "content": " 1 day",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Cost",
+      "value": [
+        {
+          "content": " a piece of hair, drop of blood, or other part of the creature to be duplicated, plus rare oils, minerals, and pigments with a total value of 300 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Secondary Casters",
+      "value": [
+        {
+          "content": " 3",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Primary Check",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Arcana",
+          "kind": "crossref",
+          "targetId": "skill/arcana"
+        },
+        {
+          "content": " or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Occultism",
+          "kind": "crossref",
+          "targetId": "skill/occultism"
+        },
+        {
+          "content": " (master, the check has the ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "secret",
+          "kind": "crossref",
+          "targetId": "trait/secret"
+        },
+        {
+          "content": " trait)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Secondary Checks",
+      "value": [
+        {
+          "content": " Arcana,  Nature , Occultism,  Religion , or  Society  (whichever is required to  Recall Knowledge  about the creature being duplicated);  Crafting ;  Deception ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Target(s)",
+      "value": [
+        {
+          "content": " 1 living creature",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Simulacrum",
+  "proseOnly": true,
+  "rarity": "rare",
+  "remasteredAs": [
+    "ritual/shadow-double"
+  ],
+  "slug": "simulacrum",
+  "source": {
+    "book": "Advanced Player's Guide",
+    "license": "OGL",
+    "page": 244
+  },
+  "traits": [
+    "Illusion",
+    "Rare"
+  ]
+}

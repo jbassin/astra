@@ -4,17 +4,6 @@
     {
       "children": [
         {
-          "display": "Grick",
-          "kind": "crossref",
-          "targetId": "creature/grick"
-        }
-      ],
-      "kind": "heading",
-      "level": 1
-    },
-    {
-      "children": [
-        {
           "content": "The wormlike gricks terrorize the caverns and tunnels in which it dwells, lying in wait near heavily traveled underground passages or subterranean cities for the chance to reach forth from the darkness and take its prey. Those laid low by a grick are rarely consumed on the spot. Instead, gricks haul back fresh food back to their lair in a tight burrow or high on a cavern ledge, where they consume their spoils in small bites at the gricks' leisure.",
           "kind": "text",
           "marks": {

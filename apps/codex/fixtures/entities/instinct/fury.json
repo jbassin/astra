@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Fury",
-          "kind": "crossref",
-          "targetId": "instinct/fury"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Barbarian Instinct "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Player Core 2",
-          "kind": "crossref",
-          "targetId": "source/player-core-2"
-        },
-        {
-          "content": " pg. 75",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Your rage comes from a deep and purely personal well within you. You use your rage as you choose.",
           "kind": "text",
           "marks": {

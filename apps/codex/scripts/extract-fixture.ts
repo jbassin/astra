@@ -665,6 +665,26 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   "class-feature/ability-boosts-15", // shares the SAME url — must NOT be a sidebar host
   "sidebar/in-service-to-the-unknown", // attaches to class/witch@legacy (M8 case)
   "source/core-rulebook", // the D29-44 source entity
+  // P6 (D29-65, Track B glyph gate + Integration's real-specimen check): the
+  // fixture corpus had ZERO free-action entities before this — the smallest
+  // real `facets.actionCost === "free"` feat.
+  "feat/spellshape-channel",
+  // P6 (D29-59, R4 ritual re-categorization) — the widened selection list the
+  // spec's own §4 Track A gate requires, so downstream tracks' deferred
+  // real-specimen proofs have material: the commune many-to-one pair (a
+  // single mover, `ritual/commune`, whose `legacyOf` lists BOTH legacy
+  // halves — the exact-slug collider `ritual/commune@legacy` AND the
+  // fresh-slug `ritual/commune-with-nature`), the shadow-double/simulacrum
+  // fresh-slug pair, and (implementation-time addition, D29-59's own
+  // correction note — the real 143-mover population is 87/143 pairing-less,
+  // not the rare case the spec first assumed) a pairing-less mover with
+  // neither `legacyOf` nor `remasteredAs` at all.
+  "ritual/commune",
+  "ritual/commune@legacy",
+  "ritual/commune-with-nature",
+  "ritual/shadow-double",
+  "ritual/simulacrum",
+  "ritual/unbearable-cacophony",
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {

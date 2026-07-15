@@ -4,234 +4,6 @@
     {
       "children": [
         {
-          "display": "Force Barrage",
-          "kind": "crossref",
-          "targetId": "spell/force-barrage"
-        },
-        {
-          "cost": "Single Action to Three Actions",
-          "kind": "actionGlyph"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Spell 1"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Player Core",
-          "kind": "crossref",
-          "targetId": "source/player-core"
-        },
-        {
-          "content": " pg. 332",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Traditions",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Arcane",
-          "kind": "crossref",
-          "targetId": "tradition/arcane"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Occult",
-          "kind": "crossref",
-          "targetId": "tradition/occult"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Bloodline",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Imperial",
-          "kind": "crossref",
-          "targetId": "bloodline/imperial"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Deities",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Gravelady's Guard",
-          "kind": "crossref",
-          "targetId": "deity/graveladys-guard"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Lorthact",
-          "kind": "crossref",
-          "targetId": "deity/lorthact"
-        },
-        {
-          "content": ", ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Nethys",
-          "kind": "crossref",
-          "targetId": "deity/nethys"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Range",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 120 feet",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Target",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1 creature",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "You fire a shard of solidified magic toward a creature that you can see. It automatically hits and deals 1d4+1 force damage. For each additional action you use when Casting the Spell, increase the number of shards you shoot by one, to a maximum of three shards for 3 actions. You choose the target for each shard individually. If you shoot more than one shard at the same target, combine the damage before applying bonuses or penalties to damage, resistances, weaknesses, and so forth.",
           "kind": "text",
           "marks": {
@@ -287,6 +59,135 @@
     "spell/magic-missile"
   ],
   "level": 1,
+  "mastheadExtra": [
+    {
+      "label": "Traditions",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Arcane",
+          "kind": "crossref",
+          "targetId": "tradition/arcane"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Occult",
+          "kind": "crossref",
+          "targetId": "tradition/occult"
+        }
+      ]
+    },
+    {
+      "label": "Bloodline",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Imperial",
+          "kind": "crossref",
+          "targetId": "bloodline/imperial"
+        }
+      ]
+    },
+    {
+      "label": "Deities",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Gravelady's Guard",
+          "kind": "crossref",
+          "targetId": "deity/graveladys-guard"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Lorthact",
+          "kind": "crossref",
+          "targetId": "deity/lorthact"
+        },
+        {
+          "content": ", ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nethys",
+          "kind": "crossref",
+          "targetId": "deity/nethys"
+        }
+      ]
+    },
+    {
+      "label": "Range",
+      "value": [
+        {
+          "content": " 120 feet",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Target",
+      "value": [
+        {
+          "content": " 1 creature",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Force Barrage",
   "rarity": "common",
   "slug": "force-barrage",

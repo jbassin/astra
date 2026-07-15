@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Amulet",
-          "kind": "crossref",
-          "targetId": "implement/amulet"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Thaumaturge Implement "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Dark Archive",
-          "kind": "crossref",
-          "targetId": "source/dark-archive"
-        },
-        {
-          "content": " pg. 36",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Amulets are items carried for good luck and protection. Your amulet might be a magical diagram, a religious symbol, a preserved body part such as a rabbit's foot, or a lucky coin. Amulet implements are associated with the harrow suit of shields and the astrological signs of the bridge and the ogre.",
           "kind": "text",
           "marks": {

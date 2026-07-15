@@ -4,81 +4,6 @@
     {
       "children": [
         {
-          "display": "Seer's Array",
-          "kind": "crossref",
-          "targetId": "set-relic/seers-array"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Set Relic"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Treasure Vault (Remastered)",
-          "kind": "crossref",
-          "targetId": "source/treasure-vault-remastered"
-        },
-        {
-          "content": " pg. 202",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Aspects",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Mind and Time",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "Diviners through the ages have employed a variety of tools to glimpse the future, but one who assembles five pieces of a ",
           "kind": "text",
           "marks": {
@@ -496,6 +421,22 @@
   "edition": "legacy",
   "facets": {},
   "id": "set-relic/seers-array-2",
+  "mastheadExtra": [
+    {
+      "label": "Aspects",
+      "value": [
+        {
+          "content": " Mind and Time",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Seer's Array",
   "proseOnly": true,
   "rarity": "common",

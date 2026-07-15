@@ -1,81 +1,6 @@
 {
-  "aonUrl": "/Vehicles.aspx?ID=60",
+  "aonUrl": "/Vehicles.aspx?ID=13",
   "body": [
-    {
-      "children": [
-        {
-          "display": "Sky Chariot, Light",
-          "kind": "crossref",
-          "targetId": "vehicle/sky-chariot-light"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Vehicle 7"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "GM Core",
-          "kind": "crossref",
-          "targetId": "source/gm-core"
-        },
-        {
-          "content": " pg. 214",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Price",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 1,000 gp",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
     {
       "children": [
         {
@@ -337,25 +262,39 @@
     }
   ],
   "category": "vehicle",
-  "edition": "remaster",
-  "facets": {
-    "ac": 20,
-    "fortitudeSave": 14,
-    "hp": 80,
-    "size": "lg"
-  },
-  "id": "vehicle/sky-chariot-light",
-  "legacyOf": [
-    "vehicle/sky-chariot-light@legacy"
-  ],
+  "edition": "legacy",
+  "facets": {},
+  "id": "vehicle/sky-chariot-light@legacy",
   "level": 7,
-  "name": "Sky Chariot (Light)",
+  "mastheadExtra": [
+    {
+      "label": "Price",
+      "value": [
+        {
+          "content": " 1,000 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Sky Chariot, Light",
+  "proseOnly": true,
   "rarity": "uncommon",
+  "remasteredAs": [
+    "vehicle/sky-chariot-light"
+  ],
   "slug": "sky-chariot-light",
   "source": {
-    "book": "GM Core",
-    "license": "ORC",
-    "page": 214
+    "book": "Pathfinder #167: Ready? Fight!",
+    "license": "OGL",
+    "page": 73
   },
-  "traits": []
+  "traits": [
+    "Uncommon"
+  ]
 }

@@ -52,7 +52,7 @@
     "equipment": 1,
     "familiar-ability": 1,
     "familiar-specific": 1,
-    "feat": 1,
+    "feat": 2,
     "hazard": 1,
     "hellknight-order": 1,
     "heritage": 1,
@@ -73,7 +73,7 @@
     "racket": 1,
     "relic": 1,
     "research-field": 1,
-    "ritual": 1,
+    "ritual": 6,
     "rules": 7,
     "set-relic": 1,
     "shield": 1,
@@ -103,6 +103,6 @@
     "tag": "fixture"
   },
   "schemaVersion": 2,
-  "totalEntityCount": 107,
-  "totalSizeBytes": 1226621
+  "totalEntityCount": 113,
+  "totalSizeBytes": 1152226
 }

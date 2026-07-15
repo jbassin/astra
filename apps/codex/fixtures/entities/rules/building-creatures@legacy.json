@@ -13,55 +13,6 @@
     {
       "children": [
         {
-          "display": "Building Creatures",
-          "kind": "crossref",
-          "targetId": "rules/building-creatures"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Rules"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Gamemastery Guide",
-          "kind": "crossref",
-          "targetId": "source/gamemastery-guide"
-        },
-        {
-          "content": " pg. 56",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Making your own creatures fleshes out your game world and lets you introduce concepts not yet available in published products like the Bestiary volumes. These guidelines help you customize creatures to your specifications and explore your imagination. From strange beasts to canny political rivals, you have the power to design creatures that fit the narrative needs of your story.",
           "kind": "text",
           "marks": {

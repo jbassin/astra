@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Tengu",
-          "kind": "crossref",
-          "targetId": "creature-adjustment/tengu"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Creature Adjustment "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "NPC Core",
-          "kind": "crossref",
-          "targetId": "source/npc-core"
-        },
-        {
-          "content": " pg. 169",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Tengu traveled from their ancestral home in search of a better life. They love collecting all kinds of things. They often pick up traditions as they travel and integrate them into their own. Most tengu consider their companions to be their most valuable collection. • Replace the ",
           "kind": "text",
           "marks": {

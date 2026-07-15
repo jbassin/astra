@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Air",
-          "kind": "crossref",
-          "targetId": "element/air"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Kineticist Element "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Rage of Elements",
-          "kind": "crossref",
-          "targetId": "source/rage-of-elements"
-        },
-        {
-          "content": " pg. 14",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Impulse Feats",
           "kind": "text",
           "marks": {

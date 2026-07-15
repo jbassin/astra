@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Agriculture",
-          "kind": "crossref",
-          "targetId": "skill/agriculture"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Skill "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Kingmaker Adventure Path",
-          "kind": "crossref",
-          "targetId": "source/kingmaker-adventure-path"
-        },
-        {
-          "content": " pg. 522",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Agriculture measures the kingdom's ability to cultivate the land, bringing forth crops, flocks, and livestock.",
           "kind": "text",
           "marks": {

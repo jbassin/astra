@@ -7,55 +7,6 @@
     {
       "children": [
         {
-          "display": "Chapter 2: Tools",
-          "kind": "crossref",
-          "targetId": "rules/chapter-2-tools"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Rules"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Gamemastery Guide",
-          "kind": "crossref",
-          "targetId": "source/gamemastery-guide"
-        },
-        {
-          "content": " pg. 55",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "While the Core Rulebook provides all the tools you need to be a Game Master, you may want resources to create original game content, whether it be new items, unique creatures, or a sprawling new world for adventurers to explore.",
           "kind": "text",
           "marks": {

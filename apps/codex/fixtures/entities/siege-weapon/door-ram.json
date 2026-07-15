@@ -4,81 +4,6 @@
     {
       "children": [
         {
-          "display": "Door Ram",
-          "kind": "crossref",
-          "targetId": "siege-weapon/door-ram"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Siege Weapon 2"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Guns & Gears (Remastered)",
-          "kind": "crossref",
-          "targetId": "source/guns-gears-remastered"
-        },
-        {
-          "content": " pg. 75",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Price",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 30 gp",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "Usage",
           "kind": "text",
           "marks": {
@@ -258,6 +183,22 @@
   "facets": {},
   "id": "siege-weapon/door-ram",
   "level": 2,
+  "mastheadExtra": [
+    {
+      "label": "Price",
+      "value": [
+        {
+          "content": " 30 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Door Ram",
   "proseOnly": true,
   "rarity": "uncommon",

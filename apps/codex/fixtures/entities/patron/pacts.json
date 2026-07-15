@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Pacts",
-          "kind": "crossref",
-          "targetId": "patron/pacts"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Witch Patron Theme "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Dark Archive",
-          "kind": "crossref",
-          "targetId": "source/dark-archive"
-        },
-        {
-          "content": " pg. 159",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Your patron deals only in promises and bargains, and no lesson is ever given for free.",
           "kind": "text",
           "marks": {

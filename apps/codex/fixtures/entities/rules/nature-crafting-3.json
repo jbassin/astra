@@ -1,56 +1,6 @@
 {
   "aonUrl": "/Rules.aspx?ID=3645",
-  "body": [
-    {
-      "children": [
-        {
-          "display": "Nature Crafting",
-          "kind": "crossref",
-          "targetId": "rules/nature-crafting"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Rules"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Treasure Vault",
-          "kind": "crossref",
-          "targetId": "source/treasure-vault"
-        },
-        {
-          "content": " pg. 164",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    }
-  ],
+  "body": [],
   "breadcrumbs": [
     "Momentary Magic",
     "Spellguns"

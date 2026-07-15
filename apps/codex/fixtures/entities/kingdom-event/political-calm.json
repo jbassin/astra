@@ -4,109 +4,6 @@
     {
       "children": [
         {
-          "display": "Political Calm",
-          "kind": "crossref",
-          "targetId": "kingdom-event/political-calm"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Kingdom Event -1"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Kingmaker Adventure Path",
-          "kind": "crossref",
-          "targetId": "source/kingmaker-adventure-path"
-        },
-        {
-          "content": " pg. 562",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Kingdom Skill",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Politics",
-          "kind": "crossref",
-          "targetId": "skill/politics"
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Leader",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " Ruler",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "A sudden absence of political machinations and distracting intrigue coincides with a rise in public approval for its leaders.",
           "kind": "text",
           "marks": {
@@ -201,6 +98,41 @@
   "facets": {},
   "id": "kingdom-event/political-calm",
   "level": -1,
+  "mastheadExtra": [
+    {
+      "label": "Kingdom Skill",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Politics",
+          "kind": "crossref",
+          "targetId": "skill/politics"
+        }
+      ]
+    },
+    {
+      "label": "Leader",
+      "value": [
+        {
+          "content": " Ruler",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Political Calm",
   "proseOnly": true,
   "rarity": "common",

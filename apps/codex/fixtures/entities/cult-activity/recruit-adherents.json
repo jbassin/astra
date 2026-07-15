@@ -4,44 +4,6 @@
     {
       "children": [
         {
-          "display": "Recruit Adherents",
-          "kind": "crossref",
-          "targetId": "cult-activity/recruit-adherents"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Cult Activity"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " [Pathfinder #217: Death Sails a Wine-Dark Sea ](/Sources.aspx?ID=273) pg. 68",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "kind": "divider"
-    },
-    {
-      "children": [
-        {
           "content": "Under your direction, the cult focuses on evangelism and developing its reputation to attract new members. The cult attempts a check against a standard DC of the cult’s level.",
           "kind": "text",
           "marks": {

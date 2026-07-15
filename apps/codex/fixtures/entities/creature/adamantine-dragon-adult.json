@@ -4,17 +4,6 @@
     {
       "children": [
         {
-          "display": "Adult Adamantine Dragon",
-          "kind": "crossref",
-          "targetId": "creature/adamantine-dragon-adult"
-        }
-      ],
-      "kind": "heading",
-      "level": 1
-    },
-    {
-      "children": [
-        {
           "content": "The powerful adamantine dragons are one of several dragons known as skymetal dragons. The innate magic that flows through these dragons causes them to draw particular metals to their bodies like magnets or, in some cases, naturally grow these skymetals on their bodies. Adamantine dragons begin their lives with tough scales that are naturally replaced with thicker and even tougher adamantine plating as they grow older. Adamantine dragons are typically steadfast and loyal. Once they commit to a certain purpose, changing their minds is nigh impossible.",
           "kind": "text",
           "marks": {

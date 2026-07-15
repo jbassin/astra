@@ -1,0 +1,34 @@
+{
+  "aonUrl": "/Traits.aspx?ID=466",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Note from Nethys: no description was provided for this trait",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": true,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "trait",
+  "edition": "legacy",
+  "facets": {},
+  "id": "trait/meal",
+  "name": "Meal",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "meal",
+  "source": {
+    "book": "Kingmaker Companion Guide",
+    "license": "OGL"
+  },
+  "traits": [
+    "Meal"
+  ]
+}

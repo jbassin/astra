@@ -4,18 +4,6 @@
     {
       "children": [
         {
-          "display": "Fiery Leopard",
-          "kind": "brokenRef",
-          "target": "/Companions.aspx?ID=1&Unique=true"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Unique Animal Companion "
-    },
-    {
-      "children": [
-        {
           "children": [
             {
               "content": "May contain spoilers from The Fall of Plaguestone",

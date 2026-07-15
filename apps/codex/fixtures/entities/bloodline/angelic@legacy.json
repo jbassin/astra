@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Angelic",
-          "kind": "crossref",
-          "targetId": "bloodline/angelic"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Sorcerer Bloodline "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Core Rulebook",
-          "kind": "crossref",
-          "targetId": "source/core-rulebook"
-        },
-        {
-          "content": " pg. 195",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "One of your forebears hailed from a celestial realm, or your ancestors’ devotion led to their lineage being blessed.",
           "kind": "text",
           "marks": {

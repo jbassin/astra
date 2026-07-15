@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Student of Thoughts",
-          "kind": "crossref",
-          "targetId": "class-sample/student-of-thoughts"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Class Sample Build"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Dark Archives (Remastered)",
-          "kind": "crossref",
-          "targetId": "source/dark-archives-remastered"
-        },
-        {
-          "content": " pg. 22",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "You hear and learn from other minds to grow your knowledge.",
           "kind": "text",
           "marks": {

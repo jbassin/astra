@@ -4,129 +4,6 @@
     {
       "children": [
         {
-          "display": "Duty",
-          "kind": "crossref",
-          "targetId": "domain/duty"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Domain "
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Pathfinder #148: Fires of the Haunted City",
-          "kind": "crossref",
-          "targetId": "source/pathfinder-148-fires-of-the-haunted-city"
-        },
-        {
-          "content": " pg. 64, ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Divine Mysteries",
-          "kind": "crossref",
-          "targetId": "source/divine-mysteries"
-        },
-        {
-          "content": " pg. 265",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Deity",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Domain Spell",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Advanced Domain Spell",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "No information provided yet for this domain.",
           "kind": "text",
           "marks": {
@@ -143,6 +20,40 @@
   "edition": "legacy",
   "facets": {},
   "id": "domain/duty",
+  "mastheadExtra": [
+    {
+      "label": "Deity",
+      "value": []
+    },
+    {
+      "label": "Domain Spell",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "label": "Advanced Domain Spell",
+      "value": [
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
   "name": "Duty",
   "proseOnly": true,
   "rarity": "common",

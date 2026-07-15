@@ -4,17 +4,6 @@
     {
       "children": [
         {
-          "display": "Grick",
-          "kind": "crossref",
-          "targetId": "creature/grick"
-        }
-      ],
-      "kind": "heading",
-      "level": 1
-    },
-    {
-      "children": [
-        {
           "display": "Recall Knowledge - Aberration",
           "kind": "crossref",
           "targetId": "rules/recall-knowledge"

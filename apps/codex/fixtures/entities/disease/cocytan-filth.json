@@ -4,55 +4,6 @@
     {
       "children": [
         {
-          "display": "Cocytan Filth",
-          "kind": "crossref",
-          "targetId": "disease/cocytan-filth"
-        }
-      ],
-      "kind": "heading",
-      "level": 1,
-      "meta": "Disease 3"
-    },
-    {
-      "children": [
-        {
-          "content": "Source",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "Bestiary 2",
-          "kind": "crossref",
-          "targetId": "source/bestiary-2"
-        },
-        {
-          "content": " pg. 72",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
           "content": "Nethys Note: no description was provided for this disease.",
           "kind": "text",
           "marks": {
