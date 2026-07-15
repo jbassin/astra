@@ -117,6 +117,17 @@ heartwood.iridi.cc {
 	reverse_proxy localhost:10371
 }
 
+# codex — the PF2e compendium/rules browser (0029), SSR frontend on port 10374.
+# Public with NO auth gate (C-8) but NOINDEXED (C-1): the X-Robots-Tag header here is
+# layer 3 of 3 (the SSR HTML always carries a robots meta tag; /robots.txt Disallow-all
+# ships in the app's public/). Plain `header` (not `header ?`) — this must always win.
+# (*.iridi.cc wildcard — no manual DNS record; cert mints on first hit, ~20-60s flap.)
+codex.iridi.cc {
+	import astra_site
+	header X-Robots-Tag noindex
+	reverse_proxy localhost:10374
+}
+
 # vellum-frontend — the document-forge editor (0013), the fourth SSR frontend on the
 # strider/akasha template. Two upstreams (D2, mirroring faerrin's old vellum block):
 # /render + /health proxy to the vellum-render service (the PNG render sidecar), so the

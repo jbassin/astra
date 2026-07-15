@@ -1,6 +1,9 @@
 # 0029 — codex P5: deploy — spec
 
-**Status:** FINAL (2026-07-15) — authored by the staff-orchestrator over two same-day research
+**Status:** BUILT (2026-07-15) — S1+S2 complete same day as the spec, gates A–G met with
+recorded evidence (§8); **`codex.iridi.cc` is LIVE**. ▶ Remaining: gate H — the consolidated
+stakeholder review (D29-58).
+_(Authoring record:)_ FINAL 2026-07-15 — authored by the staff-orchestrator over two same-day research
 passes (deploy-pattern survey of the sibling frontends + a codex-side deploy-surface audit, both
 verified against the real repo/disk); **adversarially reviewed same day: 0 blockers, 1 minor
 (D29-55 enumeration missing `build:`/`command:`) + 1 nit (fixture size 2.1 MB not 2.8) + 1 bonus
@@ -292,3 +295,21 @@ future phase only if H redirects).
   fixture lacks, `/robots.txt` 200 Disallow-all, zero fallback warns) · lint (oxlint
   `--threads=4`, the standing OOM workaround) + format + ruff both green · control-char sweep
   clean · test containers removed. Deviation: none.
+- **S2 (2026-07-15, orchestrator-driven) — edge + go-live + gates A–G.** `sites.caddyfile`
+  `codex.iridi.cc` stanza (`import astra_site` + plain `header X-Robots-Tag noindex` +
+  `reverse_proxy localhost:10374`) · `just up` + `just caddy-reload`; cert minted inside the
+  first ~20 s (wildcard DNS, no record needed). **Gate evidence:** **A** corpus-free build
+  (S1 proof + the compose rebuild) · **B** `astra-codex` healthy, `user=1000:1000`,
+  `restart=unless-stopped`, both mounts `rw=false` at identical paths (docker inspect) ·
+  **C** through the edge: `creature/red-dragon-adult` marker present, `/spell` carries 2,604 +
+  `fireball`, ZERO fixture-fallback warns in container logs · **D** `/pagefind/pagefind.js`
+  200 (45,555 B), fragment 200, **Range → 206** (100 B); live Omnibar proof via Playwright:
+  query "fireball" → 8 result links, zero page errors · **E** `X-Robots-Tag: noindex` in edge
+  response headers, `/robots.txt` 200 Disallow-all, meta tag in SSR HTML, ledger grid carries
+  zero codex mentions · **F** pagefind move-aside → 404 → move-back → 200 with zero restarts;
+  `docker compose restart codex` → healthy; dirty-tree guard refused a dirty `apps/codex` ·
+  **G** `astra.codex` SSR spans in SigNoz from edge traffic (SSR GET /, serverFn POSTs, a
+  `codex.search` span), ERROR logs = 0. Public-exposure note: internet scanners hit the host
+  within minutes (404s, non-error) — expected noise. Pre-existing host residue surfaced, not
+  touched: `nextcloud-app` (non-astra) has been crash-looping for months. **▶ Gate H remains:
+  the consolidated stakeholder review on live `codex.iridi.cc` (D29-58).**
