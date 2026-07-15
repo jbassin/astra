@@ -63,6 +63,7 @@ import {
   parseRemasterChanges,
   registerExcludedJournal,
 } from "../src/ingest/journals";
+import { applyLevelDefault } from "../src/ingest/levelDefault";
 import { buildReportJson, buildReportMarkdown, type ReportJson } from "../src/ingest/report";
 import { type RulesDocInput, buildRulesTree } from "../src/ingest/rulesTree";
 import { attachSidebars } from "../src/ingest/sidebarAttach";
@@ -390,12 +391,17 @@ export function runTransform(paths: TransformPaths): TransformResult {
   // carve-out — S5c, the last P1.5 pass before emit.
   const dropResult = applyAonPrimaryDrop(joinResult.entities, report);
 
+  // D29-61(a) (R9, P6): the ingest-time "missing level -> 0" default — runs
+  // on the FINAL (post-drop) entity set, since R4's ritual move has already
+  // settled every entity's final `category` by this point in the pipeline.
+  const levelDefaultResult = applyLevelDefault(dropResult.keptEntities, report);
+
   // ---- P4 (D29-39) S1: book-name normalize -> sidebar reverse-join ----
   // Both passes run BEFORE emit — the corpus on disk (entity files +
   // `_index.json`) must reflect the normalized book strings and the
   // `attachedSidebars` field, not just the two new standalone artifacts.
   const aonBookNames = new Set(dedupedMetas.map((m) => m.primarySource.book));
-  const bookNorm = normalizeBookNames(dropResult.keptEntities, aonBookNames);
+  const bookNorm = normalizeBookNames(levelDefaultResult.entities, aonBookNames);
 
   const finalIdToAonId = new Map<string, string>();
   for (const [aonId, finalId] of joinResult.aonIdToFinalId) finalIdToAonId.set(finalId, aonId);
