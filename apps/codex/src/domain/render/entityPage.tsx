@@ -8,6 +8,7 @@ import {
   EquipmentFacetHeader,
   FeatFacetHeader,
   GenericFacetLine,
+  MastheadExtraFallback,
   SpellFacetHeader,
 } from "./facetHeader";
 import { type RenderCtx, renderNodes } from "./nodes";
@@ -77,10 +78,13 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
 
       {group === "creature" ? <CreatureStatblock entity={entity} /> : null}
       {group === "hazard" ? <HazardStatblock entity={entity} ctx={ctx} /> : null}
-      {group === "spell" ? <SpellFacetHeader entity={entity} /> : null}
-      {group === "equipment" ? <EquipmentFacetHeader entity={entity} /> : null}
-      {group === "feat" ? <FeatFacetHeader entity={entity} /> : null}
-      {group === "generic" ? <GenericFacetLine entity={entity} /> : null}
+      {group === "creature" || group === "hazard" ? (
+        <MastheadExtraFallback entity={entity} ctx={ctx} />
+      ) : null}
+      {group === "spell" ? <SpellFacetHeader entity={entity} ctx={ctx} /> : null}
+      {group === "equipment" ? <EquipmentFacetHeader entity={entity} ctx={ctx} /> : null}
+      {group === "feat" ? <FeatFacetHeader entity={entity} ctx={ctx} /> : null}
+      {group === "generic" ? <GenericFacetLine entity={entity} ctx={ctx} /> : null}
 
       {entity.embeddedItems !== undefined ? (
         <EmbeddedItemSections items={entity.embeddedItems} ctx={ctx} />
