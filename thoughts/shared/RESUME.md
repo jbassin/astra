@@ -36,7 +36,46 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `b5a15e6`, 2026-07-14 — codex (0029) P4 SPEC FINAL; H deferred → folds into P4's exit gate; ▶ `octo:embrace` P4 S1; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `43caa6c`, 2026-07-14 — codex (0029) P4 BUILT S1–S5, A–G met; ▶ acceptance H = THE consolidated stakeholder review (P2+P3+P4), then spec P5; heartwood ON HOLD)
+
+> **✅ codex (0029) P4 (rules/lore browser) — ALL FIVE SLICES BUILT + PUSHED same day as the
+> spec** (staff-orchestrator + sonnet engineers, one reviewed commit per slice; spec
+> `thoughts/astra/specs/0029-codex-p4-rules-browser-spec.md` status → BUILT, §8 build record
+> carries per-gate evidence): **S1 `0e75391`** (transform: breadcrumbs threaded both join
+> sites, sibling-group chain ordering, attachedSidebars reverse-join 689/689 rules=361 max=7,
+> book normalize 519→496 w/ 23 prefix merges, `rules-tree.json` + `sources-index.json`,
+> fixture regen, host search-index rebuild 46,192 == manifest; **spec pin CORRECTED:
+> synthetic nodes == 2 not 3** — verified vs raw snapshot, a real "Gods & Magic" root doc
+> exists, amendment in spec §4) · **S2 `c9ad9d1`** (`/rules` tree browser: akasha computeOpen
+> port, quick-filter, legacy counts w/ Dark Archive/Guns & Gears "all hidden" headers, GMG
+> interior chain order proven live, 393 KB/77 gz) · **S3 content in `b71d3f4` + marker
+> `a3184ce`** (⚠️ the timer race — see gotchas; trail + RulesLayout first-sidebar + DFS pager
+> proven descend/round-trip/one-sided, non-rules shell untouched) · **S4 `65036ba`**
+> (AttachedSidebars all categories w/ M8 shared-url owner proven live; `/sources` 9 product-
+> line groups, "Other" 253 books last+collapsed, comma-book filtered-browse click-through;
+> `categoryCounts` added to sources-index.json — spec gap closed additively, determinism
+> re-proven) · **S5 `43caa6c`** (A–G consolidated sweep: fresh B/E proofs, F weights
+> recorded, G telemetry via local OTLP → SigNoz-verified spans on all 3 new routes,
+> hermeticity BOTH lanes; README P4 section). Codex 1,362 tests; both lanes green.
+> - **▶ NEXT: acceptance H — THE consolidated stakeholder review** (P2-H spot-set w/ M7/M11
+>   expected + P3 browse/search incl. the heal-ranking limitation + P4 tree/sidebars/
+>   sources). Run `pnpm build` + start in `apps/codex` (vite dev serves neither /pagefind
+>   nor staticMounts). After H sign-off: `octo:spec` P5 (deploy) — weights recorded for it
+>   in the spec + memory.
+> - **Session gotchas (detail in [[codex-0029-gotchas]]):** the linguist-commit timer fired
+>   BETWEEN `git add` and `git commit` and swept the staged S3 slice into a mislabeled
+>   `chore(mouthpiece)` commit (recovered via `--allow-empty` marker `a3184ce`; timer now
+>   stopped around commit windows); the P1.5 NUL-byte binary-source gotcha recurred twice
+>   (Read silently swallows control chars — perl sweep is the review check); an S2 ssrSmoke
+>   assert was hermeticity-masked (fixture GMG root superseded — fixed under `?legacy=true`).
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-14, earlier same day) — P4 SPEC FINAL (superseded above)
+
+## (was) Current state (as of `b5a15e6`, 2026-07-14 — codex (0029) P4 SPEC FINAL; H deferred → folds into P4's exit gate; ▶ `octo:embrace` P4 S1; heartwood ON HOLD)
 
 > **✅ codex (0029) P4 (rules/lore browser) — SPEC FINAL**
 > (`thoughts/astra/specs/0029-codex-p4-rules-browser-spec.md`, D29-39..45; staff-orchestrator
