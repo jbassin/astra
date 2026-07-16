@@ -102,7 +102,7 @@
     "sha256": null,
     "tag": "fixture"
   },
-  "schemaVersion": 2,
+  "schemaVersion": 3,
   "totalEntityCount": 113,
-  "totalSizeBytes": 1152226
+  "totalSizeBytes": 1157853
 }

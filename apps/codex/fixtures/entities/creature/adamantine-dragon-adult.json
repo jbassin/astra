@@ -1761,6 +1761,7 @@
         "3d8+14 bludgeoning"
       ],
       "name": "Rock",
+      "range": "range increment 120 feet",
       "slug": "rock",
       "traits": [
         "brutal"
@@ -2863,6 +2864,7 @@
       "acrobatics": 22,
       "athletics": 27,
       "intimidation": 24,
+      "mining-lore": 24,
       "nature": 23,
       "survival": 25
     },

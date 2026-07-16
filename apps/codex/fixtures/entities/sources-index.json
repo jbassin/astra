@@ -28,10 +28,11 @@
     {
       "book": "Battlecry!",
       "categoryCounts": {
-        "innovation": 1
+        "innovation": 1,
+        "vehicle": 1
       },
       "edition": "remaster",
-      "entityCount": 1,
+      "entityCount": 2,
       "license": "ORC"
     },
     {
@@ -299,15 +300,6 @@
       "book": "Pathfinder #164: Hands of the Devil",
       "categoryCounts": {
         "creature": 1
-      },
-      "edition": "legacy",
-      "entityCount": 1,
-      "license": "OGL"
-    },
-    {
-      "book": "Pathfinder #167: Ready? Fight!",
-      "categoryCounts": {
-        "vehicle": 1
       },
       "edition": "legacy",
       "entityCount": 1,

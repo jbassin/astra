@@ -1,1 +1,1 @@
-[{"edition":"legacy","id":"vehicle/sky-chariot-light@legacy","level":7,"name":"Sky Chariot, Light","rarity":"uncommon","source":{"book":"Pathfinder #167: Ready? Fight!","license":"OGL","page":73},"superseded":true,"traits":["Uncommon"]}]
+[{"edition":"remaster","facets":{"ac":39,"fortitudeSave":30,"hp":280,"size":"grg"},"id":"vehicle/armored-sleigh","level":17,"name":"Armored Sleigh","rarity":"uncommon","source":{"book":"Battlecry!","license":"ORC","page":110},"superseded":false,"traits":[]}]

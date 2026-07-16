@@ -4,7 +4,7 @@ import { join } from "node:path";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
-import { CodexEntitySchema } from "../../schema/entity";
+import { CodexEntitySchema, type EmbeddedItem } from "../../schema/entity";
 import { noEmbeds, rootRenderCtx } from "./nodes";
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
 
@@ -40,6 +40,14 @@ describe("CreatureStatblock (against the real adamantine-dragon-adult fixture)",
   it("absent fields are simply omitted (fail-soft), never 'undefined'", () => {
     const out = renderToStaticMarkup(<CreatureStatblock entity={dragon} />);
     expect(out).not.toContain("undefined");
+  });
+
+  it("D29-74 (P7): a merged lore-skill slug renders HUMANIZED — 'Mining Lore +24', never first-char-only 'Mining-lore'", () => {
+    const out = renderToStaticMarkup(<CreatureStatblock entity={dragon} />);
+    expect(out).toContain("Mining Lore +24");
+    expect(out).not.toContain("Mining-lore");
+    // single-word core skills render identically to the pre-humanizer output
+    expect(out).toContain("Athletics +27");
   });
 });
 
@@ -88,6 +96,89 @@ describe("EmbeddedItemSections (dragon strikes/actions + spellcaster variant's s
 
   it("empty embeddedItems -> null", () => {
     expect(renderToStaticMarkup(<EmbeddedItemSections items={[]} ctx={ctx} />)).toBe("");
+  });
+
+  it("D29-73 (P7): a strike's transform-baked range renders as a parenthetical after the trait pills (the spellcaster's Rock, range increment 120)", () => {
+    const out = renderToStaticMarkup(
+      <EmbeddedItemSections items={spellcaster.embeddedItems ?? []} ctx={ctx} />,
+    );
+    expect(out).toContain("(range increment 120 feet)");
+    expect(out).toContain("codex-strike-range");
+  });
+
+  it("D29-73 (P7): a range-less melee strike renders no range parenthetical (Jaws)", () => {
+    const jaws = (dragon.embeddedItems ?? []).filter((i) => i.name === "Jaws");
+    expect(jaws).toHaveLength(1);
+    const out = renderToStaticMarkup(<EmbeddedItemSections items={jaws} ctx={ctx} />);
+    expect(out).not.toContain("codex-strike-range");
+  });
+
+  it("D29-75 (P7): lore items are EXCLUDED from the abilities bucket — the bonus lives in the Skills row instead", () => {
+    const items = spellcaster.embeddedItems ?? [];
+    expect(items.some((i) => i.type === "lore")).toBe(true); // fixture pin: Mining Lore exists
+    const out = renderToStaticMarkup(<EmbeddedItemSections items={items} ctx={ctx} />);
+    expect(out).not.toContain('data-ability-slug="mining-lore"');
+  });
+});
+
+describe("D29-76 (P7): empty-stub filter in the abilities bucket (synthetic items)", () => {
+  function item(overrides: Partial<EmbeddedItem> & { name: string; slug: string }): EmbeddedItem {
+    return { type: "action", traits: [], body: [], ...overrides };
+  }
+
+  const stub = item({ name: "Bottle", slug: "bottle", type: "equipment" });
+  const realAbility = item({
+    name: "Frightful Presence",
+    slug: "frightful-presence",
+    actionCost: "passive",
+  });
+
+  it("a body-less, trait-less, cost-less other-bucket item is skipped; a real ability survives", () => {
+    const out = renderToStaticMarkup(
+      <EmbeddedItemSections items={[stub, realAbility]} ctx={ctx} />,
+    );
+    expect(out).not.toContain("Bottle");
+    expect(out).toContain("Frightful Presence");
+  });
+
+  it("an item with ONLY traits, or ONLY an actionCost, or ONLY a body is NOT a stub", () => {
+    const traitsOnly = item({ name: "Traity", slug: "traity", traits: ["magical"] });
+    const costOnly = item({ name: "Costy", slug: "costy", actionCost: "reaction" });
+    const bodyOnly = item({
+      name: "Bodied",
+      slug: "bodied",
+      body: [
+        {
+          kind: "paragraph",
+          children: [
+            {
+              kind: "text",
+              content: "real text",
+              marks: { bold: false, italic: false, superscript: false },
+            },
+          ],
+        },
+      ],
+    });
+    const out = renderToStaticMarkup(
+      <EmbeddedItemSections items={[traitsOnly, costOnly, bodyOnly]} ctx={ctx} />,
+    );
+    expect(out).toContain("Traity");
+    expect(out).toContain("Costy");
+    expect(out).toContain("Bodied");
+  });
+
+  it("strikes and spellcasting entries are NOT stub-filtered (a bare melee item still renders)", () => {
+    const bareStrike = item({ name: "Fist", slug: "fist", type: "melee", attackBonus: 5 });
+    const out = renderToStaticMarkup(<EmbeddedItemSections items={[bareStrike]} ctx={ctx} />);
+    expect(out).toContain("Fist");
+    expect(out).toContain("+5");
+  });
+
+  it("ALL items filtered away (lore + stubs only) -> null, never an empty codex-embedded-items shell", () => {
+    const lore = item({ name: "Mining Lore", slug: "mining-lore", type: "lore" });
+    const out = renderToStaticMarkup(<EmbeddedItemSections items={[stub, lore]} ctx={ctx} />);
+    expect(out).toBe("");
   });
 });
 

@@ -317,7 +317,11 @@ export const CreatureStatsSchema = z
     resistances: z.array(TypedValueSchema).optional(),
     /** `system.attributes.weaknesses[]`. */
     weaknesses: z.array(TypedValueSchema).optional(),
-    /** `system.skills.*.base`, keyed on the skill slug (e.g. `"stealth"`). */
+    /** `system.skills.*.base`, keyed on the skill slug (e.g. `"stealth"`),
+     * PLUS (D29-74, P7) `type:"lore"` embedded items' `system.mod.value`
+     * keyed on `sluggify(name)` (e.g. `"gambling-lore"`) — merged by
+     * `foundryEntities.ts`'s `mergeLoreSkills`. Keys stay slugs; display
+     * humanization is render-side (`humanizeSlug` in `SkillsRow`/`statsText`). */
     skills: z.record(z.string(), z.number()).optional(),
   })
   .strict();

@@ -207,8 +207,13 @@ export function statsText(facets: Facets, stats: Stats | undefined): string {
       parts.push(w.value !== undefined ? `Weakness ${w.type} ${w.value}` : `Weakness ${w.type}`);
     }
     if (stats.skills) {
+      // D29-74 (P7): `humanizeSlug`, not first-char `capitalize` — `skills`
+      // keys include multi-word lore slugs since the lore merge
+      // ("gambling-lore" must index as "Gambling Lore", never
+      // "Gambling-lore"); single-word core skills are unchanged. Mirrors
+      // `statblock.tsx`'s SkillsRow, same D29-74 render blocker.
       for (const [name, mod] of Object.entries(stats.skills)) {
-        parts.push(`${capitalize(name)} ${fmtMod(mod)}`);
+        parts.push(`${humanizeSlug(name)} ${fmtMod(mod)}`);
       }
     }
   } else if (stats?.kind === "hazard") {

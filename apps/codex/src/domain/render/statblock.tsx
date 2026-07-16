@@ -3,7 +3,7 @@ import type { ReactElement, ReactNode } from "react";
 import type { CodexEntity, EmbeddedItem, Facets } from "../../schema/entity";
 import { CodexActionGlyph } from "./actionGlyph";
 import { type RenderCtx, renderNodes } from "./nodes";
-import { capitalize } from "./text";
+import { capitalize, humanizeSlug } from "./text";
 import { CodexTraitPills } from "./traits";
 
 /**
@@ -61,7 +61,11 @@ function LanguagesRow({ entity }: { entity: CodexEntity }): ReactElement | null 
 function SkillsRow({ entity }: { entity: CodexEntity }): ReactElement | null {
   const skills = entity.stats?.kind === "creature" ? entity.stats.skills : undefined;
   if (!skills || Object.keys(skills).length === 0) return null;
-  const parts = Object.entries(skills).map(([name, mod]) => `${capitalize(name)} ${fmtMod(mod)}`);
+  // D29-74 (P7): `humanizeSlug`, not first-char `capitalize` — since the lore
+  // merge, `skills` keys include multi-word lore slugs ("gambling-lore"),
+  // which must render "Gambling Lore", never "Gambling-lore". Single-word
+  // core skills ("stealth" -> "Stealth") render identically to before.
+  const parts = Object.entries(skills).map(([name, mod]) => `${humanizeSlug(name)} ${fmtMod(mod)}`);
   return <Row label="Skills">{parts.join(", ")}</Row>;
 }
 
@@ -185,6 +189,13 @@ function StrikeRow({ item, ctx }: { item: EmbeddedItem; ctx: RenderCtx }): React
       <CodexActionGlyph raw="1" /> <strong>{item.name}</strong>{" "}
       {item.attackBonus !== undefined ? fmtMod(item.attackBonus) : null}{" "}
       <CodexTraitPills traits={item.traits} knownTraitIds={ctx.knownTraitIds} />
+      {/* D29-73 (P7): the transform-baked AoN-format range string ("range 10
+          feet" / "range increment 120 feet") — a parenthetical after the
+          trait pills, same slot AoN's own strike line uses. Absent on most
+          melee strikes (thrown-N TRAITS already render as pills above). */}
+      {item.range !== undefined ? (
+        <span className="codex-strike-range"> ({item.range})</span>
+      ) : null}
       {item.damage !== undefined && item.damage.length > 0 ? (
         <span className="codex-strike-damage"> {item.damage.join(" plus ")}</span>
       ) : null}
@@ -246,10 +257,27 @@ function AbilityRow({ item, ctx }: { item: EmbeddedItem; ctx: RenderCtx }): Reac
   );
 }
 
+/** D29-76 (P7, I2): an `other`-bucket item with no body, no traits, and no
+ * action cost renders as nothing but a bare heading ("Bottle") — 7,907 such
+ * stubs corpus-wide, upstream Foundry data verified genuinely empty
+ * (388/388 sampled). Skipped from the abilities bucket entirely. Strikes and
+ * spellcasting sections are NOT touched (a bare strike still carries its
+ * bonus/damage fields; a spellcastingEntry is a grouping node). */
+function isEmptyStub(item: EmbeddedItem): boolean {
+  return item.body.length === 0 && item.traits.length === 0 && item.actionCost === undefined;
+}
+
 /** D29-26 — grouped embedded-item sections: strikes, spellcasting entries
- * (with their spells nested under them), then actions/abilities. Any other
- * embedded-item `type` (e.g. `lore`) is rendered in the generic "abilities"
- * bucket too — fail-soft, nothing is dropped. */
+ * (with their spells nested under them), then actions/abilities. P7 narrows
+ * the old "any other `type` renders in the abilities bucket" posture two
+ * ways, both applied BEFORE the section-emptiness checks below (so a bucket
+ * emptied by the filters renders no section shell at all):
+ *   - D29-75 (I3): `type === "lore"` items are EXCLUDED — the lore bonus
+ *     now lives in the Skills row (D29-74's transform-side merge into
+ *     `stats.skills`, landed at S1, so the bonus is never invisible);
+ *   - D29-76 (I2): empty stubs are skipped (`isEmptyStub` above).
+ * Review-verified: zero Foundry-only entities lose ALL their items to these
+ * two filters (no empty shells appear). */
 export function EmbeddedItemSections({
   items,
   ctx,
@@ -262,8 +290,18 @@ export function EmbeddedItemSections({
   const spellcastingEntries = items.filter((i) => i.type === "spellcastingEntry");
   const spells = items.filter((i) => i.type === "spell");
   const other = items.filter(
-    (i) => i.type !== "melee" && i.type !== "spellcastingEntry" && i.type !== "spell",
+    (i) =>
+      i.type !== "melee" &&
+      i.type !== "spellcastingEntry" &&
+      i.type !== "spell" &&
+      i.type !== "lore" &&
+      !isEmptyStub(i),
   );
+  // All buckets emptied by the P7 filters (e.g. a hypothetical actor whose
+  // only items are lore + stubs) -> no empty `codex-embedded-items` shell.
+  // Review-verified unreachable on the real corpus (zero entities lose ALL
+  // items), so this is structural belt-and-suspenders, not a data path.
+  if (strikes.length === 0 && spellcastingEntries.length === 0 && other.length === 0) return null;
 
   return (
     <div className="codex-embedded-items">

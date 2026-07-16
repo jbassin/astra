@@ -1,0 +1,516 @@
+{
+  "aonUrl": "/Vehicles.aspx?ID=97",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "Designed to traverse frozen climates, armored sleighs are constructed from heavy oaken timbers covered with iron. These massive vehicles can readily traverse frozen and snow-covered ground while protecting the pilot and crew from the cold.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Space",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 60 feet long, 30 feet wide, 20 feet high",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Crew",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 2 pilots, 8 crew",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Passengers",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 20",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Piloting Check",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Driving Lore",
+          "kind": "crossref",
+          "targetId": "skill/lore"
+        },
+        {
+          "content": " (DC 36) or ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "Nature",
+          "kind": "crossref",
+          "targetId": "skill/nature"
+        },
+        {
+          "content": " (DC 38 to DC 46, depending on pulling creatures)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "AC",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 39",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Fort",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " +30",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Hardness",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 20",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "HP",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 280 (BT 140)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Immunities",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "object immunities",
+          "kind": "crossref",
+          "targetId": "rules/object-immunities"
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "kind": "divider"
+    },
+    {
+      "children": [
+        {
+          "content": "Speed",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " the Speed of the slowest pulling creature (pulled by 4 Huge creatures)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Collision",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " 12d10 (DC 36)",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Ice Traverser",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " The armored sleigh ignores difficult terrain caused by ice or snow.\n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Insulated Protections",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " from the icy landscape are built into the front of this vehicle, providing sanctuary from the cold. The pilot and crew are protected from ",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "display": "severe and extreme cold",
+          "kind": "crossref",
+          "targetId": "rules/temperature"
+        },
+        {
+          "content": ". The pilot also gains resistance 10 to all cold damage. \n",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": "Sluggish",
+          "kind": "text",
+          "marks": {
+            "bold": true,
+            "italic": false,
+            "superscript": false
+          }
+        },
+        {
+          "content": " This vehicle must move twice its length for each 90-degree turn it makes.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "vehicle",
+  "edition": "remaster",
+  "embeddedItems": [
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "60 feet long, 30 feet wide, 20 feet high",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Space",
+      "slug": "space",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "The armored sleigh ignores difficult terrain caused by ice or snow.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Ice Traverser",
+      "slug": "ice-traverser",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "Protections from the icy landscape are built into the front of this vehicle, providing sanctuary from the cold. The pilot and crew are protected from severe and extreme cold. The pilot also gains resistance 10 to all cold damage.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Insulated",
+      "slug": "insulated",
+      "traits": [],
+      "type": "action"
+    },
+    {
+      "actionCost": "passive",
+      "body": [
+        {
+          "children": [
+            {
+              "content": "This vehicle must move twice its length for each 90-degree turn it makes.",
+              "kind": "text",
+              "marks": {
+                "bold": false,
+                "italic": false,
+                "superscript": false
+              }
+            }
+          ],
+          "kind": "paragraph"
+        }
+      ],
+      "name": "Sluggish",
+      "slug": "sluggish",
+      "traits": [],
+      "type": "action"
+    }
+  ],
+  "facets": {
+    "ac": 39,
+    "fortitudeSave": 30,
+    "hp": 280,
+    "size": "grg"
+  },
+  "id": "vehicle/armored-sleigh",
+  "level": 17,
+  "mastheadExtra": [
+    {
+      "label": "Price",
+      "value": [
+        {
+          "content": " 45,000 gp",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Armored Sleigh",
+  "rarity": "uncommon",
+  "slug": "armored-sleigh",
+  "source": {
+    "book": "Battlecry!",
+    "license": "ORC",
+    "page": 110
+  },
+  "traits": []
+}

@@ -1,5 +1,5 @@
 /**
- * D29-29 tier 2 — regenerates the 6 committed flagship golden HTML files
+ * D29-29 tier 2 — regenerates the 7 committed flagship golden HTML files
  * (`apps/codex/goldens/*.html`) from the current renderer + the committed
  * fixture. Deterministic (no timestamps/randomness) so a re-run with no
  * source change produces byte-identical output — `goldens.test.tsx` asserts
@@ -12,7 +12,7 @@
  *   pnpm --filter @astra/codex exec node \
  *     --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/regen-goldens.ts
  *
- * Hand-check the 6 files after any intentional renderer change (D29-29's
+ * Hand-check the 7 files after any intentional renderer change (D29-29's
  * "vs hand-checked output" gate) before committing the regenerated goldens.
  */
 import { mkdirSync, writeFileSync } from "node:fs";
@@ -48,6 +48,21 @@ function main(): void {
       file: "creature-dragon.html",
       title: "creature/adamantine-dragon-adult — golden",
       html: renderEntityPage(requireEntity(byId, "creature/adamantine-dragon-adult"), ctx),
+    },
+    {
+      // P7 (D29-72/-73/-74, review M4): the joined dragon above LOST its
+      // structured-render markup to the D29-72 suppression — this
+      // Foundry-only fixture (variantOf + lore-bearing + a range.increment
+      // Rock strike) is the golden that keeps the structured render
+      // byte-locked: retention (empty body), StrikeRow range, lore-in-Skills
+      // humanized, and the §5 variantOf risk, all in one file.
+      file: "creature-dragon-spellcaster.html",
+      title:
+        "creature/adamantine-dragon-adult-spellcaster — golden (P7 structured-render retention)",
+      html: renderEntityPage(
+        requireEntity(byId, "creature/adamantine-dragon-adult-spellcaster"),
+        ctx,
+      ),
     },
     {
       file: "spell-heal.html",

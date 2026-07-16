@@ -76,8 +76,28 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
         <EditionBanner entity={entity} />
       </header>
 
-      {group === "creature" ? <CreatureStatblock entity={entity} /> : null}
-      {group === "hazard" ? <HazardStatblock entity={entity} ctx={ctx} /> : null}
+      {/* D29-72 (P7): when an AoN body is present, the AoN prose is the
+          statblock of record — the structured statblock cards AND the
+          embedded-item sections are suppressed (dedup, keep-the-AoN-side;
+          stakeholder R1+R2). The predicate is BODY-PRESENCE, deliberately
+          NOT `aonUrl` (a no-markdown join can set `aonUrl` with a
+          Foundry-fallback body — join.ts's mergeJoined; body-presence is
+          the honest signal) and deliberately NOT a category list (the
+          uniform rule R2 chose: a future category gaining both struct+body
+          flips behavior by design, spec §5). Foundry-only entities
+          (`body: []`) keep the full structured render. Bonus fix riding the
+          same gate: AoN-only prose creatures used to render an EMPTY
+          `codex-statblock` shell (CreatureStatblock has no null guard) —
+          suppressed now too. `MastheadExtraFallback` is NOT suppressed: it
+          renders masthead pairs STRIPPED FROM the body by D29-62's ingest
+          mechanism (545 hazard "Complexity" lines live only there) — it is
+          complementary, never duplicative, and self-nulls when absent. */}
+      {entity.body.length === 0 ? (
+        <>
+          {group === "creature" ? <CreatureStatblock entity={entity} /> : null}
+          {group === "hazard" ? <HazardStatblock entity={entity} ctx={ctx} /> : null}
+        </>
+      ) : null}
       {group === "creature" || group === "hazard" ? (
         <MastheadExtraFallback entity={entity} ctx={ctx} />
       ) : null}
@@ -86,7 +106,7 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
       {group === "feat" ? <FeatFacetHeader entity={entity} ctx={ctx} /> : null}
       {group === "generic" ? <GenericFacetLine entity={entity} ctx={ctx} /> : null}
 
-      {entity.embeddedItems !== undefined ? (
+      {entity.body.length === 0 && entity.embeddedItems !== undefined ? (
         <EmbeddedItemSections items={entity.embeddedItems} ctx={ctx} />
       ) : null}
 

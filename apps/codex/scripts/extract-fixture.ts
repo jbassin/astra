@@ -685,6 +685,12 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   "ritual/shadow-double",
   "ritual/simulacrum",
   "ritual/unbearable-cacophony",
+  // P7 (D29-72, review M3): a JOINED vehicle carrying both a non-empty body
+  // AND non-empty embeddedItems (16 body blocks + 4 action items, verified
+  // against the real corpus) — the category-smallest vehicle auto-pick has
+  // zero embeddedItems, so the S2 vehicle item-section-suppression test
+  // can't run hermetically without this.
+  "vehicle/armored-sleigh",
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {

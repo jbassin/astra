@@ -11,10 +11,10 @@ import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
 import type { RenderCtx } from "./nodes";
 
 /**
- * D29-29 tier 2 — the 6 committed flagship goldens, byte-exact (mirrors
+ * D29-29 tier 2 — the 7 committed flagship goldens, byte-exact (mirrors
  * `scripts/regen-goldens.ts` construction exactly). A drift here means
  * either an unintentional renderer regression (fix the renderer) or an
- * intentional change (re-run `scripts/regen-goldens.ts`, hand-check the 6
+ * intentional change (re-run `scripts/regen-goldens.ts`, hand-check the 7
  * files, commit them — the spec's "vs hand-checked output" gate).
  */
 
@@ -31,7 +31,7 @@ function page(title: string, bodyHtml: string): string {
   );
 }
 
-describe("D29-29 tier 2: the 6 flagship goldens are byte-exact", () => {
+describe("D29-29 tier 2: the 7 flagship goldens are byte-exact", () => {
   const { byId, ctx } = loadFixtureRenderEnv();
 
   function expectGoldenMatches(file: string, title: string, html: string): void {
@@ -45,6 +45,16 @@ describe("D29-29 tier 2: the 6 flagship goldens are byte-exact", () => {
     "creature-dragon.html",
     "creature/adamantine-dragon-adult — golden",
     renderEntityPage(requireEntity(byId, "creature/adamantine-dragon-adult"), ctx),
+  );
+
+  // P7 (D29-72, review M4): the joined dragon above lost its structured
+  // render to the suppression — this Foundry-only variant golden locks the
+  // SURVIVING structured render byte-exactly (retention + StrikeRow range +
+  // humanized lore-in-Skills + variantOf, spec §4 B).
+  expectGoldenMatches(
+    "creature-dragon-spellcaster.html",
+    "creature/adamantine-dragon-adult-spellcaster — golden (P7 structured-render retention)",
+    renderEntityPage(requireEntity(byId, "creature/adamantine-dragon-adult-spellcaster"), ctx),
   );
 
   expectGoldenMatches(

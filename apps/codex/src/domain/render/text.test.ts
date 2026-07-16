@@ -186,4 +186,18 @@ describe("statsText (S2, D29-34) — against the real fixture corpus", () => {
   it("a non-statblock entity's facets/stats yields empty string (safe to call unconditionally)", () => {
     expect(statsText({}, undefined)).toBe("");
   });
+
+  it("D29-74 (P7): merged lore-skill slugs are HUMANIZED in the indexed text — 'Mining Lore +24', never 'Mining-lore' (the spellcaster fixture)", () => {
+    const spellcaster = loadEntity("creature/adamantine-dragon-adult-spellcaster.json");
+    const out = statsText(spellcaster.facets, spellcaster.stats);
+    expect(out).toContain("Mining Lore +24");
+    expect(out).not.toContain("Mining-lore");
+    expect(out).toContain("Athletics +27"); // single-word core skills unchanged
+  });
+
+  it("D29-74 (P7, synthetic): a multi-word lore slug humanizes word-by-word", () => {
+    const out = statsText({}, { kind: "creature", skills: { "gambling-lore": 1, stealth: 12 } });
+    expect(out).toContain("Gambling Lore +1");
+    expect(out).toContain("Stealth +12");
+  });
 });
