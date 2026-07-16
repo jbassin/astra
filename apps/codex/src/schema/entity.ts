@@ -219,6 +219,18 @@ export const EmbeddedItemSchema = z
      * it's read verbatim off disk every run). Absent for every non-strike
      * item type. */
     damage: z.array(z.string().min(1)).optional(),
+    /** D29-73 (P7): a `melee`-typed strike item's `system.range.{increment,max}`,
+     * transform-baked to an AoN-format display string (precedent: `damage`
+     * above is already a transform-baked display string, not raw JSON) —
+     * `"range {max} feet"` for a max-only ranged strike, `"range increment
+     * {increment} feet"` for an increment-based one (thrown weapons);
+     * `increment` wins if both are set (defensive only — 0/12,942 raw melee
+     * items carry both in the real corpus, `foundryEntities.ts`'s
+     * `formatStrikeRange`). Absent for every non-strike item type and for a
+     * melee strike with no `system.range` at all (most melee weapons —
+     * `thrown-N` traits already cover the common thrown-weapon case
+     * separately). */
+    range: z.string().optional(),
     /** D29-20 (P1.6): a `spellcastingEntry`-typed item's spell DC
      * (`system.spelldc.dc`). Absent for every other item type. */
     dc: z.number().optional(),

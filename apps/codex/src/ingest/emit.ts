@@ -167,8 +167,17 @@ export interface CorpusOutputManifest {
  * `CodexEntity.stats` field + `EmbeddedItem`'s new optional strike/
  * spellcasting fields, the `creature` category's npc-only narrowing, and the
  * `index.json` -> `_index.json` rename are all corpus-shape changes a P2+
- * consumer must be able to detect a regen against. */
-export const CORPUS_SCHEMA_VERSION = 2;
+ * consumer must be able to detect a regen against.
+ *
+ * Bumped 2->3 for P7 S1 (D29-73): `EmbeddedItem` gains a new optional
+ * `range` field (strike range, transform-baked display string). This is the
+ * SAME D29-20 EmbeddedItem-fields precedent above, not `entity.ts:92`'s
+ * facets additive-no-bump rule — a new field a P2+ consumer must be able to
+ * detect a regen against, per that spec decision (deliberately not treated
+ * as a silent additive-only change). D29-74's lore-into-`stats.skills` merge
+ * changes VALUES within the existing `skills` record shape, not the schema
+ * itself — no separate bump needed for it. */
+export const CORPUS_SCHEMA_VERSION = 3;
 
 export interface EmitCorpusInput {
   /** `<dataPath>/corpus` — wiped and rewritten wholesale on every call. */

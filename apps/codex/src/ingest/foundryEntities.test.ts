@@ -155,6 +155,261 @@ describe("assembleFoundryEntity: real fixture — Balor (Actor, npc, embedded it
   });
 });
 
+describe("assembleFoundryEntity: D29-73 (P7 S1) strike range extraction", () => {
+  /** A minimal npc Actor carrying one `melee`-typed embedded item whose raw
+   * `system.range` is overridden per test. */
+  function creatureDoc(items: RawFoundryDoc[]): RawFoundryDoc {
+    return {
+      _id: "npcID00000001",
+      name: "Test Creature",
+      type: "npc",
+      system: {
+        details: { publication: { license: "OGL", remaster: false, title: "Core Rulebook" } },
+      },
+      items,
+    };
+  }
+
+  function meleeItem(
+    name: string,
+    range: { increment?: number | null; max?: number | null },
+  ): RawFoundryDoc {
+    return {
+      _id: "meleeID0000001",
+      name,
+      type: "melee",
+      system: { range },
+    };
+  }
+
+  it('max-only range formats as AoN-style "range {max} feet" (abberton-ruffian\'s Thrown Bottle shape: increment null, max 10)', () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([meleeItem("Thrown Bottle", { increment: null, max: 10 })]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const item = entity?.embeddedItems?.find((i) => i.name === "Thrown Bottle");
+    expect(item?.range).toBe("range 10 feet");
+  });
+
+  it('increment-only range formats as "range increment {increment} feet" (ailuran\'s Boomerang shape: increment 20, max null)', () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([meleeItem("Boomerang", { increment: 20, max: null })]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const item = entity?.embeddedItems?.find((i) => i.name === "Boomerang");
+    expect(item?.range).toBe("range increment 20 feet");
+  });
+
+  it("SYNTHETIC ONLY (0/12,942 real melee items carry both): increment wins when both increment and max are set", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([meleeItem("Both-Set Thrower", { increment: 30, max: 60 })]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const item = entity?.embeddedItems?.find((i) => i.name === "Both-Set Thrower");
+    expect(item?.range).toBe("range increment 30 feet");
+  });
+
+  it("a melee item with no system.range at all gets no range field (most melee weapons — thrown-N traits cover that case separately)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([
+        {
+          _id: "meleeID0000002",
+          name: "Dagger",
+          type: "melee",
+          system: { traits: { value: ["agile", "thrown-10", "versatile-s"] } },
+        },
+      ]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const dagger = entity?.embeddedItems?.find((i) => i.name === "Dagger");
+    expect(dagger?.range).toBeUndefined();
+    expect(dagger?.traits).toContain("thrown-10"); // trait-encoded range is unchanged
+  });
+
+  it("a non-melee embedded item (e.g. a spell, which has its own unrelated system.range.value shape) never gains a range field", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([
+        {
+          _id: "spellID0000002",
+          name: "Fireball",
+          type: "spell",
+          system: { range: { value: "500 feet" } },
+        },
+      ]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const spell = entity?.embeddedItems?.find((i) => i.name === "Fireball");
+    expect(spell?.range).toBeUndefined();
+  });
+});
+
+describe("assembleFoundryEntity: D29-74 (P7 S1) lore-skill merge into stats.skills", () => {
+  function creatureDoc(
+    items: RawFoundryDoc[],
+    skills?: Record<string, { base?: number }>,
+  ): RawFoundryDoc {
+    return {
+      _id: "npcID00000002",
+      name: "Test Creature",
+      type: "npc",
+      system: {
+        details: { publication: { license: "OGL", remaster: false, title: "Core Rulebook" } },
+        ...(skills ? { skills } : {}),
+      },
+      items,
+    };
+  }
+
+  function loreItem(name: string, mod: number | null | undefined): RawFoundryDoc {
+    return {
+      _id: `loreID${name}`,
+      name,
+      type: "lore",
+      system: { mod: { value: mod ?? undefined } },
+    };
+  }
+
+  it('abberton-ruffian shape: Gambling Lore (mod 1) merges into stats.skills["gambling-lore"]', () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([loreItem("Gambling Lore", 1)]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const stats = entity?.stats?.kind === "creature" ? entity.stats : undefined;
+    expect(stats?.skills).toEqual({ "gambling-lore": 1 });
+  });
+
+  it('ailuran shape: Silver Lore (mod 13) merges into stats.skills["silver-lore"] alongside a real core skill', () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([loreItem("Silver Lore", 13)], { stealth: { base: 12 } }),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const stats = entity?.stats?.kind === "creature" ? entity.stats : undefined;
+    expect(stats?.skills).toEqual({ stealth: 12, "silver-lore": 13 });
+  });
+
+  it("guards a lore slug that collides with a real core skill — the core value wins, collision is reported (loreSkillCoreCollision)", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    // Sluggify("Stealth") === "stealth" — a lore item improbably named
+    // exactly like a core skill collides with it.
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([loreItem("Stealth", 99)], { stealth: { base: 12 } }),
+      ctx: makeCtx(),
+      report: (cls, detail) => reports.push({ cls, detail }),
+      seenIds: new Set(),
+    });
+    const stats = entity?.stats?.kind === "creature" ? entity.stats : undefined;
+    expect(stats?.skills).toEqual({ stealth: 12 }); // the real core value survives, unclobbered
+    expect(reports.some((r) => r.cls === "loreSkillCoreCollision")).toBe(true);
+  });
+
+  it("logs (not silently merges) a same-slug DUPLICATE lore item on one actor — last-write-wins (loreSkillDuplicateSlug)", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([loreItem("Abyss Lore", 5), loreItem("Abyss Lore", 9)]),
+      ctx: makeCtx(),
+      report: (cls, detail) => reports.push({ cls, detail }),
+      seenIds: new Set(),
+    });
+    const stats = entity?.stats?.kind === "creature" ? entity.stats : undefined;
+    expect(stats?.skills).toEqual({ "abyss-lore": 9 }); // last (2nd) write wins
+    expect(reports.some((r) => r.cls === "loreSkillDuplicateSlug")).toBe(true);
+  });
+
+  it("a creature with lore items but no core skills at all still gets stats.skills (never returns undefined once a lore mod is present)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([loreItem("Academia Lore", 8)]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.stats?.kind).toBe("creature");
+    const stats = entity?.stats?.kind === "creature" ? entity.stats : undefined;
+    expect(stats?.skills).toEqual({ "academia-lore": 8 });
+  });
+
+  it("a lore item with no system.mod.value at all contributes nothing (present() guard, same S4 emit-gate convention)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "pathfinder-bestiary",
+      docClass: "Actor",
+      basename: "test-creature",
+      doc: creatureDoc([loreItem("Undefined Lore", undefined)]),
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    const stats = entity?.stats?.kind === "creature" ? entity.stats : undefined;
+    expect(stats?.skills).toBeUndefined();
+  });
+
+  it("a hazard's lore items never merge — HazardStatsSchema has no skills field, and no crash occurs (D29-74 hazard guard)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "hazards",
+      docClass: "Actor",
+      basename: "test-hazard",
+      doc: {
+        _id: "hazID00000002",
+        name: "Test Hazard With Lore",
+        type: "hazard",
+        system: {
+          details: { publication: { license: "OGL", remaster: false, title: "Core Rulebook" } },
+          attributes: { hardness: 10 },
+        },
+        items: [loreItem("Trap Lore", 4)],
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.stats?.kind).toBe("hazard");
+    const stats = entity?.stats?.kind === "hazard" ? entity.stats : undefined;
+    expect(stats).not.toHaveProperty("skills");
+  });
+});
+
 describe("assembleFoundryEntity: D29-20 (P1.6) HazardStats extraction", () => {
   function hazardDoc(): RawFoundryDoc {
     return {

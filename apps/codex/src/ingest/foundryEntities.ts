@@ -37,6 +37,14 @@ import { sluggify } from "./sluggify";
  * `attackBonus`/`damage`/`dc`/`attack`/`tradition` (`extractStrikeFields`/
  * `extractSpellcastingFields`) — schemaVersion 1->2, `src/ingest/emit.ts`'s
  * `CORPUS_SCHEMA_VERSION`.
+ *
+ * P7 S1 widening (D29-73/D29-74): `melee`-typed embedded items additionally
+ * gain a transform-baked `range` display string off `system.range.
+ * {increment,max}` (`extractStrikeFields`'s new `formatStrikeRange` call) —
+ * schemaVersion 2->3. And a creature's `type:"lore"` embedded items'
+ * `system.mod.value` now merges into `stats.skills` (`mergeLoreSkills`,
+ * called from `extractCreatureStats`) — same `skills` record shape, no
+ * schema change of its own.
  */
 
 // ---------------------------------------------------------------------------
@@ -123,6 +131,11 @@ interface RawSystem {
   abilities?: Partial<Record<"str" | "dex" | "con" | "int" | "wis" | "cha", { mod?: number }>>;
   /** D29-20/P1.6 (creature): `system.skills.*.base`, keyed on the skill slug. */
   skills?: Record<string, { base?: number }>;
+  /** D29-74 (P7, `lore`-typed embedded item): `system.mod.value` — the
+   * lore's flat skill bonus (verified on `abberton-ruffian`'s "Gambling
+   * Lore" = 1 / `ailuran`'s "Silver Lore" = 13), merged into the owning
+   * creature's `stats.skills` by `mergeLoreSkills` below. */
+  mod?: { value?: number };
   level?: { value?: number };
   actionType?: { value?: string };
   actions?: { value?: number | null };
@@ -132,7 +145,17 @@ interface RawSystem {
   usage?: { value?: string };
   category?: string;
   time?: { value?: string };
-  range?: { value?: string };
+  /** Two distinct real shapes share this one raw field name: a spell Item's
+   * `system.range.value` (a free-text string, e.g. "30 feet"/"touch" — read
+   * by `extractFacets`'s `facets.range`) and a `melee`-typed embedded
+   * strike's `system.range.{increment,max}` (D29-73/P7, `formatStrikeRange`
+   * below) — both nullable numbers in the raw JSON (`{"increment": null,
+   * "max": 10}`, verified on `abberton-ruffian`'s Thrown Bottle /
+   * `ailuran`'s Boomerang). Harmless to share one interface: a spell's
+   * `range` object never carries `increment`/`max`, and a strike's never
+   * carries `value`, so each extractor only ever sees its own sub-shape
+   * populated. */
+  range?: { value?: string; increment?: number | null; max?: number | null };
   area?: { type?: string; value?: number };
   duration?: { value?: string; sustained?: boolean };
   defense?: { save?: { basic?: boolean; statistic?: string } };
@@ -486,13 +509,62 @@ function extractSkills(skills: RawSystem["skills"]): CreatureStats["skills"] | u
   return Object.keys(out).length > 0 ? out : undefined;
 }
 
+/** D29-74 (P7): folds `type:"lore"` embedded items' `system.mod.value` into
+ * the creature's `skills` record, keyed on `sluggify(item.name)` — the same
+ * slug convention `assembleEmbeddedItem`'s own `slug` field uses — so the
+ * lore bonus (otherwise visible only on the embedded item) surfaces in the
+ * structured Skills row too (`SkillsRow`, render-side, S2). Two guarded
+ * cases (both report-visible, never silent):
+ *   - a lore slug that collides with a genuine CORE skill key (report class
+ *     `loreSkillCoreCollision`) — the real corpus carries zero of these
+ *     (verified), but a future pack addition must not silently clobber a
+ *     trained core skill's real value, so the core value wins and the lore
+ *     item is skipped;
+ *   - a same-slug DUPLICATE lore item on one actor (report class
+ *     `loreSkillDuplicateSlug`; 3 known real cases, e.g. two "Abyss Lore"
+ *     entries on one creature) — last-write-wins, in the doc's own on-disk
+ *     item order (same determinism guarantee `extractDamage`'s
+ *     `Object.values` comment documents for embedded items generally).
+ * NOT called for hazard docs — see `extractStats`'s own comment
+ * (`HazardStatsSchema` has no `skills` field; a future hazard lore item must
+ * not vanish silently, hence the comment there rather than a mechanism
+ * here). */
+function mergeLoreSkills(
+  coreSkills: CreatureStats["skills"],
+  items: RawFoundryDoc[] | undefined,
+  report: ReportFn,
+): CreatureStats["skills"] | undefined {
+  if (!items || items.length === 0) return coreSkills;
+  const out: Record<string, number> = { ...coreSkills };
+  for (const item of items) {
+    if (item.type !== "lore") continue;
+    const mod = item.system?.mod?.value;
+    if (!present(mod)) continue;
+    const slug = sluggify(item.name);
+    if (coreSkills && Object.prototype.hasOwnProperty.call(coreSkills, slug)) {
+      report("loreSkillCoreCollision", `${item.name} (slug "${slug}")`);
+      continue;
+    }
+    if (Object.prototype.hasOwnProperty.call(out, slug)) {
+      report("loreSkillDuplicateSlug", `${item.name} (slug "${slug}")`);
+    }
+    out[slug] = mod;
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
+}
+
 /** Extracts `CreatureStats` from an Actor's `system` — only called for
  * `category === "creature"` docs (npc/familiar; `character` docs never reach
  * assembly at all, D29-19). Returns `undefined` when nothing at all is
  * extractable (e.g. a bare-bones familiar) rather than an all-empty object,
  * matching `embeddedItems`/`loreBody`'s own "never an empty placeholder"
- * convention. */
-function extractCreatureStats(system: RawSystem | undefined): CreatureStats | undefined {
+ * convention. `items` (D29-74, P7): the Actor's raw embedded-item list, so
+ * lore skills can merge into `skills` — see `mergeLoreSkills`. */
+function extractCreatureStats(
+  system: RawSystem | undefined,
+  items: RawFoundryDoc[] | undefined,
+  report: ReportFn,
+): CreatureStats | undefined {
   const speeds = extractSpeeds(system?.attributes?.speed);
   const abilityMods = extractAbilityMods(system?.abilities);
   const senses = extractSenses(system?.perception);
@@ -500,7 +572,7 @@ function extractCreatureStats(system: RawSystem | undefined): CreatureStats | un
   const immunities = extractImmunities(system?.attributes);
   const resistances = extractTypedValues(system?.attributes?.resistances);
   const weaknesses = extractTypedValues(system?.attributes?.weaknesses);
-  const skills = extractSkills(system?.skills);
+  const skills = mergeLoreSkills(extractSkills(system?.skills), items, report);
   if (
     speeds === undefined &&
     abilityMods === undefined &&
@@ -608,8 +680,15 @@ function extractStats(
   system: RawSystem | undefined,
   ctx: EnricherContext,
   report: ReportFn,
+  items: RawFoundryDoc[] | undefined,
 ): Stats | undefined {
-  if (category === "creature") return extractCreatureStats(system);
+  if (category === "creature") return extractCreatureStats(system, items, report);
+  // D29-74 (P7) guard: hazard docs' `type:"lore"` embedded items (0/1,309
+  // real hazard docs today, verified) are deliberately NOT merged anywhere —
+  // `HazardStatsSchema` has no `skills` field at all. A future hazard lore
+  // item must not vanish silently here without deliberate schema work first
+  // (add a `skills` field to `HazardStatsSchema`, then wire a merge call
+  // the same shape `extractCreatureStats` uses above).
   if (category === "hazard") return extractHazardStats(system, ctx, report);
   return undefined;
 }
@@ -639,17 +718,32 @@ function extractDamage(damageRolls: RawSystem["damageRolls"]): string[] | undefi
   return out.length > 0 ? out : undefined;
 }
 
-/** D29-20 (P1.6): a `melee`-typed strike item's to-hit bonus + flattened
- * damage rolls. Absent for every other item type (the source fields simply
- * don't exist on them). */
+/** D29-73 (P7): a `melee`-typed strike item's `system.range.{increment,max}`
+ * → an AoN-format display string. `increment` wins if both are set —
+ * defensive only, 0/12,942 raw melee items in the real corpus carry both
+ * (verified); the tiebreak is exercisable by synthetic unit test only. Both
+ * raw fields are nullable numbers (`{"increment": null, "max": 10}`), hence
+ * `present()` rather than a bare `!== undefined` (the same S4 emit-gate
+ * literal-`null` lesson `extractHazardStats`'s own comment documents). */
+function formatStrikeRange(range: RawSystem["range"] | undefined): string | undefined {
+  if (present(range?.increment)) return `range increment ${range.increment} feet`;
+  if (present(range?.max)) return `range ${range.max} feet`;
+  return undefined;
+}
+
+/** D29-20 (P1.6) + D29-73 (P7): a `melee`-typed strike item's to-hit bonus,
+ * flattened damage rolls, and (P7) formatted range. Absent for every other
+ * item type (the source fields simply don't exist on them). */
 function extractStrikeFields(
   system: RawSystem | undefined,
-): Pick<EmbeddedItem, "attackBonus" | "damage"> {
+): Pick<EmbeddedItem, "attackBonus" | "damage" | "range"> {
   const attackBonus = present(system?.bonus?.value) ? system.bonus.value : undefined;
   const damage = extractDamage(system?.damageRolls);
+  const range = formatStrikeRange(system?.range);
   return {
     ...(attackBonus !== undefined ? { attackBonus } : {}),
     ...(damage !== undefined ? { damage } : {}),
+    ...(range !== undefined ? { range } : {}),
   };
 }
 
@@ -770,7 +864,7 @@ export function assembleFoundryEntity(
       ? doc.items.map((item) => assembleEmbeddedItem(item, ctx))
       : undefined;
 
-  const stats = extractStats(decision.category, doc.system, ctx, report);
+  const stats = extractStats(decision.category, doc.system, ctx, report, doc.items);
 
   return {
     id,
