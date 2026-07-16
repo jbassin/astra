@@ -209,3 +209,66 @@ snapshots, live-interim note) · **M6** STOP tolerance quantified (±5%) · nits
 tiebreak synthetic-only; schemaVersion comment conflict acknowledged; dup-slug lore logged;
 hazard-lore guard comment; post-sort moot via `canonicalJson`; in-body mini-masthead
 recorded as expected residue.
+
+## 7. Build record
+
+- **S1 (transform), 2026-07-15, committed `238b2f4`:** D29-73 (`formatStrikeRange` in
+  `extractStrikeFields`, `EmbeddedItemSchema.range`, schemaVersion 2→3 citing the D29-20
+  precedent) + D29-74 data side (`mergeLoreSkills` off `system.mod.value`, keys stay slugs,
+  `loreSkillCoreCollision` guard + `loreSkillDuplicateSlug` log, hazard guard comment at
+  `extractStats`) + 13 synthetic unit tests. Real-corpus regen over the PINNED snapshots
+  (`pf2e-8.3.0` / AoN `2026-07-13`), transform-only. **Gate A measured:** range strikes
+  **1,806** / entities **1,713** (+4.8%/+4.7% vs the ≈1,723/1,636 pins — inside the ±5%
+  STOP line; the scope sweep under-counted slightly, the mechanism is as spec'd); lore
+  merges **1,727** / entities **1,481** (−0.06%/+0.14% vs ≈1,728/1,479); collisions 0,
+  dup-slugs 3 (exact); abberton `gambling-lore: 1` + "range 10 feet", ailuran
+  `silver-lore: 13` + "range increment 20 feet", Dagger `thrown-10` trait untouched — all
+  exact; determinism 3× byte-identical (tree-sha256 `a8a8a5f7…`); 46,192 entities Zod-green,
+  0 hard failures; schemaVersion bumped exactly once.
+  - **⚠ M5 CORRECTION (found at S2 gate B, root-caused): the "benign live interim" claim
+    was WRONG.** `emit.ts` wipes the corpus root (`rmSync` + `mkdirSync`) — this UNLINKS
+    the directory inode the running container's `:ro` bind mount holds, so after any
+    host-side transform regen the container serves ENOENT for every entity (healthy-looking
+    landing page + 0 error logs — the fail-soft masks it; both hostnames 404'd entity pages
+    through the edge until a container restart re-established the mount). **Rule: a corpus
+    regen against the live bind mount REQUIRES a container restart** — the D29-57 restart
+    tail is load-bearing for mount re-establishment, not just cache flushing. Outage found
+    + reported by the S2 engineer; coordinator restarted the container same session.
+- **S2 (render + fixture/golden regen), 2026-07-15, committed `b0024d5`:** the D29-72 seam
+  in `entityPage.tsx` (statblock cards + `EmbeddedItemSections` gated on
+  `body.length === 0`; `MastheadExtraFallback` ungated), D29-74 display humanizer
+  (`humanizeSlug` in `SkillsRow` + `statsText`), D29-75 lore exclusion + D29-76 stub filter
+  (applied before the section-emptiness checks + an all-buckets-empty → no-shell guard),
+  D29-73 `StrikeRow` range parenthetical. Fixture regen picked up S1's fields;
+  `vehicle/armored-sleigh` claimed the vehicle slot (replacing the zero-embeddedItems
+  smallest-file pick); static fixture manifest pin 2→3. Goldens: ONE regen, hand-reviewed —
+  `creature-dragon.html` 31,443→14,122 bytes (header + body-onward byte-identical, ONLY the
+  structured-render markup removed); other 5 byte-identical (zero humanizer churn); NEW 7th
+  golden `creature-dragon-spellcaster.html` (retention + range + humanized lore-in-Skills +
+  variantOf, all verified in-file). +19 tests (predicate pinned BOTH directions via
+  synthetic body-swap clones per §5, suppression/retention/vehicle/MastheadExtra/humanizer/
+  stub cases) → 80 files / 1,564 green. Gate B proven on the production build against the
+  real corpus (local alt-port instance of the identical `dist/`): abberton ONE statblock
+  (0 `codex-statblock`/0 `codex-embedded-items`, RK + body present), ailuran retains
+  structure + "Silver Lore +13" + Boomerang range, gravehall suppressed but Complexity
+  renders, armored-sleigh no item sections, `@legacy` twin unaffected, zero
+  console/hydration errors across the 7-URL spot-set in real Chromium, both surfaces
+  (standalone + split-view `?entry=`) identical through the shared seam. Both CI lanes
+  reproduced green.
+- **S3 (deploy + verification), 2026-07-15, IN PROGRESS:** pre-deploy abberton capture
+  through the edge (old renderer + new corpus): **50,880 bytes / 10,790 gz**, statblock +
+  embedded-items both present (the "before" for gate E). Non-deploy gates done ahead of the
+  deploy: **hermeticity both lanes green** with `data/` renamed out of tree (same-filesystem
+  rename to keep the live mount's inodes — NOT a cross-device `mv` to `/tmp`, which would
+  copy + unlink and re-break the live mount; TS typecheck/lint/format/test/build + py
+  ruff/format/ty/pytest 360 all green hermetic; post-restore recount 46,192 == manifest
+  exact; codex suite re-run on the real corpus 80/1,564 green). **Local OTLP smoke green:**
+  the P4 pattern (initTelemetry BEFORE createSsrServer, endpoint = the host-published
+  collector `localhost:10353` — the in-cluster name doesn't resolve from a host process),
+  `SSR GET /creature/ailuran` span verified in SigNoz via MCP (`astra.codex`, 200,
+  hasError=false). README render/search/ingest sections updated for D29-72..76.
+  **Deploy steps (`just up` image rebuild + `just codex-refresh` fresh-snapshot transform +
+  reindex + restart) BLOCKED by the harness permission classifier** (production deploy
+  requires the user's own permission prompt) — the edge re-verification (gate D three-prong
+  both hostnames, §4-B spot-set through the edge, the "Gambling Lore" Pagefind reindex
+  proof, post-deploy weights) awaits the sanctioned deploy.

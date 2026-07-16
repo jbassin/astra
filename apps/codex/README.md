@@ -22,6 +22,22 @@ totals, unchanged since P2); `/{category}` is P3's faceted listing (below) — P
 listing is gone. Crossref + trait-pill hover cards are a ported akasha Popover island
 (`src/domain/components/islands/Popover.tsx`), mounted on entity pages only.
 
+**Statblock dedup — the AoN body is the statblock of record (P7, D29-72).** When
+`entity.body.length > 0` (a joined or AoN-only entity), `entityPage.tsx` suppresses the
+structured render entirely: `CreatureStatblock`/`HazardStatblock` AND `EmbeddedItemSections`
+(any category — creature 3,672 + hazard 506 + vehicle 83 + warfare-army 7 joined pages at
+P7 build time). Foundry-only entities (`body: []`, incl. all `variantOf` variants) keep the
+full structured render. The predicate is **body-presence, not `aonUrl`** (a no-markdown join
+can set `aonUrl` with a Foundry-fallback body) and deliberately not a category list.
+`MastheadExtraFallback` is never suppressed — it re-surfaces masthead pairs *stripped from*
+the body at ingest (D29-62; the 545 hazard "Complexity" lines live only there). Within the
+surviving structured render: strike rows show the transform-baked `range` string as a
+parenthetical after the trait pills (D29-73), `type:"lore"` embedded items are excluded from
+the abilities bucket (their bonus lives in the Skills row via D29-74's transform merge), and
+empty stubs (no body/traits/actionCost) are skipped (D29-76). Skill labels humanize slugs
+word-by-word (`gambling-lore` → "Gambling Lore", `humanizeSlug` in `SkillsRow` + `statsText`
+— JSON keys stay slugs).
+
 `renderNodes`' one structural gotcha (S5 real-corpus find, fixed): a `paragraph` whose children
 include a RESOLVED, depth-0 `embed` node must render as `<div class="codex-content">`, not `<p>`
 — `renderEmbed` inlines a resolved top-level embed as a block `<div class="codex-embed-card">`
@@ -106,7 +122,9 @@ rows already carry everything needed).
 the corpus and writes it to `data/search/pagefind/` (sibling of `data/corpus/`, gitignored). It
 walks every entity via the same `createCorpusReader` fs layer the frontend reads through, extracts
 plain text (`collectText`/`statsText`, `src/domain/render/text.ts`) from `body` + `loreBody` +
-the creature/hazard `stats`/`facets` statblock, and calls Pagefind's `addCustomRecord` directly
+the creature/hazard `stats`/`facets` statblock — `statsText`'s skills line includes the D29-74
+merged lore skills, humanized (`gambling-lore` indexes as "Gambling Lore"), so lore skill names
+are searchable after a reindex — and calls Pagefind's `addCustomRecord` directly
 with structured `meta` (title/category/level/rarity/edition/book) and `filters`
 (category/rarity/edition/level/superseded/traits — traits case-folded lowercase, corpus data
 itself stays verbatim). `server.ts` serves the bundle at `/pagefind/` via `@astra/site-kit`'s
@@ -527,6 +545,16 @@ corpus/
   `attackBonus`/`damage[]` on `melee` strikes and `dc`/`attack`/`tradition` on
   `spellcastingEntry` items. Extraction is deterministic field mapping; absent source
   fields are omitted. The report carries per-field extraction coverage tables.
+- **P7 additions (D29-73/D29-74, schemaVersion 2→3):** `melee` strikes additionally
+  carry an optional `range` display string baked from `system.range.{increment,max}`
+  ("range 10 feet" max-only / "range increment 120 feet"; increment wins if both —
+  0 real docs carry both). And `type:"lore"` embedded items' `system.mod.value`
+  merges into the creature's `stats.skills` as `sluggify(name) → mod`
+  (`mergeLoreSkills` — core-skill collisions guarded + reported as
+  `loreSkillCoreCollision` (0 real), same-slug duplicates last-write-wins +
+  reported as `loreSkillDuplicateSlug` (3 real)); hazards have no `skills` field —
+  a future hazard lore item needs deliberate schema work (guard comment at
+  `extractStats`).
 - One upstream pack typo (`pfs-season-6-bestiary/.../historys-repetition-7-8`, an
   unterminated `@Check[` in its hazard `disable` field) is handled fail-soft: the one
   broken field is omitted and counted as `hazardStatsHtmlFailed` — entity `body`
