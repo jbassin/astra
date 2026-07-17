@@ -1,6 +1,6 @@
 # 0029 codex — P7 spec: statblock dedup (keep AoN) + structured-render data fixes
 
-**Status:** FINAL (adversarially reviewed ×2, 2026-07-15 — 3 blockers + 6 minors folded; see §6)
+**Status:** BUILT (2026-07-16 — S1–S3 incl. the sanctioned deploy + edge verification, §7; spec was FINAL after adversarial review ×2, 2026-07-15 — 3 blockers + 6 minors folded; see §6)
 **Scope doc:** `thoughts/shared/research/2026-07-15-codex-0029-p7-statblock-dedup-thoughts.md`
 (decisions R1–R4 stakeholder-RESOLVED; all populations live-swept 2026-07-15).
 **Provenance:** early gate-H feedback (the abberton-ruffian review). Gate H continues in
@@ -272,3 +272,18 @@ recorded as expected residue.
   requires the user's own permission prompt) — the edge re-verification (gate D three-prong
   both hostnames, §4-B spot-set through the edge, the "Gambling Lore" Pagefind reindex
   proof, post-deploy weights) awaits the sanctioned deploy.
+- **S3 deploy, 2026-07-16, DONE (user-sanctioned):** `just up` (image rebuilt, container
+  recreated) + `just codex-refresh` (fresh snapshots: Foundry sha unchanged at `pf2e-8.3.0`,
+  AoN re-fetched 2026-07-17 with IDENTICAL doc counts — corpus-manifest diff was
+  timestamp-only, reverted per the P1 precedent; corpus 46,192 / schemaVersion 3 /
+  spell 2,461 / ritual 201 all == pins; Pagefind reindexed; container restarted).
+  **Edge verification, both hostnames:** real-corpus three-prong (red-dragon-adult marker,
+  ailuran 200, zero fixture-fallback warns), `X-Robots-Tag: noindex` intact; **gate E:**
+  `creature/abberton-ruffian` structured statblock GONE through the edge (0 `codex-statblock`
+  blocks, 46,380 bytes vs the 50,880 pre-deploy capture); **the "Gambling Lore" reindex
+  proof non-vacuous:** live `/search` for `"gambling lore" satinder` returns exactly
+  Satinder Morne (a creature whose Gambling Lore exists only via the D29-74 merge), 20-result
+  generic query, 0 page errors in real Chromium; fresh `astra.codex` spans in SigNoz incl.
+  `codex.search`, all `hasError=false`. The deploy also shipped the post-P7 edition-icon
+  change (`e0267e0`, both icon variants grep-verified in served HTML). Gate H continues on
+  this now-current live site.
