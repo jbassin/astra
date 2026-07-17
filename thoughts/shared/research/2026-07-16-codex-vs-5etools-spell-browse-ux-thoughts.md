@@ -185,8 +185,46 @@ content-gating.
 not codex), Book View/print mode (maybe someday for /rules), random-entry shuffle, Manage
 Defaults.
 
+## 11. Spacing appendix (measured, desktop 1600×900, computed styles + getBoundingClientRect)
+
+| Metric | 5e.tools | codex | ratio |
+|---|---|---|---|
+| Body type / line-height | 14px / 20px Arial (1.43) | 18px / 28.8px EB Garamond (1.6) | 1.29× / 1.44× |
+| List-row type | 11.2px / 14px | 18px / 28.8px | 1.6× / 2.06× |
+| Row box height | **16px** (30px when the name wraps) | **71px** (4.8px pad + 1px hairline) | **4.4×** |
+| Gap between rows | 0 | 4.8px | — |
+| Effective row pitch | ~16px | ~76px | **4.75×** |
+| Rows per 900px viewport | ~28 | ~6–7 | ~4.5× |
+| Header chrome above list | banner 41 + nav 33 + toolbar 34 + pill bar ≈ 130 → first row ≈ y 250 | header 77 + title/controls/jump strip → first row ≈ y 440 | codex spends ~1.75× more lead-in |
+| Detail-pane padding | **0px** (card border sits on text) | **48px** all sides | — |
+| Paragraph spacing (pane) | 5px below, 12.6px/18px type | 12px above+below, 18px/28.8px | ~2.4× |
+| Content band | 649px list + **14px gap** + 463px pane = 1126px | 416px list + **65px gap** + 551px pane, main max-width 1152/pad 48 | gap 4.6× |
+| Side gutters | 237 / 237 (symmetric) | 272 / 296 | ~equal |
+| Background-pixel ratio (same task, list+detail selected) | **61.3%** | **83.6%** | +22pts whitespace |
+
+Both center a ~1,100px band at 1600w with ~15% side gutters — the density difference is entirely
+*inside* the band. 5e.tools' 16px pitch is UI-table rhythm (line-height IS the row); codex's 76px
+pitch is book rhythm (each row is a two-line typographic unit with air). Neither is "wrong": at
+16px, 550 spells scan in 20 screenfuls; at 76px codex needs ~190 — which is exactly why codex's
+letter jump-strip and Ctrl+K exist, and why a "dense mode" (halving pitch to ~38px by inlining
+the pill/meta line) is the one spacing lever worth considering if browse-scanning ever becomes
+the primary verb.
+
 ---
 *Captures: A1–A14 (5etools: initial, manage-content menu, name-search, detail, filter modal ×3,
 j/k, Table View + CSV, Book View, mobile ×2, nav dropdowns ×2) · B1–B12 (codex: initial, nav
 dropdown, split view, facet clip, omnibar, drawer ×3, facet-applied pills, mobile ×2, /search
 ranking). Session scratchpad `uxcmp/`.*
+
+## Post-script finding (unrelated to 5e.tools): the Rules nav caret renders UA-default chrome
+
+The "weird arrow" next to RULES in the codex header is the D29-47/M4 **split control** — the
+RULES text is a real `<a href="/rules">` and the ▾ is a SEPARATE disclosure `<button>` for the
+8-category tail (a dropdown trigger can't also be a link; two tab stops, deliberate, keep it).
+But the button ships with **UA default button chrome** — computed live: `border: 2px outset
+black`, `background: rgb(239,239,239)`, `appearance: auto` — because `.codex-nav-caret` only
+sets padding/font-size and nothing resets the native look. That gray OS push-button in the
+parchment header is why it reads as a stray artifact. One-rule fix: `border: none; background:
+none; appearance: none; font: inherit; color: inherit; cursor: pointer` on `.codex-nav-caret`.
+(Adjacent observation for a future call: Rules is the ONLY nav item with a visible caret — the
+other seven dropdowns give no affordance at all.)
