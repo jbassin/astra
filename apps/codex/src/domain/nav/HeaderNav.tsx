@@ -185,6 +185,15 @@ function NavDropdown({ item }: { item: NavItem }): ReactElement {
         onKeyDown={dd.onTriggerKeyDown}
       >
         {item.label}
+        {/* P8 S2 (D29-80b): the same `▾` affordance every dropdown trigger
+            now carries, matching the Rules split control's own caret
+            voice/size (`.codex-nav-caret`) — aria-hidden so the button's
+            accessible name stays just `item.label` (unchanged from before
+            this, still matched by `getByRole("button", {name: item.label})`
+            in tests and by AT). */}
+        <span aria-hidden="true" className="codex-nav-trigger-caret">
+          ▾
+        </span>
       </button>
       <NavPanel categories={categories} label={item.label} dd={dd} />
     </div>

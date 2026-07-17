@@ -39,8 +39,11 @@ body {
   min-height: 100%;
   color: var(--color-ink);
   font-family: var(--font-body), serif;
-  font-size: 18px;
-  line-height: 1.6;
+  /* P8 S2 (D29-77, adversarial M7 — "entity-page body font" is actually this
+     GLOBAL rule): 18px/1.6 → 16px/1.5, site-wide by intent (every rem-based
+     rule rides along, error/404 pages included). */
+  font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -209,7 +212,12 @@ select:focus-visible,
   align-items: center;
   gap: 0.75rem;
   flex-wrap: wrap;
-  padding: 1.25rem clamp(1rem, 4vw, 3rem);
+  /* P8 S2 (D29-77): vertical padding 20px → 10px (`--density-header-pad-y`)
+     — 77px → ~56px at desktop, a desktop-only target (below 1024px the nav
+     already wraps to its own rows and height goes wrap-dominated,
+     adversarial M8 — this rule is untouched by viewport, only its content
+     changes shape below the `.codex-header-nav` breakpoint). */
+  padding: var(--density-header-pad-y) clamp(1rem, 4vw, 3rem);
   border-bottom: 1px solid var(--color-rule);
 }
 .site-brand {
@@ -270,8 +278,26 @@ select:focus-visible,
   padding-right: 0.1rem;
 }
 .codex-nav-caret {
+  /* P8 S2 (D29-80): de-chrome the UA default `<button>` skin — root cause of
+     the measured "2px outset black + gray fill" — padding/size unchanged. */
+  appearance: none;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
   padding-left: 0.15rem;
   padding-right: 0.4rem;
+  font-size: 0.65rem;
+}
+/* P8 S2 (D29-80b): the same `▾` affordance on every OTHER dropdown trigger
+   (`NavDropdown`'s `.codex-nav-trigger`, `HeaderNav.tsx`) — an aria-hidden
+   glyph span INSIDE the existing trigger button, matching the Rules split
+   control's caret voice/size (`.codex-nav-caret`'s own 0.65rem) without
+   touching that button's own class (a `.codex-nav-trigger` is a single tab
+   stop, unlike Rules' two — D29-47/M4 stays intact). */
+.codex-nav-trigger-caret {
+  margin-left: 0.3rem;
   font-size: 0.65rem;
 }
 .codex-nav-panel {
@@ -433,7 +459,10 @@ select:focus-visible,
   width: 100%;
   max-width: 52rem;
   margin: 0 auto;
-  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 8vw, 5rem);
+  /* P8 S2 (D29-77, adversarial M7): half-scale, ≈48px → 24px at desktop —
+     `.wrap-wide` hardcodes the IDENTICAL clamp (below), so both consume
+     `--density-page-pad` (`tokens.css`) in lockstep rather than drifting. */
+  padding: var(--density-page-pad);
 }
 .codex-entity-header {
   margin-bottom: 1.25rem;
@@ -617,7 +646,9 @@ select:focus-visible,
 }
 
 .codex-content p {
-  margin: 0.75rem 0;
+  /* P8 S2 (D29-77): 0.75rem → `--density-content-margin` (0.375rem) —
+     `ul`/`ol` below move in lockstep, same shared value as before this. */
+  margin: var(--density-content-margin) 0;
   /* R2 (D29-64): AoN marks each degree-of-success block with `<br/>`, which
      ingest deliberately preserves as a literal "\n" inside one `text` node
      within a single `paragraph` (aonMarkup.ts:69-71) rather than opening a
@@ -628,7 +659,7 @@ select:focus-visible,
 }
 .codex-content ul,
 .codex-content ol {
-  margin: 0.75rem 0 0.75rem 1.5rem;
+  margin: var(--density-content-margin) 0 var(--density-content-margin) 1.5rem;
 }
 /* R1 (D29-63) — gothic's GFM table skin (theme.css:208-219), re-tokenized
    onto codex's own parchment tokens: hairline borders off `--color-rule`,
@@ -752,12 +783,18 @@ select:focus-visible,
   width: 100%;
   max-width: 72rem;
   margin: 0 auto;
-  padding: clamp(1.5rem, 5vw, 3rem) clamp(1rem, 4vw, 3rem) clamp(3rem, 8vw, 5rem);
+  /* P8 S2 (D29-77, adversarial M7): the identical clamp `.codex-entity-page`
+     carries — same `--density-page-pad` token, lockstep (see its comment). */
+  padding: var(--density-page-pad);
 }
+/* P8 S2 (D29-77): the title block + controls row consolidate to one line
+   each — spacing tightened so the total lead-in above the first table row
+   lands ≤ 300px at 1600×900 (measured 440px pre-P8; S1 already brought it
+   to ~297px via the row-register swap alone, this tightens further). */
 .codex-listing-header {
-  padding-bottom: 0.75rem;
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid var(--color-rule);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 .codex-listing-title {
   color: var(--color-heading-maroon);
@@ -769,14 +806,14 @@ select:focus-visible,
 .codex-listing-count {
   color: var(--color-ink-dim);
   font-size: 0.85rem;
-  margin-top: 0.25rem;
+  margin-top: 0.15rem;
 }
 .codex-listing-controls {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: 0.75rem;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 .codex-listing-controls input[type="search"] {
   max-width: 16rem;
@@ -794,7 +831,10 @@ select:focus-visible,
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 1.25rem;
+  /* P8 S2 (D29-77): tightened with the rest of the listing lead-in — only
+     rendered when ≥1 filter is active, so it isn't part of the baseline
+     ≤300px measurement, but stays consistent with it. */
+  margin-bottom: 0.75rem;
 }
 .codex-active-pill {
   display: inline-flex;
@@ -831,9 +871,23 @@ select:focus-visible,
    an SSR deep link must still contain the full body in the raw HTML
    regardless of viewport) and row taps fully navigate instead of
    selecting. --- */
+/* P8 S2 (D29-78 S1-build amendment): the LIST track widens at desktop — S1
+   proved the pre-P8 `minmax(0, 26rem)` cap (416px at ANY viewport ≥ 897px)
+   makes the FULL column set unreachable on desktop, contradicting the
+   "full table register" preview stakeholders chose. The entry pane is
+   ALWAYS the second grid column at this width (placeholder copy when no
+   `?entry=` is set — `BrowseListing.tsx`'s own comment on why it's
+   CSS-hidden, not React-conditional, below the breakpoint), so the ratio
+   has to clear `NARROW_CONTAINER_WIDTH_PX` (600px, `columnDefs.ts`)
+   whether or not an entry is actually selected. A measured 55/45 falls
+   ~15px short of 600 at 1600px once `.wrap-wide`'s own max-width/padding/
+   gap are subtracted (1,064px left for both columns + the 40px gap) — 58/42
+   is the closest round ratio that clears it with margin (~617px/~447px),
+   still reading as "≈55/45" (5e.tools' own split). Gate B's "full set at
+   1600px" reads against this rule. */
 .codex-browse-layout {
   display: grid;
-  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
   gap: clamp(1.25rem, 3vw, 2.5rem);
   align-items: start;
 }
@@ -843,6 +897,28 @@ select:focus-visible,
   }
   .codex-entry-pane {
     display: none;
+  }
+}
+
+/* P8 S2 — `/search` (`SearchPage.tsx`) reuses this SAME class for an
+   unrelated split: a narrow facet-checkbox aside + a wide results column,
+   not the browse listing's list/entry-preview pair. Left un-rebalanced
+   above, the 58/42 desktop split would blow the facet aside out to over
+   half the page — scoped back to the pre-P8 narrow-aside ratio here rather
+   than widening `SearchPage`'s own facet column (out of this slice's scope
+   — D29-77/78 name the browse listing, not `/search`'s layout). The 2-class
+   selector here is MORE specific than the bare `.codex-browse-layout`
+   narrow-collapse rule above (both are un-scoped by media query otherwise),
+   so the ≤56rem collapse needs its own equally-scoped restatement below —
+   without it this override would keep the two-column split alive under the
+   26rem floor at every viewport, including 390px (caught live: 34px of
+   forced horizontal page scroll on `/search` before this fix). */
+.codex-search-shell .codex-browse-layout {
+  grid-template-columns: minmax(0, 26rem) minmax(0, 1fr);
+}
+@media (max-width: 56rem) {
+  .codex-search-shell .codex-browse-layout {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -943,7 +1019,10 @@ select:focus-visible,
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.2rem;
+  /* P8 S2 (D29-77): 0 gap — the option row's own vertical padding (below)
+     now carries the spacing, mirroring `.codex-listing-row`'s "0 gap, row
+     owns its own padding" convention rather than compounding both. */
+  gap: 0;
   max-height: 14rem;
   overflow-y: auto;
 }
@@ -951,6 +1030,7 @@ select:focus-visible,
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  padding: 0.2rem 0;
   font-size: 0.85rem;
   cursor: pointer;
 }
@@ -1320,18 +1400,23 @@ select:focus-visible,
   color: var(--color-ink-dim);
   padding: 1.5rem 0;
 }
+/* P8 S2 (D29-77): tightened onto the same density register as the listing
+   table rows (0.9rem → ~a quarter of that) — a result row still carries a
+   name + source line + optional excerpt (not a single table line), so it
+   keeps its own `padding-bottom` rather than adopting the table's exact
+   24px pitch verbatim. */
 .codex-search-results {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 0.35rem;
 }
 .codex-search-result {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   gap: 0.5rem;
-  padding-bottom: 0.9rem;
+  padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--color-rule);
 }
 .codex-search-excerpt {
@@ -1619,8 +1704,12 @@ select:focus-visible,
   flex-direction: column;
   gap: 1rem;
 }
+/* P8 S2 (D29-77): vertical padding halved with the rest of the density pass
+   — this is a card (rendered sub-entity body), not a bare table row, so it
+   keeps meaningfully more than a listing row's 0.15–0.25rem; horizontal
+   padding is untouched (not a "vertical pad" concern). */
 .codex-attached-sidebar {
-  padding: 0.9rem 1.1rem;
+  padding: 0.45rem 1.1rem;
 }
 .codex-attached-sidebar-title {
   display: flex;
@@ -1676,10 +1765,13 @@ select:focus-visible,
   margin-top: 0.75rem;
 }
 /* P4.5 S5 (D29-50): style doc §3.10 — no cell borders, zebra tint on
-   alternating rows using the callout-blue hue at low opacity, generous
-   vertical padding, left column (book name) bold (kept from P4). */
+   alternating rows using the callout-blue hue at low opacity, left column
+   (book name) bold (kept from P4). P8 S2 (D29-77): the "generous vertical
+   padding" this comment used to call for is the density pass's own target
+   — tightened onto the same secondary-surface register as the other row
+   listings (0.15–0.25rem-class), horizontal padding untouched. */
 .codex-sources-book {
-  padding: 0.65rem 0.9rem;
+  padding: 0.2rem 0.9rem;
   border: none;
   border-radius: 0;
 }
