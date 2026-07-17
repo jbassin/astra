@@ -1,6 +1,6 @@
 ---
 name: codex-0029-gotchas
-description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-15 **P6 gate-H FEEDBACK ROUND BUILT + LIVE same day (codex.iridi.cc + 2e.iridi.cc)** — 11 stakeholder items via the FIRST 4-parallel-worktree-track build (D29-71); ⭐ THE find: THREE spec pins failed at implementation because they were verified against PROXY populations not the mechanism's real trigger (ritual movers 55-by-legacyOf-grep vs 143-real; Runes 323-raw vs 273-emitted) — run the real transform before trusting any pin; rituals recategorized spell/=2,461 ritual/=201; plus the cross-worktree git-stash incident, the injection-cautious subagent provenance lesson, the P5 bind-mount/fixture-fail-soft/Pagefind-203MB finds, the P4.5 loaderDeps/superseded-semantics finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H re-run (all 11 P6 items + carried P2–P5 set)
+description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-17 **P8 DENSITY/TABLE ROUND BUILT + DEPLOYED same 2 days as P7-deploy + edition-icons + the 5e.tools UX comparison that spawned it** — listings are now flat sortable per-category-column tables (5e.tools register, parchment voice kept), site-wide density pass, exact-name search boost (fireball/heal #1), j/k keyboard, nav carets; ⭐ the proxy-pin class struck AGAIN ×2 (hydrate-window 40 vs heal-ranks-43 → 60; gate-B "full set at 1600px" impossible under the 26rem list-track cap → 58/42 grid amendment) and the adversarial reviews caught the omnibar-8-stub no-op + the j/k history/fetch-spam class pre-build; plus the P6 proxy-population finds, the P5 bind-mount/fixture-fail-soft finds, the P4.5 loaderDeps finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H consolidated re-run (P2–P8) — screenshots delivered
 metadata:
   type: project
 ---
@@ -10,6 +10,53 @@ flat TS member `apps/codex` on the strider/site-kit SSR template, **port 10374**
 NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pending-review** →
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
+
+**P8 BUILT + DEPLOYED + LIVE 2026-07-17 (density/table restyle + UX round; spec
+`thoughts/astra/specs/0029-codex-p8-density-tables-spec.md` D29-77..82 status BUILT w/ §7 build
+record; scope `…/research/2026-07-16-codex-0029-p8-density-thoughts.md` R1–R4).** Provenance
+chain, all 2026-07-16→17: **P7 deploy sanctioned + edge-verified** (P7 spec → BUILT; the
+"Gambling Lore" reindex proof made non-vacuous via Satinder Morne — a creature whose lore skill
+exists only via the D29-74 merge; `codex-refresh`'s corpus-manifest diff was timestamp-only →
+REVERTED per the P1 precedent, AoN un-drifted) → **edition icons `e0267e0`** (Remaster/Legacy
+text → Four-Point-Spark/History-Ring square SVGs at 10 sites + both filter `labelOf` seams
+widened string→ReactNode; gotcha: `regen-goldens.ts` runs under `nodeTsResolve.mjs` which
+retries only RELATIVE specifiers — `@/*` imports in EntityPage-reachable modules break golden
+regen while tsc/vite/vitest all pass) → **the 5e.tools UX comparison**
+(`…/research/2026-07-16-codex-vs-5etools-spell-browse-ux-thoughts.md`; method find: 5e.tools is
+Cloudflare-challenged AND this host's DNS filter blocks `*.challenges.cloudflare.com` — headless
+can never pass; clone `5etools-mirror-3/5etools-src` and serve locally, byte-identical UI) →
+stakeholder adopted its recommendations + the 5e.tools spacing scheme (R1 full table register ·
+R2 aligned sortable columns · R3 traits out of rows · R4 site-wide), AskUserQuestion w/ ASCII
+previews. **Slices: S1 `0693d61` columnDefs/sort/table · S2 `fa0b42d` density+grid+carets · S3
+`e969cf0` search-boost+keyboard · S4 sweep+`just up` (render-only round — NO codex-refresh
+needed, the deploy discriminator is "did the transform/index change").**
+**⭐ THE P8 finds:** the **proxy-pin class struck ×2 more** (the D29-81 hydrate window was sized
+40 off the fireball-rank-10 measurement alone — `heal`, the decision's own second acceptance
+query, ranks 43 raw → 60; gate-B's "full set at 1600px" was UNREACHABLE — the pre-P8
+`.codex-browse-layout` caps the list track at 26rem/416px at every desktop width → S1-build
+amendment, 58/42 grid, 55/45 fell 15px short of the 600px tier floor); **the adversarial
+reviews pre-killed two would-be no-ops** (Omnibar hydrates only its first 8 stubs — a
+post-hydration name-boost literally cannot see rank-10; j/k reusing the click path's deliberate
+non-replace push = 15 history entries + a ~43.5KB-avg entity fetch PER KEYPRESS on /creature →
+real-DOM-focus selection + 180ms-settled `replace:true` commit + `memoizedEntity` 50-LRU);
+**`/search` silently reuses `.codex-browse-layout`** — S2's widening broke /search's mobile
+collapse via specificity (the 2-class scoped override outranked the 56rem media query; restate
+the media query inside the override); **React SSR text nodes carry `<!-- -->` separators** —
+"145 of 145 shown" is un-greppable as plain text through the edge (match segments or parse;
+the three-prong assert scripts must know this); **keyboard Enter on a row anchor is a click
+with `detail === 0`** — the split-view row-click intercept must fall through to native
+navigation for it or Enter breaks; sortable-header a11y = `aria-sort` on the CELL never the
+button; coverage-aware columns (64/88 categories are 0%-level; sidebar has NO rarity) — reuse
+the facetKeys classifier rule, never hardcode fallback columns. **Weights: /feat 8.04 MB/630 KB
+gz = +35% gz vs P3** (per-row inline Cast-glyph SVGs are the growth) — flagged for H,
+`<symbol>`/`<use>` dedupe is the ready fix if felt. **Harness finds:** a user-STOPPED
+background agent is UNRESUMABLE (SendMessage refuses; relaunch fresh only on the user's
+explicit word — tree was clean, zero work lost); oxlint at default threads OOMs on this host
+(the 0023 `--threads=4` fix still required, repo-wide). Alphabet jump strip + letter headers
+DELETED (recorded trade-off — quick-filter+sort replace them imperfectly; a jump aid can
+return if H asks). ▶ **OPEN: gate H, now the consolidated P2–P8 review on the live site**
+(M7/M11 + heal-Pagefind-limitation now FIXED by the boost; P8 register screenshots delivered
+2026-07-17).
 
 **P6 BUILT + LIVE 2026-07-15 (gate-H feedback round; spec
 `thoughts/astra/specs/0029-codex-p6-feedback-spec.md` D29-59..71, status BUILT; scope

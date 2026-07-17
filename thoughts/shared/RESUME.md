@@ -36,7 +36,55 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `ac1a3cc`, 2026-07-15 — codex (0029) P6 gate-H FEEDBACK ROUND BUILT + LIVE same day: scope→spec→adversarial-×2→4-parallel-worktree-tracks→integration→deploy; `2e.iridi.cc` now ALSO live; ▶ THE ONLY OPEN ITEM = gate H re-run on the live site incl. all 11 P6 items; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `b3d60f7`, 2026-07-17 — codex (0029) P7 DEPLOYED + edition icons + the 5e.tools UX comparison + P8 DENSITY/TABLE ROUND all BUILT + DEPLOYED + LIVE across 2026-07-16→17; ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P8 stakeholder review on the live site; heartwood ON HOLD)
+
+> **✅ codex (0029) — two sessions, 2026-07-16→17, all live on `codex.iridi.cc` + `2e.iridi.cc`:**
+> 1. **P7 deploy sanctioned + verified** (spec `0029-codex-p7-statblock-dedup-spec.md` → BUILT):
+>    `just up` + `just codex-refresh`; corpus 46,192/schemaVersion 3/spell 2,461/ritual 201 all ==
+>    pins, AoN re-fetch un-drifted (timestamp-only manifest diff REVERTED per the P1 precedent);
+>    abberton-ruffian dedup proven through the edge (0 statblock blocks, 50,880→46,380 B); the
+>    "Gambling Lore" reindex proof made non-vacuous via Satinder Morne.
+> 2. **Edition icons `e0267e0`** — Remaster/Legacy text labels → square SVGs (Four-Point Spark /
+>    History Ring) at all 10 render sites + both filter `labelOf` seams (string→ReactNode);
+>    a11y kept (role=img/aria-label/title); pill CSS deleted; goldens regen'd (pill→icon only).
+> 3. **The 5e.tools UX compare** (`thoughts/shared/research/2026-07-16-codex-vs-5etools-spell-
+>    browse-ux-thoughts.md` incl. the spacing appendix + the Rules-caret UA-chrome finding) —
+>    stakeholder adopted its recommendations wholesale + the 5e.tools spacing scheme.
+> 4. **P8 density/table round — scope→spec→adversarial-×2→4 slices→deploy** (spec
+>    `thoughts/astra/specs/0029-codex-p8-density-tables-spec.md` D29-77..82 status BUILT, §7
+>    build record; scope `…/research/2026-07-16-codex-0029-p8-density-thoughts.md`, R1–R4
+>    stakeholder-resolved: full table register · aligned sortable columns · traits out of rows ·
+>    site-wide). **S1 `0693d61`** (columnDefs.tsx per-category column sets w/ coverage-aware
+>    drops + rank comparators, `?sort=` widened w/ forever-decode, flat table register, per-row
+>    content-visibility, FULL/COMPACT container tiers) · **S2 `fa0b42d`** (body 16px/1.5, shared
+>    `--density-page-pad`, header 54.6px, lead-in 228px, browse grid 58/42 — the S1-build
+>    amendment that made FULL columns desktop-reachable; carets de-chromed + on all 7 dropdown
+>    triggers) · **S3 `e969cf0`** (exact-name search boost at the pagefindClient seam — hydrate
+>    window 60, pin amended from 40, heal ranks 43 raw; j/k real-DOM-focus + replace-only
+>    settled `?entry=` + memoizedEntity; hint line) · **S4 + deploy `b3d60f7`** (`just up` only —
+>    render-only round; edge-verified: hydration-ZERO on 8 routes, fireball/heal #1 live,
+>    j/k history-delta 0, sorted-URL SSR proof, 30 rows/screen, mobile 0 h-scroll; weights
+>    recorded — **/feat 630 KB gz = +35% vs P3, per-row glyph SVGs, flagged w/ symbol/use dedupe
+>    ready**; stakeholder screenshot set delivered).
+> - **⚠ Session finds (detail in [[codex-0029-gotchas]]):** the proxy-pin class struck ×2 more
+>   (hydrate window; the unreachable gate-B 26rem cap); the adversarial reviews pre-killed two
+>   would-be no-ops (omnibar 8-stub hydration; j/k history/fetch spam); /search silently reuses
+>   `.codex-browse-layout`; React SSR `<!-- -->` separators defeat plain greps of count lines;
+>   user-STOPPED background agents are unresumable (relaunch only on explicit user word).
+> - **▶ NEXT: gate H — the ONE consolidated stakeholder review at `https://codex.iridi.cc`**:
+>   carried P2–P7 items (M7/M11 expected; the heal Pagefind limitation is now FIXED by the P8
+>   boost; R10's 40 UNCERTAIN abbreviations + dual-form PFS codes) + the P8 register (density,
+>   tables, deleted alphabet strip — a jump aid can return if he asks; the /feat weight growth).
+>   Sign-off → 0029 COMPLETE; a redirect spawns P9. Backrefs ("granted by") sits scoped-but-
+>   unstarted as its own future mini-round (deliberately deferred out of P8).
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A alerting
+>   breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-15) — P6 BUILT (superseded above)
+
+## (was) Current state (as of `ac1a3cc`, 2026-07-15 — codex (0029) P6 gate-H FEEDBACK ROUND BUILT + LIVE same day: scope→spec→adversarial-×2→4-parallel-worktree-tracks→integration→deploy; `2e.iridi.cc` now ALSO live; heartwood ON HOLD)
 
 > **✅ codex (0029) P6 (gate-H feedback round) — SCOPED + SPEC'D + BUILT + LIVE in one session.**
 > P5's gate H ran 2026-07-15 and came back a REDIRECT with 11 items. Four investigation agents
