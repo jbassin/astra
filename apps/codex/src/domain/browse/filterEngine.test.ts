@@ -6,6 +6,7 @@ import {
   ambientRows,
   applyFilters,
   categoryHasLevelCoverage,
+  categoryHasRarityCoverage,
   clearAllFilters,
   collidingNames,
   countMissingByValue,
@@ -320,6 +321,66 @@ describe("filterEngine: sort", () => {
     ];
     expect(sortRows(rows, "level").map((r) => r.id)).toEqual(["low", "high", "none"]);
   });
+
+  // P8 S1 (D29-78) — the widened grammar's built-in-only (no comparator arg)
+  // half: "-name"/"-level" reuse the exact same built-in name/level logic
+  // `sortRows`'s original 2-arg call sites (above) already exercise, just
+  // reversed — proving the 2-arg call sites keep compiling AND behaving
+  // byte-identically was the whole point of making `comparator` additive-
+  // optional rather than replacing the signature.
+  it("-name sorts descending Z-A", () => {
+    const rows = [row({ id: "a", name: "Apple" }), row({ id: "b", name: "Zebra" })];
+    expect(sortRows(rows, "-name").map((r) => r.name)).toEqual(["Zebra", "Apple"]);
+  });
+
+  it("-level sorts descending, missing-level bucket STILL last (not first)", () => {
+    const rows = [
+      row({ id: "a", name: "B", level: 5 }),
+      row({ id: "b", name: "C" }), // no level
+      row({ id: "c", name: "A", level: -2 }),
+    ];
+    expect(sortRows(rows, "-level").map((r) => r.id)).toEqual(["a", "c", "b"]);
+  });
+
+  // A custom RowComparator (the shape `columnDefs.ts`'s `comparatorForSort`
+  // builds) exercised directly, in isolation from that module — proves
+  // `sortRows`'s own missing-last-under-both-directions contract holds for
+  // ANY comparator, not just the two built-in ones.
+  it("a custom numeric RowComparator: missing-last holds ascending and descending", () => {
+    const rows = [
+      row({ id: "a", name: "A", facets: { hp: 50 } }),
+      row({ id: "b", name: "B" }), // no facets -> missing hp
+      row({ id: "c", name: "C", facets: { hp: 10 } }),
+    ];
+    const hpComparator = { valueOf: (r: IndexRow) => r.facets?.hp };
+    expect(sortRows(rows, "hp", hpComparator).map((r) => r.id)).toEqual(["c", "a", "b"]);
+    expect(sortRows(rows, "-hp", hpComparator).map((r) => r.id)).toEqual(["a", "c", "b"]);
+  });
+
+  it("a custom RowComparator with an explicit `compare` overrides the default numeric/localeCompare fallback", () => {
+    const rows = [
+      row({ id: "a", name: "A", facets: { size: "lg" } }),
+      row({ id: "b", name: "B", facets: { size: "tiny" } }),
+      row({ id: "c", name: "C" }), // missing
+    ];
+    const order = ["tiny", "sm", "med", "lg", "huge", "grg"];
+    const sizeComparator = {
+      valueOf: (r: IndexRow) => r.facets?.size,
+      compare: (a: string | number, b: string | number) =>
+        order.indexOf(String(a)) - order.indexOf(String(b)),
+    };
+    expect(sortRows(rows, "size", sizeComparator).map((r) => r.id)).toEqual(["b", "a", "c"]);
+  });
+
+  it("an unknown/inapplicable sort key with NO comparator falls back to name, silently — never throws; the leading '-' direction is still honored", () => {
+    const rows = [row({ id: "a", name: "Zebra" }), row({ id: "b", name: "Apple" })];
+    expect(() => sortRows(rows, "totally-not-a-real-key")).not.toThrow();
+    expect(sortRows(rows, "totally-not-a-real-key").map((r) => r.name)).toEqual(["Apple", "Zebra"]);
+    // "-also-fake" is STILL an unknown key (no comparator resolves it), but
+    // its leading `-` is honored on the name fallback — "sort by name, in
+    // the direction that was asked for" rather than resetting direction too.
+    expect(sortRows(rows, "-also-fake").map((r) => r.name)).toEqual(["Zebra", "Apple"]);
+  });
 });
 
 describe("filterEngine: ambientRows (self-exclusion for option counts)", () => {
@@ -382,6 +443,52 @@ describe("filterEngine: bounds + level coverage + collisions", () => {
   it("categoryHasLevelCoverage is true when at least one row carries a level", () => {
     const rows = [row({ id: "feat/a", name: "A", level: 1 }), row({ id: "feat/b", name: "B" })];
     expect(categoryHasLevelCoverage(rows)).toBe(true);
+  });
+
+  // P8 S1 (D29-78 adversarial B-U3) — the rarity analog, real-corpus-pinned:
+  // rules/trait/source/article are 100%-covered but cardinality-1 (every
+  // measured row is "common", real numbers this slice's own report
+  // records); sidebar is 0%-covered (no row carries `rarity` at all).
+  describe("categoryHasRarityCoverage", () => {
+    it("false when every row is missing rarity entirely (e.g. sidebar)", () => {
+      const rows = [row({ id: "sidebar/a", name: "A" }), row({ id: "sidebar/b", name: "B" })];
+      expect(categoryHasRarityCoverage(rows)).toBe(false);
+    });
+
+    it("false at 100% coverage but cardinality 1 (e.g. rules — every row is 'common')", () => {
+      const rows = [
+        row({ id: "rules/a", name: "A", rarity: "common" }),
+        row({ id: "rules/b", name: "B", rarity: "common" }),
+        row({ id: "rules/c", name: "C", rarity: "common" }),
+      ];
+      expect(categoryHasRarityCoverage(rows)).toBe(false);
+    });
+
+    it("false below the 40% coverage floor even with cardinality >= 2", () => {
+      const rows = [
+        row({ id: "a", name: "A", rarity: "common" }),
+        row({ id: "b", name: "B", rarity: "rare" }),
+        row({ id: "c", name: "C" }),
+        row({ id: "d", name: "D" }),
+        row({ id: "e", name: "E" }),
+        row({ id: "f", name: "F" }),
+      ]; // 2/6 = 33.3% coverage, well under 40%, despite 2 distinct rarities
+      expect(categoryHasRarityCoverage(rows)).toBe(false);
+    });
+
+    it("true when coverage clears 40% AND cardinality is >= 2 (e.g. creature)", () => {
+      const rows = [
+        row({ id: "a", name: "A", rarity: "common" }),
+        row({ id: "b", name: "B", rarity: "uncommon" }),
+        row({ id: "c", name: "C", rarity: "rare" }),
+      ];
+      expect(categoryHasRarityCoverage(rows)).toBe(true);
+    });
+
+    it("false for an empty row set (no divide-by-zero throw)", () => {
+      expect(() => categoryHasRarityCoverage([])).not.toThrow();
+      expect(categoryHasRarityCoverage([])).toBe(false);
+    });
   });
 
   it("collidingNames flags only names appearing more than once", () => {

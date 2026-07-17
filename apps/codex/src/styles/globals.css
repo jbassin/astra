@@ -781,21 +781,6 @@ select:focus-visible,
 .codex-listing-controls input[type="search"] {
   max-width: 16rem;
 }
-.codex-sort-control {
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  color: var(--color-ink-dim);
-}
-.codex-sort-control select {
-  background-color: var(--color-void);
-  color: var(--color-ink);
-  border: 1px solid var(--color-rule-bright);
-  border-radius: 1px;
-  padding: 0.25rem 0.4rem;
-  font-family: var(--font-body), serif;
-}
 .codex-listing-controls .codex-ui-button {
   margin-left: auto;
 }
@@ -1053,61 +1038,87 @@ select:focus-visible,
   text-decoration: line-through;
 }
 
-.codex-listing-alpha {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1.25rem;
-  position: sticky;
-  top: 0;
-  padding: 0.5rem 0;
-  background-color: var(--color-void);
-  z-index: 1;
+/* --- P8 S1 (D29-77/D29-78): the listing TABLE register — replaces the old
+   letter-grouped/level-ordered `<ul>` (`.codex-listing-alpha`/
+   `.codex-listing-letter`/`.codex-listing-rows*`, deleted along with the
+   jump strip + section headers themselves, R2/N11) with a real
+   `<table>`/`<thead>`/`<tbody>`. `--density-row-*` (`tokens.css`) are the
+   ONLY new tokens this slice adds — the rest of D29-77's site-wide density
+   pass (body font, pane padding, header) is S2. --- */
+.codex-listing-table {
+  width: 100%;
+  border-collapse: collapse;
+  /* Live-measured gotcha: `body` sets a site-wide `line-height: 1.6` (the
+     entity-page prose voice) that every cell here would otherwise INHERIT,
+     ballooning the row box to ~32px regardless of the 5px/13px/14px values
+     below (measured via a real headless-Chromium pass against `/spell`
+     before this fix). A tight `line-height: 1.15` here is what actually
+     delivers the D29-77 ~24px pitch (13px data / 14px name × 1.15 ≈ 15–16px
+     content + the 5px×2 padding ≈ 23–24px, hairline included) — set ONCE
+     at the table root so every cell's own font-size still drives its own
+     content height, not a copy-pasted per-cell override. */
+  line-height: 1.15;
 }
-.codex-listing-alpha a {
-  padding: 0.1rem 0.4rem;
-  font-size: 0.85rem;
+.codex-listing-table th,
+.codex-listing-table td {
+  padding: 4px 0.5rem;
+  text-align: left;
+  white-space: nowrap;
 }
-.codex-listing-letter {
-  margin-top: 1.25rem;
-  /* D29-35 perf guard (the sanctioned no-new-dependency fallback for a
-     long letter-grouped list): browsers skip layout/paint for off-screen
-     sections, without a virtualization library. P4.5 S4 (adversarial M5)
-     re-tuned 400px -> 640px: the split view's narrower `.codex-listing-pane`
-     column wraps a row's 5 inline fields onto more lines than the old
-     full-width listing did, so the old placeholder under-counted real
-     section heights (scroll-anchor jank on a fast scroll into an
-     off-screen section) — measured against feat's 8,485 rows at the actual
-     split-view column width (~26rem), see the session report for the
-     before/after scroll-stability numbers. */
-  content-visibility: auto;
-  contain-intrinsic-size: auto 640px;
+.codex-listing-table thead th {
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+  border-bottom: 1px solid var(--color-gold-rule);
 }
-.codex-listing-rows {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 0.3rem;
+.codex-listing-sort-button {
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
 }
-.codex-listing-rows-flat {
-  margin-top: 0.5rem;
+.codex-listing-sort-caret {
+  color: var(--color-heading-maroon);
+  font-size: 0.7em;
 }
-/* --- P4.5 S4 (D29-49) — style-tokens doc §4 "Faceted list / data-dense
-   view": hairline row separators (kept), a hover wash + gold hairline top/
-   bottom, and a solid selected-row fill with a maroon "bookmark ribbon"
-   left-edge bar. --- */
+.codex-listing-table tbody td {
+  font-family: var(--font-condensed), sans-serif;
+  font-size: var(--density-row-data-size);
+  color: var(--color-ink-dim);
+}
+/* P8 S1 (D29-77/D29-78) — style-tokens doc §4 "Faceted list / data-dense
+   view", re-tuned to the single-line ~24px-pitch table register: hairline
+   row separators, a hover wash + gold hairline top/bottom, a solid
+   selected-row fill with a maroon "bookmark ribbon" left-edge bar (now on
+   the row's first `<td>` — a `border-left` on the `<tr>` itself is
+   unreliable across engines once `border-collapse: collapse` is in play).
+   `content-visibility: auto` is the D29-78 (adversarial M5) per-ROW
+   perf guard replacing the deleted letter `<section>`'s own — the ONLY
+   chunking boundary a flat sorted table has left; `contain-intrinsic-size`
+   is pinned to the SAME `--density-row-pitch` the row's own padding target
+   sums to (23px content box + the 1px hairline below), so an off-screen
+   estimate never drifts from the real rendered height. */
 .codex-listing-row {
   position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 0.5rem;
-  padding: 0.3rem 0.5rem 0.3rem 0.6rem;
   border-bottom: 1px solid var(--color-rule);
   border-top: 1px solid transparent;
   transition:
     background-color 120ms ease,
     border-color 120ms ease;
+  content-visibility: auto;
+  contain-intrinsic-size: auto var(--density-row-pitch);
 }
 .codex-listing-row:hover {
   background-color: var(--color-hover);
@@ -1117,50 +1128,60 @@ select:focus-visible,
 .codex-listing-row-selected,
 .codex-listing-row-selected:hover {
   background-color: var(--color-callout-blue-bg);
+}
+.codex-listing-row-selected td:first-child {
   border-left: 3px solid var(--color-heading-maroon);
-  padding-left: calc(0.6rem - 3px);
+  padding-left: calc(0.5rem - 3px);
+}
+/* The Name column is the one flexible column (`width: 100%` — every other
+   column shrinks to its content, so a coverage-dropped column widens Name
+   for free, no extra logic needed, D29-78's own "a dropped column widens
+   Name"); it alone wraps normally + keeps the serif link voice at
+   `--density-row-name-size` (14px) so rows stay codex-flavored next to the
+   13px condensed data cells (D29-77's own "5e.tools' rhythm, not its
+   Arial"). */
+.codex-listing-col-name {
+  width: 100%;
+  white-space: normal;
+  font-family: var(--font-body), serif;
+  font-size: var(--density-row-name-size);
 }
 .codex-listing-name {
   font-weight: 600;
-  min-width: 12rem;
 }
 .codex-listing-collision {
   font-weight: 400;
   color: var(--color-ink-faint);
   font-size: 0.85em;
 }
-/* P4.5 S5 (D29-50): style doc §4's per-row trait pills, reduced scale — the
- * SAME `.codex-ui-pill` component (`src/ui/TraitPill.tsx`) shrunk down for a
- * dense list row, capped at 3 + a "+N" overflow marker
- * (`BrowseListing.tsx`'s `ROW_TRAIT_CAP`). */
-.codex-listing-traits {
+/* The edition icon: a fixed narrow END cell, never a labeled column
+   (D29-78) — no `<button>`/sort affordance, just the glyph, centered. */
+.codex-listing-col-icon {
+  width: 1.4em;
+  padding-inline: 0.35rem;
+  text-align: center;
+}
+/* Condensed-truncate treatment (D29-78): spell Cast's time-string/
+   unenumerated-composite fallback + Range's abbreviated-but-still-long
+   value (worst real case 47 chars) — both truncate with an ellipsis, full
+   text on hover/focus via the renderer's own `title`. */
+.codex-col-truncate {
+  display: inline-block;
+  max-width: 14rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+.codex-col-passive {
+  color: var(--color-ink-faint);
+  font-style: italic;
+}
+.codex-col-cast-composite {
   display: inline-flex;
-  flex-wrap: wrap;
   align-items: center;
   gap: 0.2rem;
-}
-.codex-listing-traits .codex-ui-pill {
-  font-size: 0.6rem;
-  padding: 0.08rem 0.35rem;
-}
-.codex-listing-traits-more {
-  color: var(--color-ink-faint);
-  font-size: 0.68rem;
-}
-/* the condensed "crunch" type/level column (style doc §4) — right-aligned
-   per row, pushed to the row's trailing edge. */
-.codex-listing-typelevel {
-  display: inline-flex;
-  gap: 0.5rem;
-  margin-left: auto;
-  font-family: var(--font-condensed), sans-serif;
-  text-align: right;
-}
-.codex-listing-level,
-.codex-listing-rarity,
-.codex-listing-source {
-  color: var(--color-ink-dim);
-  font-size: 0.82rem;
+  white-space: nowrap;
 }
 .codex-listing-empty-category {
   color: var(--color-ink-dim);

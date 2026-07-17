@@ -46,7 +46,30 @@ export interface TraitFilter {
   exclude: ReadonlySet<string>;
 }
 
-export type SortMode = "name" | "level";
+/**
+ * P8 S1 (D29-78) — widened from the closed `"name" | "level"` union to the
+ * open grammar `name|-name|level|-level|<facetKey>|-<facetKey>` (a leading
+ * `-` means descending): a plain `string` type, since the facet-key half of
+ * the space is open-ended (whatever `columnDefs.ts`'s per-category column
+ * set carries) and can't be enumerated here without this module importing
+ * that one (a layering cycle — `columnDefs.ts` already imports from here).
+ * Validity is checked in TWO places, on purpose (the spec's own "unknown/
+ * inapplicable... fall back to name silently"):
+ *   - "unknown" (not a real key ANYWHERE, e.g. `?sort=banana`) is rejected at
+ *     the URL-decode layer (`urlState.ts`'s `isValidSortKey` — that module
+ *     knows the full key vocabulary via `facetDefFor` + the "rarity" core
+ *     exception) — `searchToFilterState` never even constructs a `SortMode`
+ *     carrying it.
+ *   - "inapplicable" (a REAL key elsewhere, e.g. `hp` on `/spell`, which has
+ *     no HP column) can't be caught there — `urlState.ts` is category-
+ *     agnostic. It's caught HERE, structurally: `sortRows` below falls back
+ *     to name-ascending whenever it's asked to sort by anything other than
+ *     the built-in `name`/`level` WITHOUT a `comparator` argument — and
+ *     `BrowseListing.tsx` only ever builds/passes one for a key it found on
+ *     the CURRENT category's actual column set (`columnDefs.ts`'s
+ *     `comparatorForSort`).
+ */
+export type SortMode = string;
 
 export interface BrowseFilterState {
   /** Name quick-filter, substring, case-insensitive. */
@@ -183,23 +206,84 @@ export function applyFilters(rows: readonly IndexRow[], state: BrowseFilterState
   return rows.filter((row) => matchesFilterState(row, state));
 }
 
-/** name (default): plain A-Z. level: ascending, the "—" (no `level`) bucket
- * LAST (adversarial M7/M8 — never coerce a missing level to 0). Both break
- * ties by name so the ordering is deterministic. */
-export function sortRows(rows: readonly IndexRow[], sort: SortMode): IndexRow[] {
+/**
+ * P8 S1 (D29-78) — a column-agnostic sort-key value extractor + comparator,
+ * built by `columnDefs.ts`'s `comparatorForSort` for a facet/rank/numeric/
+ * text column and handed to `sortRows` below. `valueOf` returning
+ * `undefined`/`null` means "no value for this row" — folds into the SAME
+ * missing-last rule `sortRows` already enforced for `level` (extended here
+ * to hold under every comparator, in both directions — the D29-78 "passive
+ * sorts with missing, LAST" rule is just `columnDefs.ts`'s `actionCostRank`
+ * returning `undefined` for `"passive"`, no special-casing needed here).
+ */
+export interface RowComparator {
+  valueOf: (row: IndexRow) => number | string | undefined | null;
+  /** Compares two PRESENT (non-missing) values in ascending order. Defaults
+   * to a numeric subtraction when both are numbers, `localeCompare`
+   * otherwise. */
+  compare?: (a: number | string, b: number | string) => number;
+}
+
+function defaultCompare(a: number | string, b: number | string): number {
+  if (typeof a === "number" && typeof b === "number") return a - b;
+  return String(a).localeCompare(String(b));
+}
+
+/** The single missing-last-under-every-direction sort primitive: `desc` only
+ * ever flips the sign of a PRESENT-vs-PRESENT comparison — a missing value
+ * unconditionally sorts after a present one, in both directions (D29-78:
+ * "missing-last holds for every comparator, including under desc"). Ties
+ * (including both-missing) break by name, matching every sort mode's prior
+ * convention. */
+function sortByComparator(rows: readonly IndexRow[], desc: boolean, rc: RowComparator): IndexRow[] {
+  const compare = rc.compare ?? defaultCompare;
   const copy = [...rows];
-  if (sort === "name") {
-    copy.sort((a, b) => a.name.localeCompare(b.name));
-    return copy;
-  }
   copy.sort((a, b) => {
-    if (a.level === undefined && b.level === undefined) return a.name.localeCompare(b.name);
-    if (a.level === undefined) return 1;
-    if (b.level === undefined) return -1;
-    if (a.level !== b.level) return a.level - b.level;
-    return a.name.localeCompare(b.name);
+    const va = rc.valueOf(a);
+    const vb = rc.valueOf(b);
+    const missingA = va === undefined || va === null;
+    const missingB = vb === undefined || vb === null;
+    if (missingA && missingB) return a.name.localeCompare(b.name);
+    if (missingA) return 1;
+    if (missingB) return -1;
+    const cmp = compare(va, vb);
+    return cmp !== 0 ? (desc ? -cmp : cmp) : a.name.localeCompare(b.name);
   });
   return copy;
+}
+
+const NAME_COMPARATOR: RowComparator = { valueOf: (row) => row.name };
+const LEVEL_COMPARATOR: RowComparator = { valueOf: (row) => row.level };
+
+/**
+ * name (default): plain A-Z. level: ascending, the "—" (no `level`) bucket
+ * LAST (adversarial M7/M8 — never coerce a missing level to 0). Both break
+ * ties by name so the ordering is deterministic.
+ *
+ * P8 S1 (D29-78) widening, ADDITIVE-OPTIONAL: `sort` now carries the full
+ * `name|-name|level|-level|<facetKey>|-<facetKey>` grammar (a leading `-` =
+ * descending) and `comparator` is a NEW optional third argument — every
+ * existing 2-arg call site (`sortRows(rows, "name")`/`sortRows(rows,
+ * "level")`) keeps compiling AND behaving byte-identically, since `"name"`/
+ * `"level"` (with no leading `-`) hit the exact same built-in branches below
+ * they always did. A `comparator` is required for anything other than name/
+ * level — its absence there is the "inapplicable/unknown -> name silently"
+ * fallback (`SortMode`'s own file comment above spells out why that's split
+ * across this module and `urlState.ts`).
+ */
+export function sortRows(
+  rows: readonly IndexRow[],
+  sort: SortMode,
+  comparator?: RowComparator,
+): IndexRow[] {
+  const desc = sort.startsWith("-");
+  const base = desc ? sort.slice(1) : sort;
+  if (comparator) return sortByComparator(rows, desc, comparator);
+  if (base === "level") return sortByComparator(rows, desc, LEVEL_COMPARATOR);
+  // "name", and every unknown/inapplicable key with no comparator supplied
+  // (the forever-decode fallback) — both land here, ascending or descending
+  // per the leading `-` regardless of what `base` actually was.
+  return sortByComparator(rows, desc, NAME_COMPARATOR);
 }
 
 // ---------------------------------------------------------------------------
@@ -353,6 +437,25 @@ export function collidingNames(rows: readonly Pick<IndexRow, "name">[]): Readonl
  * coverage — e.g. trait, action)"). */
 export function categoryHasLevelCoverage(rows: readonly IndexRow[]): boolean {
   return rows.some((row) => row.level !== undefined);
+}
+
+/**
+ * P8 S1 (D29-78 adversarial B-U3) — the `rarity` analog of
+ * `categoryHasLevelCoverage`, for `columnDefs.ts`'s fallback-category Rarity
+ * column: the SAME classifier `facetKeys.ts` already uses for a `facets.*`
+ * key (coverage ≥ 40% of rows AND cardinality ≥ 2 — a degenerate
+ * cardinality-1 column has zero discriminating power even at 100% coverage,
+ * e.g. `rules`/`trait`/`source`/`article`, every row measured `"common"`)
+ * applied to the CORE `rarity` field instead, since that field sits outside
+ * `facetKeys.ts`'s own allowlist (it's a top-level `IndexRow` column, not a
+ * `facets.*` key) and so was never gated by that classifier at emit time the
+ * way e.g. `hp`/`size` were. `sidebar` (0% coverage, no row carries `rarity`
+ * at all) and the cardinality-1 quartet above both correctly fail this. */
+export function categoryHasRarityCoverage(rows: readonly IndexRow[]): boolean {
+  if (rows.length === 0) return false;
+  const present = rows.filter((row) => row.rarity !== undefined);
+  if (present.length / rows.length < 0.4) return false;
+  return new Set(present.map((row) => row.rarity)).size >= 2;
 }
 
 // ---------------------------------------------------------------------------

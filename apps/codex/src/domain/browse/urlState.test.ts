@@ -296,9 +296,48 @@ describe("urlState: hostile / unknown params never throw", () => {
     });
   });
 
-  it("sort falls back to name (absent) for any value other than the literal 'level'", () => {
-    expect(validateBrowseSearch({ sort: "banana" }).sort).toBeUndefined();
-    expect(validateBrowseSearch({ sort: "level" }).sort).toBe("level");
+  describe("P8 S1 (D29-78): ?sort= widened to name|-name|level|-level|<facetKey>|-<facetKey>|rarity|-rarity", () => {
+    it("a genuinely unknown key (not real ANYWHERE) falls back to absent, same as before", () => {
+      expect(validateBrowseSearch({ sort: "banana" }).sort).toBeUndefined();
+      expect(validateBrowseSearch({ sort: "-banana" }).sort).toBeUndefined();
+    });
+
+    it("the literal default 'name' also decodes to absent (never stored, same 'default = omitted' convention as every other field)", () => {
+      expect(validateBrowseSearch({ sort: "name" }).sort).toBeUndefined();
+    });
+
+    it("'level'/'-level' both decode verbatim", () => {
+      expect(validateBrowseSearch({ sort: "level" }).sort).toBe("level");
+      expect(validateBrowseSearch({ sort: "-level" }).sort).toBe("-level");
+    });
+
+    it("'-name' decodes verbatim (a real, distinct sort mode — descending name)", () => {
+      expect(validateBrowseSearch({ sort: "-name" }).sort).toBe("-name");
+    });
+
+    it("'rarity'/'-rarity' decode verbatim (a core field, real columnDefs.ts sort key, but NOT in facetDefFor's vocabulary)", () => {
+      expect(validateBrowseSearch({ sort: "rarity" }).sort).toBe("rarity");
+      expect(validateBrowseSearch({ sort: "-rarity" }).sort).toBe("-rarity");
+    });
+
+    it("a real facetKeys.ts key decodes verbatim, in both directions (the 'inapplicable per-category' half of the fallback is a RENDER-time concern, not this decoder's — see filterEngine.ts's SortMode doc comment)", () => {
+      expect(validateBrowseSearch({ sort: "hp" }).sort).toBe("hp");
+      expect(validateBrowseSearch({ sort: "-castTime" }).sort).toBe("-castTime");
+      expect(validateBrowseSearch({ sort: "itemCategory" }).sort).toBe("itemCategory");
+    });
+
+    it("the encoder round-trips a widened sort value and omits the default", () => {
+      expect(filterStateToSearch({ ...emptyFilterState(), sort: "-hp" })).toEqual({ sort: "-hp" });
+      expect(filterStateToSearch({ ...emptyFilterState(), sort: "name" })).toEqual({});
+      expect(filterStateToSearch({ ...emptyFilterState(), sort: "-name" })).toEqual({
+        sort: "-name",
+      });
+    });
+
+    it("full round-trip through searchToFilterState for a widened value", () => {
+      const state = searchToFilterState(validateBrowseSearch({ sort: "-rarity" }));
+      expect(state.sort).toBe("-rarity");
+    });
   });
 });
 
@@ -339,6 +378,13 @@ const ENUM_FACET_KEYS = Object.entries(FACET_DEFS)
 const RANGE_FACET_KEYS = Object.entries(FACET_DEFS)
   .filter(([, def]) => def.widget === "range")
   .map(([key]) => key);
+// P8 S1 (D29-78 adversarial M6) — the widened `?sort=` value space:
+// name|-name|level|-level|rarity|-rarity|<facetKey>|-<facetKey>, "rarity"
+// included even though it's not a `FACET_DEFS` key at all (`urlState.ts`'s
+// own `SORT_CORE_KEYS` special case — a real `columnDefs.ts` sort key that
+// lives outside `facetDefFor`'s vocabulary).
+const SORT_BASE_POOL = ["name", "level", "rarity", ...Object.keys(FACET_DEFS)];
+const SORT_POOL = SORT_BASE_POOL.flatMap((key) => [key, `-${key}`]);
 
 function randomState(rand: () => number): BrowseFilterState {
   const include = subset(rand, TRAIT_POOL);
@@ -375,7 +421,7 @@ function randomState(rand: () => number): BrowseFilterState {
   return {
     query: rand() < 0.4 ? pick(rand, ["drag", "heal", "fire bolt", ""]) : "",
     superseded: rand() < 0.3,
-    sort: rand() < 0.3 ? "level" : "name",
+    sort: rand() < 0.5 ? pick(rand, SORT_POOL) : "name",
     traits: { include, exclude },
     level,
     rarity: subset(rand, RARITY_POOL),

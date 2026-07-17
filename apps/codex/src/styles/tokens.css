@@ -71,4 +71,15 @@
   --font-body: "EB Garamond", serif;
   --font-condensed: "Oswald", sans-serif; /* renamed from --font-mono (D29-46) — the
     statblock/omnibar/rules-tree/citation "mechanical voice" slot */
+
+  /* --- P8 S1 (D29-77): row-density tokens, LISTING register only — the
+     site-wide density pass (body font/pane padding/header) is S2's job and
+     will extend this same block, not start a new one. Single-line ~24px
+     pitch (a 23px row box + the 1px hairline `border-bottom` already on
+     `.codex-listing-row`), 13px condensed data cells, the row NAME staying
+     at 14px in the serif link voice so rows read codex-flavored (5e.tools'
+     RHYTHM, not its Arial — D29-77's own text). */
+  --density-row-pitch: 24px;
+  --density-row-data-size: 13px;
+  --density-row-name-size: 14px;
 }

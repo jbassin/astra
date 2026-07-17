@@ -7,7 +7,7 @@
 // needs a DOM, so it opts in per-file instead.
 
 import { createRootRoute, createRouter, RouterProvider } from "@tanstack/react-router";
-import { fireEvent, render, screen, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, within } from "@testing-library/react";
 import { useState, type ReactElement } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -128,6 +128,31 @@ function renderWithRouter(component: () => ReactElement) {
   const rootRoute = createRootRoute({ component });
   const router = createRouter({ routeTree: rootRoute });
   return render(<RouterProvider router={router} />);
+}
+
+/** jsdom (pinned 29.1.1) has no `ResizeObserver` at all — this is a
+ * capture-the-callback stand-in (same "polyfill only what jsdom is missing,
+ * keep production code idiomatic" posture as the `showModal` polyfill
+ * above), letting a test manually fire a fake `contentRect.width` to drive
+ * `useNarrowListingContainer` (`BrowseListing.tsx`) without a real layout
+ * engine — jsdom does no layout at all, so there's no other way to exercise
+ * the container-width branch. */
+class FakeResizeObserver {
+  static instances: FakeResizeObserver[] = [];
+  private readonly callback: ResizeObserverCallback;
+  constructor(callback: ResizeObserverCallback) {
+    this.callback = callback;
+    FakeResizeObserver.instances.push(this);
+  }
+  observe(): void {}
+  unobserve(): void {}
+  disconnect(): void {}
+  trigger(width: number): void {
+    this.callback(
+      [{ contentRect: { width } } as ResizeObserverEntry],
+      this as unknown as ResizeObserver,
+    );
+  }
 }
 
 function StatefulHarness() {
@@ -401,5 +426,124 @@ describe("BrowseListing active-filter pills + drawer (P4.5 S4, D29-49)", () => {
     expect(document.querySelector("dialog .codex-facet-panel")).not.toBeNull();
     // no filter got applied just by opening the drawer.
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P8 S1 (D29-78) — the table register: sortable headers, aria-sort on the
+// <th> (never the button), the jump strip/letter-header removal (already
+// covered above by the pre-existing "no letter anchors" assertion — the
+// table register makes that unconditionally true now, not just under level
+// sort), and the container-driven FULL/COMPACT collapse.
+// ---------------------------------------------------------------------------
+
+describe("BrowseListing: sortable column headers (D29-78 acceptance gate C)", () => {
+  it("renders a real <table> with column headers, no Sort <select> anywhere", () => {
+    render(<StatefulHarness />);
+    expect(document.querySelector("table.codex-listing-table")).not.toBeNull();
+    expect(document.querySelector("select")).toBeNull();
+    expect(screen.getByRole("columnheader", { name: "Name" })).not.toBeNull();
+    expect(screen.getByRole("columnheader", { name: "Lvl" })).not.toBeNull();
+  });
+
+  it("Name defaults to aria-sort=ascending (the implicit default order)", () => {
+    render(<StatefulHarness />);
+    const nameHeader = screen.getByRole("columnheader", { name: "Name" });
+    expect(nameHeader.getAttribute("aria-sort")).toBe("ascending");
+  });
+
+  it("aria-sort lives on the <th>, never the inner <button>", () => {
+    render(<StatefulHarness />);
+    const button = screen.getByRole("button", { name: "Lvl" });
+    expect(button.getAttribute("aria-sort")).toBeNull();
+    expect(button.tagName).toBe("BUTTON");
+  });
+
+  it("clicking a sortable header cycles asc -> desc -> back to the name-asc default; missing-last holds under BOTH directions", () => {
+    render(<StatefulHarness />);
+    const rowNames = () =>
+      screen
+        .getAllByRole("link")
+        .map((el) => el.textContent?.trim())
+        .filter((t): t is string => t !== undefined && t !== "");
+
+    fireEvent.click(screen.getByRole("button", { name: "Lvl" }));
+    expect(rowNames()).toEqual(["Alpha", "Bravo", "Charlie"]); // 1, 2, level-less LAST
+    expect(screen.getByRole("columnheader", { name: /Lvl/ }).getAttribute("aria-sort")).toBe(
+      "ascending",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Lvl" }));
+    expect(rowNames()).toEqual(["Bravo", "Alpha", "Charlie"]); // 2, 1 — REVERSED, level-less STILL last
+    expect(screen.getByRole("columnheader", { name: /Lvl/ }).getAttribute("aria-sort")).toBe(
+      "descending",
+    );
+
+    fireEvent.click(screen.getByRole("button", { name: "Lvl" }));
+    expect(rowNames()).toEqual(["Alpha", "Bravo", "Charlie"]); // back to name-asc default
+    expect(screen.getByRole("columnheader", { name: "Name" }).getAttribute("aria-sort")).toBe(
+      "ascending",
+    );
+  });
+
+  it("clicking a DIFFERENT column always starts fresh at ascending (not mid-cycle)", () => {
+    render(<StatefulHarness />);
+    fireEvent.click(screen.getByRole("button", { name: "Lvl" }));
+    fireEvent.click(screen.getByRole("button", { name: "Lvl" })); // now -level (desc)
+    fireEvent.click(screen.getByRole("button", { name: "Actions" })); // switch column
+    expect(screen.getByRole("columnheader", { name: /Actions/ }).getAttribute("aria-sort")).toBe(
+      "ascending",
+    );
+  });
+
+  it("the alphabet jump strip and letter section headers are gone unconditionally (not just under level sort)", () => {
+    render(<StatefulHarness />);
+    expect(screen.queryByLabelText("Jump to letter")).toBeNull();
+    expect(document.querySelector(".codex-listing-letter")).toBeNull();
+    expect(document.querySelector(".codex-listing-alpha")).toBeNull();
+  });
+});
+
+describe("BrowseListing: container-driven FULL/COMPACT column collapse (D29-78)", () => {
+  afterEach(() => {
+    Reflect.deleteProperty(globalThis, "ResizeObserver");
+    FakeResizeObserver.instances = [];
+  });
+
+  it("a narrow container (< 600px, e.g. the real 416px split-pane width) collapses to Name/Lvl/Source only", () => {
+    FakeResizeObserver.instances = [];
+    (globalThis as unknown as { ResizeObserver: typeof FakeResizeObserver }).ResizeObserver =
+      FakeResizeObserver;
+    render(<StatefulHarness />);
+    // Full set first (no width reported yet — the SSR/pre-measurement default).
+    expect(screen.getByRole("columnheader", { name: /Actions/ })).not.toBeNull();
+
+    act(() => {
+      FakeResizeObserver.instances[0]?.trigger(416);
+    });
+
+    expect(screen.getByRole("columnheader", { name: "Name" })).not.toBeNull();
+    expect(screen.getByRole("columnheader", { name: /Lvl/ })).not.toBeNull();
+    expect(screen.getByRole("columnheader", { name: "Source" })).not.toBeNull();
+    expect(screen.queryByRole("columnheader", { name: /Actions/ })).toBeNull();
+    expect(screen.queryByRole("columnheader", { name: /Type/ })).toBeNull();
+    // Rows themselves still render (just fewer cells) — Alpha/Bravo/Charlie
+    // all present, nothing dropped from the row SET, only the column set.
+    expect(screen.getByText("Alpha")).not.toBeNull();
+  });
+
+  it("widening back past 600px restores the full column set", () => {
+    FakeResizeObserver.instances = [];
+    (globalThis as unknown as { ResizeObserver: typeof FakeResizeObserver }).ResizeObserver =
+      FakeResizeObserver;
+    render(<StatefulHarness />);
+    act(() => {
+      FakeResizeObserver.instances[0]?.trigger(416);
+    });
+    expect(screen.queryByRole("columnheader", { name: /Actions/ })).toBeNull();
+    act(() => {
+      FakeResizeObserver.instances[0]?.trigger(900);
+    });
+    expect(screen.getByRole("columnheader", { name: /Actions/ })).not.toBeNull();
   });
 });

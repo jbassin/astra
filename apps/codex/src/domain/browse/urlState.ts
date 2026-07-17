@@ -83,6 +83,30 @@ function toBool(raw: unknown): boolean {
   return raw === true || raw === 1 || raw === "1" || raw === "true";
 }
 
+/**
+ * P8 S1 (D29-78 adversarial M6) — `?sort=` widened from the closed
+ * `"level"`-literal-match to `name|-name|level|-level|<facetKey>|-
+ * <facetKey>` (a leading `-` = descending). This is the "unknown" half of
+ * the spec's "unknown/inapplicable values fall back to name silently" rule
+ * (`filterEngine.ts`'s `SortMode` doc comment covers the other half, the
+ * per-category "inapplicable" case this module can't see): a key that is
+ * NOT `name`/`level`/`rarity` and not a real `facetKeys.ts` key (via
+ * `facetDefFor`) is genuinely unknown ANYWHERE (e.g. `?sort=banana`) and is
+ * dropped right here, at decode time — never even reaches `BrowseFilterState`.
+ * `level`/`rarity` are both special cases: real `columnDefs.ts` sort keys
+ * (Lvl everywhere; the fallback category's ranked Rarity column) that live
+ * OUTSIDE `facetDefFor`'s vocabulary (core `IndexRow` fields, not `facets.*`
+ * keys) — `columnDefs.ts` never needed to teach `facetDefs.ts` about either,
+ * so this module names them directly instead. */
+const SORT_CORE_KEYS: ReadonlySet<string> = new Set(["level", "rarity"]);
+
+function isValidSortKey(key: string): boolean {
+  const base = key.startsWith("-") ? key.slice(1) : key;
+  if (base === "" || base === "-") return false;
+  if (base === "name" || SORT_CORE_KEYS.has(base)) return true;
+  return facetDefFor(base) !== undefined;
+}
+
 /** `validateSearch` proper — see the file header. `raw` is whatever
  * `defaultParseSearch` produced from the actual query string (per-value
  * already coerced by `qss`'s `toValue`). */
@@ -124,7 +148,8 @@ export function validateBrowseSearch(raw: Record<string, unknown>): BrowseSearch
   } else if (toBool(raw.legacy)) {
     out.superseded = true;
   }
-  if (str(raw.sort) === "level") out.sort = "level";
+  const sortRaw = str(raw.sort);
+  if (sortRaw !== "" && sortRaw !== "name" && isValidSortKey(sortRaw)) out.sort = sortRaw;
   if ("entry" in raw) {
     const v = str(raw.entry);
     if (v !== "") out.entry = v;
@@ -297,7 +322,11 @@ export function searchToFilterState(search: BrowseSearch): BrowseFilterState {
   return {
     query: search.q ?? "",
     superseded: search.superseded === true,
-    sort: search.sort === "level" ? "level" : "name",
+    // `validateBrowseSearch` already rejected anything not in the
+    // `name|-name|level|-level|<facetKey>|-<facetKey>|rarity|-rarity`
+    // grammar (`isValidSortKey`) — a present `search.sort` is always safe to
+    // use verbatim; absent falls back to the default "name".
+    sort: search.sort ?? "name",
     traits,
     level,
     rarity,
@@ -322,7 +351,10 @@ export function filterStateToSearch(state: BrowseFilterState): BrowseSearch {
   if (editionParam !== undefined) out.edition = editionParam;
   if (state.query.trim() !== "") out.q = state.query.trim();
   if (state.superseded) out.superseded = true;
-  if (state.sort === "level") out.sort = "level";
+  // "name" is the default — never serialized, same "empty state = clean
+  // URL" convention as every other field here (P8 S1 widening of the old
+  // literal `"level"`-only check).
+  if (state.sort !== "name") out.sort = state.sort;
 
   for (const [key, selected] of state.facetEnum) {
     const param = encodeCsvSet(selected);

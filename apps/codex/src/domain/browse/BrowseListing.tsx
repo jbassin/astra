@@ -12,11 +12,17 @@ import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
 import type { EntityPageData } from "@/server/entityPageData";
-import { Button, EditionIcon, Input, TraitPill } from "@/ui";
+import { Button, EditionIcon, Input } from "@/ui";
 import { cx } from "@/ui/cx";
 
-import { capitalize, humanizeSlug } from "../render/text";
+import { humanizeSlug } from "../render/text";
 import { activeFilterPills } from "./activeFilterPills";
+import {
+  columnsFor,
+  comparatorForSort,
+  NARROW_CONTAINER_WIDTH_PX,
+  type ColumnDef,
+} from "./columnDefs";
 import { BrowseEmptyState } from "./EmptyState";
 import { FacetPanel } from "./FacetPanel";
 import {
@@ -27,7 +33,6 @@ import {
   setSort,
   sortRows,
   type BrowseFilterState,
-  type SortMode,
 } from "./filterEngine";
 
 export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
@@ -40,6 +45,44 @@ export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFi
  * between desktop/mobile — "one component, one breakpoint-gated behavior
  * branch, not two components" (spec's own text). */
 const SPLIT_VIEW_MEDIA = "(min-width: 56.0625rem)";
+
+/**
+ * P8 S1 (D29-78) — "the compact set applies whenever the LIST CONTAINER is
+ * narrow ... via container query or measured width — keyed to the
+ * container, never the viewport." A `ResizeObserver` on the listing pane
+ * itself (not `window.matchMedia`) is what makes this genuinely
+ * container-driven rather than viewport-driven: it's the ONE mechanism that
+ * naturally covers every scenario the spec names — split view open (the
+ * 416px pane), the 640–896px non-split band's narrow end, AND mobile —
+ * without this component needing to know WHY its container is narrow.
+ * `undefined`/no `ResizeObserver` (SSR, or a test env that doesn't polyfill
+ * it) keeps the initial `false` (full set) — a safe, SSR-hydration-matching
+ * default that only ever adjusts client-side, after mount, same posture as
+ * `EntityRenderPane`'s own `useRouterState`-driven islands. */
+function useNarrowListingContainer(ref: { current: HTMLElement | null }): boolean {
+  const [narrow, setNarrow] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver((entries) => {
+      const width = entries[0]?.contentRect.width;
+      if (width !== undefined) setNarrow(width < NARROW_CONTAINER_WIDTH_PX);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [ref]);
+  return narrow;
+}
+
+/** Click-to-sort header cycle (D29-78): asc -> desc -> back to the name-asc
+ * default. Switching to a DIFFERENT column always starts fresh at ascending
+ * — only re-clicking the SAME already-active column advances the cycle. */
+function nextSortForClick(current: string, key: string): string {
+  const desc = current.startsWith("-");
+  const base = desc ? current.slice(1) : current;
+  if (base !== key) return key;
+  return desc ? "name" : `-${key}`;
+}
 
 /**
  * D29-35 — the faceted `/{category}` listing island. Purely a function of
@@ -94,6 +137,8 @@ export function BrowseListing({
   const [queryText, setQueryText] = useState(state.query);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const listingPaneRef = useRef<HTMLDivElement>(null);
+  const narrow = useNarrowListingContainer(listingPaneRef);
 
   // Native `<dialog>` owns its own open/close semantics (Esc, backdrop via
   // the `::backdrop` pseudo-element, native focus-trap + focus-return) —
@@ -107,7 +152,35 @@ export function BrowseListing({
     if (!drawerOpen && dialog.open) dialog.close();
   }, [drawerOpen]);
 
-  const visible = useMemo(() => sortRows(applyFilters(rows, state), state.sort), [rows, state]);
+  // P8 S1 (D29-78) — the per-category column model, memoized on the same
+  // (category, rows) pair `columnsFor` itself only needs (its two coverage
+  // checks are computed once per listing here, not per row/render).
+  const cols = useMemo(() => columnsFor(category, rows), [category, rows]);
+  const visibleCols = useMemo(
+    () => (narrow ? cols.filter((c) => c.compact) : cols),
+    [cols, narrow],
+  );
+
+  const sortDesc = state.sort.startsWith("-");
+  const sortBaseKey = sortDesc ? state.sort.slice(1) : state.sort;
+  // "name"/"level" stay on `sortRows`'s own built-in path (no comparator);
+  // everything else resolves against the CURRENT category's column set — a
+  // miss (an inapplicable key, e.g. `?sort=hp` on `/spell`) yields
+  // `undefined`, which `sortRows` treats as "fall back to name" (the
+  // `SortMode` doc comment in `filterEngine.ts` spells out why this half of
+  // the fallback lives here and not in `urlState.ts`).
+  const sortComparator = useMemo(
+    () =>
+      sortBaseKey === "name" || sortBaseKey === "level"
+        ? undefined
+        : comparatorForSort(cols, sortBaseKey),
+    [cols, sortBaseKey],
+  );
+
+  const visible = useMemo(
+    () => sortRows(applyFilters(rows, state), state.sort, sortComparator),
+    [rows, state, sortComparator],
+  );
   const collisions = useMemo(() => collidingNames(visible), [visible]);
   const eligibleCount = useMemo(
     () => (state.superseded ? rows.length : rows.filter((r) => !r.superseded).length),
@@ -132,9 +205,8 @@ export function BrowseListing({
     onStateChange((prev) => setQuery(prev, next));
   }
 
-  function handleSortChange(e: ChangeEvent<HTMLSelectElement>) {
-    const next = e.target.value as SortMode;
-    onStateChange((prev) => setSort(prev, next));
+  function handleHeaderSort(key: string) {
+    onStateChange((prev) => setSort(prev, nextSortForClick(prev.sort, key)));
   }
 
   function handleClear() {
@@ -164,13 +236,6 @@ export function BrowseListing({
             value={queryText}
             onChange={handleQueryChange}
           />
-          <label className="codex-sort-control">
-            Sort
-            <select value={state.sort} onChange={handleSortChange}>
-              <option value="name">Name (A–Z)</option>
-              <option value="level">Level</option>
-            </select>
-          </label>
           <Button type="button" onClick={() => setDrawerOpen(true)}>
             Filters{pills.length > 0 ? ` (${pills.length})` : ""}
           </Button>
@@ -199,7 +264,7 @@ export function BrowseListing({
       ) : null}
 
       <div className="codex-browse-layout">
-        <div className="codex-listing-pane">
+        <div className="codex-listing-pane" ref={listingPaneRef}>
           {visible.length === 0 ? (
             eligibleCount === 0 ? (
               <p className="codex-listing-empty-category">Nothing in this category yet.</p>
@@ -209,21 +274,16 @@ export function BrowseListing({
                 noun={humanizeSlug(category).toLowerCase()}
               />
             )
-          ) : state.sort === "level" ? (
-            <LevelOrderedList
-              rows={visible}
-              collisions={collisions}
-              superseded={state.superseded}
-              selectedId={entryRow?.id}
-              onRowClick={handleRowClick}
-            />
           ) : (
-            <LetterGroupedList
+            <ListingTable
+              cols={visibleCols}
               rows={visible}
               collisions={collisions}
               superseded={state.superseded}
               selectedId={entryRow?.id}
               onRowClick={handleRowClick}
+              sort={state.sort}
+              onSortClick={handleHeaderSort}
             />
           )}
         </div>
@@ -336,163 +396,125 @@ function displayName(
   );
 }
 
-/** P4.5 S5 (D29-50) — style doc §4's per-row trait pill treatment, at
- * reduced scale (`.codex-listing-traits`, globals.css). GATED on the S4
- * perf baseline (124-148ms filter-interaction, feat's 8,485-row category):
- * kept — an A/B production-build measurement on `/feat` (keystroke-to-
- * `.codex-listing-count`-DOM-update latency, 5 runs each via a MutationObserver,
- * 1400px viewport / split-view active) showed NO measurable regression from
- * adding them: avg 11.2ms without row pills vs 11.7ms with them (both
- * comfortably inside the ~2x/296ms budget; the S4 baseline's own 124-148ms
- * figure likely measured a different, heavier metric — paint-complete, not
- * DOM-mutation — so treat the ~11ms numbers as a same-methodology A/B ratio,
- * not a like-for-like replacement of the S4 figure). Capped at 3 pills/row +
- * a "+N" overflow marker so a heavily-tagged creature entry never balloons a
- * row's height or the per-keystroke re-render cost unboundedly. Unlinked
- * (plain `TraitPill`, not `CodexTraitPills`) — a dense list row has no
- * `knownTraitIds` context threaded to it (loader logic is out of scope for
- * this restyle slice) and a crossref link per pill per row would be pure
- * additional cost with no reader benefit here (the full trait-pill-with-link
- * treatment already exists on the entity page/right pane one click away). */
-const ROW_TRAIT_CAP = 3;
-
-function RowTraitPills({ traits }: { traits: readonly string[] }): ReactElement | null {
-  if (traits.length === 0) return null;
-  const shown = traits.slice(0, ROW_TRAIT_CAP);
-  const overflow = traits.length - shown.length;
-  return (
-    <span className="codex-listing-traits">
-      {shown.map((t) => (
-        <TraitPill key={t} name={humanizeSlug(t)} />
-      ))}
-      {overflow > 0 ? <span className="codex-listing-traits-more">+{overflow}</span> : null}
-    </span>
-  );
-}
-
-function ListingRowView({
-  row,
+/**
+ * P8 S1 (D29-78) — the table register that replaces the old letter-grouped/
+ * level-ordered `<ul>` split (`LetterGroupedList`/`LevelOrderedList` — R2:
+ * "the render-path split collapses into ONE flat sorted renderer"). Real
+ * `<table>`/`<thead>`/`<th scope="col">`/`<tbody>` semantics (not a CSS
+ * grid): every row here is only ever clickable via its name-cell anchor
+ * (never the full row), same as the pre-table markup, so a `<tr>`'s
+ * inability to be wrapped in `<a>` costs nothing — "row-level click/
+ * keyboard delegation to the name-cell anchor" is what this component
+ * already did. Traits are gone from the row entirely (D29-79 — the drawer/
+ * entity page keep them). `content-visibility: auto` lives on
+ * `.codex-listing-row` in `globals.css` (the letter `<section>` was the
+ * only prior chunking boundary — deleted along with it here). */
+function ListingTable({
+  cols,
+  rows,
   collisions,
   superseded,
-  selected,
+  selectedId,
   onRowClick,
+  sort,
+  onSortClick,
 }: {
-  row: IndexRow;
-  collisions: ReadonlySet<string>;
-  superseded: boolean;
-  selected: boolean;
-  onRowClick: (e: MouseEvent<HTMLAnchorElement>, row: IndexRow) => void;
-}): ReactElement {
-  return (
-    <li className={cx("codex-listing-row", selected && "codex-listing-row-selected")}>
-      {displayName(row, collisions, superseded, onRowClick)}
-      <RowTraitPills traits={row.traits} />
-      <span className="codex-listing-typelevel">
-        {row.level !== undefined ? (
-          <span className="codex-listing-level">Lvl {row.level}</span>
-        ) : null}
-        {row.rarity !== undefined ? (
-          <span className="codex-listing-rarity">{capitalize(row.rarity)}</span>
-        ) : null}
-      </span>
-      <span className="codex-listing-source" title={row.source.book}>
-        {abbreviateBook(row.source.book) ?? row.source.book}
-      </span>
-      <EditionIcon edition={row.edition} />
-    </li>
-  );
-}
-
-function letterOf(name: string): string {
-  const first = name.charAt(0).toUpperCase();
-  return first >= "A" && first <= "Z" ? first : "#";
-}
-
-function groupByLetter(rows: readonly IndexRow[]): Array<[string, IndexRow[]]> {
-  const groups = new Map<string, IndexRow[]>();
-  for (const row of rows) {
-    const letter = letterOf(row.name);
-    const bucket = groups.get(letter);
-    if (bucket) bucket.push(row);
-    else groups.set(letter, [row]);
-  }
-  return [...groups.entries()].sort(([a], [b]) => a.localeCompare(b));
-}
-
-interface RowListProps {
+  cols: readonly ColumnDef[];
   rows: readonly IndexRow[];
   collisions: ReadonlySet<string>;
   superseded: boolean;
   selectedId?: string;
   onRowClick: (e: MouseEvent<HTMLAnchorElement>, row: IndexRow) => void;
-}
-
-/** name sort: letter-anchored sections. `content-visibility: auto` (CSS,
- * `globals.css`) is the sanctioned perf guard for a long list (spec §D29-35
- * — "NO new virtualization dependency"); incremental reveal is the ESCALATION
- * fallback only if the measured interaction latency demands it (S3's perf
- * gate — see the session report for what was actually needed). */
-function LetterGroupedList({
-  rows,
-  collisions,
-  superseded,
-  selectedId,
-  onRowClick,
-}: RowListProps): ReactElement {
-  const letterGroups = groupByLetter(rows);
+  sort: string;
+  onSortClick: (key: string) => void;
+}): ReactElement {
+  const desc = sort.startsWith("-");
+  const activeKey = desc ? sort.slice(1) : sort;
   return (
-    <div className="codex-listing-lettered">
-      {letterGroups.length > 1 ? (
-        <nav className="codex-listing-alpha" aria-label="Jump to letter">
-          {letterGroups.map(([letter]) => (
-            <a key={letter} href={`#letter-${letter}`}>
-              {letter}
-            </a>
+    <table className="codex-listing-table">
+      <thead>
+        <tr>
+          {cols.map((col) => (
+            <ColumnHeaderCell
+              key={col.key}
+              col={col}
+              active={col.key === activeKey}
+              desc={desc}
+              onSortClick={onSortClick}
+            />
           ))}
-        </nav>
-      ) : null}
-      {letterGroups.map(([letter, letterRows]) => (
-        <section key={letter} id={`letter-${letter}`} className="codex-listing-letter">
-          <h2 className="codex-heading">{letter}</h2>
-          <ul className="codex-listing-rows">
-            {letterRows.map((row) => (
-              <ListingRowView
-                key={row.id}
-                row={row}
-                collisions={collisions}
-                superseded={superseded}
-                selected={row.id === selectedId}
-                onRowClick={onRowClick}
-              />
+          <th scope="col" aria-label="Edition" className="codex-listing-col-icon" />
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr
+            key={row.id}
+            className={cx(
+              "codex-listing-row",
+              row.id === selectedId && "codex-listing-row-selected",
+            )}
+          >
+            {cols.map((col) => (
+              <td key={col.key} className={`codex-listing-col-${col.key}`}>
+                {col.key === "name"
+                  ? displayName(row, collisions, superseded, onRowClick)
+                  : col.render(row)}
+              </td>
             ))}
-          </ul>
-        </section>
-      ))}
-    </div>
+            <td className="codex-listing-col-icon">
+              <EditionIcon edition={row.edition} />
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
   );
 }
 
-/** level sort: one flat list, ascending, anchors hidden (D29-35 explicit —
- * "level (anchors hidden, ascending w/ '—' bucket last)"). */
-function LevelOrderedList({
-  rows,
-  collisions,
-  superseded,
-  selectedId,
-  onRowClick,
-}: RowListProps): ReactElement {
+/**
+ * D29-78 — `aria-sort` lives on the header CELL, never the inner `<button>`
+ * (undefined there per WAI-ARIA, adversarial M5); the button is the plain
+ * click target, carrying a visible caret only once it's the active column
+ * (an `aria-hidden` glyph — the cell's own `aria-sort` already carries the
+ * meaning for AT).
+ */
+function ColumnHeaderCell({
+  col,
+  active,
+  desc,
+  onSortClick,
+}: {
+  col: ColumnDef;
+  active: boolean;
+  desc: boolean;
+  onSortClick: (key: string) => void;
+}): ReactElement {
+  if (!col.sortable) {
+    return (
+      <th scope="col" className={`codex-listing-col-${col.key}`}>
+        {col.label}
+      </th>
+    );
+  }
   return (
-    <ul className="codex-listing-rows codex-listing-rows-flat">
-      {rows.map((row) => (
-        <ListingRowView
-          key={row.id}
-          row={row}
-          collisions={collisions}
-          superseded={superseded}
-          selected={row.id === selectedId}
-          onRowClick={onRowClick}
-        />
-      ))}
-    </ul>
+    <th
+      scope="col"
+      aria-sort={active ? (desc ? "descending" : "ascending") : "none"}
+      className={`codex-listing-col-${col.key}`}
+    >
+      <button
+        type="button"
+        className="codex-listing-sort-button"
+        onClick={() => onSortClick(col.key)}
+      >
+        {col.label}
+        {active ? (
+          <span aria-hidden="true" className="codex-listing-sort-caret">
+            {desc ? "▾" : "▴"}
+          </span>
+        ) : null}
+      </button>
+    </th>
   );
 }
