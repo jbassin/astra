@@ -73,16 +73,16 @@ describe("RulesTree (D29-40)", () => {
     localStorage.clear();
   });
 
-  it("renders every book name (abbreviation-with-fallback, R10/D29-68) + edition/license pills", () => {
+  it("renders every book name (abbreviation-with-fallback, R10/D29-68) + edition icon/license pill", () => {
     render(<RulesTree books={[GMG_LIKE]} superseded={false} />);
     // "Gamemastery Guide" curates to "GMG" — the heading shows the
     // abbreviation, the full name stays available via `title`.
     const heading = screen.getByText("GMG");
     expect(heading).not.toBeNull();
     expect(heading.getAttribute("title")).toBe("Gamemastery Guide");
-    // "Legacy" appears twice: the book-level edition pill AND the root
-    // node's own superseded pill (GMG_LIKE's root doc is itself superseded).
-    expect(screen.getAllByText("Legacy").length).toBeGreaterThanOrEqual(1);
+    // "Legacy" appears twice: the book-level edition icon AND the root
+    // node's own superseded icon (GMG_LIKE's root doc is itself superseded).
+    expect(screen.getAllByRole("img", { name: "Legacy" }).length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText("OGL")).not.toBeNull();
   });
 

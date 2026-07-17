@@ -3,6 +3,7 @@ import type { ReactElement } from "react";
 import { joinCsv } from "@/domain/browse/urlState";
 import { humanizeSlug } from "@/domain/render/text";
 import type { SourceIndexEntry } from "@/schema/sourcesIndex";
+import { EditionIcon } from "@/ui";
 
 import { groupSourcesByProductLine, OTHER_GROUP_LABEL } from "./sourcesModel";
 
@@ -83,9 +84,7 @@ function SourceBookRow({ book }: { book: SourceIndexEntry }): ReactElement {
         ) : (
           <span className="codex-sources-book-name">{book.book}</span>
         )}
-        <span className={`codex-edition-pill codex-edition-${book.edition}`}>
-          {book.edition === "remaster" ? "Remaster" : "Legacy"}
-        </span>
+        <EditionIcon edition={book.edition} />
         <span
           className={`codex-license-badge${book.license === "unknown" ? " codex-license-unknown" : ""}`}
         >

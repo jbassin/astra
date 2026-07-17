@@ -1,9 +1,9 @@
-import type { ReactElement } from "react";
+import type { ReactElement, ReactNode } from "react";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
 import { facetKeysFor } from "@/schema/facetKeys";
-import { Input } from "@/ui";
+import { EditionIcon, Input } from "@/ui";
 
 import { humanizeFacetKey } from "../render/text";
 import { facetDefFor, labelFor, type FacetDef } from "./facetDefs";
@@ -65,7 +65,7 @@ function EnumOptionList({
   options: readonly { value: string; count: number }[];
   selected: ReadonlySet<string>;
   missing: number;
-  labelOf: (value: string) => string;
+  labelOf: (value: string) => ReactNode;
   onToggle: (value: string) => void;
 }): ReactElement | null {
   if (options.length === 0 && missing === 0) return null;
@@ -194,6 +194,13 @@ function DerivedFacetSection({
 // core sections (every category)
 // ---------------------------------------------------------------------------
 
+/** The Edition dimension's own `labelOf` — a stable module-scope reference
+ * (not an inline arrow) so oxlint's `no-unstable-nested-components` doesn't
+ * flag a JSX-returning closure defined during render. */
+function editionOptionLabel(value: string): ReactElement {
+  return <EditionIcon edition={value === "remaster" ? "remaster" : "legacy"} />;
+}
+
 function CoreEnumSection({
   title,
   dimension,
@@ -211,9 +218,9 @@ function CoreEnumSection({
   valueOf: (row: IndexRow) => string | undefined;
   /** R10 (D29-68) — the Source dimension's own option label wants the
    * abbreviation-with-fallback treatment; every other `CoreEnumSection`
-   * caller (Rarity, Edition) leaves this unset and keeps the plain
-   * identity label it always had. */
-  labelOf?: (value: string) => string;
+   * caller (Rarity) leaves this unset and keeps the plain identity label
+   * it always had. Edition (below) supplies the `EditionIcon` glyph. */
+  labelOf?: (value: string) => ReactNode;
 }): ReactElement | null {
   const ambient = ambientRows(rows, state, { kind: dimension });
   const options = scalarOptionCounts(ambient, valueOf);
@@ -373,6 +380,7 @@ export function FacetPanel({
         state={state}
         onChange={onChange}
         valueOf={editionValueOf}
+        labelOf={editionOptionLabel}
       />
       <SupersededSection state={state} onChange={onChange} />
       {derivedKeys.map((key) => {

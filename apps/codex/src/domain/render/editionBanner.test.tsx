@@ -22,11 +22,13 @@ function baseEntity(overrides: Partial<CodexEntity> = {}): CodexEntity {
 describe("EditionPill (D29-22/-26): every page shows one", () => {
   it("remaster", () => {
     const out = renderToStaticMarkup(<EditionPill entity={baseEntity({ edition: "remaster" })} />);
-    expect(out).toContain("Remaster");
+    expect(out).toContain('aria-label="Remaster"');
+    expect(out).toContain("codex-edition-icon");
   });
   it("legacy", () => {
     const out = renderToStaticMarkup(<EditionPill entity={baseEntity({ edition: "legacy" })} />);
-    expect(out).toContain("Legacy");
+    expect(out).toContain('aria-label="Legacy"');
+    expect(out).toContain("codex-edition-icon");
   });
 });
 

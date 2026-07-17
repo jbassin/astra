@@ -46,7 +46,7 @@ describe("ReadingOrderPager (P4 S3, D29-41)", () => {
     );
   });
 
-  it("a superseded target carries the Legacy edition pill (the legacy toggle does NOT re-chain the pager)", () => {
+  it("a superseded target carries the Legacy edition icon (the legacy toggle does NOT re-chain the pager)", () => {
     render(
       <ReadingOrderPager
         next={{
@@ -57,12 +57,12 @@ describe("ReadingOrderPager (P4 S3, D29-41)", () => {
       />,
     );
     const link = screen.getByRole("link", { name: /Building Creatures/ });
-    expect(link.textContent).toContain("Legacy");
+    expect(link.querySelector('[aria-label="Legacy"]')).not.toBeNull();
   });
 
-  it("a non-superseded target carries no edition pill", () => {
+  it("a non-superseded target carries no edition icon", () => {
     render(<ReadingOrderPager next={{ id: "rules/counteracting-2", name: "Counteracting" }} />);
     const link = screen.getByRole("link", { name: /Counteracting/ });
-    expect(link.textContent).not.toContain("Legacy");
+    expect(link.querySelector('[aria-label="Legacy"]')).toBeNull();
   });
 });

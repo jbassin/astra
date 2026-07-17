@@ -560,9 +560,9 @@ describe("rules entity-page hierarchy nav (D29-41 tier 3)", () => {
     expect(html.slice(nextSlotIdx, nextSlotIdx + 400)).toContain(
       'href="/rules/building-creatures@legacy"',
     );
-    // that next target is itself superseded -> renders its own Legacy pill
-    // (the legacy toggle does NOT re-chain the pager, D29-41).
-    expect(html.slice(nextSlotIdx, nextSlotIdx + 400)).toContain("Legacy");
+    // that next target is itself superseded -> renders its own Legacy edition
+    // icon (the legacy toggle does NOT re-chain the pager, D29-41).
+    expect(html.slice(nextSlotIdx, nextSlotIdx + 400)).toContain('aria-label="Legacy"');
   });
 
   it("the tree sidebar renders, scoped to the current book, with the current doc highlighted", async () => {

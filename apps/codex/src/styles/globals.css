@@ -489,18 +489,18 @@ select:focus-visible,
   flex-wrap: wrap;
   gap: 0.35rem;
 }
-.codex-edition-pill {
-  font-size: 0.72rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  padding: 0.15rem 0.5rem;
-  border-radius: 999px;
-  border: 1px solid var(--color-rule);
+/* the "History vs. Spark" edition icon (replaces the old text pill) — an
+   inline square SVG glyph, sized relative to the surrounding font so it
+   drops into any text-flow context unchanged. */
+.codex-edition-icon {
+  display: inline-flex;
+  width: 0.95em;
+  height: 0.95em;
+  vertical-align: -0.1em;
   color: var(--color-ink-dim);
 }
 .codex-edition-remaster {
   color: var(--color-accent-amber);
-  border-color: var(--color-accent-amber);
 }
 .codex-rarity {
   font-size: 0.85rem;
@@ -1161,13 +1161,6 @@ select:focus-visible,
 .codex-listing-source {
   color: var(--color-ink-dim);
   font-size: 0.82rem;
-}
-/* smaller row-scale pill (style doc §4: "reuse the exact pill component at
-   a slightly smaller scale") — the same edition pill used on the entity
-   page header, just dialed down for a dense list row. */
-.codex-edition-pill-sm {
-  font-size: 0.68rem;
-  padding: 0.05rem 0.4rem;
 }
 .codex-listing-empty-category {
   color: var(--color-ink-dim);

@@ -1,18 +1,15 @@
 import type { ReactElement } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
+import { EditionIcon } from "../../ui";
 
 /**
- * D29-22/-26 — every page shows an edition pill; a legacy member with
+ * D29-22/-26 — every page shows an edition icon; a legacy member with
  * `remasteredAs` shows a banner linking the remaster member(s); a remaster
  * member with `legacyOf` shows a compact "legacy version" link.
  */
 export function EditionPill({ entity }: { entity: CodexEntity }): ReactElement {
-  return (
-    <span className={`codex-edition-pill codex-edition-${entity.edition}`}>
-      {entity.edition === "remaster" ? "Remaster" : "Legacy"}
-    </span>
-  );
+  return <EditionIcon edition={entity.edition} />;
 }
 
 function EntityIdLink({ id }: { id: string }): ReactElement {

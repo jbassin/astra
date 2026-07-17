@@ -34,6 +34,7 @@ import { collidingNames } from "@/domain/browse/filterEngine";
 import { humanizeSlug } from "@/domain/render/text";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
+import { EditionIcon } from "@/ui";
 
 import {
   groupByCategory,
@@ -236,9 +237,9 @@ export function Omnibar(): ReactElement {
                           {item.level !== undefined ? (
                             <span className="codex-listing-level">Lvl {item.level}</span>
                           ) : null}
-                          <span className={`codex-edition-pill codex-edition-${item.edition}`}>
-                            {item.edition === "remaster" ? "Remaster" : "Legacy"}
-                          </span>
+                          <EditionIcon
+                            edition={item.edition === "remaster" ? "remaster" : "legacy"}
+                          />
                         </a>
                       </li>
                     );

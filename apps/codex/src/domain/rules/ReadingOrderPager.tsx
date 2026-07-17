@@ -3,13 +3,14 @@
 // `resolveRulesNav` computed server-side (descends into a chaptered node's
 // subtree, symmetric, never crosses a book, one-sided at the ends) — this
 // component only renders two links. A superseded target still renders (the
-// legacy toggle does NOT re-chain the pager, D29-41) with its own "Legacy"
-// pill, the same `codex-edition-pill` convention `EditionPill`/`RulesTree`'s
+// legacy toggle does NOT re-chain the pager, D29-41) with its own Legacy
+// edition icon, the same `EditionIcon` convention `EditionPill`/`RulesTree`'s
 // node rows already use.
 
 import type { ReactElement } from "react";
 
 import type { RulesPagerTarget } from "@/server/entityPageData";
+import { EditionIcon } from "@/ui";
 
 function PagerLink({
   target,
@@ -24,9 +25,7 @@ function PagerLink({
         {direction === "prev" ? "← Previous" : "Next →"}
       </span>
       <span className="codex-rules-pager-name">{target.name}</span>
-      {target.superseded === true ? (
-        <span className="codex-edition-pill codex-edition-legacy">Legacy</span>
-      ) : null}
+      {target.superseded === true ? <EditionIcon edition="legacy" /> : null}
     </a>
   );
 }

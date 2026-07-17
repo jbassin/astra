@@ -11,7 +11,7 @@ import { useEffect, useMemo, useState, type ReactElement } from "react";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { RulesTreeBook, TreeNode } from "@/schema/rulesTree";
-import { Input } from "@/ui";
+import { EditionIcon, Input } from "@/ui";
 
 import { computeOpen, filterTreeByQuery, nodeKeyFor, pruneForSuperseded } from "./treeModel";
 
@@ -134,9 +134,7 @@ function RulesBookSection({
         <h2 className="codex-heading" title={book.book}>
           {abbreviateBook(book.book) ?? book.book}
         </h2>
-        <span className={`codex-edition-pill codex-edition-${book.edition}`}>
-          {book.edition === "remaster" ? "Remaster" : "Legacy"}
-        </span>
+        <EditionIcon edition={book.edition} />
         <span
           className={`codex-license-badge${book.license === "unknown" ? " codex-license-unknown" : ""}`}
         >
@@ -222,9 +220,7 @@ function RulesTreeNodeView({
         ) : (
           <span className="codex-rules-node-name codex-rules-node-synthetic">{node.name}</span>
         )}
-        {node.superseded === true ? (
-          <span className="codex-edition-pill codex-edition-legacy">Legacy</span>
-        ) : null}
+        {node.superseded === true ? <EditionIcon edition="legacy" /> : null}
       </div>
       {hasChildren && isOpen ? (
         <ul className="codex-rules-tree-list codex-rules-tree-children">

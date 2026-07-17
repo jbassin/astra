@@ -24,13 +24,22 @@
 // wired through `searchUrlState.ts`'s own `superseded` field/`?superseded=`
 // param rather than a re-adaptation of the deleted site-wide toggle.
 
-import { useEffect, useMemo, useRef, useState, type ChangeEvent, type ReactElement } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 
 import { BrowseEmptyState } from "@/domain/browse/EmptyState";
 import { collidingNames } from "@/domain/browse/filterEngine";
 import { capitalize, humanizeSlug } from "@/domain/render/text";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
+import { EditionIcon } from "@/ui";
 
 import {
   loadPagefind,
@@ -65,6 +74,13 @@ function sortedEntries(counts: Record<string, number> | undefined): [string, num
   const allNumeric = entries.length > 0 && entries.every(([k]) => Number.isFinite(Number(k)));
   if (allNumeric) return entries.sort((a, b) => Number(a[0]) - Number(b[0]));
   return entries.sort((a, b) => a[0].localeCompare(b[0]));
+}
+
+/** The Edition facet's own `labelOf` — a stable module-scope reference (not
+ * an inline arrow) so oxlint's `no-unstable-nested-components` doesn't flag
+ * a JSX-returning closure defined during render. */
+function editionOptionLabel(value: string): ReactElement {
+  return <EditionIcon edition={value === "remaster" ? "remaster" : "legacy"} />;
 }
 
 export function SearchPage({
@@ -259,7 +275,7 @@ export function SearchPage({
             title="Edition"
             counts={filterCounts.edition}
             selected={state.edition}
-            labelOf={(v) => (v === "remaster" ? "Remaster" : "Legacy")}
+            labelOf={editionOptionLabel}
             onToggle={(v) => toggleDimension("edition", v)}
           />
           <FilterSection
@@ -301,9 +317,7 @@ export function SearchPage({
                       {item.rarity !== undefined ? ` · ${capitalize(item.rarity)}` : ""}
                       <span title={item.book}> · {abbreviateBook(item.book) ?? item.book}</span>
                     </span>
-                    <span className={`codex-edition-pill codex-edition-${item.edition}`}>
-                      {item.edition === "remaster" ? "Remaster" : "Legacy"}
-                    </span>
+                    <EditionIcon edition={item.edition === "remaster" ? "remaster" : "legacy"} />
                     {item.excerpt !== undefined && item.excerpt !== "" ? (
                       // Pagefind's own excerpt HTML (`<mark>` around matched
                       // terms) — the one intentional `dangerouslySetInnerHTML`
@@ -343,7 +357,7 @@ function FilterSection({
   title: string;
   counts: Record<string, number> | undefined;
   selected: ReadonlySet<string>;
-  labelOf: (value: string) => string;
+  labelOf: (value: string) => ReactNode;
   onToggle: (value: string) => void;
 }): ReactElement | null {
   const entries = sortedEntries(counts);

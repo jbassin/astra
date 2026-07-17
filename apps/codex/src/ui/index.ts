@@ -5,6 +5,7 @@
  * matching the exact prop-signature parity the spec requires.
  */
 export { Button } from "./Button";
+export { EditionIcon, type Edition } from "./EditionIcon";
 export { ErrorChip } from "./ErrorChip";
 export { Input } from "./Input";
 export { TraitPill } from "./TraitPill";

@@ -12,7 +12,7 @@ import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
 import type { EntityPageData } from "@/server/entityPageData";
-import { Button, Input, TraitPill } from "@/ui";
+import { Button, EditionIcon, Input, TraitPill } from "@/ui";
 import { cx } from "@/ui/cx";
 
 import { capitalize, humanizeSlug } from "../render/text";
@@ -398,9 +398,7 @@ function ListingRowView({
       <span className="codex-listing-source" title={row.source.book}>
         {abbreviateBook(row.source.book) ?? row.source.book}
       </span>
-      <span className={`codex-edition-pill codex-edition-pill-sm codex-edition-${row.edition}`}>
-        {row.edition === "remaster" ? "Remaster" : "Legacy"}
-      </span>
+      <EditionIcon edition={row.edition} />
     </li>
   );
 }

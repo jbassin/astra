@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 
 import type { AttachedSidebarView } from "../../server/entityPageData";
+import { EditionIcon } from "../../ui";
 import { Citation } from "./citation";
 import { type RenderCtx, renderNodes } from "./nodes";
 
@@ -62,9 +63,7 @@ export function AttachedSidebars({
         <aside key={sidebar.id} className="codex-card codex-attached-sidebar">
           <h3 className="codex-attached-sidebar-title">
             {sidebar.name}
-            {sidebar.superseded ? (
-              <span className="codex-edition-pill codex-edition-legacy">Legacy</span>
-            ) : null}
+            {sidebar.superseded ? <EditionIcon edition="legacy" /> : null}
           </h3>
           <div className="codex-content">
             {renderNodes(sidebar.body, { ...ctx, embedDepth: ctx.embedDepth + 1 })}
