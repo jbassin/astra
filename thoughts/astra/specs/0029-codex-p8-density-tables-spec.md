@@ -126,8 +126,15 @@ columnsFor(category: string, rows: readonly IndexRow[]): readonly ColumnDef[]
   verified untouched.)
 - **Narrow-container collapse** (replaces the viewport-keyed mobile rule): compact set =
   `compact: true` columns (Name · Lvl-if-covered · Source · icon) whenever the list
-  container is < ~600px — split view open (416px pane), the 640–896px non-split band at the
-  narrow end, and mobile all take this path. No horizontal scroll, ever.
+  container is < ~600px — the 640–896px non-split band at the narrow end and mobile take
+  this path. No horizontal scroll, ever.
+- **S1-build amendment (2026-07-17): the list-pane track widens at desktop.** S1 proved the
+  pre-P8 `.codex-browse-layout` cap (`minmax(0, 26rem)` = 416px at ANY viewport ≥ 897px)
+  would make the FULL set unreachable on desktop — contradicting the stakeholder's chosen
+  "full table register" preview outright. S2 rebalances the split grid so the LIST track
+  gets ≥ 600px at wide viewports (≈55/45 at 1600px — incidentally 5e.tools' own split),
+  making FULL the desktop default with the preview pane open; the compact tier remains for
+  genuinely narrow containers. Gate B's "full set at 1600px" reads against this layout.
 - **Alphabet jump strip + letter section headers are REMOVED from listings** — and the
   `LetterGroupedList`/`LevelOrderedList` render-path split collapses into ONE flat sorted
   renderer (adversarial N11: don't hide the headers and keep the dead branch). The count
