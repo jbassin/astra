@@ -39,6 +39,9 @@ import { EditionIcon } from "@/ui";
 import {
   groupByCategory,
   loadPagefind,
+  NAME_BOOST_HYDRATE_WINDOW,
+  NAME_MATCH_PIN_CAP,
+  partitionNameMatches,
   supersededFilter,
   toDisplayResult,
   type SearchDisplayResult,
@@ -54,6 +57,11 @@ export function Omnibar(): ReactElement {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [results, setResults] = useState<SearchDisplayResult[]>([]);
+  // D29-81 — how many of `results`' LEADING items are the pinned "Name
+  // matches" group (always a prefix of `results`, so keyboard nav's
+  // `rankOf`/`highlight` over the full flat array still walks pinned-then-
+  // categories in visual top-to-bottom order with no separate index space).
+  const [pinnedCount, setPinnedCount] = useState(0);
   const [disabled, setDisabled] = useState(false);
   const [highlight, setHighlight] = useState(-1); // -1 = nothing highlighted
   const timerRef = useRef<number | undefined>(undefined);
@@ -71,6 +79,7 @@ export function Omnibar(): ReactElement {
       const trimmed = term.trim();
       if (trimmed === "") {
         setResults([]);
+        setPinnedCount(0);
         setHighlight(-1);
         return;
       }
@@ -91,12 +100,28 @@ export function Omnibar(): ReactElement {
           : {};
       const res = await pf.search(trimmed, searchOptions).catch(() => null);
       if (!res || token !== tokenRef.current) return;
-      const stubs = res.results.slice(0, MAX_RESULTS);
-      // One fragment fetch per SHOWN result only (D29-34/-36) — never the
-      // full result set, which can run into the thousands.
+      // D29-81 — hydrate a WIDER window than we'll ever display: an
+      // exact-name hit can rank below `MAX_RESULTS` (the measured `fireball`
+      // case, rank 10), and stub `.data()` is the only way to learn a
+      // result's name to check for that in the first place. Still far short
+      // of "the full result set" (thousands) — fragments are small.
+      const scanCount = Math.min(res.results.length, NAME_BOOST_HYDRATE_WINDOW);
+      const stubs = res.results.slice(0, scanCount);
       const fragments = await Promise.all(stubs.map((s) => s.data().catch(() => null)));
       if (token !== tokenRef.current) return;
-      setResults(fragments.filter((f) => f !== null).map(toDisplayResult));
+      const hydrated = fragments.filter((f) => f !== null).map(toDisplayResult);
+      const { pinned, rest } = partitionNameMatches(hydrated, trimmed, NAME_MATCH_PIN_CAP);
+      // DISPLAY total stays at the pre-boost budget (`MAX_RESULTS`) — a
+      // non-name query (`pinned` empty) is byte-identical to the old
+      // `hydrated.slice(0, MAX_RESULTS)` since `hydrated`'s first
+      // `MAX_RESULTS` entries are exactly the old `stubs.slice(0,
+      // MAX_RESULTS)` in the same rank order.
+      const display =
+        pinned.length > 0
+          ? [...pinned, ...rest.slice(0, MAX_RESULTS - pinned.length)]
+          : hydrated.slice(0, MAX_RESULTS);
+      setResults(display);
+      setPinnedCount(pinned.length);
       setHighlight(-1);
     },
     [ensureLoaded],
@@ -121,7 +146,12 @@ export function Omnibar(): ReactElement {
     window.setTimeout(() => setOpen(false), 150);
   };
 
-  const groups = useMemo(() => groupByCategory(results), [results]);
+  // D29-81 — `results` is [pinned..., categorized...]; slice the pinned
+  // prefix off before grouping so it never also appears inside a category
+  // group below (the "pinned hits are not repeated below" dedupe).
+  const pinnedGroup = useMemo(() => results.slice(0, pinnedCount), [results, pinnedCount]);
+  const categoryResults = useMemo(() => results.slice(pinnedCount), [results, pinnedCount]);
+  const groups = useMemo(() => groupByCategory(categoryResults), [categoryResults]);
   const collisions = useMemo(() => collidingNames(results), [results]);
   const rankOf = useMemo(() => {
     const m = new Map<string, number>();
@@ -184,6 +214,40 @@ export function Omnibar(): ReactElement {
 
   const showDropdown = open && !disabled && query.trim() !== "";
 
+  // Shared row markup for both the pinned "Name matches" group and the
+  // regular category groups below it (D29-81) — factored out rather than
+  // duplicated inline across the two `.map` calls.
+  function renderRow(item: SearchDisplayResult): ReactElement {
+    const idx = rankOf.get(item.id) ?? -1;
+    return (
+      <li key={item.id}>
+        <a
+          href={item.url}
+          aria-current={idx === highlight ? "true" : undefined}
+          className={
+            idx === highlight ? "codex-omnibar-row codex-omnibar-row-active" : "codex-omnibar-row"
+          }
+          onMouseEnter={() => setHighlight(idx)}
+          onClick={() => setOpen(false)}
+        >
+          <span className="codex-omnibar-row-name">
+            {item.name}
+            {collisions.has(item.name) ? (
+              <span className="codex-listing-collision" title={item.book}>
+                {" "}
+                ({abbreviateBook(item.book) ?? item.book})
+              </span>
+            ) : null}
+          </span>
+          {item.level !== undefined ? (
+            <span className="codex-listing-level">Lvl {item.level}</span>
+          ) : null}
+          <EditionIcon edition={item.edition === "remaster" ? "remaster" : "legacy"} />
+        </a>
+      </li>
+    );
+  }
+
   return (
     <div className="codex-omnibar">
       <input
@@ -203,50 +267,23 @@ export function Omnibar(): ReactElement {
       />
       {showDropdown ? (
         <div className="codex-omnibar-dropdown" aria-label="Search results">
-          {groups.length === 0 ? (
+          {pinnedGroup.length === 0 && groups.length === 0 ? (
             <p className="codex-omnibar-empty">No results.</p>
           ) : (
-            groups.map((group) => (
-              <div key={group.category} className="codex-omnibar-group">
-                <h4 className="codex-omnibar-group-title">{humanizeSlug(group.category)}</h4>
-                <ul>
-                  {group.items.map((item) => {
-                    const idx = rankOf.get(item.id) ?? -1;
-                    return (
-                      <li key={item.id}>
-                        <a
-                          href={item.url}
-                          aria-current={idx === highlight ? "true" : undefined}
-                          className={
-                            idx === highlight
-                              ? "codex-omnibar-row codex-omnibar-row-active"
-                              : "codex-omnibar-row"
-                          }
-                          onMouseEnter={() => setHighlight(idx)}
-                          onClick={() => setOpen(false)}
-                        >
-                          <span className="codex-omnibar-row-name">
-                            {item.name}
-                            {collisions.has(item.name) ? (
-                              <span className="codex-listing-collision" title={item.book}>
-                                {" "}
-                                ({abbreviateBook(item.book) ?? item.book})
-                              </span>
-                            ) : null}
-                          </span>
-                          {item.level !== undefined ? (
-                            <span className="codex-listing-level">Lvl {item.level}</span>
-                          ) : null}
-                          <EditionIcon
-                            edition={item.edition === "remaster" ? "remaster" : "legacy"}
-                          />
-                        </a>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            ))
+            <>
+              {pinnedGroup.length > 0 ? (
+                <div className="codex-omnibar-group codex-omnibar-group-pinned">
+                  <h4 className="codex-omnibar-group-title">Name matches</h4>
+                  <ul>{pinnedGroup.map(renderRow)}</ul>
+                </div>
+              ) : null}
+              {groups.map((group) => (
+                <div key={group.category} className="codex-omnibar-group">
+                  <h4 className="codex-omnibar-group-title">{humanizeSlug(group.category)}</h4>
+                  <ul>{group.items.map(renderRow)}</ul>
+                </div>
+              ))}
+            </>
           )}
           <button
             type="button"

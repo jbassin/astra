@@ -114,6 +114,7 @@ function Harness({
         setSearch((prev) => withEntryPreserved(next, prev));
       }}
       onEntrySelect={(slug) => setSearch((prev) => ({ ...prev, entry: slug }))}
+      onEntryPreview={(slug) => setSearch((prev) => ({ ...prev, entry: slug }))}
     />
   );
 }
@@ -164,6 +165,7 @@ function StatefulHarness() {
       state={state}
       onStateChange={(updater) => setState((prev) => updater(prev))}
       onEntrySelect={() => {}}
+      onEntryPreview={() => {}}
     />
   );
 }
@@ -214,6 +216,7 @@ describe("BrowseListing (D29-35)", () => {
           state={state}
           onStateChange={() => {}}
           onEntrySelect={() => {}}
+          onEntryPreview={() => {}}
         />
       );
     }
@@ -232,6 +235,7 @@ describe("BrowseListing (D29-35)", () => {
         state={state}
         onStateChange={() => {}}
         onEntrySelect={() => {}}
+        onEntryPreview={() => {}}
       />,
     );
     const names = screen
@@ -266,6 +270,7 @@ describe("BrowseListing (D29-35)", () => {
         state={emptyFilterState()}
         onStateChange={() => {}}
         onEntrySelect={() => {}}
+        onEntryPreview={() => {}}
       />,
     );
     const links = screen.getAllByRole("link").map((el) => el.textContent ?? "");
@@ -286,6 +291,7 @@ describe("BrowseListing (D29-35)", () => {
         state={emptyFilterState()}
         onStateChange={() => {}}
         onEntrySelect={() => {}}
+        onEntryPreview={() => {}}
       />,
     );
     // no filter active -> both visible (the "—" bucket stays by default)
@@ -311,11 +317,40 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         state={emptyFilterState()}
         onStateChange={() => {}}
         onEntrySelect={onEntrySelect}
+        onEntryPreview={() => {}}
       />,
     );
     const link = screen.getByText("Alpha");
-    fireEvent.click(link);
+    // `detail: 1` — a REAL mouse click (jsdom/RTL's `fireEvent.click`
+    // defaults `detail` to 0 unless told otherwise, indistinguishable from
+    // a keyboard-triggered activation click without this — see the
+    // `detail === 0` test right below, which exercises exactly that other
+    // branch, D29-82's own "Enter is native link activation" case).
+    fireEvent.click(link, { detail: 1 });
     expect(onEntrySelect).toHaveBeenCalledWith("alpha");
+  });
+
+  it("P8 S3 (D29-82) — a KEYBOARD-triggered click (detail: 0, e.g. Enter on a focused row) does NOT call onEntrySelect — native link activation opens the full page instead of the split-view preview", () => {
+    mockSplitViewViewport(true);
+    const onEntrySelect = vi.fn();
+    render(
+      <BrowseListing
+        category="feat"
+        rows={ROWS}
+        state={emptyFilterState()}
+        onStateChange={() => {}}
+        onEntrySelect={onEntrySelect}
+        onEntryPreview={() => {}}
+      />,
+    );
+    const link = screen.getByText("Alpha").closest("a") as HTMLAnchorElement;
+    // Real browsers set `detail: 0` on a keyboard-activated (Enter/Space)
+    // click, vs >= 1 for a genuine mouse click — the one reliable signal
+    // `handleRowClick` uses to let Enter through to native navigation
+    // rather than intercepting it into the split-view preview (spec's own
+    // "no separate Enter handler").
+    fireEvent.click(link, { detail: 0 });
+    expect(onEntrySelect).not.toHaveBeenCalled();
   });
 
   it("a sub-56rem-viewport row click does NOT call onEntrySelect (mobile: plain full navigation)", () => {
@@ -328,9 +363,10 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         state={emptyFilterState()}
         onStateChange={() => {}}
         onEntrySelect={onEntrySelect}
+        onEntryPreview={() => {}}
       />,
     );
-    fireEvent.click(screen.getByText("Alpha"));
+    fireEvent.click(screen.getByText("Alpha"), { detail: 1 }); // a real mouse click
     expect(onEntrySelect).not.toHaveBeenCalled();
   });
 
@@ -342,6 +378,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         state={emptyFilterState()}
         onStateChange={() => {}}
         onEntrySelect={() => {}}
+        onEntryPreview={() => {}}
       />,
     );
     expect(within(plain.container).getByText("Alpha").closest("a")?.getAttribute("href")).toBe(
@@ -357,6 +394,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         state={supersededState}
         onStateChange={() => {}}
         onEntrySelect={() => {}}
+        onEntryPreview={() => {}}
       />,
     );
     expect(within(widened.container).getByText("Alpha").closest("a")?.getAttribute("href")).toBe(
@@ -545,5 +583,149 @@ describe("BrowseListing: container-driven FULL/COMPACT column collapse (D29-78)"
       FakeResizeObserver.instances[0]?.trigger(900);
     });
     expect(screen.getByRole("columnheader", { name: /Actions/ })).not.toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P8 S3 (D29-82) — j/k real-focus browsing, the debounced+replace preview
+// commit, the input/dialog/narrow-container guards, and the desktop-only
+// hint line.
+// ---------------------------------------------------------------------------
+
+function PreviewHarness({
+  onEntryPreview,
+}: {
+  onEntryPreview: (slug: string) => void;
+}): ReactElement {
+  const [search, setSearch] = useState<BrowseSearch>({});
+  const state = searchToFilterState(search);
+  return (
+    <BrowseListing
+      category="feat"
+      rows={ROWS}
+      state={state}
+      entrySlug={search.entry}
+      onStateChange={(updater) => {
+        const next = updater(state);
+        setSearch((prev) => withEntryPreserved(next, prev));
+      }}
+      onEntrySelect={(slug) => setSearch((prev) => ({ ...prev, entry: slug }))}
+      onEntryPreview={onEntryPreview}
+    />
+  );
+}
+
+describe("BrowseListing keyboard nav + hint (D29-82)", () => {
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("j moves focus onto the first row anchor, then the next; k moves back", () => {
+    render(<PreviewHarness onEntryPreview={() => {}} />);
+    const alpha = screen.getByText("Alpha").closest("a");
+    const bravo = screen.getByText("Bravo").closest("a");
+    fireEvent.keyDown(document, { key: "j" });
+    expect(document.activeElement).toBe(alpha);
+    fireEvent.keyDown(document, { key: "j" });
+    expect(document.activeElement).toBe(bravo);
+    fireEvent.keyDown(document, { key: "k" });
+    expect(document.activeElement).toBe(alpha);
+  });
+
+  it("j/k clamp at the first/last row rather than wrapping or moving off the ends", () => {
+    render(<PreviewHarness onEntryPreview={() => {}} />);
+    const alpha = screen.getByText("Alpha").closest("a");
+    const charlie = screen.getByText("Charlie").closest("a");
+    fireEvent.keyDown(document, { key: "k" }); // nothing focused yet -> lands on the first row
+    expect(document.activeElement).toBe(alpha);
+    fireEvent.keyDown(document, { key: "k" }); // already first -> stays
+    expect(document.activeElement).toBe(alpha);
+    fireEvent.keyDown(document, { key: "j" });
+    fireEvent.keyDown(document, { key: "j" });
+    expect(document.activeElement).toBe(charlie);
+    fireEvent.keyDown(document, { key: "j" }); // already last -> stays
+    expect(document.activeElement).toBe(charlie);
+  });
+
+  it("guard: j/k are inert while a form control (e.g. the quick-filter input) has focus", () => {
+    render(<PreviewHarness onEntryPreview={() => {}} />);
+    const input = screen.getByPlaceholderText("Filter by name…");
+    input.focus();
+    expect(document.activeElement).toBe(input);
+    fireEvent.keyDown(document, { key: "j" });
+    expect(document.activeElement).toBe(input); // unchanged — "j" was free to type
+  });
+
+  it("guard: j/k are inert while focus sits inside the open filter drawer <dialog>", () => {
+    render(<PreviewHarness onEntryPreview={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
+    const doneButton = screen.getByRole("button", { name: "Done" });
+    doneButton.focus();
+    expect(document.activeElement).toBe(doneButton);
+    fireEvent.keyDown(document, { key: "j" });
+    expect(document.activeElement).toBe(doneButton); // no row anchor stole focus
+  });
+
+  it("preview-follows-focus: commits `?entry=` via onEntryPreview only after a settle window, once per settle (not once per keypress)", () => {
+    vi.useFakeTimers();
+    const onEntryPreview = vi.fn();
+    render(<PreviewHarness onEntryPreview={onEntryPreview} />);
+    act(() => {
+      fireEvent.keyDown(document, { key: "j" }); // -> Alpha
+    });
+    act(() => {
+      vi.advanceTimersByTime(100); // < 180ms settle — not yet committed
+    });
+    expect(onEntryPreview).not.toHaveBeenCalled();
+    act(() => {
+      fireEvent.keyDown(document, { key: "j" }); // -> Bravo, resets the settle timer
+    });
+    act(() => {
+      vi.advanceTimersByTime(100); // still < 180ms since the LAST keypress
+    });
+    expect(onEntryPreview).not.toHaveBeenCalled();
+    act(() => {
+      vi.advanceTimersByTime(100); // now past 180ms since the last (Bravo) focus
+    });
+    // Exactly ONE commit, for the LAST focused row only (Bravo, not Alpha).
+    expect(onEntryPreview).toHaveBeenCalledTimes(1);
+    expect(onEntryPreview).toHaveBeenCalledWith("bravo");
+  });
+
+  it("a 10-row j-scan settles to exactly one onEntryPreview call (the history-length-unchanged gate's own precondition)", () => {
+    vi.useFakeTimers();
+    const onEntryPreview = vi.fn();
+    render(<PreviewHarness onEntryPreview={onEntryPreview} />);
+    act(() => {
+      // Only 3 real rows exist in the fixture, but holding "j" past the last
+      // row clamps in place — still exactly one settle-commit, never one
+      // per keypress, regardless of how many of the 10 presses actually
+      // moved focus.
+      for (let i = 0; i < 10; i++) fireEvent.keyDown(document, { key: "j" });
+    });
+    act(() => {
+      vi.advanceTimersByTime(200);
+    });
+    expect(onEntryPreview).toHaveBeenCalledTimes(1);
+    expect(onEntryPreview).toHaveBeenCalledWith("charlie"); // clamped at the last row
+  });
+
+  it("the hint line renders desktop-only text right of the count line", () => {
+    render(<PreviewHarness onEntryPreview={() => {}} />);
+    expect(screen.getByText("Ctrl+K search · j/k browse · enter open")).not.toBeNull();
+  });
+
+  it("the hint line is hidden under the same narrow-container condition as the compact column set", () => {
+    FakeResizeObserver.instances = [];
+    (globalThis as unknown as { ResizeObserver: typeof FakeResizeObserver }).ResizeObserver =
+      FakeResizeObserver;
+    render(<PreviewHarness onEntryPreview={() => {}} />);
+    expect(screen.getByText("Ctrl+K search · j/k browse · enter open")).not.toBeNull();
+    act(() => {
+      FakeResizeObserver.instances[0]?.trigger(416);
+    });
+    expect(screen.queryByText("Ctrl+K search · j/k browse · enter open")).toBeNull();
+    Reflect.deleteProperty(globalThis, "ResizeObserver");
+    FakeResizeObserver.instances = [];
   });
 });

@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -45,6 +46,20 @@ export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFi
  * between desktop/mobile — "one component, one breakpoint-gated behavior
  * branch, not two components" (spec's own text). */
 const SPLIT_VIEW_MEDIA = "(min-width: 56.0625rem)";
+
+/** P8 S3 (D29-82) — how long a j/k-focused row must "settle" before its
+ * `?entry=` preview commits, mirroring `Omnibar.tsx`'s own `DEBOUNCE_MS`
+ * (that file's own module-scope constant isn't exported — this is the same
+ * value, independently named for this file's own debounce). Holding `j`
+ * across many rows must produce exactly ONE commit after the LAST keypress,
+ * never one per row. */
+const FOCUS_SETTLE_MS = 180;
+
+/** Row-anchor selector shared by the j/k scan and the focus-follow listener
+ * — every row's name cell renders exactly one such anchor
+ * (`displayName()` below), tagged with `data-entry-slug` for the
+ * focus-follow handler to read without re-deriving `rowSlug` from the DOM. */
+const ROW_ANCHOR_SELECTOR = ".codex-listing-name";
 
 /**
  * P8 S1 (D29-78) — "the compact set applies whenever the LIST CONTAINER is
@@ -112,6 +127,7 @@ export function BrowseListing({
   entrySlug,
   entryData,
   onEntrySelect,
+  onEntryPreview,
 }: {
   category: string;
   rows: readonly IndexRow[];
@@ -129,6 +145,13 @@ export function BrowseListing({
    * `navigate({search: {...search, entry: slug}})` non-replace push; this
    * component just reports which row's raw slug was clicked. */
   onEntrySelect: (slug: string) => void;
+  /** P8 S3 (D29-82) — focus-follow preview: fired at most once per
+   * `FOCUS_SETTLE_MS` settle window after DOM focus lands on a row anchor
+   * (j/k or Tab), already deduped against the currently-shown `entrySlug`.
+   * The ROUTE performs the actual `navigate({..., replace: true})` — same
+   * "component reports, route navigates" split as `onEntrySelect`, but
+   * REPLACE instead of push (never adds a history entry). */
+  onEntryPreview: (slug: string) => void;
 }): ReactElement {
   // Local echo of the quick-filter text so typing feels instant; the actual
   // filter state (and therefore the URL) updates on every keystroke too —
@@ -139,6 +162,10 @@ export function BrowseListing({
   const dialogRef = useRef<HTMLDialogElement>(null);
   const listingPaneRef = useRef<HTMLDivElement>(null);
   const narrow = useNarrowListingContainer(listingPaneRef);
+  const entrySlugRef = useRef(entrySlug);
+  useEffect(() => {
+    entrySlugRef.current = entrySlug;
+  }, [entrySlug]);
 
   // Native `<dialog>` owns its own open/close semantics (Esc, backdrop via
   // the `::backdrop` pseudo-element, native focus-trap + focus-return) —
@@ -216,18 +243,123 @@ export function BrowseListing({
 
   function handleRowClick(e: MouseEvent<HTMLAnchorElement>, row: IndexRow) {
     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return; // new-tab/etc — let it through
+    // P8 S3 (D29-82) — "Enter is then native link activation on the focused
+    // anchor -> the full entity page; no separate Enter handler": a
+    // keyboard-triggered `click` (Enter/Space on a focused `<a>`) carries
+    // `detail === 0` in every evergreen browser (a real mouse click's
+    // `detail` is always >= 1) — the one reliable way to tell "this `click`
+    // event came from keyboard activation" apart from a mouse click without
+    // adding a parallel `onKeyDown` handler. Letting it through here means
+    // Enter always fully navigates, even in split view where a MOUSE click
+    // on the same anchor intercepts into the `?entry=` preview below.
+    if (e.detail === 0) return;
     if (typeof window === "undefined" || !window.matchMedia(SPLIT_VIEW_MEDIA).matches) return; // mobile: full nav
     e.preventDefault();
     onEntrySelect(rowSlug(row, category));
   }
 
+  // P8 S3 (D29-82) — preview-follows-focus: whenever DOM focus lands on a
+  // row anchor (j/k below, or a plain Tab), commit `?entry=` after a settle
+  // window via REPLACE navigation (never the click path's push). Delegated
+  // on the listing pane container (one listener, not one per row) via the
+  // native `focusin` event (bubbles, unlike `focus`).
+  const previewTimerRef = useRef<number | undefined>(undefined);
+  const scheduleEntryPreview = useCallback(
+    (slug: string) => {
+      window.clearTimeout(previewTimerRef.current);
+      previewTimerRef.current = window.setTimeout(() => {
+        // Re-check against the LATEST `entrySlug` at fire time, not at
+        // schedule time: a click on this same row already pushed this exact
+        // slug (and also focuses the anchor, so it ALSO fires this
+        // listener) — without this guard the settle timer would still fire
+        // a redundant same-slug replace 180ms later.
+        if (slug !== entrySlugRef.current) onEntryPreview(slug);
+      }, FOCUS_SETTLE_MS);
+    },
+    [onEntryPreview],
+  );
+
+  useEffect(() => {
+    const container = listingPaneRef.current;
+    if (!container) return;
+    function onFocusIn(e: FocusEvent) {
+      const target = e.target;
+      if (!(target instanceof HTMLElement)) return;
+      const slug = target.dataset.entrySlug;
+      if (slug === undefined) return;
+      scheduleEntryPreview(slug);
+    }
+    container.addEventListener("focusin", onFocusIn);
+    return () => {
+      container.removeEventListener("focusin", onFocusIn);
+      window.clearTimeout(previewTimerRef.current);
+    };
+  }, [scheduleEntryPreview]);
+
+  // P8 S3 (D29-82) — j/k move REAL DOM focus to the next/prev row's name
+  // anchor (native scroll-into-view, `block: "nearest"`); Enter needs no
+  // handler here (native link activation, `handleRowClick`'s own
+  // `e.detail === 0` early-return above). Guard: inert while
+  // `document.activeElement` is a form control (covers the Omnibar's own
+  // `<input>` too — typing "j"/"k" there must never hijack focus) or sits
+  // inside an open `<dialog>` (the filter drawer), and inert on narrow
+  // containers (S1's own `narrow` tier state — no preview pane to browse
+  // into there; matches split view's own container-driven posture, D29-78).
+  useEffect(() => {
+    if (narrow) return;
+    function onKeyDown(e: globalThis.KeyboardEvent) {
+      if (e.key !== "j" && e.key !== "k") return;
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      const active = document.activeElement;
+      if (active instanceof HTMLElement) {
+        const tag = active.tagName;
+        if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
+        if (active.closest("dialog")) return;
+      }
+      const container = listingPaneRef.current;
+      if (!container) return;
+      const anchors = Array.from(
+        container.querySelectorAll<HTMLAnchorElement>(ROW_ANCHOR_SELECTOR),
+      );
+      if (anchors.length === 0) return;
+      const currentIndex: number =
+        active instanceof HTMLElement ? anchors.indexOf(active as HTMLAnchorElement) : -1;
+      e.preventDefault();
+      const nextIndex =
+        currentIndex === -1
+          ? 0
+          : e.key === "j"
+            ? Math.min(currentIndex + 1, anchors.length - 1)
+            : Math.max(currentIndex - 1, 0);
+      const next = anchors[nextIndex];
+      next?.focus();
+      // `?.()` twice over: jsdom (this repo's unit-test environment) has no
+      // `scrollIntoView` at all — real Chromium (the S4 Playwright gate's
+      // actual target) does, so this is a genuine environment gap, not a
+      // production concern.
+      next?.scrollIntoView?.({ block: "nearest" });
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [narrow]);
+
   return (
     <div className="codex-listing">
       <header className="codex-listing-header">
         <h1 className="codex-listing-title">{humanizeSlug(category)}</h1>
-        <p className="codex-listing-count">
-          {visible.length.toLocaleString()} of {eligibleCount.toLocaleString()} shown
-        </p>
+        <div className="codex-listing-count-row">
+          <p className="codex-listing-count">
+            {visible.length.toLocaleString()} of {eligibleCount.toLocaleString()} shown
+          </p>
+          {/* P8 S3 (D29-82) — desktop-only hint, right of the count line;
+              hidden under the same narrow-container condition that drops
+              the split view/compact columns (S1's own `narrow` tier state):
+              plain text, no dismiss state, AT-readable as ordinary content
+              (not an ARIA live region — it never changes). */}
+          {!narrow ? (
+            <p className="codex-listing-hint">Ctrl+K search · j/k browse · enter open</p>
+          ) : null}
+        </div>
         <div className="codex-listing-controls">
           <Input
             type="search"
@@ -276,6 +408,7 @@ export function BrowseListing({
             )
           ) : (
             <ListingTable
+              category={category}
               cols={visibleCols}
               rows={visible}
               collisions={collisions}
@@ -375,6 +508,7 @@ function rowHref(row: IndexRow, superseded: boolean): string {
 
 function displayName(
   row: IndexRow,
+  category: string,
   collisions: ReadonlySet<string>,
   superseded: boolean,
   onRowClick: (e: MouseEvent<HTMLAnchorElement>, row: IndexRow) => void,
@@ -383,6 +517,9 @@ function displayName(
     <a
       href={rowHref(row, superseded)}
       className="codex-listing-name"
+      // P8 S3 (D29-82) — the j/k scan + focus-follow listener read this
+      // directly rather than re-deriving `rowSlug` from the DOM.
+      data-entry-slug={rowSlug(row, category)}
       onClick={(e) => onRowClick(e, row)}
     >
       {row.name}
@@ -410,6 +547,7 @@ function displayName(
  * `.codex-listing-row` in `globals.css` (the letter `<section>` was the
  * only prior chunking boundary — deleted along with it here). */
 function ListingTable({
+  category,
   cols,
   rows,
   collisions,
@@ -419,6 +557,7 @@ function ListingTable({
   sort,
   onSortClick,
 }: {
+  category: string;
   cols: readonly ColumnDef[];
   rows: readonly IndexRow[];
   collisions: ReadonlySet<string>;
@@ -458,7 +597,7 @@ function ListingTable({
             {cols.map((col) => (
               <td key={col.key} className={`codex-listing-col-${col.key}`}>
                 {col.key === "name"
-                  ? displayName(row, collisions, superseded, onRowClick)
+                  ? displayName(row, category, collisions, superseded, onRowClick)
                   : col.render(row)}
               </td>
             ))}

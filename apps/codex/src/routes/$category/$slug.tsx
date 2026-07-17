@@ -1,9 +1,9 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 
+import { memoizedEntity } from "@/domain/browse/listingClient";
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import { firstParagraphSummary } from "@/domain/render/text";
 import { RulesLayout } from "@/domain/rules/RulesLayout";
-import { getEntityPage } from "@/server/corpusFns";
 
 /**
  * D29-22 — the entity page: `/{category}/{slug}` verbatim corpus ids
@@ -42,9 +42,12 @@ function validateEntitySearch(raw: Record<string, unknown>): EntitySearch {
 export const Route = createFileRoute("/$category/$slug")({
   validateSearch: validateEntitySearch,
   loader: async ({ params }) => {
-    const data = await getEntityPage({
-      data: { category: params.category, slug: params.slug },
-    });
+    // P8 S3 (D29-82) — routed through the shared `memoizedEntity` cache
+    // (`listingClient.ts`), not a bare `getEntityPage` call: a full-page
+    // navigation reached via Enter from the split-view listing (having
+    // already previewed this exact slug through `?entry=`) hits cache
+    // instead of re-fetching.
+    const data = await memoizedEntity(params.category, params.slug);
     if (!data) throw notFound();
     return data;
   },

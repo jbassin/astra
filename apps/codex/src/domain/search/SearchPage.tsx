@@ -43,6 +43,9 @@ import { EditionIcon } from "@/ui";
 
 import {
   loadPagefind,
+  NAME_BOOST_HYDRATE_WINDOW,
+  NAME_MATCH_PIN_CAP,
+  partitionNameMatches,
   toDisplayResult,
   type PagefindApi,
   type PagefindSearchResultStub,
@@ -63,7 +66,19 @@ export type SearchSearchUpdater = (updater: (prev: SearchPageSearch) => SearchPa
 
 interface ResultPage {
   stubs: PagefindSearchResultStub[];
+  /** [pinned name-matches..., naturally-ranked rest...] — a prefix of
+   * length `pinnedCount` is the pinned "Name matches" group (D29-81). */
   items: SearchDisplayResult[];
+  /** How many of `items`' leading entries are pinned. */
+  pinnedCount: number;
+  /** How many of `stubs` have been scanned/hydrated so far — the `loadMore`
+   * cursor. Distinct from `items.length` because a pin can be found beyond
+   * the display budget (`PAGE_SIZE`) inside the wider hydration window, in
+   * which case more of `stubs` were consumed than got displayed; when
+   * nothing was pinned this equals `items.length` (`PAGE_SIZE`) exactly,
+   * matching the pre-D29-81 cursor so an un-boosted query's pagination is
+   * byte-identical to before. */
+  consumed: number;
 }
 
 /** Numeric-sorts when every key parses as a finite number (level's own
@@ -144,17 +159,32 @@ export function SearchPage({
         .then(async (res) => {
           if (token !== tokenRef.current) return;
           if (!res) {
-            setResult({ stubs: [], items: [] });
+            setResult({ stubs: [], items: [], pinnedCount: 0, consumed: 0 });
             setSearching(false);
             return;
           }
-          const firstPage = res.results.slice(0, PAGE_SIZE);
-          const fragments = await Promise.all(firstPage.map((r) => r.data().catch(() => null)));
+          // D29-81 — same widened-hydration-window boost as the Omnibar,
+          // "ahead of page 1" only (`loadMore` below is untouched — the
+          // widened window already covers well past a single page, so a
+          // rank-10 hit like `fireball` is caught on this very first scan).
+          const scanCount = Math.min(res.results.length, NAME_BOOST_HYDRATE_WINDOW);
+          const scanStubs = res.results.slice(0, scanCount);
+          const fragments = await Promise.all(scanStubs.map((r) => r.data().catch(() => null)));
           if (token !== tokenRef.current) return;
-          setResult({
-            stubs: res.results,
-            items: fragments.filter((f) => f !== null).map(toDisplayResult),
-          });
+          const hydrated = fragments.filter((f) => f !== null).map(toDisplayResult);
+          const { pinned, rest } = partitionNameMatches(hydrated, state.query, NAME_MATCH_PIN_CAP);
+          const items =
+            pinned.length > 0
+              ? [...pinned, ...rest.slice(0, PAGE_SIZE - pinned.length)]
+              : hydrated.slice(0, PAGE_SIZE);
+          // No pin found: the cursor stays at `PAGE_SIZE` (byte-identical to
+          // pre-D29-81 pagination — "non-name queries pass through
+          // unchanged" extends to `loadMore` too). A pin found beyond
+          // `PAGE_SIZE` inside the wider window: the cursor advances to
+          // `scanCount` (everything already scanned), so `loadMore` doesn't
+          // re-fetch/re-display the tail of that window.
+          const consumed = pinned.length > 0 ? scanCount : PAGE_SIZE;
+          setResult({ stubs: res.results, items, pinnedCount: pinned.length, consumed });
           setSearching(false);
         });
     }, DEBOUNCE_MS);
@@ -167,7 +197,11 @@ export function SearchPage({
   async function loadMore() {
     if (!result || !pf) return;
     const token = tokenRef.current;
-    const nextStubs = result.stubs.slice(result.items.length, result.items.length + PAGE_SIZE);
+    // D29-81 — cursor is `consumed` (how much of `stubs` this page has
+    // already scanned), not `items.length` (how much it DISPLAYED) — the
+    // two only diverge when a pin was found beyond `PAGE_SIZE` inside the
+    // wider hydration window; see `ResultPage.consumed`'s own comment.
+    const nextStubs = result.stubs.slice(result.consumed, result.consumed + PAGE_SIZE);
     const fragments = await Promise.all(nextStubs.map((r) => r.data().catch(() => null)));
     if (token !== tokenRef.current) return;
     setResult((prev) =>
@@ -175,6 +209,8 @@ export function SearchPage({
         ? {
             stubs: prev.stubs,
             items: [...prev.items, ...fragments.filter((f) => f !== null).map(toDisplayResult)],
+            pinnedCount: prev.pinnedCount,
+            consumed: prev.consumed + nextStubs.length,
           }
         : prev,
     );
@@ -215,7 +251,7 @@ export function SearchPage({
   }
 
   const collisions = useMemo(() => collidingNames(result?.items ?? []), [result]);
-  const hasMore = result !== null && result.items.length < result.stubs.length;
+  const hasMore = result !== null && result.consumed < result.stubs.length;
 
   if (pf === undefined) {
     return (
@@ -299,35 +335,23 @@ export function SearchPage({
             <BrowseEmptyState onClearFilters={handleClear} noun="results" />
           ) : (
             <>
+              {/* D29-81 — `result.items` is [pinned..., rest...]; the pinned
+                  prefix (length `result.pinnedCount`) renders as its own
+                  "Name matches" group ABOVE the plain results list, exact/
+                  prefix name hits are never duplicated in the list below. */}
+              {result.pinnedCount > 0 ? (
+                <div className="codex-search-pinned">
+                  <h2 className="codex-facet-title">Name matches</h2>
+                  <ul className="codex-search-results">
+                    {result.items.slice(0, result.pinnedCount).map((item) => (
+                      <SearchResultRow key={item.id} item={item} collisions={collisions} />
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
               <ul className="codex-search-results">
-                {result.items.map((item) => (
-                  <li key={item.id} className="codex-search-result">
-                    <a href={item.url} className="codex-listing-name">
-                      {item.name}
-                      {collisions.has(item.name) ? (
-                        <span className="codex-listing-collision" title={item.book}>
-                          {" "}
-                          ({abbreviateBook(item.book) ?? item.book})
-                        </span>
-                      ) : null}
-                    </a>
-                    <span className="codex-listing-source">
-                      {humanizeSlug(item.category)}
-                      {item.level !== undefined ? ` · Lvl ${item.level}` : ""}
-                      {item.rarity !== undefined ? ` · ${capitalize(item.rarity)}` : ""}
-                      <span title={item.book}> · {abbreviateBook(item.book) ?? item.book}</span>
-                    </span>
-                    <EditionIcon edition={item.edition === "remaster" ? "remaster" : "legacy"} />
-                    {item.excerpt !== undefined && item.excerpt !== "" ? (
-                      // Pagefind's own excerpt HTML (`<mark>` around matched
-                      // terms) — the one intentional `dangerouslySetInnerHTML`
-                      // in this island, same pattern akasha's Search.tsx uses.
-                      <p
-                        className="codex-search-excerpt"
-                        dangerouslySetInnerHTML={{ __html: item.excerpt }}
-                      />
-                    ) : null}
-                  </li>
+                {result.items.slice(result.pinnedCount).map((item) => (
+                  <SearchResultRow key={item.id} item={item} collisions={collisions} />
                 ))}
               </ul>
               {hasMore ? (
@@ -336,7 +360,7 @@ export function SearchPage({
                   className="codex-search-load-more"
                   onClick={() => void loadMore()}
                 >
-                  Load more ({result.stubs.length - result.items.length} remaining)
+                  Load more ({result.stubs.length - result.consumed} remaining)
                 </button>
               ) : null}
             </>
@@ -344,6 +368,45 @@ export function SearchPage({
         </div>
       </div>
     </div>
+  );
+}
+
+// D29-81 — the single result-row renderer shared by the pinned "Name
+// matches" group and the plain results list below it; module-scope (not
+// nested inside `SearchPage`) since it's used as a JSX tag, matching this
+// file's existing `FilterSection`/`SupersededSection` convention.
+function SearchResultRow({
+  item,
+  collisions,
+}: {
+  item: SearchDisplayResult;
+  collisions: ReadonlySet<string>;
+}): ReactElement {
+  return (
+    <li className="codex-search-result">
+      <a href={item.url} className="codex-listing-name">
+        {item.name}
+        {collisions.has(item.name) ? (
+          <span className="codex-listing-collision" title={item.book}>
+            {" "}
+            ({abbreviateBook(item.book) ?? item.book})
+          </span>
+        ) : null}
+      </a>
+      <span className="codex-listing-source">
+        {humanizeSlug(item.category)}
+        {item.level !== undefined ? ` · Lvl ${item.level}` : ""}
+        {item.rarity !== undefined ? ` · ${capitalize(item.rarity)}` : ""}
+        <span title={item.book}> · {abbreviateBook(item.book) ?? item.book}</span>
+      </span>
+      <EditionIcon edition={item.edition === "remaster" ? "remaster" : "legacy"} />
+      {item.excerpt !== undefined && item.excerpt !== "" ? (
+        // Pagefind's own excerpt HTML (`<mark>` around matched terms) — the
+        // one intentional `dangerouslySetInnerHTML` in this island, same
+        // pattern akasha's Search.tsx uses.
+        <p className="codex-search-excerpt" dangerouslySetInnerHTML={{ __html: item.excerpt }} />
+      ) : null}
+    </li>
   );
 }
 

@@ -803,10 +803,28 @@ select:focus-visible,
   font-size: clamp(1.5rem, 4vw, 2rem);
   font-weight: 600;
 }
+/* P8 S3 (D29-82) — the count line + the desktop-only keyboard hint share
+   one row, hint pushed to the far right (`justify-content: space-between`);
+   `.codex-listing-hint` isn't rendered at all under the narrow-container
+   condition (React-conditional, `BrowseListing.tsx`), so no extra
+   breakpoint rule is needed here. */
+.codex-listing-count-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-top: 0.15rem;
+}
 .codex-listing-count {
   color: var(--color-ink-dim);
   font-size: 0.85rem;
-  margin-top: 0.15rem;
+}
+.codex-listing-hint {
+  color: var(--color-ink-dim);
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
 }
 .codex-listing-controls {
   display: flex;
@@ -1324,6 +1342,13 @@ select:focus-visible,
 .codex-omnibar-group {
   padding: 0.35rem 0;
 }
+/* P8 S3 (D29-81) — the pinned "Name matches" group renders with the SAME
+   `.codex-omnibar-group`/`.codex-omnibar-group-title`/row markup as a
+   category group (this modifier only adds a hairline separating it from
+   the category groups below, since it's always first when present). */
+.codex-omnibar-group-pinned {
+  border-bottom: 1px solid var(--color-rule);
+}
 .codex-omnibar-group-title {
   padding: 0.15rem 1rem;
   font-family: var(--font-condensed), sans-serif;
@@ -1410,6 +1435,15 @@ select:focus-visible,
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+}
+/* P8 S3 (D29-81) — the pinned "Name matches" group on `/search`: its own
+   `.codex-facet-title` heading (the SAME small-caps amber label the facet
+   sections use) sitting above its own `.codex-search-results` list, then a
+   rule separating it from the plain results below. */
+.codex-search-pinned {
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-rule);
 }
 .codex-search-result {
   display: flex;

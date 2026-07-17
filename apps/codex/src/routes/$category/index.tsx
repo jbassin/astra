@@ -2,14 +2,13 @@ import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import { useMemo } from "react";
 
 import { BrowseListing } from "@/domain/browse/BrowseListing";
-import { memoizedListing } from "@/domain/browse/listingClient";
+import { memoizedEntity, memoizedListing } from "@/domain/browse/listingClient";
 import {
   searchToFilterState,
   validateBrowseSearch,
   withEntryPreserved,
   type BrowseSearch,
 } from "@/domain/browse/urlState";
-import { getEntityPage } from "@/server/corpusFns";
 
 /**
  * D29-35 — the faceted `/{category}` listing that replaced P2's D29-27
@@ -36,6 +35,11 @@ import { getEntityPage } from "@/server/corpusFns";
  *     (verified against the pinned `@tanstack/router-core@1.171.14`).
  *   - `memoizedListing` (`listingClient.ts`) — a row click only ever fetches
  *     `getEntityPage`, never re-fetches the whole category's listing.
+ *   - **P8 S3 (D29-82):** `?entry=` now also resolves through the sibling
+ *     `memoizedEntity` (same file), not a bare `getEntityPage` call — j/k
+ *     focus-scanning can commit several `?entry=` values per second, and a
+ *     later Enter/click onto the FULL `/{category}/{slug}` page (that
+ *     route's own loader, same memo) should hit cache rather than re-fetch.
  *   - `onStateChange` resyncs `entry` back into every facet-write's search
  *     object via `withEntryPreserved` (`urlState.ts`) — `entry` lives
  *     outside `BrowseFilterState` entirely, so a bare `filterStateToSearch`
@@ -55,7 +59,7 @@ export const Route = createFileRoute("/$category/")({
     const [listing, entry] = await Promise.all([
       memoizedListing(params.category),
       deps.entry !== undefined
-        ? getEntityPage({ data: { category: params.category, slug: deps.entry } })
+        ? memoizedEntity(params.category, deps.entry)
         : Promise.resolve(null),
     ]);
     if (!listing) throw notFound();
@@ -89,6 +93,11 @@ function CategoryIndexComponent() {
           // D29-49 — a plain, NON-replace push: back/forward steps
           // entry-to-entry through visited rows.
           void navigate({ search: { ...search, entry: slug } });
+        }}
+        onEntryPreview={(slug) => {
+          // P8 S3 (D29-82) — REPLACE, never push: a j/k scan across many
+          // rows must not create a history entry per row (gate E).
+          void navigate({ search: { ...search, entry: slug }, replace: true });
         }}
       />
     </main>

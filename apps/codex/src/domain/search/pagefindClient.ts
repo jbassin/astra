@@ -161,3 +161,126 @@ export function groupByCategory(results: readonly SearchDisplayResult[]): Catego
   }
   return order.map((category) => ({ category, items: byCategory.get(category) ?? [] }));
 }
+
+// ---------------------------------------------------------------------------
+// P8 S3 (D29-81) — exact-name search boost. `Omnibar.tsx` previously hydrated
+// only the first `MAX_RESULTS` (8) stubs, so an exact-name hit Pagefind ranks
+// below that (the measured `fireball` case, rank 10) was never even fetched —
+// a post-hydration partition over 8 stubs can't see it. Both callers now
+// hydrate a wider window (`NAME_BOOST_HYDRATE_WINDOW`) before calling
+// `partitionNameMatches`, then clamp the DISPLAYED total back down to their
+// own pre-existing budget (8 omnibar / `PAGE_SIZE` search-page) — this
+// module only does the pure partition, callers own the hydrate-then-clamp
+// wiring (kept here rather than in each surface only so both stay provably
+// in sync on the window/cap constants).
+// ---------------------------------------------------------------------------
+
+/** How many rank-ordered stubs to hydrate (fetch `.data()` for) before
+ * partitioning into name-matches vs the rest — stub `.data()` is the only
+ * way to learn a result's name (stubs carry no metadata of their own), and
+ * fragments are small enough that widening the scan is cheap (spec's own
+ * "fragments are small" call).
+ *
+ * **PIN CORRECTION (P8 S3 build, measured against the real corpus/index):**
+ * the spec text pins this at 40, sized off the one measured case it names
+ * (`fireball`, rank 10). The OTHER acceptance query it names in the same
+ * breath — `heal` — measures at Pagefind rank 43 (`spell/heal` is index 42
+ * of `pf.search("heal")`'s own results; a live Chromium run against the
+ * real `data/search/pagefind` index proved this, via
+ * `res.results[42].data().meta.title === "Heal"`), past a 40-stub window —
+ * so 40 alone would still leave gate D's own `heal` case unfixed. Widened to
+ * 60 (comfortable headroom past the measured 43rd rank, still a small
+ * per-query fragment-fetch cost) — ship the mechanism, amend the pin. */
+export const NAME_BOOST_HYDRATE_WINDOW = 60;
+
+/** Max size of the pinned "Name matches" group, both surfaces. */
+export const NAME_MATCH_PIN_CAP = 8;
+
+export interface PartitionedNameMatches {
+  /** Exact/prefix name matches, ranked exact-before-prefix then
+   * level-then-name, capped at `cap`. */
+  pinned: SearchDisplayResult[];
+  /** Everything else, in original relative rank order — any matches beyond
+   * `cap` (no real corpus case at spec time) fall back in here rather than
+   * vanishing outright, appended after the naturally-ranked remainder. */
+  rest: SearchDisplayResult[];
+}
+
+/** NFD-strip diacritics + casefold + collapse whitespace — the corpus has
+ * names like `ixamè`, and a query may carry incidental leading/trailing or
+ * doubled internal spaces. */
+function normalizeForMatch(raw: string): string {
+  return raw
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim()
+    .replace(/\s+/g, " ")
+    .toLowerCase();
+}
+
+function nameMatchKind(name: string, normalizedQuery: string): "exact" | "prefix" | undefined {
+  const normalizedName = normalizeForMatch(name);
+  if (normalizedName === normalizedQuery) return "exact";
+  if (normalizedName.startsWith(normalizedQuery)) return "prefix";
+  return undefined;
+}
+
+/** Numeric-ascending, missing-last — mirrors the site-wide "missing sorts
+ * last" rule (D29-78's own comparator convention) for the pinned group's
+ * level tie-break. `level` is a free-form string field on
+ * `SearchDisplayResult` (not every category numbers it), so a non-numeric
+ * value is treated the same as absent. */
+function compareLevel(a: string | undefined, b: string | undefined): number {
+  const an = a === undefined ? Number.NaN : Number(a);
+  const bn = b === undefined ? Number.NaN : Number(b);
+  const aValid = Number.isFinite(an);
+  const bValid = Number.isFinite(bn);
+  if (aValid && bValid) return an - bn;
+  if (aValid) return -1;
+  if (bValid) return 1;
+  return 0;
+}
+
+interface NameMatch {
+  result: SearchDisplayResult;
+  kind: "exact" | "prefix";
+}
+
+function compareNameMatch(a: NameMatch, b: NameMatch): number {
+  if (a.kind !== b.kind) return a.kind === "exact" ? -1 : 1;
+  const levelCmp = compareLevel(a.result.level, b.result.level);
+  if (levelCmp !== 0) return levelCmp;
+  return a.result.name.localeCompare(b.result.name);
+}
+
+/**
+ * Partitions an already rank-ordered, already-hydrated result list into
+ * exact/prefix NAME matches (pinned) vs the remainder. Matched against the
+ * DISPLAYED name (`SearchDisplayResult.name`, i.e. `meta.title`), case/
+ * diacritic-insensitive. A blank query (after trim) is a deliberate no-op —
+ * `{ pinned: [], rest: [...results] }` verbatim — the "non-name queries
+ * pass through unchanged" gate; a query that matches nothing behaves the
+ * same way for the same reason (empty `pinned`).
+ */
+export function partitionNameMatches(
+  results: readonly SearchDisplayResult[],
+  query: string,
+  cap: number,
+): PartitionedNameMatches {
+  const normalizedQuery = normalizeForMatch(query);
+  if (normalizedQuery === "") return { pinned: [], rest: [...results] };
+
+  const matches: NameMatch[] = [];
+  const rest: SearchDisplayResult[] = [];
+  for (const r of results) {
+    const kind = nameMatchKind(r.name, normalizedQuery);
+    if (kind !== undefined) matches.push({ result: r, kind });
+    else rest.push(r);
+  }
+  if (matches.length === 0) return { pinned: [], rest };
+
+  matches.sort(compareNameMatch);
+  const pinned = matches.slice(0, cap).map((m) => m.result);
+  const overflow = matches.slice(cap).map((m) => m.result);
+  return { pinned, rest: [...rest, ...overflow] };
+}
