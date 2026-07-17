@@ -95,9 +95,10 @@ rows already carry everything needed).
   OR; numeric facets are min/max over parsed values (price parses `pp/gp/sp/cp` → copper, `per 10`
   divides for per-item value); entities missing a facet key form an implicit "—" bucket (an
   include-selection drops them, an exclude never matches them, range filters ignore them unless a
-  "has value" bound is set — the per-facet UI reports an "N without data" count). Sort is name
+  "has value" bound is set — the per-facet UI reports an "N without data" count). Sort was name
   (default, letter-anchored A–Z, `content-visibility: auto` per section — no virtualization
-  dependency) or level (ascending, "—" bucket last); nothing else (rarity/source stay filters).
+  dependency) or level (ascending, "—" bucket last) — **superseded by P8's sortable column
+  headers + flat table register (see the P8 section below)**; rarity/source stay filters.
 - **URL codec** (`src/domain/browse/urlState.ts`) — human-readable, round-trip-tested:
   `?traits=fire,-agile&level=-2..5&rarity=rare,unique&f.actionCost=1,reaction&q=drag&legacy=1`.
   Core facets are bare keys; derived facets are namespaced `f.<key>`. **Include sigil = no
@@ -818,3 +819,38 @@ live `2e.iridi.cc` — byte-identical SSR payload between the two hosts (a diff 
 `updatedAt` timestamp, same byte length, same entity data). `sites.caddyfile` gained a
 `2e.iridi.cc` stanza mirroring the `heart.iridi.cc` alias precedent, same noindex
 `X-Robots-Tag`; TLS minted on the wildcard within one ~10s poll.
+
+## Density + table listings + UX round (P8, D29-77..82)
+
+P8 is render/client-only — no corpus/transform/index change; deploy = `just up` alone.
+Provenance: the 2026-07-16 5e.tools UX comparison
+(`thoughts/shared/research/2026-07-16-codex-vs-5etools-spell-browse-ux-thoughts.md`); spec
+`thoughts/astra/specs/0029-codex-p8-density-tables-spec.md`.
+
+- **Table register (D29-78/-79, S1):** every `/{category}` listing is a flat sortable table —
+  per-category column sets from `src/domain/browse/columnDefs.tsx` (spell: Lvl/Cast/Range ·
+  creature/hazard/vehicle: Lvl/Size/HP/AC · equipment family: Lvl/Price/Bulk · feat: Lvl/
+  Actions/Type · fallback: Lvl/Rarity — coverage-aware: a column whose live coverage fails the
+  facetKeys classifier rule is dropped, so e.g. sidebar shows Name·Source only). Sortable
+  `<th>` headers (aria-sort on the cell) replaced the Sort `<select>`; `?sort=` widened to
+  `name|-name|level|-level|<facetKey>|-<facetKey>` with forever-decode. Rank comparators for
+  size/rarity/cast (passive + missing LAST); numeric ones reuse `facetDefs`'
+  `numericValueFor`/`parsePriceToCopper`. Letter groups + the alphabet jump strip are GONE
+  (recorded trade-off); containment is per-row `content-visibility`. Trait pills left the rows
+  (drawer/entity page keep them). FULL vs COMPACT column tiers switch on measured container
+  width (<600px → Name·Lvl·Source), which covers split view on narrow screens, the 640–896px
+  band, and mobile.
+- **Density (D29-77, S2):** `body` 16px/1.5; one `--density-page-pad` token shared by
+  `.codex-entity-page` + `.wrap-wide` (≈24px desktop); content p/ul/ol rhythm halved; header
+  ≈55px desktop; listing lead-in 228px (was ~440). The browse split grid rebalanced 58/42 so
+  the FULL column set is the desktop default (S1-build amendment — the old 26rem cap made it
+  unreachable); `/search` keeps its own pre-P8 ratio via a scoped override.
+- **Search boost (D29-81, S3):** `partitionNameMatches` in `pagefindClient.ts` — hydrates a
+  60-stub window (pin amended from 40: "heal" ranks 43 raw), pins exact-then-prefix name
+  matches above the category groups in Omnibar and `/search` (cap 8, deduped below); fixes the
+  P3-documented "heal"/"fireball" title-weight limitation at the display layer.
+- **Keyboard (D29-82, S3):** j/k move real DOM focus row-to-row on split-view listings
+  (Enter = native activation → full page); the preview `?entry=` commits replace-only after a
+  180ms settle (zero history growth); `memoizedEntity` (50-entry) backs both entity loaders;
+  guards: focus in inputs/open `<dialog>`, narrow containers; hint line (desktop):
+  `Ctrl+K search · j/k browse · enter open`.

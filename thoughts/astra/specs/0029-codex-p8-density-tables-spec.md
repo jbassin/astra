@@ -1,7 +1,7 @@
 # 0029 P8 — density/table restyle + UX round (spec)
 
-**Status:** FINAL (adversarially reviewed ×2, 2026-07-16 — mechanics lens + UX/edges lens; 7
-blockers + 9 minors folded, §7 records them)
+**Status:** BUILT (2026-07-17 — S1 `0693d61` · S2 `fa0b42d` · S3 `e969cf0` · S4 sweep +
+deploy, §7 build record; spec was FINAL after adversarial review ×2, 2026-07-16 — §6)
 **Scope doc:** `thoughts/shared/research/2026-07-16-codex-0029-p8-density-thoughts.md` (R1–R4
 stakeholder-resolved 2026-07-16; provenance = the 5e.tools UX comparison).
 **Change class:** render/client-only. No transform, no corpus regen, no Pagefind reindex.
@@ -184,7 +184,11 @@ never fetched, so a post-hydration partition cannot see it. The boost therefore 
 hydration window: hydrate `min(res.results.length, 40)` stubs (fragments are small; stub
 `.data()` is the only way to learn the name — stubs carry no metadata), partition over that
 window, then DISPLAY at most the previous counts (8 omnibar / 20 per SearchPage page).
-SearchPage's `PAGE_SIZE = 20` gets the same 40-stub scan ahead of page 1. Cap the pinned
+SearchPage's `PAGE_SIZE = 20` gets the same widened scan ahead of page 1. **S3-build pin amendment
+(2026-07-17): the window is 60, not 40** — the real transform showed `heal` (this
+decision's own second acceptance query) at Pagefind position **43**; 40 was sized off the
+fireball/rank-10 measurement alone (`NAME_BOOST_HYDRATE_WINDOW`, mechanism unchanged —
+the "ship the mechanism, amend the pins" convention). Cap the pinned
 group at 8; pinned hits are NOT repeated in the groups below (dedupe by fragment id/url).
 
 Acceptance queries: `fireball` → spell Fireball #1 (currently rank 10 — proves the window);
@@ -296,3 +300,39 @@ never the button; M6 itemCategory 7-value override map; M7 density selectors nam
 (`body` global, `.wrap-wide` == `.codex-entity-page` clamp → one token, ul/ol lockstep);
 M8 header target desktop-only + mobile check added; M9 alphabet-strip loss recorded as a
 deliberate trade-off; N10 `@/ui` ActionGlyph disambiguated; N11 single flat renderer.
+
+## 7. Build record
+
+- **S1 `0693d61` (2026-07-17):** columnDefs.tsx (+totality/rank/coverage tests), SortMode +
+  `?sort=` widening (fuzzer widened), BrowseListing flat table register, per-row
+  content-visibility, ResizeObserver FULL/COMPACT tiers, listing density tokens. Live-proven
+  25 rows/900px @ 23.94px pitch; two real bugs caught pre-ship (inherited line-height 1.6
+  ballooned pitch to ~32px; `?sort=level` decoded to nothing). Deviations: Source/Range not
+  sortable (spec-literal); the FULL-set-unreachable-at-desktop finding → the D29-78
+  S1-build amendment (list track widens).
+- **S2 `fa0b42d`:** site-wide density on the spec's named selectors (body 16px/1.5,
+  `--density-page-pad` shared token, p/ul/ol lockstep, header 54.6px desktop, lead-in
+  228px), browse grid 58/42 (55/45 fell 15px short of the 600px floor), `/search` scoped
+  override (its own mobile collapse — a real specificity bug found+fixed live), caret
+  de-chrome + 7 dropdown carets (Sources is bare by design — "eight" in gate F was wrong).
+  Goldens byte-stable.
+- **S3 `e969cf0`:** partitionNameMatches at the pagefindClient seam — **hydration window 60,
+  pin amended from 40 ("heal" ranks 43 raw)**; pinned Name-matches group both surfaces,
+  loadMore cursor pinnedCount-aware; j/k real-DOM-focus + 180ms-settled replace-only
+  `?entry=` (zero history growth), memoizedEntity (50-entry) on both loaders,
+  keyboard-Enter falls through to native navigation (`detail === 0`), guards, hint line.
+  1,649 tests.
+- **S4 (sweep + deploy, 2026-07-17):** README P8 section + P3-section pointer; `just up`
+  only (render-only round). **Edge verification, both hostnames:** three-prong real-corpus
+  (ritual "145 of 145 shown" — NB React `<!-- -->` text-node breaks separate the numbers in
+  raw HTML, grep the segments; zero fixture warns; noindex both); SSR sort proof
+  (`?sort=-level` → Apex Companion/Avatar first, `?sort=banana` → name fallback);
+  hydration-ZERO page errors across 8 reworked routes; live search boost (omnibar
+  `fireball` → Fireball #1; `/search` `heal` → Heal #1; satinder unchanged); j/k 10-row scan
+  → history delta 0, focus on row anchor, `?entry=` replace-committed; carets 7/7 computed
+  border-none; mobile zero h-scroll; 30 rows in the first viewport. Stakeholder screenshot
+  set delivered (gate H continues on the live site). **Weights (gate G, recorded):** `/` 12.6
+  KB/3.0 gz · `/spell` 2.75 MB/204 KB gz · `/creature` 7.59 MB/736 KB gz · `/spell/heal`
+  37.8 KB/8.7 gz · `/rules` 417 KB/83 gz · **`/feat` 8.04 MB/630 KB gz — NOT flat: +35% gz
+  vs P3's 4.49 MB/465 KB**, the per-row Cast-glyph inline SVGs are the growth; flagged, a
+  `<symbol>`/`<use>` dedupe is the ready follow-up if gate H feels it.
