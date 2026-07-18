@@ -854,3 +854,87 @@ Provenance: the 2026-07-16 5e.tools UX comparison
   180ms settle (zero history growth); `memoizedEntity` (50-entry) backs both entity loaders;
   guards: focus in inputs/open `<dialog>`, narrow containers; hint line (desktop):
   `Ctrl+K search · j/k browse · enter open`.
+
+## Listing windowed virtualization (P9, D29-83..90)
+
+P9 is render/client-only — no corpus/transform/index change; deploy = `just up` alone. Killed the
+/feat-class parse+hydrate cost (8,485 SSR'd+hydrated `<tr>`s → ~2.8s parse+~1s hydrate at 4×
+throttle) two ways at once: DOM windowing over the row array, and pulling the full row array out
+of the router's dehydration payload entirely. Spec `thoughts/astra/specs/0029-codex-p9-
+virtualization-spec.md` (D29-83..90, status BUILT). Slices: **S1 `d467e78`** windowed table + SSR
+data split · **S2 `9542d0c`** interaction parity + whole-row click · **S3** this sweep.
+
+- **Windowed table (D29-83, S1):** `@tanstack/react-virtual`'s `useWindowVirtualizer`
+  (window-scroll, fixed `estimateSize = ROW_PITCH_PX`, no `measureElement`) over every category
+  listing's `<tbody>` — top/bottom spacer `<tr>`s carrying their height on a single
+  `<td colSpan style={{height}}>` (never the `<tr>` itself — cross-engine `border-collapse`
+  unreliability), overscan 20, row `key` = entity slug, `aria-rowcount`/`aria-rowindex` compensate
+  Tab-reach narrowing for AT (R5). Row CSS tightened to a real-Chromium-measured **exactly
+  24.00px** (P8 had measured 23.94px live vs the token's nominal 24px — fixed-size windowing
+  never self-corrects off that gap) — `scripts/rowHeightDriftGuard.ts` asserts it at both column
+  tiers via real Playwright Chromium, its own CI job. Per-row `content-visibility` deleted
+  (redundant at ≤~110 mounted rows).
+- **SSR window determinism (D29-84, S1):** both the server pass and the client's first pass get
+  identical `initialOffset: 0` / `initialRect = { height: 40 × ROW_PITCH_PX }` — first computed
+  range is the OUTPUT of that formula (`SSR_WINDOW = 60`), never a re-asserted constant; a unit
+  test recomputes the range through the real virtualizer and pins `[0, 60)`. `scrollMargin`
+  (the furniture above the table) is 0 on both first passes, corrected in a post-hydration effect.
+  Deep links (`?entry=` beyond the SSR window) `scrollToIndex(target, align:"center")` post-mount;
+  a same-URL scroll-restoration entry wins over centering (back-nav returns where the user was).
+- **Dehydration split (D29-89, S1 — the actual bulk of the win):** the loader ships a **windowed
+  projection** server-side (`{ rows: <=60, totalCount, eligibleCount, category meta, entry }`), so
+  the auto-dehydrated inline `<script>` carries ≤60 rows instead of the full array — measured live
+  2,264,706 B → 17,560 B. Post-hydration the client re-fetches the FULL array through the existing
+  `memoizedListing` client path (same serverFn SPA navigations already used; no new wire cost, no
+  re-fetch on row clicks). D29-35 (full array client-side, all filter/sort local) stays
+  semantically intact — the narrowing is a ~100-300ms window after a cold load where filter/sort
+  controls are live but compute over the SSR-window+counts until the array lands (recorded for
+  gate H, no control disabled). **/feat total: 7,157,306 B → 93,606 B decoded** (S1 measured);
+  8,485 → 60 SSR'd rows.
+- **table-layout: fixed (D29-86, S1):** per-column `ch` widths measured 99th-percentile against
+  the real 46,192-row corpus (measure, don't guess — raw p99/max recorded in `columnDefs.tsx`'s
+  own comment block). `.codex-listing-col-name { width: 100% }` DELETED (adversarial M5 — an
+  explicit 100% next to explicit `ch` siblings over-constrains fixed layout); Name gets no
+  declared width, the algorithm's remainder rule does the job. **R6: name column is single-line**
+  (nowrap + ellipsis + `title` full-name fallback) — a wrapped row would desync every
+  spacer/scroll-offset computation below it, since fixed-size windowing assumes every row is
+  exactly `ROW_PITCH_PX` tall. Gate proven against the real corpus's actual longest browsable-
+  category name — **56 chars** ("House Spirits With an Absurd Number of Regenerating Pies",
+  `hazard`), not the spec's original 41-char pin (S3 finding, §7) — single-line/24px/title-
+  fallback confirmed at the narrowest engaged split-view floor (897px viewport).
+- **Interaction parity (D29-85/-90, S2):** active row position is **persisted state keyed by
+  slug**, never `document.activeElement` — wheel-scroll unmounting the focused row (browser moves
+  focus to `body`) does not lose position; the next j/k resolves the slug against the current
+  `visible` array and resumes (mount → `scrollToIndex` → focus), never snaps to row 0. Ordinary
+  j/k uses `align:"auto"` (minimal scroll); `center` is reserved for deep-link arrivals. The
+  virtualizer lifted into `BrowseListing` itself; `scrollToIndex` calls are **rAF-coalesced** (key-
+  repeat outruns scroll-event dispatch) and focus uses `{preventScroll:true}` (a wheel-back
+  remount was observed yanking the viewport at 923px pre-fix). **Whole-row click (D29-90):**
+  clicking anywhere on a listing row (not just the name `<a>`) selects it — same guard order as
+  the anchor handler (primary-button-only, modifier-key no-op, text-selection-drag no-op, clicks
+  inside a nested `<a>`/`<button>` yield to that element's own handler), implemented directly
+  (never a synthetic `anchor.click()` — that carries `detail===0`, read as keyboard activation).
+  `scripts/virtualizationInteractionGuard.ts` — 22 real-Chromium Playwright checks (frontier j/k
+  on a cold load, Enter-opens, preview-follow zero-history-growth, wheel-unmount-then-resume,
+  reload-at-depth restoration with no blank-spacer flash, row-click/text-drag/modifier-click) —
+  its own CI job, against a fixture `ritual` category grown 6→96 rows (additive) specifically to
+  clear `SSR_WINDOW`.
+- **Four real bugs found in-slice (S2):** `resetScroll:false` needed on both entry navigations (a
+  latent P8 scroll-snap); a settle-timer cancellation race in `onEntryPreview` (fixed via a ref-
+  mirror); a `scrollToIndex` flood under fast key-repeat (fixed by the rAF-coalesce above); deep-
+  link centering needed a retry loop until the D29-89 full array actually lands.
+- **Trade-offs recorded for gate H:** Ctrl+F stays categorical (browser find-in-page only sees
+  mounted rows, R2 carry); "N of N shown" counts the array not the DOM (R3 carry); Tab reaches
+  only mounted-window anchors, j/k is the sanctioned full-list traversal (R5, ARIA-compensated);
+  name column is single-line not two-line-wrap (R6); the D29-89 ~100-300ms fetch window where
+  filter/sort compute over not-yet-landed data (judged imperceptible, no control disabled).
+- **S3 sweep (local, pre-deploy — see spec §7 for the full evidence table):** hydration-zero on
+  the 8-route set, `?sort=`/`?sort=-` SSR order proof via a comment-marker-safe extraction method
+  (React SSR's `<!-- -->` text-node separators defeat naive `grep`), both guard scripts green,
+  column-width scroll stability, mobile 0 h-scroll + a touch-fling overscan stress probe (record-
+  don't-hide: no fully-blank window observed, minimum 34 rows stayed in-viewport during a 1.2s
+  post-fling poll), full hermeticity re-proof (masked-corpus run: 85/85 files, 1854/1854 tests
+  green, including the 7 corpus-visibility-dependent `ssrSmoke` cases), and a local perf snapshot
+  (/feat 4× throttle: 95,167 B decoded / 11,334 B gz, DCL 141ms, main-thread-quiet 745ms, full-
+  array fetch-complete 630ms — all comfortably inside D29-88's budget; live-edge numbers are the
+  orchestrator's post-deploy pass).

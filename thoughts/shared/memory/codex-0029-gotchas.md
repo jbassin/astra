@@ -11,6 +11,52 @@ NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pen
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
 
+**P9 BUILT — S1 `d467e78`/S2 `9542d0c` + S3 local sweep 2026-07-18 (DRAFT, orchestrator finalizes
+post-deploy) — listing windowed virtualization; spec
+`thoughts/astra/specs/0029-codex-p9-virtualization-spec.md` D29-83..90 status BUILT w/ §7 build
+record.** Killed the /feat-class parse+hydrate cost two ways: `@tanstack/react-virtual`
+`useWindowVirtualizer` DOM-windows every category `<tbody>` (spacer-`<td>`s, overscan 20, slug
+keys), AND — the actual bulk of the win — the router's auto-dehydration payload now ships only the
+SSR window's rows, not the full array (**bytes-not-nodes lesson**: P8-era windowing-only framing
+would have left a ~2.4 MB dehydration floor untouched; D29-89 measured it LIVE first —
+2,264,706 B, 31.7% of post-dedupe /feat — before the fix, confirming the payload as the real
+target, not just DOM node count). /feat: 7,157,306→93,606 B decoded, 8,485→60 SSR rows.
+**The derived-window mechanism:** `SSR_WINDOW=60` is never asserted, it's the OUTPUT of
+`initialRect.height = 40×ROW_PITCH_PX` fed through the real virtualizer on both server AND client-
+first passes (a unit test recomputes and pins `[0,60)`) — change any input, re-derive, never
+hand-edit the constant. Post-hydration, the client re-fetches the FULL array via the existing
+`memoizedListing` path (D29-35 stays intact; ~100-300ms window where filter/sort compute over
+not-yet-landed data, recorded not hidden). **`resetScroll:false`** was needed on both entry
+navigations — a LATENT P8 scroll-snap bug, not new to P9, only surfaced once virtualization made
+scroll position load-bearing. **The `preventScroll` yank:** `focus()` after a wheel-back remount
+was observed dragging the viewport at 923px (browser's default post-focus scroll-into-view
+fighting the virtualizer's own scroll math) — `{preventScroll:true}` on every programmatic focus
+call is now mandatory in this codepath, not optional hygiene. **The rAF-coalesce find:** fast key-
+repeat j/k outruns scroll-event dispatch and floods `scrollToIndex` calls — coalesce them per
+animation frame, don't call directly from the keydown handler. **The settle-timer ref-mirror
+race:** `onEntryPreview`'s 180ms settle timer closed over stale props on rapid j/k — fixed by
+mirroring the current value into a ref the timer reads at fire-time, not capture-time. **Fixture
+growth:** `ritual` grown 6→96 rows (additive-only, no other fixture touched) specifically so
+`virtualizationInteractionGuard.ts` has a real category past `SSR_WINDOW` to drive — every other
+fixture category tops out at 7 rows. **S3 finding — the name-column pin was stale:** spec §2/D29-
+86 cited "the longest real corpus name (41 chars)" for the R6 zero-wrap gate; the actual real
+corpus (`_index.json` scan, 38,268 clean entity names across 85 browsable categories) tops out at
+**56 chars** ("House Spirits With an Absurd Number of Regenerating Pies", `hazard`) — re-verified
+the gate against the corrected pin (single-line/24px/`title`-fallback holds at the narrowest
+engaged 897px split-view floor), no code change needed, spec-pin correction only. **S3 also
+reconfirmed:** the `?entry=` param on a `/{category}` route takes the BARE slug, not
+`category/slug` (passing the corpus `id` verbatim 404s inside the entry pane); `codex.port` has NO
+env override by design (`config.kdl`) — a local scratch-port serve needs its own throwaway
+`createSsrServer` boot script, never edit the shared config file or touch 10374; a raw
+`LC_ALL=C` byte sort of SSR'd HTML titles DISAGREES with the app's actual `a.name.localeCompare
+(b.name)` comparator on entity-escaped punctuation (`&#x27;`) — decode entities and use
+`localeCompare` itself to verify SSR sort-order proofs, not a shell byte-sort; hermeticity re-
+proof (corpus masked via a temporary reverted `config.kdl` data-path edit) = 85/85 files, 1854/1854
+green including the 7 `ssrSmoke` cases that fail w/ the real corpus visible (confirmed as the
+baseline first, not assumed); oxlint still needs `--threads=4` (standing repo gotcha, recurred).
+▶ **OPEN: `just up` + live-edge probe pass (orchestrator-owned) — gate F needs live-edge numbers;
+gate H still the consolidated P2–P9 re-run.**
+
 **P8 BUILT + DEPLOYED + LIVE 2026-07-17 (density/table restyle + UX round; spec
 `thoughts/astra/specs/0029-codex-p8-density-tables-spec.md` D29-77..82 status BUILT w/ §7 build
 record; scope `…/research/2026-07-16-codex-0029-p8-density-thoughts.md` R1–R4).** Provenance

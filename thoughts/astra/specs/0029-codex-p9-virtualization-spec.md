@@ -1,7 +1,8 @@
 # 0029 P9 — listing windowed virtualization (spec)
 
-**Status:** FINAL (2026-07-17 — adversarial review ×2 folded: 2 mechanics blockers + 2
-interaction blockers + 2 stakeholder resolutions R5/R6 + 5 minors + 3 nits, §6)
+**Status:** BUILT (S1 `d467e78` · S2 `9542d0c` · S3 local sweep this session, §7 build record —
+deploy `just up` + live-edge probe pass PENDING, orchestrator-owned; spec was FINAL after
+adversarial review ×2, 2026-07-17 — §6)
 **Scope doc:** `thoughts/shared/research/2026-07-17-codex-0029-p9-virtualization-thoughts.md`
 (R1–R4 stakeholder-resolved 2026-07-17: option A windowed virtualization chosen; Ctrl+F and
 "N of N shown" trade-offs accepted; D29-35 full-rows-client-side DATA decision untouched.
@@ -294,4 +295,114 @@ clamp predates windowing; row pitch has no mobile media-query override.
 
 ## 7. Build record
 
-_(to be filled)_
+**Status: BUILT.** S1 `d467e78`, S2 `9542d0c`, S3 (this sweep) local-verified, deploy-pending
+(orchestrator owns `just up` + the live-edge probe pass).
+
+### Slices
+
+- **S1 `d467e78`** — windowed `<tbody>` (spacer-`<td>`, overscan 20, slug keys,
+  `aria-rowcount`/`aria-rowindex`), derived SSR window + range unit test, D29-89 loader
+  projection + post-hydration full-array refetch, `table-layout: fixed` + measured `ch` widths +
+  name-column single-line, row pitch tightened to a real-Chromium 24.00px + drift-guard script +
+  CI job. Measured: /feat 7,157,306 → 93,606 B decoded (gz 11,231); dehydration blob 2,264,706 →
+  17,560 B; SSR rows 8,485 → 60 (sorted-order proven both directions). 1,674 tests, 13 new.
+  In-slice find: `entryVisible` had to be computed server-side against the FULL corpus, not the
+  windowed slice (a windowing bug caught before merge, not shipped).
+- **S2 `9542d0c`** — virtualizer lifted into `BrowseListing`; `focusedSlug` state is the sole
+  position authority (`activeElement` never consulted); deep-link centering + reload-at-depth
+  scroll-restoration sync; D29-90 whole-row click target. Interaction guard: 22 Playwright checks,
+  5 consecutive green runs + its own CI job; fixture `ritual` category grown 6→96 rows
+  (additive-only) to clear `SSR_WINDOW` for real. **Four real bugs found and fixed in-slice:**
+  (1) `resetScroll:false` needed on both entry navigations (a latent P8 scroll-snap, not new to
+  P9); (2) a settle-timer cancellation race in `onEntryPreview` (fixed via a ref-mirror so the
+  timer always sees current props, not a stale closure); (3) a `scrollToIndex` flood under fast
+  key-repeat (key-repeat outruns scroll-event dispatch — fixed by rAF-coalescing the calls);
+  (4) deep-link centering needed a retry loop, since it can fire before the D29-89 full array has
+  landed. **Review fix:** `focus({preventScroll:true})` — a wheel-back remount was negative-path-
+  proven to yank the viewport at 923px before this landed (the browser's default post-focus
+  scroll-into-view fighting the virtualizer's own scroll math).
+- **S3 (this sweep)** — consolidated local pre-deploy verification, below. No implementation code
+  touched; all gates passed at HEAD as landed by S1/S2.
+
+### Deviation: the name-column pin corrected 41 → 56 chars
+
+D29-86/R6 in this spec's §2 cites "the longest real corpus name (41 chars)" as the zero-wrap pin.
+S3 measured the *actual* real corpus (`_index.json` per category, 46,192 rows minus the
+non-browsable `action`/`rules`/`source` meta-categories, 38,268 clean entity names scanned): the
+true longest browsable-category name is **56 characters** — `"House Spirits With an Absurd Number
+of Regenerating Pies"` (`hazard`, edition `legacy`, `superseded: false`). The 41-char figure was
+stale/approximate at spec-writing time. Re-verified the R6 gate against the CORRECT pin: navigated
+to `/hazard?sort=name&entry=house-spirits-with-an-absurd-number-of-regenerating-pies` at the
+narrowest engaged split-view floor (897px viewport, list pane 483.8px), and at 1600px — in both
+cases the row's `<tr>` is exactly 24px tall, the name anchor is `white-space: nowrap` +
+`text-overflow: ellipsis`, and `title` carries the full 56-char string. (At neither width does the
+name column's available space actually force a *visible* ellipsis-clip for this specific
+category's column set — `hazard`'s few fixed-width sibling columns leave enough remainder — but the
+single-line/no-wrap/24px-row invariant holds regardless, which is the actual gate.) No code change
+required; recorded here as a spec-pin correction, not an implementation gap.
+
+### Gate evidence (S3 sweep, LOCAL — real corpus, fresh `pnpm build` + scratch-port serve, never
+port 10374)
+
+- **A. Hydration — PASS.** Real Chromium, 8-route sweep (`/`, `/feat`, `/spell`, `/rules`,
+  `/sources`, `/feat?sort=level`, `/feat?level=5..10`, `/feat?entry=treacherous-earth`): zero
+  console errors/warnings, zero `pageerror`, all HTTP 200. (The S1 range unit test
+  `[0,60)` already runs in the vitest suite — reconfirmed green in the hermeticity re-run below.)
+- **B. SSR order — PASS.** `/feat?sort=name` and `/feat?sort=-name` both SSR exactly 60 rows
+  (`aria-rowindex="1"`..`"60"`, extracted via `grep -a` — plain `grep` mis-detects the file as
+  binary/misses matches because React SSR interposes `<!-- -->` comment-node separators around
+  text; `-a` plus per-occurrence `-o` extraction is order-preserving regardless of the
+  separators). Order re-verified with a small Node script using the SAME comparator the app uses
+  (`a.name.localeCompare(b.name)`, `filterEngine.ts:250`) after HTML-entity-decoding — a raw
+  `LC_ALL=C` byte sort DISAGREES with `localeCompare` on entity-escaped punctuation (`&#x27;` vs a
+  decoded apostrophe) and produced a false "disorder" on the descending case until corrected; the
+  decoded/`localeCompare` check passes both directions.
+- **C/D/E. Interaction/deep-link/scroll-restoration — PASS.** `virtualizationInteractionGuard.ts`:
+  22/22 checks green (cold-load frontier j-burst past row 60, Enter navigates, preview-follow
+  zero-history-growth, wheel-unmount-then-resume from persisted slug in both directions, gate-D
+  entry-pane SSR + post-mount centering, gate-E reload restores real rows within ~8 rows with no
+  blank-spacer flash, row-body click selects + moves focus, text-selection-drag doesn't select,
+  modifier-click still opens a new tab).
+- **F. Perf — LOCAL PASS, live-edge numbers pending deploy (orchestrator fills):**
+  - Byte weights (decoded / gz-9, local scratch server): `/feat` 95,167 B / 11,334 B (≤600 KB
+    budget, ~6× under); `/spell` 109,640 B / 11,685 B; `/feat?entry=treacherous-earth` 115,364 B /
+    16,060 B.
+  - 4× CPU throttle (buffered longtask `PerformanceObserver`, quiet = last-long-task-end once
+    1.5s of silence follows): `/feat` DCL 141 ms (budget ≤800 ms) / quiet 745 ms (budget ≤1.2 s) /
+    full-array fetch-complete 630 ms; `/spell` DCL 162 ms / quiet 265 ms (budget ≤1 s) / fetch-
+    complete 518 ms; `/` DCL 35 ms / quiet 125 ms (no-regression check, no strict budget); `/rules`
+    DCL 198 ms / quiet 277 ms (no-regression check).
+  - `Live edge: PENDING — orchestrator re-runs this exact probe method through the deployed
+    codex.iridi.cc post-`just up`.`
+- **G. No-regression — PASS (locals only; full list incl. items proven above):**
+  - `rowHeightDriftGuard.ts`: FULL tier (1600px) 24px, COMPACT tier (375px) 24px — both exact.
+  - Column widths (header `<th>` + a sampled row's `<td>`s) measured before / during a 15-step
+    deep scroll / after a mid-page jump: byte-identical at every checkpoint, no jitter.
+  - Zero wrapped name rows — see the 41→56-char deviation above; PASS against the corrected pin.
+  - Mobile 375px: 0 horizontal scroll (`scrollWidth − innerWidth = 0`), rows stayed mounted (74)
+    and console-clean through a 10-step wheel-scroll.
+  - Touch-fling overscan (CDP `Input.dispatchTouchEvent` synthetic fling + a 1.2s post-fling poll
+    of in-viewport mounted rows): **recorded, not gated** per spec — minimum 34 rows stayed
+    visible-in-viewport across the poll window, no fully-blank spacer window observed at this
+    fling speed.
+  - Hermeticity: full codex vitest suite re-run with `config.kdl`'s `codex.data-path` temporarily
+    redirected to a nonexistent path (real corpus present in this tree, so this is the only way to
+    force the fixture-fallback path locally) — **85/85 files, 1854/1854 tests green**, including
+    the 7 `ssrSmoke.test.ts` cases that FAIL when the real corpus is visible (confirmed as the
+    baseline first: same run w/ real corpus visible = 84/85 files, 1847/1854 tests, exactly 7
+    failures, all in `ssrSmoke.test.ts`, all corpus-content-assumption mismatches — not P9 bugs).
+    `config.kdl` reverted immediately after; `git status` confirmed clean on it before proceeding.
+  - `pnpm exec vp run -r typecheck`: green, 32/32 members. `pnpm run lint`
+    (`oxlint --type-aware --deny-warnings`) OOM'd at default threads (the standing repo gotcha) —
+    green under the documented `--threads=4` workaround. `pnpm run format:check`: green, 845
+    files. `routeTree.gen.ts`: untouched by the sweep (no diff).
+
+### Method notes for gate H / future reference
+
+- The scratch local-serve pattern: `server.ts`/`config.kdl`'s `codex.port` has **no env override
+  by design** ("no PORT env", `config.kdl:304`), so a throwaway `createSsrServer({...port:18376})`
+  boot script (mirroring `rowHeightDriftGuard.ts`'s own idiom, deleted after use) is the correct
+  way to local-serve on a scratch port without touching the live 10374 container or editing the
+  shared config file.
+- `?entry=` on a `/{category}` route takes the **bare slug**, not `category/slug` — passing the
+  full corpus `id` (e.g. `hazard/house-spirits-…`) 404s inside the entry pane ("wasn't found").
