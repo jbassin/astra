@@ -3,18 +3,25 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 
 import { EditionIcon, type Edition } from "./EditionIcon";
+import { GLYPH_IDS } from "./GlyphDefs";
 
 /**
  * The stakeholder "History vs. Spark" icon pass — mirrors `actionGlyph
  * .test.tsx`'s style: renders both editions via the public `edition` prop
- * and pins the accessibility contract + the two distinct glyph shapes as a
- * regression gate (a silent revert to the old text pill fails this test).
+ * and pins the accessibility contract as a regression gate.
+ *
+ * P8-follow-up dedupe: `EditionIcon` no longer carries its own path data —
+ * every instance emits `<use href="#codex-glyph-...">` against the shared
+ * `<symbol>` defs in `GlyphDefs.tsx`. The traced path-data regression pin
+ * now lives in `GlyphDefs.test.tsx`; this file pins the per-instance
+ * contract — accessibility + exactly which shared symbol each edition
+ * resolves to, with no inline `<path>` at all.
  */
 function renderIcon(edition: Edition): string {
   return renderToStaticMarkup(createElement(EditionIcon, { edition }));
 }
 
-describe("EditionIcon", () => {
+describe("EditionIcon — P8-dedupe use/symbol contract", () => {
   it.each<[Edition, string]>([
     ["remaster", "Remaster"],
     ["legacy", "Legacy"],
@@ -30,19 +37,19 @@ describe("EditionIcon", () => {
     expect(renderIcon("legacy")).toContain('class="codex-edition-icon codex-edition-legacy"');
   });
 
-  it("remaster renders the filled four-point spark path, nothing else", () => {
+  it("remaster renders exactly one <use> against the shared spark symbol, no inline path", () => {
     const html = renderIcon("remaster");
-    expect(html).toContain('d="M 50 10 Q 50 50 90 50 Q 50 50 50 90 Q 50 50 10 50 Q 50 50 50 10 Z"');
-    expect((html.match(/<path/g) ?? []).length).toBe(1);
+    expect(html).toContain(`href="#${GLYPH_IDS.remaster}"`);
+    expect((html.match(/<use/g) ?? []).length).toBe(1);
+    expect(html).not.toContain("<path");
   });
 
-  it("legacy renders a stroked arc plus a separate filled arrowhead — distinct from remaster's single fill", () => {
+  it("legacy renders exactly one <use> against the shared ring symbol, no inline path", () => {
     const html = renderIcon("legacy");
-    expect((html.match(/<path/g) ?? []).length).toBe(2);
-    expect(html).toContain("stroke=");
-    expect(html).not.toContain(
-      'd="M 50 10 Q 50 50 90 50 Q 50 50 50 90 Q 50 50 10 50 Q 50 50 50 10 Z"',
-    );
+    expect(html).toContain(`href="#${GLYPH_IDS.legacy}"`);
+    expect((html.match(/<use/g) ?? []).length).toBe(1);
+    expect(html).not.toContain("<path");
+    expect(html).not.toContain(`href="#${GLYPH_IDS.remaster}"`);
   });
 
   it("both editions share the same square viewBox (identical bounding box)", () => {

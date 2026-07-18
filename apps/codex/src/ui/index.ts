@@ -7,6 +7,7 @@
 export { Button } from "./Button";
 export { EditionIcon, type Edition } from "./EditionIcon";
 export { ErrorChip } from "./ErrorChip";
+export { GLYPH_IDS, GlyphDefs } from "./GlyphDefs";
 export { Input } from "./Input";
 export { TraitPill } from "./TraitPill";
 export { ActionGlyph, normalizeActionCost, type ActionCost } from "./actionGlyph";

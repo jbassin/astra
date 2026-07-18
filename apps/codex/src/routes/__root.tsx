@@ -4,6 +4,7 @@ import { useEffect } from "react";
 
 import { HeaderNav } from "@/domain/nav/HeaderNav";
 import { Omnibar } from "@/domain/search/Omnibar";
+import { GlyphDefs } from "@/ui";
 
 // D29-46 — codex's own self-hosted parchment-system fonts (mirrors the prior
 // `@fontsource/ibm-plex-mono` two-file-per-weight pattern verbatim, now 4
@@ -56,6 +57,13 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body>
+        {/* SVG `<symbol>`/`<use>` dedupe (P8 follow-up) — the 5 distinct
+            action/edition glyph shapes, mounted ONCE here so every
+            `ActionGlyph`/`EditionIcon` instance on the page can `<use
+            href="#...">` against it instead of re-emitting its own path
+            data. Must precede any `<use>` that references it (progressive
+            HTML streaming) — first thing in `<body>`, before the header. */}
+        <GlyphDefs />
         <header className="site-head">
           <Link to="/" className="site-brand">
             codex
