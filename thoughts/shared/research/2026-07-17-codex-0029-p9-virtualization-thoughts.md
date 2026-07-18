@@ -60,6 +60,15 @@ intact. This round is the structural fix.
   `?superseded=`/split-view-loader all operate on the in-memory array and are unaffected
   (verified: `filterEngine.ts:205-207,274+`, `BrowseListing.tsx:207-215,350-353`,
   `listingClient.ts:29-88`).
+- **R5 (resolved in-review, 2026-07-17): Tab-reach narrowing ACCEPTED** — Tab reaches only
+  the mounted window (~90-110 anchors, was 8,485); j/k is the sanctioned full traversal.
+  Compensation required: `aria-rowcount`/`aria-rowindex` so AT announces true position.
+  (Raised as its own decision by the interaction-lens adversarial review — distinct from
+  R2's find-in-page concession.)
+- **R6 (resolved in-review, 2026-07-17): name column goes single-line** (nowrap + ellipsis +
+  `title`) — a two-line wrapped name would break the constant-pitch invariant fixed-size
+  windowing depends on. Visible change: rare long names truncate at narrow widths; full
+  name in tooltip + entry pane.
 
 ## 4. Load-bearing structural facts (verified against the repo, not the research report)
 
