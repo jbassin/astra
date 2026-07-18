@@ -14,8 +14,13 @@
 // category dispatch would just duplicate `facetKeys.ts`'s own allowlist for
 // no benefit (no def below actually varies its shape by category).
 
-import { FACET_KEYS, SPILLOVER_FACET_KEYS } from "@/schema/facetKeys";
-
+// P10 (D29-95): a relative import, not the `@/*` alias — this module is now
+// reachable from `entityPage.tsx` (the header size chip's `SIZE_LABELS`
+// reuse), which sits in `regen-goldens.ts`'s import graph; the plain
+// `nodeTsResolve.mjs` loader that script runs under can't follow `@/*`
+// aliases (a standing gotcha — see the codex-0029 memory), so this stays
+// relative rather than reintroducing that failure mode.
+import { FACET_KEYS, SPILLOVER_FACET_KEYS } from "../../schema/facetKeys";
 import { humanizeFacetKey, humanizeSlug } from "../render/text";
 
 export type FacetWidget = "enum" | "tristate" | "range";
@@ -144,7 +149,12 @@ function asNumber(value: RawFacetValue): number | null {
 // Foundry PF2e size slugs (verified: exactly this 6-value set, D29-32/
 // facetKeys.ts provenance — creature 85.6%/6, hazard 90.2%/2 (a subset),
 // vehicle 68.6%/4 (also a subset), ancestry 50.5%/4 (also a subset)).
-const SIZE_LABELS: Readonly<Record<string, string>> = {
+// Exported (P10, D29-95) so `entityPage.tsx`'s header size chip reuses this
+// SAME map rather than writing a third one — the listing column
+// (`columnDefs.tsx`'s `renderSize`) deliberately keeps its own raw
+// uppercased-slug rendering (a table-density convention), the header wants
+// the human label.
+export const SIZE_LABELS: Readonly<Record<string, string>> = {
   tiny: "Tiny",
   sm: "Small",
   med: "Medium",

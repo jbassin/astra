@@ -161,9 +161,10 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
         const manifest = raw as { schemaVersion?: number; categoryCounts?: unknown };
         // The STATIC committed `fixtures/entities/manifest.json` — pinned at
         // the schemaVersion active when the fixture was last extracted (P7
-        // S2's fixture regen picked up D29-73's 2->3 bump; the generated
+        // S2's fixture regen picked up D29-73's 2->3 bump; P10 S2's fixture
+        // regen picked up D29-93's 3->4 bump (statRow); the generated
         // manifest is separately checked at HEAD via `runOnce()` below).
-        expect(manifest.schemaVersion, file).toBe(3);
+        expect(manifest.schemaVersion, file).toBe(4);
         expect(typeof manifest.categoryCounts, file).toBe("object");
       } else if (file.endsWith("/rules-tree.json")) {
         // P4 (D29-39/D29-44): the fixture-scoped rules tree — its own schema,

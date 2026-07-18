@@ -257,7 +257,7 @@
       "label": "Secondary Checks",
       "value": [
         {
-          "content": " Arcana,  Nature , Occultism,  Religion , or  Society  (whichever is required to  Recall Knowledge  about the creature being duplicated);  Crafting ;  Deception ",
+          "content": " Arcana,  Nature , Occultism,  Religion , or  Society  (whichever is required to  Recall Knowledge  about the creature being duplicated);  Crafting ;  Deception",
           "kind": "text",
           "marks": {
             "bold": false,

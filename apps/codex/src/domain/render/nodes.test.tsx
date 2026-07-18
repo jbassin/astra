@@ -306,6 +306,71 @@ describe("nodes.tsx: B2 adversarial — paragraph-carrying-block-children guard"
   });
 });
 
+describe("nodes.tsx: statRow (P10, D29-91/-93/-94)", () => {
+  it("renders one codex-stat-line div wrapping one codex-stat-line-cell span per cell", () => {
+    const node: CodexNode = {
+      kind: "statRow",
+      cells: [
+        [text("Str +7")],
+        [text("Dex +5")],
+        [text("Con +5")],
+        [text("Int +3")],
+        [text("Wis +7")],
+        [text("Cha +5")],
+      ],
+    };
+    const out = html([node]);
+    expect(out).toBe(
+      '<div class="codex-stat-line">' +
+        '<span class="codex-stat-line-cell">Str +7</span>' +
+        '<span class="codex-stat-line-cell">Dex +5</span>' +
+        '<span class="codex-stat-line-cell">Con +5</span>' +
+        '<span class="codex-stat-line-cell">Int +3</span>' +
+        '<span class="codex-stat-line-cell">Wis +7</span>' +
+        '<span class="codex-stat-line-cell">Cha +5</span>' +
+        "</div>",
+    );
+  });
+
+  it("does not use codex-stat-row — that class belongs to the structured statblock", () => {
+    const node: CodexNode = { kind: "statRow", cells: [[text("HP 260")], [text("AC 32")]] };
+    expect(html([node])).not.toContain("codex-stat-row");
+  });
+
+  it("a cell containing crossref inline content still renders inline (real cell composition: text + crossref only)", () => {
+    const node: CodexNode = {
+      kind: "statRow",
+      cells: [
+        [text("Perception ")],
+        [{ kind: "crossref", targetId: "action/seek", display: "+25" }],
+      ],
+    };
+    const out = html([node]);
+    expect(out).toContain('<span class="codex-stat-line-cell">Perception </span>');
+    expect(out).toContain(
+      '<span class="codex-stat-line-cell"><a href="/action/seek" data-crossref="" data-crossref-target="action/seek">+25</a></span>',
+    );
+  });
+
+  it("block-cell guard: a cell whose inline would block-render (resolved depth-0 embed) renders that cell as a <div>, not a <span>", () => {
+    const family = makeEntity("creature-family/dragon-red", [para(text("Family lore"))]);
+    const resolver = (id: string) => (id === family.id ? family : undefined);
+    const ctx = baseCtx({ resolveEmbed: resolver });
+    const node: CodexNode = {
+      kind: "statRow",
+      cells: [
+        [{ kind: "embed", target: family.id, resolved: true, display: "Red Dragon" }],
+        [text("HP 260")],
+      ],
+    };
+    const out = html([node], ctx);
+    expect(out).toContain('<div class="codex-stat-line-cell">');
+    expect(out).not.toContain('<span class="codex-stat-line-cell"><div');
+    expect(out).toContain("codex-embed-card");
+    expect(out).toContain('<span class="codex-stat-line-cell">HP 260</span>');
+  });
+});
+
 describe("nodes.tsx: D29-25 embed inlining, depth 1, cycle-guarded", () => {
   it("a resolved top-level embed inlines the target's body, framed with a source link", () => {
     const target = makeEntity("action/pursue-a-lead", [para(text("Pursue body"))]);

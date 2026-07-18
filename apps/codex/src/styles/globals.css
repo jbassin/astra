@@ -536,6 +536,14 @@ select:focus-visible,
   color: var(--color-ink-dim);
   text-transform: capitalize;
 }
+/* P10 (D29-95): the header size chip — a plain facet chip (styled identically
+   to `.codex-rarity` above), never a linked `TraitPill`; positioned
+   immediately before it in the meta row (size · rarity, echoing AoN's own
+   "Rare · Large · traits" strip). */
+.codex-entity-size {
+  font-size: 0.85rem;
+  color: var(--color-ink-dim);
+}
 /* --- P4.5 S5 (D29-50): the per-entity citation-line treatment — font-condensed
    (the "mechanical voice" slot, D29-46), same voice as the statblock header
    tag/pill row, no structural change to what it renders (D29-24/citation
@@ -660,6 +668,23 @@ select:focus-visible,
 .codex-content ul,
 .codex-content ol {
   margin: var(--density-content-margin) 0 var(--density-content-margin) 1.5rem;
+}
+/* P10 (D29-94): a collapsed AoN statblock row (`Str +7 Dex +5 ...`). Mirrors
+   the `.codex-entity-meta-row` flex idiom above (flex row, wraps, medium
+   column-gap/small row-gap — AoN's own `gap="medium"`) plus the row's own
+   equivalent of `.codex-content p`'s block margin (that rule is p-scoped, so
+   this block needs its own copy of the same token). */
+.codex-content .codex-stat-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin: var(--density-content-margin) 0;
+}
+.codex-stat-line-cell {
+  /* Same rationale as `.codex-content p`: ingest preserves `<br/>` as a
+     literal "\n" inside a cell's text, so this honors that break without
+     letting incidental whitespace runs affect layout. */
+  white-space: pre-line;
 }
 /* R1 (D29-63) — gothic's GFM table skin (theme.css:208-219), re-tokenized
    onto codex's own parchment tokens: hairline borders off `--color-rule`,

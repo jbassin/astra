@@ -9,7 +9,7 @@ import { CodexTraitPills } from "./traits";
 
 /**
  * D29-24 — the ONE total `CodexNode -> React` renderer, mirroring gothic's
- * `mdastToReact.tsx` shape: a flat switch over all 18 `CodexNode.kind`
+ * `mdastToReact.tsx` shape: a flat switch over all 19 `CodexNode.kind`
  * values, `renderNodes` mapping over a list, an `ErrorChip`-carrying default
  * branch that can never throw. Unlike gothic's renderer (which resolves
  * targets via React context, `CrossRefResolverContext`), the embed
@@ -415,9 +415,33 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
           <CalloutTanRule />
         </div>
       );
+    case "statRow": {
+      // P10 (D29-91/-93/-94): a collapsed AoN statblock row. `codex-stat-line`
+      // / `codex-stat-line-cell` — deliberately NOT `codex-stat-row`, which is
+      // ALREADY TAKEN by the structured statblock's own Row component
+      // (`statblock.tsx`, styled at `globals.css` — a collision would restyle
+      // pages this round doesn't touch). Each cell reuses the same
+      // block-content guard a paragraph applies to its own children
+      // (`paragraphCarriesBlockContent`, generic over any `CodexNode[]` —
+      // cells are `InlineNode[]`, a subtype) — 0 real occurrences today
+      // (cells are text+crossref only per the census), pure future-proofing
+      // against re-snapshot drift.
+      return (
+        <div key={key} className="codex-stat-line">
+          {node.cells.map((cell, c) => {
+            const Tag = paragraphCarriesBlockContent(cell, ctx) ? "div" : "span";
+            return (
+              <Tag key={c} className="codex-stat-line-cell">
+                {renderNodes(cell, ctx)}
+              </Tag>
+            );
+          })}
+        </div>
+      );
+    }
 
     default: {
-      // Totality guarantee (D29-24): never throw. The 18-member union is
+      // Totality guarantee (D29-24): never throw. The 19-member union is
       // exhaustive today, but a future corpus-schema kind reaching here
       // (or, in tests, a deliberately malformed node) still degrades to a
       // visible, non-throwing chip — the gothic `ErrorChip` idiom, wrapped so

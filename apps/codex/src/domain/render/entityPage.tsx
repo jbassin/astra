@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
+import { SIZE_LABELS } from "../browse/facetDefs";
 import { categoryGroupOf } from "./categoryGroup";
 import { Citation } from "./citation";
 import { EditionBanner, EditionPill } from "./editionBanner";
@@ -42,6 +43,16 @@ function entityTypeTag(entity: CodexEntity): string {
   return entity.level !== undefined ? `${label} ${entity.level}` : label;
 }
 
+/** P10 (D29-95) — the header size chip's category inclusion list. Deliberately
+ * the literal `category` string (all 4 size-bearing categories are creature/
+ * hazard/vehicle/ancestry per the R4 census), NOT `categoryGroupOf` (vehicle
+ * has no page-shape group of its own — it falls into "generic"). Ancestry
+ * and hazard are review-driven EXCLUSIONS (spec D29-95): ancestry size is a
+ * player CHOICE (a bare chip would contradict the page's own body text) and
+ * hazard's `facets.size` is 81% Foundry default-fill noise with no AoN
+ * precedent for displaying it. */
+const SIZE_CHIP_CATEGORIES: ReadonlySet<string> = new Set(["creature", "vehicle"]);
+
 export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCtx }): ReactElement {
   const group = categoryGroupOf(entity.category);
   return (
@@ -63,6 +74,11 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
         <div className="codex-entity-meta-row">
           <CodexTraitPills traits={entity.traits} knownTraitIds={ctx.knownTraitIds} />
           <EditionPill entity={entity} />
+          {entity.facets.size !== undefined && SIZE_CHIP_CATEGORIES.has(entity.category) ? (
+            <span className="codex-entity-size">
+              {SIZE_LABELS[entity.facets.size] ?? capitalize(entity.facets.size)}
+            </span>
+          ) : null}
           {entity.rarity !== undefined ? (
             <span className="codex-rarity">{capitalize(entity.rarity)}</span>
           ) : null}

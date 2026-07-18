@@ -420,256 +420,233 @@
       "kind": "paragraph"
     },
     {
-      "children": [
-        {
-          "content": "Str",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
+      "cells": [
+        [
+          {
+            "content": "Str",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +8",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        },
-        {
-          "content": " +8",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
+        ],
+        [
+          {
+            "content": "Dex",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +3",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        }
+        ],
+        [
+          {
+            "content": "Con",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +6",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Int",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +3",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Wis",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +4",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Cha",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +5",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ]
       ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Dex",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +3",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Con",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +6",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Int",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +3",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Wis",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +4",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Cha",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +5",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
+      "kind": "statRow"
     },
     {
       "kind": "divider"
     },
     {
-      "children": [
-        {
-          "content": "AC",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
+      "cells": [
+        [
+          {
+            "content": "AC",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " 33",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        },
-        {
-          "content": " 33 ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
+        ],
+        [
+          {
+            "content": "Fort",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +25",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        }
+        ],
+        [
+          {
+            "content": "Ref",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +20",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "Will",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " +23",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          }
+        ],
+        [
+          {
+            "content": "+2 status to all saves vs. ",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "display": "primal",
+            "kind": "crossref",
+            "targetId": "trait/primal"
+          }
+        ]
       ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Fort",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +25 ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Ref",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +20 ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Will",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " +23 ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "+2 status to all saves vs. ",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "display": "primal",
-          "kind": "crossref",
-          "targetId": "trait/primal"
-        }
-      ],
-      "kind": "paragraph"
+      "kind": "statRow"
     },
     {
       "children": [

@@ -2,96 +2,94 @@
   "aonUrl": "/SiegeWeapons.aspx?ID=6",
   "body": [
     {
-      "children": [
-        {
-          "content": "Usage",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
+      "cells": [
+        [
+          {
+            "content": "Usage",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " portable, held in 4 hands",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        },
-        {
-          "content": " portable, held in 4 hands",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
+        ],
+        [
+          {
+            "content": "Bulk",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " 3",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        }
+        ]
       ],
-      "kind": "paragraph"
+      "kind": "statRow"
     },
     {
-      "children": [
-        {
-          "content": "Bulk",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
+      "cells": [
+        [
+          {
+            "content": "Crew",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " 2",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        },
-        {
-          "content": " 3",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
+        ],
+        [
+          {
+            "content": "Proficiency",
+            "kind": "text",
+            "marks": {
+              "bold": true,
+              "italic": false,
+              "superscript": false
+            }
+          },
+          {
+            "content": " simple",
+            "kind": "text",
+            "marks": {
+              "bold": false,
+              "italic": false,
+              "superscript": false
+            }
           }
-        }
+        ]
       ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Crew",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " 2",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
-    },
-    {
-      "children": [
-        {
-          "content": "Proficiency",
-          "kind": "text",
-          "marks": {
-            "bold": true,
-            "italic": false,
-            "superscript": false
-          }
-        },
-        {
-          "content": " simple",
-          "kind": "text",
-          "marks": {
-            "bold": false,
-            "italic": false,
-            "superscript": false
-          }
-        }
-      ],
-      "kind": "paragraph"
+      "kind": "statRow"
     },
     {
       "kind": "divider"
