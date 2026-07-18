@@ -1,0 +1,34 @@
+{
+  "id": "ritual/virt-055",
+  "slug": "virt-055",
+  "category": "ritual",
+  "name": "Virt Synth Ritual 055",
+  "edition": "remaster",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 555
+  },
+  "level": 6,
+  "traits": [
+    "virt-fixture"
+  ],
+  "rarity": "common",
+  "body": [
+    {
+      "kind": "paragraph",
+      "children": [
+        {
+          "kind": "text",
+          "content": "P9 S2 (D29-89/-85) synthetic fixture row #055, generated only to grow the committed fixture corpus's ritual category past the SSR_WINDOW=60 threshold for real-browser interaction coverage (frontier j/k, deep-link centering, scroll restoration) — never asserted on for content, only for its position in the sorted listing.",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "facets": {}
+}

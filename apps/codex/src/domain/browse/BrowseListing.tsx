@@ -1,13 +1,15 @@
-import { useWindowVirtualizer } from "@tanstack/react-virtual";
+import { useWindowVirtualizer, type VirtualItem } from "@tanstack/react-virtual";
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type ChangeEvent,
   type MouseEvent,
   type ReactElement,
+  type RefObject,
 } from "react";
 
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
@@ -36,7 +38,7 @@ import {
   sortRows,
   type BrowseFilterState,
 } from "./filterEngine";
-import { INITIAL_VIEWPORT_PX, OVERSCAN, ROW_PITCH_PX } from "./virtualization";
+import { initialWindowRange, INITIAL_VIEWPORT_PX, OVERSCAN, ROW_PITCH_PX } from "./virtualization";
 
 export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
@@ -57,11 +59,44 @@ const SPLIT_VIEW_MEDIA = "(min-width: 56.0625rem)";
  * never one per row. */
 const FOCUS_SETTLE_MS = 180;
 
-/** Row-anchor selector shared by the j/k scan and the focus-follow listener
- * — every row's name cell renders exactly one such anchor
- * (`displayName()` below), tagged with `data-entry-slug` for the
- * focus-follow handler to read without re-deriving `rowSlug` from the DOM. */
+/** Row-anchor selector shared by the focus-follow listener and the P9 S2
+ * (D29-85) slug->anchor lookup below — every row's name cell renders exactly
+ * one such anchor (`displayName()` below), tagged with `data-entry-slug` so
+ * neither caller needs to re-derive `rowSlug` from the DOM. */
 const ROW_ANCHOR_SELECTOR = ".codex-listing-name";
+
+/** P9 S2 (D29-85) — resolves a row's anchor by SLUG, never by array index
+ * into `document.activeElement`/a live NodeList: `focusedSlug` (persisted
+ * React state, `BrowseListing`'s own) is the single source of truth for
+ * "which row is active," and this is the one place that turns a slug back
+ * into a real, currently-MOUNTED DOM node to move focus onto — returns
+ * `false` (a no-op) when the row isn't in the mounted window yet, which the
+ * caller (the rendered-range-keyed effect below) treats as "keep waiting,"
+ * never a timer.
+ *
+ * `preventScroll: true` (orchestrator review): a bare `.focus()` on an
+ * off-viewport element makes the browser scroll it into view — and the
+ * focus-after-mount effect deliberately fires on EVERY rendered-range
+ * change, including a wheel-scroll bringing the persisted row back toward
+ * the window, where it MOUNTS while still up to OVERSCAN×pitch (~480px)
+ * OUTSIDE the viewport. Without this flag, that remount's focus call
+ * yanked the scroll position out of the user's hands mid-wheel, against
+ * their gesture. Safe for every caller: the j/k path's positioning is
+ * already owned by `scheduleScrollToIndex(align:"auto")` (the target is
+ * in-viewport before focus lands), the D29-90 row-click path's row is by
+ * definition visible, and native Tab does its own scroll before the focus
+ * event ever fires — positioning stays 100% the virtualizer's job; focus
+ * is now side-effect-free. */
+function focusAnchorForSlug(container: HTMLElement, slug: string): boolean {
+  const anchors = container.querySelectorAll<HTMLAnchorElement>(ROW_ANCHOR_SELECTOR);
+  for (const anchor of anchors) {
+    if (anchor.dataset.entrySlug === slug) {
+      if (document.activeElement !== anchor) anchor.focus({ preventScroll: true });
+      return true;
+    }
+  }
+  return false;
+}
 
 /**
  * P8 S1 (D29-78) — "the compact set applies whenever the LIST CONTAINER is
@@ -133,6 +168,7 @@ export function BrowseListing({
   entryData,
   onEntrySelect,
   onEntryPreview,
+  restoredScrollY,
 }: {
   category: string;
   rows: readonly IndexRow[];
@@ -179,6 +215,17 @@ export function BrowseListing({
    * "component reports, route navigates" split as `onEntrySelect`, but
    * REPLACE instead of push (never adds a history entry). */
   onEntryPreview: (slug: string) => void;
+  /** P9 S2 (D29-84) — the current URL's window scroll-restoration entry
+   * (`scrollY`), if TanStack's `useElementScrollRestoration` found one — the
+   * ROUTE reads it (that hook needs real router context, which this
+   * component deliberately doesn't have, see the file-level doc comment
+   * above: "no router/URL awareness of its own," directly render-testable
+   * with a plain state object) and passes down just the number this
+   * component actually needs. `undefined` means "no restoration entry for
+   * this URL" (a genuinely fresh arrival — see the mount-sync effect below,
+   * which is also what every ordinary caller/test gets by not passing this
+   * prop at all). */
+  restoredScrollY?: number;
 }): ReactElement {
   // Local echo of the quick-filter text so typing feels instant; the actual
   // filter state (and therefore the URL) updates on every keystroke too —
@@ -273,6 +320,171 @@ export function BrowseListing({
   const entryVisible =
     entryVisibleOverride ?? (entryRow !== undefined && visibleIds.has(entryRow.id));
 
+  // P9 S2 (D29-83/-84/-85) — the virtualizer now lives HERE, not inside
+  // `ListingTable`: both D29-85 (slug-persisted j/k needs `scrollToIndex` +
+  // the rendered range to know when a target row has mounted) and D29-84
+  // (deep-link centering, reload-at-depth sync) are keyboard/router-level
+  // concerns this component already owns, and `ListingTable` stays a plain
+  // presentational renderer over the `virtualRows`/spacer arithmetic it's
+  // handed. `tableRef` is created here and threaded down so the scrollMargin
+  // measurement below can still read the real `<table>`'s document offset.
+  const tableRef = useRef<HTMLTableElement>(null);
+  // D29-83 (review M3) — `scrollMargin` = the table's own document-top
+  // offset, ref-measured in a POST-hydration effect only: both the server
+  // pass and the client's FIRST pass render with 0 (so the hydration ranges
+  // agree byte-for-byte), and this effect's `setState` re-renders with the
+  // true margin afterward — a client-only correction, never part of the
+  // hydration comparison itself. P9 S2: promoted `useEffect` -> `useLayoutEffect`
+  // (still strictly post-hydration-commit, so the hydration-mismatch
+  // invariant above is untouched) so the D29-84 mount-sync effect below,
+  // which depends on `scrollMargin` to compute correct pixel offsets, always
+  // settles in the SAME pre-paint window — gate E's "no flash beyond one
+  // frame" needs both corrections to land before the browser's first paint,
+  // not across two.
+  const [scrollMargin, setScrollMargin] = useState(0);
+  useLayoutEffect(() => {
+    const el = tableRef.current;
+    if (!el) return;
+    setScrollMargin(el.getBoundingClientRect().top + window.scrollY);
+  }, []);
+
+  const virtualizer = useWindowVirtualizer({
+    count: displayTotalCount,
+    estimateSize: () => ROW_PITCH_PX,
+    overscan: OVERSCAN,
+    // D29-84 — identical on the server pass and the client's first pass;
+    // only `scrollMargin` (above) ever differs, and only post-hydration.
+    initialRect: { width: 0, height: INITIAL_VIEWPORT_PX },
+    initialOffset: 0,
+    scrollMargin,
+    getItemKey: (index) => visible[index]?.id ?? index,
+  });
+  const virtualRows = virtualizer.getVirtualItems();
+
+  // P9 S2 (D29-85) — a rAF-coalesced `scrollToIndex`: calling the virtualizer
+  // once PER KEYDOWN (a rapid "j" burst — holding the key down produces
+  // native OS key-repeat well over 30/s, verified against real Chromium) can
+  // call `scrollToIndex` — and therefore `window.scrollTo` — more often than
+  // the browser dispatches "scroll" events for them; `@tanstack/virtual-core`
+  // only recomputes its rendered range (`getVirtualItems`) in response to an
+  // ACTUAL "scroll" event (verified against the pinned `virtual-core@3.17.4`
+  // source: `observeWindowOffset`'s handler is what calls `maybeNotify()` —
+  // `scrollToIndex` itself just calls `scrollToFn`/schedules an rAF
+  // reconcile, it never updates `scrollOffset`/notifies directly) — under a
+  // fast-enough burst the mounted window can measurably get STUCK short of
+  // the true target for a real, human-reachable span (found live driving
+  // this exact case in Chromium while writing S2's own Playwright coverage:
+  // a 160-keydown burst left the mounted range short and never recovered on
+  // its own, even seconds later). Batching every keydown's target down to AT
+  // MOST one real `scrollToIndex` call per animation frame (always the
+  // LATEST target — never queued/coalesced-then-replayed) keeps pace with
+  // what the browser can actually dispatch, and the ref-persisted target
+  // (`focusedSlugRef`, above) means no intermediate keypress's INTENT is
+  // ever lost even though most of them never place their own imperative
+  // scroll call.
+  const pendingScrollIndexRef = useRef<number | null>(null);
+  const scrollRafIdRef = useRef<number | null>(null);
+  const scheduleScrollToIndex = useCallback(
+    (index: number) => {
+      pendingScrollIndexRef.current = index;
+      if (scrollRafIdRef.current !== null) return;
+      scrollRafIdRef.current = requestAnimationFrame(() => {
+        scrollRafIdRef.current = null;
+        const target = pendingScrollIndexRef.current;
+        pendingScrollIndexRef.current = null;
+        if (target !== null) virtualizer.scrollToIndex(target, { align: "auto" });
+      });
+    },
+    [virtualizer],
+  );
+  useEffect(
+    () => () => {
+      if (scrollRafIdRef.current !== null) cancelAnimationFrame(scrollRafIdRef.current);
+    },
+    [],
+  );
+
+  // P9 S2 (D29-84) — the mount-time precedence gate: a scroll-restoration
+  // entry for this exact URL WINS over deep-link centering (back-nav/reload
+  // returns where the user was; centering is for fresh arrivals only).
+  // `initialScrollResolvedRef` — set exactly ONCE this decision is actually
+  // MADE (not merely attempted) — is what keeps this a genuine "resolve once
+  // on arrival" effect despite needing to run more than once: a fresh
+  // `?entry=` deep link beyond row 60 is, on the client's FIRST hydration
+  // pass, only present in the SSR-shipped WINDOW's `data.rows` (60 items —
+  // `computeWindowedListing` never special-cases a deep entrySlug into that
+  // slice, only `entryVisible` accounts for it), so `visible.findIndex(...)`
+  // genuinely returns -1 on that first pass — a real bug found live running
+  // this exact case in Chromium: keying this effect on `scrollMargin` alone
+  // (as S2 first shipped it) meant that first `idx === -1` was FINAL, the
+  // D29-89 post-hydration full-array fetch landing moments later never got a
+  // second look, and the row never centered — `visible` (now also a
+  // dependency) is what lets this effect get a SECOND chance once that fetch
+  // actually lands, while the ref is what still stops it from re-centering
+  // on every LATER `visible` change a filter/sort/j-k/click causes (D29-84's
+  // own "centering is for fresh arrivals only") — `visible.length >=
+  // displayTotalCount` is the signal that the full array has landed, so an
+  // entrySlug that's STILL not found at that point is conclusively
+  // unknown/filtered-out (not just "hasn't arrived yet"), and the ref locks
+  // in either way.
+  const initialScrollResolvedRef = useRef(false);
+  // oxlint-disable react-hooks/exhaustive-deps -- `category`/`entrySlug`/
+  // `virtualizer` deliberately excluded: `entrySlug`/`category` are read
+  // through the ref-gated body above (only ever ACTED on before
+  // `initialScrollResolvedRef` locks), and `virtualizer` is a referentially
+  // stable instance (its own methods, not its identity, are what matter
+  // here) — including them would only invite MORE spurious re-runs of an
+  // effect the ref already keeps from doing anything a second time.
+  useLayoutEffect(() => {
+    if (initialScrollResolvedRef.current) return;
+    if (restoredScrollY !== undefined) {
+      virtualizer.scrollToOffset(restoredScrollY, { align: "start" });
+      initialScrollResolvedRef.current = true;
+      return;
+    }
+    if (entrySlug === undefined) {
+      initialScrollResolvedRef.current = true; // fresh arrival, no selection at all — nothing to center
+      return;
+    }
+    const idx = visible.findIndex((r) => rowSlug(r, category) === entrySlug);
+    if (idx === -1) {
+      // Not (yet?) found — the full array may simply not have landed. Only
+      // give up for good once it demonstrably HAS (`visible.length` caught
+      // up to the true total) and the slug is STILL missing (unknown, or
+      // filtered out under the current — default — filter state).
+      if (visible.length >= displayTotalCount) initialScrollResolvedRef.current = true;
+      return;
+    }
+    const { startIndex, endIndex } = initialWindowRange(visible.length);
+    if (!(idx >= startIndex && idx < endIndex)) virtualizer.scrollToIndex(idx, { align: "center" });
+    initialScrollResolvedRef.current = true;
+  }, [scrollMargin, visible, displayTotalCount]);
+  // oxlint-enable react-hooks/exhaustive-deps
+
+  // P9 S2 (D29-85) — the active row, PERSISTED as a SLUG (never a DOM index
+  // or `document.activeElement` reference): every j/k press resolves it
+  // against the CURRENT `visible` array below, so wheel-scroll unmounting
+  // the focused anchor (the browser moves focus to `<body>`) never loses
+  // position, and a filter/sort change that drops the slug out of `visible`
+  // reads as "unfocused" (matches the pre-P9 filtered-out-focused-row
+  // behavior) rather than throwing or pinning a stale index.
+  //
+  // `focusedSlugRef` mirrors the state SYNCHRONOUSLY, written by the same
+  // `setFocusedSlug` call that updates the state — the keydown handler below
+  // reads the REF, never the state/its derived index, so a burst of several
+  // "j" keydowns dispatched within one browser task (holding the key down;
+  // real, not just a test artifact — found while writing S2's own j-scan
+  // Playwright/unit coverage) each see the position the PREVIOUS keydown in
+  // the same burst just set, instead of every press in the burst reading the
+  // same stale `useMemo`-derived index from before React had a chance to
+  // re-render and reattach the listener with a fresh closure.
+  const [focusedSlug, setFocusedSlugState] = useState<string | undefined>(undefined);
+  const focusedSlugRef = useRef<string | undefined>(undefined);
+  const setFocusedSlug = useCallback((slug: string | undefined) => {
+    focusedSlugRef.current = slug;
+    setFocusedSlugState(slug);
+  }, []);
+
   function handleQueryChange(e: ChangeEvent<HTMLInputElement>) {
     const next = e.target.value;
     setQueryText(next);
@@ -305,26 +517,84 @@ export function BrowseListing({
     onEntrySelect(rowSlug(row, category));
   }
 
+  /** P9 S2 (D29-90, stakeholder amendment) — the whole-row click target:
+   * clicking ANYWHERE on a `<tr>` selects it, with the SAME semantics as
+   * `handleRowClick` above, by direct implementation (never a synthetic
+   * `anchor.click()` — that carries `detail === 0`, which `handleRowClick`
+   * deliberately reads as keyboard activation, the WRONG branch on
+   * desktop). Guard order mirrors the anchor handler exactly: primary button
+   * only, any modifier -> no-op (a `<td>` has no new-tab affordance to
+   * preserve, unlike the anchor), a click whose target sits inside an `<a>`/
+   * `<button>` -> yield (that element's own handler owns it — `handleRowClick`
+   * on the name anchor already fires first in bubble order; without this
+   * guard both handlers would fire for the exact same click), and a click
+   * that CONCLUDES a text-selection drag (non-collapsed
+   * `window.getSelection()`) -> no-op, so copying a cell value doesn't also
+   * select the row. */
+  function handleRowBodyClick(e: MouseEvent<HTMLTableRowElement>, row: IndexRow) {
+    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const target = e.target;
+    if (target instanceof Element && target.closest("a, button")) return; // the anchor/button's own handler owns this click
+    const selection = typeof window !== "undefined" ? window.getSelection() : null;
+    if (selection !== null && !selection.isCollapsed) return; // concludes a text-selection drag, not a click-to-select
+    if (typeof window === "undefined" || !window.matchMedia(SPLIT_VIEW_MEDIA).matches) {
+      // Non-split (mobile): programmatic navigation identical to the name
+      // anchor's OWN default — that anchor is a bare `<a href>` (not a
+      // `<Link>`), i.e. a genuine full-page browser navigation, not an SPA
+      // transition, so this is the direct DOM equivalent, not a shortcut.
+      window.location.href = rowHref(row, state.superseded);
+      return;
+    }
+    onEntrySelect(rowSlug(row, category));
+    // D29-90 — "move DOM focus to that row's name anchor so j/k continues
+    // from the clicked row"; the anchor is already mounted (this row was
+    // just clicked), so a direct synchronous focus call suffices — no need
+    // for the rendered-range-keyed wait the D29-85 j/k path uses below.
+    const container = listingPaneRef.current;
+    if (container) focusAnchorForSlug(container, rowSlug(row, category));
+  }
+
   // P8 S3 (D29-82) — preview-follows-focus: whenever DOM focus lands on a
   // row anchor (j/k below, or a plain Tab), commit `?entry=` after a settle
   // window via REPLACE navigation (never the click path's push). Delegated
   // on the listing pane container (one listener, not one per row) via the
   // native `focusin` event (bubbles, unlike `focus`).
+  //
+  // P9 S2 — `onEntryPreview` mirrored into a ref (`onEntryPreviewRef`, same
+  // "latest ref" pattern as `entrySlugRef` above), so `scheduleEntryPreview`
+  // itself can be a referentially STABLE `useCallback` (`[]` deps) instead of
+  // depending on `[onEntryPreview]` directly. This matters because
+  // `onEntryPreview` is an inline arrow PROP (`routes/$category/index.tsx`) —
+  // a NEW function identity on every render of the ROUTE — and D29-89's own
+  // post-hydration full-array fetch (`CategoryIndexComponent`'s `setFullRows`)
+  // causes exactly one such extra route re-render, asynchronously, sometime
+  // after mount. Before this fix, THAT re-render's new `onEntryPreview`
+  // reference rippled into a new `scheduleEntryPreview`, which reinstalled
+  // the `onFocusIn` effect below, whose CLEANUP unconditionally
+  // `clearTimeout`s the in-flight settle timer — silently cancelling a
+  // pending preview commit with nothing left to reschedule it if the
+  // reinstall landed between the last focus move and the 180ms mark. A real,
+  // P9-introduced bug (P8 had no async post-mount route re-render to race
+  // against) found live running this slice's own Playwright coverage: j-scan
+  // to a real row, wait several seconds, `?entry=` never committed. Keeping
+  // `scheduleEntryPreview`/the effect stable regardless of how often the
+  // ROUTE re-renders removes the race at its root instead of chasing timing.
+  const onEntryPreviewRef = useRef(onEntryPreview);
+  useEffect(() => {
+    onEntryPreviewRef.current = onEntryPreview;
+  }, [onEntryPreview]);
   const previewTimerRef = useRef<number | undefined>(undefined);
-  const scheduleEntryPreview = useCallback(
-    (slug: string) => {
-      window.clearTimeout(previewTimerRef.current);
-      previewTimerRef.current = window.setTimeout(() => {
-        // Re-check against the LATEST `entrySlug` at fire time, not at
-        // schedule time: a click on this same row already pushed this exact
-        // slug (and also focuses the anchor, so it ALSO fires this
-        // listener) — without this guard the settle timer would still fire
-        // a redundant same-slug replace 180ms later.
-        if (slug !== entrySlugRef.current) onEntryPreview(slug);
-      }, FOCUS_SETTLE_MS);
-    },
-    [onEntryPreview],
-  );
+  const scheduleEntryPreview = useCallback((slug: string) => {
+    window.clearTimeout(previewTimerRef.current);
+    previewTimerRef.current = window.setTimeout(() => {
+      // Re-check against the LATEST `entrySlug` at fire time, not at
+      // schedule time: a click on this same row already pushed this exact
+      // slug (and also focuses the anchor, so it ALSO fires this
+      // listener) — without this guard the settle timer would still fire
+      // a redundant same-slug replace 180ms later.
+      if (slug !== entrySlugRef.current) onEntryPreviewRef.current(slug);
+    }, FOCUS_SETTLE_MS);
+  }, []);
 
   useEffect(() => {
     const container = listingPaneRef.current;
@@ -335,23 +605,56 @@ export function BrowseListing({
       const slug = target.dataset.entrySlug;
       if (slug === undefined) return;
       scheduleEntryPreview(slug);
+      // P9 S2 (D29-85) — ANY real focus arriving at a row anchor (a plain
+      // Tab, or the `.focus()` calls j/k and the D29-90 row-body click make
+      // below) reconciles the persisted slug — so a subsequent j/k press
+      // always resumes from wherever focus ACTUALLY is, not just from the
+      // last j/k-initiated move.
+      setFocusedSlug(slug);
     }
     container.addEventListener("focusin", onFocusIn);
     return () => {
       container.removeEventListener("focusin", onFocusIn);
       window.clearTimeout(previewTimerRef.current);
     };
-  }, [scheduleEntryPreview]);
+  }, [scheduleEntryPreview, setFocusedSlug]);
 
-  // P8 S3 (D29-82) — j/k move REAL DOM focus to the next/prev row's name
-  // anchor (native scroll-into-view, `block: "nearest"`); Enter needs no
-  // handler here (native link activation, `handleRowClick`'s own
-  // `e.detail === 0` early-return above). Guard: inert while
-  // `document.activeElement` is a form control (covers the Omnibar's own
-  // `<input>` too — typing "j"/"k" there must never hijack focus) or sits
-  // inside an open `<dialog>` (the filter drawer), and inert on narrow
-  // containers (S1's own `narrow` tier state — no preview pane to browse
-  // into there; matches split view's own container-driven posture, D29-78).
+  // P9 S2 (D29-85) — focus-after-mount: whenever the virtualizer's rendered
+  // range changes (a j/k `scrollToIndex` call below mounting the target row,
+  // or an ordinary wheel-scroll bringing it back into the window), check
+  // whether `focusedSlug`'s anchor now EXISTS in the mounted DOM and move
+  // real focus onto it if so — keyed off `virtualRows` (the rendered range),
+  // NEVER a timer, matching D29-85's own text. A no-op whenever the anchor
+  // is already focused (`focusAnchorForSlug`'s own guard) or isn't mounted
+  // yet (the common case for most renders — this effect just fires again
+  // next time `virtualRows` changes, until the target eventually mounts).
+  useEffect(() => {
+    if (focusedSlug === undefined) return;
+    const container = listingPaneRef.current;
+    if (!container) return;
+    focusAnchorForSlug(container, focusedSlug);
+  }, [focusedSlug, virtualRows]);
+
+  // P9 S2 (D29-85) — j/k resolve the next/prev row purely off `visible` +
+  // `focusedSlugRef` (the SYNCHRONOUS ref above — read fresh on every
+  // keydown, never a `focusedIndex` value captured in this closure at
+  // attach-time, which a rapid same-task "j" burst would otherwise see as
+  // stale — see `focusedSlugRef`'s own comment) and drive the virtualizer's
+  // `scrollToIndex` — `document.activeElement`/a live anchor NodeList is
+  // never consulted for POSITION (only the typing/dialog guard below still
+  // reads it, to decide whether this keystroke should be intercepted at all
+  // — a different question). This is what survives a wheel-scroll
+  // unmounting the focused anchor: the ref doesn't change just because the
+  // browser moved `document.activeElement` to `<body>`, so the very next
+  // j/k press still resolves the correct current index and resumes from
+  // there — never a snap back to row 0. Enter needs no handler here (native
+  // link activation, `handleRowClick`'s own `e.detail === 0` early-return
+  // above). Guard: inert while `document.activeElement` is a form control
+  // (covers the Omnibar's own `<input>` too — typing "j"/"k" there must
+  // never hijack focus) or sits inside an open `<dialog>` (the filter
+  // drawer), and inert on narrow containers (S1's own `narrow` tier state —
+  // no preview pane to browse into there; matches split view's own
+  // container-driven posture, D29-78).
   useEffect(() => {
     if (narrow) return;
     function onKeyDown(e: globalThis.KeyboardEvent) {
@@ -363,32 +666,34 @@ export function BrowseListing({
         if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
         if (active.closest("dialog")) return;
       }
-      const container = listingPaneRef.current;
-      if (!container) return;
-      const anchors = Array.from(
-        container.querySelectorAll<HTMLAnchorElement>(ROW_ANCHOR_SELECTOR),
-      );
-      if (anchors.length === 0) return;
-      const currentIndex: number =
-        active instanceof HTMLElement ? anchors.indexOf(active as HTMLAnchorElement) : -1;
+      if (visible.length === 0) return;
       e.preventDefault();
+      const currentSlug = focusedSlugRef.current;
+      const currentIndex =
+        currentSlug === undefined
+          ? -1
+          : visible.findIndex((r) => rowSlug(r, category) === currentSlug);
       const nextIndex =
         currentIndex === -1
           ? 0
           : e.key === "j"
-            ? Math.min(currentIndex + 1, anchors.length - 1)
+            ? Math.min(currentIndex + 1, visible.length - 1)
             : Math.max(currentIndex - 1, 0);
-      const next = anchors[nextIndex];
-      next?.focus();
-      // `?.()` twice over: jsdom (this repo's unit-test environment) has no
-      // `scrollIntoView` at all — real Chromium (the S4 Playwright gate's
-      // actual target) does, so this is a genuine environment gap, not a
-      // production concern.
-      next?.scrollIntoView?.({ block: "nearest" });
+      const nextRow = visible[nextIndex];
+      if (!nextRow) return;
+      setFocusedSlug(rowSlug(nextRow, category));
+      // `align: "auto"` (review M6) — minimal scroll, the
+      // `scrollIntoView({block:"nearest"})` equivalent; `center` is reserved
+      // for the D29-84 deep-link-arrival effect above. The focus-after-mount
+      // effect (above) picks up once `virtualRows` reflects `nextIndex` —
+      // this call itself never focuses anything directly. rAF-coalesced
+      // (`scheduleScrollToIndex`, above) — never a raw `virtualizer
+      // .scrollToIndex` call here, see that helper's own comment.
+      scheduleScrollToIndex(nextIndex);
     }
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
-  }, [narrow]);
+  }, [narrow, visible, category, setFocusedSlug, scheduleScrollToIndex]);
 
   return (
     <div className="codex-listing">
@@ -459,10 +764,13 @@ export function BrowseListing({
               cols={visibleCols}
               rows={visible}
               totalRowCount={displayTotalCount}
+              virtualRows={virtualRows}
+              tableRef={tableRef}
               collisions={collisions}
               superseded={state.superseded}
               selectedId={entryRow?.id}
               onRowClick={handleRowClick}
+              onRowBodyClick={handleRowBodyClick}
               sort={state.sort}
               onSortClick={handleHeaderSort}
             />
@@ -625,10 +933,13 @@ function ListingTable({
   cols,
   rows,
   totalRowCount = rows.length,
+  virtualRows,
+  tableRef,
   collisions,
   superseded,
   selectedId,
   onRowClick,
+  onRowBodyClick,
   sort,
   onSortClick,
 }: {
@@ -640,41 +951,24 @@ function ListingTable({
    * OTHER caller (SPA navigations, tests) where `rows` is already the full
    * array. */
   totalRowCount?: number;
+  /** P9 S2 — the virtualizer itself now lives in `BrowseListing` (the D29-85/
+   * -84 keyboard + deep-link mechanics need `scrollToIndex`/the rendered
+   * range from there); `ListingTable` stays a plain renderer over the
+   * already-computed rendered range + spacer arithmetic. */
+  virtualRows: readonly VirtualItem[];
+  tableRef: RefObject<HTMLTableElement | null>;
   collisions: ReadonlySet<string>;
   superseded: boolean;
   selectedId?: string;
   onRowClick: (e: MouseEvent<HTMLAnchorElement>, row: IndexRow) => void;
+  /** P9 S2 (D29-90) — the whole-row click target; see `BrowseListing`'s own
+   * `handleRowBodyClick` for the full guard order. */
+  onRowBodyClick: (e: MouseEvent<HTMLTableRowElement>, row: IndexRow) => void;
   sort: string;
   onSortClick: (key: string) => void;
 }): ReactElement {
   const desc = sort.startsWith("-");
   const activeKey = desc ? sort.slice(1) : sort;
-  const tableRef = useRef<HTMLTableElement>(null);
-  // D29-83 (review M3) — `scrollMargin` = the table's own document-top
-  // offset, ref-measured in a POST-hydration effect only: both the server
-  // pass and the client's FIRST pass render with 0 (so the hydration ranges
-  // agree byte-for-byte), and this effect's `setState` re-renders with the
-  // true margin afterward — a client-only correction, never part of the
-  // hydration comparison itself.
-  const [scrollMargin, setScrollMargin] = useState(0);
-  useEffect(() => {
-    const el = tableRef.current;
-    if (!el) return;
-    setScrollMargin(el.getBoundingClientRect().top + window.scrollY);
-  }, []);
-
-  const virtualizer = useWindowVirtualizer({
-    count: totalRowCount,
-    estimateSize: () => ROW_PITCH_PX,
-    overscan: OVERSCAN,
-    // D29-84 — identical on the server pass and the client's first pass;
-    // only `scrollMargin` (above) ever differs, and only post-hydration.
-    initialRect: { width: 0, height: INITIAL_VIEWPORT_PX },
-    initialOffset: 0,
-    scrollMargin,
-    getItemKey: (index) => rows[index]?.id ?? index,
-  });
-  const virtualRows = virtualizer.getVirtualItems();
   const firstIndex = virtualRows[0]?.index ?? 0;
   const lastIndex = virtualRows[virtualRows.length - 1]?.index ?? -1;
   const topSpacerHeight = firstIndex * ROW_PITCH_PX;
@@ -732,6 +1026,8 @@ function ListingTable({
                 row.id === selectedId && "codex-listing-row-selected",
               )}
               aria-rowindex={virtualRow.index + 1}
+              // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions -- D29-90: a pointer-target widening ONLY (no `role`/`tabindex` on the `<tr>` — the name anchor stays the row's single focusable element, R5/keyboard path untouched, see `BrowseListing`'s own `handleRowBodyClick` doc comment).
+              onClick={(e) => onRowBodyClick(e, row)}
             >
               {cols.map((col) => (
                 <td key={col.key} className={`codex-listing-col-${col.key}`}>

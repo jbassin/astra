@@ -73,7 +73,7 @@
     "racket": 1,
     "relic": 1,
     "research-field": 1,
-    "ritual": 6,
+    "ritual": 96,
     "rules": 7,
     "set-relic": 1,
     "shield": 1,
@@ -103,6 +103,6 @@
     "tag": "fixture"
   },
   "schemaVersion": 3,
-  "totalEntityCount": 113,
+  "totalEntityCount": 203,
   "totalSizeBytes": 1157853
 }

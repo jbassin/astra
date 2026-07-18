@@ -1,0 +1,34 @@
+{
+  "id": "ritual/virt-021",
+  "slug": "virt-021",
+  "category": "ritual",
+  "name": "Virt Synth Ritual 021",
+  "edition": "remaster",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 521
+  },
+  "level": 2,
+  "traits": [
+    "virt-fixture"
+  ],
+  "rarity": "uncommon",
+  "body": [
+    {
+      "kind": "paragraph",
+      "children": [
+        {
+          "kind": "text",
+          "content": "P9 S2 (D29-89/-85) synthetic fixture row #021, generated only to grow the committed fixture corpus's ritual category past the SSR_WINDOW=60 threshold for real-browser interaction coverage (frontier j/k, deep-link centering, scroll restoration) — never asserted on for content, only for its position in the sorted listing.",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "facets": {}
+}

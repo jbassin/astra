@@ -210,6 +210,34 @@ jobs:
       - run: pnpm --filter @astra/codex build
       - run: cd apps/codex && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
 
+  # P9 S2 (D29-84/-85/-90) — the listing-virtualization INTERACTION guard: a
+  # real Chromium probe over gate C (j/k frontier + wheel-unmount-resume +
+  # row-body click/text-drag/modified-click), D (deep-link centering), and E
+  # (scroll-deep-then-reload restoration) — none of these are observable from
+  # `jsdom` (no real scroll/wheel events, no real keyboard-vs-synthetic-click
+  # `detail`, no real pre-hydration scroll-restoration `<script>` timing). Same
+  # pinned-container posture as `codex-row-height-drift-guard` above; runs
+  # against the committed FIXTURE corpus's `ritual` category (grown to 96 rows
+  # SPECIFICALLY so it clears `SSR_WINDOW`=60 — see
+  # `scripts/virtualizationInteractionGuard.ts`'s own header) — hermetic, no
+  # real corpus touched.
+  codex-virtualization-interaction-guard:
+    needs: changes
+    if: needs.changes.outputs.codex == 'true'
+    runs-on: ubuntu-latest
+    container:
+      image: node:24-slim
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+    steps:
+      - run: apt-get update && apt-get install -y --no-install-recommends git ca-certificates
+      - uses: actions/checkout@v4
+      - run: corepack enable && corepack prepare pnpm@10.34.4 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: cd apps/codex && npx playwright install --with-deps chromium
+      - run: pnpm --filter @astra/codex build
+      - run: cd apps/codex && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/virtualizationInteractionGuard.ts
+
   commitlint:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest

@@ -1,4 +1,9 @@
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  notFound,
+  useElementScrollRestoration,
+  useNavigate,
+} from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 
 import { BrowseListing } from "@/domain/browse/BrowseListing";
@@ -113,6 +118,13 @@ function CategoryIndexComponent() {
 
   const state = useMemo(() => searchToFilterState(search), [search]);
 
+  // P9 S2 (D29-84) — read here, not inside `BrowseListing` (that component
+  // is deliberately router-agnostic, directly render-testable with a plain
+  // state object — see its own file-level doc comment); only the `scrollY`
+  // number crosses the boundary, via the same "component reports, route
+  // supplies" split `onEntrySelect`/`onEntryPreview` already use in reverse.
+  const restoredWindowEntry = useElementScrollRestoration({ getElement: () => window });
+
   // P9 S1 (D29-89) — the post-hydration full-array fetch: `data.rows` is a
   // windowed SSR projection whenever `data.rows.length < data.totalCount`
   // (client-executed loader runs never leave this true — see the loader's
@@ -152,19 +164,37 @@ function CategoryIndexComponent() {
         state={state}
         entrySlug={search.entry}
         entryData={data.entry}
+        restoredScrollY={restoredWindowEntry?.scrollY}
         onStateChange={(updater) => {
           const next = updater(state);
           void navigate({ search: withEntryPreserved(next, search), replace: true });
         }}
         onEntrySelect={(slug) => {
           // D29-49 — a plain, NON-replace push: back/forward steps
-          // entry-to-entry through visited rows.
-          void navigate({ search: { ...search, entry: slug } });
+          // entry-to-entry through visited rows. P9 S2 (D29-83/-85) —
+          // `resetScroll: false`: TanStack's own default is `true` (verified
+          // against the pinned `@tanstack/router-core` `buildAndCommitLocation`
+          // source — every `navigate()` resets `window.scrollTo(0,0)` on
+          // render unless told otherwise), a P8-era latent bug this slice's
+          // own real-browser j/k coverage surfaced — pre-windowing there was
+          // nothing tall enough to scroll BACK from, so a row click's own
+          // scroll-to-top was invisible; now the listing can be thousands of
+          // rows tall and a reset here would undo D29-85's whole point.
+          void navigate({ search: { ...search, entry: slug }, resetScroll: false });
         }}
         onEntryPreview={(slug) => {
           // P8 S3 (D29-82) — REPLACE, never push: a j/k scan across many
-          // rows must not create a history entry per row (gate E).
-          void navigate({ search: { ...search, entry: slug }, replace: true });
+          // rows must not create a history entry per row (gate E). P9 S2 —
+          // same `resetScroll: false` fix as `onEntrySelect` above, for the
+          // SAME reason — a settled j/k preview commit fires this exact
+          // `navigate()` call every ~180ms during a scan; without the flag it
+          // silently snapped the listing back to the top after every single
+          // settle, defeating j/k entirely on any list taller than one
+          // screen (found via this slice's own Playwright coverage: `?entry=`
+          // committed correctly, but `window.scrollY` measured 0 and DOM
+          // focus had fallen back to `<body>` a few hundred ms after a j-scan
+          // stopped — the row was scrolled to, then un-scrolled back to top).
+          void navigate({ search: { ...search, entry: slug }, replace: true, resetScroll: false });
         }}
       />
     </main>
