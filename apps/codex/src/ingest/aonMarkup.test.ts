@@ -133,6 +133,27 @@ describe("real docs", () => {
     expect(textContent(blocks)).not.toContain("Rare");
   });
 
+  // -------------------------------------------------------------------------
+  // P10 (D29-91/D29-92): negative fixtures — the outer `<row>` in each of
+  // these two docs wraps NESTED `<column>`s, so condition (a) (no wrapper
+  // opened anywhere inside the row's own scope) fails and the row keeps
+  // flattening exactly as it did before this round. Pinned via a committed
+  // golden captured from the PRE-P10 parser (`*.expected-blocks.json`,
+  // sibling files to the input fixture) — a real regression gate, not just a
+  // "no statRow appears" smoke check.
+  // -------------------------------------------------------------------------
+
+  it("column-heavy + rules-section (load-bearing NEGATIVE fixtures): parse is byte-identical to the pre-P10 golden — the outer row's nested column disqualifies it", () => {
+    for (const file of ["column-heavy.json", "rules-section.json"]) {
+      const { blocks } = parseFixture(file);
+      const golden = JSON.parse(
+        readFileSync(join(FIXTURE_DIR, file.replace(".json", ".expected-blocks.json")), "utf8"),
+      ) as BlockNode[];
+      expect(blocks, file).toEqual(golden);
+      expect(findAll(blocks, "statRow"), file).toHaveLength(0);
+    }
+  });
+
   it("actions glyph inline in a bold statblock line", () => {
     const { blocks } = parseFixture("title-right-actions.json");
     const glyphs = findAll(blocks, "actionGlyph");
@@ -184,6 +205,67 @@ describe("real docs", () => {
         l.kind === "list" && l.items.some((item) => textContent(item).includes("dispel magic")),
     );
     expect(anyList).toBeDefined();
+  });
+
+  // -------------------------------------------------------------------------
+  // P10 (D29-91): creature-2179 (King Merlokrep) carries exactly 3 statRow
+  // CANDIDATES corpus-wide (spec's own pin) — 2 collapse (6-cell ability
+  // mods, 4-cell AC/saves), 1 stays a paragraph (single-cell HP). The
+  // fixture's OUTER `<row><column><column>...` wrapper (the recall-knowledge
+  // sidebar) still flattens unconditionally — it has a nested column, so it
+  // fails condition (a) regardless of its post-flatten all-paragraph shape
+  // (the exact 14,869-row definitional trap the scope doc's R1 census
+  // describes).
+  // -------------------------------------------------------------------------
+
+  it("list-continuation-sup (P10, D29-91): the 6-cell ability-mod row and the 4-cell AC/save row collapse to statRow; the 1-cell HP row stays a paragraph", () => {
+    const { blocks, reports } = parseFixture("list-continuation-sup.json");
+    const statRows = findAll(blocks, "statRow");
+    expect(statRows).toHaveLength(2);
+
+    const abilityRow = statRows[0];
+    if (abilityRow?.kind !== "statRow") throw new Error("expected statRow");
+    expect(abilityRow.cells.map((c) => textContent(c))).toEqual([
+      "Str +4",
+      "Dex +6",
+      "Con +4",
+      "Int +2",
+      "Wis +4",
+      "Cha +6",
+    ]);
+
+    const saveRow = statRows[1];
+    if (saveRow?.kind !== "statRow") throw new Error("expected statRow");
+    // The census's own "AC 32 " trailing-whitespace example, boundary-trimmed
+    // (D29-91): no cell's text carries a trailing space.
+    expect(saveRow.cells.map((c) => textContent(c))).toEqual([
+      "AC 26",
+      "Fort +14",
+      "Ref +18",
+      "Will +16",
+    ]);
+    for (const cell of saveRow.cells) {
+      const last = cell[cell.length - 1];
+      if (last?.kind === "text") expect(last.content).not.toMatch(/\s$/);
+    }
+
+    // The HP row (single cell) keeps flattening to its today-shaped paragraph
+    // — identical render either way, report-counted as a candidate.
+    const paragraphs = findAll(blocks, "paragraph");
+    expect(paragraphs.some((p) => p.kind === "paragraph" && textContent([p]) === "HP 140")).toBe(
+      true,
+    );
+
+    expect(reports.get("statRowCollapsed")).toEqual(["6", "4"]);
+    expect(reports.get("statRowSingleCellKept")).toHaveLength(1);
+
+    // The outer recall-knowledge `<row>` has a nested `<column>` inside it —
+    // condition (a) fails, so it's never a candidate at all (no report, no
+    // collapse) even though its own flattened content is all-paragraph.
+    const recallPara = paragraphs.find((p) =>
+      p.kind === "paragraph" ? textContent([p]).includes("Recall Knowledge") : false,
+    );
+    expect(recallPara).toBeDefined();
   });
 });
 
@@ -327,6 +409,82 @@ describe("mappings", () => {
     const spoiler = blocks[1];
     if (spoiler?.kind !== "aside") throw new Error("expected aside");
     expect(textContent(spoiler.children)).toBe("May contain spoilers");
+  });
+
+  // -------------------------------------------------------------------------
+  // P10 (D29-91/D29-93): `<row>` statRow candidacy — synthetic grammar-level
+  // tests (the real-doc coverage lives in the "real docs" describe above).
+  // -------------------------------------------------------------------------
+
+  it("a nested-wrapper row does NOT collapse even though its flattened content is all-paragraph (the D29-91 definitional trap)", () => {
+    const t = makeCtx();
+    const blocks = parseAonMarkdown("<row><column>a</column><column>b</column></row>", t.ctx);
+    expect(blocks.map((b) => b.kind)).toEqual(["paragraph", "paragraph"]);
+    expect(findAll(blocks, "statRow")).toHaveLength(0);
+    expect(t.reports.get("statRowCollapsed")).toBeUndefined();
+    expect(t.reports.get("statRowSingleCellKept")).toBeUndefined();
+  });
+
+  it("a single-cell row candidate keeps flattening to its one paragraph, report-counted", () => {
+    const t = makeCtx();
+    const blocks = parseAonMarkdown("<row>**Bulk** L</row>", t.ctx);
+    expect(blocks.map((b) => b.kind)).toEqual(["paragraph"]);
+    expect(findAll(blocks, "statRow")).toHaveLength(0);
+    expect(t.reports.get("statRowSingleCellKept")).toHaveLength(1);
+    expect(t.reports.get("statRowCollapsed")).toBeUndefined();
+  });
+
+  it("a multi-cell row candidate collapses to statRow, report-counted with its cell count", () => {
+    const t = makeCtx();
+    const blocks = parseAonMarkdown("<row>\n**Str** +7\n\n**Dex** +5\n</row>", t.ctx);
+    expect(blocks.map((b) => b.kind)).toEqual(["statRow"]);
+    const row = blocks[0];
+    if (row?.kind !== "statRow") throw new Error("expected statRow");
+    expect(row.cells).toHaveLength(2);
+    expect(textContent(row.cells[0] ?? [])).toBe("Str +7");
+    expect(textContent(row.cells[1] ?? [])).toBe("Dex +5");
+    expect(t.reports.get("statRowCollapsed")).toEqual(["2"]);
+  });
+
+  it("an empty row keeps flattening to nothing — not report-counted", () => {
+    const t = makeCtx();
+    const blocks = parseAonMarkdown("before\n\n<row></row>\n\nafter", t.ctx);
+    expect(blocks.map((b) => b.kind)).toEqual(["paragraph", "paragraph"]);
+    expect(textContent(blocks)).toBe("beforeafter");
+    expect(t.reports.get("statRowCollapsed")).toBeUndefined();
+    expect(t.reports.get("statRowSingleCellKept")).toBeUndefined();
+  });
+
+  it("cell boundary trim: a fully-whitespace boundary text node is DROPPED, a trailing-whitespace-bearing node is trimEnd'd", () => {
+    const t = makeCtx();
+    const blocks = parseAonMarkdown(
+      "<row>**Bulk** [L](/Bulk.aspx?ID=1) \n\n**Price** 5 gp </row>",
+      t.ctx,
+    );
+    const row = blocks[0];
+    if (row?.kind !== "statRow") throw new Error("expected statRow");
+    expect(row.cells).toHaveLength(2);
+
+    // Cell 1 pre-trim would be [text("Bulk", bold), text(" "), crossref("L"),
+    // text(" ")] — a trailing pure-whitespace text node after the crossref
+    // that must be DROPPED entirely (not merely trimmed), leaving the
+    // crossref as the cell's last element and exactly 3 children (the
+    // INTERIOR separator space between the label and the link is real content
+    // at a non-boundary position and must survive untouched).
+    const bulkCell = row.cells[0] ?? [];
+    expect(bulkCell).toHaveLength(3);
+    const lastOfBulk = bulkCell[bulkCell.length - 1];
+    expect(lastOfBulk?.kind).toBe("crossref");
+
+    // Cell 2: the trailing " 5 gp " value text is trimEnd'd (trailing space
+    // gone) but NOT trimStart'd away from its own leading space (that space
+    // sits between the bold label and the value, not at the true cell edge —
+    // `**Price**` is the true leading edge and needs no trim).
+    expect(textContent(row.cells[1] ?? [])).toBe("Price 5 gp");
+    const priceCell = row.cells[1] ?? [];
+    const lastOfPrice = priceCell[priceCell.length - 1];
+    if (lastOfPrice?.kind !== "text") throw new Error("expected trailing text node");
+    expect(lastOfPrice.content).not.toMatch(/\s$/);
   });
 
   it("HTML lists: <ul>/<ol> with li items; simple items unwrap to bare inline", () => {
@@ -624,5 +782,117 @@ describe("stripMasthead (D29-62)", () => {
     const result = stripMasthead([]);
     expect(result.body).toEqual([]);
     expect(result.mastheadExtra).toBeUndefined();
+  });
+
+  // -------------------------------------------------------------------------
+  // P10 (D29-92): statRow-aware unwrap. `ritual/shadow-double`'s own raw
+  // markdown isn't in the committed unit-fixture raw set (verified:
+  // `fixtures/raw/aon` doesn't carry it) — these synthetic cases are built
+  // from the census's own description of that doc's pattern (a Bulk/Price-
+  // style row inside the masthead run, trailing-whitespace value tail) rather
+  // than a fabricated fixture file. `list-continuation-sup.json`'s own
+  // masthead walk (the "real docs" describe above) is the one committed
+  // fixture whose masthead-consumed run this pass touches at all — it
+  // collects zero pairs before ever reaching its statRow, so it's a
+  // (necessary but not sufficient) equality-modulo-trim proof; these
+  // synthetic cases cover the statRow-specific branches it can't reach.
+  // -------------------------------------------------------------------------
+
+  function valueText(value: readonly InlineNode[]): string {
+    return value.map((n) => (n.kind === "text" ? n.content : "")).join("");
+  }
+
+  it("D29-92: a fully-qualifying statRow inside the masthead run unwraps into pairs, in order", () => {
+    const row: BlockNode = {
+      kind: "statRow",
+      cells: [
+        [
+          { kind: "text", content: "Str", marks: BOLD_MARKS },
+          { kind: "text", content: " +7", marks: NO_MARKS },
+        ],
+        [
+          { kind: "text", content: "Dex", marks: BOLD_MARKS },
+          { kind: "text", content: " +5", marks: NO_MARKS },
+        ],
+      ],
+    };
+    const body: BlockNode[] = [h1("X"), labelLine("Source", "y"), row, divider, prose("body")];
+    const result = stripMasthead(body);
+    expect(result.body).toEqual([prose("body")]);
+    expect(result.mastheadExtra?.map((p) => p.label)).toEqual(["Str", "Dex"]);
+    expect(result.mastheadExtra?.map((p) => valueText(p.value))).toEqual([" +7", " +5"]);
+  });
+
+  it("D29-92: a statRow with even one non-qualifying cell stops the walk BEFORE it (whole-row-or-nothing), report-counted (expected 0 real occurrences)", () => {
+    const reports: Array<[string, string]> = [];
+    const report = (cls: string, detail: string): void => {
+      reports.push([cls, detail]);
+    };
+    const partialRow: BlockNode = {
+      kind: "statRow",
+      cells: [
+        [
+          { kind: "text", content: "Str", marks: BOLD_MARKS },
+          { kind: "text", content: " +7", marks: NO_MARKS },
+        ],
+        [{ kind: "text", content: "not bold", marks: NO_MARKS }],
+      ],
+    };
+    const body: BlockNode[] = [h1("X"), labelLine("Source", "y"), partialRow, prose("after")];
+    const result = stripMasthead(body, report);
+    // The row stays in body WHOLE — nothing is consumed from it, unlike the
+    // bold-first-paragraph case, which would never partially consume either
+    // (it's all-or-nothing per line already); this is the same posture
+    // extended to a row's cells.
+    expect(result.body).toEqual([partialRow, prose("after")]);
+    expect(result.mastheadExtra).toBeUndefined(); // only Source was ever collected
+    expect(reports).toEqual([["mastheadStatRowPartial", "cells=2"]]);
+  });
+
+  it("D29-92 trim delta: a statRow-sourced pair's value differs from the pre-P10 paragraph-line convention only by trailing whitespace (accepted — ~155 pairs/151 docs measured, e.g. ritual 99/shield 28/spell 21)", () => {
+    // Pre-P10 convention: today's stripMasthead trims the LABEL but never the
+    // value run (aonMarkup.ts's own historical note) — trailing whitespace
+    // from the source markdown survives verbatim into mastheadExtra.
+    const oldBody: BlockNode[] = [
+      h1("Shadow Double"),
+      labelLine("Source", "x"),
+      labelLine("Bulk", "L "),
+      divider,
+      prose("body"),
+    ];
+    const oldResult = stripMasthead(oldBody);
+    const oldBulk = oldResult.mastheadExtra?.find((p) => p.label === "Bulk");
+    expect(oldBulk && valueText(oldBulk.value)).toBe(" L ");
+
+    // P10: the SAME logical pair arriving as an already boundary-trimmed
+    // statRow cell (D29-91's trim runs at row-collapse time, upstream of
+    // stripMasthead) — only the trailing whitespace is gone.
+    const newRow: BlockNode = {
+      kind: "statRow",
+      cells: [
+        [
+          { kind: "text", content: "Bulk", marks: BOLD_MARKS },
+          { kind: "text", content: " L", marks: NO_MARKS },
+        ],
+        [
+          { kind: "text", content: "Price", marks: BOLD_MARKS },
+          { kind: "text", content: " 5 gp", marks: NO_MARKS },
+        ],
+      ],
+    };
+    const newBody: BlockNode[] = [
+      h1("Shadow Double"),
+      labelLine("Source", "x"),
+      newRow,
+      divider,
+      prose("body"),
+    ];
+    const newResult = stripMasthead(newBody);
+    const newBulk = newResult.mastheadExtra?.find((p) => p.label === "Bulk");
+    expect(newBulk && valueText(newBulk.value)).toBe(" L");
+    expect(oldBulk && valueText(oldBulk.value).trimEnd()).toBe(newBulk && valueText(newBulk.value));
+    // Everything else about the strip (which body survives, which labels are
+    // collected) is otherwise identical — the trim is the ONLY delta.
+    expect(newResult.body).toEqual(oldResult.body);
   });
 });

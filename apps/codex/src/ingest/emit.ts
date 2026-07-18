@@ -176,8 +176,15 @@ export interface CorpusOutputManifest {
  * detect a regen against, per that spec decision (deliberately not treated
  * as a silent additive-only change). D29-74's lore-into-`stats.skills` merge
  * changes VALUES within the existing `skills` record shape, not the schema
- * itself — no separate bump needed for it. */
-export const CORPUS_SCHEMA_VERSION = 3;
+ * itself — no separate bump needed for it.
+ *
+ * Bumped 3->4 for P10 S1 (D29-91/-93): `nodes.ts` gains a new `BlockNode`
+ * kind, `statRow` (an AoN statblock `<row>` collapsed at ingest instead of
+ * flattened, D29-2's original mapping amended). A brand-new node kind is a
+ * corpus-shape change by the same posture as every prior bump above — a P2+
+ * consumer walking `CodexNode` unions must be able to detect a regen that can
+ * now hand it a kind it didn't understand before. */
+export const CORPUS_SCHEMA_VERSION = 4;
 
 export interface EmitCorpusInput {
   /** `<dataPath>/corpus` — wiped and rewritten wholesale on every call. */

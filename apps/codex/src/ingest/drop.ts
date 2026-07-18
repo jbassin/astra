@@ -116,6 +116,13 @@ function reconcileNode(node: CodexNode, keptIds: ReadonlySet<string>, report: Re
       return { ...node, children: node.children.map((c) => reconcileNode(c, keptIds, report)) };
     case "divider":
       return node;
+    case "statRow":
+      // P10 (D29-94): same "cells are InlineNode[][], map through
+      // reconcileInline directly" shape as `join.ts`'s `patchNode`.
+      return {
+        ...node,
+        cells: node.cells.map((cell) => cell.map((c) => reconcileInline(c, keptIds, report))),
+      };
     default:
       return reconcileInline(node, keptIds, report);
   }

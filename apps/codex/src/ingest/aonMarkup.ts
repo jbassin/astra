@@ -44,8 +44,24 @@ import type { BlockNode, CodexNode, InlineNode, TableRow, TextMarks } from "../s
  *     "Single Action", "Two Actions or Three Actions"). The 9,161 empty
  *     `string=""` uses mean "no glyph" (textual activation time follows) —
  *     dropped with a report count (actionGlyph.cost has min-length 1).
- *   - `<row>`/`<column>` → FLATTENED to sequential blocks (layout, not content —
- *     D29-2 verbatim; they nest, flattening recurses).
+ *   - `<column>` → FLATTENED to sequential blocks (layout, not content — D29-2
+ *     verbatim; columns nest, flattening recurses). `<row>` mostly flattens the
+ *     same way, EXCEPT (P10, D29-91/D29-93 — amends the D29-2 verbatim-flatten
+ *     posture): a row whose parsed children are ALL paragraphs, with NO wrapper
+ *     tag (`row`/`column`/`center`) opened anywhere inside its own scope, and
+ *     at least 2 children, collapses to a `statRow` block (`cells:
+ *     InlineNode[][]`, one cell per child paragraph's inline run, trimmed at
+ *     cell boundaries) instead of flattening — the AoN statblock stat-line
+ *     idiom (`Str +7 … Cha +5`, `AC 32 Fort +25 …`). Candidacy is decided
+ *     DURING parse via a wrapper-open counter sampled around the row's own
+ *     recursive `parseSequence` call (see `collectStatRowCells`/the `row` case
+ *     below) — a post-hoc `children.every(paragraph)` check on the FLATTENED
+ *     result can't distinguish a real stat line from a deity/class/ancestry
+ *     page whose paragraphs were spliced out of a nested `<column>`. A
+ *     single-cell candidate (exactly 1 qualifying child) still flattens to
+ *     that one paragraph (identical render either way, report-counted); an
+ *     empty row still flattens to nothing; a row containing ANY nested
+ *     wrapper still flattens unconditionally, same as `<column>`/`<center>`.
  *   - `<aside>`/`<spoilers>` → aside node (spoiler banners are inset callouts).
  *   - `<document level id override-title-right/>` → embed node
  *     (`target` = the raw doc id, `resolved: false` — the gate runner resolves);
@@ -661,6 +677,83 @@ function fail(tok: Token | undefined, message: string): never {
   throw new AonMarkupError("", start, start, message);
 }
 
+// ---------------------------------------------------------------------------
+// P10 (D29-91/D29-93): `<row>` statRow candidacy + boundary trim
+// ---------------------------------------------------------------------------
+
+/** Bumped once on EVERY `row`/`column`/`center` open, at the moment `parseSequence`
+ * recognizes the tag — including the outermost one itself. A row samples this
+ * counter right after its OWN bump (so its own opening never counts against it),
+ * recurses into its children, then compares: any wrapper opened anywhere inside
+ * that recursion (at any depth — the counter is shared across the whole call
+ * stack) bumps the counter again, so a post-recursion mismatch means "some
+ * wrapper opened inside my scope" — the D29-91 candidacy condition (a). This is
+ * the "per-row-invocation counter sampled around the recursive `parseSequence`
+ * call" the census's instrumented-recorder prototype proved out. Module-scope is
+ * safe: `parseAonMarkdown` is fully synchronous (no `await` inside), so two
+ * top-level parses can never interleave even when driven concurrently (e.g.
+ * `Promise.all` over many docs) — only the delta across one call's own
+ * synchronous recursion is ever read. */
+let wrapperOpenSeq = 0;
+
+/** Drops boundary TEXT nodes that trim to fully empty, then `trimStart`s the
+ * (new) first node's content and `trimEnd`s the (new) last node's content when
+ * they're text — D29-91's cell-boundary trim (census: "AC 32 " trailing
+ * whitespace). Non-text boundary nodes are never dropped (no "trim to empty"
+ * concept applies to them). A single surviving node gets both trimStart AND
+ * trimEnd applied (equivalent to a plain `.trim()`) since the same index is read
+ * again after the first mutation. */
+function trimCellBoundary(children: readonly InlineNode[]): InlineNode[] {
+  let start = 0;
+  let end = children.length;
+  while (start < end) {
+    const node = children[start];
+    if (node !== undefined && node.kind === "text" && node.content.trim() === "") {
+      start++;
+      continue;
+    }
+    break;
+  }
+  while (end > start) {
+    const node = children[end - 1];
+    if (node !== undefined && node.kind === "text" && node.content.trim() === "") {
+      end--;
+      continue;
+    }
+    break;
+  }
+  const result = children.slice(start, end);
+  if (result.length === 0) return result;
+  const first = result[0];
+  if (first !== undefined && first.kind === "text") {
+    result[0] = { ...first, content: first.content.trimStart() };
+  }
+  const lastIdx = result.length - 1;
+  const last = result[lastIdx];
+  if (last !== undefined && last.kind === "text") {
+    result[lastIdx] = { ...last, content: last.content.trimEnd() };
+  }
+  return result;
+}
+
+/** D29-91 condition (b)+(c): every parsed child is a `paragraph`, boundary-
+ * trimmed into a `statRow` cell. Returns `undefined` when any child isn't a
+ * paragraph (a candidate row never has a non-paragraph child by construction —
+ * a wrapper containing one would already have failed condition (a) — but this
+ * stays a real check, not an assumption) or when `children` is empty (an empty
+ * row keeps flattening to nothing, D29-91). Doesn't itself check the `>= 2`
+ * cell-count gate — the caller decides collapse vs. single-cell-kept vs. plain
+ * flatten from the returned array's length. */
+function collectStatRowCells(children: readonly BlockNode[]): InlineNode[][] | undefined {
+  if (children.length === 0) return undefined;
+  const cells: InlineNode[][] = [];
+  for (const child of children) {
+    if (child.kind !== "paragraph") return undefined;
+    cells.push(trimCellBoundary(child.children));
+  }
+  return cells;
+}
+
 /**
  * The recursive workhorse: walks tokens producing blocks; text/inline-tag runs
  * buffer as flow segments and become markdown blocks at each block boundary.
@@ -782,11 +875,40 @@ function parseSequence(cursor: TokenCursor, ctx: AonParseCtx, opts: SequenceOpti
         out.push({ kind: "aside", children });
         continue;
       }
-      case "row":
+      case "row": {
+        // P10 (D29-91/D29-93): a candidate collapses to `statRow`; everything
+        // else still flattens to sequential blocks exactly like `<column>`/
+        // `<center>` (D29-2 verbatim posture, amended only for the candidate
+        // case). See `collectStatRowCells`/`wrapperOpenSeq`'s own doc comments
+        // for the candidacy mechanics.
+        flushFlow();
+        wrapperOpenSeq++;
+        const preChildWrapperSeq = wrapperOpenSeq;
+        const children = parseSequence(cursor, ctx, {
+          stopAt: new Set([name]),
+          scopes: withScope(opts.scopes, name),
+        });
+        consumeClose(cursor, ctx, new Set([name]));
+        const hasNestedWrapper = wrapperOpenSeq !== preChildWrapperSeq;
+        const cells = hasNestedWrapper ? undefined : collectStatRowCells(children);
+        if (cells !== undefined && cells.length >= 2) {
+          ctx.report("statRowCollapsed", String(cells.length));
+          out.push({ kind: "statRow", cells });
+        } else {
+          if (cells !== undefined && cells.length === 1) {
+            ctx.report("statRowSingleCellKept", "");
+          }
+          out.push(...children);
+        }
+        continue;
+      }
       case "column":
       case "center": {
-        // Layout wrappers — flatten to sequential blocks (D29-2).
+        // Layout wrappers — flatten to sequential blocks (D29-2). Still bump
+        // `wrapperOpenSeq` (an enclosing `<row>`'s candidacy check must see a
+        // nested column/center the same as a nested row).
         flushFlow();
+        wrapperOpenSeq++;
         const children = parseSequence(cursor, ctx, {
           stopAt: new Set([name]),
           scopes: withScope(opts.scopes, name),
@@ -1246,6 +1368,22 @@ export interface MastheadStripResult {
   mastheadExtra?: MastheadPair[];
 }
 
+/** Whole-row-or-nothing check (D29-92): a leading statRow unwraps into masthead
+ * pairs only when EVERY cell qualifies as a masthead line (cell[0] is a `text`
+ * node with `marks.bold === true`, same test a bold-first paragraph gets below).
+ * Returns `undefined` the moment any cell doesn't qualify — the caller stops
+ * BEFORE the row entirely rather than partially consume it (measured 0
+ * real occurrences; still report-counted as a drift tripwire). */
+function statRowAsMastheadPairs(cells: readonly InlineNode[][]): MastheadPair[] | undefined {
+  const pairs: MastheadPair[] = [];
+  for (const cell of cells) {
+    const lead = cell[0];
+    if (lead === undefined || lead.kind !== "text" || !lead.marks.bold) return undefined;
+    pairs.push({ label: lead.content.trim(), value: cell.slice(1) });
+  }
+  return pairs;
+}
+
 /**
  * D29-62: strips the AoN masthead's bold-label lines out of `body` and
  * returns the leftover pairs as `mastheadExtra` — a general STRUCTURAL walk
@@ -1255,23 +1393,31 @@ export interface MastheadStripResult {
  *
  *   1. `body[0]` a level-1 heading (the AoN masthead's own title, duplicating
  *      `entity.name`) is dropped.
- *   2. Walk forward while the current node is a `paragraph` whose FIRST child
- *      is a `text` node with `marks.bold === true` — that's a masthead line
- *      (`label` = the bold text's own content, trimmed; `value` = every
- *      other child). Stop at the first node that doesn't match (a `divider`,
- *      a plain prose paragraph whose first child isn't bold, a heading, a
- *      list, ...).
+ *   2. Walk forward while the current node is EITHER a `paragraph` whose
+ *      FIRST child is a `text` node with `marks.bold === true` (a masthead
+ *      line: `label` = the bold text's own content, trimmed; `value` = every
+ *      other child) OR — P10, D29-92 — a `statRow` every one of whose cells
+ *      qualifies the same way (`statRowAsMastheadPairs`; a statRow with even
+ *      one non-qualifying cell stops the walk BEFORE it, whole-row-or-nothing,
+ *      report-counted). Stop at the first node that matches neither (a
+ *      `divider`, a plain prose paragraph whose first child isn't bold, a
+ *      heading, a list, ...).
  *   3. If the node immediately after the collected run is a `divider`, drop
  *      it too (the masthead's own closing rule). If no divider follows (the
  *      real `ancestry/human` case — an H1 + a bare "Source" paragraph,
  *      straight into prose), stop cleanly — nothing extra is consumed, so
  *      the body's own prose survives intact.
  *
- * Pure — no report sink: an entity with no masthead shape at all (most
- * `rules`/`lore` docs, per R3's own scope) simply collects zero pairs and
- * loses nothing but a possible leading H1.
+ * Pure except for the optional `report` sink (P10 addition, used only for the
+ * statRow partial-consumption drift tripwire above — every OTHER path here is
+ * still a total, side-effect-free walk): an entity with no masthead shape at
+ * all (most `rules`/`lore` docs, per R3's own scope) simply collects zero
+ * pairs and loses nothing but a possible leading H1.
  */
-export function stripMasthead(body: readonly BlockNode[]): MastheadStripResult {
+export function stripMasthead(
+  body: readonly BlockNode[],
+  report?: (cls: string, detail: string) => void,
+): MastheadStripResult {
   let rest = body;
   const first = rest[0];
   if (first !== undefined && first.kind === "heading" && first.level === 1) {
@@ -1282,7 +1428,17 @@ export function stripMasthead(body: readonly BlockNode[]): MastheadStripResult {
   let i = 0;
   for (; i < rest.length; i++) {
     const node = rest[i];
-    if (node === undefined || node.kind !== "paragraph") break;
+    if (node === undefined) break;
+    if (node.kind === "statRow") {
+      const rowPairs = statRowAsMastheadPairs(node.cells);
+      if (rowPairs === undefined) {
+        report?.("mastheadStatRowPartial", `cells=${node.cells.length}`);
+        break;
+      }
+      pairs.push(...rowPairs);
+      continue;
+    }
+    if (node.kind !== "paragraph") break;
     const lead = node.children[0];
     if (lead === undefined || lead.kind !== "text" || !lead.marks.bold) break;
     pairs.push({ label: lead.content.trim(), value: node.children.slice(1) });

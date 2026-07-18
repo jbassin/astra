@@ -299,7 +299,7 @@ function fail(message: string): never {
  * tests never needed a corpus entity). */
 const KNOWN_EXTINCT_KINDS: ReadonlySet<string> = new Set(["blockquote"]);
 
-/** All `CodexNode.kind` values (D29-2's 18-member union — 7 block + 11
+/** All `CodexNode.kind` values (P10, D29-93/94: 19-member union — 8 block + 11
  * inline) — the coverage matrix this extractor asserts against. */
 const ALL_NODE_KINDS: readonly string[] = [
   "paragraph",
@@ -309,6 +309,7 @@ const ALL_NODE_KINDS: readonly string[] = [
   "blockquote",
   "divider",
   "aside",
+  "statRow",
   "text",
   "crossref",
   "brokenRef",
@@ -345,6 +346,11 @@ function collectKinds(node: CodexNode, into: Set<string>): void {
       return;
     case "localizedBoilerplate":
       for (const c of node.children) collectKinds(c, into);
+      return;
+    case "statRow":
+      // P10 (D29-94): cells are InlineNode[][] — recurse the same as any
+      // other cell-shaped field (table's own case above).
+      for (const cell of node.cells) for (const c of cell) collectKinds(c, into);
       return;
     default:
       return; // divider + every other leaf inline kind

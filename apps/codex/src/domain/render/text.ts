@@ -106,6 +106,14 @@ function collectNodeText(node: CodexNode, includeTables: boolean): string {
       return node.children.map((n) => collectNodeText(n, includeTables)).join("");
     case "divider":
       return "";
+    case "statRow":
+      // P10 (D29-94): cells joined with a single space, NO trailing newline —
+      // no existing case here emits a newline and both callers (the meta
+      // description below, and `collectText`'s Pagefind body) whitespace-
+      // collapse anyway, so a plain space join is provably byte-stable.
+      return node.cells
+        .map((cell) => cell.map((n) => collectNodeText(n, includeTables)).join(""))
+        .join(" ");
   }
 }
 
@@ -115,11 +123,20 @@ function collectNodeText(node: CodexNode, includeTables: boolean): string {
  * `paragraph` node, whitespace-collapsed and length-capped. Returns `""` for a
  * body with no paragraph at all (e.g. an entity whose body opens with a table or
  * list) — the route omits the meta tag rather than render an empty one.
+ *
+ * P10 (D29-94) fallback: when the body has NO paragraph at all, fall back to
+ * the first `statRow`'s joined text rather than "" — an accepted improvement
+ * for the categories whose lead block collapses into a stat row (vehicle/
+ * siege-weapon/warfare-army, whose masthead-following content used to open
+ * with "Price 250 gp" as a paragraph and now opens with a statRow instead).
+ * Paragraph-first stays unchanged for every category that still has one
+ * (prose beats a stat line as a summary).
  */
 export function firstParagraphSummary(body: readonly CodexNode[], maxLen = 200): string {
   const first = body.find((n) => n.kind === "paragraph");
-  if (!first) return "";
-  const collapsed = collectNodeText(first, false).trim().replace(/\s+/g, " ");
+  const source = first ?? body.find((n) => n.kind === "statRow");
+  if (!source) return "";
+  const collapsed = collectNodeText(source, false).trim().replace(/\s+/g, " ");
   if (collapsed.length <= maxLen) return collapsed;
   return `${collapsed.slice(0, maxLen - 1).trimEnd()}…`;
 }

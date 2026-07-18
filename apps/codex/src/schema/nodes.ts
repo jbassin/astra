@@ -2,7 +2,7 @@ import { z } from "zod";
 
 /**
  * CodexNode — the P2 renderer contract (D29-2, spec §2/§3). ONE Zod discriminated
- * union over 18 kinds, no `dangerouslySetInnerHTML` of source-derived HTML anywhere
+ * union over 19 kinds, no `dangerouslySetInnerHTML` of source-derived HTML anywhere
  * downstream. `CORPUS_SCHEMA_VERSION` (`src/ingest/emit.ts`) bumps on ANY breaking
  * change here (a kind added/removed/reshaped) — NOT the committed root
  * `corpus-manifest.json`'s own `schemaVersion` (a different, fetch-pin concept, see
@@ -10,10 +10,13 @@ import { z } from "zod";
  *
  * Two tiers, both riding the same discriminant field (`kind`) so `CodexNodeSchema`
  * stays a single flat `z.discriminatedUnion`:
- *   - BLOCK (paragraph/heading/list/table/blockquote/divider/aside) — structural;
- *     their recursive fields (`children`/`items`/`rows`/`caption`) hold arbitrary
- *     `CodexNode`s (block-in-block for nested lists/asides, or bare inline runs for
- *     simple list items — both are real shapes in the corpus).
+ *   - BLOCK (paragraph/heading/list/table/blockquote/divider/aside/statRow) —
+ *     structural; their recursive fields (`children`/`items`/`rows`/`caption`) hold
+ *     arbitrary `CodexNode`s (block-in-block for nested lists/asides, or bare inline
+ *     runs for simple list items — both are real shapes in the corpus). `statRow`
+ *     (P10, D29-93) is the one exception: its `cells` field holds `InlineNode[][]`,
+ *     not recursive `CodexNode[]` — an AoN statblock row is always paragraph-shaped
+ *     content (D29-91), never block-in-block.
  *   - INLINE (text/crossref/brokenRef/check/damage/inlineRoll/inlineAction/template/
  *     embed/actionGlyph/localizedBoilerplate) — leaves; no inline-in-inline nesting
  *     (styling is carried on `text` via `marks`, never by wrapping one inline node in
@@ -30,9 +33,14 @@ import { z } from "zod";
  *     optional fields — `join.ts` flips `resolved` in place once it resolves a raw
  *     `@Embed`/`<document>` reference against the corpus, so the node's shape is
  *     stable across the pre-join/post-join transform stages.
- *   - Images and `<column>`/`<row>` are NOT node kinds (D29-2): images are dropped at
- *     transform (report-counted), columns/rows flatten to sequential blocks before
- *     nodes are ever constructed — neither survives into this schema.
+ *   - Images and `<column>`/`<center>` are NOT node kinds (D29-2): images are
+ *     dropped at transform (report-counted), columns/centers flatten to sequential
+ *     blocks before nodes are ever constructed — neither survives into this schema.
+ *     `<row>` is the one exception (P10, D29-91/D29-93): a row whose parsed
+ *     children are ALL paragraphs, with no wrapper tag opened anywhere inside its
+ *     own scope, and at least 2 children, collapses to a `statRow` block instead of
+ *     flattening — see `aonMarkup.ts`'s own file header for the full candidacy
+ *     rule. A single-cell or nested-wrapper row still flattens exactly as before.
  *
  * S2 widenings (`apps/codex/src/ingest/enrichers.ts`, verified against the real
  * Foundry snapshot — see the codex-0029 memory for the full census):
@@ -253,6 +261,14 @@ export interface AsideNode {
   kind: "aside";
   children: CodexNode[];
 }
+/** P10 (D29-91/D29-93): an AoN `<row gap="…">` statblock row collapsed at ingest
+ * (see `aonMarkup.ts` for the candidacy rule + boundary-trim semantics). `cells`
+ * is `InlineNode[][]`, not recursive `CodexNode[]` — every real candidate corpus-
+ * wide is paragraph-shaped inline content, never block-in-block. */
+export interface StatRowNode {
+  kind: "statRow";
+  cells: InlineNode[][];
+}
 
 export type BlockNode =
   | ParagraphNode
@@ -261,7 +277,8 @@ export type BlockNode =
   | TableNode
   | BlockquoteNode
   | DividerNode
-  | AsideNode;
+  | AsideNode
+  | StatRowNode;
 
 export type CodexNode = BlockNode | InlineNode;
 
@@ -274,6 +291,7 @@ const CodexNodeSchema: z.ZodType<CodexNode> = z.lazy(() =>
     BlockquoteNodeSchema,
     DividerNodeSchema,
     AsideNodeSchema,
+    StatRowNodeSchema,
     TextNode,
     CrossrefNode,
     BrokenRefNode,
@@ -321,6 +339,22 @@ const InlineNodeSchema = z.discriminatedUnion("kind", [
   ActionGlyphNode,
   LocalizedBoilerplateNodeSchema,
 ]);
+
+/** P10 (D29-93): `cells` is `z.array(InlineNodeSchema)`, not a `z.lazy` recursive
+ * field — same reason it sits down here rather than up with the other leaf
+ * schemas: it needs the already-built eager `InlineNodeSchema` above, which in
+ * turn needs `LocalizedBoilerplateNodeSchema` already built (the same ordering
+ * constraint documented at that schema's own definition). `cells.length >= 2` +
+ * every cell non-empty are the D29-93 Zod pins; a cell can never trim to fully
+ * empty in practice (`aonMarkup.ts`'s `inlineIsMeaningful` filters all-whitespace
+ * paragraphs upstream, before a row is ever a candidate), so the non-empty pin is
+ * satisfiable by construction, not just aspirational. */
+const StatRowNodeSchema = z
+  .object({
+    kind: z.literal("statRow"),
+    cells: z.array(z.array(InlineNodeSchema).min(1)).min(2),
+  })
+  .strict();
 
 const ParagraphNodeSchema = z
   .object({ kind: z.literal("paragraph"), children: z.array(InlineNodeSchema) })
@@ -382,6 +416,7 @@ const BlockNodeSchema = z.union([
   BlockquoteNodeSchema,
   DividerNodeSchema,
   AsideNodeSchema,
+  StatRowNodeSchema,
 ]);
 
 export {
@@ -407,6 +442,7 @@ export {
   BlockquoteNodeSchema,
   DividerNodeSchema,
   AsideNodeSchema,
+  StatRowNodeSchema,
 };
 
 export function parseCodexNode(data: unknown): CodexNode {

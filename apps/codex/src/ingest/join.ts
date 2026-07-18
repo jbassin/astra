@@ -416,6 +416,7 @@ export function mergeJoined(
     markdown !== undefined && markdown.trim().length > 0
       ? stripMasthead(
           parseAonMarkdown(markdown, { resolveLink: deps.resolveLink, report: deps.report }),
+          deps.report,
         )
       : undefined;
   const body: BlockNode[] = parsedMasthead ? parsedMasthead.body : foundryEntity.body;
@@ -534,6 +535,7 @@ function buildAonOnlyEntity(meta: AonDocMeta, deps: JoinDeps): CodexEntity {
     markdown !== undefined && markdown.trim().length > 0
       ? stripMasthead(
           parseAonMarkdown(markdown, { resolveLink: deps.resolveLink, report: deps.report }),
+          deps.report,
         )
       : undefined;
   const body: BlockNode[] = parsedMasthead ? parsedMasthead.body : [];
@@ -1255,6 +1257,11 @@ function patchNode(node: CodexNode, ctx: PatchCtx): CodexNode {
       return node;
     case "aside":
       return { ...node, children: node.children.map((c) => patchNode(c, ctx)) };
+    case "statRow":
+      // P10 (D29-94): cells are `InlineNode[][]`, not recursive `CodexNode[]`
+      // — map through `patchInline` directly (same shape as paragraph/heading
+      // `children` above), never `patchNode` (which would need a `CodexNode`).
+      return { ...node, cells: node.cells.map((cell) => cell.map((c) => patchInline(c, ctx))) };
     default:
       return patchInline(node, ctx);
   }

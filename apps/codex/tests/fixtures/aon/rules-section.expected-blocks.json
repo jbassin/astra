@@ -1,0 +1,123 @@
+[
+  {
+    "kind": "heading",
+    "level": 1,
+    "children": [
+      {
+        "kind": "crossref",
+        "targetId": "/Rules.aspx?ID=3454",
+        "display": "1. Set Objectives"
+      }
+    ],
+    "meta": "Rules"
+  },
+  {
+    "kind": "paragraph",
+    "children": [
+      {
+        "kind": "text",
+        "content": "Source",
+        "marks": {
+          "bold": true,
+          "italic": false,
+          "superscript": false
+        }
+      },
+      {
+        "kind": "text",
+        "content": " ",
+        "marks": {
+          "bold": false,
+          "italic": false,
+          "superscript": false
+        }
+      },
+      {
+        "kind": "crossref",
+        "targetId": "/Sources.aspx?ID=268",
+        "display": "Battlecry!"
+      },
+      {
+        "kind": "text",
+        "content": " pg. 163",
+        "marks": {
+          "bold": false,
+          "italic": false,
+          "superscript": false
+        }
+      }
+    ]
+  },
+  {
+    "kind": "paragraph",
+    "children": [
+      {
+        "kind": "text",
+        "content": "Given the large number of creatures involved in a skirmish encounter, it’s best to avoid just playing out a fight until everybody is at 0 HP. A skirmish encounter should have a specific objective! You can set up any objective that makes sense, which is usually relevant to the PCs but can sometimes be a shared objective both sides are competing to attain. Once the objective is attained or becomes impossible to complete, the encounter ends. It’s vitally important to make the objective clear to the players at the start of the encounter, usually while they’re making preparations. The more details you can give them, the better they can plan for the encounter and measure their success.",
+        "marks": {
+          "bold": false,
+          "italic": false,
+          "superscript": false
+        }
+      }
+    ]
+  },
+  {
+    "kind": "paragraph",
+    "children": [
+      {
+        "kind": "text",
+        "content": "Some of the basic types of objectives you might choose from while designing your skirmish encounters are defined in the ",
+        "marks": {
+          "bold": false,
+          "italic": false,
+          "superscript": false
+        }
+      },
+      {
+        "kind": "crossref",
+        "targetId": "/MonsterFamilies.aspx?ID=543",
+        "display": "Military"
+      },
+      {
+        "kind": "text",
+        "content": " section of NPC Core. They are: defend, eliminate, and seize.",
+        "marks": {
+          "bold": false,
+          "italic": false,
+          "superscript": false
+        }
+      }
+    ]
+  },
+  {
+    "kind": "paragraph",
+    "children": [
+      {
+        "kind": "embed",
+        "target": "rules-3455",
+        "resolved": false
+      }
+    ]
+  },
+  {
+    "kind": "paragraph",
+    "children": [
+      {
+        "kind": "embed",
+        "target": "rules-3456",
+        "resolved": false
+      }
+    ]
+  },
+  {
+    "kind": "paragraph",
+    "children": [
+      {
+        "kind": "embed",
+        "target": "rules-3457",
+        "resolved": false
+      }
+    ]
+  }
+]

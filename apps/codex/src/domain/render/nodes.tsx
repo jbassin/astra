@@ -72,6 +72,7 @@ const BLOCK_KINDS: ReadonlySet<CodexNode["kind"]> = new Set([
   "blockquote",
   "divider",
   "aside",
+  "statRow",
 ]);
 
 /** D29-24 adversarial B2: `localizedBoilerplate` is the one INLINE kind whose
@@ -473,6 +474,12 @@ function walkEmbedTargets(node: CodexNode, into: Set<string>): void {
       return;
     case "localizedBoilerplate":
       for (const c of node.children) walkEmbedTargets(c, into);
+      return;
+    case "statRow":
+      // P10 (D29-94): cells are InlineNode[][] — embed prefetch must still see
+      // them (a resolved embed inside a cell needs the same depth-0 prefetch
+      // as one inside a paragraph).
+      for (const cell of node.cells) for (const c of cell) walkEmbedTargets(c, into);
       return;
     default:
       return; // divider + every other leaf inline kind carries no embeds

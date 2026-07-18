@@ -340,8 +340,8 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     // against find|wc"): entity files == manifest totalEntityCount.
     const manifest = JSON.parse(readFileSync(join(corpusRoot, "manifest.json"), "utf8"));
     expect(collectEntityFiles(corpusRoot)).toHaveLength(manifest.totalEntityCount);
-    // P7 S1 (D29-73): CORPUS_SCHEMA_VERSION bumped 2->3.
-    expect(manifest.schemaVersion).toBe(3);
+    // P10 S1 (D29-91/-93): CORPUS_SCHEMA_VERSION bumped 3->4.
+    expect(manifest.schemaVersion).toBe(4);
   });
 
   it("S6/D29-19: a character-typed Actor is excluded (excludedActors report class + top-level count)", () => {
