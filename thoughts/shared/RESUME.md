@@ -36,7 +36,57 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-18 — codex (0029) P9 LISTING VIRTUALIZATION BUILT + DEPLOYED + LIVE same 2 days as its provenance ("site very slow"); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P9 stakeholder review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of 2026-07-18 — codex (0029) P10 STATROW+SIZE ROUND BUILT + DEPLOYED + LIVE same day as its mid-gate-H provenance; a net-new UX/bug BACKLOG from a live-site sweep committed `8454534` = the P11 feedstock; ▶ NEXT = scope P11 from the backlog; gate H = the ONE consolidated P2–P10 review; heartwood ON HOLD)
+
+> **✅ codex (0029) P10 — statRow collapse + header size chip, 2026-07-18, all live:**
+> 1. **Provenance:** mid-gate-H "look at /creature/aso-berang" → 4 oddities triaged: 2 ours
+>    (stat-line sprawl from D29-2 row-flattening; size rendered nowhere) + 2 upstream-verbatim
+>    non-fixes recorded (Watch Over Evil mislabeled Single-Action w/ malformed `**`; "Enimty"
+>    typo — an override registry is a future decision).
+> 2. **Spec** `…/specs/0029-codex-p10-statrow-size-spec.md` D29-91..97, FINAL after adversarial
+>    ×2 — 6 blockers folded; the reviews pre-killed a `codex-stat-row` CLASS-NAME COLLISION
+>    (taken by the structured statblock → renamed `codex-stat-line`), the draft deploy order's
+>    LIVE-MOUNT WIPE (resequenced: build image FIRST, then wipe→reindex→`just up`; measured
+>    residual window 77–91 s), and a factually-wrong ancestry size chip (facets.size is
+>    Foundry's single default token but ancestry size is a PLAYER CHOICE → chip is
+>    creature+vehicle ONLY; hazard excluded as 81% default-fill noise). The proxy-pin class
+>    struck in the orchestrator's OWN draft: expected-diff lists were candidacy-derived, wrong
+>    both directions (spell-heal golden is byte-identical — rows fully masthead-consumed).
+> 3. **Build: S1 `0b7b3f8`** (AoN `<row>` wrappers → 19th node kind `statRow` at ingest via
+>    tag-aware candidacy — `wrapperOpenSeq` counter around the recursive parseSequence; 14,869
+>    rows are all-paragraph only POST-FLATTEN, a children-array test would collapse whole
+>    deity pages; stripMasthead made statRow-aware whole-row-or-nothing — 36% of candidates,
+>    17,471 rows/10,710 docs; cell-trim vs masthead byte-identity relaxed to modulo-trim on
+>    exactly 155 pairs/151 docs; schema v4; collapse counter 20,738 < census 21,389 explained
+>    = dedup/variant docs never re-parsed, rule reproduces census exactly on raw docs) ·
+>    **S2 `cf254a4`** (renderer `codex-stat-line`/`-cell` w/ block-cell guard + `pre-line`
+>    cells; creature/vehicle size chip; fixture/golden regen — only the 2 dragon goldens
+>    changed; virt-001..090 restored-from-git + re-spliced, they have NO generator; staged
+>    deploy per D29-97). Gates A–G met w/ evidence in spec §6; live: aso-berang one-line
+>    Str…Cha + AC…Will + "Large" chip; ~18.5k pages now render one-line stat rows.
+> 4. **Backlog `8454534`** — a read-only Playwright live-site sweep (desktop 1440/1920 +
+>    mobile 390) produced `…/research/2026-07-18-codex-0029-ux-backlog-thoughts.md`, net-new
+>    items only (P9/P10 registers, M7/M11, R10, backrefs NOT re-reported). Headliners: P9's
+>    measured-ch column widths EXCLUDE cell padding → every numeric listing column clips
+>    site-wide ("287"→"2…", edition-icon column = 0px content box); table width fixed at
+>    617px regardless of viewport; ~31% of action = nameless "(1 minute)…" item-activation
+>    docs (stakeholder call); 10 nav-reachable categories default-empty (all-superseded, no
+>    reveal affordance); popovers dead to pointer events + off-palette; plus
+>    stakeholder-requested scrollbar theming, title-into-header, and nav curation (~25–35
+>    curated destinations à la 2e.aonprd.com).
+> - **▶ NEXT: scope P11 from the backlog** (stakeholder calls to batch: round contents · 3a
+>   activations · 3e/3f empty categories · 13e header-title design a–d · 13f curated nav
+>   set). Gate H stays open = the ONE consolidated P2–P10 review. Pre-existing residue (NOT
+>   P10's): 7 ssrSmoke fails on main; the `codex-virtualization-interaction-guard` CI-env
+>   flake (`before=1600 after=1336`, passes locally). Backrefs still scoped-but-unstarted.
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A alerting
+>   breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-18, earlier) — P9 round (superseded above)
+
+## (was) Current state (as of 2026-07-18 — codex (0029) P9 LISTING VIRTUALIZATION BUILT + DEPLOYED + LIVE same 2 days as its provenance ("site very slow"); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P9 stakeholder review; heartwood ON HOLD)
 
 > **✅ codex (0029) P9 — perf round, stakeholder-directed 2026-07-17→18, all live:**
 > 1. **Diagnosis:** "the website is very slow" → measured: TTFB/edge fine, the cost = browser

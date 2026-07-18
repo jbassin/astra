@@ -1,6 +1,6 @@
 ---
 name: codex-0029-gotchas
-description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-17 **P8 DENSITY/TABLE ROUND BUILT + DEPLOYED same 2 days as P7-deploy + edition-icons + the 5e.tools UX comparison that spawned it** — listings are now flat sortable per-category-column tables (5e.tools register, parchment voice kept), site-wide density pass, exact-name search boost (fireball/heal #1), j/k keyboard, nav carets; ⭐ the proxy-pin class struck AGAIN ×2 (hydrate-window 40 vs heal-ranks-43 → 60; gate-B "full set at 1600px" impossible under the 26rem list-track cap → 58/42 grid amendment) and the adversarial reviews caught the omnibar-8-stub no-op + the j/k history/fetch-spam class pre-build; plus the P6 proxy-population finds, the P5 bind-mount/fixture-fail-soft finds, the P4.5 loaderDeps finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H consolidated re-run (P2–P8) — screenshots delivered
+description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-18 **P10 STATROW+SIZE ROUND BUILT + DEPLOYED + LIVE same day as its gate-H provenance ("look at aso-berang"): AoN `<row>` wrappers now collapse to a 19th node kind `statRow` at ingest (schema v4) + creature/vehicle header size chip; ⭐ the census's tag-aware-candidacy trap (post-flatten all-paragraph ≠ collapsible — deity pages), the stripMasthead 36%-overlap find, and BOTH adversarial reviews pre-killing a class-name collision + a live-serving deploy wipe + a factually-wrong ancestry chip**; 2026-07-17 P8 density/table round — listings are now flat sortable per-category-column tables (5e.tools register, parchment voice kept), site-wide density pass, exact-name search boost (fireball/heal #1), j/k keyboard, nav carets; ⭐ the proxy-pin class struck AGAIN ×2 (hydrate-window 40 vs heal-ranks-43 → 60; gate-B "full set at 1600px" impossible under the 26rem list-track cap → 58/42 grid amendment) and the adversarial reviews caught the omnibar-8-stub no-op + the j/k history/fetch-spam class pre-build; plus the P6 proxy-population finds, the P5 bind-mount/fixture-fail-soft finds, the P4.5 loaderDeps finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H consolidated re-run (P2–P8) — screenshots delivered
 metadata:
   type: project
 ---
@@ -10,6 +10,44 @@ flat TS member `apps/codex` on the strider/site-kit SSR template, **port 10374**
 NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pending-review** →
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
+
+**P10 BUILT + DEPLOYED + LIVE 2026-07-18 — S1 `0b7b3f8` (ingest/schema) · S2 `cf254a4`
+(render/chip/regen/deploy); spec `thoughts/astra/specs/0029-codex-p10-statrow-size-spec.md`
+D29-91..97 status BUILT w/ §6 record; scope `…/research/2026-07-18-codex-0029-p10-statrow-size-
+thoughts.md`.** Provenance: mid-gate-H "look at /creature/aso-berang" → triage split 4 oddities
+into 2 ours (stat-line sprawl from D29-2 row-flattening; size rendered NOWHERE) + 2 upstream-
+verbatim (Watch Over Evil mislabeled Single-Action w/ malformed `**` spans; "Enimty" typo —
+left faithful, override registry = future decision). **THE P10 finds:** (1) **tag-aware candidacy
+is mandatory** — 14,869 rows are all-paragraph only POST-FLATTEN (paragraphs spliced from nested
+`<column>`s; every deity page) — a children-array test would collapse whole pages; the working
+mechanism = a `wrapperOpenSeq` counter sampled around the recursive parseSequence call. (2)
+**stripMasthead eats 36% of candidates** (17,471 rows / 10,710 docs — spells/equipment, NOT
+creatures): collapse-before-strip would have silently vanished mastheadExtra pairs; strip is now
+statRow-aware (whole-row-or-nothing, partial=0 measured). (3) **Cell-trim vs masthead byte-
+identity contradicted on exactly 155 pairs/151 docs** (today's pairs keep untrimmed value runs) —
+gate relaxed to modulo-trim w/ the pin report-counted; 2 committed fixtures (shadow-double,
+simulacrum) are in the set. (4) **The adversarial reviews earned their keep ×3:**
+`codex-stat-row` class was ALREADY TAKEN (structured statblock Row — a collision would restyle
+Foundry-only pages; renamed `codex-stat-line`); the draft deploy order wiped the LIVE-mounted
+`data/corpus`+`data/search` before the image build (≈18.5k pages of ErrorChips for the whole
+reindex — resequenced: build image FIRST, then one wipe→reindex→immediate `just up`; measured
+residual window 77–91 s); the ancestry size chip would have shipped factually-wrong data
+(facets.size = Foundry's single default token size but ancestry size is a PLAYER CHOICE —
+"awakened-animal med" vs body "Tiny or Small or Medium or Large"; chip is creature+vehicle only,
+hazard excluded too — 81% default-fill `med` noise). (5) **The proxy-pin class struck in MY OWN
+draft** — the expected-diff lists were candidacy-derived, wrong both directions (spell-heal
+golden is byte-IDENTICAL — its rows are fully masthead-consumed; 6 changing fixtures omitted);
+review re-derived masthead-aware. (6) The transform's collapse counter (20,738) runs BELOW the
+census (21,389) because url-dedup + variant-grouping never re-parse duplicate docs — the S1
+engineer proved the rule reproduces census numbers exactly on raw docs before accepting the
+delta. (7) virt-001..090 fixture rows have NO generator — regen rm-rfs them; restore-from-git +
+re-splice into `_index.json` is now the spec'd procedure (ritual `_index` proved byte-identical —
+IndexRow carries no mastheadExtra). Render notes: cells `white-space: pre-line` (`<br/>`→literal
+`\n`); block-cell guard vs the div-in-span hydration class (cells are text+crossref-only today,
+census-measured); `firstParagraphSummary` stays paragraph-first w/ statRow fallback when no
+paragraph exists. ▶ Pre-existing residue surfaced (NOT P10's): 7 ssrSmoke failures on main;
+`codex-virtualization-interaction-guard` CI-env flake (`before=1600 after=1336`, passes locally
+— identical on S1's pre-S2 run).**
 
 **P9 BUILT + DEPLOYED + LIVE 2026-07-18 — S1 `d467e78`/S2 `9542d0c` + S3 sweep + `just up`;
 live-edge gate F PASSED: /feat 95,167 B decoded / 11.8 KB wire, quiet 783–862 ms at 4× throttle

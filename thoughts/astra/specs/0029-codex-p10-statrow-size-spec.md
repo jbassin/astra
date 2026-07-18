@@ -1,6 +1,7 @@
 # 0029 codex P10 — statRow collapse + header size chip — NLSpec
 
-**Status:** FINAL (2026-07-18) — adversarially reviewed ×2 (independent lenses: mechanism;
+**Status:** BUILT + DEPLOYED + LIVE (2026-07-18; S1 `0b7b3f8` · S2 `cf254a4`; gates A–G met,
+evidence in §6) — adversarially reviewed ×2 (independent lenses: mechanism;
 product/runtime). 6 blockers + 8 minors/nits ALL folded below: the trim-vs-masthead-byte-identity
 contradiction (155 pairs / 151 real docs measured, incl. 2 committed fixtures), the expected-diff
 lists re-derived masthead-aware (spell-heal golden is byte-identical, NOT changing; 6 omitted
@@ -223,6 +224,49 @@ ancestry multi-size labeling is a possible future decision).
 - **G (telemetry):** no new services/spans required (render-only); confirm zero new ERROR
   logs for `astra.codex` post-deploy in SigNoz.
 
-## 6. Build record
+## 6. Build record (2026-07-18, staff-orchestrator + 2 sonnet engineers, one commit each)
 
-(To be filled per slice — commits, gate evidence, report counters, deviations.)
+**S1 `0b7b3f8`** — ingest collapse + schema v4 + consumer ripple. Counters: transform
+statRowCollapsed **20,738** / singleCellKept **25,143** vs census pins 21,389/26,819 — the
+delta is a fully-explained pipeline artifact (814 `aonUrlDuplicateCollapsed` + Foundry
+variant-grouping never re-parse duplicate docs' markdown); the engineer re-ran the collapse
+rule over all 43,684 raw docs and reproduced the census numbers EXACTLY, so the mechanism
+matches spec and the transform numbers are recorded as authoritative. mastheadStatRowPartial
+= 0; trim delta = **155 pairs / 151 docs exact** (ritual 103 / shield 28 / spell 21 /
+equipment 2 / siege-weapon 1); determinism 2× byte-identical (46,285 files); totals
+unchanged 46,192 / 88 / per-category (manifest schemaVersion 3→4 only); negative categories
+deity 719 / rules 3,646 / class 50 byte-identical; aso-berang scratch shape = 6-cell +
+4-cell statRows + "HP 260" paragraph, exactly as pinned. +10 tests (1,867 total then);
+2 new committed negative-fixture parse goldens (`tests/fixtures/aon/*.expected-blocks.json`).
+
+**S2 `cf254a4`** — renderer (`codex-stat-line`/`-cell`, block-cell guard) + creature/vehicle
+size chip (SIZE_LABELS exported) + fixture/golden regen + staged deploy. Fixture diff ==
+D29-96's measured list exactly, zero off-list; virt-001..090 restored + re-spliced (ritual
+`_index.json` proved byte-identical — IndexRow carries no mastheadExtra; manifest ritual
+count 6→96). Goldens: only `creature-dragon.html` (6 stat-line collapses + "Huge" chip) and
+`creature-dragon-spellcaster.html` (size chip ONLY) changed; other 5 incl. `spell-heal.html`
+byte-identical. Deploy per D29-97 staged order; **measured degraded window ~77–91 s**
+(transform 17.2 s + search index 31.5 s + recreate; only `astra-codex` recreated).
+
+**Gates:** A (S1, above) · B — 1,876 codex tests (7 ssrSmoke fails PRE-EXISTING on main,
+A/B-proven via stash-rerun; both P9 Playwright guards pass locally ×2; both CI lanes green
+locally; GHA green except `codex-virtualization-interaction-guard`, which fails with the
+IDENTICAL signature on S1's pre-S2 run → pre-existing CI-environment flake, open item) ·
+C — S1 corpus proofs + spell-heal golden byte-identity + live spot-set (heal, sarenrae,
+recall-knowledge, fighter, 10th-level-scroll, accolade-robe: zero `codex-stat-line`/
+`codex-entity-size` markup — new code provably never fires there; deviation: literal
+pre-deploy HTML captures were skipped, compensated by the corpus-level + golden-level +
+negative-markup evidence) · D — live aso-berang one-line Str…Cha + AC…Will, HP own line,
+"Large" chip; shoony-tiller 324-char cell readable; mobile 390 px wraps, no h-scroll;
+screenshots delivered (orchestrator re-verified the desktop shot independently) ·
+E — "spectral flame aso" → Aso Berang #1, sane excerpt · F — adaptable-paddleboat "Large";
+hazard/ancestry with size facets + spell all render NO chip · G — SigNoz `astra.codex`
+0 errors / 552 calls post-deploy, zero ERROR/FATAL logs across the deploy window.
+
+**Deviations:** gate-C pre-capture skipped (above); `facetDefs.ts` `@/schema/facetKeys`
+import → relative (regen-goldens' nodeTsResolve can't follow `@/*` — standing gotcha);
+second schemaVersion pin found+fixed (`transform.test.ts:166`, distinct from S1's :344).
+
+**Open items for gate H:** the pre-existing 7 ssrSmoke failures on main; the
+`codex-virtualization-interaction-guard` CI-env flake (`before=1600 after=1336`, passes
+locally) — both predate P10.
