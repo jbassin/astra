@@ -136,6 +136,30 @@ preserved; j/k changes mechanism (index-based) but not behavior.
   `role="grid"`, matching the repo's existing bar (`aria-sort`/`scope="col"` already
   present).
 
+### D29-90 — whole-row click target (stakeholder-requested amendment, 2026-07-17; S2)
+
+Clicking ANYWHERE on a listing row selects it — today only the name `<a>` carries the
+handler (`BrowseListing.tsx:523`, everything else in the row is inert). The row `<tr>`
+gains a click handler with the SAME semantics as `handleRowClick` (`:244-259`), by
+direct implementation, NOT a synthetic `anchor.click()` (a synthetic click carries
+`detail === 0`, which the existing handler deliberately reads as keyboard activation →
+it would full-navigate on desktop — the wrong branch):
+
+- Guard order mirrors the anchor handler: primary button only; any modifier key → no-op
+  (a `<td>` has no native new-tab affordance to preserve — the name anchor keeps its
+  modified-click/new-tab behavior untouched); a click whose target is inside an `<a>` or
+  `<button>` → the tr handler yields (the anchor's own handler owns it; no double-fire).
+- A click that concludes a text-selection drag (non-collapsed `window.getSelection()`)
+  → no-op, so copying a value from a cell doesn't select the row.
+- Split view: `onEntrySelect(slug)` — identical to a name click. Non-split (mobile):
+  programmatic router navigation to the entity page — identical to the anchor's default.
+- After a row-body click, move DOM focus to that row's name anchor so j/k continues from
+  the clicked row (a name click already does this natively; the preview settle-timer's
+  same-slug guard `:271-276` already absorbs the resulting `focusin`).
+- `.codex-listing-row { cursor: pointer }`. No `role`/`tabindex` on the `<tr>` — the
+  anchor stays the row's single focusable; this is a pointer-target widening only, the
+  keyboard path is unchanged (R5 semantics untouched).
+
 ### D29-86 — `table-layout: fixed` + column width authority (windowing prerequisite)
 
 - `table-layout: fixed` on `.codex-listing-table`; `columnDefs.tsx` gains a per-column
@@ -185,9 +209,11 @@ LIVE edge post-deploy; before = the dedupe-only baseline recorded above.
   hydration-zero sweep. CI green both lanes.
 - **S2 — interaction parity:** D29-85 slug-persisted j/k/Enter/preview-follow +
   focus-after-mount; D29-84 deep-link centering + restoration precedence + the
-  reload-at-depth synchronized seed; Playwright: frontier j/k, Enter-opens,
-  preview-follows-focus, deep-link-centers, wheel-unmount-then-j/k resume,
-  scroll-deep-reload no-flash, cold-load frontier nav (D29-89 fetch race).
+  reload-at-depth synchronized seed; **D29-90 whole-row click target**; Playwright:
+  frontier j/k, Enter-opens, preview-follows-focus, deep-link-centers,
+  wheel-unmount-then-j/k resume, scroll-deep-reload no-flash, cold-load frontier nav
+  (D29-89 fetch race), row-body click selects / text-drag doesn't / anchor
+  modified-click unaffected.
 - **S3 — sweep + deploy:** A-style sweep (hydration-zero 8 routes, sorted-URL SSR proof
   via the `grep -a` method, mobile 0 h-scroll incl. a touch-fling overscan check — review
   N-mobile), weights, README P9 section, spec §7 build record, `just up`, edge probes
@@ -203,7 +229,10 @@ LIVE edge post-deploy; before = the dedupe-only baseline recorded above.
 - **C. Interaction parity:** j/k walks beyond row 60 on a COLD load (frontier mounts +
   focuses; full-array fetch race covered); Enter opens; preview-follow updates `?entry=`
   replace-only, zero history growth; row click ≠ listing re-fetch; wheel-scroll past the
-  focused row then j/k resumes from the persisted slug (no snap-to-top).
+  focused row then j/k resumes from the persisted slug (no snap-to-top); a click on any
+  non-anchor cell selects the row and moves focus to its anchor (D29-90), a
+  text-selection drag does not, and a ctrl/cmd-click on the name anchor still opens a
+  new tab.
 - **D. Deep link:** `/feat?entry=<row ~#7000 by current sort>` SSRs the entry pane AND
   centers the row post-mount; back-nav restoration wins over centering.
 - **E. Scroll restoration:** SPA back-nav AND tab-reload at depth both restore to real rows
