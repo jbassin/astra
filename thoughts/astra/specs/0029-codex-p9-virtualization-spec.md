@@ -1,8 +1,9 @@
 # 0029 P9 — listing windowed virtualization (spec)
 
-**Status:** BUILT (S1 `d467e78` · S2 `9542d0c` · S3 local sweep this session, §7 build record —
-deploy `just up` + live-edge probe pass PENDING, orchestrator-owned; spec was FINAL after
-adversarial review ×2, 2026-07-17 — §6)
+**Status:** BUILT + DEPLOYED (2026-07-18 — S1 `d467e78` · S2 `9542d0c` · S3 sweep + `just up`,
+§7 build record incl. live-edge gate-F numbers: /feat 95 KB decoded, quiet 783–862 ms at 4×
+throttle, ~4.7× faster than the pre-P9 baseline; spec was FINAL after adversarial review ×2,
+2026-07-17 — §6)
 **Scope doc:** `thoughts/shared/research/2026-07-17-codex-0029-p9-virtualization-thoughts.md`
 (R1–R4 stakeholder-resolved 2026-07-17: option A windowed virtualization chosen; Ctrl+F and
 "N of N shown" trade-offs accepted; D29-35 full-rows-client-side DATA decision untouched.
@@ -372,8 +373,15 @@ port 10374)
     full-array fetch-complete 630 ms; `/spell` DCL 162 ms / quiet 265 ms (budget ≤1 s) / fetch-
     complete 518 ms; `/` DCL 35 ms / quiet 125 ms (no-regression check, no strict budget); `/rules`
     DCL 198 ms / quiet 277 ms (no-regression check).
-  - `Live edge: PENDING — orchestrator re-runs this exact probe method through the deployed
-    codex.iridi.cc post-`just up`.`
+  - **Live edge (deployed 2026-07-18, `just up`, container healthy; same probe method through
+    `codex.iridi.cc`): PASS.** `/feat` 95,167 B decoded / 11,782 B wire — 60 SSR rows
+    (`aria-rowindex` 1–60), `aria-rowcount=6171`, 5 glyph symbols intact, real corpus confirmed
+    (dragon-page marker). 4× throttle: `/feat` DCL 62 ms / quiet **783–862 ms across 3 runs**
+    (first-hit run read 1,212 ms — cold cache immediately post-recreate, treated as warm-up, the
+    3-run set is the record) / TBT 136 ms (was 2,726 pre-P9); `/spell` DCL 185 ms / quiet 388 ms;
+    `/` quiet 219 ms (no regression). Baseline for the round (pre-P9, post-dedupe, same method
+    same edge): `/feat` 7,157,306 B decoded / DCL 2,847–3,299 ms / quiet 3,769–4,498 ms. Net:
+    **~75× less HTML, ~4.7× faster to main-thread-quiet, ~20× less total blocking time.**
 - **G. No-regression — PASS (locals only; full list incl. items proven above):**
   - `rowHeightDriftGuard.ts`: FULL tier (1600px) 24px, COMPACT tier (375px) 24px — both exact.
   - Column widths (header `<th>` + a sampled row's `<td>`s) measured before / during a 15-step

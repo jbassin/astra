@@ -36,7 +36,40 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `b3d60f7`, 2026-07-17 — codex (0029) P7 DEPLOYED + edition icons + the 5e.tools UX comparison + P8 DENSITY/TABLE ROUND all BUILT + DEPLOYED + LIVE across 2026-07-16→17; ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P8 stakeholder review on the live site; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of 2026-07-18 — codex (0029) P9 LISTING VIRTUALIZATION BUILT + DEPLOYED + LIVE same 2 days as its provenance ("site very slow"); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P9 stakeholder review; heartwood ON HOLD)
+
+> **✅ codex (0029) P9 — perf round, stakeholder-directed 2026-07-17→18, all live:**
+> 1. **Diagnosis:** "the website is very slow" → measured: TTFB/edge fine, the cost = browser
+>    main-thread parse (8,485 SSR `<tr>`s) + hydration on /feat-class listings (3.8–4.5 s quiet
+>    at 4× throttle).
+> 2. **SVG symbol/use dedupe `a298025`** (the P8-flagged follow-up): /feat −884 KB decoded
+>    (−11%), 5 shared symbols replace 8,332 inline paths — but main-thread UNCHANGED
+>    (bytes-not-nodes: per-instance `<svg><title><use>` wrappers keep node count).
+> 3. **P9 windowed virtualization** (scope `…/research/2026-07-17-codex-0029-p9-virtualization-
+>    thoughts.md` R1–R6; spec `…/specs/0029-codex-p9-virtualization-spec.md` D29-83..90, FINAL
+>    after adversarial ×2 — the reviews killed an unhittable byte gate by finding the 2.26 MB
+>    router-dehydration blob, forced the derived SSR window, and pre-killed two interaction
+>    bugs): **S1 `d467e78`** (windowed tbody, derived window [0,60) unit-pinned, D29-89 loader
+>    projection + post-hydration refetch, table-layout fixed + measured ch widths, 24.00 px
+>    real-browser drift-guard + CI job) · **S2 `9542d0c`** (slug-persisted j/k, deep-link
+>    centering + reload sync, D29-90 whole-row click, 22-check interaction guard + CI job; 4
+>    real bugs found in-slice: resetScroll snap, settle-timer race, scrollToIndex flood,
+>    centering retry; review fix focus preventScroll — 923 px yank negative-path-proven) ·
+>    **S3 + deploy** (gates A–G met; `just up`; live edge: /feat 95,167 B decoded / 11.8 KB
+>    wire / quiet 783–862 ms / TBT 136 ms — ~75× less HTML, ~4.7× faster than pre-P9).
+> - **▶ NEXT: gate H — the ONE consolidated P2–P9 stakeholder review at `https://codex.iridi.cc`**:
+>   everything carried from P2–P8 plus the P9 register (Ctrl+F finds only mounted rows; Tab
+>   reaches only the window, aria-rowcount/rowindex compensate; name column single-line +
+>   ellipsis; ~100–300 ms cold-load filter window). Sign-off → 0029 COMPLETE; backrefs
+>   ("granted by") still scoped-but-unstarted.
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A alerting
+>   breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-17) — P8 round (superseded above)
+
+## (was) Current state (as of `b3d60f7`, 2026-07-17 — codex (0029) P7 DEPLOYED + edition icons + the 5e.tools UX comparison + P8 DENSITY/TABLE ROUND all BUILT + DEPLOYED + LIVE across 2026-07-16→17; ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P8 stakeholder review on the live site; heartwood ON HOLD)
 
 > **✅ codex (0029) — two sessions, 2026-07-16→17, all live on `codex.iridi.cc` + `2e.iridi.cc`:**
 > 1. **P7 deploy sanctioned + verified** (spec `0029-codex-p7-statblock-dedup-spec.md` → BUILT):

@@ -11,8 +11,16 @@ NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pen
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
 
-**P9 BUILT — S1 `d467e78`/S2 `9542d0c` + S3 local sweep 2026-07-18 (DRAFT, orchestrator finalizes
-post-deploy) — listing windowed virtualization; spec
+**P9 BUILT + DEPLOYED + LIVE 2026-07-18 — S1 `d467e78`/S2 `9542d0c` + S3 sweep + `just up`;
+live-edge gate F PASSED: /feat 95,167 B decoded / 11.8 KB wire, quiet 783–862 ms at 4× throttle
+(3-run set; the first post-recreate hit read 1,212 ms = cold cache, warm-up not the record), TBT
+136 ms — vs the pre-P9 baseline 7.16 MB / 3.8–4.5 s quiet / 2,726 ms TBT: ~75× less HTML, ~4.7×
+faster to quiet. Provenance: stakeholder "site is very slow" 2026-07-17 → measured TTFB fine +
+main-thread parse/hydrate guilty → SVG symbol/use dedupe landed same day (`a298025`, −884 KB
+decoded −11%, but main-thread UNCHANGED — bytes-not-nodes: each glyph kept its <svg><title><use>
+wrapper so node count never dropped; the dedupe was worth it for weight, virtualization was the
+real fix) → stakeholder chose full windowing over the recommended progressive-append (option 2).
+Listing windowed virtualization; spec
 `thoughts/astra/specs/0029-codex-p9-virtualization-spec.md` D29-83..90 status BUILT w/ §7 build
 record.** Killed the /feat-class parse+hydrate cost two ways: `@tanstack/react-virtual`
 `useWindowVirtualizer` DOM-windows every category `<tbody>` (spacer-`<td>`s, overscan 20, slug
@@ -54,8 +62,13 @@ env override by design (`config.kdl`) — a local scratch-port serve needs its o
 proof (corpus masked via a temporary reverted `config.kdl` data-path edit) = 85/85 files, 1854/1854
 green including the 7 `ssrSmoke` cases that fail w/ the real corpus visible (confirmed as the
 baseline first, not assumed); oxlint still needs `--threads=4` (standing repo gotcha, recurred).
-▶ **OPEN: `just up` + live-edge probe pass (orchestrator-owned) — gate F needs live-edge numbers;
-gate H still the consolidated P2–P9 re-run.**
+**D29-90 (stakeholder mid-round): whole-row click target** — direct implementation, NEVER a
+synthetic `anchor.click()` (detail===0 takes the keyboard branch = wrong full-nav on desktop);
+guards: modifier no-op on cells, closest("a,button") yields, non-collapsed selection no-op.
+▶ **OPEN: gate H — now the consolidated P2–P9 review on the live site** (P9 adds to the register:
+Ctrl+F finds only mounted rows — categorical now, R2; Tab reaches only the window w/
+aria-rowcount/rowindex compensation, R5; name column single-line + ellipsis, R6; the ~100-300 ms
+cold-load filter window, D29-89).**
 
 **P8 BUILT + DEPLOYED + LIVE 2026-07-17 (density/table restyle + UX round; spec
 `thoughts/astra/specs/0029-codex-p8-density-tables-spec.md` D29-77..82 status BUILT w/ §7 build
