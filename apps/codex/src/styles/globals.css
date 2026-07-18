@@ -1146,22 +1146,68 @@ select:focus-visible,
 .codex-listing-table {
   width: 100%;
   border-collapse: collapse;
+  /* P9 S1 (D29-86) — windowing prerequisite: under AUTO layout, only the
+     currently-MOUNTED rows feed column-width auto-sizing, so column widths
+     would visibly jitter as the virtualized window scrolls (a column
+     narrower/wider than the header once a wide/narrow value scrolls out of
+     the mounted range). Fixed layout + explicit per-column `ch` widths
+     (`columnDefs.tsx`'s `width`, applied to each `<th>`) make every
+     column's width a function of the CURRENT CATEGORY alone, never the
+     scroll position. */
+  table-layout: fixed;
   /* Live-measured gotcha: `body` sets a site-wide `line-height: 1.6` (the
      entity-page prose voice) that every cell here would otherwise INHERIT,
-     ballooning the row box to ~32px regardless of the 5px/13px/14px values
-     below (measured via a real headless-Chromium pass against `/spell`
-     before this fix). A tight `line-height: 1.15` here is what actually
-     delivers the D29-77 ~24px pitch (13px data / 14px name × 1.15 ≈ 15–16px
-     content + the 5px×2 padding ≈ 23–24px, hairline included) — set ONCE
-     at the table root so every cell's own font-size still drives its own
-     content height, not a copy-pasted per-cell override. */
-  line-height: 1.15;
+     ballooning the row box to ~32px regardless of the values below
+     (measured via a real headless-Chromium pass against `/spell` before
+     this fix).
+     P9 S1 (D29-83, adversarial M4 — "the proxy-pin class"): P8's own
+     "≈24px" arithmetic here never matched its actual `padding: 4px 0.5rem`
+     rule (it said "5px×2 padding"), and the LIVE rendered row measured
+     23.94px, not 24px — fixed-size windowing has no self-correction, so the
+     real number now matters EXACTLY, not approximately, proven by a real
+     Chromium pass (`scripts/rowHeightDriftGuard.ts`) rather than re-trusting
+     this comment's own arithmetic a second time. Two live-measured facts,
+     not guessed:
+       1. `line-height: 15px` (an EXPLICIT px value, not the old unitless
+          `1.15` multiplier — which recomputed PER CELL's own font-size,
+          13px data / 14px name, the actual source of the prior sub-pixel
+          drift) gives every cell an identical 15px content line box
+          regardless of its own font-size.
+       2. Under `border-collapse: collapse`, ONE shared hairline (not two)
+          contributes to each row's OWN measured border-box — confirmed by
+          diffing consecutive rows' `getBoundingClientRect().top` (the
+          per-row PITCH, not just one row's own height): `15 (line-height) +
+          2×4px (padding) + 1 (the collapsed hairline) = 24.00px`, exactly,
+          at both container tiers.
+     (A SEPARATE bug surfaced while live-measuring this, now also fixed —
+     see `.codex-listing-table td.codex-listing-col-name`, below: the name
+     cell's own `font-size: var(--density-row-name-size)` (14px) was losing
+     the cascade to this same file's `.codex-listing-table tbody td` rule —
+     1 class vs. 1 class + 2 elements — so the name column had ALWAYS
+     rendered at the 13px data size in practice, never its intended 14px.)
+     Set ONCE at the table root so no cell needs a per-font-size override. */
+  line-height: 15px;
 }
 .codex-listing-table th,
 .codex-listing-table td {
   padding: 4px 0.5rem;
   text-align: left;
   white-space: nowrap;
+}
+/* P9 S1 (D29-86) — "Fixed cells: overflow: hidden; text-overflow: ellipsis,
+   nowrap stays" (nowrap already set above): a data cell that overflows its
+   OWN fixed `ch` width now clips + ellipsizes at the CELL boundary itself
+   rather than the pre-fixed-layout convention of a bespoke inner
+   `.codex-col-truncate` span per renderer — those inner spans (Cast/Range)
+   keep their own `title` attribute (still useful for a hover tooltip) but
+   their `max-width: 14rem` is now redundant/inert once the outer `<td>` is
+   the narrower real boundary; harmless left in place. `<th>` is excluded —
+   header labels are short, fixed English words that never need ellipsis,
+   and clipping `aria-sort`'s own visible caret glyph would be a visible
+   regression. */
+.codex-listing-table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .codex-listing-table thead th {
   font-family: var(--font-condensed), sans-serif;
@@ -1202,12 +1248,14 @@ select:focus-visible,
    selected-row fill with a maroon "bookmark ribbon" left-edge bar (now on
    the row's first `<td>` — a `border-left` on the `<tr>` itself is
    unreliable across engines once `border-collapse: collapse` is in play).
-   `content-visibility: auto` is the D29-78 (adversarial M5) per-ROW
-   perf guard replacing the deleted letter `<section>`'s own — the ONLY
-   chunking boundary a flat sorted table has left; `contain-intrinsic-size`
-   is pinned to the SAME `--density-row-pitch` the row's own padding target
-   sums to (23px content box + the 1px hairline below), so an off-screen
-   estimate never drifts from the real rendered height. */
+   P9 S1 (D29-83, R2) — `content-visibility: auto`/`contain-intrinsic-size`
+   DELETED: that per-row perf guard was a stand-in chunking boundary for a
+   flat sorted table with NO other one — `ListingTable`'s own windowing
+   (spacer `<tr>`s, `BrowseListing.tsx`) is the real one now, and having
+   BOTH is redundant at the ≤ ~110-row mounted-window scale (it also half-
+   broke native find-in-page, the exact "half-working middle state" this
+   round's own R2 retires outright — windowing already makes unmounted rows
+   categorically unfindable, so the redundant mechanism buys nothing). */
 .codex-listing-row {
   position: relative;
   border-bottom: 1px solid var(--color-rule);
@@ -1215,8 +1263,6 @@ select:focus-visible,
   transition:
     background-color 120ms ease,
     border-color 120ms ease;
-  content-visibility: auto;
-  contain-intrinsic-size: auto var(--density-row-pitch);
 }
 .codex-listing-row:hover {
   background-color: var(--color-hover);
@@ -1231,20 +1277,41 @@ select:focus-visible,
   border-left: 3px solid var(--color-heading-maroon);
   padding-left: calc(0.5rem - 3px);
 }
-/* The Name column is the one flexible column (`width: 100%` — every other
-   column shrinks to its content, so a coverage-dropped column widens Name
-   for free, no extra logic needed, D29-78's own "a dropped column widens
-   Name"); it alone wraps normally + keeps the serif link voice at
-   `--density-row-name-size` (14px) so rows stay codex-flavored next to the
-   13px condensed data cells (D29-77's own "5e.tools' rhythm, not its
-   Arial"). */
-.codex-listing-col-name {
-  width: 100%;
-  white-space: normal;
+/* P9 S1 (D29-86, adversarial M5) — `width: 100%` DELETED: under
+   `table-layout: fixed` (below) an explicit 100% next to explicit `ch`
+   siblings over-constrains the algorithm (engine-inconsistent proportional
+   scaling, NOT "Name takes the remainder") — Name gets NO declared width at
+   all, so the fixed-layout remainder rule does that job for free (still
+   "every OTHER coverage-dropped column widens Name," D29-78's own text —
+   just via the algorithm's default instead of an explicit percentage).
+   R6 (stakeholder-resolved) — single-line now, not `white-space: normal`
+   two-line wrap: a wrapped name would break the constant-pitch invariant
+   fixed-size windowing depends on (every spacer/scroll-offset computation
+   assumes EVERY row is exactly `ROW_PITCH_PX` tall). `overflow`/
+   `text-overflow` here (not just the general `.codex-listing-table td`
+   rule below) because `codex-listing-name` — the inner anchor, not this
+   `<td>` — is the flex/inline-block-shaped element that actually needs the
+   ellipsis treatment; `title` on that same anchor carries the full name
+   (`displayName()`, `BrowseListing.tsx`) for hover/AT.
+   Keeps the serif link voice at `--density-row-name-size` (14px) so rows
+   stay codex-flavored next to the 13px condensed data cells (D29-77's own
+   "5e.tools' rhythm, not its Arial") — qualified as `.codex-listing-table
+   td.codex-listing-col-name` (not the bare class) because the PLAIN
+   `.codex-listing-col-name` selector is LESS specific than
+   `.codex-listing-table tbody td` above (1 class vs. 1 class + 2 elements)
+   and was silently losing that cascade fight — found live via the P9 S1
+   row-height drift-guard measurement: the name cell was rendering at the
+   13px data size, not its own 14px, the whole time. */
+.codex-listing-table td.codex-listing-col-name {
   font-family: var(--font-body), serif;
   font-size: var(--density-row-name-size);
+  overflow: hidden;
 }
 .codex-listing-name {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   font-weight: 600;
 }
 .codex-listing-collision {

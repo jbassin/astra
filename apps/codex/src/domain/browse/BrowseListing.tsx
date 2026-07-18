@@ -1,3 +1,4 @@
+import { useWindowVirtualizer } from "@tanstack/react-virtual";
 import {
   useCallback,
   useEffect,
@@ -35,6 +36,7 @@ import {
   sortRows,
   type BrowseFilterState,
 } from "./filterEngine";
+import { INITIAL_VIEWPORT_PX, OVERSCAN, ROW_PITCH_PX } from "./virtualization";
 
 export type FilterStateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
@@ -122,6 +124,9 @@ function nextSortForClick(current: string, key: string): string {
 export function BrowseListing({
   category,
   rows,
+  totalCount,
+  eligibleCountOverride,
+  entryVisibleOverride,
   state,
   onStateChange,
   entrySlug,
@@ -131,6 +136,28 @@ export function BrowseListing({
 }: {
   category: string;
   rows: readonly IndexRow[];
+  /** P9 S1 (D29-89) — `undefined` for every ordinary caller (SPA
+   * navigations, tests): `rows` IS the full array, and the count line/
+   * virtualizer both derive their totals from it locally, exactly as
+   * before this slice. Set ONLY by the route while a cold load's SSR
+   * window (`rows.length < totalCount`) hasn't been replaced by the full
+   * array yet — the eventual TRUE row count under the current URL's
+   * filter/sort, so the count line and the virtualizer's bottom spacer are
+   * both correct on arrival (the router's D29-84 "full final scroll height
+   * on arrival") instead of transiently reading `rows.length`. */
+  totalCount?: number;
+  /** Same pending-window override as `totalCount`, for the count line's
+   * "of N" denominator (`eligibleCount`, below) — always supplied together
+   * with `totalCount` or not at all. */
+  eligibleCountOverride?: number;
+  /** Same pending-window override, for whether the CURRENT `?entry=`
+   * selection passes the active filters — `entryRow`/`entryVisible` below
+   * normally derive from `rows.find(...)`, which is wrong while `rows` is
+   * only the SSR window (a deep-linked entry sorted outside that window
+   * would read as "filtered out" under NO active filter at all — found live
+   * verifying this slice, `virtualization.ts`'s own doc comment on
+   * `WindowedCategoryListing.entryVisible`). */
+  entryVisibleOverride?: boolean;
   state: BrowseFilterState;
   onStateChange: FilterStateUpdater;
   /** The raw corpus id SEGMENT from `?entry=` (identical format to the
@@ -204,15 +231,30 @@ export function BrowseListing({
     [cols, sortBaseKey],
   );
 
+  // P9 S1 (D29-89) — re-running `applyFilters`/`sortRows` over `rows` is
+  // idempotent whether `rows` is the full array (ordinary case) OR the
+  // route's SSR window (already filtered/sorted server-side by the SAME
+  // pure functions, same `state` — filtering an already-filtered set with
+  // an unchanged filter, or sorting an already-sorted one with an unchanged
+  // sort, is a no-op): no special-casing needed here for the pending
+  // window, only for the COUNTS below, which `rows.length`/`.filter(...)`
+  // alone can't answer correctly while `rows` is still partial.
   const visible = useMemo(
     () => sortRows(applyFilters(rows, state), state.sort, sortComparator),
     [rows, state, sortComparator],
   );
   const collisions = useMemo(() => collidingNames(visible), [visible]);
-  const eligibleCount = useMemo(
+  const localEligibleCount = useMemo(
     () => (state.superseded ? rows.length : rows.filter((r) => !r.superseded).length),
     [rows, state.superseded],
   );
+  // D29-87 (R3) — "N of N shown" counts the ARRAY, not the mounted DOM;
+  // `totalCount`/`eligibleCountOverride` (set by the route ONLY during the
+  // D29-89 pending window) keep that count line reading the eventual TRUE
+  // total immediately, instead of the transient `rows.length` the SSR
+  // window alone would give.
+  const displayTotalCount = totalCount ?? visible.length;
+  const displayEligibleCount = eligibleCountOverride ?? localEligibleCount;
   const visibleIds = useMemo(() => new Set(visible.map((r) => r.id)), [visible]);
   const pills = useMemo(
     () => activeFilterPills(state, category, onStateChange),
@@ -224,7 +266,12 @@ export function BrowseListing({
       entrySlug !== undefined ? rows.find((r) => rowSlug(r, category) === entrySlug) : undefined,
     [rows, entrySlug, category],
   );
-  const entryVisible = entryRow !== undefined && visibleIds.has(entryRow.id);
+  // P9 S1 (D29-89) — `entryVisibleOverride` wins while present (the SSR
+  // windowed pass, computed against the FULL corpus server-side); falls
+  // back to the ordinary `rows`-derived check once it's gone (the full
+  // array has landed, or this was never a windowed render at all).
+  const entryVisible =
+    entryVisibleOverride ?? (entryRow !== undefined && visibleIds.has(entryRow.id));
 
   function handleQueryChange(e: ChangeEvent<HTMLInputElement>) {
     const next = e.target.value;
@@ -349,7 +396,7 @@ export function BrowseListing({
         <h1 className="codex-listing-title">{humanizeSlug(category)}</h1>
         <div className="codex-listing-count-row">
           <p className="codex-listing-count">
-            {visible.length.toLocaleString()} of {eligibleCount.toLocaleString()} shown
+            {displayTotalCount.toLocaleString()} of {displayEligibleCount.toLocaleString()} shown
           </p>
           {/* P8 S3 (D29-82) — desktop-only hint, right of the count line;
               hidden under the same narrow-container condition that drops
@@ -398,7 +445,7 @@ export function BrowseListing({
       <div className="codex-browse-layout">
         <div className="codex-listing-pane" ref={listingPaneRef}>
           {visible.length === 0 ? (
-            eligibleCount === 0 ? (
+            displayEligibleCount === 0 ? (
               <p className="codex-listing-empty-category">Nothing in this category yet.</p>
             ) : (
               <BrowseEmptyState
@@ -411,6 +458,7 @@ export function BrowseListing({
               category={category}
               cols={visibleCols}
               rows={visible}
+              totalRowCount={displayTotalCount}
               collisions={collisions}
               superseded={state.superseded}
               selectedId={entryRow?.id}
@@ -517,6 +565,12 @@ function displayName(
     <a
       href={rowHref(row, superseded)}
       className="codex-listing-name"
+      // P9 S1 (D29-86, R6) — the name column is single-line now (nowrap +
+      // ellipsis); `title` carries the FULL name for hover/AT whenever the
+      // fixed-layout column is too narrow to show it in full (the
+      // collision suffix below already had its own `title`, on the BOOK —
+      // this is the one on the NAME itself).
+      title={row.name}
       // P8 S3 (D29-82) — the j/k scan + focus-follow listener read this
       // directly rather than re-deriving `rowSlug` from the DOM.
       data-entry-slug={rowSlug(row, category)}
@@ -543,13 +597,34 @@ function displayName(
  * inability to be wrapped in `<a>` costs nothing — "row-level click/
  * keyboard delegation to the name-cell anchor" is what this component
  * already did. Traits are gone from the row entirely (D29-79 — the drawer/
- * entity page keep them). `content-visibility: auto` lives on
- * `.codex-listing-row` in `globals.css` (the letter `<section>` was the
- * only prior chunking boundary — deleted along with it here). */
+ * entity page keep them).
+ *
+ * P9 S1 (D29-83/-84) — windowed via `useWindowVirtualizer` (the DOCUMENT
+ * scrolls, `.codex-listing-pane` carries no `overflow` of its own —
+ * `globals.css`): `<tbody>` = a top spacer `<tr>` + the mounted window +
+ * a bottom spacer `<tr>`, each spacer's height living on its OWN single
+ * `<td colSpan style={{height, padding:0, border:"none"}}>` (never the
+ * `<tr>` itself — cross-engine `<tr>` height + `border-collapse` is
+ * unreliable, review N6) and `aria-hidden` (N7, compensated by
+ * `aria-rowcount`/`aria-rowindex` below, R5). Spacer HEIGHT is plain
+ * `index * ROW_PITCH_PX` arithmetic (never the virtualizer's own
+ * `item.start`/`.end`, which bake in `scrollMargin` — a document-relative
+ * offset that's meaningless as an IN-TABLE, row-relative spacer height); the
+ * constant pitch (`estimateSize`, no `measureElement`) is exactly why this
+ * arithmetic can stay this simple. `totalRowCount` (D29-89) is a SEPARATE
+ * input from `rows.length`: while the SSR window is still the only data on
+ * hand, `rows` may be shorter than the eventual full count, but the
+ * virtualizer's own `count` — and therefore the bottom spacer, and the
+ * total scroll height on arrival — already reflects the FULL count
+ * (`ListingTable`'s own `rows[item.index]` guard below no-ops for any
+ * index the caller hasn't populated yet, matching D29-89's own accepted
+ * risk window). `getItemKey` returns each row's real slug id (never the
+ * bare index) so react's own reconciliation survives the window sliding. */
 function ListingTable({
   category,
   cols,
   rows,
+  totalRowCount = rows.length,
   collisions,
   superseded,
   selectedId,
@@ -560,6 +635,11 @@ function ListingTable({
   category: string;
   cols: readonly ColumnDef[];
   rows: readonly IndexRow[];
+  /** D29-89 — the virtualizer's own `count` (may exceed `rows.length` while
+   * only the SSR window has landed); defaults to `rows.length` for every
+   * OTHER caller (SPA navigations, tests) where `rows` is already the full
+   * array. */
+  totalRowCount?: number;
   collisions: ReadonlySet<string>;
   superseded: boolean;
   selectedId?: string;
@@ -569,8 +649,49 @@ function ListingTable({
 }): ReactElement {
   const desc = sort.startsWith("-");
   const activeKey = desc ? sort.slice(1) : sort;
+  const tableRef = useRef<HTMLTableElement>(null);
+  // D29-83 (review M3) — `scrollMargin` = the table's own document-top
+  // offset, ref-measured in a POST-hydration effect only: both the server
+  // pass and the client's FIRST pass render with 0 (so the hydration ranges
+  // agree byte-for-byte), and this effect's `setState` re-renders with the
+  // true margin afterward — a client-only correction, never part of the
+  // hydration comparison itself.
+  const [scrollMargin, setScrollMargin] = useState(0);
+  useEffect(() => {
+    const el = tableRef.current;
+    if (!el) return;
+    setScrollMargin(el.getBoundingClientRect().top + window.scrollY);
+  }, []);
+
+  const virtualizer = useWindowVirtualizer({
+    count: totalRowCount,
+    estimateSize: () => ROW_PITCH_PX,
+    overscan: OVERSCAN,
+    // D29-84 — identical on the server pass and the client's first pass;
+    // only `scrollMargin` (above) ever differs, and only post-hydration.
+    initialRect: { width: 0, height: INITIAL_VIEWPORT_PX },
+    initialOffset: 0,
+    scrollMargin,
+    getItemKey: (index) => rows[index]?.id ?? index,
+  });
+  const virtualRows = virtualizer.getVirtualItems();
+  const firstIndex = virtualRows[0]?.index ?? 0;
+  const lastIndex = virtualRows[virtualRows.length - 1]?.index ?? -1;
+  const topSpacerHeight = firstIndex * ROW_PITCH_PX;
+  const bottomSpacerHeight = Math.max(0, totalRowCount - 1 - lastIndex) * ROW_PITCH_PX;
+  const colSpan = cols.length + 1; // + the fixed edition-icon end column
+
   return (
-    <table className="codex-listing-table">
+    <table
+      className="codex-listing-table"
+      ref={tableRef}
+      // R5 (stakeholder-resolved) — Tab now reaches only the MOUNTED window
+      // (j/k is the sanctioned full traversal, D29-85); these compensate so
+      // AT still announces true position ("row 4,200 of 8,485") even though
+      // most rows aren't in the DOM at all. Valid without `role="grid"`,
+      // matching this table's existing `aria-sort`/`scope="col"` bar.
+      aria-rowcount={totalRowCount}
+    >
       <thead>
         <tr>
           {cols.map((col) => (
@@ -586,26 +707,54 @@ function ListingTable({
         </tr>
       </thead>
       <tbody>
-        {rows.map((row) => (
-          <tr
-            key={row.id}
-            className={cx(
-              "codex-listing-row",
-              row.id === selectedId && "codex-listing-row-selected",
-            )}
-          >
-            {cols.map((col) => (
-              <td key={col.key} className={`codex-listing-col-${col.key}`}>
-                {col.key === "name"
-                  ? displayName(row, category, collisions, superseded, onRowClick)
-                  : col.render(row)}
-              </td>
-            ))}
-            <td className="codex-listing-col-icon">
-              <EditionIcon edition={row.edition} />
-            </td>
+        {topSpacerHeight > 0 ? (
+          <tr aria-hidden="true">
+            <td
+              aria-hidden="true"
+              colSpan={colSpan}
+              style={{ height: topSpacerHeight, padding: 0, border: "none" }}
+            />
           </tr>
-        ))}
+        ) : null}
+        {virtualRows.map((virtualRow) => {
+          const row = rows[virtualRow.index];
+          // D29-89's own accepted risk window: the mounted range can
+          // (briefly, only on a cold load) reach beyond `rows.length`
+          // before the full array has landed — no-op for that index rather
+          // than throwing; the row appears once the fetch resolves and
+          // re-renders.
+          if (!row) return null;
+          return (
+            <tr
+              key={row.id}
+              className={cx(
+                "codex-listing-row",
+                row.id === selectedId && "codex-listing-row-selected",
+              )}
+              aria-rowindex={virtualRow.index + 1}
+            >
+              {cols.map((col) => (
+                <td key={col.key} className={`codex-listing-col-${col.key}`}>
+                  {col.key === "name"
+                    ? displayName(row, category, collisions, superseded, onRowClick)
+                    : col.render(row)}
+                </td>
+              ))}
+              <td className="codex-listing-col-icon">
+                <EditionIcon edition={row.edition} />
+              </td>
+            </tr>
+          );
+        })}
+        {bottomSpacerHeight > 0 ? (
+          <tr aria-hidden="true">
+            <td
+              aria-hidden="true"
+              colSpan={colSpan}
+              style={{ height: bottomSpacerHeight, padding: 0, border: "none" }}
+            />
+          </tr>
+        ) : null}
       </tbody>
     </table>
   );
@@ -629,9 +778,16 @@ function ColumnHeaderCell({
   desc: boolean;
   onSortClick: (key: string) => void;
 }): ReactElement {
+  // P9 S1 (D29-86) — `table-layout: fixed` sizes each column off an
+  // explicit width on a cell in the table's FIRST row (`<thead>`), so
+  // `col.width` (the measured `ch` authority, `columnDefs.tsx`) lands here,
+  // not on every `<tbody>` cell — `undefined` for `NAME_COLUMN` leaves the
+  // header cell (and therefore the whole column) unconstrained, the
+  // fixed-layout remainder rule.
+  const style = col.width ? { width: col.width } : undefined;
   if (!col.sortable) {
     return (
-      <th scope="col" className={`codex-listing-col-${col.key}`}>
+      <th scope="col" className={`codex-listing-col-${col.key}`} style={style}>
         {col.label}
       </th>
     );
@@ -641,6 +797,7 @@ function ColumnHeaderCell({
       scope="col"
       aria-sort={active ? (desc ? "descending" : "ascending") : "none"}
       className={`codex-listing-col-${col.key}`}
+      style={style}
     >
       <button
         type="button"

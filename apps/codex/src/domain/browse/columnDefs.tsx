@@ -49,6 +49,22 @@ export interface ColumnDef {
    * edition icon itself is never a `ColumnDef` at all, see `columnsFor`'s
    * own comment). */
   compact?: boolean;
+  /** P9 S1 (D29-86) — a `ch`-based CSS length, applied to the column's
+   * header `<th>` (which is what `table-layout: fixed` actually measures —
+   * the CSS2.1 fixed-layout algorithm sizes each column off an explicit
+   * width on a cell in the table's FIRST row, i.e. `<thead>`, not every
+   * `<tbody>` cell). Chosen from a one-time 99th-percentile RENDERED-value-
+   * width measurement against the real 46,192-row corpus (`measure, don't
+   * guess` — see this slice's own build report for the raw numbers), plus a
+   * 1ch safety buffer; genuine outliers beyond that still degrade gracefully
+   * via the `.codex-listing-table td`'s own `overflow: hidden;
+   * text-overflow: ellipsis` (below). `undefined` for `NAME_COLUMN` only —
+   * the fixed-layout remainder rule gives Name whatever width is left once
+   * every OTHER declared column (+ the icon column) claims its share
+   * (`.codex-listing-col-name { width: 100% }` is DELETED, adversarial M5 —
+   * an explicit 100% next to explicit `ch` siblings over-constrains the
+   * algorithm instead of "Name takes the remainder"). */
+  width?: string;
 }
 
 /** D29-78's container-query threshold ("< ~600px content width — i.e. split
@@ -318,6 +334,33 @@ function renderRange(row: IndexRow): ReactNode {
 
 // ---------------------------------------------------------------------------
 // shared columns (identical across every group that carries them)
+//
+// P9 S1 (D29-86) — `width` below is a one-time 99th-percentile RENDERED-
+// value-CHARACTER-COUNT measurement against the real 46,192-row corpus
+// (`ch` is inherently a per-font approximation even for a measured value —
+// the established convention `.codex-col-truncate { max-width: 14rem }`
+// already used before this slice), +1ch safety buffer, +1ch again where the
+// rendered form can add a short suffix/label the raw facet value alone
+// doesn't carry. Raw p99/max, measured via a throwaway script against
+// `apps/codex/data/corpus/` (not committed — corpus-derived, hermeticity,
+// gate G):
+//   source (ALL categories, abbreviateBook() output): n=46,192 p99=8 max=18
+//   level (ALL categories): p99=2 max=2
+//   spell.castTime (raw facet, pre-glyph): p99=10 max=13
+//   spell.range (raw facet, pre-"feet"->"ft" abbreviation): p99=9 max=46
+//   creature/hazard/vehicle.size (rendered upper-case): p99=4 max=4
+//   creature/hazard/vehicle.hp: p99=3 max=3
+//   creature/hazard/vehicle.ac: p99=2 max=2
+//   equipment.price (raw facet string): p99=8 max=11
+//   equipment.bulk: p99=3 max=3
+//   feat/creature-ability.actionCost (raw facet; "Passive" itself is 7ch,
+//     the MODAL rendered form — 3,837/6,026 populated rows, not enumerated
+//     glyphs): p99=8 max=8
+//   feat/creature-ability.itemCategory (rendered label, incl. the rare
+//     "Class Feature"/"Ancestry Feature"/"Deity Boon" overrides — together
+//     <0.1% of rows, genuinely a truncation-tail per p99, not a routine
+//     value): p99=8 max=16
+//   rarity (ALL categories, capitalized): p99=8 max=8
 // ---------------------------------------------------------------------------
 
 const NAME_COLUMN: ColumnDef = {
@@ -328,6 +371,8 @@ const NAME_COLUMN: ColumnDef = {
   comparator: "text",
   compact: true,
   render: renderName,
+  // No declared width — the fixed-layout remainder rule (D29-86, own
+  // interface doc comment).
 };
 
 const LEVEL_COLUMN: ColumnDef = {
@@ -338,6 +383,7 @@ const LEVEL_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: true,
   render: renderLevel,
+  width: "3ch", // p99=2 ("-2".."28") + 1ch buffer
 };
 
 // Not sortable (D29-78's enumerated sortable-comparator list — numeric HP/
@@ -350,6 +396,7 @@ const SOURCE_COLUMN: ColumnDef = {
   sortable: false,
   compact: true,
   render: renderSource,
+  width: "9ch", // p99=8 (abbreviateBook() output) + 1ch buffer
 };
 
 const RARITY_COLUMN: ColumnDef = {
@@ -360,6 +407,7 @@ const RARITY_COLUMN: ColumnDef = {
   comparator: { rank: ["common", "uncommon", "rare", "unique"] },
   compact: false,
   render: renderRarity,
+  width: "9ch", // p99=8 ("Uncommon") + 1ch buffer
 };
 
 const CAST_COLUMN: ColumnDef = {
@@ -370,6 +418,10 @@ const CAST_COLUMN: ColumnDef = {
   comparator: { rank: ACTION_COST_ORDER },
   compact: false,
   render: renderCastTime,
+  // Icon-shaped, not text-shaped — a single/composite `ActionGlyph` (small,
+  // fixed) or (the 4.6% fallback tail) a `.codex-col-truncate`d time-string
+  // — 8ch comfortably fits a two-glyph composite + its "or"/"to" connective.
+  width: "8ch",
 };
 
 const RANGE_COLUMN: ColumnDef = {
@@ -379,6 +431,7 @@ const RANGE_COLUMN: ColumnDef = {
   sortable: false,
   compact: false,
   render: renderRange,
+  width: "10ch", // p99=9 raw (pre-abbreviation, so a bit generous post-"ft")
 };
 
 const SIZE_COLUMN: ColumnDef = {
@@ -389,6 +442,7 @@ const SIZE_COLUMN: ColumnDef = {
   comparator: { rank: ["tiny", "sm", "med", "lg", "huge", "grg"] },
   compact: false,
   render: renderSize,
+  width: "5ch", // p99=4 ("HUGE") + 1ch buffer
 };
 
 const HP_COLUMN: ColumnDef = {
@@ -399,6 +453,7 @@ const HP_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderNumeric("hp"),
+  width: "4ch", // p99=3 + 1ch buffer
 };
 
 const AC_COLUMN: ColumnDef = {
@@ -409,6 +464,7 @@ const AC_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderNumeric("ac"),
+  width: "3ch", // p99=2 + 1ch buffer
 };
 
 const PRICE_COLUMN: ColumnDef = {
@@ -419,6 +475,7 @@ const PRICE_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderPrice,
+  width: "9ch", // p99=8 + 1ch buffer
 };
 
 const BULK_COLUMN: ColumnDef = {
@@ -429,6 +486,7 @@ const BULK_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderNumeric("bulk"),
+  width: "4ch", // p99=3 + 1ch buffer
 };
 
 const ACTIONS_COLUMN: ColumnDef = {
@@ -439,6 +497,9 @@ const ACTIONS_COLUMN: ColumnDef = {
   comparator: { rank: ACTION_COST_ORDER },
   compact: false,
   render: renderActionCost,
+  // "Passive" (7ch, italic text) is the MODAL rendered form (see the
+  // shared-columns comment above) — 8ch fits it with a 1ch buffer.
+  width: "8ch",
 };
 
 const TYPE_COLUMN: ColumnDef = {
@@ -449,6 +510,7 @@ const TYPE_COLUMN: ColumnDef = {
   comparator: "text",
   compact: false,
   render: renderItemCategory,
+  width: "9ch", // p99=8 ("Ancestry") + 1ch buffer
 };
 
 // ---------------------------------------------------------------------------

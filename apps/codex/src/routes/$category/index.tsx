@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { BrowseListing } from "@/domain/browse/BrowseListing";
 import { memoizedEntity, memoizedListing } from "@/domain/browse/listingClient";
@@ -9,6 +9,8 @@ import {
   withEntryPreserved,
   type BrowseSearch,
 } from "@/domain/browse/urlState";
+import { computeWindowedListing } from "@/domain/browse/virtualization";
+import type { IndexRow } from "@/schema/entity";
 
 /**
  * D29-35 — the faceted `/{category}` listing that replaced P2's D29-27
@@ -51,11 +53,28 @@ import {
  * dynamic `$category` segment for that exact path (proven by
  * `ssrSmoke.test.ts`'s own "out-ranks the $category/ route" case) — so no
  * runtime guard is needed here for D29-49's "except `rules`" exclusion.
+ *
+ * P9 S1 (D29-89) — the loader ships a WINDOWED projection on the server
+ * only: `typeof window === "undefined"` (the SAME SSR-detection idiom
+ * `listingClient.ts`'s own memo guards already use) means this specific
+ * invocation is the real server render, so `computeWindowedListing` filters
+ * + sorts the full corpus row set exactly the way `BrowseListing.tsx`'s own
+ * render path does, then slices to the D29-84-derived window (currently 60
+ * rows) — the router's dehydration payload carries AT MOST that many rows,
+ * in the URL's real sort/filter order (gate B), while `totalCount`/
+ * `eligibleCount` still reflect the FULL corpus so the count line and the
+ * bottom spacer are both right on arrival. A client-executed loader run
+ * (every SPA navigation once hydrated) hits the `else` branch — full local
+ * array, exactly today's pre-P9 behavior, `totalCount === rows.length`
+ * (never actually "pending", D29-89's own "on client-side navigations the
+ * loader behaves as today"). `CategoryIndexComponent`'s own effect (below)
+ * is what fetches the FULL array back in for the one case that stays
+ * genuinely partial — a cold SSR load nobody has navigated away from yet.
  */
 export const Route = createFileRoute("/$category/")({
   validateSearch: (search: Record<string, unknown>): BrowseSearch => validateBrowseSearch(search),
   loaderDeps: ({ search }) => ({ entry: search.entry }),
-  loader: async ({ params, deps }) => {
+  loader: async ({ params, deps, location }) => {
     const [listing, entry] = await Promise.all([
       memoizedListing(params.category),
       deps.entry !== undefined
@@ -63,7 +82,24 @@ export const Route = createFileRoute("/$category/")({
         : Promise.resolve(null),
     ]);
     if (!listing) throw notFound();
-    return { ...listing, entry };
+
+    if (typeof window === "undefined") {
+      const windowed = computeWindowedListing(
+        listing.category,
+        listing.rows,
+        location.search as BrowseSearch,
+        deps.entry,
+      );
+      return { ...windowed, entry };
+    }
+    return {
+      category: listing.category,
+      rows: listing.rows,
+      totalCount: listing.rows.length,
+      eligibleCount: listing.rows.length,
+      entryVisible: undefined,
+      entry,
+    };
   },
   head: ({ loaderData }) =>
     loaderData ? { meta: [{ title: `${loaderData.category} · codex` }] } : {},
@@ -77,11 +113,42 @@ function CategoryIndexComponent() {
 
   const state = useMemo(() => searchToFilterState(search), [search]);
 
+  // P9 S1 (D29-89) — the post-hydration full-array fetch: `data.rows` is a
+  // windowed SSR projection whenever `data.rows.length < data.totalCount`
+  // (client-executed loader runs never leave this true — see the loader's
+  // own comment). `memoizedListing` is the EXISTING client listing path
+  // (`listingClient.ts`) every SPA navigation already fetches through — its
+  // module-level memo means this costs nothing extra once a real navigation
+  // (row click, category switch) happens to trigger the same fetch anyway.
+  // Depends on the whole `data` object rather than picking fields: any
+  // refire this causes beyond the one that matters is a no-op (`data.rows`
+  // is ALREADY the full array by then, so the `pending` guard below returns
+  // immediately and `fullRows` just gets reset to a value `data.rows`
+  // already equals).
+  const [fullRows, setFullRows] = useState<readonly IndexRow[] | null>(null);
+  useEffect(() => {
+    setFullRows(null);
+    if (data.rows.length >= data.totalCount) return;
+    let cancelled = false;
+    void memoizedListing(data.category).then((full) => {
+      if (!cancelled && full) setFullRows(full.rows);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [data]);
+
+  const rows = fullRows ?? data.rows;
+  const pending = fullRows === null && data.rows.length < data.totalCount;
+
   return (
     <main className="wrap-wide">
       <BrowseListing
         category={data.category}
-        rows={data.rows}
+        rows={rows}
+        totalCount={pending ? data.totalCount : undefined}
+        eligibleCountOverride={pending ? data.eligibleCount : undefined}
+        entryVisibleOverride={pending ? data.entryVisible : undefined}
         state={state}
         entrySlug={search.entry}
         entryData={data.entry}

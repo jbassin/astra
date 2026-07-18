@@ -21,6 +21,7 @@ jobs:
       ts: ${{ steps.filter.outputs.ts }}
       corpus: ${{ steps.filter.outputs.corpus }}
       vellumRender: ${{ steps.filter.outputs.vellumRender }}
+      codex: ${{ steps.filter.outputs.codex }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
@@ -55,6 +56,15 @@ jobs:
               - 'apps/vellum-render/**'
               - 'libs/ts/gothic/**'
               - 'libs/ts/vellum-lang/**'
+              - 'pnpm-lock.yaml'
+              - '.github/**'
+            # P9 S1 (D29-83) — the row-pitch drift guard needs a real Chromium,
+            # same "own pinned-container job" posture as vellumRender above.
+            codex:
+              - 'apps/codex/**'
+              - 'libs/ts/site-kit/**'
+              - 'libs/ts/observe/**'
+              - 'libs/ts/config/**'
               - 'pnpm-lock.yaml'
               - '.github/**'
 
@@ -172,6 +182,33 @@ jobs:
       - run: cd apps/vellum-render && npx playwright install --with-deps chromium
       - run: pnpm --filter @astra/vellum-render build
       - run: cd apps/vellum-render && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/visual-regression.ts
+
+  # P9 S1 (D29-83) — the listing row-pitch drift guard: a real Chromium probe
+  # asserting `getBoundingClientRect().height === 24` on a rendered
+  # `.codex-listing-row`, at both container tiers. Fixed-size windowing has no
+  # self-correction if the live rendered height ever drifts off the token — see
+  # `apps/codex/scripts/rowHeightDriftGuard.ts`'s own header for the "proxy-pin
+  # class" this exists to catch. Same pinned-container posture as
+  # vellum-visual-regression above (this repo's established pattern for a real-
+  # Chromium CI check); runs against the committed FIXTURE corpus (CI has no
+  # `apps/codex/data/`, D29-23's own fallback) — hermetic, no real-corpus data
+  # asserted on, only CSS-driven row geometry.
+  codex-row-height-drift-guard:
+    needs: changes
+    if: needs.changes.outputs.codex == 'true'
+    runs-on: ubuntu-latest
+    container:
+      image: node:24-slim
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
+    steps:
+      - run: apt-get update && apt-get install -y --no-install-recommends git ca-certificates
+      - uses: actions/checkout@v4
+      - run: corepack enable && corepack prepare pnpm@10.34.4 --activate
+      - run: pnpm install --frozen-lockfile
+      - run: cd apps/codex && npx playwright install --with-deps chromium
+      - run: pnpm --filter @astra/codex build
+      - run: cd apps/codex && node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/rowHeightDriftGuard.ts
 
   commitlint:
     if: github.event_name == 'pull_request'
