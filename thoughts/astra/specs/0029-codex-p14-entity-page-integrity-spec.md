@@ -1,7 +1,9 @@
 # 0029 codex P14 — entity-page integrity round — NLSpec
 
-**Status:** FINAL (2026-07-19) — adversarially reviewed ×2 (opus; independent lenses:
-transform/data, render/product). **5 blockers + 8 minors + nits ALL folded below.** The
+**Status:** BUILT + DEPLOYED (2026-07-19) — S1 `dbb6cbb` · S2 `5ecb628` · S3 sweep + deploy
+same session; gates A–G met with evidence in §8; live on codex.iridi.cc (window ≈70 s).
+Gate H rides the consolidated P2–P14 review. Was: FINAL (2026-07-19) — adversarially
+reviewed ×2 (opus; independent lenses: transform/data, render/product). **5 blockers + 8 minors + nits ALL folded below.** The
 reviews' headline catches: the draft's "split at top-level headings" produced ONE giant H1
 "Class Features" section on all 27 classes (coverage 0.59–0.89 → suppressed whole →
 **the unique Versatile Vial table was destroyed by the spec's own canary mechanism**; split is
@@ -368,3 +370,74 @@ separator gotcha).
 After FINAL: `octo:embrace` S1 → S2 → S3 per §4. Build record lands in this file as §8
 (the P13 pattern); memory + RESUME updated at round close; gate H remains the ONE
 consolidated stakeholder review, now P2–P14.
+
+## 8. Build record
+
+**Orchestration:** one sonnet engineer per slice (serial), one orchestrator-reviewed commit
+each; S3 sweep + deploy orchestrator-run under the stakeholder's standing sanction ("deploy
+once your work is done"). Linguist-commit timer stopped for the session. **Environment
+note:** a CONCURRENT session was building `apps/assay` (0030) in the same tree throughout —
+its `uv.lock`/`apps/assay` changes were left strictly untouched, P14 commits used enumerated
+pathspecs, the Python lane was skipped (P14 touches zero Python; CI is path-filtered), and
+the deploy was scoped to the codex compose unit (`docker compose build codex && up -d
+codex`; the unit has no `environment:` secrets) instead of blanket `just up` — recorded
+deviation, rationale: a full rebuild would have tripped over the concurrent session's
+in-tree `uv.lock` (dagster image `uv sync --frozen` with the not-yet-present `apps/assay`
+member) and interfered with work not ours.
+
+**S1 (`dbb6cbb`) — transform lane (D29-132..134).** All pins exact on first measurement,
+zero STOPs: 44,808→44,799 · grants 497/23 · 0 cross-class targets among the 344
+disambiguated · all five named spot-pins · swashbuckler 24/24 byte-unchanged · exactly the
+6 named unresolved embeds · vishkanya inert-node swap · index deltas −3/−1/−5 ·
+sources-index 5→2/17→16 · subclassOptions byte-identical · determinism ×2 (byte-identical,
+572,100,582 B). The 6 nulled pairs: inventor Perception Expertise L13; investigator
+Vigilant Senses L7 + Incredible Senses L13; magus Lightning Reflexes L5; thaumaturge
+Reflex Expertise L3 + Perception Mastery L9. `foundryFinalIdByPreId` exposure skipped
+(sanctioned — family index alone sufficed). New `embedOverrides.ts` module + first
+same-slug collision fixture. Due-diligence find (recorded, out of scope): 4 pre-existing
+family-size-1 grants point at docs mastheaded to another class with NO alternative
+candidate in the corpus (champion/investigator/swashbuckler "Weapon Mastery" →
+martial-weapon-mastery [Ranger]; magus "Arcane Spellcasting" → [Wizard]) — byte-identical
+pre/post, upstream coverage gaps, gate-H register.
+
+**S2 (`5ecb628`, amended) — render lane (D29-135..139).** `loreDedupe.ts` (per-heading
+split, implicit preamble, base-slug embed matching, adaptive shingle window); real-data
+verification over all 77 docs: ancestry 444/504 sections suppressed · class 1,159/1,232 ·
+5 all-covered class lore cards omitted entirely · exactly 52 heritage sections survive ·
+shisk = `['Shisk Heritages']` only · alchemist = Versatile Vials + Research Field.
+**In-slice find: fixed a real bug the mandated real-data run exposed** — a fixed 5-word
+shingle window can never match sections shorter than 5 words (every class's byte-identical
+"Perception" stub survived); window now adapts to `min(5, sectionWords)`. Embed fail-soft
+(creature-dragon golden 1-line delta); ToC deleted (last mount); facet-line humanization;
+heading join. New loreBody-bearing witch fixture + basic-lesson collision pair. Residual
+(recorded for gate H): ~30 class lore survivors whose duplicate content hides behind
+cross-category `action/*` embeds (zero shingle text — structurally outside both
+mechanisms); Description sub-feature headings (e.g. alchemist "Formula Book") survive once
+since only granted-feature-NAMED sections strip. **Commit-mechanics note: the first S2
+commit captured only pre-staged deletions (a missing-pathspec aborted the whole `git add`)
+— caught on immediate re-read of `git status`, amended to the full 20-file set before
+anything else landed.**
+
+**S3 (orchestrator) — sweep + deploy, gates.**
+- **B PASS:** rebuilt dist; codex 2,295/2,302 — the 7 fails are the documented pre-existing
+  ssrSmoke browse-tier residue, verified same-signature by name. TS lane clean (typecheck/
+  lint/format via engineers' repo-wide runs + pre-commit gate). Python lane skipped
+  (zero Python touched; concurrent-session entanglement).
+- **A PASS (via S1):** scratch-corpus diff exactly enumerable (9 removed · 26 class docs ·
+  vishkanya + undead-archetypes · 7 structural artifacts; zero unexplained), deployed via
+  checksum-rsync of the determinism-proven scratch corpus (0.7 s).
+- **Deploy:** image first (`5ccaf5cbc552`) → rsync 18:22:34 → reindex 31 s, **exactly
+  44,799 pages** → `up -d codex` healthy 18:23:44 — **window ≈70 s**.
+- **D/E/F PASS (live-edge Playwright):** shisk — every chapter section ×1, lore card =
+  "Shisk Heritages" + 5 heritage links only, ToC gone (article y=53, was 677), height
+  5,276→2,843 px, "Size: Medium", zero slug leaks; alchemist — Perception Expertise =
+  "You remain alert…" (zero "apparitions" anywhere), lore = Versatile Vial stat table,
+  height 22,421→12,142 px; barbarian rage-specific Weapon Specialization live; summoner
+  13 eidolon embed cards render (the `class-feature/*-eidolon` strings visible in raw HTML
+  are `brokenRef` CROSSREF targets riding the dehydration payload with proper displays —
+  rendered text clean; repointing those crossrefs = gate-H register item); inventor's
+  nulled Perception Expertise renders plain, no wrong-class text; /ancestry "72 of 72
+  shown" (was 75), no debris rows; Pagefind page_count exactly 44,799.
+- **G PASS:** SigNoz 1 h window: 0 ERROR logs, 0 error traces (5,695 spans scanned).
+- **H:** rides the ONE consolidated stakeholder review (now P2–P14) with the §5-H register
+  + the S1/S2 residuals above.

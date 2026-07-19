@@ -36,7 +36,57 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `770efbc`, 2026-07-19 — codex (0029) P13 FILTER PANEL REDESIGN BUILT + DEPLOYED + LIVE in one session (tester-feedback round, pane-swap; slices `c60bdbe`/`f443d31`/`713c138`/`0d7765f`, all pushed, tree clean); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P13 review — a stakeholder action, no build work pending; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `5ecb628`, 2026-07-19 — codex (0029) P14 ENTITY-PAGE INTEGRITY ROUND BUILT + DEPLOYED + LIVE in one session (scope → spec → opus adversarial ×2 → S1 `dbb6cbb` transform · S2 `5ecb628` render · S3 orchestrator deploy ≈70 s window); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P14 review — a stakeholder action, no build work pending; NOTE: a separate 0030 "assay" workstream is in flight in ANOTHER session (its `d3095d3` + working-tree files ride this branch — don't touch); heartwood ON HOLD)
+
+> **✅ codex (0029) P14 — entity-page integrity round, all live on codex.iridi.cc:**
+> 1. **Provenance:** stakeholder: "Two pages for you to investigate, `/ancestry?entry=shisk`
+>    and `/class/alchemist`." Live+corpus investigation found 5 systemic defects (none
+>    page-specific): body+loreBody double-render (77 docs, class pages up to 4×); 164/503
+>    class grants linking the WRONG class's feature doc (pre-collision uuid resolution);
+>    27 unresolved embeds rendering raw ids; 9 debris entities; the `.codex-toc` CSS-less
+>    full-width strip. Scope `…/research/2026-07-19-codex-0029-p14-entity-page-integrity-
+>    thoughts.md` (`7f44af8`, R1–R4 stakeholder-resolved same day), spec
+>    `…/specs/0029-codex-p14-entity-page-integrity-spec.md` D29-132..140 FINAL `137b446`,
+>    now BUILT + DEPLOYED w/ §8 per-gate evidence.
+> 2. **The opus adversarial pair pre-killed 5 blockers** (both lenses independently
+>    re-derived every numeric pin): top-level lore split would have DESTROYED the Versatile
+>    Vial canary (→ per-every-heading); exact-id embed matching was a 260/469 no-op (→
+>    collision-base slug); preamble undefined in 77/77 docs (→ implicit leading section);
+>    the patchEmbed application option was a provable silent no-op (→ reconcileInline
+>    mandated); map-to-nothing had no deletion mechanism (→ empty-text-node swap).
+> 3. **Build (one reviewed commit per slice, sonnet engineers):** S1 `dbb6cbb` (grants
+>    disambiguation masthead→legacyOf→level, 497/23, all spot-pins exact, 6 undeterminable
+>    nulled; 2 debris drop-families; embedOverrides table; determinism ×2; first same-slug
+>    collision fixture) · S2 `5ecb628` (loreDedupe w/ the in-slice ADAPTIVE-shingle-window
+>    find — fixed 5-word windows can't match short sections; embed fail-soft; ToC deleted;
+>    facet-line humanization; heading join; loreBody witch fixture; NOTE the amend — a
+>    missing pathspec aborted the first `git add`, commit initially captured only the
+>    pre-staged deletions).
+> 4. **Deploy (orchestrator-run, sanctioned):** image-first → checksum-rsync of the
+>    determinism-proven scratch corpus (0.7 s) → reindex 31 s / exactly 44,799 pages →
+>    codex-scoped `docker compose up` (deviation from blanket `just up` recorded: the
+>    concurrent 0030 session's in-tree uv.lock would trip dagster's `uv sync --frozen`);
+>    window ≈70 s; live gates D/E/F all PASS (shisk lore = exactly "Shisk Heritages",
+>    height 5,276→2,843 px; alchemist Perception Expertise correct + Versatile Vial table,
+>    22,421→12,142 px; summoner 13 eidolon cards; /ancestry 72-of-72; Pagefind 44,799);
+>    SigNoz 0 ERROR / 0 error traces.
+> - **▶ NEXT: gate H — the ONE consolidated P2–P14 stakeholder review at
+>   `https://codex.iridi.cc`.** P14 adds to the register: ToC gone everywhere (ancestry
+>   in-page nav loss); ~30 class lore survivors w/ cross-category `action/*` embed dups
+>   (outside both mechanisms); Description sub-feature headings survive once; the 6 nulled
+>   grants + 4 family-size-1 upstream masthead gaps; eidolon crossref repoints candidate;
+>   the suppression threshold as a standing maintenance surface. Carried: P12's /rules
+>   `::details-content` latent fix + 2 miscategorized class/ docs; P11's 4 malformed-name
+>   actions; backrefs scoped-unstarted. Pre-existing residue rides: 7 ssrSmoke fails on
+>   main; the deep-scroll-reload guard flake.
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-19, earlier) — P13 round (superseded above)
+
+## (was) Current state (as of `770efbc`, 2026-07-19 — codex (0029) P13 FILTER PANEL REDESIGN BUILT + DEPLOYED + LIVE in one session (tester-feedback round, pane-swap; slices `c60bdbe`/`f443d31`/`713c138`/`0d7765f`, all pushed, tree clean); ▶ was: gate H, the ONE consolidated P2–P13 review; heartwood ON HOLD)
 
 > **✅ codex (0029) P13 — filter panel redesign, all live on codex.iridi.cc:**
 > 1. **Provenance:** testers: "the aesthetics and ux of the filter panel are very poor."
