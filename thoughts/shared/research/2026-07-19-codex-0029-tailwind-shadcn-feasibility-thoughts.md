@@ -1,8 +1,9 @@
 # Codex → Tailwind + shadcn/ui — feasibility exploration (2026-07-19)
 
-**Status:** EXPLORATION — no decision taken. Staff-engineer assessment of migrating codex's
-hand-rolled parchment CSS to Tailwind v4 + shadcn/ui while keeping the palette. Not a scope doc
-for a round; if adopted, a P14-style scope/spec round would follow.
+**Status:** PARKED (2026-07-19, stakeholder call) — exploration only; not moving forward for
+now. Kept as the reference assessment if the question reopens. Staff-engineer assessment of
+migrating codex's hand-rolled parchment CSS to Tailwind v4 + shadcn/ui while keeping the
+palette; if ever adopted, a P14-style scope/spec round would follow this doc.
 
 **Provenance:** stakeholder question ("if we wanted to move away from our hand-rolled css and to
 use tailwind and shadcn, is that feasible / what would it take — not byte-perfect"). Clarified:
