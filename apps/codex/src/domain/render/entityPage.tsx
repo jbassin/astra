@@ -1,11 +1,8 @@
 import type { ReactElement } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
-import { SIZE_LABELS } from "../browse/facetDefs";
 import { categoryGroupOf } from "./categoryGroup";
-import { Citation } from "./citation";
-import { displayCategoryName } from "./displayCategoryName";
-import { EditionBanner, EditionPill } from "./editionBanner";
+import { EntityHeader } from "./EntityHeader";
 import {
   EquipmentFacetHeader,
   FeatFacetHeader,
@@ -15,8 +12,6 @@ import {
 } from "./facetHeader";
 import { type RenderCtx, renderNodes } from "./nodes";
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
-import { capitalize } from "./text";
-import { CodexTraitPills } from "./traits";
 
 /**
  * D29-26 — the assembled entity page: the universal header (name + level,
@@ -28,34 +23,6 @@ import { CodexTraitPills } from "./traits";
  * wires it into an actual route/loader; nothing here touches the filesystem
  * or a server.
  */
-
-/** AoN's public site root — `aonUrl` values are site-relative paths
- * (`/Spells.aspx?ID=148`, entity.ts's own comment), never absolute. */
-const AON_SITE_ROOT = "https://2e.aonprd.com";
-
-/** D29-50 (S5) — the style doc §3.5 "type/level tag": the entity's category
- * label (humanized) plus its level when present ("Feat 13", "Creature 17",
- * "Deity" with no number) — the right-hand side of the statblock header row
- * grammar, opposite the name. Every category carries `category`; `level` is
- * optional (D29-3), so the tag degrades to the bare category label rather
- * than omitting the whole row. */
-function entityTypeTag(entity: CodexEntity): string {
-  // D29-109d (P11 S5, #19) — `displayCategoryName`, not the bare
-  // `humanizeSlug` this used before: `entityTypeTag`'s label IS the
-  // category name (the seam's own enumerated "entityPage type tag" site).
-  const label = displayCategoryName(entity.category);
-  return entity.level !== undefined ? `${label} ${entity.level}` : label;
-}
-
-/** P10 (D29-95) — the header size chip's category inclusion list. Deliberately
- * the literal `category` string (all 4 size-bearing categories are creature/
- * hazard/vehicle/ancestry per the R4 census), NOT `categoryGroupOf` (vehicle
- * has no page-shape group of its own — it falls into "generic"). Ancestry
- * and hazard are review-driven EXCLUSIONS (spec D29-95): ancestry size is a
- * player CHOICE (a bare chip would contradict the page's own body text) and
- * hazard's `facets.size` is 81% Foundry default-fill noise with no AoN
- * precedent for displaying it. */
-const SIZE_CHIP_CATEGORIES: ReadonlySet<string> = new Set(["creature", "vehicle"]);
 
 /** D29-109c (P11 S5, #16) — the trait-page dead-end fix: "Find everything
  * with this trait" links to the filter-only `/search?traits=<trait>` view
@@ -103,42 +70,7 @@ export function EntityPage({
       data-entity-id={entity.id}
       data-category={entity.category}
     >
-      <header className="codex-entity-header">
-        {/* D29-50 style doc §3.5 — "name (left) + type/level tag (right)...
-            full-width thin hairline rule beneath the whole row (not just
-            under the name)": the title row carries its own hairline
-            (`.codex-entity-title-row`, globals.css), with the trait pill
-            row immediately below it per the same section. */}
-        <div className="codex-entity-title-row">
-          <h1
-            className={
-              standalone ? "codex-entity-name codex-entity-name-standalone" : "codex-entity-name"
-            }
-          >
-            {entity.name}
-          </h1>
-          <span className="codex-entity-type-tag">{entityTypeTag(entity)}</span>
-        </div>
-        <div className="codex-entity-meta-row">
-          <CodexTraitPills traits={entity.traits} knownTraitIds={ctx.knownTraitIds} />
-          <EditionPill entity={entity} />
-          {entity.facets.size !== undefined && SIZE_CHIP_CATEGORIES.has(entity.category) ? (
-            <span className="codex-entity-size">
-              {SIZE_LABELS[entity.facets.size] ?? capitalize(entity.facets.size)}
-            </span>
-          ) : null}
-          {entity.rarity !== undefined ? (
-            <span className="codex-rarity">{capitalize(entity.rarity)}</span>
-          ) : null}
-          <Citation source={entity.source} />
-          {entity.aonUrl !== undefined ? (
-            <a className="codex-aon-link" href={`${AON_SITE_ROOT}${entity.aonUrl}`}>
-              View on Archives of Nethys
-            </a>
-          ) : null}
-        </div>
-        <EditionBanner entity={entity} ctx={ctx} />
-      </header>
+      <EntityHeader entity={entity} ctx={ctx} standalone={standalone} />
 
       {/* D29-72 (P7): when an AoN body is present, the AoN prose is the
           statblock of record — the structured statblock cards AND the

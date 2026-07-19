@@ -4,14 +4,12 @@
 // `RulesLayout.tsx` "one shared sidebar+main component, two route files"
 // precedent — see that file's own header comment).
 //
-// THIS SLICE (S2) ships the shell + rail wiring only — S3 owns "rail
-// styling + mobile fallback" (spec's own slice split, D29-119/-120's own
-// text), so the CSS below is a minimal, functional two-column layout (the
-// same responsive-grid mechanism `.codex-rules-layout` already uses in
-// `globals.css`), not a polish pass. The main pane is whatever the route
-// gives it as `children` — for this slice, always `<EntityRenderPane/>`
-// (the bespoke `ClassPage` dispatch is S3, `routes/class/$slug.tsx`'s own
-// comment on the seam).
+// P12 S3 (D29-119/-120) — the rail's real styling + mobile fallback: a
+// native `<details>`/`<summary>` disclosure, the SAME zero-JS pattern
+// `RulesLayout.tsx` already established (`.codex-rules-sidebar-disclosure`)
+// — always-open + sticky on desktop, collapsible with content-first
+// ordering below the shared `.codex-rules-layout` 56rem breakpoint
+// (`globals.css`'s own "no new breakpoint system" rule).
 
 import type { ReactElement, ReactNode } from "react";
 
@@ -68,33 +66,47 @@ export function ClassBrowse({
 }): ReactElement {
   return (
     <div className="codex-class-browse">
-      <nav className="codex-class-rail" aria-label="Classes">
-        <ul className="codex-class-rail-list">
-          {rail.visible.map((row) => (
-            <li key={row.id}>
-              <ClassRailLink row={row} current={row.id === currentId} superseded={superseded} />
-            </li>
-          ))}
-          {superseded
-            ? rail.hidden.map((row) => (
-                <li key={row.id}>
-                  <ClassRailLink row={row} current={row.id === currentId} superseded={superseded} />
-                </li>
-              ))
-            : null}
-        </ul>
-        {/* D29-118 — the site-convention `?superseded=1` reveal (the `/rules`/
-            `$category/` precedent's own toggle microcopy), scoped to the ≤49
-            rail rows (no virtualization, no pagination — spec's own text). */}
-        {rail.hidden.length > 0 ? (
-          <a
-            className="codex-class-rail-toggle"
-            href={superseded ? basePath : `${basePath}?superseded=1`}
-          >
-            {superseded ? "Hide superseded ←" : `Show ${rail.hidden.length} hidden (superseded) →`}
-          </a>
-        ) : null}
-      </nav>
+      {/* P12 S3 — the `RulesLayout.tsx` disclosure mechanism verbatim: NO
+          `open` attribute (collapsed-by-default markup), desktop shows the
+          rail regardless via unconditional CSS, only the mobile media query
+          gates on `[open]` — zero JS breakpoint logic, an uncontrolled DOM
+          attribute, no hydration risk. */}
+      <details className="codex-class-rail-disclosure">
+        <summary className="codex-class-rail-summary">Classes</summary>
+        <nav className="codex-class-rail" aria-label="Classes">
+          <ul className="codex-class-rail-list">
+            {rail.visible.map((row) => (
+              <li key={row.id}>
+                <ClassRailLink row={row} current={row.id === currentId} superseded={superseded} />
+              </li>
+            ))}
+            {superseded
+              ? rail.hidden.map((row) => (
+                  <li key={row.id}>
+                    <ClassRailLink
+                      row={row}
+                      current={row.id === currentId}
+                      superseded={superseded}
+                    />
+                  </li>
+                ))
+              : null}
+          </ul>
+          {/* D29-118 — the site-convention `?superseded=1` reveal (the `/rules`/
+              `$category/` precedent's own toggle microcopy), scoped to the ≤49
+              rail rows (no virtualization, no pagination — spec's own text). */}
+          {rail.hidden.length > 0 ? (
+            <a
+              className="codex-class-rail-toggle"
+              href={superseded ? basePath : `${basePath}?superseded=1`}
+            >
+              {superseded
+                ? "Hide superseded ←"
+                : `Show ${rail.hidden.length} hidden (superseded) →`}
+            </a>
+          ) : null}
+        </nav>
+      </details>
       <div className="codex-class-pane">{children}</div>
     </div>
   );

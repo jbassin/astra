@@ -2218,11 +2218,12 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-accent);
 }
 
-/* --- P12 S2 (D29-118): `/class` + `/class/{slug}` shell (`ClassBrowse.tsx`)
-   --- MINIMAL/FUNCTIONAL ONLY: S3 owns the real "rail styling + mobile
-   fallback" pass (spec's own slice split). This just keeps the two-column
-   shell usable in the interim, reusing `.codex-rules-layout`'s own grid
-   mechanism rather than inventing a third one. */
+/* --- P12 S2 (D29-118)/S3 (D29-119/-120): `/class` + `/class/{slug}` shell
+   (`ClassBrowse.tsx`). The rail disclosure mirrors `RulesLayout.tsx`'s own
+   `.codex-rules-sidebar-disclosure` mechanism exactly (same "no `open`
+   attribute, desktop always shows it via unconditional CSS, only the mobile
+   query gates on `[open]`" convention, `globals.css`'s own "no new
+   breakpoint system" rule) — reusing the identical 56rem breakpoint. --- */
 .codex-class-browse {
   display: grid;
   grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
@@ -2232,24 +2233,78 @@ html::-webkit-scrollbar-thumb:hover {
   margin: 0 auto;
   padding: 1.5rem 1rem;
 }
-.codex-class-rail {
+.codex-class-rail-disclosure {
   position: sticky;
   top: 1rem;
+}
+/* Live-Chromium finding (P12 S3, verified via a real headless-Chromium pass,
+   `HeadlessChrome/149`): a `<details>` without `[open]` now renders its own
+   non-summary content through an internal `::details-content` pseudo-element
+   carrying `content-visibility: hidden` — an ordinary descendant's own
+   `display` override (`.codex-class-rail { display: flex }`, below) CANNOT
+   undo this (content-visibility:hidden on an ancestor box skips rendering
+   the WHOLE subtree by spec, regardless of descendant styles), so the rail
+   was present in the DOM (real `getBoundingClientRect()`, unaffected) but
+   literally unpainted/un-hit-testable on desktop. `.codex-rules-sidebar-
+   disclosure` (P4's own `/rules` sidebar) carries the identical latent
+   defect — out of this slice's scope, flagged separately. Force it visible
+   unconditionally here (the desktop "always open regardless of `[open]`"
+   contract); the mobile query below re-applies the hidden state. */
+.codex-class-rail-disclosure::details-content {
+  content-visibility: visible !important;
+}
+.codex-class-rail-summary {
+  display: none;
+}
+.codex-class-rail {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.6rem;
 }
 .codex-class-rail-list {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.1rem;
   list-style: none;
   margin: 0;
   padding: 0;
 }
+/* Mirrors `.codex-rules-node-name`'s own link grammar (the nearest existing
+   "tree/list of doc links" precedent) rather than inventing a new one. */
+.codex-class-rail-link {
+  display: block;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.2rem;
+  font-size: 0.92rem;
+  color: var(--color-ink);
+}
+.codex-class-rail-link:hover {
+  background-color: var(--color-hover);
+  text-decoration: none;
+}
 .codex-class-rail-link-current {
   font-weight: 600;
   color: var(--color-accent);
+  background-color: var(--color-callout-blue-bg);
+}
+.codex-class-rail-edition {
+  color: var(--color-ink-faint);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+/* Same link-in-voice control as `.codex-rules-superseded-toggle`. */
+.codex-class-rail-toggle {
+  display: inline-block;
+  margin-top: 0.3rem;
+  padding: 0.2rem 0.4rem;
+  font-size: 0.8rem;
+  color: var(--color-link);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 120ms ease-out;
+}
+.codex-class-rail-toggle:hover {
+  text-decoration-color: var(--color-link-hover);
 }
 .codex-class-pane {
   min-width: 0;
@@ -2258,11 +2313,127 @@ html::-webkit-scrollbar-thumb:hover {
   .codex-class-browse {
     grid-template-columns: minmax(0, 1fr);
   }
+  /* Content first — the reader opened this page for the class, not the
+     rail (mirrors `.codex-rules-main`'s own P4 S3 "content first" order). */
   .codex-class-pane {
     order: 1;
   }
-  .codex-class-rail {
+  .codex-class-rail-disclosure {
     order: 2;
     position: static;
   }
+  .codex-class-rail-summary {
+    display: list-item;
+    cursor: pointer;
+    font-weight: 600;
+    padding: 0.5rem 0;
+  }
+  .codex-class-rail-disclosure:not([open]) .codex-class-rail {
+    display: none;
+  }
+  /* Undo the desktop force-visible override above — mobile keeps the real
+     native collapse (closed = hidden, tap the summary to open). */
+  .codex-class-rail-disclosure:not([open])::details-content {
+    content-visibility: hidden !important;
+  }
+}
+
+/* --- P12 S3 (D29-119/-120): the bespoke `ClassPage` composition
+   (`ClassPage.tsx`) — Core Traits box, progression table, subclass pills,
+   feature stream, description. Section headings reuse the site's own
+   `.codex-heading` grammar (small-caps maroon, `nodes.tsx`'s heading case)
+   for a consistent look across every entity-page-shaped surface. --- */
+.codex-class-traits-section,
+.codex-class-progression-section,
+.codex-class-subclass-section,
+.codex-class-description-section {
+  margin-bottom: 1.5rem;
+}
+.codex-class-traits {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+/* `.codex-content` (the GFM-table skin, `.codex-content table` above)
+   already gives the progression table hairline borders/zebra rows/small-
+   caps header for free — this modifier only narrows the Level column so
+   Features gets the room a level's mixed link/cadence-text cell needs. */
+.codex-class-progression-table th:first-child,
+.codex-class-progression-table td:first-child {
+  width: 4.5rem;
+  text-align: center;
+}
+.codex-class-subclass-group {
+  /* Reset default UA `<fieldset>` chrome — used here purely for its
+     semantic grouping (oxlint's `jsx-a11y/prefer-tag-over-role` steers a
+     labeled toggle-button group away from a bare `role="group"` div), not
+     its default border/inset look. */
+  border: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  min-width: 0;
+}
+.codex-class-subclass-category-label {
+  padding: 0;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-accent-amber);
+}
+.codex-class-subclass-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+/* Same toggle-button grammar as the reveal controls elsewhere (a bordered
+   pill, filled + maroon when the current selection is active). */
+.codex-class-subclass-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid var(--color-rule-bright);
+  border-radius: 999px;
+  padding: 0.25rem 0.75rem;
+  background: transparent;
+  color: var(--color-ink);
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease;
+}
+.codex-class-subclass-pill:hover {
+  border-color: var(--color-gold-rule);
+  background-color: var(--color-hover);
+}
+.codex-class-subclass-pill-selected {
+  border-color: var(--color-heading-maroon);
+  background-color: var(--color-callout-blue-bg);
+  color: var(--color-heading-maroon-dark);
+  font-weight: 600;
+}
+.codex-class-subclass-doc {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-rule);
+}
+.codex-class-subclass-pending {
+  color: var(--color-ink-faint);
+  font-style: italic;
+  padding: 0.5rem 0;
+}
+.codex-class-feature-stream {
+  display: flex;
+  flex-direction: column;
+}
+.codex-class-feature {
+  padding: 0.6rem 0;
+  border-top: 1px solid var(--color-rule);
+}
+.codex-class-feature:first-child {
+  border-top: none;
 }

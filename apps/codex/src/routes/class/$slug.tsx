@@ -1,8 +1,9 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
 import type { ReactElement } from "react";
 
 import { ClassBrowse } from "@/domain/browse/ClassBrowse";
 import { splitCsv } from "@/domain/browse/urlState";
+import { ClassPage } from "@/domain/render/ClassPage";
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import { firstParagraphSummary } from "@/domain/render/text";
 import type { ClassPageData } from "@/server/classPageData";
@@ -44,12 +45,29 @@ function toBool(raw: unknown): boolean {
  * `{category}/{slug}` ids, e.g. `class-feature/cloistered-cleric`) via the
  * EXISTING `splitCsv` codec (`urlState.ts`) — reused, not re-implemented
  * (spec's own "no reserved-param collision" review note). Deduplicated,
- * first-occurrence order; empty/whitespace-only tokens dropped. */
+ * first-occurrence order; empty/whitespace-only tokens dropped.
+ *
+ * S3 addition (verified against the pinned `@tanstack/router-core@1.171.14`
+ * default search (de)serializer directly — `stringifySearchWith`/
+ * `parseSearchWith`, `searchParams.js`): a genuine `string[]` VALUE written
+ * via `navigate({search})` round-trips as a real JS array (`typeof ===
+ * "object"` -> `JSON.stringify` on write, `JSON.parse` succeeds on read) —
+ * so a client-side subclass-pill toggle (this slice, `ClassSlugComponent`)
+ * needs `raw.subclass` to ALSO be accepted as an already-decoded array, not
+ * just the original comma-joined STRING a hand-typed/shared URL carries
+ * (confirmed via `defaultParseSearch`/`defaultStringifySearch` run directly
+ * against literal fixtures — both shapes are stable round-trips, never one
+ * degrading into the other). Both branches apply the identical dedupe/trim/
+ * empty-filter pass. */
 function decodeSubclassParam(raw: unknown): string[] | undefined {
-  if (typeof raw !== "string" || raw.length === 0) return undefined;
+  const tokens: string[] = Array.isArray(raw)
+    ? raw.filter((t): t is string => typeof t === "string")
+    : typeof raw === "string" && raw.length > 0
+      ? splitCsv(raw)
+      : [];
   const seen = new Set<string>();
   const out: string[] = [];
-  for (const token of splitCsv(raw)) {
+  for (const token of tokens) {
     const trimmed = token.trim();
     if (trimmed === "" || seen.has(trimmed)) continue;
     seen.add(trimmed);
@@ -96,40 +114,44 @@ export const Route = createFileRoute("/class/$slug")({
 });
 
 /**
- * D29-117/-118 — the main-pane dispatch seam. `stats.kind === "class"` is
- * the ONE predicate S3's `<ClassPage>` will key its bespoke render off of
- * (Core Traits/progression/subclass pills/feature stream/description) —
- * both branches render `EntityRenderPane` identically today because that
- * component doesn't exist yet; the `if` is the seam itself, kept visible
- * rather than collapsed to one bare return so S3's diff is a single swap.
+ * D29-117/-118/-119 — the main-pane dispatch seam. `stats.kind === "class"`
+ * is the ONE predicate `<ClassPage>` keys its bespoke render off of (Core
+ * Traits/progression/subclass pills/feature stream/description) —
+ * `data.grantedFeatures`/`data.selectedSubclasses` (already resolved server-
+ * side) feed it directly. The 20 `@legacy` + 2 miscategorized `class/` docs
+ * (no `stats.kind === "class"`) keep rendering the EXISTING generic pane
+ * permanently, INSIDE the shell (D29-118's own "no dead ends" text).
  */
 function ClassMainPane({
   data,
   superseded,
+  selectedSubclassIds,
+  onSubclassToggle,
 }: {
   data: ClassPageData;
   superseded: boolean;
+  selectedSubclassIds: ReadonlySet<string>;
+  onSubclassToggle: (targetId: string) => void;
 }): ReactElement {
   if (data.entity.stats?.kind === "class") {
-    // TODO(P12 S3, D29-119/-120): swap this branch for the bespoke
-    // `<ClassPage>` composition (Core Traits box, progression table,
-    // subclass pills + on-demand fetch, feature stream, description
-    // suppression, ToC wiring) — `data.grantedFeatures`/
-    // `data.selectedSubclasses` are already resolved and waiting on this
-    // payload for that render to consume.
-    return <EntityRenderPane data={data} superseded={superseded} standalone />;
+    return (
+      <ClassPage
+        data={data}
+        superseded={superseded}
+        selectedSubclassIds={selectedSubclassIds}
+        onSubclassToggle={onSubclassToggle}
+      />
+    );
   }
-  // Fail-soft: the 20 `@legacy` + 2 miscategorized `class/` docs (no
-  // `stats.kind === "class"`) render the generic pane permanently, INSIDE
-  // the shell (D29-118's own "no dead ends" text) — this branch is NOT
-  // temporary, unlike the one above.
   return <EntityRenderPane data={data} superseded={superseded} standalone />;
 }
 
 function ClassSlugComponent() {
   const data = Route.useLoaderData();
   const search = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
   const superseded = search.superseded === true;
+  const selectedSubclassIds = new Set(search.subclass ?? []);
 
   return (
     <ClassBrowse
@@ -138,7 +160,40 @@ function ClassSlugComponent() {
       superseded={superseded}
       basePath={`/${data.entity.id}`}
     >
-      <ClassMainPane data={data} superseded={superseded} />
+      <ClassMainPane
+        data={data}
+        superseded={superseded}
+        selectedSubclassIds={selectedSubclassIds}
+        onSubclassToggle={(targetId) => {
+          // D29-119 — "component reports, route navigates" (the site's own
+          // established split, `BrowseListing.tsx`'s `onSupersededReveal`):
+          // add-vs-remove against the CURRENT url is decided here, then a
+          // functional search merge (preserves every other active param)
+          // writes the new array back — `decodeSubclassParam` above accepts
+          // this shape verbatim on the round trip (verified directly against
+          // the pinned router's default search (de)serializer). `replace:
+          // true` (a pill toggle isn't a new navigation to undo via
+          // back-button, same posture as the superseded-reveal toggle) +
+          // `resetScroll: false` (toggling a pill must not jump the reader
+          // back to the top of the page). This ALSO satisfies the
+          // `loaderDeps` contract (`subclass` is declared below): the router
+          // re-runs `getClassPage` in the background with the new
+          // `?subclass=`, converging on the SSR-authoritative payload even
+          // though the immediate render already shows the toggled doc via
+          // `ClassPage`'s own `memoizedEntity` on-demand fetch.
+          const next = new Set(selectedSubclassIds);
+          if (next.has(targetId)) next.delete(targetId);
+          else next.add(targetId);
+          void navigate({
+            search: (prev) => ({
+              ...prev,
+              subclass: next.size > 0 ? [...next] : undefined,
+            }),
+            replace: true,
+            resetScroll: false,
+          });
+        }}
+      />
     </ClassBrowse>
   );
 }

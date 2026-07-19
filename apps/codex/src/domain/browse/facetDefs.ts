@@ -174,7 +174,11 @@ const ACTION_COST_LABELS: Readonly<Record<string, string>> = {
   passive: "Passive",
 };
 
-const ABILITY_LABELS: Readonly<Record<string, string>> = {
+// Exported (P12 S3, D29-119) so `ClassPage.tsx`'s Core Traits box reuses this
+// SAME map for the key-ability row ("Strength or Dexterity") rather than
+// writing a third one — same "additive reuse, no behavior change" posture as
+// `SIZE_LABELS`'s own P10 export comment above.
+export const ABILITY_LABELS: Readonly<Record<string, string>> = {
   str: "Strength",
   dex: "Dexterity",
   con: "Constitution",
