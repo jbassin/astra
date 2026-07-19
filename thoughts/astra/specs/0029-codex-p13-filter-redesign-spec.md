@@ -1,6 +1,9 @@
 # 0029 codex P13 — filter panel redesign (pane-swap) — NLSpec
 
-**Status:** FINAL (2026-07-19) — adversarially reviewed ×2 (opus; independent lenses:
+**Status:** BUILT + DEPLOYED (2026-07-19) — all four slices (`c60bdbe`/`f443d31`/`713c138`/
+`0d7765f` + deploy) shipped serially same-session; gates A–G met with evidence in §7; live on
+codex.iridi.cc (~33 s window). Gate H rides the consolidated P2–P13 review. Was: FINAL
+(2026-07-19) — adversarially reviewed ×2 (opus; independent lenses:
 state/mechanism, product/runtime). **4 distinct blockers + 13 minors/nits ALL folded below.**
 The reviews' headline catches: the draft's count-gating design rested on a FALSE premise (the
 count row never shows the 60-row window as a total — `totalCount`/`eligibleCountOverride`
@@ -330,4 +333,80 @@ separator gotcha breaks count-string greps regardless).
 
 ## 7. Build record
 
-(added per slice)
+**Orchestration:** one sonnet engineer per slice, serial, one orchestrator-reviewed commit
+each; deploy + gate G orchestrator-run. The linguist-commit timer was stopped for the whole
+build session (the P4 staged-sweep lesson) and restarted after the final docs push.
+
+**S1 (`c60bdbe`) — shared primitives + facet content (D29-122, 125–127, 129-pills,
+130-extraction).** `formatFacetValue.ts` (186 lines; curated map 33 entries — 3 glued
+itemCategory compounds, 24 glued equipment/weapon `usage` "worn<slot>" values, 6 size codes;
+stringified-Python-list parse with recursive member formatting; stopword-aware title case) +
+sweep of ~726 distinct raw values across all 88 categories; `facetControls.tsx` (283 lines:
+FacetSection, OptionSearch w/ exported thresholds 20/100, EnumOptionList, UnspecifiedCount,
+ToggleChipRow, CHIP_MAX_OPTIONS=8); `humanizedLabelFor` in facetDefs (labelMap-wins
+precedence, no-double-format proven); `sortOptionsFor` w/ comparator seam; traits restyle
+(selected-first, 40-bound + Show-all, AT state labels, hint line); pills truncation.
+**Find:** the `.codex-facet-option-label` `text-transform: capitalize` CSS rule WAS the
+"Ancestryfeature" bug — deleted, it fought the new casing. Deliberate pin changes: FacetPanel
+placeholders; ssrSmoke's `>ancestry<` literal → `codex-toggle-chip …>Ancestry<` (TWO stacked
+reasons: humanization + itemCategory's 7 options crossing into chip mode — the panel-presence
+pin itself untouched, the D29-123 posture held).
+
+**S2 (`f443d31`) — pane-swap container + chrome (D29-123..124, 129-consolidation).**
+Single-instance content move (dialog host unconditionally mounted at SSR — ssrSmoke
+unedited); j/k suppressed via the generalized `FILTER_UI_SELECTOR`; Esc sequencing; focus
+✕-on-open/button-on-close; sticky header Clear-all+✕ (NO count — toolbar canonical);
+per-section badges/clear; single scroll region; `aria-live` scoped to the preview branch
+only (the ternary already made them siblings); mobile bottom sheet w/ sticky Done;
+superseded onto the `onSupersededReveal`/`resetScroll:false` path; 9 net-new interaction-
+guard cases (41/41 with existing). **Finds (guard-caught in-slice):** `hydrateRoot(document)`
+makes React's delegated key listeners same-node siblings of any manual `document` listener —
+`stopPropagation()` cannot block them, `nativeEvent.stopImmediatePropagation()` is required
+for the Esc sequence; the close-focus effect races the pre-existing row-refocus effect
+(declaration order is the contract); Playwright locator `.click()` auto-scrolls targets into
+view and confounds scroll-drift measurements — use `evaluate(el => el.click())`; the
+superseded "no scroll jump" invariant is really PARITY (the toolbar control itself exhibits
+~480 px content-reflow drift on a deep-scroll reveal — asserted parity, not zero).
+**Recorded deviation:** a new `matchMedia`-based `useTwoColumnFilterTier` hook (mirroring
+`SPLIT_VIEW_MEDIA`) instead of `useNarrowListingContainer` — the container-width flag has a
+proven mid-width gap (700–850 px: container reads "wide" while the 56 rem CSS breakpoint has
+already hidden the pane cell → invisible pane).
+
+**S3 (`713c138`) — sourceLines + grouped Source + SearchPage (D29-121, 128, 130).**
+`resolveCategoryListing` ships `sourceLines` (full-rows join against `reader.sourcesIndex()`;
+fail-soft ×3 incl. `CorpusNotFoundError` → all-Other + one-time warn); `SourceSection`
+grouped via the EXPORTED `PINNED_PRODUCT_LINE_ORDER`/`orderProductLines`/`OTHER_GROUP_LABEL`
+(sourcesModel refactored additively, its tests unchanged); explicit conditional-render
+disclosures (no `<details>`); full-name + `· CODE` labels; selection/search auto-expand;
+SearchPage consumes the shared primitives (keeps SearchFilterState + Pagefind counts +
+numeric level comparator + inline layout; no Source facet). /feat census: 9 groups (all 8
+lines + Other) partitioning its 114 books; max sourceLines = creature 21,436 B / 374 books.
+**Process note:** the engineer used `git stash` to baseline pre-existing failures despite
+the no-git-writes brief (popped cleanly, no harm — the P6 rule bears repeating in every
+brief).
+
+**S4 (`0d7765f` sweep + orchestrator deploy) — gates.**
+- **A PASS:** corpus/search mtimes+md5 identical before/after the whole sweep; zero
+  data-path hits across all three commit diffs; sourceLines /feat 5,160 B · /creature
+  21,436 B (max of all 88) — under the 50 KB STOP.
+- **B PASS:** codex 2,227/2,234 (the 7 = the documented pre-existing ssrSmoke residue, names
+  matched); vp typecheck/test/build clean repo-wide otherwise; python lane clean (360);
+  rowHeightDriftGuard 24.00 px both tiers; interaction guard green on all P13 cases — the
+  one failing case (deep-scroll reload restore) reproduces IDENTICALLY at pre-P13 `dc9ad06`
+  (independent worktree bisection; the documented standing flake).
+- **C PASS:** `urlState.ts` zero-diff across the round (strongest invariance proof) + the
+  pre-existing pinned encode table covers the spec's named cases; superseded write-path
+  parity proven at test level.
+- **D/E/F PASS (local real-corpus built server, Playwright 1440 + 390):** all pane-swap
+  machine assertions; source groups a verified subsequence of /sources' own order;
+  "AP147" → Tomorrow Must Burn w/ group auto-expand ("age of ashes" proven on /background —
+  the two spec examples share no category in the real corpus); zero bracket residue on
+  spell/feat/creature/background; latency /creature: first-toggle ~144 ms ONE-TIME warmup
+  (JIT/memoization), warmed toggle 13–23 ms · keystroke 22–27 ms · Show-all-467 6 ms —
+  recorded for gate H, not a per-interaction regression; /feat SSR 95,618 B (≈ P9 baseline);
+  zero hydration errors.
+- **G PASS (live, orchestrator):** `just up` render-only, **window ~33 s**; live edge
+  Playwright: pane-swap live, groups in canonical order, humanized chips, edition text,
+  no pane count, no bracket residue; SigNoz: 100 spans / 0 `hasError` (SSR GET /feat +
+  listing serverFns + page-load RUM), **ERROR log count = 0** (aggregate query, 1 h window).
+- **H:** rides the ONE consolidated stakeholder review (now P2–P13).

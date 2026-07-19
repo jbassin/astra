@@ -36,7 +36,56 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `7829f29`, 2026-07-19 — codex (0029) P12 BESPOKE CLASS PAGE BUILT + DEPLOYED + LIVE + same-day mid-gate-H follow-ups `7829f29` also LIVE (class ToC dropped · bare /class redirects to first class · header nav right-aligned); ▶ THE ONLY OPEN ITEM = gate H, the ONE consolidated P2–P12 review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of 2026-07-19 — codex (0029) P13 FILTER PANEL REDESIGN BUILT + DEPLOYED + LIVE in one session (tester-feedback round, pane-swap); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P13 review; heartwood ON HOLD)
+
+> **✅ codex (0029) P13 — filter panel redesign, all live on codex.iridi.cc:**
+> 1. **Provenance:** testers: "the aesthetics and ux of the filter panel are very poor."
+>    Staff diagnosis (live inspection + implementation map): occluding modal, triple-nested
+>    scroll, raw-data leaks (AP codes, "Ancestryfeature", icon-only Edition, stringified
+>    lists), off-palette identity, duplicated superseded, /search fork. Scope
+>    `…/research/2026-07-19-codex-0029-p13-filter-redesign-thoughts.md` (`1cfa1bb`, R1–R6
+>    resolved same day), spec `…/specs/0029-codex-p13-filter-redesign-spec.md` D29-121..131
+>    FINAL `dc9ad06`, now BUILT + DEPLOYED w/ per-gate evidence in §7.
+> 2. **The opus adversarial pair pre-killed 4 blockers:** the count-gating em-dash design
+>    (false premise — totalCount override props already correct through the cold-load
+>    window → pane header has NO count, toolbar canonical); the unpinned SSR posture
+>    (panel stays unconditionally mounted in the closed dialog — ssrSmoke pins stay real);
+>    the j/k focus-steal (focusAnchorForSlug vs pane focus → j/k suppressed while focus in
+>    pane); the source-group order FORK vs sourcesModel's shipped PINNED_PRODUCT_LINE_ORDER
+>    (reuse-don't-redeclare).
+> 3. **Build (one reviewed commit per slice, sonnet engineers):** S1 `c60bdbe`
+>    (facetControls extraction, formatFacetValue w/ 33-entry curated map + 88-category
+>    sweep, OptionSearch ≥20/≥100, chip/checkbox split ≤8, traits restyle w/ AT labels,
+>    pills truncation; find: the capitalize CSS WAS the "Ancestryfeature" bug) ·
+>    S2 `f443d31` (pane-swap w/ matchMedia tier hook — container-width flag has a 700–850 px
+>    gap; Esc sequencing needs nativeEvent.stopImmediatePropagation under
+>    hydrateRoot(document); aria-live scoped to preview branch; superseded onto the
+>    resetScroll:false path; 9 new interaction-guard cases, 41/41) · S3 `713c138`
+>    (sourceLines request-time loader derivation w/ CorpusNotFoundError fail-soft, grouped
+>    Source via sourcesModel exports, SearchPage onto shared primitives w/ comparator seam;
+>    engineer ran git stash despite ban — clean pop, restate the rule) · S4 `0d7765f`
+>    (gates A–F: corpus byte-untouched, 2,227/2,234 w/ the 7 documented residue, urlState
+>    zero-diff = codec invariance, /creature warmed latency 6–27 ms w/ one-time 144 ms
+>    warmup flagged for H, README).
+> 4. **Deploy (orchestrator-run, sanctioned):** render-only `just up`, window ~33 s; live
+>    edge Playwright: pane-swap live, groups canonical order, humanized chips, edition
+>    text, zero bracket residue; SigNoz 100 spans / 0 hasError, ERROR count 0.
+> - **▶ NEXT: gate H — the ONE consolidated P2–P13 stakeholder review at
+>   `https://codex.iridi.cc`.** P13 adds to the register: filters-open is non-shareable
+>   local state; group headers aren't select-alls; tier-cross closes the pane; the
+>   humanization map is a standing maintenance surface; the /creature first-toggle warmup.
+>   Carried: P12's /rules ::details-content latent fix candidate + 2 miscategorized class/
+>   docs + subclass pill doc-names; P11's 4 malformed-name actions; backrefs
+>   scoped-unstarted. Pre-existing residue rides: 7 ssrSmoke fails on main; the
+>   deep-scroll-reload guard flake (bisect-proven pre-P13).
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-19, earlier) — P12 round (superseded above)
+
+## (was) Current state (as of `7829f29`, 2026-07-19 — codex (0029) P12 BESPOKE CLASS PAGE BUILT + DEPLOYED + LIVE + same-day mid-gate-H follow-ups `7829f29` also LIVE (class ToC dropped · bare /class redirects to first class · header nav right-aligned); ▶ was: gate H, the consolidated P2–P12 review; heartwood ON HOLD)
 
 > **✅ codex (0029) P12 — bespoke class page, all live on codex.iridi.cc:**
 > 1. **Provenance:** stakeholder: "special interface for some data types — look at how
