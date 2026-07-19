@@ -17,7 +17,7 @@ import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { facetKeysFor } from "@/schema/facetKeys";
 
 import { humanizeFacetKey } from "../render/text";
-import { facetDefFor, labelFor } from "./facetDefs";
+import { facetDefFor, humanizedLabelFor } from "./facetDefs";
 import {
   isRangeFilterActive,
   setSupersededFilter,
@@ -25,6 +25,7 @@ import {
   type BrowseFilterState,
   type RangeFilter,
 } from "./filterEngine";
+import { formatFacetValue } from "./formatFacetValue";
 
 /** Structurally identical to `BrowseListing.tsx`'s `FilterStateUpdater`/
  * `FacetPanel.tsx`'s `StateUpdater` — named locally rather than imported
@@ -36,7 +37,32 @@ export interface ActiveFilterPill {
   /** Stable React key + (for `f.*` dimensions) the facet key itself. */
   key: string;
   label: string;
+  /** P13 S1 (D29-129) — set ONLY when `label` was truncated: the pill's
+   * `title` attribute carries the FULL untruncated value list (a native
+   * hover tooltip), so truncation never loses information, only display
+   * width. `undefined` when nothing was truncated (the DOM `title` attr is
+   * simply omitted — never a redundant copy of `label`). */
+  title?: string;
   onRemove: () => void;
+}
+
+/** D29-129 — "Label: A, B +N more" once a labeled value list exceeds 2
+ * entries (first 2, alphabetically for determinism over `Set` iteration
+ * order — full list always available via the pill's `title` attribute).
+ * `parts` is already the per-value DISPLAY strings (traits' own `-excluded`
+ * prefix marker included, so this applies uniformly to every list-shaped
+ * pill, not just plain enum selections). */
+function truncatedList(
+  title: string,
+  parts: readonly string[],
+): Pick<ActiveFilterPill, "label" | "title"> {
+  const sorted = [...parts].sort((a, b) => a.localeCompare(b));
+  if (sorted.length <= 2) return { label: `${title}: ${sorted.join(", ")}` };
+  const shown = sorted.slice(0, 2).join(", ");
+  return {
+    label: `${title}: ${shown} +${sorted.length - 2} more`,
+    title: `${title}: ${sorted.join(", ")}`,
+  };
 }
 
 function rangeLabel(title: string, filter: RangeFilter): string {
@@ -47,12 +73,12 @@ function rangeLabel(title: string, filter: RangeFilter): string {
   return `${title}: ${bounds}`;
 }
 
-function enumLabel(
+function enumPill(
   title: string,
   values: ReadonlySet<string>,
   labelOf: (value: string) => string,
-): string {
-  return `${title}: ${[...values].map(labelOf).join(", ")}`;
+): Pick<ActiveFilterPill, "label" | "title"> {
+  return truncatedList(title, [...values].map(labelOf));
 }
 
 /**
@@ -82,7 +108,7 @@ export function activeFilterPills(
   if (state.rarity.size > 0) {
     pills.push({
       key: "rarity",
-      label: enumLabel("Rarity", state.rarity, (v) => v),
+      ...enumPill("Rarity", state.rarity, formatFacetValue),
       onRemove: () => onChange((prev) => withoutDimension(prev, { kind: "rarity" })),
     });
   }
@@ -90,7 +116,7 @@ export function activeFilterPills(
     const parts = [...state.traits.include, ...[...state.traits.exclude].map((t) => `-${t}`)];
     pills.push({
       key: "traits",
-      label: `Traits: ${parts.join(", ")}`,
+      ...truncatedList("Traits", parts),
       onRemove: () => onChange((prev) => withoutDimension(prev, { kind: "traits" })),
     });
   }
@@ -99,14 +125,14 @@ export function activeFilterPills(
       key: "sourceBook",
       // R10 (D29-68) — abbreviation-with-fallback, same as the FacetPanel
       // Source section and every other compact-surface site.
-      label: enumLabel("Source", state.sourceBook, (v) => abbreviateBook(v) ?? v),
+      ...enumPill("Source", state.sourceBook, (v) => abbreviateBook(v) ?? v),
       onRemove: () => onChange((prev) => withoutDimension(prev, { kind: "sourceBook" })),
     });
   }
   if (state.edition.size > 0) {
     pills.push({
       key: "edition",
-      label: enumLabel("Edition", state.edition, (v) => v),
+      ...enumPill("Edition", state.edition, (v) => v),
       onRemove: () => onChange((prev) => withoutDimension(prev, { kind: "edition" })),
     });
   }
@@ -120,13 +146,17 @@ export function activeFilterPills(
   for (const facetKey of facetKeysFor(category)) {
     const def = facetDefFor(facetKey);
     const title = def?.label ?? humanizeFacetKey(facetKey);
-    const labelOf = def ? (v: string) => labelFor(def, v) : (v: string) => v;
+    // P13 S1 (D29-122) — the precedence-respecting humanizer, replacing the
+    // raw-fallback `labelFor`: a pill showing "classfeature" instead of
+    // "Class Feature" is the same raw-data leak the facet panel itself
+    // fixes, just on a different surface.
+    const labelOf = (v: string) => humanizedLabelFor(def, v);
 
     const enumSelected = state.facetEnum.get(facetKey);
     if (enumSelected !== undefined && enumSelected.size > 0) {
       pills.push({
         key: `f.${facetKey}`,
-        label: enumLabel(title, enumSelected, labelOf),
+        ...enumPill(title, enumSelected, labelOf),
         onRemove: () =>
           onChange((prev) => withoutDimension(prev, { kind: "facet", key: facetKey })),
       });

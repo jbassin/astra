@@ -776,6 +776,7 @@ export function BrowseListing({
               key={pill.key}
               type="button"
               className="codex-active-pill"
+              title={pill.title}
               onClick={pill.onRemove}
             >
               {pill.label}

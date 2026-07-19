@@ -1001,6 +1001,11 @@ select:focus-visible,
      ≤300px measurement, but stays consistent with it. */
   margin-bottom: 0.75rem;
 }
+/* P13 S1 (D29-129): restyled to the refreshed chip language — same
+   parchment neutral treatment as `.codex-toggle-chip`/`.codex-trait-chip`
+   (transparent field, gold-rule outline) rather than the old blue-callout
+   tint, so the pill row reads as ONE consistent chip vocabulary with the
+   panel it summarizes. */
 .codex-active-pill {
   display: inline-flex;
   align-items: center;
@@ -1008,12 +1013,16 @@ select:focus-visible,
   font-family: var(--font-condensed), sans-serif;
   font-size: 0.72rem;
   letter-spacing: 0.02em;
-  padding: 0.2rem 0.5rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 999px;
   border: 1px solid var(--color-gold-rule);
-  background-color: var(--color-callout-blue-bg);
+  background: transparent;
   color: var(--color-ink-dim);
   cursor: pointer;
+}
+.codex-active-pill:hover {
+  border-color: var(--color-gold-frame-dark);
+  color: var(--color-ink);
 }
 .codex-active-pill-remove {
   color: var(--color-heading-maroon);
@@ -1184,6 +1193,25 @@ select:focus-visible,
   color: var(--color-accent-amber);
   margin-bottom: 0.5rem;
 }
+/* P13 S1 (D29-125/-130): the title-row wrapper `FacetSection` now renders
+   around every title — carries `OptionSearch`'s magnifier button alongside
+   the heading text. The row itself owns the bottom margin/gap (a two-class
+   selector, MORE specific than the bare `.codex-facet-title` rule above —
+   the same scoped-override convention `.codex-listing-col-icon`'s own
+   comment documents — so `.codex-facet-title`'s own margin is zeroed ONLY
+   inside this row, never for `SearchPage.tsx`'s bare/unwrapped h2/h3 reuse
+   of the same class, which keeps its own margin untouched). */
+.codex-facet-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+.codex-facet-title-row .codex-facet-title {
+  margin-bottom: 0;
+}
 .codex-facet-options {
   list-style: none;
   display: flex;
@@ -1206,9 +1234,24 @@ select:focus-visible,
   font-size: 0.85rem;
   cursor: pointer;
 }
+/* P13 S1 (D29-126): custom-styled treatment — the real `<input
+   type="checkbox">` stays in the DOM (never a hand-rolled div), just given
+   the parchment accent color + a touch more size than the UA default. */
+.codex-facet-option input[type="checkbox"] {
+  accent-color: var(--color-heading-maroon);
+  width: 1rem;
+  height: 1rem;
+}
+/* P13 S1 (D29-122): `text-transform: capitalize` DELETED — this is the very
+   mechanism that produced "Ancestryfeature"/"Classfeature" (the scope doc's
+   own named symptom): a CSS capitalize blindly title-cases every
+   space-separated word with NO stopword awareness, fighting
+   `formatFacetValue`'s deliberate "held-in-one-hand" -> "Held in One Hand"
+   (lowercase "in") the moment any label reaches this class. Labels now
+   arrive pre-formatted from JS (`humanizedLabelFor`/`formatFacetValue`) and
+   render verbatim. */
 .codex-facet-option-label {
   flex: 1;
-  text-transform: capitalize;
 }
 .codex-facet-option-count {
   color: var(--color-ink-faint);
@@ -1258,39 +1301,132 @@ select:focus-visible,
   color: var(--color-ink-dim);
 }
 
+/* P13 S1 (D29-127): the inner `max-height`/`overflow-y` scrollbox DIES — the
+   list now flows (bounded to `TRAITS_INITIAL_RENDER_COUNT` = 40 + a "Show
+   all N" expander keeps the default render from becoming enormous; the
+   pane's own single scroll region is S2's job, D29-124). */
 .codex-trait-chips {
   list-style: none;
   display: flex;
   flex-wrap: wrap;
   gap: 0.3rem;
-  max-height: 14rem;
-  overflow-y: auto;
-  /* D29-106 (#13d): themed scrollbar — one of the 6 regions. */
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
+/* P13 S1 (D29-127): restyled to the token palette — neutral = a gold-rule
+   outline on parchment (`--color-gold-rule`, not the diluted `--color-rule`
+   hairline); include = FILLED maroon (was outline-only — "kill the current
+   dark boxes"); exclude = amber outline + strikethrough (unchanged
+   treatment, already token-correct). `text-transform: capitalize` DELETED
+   here too (same D29-122 reasoning as `.codex-facet-option-label` above —
+   trait tokens are already lowercase by design/convention, never CSS-cased). */
 .codex-trait-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
   font-size: 0.72rem;
   letter-spacing: 0.04em;
-  text-transform: capitalize;
-  padding: 0.15rem 0.5rem;
+  padding: 0.2rem 0.55rem;
   border-radius: 999px;
-  border: 1px solid var(--color-rule);
+  border: 1px solid var(--color-gold-rule);
   color: var(--color-ink-dim);
   background: transparent;
   cursor: pointer;
 }
+.codex-trait-chip:hover {
+  border-color: var(--color-gold-frame-dark);
+  color: var(--color-ink);
+}
 .codex-trait-chip-include {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  background-color: var(--color-heading-maroon);
+  border-color: var(--color-heading-maroon-dark);
+  color: var(--pill-text);
 }
 .codex-trait-chip-exclude {
   border-color: var(--color-accent-amber);
   color: var(--color-accent-amber);
   text-decoration: line-through;
+}
+/* P13 S1 (D29-127): the muted tri-state gesture hint under the Traits
+   title ("click to require · again to exclude · again to reset") —
+   previously undiscoverable. */
+.codex-facet-hint {
+  font-size: 0.72rem;
+  font-style: italic;
+  color: var(--color-ink-faint);
+  margin: -0.2rem 0 0.5rem;
+}
+
+/* P13 S1 (D29-125): `OptionSearch` — the magnifier toggle sits in the
+   section title row (`.codex-facet-title-row`'s own flex layout); the
+   expanded input drops to its own full-width line beneath the title via
+   `flex-basis: 100%` regardless of available row width. */
+.codex-option-search-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-ink-faint);
+  cursor: pointer;
+}
+.codex-option-search-toggle:hover,
+.codex-option-search-toggle[aria-expanded="true"] {
+  color: var(--color-accent);
+  border-color: var(--color-gold-rule);
+}
+.codex-option-search-input {
+  flex: 1 1 100%;
+  margin-top: 0.3rem;
+}
+
+/* P13 S1 (D29-126): the parchment toggle-chip row (≤8-option enum sections
+   — Rarity/Edition/actionCost/feat itemCategory) — real `<button>`s,
+   multi-select `aria-pressed` semantics, wraps at any width (two-word
+   chips sanctioned, D29-126). */
+.codex-toggle-chip-row {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.codex-toggle-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-gold-rule);
+  background: transparent;
+  color: var(--color-ink-dim);
+  cursor: pointer;
+}
+.codex-toggle-chip:hover {
+  border-color: var(--color-gold-frame-dark);
+  color: var(--color-ink);
+}
+.codex-toggle-chip[aria-pressed="true"] {
+  background-color: var(--color-heading-maroon);
+  border-color: var(--color-heading-maroon-dark);
+  color: var(--pill-text);
+}
+.codex-toggle-chip .codex-facet-option-count {
+  color: inherit;
+  opacity: 0.8;
+}
+
+/* P13 S1 (D29-126): Edition's option label — icon + VISIBLE text ("Remaster"
+   / "Legacy"), replacing the old icon-only rendering. */
+.codex-edition-option-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 /* --- P8 S1 (D29-77/D29-78): the listing TABLE register — replaces the old
@@ -2207,8 +2343,10 @@ html::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-accent);
 }
 
+/* P13 S1 (D29-127): `.codex-trait-chips` dropped from this group — its own
+   scrollbox is gone (the list flows now), so it no longer has a scroll
+   region to theme. */
 .codex-facet-options::-webkit-scrollbar,
-.codex-trait-chips::-webkit-scrollbar,
 .codex-nav-panel::-webkit-scrollbar,
 .popover-inner::-webkit-scrollbar,
 .codex-entry-pane::-webkit-scrollbar {
@@ -2216,14 +2354,12 @@ html::-webkit-scrollbar-thumb:hover {
   height: 8px;
 }
 .codex-facet-options::-webkit-scrollbar-track,
-.codex-trait-chips::-webkit-scrollbar-track,
 .codex-nav-panel::-webkit-scrollbar-track,
 .popover-inner::-webkit-scrollbar-track,
 .codex-entry-pane::-webkit-scrollbar-track {
   background: var(--color-void);
 }
 .codex-facet-options::-webkit-scrollbar-thumb,
-.codex-trait-chips::-webkit-scrollbar-thumb,
 .codex-nav-panel::-webkit-scrollbar-thumb,
 .popover-inner::-webkit-scrollbar-thumb,
 .codex-entry-pane::-webkit-scrollbar-thumb {
@@ -2231,7 +2367,6 @@ html::-webkit-scrollbar-thumb:hover {
   border-radius: 4px;
 }
 .codex-facet-options::-webkit-scrollbar-thumb:hover,
-.codex-trait-chips::-webkit-scrollbar-thumb:hover,
 .codex-nav-panel::-webkit-scrollbar-thumb:hover,
 .popover-inner::-webkit-scrollbar-thumb:hover,
 .codex-entry-pane::-webkit-scrollbar-thumb:hover {

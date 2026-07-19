@@ -624,6 +624,63 @@ export function sortOptionsByRarityRank(options: readonly OptionCount[]): Option
   });
 }
 
+/** P13 S1 (D29-126) — the `actionCost` facet's own filter-list rank order:
+ * 1/2/3/free/reaction/passive, the PF2e rulebook's own conventional
+ * action-type listing order. DISTINCT from `columnDefs.tsx`'s own
+ * `actionCostRank` (a free-text time-DURATION rank for TABLE sort, which
+ * deliberately puts free/reaction ahead of numbered actions and folds
+ * `castTime`'s composite strings in too — a different problem entirely).
+ * Same "sort over whatever's actually observed, never a whitelist/option
+ * source" posture as `sortOptionsByRarityRank` above: an unrecognized value
+ * sorts last, alphabetically among itself. */
+const ACTION_COST_RANK: Readonly<Record<string, number>> = {
+  "1": 0,
+  "2": 1,
+  "3": 2,
+  free: 3,
+  reaction: 4,
+  passive: 5,
+};
+
+export function sortOptionsByActionCostRank(options: readonly OptionCount[]): OptionCount[] {
+  return [...options].sort((a, b) => {
+    const ra = ACTION_COST_RANK[a.value];
+    const rb = ACTION_COST_RANK[b.value];
+    if (ra !== undefined && rb !== undefined) return ra - rb;
+    if (ra !== undefined) return -1;
+    if (rb !== undefined) return 1;
+    return a.value.localeCompare(b.value);
+  });
+}
+
+/** A comparator over two already-tallied `OptionCount`s — the seam
+ * `sortOptionsFor`'s optional `comparator` config carries, for a caller
+ * whose ordering fits neither a declared rank table nor a plain label sort
+ * (S3's `/search` numeric `level` facet, -2..28, and its Category facet). */
+export type OptionComparator = (a: OptionCount, b: OptionCount) => number;
+
+/**
+ * P13 S1 (D29-126) — the ONE option-sort convention every `FacetPanel.tsx`
+ * section (and, from S3, `SearchPage.tsx`) calls through, replacing the
+ * three ad-hoc conventions this file's own header comment used to flag
+ * (source label-sort / rarity rank-sort / raw alphabetical) with two
+ * declared rank exceptions and a case-insensitive DISPLAYED-label sort for
+ * everything else. `config.comparator`, when supplied, always wins outright
+ * — it's checked BEFORE the dimension name, so a caller with its own
+ * numeric/custom ordering never has to fight a rank-table match on a
+ * coincidentally-named dimension.
+ */
+export function sortOptionsFor(
+  dimension: string,
+  options: readonly OptionCount[],
+  config?: { labelOf?: (value: string) => string; comparator?: OptionComparator },
+): OptionCount[] {
+  if (config?.comparator) return [...options].sort(config.comparator);
+  if (dimension === "rarity") return sortOptionsByRarityRank(options);
+  if (dimension === "actionCost") return sortOptionsByActionCostRank(options);
+  return sortOptionsByLabel(options, config?.labelOf ?? ((v) => v));
+}
+
 /** Missing-value count for any `valueOf`-shaped accessor (the `level`
  * counterpart of `missingCount`, which is keyed on a `facets.*` key). */
 export function countMissingByValue<T>(

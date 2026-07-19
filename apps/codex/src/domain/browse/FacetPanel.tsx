@@ -3,14 +3,24 @@ import { useState, type ReactElement, type ReactNode } from "react";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
 import { facetKeysFor } from "@/schema/facetKeys";
-import { EditionIcon, Input } from "@/ui";
+import { Button, EditionIcon, Input } from "@/ui";
 
 import { humanizeFacetKey } from "../render/text";
-import { facetDefFor, labelFor, type FacetDef } from "./facetDefs";
+import {
+  CHIP_MAX_OPTIONS,
+  EnumOptionList,
+  FacetSection,
+  OptionSearch,
+  ToggleChipRow,
+  UnspecifiedCount,
+  filterOptionsByQuery,
+} from "./facetControls";
+import { facetDefFor, humanizedLabelFor, type FacetDef } from "./facetDefs";
 import {
   ambientRows,
   categoryHasLevelCoverage,
   countMissingByValue,
+  cycleTraitFilter,
   editionValueOf,
   enumOptionCounts,
   facetValueOf,
@@ -22,113 +32,23 @@ import {
   setFacetRange,
   setLevelRange,
   setSupersededFilter,
-  sortOptionsByLabel,
-  sortOptionsByRarityRank,
+  sortOptionsFor,
   sourceBookValueOf,
   toggleCoreEnumOption,
   toggleFacetEnumOption,
   traitOptionCounts,
   traitTriState,
-  cycleTraitFilter,
   type BrowseFilterState,
   type CoreEnumDimension,
-  type OptionCount,
   type RangeFilter,
 } from "./filterEngine";
+import { formatFacetValue } from "./formatFacetValue";
 
 export type StateUpdater = (updater: (prev: BrowseFilterState) => BrowseFilterState) => void;
 
 // ---------------------------------------------------------------------------
-// small presentational pieces
+// range widget (D29-131 — kept exactly as-is, no stepper/slider redesign)
 // ---------------------------------------------------------------------------
-
-function FacetSection({
-  title,
-  children,
-}: {
-  title: string;
-  // P11 S2 (D29-107a) — widened from `ReactElement | null` to `ReactNode`:
-  // a `filterable` `CoreEnumSection`/`TraitsSection` now renders TWO
-  // siblings (the type-ahead `Input` + the option list), wrapped in a
-  // Fragment — a Fragment element is always truthy, so the `!children`
-  // "hide the whole section when empty" gate below intentionally no longer
-  // fires for those two sections (the type-ahead input itself must stay
-  // visible even when it has filtered the option list down to zero matches,
-  // so the reader can clear it) — every OTHER (non-filterable) caller still
-  // passes a single `ReactElement | null` exactly as before, unaffected.
-  children: ReactNode;
-}): ReactElement | null {
-  if (!children) return null;
-  return (
-    <section className="codex-facet-section">
-      <h3 className="codex-facet-title">{title}</h3>
-      {children}
-    </section>
-  );
-}
-
-/**
- * P11 S2 (D29-107a) — the shared per-section type-ahead: a plain
- * client-substring filter (case-insensitive, no fuzzy/typo tolerance),
- * mirroring `RulesTree.tsx`'s own `/rules` quick-filter idiom (`Input
- * type="search"`, local component state, no URL/router involvement — the
- * j/k dialog guard already ignores `INPUT`/`SELECT`/`TEXTAREA` targets,
- * `BrowseListing.tsx:666`, so this is safe inside the filter `<dialog>`
- * without any guard change).
- */
-function TypeAheadInput({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (next: string) => void;
-}): ReactElement {
-  return (
-    <Input
-      type="search"
-      aria-label={label}
-      placeholder={label}
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-    />
-  );
-}
-
-function EnumOptionList({
-  options,
-  selected,
-  missing,
-  labelOf,
-  onToggle,
-}: {
-  options: readonly { value: string; count: number }[];
-  selected: ReadonlySet<string>;
-  missing: number;
-  labelOf: (value: string) => ReactNode;
-  onToggle: (value: string) => void;
-}): ReactElement | null {
-  if (options.length === 0 && missing === 0) return null;
-  return (
-    <ul className="codex-facet-options">
-      {options.map((opt) => (
-        <li key={opt.value}>
-          <label className="codex-facet-option">
-            <input
-              type="checkbox"
-              checked={selected.has(opt.value)}
-              onChange={() => onToggle(opt.value)}
-            />
-            <span className="codex-facet-option-label">{labelOf(opt.value)}</span>
-            <span className="codex-facet-option-count">{opt.count}</span>
-          </label>
-        </li>
-      ))}
-      {missing > 0 ? <li className="codex-facet-missing">— without data: {missing}</li> : null}
-    </ul>
-  );
-}
 
 // P6 R9(b,c) (D29-61): the separate "Must have a value" checkbox is DELETED
 // — a typed min/max bound now implies has-value on its own
@@ -216,17 +136,46 @@ function DerivedFacetSection({
   }
 
   // enum (the only other widget any real facetDefs entry uses today).
-  const options = enumOptionCounts(ambient, facetKey);
+  const rawOptions = enumOptionCounts(ambient, facetKey);
+  const labelOf = (v: string): string => humanizedLabelFor(def, v);
+  const sorted = sortOptionsFor(facetKey, rawOptions, { labelOf });
+  const [query, setQuery] = useState("");
+  if (sorted.length === 0 && missing === 0) return null;
+  const visible = filterOptionsByQuery(sorted, query, labelOf);
   const selected = state.facetEnum.get(facetKey) ?? new Set<string>();
+  const onToggle = (v: string) => onChange((prev) => toggleFacetEnumOption(prev, facetKey, v));
+
   return (
-    <FacetSection title={def.label}>
-      <EnumOptionList
-        options={options}
-        selected={selected}
-        missing={missing}
-        labelOf={(v) => labelFor(def, v)}
-        onToggle={(v) => onChange((prev) => toggleFacetEnumOption(prev, facetKey, v))}
-      />
+    <FacetSection
+      title={def.label}
+      titleExtra={
+        <OptionSearch
+          sectionTitle={def.label}
+          optionCount={sorted.length}
+          query={query}
+          onQueryChange={setQuery}
+        />
+      }
+    >
+      {sorted.length <= CHIP_MAX_OPTIONS ? (
+        <>
+          <ToggleChipRow
+            options={visible}
+            selected={selected}
+            labelOf={labelOf}
+            onToggle={onToggle}
+          />
+          <UnspecifiedCount count={missing} />
+        </>
+      ) : (
+        <EnumOptionList
+          options={visible}
+          selected={selected}
+          missing={missing}
+          labelOf={labelOf}
+          onToggle={onToggle}
+        />
+      )}
     </FacetSection>
   );
 }
@@ -237,9 +186,26 @@ function DerivedFacetSection({
 
 /** The Edition dimension's own `labelOf` — a stable module-scope reference
  * (not an inline arrow) so oxlint's `no-unstable-nested-components` doesn't
- * flag a JSX-returning closure defined during render. */
+ * flag a JSX-returning closure defined during render.
+ *
+ * P13 S1 (D29-126): widened from an icon-ONLY glyph to icon + VISIBLE text
+ * ("Remaster" / "Legacy") — the old icon-only rendering left mobile
+ * checkboxes reading as bare "◯"/"✦" glyphs with no discoverable meaning
+ * outside a hover tooltip. */
 function editionOptionLabel(value: string): ReactElement {
-  return <EditionIcon edition={value === "remaster" ? "remaster" : "legacy"} />;
+  const edition = value === "remaster" ? "remaster" : "legacy";
+  return (
+    <span className="codex-edition-option-label">
+      <EditionIcon edition={edition} />
+      {edition === "remaster" ? "Remaster" : "Legacy"}
+    </span>
+  );
+}
+
+/** Rarity's own `labelOf` — a stable module-scope reference for the same
+ * `no-unstable-nested-components` reason as `editionOptionLabel` above. */
+function rarityOptionLabel(value: string): string {
+  return formatFacetValue(value);
 }
 
 function CoreEnumSection({
@@ -250,8 +216,6 @@ function CoreEnumSection({
   onChange,
   valueOf,
   labelOf,
-  sortOptions,
-  filterable = false,
   labelTextOf,
 }: {
   title: string;
@@ -261,61 +225,51 @@ function CoreEnumSection({
   onChange: StateUpdater;
   valueOf: (row: IndexRow) => string | undefined;
   /** R10 (D29-68) — the Source dimension's own option label wants the
-   * abbreviation-with-fallback treatment; every other `CoreEnumSection`
-   * caller (Rarity) leaves this unset and keeps the plain identity label
-   * it always had. Edition (below) supplies the `EditionIcon` glyph. */
+   * abbreviation-with-fallback treatment; Rarity/Edition supply their own
+   * module-scope labels above. Omitted -> the plain identity label. */
   labelOf?: (value: string) => ReactNode;
-  /** D29-107(b/c) — an optional re-sort of `scalarOptionCounts`'s already-
-   * tallied option list (never a re-derivation of WHICH options appear —
-   * see `filterEngine.ts`'s own doc comments on both real callers, Source's
-   * label sort and Rarity's rank sort). Omitted -> the pre-existing raw-
-   * value alphabetical order (Edition, unaffected by this round). */
-  sortOptions?: (options: readonly OptionCount[]) => readonly OptionCount[];
-  /** D29-107(a) — Source's own per-section type-ahead (Traits gets its own
-   * copy below, since it doesn't route through this shared component at
-   * all). Omitted/false everywhere else (Rarity/Edition: too few options to
-   * need one). */
-  filterable?: boolean;
-  /** Plain-STRING projection of a value for the type-ahead's substring
+  /** Plain-STRING projection of a value for `OptionSearch`'s substring
    * match — distinct from `labelOf` (which may return rich `ReactNode`,
-   * e.g. Edition's `<EditionIcon>`, though Edition never sets `filterable`
-   * so never needs this). Required when `filterable` is true. */
+   * e.g. Edition's icon+text). Omitted -> the raw value itself. */
   labelTextOf?: (value: string) => string;
 }): ReactElement | null {
   const ambient = ambientRows(rows, state, { kind: dimension });
   const rawOptions = scalarOptionCounts(ambient, valueOf);
-  const options = sortOptions ? sortOptions(rawOptions) : rawOptions;
-  const selected = state[dimension];
+  const textOf = labelTextOf ?? ((v: string) => v);
+  const sorted = sortOptionsFor(dimension, rawOptions, { labelOf: textOf });
   const [query, setQuery] = useState("");
-  const q = query.trim().toLowerCase();
-  const visibleOptions =
-    filterable && q !== ""
-      ? options.filter((opt) => (labelTextOf?.(opt.value) ?? opt.value).toLowerCase().includes(q))
-      : options;
+  if (sorted.length === 0) return null;
+  const visible = filterOptionsByQuery(sorted, query, textOf);
+  const selected = state[dimension];
+  const onToggle = (v: string) => onChange((prev) => toggleCoreEnumOption(prev, dimension, v));
+  const resolvedLabelOf = labelOf ?? ((v: string) => textOf(v));
+
   return (
-    <FacetSection title={title}>
-      {filterable ? (
-        <>
-          <TypeAheadInput
-            label={`Filter ${title.toLowerCase()}`}
-            value={query}
-            onChange={setQuery}
-          />
-          <EnumOptionList
-            options={visibleOptions}
-            selected={selected}
-            missing={0}
-            labelOf={labelOf ?? ((v) => v)}
-            onToggle={(v) => onChange((prev) => toggleCoreEnumOption(prev, dimension, v))}
-          />
-        </>
+    <FacetSection
+      title={title}
+      titleExtra={
+        <OptionSearch
+          sectionTitle={title}
+          optionCount={sorted.length}
+          query={query}
+          onQueryChange={setQuery}
+        />
+      }
+    >
+      {sorted.length <= CHIP_MAX_OPTIONS ? (
+        <ToggleChipRow
+          options={visible}
+          selected={selected}
+          labelOf={resolvedLabelOf}
+          onToggle={onToggle}
+        />
       ) : (
         <EnumOptionList
-          options={visibleOptions}
+          options={visible}
           selected={selected}
           missing={0}
-          labelOf={labelOf ?? ((v) => v)}
-          onToggle={(v) => onChange((prev) => toggleCoreEnumOption(prev, dimension, v))}
+          labelOf={resolvedLabelOf}
+          onToggle={onToggle}
         />
       )}
     </FacetSection>
@@ -347,6 +301,18 @@ function LevelSection({
   );
 }
 
+// ---------------------------------------------------------------------------
+// Traits (D29-127): tri-state cycle/semantics/URL behavior UNTOUCHED. New:
+// selected-first ordering, a bounded initial render + "Show all N" expander,
+// AT-legible per-chip aria-labels, the tri-state gesture hint, OptionSearch.
+// ---------------------------------------------------------------------------
+
+/** N = 40 (D29-127): the initial bounded render, after selected-first +
+ * alphabetical ordering. An active search query (or "Show all") bypasses
+ * this entirely — never a hard cap on what's reachable, only on what
+ * renders by default. Exported for direct unit testing. */
+export const TRAITS_INITIAL_RENDER_COUNT = 40;
+
 function TraitsSection({
   rows,
   state,
@@ -357,26 +323,57 @@ function TraitsSection({
   onChange: StateUpdater;
 }): ReactElement | null {
   const ambient = ambientRows(rows, state, { kind: "traits" });
-  const options = traitOptionCounts(ambient);
+  const options = traitOptionCounts(ambient); // already alphabetical
   const [query, setQuery] = useState("");
+  const [showAll, setShowAll] = useState(false);
   if (options.length === 0) return null;
-  // D29-107(a) — the same client-substring type-ahead as Source, applied to
-  // the trait chip list (its own `<ul>`, not `EnumOptionList` — traits are
-  // tri-state chips, not checkboxes, D29-61's own idiom).
-  const q = query.trim().toLowerCase();
-  const visibleOptions = q === "" ? options : options.filter((opt) => opt.value.includes(q));
+
+  // D29-127: selected (include OR exclude) chips pin to the FRONT of the
+  // list — each partition stays alphabetical internally (traitOptionCounts'
+  // own order, preserved by a stable `.filter()` split).
+  const selectedFirst = [
+    ...options.filter((o) => traitTriState(state.traits, o.value) !== "neutral"),
+    ...options.filter((o) => traitTriState(state.traits, o.value) === "neutral"),
+  ];
+
+  const visible = filterOptionsByQuery(selectedFirst, query, (v) => v);
+  // D29-125: an active query bypasses the 40-bound entirely; so does
+  // "Show all".
+  const bounded =
+    query.trim() !== "" || showAll ? visible : visible.slice(0, TRAITS_INITIAL_RENDER_COUNT);
+  const hiddenCount = visible.length - bounded.length;
+
   return (
-    <FacetSection title="Traits">
-      <TypeAheadInput label="Filter traits" value={query} onChange={setQuery} />
+    <FacetSection
+      title="Traits"
+      titleExtra={
+        <OptionSearch
+          sectionTitle="Traits"
+          optionCount={options.length}
+          query={query}
+          onQueryChange={setQuery}
+        />
+      }
+    >
+      <p className="codex-facet-hint">click to require · again to exclude · again to reset</p>
       <ul className="codex-trait-chips">
-        {visibleOptions.map((opt) => {
+        {bounded.map((opt) => {
           const tri = traitTriState(state.traits, opt.value);
+          // AT-legible (review): aria-pressed alone can't distinguish
+          // include from exclude.
+          const ariaLabel =
+            tri === "include"
+              ? `${opt.value} — required`
+              : tri === "exclude"
+                ? `${opt.value} — excluded`
+                : opt.value;
           return (
             <li key={opt.value}>
               <button
                 type="button"
                 className={`codex-trait-chip codex-trait-chip-${tri}`}
                 aria-pressed={tri !== "neutral"}
+                aria-label={ariaLabel}
                 onClick={() => onChange((prev) => cycleTraitFilter(prev, opt.value))}
               >
                 {opt.value}
@@ -386,18 +383,19 @@ function TraitsSection({
           );
         })}
       </ul>
+      {hiddenCount > 0 ? (
+        <Button type="button" variant="ghost" onClick={() => setShowAll(true)}>
+          Show all {visible.length}
+        </Button>
+      ) : null}
     </FacetSection>
   );
 }
 
 // ---------------------------------------------------------------------------
-// P4.5 D29-48 (adversarial M6) — the superseded-visibility control. Distinct
-// from `CoreEnumSection`'s own "Edition" (the ordinary remaster/legacy
-// CONTENT facet, `state.edition` — unchanged): this is the boolean
-// hide-by-default toggle (`state.superseded`), the direct replacement for
-// the deleted site-wide header checkbox. The explainer copy ships HERE, in
-// S3, not held back for an H-rejection fallback — a never-remastered legacy
-// row staying visible under the default state reads as a bug without it.
+// P4.5 D29-48 (adversarial M6) — the superseded-visibility control. UNTOUCHED
+// this slice (D29-129's consolidation onto the toolbar's `resetScroll:false`
+// path + callout deletion is S2's job, D29-124/129-consolidation).
 // ---------------------------------------------------------------------------
 
 function SupersededSection({
@@ -453,7 +451,7 @@ export function FacetPanel({
         state={state}
         onChange={onChange}
         valueOf={rarityValueOf}
-        sortOptions={sortOptionsByRarityRank}
+        labelOf={rarityOptionLabel}
       />
       <TraitsSection rows={rows} state={state} onChange={onChange} />
       <CoreEnumSection
@@ -465,8 +463,6 @@ export function FacetPanel({
         valueOf={sourceBookValueOf}
         labelOf={(v) => abbreviateBook(v) ?? v}
         labelTextOf={(v) => abbreviateBook(v) ?? v}
-        sortOptions={(opts) => sortOptionsByLabel(opts, (v) => abbreviateBook(v) ?? v)}
-        filterable
       />
       <CoreEnumSection
         title="Edition"

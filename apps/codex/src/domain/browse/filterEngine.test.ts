@@ -29,8 +29,10 @@ import {
   setLevelRange,
   setQuery,
   setSort,
+  sortOptionsByActionCostRank,
   sortOptionsByLabel,
   sortOptionsByRarityRank,
+  sortOptionsFor,
   sortRows,
   sourceBookValueOf,
   toggleCoreEnumOption,
@@ -703,5 +705,87 @@ describe("sortOptionsByRarityRank (D29-107c — a SORT, never a whitelist)", () 
       "alpha-unknown",
       "zeta-unknown",
     ]);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P13 S1 (D29-126) — the unified `sortOptionsFor` entry point.
+// ---------------------------------------------------------------------------
+
+describe("sortOptionsByActionCostRank (D29-126 — 1/2/3/free/reaction/passive, the PF2e listing order)", () => {
+  it("orders the 6 real observed values 1/2/3/free/reaction/passive regardless of input order", () => {
+    const options: OptionCount[] = [
+      { value: "passive", count: 3837 },
+      { value: "1", count: 894 },
+      { value: "2", count: 496 },
+      { value: "reaction", count: 454 },
+      { value: "free", count: 203 },
+      { value: "3", count: 142 },
+    ];
+    expect(sortOptionsByActionCostRank(options).map((o) => o.value)).toEqual([
+      "1",
+      "2",
+      "3",
+      "free",
+      "reaction",
+      "passive",
+    ]);
+  });
+
+  it("an unrecognized value sorts LAST, alphabetically among itself", () => {
+    const options: OptionCount[] = [
+      { value: "zeta-unknown", count: 1 },
+      { value: "passive", count: 1 },
+      { value: "1", count: 1 },
+    ];
+    expect(sortOptionsByActionCostRank(options).map((o) => o.value)).toEqual([
+      "1",
+      "passive",
+      "zeta-unknown",
+    ]);
+  });
+});
+
+describe("sortOptionsFor (D29-126 — the ONE convention, declared rank exceptions)", () => {
+  it("dimension 'rarity' delegates to the rank sort", () => {
+    const options: OptionCount[] = [
+      { value: "unique", count: 1 },
+      { value: "common", count: 1 },
+    ];
+    expect(sortOptionsFor("rarity", options).map((o) => o.value)).toEqual(["common", "unique"]);
+  });
+
+  it("dimension 'actionCost' delegates to the actionCost rank sort", () => {
+    const options: OptionCount[] = [
+      { value: "reaction", count: 1 },
+      { value: "1", count: 1 },
+    ];
+    expect(sortOptionsFor("actionCost", options).map((o) => o.value)).toEqual(["1", "reaction"]);
+  });
+
+  it("any other dimension falls back to the case-insensitive DISPLAYED-label sort", () => {
+    const options: OptionCount[] = [
+      { value: "Gamemastery Guide", count: 1 }, // "GMG"
+      { value: "Core Rulebook", count: 1 }, // "CRB"
+    ];
+    const sorted = sortOptionsFor("sourceBook", options, {
+      labelOf: (v) => abbreviateBook(v) ?? v,
+    });
+    expect(sorted.map((o) => o.value)).toEqual(["Core Rulebook", "Gamemastery Guide"]);
+  });
+
+  it("an explicit comparator ALWAYS wins, even over a dimension that would otherwise match a rank table", () => {
+    const options: OptionCount[] = [
+      { value: "3", count: 1 },
+      { value: "-2", count: 1 },
+      { value: "10", count: 1 },
+    ];
+    // the S3 `/search` numeric `level` facet's own shape: a plain numeric
+    // comparator over string-typed values, nothing to do with rarity/
+    // actionCost's rank tables even if `dimension` coincidentally matched one.
+    const sorted = sortOptionsFor("rarity", options, {
+      comparator: (a, b) => Number(a.value) - Number(b.value),
+    });
+    expect(sorted.map((o) => o.value)).toEqual(["-2", "3", "10"]);
   });
 });

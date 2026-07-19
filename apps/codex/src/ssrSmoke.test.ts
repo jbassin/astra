@@ -230,11 +230,22 @@ describe("$category/ browse route (D29-35 tier 3)", () => {
     const { status, html } = await get("/feat");
     expect(status).toBe(200);
     expect(rendersRow(html, "feat/camouflage-coat")).toBe(true);
-    // the facet panel renders itemCategory's option, derived from `facets`
-    // (`itemCategory` has no facetDefs labelMap — its raw lowercase value
-    // renders as-is, unlike `size`/`actionCost`).
     expect(html).toContain("codex-facet-panel");
-    expect(html).toContain('class="codex-facet-option-label">ancestry<');
+    // P13 S1 (D29-122/126) — DELIBERATELY CHANGED PIN: the old literal
+    // `class="codex-facet-option-label">ancestry<` no longer appears, for
+    // TWO stacked reasons, not just the text-casing one the spec
+    // anticipated: `itemCategory` has no `facetDefs` labelMap so it still
+    // routes through `formatFacetValue`'s generic pass ("ancestry" ->
+    // "Ancestry", Title Case, D29-122) — AND `feat`'s `itemCategory` has
+    // only 7 distinct real values (`facetKeys.ts`'s own provenance comment),
+    // <= `CHIP_MAX_OPTIONS` (8), so it renders as a `ToggleChipRow` chip
+    // (bare text + a sibling count `<span>`, D29-126) rather than an
+    // `EnumOptionList` checkbox row — the `.codex-facet-option-label` class
+    // never appears on THIS facet's markup at all anymore. The chip's own
+    // literal HTML is asserted instead (unselected by default on a bare
+    // `/feat` request, so `aria-pressed="false"`).
+    expect(html).toContain("codex-toggle-chip");
+    expect(html).toContain('class="codex-toggle-chip" aria-pressed="false">Ancestry<');
   });
 
   it("a derived enum facet filter narrows correctly", async () => {

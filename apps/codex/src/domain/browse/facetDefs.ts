@@ -22,6 +22,7 @@
 // relative rather than reintroducing that failure mode.
 import { FACET_KEYS, SPILLOVER_FACET_KEYS } from "../../schema/facetKeys";
 import { humanizeFacetKey, humanizeSlug } from "../render/text";
+import { formatFacetValue } from "./formatFacetValue";
 
 export type FacetWidget = "enum" | "tristate" | "range";
 
@@ -321,6 +322,26 @@ export function numericValueFor(def: FacetDef, value: RawFacetValue | undefined)
 /** enum widget display label for one tag value. */
 export function labelFor(def: FacetDef, value: string): string {
   return def.labelMap?.[value] ?? value;
+}
+
+/**
+ * P13 S1 (D29-122) — the precedence-respecting label a facet option should
+ * actually DISPLAY: `def`'s own `labelMap` entry wins outright (checked
+ * directly against the map, never via `labelFor`'s raw-value fallback,
+ * which would be indistinguishable from "no entry" once returned);
+ * `formatFacetValue` runs ONLY when there's no entry for `value` at all —
+ * never both, so a labelMap's own carefully-written string (e.g. "1 Action")
+ * is never re-run through the generic humanizer and mangled
+ * (`formatFacetValue.test.ts`'s own "no double-formatting" proof). `def`
+ * itself is optional — the two CORE scalar dimensions with no `FacetDef` at
+ * all (`rarity`, and `sourceBook`'s raw book title, which deliberately
+ * stays on `abbreviateBook` instead) can still call this with `undefined`
+ * and fall straight to the generic formatter.
+ */
+export function humanizedLabelFor(def: FacetDef | undefined, value: string): string {
+  const mapped = def?.labelMap?.[value];
+  if (mapped !== undefined) return mapped;
+  return formatFacetValue(value);
 }
 
 // re-exported so a conformance test / the panel can cross-check against the
