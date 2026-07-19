@@ -2217,3 +2217,52 @@ html::-webkit-scrollbar-thumb:hover {
 .codex-entry-pane::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-accent);
 }
+
+/* --- P12 S2 (D29-118): `/class` + `/class/{slug}` shell (`ClassBrowse.tsx`)
+   --- MINIMAL/FUNCTIONAL ONLY: S3 owns the real "rail styling + mobile
+   fallback" pass (spec's own slice split). This just keeps the two-column
+   shell usable in the interim, reusing `.codex-rules-layout`'s own grid
+   mechanism rather than inventing a third one. */
+.codex-class-browse {
+  display: grid;
+  grid-template-columns: minmax(0, 16rem) minmax(0, 1fr);
+  gap: clamp(1.25rem, 3vw, 2.5rem);
+  align-items: start;
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+.codex-class-rail {
+  position: sticky;
+  top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.codex-class-rail-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.codex-class-rail-link-current {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+.codex-class-pane {
+  min-width: 0;
+}
+@media (max-width: 56rem) {
+  .codex-class-browse {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .codex-class-pane {
+    order: 1;
+  }
+  .codex-class-rail {
+    order: 2;
+    position: static;
+  }
+}

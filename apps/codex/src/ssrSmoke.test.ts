@@ -5,7 +5,8 @@ import path from "node:path";
 import { beforeAll, describe, expect, it } from "vitest";
 
 import { allNavCategories } from "@/domain/nav/navData";
-import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
+import { resolveClassRail } from "@/server/classPageData";
+import { createCorpusReader, fixtureCorpusRoot, resolveCorpusRoot } from "@/server/corpusFs";
 
 /**
  * SSR render smoke + D29-29 tier 3 route tests, in ONE file sharing ONE
@@ -389,6 +390,147 @@ describe("$category/ split-view browse: ?entry= deep link (P4.5 S4, D29-49 tier 
     const { html } = await get("/feat?entry=camouflage-coat");
     expect(html).toContain('name="robots"');
     expect(html).toContain('content="noindex"');
+  });
+});
+
+/**
+ * P12 S2 (D29-117/-118) — `/class` + `/class/{slug}`, over the S1 fixture
+ * corpus (`class/{fighter,cleric,witch}` stats-bearing + `class/
+ * investigator@legacy` fail-soft + `class/witch@legacy` superseded, D29-113
+ * ..116). This slice ships the shell + dispatch seam only — the bespoke
+ * `ClassPage` composition is S3, so every case here still renders through
+ * the EXISTING `EntityRenderPane` (asserted via `codex-entity-page`), inside
+ * the new `ClassBrowse` shell (asserted via `codex-class-rail`/
+ * `codex-class-pane`). `resolveClassPageData`'s own data-shaping is
+ * exhaustively covered in `classPageData.test.ts`; this proves the ROUTE
+ * wiring end to end — static-over-dynamic precedence over `$category`, the
+ * rail's default/reveal split, the fail-soft-in-shell posture, 404s, and the
+ * `?subclass=` loaderDeps rerun.
+ */
+describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)", () => {
+  it("/class/fighter out-ranks the $category/$slug route for the literal 'class' category (static-over-dynamic precedence)", async () => {
+    const { status, html } = await get("/class/fighter");
+    expect(status).toBe(200);
+    // the class shell's own rail/pane wrapper — absent from a plain
+    // `$category/$slug` render, so this alone proves the STATIC route
+    // matched, not `$category` with category="class".
+    expect(html).toContain("codex-class-rail");
+    expect(html).toContain("codex-class-pane");
+    expect(html).toContain("Fighter");
+  });
+
+  it("bare /class out-ranks the $category/ route for the literal 'class' category too", async () => {
+    const { status, html } = await get("/class");
+    expect(status).toBe(200);
+    expect(html).toContain("codex-class-rail");
+    expect(html).toContain("Classes");
+    // NOT the generic browse listing's own facet-panel chrome.
+    expect(html).not.toContain("codex-facet-panel");
+  });
+
+  it("/class/{slug} still owns every class/* id — no fallback to $category (the fail-soft doc renders here too, not a 404)", async () => {
+    const { status, html } = await get("/class/investigator@legacy");
+    expect(status).toBe(200);
+    expect(html).toContain("codex-class-rail");
+  });
+
+  // The next two cases are written to hold whether this process resolved
+  // the FIXTURE corpus (CI, a fresh clone) or a REAL corpus checked out at
+  // `apps/codex/data` (this dev environment) — same cross-environment
+  // discipline as the `$category/`/`/rules` suites above (their own
+  // comments): the fixture has exactly 3 visible/2 hidden rail rows, the
+  // real corpus has 27/20 (D29-113's own pin), and the real corpus's
+  // `class/investigator` is ITSELF a real, current, stats-bearing doc
+  // (unlike the fixture, which only carries `investigator@legacy`) — so a
+  // hardcoded "Investigator must be absent by default" assertion is
+  // fixture-only, not a structural truth. `resolveClassRail` over
+  // WHICHEVER root `resolveCorpusRoot()` actually resolved is the
+  // corpus-agnostic oracle both cases check the SSR HTML against.
+  it("the rail shows every visible (non-superseded, stats-bearing) class row by default, current slug highlighted, hidden rows absent", async () => {
+    const reader = createCorpusReader(resolveCorpusRoot());
+    const rail = resolveClassRail(reader);
+    const { html } = await get("/class/fighter");
+    for (const row of rail.visible) {
+      expect(html, `rail is missing visible row ${row.id}`).toContain(
+        `href="/${row.id}" class="codex-class-rail-link`,
+      );
+    }
+    for (const row of rail.hidden) {
+      expect(html, `hidden row ${row.id} leaked into the default rail`).not.toContain(
+        `href="/${row.id}" class="codex-class-rail-link`,
+      );
+    }
+    expect(html).toContain("codex-class-rail-link-current");
+  });
+
+  it("?superseded=1 reveals every hidden (superseded) rail row, edition-marked", async () => {
+    const reader = createCorpusReader(resolveCorpusRoot());
+    const rail = resolveClassRail(reader);
+    expect(rail.hidden.length).toBeGreaterThan(0); // both corpora carry at least the `@legacy` rows
+    // `getFollow`, not `get` — same `?superseded=1` canonicalization redirect
+    // the `/rules` suite's own toggle test already follows (raw `"1"` ->
+    // validated `true` is itself a canonicalization, not just the `legacy=`
+    // alias case).
+    const on = await getFollow("/class/fighter?superseded=1");
+    for (const row of rail.hidden) {
+      expect(on.html, `?superseded=1 is missing hidden row ${row.id}`).toContain(
+        `href="/${row.id}?superseded=1" class="codex-class-rail-link`,
+      );
+    }
+    expect(on.html).toContain("codex-class-rail-edition"); // the Legacy marker
+  });
+
+  it("a stats-bearing class (fighter) still renders through the EXISTING generic pane this slice (S3 owns the bespoke ClassPage)", async () => {
+    const { html } = await get("/class/fighter");
+    expect(html).toContain("codex-entity-page");
+    expect(html).not.toContain("data-render-error");
+  });
+
+  it("a fail-soft class doc (investigator@legacy, no stats.kind==='class') renders the generic pane INSIDE the shell — no dead end", async () => {
+    const { status, html } = await get("/class/investigator@legacy");
+    expect(status).toBe(200);
+    expect(html).toContain("codex-class-rail");
+    expect(html).toContain("codex-entity-page");
+    expect(html).toContain("Investigator");
+    expect(html).not.toContain("data-render-error");
+  });
+
+  it("404s for an unknown slug in the class category, same convention as $category/$slug", async () => {
+    const { status } = await get("/class/not-a-real-class");
+    expect(status).toBe(404);
+  });
+
+  it("?subclass= changes the SSR payload (loaderDeps proven: a different ?subclass= value re-runs getClassPage server-side)", async () => {
+    // `getFollow`, not `get`: a raw unencoded `/` inside the `subclass`
+    // query value trips the pinned router's own canonicalization pass into
+    // a same-content 307 (the exact class of redirect `getFollow`'s own doc
+    // comment already documents for `legacy=`/`superseded=`) — the settled
+    // page is what this asserts against either way.
+    const bare = await getFollow("/class/cleric");
+    const withSubclass = await getFollow("/class/cleric?subclass=class-feature/warpriest");
+    expect(bare.status).toBe(200);
+    expect(withSubclass.status).toBe(200);
+    expect(stripVolatile(bare.html)).not.toBe(stripVolatile(withSubclass.html));
+  });
+
+  it("noindex meta is present on the class shell's SSR HTML too", async () => {
+    const { html } = await get("/class/fighter");
+    expect(html).toContain('name="robots"');
+    expect(html).toContain('content="noindex"');
+  });
+
+  it("zero hydration/render errors across the class route family", async () => {
+    for (const routePath of [
+      "/class",
+      "/class/fighter",
+      "/class/cleric",
+      "/class/witch",
+      "/class/investigator@legacy",
+    ]) {
+      const { status, html } = await get(routePath);
+      expect(status).toBe(200);
+      expect(html).not.toContain("data-render-error");
+    }
   });
 });
 

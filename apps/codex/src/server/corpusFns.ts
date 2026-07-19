@@ -10,6 +10,12 @@
 
 import { createServerFn } from "@tanstack/react-start";
 
+import {
+  type ClassPageData,
+  type ClassRailData,
+  resolveClassPageData,
+  resolveClassRail,
+} from "./classPageData";
 import { getCorpusReader } from "./corpusFs";
 import { type CategoryDirectoryData, resolveCategoryDirectory } from "./directoryData";
 import { type EntityPageData, resolveEntityPageData } from "./entityPageData";
@@ -54,4 +60,23 @@ export const getRulesTree = createServerFn({ method: "GET" }).handler(
  * a valid corpus, real or fixture). */
 export const getSourcesIndex = createServerFn({ method: "GET" }).handler(
   (): SourcesIndexData => resolveSourcesIndex(getCorpusReader()),
+);
+
+/** P12 S2 (D29-117) — the `/class/{slug}` bespoke page's one loader server
+ * fn. `subclassTargetIds` is the URL's `?subclass=` CSV, already split by
+ * the route's own `urlState.ts` codec — this fn takes the decoded array,
+ * never the raw query string. `null` (unknown slug in the `class` category)
+ * crosses the RPC boundary as a plain value, same `getEntityPage` convention. */
+export const getClassPage = createServerFn({ method: "GET" })
+  .validator((input: { slug: string; subclassTargetIds?: readonly string[] }) => input)
+  .handler(({ data }): ClassPageData | null => resolveClassPageData(getCorpusReader(), data));
+
+/** P12 S2 (D29-118) — the bare `/class` index route's own loader: just the
+ * rail (no entity, no `?subclass=` to decode). `/class/{slug}` computes the
+ * SAME rail data as part of its own `getClassPage` call above (one corpus
+ * read either way — `resolveClassRail` is a cheap `_index.json`-only pass,
+ * no per-doc reads), so this is a separate, smaller server fn rather than a
+ * redundant `getClassPage` call with a placeholder slug. */
+export const getClassRail = createServerFn({ method: "GET" }).handler(
+  (): ClassRailData => resolveClassRail(getCorpusReader()),
 );

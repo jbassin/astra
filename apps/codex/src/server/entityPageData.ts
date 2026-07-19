@@ -17,8 +17,12 @@ import { CorpusNotFoundError, type CorpusReader } from "./corpusFs";
 
 /** Spec §6 risk: "the loader caps inlined targets (e.g. 100/page, report-logged in
  * dev)" — a pathological page (or a future corpus regen) can't make a single
- * request fan out into an unbounded number of file reads. */
-const EMBED_INLINE_CAP = 100;
+ * request fan out into an unbounded number of file reads. Exported (P12 S2,
+ * D29-117) so `classPageData.ts`'s own embed-collection pass — which merges
+ * targets from the class body AND every granted-feature body AND the
+ * SSR-selected subclass bodies into ONE map before capping — reuses this SAME
+ * limit rather than declaring a second one. */
+export const EMBED_INLINE_CAP = 100;
 
 /** P4 S3 (D29-41) — one ancestor step in a rules entity's breadcrumb trail.
  * `id` present -> a real doc, rendered as a link; absent -> a synthetic
@@ -112,8 +116,11 @@ export interface EntityPageData {
  * PLUS (D29-109a, P11 S5, #14) its own `remasteredAs`/`legacyOf` pointer ids —
  * `EditionBanner`'s pointer-box name resolves through this SAME prefetch map
  * (`ctx.resolveEmbed`), no second server round-trip. Deduplicated, in
- * first-encountered order. */
-function entityEmbedTargetIds(entity: CodexEntity): string[] {
+ * first-encountered order. Exported (P12 S2, D29-117) so `classPageData.ts`
+ * reuses this exact "class body's own embed/pointer targets" computation as
+ * the FIRST layer of its own wider (class body + granted features + selected
+ * subclasses) embed-target set, rather than re-deriving it. */
+export function entityEmbedTargetIds(entity: CodexEntity): string[] {
   const ids = new Set<string>();
   for (const id of collectEmbedTargetIds(entity.body)) ids.add(id);
   if (entity.loreBody) for (const id of collectEmbedTargetIds(entity.loreBody)) ids.add(id);
@@ -129,8 +136,12 @@ function entityEmbedTargetIds(entity: CodexEntity): string[] {
 
 /** A codex id (`{category}/{slug}`) is exactly one slash-separated pair
  * (`entity.ts`'s own `CodexId` regex) — split on the FIRST slash only, since a
- * `sluggify()`-produced slug is itself guaranteed slash-free. */
-function splitCodexId(id: string): { category: string; slug: string } | null {
+ * `sluggify()`-produced slug is itself guaranteed slash-free. Exported (P12
+ * S2, D29-117) — `classPageData.ts` resolves granted-feature/subclass target
+ * ids that live in OTHER categories (`class-feature/*`, `doctrine/*`,
+ * `lesson/*`, `patron/*`, ...), the exact same split-then-`reader.entity()`
+ * shape this function already serves every other embed/sidebar target. */
+export function splitCodexId(id: string): { category: string; slug: string } | null {
   const idx = id.indexOf("/");
   if (idx <= 0 || idx === id.length - 1) return null;
   return { category: id.slice(0, idx), slug: id.slice(idx + 1) };
@@ -294,8 +305,12 @@ export function resolveEntityPageData(
  * not a runtime check, so it can't silently regress). Measured max 7
  * sidebars/host — a plain loop of `reader.entity()` calls needs no
  * `EMBED_INLINE_CAP`-style cap.
+ *
+ * Exported (P12 S2, D29-117) — `classPageData.ts` reuses this UNCHANGED
+ * ("attachedSidebars as today", the spec's own text) rather than
+ * re-implementing depth-1 sidebar resolution for the `class` category.
  */
-function resolveAttachedSidebars(
+export function resolveAttachedSidebars(
   reader: CorpusReader,
   entity: CodexEntity,
 ): AttachedSidebarView[] | undefined {

@@ -14,7 +14,9 @@ import { Route as SearchRouteImport } from './routes/search'
 import { Route as RulesRouteImport } from './routes/rules'
 import { Route as CategoriesRouteImport } from './routes/categories'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClassIndexRouteImport } from './routes/class/index'
 import { Route as CategoryIndexRouteImport } from './routes/$category/index'
+import { Route as ClassSlugRouteImport } from './routes/class/$slug'
 import { Route as CategorySlugRouteImport } from './routes/$category/$slug'
 
 const SourcesRoute = SourcesRouteImport.update({
@@ -42,9 +44,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClassIndexRoute = ClassIndexRouteImport.update({
+  id: '/class/',
+  path: '/class/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CategoryIndexRoute = CategoryIndexRouteImport.update({
   id: '/$category/',
   path: '/$category/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClassSlugRoute = ClassSlugRouteImport.update({
+  id: '/class/$slug',
+  path: '/class/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
@@ -60,7 +72,9 @@ export interface FileRoutesByFullPath {
   '/search': typeof SearchRoute
   '/sources': typeof SourcesRoute
   '/$category/$slug': typeof CategorySlugRoute
+  '/class/$slug': typeof ClassSlugRoute
   '/$category/': typeof CategoryIndexRoute
+  '/class/': typeof ClassIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -69,7 +83,9 @@ export interface FileRoutesByTo {
   '/search': typeof SearchRoute
   '/sources': typeof SourcesRoute
   '/$category/$slug': typeof CategorySlugRoute
+  '/class/$slug': typeof ClassSlugRoute
   '/$category': typeof CategoryIndexRoute
+  '/class': typeof ClassIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -79,7 +95,9 @@ export interface FileRoutesById {
   '/search': typeof SearchRoute
   '/sources': typeof SourcesRoute
   '/$category/$slug': typeof CategorySlugRoute
+  '/class/$slug': typeof ClassSlugRoute
   '/$category/': typeof CategoryIndexRoute
+  '/class/': typeof ClassIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -90,7 +108,9 @@ export interface FileRouteTypes {
     | '/search'
     | '/sources'
     | '/$category/$slug'
+    | '/class/$slug'
     | '/$category/'
+    | '/class/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -99,7 +119,9 @@ export interface FileRouteTypes {
     | '/search'
     | '/sources'
     | '/$category/$slug'
+    | '/class/$slug'
     | '/$category'
+    | '/class'
   id:
     | '__root__'
     | '/'
@@ -108,7 +130,9 @@ export interface FileRouteTypes {
     | '/search'
     | '/sources'
     | '/$category/$slug'
+    | '/class/$slug'
     | '/$category/'
+    | '/class/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,7 +142,9 @@ export interface RootRouteChildren {
   SearchRoute: typeof SearchRoute
   SourcesRoute: typeof SourcesRoute
   CategorySlugRoute: typeof CategorySlugRoute
+  ClassSlugRoute: typeof ClassSlugRoute
   CategoryIndexRoute: typeof CategoryIndexRoute
+  ClassIndexRoute: typeof ClassIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -158,11 +184,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/class/': {
+      id: '/class/'
+      path: '/class'
+      fullPath: '/class/'
+      preLoaderRoute: typeof ClassIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/$category/': {
       id: '/$category/'
       path: '/$category'
       fullPath: '/$category/'
       preLoaderRoute: typeof CategoryIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/class/$slug': {
+      id: '/class/$slug'
+      path: '/class/$slug'
+      fullPath: '/class/$slug'
+      preLoaderRoute: typeof ClassSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/$category/$slug': {
@@ -182,7 +222,9 @@ const rootRouteChildren: RootRouteChildren = {
   SearchRoute: SearchRoute,
   SourcesRoute: SourcesRoute,
   CategorySlugRoute: CategorySlugRoute,
+  ClassSlugRoute: ClassSlugRoute,
   CategoryIndexRoute: CategoryIndexRoute,
+  ClassIndexRoute: ClassIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
