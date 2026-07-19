@@ -27,8 +27,15 @@ export const OTHER_GROUP_LABEL = "Other";
  * (`groupSourcesByProductLine`'s own "pinned-then-alphabetical-then-Other"
  * rule) — `Other` itself is NEVER pinned here; it is always forced last by
  * the grouping function regardless of this list.
+ *
+ * P13 S3 (D29-128) — EXPORTED (was module-private through P4): the review's
+ * own blocker on the filter-panel redesign's draft was that its Source
+ * facet's group order FORKED this one ("Adventures before Society, Comics
+ * before Blog Posts") — `FacetPanel.tsx`'s grouped Source section
+ * (`orderProductLines`, below) imports this list directly rather than
+ * re-declaring it, so the panel and `/sources` can never disagree again.
  */
-const PINNED_PRODUCT_LINE_ORDER: readonly string[] = [
+export const PINNED_PRODUCT_LINE_ORDER: readonly string[] = [
   "Rulebooks",
   "Lost Omens",
   "Adventure Paths",
@@ -38,6 +45,27 @@ const PINNED_PRODUCT_LINE_ORDER: readonly string[] = [
   "Blog Posts",
   "April Fools",
 ];
+
+/**
+ * The pinned-then-alphabetical-then-Other GROUP ORDER, given the distinct
+ * product-line strings actually present (`OTHER_GROUP_LABEL` may or may not
+ * be among them) — the ordering half of `groupSourcesByProductLine` below,
+ * extracted (P13 S3, D29-128) so `FacetPanel.tsx`'s Source-section grouping
+ * can reuse the EXACT SAME order over a different member shape (option
+ * counts, not `SourceIndexEntry` rows) without re-deriving or re-declaring
+ * it a second time.
+ */
+export function orderProductLines(lines: readonly string[]): string[] {
+  const distinct = new Set(lines);
+  const realLines = [...distinct].filter((l) => l !== OTHER_GROUP_LABEL);
+  const pinnedPresent = PINNED_PRODUCT_LINE_ORDER.filter((l) => realLines.includes(l));
+  const unpinned = realLines
+    .filter((l) => !PINNED_PRODUCT_LINE_ORDER.includes(l))
+    .sort((a, b) => a.localeCompare(b));
+  const order = [...pinnedPresent, ...unpinned];
+  if (distinct.has(OTHER_GROUP_LABEL)) order.push(OTHER_GROUP_LABEL);
+  return order;
+}
 
 export interface SourcesGroup {
   /** `OTHER_GROUP_LABEL` for the ungrouped bucket, else the real product
@@ -68,13 +96,13 @@ export function groupSourcesByProductLine(books: readonly SourceIndexEntry[]): S
   }
   for (const arr of byLine.values()) arr.sort((a, b) => a.book.localeCompare(b.book));
 
-  const realLines = [...byLine.keys()].filter((l) => l !== OTHER_GROUP_LABEL);
-  const pinnedPresent = PINNED_PRODUCT_LINE_ORDER.filter((l) => realLines.includes(l));
-  const unpinned = realLines
-    .filter((l) => !PINNED_PRODUCT_LINE_ORDER.includes(l))
-    .sort((a, b) => a.localeCompare(b));
-  const order = [...pinnedPresent, ...unpinned];
-  if (byLine.has(OTHER_GROUP_LABEL)) order.push(OTHER_GROUP_LABEL);
+  // P13 S3 (D29-128): the order derivation itself now lives in
+  // `orderProductLines` (above), shared verbatim with `FacetPanel.tsx`'s
+  // grouped Source section — this call is byte-for-byte the same
+  // pinned-then-alphabetical-then-Other computation the inline version used
+  // to do here directly (`sourcesModel.test.ts`'s existing order pins are
+  // unchanged by this refactor).
+  const order = orderProductLines([...byLine.keys()]);
 
   return order.map((productLine) => {
     const groupBooks = byLine.get(productLine) ?? [];

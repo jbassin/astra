@@ -128,7 +128,14 @@ export const Route = createFileRoute("/$category/")({
       // ONLY on this genuinely server-windowed branch, is what makes both
       // the fetch-trigger and the override props key off "was this payload
       // windowed at all," not a size comparison that coincidentally lies.
-      return { ...windowed, entry, windowed: true as const };
+      // P13 S3 (D29-121) — `sourceLines` rides alongside the windowed
+      // projection, NOT computed BY it: `computeWindowedListing` (a pure,
+      // corpus-free function, `virtualization.ts`) has no reason to know
+      // about the sources-index artifact, and the map itself is windowing
+      // -independent (built from `listing.rows`, the FULL category, at
+      // `resolveCategoryListing` time either way) — so it's spread in here
+      // rather than added to that function's own return shape.
+      return { ...windowed, entry, windowed: true as const, sourceLines: listing.sourceLines };
     }
     return {
       category: listing.category,
@@ -138,6 +145,7 @@ export const Route = createFileRoute("/$category/")({
       hiddenCount: listing.rows.filter((r) => r.superseded).length,
       entryVisible: undefined,
       entry,
+      sourceLines: listing.sourceLines,
       // D29-111 — a client-executed loader run always ships the FULL raw
       // array already (`listing.rows` verbatim, no windowing/filtering) —
       // never needs the post-hydration re-fetch, and every override prop
@@ -214,6 +222,7 @@ function CategoryIndexComponent() {
         entrySlug={search.entry}
         entryData={data.entry}
         restoredScrollY={restoredWindowEntry?.scrollY}
+        sourceLines={data.sourceLines}
         onStateChange={(updater) => {
           const next = updater(state);
           void navigate({ search: withEntryPreserved(next, search), replace: true });

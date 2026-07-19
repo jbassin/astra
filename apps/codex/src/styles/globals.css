@@ -1405,6 +1405,57 @@ select:focus-visible,
   margin-top: 0.15rem;
 }
 
+/* P13 S3 (D29-128) — the grouped Source section's product-line disclosures:
+   an explicit conditional-render toggle, NEVER a `<details>` element (the
+   P12 `::details-content` trap this spec's own review named as a hard
+   ban) — mirrors `.codex-rules-toggle`'s own button-plus-glyph idiom
+   (`RulesTree.tsx`) rather than inventing a second one. */
+.codex-source-groups {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+.codex-source-group-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0.4rem;
+  padding: 0.25rem 0;
+  background: transparent;
+  border: none;
+  color: var(--color-ink);
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+.codex-source-group-toggle > [aria-hidden="true"] {
+  flex: none;
+  width: 1rem;
+  color: var(--color-ink-faint);
+  font-size: 0.75rem;
+  text-align: center;
+}
+.codex-source-group-toggle:hover > [aria-hidden="true"] {
+  color: var(--color-ink);
+}
+.codex-source-group-label {
+  flex: 1;
+  font-family: var(--font-condensed), sans-serif;
+  letter-spacing: 0.02em;
+}
+/* Member books nest one step in, mirroring `.codex-rules-tree-children`'s
+   own indent-plus-rule idiom (the same "this is a level BELOW its header"
+   visual grammar, reused rather than invented twice). */
+.codex-source-group .codex-facet-options {
+  margin-left: 1.4rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--color-rule);
+}
+.codex-source-option-code {
+  color: var(--color-ink-faint);
+}
+
 .codex-facet-range-inputs {
   display: flex;
   align-items: center;
@@ -1426,24 +1477,22 @@ select:focus-visible,
   margin-top: 0.4rem;
 }
 
-/* --- P13 S2 (D29-129 consolidation): `FacetPanel.tsx`'s `SupersededSection`
-   (browse) is now a plain toggle row + a one-line muted caption — the loud
-   BLUE explainer callout DIES from THIS panel specifically. The
-   `.codex-facet-superseded-explainer`/`.codex-callout-blue` RULE below is
-   kept (not deleted) — `SearchPage.tsx` still hand-copies its own callout
-   using this exact class pair (D29-130's SearchPage consumption is S3's
-   job, out of S2 scope — deleting the shared rule here would silently
-   unstyle that still-live markup before S3 lands). --- */
+/* --- P13 S2 (D29-129 consolidation), completed P13 S3 (D29-130):
+   `FacetPanel.tsx`'s `SupersededSection` (browse) went to a plain toggle
+   row + a one-line muted caption at S2 — the loud BLUE explainer callout
+   died from THAT panel specifically then. `SearchPage.tsx`'s own copy held
+   onto `.codex-facet-superseded-explainer`/`.codex-callout-blue` through S2
+   (deliberately — deleting the shared rule then would have silently
+   unstyled its still-live markup before S3 landed); S3's own consumption of
+   the shared primitives dropped that callout too (its `SupersededSection`
+   now uses the SAME muted-caption treatment), so
+   `.codex-facet-superseded-explainer` has no remaining consumer and is
+   DELETED here — `.codex-callout-blue` itself stays (`editionBanner.tsx`
+   still uses it). --- */
 .codex-facet-superseded {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-}
-.codex-facet-superseded-explainer {
-  padding: 0.6rem 0.75rem;
-  font-size: 0.78rem;
-  line-height: 1.4;
-  color: var(--color-ink-dim);
 }
 .codex-facet-superseded-caption {
   font-size: 0.78rem;

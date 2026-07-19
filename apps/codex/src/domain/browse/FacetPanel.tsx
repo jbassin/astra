@@ -1,13 +1,15 @@
 import { useState, type ReactElement, type ReactNode } from "react";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
+import { OTHER_GROUP_LABEL, orderProductLines } from "@/domain/sources/sourcesModel";
 import type { IndexRow } from "@/schema/entity";
 import { facetKeysFor } from "@/schema/facetKeys";
-import { Button, EditionIcon, Input } from "@/ui";
+import { Button, Input } from "@/ui";
 
 import { humanizeFacetKey } from "../render/text";
 import {
   CHIP_MAX_OPTIONS,
+  editionOptionLabel,
   EnumOptionList,
   FacetSection,
   OptionSearch,
@@ -41,6 +43,7 @@ import {
   withoutDimension,
   type BrowseFilterState,
   type CoreEnumDimension,
+  type OptionCount,
   type RangeFilter,
 } from "./filterEngine";
 import { formatFacetValue } from "./formatFacetValue";
@@ -191,24 +194,6 @@ function DerivedFacetSection({
 // core sections (every category)
 // ---------------------------------------------------------------------------
 
-/** The Edition dimension's own `labelOf` — a stable module-scope reference
- * (not an inline arrow) so oxlint's `no-unstable-nested-components` doesn't
- * flag a JSX-returning closure defined during render.
- *
- * P13 S1 (D29-126): widened from an icon-ONLY glyph to icon + VISIBLE text
- * ("Remaster" / "Legacy") — the old icon-only rendering left mobile
- * checkboxes reading as bare "◯"/"✦" glyphs with no discoverable meaning
- * outside a hover tooltip. */
-function editionOptionLabel(value: string): ReactElement {
-  const edition = value === "remaster" ? "remaster" : "legacy";
-  return (
-    <span className="codex-edition-option-label">
-      <EditionIcon edition={edition} />
-      {edition === "remaster" ? "Remaster" : "Legacy"}
-    </span>
-  );
-}
-
 /** Rarity's own `labelOf` — a stable module-scope reference for the same
  * `no-unstable-nested-components` reason as `editionOptionLabel` above. */
 function rarityOptionLabel(value: string): string {
@@ -231,9 +216,11 @@ function CoreEnumSection({
   state: BrowseFilterState;
   onChange: StateUpdater;
   valueOf: (row: IndexRow) => string | undefined;
-  /** R10 (D29-68) — the Source dimension's own option label wants the
-   * abbreviation-with-fallback treatment; Rarity/Edition supply their own
-   * module-scope labels above. Omitted -> the plain identity label. */
+  /** Rarity/Edition supply their own module-scope labels above/in
+   * `facetControls.tsx` (P13 S3: Source moved OUT of this shared section
+   * entirely, into its own `SourceSection` below — grouping doesn't fit this
+   * component's flat option-list shape). Omitted -> the plain identity
+   * label. */
   labelOf?: (value: string) => ReactNode;
   /** Plain-STRING projection of a value for `OptionSearch`'s substring
    * match — distinct from `labelOf` (which may return rich `ReactNode`,
@@ -281,6 +268,172 @@ function CoreEnumSection({
           onToggle={onToggle}
         />
       )}
+    </FacetSection>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Source (P13 S3, D29-121/-128): specialized OUT of `CoreEnumSection` into
+// its own grouped rendering — the flat `sourceBook` dimension, the URL
+// values (raw book strings, untouched), and the ambient-count mechanism
+// (`ambientRows`/`scalarOptionCounts`) are ALL the same as before; only the
+// PRESENTATION groups the same option list by product line. Order/labels
+// come from `sourcesModel.ts` (`orderProductLines`/`OTHER_GROUP_LABEL`),
+// reused rather than re-declared (the review's own blocker on the draft's
+// forked order).
+// ---------------------------------------------------------------------------
+
+/** A book's own display label: full name + abbreviation suffix
+ * (`abbreviateBook()`) — e.g. "Ancestry Guide · LOAG". `abbreviateBook`
+ * returning `undefined` (no known abbreviation) means the suffix is simply
+ * omitted, never a literal "(undefined)". */
+function sourceOptionLabel(book: string): ReactElement {
+  const code = abbreviateBook(book);
+  return (
+    <span className="codex-source-option-label">
+      {book}
+      {code !== undefined ? <span className="codex-source-option-code"> · {code}</span> : null}
+    </span>
+  );
+}
+
+/** The plain-STRING projection of `sourceOptionLabel` above, for
+ * `OptionSearch`/`sortOptionsFor`'s own text-based matching/sorting — a
+ * query for "LOAG" matches here (the suffix), while a query for the book's
+ * own full title matches via `filterOptionsByQuery`'s OTHER check (the raw
+ * `opt.value`, always the full book string) — between the two, D29-128's
+ * "OptionSearch matches name AND code" is covered without any bespoke
+ * matching logic of its own. */
+function sourceOptionLabelText(book: string): string {
+  const code = abbreviateBook(book);
+  return code !== undefined ? `${book} · ${code}` : book;
+}
+
+interface SourceProductLineGroup {
+  productLine: string;
+  options: OptionCount[];
+  /** Sum of every member book's own ambient count — D29-128's "per-group
+   * counts = sum of member ambient counts", independent of any active
+   * OptionSearch query (the group header's own count is never filtered). */
+  count: number;
+}
+
+/** Groups an already-tallied, already-SORTED `OptionCount[]` (book -> ambient
+ * count) by product line, in `orderProductLines`' pinned-then-alphabetical
+ * -then-Other order — a book missing from `sourceLines` (shouldn't happen;
+ * `listingData.ts`'s `buildSourceLines` covers every book in the category)
+ * groups under `OTHER_GROUP_LABEL` too, the same fail-soft posture the
+ * loader itself uses. */
+function groupSourceOptions(
+  sortedOptions: readonly OptionCount[],
+  sourceLines: Record<string, string>,
+): SourceProductLineGroup[] {
+  const byLine = new Map<string, OptionCount[]>();
+  for (const opt of sortedOptions) {
+    const line = sourceLines[opt.value] ?? OTHER_GROUP_LABEL;
+    const arr = byLine.get(line) ?? [];
+    arr.push(opt);
+    byLine.set(line, arr);
+  }
+  return orderProductLines([...byLine.keys()]).map((productLine) => {
+    const options = byLine.get(productLine) ?? [];
+    return { productLine, options, count: options.reduce((n, o) => n + o.count, 0) };
+  });
+}
+
+function SourceSection({
+  rows,
+  state,
+  onChange,
+  sourceLines,
+}: {
+  rows: readonly IndexRow[];
+  state: BrowseFilterState;
+  onChange: StateUpdater;
+  /** `source.book` -> product-line group name, from the loader's own
+   * `CategoryListingData.sourceLines` (D29-121) — a map built over the FULL
+   * category, threaded down through `BrowseListing`/`FacetPanel` verbatim,
+   * never re-derived here. */
+  sourceLines: Record<string, string>;
+}): ReactElement | null {
+  const ambient = ambientRows(rows, state, { kind: "sourceBook" });
+  const rawOptions = scalarOptionCounts(ambient, sourceBookValueOf);
+  const sorted = sortOptionsFor("sourceBook", rawOptions, { labelOf: sourceOptionLabelText });
+  const [query, setQuery] = useState("");
+  // Manually-toggled groups (D29-128: group headers are chrome, a plain
+  // expand/collapse — never a select-all) — ADDITIVE to the two automatic
+  // expand rules below (a selected book's group, or a matching group while
+  // searching), never a replacement for them.
+  const [openGroups, setOpenGroups] = useState<ReadonlySet<string>>(new Set());
+  if (sorted.length === 0) return null;
+
+  const selected = state.sourceBook;
+  const onToggle = (v: string) => onChange((prev) => toggleCoreEnumOption(prev, "sourceBook", v));
+  const groups = groupSourceOptions(sorted, sourceLines);
+  const queryActive = query.trim() !== "";
+
+  return (
+    <FacetSection
+      title="Source"
+      titleExtra={
+        <OptionSearch
+          sectionTitle="Source"
+          optionCount={sorted.length}
+          query={query}
+          onQueryChange={setQuery}
+        />
+      }
+      activeCount={selected.size}
+      onClear={() => onChange((prev) => withoutDimension(prev, { kind: "sourceBook" }))}
+    >
+      <ul className="codex-source-groups">
+        {groups.map((group) => {
+          const visibleOptions = filterOptionsByQuery(group.options, query, sourceOptionLabelText);
+          // D29-128: while a query is active, a group with zero matches
+          // among its own members simply doesn't render at all — nothing in
+          // the spec asks for an empty, expanded, header-only group to stay
+          // visible, and hiding it keeps the search result set exactly the
+          // matching books (plus any group that ALSO holds a selection, the
+          // `hasSelected` branch below).
+          const hasSelected = group.options.some((o) => selected.has(o.value));
+          if (queryActive && visibleOptions.length === 0 && !hasSelected) return null;
+          const isOpen =
+            hasSelected ||
+            (queryActive && visibleOptions.length > 0) ||
+            openGroups.has(group.productLine);
+          return (
+            <li key={group.productLine} className="codex-source-group">
+              <button
+                type="button"
+                className="codex-source-group-toggle"
+                aria-expanded={isOpen}
+                aria-label={`Toggle ${group.productLine}`}
+                onClick={() =>
+                  setOpenGroups((prev) => {
+                    const next = new Set(prev);
+                    if (next.has(group.productLine)) next.delete(group.productLine);
+                    else next.add(group.productLine);
+                    return next;
+                  })
+                }
+              >
+                <span aria-hidden="true">{isOpen ? "▾" : "▸"}</span>
+                <span className="codex-source-group-label">{group.productLine}</span>
+                <span className="codex-facet-option-count">{group.count}</span>
+              </button>
+              {isOpen ? (
+                <EnumOptionList
+                  options={visibleOptions}
+                  selected={selected}
+                  missing={0}
+                  labelOf={sourceOptionLabel}
+                  onToggle={onToggle}
+                />
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
     </FacetSection>
   );
 }
@@ -460,6 +613,7 @@ export function FacetPanel({
   state,
   onChange,
   onSupersededReveal,
+  sourceLines,
 }: {
   category: string;
   rows: readonly IndexRow[];
@@ -470,6 +624,14 @@ export function FacetPanel({
    * comment for why. Threaded straight from `BrowseListing`'s own prop of
    * the same name (the toolbar reveal's callback), never re-derived. */
   onSupersededReveal: (superseded: boolean) => void;
+  /** P13 S3 (D29-121/-128) — the loader's `CategoryListingData.sourceLines`,
+   * threaded verbatim through `BrowseListing` for `SourceSection`'s own
+   * grouping. Optional + defaults to `{}` (every book falls to
+   * `OTHER_GROUP_LABEL`, one flat "Other" group) so callers that don't care
+   * about grouping (most of `FacetPanel.test.tsx`'s existing non-Source
+   * suites, `BrowseListing.test.tsx`'s many render calls) don't all need a
+   * ripple edit just to keep compiling. */
+  sourceLines?: Record<string, string>;
 }): ReactElement {
   const derivedKeys = facetKeysFor(category);
   return (
@@ -485,15 +647,11 @@ export function FacetPanel({
         labelOf={rarityOptionLabel}
       />
       <TraitsSection rows={rows} state={state} onChange={onChange} />
-      <CoreEnumSection
-        title="Source"
-        dimension="sourceBook"
+      <SourceSection
         rows={rows}
         state={state}
         onChange={onChange}
-        valueOf={sourceBookValueOf}
-        labelOf={(v) => abbreviateBook(v) ?? v}
-        labelTextOf={(v) => abbreviateBook(v) ?? v}
+        sourceLines={sourceLines ?? {}}
       />
       <CoreEnumSection
         title="Edition"

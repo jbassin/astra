@@ -212,6 +212,7 @@ export function BrowseListing({
   onEntryPreview,
   onSupersededReveal,
   restoredScrollY,
+  sourceLines,
 }: {
   category: string;
   rows: readonly IndexRow[];
@@ -286,6 +287,15 @@ export function BrowseListing({
    * which is also what every ordinary caller/test gets by not passing this
    * prop at all). */
   restoredScrollY?: number;
+  /** P13 S3 (D29-121/-128) — the loader's `CategoryListingData.sourceLines`
+   * (`routes/$category/index.tsx`'s own `data.sourceLines`), threaded
+   * straight through to `FacetPanel`'s grouped Source section — this
+   * component never reads/derives it itself, matching every other
+   * loader-shaped prop here (`entryData`, the count overrides). Optional +
+   * defaults to `{}` (`FacetPanel`'s own fallback) so `BrowseListing.test
+   * .tsx`'s many existing render calls don't need a ripple edit just to
+   * keep compiling. */
+  sourceLines?: Record<string, string>;
 }): ReactElement {
   // Local echo of the quick-filter text so typing feels instant; the actual
   // filter state (and therefore the URL) updates on every keystroke too —
@@ -1038,6 +1048,7 @@ export function BrowseListing({
                 state={state}
                 onChange={onStateChange}
                 onSupersededReveal={onSupersededReveal}
+                sourceLines={sourceLines}
               />
             </div>
           </div>
@@ -1124,6 +1135,7 @@ export function BrowseListing({
                 state={state}
                 onChange={onStateChange}
                 onSupersededReveal={onSupersededReveal}
+                sourceLines={sourceLines}
               />
             </div>
             <div className="codex-filter-pane-footer">

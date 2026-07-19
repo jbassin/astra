@@ -25,10 +25,27 @@
 //     not `EnumOptionList` checkboxes (`CHIP_MAX_OPTIONS` = 8, D29-126) — so
 //     the old `.codex-facet-option-label` selector is replaced with
 //     `.codex-toggle-chip`.
+//
+// P13 S3 (D29-121/-128) — Source's own P13 S1/D29-107 pins are SUPERSEDED
+// again, deliberately, by the grouped rendering below:
+//   - the flat "abbreviation-only" option label ("GMG") is replaced by "full
+//     book name + abbreviation suffix" ("Gamemastery Guide" + "GMG" in a
+//     sibling span) — a bare `getByText("GMG")` no longer matches; every
+//     Source test below queries the full name and/or a regex for the code.
+//   - options no longer render as one flat list at all — they're grouped
+//     into collapsed-by-default product-line disclosures
+//     (`.codex-source-group`), so most assertions now expand a group first
+//     (`toggleGroup`/a matching OptionSearch query/a selected book) before
+//     asserting a book's own label is visible.
+//   - `FacetPanel` gains an optional `sourceLines` prop (default `{}` —
+//     every book groups under "Other") — every Source test now either
+//     passes `MANY_SOURCE_LINES` (two real pinned groups) or exercises the
+//     default/fail-soft shape explicitly.
 
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 
+import { OTHER_GROUP_LABEL, PINNED_PRODUCT_LINE_ORDER } from "@/domain/sources/sourcesModel";
 import type { IndexRow } from "@/schema/entity";
 
 import { FacetPanel, TRAITS_INITIAL_RENDER_COUNT } from "./FacetPanel";
@@ -129,6 +146,24 @@ const MANY_SOURCE_ROWS: IndexRow[] = [
   ),
 ];
 
+/** P13 S3 (D29-128) — `MANY_SOURCE_ROWS`' own 22 books grouped two ways: the
+ * two named books ("Gamemastery Guide"/"Core Rulebook") in the PINNED
+ * "Rulebooks" line, the 20 generated "Filler Volume" books in the PINNED
+ * "Adventure Paths" line — both pinned, so the group order this drives is a
+ * real subsequence of `PINNED_PRODUCT_LINE_ORDER` (index 0 then index 2),
+ * not a coincidence of alphabetical order (which would put "Adventure
+ * Paths" BEFORE "Rulebooks"). */
+const MANY_SOURCE_LINES: Record<string, string> = {
+  "Gamemastery Guide": "Rulebooks",
+  "Core Rulebook": "Rulebooks",
+  ...Object.fromEntries(
+    Array.from({ length: 20 }, (_, i) => [
+      `Pathfinder #${200 + i}: Filler Volume`,
+      "Adventure Paths",
+    ]),
+  ),
+};
+
 /** 22 distinct traits (same threshold reasoning as Source above). */
 const MANY_TRAIT_ROWS: IndexRow[] = [
   row({ id: "feat/a", name: "A", level: 1, traits: ["fire", "magical"] }),
@@ -143,7 +178,21 @@ function expandOptionSearch(sectionTitle: string): HTMLInputElement {
   return screen.getByPlaceholderText(`Search ${sectionTitle.toLowerCase()}…`);
 }
 
-describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () => {
+/** Every `.codex-source-group-toggle`'s own `<button aria-label="Toggle
+ * <line>">`, in DOM order — the group-order assertion helper every test
+ * below reaches for. */
+function groupOrder(): string[] {
+  return screen.getAllByRole("button", { name: /^Toggle / }).map((btn) => {
+    const label = btn.getAttribute("aria-label") ?? "";
+    return label.replace(/^Toggle /, "");
+  });
+}
+
+function toggleGroup(productLine: string): void {
+  fireEvent.click(screen.getByRole("button", { name: `Toggle ${productLine}` }));
+}
+
+describe("FacetPanel: Source section — grouped by product line (P13 S3, D29-121/-128)", () => {
   it("below the OptionSearch threshold (20), no search affordance renders at all", () => {
     const twoBookRows: IndexRow[] = [
       row({
@@ -165,7 +214,7 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
     expect(screen.queryByRole("button", { name: "Search Source" })).toBeNull();
   });
 
-  it("at/above the threshold, a magnifier button expands to a search input that narrows by the DISPLAYED label", () => {
+  it("groups render in sourcesModel's PINNED_PRODUCT_LINE_ORDER — imported, never a re-declared literal", () => {
     render(
       <FacetPanel
         category="feat"
@@ -173,17 +222,40 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         state={emptyFilterState()}
         onChange={vi.fn()}
         onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
       />,
     );
-    expect(screen.getByText("GMG")).not.toBeNull();
-    expect(screen.getByText("CRB")).not.toBeNull();
-    const input = expandOptionSearch("Source");
-    fireEvent.change(input, { target: { value: "gmg" } });
-    expect(screen.getByText("GMG")).not.toBeNull();
-    expect(screen.queryByText("CRB")).toBeNull();
+    // "Rulebooks" (index 0) before "Adventure Paths" (index 2) in
+    // `PINNED_PRODUCT_LINE_ORDER` — NOT alphabetical (which would reverse
+    // them) — proves the order comes from the imported constant.
+    expect(groupOrder()).toEqual(
+      PINNED_PRODUCT_LINE_ORDER.filter((l) => l === "Rulebooks" || l === "Adventure Paths"),
+    );
   });
 
-  it("the query also matches the RAW value (a full book title), not just the displayed abbreviation", () => {
+  it("groups render COLLAPSED by default; a group header shows the SUM of its members' ambient counts", () => {
+    const { container } = render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_SOURCE_ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
+      />,
+    );
+    // Collapsed: no member book's own label renders yet.
+    expect(screen.queryByText(/Gamemastery Guide/)).toBeNull();
+    expect(screen.queryByText(/Filler Volume/)).toBeNull();
+    const rulebooksToggle = screen.getByRole("button", { name: "Toggle Rulebooks" });
+    expect(rulebooksToggle.getAttribute("aria-expanded")).toBe("false");
+    expect(rulebooksToggle.querySelector(".codex-facet-option-count")?.textContent).toBe("2"); // Gamemastery Guide + Core Rulebook, 1 row each
+    const apToggle = screen.getByRole("button", { name: "Toggle Adventure Paths" });
+    expect(apToggle.querySelector(".codex-facet-option-count")?.textContent).toBe("20");
+    expect(container.querySelectorAll(".codex-source-group")).toHaveLength(2);
+  });
+
+  it("clicking a collapsed group's header expands it, revealing full book name + abbreviation-suffix labels", () => {
     render(
       <FacetPanel
         category="feat"
@@ -191,19 +263,152 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         state={emptyFilterState()}
         onChange={vi.fn()}
         onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
+      />,
+    );
+    toggleGroup("Rulebooks");
+    expect(
+      screen.getByRole("button", { name: "Toggle Rulebooks" }).getAttribute("aria-expanded"),
+    ).toBe("true");
+    // "Ancestry Guide · LOAG"-style: full name + abbreviation suffix, both
+    // present (D29-128) — the two book rows here abbreviate as CRB/GMG.
+    expect(screen.getByText("Gamemastery Guide")).not.toBeNull();
+    expect(screen.getByText(/GMG/)).not.toBeNull();
+    expect(screen.getByText("Core Rulebook")).not.toBeNull();
+    expect(screen.getByText(/CRB/)).not.toBeNull();
+    // The other group stays collapsed — clicking one header doesn't expand
+    // its sibling.
+    expect(screen.queryByText(/Filler Volume/)).toBeNull();
+  });
+
+  it("a group containing a SELECTED book renders expanded automatically, with no click", () => {
+    const state: BrowseFilterState = {
+      ...emptyFilterState(),
+      sourceBook: new Set(["Core Rulebook"]),
+    };
+    render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_SOURCE_ROWS}
+        state={state}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
+      />,
+    );
+    expect(
+      screen.getByRole("button", { name: "Toggle Rulebooks" }).getAttribute("aria-expanded"),
+    ).toBe("true");
+    expect(screen.getByText("Core Rulebook")).not.toBeNull();
+    // The selection doesn't auto-expand every OTHER group too.
+    expect(
+      screen.getByRole("button", { name: "Toggle Adventure Paths" }).getAttribute("aria-expanded"),
+    ).toBe("false");
+  });
+
+  it("an OptionSearch query auto-expands ONLY the group(s) with a match, by DISPLAYED name", () => {
+    render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_SOURCE_ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
+      />,
+    );
+    const input = expandOptionSearch("Source");
+    fireEvent.change(input, { target: { value: "gamemastery" } });
+    expect(
+      screen.getByRole("button", { name: "Toggle Rulebooks" }).getAttribute("aria-expanded"),
+    ).toBe("true");
+    expect(screen.getByText("Gamemastery Guide")).not.toBeNull();
+    // Zero matches in "Adventure Paths" -> the whole group doesn't render.
+    expect(screen.queryByRole("button", { name: "Toggle Adventure Paths" })).toBeNull();
+  });
+
+  it("the query also matches the ABBREVIATION CODE, not just the full book name", () => {
+    render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_SOURCE_ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
+      />,
+    );
+    const input = expandOptionSearch("Source");
+    fireEvent.change(input, { target: { value: "gmg" } });
+    expect(screen.getByText("Gamemastery Guide")).not.toBeNull();
+    expect(screen.queryByText("Core Rulebook")).toBeNull();
+  });
+
+  it("the query also matches the RAW value (a full book title with no abbreviation in the SAME group)", () => {
+    render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_SOURCE_ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
       />,
     );
     const input = expandOptionSearch("Source");
     // "filler volume" appears only in the RAW book title
-    // ("Pathfinder #20N: Filler Volume") — the rendered label is the
-    // abbreviation ("AP20N"), which does NOT contain this substring, so a
-    // match here proves the raw-value fallback fired.
+    // ("Pathfinder #20N: Filler Volume") — the rendered label abbreviates
+    // to "AP20N", which does NOT contain this substring, so a match here
+    // proves the raw-value fallback fired.
     fireEvent.change(input, { target: { value: "filler volume" } });
-    expect(screen.queryByText("GMG")).toBeNull();
-    expect(screen.getAllByText(/^AP2\d\d$/).length).toBeGreaterThan(0);
+    expect(screen.queryByText(/Gamemastery Guide/)).toBeNull();
+    // The abbreviation suffix lives in its OWN nested span (`sourceOptionLabel`
+    // renders "<book><span> · <code></span>"), so its OWN direct text is
+    // "· AP20N" (the leading middot survives) — unanchored, not an exact
+    // "AP20N" match.
+    expect(screen.getAllByText(/AP2\d\d/).length).toBeGreaterThan(0);
   });
 
-  it("options are ordered by the displayed label, case-insensitively ('CRB' before 'GMG')", () => {
+  it("within an expanded group, options are ordered by the displayed label, case-insensitively ('Core Rulebook' before 'Gamemastery Guide')", () => {
+    const { container } = render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_SOURCE_ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
+      />,
+    );
+    toggleGroup("Rulebooks");
+    // Each `.codex-source-option-label`'s OWN full name is its FIRST direct
+    // text-node child (the abbreviation suffix is a nested sibling `<span>`,
+    // so a bare `.textContent` read would include it too) — DOM order here
+    // is render order, i.e. sort order.
+    const names = [...container.querySelectorAll(".codex-source-option-label")].map(
+      (el) => el.childNodes[0]?.textContent,
+    );
+    expect(names).toEqual(["Core Rulebook", "Gamemastery Guide"]);
+  });
+
+  it("a book missing from the sourceLines map groups under Other (fail-soft)", () => {
+    render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_SOURCE_ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+        sourceLines={{ "Gamemastery Guide": "Rulebooks" }} // every OTHER book unmapped
+      />,
+    );
+    expect(groupOrder()).toEqual(["Rulebooks", OTHER_GROUP_LABEL]);
+    const otherToggle = screen.getByRole("button", { name: `Toggle ${OTHER_GROUP_LABEL}` });
+    // Core Rulebook + the 20 Filler Volume books = 21.
+    expect(otherToggle.querySelector(".codex-facet-option-count")?.textContent).toBe("21");
+  });
+
+  it("with no sourceLines prop at all (BrowseListing.test.tsx's own render shape), every book falls into one Other group", () => {
     render(
       <FacetPanel
         category="feat"
@@ -213,11 +418,10 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         onSupersededReveal={vi.fn()}
       />,
     );
-    const labels = screen.getAllByText(/^(CRB|GMG)$/).map((el) => el.textContent);
-    expect(labels).toEqual(["CRB", "GMG"]);
+    expect(groupOrder()).toEqual([OTHER_GROUP_LABEL]);
   });
 
-  it("Esc collapses an expanded search and clears the query", () => {
+  it("Esc collapses an expanded search and clears the query (group auto-expand reverts with it)", () => {
     render(
       <FacetPanel
         category="feat"
@@ -225,17 +429,20 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         state={emptyFilterState()}
         onChange={vi.fn()}
         onSupersededReveal={vi.fn()}
+        sourceLines={MANY_SOURCE_LINES}
       />,
     );
     const input = expandOptionSearch("Source");
     fireEvent.change(input, { target: { value: "gmg" } });
     fireEvent.keyDown(input, { key: "Escape" });
     expect(screen.queryByPlaceholderText("Search source…")).toBeNull();
-    // collapsing cleared the query — every option is visible again once
-    // re-expanded.
-    expandOptionSearch("Source");
-    expect(screen.getByText("GMG")).not.toBeNull();
-    expect(screen.getByText("CRB")).not.toBeNull();
+    // collapsing cleared the query — both groups are reachable again
+    // (re-collapsed, not auto-expanded), and re-expanding one manually still
+    // shows every one of its own members.
+    expect(screen.queryByRole("button", { name: "Toggle Adventure Paths" })).not.toBeNull();
+    toggleGroup("Rulebooks");
+    expect(screen.getByText("Gamemastery Guide")).not.toBeNull();
+    expect(screen.getByText("Core Rulebook")).not.toBeNull();
   });
 });
 
@@ -471,7 +678,7 @@ describe("FacetPanel: derived enum facet humanization + 'Unspecified (N)' (D29-1
 });
 
 describe("FacetPanel: custom checkbox styling hook (D29-126) present without removing the real input", () => {
-  it("a >8-option enum section (Source) still renders a real <input type=checkbox> per option", () => {
+  it("a >8-option enum section (Source) still renders a real <input type=checkbox> per option, once its group is expanded", () => {
     render(
       <FacetPanel
         category="feat"
@@ -479,11 +686,16 @@ describe("FacetPanel: custom checkbox styling hook (D29-126) present without rem
         state={emptyFilterState()}
         onChange={vi.fn()}
         onSupersededReveal={vi.fn()}
+        // No sourceLines -> a single "Other" group (P13 S3, D29-128's own
+        // fail-soft default) — expand it to reach the checkbox rows, since
+        // every group renders collapsed by default now.
       />,
     );
     const sourceHeading = screen.getByText("Source");
     const section = sourceHeading.closest("section");
     expect(section).not.toBeNull();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
+    fireEvent.click(within(section!).getByRole("button", { name: `Toggle ${OTHER_GROUP_LABEL}` }));
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     const checkboxes = within(section!).getAllByRole("checkbox");
     expect(checkboxes.length).toBeGreaterThan(0);

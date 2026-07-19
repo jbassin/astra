@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactElement, type ReactNode } from "react";
 
-import { Input } from "@/ui";
+import { EditionIcon, Input } from "@/ui";
 
 import type { OptionCount } from "./filterEngine";
 
@@ -235,6 +235,26 @@ export function filterOptionsByQuery<T extends { value: string }>(
     if (opt.value.toLowerCase().includes(q)) return true;
     return labelTextOf(opt.value).toLowerCase().includes(q);
   });
+}
+
+// ---------------------------------------------------------------------------
+// editionOptionLabel (D29-126/-130) — the Edition dimension's shared
+// icon+VISIBLE-text label, moved here from `FacetPanel.tsx` (P13 S3) so
+// `SearchPage.tsx`'s own Edition section can render the SAME widened
+// treatment ("Remaster"/"Legacy" text, not an icon-only glyph) instead of
+// maintaining its own icon-only copy. A stable module-scope reference (not
+// an inline arrow) so oxlint's `no-unstable-nested-components` doesn't flag
+// a JSX-returning closure defined during render.
+// ---------------------------------------------------------------------------
+
+export function editionOptionLabel(value: string): ReactElement {
+  const edition = value === "remaster" ? "remaster" : "legacy";
+  return (
+    <span className="codex-edition-option-label">
+      <EditionIcon edition={edition} />
+      {edition === "remaster" ? "Remaster" : "Legacy"}
+    </span>
+  );
 }
 
 // ---------------------------------------------------------------------------
