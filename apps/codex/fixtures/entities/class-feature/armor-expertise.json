@@ -1,0 +1,59 @@
+{
+  "aonUrl": "/Classes.aspx?ID=35",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/armor-expertise\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 7,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 7
+  },
+  "id": "class-feature/armor-expertise",
+  "level": 7,
+  "mastheadExtra": [
+    {
+      "label": "Class",
+      "value": [
+        {
+          "content": " Fighter",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Armor Expertise",
+  "rarity": "common",
+  "slug": "armor-expertise",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 136
+  },
+  "traits": [
+    "champion",
+    "commander",
+    "fighter"
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "aonUrl": "/Classes.aspx?ID=35",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/greater-weapon-specialization\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 15,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 15
+  },
+  "id": "class-feature/greater-weapon-specialization",
+  "level": 15,
+  "mastheadExtra": [
+    {
+      "label": "Class",
+      "value": [
+        {
+          "content": " Fighter",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Greater Weapon Specialization",
+  "rarity": "common",
+  "slug": "greater-weapon-specialization",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 136
+  },
+  "traits": [
+    "champion",
+    "commander",
+    "fighter",
+    "gunslinger",
+    "inventor",
+    "investigator",
+    "magus",
+    "monk",
+    "ranger",
+    "rogue",
+    "swashbuckler",
+    "thaumaturge"
+  ]
+}

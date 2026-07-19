@@ -1,0 +1,57 @@
+{
+  "aonUrl": "/Classes.aspx?ID=35",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/combat-flexibility\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 9,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 9
+  },
+  "id": "class-feature/combat-flexibility",
+  "level": 9,
+  "mastheadExtra": [
+    {
+      "label": "Class",
+      "value": [
+        {
+          "content": " Fighter",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Combat Flexibility",
+  "rarity": "common",
+  "slug": "combat-flexibility",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 136
+  },
+  "traits": [
+    "fighter"
+  ]
+}

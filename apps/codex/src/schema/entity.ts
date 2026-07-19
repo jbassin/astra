@@ -351,7 +351,151 @@ export const HazardStatsSchema = z
   .strict();
 export type HazardStats = z.infer<typeof HazardStatsSchema>;
 
-export const StatsSchema = z.discriminatedUnion("kind", [CreatureStatsSchema, HazardStatsSchema]);
+// ---------------------------------------------------------------------------
+// ClassStats (P12 S1, D29-113..115) — a typed statblock projection for the
+// `class` category. Two layers, built at different pipeline stages:
+//   - the SCALAR fields (keyAbility..featLevels) are extract-time
+//     (`foundryEntities.ts`'s `extractClassStats`, D29-113) — deterministic
+//     field mapping off the raw class Item's `system.*` shape, same
+//     fail-soft posture as `CreatureStats`/`HazardStats`.
+//   - `grantedFeatures`/`subclassOptions` are POST-DROP (D29-114/-115,
+//     `src/ingest/augmentClassStats.ts`) — they need the FINAL kept-id set
+//     (grantedFeatures' targetId nulling) and the final `class-feature`/
+//     subclass-category entity sets (subclassOptions' current-edition
+//     union), neither of which exists at extract time (subclass AoN-only
+//     docs are built later in `join.ts`'s `runJoin`, and droppedness is
+//     unknowable before `drop.ts` runs). Optional here — absent until that
+//     pass runs; present on every one of the 27 real stats-bearing class
+//     docs after it does.
+// ---------------------------------------------------------------------------
+
+const ClassSavingThrowsSchema = z
+  .object({
+    fortitude: z.number().int(),
+    reflex: z.number().int(),
+    will: z.number().int(),
+  })
+  .strict();
+
+/** `system.attacks` — proficiency ranks (0..4) per weapon-group column, plus
+ * an optional 5th "other" column (verified: a fixed key on ALL 27 raw docs,
+ * empty `{name:"",rank:0}` on 24 — emission gated on non-empty `other.name`,
+ * `foundryEntities.ts`'s `extractClassStats`; gunslinger's is ONE
+ * comma-joined entry, not two). */
+const ClassAttacksSchema = z
+  .object({
+    simple: z.number().int(),
+    martial: z.number().int(),
+    advanced: z.number().int(),
+    unarmed: z.number().int(),
+    other: z
+      .object({ name: z.string().min(1), rank: z.number().int() })
+      .strict()
+      .optional(),
+  })
+  .strict();
+
+const ClassDefensesSchema = z
+  .object({
+    unarmored: z.number().int(),
+    light: z.number().int(),
+    medium: z.number().int(),
+    heavy: z.number().int(),
+  })
+  .strict();
+
+const ClassTrainedSkillsSchema = z
+  .object({
+    value: z.array(z.string()),
+    additional: z.number().int().nonnegative(),
+  })
+  .strict();
+
+/** `system.{class,ancestry,skill,general}FeatLevels.value` +
+ * `system.skillIncreaseLevels.value` — five `number[]` verbatim, never
+ * assumed to follow the "standard" cadence (investigator/rogue are dense
+ * 2-20/1-20; swashbuckler's skillFeatLevels is an irregular 13-entry set —
+ * measured, D29-113). */
+const ClassFeatLevelsSchema = z
+  .object({
+    classFeat: z.array(z.number().int()),
+    ancestryFeat: z.array(z.number().int()),
+    skillFeat: z.array(z.number().int()),
+    generalFeat: z.array(z.number().int()),
+    skillIncrease: z.array(z.number().int()),
+  })
+  .strict();
+
+/** D29-114: one `system.items` grant off the raw class Item, uuid-resolved
+ * through the existing `uuidResolve`/`categoryMap` seam. `targetId` is the
+ * resolved id ONLY when it lands in the final kept entity set (`null`
+ * otherwise — the D29-14 unjoined-residue drops, e.g. cleric's "First
+ * Doctrine".."Final Doctrine") — this nulling IS the referential validation
+ * (`emit.ts`'s own Zod pass is shape-only). The 17 real null cases still
+ * appear in the progression table as plain text (render-side, S3) — never
+ * silently dropped from `grantedFeatures` itself. */
+export const GrantedFeatureSchema = z
+  .object({
+    level: z.number().int(),
+    name: z.string().min(1),
+    targetId: z.union([CodexId, z.null()]),
+  })
+  .strict();
+export type GrantedFeature = z.infer<typeof GrantedFeatureSchema>;
+
+/** D29-115: one subclass pill — either a CURRENT option (`superseded:
+ * false`, `targetId` may point into `class-feature/` when the option's
+ * remaster half was absorbed there by `CATEGORY_EQUIVALENCE`, D29-16) or a
+ * LEGACY husk (`superseded: true`, `targetId` is the husk's own id, for the
+ * site-convention `?superseded=1` reveal). `category` is always the curated
+ * map's category LABEL (the pill-row grouping), even when `targetId` points
+ * into `class-feature/`. */
+export const SubclassOptionSchema = z
+  .object({
+    category: z.string().min(1),
+    targetId: CodexId,
+    name: z.string().min(1),
+    superseded: z.boolean(),
+  })
+  .strict();
+export type SubclassOption = z.infer<typeof SubclassOptionSchema>;
+
+export const ClassStatsSchema = z
+  .object({
+    kind: z.literal("class"),
+    /** `system.keyAbility.value` — kept even when empty (psychic's real
+     * shape: `[]`; render side shows "Chosen at 1st level"). */
+    keyAbility: z.array(z.string()),
+    /** `system.hp` — a bare number (the ancestry-shape precedent, not the
+     * nested Actor `attributes.hp.max` path). */
+    hp: z.number().int().nonnegative(),
+    /** `system.perception` — a bare number (NOT the nested Actor
+     * `perception.mod` shape `CreatureStats` reads). */
+    perception: z.number().int(),
+    savingThrows: ClassSavingThrowsSchema,
+    attacks: ClassAttacksSchema,
+    defenses: ClassDefensesSchema,
+    trainedSkills: ClassTrainedSkillsSchema,
+    /** `system.spellcasting` — raw 0/1, converted to boolean. */
+    spellcasting: z.boolean(),
+    featLevels: ClassFeatLevelsSchema,
+    /** D29-114 (post-drop `augmentClassStats` pass) — absent until that pass
+     * runs; never an empty array (a stats-bearing class always has ≥1 raw
+     * grant in the real corpus). */
+    grantedFeatures: z.array(GrantedFeatureSchema).optional(),
+    /** D29-115 (post-drop `augmentClassStats` pass) — absent for a class
+     * mapped to zero subclass categories (commander/fighter/guardian/magus/
+     * swashbuckler) or until the pass runs; never an empty array otherwise. */
+    subclassOptions: z.array(SubclassOptionSchema).optional(),
+  })
+  .strict();
+export type ClassStats = z.infer<typeof ClassStatsSchema>;
+
+export const StatsSchema = z.discriminatedUnion("kind", [
+  CreatureStatsSchema,
+  HazardStatsSchema,
+  ClassStatsSchema,
+]);
 export type Stats = z.infer<typeof StatsSchema>;
 
 // ---------------------------------------------------------------------------

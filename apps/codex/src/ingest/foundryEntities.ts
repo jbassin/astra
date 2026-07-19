@@ -1,5 +1,6 @@
 import { mapCategory } from "../../scripts/categoryMap";
 import type {
+  ClassStats,
   CodexEntity,
   CreatureStats,
   EmbeddedItem,
@@ -92,6 +93,58 @@ interface RawStealth {
   details?: string;
 }
 
+/** class Item `system.attacks` (D29-113/P12 S1) — proficiency ranks per
+ * weapon-group column; `other` is a fixed 5th key on ALL 27 raw docs
+ * (verified), empty (`{name:"",rank:0}`) on 24. */
+interface RawClassAttacks {
+  simple?: number;
+  martial?: number;
+  advanced?: number;
+  unarmed?: number;
+  other?: { name?: string; rank?: number };
+}
+
+/** class Item `system.defenses` (D29-113/P12 S1) — proficiency ranks per
+ * armor-category column. */
+interface RawClassDefenses {
+  unarmored?: number;
+  light?: number;
+  medium?: number;
+  heavy?: number;
+}
+
+/** class Item `system.savingThrows` (D29-113/P12 S1) — bare numeric ranks
+ * (verified on Fighter: `{fortitude:2,reflex:2,will:1}`), NOT the nested
+ * Actor `saves.*.value` shape `saves` below holds for creature/hazard. */
+interface RawClassSavingThrows {
+  fortitude?: number;
+  reflex?: number;
+  will?: number;
+}
+
+/** class Item `system.{class,ancestry,skill,general}FeatLevels`/
+ * `skillIncreaseLevels` (D29-113/P12 S1) — each a `{value: number[]}`
+ * wrapper. */
+interface RawClassFeatLevels {
+  value?: number[];
+}
+
+/** class Item `system.items` (D29-114/P12 S1) — the granted-feature
+ * manifest: an opaque-keyed dict of `{level, name, uuid}` entries, each
+ * `uuid` a `Compendium.pf2e.classfeatures.Item.<name>`-shaped reference
+ * (verified: all 520 real raw grants). Read only by
+ * `extractRawGrantedFeatures` below — the post-drop `augmentClassStats` pass
+ * (D29-114) needs this raw manifest (subclass AoN-only docs, and thus the
+ * final kept-id set a grant's uuid resolves against, don't exist until
+ * AFTER `join.ts`/`drop.ts` run) so `transform.ts`'s orchestrator carries the
+ * RETURNED TYPED array forward as a side channel — never the raw dict
+ * itself, keeping "raw shapes never leaked past this module" intact. */
+interface RawClassGrantedFeature {
+  level?: number;
+  name?: string;
+  uuid?: string;
+}
+
 interface RawSystem {
   description?: { value?: string };
   publication?: RawPublication;
@@ -126,11 +179,34 @@ interface RawSystem {
     reflex?: { value?: number };
     will?: { value?: number };
   };
-  perception?: RawPerception;
+  /** Two distinct real shapes share this one raw field name: a creature
+   * Actor's `system.perception` (a nested `RawPerception` object) and a
+   * class Item's `system.perception` (D29-113/P12 S1, a BARE NUMBER — the
+   * proficiency rank, verified on Fighter: `2`) — same "shared field name,
+   * disjoint category populations" convention as `range` below. Read via
+   * `perceptionObject()`/a bare `typeof === "number"` check, never a direct
+   * property access, so the two shapes can never cross-contaminate. */
+  perception?: RawPerception | number;
   /** D29-20/P1.6 (creature): `system.abilities.*.mod`. */
   abilities?: Partial<Record<"str" | "dex" | "con" | "int" | "wis" | "cha", { mod?: number }>>;
   /** D29-20/P1.6 (creature): `system.skills.*.base`, keyed on the skill slug. */
   skills?: Record<string, { base?: number }>;
+  /** class Item `system.savingThrows`/`attacks`/`defenses` (D29-113/P12 S1). */
+  savingThrows?: RawClassSavingThrows;
+  attacks?: RawClassAttacks;
+  defenses?: RawClassDefenses;
+  /** class Item `system.spellcasting` (D29-113/P12 S1) — raw 0/1. */
+  spellcasting?: number;
+  classFeatLevels?: RawClassFeatLevels;
+  ancestryFeatLevels?: RawClassFeatLevels;
+  generalFeatLevels?: RawClassFeatLevels;
+  skillFeatLevels?: RawClassFeatLevels;
+  skillIncreaseLevels?: RawClassFeatLevels;
+  /** class Item `system.items` (D29-114/P12 S1) — see `RawClassGrantedFeature`'s
+   * own doc comment. Distinct from `RawFoundryDoc.items` (the top-level
+   * embedded-item ARRAY every Actor doc carries) — this is a DICT, one level
+   * deeper, under `system`. */
+  items?: Record<string, RawClassGrantedFeature>;
   /** D29-74 (P7, `lore`-typed embedded item): `system.mod.value` — the
    * lore's flat skill bonus (verified on `abberton-ruffian`'s "Gambling
    * Lore" = 1 / `ailuran`'s "Silver Lore" = 13), merged into the owning
@@ -192,8 +268,12 @@ interface RawSystem {
    * skill-slug list (read); `.lore` is free-text background flavor (e.g.
    * "Academia Lore") — real, typed here for shape-fidelity, but
    * deliberately NOT read by `extractGapFacets` (near-1:1 cardinality,
-   * would fail the classifier). */
-  trainedSkills?: { value?: string[]; lore?: string[] };
+   * would fail the classifier). class Item `system.trainedSkills`
+   * (D29-113/P12 S1) shares this same field name/shape — `.value` is its
+   * fixed skill-slug list too, plus `.additional` (a bare number of
+   * player-chosen bonus trained skills) which background's own doc never
+   * carries. */
+  trainedSkills?: { value?: string[]; lore?: string[]; additional?: number };
   /** condition Item `system.value` — `.isValued` is read; `.value` (the
    * numeric magnitude itself, e.g. clumsy 1/2/3) is real, typed for
    * shape-fidelity, but out of this slice's scope (a per-condition numeric
@@ -376,6 +456,14 @@ function extractGapFacets(category: string, system: RawSystem | undefined): Face
   }
 }
 
+/** Narrows the shared `system.perception` field to its creature-Actor
+ * (`RawPerception` object) shape — a class Item's own `system.perception` is
+ * a bare number (D29-113/P12 S1), which this returns `undefined` for. See
+ * the `RawSystem.perception` field's own doc comment. */
+function perceptionObject(p: RawSystem["perception"]): RawPerception | undefined {
+  return typeof p === "object" ? p : undefined;
+}
+
 function extractFacets(system: RawSystem | undefined, category: string): Facets {
   const facets: Facets = { ...extractGapFacets(category, system) };
 
@@ -385,7 +473,8 @@ function extractFacets(system: RawSystem | undefined, category: string): Facets 
   if (present(system?.saves?.fortitude?.value)) facets.fortitudeSave = system.saves.fortitude.value;
   if (present(system?.saves?.reflex?.value)) facets.reflexSave = system.saves.reflex.value;
   if (present(system?.saves?.will?.value)) facets.willSave = system.saves.will.value;
-  if (present(system?.perception?.mod)) facets.perception = system.perception.mod;
+  const perception = perceptionObject(system?.perception);
+  if (present(perception?.mod)) facets.perception = perception.mod;
   if (present(system?.traits?.size?.value)) facets.size = system.traits.size.value;
 
   // spell
@@ -567,7 +656,7 @@ function extractCreatureStats(
 ): CreatureStats | undefined {
   const speeds = extractSpeeds(system?.attributes?.speed);
   const abilityMods = extractAbilityMods(system?.abilities);
-  const senses = extractSenses(system?.perception);
+  const senses = extractSenses(perceptionObject(system?.perception));
   const languages = extractLanguages(system?.details);
   const immunities = extractImmunities(system?.attributes);
   const resistances = extractTypedValues(system?.attributes?.resistances);
@@ -675,12 +764,153 @@ function extractHazardStats(
   };
 }
 
+// ---------------------------------------------------------------------------
+// class stats (D29-113, P12 S1) — the SCALAR model only; `grantedFeatures`/
+// `subclassOptions` are the D29-114/-115 post-drop `augmentClassStats` pass
+// (see that module + `ClassStatsSchema`'s own file comment for why).
+// ---------------------------------------------------------------------------
+
+/** All-or-nothing: a `class` Item is expected to carry every one of these
+ * raw fields (verified: 27/27 real docs, zero missing / non-numeric ranks) —
+ * unlike `CreatureStats`/`HazardStats`'s per-field-independent posture, a
+ * class doc missing even one of them isn't a partial statblock, it's a
+ * malformed class doc (report-visible, `classStatsIncomplete`), so this
+ * returns `undefined` (no `stats` at all) rather than a half-populated
+ * object a render layer would have to special-case. */
+function extractClassStats(
+  system: RawSystem | undefined,
+  report: ReportFn,
+  classId: string,
+): ClassStats | undefined {
+  const keyAbility = system?.keyAbility?.value;
+  const hp = system?.hp;
+  const perception = typeof system?.perception === "number" ? system.perception : undefined;
+  const savingThrows = system?.savingThrows;
+  const rawAttacks = system?.attacks;
+  const defenses = system?.defenses;
+  const trainedSkills = system?.trainedSkills;
+  const spellcastingRaw = system?.spellcasting;
+  const classFeat = system?.classFeatLevels?.value;
+  const ancestryFeat = system?.ancestryFeatLevels?.value;
+  const skillFeat = system?.skillFeatLevels?.value;
+  const generalFeat = system?.generalFeatLevels?.value;
+  const skillIncrease = system?.skillIncreaseLevels?.value;
+
+  if (
+    !present(keyAbility) ||
+    !present(hp) ||
+    !present(perception) ||
+    !present(savingThrows?.fortitude) ||
+    !present(savingThrows?.reflex) ||
+    !present(savingThrows?.will) ||
+    !present(rawAttacks?.simple) ||
+    !present(rawAttacks?.martial) ||
+    !present(rawAttacks?.advanced) ||
+    !present(rawAttacks?.unarmed) ||
+    !present(defenses?.unarmored) ||
+    !present(defenses?.light) ||
+    !present(defenses?.medium) ||
+    !present(defenses?.heavy) ||
+    !present(trainedSkills?.value) ||
+    !present(trainedSkills?.additional) ||
+    !present(spellcastingRaw) ||
+    !present(classFeat) ||
+    !present(ancestryFeat) ||
+    !present(skillFeat) ||
+    !present(generalFeat) ||
+    !present(skillIncrease)
+  ) {
+    report("classStatsIncomplete", classId);
+    return undefined;
+  }
+
+  // `other` is a fixed 5th key on all 27 raw docs, empty (`{name:"",rank:0}`)
+  // on 24 — gate emission on non-empty `other.name` (gunslinger's real shape
+  // is ONE comma-joined entry, `"Simple Firearms, Martial Firearms"`).
+  const otherName = rawAttacks.other?.name;
+  const otherRank = rawAttacks.other?.rank;
+  const other =
+    present(otherName) && otherName.length > 0 && present(otherRank)
+      ? { name: otherName, rank: otherRank }
+      : undefined;
+
+  return {
+    kind: "class",
+    keyAbility,
+    hp,
+    perception,
+    savingThrows: {
+      fortitude: savingThrows.fortitude,
+      reflex: savingThrows.reflex,
+      will: savingThrows.will,
+    },
+    attacks: {
+      simple: rawAttacks.simple,
+      martial: rawAttacks.martial,
+      advanced: rawAttacks.advanced,
+      unarmed: rawAttacks.unarmed,
+      ...(other !== undefined ? { other } : {}),
+    },
+    defenses: {
+      unarmored: defenses.unarmored,
+      light: defenses.light,
+      medium: defenses.medium,
+      heavy: defenses.heavy,
+    },
+    trainedSkills: { value: trainedSkills.value, additional: trainedSkills.additional },
+    spellcasting: spellcastingRaw === 1,
+    featLevels: {
+      classFeat,
+      ancestryFeat,
+      skillFeat,
+      generalFeat,
+      skillIncrease,
+    },
+  };
+}
+
+/** D29-114 (P12 S1): a class Item's `system.items` granted-feature manifest,
+ * converted to a typed array — see `RawClassGrantedFeature`'s own doc
+ * comment for why this is the seam that keeps raw JSON from leaking past
+ * this module into `transform.ts`'s orchestrator (which needs the raw
+ * uuid/level/name triples for the post-drop `augmentClassStats` pass).
+ * Returns `undefined` when the raw dict is absent/empty (never an empty
+ * array — the "absent, not defaulted" convention every extractor here
+ * follows). An entry missing `level`/`name`/`uuid` is skipped
+ * (report-visible, `classGrantedFeatureMalformed`) — none exist in the real
+ * corpus (27/27 raw class docs carry a fully-populated manifest, verified),
+ * defensive only. */
+export interface RawGrantedFeatureEntry {
+  level: number;
+  name: string;
+  uuid: string;
+}
+
+export function extractRawGrantedFeatures(
+  system: RawSystem | undefined,
+  report: ReportFn,
+  classId: string,
+): RawGrantedFeatureEntry[] | undefined {
+  const items = system?.items;
+  if (!items) return undefined;
+  const out: RawGrantedFeatureEntry[] = [];
+  for (const [key, entry] of Object.entries(items)) {
+    if (!present(entry?.level) || !present(entry?.name) || !present(entry?.uuid)) {
+      report("classGrantedFeatureMalformed", `${classId} item "${key}"`);
+      continue;
+    }
+    out.push({ level: entry.level, name: entry.name, uuid: entry.uuid });
+  }
+  return out.length > 0 ? out : undefined;
+}
+
 function extractStats(
   category: string,
   system: RawSystem | undefined,
   ctx: EnricherContext,
   report: ReportFn,
   items: RawFoundryDoc[] | undefined,
+  id: string,
 ): Stats | undefined {
   if (category === "creature") return extractCreatureStats(system, items, report);
   // D29-74 (P7) guard: hazard docs' `type:"lore"` embedded items (0/1,309
@@ -690,6 +920,7 @@ function extractStats(
   // (add a `skills` field to `HazardStatsSchema`, then wire a merge call
   // the same shape `extractCreatureStats` uses above).
   if (category === "hazard") return extractHazardStats(system, ctx, report);
+  if (category === "class") return extractClassStats(system, report, id);
   return undefined;
 }
 
@@ -864,7 +1095,7 @@ export function assembleFoundryEntity(
       ? doc.items.map((item) => assembleEmbeddedItem(item, ctx))
       : undefined;
 
-  const stats = extractStats(decision.category, doc.system, ctx, report, doc.items);
+  const stats = extractStats(decision.category, doc.system, ctx, report, doc.items, id);
 
   return {
     id,

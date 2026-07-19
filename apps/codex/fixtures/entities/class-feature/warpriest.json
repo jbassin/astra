@@ -1,0 +1,44 @@
+{
+  "aonUrl": "/Doctrines.aspx?ID=5",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/warpriest\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 1,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 1
+  },
+  "id": "class-feature/warpriest",
+  "legacyOf": [
+    "doctrine/warpriest"
+  ],
+  "level": 1,
+  "name": "Warpriest",
+  "rarity": "common",
+  "slug": "warpriest",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 112
+  },
+  "traits": [
+    "cleric"
+  ]
+}

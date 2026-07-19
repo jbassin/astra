@@ -297,6 +297,141 @@ describe("CodexEntity.stats (D29-20/P1.6, schemaVersion 1->2)", () => {
   });
 });
 
+describe("CodexEntity.stats: ClassStats (D29-113..115/P12 S1, schemaVersion 4->5)", () => {
+  it("accepts a ClassStats entity with scalar fields only (pre-augmentClassStats shape)", () => {
+    const entity = baseEntity({
+      id: "class/fighter",
+      category: "class",
+      stats: {
+        kind: "class",
+        keyAbility: ["dex", "str"],
+        hp: 10,
+        perception: 2,
+        savingThrows: { fortitude: 2, reflex: 2, will: 1 },
+        attacks: { simple: 2, martial: 2, advanced: 1, unarmed: 2 },
+        defenses: { unarmored: 1, light: 1, medium: 1, heavy: 1 },
+        trainedSkills: { value: [], additional: 3 },
+        spellcasting: false,
+        featLevels: {
+          classFeat: [1, 2, 4],
+          ancestryFeat: [1, 5],
+          skillFeat: [2, 4],
+          generalFeat: [3, 7],
+          skillIncrease: [3, 5],
+        },
+      },
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("accepts an empty keyAbility array (psychic's real shape) + a non-empty attacks.other (gunslinger's real shape)", () => {
+    const entity = baseEntity({
+      id: "class/gunslinger",
+      category: "class",
+      stats: {
+        kind: "class",
+        keyAbility: [],
+        hp: 10,
+        perception: 2,
+        savingThrows: { fortitude: 2, reflex: 1, will: 1 },
+        attacks: {
+          simple: 1,
+          martial: 1,
+          advanced: 0,
+          unarmed: 1,
+          other: { name: "Simple Firearms, Martial Firearms", rank: 2 },
+        },
+        defenses: { unarmored: 1, light: 1, medium: 0, heavy: 0 },
+        trainedSkills: { value: [], additional: 3 },
+        spellcasting: false,
+        featLevels: {
+          classFeat: [1],
+          ancestryFeat: [1],
+          skillFeat: [2],
+          generalFeat: [3],
+          skillIncrease: [3],
+        },
+      },
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("accepts the post-augmentClassStats shape: grantedFeatures (incl. a null targetId) + subclassOptions (incl. a superseded husk)", () => {
+    const entity = baseEntity({
+      id: "class/cleric",
+      category: "class",
+      stats: {
+        kind: "class",
+        keyAbility: ["wis"],
+        hp: 8,
+        perception: 1,
+        savingThrows: { fortitude: 1, reflex: 1, will: 2 },
+        attacks: {
+          simple: 1,
+          martial: 0,
+          advanced: 0,
+          unarmed: 1,
+          other: { name: "Deity's favored weapon", rank: 1 },
+        },
+        defenses: { unarmored: 1, light: 0, medium: 0, heavy: 0 },
+        trainedSkills: { value: [], additional: 2 },
+        spellcasting: true,
+        featLevels: {
+          classFeat: [1],
+          ancestryFeat: [1],
+          skillFeat: [2],
+          generalFeat: [3],
+          skillIncrease: [3],
+        },
+        grantedFeatures: [
+          { level: 1, name: "Doctrine", targetId: "class-feature/doctrine" },
+          { level: 1, name: "First Doctrine", targetId: null },
+        ],
+        subclassOptions: [
+          {
+            category: "doctrine",
+            targetId: "class-feature/cloistered-cleric",
+            name: "Cloistered Cleric",
+            superseded: false,
+          },
+          {
+            category: "doctrine",
+            targetId: "doctrine/cloistered-cleric",
+            name: "Cloistered Cleric",
+            superseded: true,
+          },
+        ],
+      },
+    });
+    expect(parseCodexEntity(entity)).toEqual(entity);
+  });
+
+  it("rejects a class stats object missing a required scalar field", () => {
+    const bad = {
+      ...baseEntity({ category: "class" }),
+      stats: {
+        kind: "class",
+        keyAbility: ["dex"],
+        // hp missing
+        perception: 2,
+        savingThrows: { fortitude: 2, reflex: 2, will: 1 },
+        attacks: { simple: 2, martial: 2, advanced: 1, unarmed: 2 },
+        defenses: { unarmored: 1, light: 1, medium: 1, heavy: 1 },
+        trainedSkills: { value: [], additional: 3 },
+        spellcasting: false,
+        featLevels: {
+          classFeat: [1],
+          ancestryFeat: [1],
+          skillFeat: [2],
+          generalFeat: [3],
+          skillIncrease: [3],
+        },
+      },
+    };
+    expect(() => CodexEntitySchema.parse(bad)).toThrow();
+  });
+});
+
 describe("Facets: typed fields + catchall passthrough", () => {
   it("accepts the typed creature facet fields", () => {
     const entity = baseEntity({

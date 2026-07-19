@@ -183,8 +183,17 @@ export interface CorpusOutputManifest {
  * flattened, D29-2's original mapping amended). A brand-new node kind is a
  * corpus-shape change by the same posture as every prior bump above — a P2+
  * consumer walking `CodexNode` unions must be able to detect a regen that can
- * now hand it a kind it didn't understand before. */
-export const CORPUS_SCHEMA_VERSION = 4;
+ * now hand it a kind it didn't understand before.
+ *
+ * Bumped 4->5 for P12 S1 (D29-113/-114/-115/-116): `StatsSchema`'s
+ * discriminated union gains a new member, `ClassStatsSchema` (`kind:
+ * "class"`) — the `class` category's scalar statblock (keyAbility/hp/
+ * perception/savingThrows/attacks/defenses/trainedSkills/spellcasting/
+ * featLevels) plus, once the post-drop `augmentClassStats` pass runs,
+ * `grantedFeatures`/`subclassOptions`. Same posture as the P10 `statRow`
+ * bump above — a brand-new discriminated-union member is a corpus-shape
+ * change a P2+ consumer's `stats.kind` switch must be able to detect. */
+export const CORPUS_SCHEMA_VERSION = 5;
 
 export interface EmitCorpusInput {
   /** `<dataPath>/corpus` — wiped and rewritten wholesale on every call. */

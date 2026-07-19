@@ -1,0 +1,60 @@
+{
+  "aonUrl": "/Lessons.aspx?ID=34",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/lesson-of-bargains\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 10,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 10
+  },
+  "id": "class-feature/lesson-of-bargains",
+  "legacyOf": [
+    "lesson/lesson-of-bargains"
+  ],
+  "level": 10,
+  "mastheadExtra": [
+    {
+      "label": "Lesson Type",
+      "value": [
+        {
+          "content": " Major",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Lesson of Bargains",
+  "rarity": "common",
+  "slug": "lesson-of-bargains",
+  "source": {
+    "book": "Dark Archives (Remastered)",
+    "license": "ORC",
+    "page": 159
+  },
+  "traits": [
+    "witch"
+  ]
+}

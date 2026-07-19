@@ -1,0 +1,44 @@
+{
+  "aonUrl": "/Patrons.aspx?ID=27",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/baba-yaga\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 1,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 1
+  },
+  "id": "class-feature/baba-yaga",
+  "legacyOf": [
+    "patron/baba-yaga"
+  ],
+  "level": 1,
+  "name": "Baba Yaga",
+  "rarity": "rare",
+  "slug": "baba-yaga",
+  "source": {
+    "book": "Divine Mysteries",
+    "license": "ORC",
+    "page": 298
+  },
+  "traits": [
+    "witch"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "aonUrl": "/Lessons.aspx?ID=14",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"lesson/lesson-of-bargains\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "lesson",
+  "edition": "legacy",
+  "facets": {},
+  "id": "lesson/lesson-of-bargains",
+  "mastheadExtra": [
+    {
+      "label": "Lesson Type",
+      "value": [
+        {
+          "content": " Major",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Lesson of Bargains",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "class-feature/lesson-of-bargains"
+  ],
+  "slug": "lesson-of-bargains",
+  "source": {
+    "book": "Dark Archive",
+    "license": "OGL",
+    "page": 159
+  },
+  "traits": []
+}

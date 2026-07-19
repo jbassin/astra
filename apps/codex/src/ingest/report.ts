@@ -1,5 +1,6 @@
 import type { CodexEntity, CreatureStats, HazardStats } from "../schema/entity";
 import { facetKeysFor } from "../schema/facetKeys";
+import type { AugmentClassStatsResult, SubclassOptionCount } from "./augmentClassStats";
 import type { BookMergeRow, BookNormalizeResult } from "./bookNormalize";
 import type { DropAccounting } from "./drop";
 import type {
@@ -101,6 +102,10 @@ export interface ReportInput {
   sidebarAttachment: SidebarAttachResult;
   rulesTree: RulesTreeStats;
   sourcesIndex: SourcesIndexStats;
+  /** P12 S1 (D29-114/-115): the post-drop class-stats augment pass's
+   * counters (the `entities` array itself isn't needed here — it's already
+   * folded into `finalEntities` above by the time the report is built). */
+  classStatsAugment: Omit<AugmentClassStatsResult, "entities">;
 }
 
 // ---------------------------------------------------------------------------
@@ -426,6 +431,29 @@ function sidebarAttachmentJson(r: SidebarAttachResult): SidebarAttachmentJson {
   };
 }
 
+/** P12 S1 (D29-114/-115): the post-drop class-stats augment pass's report
+ * projection — pins at (real corpus) 27 classStatsEmitted / 503 resolved /
+ * 17 unresolved grants / derive-at-build subclassOptionsEmitted. */
+export interface ClassStatsAugmentJson {
+  classStatsEmitted: number;
+  grantedFeaturesResolved: number;
+  grantedFeaturesUnresolved: number;
+  subclassOptionsEmitted: number;
+  subclassOptionCounts: SubclassOptionCount[];
+}
+
+function classStatsAugmentJson(
+  r: Omit<AugmentClassStatsResult, "entities">,
+): ClassStatsAugmentJson {
+  return {
+    classStatsEmitted: r.classStatsEmitted,
+    grantedFeaturesResolved: r.grantedFeaturesResolved,
+    grantedFeaturesUnresolved: r.grantedFeaturesUnresolved,
+    subclassOptionsEmitted: r.subclassOptionsEmitted,
+    subclassOptionCounts: r.subclassOptionCounts,
+  };
+}
+
 // ---------------------------------------------------------------------------
 // report.json
 // ---------------------------------------------------------------------------
@@ -490,6 +518,8 @@ export interface ReportJson {
   rulesTree: RulesTreeStats;
   /** P4 (D29-43) S1: the `sources-index.json` builder's stats. */
   sourcesIndex: SourcesIndexStats;
+  /** P12 S1 (D29-114/-115): the post-drop class-stats augment pass. */
+  classStatsAugment: ClassStatsAugmentJson;
 }
 
 function categoryJson(stat: CategoryStat, finalOut: number): CategoryJoinJson {
@@ -548,6 +578,7 @@ export function buildReportJson(input: ReportInput): ReportJson {
     sidebarAttachment: sidebarAttachmentJson(input.sidebarAttachment),
     rulesTree: input.rulesTree,
     sourcesIndex: input.sourcesIndex,
+    classStatsAugment: classStatsAugmentJson(input.classStatsAugment),
   };
 }
 
@@ -1017,6 +1048,44 @@ export function buildReportMarkdown(json: ReportJson): string {
     ),
     "",
     'Predicate: `remasteredAs` non-empty — NOT `edition === "legacy"` (which would wrongly hide never-remastered content). The 42 remaster-edition members are the same-edition pairing anomalies (`legacyPairSameEdition`) whose `remasteredAs` still points somewhere real.',
+    "",
+  );
+
+  lines.push("## Class stats augment (P12 S1 — D29-114/-115)", "");
+  lines.push(
+    mdTable(
+      [
+        "classStatsEmitted",
+        "grantedFeaturesResolved",
+        "grantedFeaturesUnresolved",
+        "subclassOptionsEmitted",
+      ],
+      [
+        [
+          json.classStatsAugment.classStatsEmitted,
+          json.classStatsAugment.grantedFeaturesResolved,
+          json.classStatsAugment.grantedFeaturesUnresolved,
+          json.classStatsAugment.subclassOptionsEmitted,
+        ],
+      ],
+    ),
+    "",
+    "`grantedFeatures.targetId` nulls out a D29-14 unjoined-residue drop (e.g. cleric's First..Final Doctrine) — the class doc's own uuid-resolved grant still appears in the progression table as plain text (render-side), never silently dropped.",
+    "",
+  );
+  lines.push("### Subclass options per (class, category) — spot-check pins", "");
+  lines.push(
+    json.classStatsAugment.subclassOptionCounts.length > 0
+      ? mdTable(
+          ["classId", "category", "current", "legacy"],
+          json.classStatsAugment.subclassOptionCounts.map((r) => [
+            r.classId,
+            r.category,
+            r.current,
+            r.legacy,
+          ]),
+        )
+      : "No subclass-mapped classes this run.",
     "",
   );
 

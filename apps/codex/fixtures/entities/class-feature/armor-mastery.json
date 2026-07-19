@@ -1,0 +1,60 @@
+{
+  "aonUrl": "/Classes.aspx?ID=35",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/armor-mastery\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 13,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 13
+  },
+  "id": "class-feature/armor-mastery",
+  "level": 13,
+  "mastheadExtra": [
+    {
+      "label": "Class",
+      "value": [
+        {
+          "content": " Fighter",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Armor Mastery",
+  "rarity": "common",
+  "slug": "armor-mastery",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 136
+  },
+  "traits": [
+    "barbarian",
+    "champion",
+    "commander",
+    "fighter"
+  ]
+}

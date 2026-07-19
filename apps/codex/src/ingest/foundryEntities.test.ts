@@ -5,7 +5,11 @@ import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 
 import type { EnricherContext, UuidResolution } from "./enrichers";
-import { type RawFoundryDoc, assembleFoundryEntity } from "./foundryEntities";
+import {
+  type RawFoundryDoc,
+  assembleFoundryEntity,
+  extractRawGrantedFeatures,
+} from "./foundryEntities";
 import { parseFoundryHtml } from "./foundryHtml";
 
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "tests", "fixtures");
@@ -969,5 +973,227 @@ describe("assembleFoundryEntity: P3 S1 (D29-33a) — the 5 extractor-gap categor
     });
     expect(entity?.category).toBe("feat");
     expect(entity?.facets).not.toHaveProperty("hp");
+  });
+});
+
+describe("assembleFoundryEntity: D29-113 (P12 S1) ClassStats scalar extraction", () => {
+  /** A full, real-shaped `system` for a `class` Item — every field
+   * D29-113's `extractClassStats` reads, verified against the real Fighter
+   * class doc (`hp:10, keyAbility:["dex","str"], perception:2,
+   * savingThrows:{fortitude:2,reflex:2,will:1}, attacks (Advanced Trained,
+   * simple/martial/unarmed=2), defenses (unarmored/light/medium/heavy=1),
+   * trainedSkills.additional:3, spellcasting:0, the five *FeatLevels`). */
+  function fullClassSystem(overrides: Record<string, unknown> = {}): RawFoundryDoc["system"] {
+    return {
+      description: { value: "<p>A master of arms.</p>" },
+      publication: { license: "ORC", remaster: true, title: "Pathfinder Player Core" },
+      hp: 10,
+      keyAbility: { value: ["dex", "str"] },
+      perception: 2,
+      savingThrows: { fortitude: 2, reflex: 2, will: 1 },
+      attacks: {
+        simple: 2,
+        martial: 2,
+        advanced: 1,
+        unarmed: 2,
+        other: { name: "", rank: 0 },
+      },
+      defenses: { unarmored: 1, light: 1, medium: 1, heavy: 1 },
+      trainedSkills: { value: [], additional: 3 },
+      spellcasting: 0,
+      classFeatLevels: { value: [1, 2, 4] },
+      ancestryFeatLevels: { value: [1, 5] },
+      generalFeatLevels: { value: [3, 7] },
+      skillFeatLevels: { value: [2, 4] },
+      skillIncreaseLevels: { value: [3, 5] },
+      ...overrides,
+    };
+  }
+
+  it("extracts the full scalar ClassStats model off a real-shaped class doc (Fighter-equivalent)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "classes",
+      docClass: "Item",
+      basename: "fighter",
+      doc: {
+        _id: "clsID0000000010",
+        name: "Fighter",
+        type: "class",
+        system: fullClassSystem(),
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.category).toBe("class");
+    expect(entity?.stats).toEqual({
+      kind: "class",
+      keyAbility: ["dex", "str"],
+      hp: 10,
+      perception: 2,
+      savingThrows: { fortitude: 2, reflex: 2, will: 1 },
+      attacks: { simple: 2, martial: 2, advanced: 1, unarmed: 2 },
+      defenses: { unarmored: 1, light: 1, medium: 1, heavy: 1 },
+      trainedSkills: { value: [], additional: 3 },
+      spellcasting: false,
+      featLevels: {
+        classFeat: [1, 2, 4],
+        ancestryFeat: [1, 5],
+        skillFeat: [2, 4],
+        generalFeat: [3, 7],
+        skillIncrease: [3, 5],
+      },
+    });
+  });
+
+  it("keeps an empty keyAbility array (Psychic's real shape) in stats.keyAbility too", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "classes",
+      docClass: "Item",
+      basename: "psychic",
+      doc: {
+        _id: "clsID0000000011",
+        name: "Psychic",
+        type: "class",
+        system: fullClassSystem({ keyAbility: { value: [] } }),
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.stats?.kind).toBe("class");
+    expect(
+      entity?.stats && "keyAbility" in entity.stats ? entity.stats.keyAbility : undefined,
+    ).toEqual([]);
+  });
+
+  it("gates attacks.other emission on non-empty other.name (Gunslinger's comma-joined single entry)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "classes",
+      docClass: "Item",
+      basename: "gunslinger",
+      doc: {
+        _id: "clsID0000000012",
+        name: "Gunslinger",
+        type: "class",
+        system: fullClassSystem({
+          attacks: {
+            simple: 1,
+            martial: 1,
+            advanced: 0,
+            unarmed: 1,
+            other: { name: "Simple Firearms, Martial Firearms", rank: 2 },
+          },
+        }),
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(entity?.stats?.kind === "class" ? entity.stats.attacks.other : undefined).toEqual({
+      name: "Simple Firearms, Martial Firearms",
+      rank: 2,
+    });
+  });
+
+  it("omits attacks.other when name is empty (the 24/27 common real shape)", () => {
+    const entity = assembleFoundryEntity({
+      packDir: "classes",
+      docClass: "Item",
+      basename: "fighter",
+      doc: {
+        _id: "clsID0000000013",
+        name: "Fighter",
+        type: "class",
+        system: fullClassSystem(),
+      },
+      ctx: makeCtx(),
+      report: () => undefined,
+      seenIds: new Set(),
+    });
+    expect(
+      entity?.stats?.kind === "class" ? entity.stats.attacks.other : "MISSING",
+    ).toBeUndefined();
+  });
+
+  it("returns no stats + reports classStatsIncomplete when a required scalar field is missing (all-or-nothing)", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const system = fullClassSystem();
+    delete (system as Record<string, unknown>).hp;
+    const entity = assembleFoundryEntity({
+      packDir: "classes",
+      docClass: "Item",
+      basename: "fighter",
+      doc: {
+        _id: "clsID0000000014",
+        name: "Fighter",
+        type: "class",
+        system,
+      },
+      ctx: makeCtx(),
+      report: (cls, detail) => reports.push({ cls, detail }),
+      seenIds: new Set(),
+    });
+    expect(entity?.stats).toBeUndefined();
+    expect(reports).toContainEqual({ cls: "classStatsIncomplete", detail: "class/fighter" });
+  });
+});
+
+describe("extractRawGrantedFeatures (D29-114, P12 S1)", () => {
+  it("converts system.items into a typed array, sorted by neither level nor name (caller's job) — insertion order preserved", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const grants = extractRawGrantedFeatures(
+      {
+        items: {
+          abc12: {
+            level: 1,
+            name: "Shield Block",
+            uuid: "Compendium.pf2e.classfeatures.Item.Shield Block",
+          },
+          def34: { level: 3, name: "Bravery", uuid: "Compendium.pf2e.classfeatures.Item.Bravery" },
+        },
+      },
+      (cls, detail) => reports.push({ cls, detail }),
+      "class/fighter",
+    );
+    expect(grants).toEqual([
+      { level: 1, name: "Shield Block", uuid: "Compendium.pf2e.classfeatures.Item.Shield Block" },
+      { level: 3, name: "Bravery", uuid: "Compendium.pf2e.classfeatures.Item.Bravery" },
+    ]);
+    expect(reports).toEqual([]);
+  });
+
+  it("skips + reports a malformed entry (missing uuid) without crashing", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const grants = extractRawGrantedFeatures(
+      {
+        items: {
+          abc12: {
+            level: 1,
+            name: "Shield Block",
+            uuid: "Compendium.pf2e.classfeatures.Item.Shield Block",
+          },
+          bad99: { level: 5, name: "Broken Entry" },
+        },
+      },
+      (cls, detail) => reports.push({ cls, detail }),
+      "class/fighter",
+    );
+    expect(grants).toEqual([
+      { level: 1, name: "Shield Block", uuid: "Compendium.pf2e.classfeatures.Item.Shield Block" },
+    ]);
+    expect(reports).toEqual([
+      { cls: "classGrantedFeatureMalformed", detail: 'class/fighter item "bad99"' },
+    ]);
+  });
+
+  it("returns undefined when system.items is absent (never an empty array)", () => {
+    expect(extractRawGrantedFeatures({}, () => undefined, "class/fighter")).toBeUndefined();
+  });
+
+  it("returns undefined when system.items is an empty dict", () => {
+    expect(
+      extractRawGrantedFeatures({ items: {} }, () => undefined, "class/fighter"),
+    ).toBeUndefined();
   });
 });

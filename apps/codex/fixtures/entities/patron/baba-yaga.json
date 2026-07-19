@@ -1,0 +1,38 @@
+{
+  "aonUrl": "/Patrons.aspx?ID=9",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"patron/baba-yaga\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "patron",
+  "edition": "legacy",
+  "facets": {},
+  "id": "patron/baba-yaga",
+  "name": "Baba Yaga",
+  "proseOnly": true,
+  "rarity": "rare",
+  "remasteredAs": [
+    "class-feature/baba-yaga"
+  ],
+  "slug": "baba-yaga",
+  "source": {
+    "book": "Legends",
+    "license": "OGL",
+    "page": 32
+  },
+  "traits": [
+    "Rare"
+  ]
+}

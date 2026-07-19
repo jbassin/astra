@@ -162,9 +162,10 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
         // The STATIC committed `fixtures/entities/manifest.json` — pinned at
         // the schemaVersion active when the fixture was last extracted (P7
         // S2's fixture regen picked up D29-73's 2->3 bump; P10 S2's fixture
-        // regen picked up D29-93's 3->4 bump (statRow); the generated
+        // regen picked up D29-93's 3->4 bump (statRow); P12 S1's fixture
+        // regen picked up D29-116's 4->5 bump (ClassStats); the generated
         // manifest is separately checked at HEAD via `runOnce()` below).
-        expect(manifest.schemaVersion, file).toBe(4);
+        expect(manifest.schemaVersion, file).toBe(5);
         expect(typeof manifest.categoryCounts, file).toBe("object");
       } else if (file.endsWith("/rules-tree.json")) {
         // P4 (D29-39/D29-44): the fixture-scoped rules tree — its own schema,
@@ -341,8 +342,8 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     // against find|wc"): entity files == manifest totalEntityCount.
     const manifest = JSON.parse(readFileSync(join(corpusRoot, "manifest.json"), "utf8"));
     expect(collectEntityFiles(corpusRoot)).toHaveLength(manifest.totalEntityCount);
-    // P10 S1 (D29-91/-93): CORPUS_SCHEMA_VERSION bumped 3->4.
-    expect(manifest.schemaVersion).toBe(4);
+    // P12 S1 (D29-113..116): CORPUS_SCHEMA_VERSION bumped 4->5.
+    expect(manifest.schemaVersion).toBe(5);
   });
 
   it("S6/D29-19: a character-typed Actor is excluded (excludedActors report class + top-level count)", () => {

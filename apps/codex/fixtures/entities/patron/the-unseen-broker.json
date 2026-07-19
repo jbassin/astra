@@ -1,0 +1,36 @@
+{
+  "aonUrl": "/Patrons.aspx?ID=29",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"patron/the-unseen-broker\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "patron",
+  "edition": "remaster",
+  "facets": {},
+  "id": "patron/the-unseen-broker",
+  "legacyOf": [
+    "patron/pacts"
+  ],
+  "name": "The Unseen Broker",
+  "proseOnly": true,
+  "rarity": "common",
+  "slug": "the-unseen-broker",
+  "source": {
+    "book": "Dark Archives (Remastered)",
+    "license": "ORC",
+    "page": 159
+  },
+  "traits": []
+}

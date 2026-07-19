@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import type { CodexEntity } from "../schema/entity";
+import type { AugmentClassStatsResult } from "./augmentClassStats";
 import type { BookNormalizeResult } from "./bookNormalize";
 import type { DropAccounting } from "./drop";
 import type { CategoryStat, CollisionReport, JoinResult } from "./join";
@@ -96,6 +97,14 @@ const EMPTY_SOURCES_INDEX_STATS: SourcesIndexStats = {
   otherEntities: 0,
   classifiedEntityPct: 0,
   belowNinetyPctGuard: false,
+};
+
+const EMPTY_CLASS_STATS_AUGMENT: Omit<AugmentClassStatsResult, "entities"> = {
+  classStatsEmitted: 0,
+  grantedFeaturesResolved: 0,
+  grantedFeaturesUnresolved: 0,
+  subclassOptionsEmitted: 0,
+  subclassOptionCounts: [],
 };
 
 describe("capList", () => {
@@ -198,6 +207,7 @@ function baseInput(overrides: Partial<ReportInput>): ReportInput {
     sidebarAttachment: EMPTY_SIDEBAR_ATTACHMENT,
     rulesTree: EMPTY_RULES_TREE_STATS,
     sourcesIndex: EMPTY_SOURCES_INDEX_STATS,
+    classStatsAugment: EMPTY_CLASS_STATS_AUGMENT,
     ...overrides,
   };
 }

@@ -5,7 +5,7 @@
       "categoryCounts": {
         "action": 3,
         "cause": 1,
-        "class": 2,
+        "class": 3,
         "class-feature": 1,
         "lesson": 1,
         "ritual": 1,
@@ -13,7 +13,7 @@
         "style": 1
       },
       "edition": "legacy",
-      "entityCount": 11,
+      "entityCount": 12,
       "license": "OGL"
     },
     {
@@ -74,7 +74,7 @@
         "armor": 1,
         "bloodline": 1,
         "class-kit": 1,
-        "doctrine": 1,
+        "doctrine": 2,
         "familiar-ability": 1,
         "hunters-edge": 1,
         "item-bonus": 1,
@@ -89,7 +89,7 @@
         "tradition": 1
       },
       "edition": "legacy",
-      "entityCount": 22,
+      "entityCount": 23,
       "license": "OGL",
       "sourceEntityRef": "source/core-rulebook"
     },
@@ -107,32 +107,36 @@
       "categoryCounts": {
         "conscious-mind": 1,
         "implement": 1,
+        "lesson": 1,
         "patron": 1,
         "subconscious-mind": 1
       },
       "edition": "legacy",
-      "entityCount": 4,
+      "entityCount": 5,
       "license": "OGL"
     },
     {
       "book": "Dark Archives (Remastered)",
       "categoryCounts": {
+        "class-feature": 1,
         "class-sample": 1,
-        "mystery": 1
+        "mystery": 1,
+        "patron": 1
       },
       "edition": "remaster",
-      "entityCount": 2,
+      "entityCount": 4,
       "license": "ORC"
     },
     {
       "book": "Divine Mysteries",
       "categoryCounts": {
+        "class-feature": 1,
         "deity": 1,
         "deity-category": 1,
         "methodology": 1
       },
       "edition": "remaster",
-      "entityCount": 3,
+      "entityCount": 4,
       "license": "ORC"
     },
     {
@@ -241,6 +245,15 @@
       },
       "edition": "legacy",
       "entityCount": 3,
+      "license": "OGL"
+    },
+    {
+      "book": "Legends",
+      "categoryCounts": {
+        "patron": 1
+      },
+      "edition": "legacy",
+      "entityCount": 1,
       "license": "OGL"
     },
     {
@@ -375,8 +388,11 @@
         "animal-companion": 1,
         "armor-group": 1,
         "category-page": 1,
+        "class": 2,
+        "class-feature": 19,
         "druidic-order": 1,
         "feat": 1,
+        "lesson": 1,
         "ritual": 1,
         "rules": 2,
         "sidebar": 1,
@@ -384,7 +400,7 @@
         "weapon-group": 1
       },
       "edition": "remaster",
-      "entityCount": 12,
+      "entityCount": 34,
       "license": "ORC"
     },
     {

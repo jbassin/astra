@@ -43,7 +43,16 @@
  *   pnpm --filter @astra/codex exec node \
  *     --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs scripts/extract-fixture.ts
  */
-import { mkdirSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 import { loadConfig } from "@astra/config";
@@ -60,9 +69,10 @@ import {
 } from "../src/schema/entity";
 import { facetKeysFor } from "../src/schema/facetKeys";
 import { parseManifest } from "../src/schema/manifest";
-import type { CodexNode } from "../src/schema/nodes";
+import type { BlockNode, CodexNode } from "../src/schema/nodes";
 import { RulesTreeFileSchema } from "../src/schema/rulesTree";
 import { SourcesIndexFileSchema } from "../src/schema/sourcesIndex";
+import { runTransform } from "./transform";
 
 const APP_ROOT = join(import.meta.dirname, "..");
 const FIXTURE_ROOT = join(APP_ROOT, "fixtures");
@@ -80,6 +90,19 @@ const BUDGET_BYTES = 2 * 1024 * 1024; // D29-11 revised budget (spec §5 accepta
 interface FoundryPick {
   relPath: string;
   reason: string;
+  /** P12 S1 (D29-120): when present, trims the copied class Item's
+   * `system.items` granted-feature dict down to exactly these `name`
+   * entries (verbatim otherwise — every OTHER field, incl. the D29-113
+   * scalar-stats fields, is untouched). Used for the cleric "stub" pick — a
+   * real class doc's full granted-feature manifest, trimmed so the fixture
+   * exercises BOTH `augmentClassStats` outcomes deterministically: a
+   * resolved grant (has a matching AoN class-feature pick below) and a
+   * Foundry-only unjoined one (`first-doctrine.json` is copied as its own
+   * RAW pick so uuid resolution succeeds structurally, but no AoN
+   * counterpart exists — D29-14 drops it, reproducing the real
+   * `targetId: null` case without needing the class's full real 16-item
+   * manifest). */
+  keepItemNames?: readonly string[];
 }
 
 const REQUIRED_FOUNDRY_PICKS: readonly FoundryPick[] = [
@@ -138,9 +161,82 @@ const SUPPLEMENTAL_FOUNDRY_PICKS: readonly FoundryPick[] = [
   { relPath: "hazards/web-lurker-deadfall.json", reason: "hazard grammar" },
 ];
 
+/** P12 S1 (D29-113..116/D29-120): the `augmentClassStats` pass's own fixture
+ * coverage — fighter (clean 16/16 grants: every raw grant resolves, no
+ * nulls), cleric (a trimmed 2-item stub: "Doctrine" resolves, "First
+ * Doctrine" stays Foundry-only-and-dropped, reproducing `targetId: null`),
+ * plus the `class-features/` docs each class's grants + subclass-absorption
+ * mechanism needs (see the matching `REQUIRED_AON_PICKS` entries below for
+ * the AoN half of each join). `classes/witch.json` (already a
+ * SUPPLEMENTAL pick above) needs no NEW class-doc pick — only its own two
+ * absorbed-subclass `class-features/` docs, added here. */
+const CLASS_STATS_FOUNDRY_PICKS: readonly FoundryPick[] = [
+  {
+    relPath: "classes/fighter.json",
+    reason: "D29-113/-114: clean 16/16 granted-feature resolution",
+  },
+  {
+    relPath: "classes/cleric.json",
+    reason:
+      "D29-114 stub case: system.items trimmed to Doctrine (resolves) + First Doctrine (stays Foundry-only-and-dropped -> targetId:null)",
+    keepItemNames: ["Doctrine", "First Doctrine"],
+  },
+  // fighter's 16 granted class-features (each paired with an AoN
+  // class-feature-* pick below, all under the real Fighter AoN url ID=35).
+  { relPath: "class-features/reactive-strike.json", reason: "fighter grant (level 1)" },
+  { relPath: "class-features/shield-block.json", reason: "fighter grant (level 1)" },
+  { relPath: "class-features/bravery.json", reason: "fighter grant (level 3)" },
+  { relPath: "class-features/fighter-weapon-mastery.json", reason: "fighter grant (level 5)" },
+  { relPath: "class-features/battlefield-surveyor.json", reason: "fighter grant (level 7)" },
+  { relPath: "class-features/weapon-specialization.json", reason: "fighter grant (level 7)" },
+  { relPath: "class-features/battle-hardened.json", reason: "fighter grant (level 9)" },
+  { relPath: "class-features/combat-flexibility.json", reason: "fighter grant (level 9)" },
+  { relPath: "class-features/fighter-expertise.json", reason: "fighter grant (level 11)" },
+  { relPath: "class-features/armor-expertise.json", reason: "fighter grant (level 11)" },
+  { relPath: "class-features/weapon-legend.json", reason: "fighter grant (level 13)" },
+  { relPath: "class-features/tempered-reflexes.json", reason: "fighter grant (level 15)" },
+  { relPath: "class-features/improved-flexibility.json", reason: "fighter grant (level 15)" },
+  {
+    relPath: "class-features/greater-weapon-specialization.json",
+    reason: "fighter grant (level 15)",
+  },
+  { relPath: "class-features/armor-mastery.json", reason: "fighter grant (level 17)" },
+  { relPath: "class-features/versatile-legend.json", reason: "fighter grant (level 19)" },
+  // cleric's "Doctrine" grant resolution + D29-115 doctrine subclass
+  // absorption (Cloistered Cleric / Warpriest remaster halves merge into
+  // class-feature/*, matching CATEGORY_EQUIVALENCE's real doctrine->
+  // class-feature rule).
+  { relPath: "class-features/doctrine.json", reason: "cleric's Doctrine grant resolves" },
+  {
+    relPath: "class-features/first-doctrine.json",
+    reason: "raw pick only, deliberately NO matching AoN doc — D29-114 null-out proof",
+  },
+  {
+    relPath: "class-features/cloistered-cleric.json",
+    reason: "D29-115: absorbs doctrine-4 (remaster Cloistered Cleric) via CATEGORY_EQUIVALENCE",
+  },
+  {
+    relPath: "class-features/warpriest.json",
+    reason: "D29-115: absorbs doctrine-5 (remaster Warpriest) via CATEGORY_EQUIVALENCE",
+  },
+  // witch's D29-115 two-category (lesson/patron) absorbed-remaster targets —
+  // "Lesson of the Elements"/"The Unseen Broker" deliberately have NO
+  // class-features pick (they stay AoN-only intra-category pairs, matching
+  // the real corpus).
+  {
+    relPath: "class-features/lesson-of-bargains.json",
+    reason: "D29-115: absorbs lesson-34 (remaster Lesson of Bargains)",
+  },
+  {
+    relPath: "class-features/baba-yaga.json",
+    reason: "D29-115: absorbs patron-27 (remaster Baba Yaga)",
+  },
+];
+
 const ALL_FOUNDRY_PICKS: readonly FoundryPick[] = [
   ...REQUIRED_FOUNDRY_PICKS,
   ...SUPPLEMENTAL_FOUNDRY_PICKS,
+  ...CLASS_STATS_FOUNDRY_PICKS,
 ];
 
 /** pack directory (first path segment) -> registered {name,type} from the
@@ -307,6 +403,103 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
     id: "feat-2653",
     reason: "Juvenile Flight — resolves feat-2649's 'leads to...' crossref target",
   },
+  // P12 S1 (D29-113..116/D29-120) — the `augmentClassStats` fixture coverage.
+  { category: "class", id: "class-35", reason: "Fighter (remaster) — clean 16/16 grants" },
+  {
+    category: "class",
+    id: "class-33",
+    reason: "Cleric (remaster) — D29-114 stub (Doctrine resolves, First Doctrine nulls)",
+  },
+  // fighter's 16 granted-feature AoN docs — all real Fighter-class-page
+  // hits (url /Classes.aspx?ID=35), each name-exact-matching its
+  // CLASS_STATS_FOUNDRY_PICKS class-features/*.json counterpart above.
+  { category: "class-feature", id: "class-feature-691", reason: "Reactive Strike" },
+  { category: "class-feature", id: "class-feature-693", reason: "Shield Block" },
+  { category: "class-feature", id: "class-feature-695", reason: "Bravery" },
+  { category: "class-feature", id: "class-feature-699", reason: "Fighter Weapon Mastery" },
+  { category: "class-feature", id: "class-feature-700", reason: "Battlefield Surveyor" },
+  { category: "class-feature", id: "class-feature-701", reason: "Weapon Specialization" },
+  { category: "class-feature", id: "class-feature-702", reason: "Battle Hardened" },
+  { category: "class-feature", id: "class-feature-703", reason: "Combat Flexibility" },
+  { category: "class-feature", id: "class-feature-704", reason: "Armor Expertise" },
+  { category: "class-feature", id: "class-feature-705", reason: "Fighter Expertise" },
+  { category: "class-feature", id: "class-feature-706", reason: "Weapon Legend" },
+  { category: "class-feature", id: "class-feature-707", reason: "Greater Weapon Specialization" },
+  { category: "class-feature", id: "class-feature-708", reason: "Improved Flexibility" },
+  { category: "class-feature", id: "class-feature-709", reason: "Tempered Reflexes" },
+  { category: "class-feature", id: "class-feature-710", reason: "Armor Mastery" },
+  { category: "class-feature", id: "class-feature-711", reason: "Versatile Legend" },
+  {
+    category: "class-feature",
+    id: "class-feature-813",
+    reason:
+      "Doctrine (Cleric remaster page ID=33, matching the class-33 pick) — cleric's ONE resolved grant",
+  },
+  // cleric's doctrine subclass pair (D29-115: the 100%-superseded-category
+  // shape — both legacy halves stay standalone `doctrine/*`, both remaster
+  // halves absorb into `class-feature/*`).
+  {
+    category: "doctrine",
+    id: "doctrine-2",
+    reason: "Cloistered Cleric (legacy) — stays doctrine/cloistered-cleric",
+  },
+  {
+    category: "doctrine",
+    id: "doctrine-4",
+    reason: "Cloistered Cleric (remaster) — absorbed into class-feature/cloistered-cleric",
+  },
+  {
+    category: "doctrine",
+    id: "doctrine-3",
+    reason: "Warpriest (legacy) — stays doctrine/warpriest",
+  },
+  {
+    category: "doctrine",
+    id: "doctrine-5",
+    reason: "Warpriest (remaster) — absorbed into class-feature/warpriest",
+  },
+  // witch's lesson/patron pair — D29-115's OTHER shape: an intra-category
+  // legacy/remaster pair that is NOT absorbed (no Foundry class-features
+  // doc exists for either "Lesson of the Elements" or "The Unseen Broker"),
+  // alongside one absorbed pair per category (Lesson of Bargains / Baba
+  // Yaga) — proving the union mechanism handles both shapes in the SAME
+  // category simultaneously.
+  {
+    category: "lesson",
+    id: "lesson-14",
+    reason: "Lesson of Bargains (legacy) — stays lesson/lesson-of-bargains",
+  },
+  {
+    category: "lesson",
+    id: "lesson-34",
+    reason: "Lesson of Bargains (remaster) — absorbed into class-feature/lesson-of-bargains",
+  },
+  {
+    category: "lesson",
+    id: "lesson-2",
+    reason: "Lesson of the Elements (legacy) — intra-category pair, NOT absorbed",
+  },
+  {
+    category: "lesson",
+    id: "lesson-17",
+    reason: "Lesson of the Elements (remaster) — intra-category pair target",
+  },
+  { category: "patron", id: "patron-9", reason: "Baba Yaga (legacy) — stays patron/baba-yaga" },
+  {
+    category: "patron",
+    id: "patron-27",
+    reason: "Baba Yaga (remaster) — absorbed into class-feature/baba-yaga",
+  },
+  {
+    category: "patron",
+    id: "patron-11",
+    reason: "Pacts (legacy) — intra-category pair, renamed remaster target (NOT absorbed)",
+  },
+  {
+    category: "patron",
+    id: "patron-29",
+    reason: "The Unseen Broker (remaster) — Pacts' intra-category pair target",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -436,6 +629,34 @@ function packDirOf(relPath: string): string {
   return dir;
 }
 
+interface ClassDocWithItems {
+  system?: { items?: Record<string, { name?: string }> };
+}
+
+/** P12 S1 (D29-120): trims a copied class Item's `system.items` dict down to
+ * exactly the entries named in `keepNames` (`FoundryPick.keepItemNames`'s
+ * own doc comment) — every other field on the doc (incl. the D29-113 scalar
+ * stats the class doc's own `system.*` carries) passes through verbatim. */
+function trimClassItems(doc: unknown, keepNames: readonly string[], relPath: string): unknown {
+  const typed = doc as ClassDocWithItems;
+  const rawItems = typed.system?.items;
+  if (!rawItems) fail(`keepItemNames trim requested for "${relPath}" but it has no system.items`);
+  const keep = new Set(keepNames);
+  const trimmedItems: Record<string, { name?: string }> = {};
+  for (const [key, item] of Object.entries(rawItems)) {
+    if (item.name !== undefined && keep.has(item.name)) trimmedItems[key] = item;
+  }
+  if (Object.keys(trimmedItems).length !== keepNames.length) {
+    fail(
+      `keepItemNames trim for "${relPath}" expected ${keepNames.length} matches (${keepNames.join(", ")}), found ${Object.keys(trimmedItems).length}`,
+    );
+  }
+  return {
+    ...(doc as Record<string, unknown>),
+    system: { ...(typed.system as Record<string, unknown>), items: trimmedItems },
+  };
+}
+
 const LOCALIZE_RE = /@Localize\[([^[\]]+)\]/g;
 
 /** Every `system.description.value` / embedded-item description string in a
@@ -523,7 +744,10 @@ function buildRawFixture(
   let rawBytes = 0;
   for (const pick of ALL_FOUNDRY_PICKS) {
     const src = join(realPacksRoot, pick.relPath);
-    const doc = readJson(src);
+    const doc =
+      pick.keepItemNames !== undefined
+        ? trimClassItems(readJson(src), pick.keepItemNames, pick.relPath)
+        : readJson(src);
     usedPackDirs.add(packDirOf(pick.relPath));
     rawTexts.push(...foundryDocTexts(doc));
     const destPath = join(fxPacksRoot, pick.relPath);
@@ -758,7 +982,126 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   "feat/fledgling-flight",
 ];
 
-function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {
+/**
+ * P12 S1 (D29-113..116/D29-120): ids that must be sourced from the FIXTURE'S
+ * OWN trimmed pipeline rerun (`buildFixturePipelineCorpus` below), never the
+ * real emitted corpus. `class/fighter`/`class/cleric`/`class/witch` and
+ * everything their `stats.grantedFeatures`/`subclassOptions` reference are
+ * shaped by exactly the curated raw-pick subset in `CLASS_STATS_FOUNDRY_PICKS`/
+ * the matching `REQUIRED_AON_PICKS` entries above (fighter clean 16/16
+ * grants, cleric's 2-item stub with the First Doctrine `targetId:null`
+ * case, witch's curated lesson/patron pair-set) — the REAL corpus's
+ * same-named entities carry the FULL real (much larger — e.g. witch's real
+ * 44-row subclassOptions) population instead, which is a different corpus
+ * entirely from what this fixture's own raw picks reproduce
+ * (`transform.test.ts`'s whole point). Verified exhaustively against a
+ * throwaway rerun before being pinned here — see the D29-120 build record.
+ */
+const FIXTURE_PIPELINE_REQUIRED_IDS: readonly string[] = [
+  "class/fighter",
+  "class/cleric",
+  "class/witch",
+  // fighter's clean 16/16 granted-feature targets.
+  "class-feature/reactive-strike",
+  "class-feature/shield-block",
+  "class-feature/bravery",
+  "class-feature/fighter-weapon-mastery",
+  "class-feature/battlefield-surveyor",
+  "class-feature/weapon-specialization",
+  "class-feature/battle-hardened",
+  "class-feature/combat-flexibility",
+  "class-feature/armor-expertise",
+  "class-feature/fighter-expertise",
+  "class-feature/weapon-legend",
+  "class-feature/greater-weapon-specialization",
+  "class-feature/improved-flexibility",
+  "class-feature/tempered-reflexes",
+  "class-feature/armor-mastery",
+  "class-feature/versatile-legend",
+  // cleric's ONE resolved grant ("First Doctrine" nulls — no target to
+  // require) + the doctrine subclass pair (both shapes: legacy husks stay
+  // standalone `doctrine/*`, remaster halves absorb into `class-feature/*`).
+  "class-feature/doctrine",
+  "class-feature/cloistered-cleric",
+  "class-feature/warpriest",
+  "doctrine/cloistered-cleric",
+  "doctrine/warpriest",
+  // witch's lesson/patron pair-set (each category: one absorbed pair, one
+  // intra-category legacy/remaster pair that stays unabsorbed).
+  "class-feature/lesson-of-bargains",
+  "lesson/lesson-of-the-elements",
+  "lesson/lesson-of-the-elements@legacy",
+  "lesson/lesson-of-bargains",
+  "class-feature/baba-yaga",
+  "patron/the-unseen-broker",
+  "patron/baba-yaga",
+  "patron/pacts",
+];
+const FIXTURE_PIPELINE_REQUIRED_ID_SET = new Set(FIXTURE_PIPELINE_REQUIRED_IDS);
+
+/** A short stand-in paragraph, replacing `body`/`loreBody` when writing a
+ * FIXTURE_PIPELINE_REQUIRED_IDS entity (below) — real class-page/
+ * class-feature prose runs into the hundreds of KB (3 full class bodies
+ * alone blew the D29-11 2MB budget), and this fixture's whole point is the
+ * `stats`/`facets`/id shape, not prose depth (the same trade-off the
+ * `ritual/virt-*` synthetic fixtures already make). Zod-valid, schema-shape
+ * unaffected. */
+function trimmedBodyPlaceholder(id: string): BlockNode[] {
+  return [
+    {
+      kind: "paragraph",
+      children: [
+        {
+          kind: "text",
+          content: `P12 S1 (D29-113..120) fixture stub — "${id}"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.`,
+          marks: { bold: false, italic: false, superscript: false },
+        },
+      ],
+    },
+  ];
+}
+
+/**
+ * Runs the fixture's OWN raw picks (`fixtures/raw/`, already written to disk
+ * by `buildRawFixture`) through the REAL `runTransform` — the exact same
+ * code path `transform.test.ts`'s `runOnce()` uses — to a throwaway temp
+ * dir, so `FIXTURE_PIPELINE_REQUIRED_IDS` above can be sourced from THIS
+ * run's output rather than the real emitted corpus (see that const's own
+ * doc comment for why). Hard-fails on any hard failure (this raw subset is
+ * already proven clean by the CI-hermetic pipeline test; a failure here
+ * means the two have drifted out of sync).
+ */
+function buildFixturePipelineCorpus(): string {
+  const outDir = mkdtempSync(join(tmpdir(), "codex-fixture-pipeline-"));
+  const result = runTransform({
+    foundrySnapshotDir: join(FIXTURE_ROOT, "raw", "foundry"),
+    aonSnapshotDir: join(FIXTURE_ROOT, "raw", "aon"),
+    corpusRoot: outDir,
+    aliasesFile: FIXTURE_ALIASES,
+    pins: {
+      foundry: { tag: "fixture", docCount: 0, sha256: null, fetchedAt: null },
+      aon: {
+        snapshotDate: "fixture",
+        docCount: 0,
+        categoryCounts: {},
+        sha256: null,
+        fetchedAt: null,
+      },
+    },
+  });
+  if (result.hardFailures.length > 0) {
+    fail(
+      `the fixture's own raw picks hard-failed when re-run through runTransform: ${result.hardFailures.map((f) => `${f.path}: ${f.message}`).join("; ")}`,
+    );
+  }
+  return outDir;
+}
+
+function buildCanonicalCoverage(
+  corpusRoot: string,
+  fixturePipelineCorpusRoot: string,
+  remainingBudget: number,
+): number {
   const entitiesDestRoot = join(FIXTURE_ROOT, "entities");
   rmSync(entitiesDestRoot, { recursive: true, force: true });
   mkdirSync(entitiesDestRoot, { recursive: true });
@@ -770,12 +1113,32 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
     byId.set(raw.id, ref);
   }
 
+  // P12 S1: the SEPARATE fixture-pipeline source (`FIXTURE_PIPELINE_REQUIRED_IDS`'
+  // own doc comment) — kept as its own map, never merged into `all`/`byId`
+  // above, so the category-smallest sweep and the CodexNode kind-coverage
+  // scan below stay scoped to the real corpus exactly as before.
+  const fixturePipelineRefs = listCorpusEntities(fixturePipelineCorpusRoot);
+  const byIdFixturePipeline = new Map<string, CorpusEntityRef>();
+  for (const ref of fixturePipelineRefs) {
+    const raw = readJson(ref.path) as { id: string };
+    byIdFixturePipeline.set(raw.id, ref);
+  }
+
   const selected = new Map<string, CorpusEntityRef>(); // id -> ref
 
   // required picks first
   for (const id of REQUIRED_CANONICAL_IDS) {
     const ref = byId.get(id);
     if (!ref) fail(`required canonical entity "${id}" not found in the real emitted corpus`);
+    selected.set(id, ref);
+  }
+  for (const id of FIXTURE_PIPELINE_REQUIRED_IDS) {
+    const ref = byIdFixturePipeline.get(id);
+    if (!ref) {
+      fail(
+        `required fixture-pipeline canonical entity "${id}" not found in the fixture's own trimmed pipeline rerun`,
+      );
+    }
     selected.set(id, ref);
   }
 
@@ -798,11 +1161,22 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   // the smallest entity anywhere in the corpus containing each still-missing
   // kind (linear scan over the full corpus, sorted by size ascending so the
   // FIRST hit for a kind is also the cheapest one to add).
+  //
+  // `readSelectedEntity` (not a bare `readJson`) — a FIXTURE_PIPELINE_
+  // REQUIRED_IDS entity's body gets trimmed (byte-budget, see
+  // `trimmedBodyPlaceholder`'s doc comment) at EVERY read site, including
+  // this kind-coverage scan, so the coverage matrix never credits a
+  // CodexNode kind that the trim then removes from the actually-written file.
+  function readSelectedEntity(ref: CorpusEntityRef): CodexEntity {
+    const entity = CodexEntitySchema.parse(readJson(ref.path));
+    if (!FIXTURE_PIPELINE_REQUIRED_ID_SET.has(entity.id)) return entity;
+    return { ...entity, body: trimmedBodyPlaceholder(entity.id) };
+  }
+
   function kindsCoveredBy(refs: Iterable<CorpusEntityRef>): Set<string> {
     const kinds = new Set<string>();
     for (const ref of refs) {
-      const entity = CodexEntitySchema.parse(readJson(ref.path));
-      for (const k of collectEntityKinds(entity)) kinds.add(k);
+      for (const k of collectEntityKinds(readSelectedEntity(ref))) kinds.add(k);
     }
     return kinds;
   }
@@ -837,7 +1211,7 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   let bytesUsed = 0;
   const selectedByCategory = new Map<string, CodexEntity[]>();
   for (const [, ref] of selected) {
-    const entity = CodexEntitySchema.parse(readJson(ref.path));
+    const entity = readSelectedEntity(ref);
     const destDir = join(entitiesDestRoot, ref.category);
     mkdirSync(destDir, { recursive: true });
     const content = canonicalJson(entity);
@@ -957,9 +1331,7 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
     }
   }
 
-  const selectedEntities = [...selected.values()].map((r) =>
-    CodexEntitySchema.parse(readJson(r.path)),
-  );
+  const selectedEntities = [...selected.values()].map(readSelectedEntity);
   const byIdSelected = new Map(selectedEntities.map((e) => [e.id, e] as const));
 
   function requireEntity(id: string, label: string): CodexEntity | undefined {
@@ -1102,6 +1474,71 @@ function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): nu
   requireEntity("sidebar/in-service-to-the-unknown", "P4 M8 shared-url case");
   requireEntity("source/core-rulebook", "P4 source entity");
 
+  // P12 S1 (D29-113..116/D29-120): the augmentClassStats fixture coverage —
+  // sourced from FIXTURE_PIPELINE_REQUIRED_IDS (the fixture's OWN trimmed
+  // pipeline rerun), not the real corpus.
+  const fighterClass = requireEntity("class/fighter", "P12 clean 16/16 grants");
+  if (fighterClass) {
+    if (fighterClass.stats?.kind !== "class") {
+      problems.push("class/fighter should carry ClassStats (stats.kind === 'class')");
+    } else {
+      const grants = fighterClass.stats.grantedFeatures ?? [];
+      if (grants.length !== 16 || grants.some((g) => g.targetId === null)) {
+        problems.push(
+          `class/fighter should carry 16 grantedFeatures, ALL resolved (clean 16/16) — got ${grants.length}, ${grants.filter((g) => g.targetId === null).length} null`,
+        );
+      }
+    }
+  }
+  const clericClass = requireEntity("class/cleric", "P12 stub case (targetId:null proof)");
+  if (clericClass) {
+    if (clericClass.stats?.kind !== "class") {
+      problems.push("class/cleric should carry ClassStats (stats.kind === 'class')");
+    } else {
+      const grants = clericClass.stats.grantedFeatures ?? [];
+      const doctrine = grants.find((g) => g.name === "Doctrine");
+      const firstDoctrine = grants.find((g) => g.name === "First Doctrine");
+      if (doctrine?.targetId !== "class-feature/doctrine") {
+        problems.push('class/cleric "Doctrine" grant should resolve to class-feature/doctrine');
+      }
+      if (firstDoctrine?.targetId !== null) {
+        problems.push(
+          'class/cleric "First Doctrine" grant should be targetId:null (D29-14 unjoined-residue drop)',
+        );
+      }
+      const subclass = clericClass.stats.subclassOptions ?? [];
+      if (subclass.length !== 4 || subclass.filter((o) => o.superseded).length !== 2) {
+        problems.push(
+          `class/cleric should carry 4 doctrine subclassOptions (2 current + 2 legacy) — got ${subclass.length}`,
+        );
+      }
+    }
+  }
+  const witchClass = requireEntity("class/witch", "P12 two-category subclass pills");
+  if (witchClass) {
+    if (witchClass.stats?.kind !== "class") {
+      problems.push("class/witch should carry ClassStats (stats.kind === 'class')");
+    } else {
+      const categories = new Set((witchClass.stats.subclassOptions ?? []).map((o) => o.category));
+      if (!categories.has("lesson") || !categories.has("patron")) {
+        problems.push("class/witch should carry BOTH lesson and patron subclassOptions categories");
+      }
+    }
+  }
+  requireEntity("class-feature/doctrine", "P12 cleric's resolved grant target");
+  requireEntity("class-feature/cloistered-cleric", "P12 doctrine absorbed-remaster target");
+  requireEntity("class-feature/warpriest", "P12 doctrine absorbed-remaster target");
+  requireEntity("doctrine/cloistered-cleric", "P12 doctrine legacy husk");
+  requireEntity("doctrine/warpriest", "P12 doctrine legacy husk");
+  requireEntity("class-feature/lesson-of-bargains", "P12 lesson absorbed-remaster target");
+  requireEntity("lesson/lesson-of-the-elements", "P12 lesson intra-category current");
+  requireEntity("lesson/lesson-of-the-elements@legacy", "P12 lesson intra-category legacy");
+  requireEntity("lesson/lesson-of-bargains", "P12 lesson legacy husk");
+  requireEntity("class-feature/baba-yaga", "P12 patron absorbed-remaster target");
+  requireEntity("patron/the-unseen-broker", "P12 patron intra-category current");
+  requireEntity("patron/baba-yaga", "P12 patron legacy husk");
+  requireEntity("patron/pacts", "P12 patron intra-category legacy");
+
   if (problems.length > 0) {
     fail(`coverage matrix FAILED:\n  - ${problems.join("\n  - ")}`);
   }
@@ -1142,9 +1579,19 @@ function main(): void {
   const rawBytes = buildRawFixture(cfg, manifest.foundry.tag, manifest.aon.snapshotDate);
   console.log(`  raw subset: ${rawBytes} bytes`);
 
+  console.log(
+    "\nRunning the fixture's own trimmed pipeline (P12 S1 class-stats coverage source)...",
+  );
+  const fixturePipelineCorpusRoot = buildFixturePipelineCorpus();
+
   console.log("\nSelecting canonical-form-only category/kind coverage from the real corpus...");
-  const canonicalBytes = buildCanonicalCoverage(corpusRoot, BUDGET_BYTES - rawBytes);
+  const canonicalBytes = buildCanonicalCoverage(
+    corpusRoot,
+    fixturePipelineCorpusRoot,
+    BUDGET_BYTES - rawBytes,
+  );
   console.log(`  canonical subset: ${canonicalBytes} bytes`);
+  rmSync(fixturePipelineCorpusRoot, { recursive: true, force: true });
 
   const total = rawBytes + canonicalBytes;
   console.log(`\nTotal fixture size: ${total} bytes (budget ${BUDGET_BYTES} bytes)`);

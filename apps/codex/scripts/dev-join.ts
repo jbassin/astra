@@ -500,6 +500,16 @@ function main(): void {
       classifiedEntityPct: 0,
       belowNinetyPctGuard: false,
     },
+    // P12 S1 (D29-114/-115): this dev tool predates the post-drop
+    // `augmentClassStats` pass too (`transform.ts` is the real orchestrator
+    // that runs it) — empty stats keep the report shape valid.
+    classStatsAugment: {
+      classStatsEmitted: 0,
+      grantedFeaturesResolved: 0,
+      grantedFeaturesUnresolved: 0,
+      subclassOptionsEmitted: 0,
+      subclassOptionCounts: [],
+    },
   });
   const markdown = buildReportMarkdown(reportJson);
 

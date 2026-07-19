@@ -1,0 +1,52 @@
+{
+  "aonUrl": "/Lessons.aspx?ID=2",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"lesson/lesson-of-the-elements@legacy\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "lesson",
+  "edition": "legacy",
+  "facets": {},
+  "id": "lesson/lesson-of-the-elements@legacy",
+  "mastheadExtra": [
+    {
+      "label": "Lesson Type",
+      "value": [
+        {
+          "content": " Basic",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Lesson of the Elements",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "lesson/lesson-of-the-elements"
+  ],
+  "slug": "lesson-of-the-elements",
+  "source": {
+    "book": "Advanced Player's Guide",
+    "license": "OGL",
+    "page": 100
+  },
+  "traits": []
+}

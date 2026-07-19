@@ -1,0 +1,75 @@
+{
+  "aonUrl": "/Classes.aspx?ID=35",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class-feature/weapon-specialization\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 7,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 7
+  },
+  "id": "class-feature/weapon-specialization",
+  "level": 7,
+  "mastheadExtra": [
+    {
+      "label": "Class",
+      "value": [
+        {
+          "content": " Fighter",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Weapon Specialization",
+  "rarity": "common",
+  "slug": "weapon-specialization",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 136
+  },
+  "traits": [
+    "alchemist",
+    "animist",
+    "bard",
+    "champion",
+    "cleric",
+    "commander",
+    "druid",
+    "fighter",
+    "gunslinger",
+    "inventor",
+    "investigator",
+    "kineticist",
+    "ranger",
+    "rogue",
+    "sorcerer",
+    "summoner",
+    "swashbuckler",
+    "witch",
+    "wizard"
+  ]
+}

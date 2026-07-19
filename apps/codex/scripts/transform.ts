@@ -34,6 +34,7 @@ import {
   extractAonMeta,
 } from "../src/ingest/aonFacets";
 import { buildAonLinkTable, normalizeUrlKey, type LinkTableDoc } from "../src/ingest/aonLinkTable";
+import { augmentClassStats } from "../src/ingest/augmentClassStats";
 import { normalizeBookNames } from "../src/ingest/bookNormalize";
 import { collapseAdjacentCrossrefs } from "../src/ingest/dedupeCrossrefs";
 import { applyAonPrimaryDrop } from "../src/ingest/drop";
@@ -49,7 +50,12 @@ import {
   type UuidResolution,
   mergeLocalizeMaps,
 } from "../src/ingest/enrichers";
-import { assembleFoundryEntity, type RawFoundryDoc } from "../src/ingest/foundryEntities";
+import {
+  assembleFoundryEntity,
+  extractRawGrantedFeatures,
+  type RawFoundryDoc,
+  type RawGrantedFeatureEntry,
+} from "../src/ingest/foundryEntities";
 import { FoundryHtmlError, parseFoundryHtml } from "../src/ingest/foundryHtml";
 import { walkFiles } from "../src/ingest/fsWalk";
 import { type JoinAliasesFile, runJoin } from "../src/ingest/join";
@@ -135,6 +141,12 @@ interface FoundrySide {
   entities: Map<string, CodexEntity>;
   redirects: RemasterRedirectEntry[];
   index: UuidIndex;
+  /** D29-114 (P12 S1): class entity id -> its raw `system.items`
+   * granted-feature manifest (`foundryEntities.ts`'s
+   * `extractRawGrantedFeatures`) — captured during the SAME walk that
+   * assembles `entities` (the raw doc is right there), so the post-drop
+   * `augmentClassStats` pass never needs a second raw-pack read. */
+  classGrantedFeatures: Map<string, RawGrantedFeatureEntry[]>;
 }
 
 function loadFoundrySide(
@@ -188,6 +200,7 @@ function loadFoundrySide(
   }
 
   const entities = new Map<string, CodexEntity>();
+  const classGrantedFeatures = new Map<string, RawGrantedFeatureEntry[]>();
   const seenIds = new Set<string>();
   for (const entry of registry) {
     if (entry.docClass !== "Actor" && entry.docClass !== "Item") continue;
@@ -205,7 +218,17 @@ function loadFoundrySide(
           report,
           seenIds,
         });
-        if (entity) entities.set(entity.id, entity);
+        if (entity) {
+          entities.set(entity.id, entity);
+          // D29-114 (P12 S1): capture the raw granted-feature manifest for
+          // every `class` doc, right here where the raw `doc` is still in
+          // scope — the post-drop `augmentClassStats` pass needs it, and this
+          // is the ONLY place in the pipeline the raw pack JSON is read.
+          if (entity.category === "class") {
+            const grants = extractRawGrantedFeatures(doc.system, report, entity.id);
+            if (grants) classGrantedFeatures.set(entity.id, grants);
+          }
+        }
       } catch (e) {
         if (e instanceof EnricherGrammarError || e instanceof FoundryHtmlError) {
           hardFailures.push({ path: file.relPath, message: e.message });
@@ -251,7 +274,7 @@ function loadFoundrySide(
   });
   const redirects = parseRemasterChanges(remasterChangesDoc, remasterCtx);
 
-  return { entities, redirects, index };
+  return { entities, redirects, index, classGrantedFeatures };
 }
 
 // ---------------------------------------------------------------------------
@@ -377,6 +400,11 @@ export function runTransform(paths: TransformPaths): TransformResult {
   }));
   const linkTable = buildAonLinkTable(linkTableDocs, report);
 
+  // Shared across the join's `@Embed` resolution AND the D29-114
+  // `augmentClassStats` pass below — same `foundry.index`, no containing-doc
+  // context needed for either (both resolve absolute uuids only).
+  const resolveForeignUuid = createResolveUuid(foundry.index);
+
   const joinResult = runJoin({
     foundryEntities: foundry.entities,
     aonMetas: dedupedMetas,
@@ -384,7 +412,7 @@ export function runTransform(paths: TransformPaths): TransformResult {
     linkTable,
     remasterRedirects: foundry.redirects,
     aliasesFile: paths.aliasesFile,
-    resolveForeignEmbed: createResolveUuid(foundry.index),
+    resolveForeignEmbed: resolveForeignUuid,
     report,
   });
 
@@ -422,7 +450,18 @@ export function runTransform(paths: TransformPaths): TransformResult {
     finalIdToAonId,
     report,
   );
-  const finalEntities = sidebarResult.entities;
+  // D29-114/-115 (P12 S1): the post-drop class-stats augment pass — MUST run
+  // over the FINAL kept entity set (grantedFeatures' targetId nulling checks
+  // final-set membership; subclassOptions' current-edition union reads
+  // final `remasteredAs`) and MUST run before `emitCorpus` (its mutations
+  // are what actually lands in the corpus).
+  const augmentResult = augmentClassStats({
+    entities: sidebarResult.entities,
+    classGrantedFeatures: foundry.classGrantedFeatures,
+    resolveUuid: resolveForeignUuid,
+    report,
+  });
+  const finalEntities = augmentResult.entities;
 
   const emitResult = emitCorpus({
     corpusRoot: paths.corpusRoot,
@@ -516,6 +555,7 @@ export function runTransform(paths: TransformPaths): TransformResult {
     sidebarAttachment: sidebarResult,
     rulesTree: rulesTreeStats,
     sourcesIndex: sourcesIndexStats,
+    classStatsAugment: augmentResult,
   });
   const reportMarkdown = buildReportMarkdown(reportJson);
 

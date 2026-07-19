@@ -1,0 +1,36 @@
+{
+  "aonUrl": "/Doctrines.aspx?ID=3",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"doctrine/warpriest\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "doctrine",
+  "edition": "legacy",
+  "facets": {},
+  "id": "doctrine/warpriest",
+  "name": "Warpriest",
+  "proseOnly": true,
+  "rarity": "common",
+  "remasteredAs": [
+    "class-feature/warpriest"
+  ],
+  "slug": "warpriest",
+  "source": {
+    "book": "Core Rulebook",
+    "license": "OGL",
+    "page": 120
+  },
+  "traits": []
+}

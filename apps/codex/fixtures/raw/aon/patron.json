@@ -1,0 +1,277 @@
+{
+  "category": "patron",
+  "hits": [
+    {
+      "_id": "patron-9",
+      "_source": {
+        "category": "patron",
+        "exclude_from_search": false,
+        "hex_cantrip": "Spirit Object",
+        "id": "patron-9",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Witch Patron Theme \" pfs=\"Standard\">[Baba Yaga](/Patrons.aspx?ID=9)</title>\r\n\r\n<traits>\r\n<trait label=\"Rare\" url=\"/Traits.aspx?ID=137\" />\r\n</traits>\r\n\r\n**Source** [Legends](/Sources.aspx?ID=40) pg. 32\n\nBaba Yaga teaches you how to transfer spirits into objects and freeze your foes. A witch with Baba Yaga as their patron can choose an inanimate object as a familiar. If they do, they still can gain master abilities and some familiar abilities that don’t require movement. The object familiar has no Speeds and must select a Speed familiar ability before it can move, coming to life in a way appropriate to the chosen Speed and using the statistics of a normal familiar for that day.\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=11)\r\n\r\n**Hex Cantrip** [Spirit Object](/Spells.aspx?ID=810)\r\n\r\n**Granted Spell** [Chilling Spray](/Spells.aspx?ID=678)\n\n</column>",
+        "name": "Baba Yaga",
+        "pfs": "Standard",
+        "primary_source": "Legends",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Legends pg. 32",
+        "rarity": "rare",
+        "rarity_id": 3,
+        "release_date": "2020-07-30",
+        "remaster_id": [
+          "patron-27"
+        ],
+        "resistance": {},
+        "search_markdown": "<traits>\r\n<trait label=\"Rare\" url=\"/Traits.aspx?ID=137\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Legends](/Sources.aspx?ID=40) pg. 32\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=11)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nBaba Yaga teaches you how to transfer spirits into objects and freeze your foes. A witch with Baba Yaga as their patron can choose an inanimate …\r\n</summary>",
+        "skill": [
+          "Occultism"
+        ],
+        "skill_markdown": "[Occultism](/Skills.aspx?ID=11)",
+        "skill_mod": {},
+        "source": [
+          "Legends"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Legends](/Sources.aspx?ID=40) pg. 32",
+        "source_raw": [
+          "Legends pg. 32"
+        ],
+        "speed": {},
+        "spell": [
+          "Spirit Object",
+          "Chilling Spray"
+        ],
+        "summary": "Baba Yaga teaches you how to transfer spirits into objects and freeze your foes. A witch with Baba Yaga as their patron can choose an inanimate …",
+        "summary_markdown": "Baba Yaga teaches you how to transfer spirits into objects and freeze your foes. A witch with Baba Yaga as their patron can choose an inanimate …",
+        "text": " Baba Yaga Source Legends pg. 32 Baba Yaga teaches you how to transfer spirits into objects and freeze your foes. A witch with Baba Yaga as their patron can choose an inanimate object as a familiar. If they do, they still can gain master abilities and some familiar abilities that don’t require movement. The object familiar has no Speeds and must select a Speed familiar ability before it can move, coming to life in a way appropriate to the chosen Speed and using the statistics of a normal familiar for that day. Spell List Occult Patron Skill Occultism Hex Cantrip Spirit Object Granted Spell Chilling Spray\n",
+        "tradition": [
+          "Occult"
+        ],
+        "tradition_markdown": "[Occult](/SpellLists.aspx?Tradition=3)",
+        "trait": [
+          "Rare"
+        ],
+        "trait_group": [
+          "Rarity"
+        ],
+        "trait_markdown": "[Rare](/Traits.aspx?ID=137)",
+        "trait_raw": [
+          "Rare"
+        ],
+        "type": "Witch Patron Theme",
+        "url": "/Patrons.aspx?ID=9",
+        "weakness": {}
+      },
+      "sort": [
+        "baba yaga",
+        "/patrons.aspx?id=9"
+      ]
+    },
+    {
+      "_id": "patron-27",
+      "_source": {
+        "category": "patron",
+        "exclude_from_search": false,
+        "hex_cantrip": "Spirit Object",
+        "id": "patron-27",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "patron-9"
+        ],
+        "markdown": "<title level=\"1\" right=\"Witch Patron Theme \" pfs=\"Standard\">[Baba Yaga](/Patrons.aspx?ID=27)</title>\r\n\r\n<traits>\r\n<trait label=\"Rare\" url=\"/Traits.aspx?ID=137\" />\r\n</traits>\r\n\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 298\r\n\r\n_[**PFS Note**](/pathfinder-society) For Baba Yaga’s Familiar of Obscuring Snowfall ability, choose a corner of the familiar’s square for the center of the burst._\r\n\r\nYour patron is Baba Yaga, the Queen of Witches. You are most likely a young woman who has been thrown into events far above your head, though you might also be a young man or a brave knight who has sworn your loyalty to the old witch. You may have demanded Baba Yaga’s aid, and somehow escaped unscathed for your audacity. She may have reached out to you by sending a messenger in the form of an animated object, such as a mortar that had grown legs. She may have instead appeared before you herself, demanding you aid her with some nigh-impossible chore. While many fail these tasks and end up becoming a meal for Baba Yaga or meet even worse fates, you prevailed and earned her respect. Her gift to you is her patronage (and your life).\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=44)\n\n**Lesson of Baba’s Understanding** Baba Yaga teaches you to be more like her, allowing you to transfer spirits into objects and freeze your foes. You gain the [_spirit object_](/Spells.aspx?ID=810) hex cantrip and your familiar learns [_chilling spray_](/Spells.aspx?ID=1975).\r\n\r\n**Familiar of Obscuring Snowfall** Your familiar is always covered in a thin layer of snow, which it sheds as needed. When you [Cast](/Actions.aspx?ID=2734) or [Sustain](/Actions.aspx?ID=2317) a hex, you can cause clinging snow to fall in a 5-foot burst centered on a square of your familiar’s space. This snowfall remains until the start of your next turn, and enemies that enter these squares during that period are [dazzled](/Conditions.aspx?ID=65) until the start of your next turn.\r\n\r\n</column>",
+        "name": "Baba Yaga",
+        "pfs": "Standard",
+        "primary_source": "Divine Mysteries",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Divine Mysteries pg. 298",
+        "rarity": "rare",
+        "rarity_id": 3,
+        "release_date": "2025-01-30",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n<trait label=\"Rare\" url=\"/Traits.aspx?ID=137\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 298\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=44)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour patron is Baba Yaga, the Queen of Witches. You are most likely a young woman who has been thrown into events far above your head, though you …\r\n</summary>",
+        "skill": [
+          "Occultism"
+        ],
+        "skill_markdown": "[Occultism](/Skills.aspx?ID=44)",
+        "skill_mod": {},
+        "source": [
+          "Divine Mysteries"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Divine Mysteries](/Sources.aspx?ID=234) pg. 298",
+        "source_raw": [
+          "Divine Mysteries pg. 298"
+        ],
+        "speed": {},
+        "spell": [
+          "Spirit Object",
+          "Chilling Spray"
+        ],
+        "summary": "Your patron is Baba Yaga, the Queen of Witches. You are most likely a young woman who has been thrown into events far above your head, though you …",
+        "summary_markdown": "Your patron is Baba Yaga, the Queen of Witches. You are most likely a young woman who has been thrown into events far above your head, though you …",
+        "text": " Baba Yaga Source Divine Mysteries pg. 298 PFS Note For Baba Yaga’s Familiar of Obscuring Snowfall ability, choose a corner of the familiar’s square for the center of the burst. Your patron is Baba Yaga, the Queen of Witches. You are most likely a young woman who has been thrown into events far above your head, though you might also be a young man or a brave knight who has sworn your loyalty to the old witch. You may have demanded Baba Yaga’s aid, and somehow escaped unscathed for your audacity. She may have reached out to you by sending a messenger in the form of an animated object, such as a mortar that had grown legs. She may have instead appeared before you herself, demanding you aid her with some nigh-impossible chore. While many fail these tasks and end up becoming a meal for Baba Yaga or meet even worse fates, you prevailed and earned her respect. Her gift to you is her patronage (and your life). Spell List Occult Patron Skill Occultism Lesson of Baba’s Understanding Baba Yaga teaches you to be more like her, allowing you to transfer spirits into objects and freeze your foes. You gain the spirit object hex cantrip and your familiar learns chilling spray . Familiar of Obscuring Snowfall Your familiar is always covered in a thin layer of snow, which it sheds as needed. When you Cast or Sustain a hex, you can cause clinging snow to fall in a 5-foot burst centered on a square of your familiar’s space. This snowfall remains until the start of your next turn, and enemies that enter these squares during that period are dazzled until the start of your next turn. ",
+        "tradition": [
+          "Occult"
+        ],
+        "tradition_markdown": "[Occult](/SpellLists.aspx?Tradition=3)",
+        "trait": [
+          "Rare"
+        ],
+        "trait_group": [
+          "Rarity"
+        ],
+        "trait_markdown": "[Rare](/Traits.aspx?ID=137)",
+        "trait_raw": [
+          "Rare"
+        ],
+        "type": "Witch Patron Theme",
+        "url": "/Patrons.aspx?ID=27",
+        "weakness": {}
+      },
+      "sort": [
+        "baba yaga",
+        "/patrons.aspx?id=27"
+      ]
+    },
+    {
+      "_id": "patron-11",
+      "_source": {
+        "category": "patron",
+        "exclude_from_search": false,
+        "hex_cantrip": "Pact Broker",
+        "id": "patron-11",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Witch Patron Theme \" pfs=\"Standard\">[Pacts](/Patrons.aspx?ID=11)</title>\r\n\r\n<traits>\r\n<trait label=\"Rare\" url=\"/Traits.aspx?ID=137\" />\r\n</traits>\r\n\r\n**Source** [Dark Archive](/Sources.aspx?ID=129) pg. 159\n\nYour patron deals only in promises and bargains, and no lesson is ever given for free.\n\n<column gap=\"tiny\">\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=11)\r\n\r\n**Hex Cantrip** [Pact Broker](/Spells.aspx?ID=1180)\r\n\r\n**Granted Spell** [Command](/Spells.aspx?ID=45)\n\n</column>",
+        "name": "Pacts",
+        "pfs": "Standard",
+        "primary_source": "Dark Archive",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Dark Archive pg. 159",
+        "rarity": "rare",
+        "rarity_id": 3,
+        "release_date": "2022-07-27",
+        "remaster_id": [
+          "patron-29"
+        ],
+        "remaster_name": [
+          "The Unseen Broker"
+        ],
+        "resistance": {},
+        "search_markdown": "<traits>\r\n<trait label=\"Rare\" url=\"/Traits.aspx?ID=137\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Dark Archive](/Sources.aspx?ID=129) pg. 159\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=11)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour patron deals only in promises and bargains, and no lesson is ever given for free.\r\n\r\n</summary>",
+        "skill": [
+          "Occultism"
+        ],
+        "skill_markdown": "[Occultism](/Skills.aspx?ID=11)",
+        "skill_mod": {},
+        "source": [
+          "Dark Archive"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Dark Archive](/Sources.aspx?ID=129) pg. 159",
+        "source_raw": [
+          "Dark Archive pg. 159"
+        ],
+        "speed": {},
+        "spell": [
+          "Pact Broker",
+          "Command"
+        ],
+        "summary": "Your patron deals only in promises and bargains, and no lesson is ever given for free.\r\n",
+        "summary_markdown": "Your patron deals only in promises and bargains, and no lesson is ever given for free.\r\n",
+        "text": " Pacts Source Dark Archive pg. 159 Your patron deals only in promises and bargains, and no lesson is ever given for free. Spell List Occult Patron Skill Occultism Hex Cantrip Pact Broker Granted Spell Command\n",
+        "tradition": [
+          "Occult"
+        ],
+        "tradition_markdown": "[Occult](/SpellLists.aspx?Tradition=3)",
+        "trait": [
+          "Rare"
+        ],
+        "trait_group": [
+          "Rarity"
+        ],
+        "trait_markdown": "[Rare](/Traits.aspx?ID=137)",
+        "trait_raw": [
+          "Rare"
+        ],
+        "type": "Witch Patron Theme",
+        "url": "/Patrons.aspx?ID=11",
+        "weakness": {}
+      },
+      "sort": [
+        "pacts",
+        "/patrons.aspx?id=11"
+      ]
+    },
+    {
+      "_id": "patron-29",
+      "_source": {
+        "category": "patron",
+        "exclude_from_search": false,
+        "hex_cantrip": "Pact Broker",
+        "id": "patron-29",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "patron-11"
+        ],
+        "legacy_name": [
+          "Pacts"
+        ],
+        "markdown": "<title level=\"1\" right=\"Witch Patron Theme \" pfs=\"Standard\">[The Unseen Broker](/Patrons.aspx?ID=29)</title>\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n**Source** [Dark Archives (Remastered)](/Sources.aspx?ID=293) pg. 159, [Divine Mysteries](/Sources.aspx?ID=234) pg. 298\n\nYou have agreed to act as a mediator between your patron and the rest of the world. Your patron might be a god, an enigmatic planar being, or even an alien entity.\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=44)\n\n**Lesson of the Bound Words** Your patron teaches you about bargains and how they can hold power over others. You gain the [_pact broker_](/Spells.aspx?ID=2597) hex cantrip and your familiar learns [_command_](/Spells.aspx?ID=1470).\r\n\r\n**Familiar of Enticing Negotiation** Your familiar constantly whispers distracting offers of temptations to your enemies, even if your familiar normally doesn't have the means of speaking. When you Cast or Sustain a hex and your familiar is within 10 feet of an enemy, the enemy becomes [off-guard](/Conditions.aspx?ID=58) until the start of your next turn. Your familiar can only distract a single enemy per round in this way.\r\n\r\n</column>",
+        "name": "The Unseen Broker",
+        "pfs": "Standard",
+        "primary_source": "Dark Archives (Remastered)",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Dark Archives (Remastered) pg. 159",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2026-02-04",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Dark Archives (Remastered)](/Sources.aspx?ID=293) pg. 159, [Divine Mysteries](/Sources.aspx?ID=234) pg. 298\r\n\r\n**Spell List** [Occult](/SpellLists.aspx?Tradition=3)\r\n\r\n**Patron Skill** [Occultism](/Skills.aspx?ID=44)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou have agreed to act as a mediator between your patron and the rest of the world. Your patron might be a god, an enigmatic planar being, or even an …\r\n</summary>",
+        "skill": [
+          "Occultism"
+        ],
+        "skill_markdown": "[Occultism](/Skills.aspx?ID=44)",
+        "skill_mod": {},
+        "source": [
+          "Dark Archives (Remastered)",
+          "Divine Mysteries"
+        ],
+        "source_category": [
+          "Rulebooks",
+          "Lost Omens"
+        ],
+        "source_markdown": "[Dark Archives (Remastered)](/Sources.aspx?ID=293) pg. 159, [Divine Mysteries](/Sources.aspx?ID=234) pg. 298",
+        "source_raw": [
+          "Dark Archives (Remastered) pg. 159",
+          "Divine Mysteries pg. 298"
+        ],
+        "speed": {},
+        "spell": [
+          "Pact Broker",
+          "Command"
+        ],
+        "summary": "You have agreed to act as a mediator between your patron and the rest of the world. Your patron might be a god, an enigmatic planar being, or even an …",
+        "summary_markdown": "You have agreed to act as a mediator between your patron and the rest of the world. Your patron might be a god, an enigmatic planar being, or even an …",
+        "text": " The Unseen Broker Source Dark Archives (Remastered) pg. 159, Divine Mysteries pg. 298 You have agreed to act as a mediator between your patron and the rest of the world. Your patron might be a god, an enigmatic planar being, or even an alien entity. Spell List Occult Patron Skill Occultism Lesson of the Bound Words Your patron teaches you about bargains and how they can hold power over others. You gain the pact broker hex cantrip and your familiar learns command . Familiar of Enticing Negotiation Your familiar constantly whispers distracting offers of temptations to your enemies, even if your familiar normally doesn't have the means of speaking. When you Cast or Sustain a hex and your familiar is within 10 feet of an enemy, the enemy becomes off-guard until the start of your next turn. Your familiar can only distract a single enemy per round in this way. ",
+        "tradition": [
+          "Occult"
+        ],
+        "tradition_markdown": "[Occult](/SpellLists.aspx?Tradition=3)",
+        "trait_markdown": "",
+        "type": "Witch Patron Theme",
+        "url": "/Patrons.aspx?ID=29",
+        "weakness": {}
+      },
+      "sort": [
+        "the unseen broker",
+        "/patrons.aspx?id=29"
+      ]
+    }
+  ]
+}

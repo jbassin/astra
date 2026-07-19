@@ -1,0 +1,203 @@
+{
+  "aonUrl": "/Classes.aspx?ID=35",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class/fighter\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class",
+  "edition": "remaster",
+  "facets": {
+    "hp": 10,
+    "keyAbility": [
+      "dex",
+      "str"
+    ]
+  },
+  "id": "class/fighter",
+  "name": "Fighter",
+  "rarity": "common",
+  "slug": "fighter",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 136
+  },
+  "stats": {
+    "attacks": {
+      "advanced": 1,
+      "martial": 2,
+      "simple": 2,
+      "unarmed": 2
+    },
+    "defenses": {
+      "heavy": 1,
+      "light": 1,
+      "medium": 1,
+      "unarmored": 1
+    },
+    "featLevels": {
+      "ancestryFeat": [
+        1,
+        5,
+        9,
+        13,
+        17
+      ],
+      "classFeat": [
+        1,
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20
+      ],
+      "generalFeat": [
+        3,
+        7,
+        11,
+        15,
+        19
+      ],
+      "skillFeat": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20
+      ],
+      "skillIncrease": [
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19
+      ]
+    },
+    "grantedFeatures": [
+      {
+        "level": 1,
+        "name": "Reactive Strike",
+        "targetId": "class-feature/reactive-strike"
+      },
+      {
+        "level": 1,
+        "name": "Shield Block",
+        "targetId": "class-feature/shield-block"
+      },
+      {
+        "level": 3,
+        "name": "Bravery",
+        "targetId": "class-feature/bravery"
+      },
+      {
+        "level": 5,
+        "name": "Fighter Weapon Mastery",
+        "targetId": "class-feature/fighter-weapon-mastery"
+      },
+      {
+        "level": 7,
+        "name": "Battlefield Surveyor",
+        "targetId": "class-feature/battlefield-surveyor"
+      },
+      {
+        "level": 7,
+        "name": "Weapon Specialization",
+        "targetId": "class-feature/weapon-specialization"
+      },
+      {
+        "level": 9,
+        "name": "Battle Hardened",
+        "targetId": "class-feature/battle-hardened"
+      },
+      {
+        "level": 9,
+        "name": "Combat Flexibility",
+        "targetId": "class-feature/combat-flexibility"
+      },
+      {
+        "level": 11,
+        "name": "Armor Expertise",
+        "targetId": "class-feature/armor-expertise"
+      },
+      {
+        "level": 11,
+        "name": "Fighter Expertise",
+        "targetId": "class-feature/fighter-expertise"
+      },
+      {
+        "level": 13,
+        "name": "Weapon Legend",
+        "targetId": "class-feature/weapon-legend"
+      },
+      {
+        "level": 15,
+        "name": "Greater Weapon Specialization",
+        "targetId": "class-feature/greater-weapon-specialization"
+      },
+      {
+        "level": 15,
+        "name": "Improved Flexibility",
+        "targetId": "class-feature/improved-flexibility"
+      },
+      {
+        "level": 15,
+        "name": "Tempered Reflexes",
+        "targetId": "class-feature/tempered-reflexes"
+      },
+      {
+        "level": 17,
+        "name": "Armor Mastery",
+        "targetId": "class-feature/armor-mastery"
+      },
+      {
+        "level": 19,
+        "name": "Versatile Legend",
+        "targetId": "class-feature/versatile-legend"
+      }
+    ],
+    "hp": 10,
+    "keyAbility": [
+      "dex",
+      "str"
+    ],
+    "kind": "class",
+    "perception": 2,
+    "savingThrows": {
+      "fortitude": 2,
+      "reflex": 2,
+      "will": 1
+    },
+    "spellcasting": false,
+    "trainedSkills": {
+      "additional": 3,
+      "value": []
+    }
+  },
+  "traits": []
+}

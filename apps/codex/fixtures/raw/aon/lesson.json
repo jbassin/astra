@@ -1,0 +1,201 @@
+{
+  "category": "lesson",
+  "hits": [
+    {
+      "_id": "lesson-14",
+      "_source": {
+        "category": "lesson",
+        "exclude_from_search": false,
+        "id": "lesson-14",
+        "is_standard_ancestry_feat": false,
+        "lesson_type": "Major",
+        "markdown": "<title level=\"1\" right=\"Witch Lesson \" pfs=\"Standard\">[Lesson of Bargains](/Lessons.aspx?ID=14)</title>\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Dark Archive](/Sources.aspx?ID=129) pg. 159\n\n**Lesson Type** Major\r\n\r\n</column>\n\nYou gain the [Over the Coals](/Spells.aspx?ID=1182) hex, and your familiar learns [Subconscious Suggestion](/Spells.aspx?ID=314).",
+        "name": "Lesson of Bargains",
+        "pfs": "Standard",
+        "primary_source": "Dark Archive",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Dark Archive pg. 159",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2022-07-27",
+        "remaster_id": [
+          "lesson-34"
+        ],
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Dark Archive](/Sources.aspx?ID=129) pg. 159\r\n\r\n**Lesson Type** Major\r\n</additional-info>",
+        "skill_mod": {},
+        "source": [
+          "Dark Archive"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Dark Archive](/Sources.aspx?ID=129) pg. 159",
+        "source_raw": [
+          "Dark Archive pg. 159"
+        ],
+        "speed": {},
+        "spell": [
+          "Over the Coals",
+          "Subconscious Suggestion"
+        ],
+        "text": " Lesson of Bargains Source Dark Archive pg. 159 Lesson Type Major You gain the Over the Coals hex, and your familiar learns Subconscious Suggestion.",
+        "trait_markdown": "",
+        "type": "Witch Lesson",
+        "url": "/Lessons.aspx?ID=14",
+        "weakness": {}
+      },
+      "sort": [
+        "lesson of bargains",
+        "/lessons.aspx?id=14"
+      ]
+    },
+    {
+      "_id": "lesson-34",
+      "_source": {
+        "category": "lesson",
+        "exclude_from_search": false,
+        "id": "lesson-34",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "lesson-14"
+        ],
+        "lesson_type": "Major",
+        "markdown": "<title level=\"1\" right=\"Witch Lesson \" pfs=\"Standard\">[Lesson of Bargains](/Lessons.aspx?ID=34)</title>\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Dark Archives (Remastered)](/Sources.aspx?ID=293) pg. 159\n\n**Lesson Type** Major\r\n\r\n</column>\n\nYou gain the [Over the Coals](/Spells.aspx?ID=2599) hex, and your familiar learns [Subconscious Suggestion](/Spells.aspx?ID=1692).",
+        "name": "Lesson of Bargains",
+        "pfs": "Standard",
+        "primary_source": "Dark Archives (Remastered)",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Dark Archives (Remastered) pg. 159",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2026-02-04",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Dark Archives (Remastered)](/Sources.aspx?ID=293) pg. 159\r\n\r\n**Lesson Type** Major\r\n</additional-info>",
+        "skill_mod": {},
+        "source": [
+          "Dark Archives (Remastered)"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Dark Archives (Remastered)](/Sources.aspx?ID=293) pg. 159",
+        "source_raw": [
+          "Dark Archives (Remastered) pg. 159"
+        ],
+        "speed": {},
+        "spell": [
+          "Over the Coals",
+          "Subconscious Suggestion"
+        ],
+        "text": " Lesson of Bargains Source Dark Archives (Remastered) pg. 159 Lesson Type Major You gain the Over the Coals hex, and your familiar learns Subconscious Suggestion.",
+        "trait_markdown": "",
+        "type": "Witch Lesson",
+        "url": "/Lessons.aspx?ID=34",
+        "weakness": {}
+      },
+      "sort": [
+        "lesson of bargains",
+        "/lessons.aspx?id=34"
+      ]
+    },
+    {
+      "_id": "lesson-2",
+      "_source": {
+        "category": "lesson",
+        "exclude_from_search": false,
+        "id": "lesson-2",
+        "is_standard_ancestry_feat": false,
+        "lesson_type": "Basic",
+        "markdown": "<title level=\"1\" right=\"Witch Lesson \" pfs=\"Standard\">[Lesson of the Elements](/Lessons.aspx?ID=2)</title>\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Advanced Player's Guide](/Sources.aspx?ID=39) pg. 100\n\n**Lesson Type** Basic\r\n\r\n</column>\n\nYou gain the [Elemental Betrayal](/Spells.aspx?ID=797) hex. Your familiar learns your choice of [_burning hands_](/Spells.aspx?ID=30), [_air bubble_](/Spells.aspx?ID=5), [_hydraulic push_](/Spells.aspx?ID=154), or [_pummeling rubble_](/Spells.aspx?ID=708).",
+        "name": "Lesson of the Elements",
+        "pfs": "Standard",
+        "primary_source": "Advanced Player's Guide",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Advanced Player's Guide pg. 100",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2020-07-30",
+        "remaster_id": [
+          "lesson-17"
+        ],
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Advanced Player's Guide](/Sources.aspx?ID=39) pg. 100\r\n\r\n**Lesson Type** Basic\r\n</additional-info>",
+        "skill_mod": {},
+        "source": [
+          "Advanced Player's Guide"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Advanced Player's Guide](/Sources.aspx?ID=39) pg. 100",
+        "source_raw": [
+          "Advanced Player's Guide pg. 100"
+        ],
+        "speed": {},
+        "spell": [
+          "Elemental Betrayal",
+          "Abyssal Plague"
+        ],
+        "text": " Lesson of the Elements Source Advanced Player's Guide pg. 100 Lesson Type Basic You gain the Elemental Betrayal hex. Your familiar learns your choice of burning hands , air bubble , hydraulic push , or pummeling rubble .",
+        "trait_markdown": "",
+        "type": "Witch Lesson",
+        "url": "/Lessons.aspx?ID=2",
+        "weakness": {}
+      },
+      "sort": [
+        "lesson of the elements",
+        "/lessons.aspx?id=2"
+      ]
+    },
+    {
+      "_id": "lesson-17",
+      "_source": {
+        "category": "lesson",
+        "exclude_from_search": false,
+        "id": "lesson-17",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "lesson-2"
+        ],
+        "lesson_type": "Basic",
+        "markdown": "<title level=\"1\" right=\"Witch Lesson \" pfs=\"Standard\">[Lesson of the Elements](/Lessons.aspx?ID=17)</title>\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 185\n\n**Lesson Type** Basic\r\n\r\n</column>\r\n\r\nNatural disasters and inclement weather hold more power than the mightiest creature.\r\nYou gain the [Elemental Betrayal](/Spells.aspx?ID=1878) hex. Your familiar learns your choice of [_breathe fire_](/Spells.aspx?ID=1457), [_gust of wind_](/Spells.aspx?ID=143), [_hydraulic push_](/Spells.aspx?ID=154), or [_pummeling rubble_](/Spells.aspx?ID=708).",
+        "name": "Lesson of the Elements",
+        "pfs": "Standard",
+        "primary_source": "Player Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Player Core pg. 185",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2023-11-15",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 185\r\n\r\n**Lesson Type** Basic\r\n</additional-info>",
+        "skill_mod": {},
+        "source": [
+          "Player Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Player Core](/Sources.aspx?ID=216) pg. 185",
+        "source_raw": [
+          "Player Core pg. 185"
+        ],
+        "speed": {},
+        "spell": [
+          "Elemental Betrayal",
+          "Abyssal Plague"
+        ],
+        "text": " Lesson of the Elements Source Player Core pg. 185 Lesson Type Basic Natural disasters and inclement weather hold more power than the mightiest creature. You gain the Elemental Betrayal hex. Your familiar learns your choice of breathe fire , gust of wind , hydraulic push , or pummeling rubble .",
+        "trait_markdown": "",
+        "type": "Witch Lesson",
+        "url": "/Lessons.aspx?ID=17",
+        "weakness": {}
+      },
+      "sort": [
+        "lesson of the elements",
+        "/lessons.aspx?id=17"
+      ]
+    }
+  ]
+}

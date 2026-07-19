@@ -1,0 +1,248 @@
+{
+  "aonUrl": "/Classes.aspx?ID=16",
+  "attachedSidebars": [
+    "sidebar/in-service-to-the-unknown"
+  ],
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class/witch\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class",
+  "edition": "remaster",
+  "facets": {
+    "hp": 6,
+    "keyAbility": [
+      "int"
+    ]
+  },
+  "id": "class/witch",
+  "name": "Witch",
+  "rarity": "common",
+  "slug": "witch",
+  "source": {
+    "book": "Advanced Player's Guide",
+    "license": "ORC",
+    "page": 94
+  },
+  "stats": {
+    "attacks": {
+      "advanced": 0,
+      "martial": 0,
+      "simple": 1,
+      "unarmed": 1
+    },
+    "defenses": {
+      "heavy": 0,
+      "light": 0,
+      "medium": 0,
+      "unarmored": 1
+    },
+    "featLevels": {
+      "ancestryFeat": [
+        1,
+        5,
+        9,
+        13,
+        17
+      ],
+      "classFeat": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20
+      ],
+      "generalFeat": [
+        3,
+        7,
+        11,
+        15,
+        19
+      ],
+      "skillFeat": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20
+      ],
+      "skillIncrease": [
+        3,
+        5,
+        7,
+        9,
+        11,
+        13,
+        15,
+        17,
+        19
+      ]
+    },
+    "grantedFeatures": [
+      {
+        "level": 1,
+        "name": "Familiar (Witch)",
+        "targetId": null
+      },
+      {
+        "level": 1,
+        "name": "Hexes",
+        "targetId": null
+      },
+      {
+        "level": 1,
+        "name": "Patron",
+        "targetId": null
+      },
+      {
+        "level": 1,
+        "name": "Witch Spellcasting",
+        "targetId": null
+      },
+      {
+        "level": 5,
+        "name": "Magical Fortitude",
+        "targetId": null
+      },
+      {
+        "level": 7,
+        "name": "Expert Spellcaster",
+        "targetId": null
+      },
+      {
+        "level": 9,
+        "name": "Reflex Expertise",
+        "targetId": null
+      },
+      {
+        "level": 11,
+        "name": "Perception Expertise",
+        "targetId": null
+      },
+      {
+        "level": 11,
+        "name": "Weapon Expertise",
+        "targetId": null
+      },
+      {
+        "level": 13,
+        "name": "Defensive Robes",
+        "targetId": null
+      },
+      {
+        "level": 13,
+        "name": "Weapon Specialization",
+        "targetId": "class-feature/weapon-specialization"
+      },
+      {
+        "level": 15,
+        "name": "Master Spellcaster",
+        "targetId": null
+      },
+      {
+        "level": 17,
+        "name": "Will of the Pupil",
+        "targetId": null
+      },
+      {
+        "level": 19,
+        "name": "Legendary Spellcaster",
+        "targetId": null
+      },
+      {
+        "level": 19,
+        "name": "Patron's Gift",
+        "targetId": null
+      }
+    ],
+    "hp": 6,
+    "keyAbility": [
+      "int"
+    ],
+    "kind": "class",
+    "perception": 1,
+    "savingThrows": {
+      "fortitude": 1,
+      "reflex": 1,
+      "will": 2
+    },
+    "spellcasting": true,
+    "subclassOptions": [
+      {
+        "category": "lesson",
+        "name": "Lesson of Bargains",
+        "superseded": false,
+        "targetId": "class-feature/lesson-of-bargains"
+      },
+      {
+        "category": "lesson",
+        "name": "Lesson of the Elements",
+        "superseded": false,
+        "targetId": "lesson/lesson-of-the-elements"
+      },
+      {
+        "category": "lesson",
+        "name": "Lesson of Bargains",
+        "superseded": true,
+        "targetId": "lesson/lesson-of-bargains"
+      },
+      {
+        "category": "lesson",
+        "name": "Lesson of the Elements",
+        "superseded": true,
+        "targetId": "lesson/lesson-of-the-elements@legacy"
+      },
+      {
+        "category": "patron",
+        "name": "Baba Yaga",
+        "superseded": false,
+        "targetId": "class-feature/baba-yaga"
+      },
+      {
+        "category": "patron",
+        "name": "The Unseen Broker",
+        "superseded": false,
+        "targetId": "patron/the-unseen-broker"
+      },
+      {
+        "category": "patron",
+        "name": "Baba Yaga",
+        "superseded": true,
+        "targetId": "patron/baba-yaga"
+      },
+      {
+        "category": "patron",
+        "name": "Pacts",
+        "superseded": true,
+        "targetId": "patron/pacts"
+      }
+    ],
+    "trainedSkills": {
+      "additional": 3,
+      "value": []
+    }
+  },
+  "traits": []
+}
