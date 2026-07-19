@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-19 — codex (0029) P12 BESPOKE CLASS PAGE BUILT + DEPLOYED + LIVE: stakeholder-directed round (5e.tools class-page model), scope→spec→OPUS-adversarial-×2→4 serial slices→staged deploy in ONE session; ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P12 review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `7829f29`, 2026-07-19 — codex (0029) P12 BESPOKE CLASS PAGE BUILT + DEPLOYED + LIVE + same-day mid-gate-H follow-ups `7829f29` also LIVE (class ToC dropped · bare /class redirects to first class · header nav right-aligned); ▶ THE ONLY OPEN ITEM = gate H, the ONE consolidated P2–P12 review; heartwood ON HOLD)
 
 > **✅ codex (0029) P12 — bespoke class page, all live on codex.iridi.cc:**
 > 1. **Provenance:** stakeholder: "special interface for some data types — look at how
@@ -71,6 +71,16 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 >    2 remaster pills, barbarian toggle→URL→reload, rail 27→47, popover-hint proof,
 >    summoner 387 KB/79 KB gz, SigNoz all routes hasError:false + 0 ERROR). Class pages
 >    carry 3 pre-existing AoN-literal prose h1s (the P11 gate-H flag, NOT a P12 regression).
+> 5. **Follow-up round `7829f29` (same day, mid-gate-H stakeholder items, built+deployed+live
+>    in-session):** class-page "On this page" ToC dropped; bare `/class` loader-307s (replace,
+>    `?superseded=` carried) to the alphabetically-first visible rail class (Alchemist real /
+>    Cleric fixture, rail-derived not hardcoded); header nav+omnibar right-aligned on every
+>    page — root cause was TWO-fold: the auto margin sat on the omnibar not the nav, AND
+>    `deriveHeaderTitle` never learned `/class/$slug`, so class pages showed the wordmark
+>    while their standalone h1 sat sr-only = NO visible class title (now resolves
+>    `entity.name` like `$category/$slug`). Finds in [[codex-0029-gotchas]]: ssrSmoke tests a
+>    STALE `dist/server/server.js` unless rebuilt; the deriveHeaderTitle switch is a
+>    route-enumeration seam to audit for every new route family.
 > - **▶ NEXT: gate H — the ONE consolidated P2–P12 stakeholder review at
 >   `https://codex.iridi.cc`.** P12 adds to the review register: the class-page composition
 >   itself, the `/rules` `::details-content` latent bug (fix candidate), the 2 miscategorized

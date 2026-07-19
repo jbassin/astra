@@ -473,3 +473,23 @@ then the corpus update, then immediate `just up`; no reindex):**
   barbarian, witch, sorcerer, psychic, summoner, both @legacy forms, /class), all
   `hasError:false`; ERROR/FATAL logs since deploy: **0 rows**.
 - Gate H: rides the ONE consolidated stakeholder review (now P2–P12).
+
+### Post-build amendments (`7829f29`, 2026-07-19 — mid-gate-H stakeholder items, live)
+
+Three stakeholder-directed follow-ups, built + deployed + live-verified the same day:
+
+1. **ClassPage's "On this page" ToC dropped** (redundant next to the fixed section order +
+   per-level progression anchors). Gate E's "ToC lists sections + Level-N features" line above
+   is therefore superseded — the ToC no longer mounts on the bespoke class page (generic
+   standalone pages keep theirs).
+2. **Bare `/class` no longer renders the empty intro pane** — its loader 307-redirects
+   (`replace`, `?superseded=` carried through the router's own pre-existing `1→true`
+   canonicalization hop) to the alphabetically-first VISIBLE rail class (Alchemist real /
+   Cleric fixture — rail-derived, never hardcoded). The D29-118 intro render survives only as
+   the zero-visible-classes fail-soft. ssrSmoke's bare-`/class` case re-pinned to the
+   redirect.
+3. **Header title + nav alignment:** `deriveHeaderTitle` gained the `/class/$slug` case (a
+   P12 miss — the page's standalone h1 is sr-only on the D29-112 header-carries-title
+   premise, so class pages had NO visible title), and the header's right-push auto margin
+   moved `.codex-omnibar` → `.codex-header-nav` so nav+omnibar sit right on every page,
+   wordmark or title (restored to the omnibar below 64rem where the nav wraps).
