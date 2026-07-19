@@ -1,6 +1,6 @@
 ---
 name: codex-0029-gotchas
-description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-18 **P10 STATROW+SIZE ROUND BUILT + DEPLOYED + LIVE same day as its gate-H provenance ("look at aso-berang"): AoN `<row>` wrappers now collapse to a 19th node kind `statRow` at ingest (schema v4) + creature/vehicle header size chip; ⭐ the census's tag-aware-candidacy trap (post-flatten all-paragraph ≠ collapsible — deity pages), the stripMasthead 36%-overlap find, and BOTH adversarial reviews pre-killing a class-name collision + a live-serving deploy wipe + a factually-wrong ancestry chip**; 2026-07-17 P8 density/table round — listings are now flat sortable per-category-column tables (5e.tools register, parchment voice kept), site-wide density pass, exact-name search boost (fireball/heal #1), j/k keyboard, nav carets; ⭐ the proxy-pin class struck AGAIN ×2 (hydrate-window 40 vs heal-ranks-43 → 60; gate-B "full set at 1600px" impossible under the 26rem list-track cap → 58/42 grid amendment) and the adversarial reviews caught the omnibar-8-stub no-op + the j/k history/fetch-spam class pre-build; plus the P6 proxy-population finds, the P5 bind-mount/fixture-fail-soft finds, the P4.5 loaderDeps finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H consolidated re-run (P2–P8) — screenshots delivered
+description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-19 **P11 BACKLOG ROUND BUILT + DEPLOYED + LIVE (6 serial slices, one autonomous orchestrated session): activation-debris drop 1,384 + keep-9 + 55 pointer-strips, 12 name-template renames, whole-doc crossref dedupe 1,167/133 (pin AMENDED from 1,147/123 — raw-markdown ground-truthing beat the review scanner), table cell-fit + 96rem browse, popover hover-bridge, curated 28-nav, loader-side hiddenCount reveal, title-into-header w/ the sr-only-h1×popover-B1 interlock; ⭐ three in-flight bug finds (proseOnly drop scoping · icon padding-inline cascade loss · the P9 pending-heuristic false-negative that would have zero-rowed the /doctrine reveal) + 4 malformed-name actions escape the drop regex (P12); corpus 44,808**; 2026-07-18 P10 statRow+size round same day as its gate-H provenance ("look at aso-berang"): AoN `<row>` wrappers now collapse to a 19th node kind `statRow` at ingest (schema v4) + creature/vehicle header size chip; ⭐ the census's tag-aware-candidacy trap (post-flatten all-paragraph ≠ collapsible — deity pages), the stripMasthead 36%-overlap find, and BOTH adversarial reviews pre-killing a class-name collision + a live-serving deploy wipe + a factually-wrong ancestry chip**; 2026-07-17 P8 density/table round — listings are now flat sortable per-category-column tables (5e.tools register, parchment voice kept), site-wide density pass, exact-name search boost (fireball/heal #1), j/k keyboard, nav carets; ⭐ the proxy-pin class struck AGAIN ×2 (hydrate-window 40 vs heal-ranks-43 → 60; gate-B "full set at 1600px" impossible under the 26rem list-track cap → 58/42 grid amendment) and the adversarial reviews caught the omnibar-8-stub no-op + the j/k history/fetch-spam class pre-build; plus the P6 proxy-population finds, the P5 bind-mount/fixture-fail-soft finds, the P4.5 loaderDeps finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H consolidated re-run (P2–P8) — screenshots delivered
 metadata:
   type: project
 ---
@@ -10,6 +10,41 @@ flat TS member `apps/codex` on the strider/site-kit SSR template, **port 10374**
 NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pending-review** →
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
+
+**P11 BUILT + DEPLOYED + LIVE 2026-07-19 — six serial slices S1 `0f2a452` (transform/search) ·
+S2 `0d015ac` (tables/facets/filter/rules) · S3 `a271419` (popovers/scrollbars) · S4 `52a046e`
+(nav/reveal/header) · S5 `6fc2a9e` (polish/search-meta) · S6 `13b99b6` (sweep+deploy record);
+spec `thoughts/astra/specs/0029-codex-p11-backlog-round-spec.md` D29-98..112 status
+BUILT+DEPLOYED w/ full §6 evidence; scope `…/research/2026-07-18-codex-0029-p11-backlog-round-
+thoughts.md`. Corpus 46,192 → 44,808 (activation drop 1,384 = paren 1,224 + digit 160; keep-9
+ID-keyed; 55 dangling edition pointers stripped); 12 ACTION.TYPES/TRAITS name-templates resolved
+(the pinned `{2:Single,3:Two,4:Three}` table — naive #N→N is off-by-one on all 9); adjacent-
+crossref dedupe whole-document 1,167/133 → 0. THE P11 finds:** (1) **the hard-pin-vs-mechanism
+rule cut BOTH ways** — dedupe's review-measured 1,147/123 UNDERCOUNTED (S1 ground-truthed the
+epicenter against raw AoN markdown: 38 real pairs vs the scanner's 37; shipped the mechanism,
+amended the pin, P6 precedent); digit-family ≈163 → exactly 160 twice-derived. (2) **drop
+predicates need `proseOnly===true` scoping** — Foundry adventure-specific actions also start
+with "(" and would be misclassified (entity set unchanged, accounting wrong). (3) **the
+padding-inline cascade trap recurred** — `.codex-listing-col-icon`'s `padding-inline` silently
+LOST to `.codex-listing-table th,td`'s higher-specificity `padding` shorthand (the same trap
+the file already documents for col-name); only the real-corpus drift-guard caught it (fixture
+too thin). Source col: `ch` is pinned to "0" glyph width — "COCA-ECPG" (uppercase+hyphens)
+clips at p99+1, needed 10ch. (4) **the P9 `pending` heuristic (`rows.length < totalCount`) is
+FALSE for small/all-superseded categories** — it silently skipped the post-hydration full-array
+fetch, so the D29-111 reveal showed ZERO rows on /doctrine; fix = an explicit `windowed` flag
+in the loader payload. (5) **the sr-only-h1 × popover interlock (B1)**: the popover clones the
+STANDALONE page's SSR HTML, so sr-only must ride a `-standalone` modifier with a
+`.popover-inner` re-show override — S3 landed its compact rule on the plain selector FIRST and
+S4 tightened it (cross-slice sequencing recorded in both §6 entries). (6) **classifier gate:
+delegating a deploy to a subagent is blocked** — the sweep ran as an agent, the deploy ran in
+the orchestrator's own loop under explicit user "deploy it" (the portal-0026 lesson holds for
+agents too). Deploy: D29-97 staged order reproduced — all 8 gate-A pins EXACT live, 82 s
+degraded window (P10 band 77–91 s), `/action/interact-142` shows NO banner (strip proof =
+absence, not fail-soft), traits=fire 686 == the S1 pin (S5's 539 was the pre-drop index).
+**Gate-H flags: 4 malformed-name actions escape both drop families (`1-minute`,
+`1-minute-manipulate-6`, `1-minute-command-interact` — truncated names missing ")" — plus
+`action/u` = "</u>"; P12 candidates); class/investigator pre-existing multi-h1 (AoN literal
+`level: 1` headings); 200 ms popover grace tunable; post-curation no live dropdown scrolls.**
 
 **P10 BUILT + DEPLOYED + LIVE 2026-07-18 — S1 `0b7b3f8` (ingest/schema) · S2 `cf254a4`
 (render/chip/regen/deploy); spec `thoughts/astra/specs/0029-codex-p10-statrow-size-spec.md`

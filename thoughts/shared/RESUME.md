@@ -36,7 +36,54 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-18 — codex (0029) P10 STATROW+SIZE ROUND BUILT + DEPLOYED + LIVE same day as its mid-gate-H provenance; a net-new UX/bug BACKLOG from a live-site sweep committed `8454534` = the P11 feedstock; ▶ NEXT = scope P11 from the backlog; gate H = the ONE consolidated P2–P10 review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `13b99b6`, 2026-07-19 — codex (0029) P11 BACKLOG ROUND BUILT + DEPLOYED + LIVE: all six slices in one autonomous orchestrated session (scope+spec were 2026-07-18); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P11 review; heartwood ON HOLD)
+
+> **✅ codex (0029) P11 — backlog round (tables, data quality, popovers, nav, density), all live:**
+> 1. **Spec** `…/specs/0029-codex-p11-backlog-round-spec.md` D29-98..112, status BUILT +
+>    DEPLOYED — six serial slices, one sonnet engineer + one orchestrator-reviewed commit
+>    each, §6 carries per-slice evidence: **S1 `0f2a452`** (widened activation drop 1,384 =
+>    paren 1,224 + digit 160, ID-keyed keep-9, 55 dangling edition pointers stripped; 12
+>    name-templates resolved via the pinned ACTION.TYPES table; whole-document adjacent-
+>    crossref dedupe **1,167/133 — AMENDED from the review pin 1,147/123** after independent
+>    raw-markdown verification at the epicenter, the P6 "ship the mechanism, amend the pins"
+>    precedent; build-search meta.class + leads-to pre-filter + the /search null-query fix;
+>    corpus 46,192 → **44,808**, categories stay 88, action 2,641) · **S2 `0d015ac`**
+>    (calc(Nch+1rem) column widths + scoped cell-fit drift-guard; `.wrap-browse` 96rem;
+>    SPILLOVER_KEYS + valued-when-true + action glyph; filter type-ahead + label-sorted
+>    sources + rarity rank-map SORT; rules zero-match + core-first book headers) ·
+>    **S3 `a271419`** (popover 200 ms grace + panel hover bridge + pointer-events:auto;
+>    compact popover CSS; gold-frame border; scrollbar theming ×6 regions) · **S4 `52a046e`**
+>    (curated 28-item nav; loader-side `hiddenCount` + reveal control w/ functional-merge
+>    navigate; title-into-header w/ the one-h1/sr-only policy + the B1 popover interlock) ·
+>    **S5 `6fc2a9e`** (omnibar rarity+class; pointer boxes Name (Book); heading ids + ToC
+>    box ≥8; trait cross-nav; displayCategoryName at all 8 sites; 404 search link) ·
+>    **S6 `13b99b6`** (sweep + staged deploy per D29-97: image-first → in-place transform →
+>    all 8 gate-A pins EXACT → 44,808-page reindex → `just up`; **82 s degraded window**;
+>    live gates C–G all PASS; SigNoz 0 ERROR).
+> 2. **Real bugs caught in-flight (all fixed + recorded):** S1's drop predicate needed
+>    `proseOnly===true` scoping (Foundry adventure actions start with "(" too); S2's icon
+>    column was losing `padding-inline` to a higher-specificity shorthand (the cascade trap
+>    the file itself documents) + Source 9ch clipped "COCA-ECPG" → 10ch; S4 found the P9
+>    `pending` heuristic (`rows.length < totalCount`) false for small/all-superseded
+>    categories — the reveal would have shown ZERO rows on /doctrine → explicit `windowed`
+>    flag.
+> 3. **Gate-H flags carried:** 4 pre-existing malformed-name action entities escape the
+>    drop families (`action/1-minute`, `…-manipulate-6`, `…-command-interact` — truncated
+>    names missing the closing paren — plus `action/u` = "</u>"; P12 candidates);
+>    class/investigator carries pre-existing extra h1s from AoN literal `level: 1` headings;
+>    the 200 ms popover grace + no-live-dropdown-scrolls-post-curation notes.
+> - **▶ NEXT: gate H — the ONE consolidated P2–P11 stakeholder review at
+>   `https://codex.iridi.cc`.** Sign-off → 0029 COMPLETE; backrefs ("granted by") still
+>   scoped-but-unstarted. Pre-existing residue rides (NOT P11's): 7 ssrSmoke fails on main;
+>   the virtualization-guard reload-scroll flake (did NOT reproduce in S6's ×2 runs).
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-18) — P10 round (superseded above)
+
+## (was) Current state (as of 2026-07-18 — codex (0029) P10 STATROW+SIZE ROUND BUILT + DEPLOYED + LIVE same day as its mid-gate-H provenance; a net-new UX/bug BACKLOG from a live-site sweep committed `8454534` = the P11 feedstock; ▶ NEXT = scope P11 from the backlog; gate H = the ONE consolidated P2–P10 review; heartwood ON HOLD)
 
 > **✅ codex (0029) P10 — statRow collapse + header size chip, 2026-07-18, all live:**
 > 1. **Provenance:** mid-gate-H "look at /creature/aso-berang" → 4 oddities triaged: 2 ours

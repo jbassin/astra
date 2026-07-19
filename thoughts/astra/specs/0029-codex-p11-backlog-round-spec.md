@@ -1,6 +1,9 @@
 # 0029 codex P11 — backlog round (tables, data quality, popovers, nav, density) — NLSpec
 
-**Status:** FINAL (2026-07-18) — adversarially reviewed ×2 (independent lenses: mechanism/
+**Status:** BUILT + DEPLOYED (2026-07-19) — all six slices S1–S6 landed (`0f2a452` /
+`0d015ac` / `a271419` / `52a046e` / `6fc2a9e` / `13b99b6`), gates A–G met with evidence in
+§6, live on codex.iridi.cc (82 s degraded window). Gate H = the consolidated P2–P11 review.
+Was: FINAL (2026-07-18) — adversarially reviewed ×2 (independent lenses: mechanism/
 transform; product/runtime). **11 blockers + ~20 minors ALL folded below.** The reviews'
 headline catches: the popover clones the STANDALONE page's SSR HTML, so suppressing the
 standalone h1 (draft D29-112) would have deleted the title from every popover site-wide;
