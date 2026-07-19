@@ -1,6 +1,9 @@
 # assay (0030) — quantitative spell power scoring for PF2e homebrew — scoping + round-1 design
 
-**Status:** SCOPED + round-1 design locked (2026-07-19). Stakeholder decisions R1–R4 resolved
+**Status:** ROUND 1 BUILT (2026-07-19, `e6df546` S1 extractor · `4285ce8` S2 fit/CLI/results) —
+gates V1–V3 FAILED as fitted, then the post-hoc pure-damage probe (§6) decomposed the failure
+into a VALIDATION of the method: the pure-damage core clusters and recovers the official
+curves; the residual spread is unpriced rider severity — exactly round 2's scope. Stakeholder decisions R1–R4 resolved
 2026-07-19 (batched): **R1** slot spells only (focus/rituals out of the calibration band) ·
 **R2** hybrid method — fit interpretable weights, then round into a human-usable point table ·
 **R3** durable standalone experiment dir in-repo (`apps/assay`, uv lane) · **R4** round 1
@@ -169,3 +172,53 @@ pathspec-scoped to `apps/assay`, `uv.lock`, and this doc — never bare `git add
 linguist-commit timer is already stopped (P14 session owns restarting it). Commit the
 CI-green slice; **do not push** (origin sits behind the other session's unpushed S1 —
 pushing would publish their in-progress round).
+
+## 6. Round-1 outcome (2026-07-19) — the honest fail, then the probe that explains it
+
+**Build:** `apps/assay` landed green both commits (`e6df546`, `4285ce8`); full py lane clean
+repo-wide; real fit executed (fit population 264 non-cantrip + 22 cantrip; skip ledger:
+812 no-damage-kind, 40 overlay-variant, 5 no-plain-damage, 1 long-cast). Committed results
+in `apps/assay/results/` (fitted-params.json, point-tables.md, power-ledger.md,
+validation.md). Engineer followed the no-silent-tuning rule: gates reported failing as-is.
+
+**As-fitted gate results:** V1 FAIL (20.5% within ±⅓ rank vs ≥80% target; raw within-rank
+log-EV sd ≈0.43 — real heterogeneity, not a metric artifact); V2 FAIL (heighten projections
+mean |resid| 2.35 ranks — the μ ladder undershoots mid-ranks); V3 MIXED (fireball/acid
+splash/admonishing ray/electric arc correct-side; force barrage/disintegrate/hydraulic push
+wrong-side); V4 informational (μ ladder hits GM Core near-exactly at r1/r3, drifts −13..−21%
+r4–r9, r10 cell n=3). Also: the full-model single-target coefficient came out ×0.50 vs AoE —
+inverting the known +25–35% premium — an identification artifact (targeting class entangled
+with area_type + log-area terms).
+
+**The probe (orchestrator, scratchpad `pure_probe.py` over `out/features.json`):** split the
+264 into **pure damage** (2-action, basic save, no condition refs, instant, non-sustained,
+no persistent/incap/passive) = **34 spells**, vs the **rider family** = 230. Findings:
+
+1. **Purity is rare** — only 13% of "damage spells" are damage-only. V1 was testing hybrids
+   with boolean rider proxies; the spread IS rider-severity variance.
+2. **The pure core clusters:** pooled within-rank log-sd 0.34 (×1.41) vs 0.58 (×1.78) for
+   the rider family; pure-AoE r1–r3 sd 0.07–0.33. Hot/cold names are sane: lightning bolt
+   ×1.45 / cone of cold ×1.44 / fireball ×1.17 hot (the community's efficient-damage picks);
+   Ibex's Harvest ×0.50 / Holy Cascade ×0.52 cold (both carry prose riders the pure filter
+   can't see — supporting, not refuting).
+3. **ST premium recovered on the pure subset:** ST/AoE geo-mean ratio 1.04–1.89 by rank
+   (mostly ~1.1–1.4) — the full-model inversion was collinearity, as suspected.
+4. **THE headline: the official rider price falls out of the data.** Rider-family spells
+   deal ×0.43–0.81 of same-rank pure budget (mid-ranks ~0.5–0.75) ≈ one rank of damage
+   budget down — empirically reproducing GM Core's "condition rider → −2 creature levels"
+   ≈ −1 spell rank exchange rate. The corpus obeys the rule; per-spell deviation from it is
+   precisely the rider-severity signal round 2 must price.
+5. **Extraction gap class 3 (new):** prose-only action-scaling — force barrage's "+1 shard
+   per action" lives nowhere structured; its base entry captures only the 1-shard cast.
+   Distinct from overlays and heightening; V3's wrong-signed outlier exposed it.
+
+**Round-2 design implications (locked by this evidence):**
+- **Anchor the budget ladder on the pure subset** (smoothed — pool thin top ranks), not on
+  the pooled fit; price everything else as deviation from it.
+- **Rider severity extraction** = the round-2 core: `conditionitems` @UUID refs + value
+  suffixes (`{Frightened 2}`), degree-of-success coverage (effect-on-success multiplier),
+  duration class, incapacitation — priced against the empirical −1-rank exchange rate.
+- **Fix identification:** collapse area_type/log-area/targeting into one effective-target
+  axis before refitting multipliers.
+- **Recover the prose action-scaling family** (force barrage class) + overlay variants
+  (heal/harm) via per-variant scoring.
