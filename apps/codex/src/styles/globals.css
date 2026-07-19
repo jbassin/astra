@@ -292,6 +292,16 @@ select:focus-visible,
   align-items: center;
   gap: 0.1rem;
   flex-wrap: wrap;
+  /* Post-P12 stakeholder fix: the nav (+ the Omnibar after it) sits at the
+     row's RIGHT edge on EVERY page. On title routes `.site-header-title`'s
+     `flex: 1` already ate the free space (so this margin resolves to 0);
+     on wordmark routes (`.site-brand`, no grow) nothing did — the nav sat
+     hugging the wordmark on the left while the Omnibar's own old
+     `margin-left: auto` floated it right alone. ONE auto margin lives here
+     now (two would split the free space and center the nav); the Omnibar
+     keeps its own only inside the <64rem block below, where the nav has
+     wrapped onto its own full-width row. */
+  margin-left: auto;
 }
 .codex-nav-item {
   position: relative;
@@ -373,6 +383,12 @@ select:focus-visible,
   .codex-header-nav {
     order: 3;
     flex-basis: 100%;
+    /* Its own full-width row — the desktop right-push margin is moot here,
+       and the Omnibar (back on row 1 with the title) reclaims it below. */
+    margin-left: 0;
+  }
+  .codex-omnibar {
+    margin-left: auto;
   }
 }
 
@@ -1538,7 +1554,11 @@ select:focus-visible,
 /* --- P3 S4 (D29-36): the header omnibar --- */
 .codex-omnibar {
   position: relative;
-  margin-left: auto;
+  /* No auto margin at desktop — `.codex-header-nav`'s `margin-left: auto`
+     pushes the nav+Omnibar pair right as a GROUP (see its comment); a second
+     auto margin here would split the free space and strand the nav mid-row.
+     The <64rem media block (up near the nav rules) restores this one, where
+     the nav has wrapped onto its own row. */
   width: clamp(12rem, 24vw, 20rem);
 }
 .codex-omnibar-input {

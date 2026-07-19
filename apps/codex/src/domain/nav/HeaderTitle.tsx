@@ -21,6 +21,13 @@ import { displayCategoryName } from "@/domain/render/displayCategoryName";
  *   `loaderData.entity.name`. Rules DOCS (an individual `/rules/{slug}`
  *   page) land on this exact same route (`category === "rules"`) and need
  *   no special-casing — same field, same posture.
+ * - the bespoke `/class/$slug` route (P12) — SAME field, same posture as
+ *   `/$category/$slug` (its `ClassPageData` extends `EntityPageData`, so
+ *   `loaderData.entity.name` is there identically). This case was MISSED at
+ *   P12: `ClassPage`/the fail-soft pane both render their h1 `standalone`
+ *   (sr-only, on the premise the header carries the visible title — the
+ *   D29-112 contract), so without it a class page had NO visible title at
+ *   all, just the wordmark.
  * - the `/rules` tree-browser route itself — title = `displayCategoryName
  *   ("rules")` ("Rules"), a fixed page name (no params/loaderData needed).
  * - everything else (landing `/`, `/search`, `/categories`, `/sources`, an
@@ -47,7 +54,8 @@ export function deriveHeaderTitle(matches: readonly MinimalRouteMatch[]): string
       const category = leaf.params?.category;
       return typeof category === "string" ? displayCategoryName(category) : null;
     }
-    case "/$category/$slug": {
+    case "/$category/$slug":
+    case "/class/$slug": {
       const loaderData = leaf.loaderData as { entity?: { name?: unknown } } | undefined;
       const name = loaderData?.entity?.name;
       return typeof name === "string" ? name : null;

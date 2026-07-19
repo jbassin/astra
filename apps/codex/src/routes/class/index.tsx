@@ -1,11 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 import { ClassBrowse } from "@/domain/browse/ClassBrowse";
 import { getClassRail } from "@/server/corpusFns";
 
 /**
- * P12 S2 (D29-118) — the bare `/class` index: rail + an intro/empty pane
- * (no bespoke class selected). A STATIC file route (`routes/class/index.tsx`,
+ * P12 S2 (D29-118), amended post-P12 (stakeholder): the bare `/class` index
+ * now REDIRECTS to the first visible rail class (alphabetical — Alchemist on
+ * the real corpus, Cleric on the fixture corpus) instead of rendering an
+ * empty "pick a class" pane — landing on nothing felt bad. The redirect is
+ * loader-thrown (works identically for SSR — a 3xx with Location — and an
+ * in-app navigation), `replace: true` so Back skips the bare `/class` hop,
+ * and carries `?superseded=` through. The intro render below survives ONLY
+ * as the fail-soft for a corpus with zero visible classes (never a real
+ * corpus; keeps the route from 500ing on a degenerate fixture).
+ *
+ * A STATIC file route (`routes/class/index.tsx`,
  * mirroring `routes/$category/index.tsx`'s own directory shape) — TanStack
  * Router ranks a literal path segment ("class") above the `$category`
  * parameter route for this exact path, the SAME static-over-dynamic
@@ -40,7 +49,20 @@ function validateClassIndexSearch(raw: Record<string, unknown>): ClassIndexSearc
 export const Route = createFileRoute("/class/")({
   validateSearch: validateClassIndexSearch,
   loaderDeps: ({ search }) => ({ superseded: search.superseded }),
-  loader: () => getClassRail(),
+  loader: async ({ deps }) => {
+    const rail = await getClassRail();
+    const first = rail.visible[0];
+    const slug = first?.id.split("/")[1];
+    if (slug !== undefined && slug.length > 0) {
+      throw redirect({
+        to: "/class/$slug",
+        params: { slug },
+        search: deps.superseded === true ? { superseded: true } : {},
+        replace: true,
+      });
+    }
+    return rail;
+  },
   head: () => ({
     meta: [{ title: "Classes · codex" }],
   }),

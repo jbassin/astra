@@ -3,8 +3,11 @@
 // `entity.stats?.kind === "class"`. This is a FULL composition root (mirrors
 // `EntityRenderPane.tsx`, not a component IT wraps) — item 6 of the spec's
 // own render order is "Attached sidebars as today", meaning ClassPage itself
-// owns that section, so it also owns the same `<Popover/>`/`<TableOfContents
-// />` mounts `EntityRenderPane` does for every other standalone entity page.
+// owns that section, so it also owns the same `<Popover/>` mount
+// `EntityRenderPane` does for every other standalone entity page. (No
+// `<TableOfContents/>` here — stakeholder-dropped post-P12: the class page's
+// own fixed section order + the progression table's per-level anchors already
+// cover in-page navigation, so the "On this page" box was redundant chrome.)
 // The `popover-hint` class on this component's own root article is NOT
 // optional polish: `Popover.tsx` fetches a hovered crossref's target page and
 // clones whatever carries that class — 1,066 `class-feature/*` docs crossref
@@ -30,7 +33,6 @@ import {
 import { EntityHeader } from "./EntityHeader";
 import { createHeadingIdAssigner } from "./headingIds";
 import { type RenderCtx, renderNodes, rootRenderCtx } from "./nodes";
-import { TableOfContents } from "./TableOfContents";
 import { humanizeSlug } from "./text";
 
 /** A codex id (`{category}/{slug}`) split client-side, WITHOUT importing
@@ -490,7 +492,6 @@ export function ClassPage({
       data-category={entity.category}
     >
       <Popover />
-      <TableOfContents />
       <EntityHeader entity={entity} ctx={ctx} standalone />
 
       <CoreTraitsBox stats={stats} headingId={coreTraitsId} />

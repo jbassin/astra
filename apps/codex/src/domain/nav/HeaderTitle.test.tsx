@@ -47,6 +47,20 @@ describe("deriveHeaderTitle (D29-112, pure — decoupled from useMatches' own bi
     expect(title).toBe("Heal");
   });
 
+  it("the bespoke /class/$slug route (P12) -> loaderData.entity.name, same as /$category/$slug", () => {
+    // The post-P12 fix: without this case a class page had NO visible title
+    // at all (its h1 renders standalone/sr-only on the premise the header
+    // carries the title) — just the wordmark.
+    const title = deriveHeaderTitle([
+      {
+        routeId: "/class/$slug",
+        params: { slug: "fighter" },
+        loaderData: { entity: { name: "Fighter" } },
+      },
+    ]);
+    expect(title).toBe("Fighter");
+  });
+
   it("a rules DOC (category === 'rules', same route) needs no special-casing — same field", () => {
     const title = deriveHeaderTitle([
       {

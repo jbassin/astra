@@ -419,12 +419,26 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
     expect(html).toContain("Fighter");
   });
 
-  it("bare /class out-ranks the $category/ route for the literal 'class' category too", async () => {
-    const { status, html } = await get("/class");
+  it("bare /class redirects to the first visible class, still out-ranking the $category/ route", async () => {
+    // Post-P12 stakeholder amendment (`routes/class/index.tsx`): the bare
+    // `/class` index no longer renders an empty "pick a class" pane — its
+    // loader redirects to the alphabetically-first VISIBLE rail class
+    // (Cleric on the fixture corpus, Alchemist on the real one — asserted
+    // shape-wise so this holds in both environments, this suite's own
+    // cross-environment discipline).
+    const res = await ssr.fetch(new Request("http://localhost/class"));
+    expect(res.status).toBeGreaterThanOrEqual(300);
+    expect(res.status).toBeLessThan(400);
+    expect(res.headers.get("location")).toMatch(/^\/class\/[a-z][a-z0-9-]*$/);
+    // `?superseded=` survives the hop.
+    const revealed = await ssr.fetch(new Request("http://localhost/class?superseded=1"));
+    expect(revealed.headers.get("location")).toContain("superseded=true");
+    // Followed, it lands on the bespoke class shell — never the generic
+    // $category browse listing (static-over-dynamic precedence still proven).
+    const { status, html } = await getFollow("/class");
     expect(status).toBe(200);
     expect(html).toContain("codex-class-rail");
-    expect(html).toContain("Classes");
-    // NOT the generic browse listing's own facet-panel chrome.
+    expect(html).toContain("codex-class-page");
     expect(html).not.toContain("codex-facet-panel");
   });
 
@@ -521,13 +535,13 @@ describe("/class + /class/{slug} route precedence + shell (D29-117/-118 tier 3)"
 
   it("zero hydration/render errors across the class route family", async () => {
     for (const routePath of [
-      "/class",
+      "/class", // follows its post-P12 first-class redirect (getFollow, not get)
       "/class/fighter",
       "/class/cleric",
       "/class/witch",
       "/class/investigator@legacy",
     ]) {
-      const { status, html } = await get(routePath);
+      const { status, html } = await getFollow(routePath);
       expect(status).toBe(200);
       expect(html).not.toContain("data-render-error");
     }
