@@ -1,6 +1,9 @@
 # 0029 codex P12 — bespoke class page (5e.tools model) — NLSpec
 
-**Status:** FINAL (2026-07-19) — adversarially reviewed ×2 (opus; independent lenses:
+**Status:** BUILT (2026-07-19) — S1–S3 landed, S4 sweep complete; deploy pending. All four
+slices (`21547da`/`ed40bab`/`93fa2e2` + this sweep) shipped serially same-session; gates A/B met
+with evidence in §6 (gates C–G ride the orchestrator's staged deploy). Was: FINAL (2026-07-19)
+— adversarially reviewed ×2 (opus; independent lenses:
 transform/mechanism, product/runtime). **4 blockers + 9 minors/nits ALL folded below.**
 The reviews' headline catches: the draft's "0 superseded subclass docs" pin was FALSE —
 the real count is **108**, because the REMASTERED subclass options were absorbed into
@@ -301,4 +304,147 @@ archetype/hellknight/deviant surfacing.
 
 ## 6. Build record
 
-(To be filled per slice.)
+**S1 (transform, D29-113..116, `21547da`) — scalar stats + the `augmentClassStats` post-drop
+pass + schema v5, real-corpus determinism proven at S1 build time.** New `class` branch beside
+`extractStats` (`src/ingest/foundryEntities.ts`) emits the scalar model (keyAbility incl.
+psychic's measured `[]`; attacks incl. gunslinger's one comma-joined `other` entry; the five
+`featLevels` cadence arrays verbatim, no assumed shape) on all 27 raw class packs, zero missing
+fields. New `src/ingest/augmentClassStats.ts` (312 lines) + `.test.ts` (396 lines): a post-drop
+pass over the FINAL kept entity set (the `drop.ts`/`sidebarAttach.ts` precedent) building
+`grantedFeatures` (uuid-resolve through the existing `uuidResolve` seam, null out any resolved id
+not in the kept set — **520 grants, 503 resolved / 17 null**, the exact 7-class stub list: cleric
+First…Final Doctrine ×6, kineticist Gate's Threshold ×3, oracle ×3, inventor ×2, psychic ×1,
+sorcerer Bloodline Spells, thaumaturge Exploit Vulnerability) and `subclassOptions` (the curated
+`SUBCLASS_CATEGORY_MAP` + the current-edition union — **279 options emitted**; per-class
+current/legacy counts recorded as report pins, re-derived every run: barbarian 9+6, sorcerer
+18+10, cleric current == its 2 remaster targets, matching the spec's spot-check pins exactly).
+`schemaVersion` 4→5 (both `transform.test.ts` pins + the `extract-fixture.ts` stamp updated).
+
+**S1 finds (both real, not spec-anticipated):** (1) the **fixture-pipeline-source** problem —
+`class/fighter`/`cleric`/`witch`'s `grantedFeatures`/`subclassOptions` can't be lifted from the
+real emitted corpus (a materially different corpus state than the fixture's trimmed raw-doc
+subset — e.g. the real corpus's 18-row sorcerer bloodline population vs. the fixture's tiny
+raw-only set) or hand-authored (must reproduce the exact `augmentClassStats` mechanism, incl.
+cleric's `targetId: null` stub case) — `extract-fixture.ts` gained a **virtual pipeline
+regen**: `buildFixturePipelineCorpus()` runs the fixture's own trimmed raw docs through a full
+`runTransform()` first, and the three class docs + their granted-feature/subclass docs are
+sourced from THAT run's output, never the real corpus. (2) The cleric fixture had to
+deliberately OMIT First Doctrine et al. from its raw doc set (not just from the corpus once
+built) so they stay Foundry-only-and-dropped, reproducing the null case end-to-end rather than
+faking it. Determinism: 2 scratch transform runs over the real snapshots, `diff -rq` empty;
+delta vs. the live corpus = exactly the 27 class docs + `manifest.json` + `report.{json,md}`
+(30 paths), proven at build time and RE-PROVEN independently at S4 below.
+
+**S2 (server + routes, D29-117/-118, `ed40bab`) — `resolveClassPageData` + `/class` routes +
+rail shell.** `src/server/classPageData.ts` (279 lines) projects granted-feature bodies SLIM
+(`{id, name, level, body}`, keeping the P9 dehydration discipline) and fetches only the
+URL-selected subclass docs server-side; embed targets are collected into ONE map across the
+class body + every granted-feature body + the SSR-selected subclass bodies, capped once at the
+existing `EMBED_INLINE_CAP=100` — **real-corpus worst case measured at 46/100, `commander`**,
+comfortably under. New static routes `routes/class/{index,$slug}.tsx` with `loaderDeps` on
+both (`superseded` / `subclass`+`superseded`) and `head`; `ClassBrowse.tsx` (101 lines) is the
+shared rail+pane shell — `ClassPage` when `stats.kind === "class"`, else the EXISTING generic
+`EntityRenderPane` (no dead ends for the 20 `@legacy` + 2 miscategorized docs). Rail computed
+from `class/_index.json`: **27 visible / 20 superseded (behind `?superseded=1`) / 2 unlisted**
+(reachable-but-not-on-the-rail, per spec scope). `routeTree.gen.ts` regenerated + committed
+this slice (the standing flap gotcha). 13 `ssrSmoke` additions (`/class`, `/class/fighter`
+generic-pending-S3, `/class/investigator@legacy` generic-in-shell) + a route-precedence test +
+a listing-pin grep (0 unrelated hits, confirming the "class" token collision the spec flagged
+was the unrelated feat itemCategory map, not a browse-route pin).
+
+**S3 (render, D29-119/-120, `93fa2e2`) — `EntityPage` header extraction + `ClassPage`
+composition.** `EntityHeader.tsx` (119 lines) extracted from `entityPage.tsx`'s inline header
+block (title row/meta row/edition banner, the `popover-hint` class 1,066 class-feature docs
+crossref into) and shared by both `EntityPage` and the new `ClassPage.tsx` (552 lines) —
+goldens regenerated and hand-reviewed **byte-identical** (all 7, confirming the extraction is a
+pure refactor, not the spec's merely-hoped-for outcome). `classProgression.ts` (136 lines) +
+`.test.ts` (173 lines) build the level-by-level table (features + `featLevels` cadence entries,
+"—" for empty levels) off one shared `createHeadingIdAssigner`, pre-assigned in render order
+(Core Traits, Progression, Subclasses, each `Level N: Name`, Description) so the progression
+table's anchor hrefs resolve to ids assigned later in the same pass. `ClassPage.test.tsx` (221
+lines) covers the composition order + suppression + subclass toggling.
+
+**S3 finds (both real-corpus, not spec-anticipated):** (1) a class's `loreBody` (a merged
+Foundry journal page, e.g. alchemist's "Roleplaying the Alchemist") independently restates the
+SAME progression table a second time when present — the identical redundancy D29-119's
+suppression predicate targets, just via a second source document; stripped the same way,
+additively (not every class carries a `loreBody`, so no exactly-one assertion here unlike
+`entity.body`'s pinned count). (2) A live-Chromium check (`HeadlessChrome/149`) caught a
+`<details>` without `[open]` rendering its non-summary content through an internal
+`::details-content` pseudo-element carrying `content-visibility: hidden` — no descendant
+`display` override can undo it (the whole subtree skips painting by spec regardless of
+descendant styles), so the class rail was present in the DOM (`getBoundingClientRect()`
+unaffected) but literally unpainted/un-hit-testable on desktop; forced visible unconditionally
+via `.codex-class-rail-disclosure::details-content { content-visibility: visible !important }`.
+`/rules`' own `.codex-rules-sidebar-disclosure` (P4) carries the IDENTICAL latent defect —
+flagged, out of this slice's scope. (3) `?subclass=` needed to accept BOTH shapes: a hand-typed/
+shared URL decodes as a CSV string (`splitCsv`), but a client-side pill toggle writing via
+`navigate({search})` round-trips as a genuine `string[]` (confirmed directly against the pinned
+`@tanstack/router-core@1.171.14` default search codec) — `decodeSubclassParam` branches on
+`Array.isArray` first, CSV-splits only the string case, same dedupe/trim pass either way.
+Verification: fixture + real scratch-corpus pass, live-Chromium desktop + 390px Playwright spot
+checks, zero hydration errors.
+
+**S4 (this sweep) — gates A/B re-proven fresh at HEAD, no deploy.**
+
+*Gate A (determinism + delta).* Two independent scratch transforms of the real snapshots
+(`data/snapshots/foundry/pf2e-8.3.0` + `aon/2026-07-13`, the committed `corpus-manifest.json`
+pins) into fresh scratch dirs, `data/corpus` never touched: **44,808 entity files / 88
+categories**, both runs byte-identical (`diff -rq` empty). Delta vs. the live corpus (`diff -rq
+data/corpus <scratch>`): exactly **30 paths** — the 27 `class/*.json` docs (alchemist, animist,
+barbarian, bard, champion, cleric, commander, druid, exemplar, fighter, guardian, gunslinger,
+inventor, investigator, kineticist, magus, monk, oracle, psychic, ranger, rogue, sorcerer,
+summoner, swashbuckler, thaumaturge, witch, wizard) + `manifest.json` + `report.json` +
+`report.md`, nothing wider. `manifest.json`: `schemaVersion 5`, `totalEntityCount 44808`,
+`categoryCounts` 88 keys. `report.json`'s `classStatsAugment`: **classStatsEmitted 27,
+grantedFeaturesResolved 503, grantedFeaturesUnresolved 17, subclassOptionsEmitted 279**; spot
+checks in `subclassOptionCounts` — barbarian `{category: instinct, current: 9, legacy: 6}`,
+sorcerer `{category: bloodline, current: 18, legacy: 10}`, cleric `{category: doctrine,
+current: 2, legacy: 2}` — all EXACT matches. `class/_index.json` sha256-identical live vs.
+scratch (the no-reindex proof, direct evidence not just a re-read of the gating comment); a
+`class/fighter.json` key-diff shows the ONLY new key added anywhere is `stats` — `body`/
+`loreBody`/`facets` are byte-identical, confirming the augment pass never touches prose. The
+exact Pagefind record payload (`content`/`meta`/`filters`, computed via the real
+`createCorpusReader`/`collectText`/`statsText` call path, `stats` excluded per its
+creature/hazard-only gate) recomputed off both corpora is IDENTICAL for `class/fighter`,
+`class/investigator` (dense skill cadence), `class/sorcerer` (heaviest subclass set), and
+`class/cleric` (the stub case) — the no-reindex claim holds for every spot-checked shape, not
+just the byte-count proxy. Scratch corpora: `/tmp/claude-1000/-ruby-data-experiments-astra/
+2c009b5c-2d40-4734-a759-ac03908eff07/scratchpad/p12-run1` (run 1, **left in place** for the
+orchestrator's deploy step to reuse or re-run) and `p12-run2` (run 2, determinism twin).
+
+*Gate B (hermetic).* Full codex suite (`pnpm --filter @astra/codex test`): **98/99 test files,
+2160/2167 tests** — the 7 failures are `src/ssrSmoke.test.ts`'s `$category/ browse route
+(D29-35 tier 3)` + `?entry= deep link (P4.5 S4, D29-49 tier 3)` blocks, same signature/count/
+location as the documented pre-existing residue on `main` across P9/P10/P11 (accepted, no new
+regression). Repo-wide TS lanes: `vp run -r typecheck` (32 tasks) clean; `oxlint
+--type-aware --deny-warnings --threads=4` (the documented OOM workaround) clean; `oxfmt --check`
+clean (871 files); `vp run -r test` (26 tasks) — only codex's own 7 residue tests fail anywhere
+in the repo, all 25 other members fully green; `vp run -r build` (26 tasks) clean. A `vp run`
+side effect regenerated `apps/heartwood-frontend/src/routeTree.gen.ts` (the documented flap,
+`git diff --stat`: 9 insertions) — reverted (`git checkout --`) before finishing, confirmed
+clean. Python lane, untouched this round but proven: `uv run ruff check` (all checks passed),
+`uv run ruff format --check` (163 files already formatted), `uv run ty check` (all checks
+passed), `uv run pytest` (**360 passed**). Goldens: all 7 regenerated via
+`scripts/regen-goldens.ts` into a scratch copy first, then for real — `git status --porcelain
+apps/codex/goldens/` empty both times, confirming byte-identity to HEAD (S3's own claim,
+re-verified independently). Tree left formatted/lint-clean, nothing uncommitted.
+
+**Deviations:** none beyond the two documented, real-corpus-only S3 finds above (both recorded
+in place at build time, not silently done).
+
+**Files (S4, docs only):** `apps/codex/README.md` (new "Bespoke class page (P12,
+D29-113..120)" section), this file (§6 + Status header). No source changes this slice — S4 is
+sweep + docs; two scratch driver scripts (`_p12s4-scratch-transform.ts`,
+`_p12s4-scratch-search-row.ts`) were created and deleted from `apps/codex/scripts/` in-place,
+never committed.
+
+**Deploy + live gate (TODO — orchestrator fills after the staged deploy, D29-116's build-image-
+first / one in-place transform / no-reindex / `just up` order):**
+- Deploy window: TODO
+- Gate C (structural truth, live vs. raw): TODO
+- Gate D (subclasses): TODO
+- Gate E (rail + fail-soft): TODO
+- Gate F (weights + mobile): TODO
+- Gate G (telemetry + deploy): TODO
+- Gate H: rides the consolidated stakeholder review (P2–P12) — TODO
