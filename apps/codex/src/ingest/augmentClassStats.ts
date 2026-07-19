@@ -1,25 +1,50 @@
 import type { CodexEntity, GrantedFeature, SubclassOption } from "../schema/entity";
+import type { InlineNode } from "../schema/nodes";
 import type { UuidResolution } from "./enrichers";
 import type { RawGrantedFeatureEntry } from "./foundryEntities";
 
 /**
- * D29-114/-115 (P12 S1): the post-drop `augmentClassStats` pass — a NEW
- * transform pass mirroring the `drop.ts`/`sidebarAttach.ts` precedent (runs
- * over the FINAL kept entity set, right before `emit.ts`). Two jobs, both
- * requiring the final kept-id set / final entity population — neither
- * knowable at extract time (D29-113's scalar-only `extractClassStats`):
+ * D29-114/-115 (P12 S1) + D29-132 (P14 S1): the post-drop `augmentClassStats`
+ * pass — a NEW transform pass mirroring the `drop.ts`/`sidebarAttach.ts`
+ * precedent (runs over the FINAL kept entity set, right before `emit.ts`).
+ * Two jobs, both requiring the final kept-id set / final entity population —
+ * neither knowable at extract time (D29-113's scalar-only
+ * `extractClassStats`):
  *
- *   - `grantedFeatures` (D29-114): each stats-bearing class's raw
- *     `system.items` manifest (`extractRawGrantedFeatures`,
+ *   - `grantedFeatures` (D29-114, corrected D29-132): each stats-bearing
+ *     class's raw `system.items` manifest (`extractRawGrantedFeatures`,
  *     `foundryEntities.ts`), uuid-resolved through the EXISTING
  *     `uuidResolve` seam (`resolveUuid`, the same `createResolveUuid(index)`
- *     `transform.ts` already builds) — `targetId` = the resolved id ONLY
- *     when it lands in the FINAL kept-id set, `null` otherwise (the D29-14
- *     unjoined-residue drops, e.g. cleric's "First Doctrine"). This nulling
- *     IS the referential validation (`emit.ts`'s own Zod pass is
- *     shape-only) — verified (both spec reviewers, independently): 0
- *     renamed/suffixed, so the raw-uuid-resolved id equals the final id in
- *     every resolved case.
+ *     `transform.ts` already builds) to a PRE-COLLISION `class-feature/<slug>`
+ *     id. **The P12 doc comment here previously claimed "0 renamed/suffixed,
+ *     so the raw-uuid-resolved id equals the final id in every resolved
+ *     case" — FALSE, corrected by P14's investigation.** `class-feature/`
+ *     carries real same-slug collision families (e.g. ~47 separate AoN
+ *     "Weapon Specialization" pages — one per class — all slugify to the
+ *     SAME base `class-feature/weapon-specialization`, resolved by
+ *     `join.ts`'s pass 3 residual-collision scheme into one unsuffixed
+ *     winner + `-2`.."-N" siblings; a raw grant uuid resolves to the shared
+ *     UNSUFFIXED preId regardless of which class is asking, so the old
+ *     "resolvedId in keptIds -> use it" logic silently linked every
+ *     non-winning class to the WRONG winner's doc — measured: 164 of 503
+ *     resolved grants, 26 of 27 classes affected pre-fix). D29-132 fixes
+ *     this with a same-base-slug collision-family index over the FINAL kept
+ *     `class-feature` entities (`buildClassFeatureFamilies` below, base slug
+ *     = strip a trailing `-\d+` / `@legacy` suffix — the `byCategory`
+ *     enumeration shape `buildCategoryOptions` already uses): a family of
+ *     size 1 resolves exactly as before (byte-identical, the 153
+ *     unambiguous grants); a family of size >1 disambiguates in priority
+ *     order — (1) a `mastheadExtra` "Class" label whose text contains the
+ *     granting class's name, (2) `legacyOf` naming `class/<grantingSlug
+ *     >@legacy`, (3) a unique `level` match among the family — ties within
+ *     rule (1)/(2) broken by (a) edition match with the granting class doc,
+ *     then (b) lowest collision suffix; no rule resolving a single
+ *     candidate -> `targetId: null` (R3 — never a wrong-class card; the
+ *     existing null fail-soft at `classPageData.ts:129-137` already renders
+ *     plain progression text for a null target). Verified on the real
+ *     corpus: rules (2)/(3) never fire today (rule (1) alone resolves all
+ *     344 disambiguated grants; 6 remain genuinely undeterminable -> null) —
+ *     the cascade is real future-proofing, not current-corpus-load-bearing.
  *   - `subclassOptions` (D29-115): the curated `classSlug -> subclassCategory[]`
  *     map (`SUBCLASS_CATEGORY_MAP` below) + the CURRENT-EDITION UNION —
  *     `currentOptions(category) = docs with remasteredAs == ∅ ∪
@@ -92,9 +117,10 @@ export interface AugmentClassStatsInput {
   classGrantedFeatures: ReadonlyMap<string, readonly RawGrantedFeatureEntry[]>;
   /** The existing `createResolveUuid(foundry.index)` instance — resolves a
    * `Compendium.pf2e.classfeatures.Item.<name>` uuid to its PRE-collision
-   * `class-feature/<slug>` id (verified: 0/520 real grants are
-   * renamed/suffixed by join-time collision resolution, so this id always
-   * equals the final id when it exists in the kept set). */
+   * `class-feature/<slug>` id (D29-132: this id is the SHARED, unsuffixed
+   * base of whatever same-slug collision family it belongs to — see the
+   * file header for why "resolvedId in keptIds" alone is not enough to
+   * disambiguate which family member a specific grant means). */
   resolveUuid: (uuid: string) => UuidResolution;
   report: ReportFn;
 }
@@ -135,17 +161,146 @@ function sortGrantedFeatures(features: readonly GrantedFeature[]): GrantedFeatur
   });
 }
 
+// ---------------------------------------------------------------------------
+// D29-132 (P14 S1): same-base-slug collision-family disambiguation for
+// grantedFeatures — see the file header for the WHY.
+// ---------------------------------------------------------------------------
+
+const TRAILING_SUFFIX_RE = /-(\d+)$/;
+const LEGACY_SUFFIX = "@legacy";
+
+/** The collision-family key for a `class-feature/<slug>[-N][@legacy]` id —
+ * strips a trailing `@legacy` marker THEN a trailing `-N` collision suffix,
+ * so a raw grant's unsuffixed resolved preId and every one of its
+ * post-join-suffixed/`@legacy` siblings land in the SAME family bucket. */
+function classFeatureBaseSlug(id: string): string {
+  const withoutLegacy = id.endsWith(LEGACY_SUFFIX) ? id.slice(0, -LEGACY_SUFFIX.length) : id;
+  return withoutLegacy.replace(TRAILING_SUFFIX_RE, "");
+}
+
+/** The numeric collision suffix `join.ts`'s pass 3 assigned (`preId-N`) — the
+ * unsuffixed collision WINNER (and any `@legacy` id, which never itself
+ * carries a `-N`) sorts as suffix 0, lower than every `-2`.."-N" sibling
+ * (tie-break (b), "lowest collision suffix"). */
+function collisionSuffixOf(id: string): number {
+  const withoutLegacy = id.endsWith(LEGACY_SUFFIX) ? id.slice(0, -LEGACY_SUFFIX.length) : id;
+  const match = TRAILING_SUFFIX_RE.exec(withoutLegacy);
+  return match?.[1] !== undefined ? Number(match[1]) : 0;
+}
+
+/** Builds the same-base-slug family index over every FINAL kept
+ * `class-feature` entity (D29-132) — the shape `buildCategoryOptions`'s own
+ * `byCategory` enumeration already uses, one level up. Built once per
+ * `augmentClassStats` call, shared across every class's grant resolution. */
+function buildClassFeatureFamilies(
+  classFeatureEntities: readonly CodexEntity[],
+): ReadonlyMap<string, readonly CodexEntity[]> {
+  const families = new Map<string, CodexEntity[]>();
+  for (const e of classFeatureEntities) {
+    const key = classFeatureBaseSlug(e.id);
+    const arr = families.get(key) ?? [];
+    arr.push(e);
+    families.set(key, arr);
+  }
+  return families;
+}
+
+/** Plain text of a masthead line's `InlineNode[]` value — a small
+ * self-contained duplicate rather than reaching into `domain/render`'s
+ * `collectText` (`drop.ts`'s own file header states the same "no new
+ * ingest -> domain coupling" posture for its crossref walker): masthead
+ * lines are, by construction, text runs with the occasional crossref
+ * (entity.ts's own `mastheadExtra` doc comment), so only those two kinds
+ * matter here. */
+function inlineText(value: readonly InlineNode[]): string {
+  return value
+    .map((n) => {
+      switch (n.kind) {
+        case "text":
+          return n.content;
+        case "crossref":
+        case "brokenRef":
+          return n.display;
+        default:
+          return "";
+      }
+    })
+    .join("");
+}
+
+/** Rule (1): does `candidate`'s masthead "Class" label mention
+ * `grantingClassName` (case-insensitive substring — review-verified moot on
+ * the real corpus, since no class name is a substring of another and 0
+ * class-feature docs masthead more than one class)? */
+function mastheadNamesClass(candidate: CodexEntity, grantingClassName: string): boolean {
+  const needle = grantingClassName.toLowerCase();
+  return (candidate.mastheadExtra ?? []).some(
+    (m) => m.label === "Class" && inlineText(m.value).toLowerCase().includes(needle),
+  );
+}
+
+/** Ties within rule (1)/(2) — (a) edition match with the granting class
+ * doc, then (b) lowest collision suffix (`collisionSuffixOf`). `candidates`
+ * is always non-empty at the call site. */
+function breakGrantTie(candidates: readonly CodexEntity[], grantingClass: CodexEntity): string {
+  const editionMatched = candidates.filter((c) => c.edition === grantingClass.edition);
+  const pool = editionMatched.length > 0 ? editionMatched : candidates;
+  const winner = [...pool].sort((a, b) => collisionSuffixOf(a.id) - collisionSuffixOf(b.id))[0];
+  // `pool` is derived from a non-empty `candidates`, so `[0]` always exists —
+  // `noUncheckedIndexedAccess` still requires the runtime guard.
+  if (winner === undefined) {
+    throw new Error("augmentClassStats: unreachable — breakGrantTie called with 0 candidates");
+  }
+  return winner.id;
+}
+
+/** The D29-132 disambiguation cascade for a family of size >1 — rule (1)
+ * masthead-Class-contains-name, else (2) `legacyOf` naming the granting
+ * class's own `@legacy` id, else (3) a UNIQUE `level` match; no rule
+ * resolving a single candidate (post tie-break) -> `null` (R3, never a
+ * wrong-class card). */
+function disambiguateGrantFamily(
+  family: readonly CodexEntity[],
+  grantLevel: number,
+  grantingClass: CodexEntity,
+): string | null {
+  const rule1 = family.filter((c) => mastheadNamesClass(c, grantingClass.name));
+  if (rule1.length > 0) return breakGrantTie(rule1, grantingClass);
+
+  const legacyTarget = `class/${grantingClass.slug}${LEGACY_SUFFIX}`;
+  const rule2 = family.filter((c) => c.legacyOf?.includes(legacyTarget) === true);
+  if (rule2.length > 0) return breakGrantTie(rule2, grantingClass);
+
+  const rule3 = family.filter((c) => c.level === grantLevel);
+  if (rule3.length === 1) return rule3[0]?.id ?? null;
+
+  return null;
+}
+
 function buildGrantedFeatures(
   raw: readonly RawGrantedFeatureEntry[] | undefined,
+  grantingClass: CodexEntity,
   keptIds: ReadonlySet<string>,
   resolveUuid: (uuid: string) => UuidResolution,
+  classFeatureFamilies: ReadonlyMap<string, readonly CodexEntity[]>,
 ): { grantedFeatures: GrantedFeature[]; resolved: number; unresolved: number } {
   let resolved = 0;
   let unresolved = 0;
   const features = (raw ?? []).map((g): GrantedFeature => {
     const resolution = resolveUuid(g.uuid);
-    const resolvedId = resolution.kind === "crossref" ? resolution.id : undefined;
-    const targetId = resolvedId !== undefined && keptIds.has(resolvedId) ? resolvedId : null;
+    const preId = resolution.kind === "crossref" ? resolution.id : undefined;
+    let targetId: string | null;
+    if (preId === undefined) {
+      targetId = null;
+    } else {
+      const family = classFeatureFamilies.get(classFeatureBaseSlug(preId)) ?? [];
+      targetId =
+        family.length <= 1
+          ? keptIds.has(preId)
+            ? preId
+            : null
+          : disambiguateGrantFamily(family, g.level, grantingClass);
+    }
     if (targetId === null) unresolved++;
     else resolved++;
     return { level: g.level, name: g.name, targetId };
@@ -232,6 +387,7 @@ export function augmentClassStats(input: AugmentClassStatsInput): AugmentClassSt
     arr.push(e);
     byCategory.set(e.category, arr);
   }
+  const classFeatureFamilies = buildClassFeatureFamilies(byCategory.get("class-feature") ?? []);
 
   let classStatsEmitted = 0;
   let grantedFeaturesResolved = 0;
@@ -255,8 +411,10 @@ export function augmentClassStats(input: AugmentClassStatsInput): AugmentClassSt
 
     const { grantedFeatures, resolved, unresolved } = buildGrantedFeatures(
       classGrantedFeatures.get(entity.id),
+      entity,
       keptIds,
       resolveUuid,
+      classFeatureFamilies,
     );
     grantedFeaturesResolved += resolved;
     grantedFeaturesUnresolved += unresolved;

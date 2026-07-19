@@ -1,5 +1,6 @@
 import type { CodexEntity, EmbeddedItem } from "../schema/entity";
 import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
+import { SUPPRESSED_EMBED_NODE, lookupEmbedOverride } from "./embedOverrides";
 
 /**
  * D29-14/-17: the AoN-primary drop pass — S5c, the final P1.5 slice. Runs
@@ -23,6 +24,10 @@ import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
  * Foundry-only buckets) AND every partially-joined category's unjoined
  * residue (e.g. the weapon/armor/shield/class-feature/action/creature-ability
  * entities that still don't join even after D29-15's equivalence widening).
+ * D29-98 (P11) widened this with the activation-debris families below;
+ * D29-133 (P14) adds two more (`journalSectionHeaderDropFamily`/
+ * `unknownBookHuskDropFamily`) — same "override the keep, checked first"
+ * shape.
  *
  * ## Why this needs its OWN crossref/embed re-validation pass
  *
@@ -42,6 +47,25 @@ import type { BlockNode, CodexNode, InlineNode } from "../schema/nodes";
  * Foundry-uuid resolution maps this pass doesn't have and doesn't need —
  * this pass only ever needs "does the target id still exist in the kept
  * set").
+ *
+ * ## D29-134 (P14 S1): the embed override table is ALSO applied here, not
+ * at `join.ts`'s `patchEmbed`
+ *
+ * The 20 repointable + 1 suppressed unresolved embeds this round fixes look,
+ * at `patchEmbed` time, like ordinary RESOLVED embeds — their raw targets
+ * are real Foundry drafts that `join.ts` successfully resolves
+ * (`resolved: true`); it's THIS pass's drop of those drafts (unjoined
+ * `class-feature`/`feat` residue, same policy as the paragraph above) that
+ * makes them unresolved (`reconcileInline`'s embed case flips `resolved`
+ * false when the target lands in `droppedIds` — the existing
+ * `postDropEmbedBroken` report class). Wiring the override table at
+ * `join.ts` instead would be a silent no-op: `patchEmbed` never sees these
+ * as unresolved to begin with (`report.json`'s `crossrefPatching.
+ * unresolvedEmbeds` is 0 at that point in the pipeline). `reconcileInline`'s
+ * embed case is therefore the ONLY point in the pipeline where "this embed
+ * is ABOUT to become unresolved because its target just got dropped" is
+ * knowable — see `lookupEmbedOverride`'s own module (`embedOverrides.ts`)
+ * for the table itself.
  */
 
 export type ReportFn = (cls: string, detail: string) => void;
@@ -77,6 +101,55 @@ const ACTIVATION_KEEP_LIST: ReadonlySet<string> = new Set([
   "action/concentration-4",
   "action/spellshape",
 ]);
+
+// ---------------------------------------------------------------------------
+// D29-133 (P14 S1): two debris drop-families — zero-body Foundry-journal
+// section dividers ("Common"/"Uncommon"/"Rare"/"Archetypes") and zero-stat
+// `book:"unknown"` creature husks. Both mirror `activationDropFamily`'s
+// shape (a clean structural predicate, no name regexes/ID keep-lists) and
+// are checked before the `isAonBacked` keep, same as the activation family.
+// ---------------------------------------------------------------------------
+
+const FOUNDRY_JOURNAL_BOOK_PREFIX = "Foundry Journal:";
+
+/** `journalSectionHeaderDropFamily` (D29-133): a `proseOnly` Foundry-journal
+ * page with an EMPTY body — a bare section-header divider
+ * (`journals.ts:decideJournalPages`'s "non-matching page becomes its own
+ * standalone entity with no content check" gap). Matches exactly 4 on the
+ * real corpus (`ancestry/{common,uncommon,rare}`, `archetype/archetypes`) —
+ * zero false positives against the other 20 real Foundry-journal docs (16
+ * archetype essays + 2 class lore pages, all non-empty-body) AND against
+ * `ancestry/index`/`archetype/index` (`emit.ts:19-24`'s deliberately
+ * preserved index pages — both carry a real, non-empty body). Bare
+ * empty-body alone is NOT a safe signal repo-wide (2,259 legitimately
+ * empty-body facet-driven docs, e.g. `action/*`) — this predicate is scoped
+ * to `proseOnly` Foundry-journal docs specifically. */
+export function journalSectionHeaderDropFamily(
+  entity: Pick<CodexEntity, "proseOnly" | "source" | "body">,
+): boolean {
+  return (
+    entity.proseOnly === true &&
+    entity.source.book.startsWith(FOUNDRY_JOURNAL_BOOK_PREFIX) &&
+    entity.body.length === 0
+  );
+}
+
+/** `unknownBookHuskDropFamily` (D29-133): an orphaned Foundry `creature`
+ * Actor with `book:"unknown"`, an empty body, zero facets, and zero traits —
+ * a zero-stat husk with no extractable content at all. Matches exactly 5 on
+ * the real corpus (`creature/{daji-level-1,daji-level-3,daji-level-5,flappy,
+ * twinsprout}`). */
+export function unknownBookHuskDropFamily(
+  entity: Pick<CodexEntity, "category" | "source" | "body" | "facets" | "traits">,
+): boolean {
+  return (
+    entity.category === "creature" &&
+    entity.source.book === "unknown" &&
+    entity.body.length === 0 &&
+    Object.keys(entity.facets).length === 0 &&
+    entity.traits.length === 0
+  );
+}
 
 /** Family (i): a name starting with `(` — the "(manipulate)"/"(concentrate,
  * manipulate)" nameless-activation shape. */
@@ -158,10 +231,24 @@ function reconcileInline(
       if (keptIds.has(node.targetId)) return node;
       report("postDropBrokenRef", `${node.targetId} -> dropped by the D29-14 AoN-primary pass`);
       return { kind: "brokenRef", target: node.targetId, display: node.display };
-    case "embed":
+    case "embed": {
+      // D29-134: the override lookup sits BEFORE the early-return below —
+      // see the file header's "D29-134" section for why this is the ONLY
+      // correct application point (patchEmbed never sees these as
+      // unresolved; this pass's drop is what makes them unresolved).
+      const override = lookupEmbedOverride(node.target);
+      if (override !== undefined) {
+        if (override.kind === "suppress") {
+          report("embedOverrideSuppressed", `${node.target}`);
+          return SUPPRESSED_EMBED_NODE;
+        }
+        report("embedOverrideRepointed", `${node.target} -> ${override.to}`);
+        return { ...node, target: override.to, resolved: keptIds.has(override.to) };
+      }
       if (!node.resolved || keptIds.has(node.target)) return node;
       report("postDropEmbedBroken", `${node.target} -> dropped by the D29-14 AoN-primary pass`);
       return { ...node, resolved: false };
+    }
     case "localizedBoilerplate":
       return {
         ...node,
@@ -268,6 +355,16 @@ export interface DropAccounting {
    * that pointed into the (activation ∪ AoN-primary) drop set — one count
    * per stripped pointer, derive-at-build against the final predicate. */
   editionPointersStripped: number;
+  /** D29-133 (P14 S1): the journal-section-header debris drop (kept SEPARATE
+   * from `totalDropped`/`byCategory`, same rationale as `activationDrop` —
+   * these docs ARE `proseOnly` and would otherwise survive unconditionally).
+   * Pins at exactly 4 on the real corpus. */
+  journalSectionHeaderDrop: number;
+  /** D29-133 (P14 S1): the unknown-book creature-husk debris drop (kept
+   * SEPARATE for the same reason — these docs would otherwise survive via
+   * the `creature`/`hazard` carve-out). Pins at exactly 5 on the real
+   * corpus. */
+  unknownBookHuskDrop: number;
 }
 
 export interface DropResult {
@@ -342,6 +439,8 @@ export function applyAonPrimaryDrop(
   let parenFamilyDropped = 0;
   let digitFamilyDropped = 0;
   const digitFamilyNames: string[] = [];
+  let journalSectionHeaderDropped = 0;
+  let unknownBookHuskDropped = 0;
 
   for (const e of entities) {
     const activationFamily = activationDropFamily(e);
@@ -354,6 +453,20 @@ export function applyAonPrimaryDrop(
         digitFamilyNames.push(`${e.id}: ${e.name}`);
       }
       report("activationDropped", `${e.id} (${activationFamily}): ${e.name}`);
+      continue;
+    }
+
+    if (journalSectionHeaderDropFamily(e)) {
+      droppedIds.add(e.id);
+      journalSectionHeaderDropped++;
+      report("journalSectionHeaderDropped", `${e.id}: ${e.name}`);
+      continue;
+    }
+
+    if (unknownBookHuskDropFamily(e)) {
+      droppedIds.add(e.id);
+      unknownBookHuskDropped++;
+      report("unknownBookHuskDropped", `${e.id}: ${e.name}`);
       continue;
     }
 
@@ -400,6 +513,8 @@ export function applyAonPrimaryDrop(
         digitFamilyNames: [...digitFamilyNames].sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)),
       },
       editionPointersStripped: editionPointersStripped.length,
+      journalSectionHeaderDrop: journalSectionHeaderDropped,
+      unknownBookHuskDrop: unknownBookHuskDropped,
     },
   };
 }

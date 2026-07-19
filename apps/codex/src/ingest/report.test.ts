@@ -188,6 +188,8 @@ const EMPTY_DROP_ACCOUNTING: DropAccounting = {
   carveOut: [],
   activationDrop: EMPTY_ACTIVATION_DROP,
   editionPointersStripped: 0,
+  journalSectionHeaderDrop: 0,
+  unknownBookHuskDrop: 0,
 };
 
 const EMPTY_ADJACENT_CROSSREF_DEDUPE = { totalOccurrences: 0, entitiesTouched: 0 };
@@ -354,6 +356,8 @@ describe("buildReportJson", () => {
       carveOut: [{ category: "creature", kept: 2242 }],
       activationDrop: EMPTY_ACTIVATION_DROP,
       editionPointersStripped: 0,
+      journalSectionHeaderDrop: 0,
+      unknownBookHuskDrop: 0,
     };
     const json = buildReportJson(baseInput({ dropAccounting }));
     expect(json.dropAccounting).toEqual(dropAccounting);
@@ -444,6 +448,8 @@ describe("buildReportMarkdown", () => {
       ],
       activationDrop: EMPTY_ACTIVATION_DROP,
       editionPointersStripped: 0,
+      journalSectionHeaderDrop: 0,
+      unknownBookHuskDrop: 0,
     };
     const json = buildReportJson(baseInput({ dropAccounting }));
     const md = buildReportMarkdown(json);
@@ -477,6 +483,8 @@ describe("buildReportMarkdown", () => {
         ],
       },
       editionPointersStripped: 55,
+      journalSectionHeaderDrop: 0,
+      unknownBookHuskDrop: 0,
     };
     const json = buildReportJson(baseInput({ dropAccounting }));
     const md = buildReportMarkdown(json);

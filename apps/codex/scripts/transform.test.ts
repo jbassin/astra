@@ -440,4 +440,66 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(next.children.some((c: { kind: string }) => c.kind === "crossref")).toBe(true);
     });
   });
+
+  describe("P14 S1 (D29-132) — grants same-slug collision-family disambiguation, end to end", () => {
+    // The fixture's fighter (real) + witch (real) class Items both grant the
+    // SHARED Foundry item `Compendium.pf2e.classfeatures.Item.Weapon
+    // Specialization` (verified against the real `pf2e-8.3.0` snapshot — witch
+    // genuinely grants Weapon Specialization at level 13, no fixture
+    // fabrication needed there). `fixtures/raw/aon/class-feature.json` adds ONE
+    // new AoN doc (`class-feature-9001`, "Weapon Specialization"/Witch) beside
+    // the pre-existing Fighter one (`class-feature-701`) — two AoN docs, same
+    // slug, exactly the real-corpus "~47 separate 'Weapon Specialization'
+    // pages" collision shape in miniature. The single shared Foundry item joins
+    // with Fighter's AoN doc (lower aonId wins `aonSlugIndex`'s first-in
+    // tie-break) as `class-feature/weapon-specialization`; Witch's AoN doc
+    // stays unjoined and gets the residual `-2` suffix. A raw grant uuid
+    // resolves to the UNSUFFIXED shared preId regardless of which class
+    // grants it — pre-D29-132, `keptIds.has(preId)` alone would resolve BOTH
+    // fighter's AND witch's grant to fighter's doc (the bug, provably
+    // reproduced below); post-D29-132, the masthead "Class" disambiguation
+    // (rule 1) resolves each to its OWN doc.
+    it("fighter's Weapon Specialization grant resolves to the Fighter-mastheaded doc (the collision winner)", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const fighter = JSON.parse(readFileSync(join(corpusRoot, "class", "fighter.json"), "utf8"));
+      const grant = fighter.stats.grantedFeatures.find(
+        (g: { name: string }) => g.name === "Weapon Specialization",
+      );
+      expect(grant?.targetId).toBe("class-feature/weapon-specialization");
+    });
+
+    it("witch's Weapon Specialization grant resolves to the Witch-mastheaded doc, NOT fighter's (the D29-132 fix — pre-fix this would wrongly resolve to fighter's)", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+
+      const witch = JSON.parse(readFileSync(join(corpusRoot, "class", "witch.json"), "utf8"));
+      const grant = witch.stats.grantedFeatures.find(
+        (g: { name: string }) => g.name === "Weapon Specialization",
+      );
+      // The pre-D29-132 bug: `keptIds.has("class-feature/weapon-specialization")`
+      // is true (it's fighter's doc) regardless of which class is asking, so
+      // this would have wrongly been "class-feature/weapon-specialization" too.
+      expect(grant?.targetId).toBe("class-feature/weapon-specialization-2");
+      expect(grant?.targetId).not.toBe("class-feature/weapon-specialization");
+
+      const witchDoc = JSON.parse(
+        readFileSync(join(corpusRoot, "class-feature", "weapon-specialization-2.json"), "utf8"),
+      );
+      const classLabel = witchDoc.mastheadExtra?.find(
+        (m: { label: string }) => m.label === "Class",
+      );
+      expect(classLabel?.value?.[0]?.content?.trim()).toBe("Witch");
+
+      const fighterDoc = JSON.parse(
+        readFileSync(join(corpusRoot, "class-feature", "weapon-specialization.json"), "utf8"),
+      );
+      const fighterLabel = fighterDoc.mastheadExtra?.find(
+        (m: { label: string }) => m.label === "Class",
+      );
+      expect(fighterLabel?.value?.[0]?.content?.trim()).toBe("Fighter");
+    });
+  });
 });

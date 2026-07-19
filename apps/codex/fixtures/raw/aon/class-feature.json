@@ -22,7 +22,7 @@
           "class-38"
         ],
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Advanced Player's Guide](/Sources.aspx?ID=39) pg. 94\r\n\r\n**Class** Witch\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nAt 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Advanced Player's Guide](/Sources.aspx?ID=39) pg. 94\r\n\r\n**Class** Witch\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nAt 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Advanced Player's Guide"
@@ -35,8 +35,8 @@
           "Advanced Player's Guide pg. 94"
         ],
         "speed": {},
-        "summary": "At 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores …",
-        "summary_markdown": "At 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores …",
+        "summary": "At 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores \u2026",
+        "summary_markdown": "At 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores \u2026",
         "text": " Ability Boosts Source Advanced Player's Guide pg. 94 Class Witch --- At 5th level and every 5 levels thereafter, you boost four different ability scores. You can use these ability boosts to increase your ability scores above 18. Boosting an ability score increases it by 1 if it's already 18 or above, or by 2 if it starts out below 18.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=16",
@@ -160,7 +160,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nHaving faced countless foes and the chaos of battle, you have learned how to stand strong in the face of fear. Your proficiency rank for Will saves …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nHaving faced countless foes and the chaos of battle, you have learned how to stand strong in the face of fear. Your proficiency rank for Will saves \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -173,8 +173,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Having faced countless foes and the chaos of battle, you have learned how to stand strong in the face of fear. Your proficiency rank for Will saves …",
-        "summary_markdown": "Having faced countless foes and the chaos of battle, you have learned how to stand strong in the face of fear. Your proficiency rank for Will saves …",
+        "summary": "Having faced countless foes and the chaos of battle, you have learned how to stand strong in the face of fear. Your proficiency rank for Will saves \u2026",
+        "summary_markdown": "Having faced countless foes and the chaos of battle, you have learned how to stand strong in the face of fear. Your proficiency rank for Will saves \u2026",
         "text": " Bravery Source Player Core pg. 136 Class Fighter --- Having faced countless foes and the chaos of battle, you have learned how to stand strong in the face of fear. Your proficiency rank for Will saves increases to expert. When you roll a success at a Will save against a fear effect, you get a critical success instead. In addition, anytime you gain the frightened condition, reduce its value by 1.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -206,7 +206,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nHours spent training with your preferred weapons, learning and developing new combat techniques, have made you particularly effective with your …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nHours spent training with your preferred weapons, learning and developing new combat techniques, have made you particularly effective with your \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -219,8 +219,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Hours spent training with your preferred weapons, learning and developing new combat techniques, have made you particularly effective with your …",
-        "summary_markdown": "Hours spent training with your preferred weapons, learning and developing new combat techniques, have made you particularly effective with your …",
+        "summary": "Hours spent training with your preferred weapons, learning and developing new combat techniques, have made you particularly effective with your \u2026",
+        "summary_markdown": "Hours spent training with your preferred weapons, learning and developing new combat techniques, have made you particularly effective with your \u2026",
         "text": " Fighter Weapon Mastery Source Player Core pg. 136 Class Fighter --- Hours spent training with your preferred weapons, learning and developing new combat techniques, have made you particularly effective with your weapons of choice. Choose one weapon group. Your proficiency rank increases to master with the simple weapons, martial weapons, and unarmed attacks in that group, and to expert with the advanced weapons in that group. You gain access to the critical specialization effects of all weapons and unarmed attacks for which you have master proficiency.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -252,7 +252,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nWhether taking stock of an enemy army or simply standing guard, you excel at observing your foes. Your proficiency rank for Perception increases to …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nWhether taking stock of an enemy army or simply standing guard, you excel at observing your foes. Your proficiency rank for Perception increases to \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -265,8 +265,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Whether taking stock of an enemy army or simply standing guard, you excel at observing your foes. Your proficiency rank for Perception increases to …",
-        "summary_markdown": "Whether taking stock of an enemy army or simply standing guard, you excel at observing your foes. Your proficiency rank for Perception increases to …",
+        "summary": "Whether taking stock of an enemy army or simply standing guard, you excel at observing your foes. Your proficiency rank for Perception increases to \u2026",
+        "summary_markdown": "Whether taking stock of an enemy army or simply standing guard, you excel at observing your foes. Your proficiency rank for Perception increases to \u2026",
         "text": " Battlefield Surveyor Source Player Core pg. 136 Class Fighter --- Whether taking stock of an enemy army or simply standing guard, you excel at observing your foes. Your proficiency rank for Perception increases to master. In addition, you gain a +2 circumstance bonus to Perception checks for initiative, making you faster to react during combat.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -298,7 +298,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou've learned how to inflict greater injuries with the weapons you know best. You deal 2 additional damage with weapons and unarmed attacks in which …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou've learned how to inflict greater injuries with the weapons you know best. You deal 2 additional damage with weapons and unarmed attacks in which \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -311,8 +311,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "You've learned how to inflict greater injuries with the weapons you know best. You deal 2 additional damage with weapons and unarmed attacks in which …",
-        "summary_markdown": "You've learned how to inflict greater injuries with the weapons you know best. You deal 2 additional damage with weapons and unarmed attacks in which …",
+        "summary": "You've learned how to inflict greater injuries with the weapons you know best. You deal 2 additional damage with weapons and unarmed attacks in which \u2026",
+        "summary_markdown": "You've learned how to inflict greater injuries with the weapons you know best. You deal 2 additional damage with weapons and unarmed attacks in which \u2026",
         "text": " Weapon Specialization Source Player Core pg. 136 Class Fighter --- You've learned how to inflict greater injuries with the weapons you know best. You deal 2 additional damage with weapons and unarmed attacks in which you're an expert. This damage increases to 3 if you're a master, and 4 if you're legendary.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -344,7 +344,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour experience in battle helps protect you against magic and toxins alike. Your proficiency rank for Fortitude saves increases to master. When you …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour experience in battle helps protect you against magic and toxins alike. Your proficiency rank for Fortitude saves increases to master. When you \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -357,8 +357,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Your experience in battle helps protect you against magic and toxins alike. Your proficiency rank for Fortitude saves increases to master. When you …",
-        "summary_markdown": "Your experience in battle helps protect you against magic and toxins alike. Your proficiency rank for Fortitude saves increases to master. When you …",
+        "summary": "Your experience in battle helps protect you against magic and toxins alike. Your proficiency rank for Fortitude saves increases to master. When you \u2026",
+        "summary_markdown": "Your experience in battle helps protect you against magic and toxins alike. Your proficiency rank for Fortitude saves increases to master. When you \u2026",
         "text": " Battle Hardened Source Player Core pg. 136 Class Fighter --- Your experience in battle helps protect you against magic and toxins alike. Your proficiency rank for Fortitude saves increases to master. When you roll a success on a Fortitude save, you get a critical success instead.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -390,7 +390,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou can prepare your tactics to suit different situations. When you make your daily preparations, you gain one fighter feat of 8th level or lower …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou can prepare your tactics to suit different situations. When you make your daily preparations, you gain one fighter feat of 8th level or lower \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -403,8 +403,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "You can prepare your tactics to suit different situations. When you make your daily preparations, you gain one fighter feat of 8th level or lower …",
-        "summary_markdown": "You can prepare your tactics to suit different situations. When you make your daily preparations, you gain one fighter feat of 8th level or lower …",
+        "summary": "You can prepare your tactics to suit different situations. When you make your daily preparations, you gain one fighter feat of 8th level or lower \u2026",
+        "summary_markdown": "You can prepare your tactics to suit different situations. When you make your daily preparations, you gain one fighter feat of 8th level or lower \u2026",
         "text": " Combat Flexibility Source Player Core pg. 136 Class Fighter --- You can prepare your tactics to suit different situations. When you make your daily preparations, you gain one fighter feat of 8th level or lower that you meet the prerequisites for and don't already have. You can use that feat until your next daily preparations.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -436,7 +436,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou have spent so much time in armor that you know how to make the most of its protection. Your proficiency ranks for light, medium, and heavy armor, …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou have spent so much time in armor that you know how to make the most of its protection. Your proficiency ranks for light, medium, and heavy armor, \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -449,8 +449,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "You have spent so much time in armor that you know how to make the most of its protection. Your proficiency ranks for light, medium, and heavy armor, …",
-        "summary_markdown": "You have spent so much time in armor that you know how to make the most of its protection. Your proficiency ranks for light, medium, and heavy armor, …",
+        "summary": "You have spent so much time in armor that you know how to make the most of its protection. Your proficiency ranks for light, medium, and heavy armor, \u2026",
+        "summary_markdown": "You have spent so much time in armor that you know how to make the most of its protection. Your proficiency ranks for light, medium, and heavy armor, \u2026",
         "text": " Armor Expertise Source Player Core pg. 136 Class Fighter --- You have spent so much time in armor that you know how to make the most of its protection. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to expert. You gain the armor specialization effects of medium and heavy armor.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -528,7 +528,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou've learned fighting techniques that apply to all armaments, and you've developed unparalleled skill with your favorite weapons. Your proficiency …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou've learned fighting techniques that apply to all armaments, and you've developed unparalleled skill with your favorite weapons. Your proficiency \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -541,8 +541,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "You've learned fighting techniques that apply to all armaments, and you've developed unparalleled skill with your favorite weapons. Your proficiency …",
-        "summary_markdown": "You've learned fighting techniques that apply to all armaments, and you've developed unparalleled skill with your favorite weapons. Your proficiency …",
+        "summary": "You've learned fighting techniques that apply to all armaments, and you've developed unparalleled skill with your favorite weapons. Your proficiency \u2026",
+        "summary_markdown": "You've learned fighting techniques that apply to all armaments, and you've developed unparalleled skill with your favorite weapons. Your proficiency \u2026",
         "text": " Weapon Legend Source Player Core pg. 136 Class Fighter --- You've learned fighting techniques that apply to all armaments, and you've developed unparalleled skill with your favorite weapons. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to master. Your proficiency rank for advanced weapons increases to expert. You can select one weapon group and increase your proficiency ranks to legendary for all simple weapons, martial weapons, and unarmed attacks in that weapon group, and to master for all advanced weapons in that weapon group.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -574,7 +574,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour damage from weapon specialization increases to 4 with weapons and unarmed attacks in which you're an expert, 6 if you're a master, and 8 if …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour damage from weapon specialization increases to 4 with weapons and unarmed attacks in which you're an expert, 6 if you're a master, and 8 if \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -587,8 +587,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Your damage from weapon specialization increases to 4 with weapons and unarmed attacks in which you're an expert, 6 if you're a master, and 8 if …",
-        "summary_markdown": "Your damage from weapon specialization increases to 4 with weapons and unarmed attacks in which you're an expert, 6 if you're a master, and 8 if …",
+        "summary": "Your damage from weapon specialization increases to 4 with weapons and unarmed attacks in which you're an expert, 6 if you're a master, and 8 if \u2026",
+        "summary_markdown": "Your damage from weapon specialization increases to 4 with weapons and unarmed attacks in which you're an expert, 6 if you're a master, and 8 if \u2026",
         "text": " Greater Weapon Specialization Source Player Core pg. 136 Class Fighter --- Your damage from weapon specialization increases to 4 with weapons and unarmed attacks in which you're an expert, 6 if you're a master, and 8 if you're legendary.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -620,7 +620,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour extensive experience gives you even greater ability to adapt to each day's challenges. When you use combat flexibility, you can gain two fighter …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour extensive experience gives you even greater ability to adapt to each day's challenges. When you use combat flexibility, you can gain two fighter \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -633,8 +633,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Your extensive experience gives you even greater ability to adapt to each day's challenges. When you use combat flexibility, you can gain two fighter …",
-        "summary_markdown": "Your extensive experience gives you even greater ability to adapt to each day's challenges. When you use combat flexibility, you can gain two fighter …",
+        "summary": "Your extensive experience gives you even greater ability to adapt to each day's challenges. When you use combat flexibility, you can gain two fighter \u2026",
+        "summary_markdown": "Your extensive experience gives you even greater ability to adapt to each day's challenges. When you use combat flexibility, you can gain two fighter \u2026",
         "text": " Improved Flexibility Source Player Core pg. 136 Class Fighter --- Your extensive experience gives you even greater ability to adapt to each day's challenges. When you use combat flexibility, you can gain two fighter feats instead of one. While the first feat must still be 8th level or lower, the second feat can be up to 14th level, and you can use the first feat to meet the prerequisites of the second feat. You must meet all of the feats' prerequisites.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -666,7 +666,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nPracticed reflexes let you find safety even in the face of cataclysmic explosions. Your proficiency rank for Reflex saves increases to master. When …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nPracticed reflexes let you find safety even in the face of cataclysmic explosions. Your proficiency rank for Reflex saves increases to master. When \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -679,8 +679,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Practiced reflexes let you find safety even in the face of cataclysmic explosions. Your proficiency rank for Reflex saves increases to master. When …",
-        "summary_markdown": "Practiced reflexes let you find safety even in the face of cataclysmic explosions. Your proficiency rank for Reflex saves increases to master. When …",
+        "summary": "Practiced reflexes let you find safety even in the face of cataclysmic explosions. Your proficiency rank for Reflex saves increases to master. When \u2026",
+        "summary_markdown": "Practiced reflexes let you find safety even in the face of cataclysmic explosions. Your proficiency rank for Reflex saves increases to master. When \u2026",
         "text": " Tempered Reflexes Source Player Core pg. 136 Class Fighter --- Practiced reflexes let you find safety even in the face of cataclysmic explosions. Your proficiency rank for Reflex saves increases to master. When you roll a success on a Reflex save, you get a critical success instead.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -712,7 +712,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour skill with armor improves further. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYour skill with armor improves further. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -725,8 +725,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "Your skill with armor improves further. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to …",
-        "summary_markdown": "Your skill with armor improves further. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to …",
+        "summary": "Your skill with armor improves further. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to \u2026",
+        "summary_markdown": "Your skill with armor improves further. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to \u2026",
         "text": " Armor Mastery Source Player Core pg. 136 Class Fighter --- Your skill with armor improves further. Your proficiency ranks for light, medium, and heavy armor, as well as for unarmored defense, increase to master.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -758,7 +758,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou are nigh-unmatched with any weapon. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to legendary, and …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 136\r\n\r\n**Class** Fighter\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou are nigh-unmatched with any weapon. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to legendary, and \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -771,8 +771,8 @@
           "Player Core pg. 136"
         ],
         "speed": {},
-        "summary": "You are nigh-unmatched with any weapon. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to legendary, and …",
-        "summary_markdown": "You are nigh-unmatched with any weapon. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to legendary, and …",
+        "summary": "You are nigh-unmatched with any weapon. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to legendary, and \u2026",
+        "summary_markdown": "You are nigh-unmatched with any weapon. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to legendary, and \u2026",
         "text": " Versatile Legend Source Player Core pg. 136 Class Fighter --- You are nigh-unmatched with any weapon. Your proficiency ranks for simple weapons, martial weapons, and unarmed attacks increase to legendary, and your proficiency rank for advanced weapons increases to master. Your proficiency rank for your fighter class DC increases to master.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=35",
@@ -804,7 +804,7 @@
         "rarity_id": 1,
         "release_date": "2023-11-15",
         "resistance": {},
-        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 108\r\n\r\n**Class** Cleric\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nEven among followers of the same deity, approaches vary. At 1st level, you select cloistered cleric or warpriest and gain the benefits of its first …\r\n</summary>",
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 108\r\n\r\n**Class** Cleric\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nEven among followers of the same deity, approaches vary. At 1st level, you select cloistered cleric or warpriest and gain the benefits of its first \u2026\r\n</summary>",
         "skill_mod": {},
         "source": [
           "Player Core"
@@ -817,8 +817,8 @@
           "Player Core pg. 108"
         ],
         "speed": {},
-        "summary": "Even among followers of the same deity, approaches vary. At 1st level, you select cloistered cleric or warpriest and gain the benefits of its first …",
-        "summary_markdown": "Even among followers of the same deity, approaches vary. At 1st level, you select cloistered cleric or warpriest and gain the benefits of its first …",
+        "summary": "Even among followers of the same deity, approaches vary. At 1st level, you select cloistered cleric or warpriest and gain the benefits of its first \u2026",
+        "summary_markdown": "Even among followers of the same deity, approaches vary. At 1st level, you select cloistered cleric or warpriest and gain the benefits of its first \u2026",
         "text": " Doctrine Source Player Core pg. 108 Class Cleric --- Even among followers of the same deity, approaches vary. At 1st level, you select cloistered cleric or warpriest and gain the benefits of its first doctrine. At 3rd level and every four levels thereafter, you gain another benefit from your doctrine. Doctrines can be found here.",
         "type": "Class Feature",
         "url": "/Classes.aspx?ID=33",
@@ -827,6 +827,48 @@
       "sort": [
         "doctrine",
         "/classes.aspx?id=33"
+      ]
+    },
+    {
+      "_id": "class-feature-9001",
+      "_source": {
+        "category": "class-feature",
+        "class": "Witch",
+        "exclude_from_search": false,
+        "id": "class-feature-9001",
+        "is_standard_ancestry_feat": false,
+        "level": 13,
+        "markdown": "<title level=\"1\" right=\"Class Feature 13\">[Weapon Specialization](/Classes.aspx?ID=9001)</title>\r\n\r\n<column gap=\"tiny\">\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 60\r\n\r\n**Class** Witch\r\n</column>\r\n\r\n---\r\n\r\nYou've learned how to inflict greater injuries with your hex-bound blade. You deal 1 additional damage with weapons and unarmed attacks in which you're an expert. This damage increases to 2 if you're a master, and 3 if you're legendary.",
+        "name": "Weapon Specialization",
+        "primary_source": "Player Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Player Core pg. 60",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2023-11-15",
+        "resistance": {},
+        "skill_mod": {},
+        "source": [
+          "Player Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Player Core](/Sources.aspx?ID=216) pg. 60",
+        "source_raw": [
+          "Player Core pg. 60"
+        ],
+        "speed": {},
+        "summary": "You've learned how to inflict greater injuries with your hex-bound blade.",
+        "summary_markdown": "You've learned how to inflict greater injuries with your hex-bound blade.",
+        "text": " Weapon Specialization Source Player Core pg. 60 Class Witch --- You've learned how to inflict greater injuries with your hex-bound blade. You deal 1 additional damage with weapons and unarmed attacks in which you're an expert. This damage increases to 2 if you're a master, and 3 if you're legendary.",
+        "type": "Class Feature",
+        "url": "/Classes.aspx?ID=9001",
+        "weakness": {}
+      },
+      "sort": [
+        "weapon specialization",
+        "/classes.aspx?id=9001"
       ]
     }
   ]

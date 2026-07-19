@@ -186,6 +186,250 @@ describe("augmentClassStats: grantedFeatures (D29-114)", () => {
   });
 });
 
+/** A `class-feature` masthead "Class" entry naming `className` (real-corpus
+ * shape — the value carries a measured leading space, `build-search.ts`'s
+ * own D29-101a note). */
+function mastheadClass(className: string): CodexEntity["mastheadExtra"] {
+  return [
+    {
+      label: "Class",
+      value: [
+        {
+          kind: "text",
+          content: ` ${className}`,
+          marks: { bold: false, italic: false, superscript: false },
+        },
+      ],
+    },
+  ];
+}
+
+function classFeature(
+  overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "name">,
+): CodexEntity {
+  return entity({ category: "class-feature", slug: "weapon-specialization", ...overrides });
+}
+
+describe("augmentClassStats: grantedFeatures same-slug collision-family disambiguation (D29-132)", () => {
+  const SHARED_UUID = "Compendium.pf2e.classfeatures.Item.Weapon Specialization";
+  const SHARED_RESOLUTION: UuidResolution = {
+    kind: "crossref",
+    id: "class-feature/weapon-specialization",
+    display: "Weapon Specialization",
+  };
+  const sharedGrant: RawGrantedFeatureEntry[] = [
+    { level: 7, name: "Weapon Specialization", uuid: SHARED_UUID },
+  ];
+
+  it("family size 1 (no collision): resolves exactly as the pre-D29-132 naive check would — byte-identical", () => {
+    const fighter = classEntity({ id: "class/fighter", slug: "fighter", name: "Fighter" });
+    const soleDoc = classFeature({
+      id: "class-feature/weapon-specialization",
+      name: "Weapon Specialization",
+      // No mastheadExtra/legacyOf at all — proves family-size-1 doesn't need
+      // ANY of the new disambiguation machinery to resolve correctly.
+    });
+    const { result } = run({
+      entities: [fighter, soleDoc],
+      classGrantedFeatures: new Map([["class/fighter", sharedGrant]]),
+      resolveUuid: resolverFrom({ [SHARED_UUID]: SHARED_RESOLUTION }),
+    });
+    const out = result.entities.find((e) => e.id === "class/fighter");
+    expect(out?.stats?.kind === "class" ? out.stats.grantedFeatures : undefined).toEqual([
+      { level: 7, name: "Weapon Specialization", targetId: "class-feature/weapon-specialization" },
+    ]);
+  });
+
+  it("rule (1) masthead match: two classes sharing the identical Foundry grant uuid each resolve to THEIR OWN masthead-matched doc — pre-D29-132 both would wrongly resolve to the collision WINNER (fighter's)", () => {
+    const fighter = classEntity({ id: "class/fighter", slug: "fighter", name: "Fighter" });
+    const swashbuckler = classEntity({
+      id: "class/swashbuckler",
+      slug: "swashbuckler",
+      name: "Swashbuckler",
+    });
+    // The collision winner (unsuffixed id) — mastheads Fighter.
+    const fighterDoc = classFeature({
+      id: "class-feature/weapon-specialization",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Fighter"),
+    });
+    // The residual loser (suffixed id) — mastheads Swashbuckler.
+    const swashbucklerDoc = classFeature({
+      id: "class-feature/weapon-specialization-2",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Swashbuckler"),
+    });
+    const { result } = run({
+      entities: [fighter, swashbuckler, fighterDoc, swashbucklerDoc],
+      classGrantedFeatures: new Map([
+        ["class/fighter", sharedGrant],
+        ["class/swashbuckler", sharedGrant],
+      ]),
+      resolveUuid: resolverFrom({ [SHARED_UUID]: SHARED_RESOLUTION }),
+    });
+
+    const fighterOut = result.entities.find((e) => e.id === "class/fighter");
+    const swashbucklerOut = result.entities.find((e) => e.id === "class/swashbuckler");
+    const fighterTarget =
+      fighterOut?.stats?.kind === "class" ? fighterOut.stats.grantedFeatures?.[0]?.targetId : "?";
+    const swashbucklerTarget =
+      swashbucklerOut?.stats?.kind === "class"
+        ? swashbucklerOut.stats.grantedFeatures?.[0]?.targetId
+        : "?";
+
+    expect(fighterTarget).toBe("class-feature/weapon-specialization");
+    // THE bug this proves fixed: pre-D29-132, `keptIds.has(resolvedId)` alone
+    // would make this ALSO "class-feature/weapon-specialization" (fighter's
+    // doc) — wrong-class prose on the swashbuckler page.
+    expect(swashbucklerTarget).toBe("class-feature/weapon-specialization-2");
+    expect(swashbucklerTarget).not.toBe(fighterTarget);
+  });
+
+  it("rule (2) legacyOf fallback: fires only when NO family member's masthead names the granting class", () => {
+    const swashbuckler = classEntity({
+      id: "class/swashbuckler",
+      slug: "swashbuckler",
+      name: "Swashbuckler",
+    });
+    // Neither doc carries a masthead at all — rule (1) can't fire for either.
+    const fighterDoc = classFeature({
+      id: "class-feature/weapon-specialization",
+      name: "Weapon Specialization",
+      legacyOf: ["class/fighter@legacy"],
+    });
+    const swashbucklerDoc = classFeature({
+      id: "class-feature/weapon-specialization-2",
+      name: "Weapon Specialization",
+      legacyOf: ["class/swashbuckler@legacy"],
+    });
+    const { result } = run({
+      entities: [swashbuckler, fighterDoc, swashbucklerDoc],
+      classGrantedFeatures: new Map([["class/swashbuckler", sharedGrant]]),
+      resolveUuid: resolverFrom({ [SHARED_UUID]: SHARED_RESOLUTION }),
+    });
+    const out = result.entities.find((e) => e.id === "class/swashbuckler");
+    const targetId = out?.stats?.kind === "class" ? out.stats.grantedFeatures?.[0]?.targetId : "?";
+    expect(targetId).toBe("class-feature/weapon-specialization-2");
+  });
+
+  it("rule (3) unique level match: fires only when NEITHER masthead NOR legacyOf disambiguates, and exactly one family member's level matches the grant's level", () => {
+    const swashbuckler = classEntity({
+      id: "class/swashbuckler",
+      slug: "swashbuckler",
+      name: "Swashbuckler",
+    });
+    const levelSeven = classFeature({
+      id: "class-feature/weapon-specialization",
+      name: "Weapon Specialization",
+      level: 7,
+    });
+    const levelNine = classFeature({
+      id: "class-feature/weapon-specialization-2",
+      name: "Weapon Specialization",
+      level: 9,
+    });
+    const { result } = run({
+      entities: [swashbuckler, levelSeven, levelNine],
+      classGrantedFeatures: new Map([
+        ["class/swashbuckler", [{ level: 9, name: "Weapon Specialization", uuid: SHARED_UUID }]],
+      ]),
+      resolveUuid: resolverFrom({ [SHARED_UUID]: SHARED_RESOLUTION }),
+    });
+    const out = result.entities.find((e) => e.id === "class/swashbuckler");
+    const targetId = out?.stats?.kind === "class" ? out.stats.grantedFeatures?.[0]?.targetId : "?";
+    expect(targetId).toBe("class-feature/weapon-specialization-2");
+  });
+
+  it("no rule resolves a single candidate -> null (R3, NEVER a wrong-class card)", () => {
+    // guardian also maps to [] (no subclass categories) — and its masthead
+    // never appears in either candidate below, so NEITHER rule (1) NOR
+    // rule (2) fires; both candidates share the SAME level, so rule (3)'s
+    // uniqueness test also fails.
+    const guardian = classEntity({ id: "class/guardian", slug: "guardian", name: "Guardian" });
+    const docA = classFeature({
+      id: "class-feature/weapon-specialization",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Fighter"),
+      level: 7,
+    });
+    const docB = classFeature({
+      id: "class-feature/weapon-specialization-2",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Swashbuckler"),
+      level: 7,
+    });
+    const { result } = run({
+      entities: [guardian, docA, docB],
+      classGrantedFeatures: new Map([["class/guardian", sharedGrant]]),
+      resolveUuid: resolverFrom({ [SHARED_UUID]: SHARED_RESOLUTION }),
+    });
+    const out = result.entities.find((e) => e.id === "class/guardian");
+    const stats = out?.stats?.kind === "class" ? out.stats : undefined;
+    expect(stats?.grantedFeatures).toEqual([
+      { level: 7, name: "Weapon Specialization", targetId: null },
+    ]);
+    expect(result.grantedFeaturesUnresolved).toBeGreaterThanOrEqual(1);
+  });
+
+  it("tie-break (a): when rule (1) matches MULTIPLE candidates (a legacy+remaster pair both mastheading the granting class), the edition matching the granting class doc wins", () => {
+    const fighter = classEntity({
+      id: "class/fighter",
+      slug: "fighter",
+      name: "Fighter",
+      edition: "remaster",
+    });
+    const remasterDoc = classFeature({
+      id: "class-feature/weapon-specialization",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Fighter"),
+      edition: "remaster",
+    });
+    const legacyDoc = classFeature({
+      id: "class-feature/weapon-specialization-2",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Fighter"),
+      edition: "legacy",
+    });
+    const { result } = run({
+      entities: [fighter, remasterDoc, legacyDoc],
+      classGrantedFeatures: new Map([["class/fighter", sharedGrant]]),
+      resolveUuid: resolverFrom({ [SHARED_UUID]: SHARED_RESOLUTION }),
+    });
+    const out = result.entities.find((e) => e.id === "class/fighter");
+    const targetId = out?.stats?.kind === "class" ? out.stats.grantedFeatures?.[0]?.targetId : "?";
+    expect(targetId).toBe("class-feature/weapon-specialization");
+  });
+
+  it("tie-break (b): when rule (1) matches multiple SAME-edition candidates, the lowest collision suffix wins", () => {
+    const fighter = classEntity({
+      id: "class/fighter",
+      slug: "fighter",
+      name: "Fighter",
+      edition: "remaster",
+    });
+    const suffix2 = classFeature({
+      id: "class-feature/weapon-specialization-2",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Fighter"),
+      edition: "remaster",
+    });
+    const suffix3 = classFeature({
+      id: "class-feature/weapon-specialization-3",
+      name: "Weapon Specialization",
+      mastheadExtra: mastheadClass("Fighter"),
+      edition: "remaster",
+    });
+    const { result } = run({
+      entities: [fighter, suffix2, suffix3],
+      classGrantedFeatures: new Map([["class/fighter", sharedGrant]]),
+      resolveUuid: resolverFrom({ [SHARED_UUID]: SHARED_RESOLUTION }),
+    });
+    const out = result.entities.find((e) => e.id === "class/fighter");
+    const targetId = out?.stats?.kind === "class" ? out.stats.grantedFeatures?.[0]?.targetId : "?";
+    expect(targetId).toBe("class-feature/weapon-specialization-2");
+  });
+});
+
 describe("augmentClassStats: subclassOptions (D29-115)", () => {
   it("a LIVING category (no absorption): the union collapses to a no-op — current = the non-superseded docs, legacy = the husks pointing back at them", () => {
     const barbarian = classEntity({ id: "class/barbarian", slug: "barbarian", name: "Barbarian" });

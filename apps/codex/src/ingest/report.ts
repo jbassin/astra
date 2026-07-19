@@ -878,6 +878,12 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
+  lines.push("## Debris drop-families (D29-133, P14 S1)", "");
+  lines.push(
+    `Two more predicate drop-families, same "override the keep, checked first" shape as the activation-debris family above. **Journal section headers** (\`journalSectionHeaderDropFamily\`: a \`proseOnly\` Foundry-journal page with an EMPTY body — a bare section-header divider journals.ts's merge-vs-standalone decision never content-checked): **${json.dropAccounting.journalSectionHeaderDrop}** dropped (pins at 4 on the real corpus — \`ancestry/{common,uncommon,rare}\`, \`archetype/archetypes\`; \`ancestry/index\`/\`archetype/index\` are non-empty-body and survive). **Unknown-book creature husks** (\`unknownBookHuskDropFamily\`: a \`creature\` doc with \`book:"unknown"\`, empty body, zero facets, zero traits — an orphaned Foundry Actor with nothing extractable): **${json.dropAccounting.unknownBookHuskDrop}** dropped (pins at 5 — \`creature/{daji-level-1,daji-level-3,daji-level-5,flappy,twinsprout}\`).`,
+    "",
+  );
+
   lines.push("## Adjacent-crossref dedupe (D29-100, P11 S1)", "");
   lines.push(
     `Whole-document post-join pre-emit walk over body + loreBody + embeddedItems + mastheadExtra + hazard stats.disable/routine/reset — collapses RUNS of crossref nodes with identical targetId and equivalent (apostrophe/case-folded) display, separated only by whitespace/punctuation-only text, to one crossref + one separator. **${json.adjacentCrossrefDedupe.totalOccurrences}** duplicate occurrences collapsed across **${json.adjacentCrossrefDedupe.entitiesTouched}** entities (epicenter: \`domain/*\` "Deities" masthead lists).`,

@@ -2,7 +2,13 @@ import { describe, expect, it } from "vitest";
 
 import type { CodexEntity } from "../schema/entity";
 import type { BlockNode, CodexNode } from "../schema/nodes";
-import { activationDropFamily, applyAonPrimaryDrop, isDropCandidate } from "./drop";
+import {
+  activationDropFamily,
+  applyAonPrimaryDrop,
+  isDropCandidate,
+  journalSectionHeaderDropFamily,
+  unknownBookHuskDropFamily,
+} from "./drop";
 
 function entity(
   overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
@@ -164,6 +170,11 @@ describe("applyAonPrimaryDrop", () => {
       category: "creature",
       slug: "beluthus",
       name: "Beluthus",
+      // D29-133: real stats, so this fixture doesn't ALSO accidentally match
+      // the new unknownBookHuskDropFamily predicate (book:"unknown" + empty
+      // body/facets/traits) — this entity is meant to prove the ordinary
+      // creature/hazard carve-out, not the husk-drop override.
+      facets: { hp: 10 },
     });
     const hazard = entity({ id: "hazard/trap", category: "hazard", slug: "trap", name: "Trap" });
     const droppedFeat = entity({ id: "feat/x", category: "feat", slug: "x", name: "X" });
@@ -534,5 +545,235 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       target: "action/arcane-99",
       display: "Arcane",
     });
+  });
+});
+
+describe("journalSectionHeaderDropFamily (D29-133, P14 S1)", () => {
+  it("matches a proseOnly Foundry-journal page with an EMPTY body", () => {
+    expect(
+      journalSectionHeaderDropFamily({
+        proseOnly: true,
+        source: { book: "Foundry Journal: Ancestries", license: "unknown" },
+        body: [],
+      }),
+    ).toBe(true);
+  });
+
+  it("does NOT match ancestry/index — same proseOnly + FJ book, but a NON-empty body (D29-133's own preserved-index carve-out)", () => {
+    expect(
+      journalSectionHeaderDropFamily({
+        proseOnly: true,
+        source: { book: "Foundry Journal: Ancestries", license: "unknown" },
+        body: [{ kind: "paragraph", children: [] }] as unknown as BlockNode[],
+      }),
+    ).toBe(false);
+  });
+
+  it("does not match a non-Foundry-Journal book, even with an empty body and proseOnly", () => {
+    expect(
+      journalSectionHeaderDropFamily({
+        proseOnly: true,
+        source: { book: "Player Core", license: "unknown" },
+        body: [],
+      }),
+    ).toBe(false);
+  });
+
+  it("does not match a non-proseOnly entity, even with an FJ book and empty body", () => {
+    expect(
+      journalSectionHeaderDropFamily({
+        proseOnly: undefined,
+        source: { book: "Foundry Journal: Archetypes", license: "unknown" },
+        body: [],
+      }),
+    ).toBe(false);
+  });
+});
+
+describe("unknownBookHuskDropFamily (D29-133, P14 S1)", () => {
+  function husk(
+    overrides: Partial<CodexEntity> = {},
+  ): Parameters<typeof unknownBookHuskDropFamily>[0] {
+    return {
+      category: "creature",
+      source: { book: "unknown", license: "unknown" },
+      body: [],
+      facets: {},
+      traits: [],
+      ...overrides,
+    };
+  }
+
+  it("matches a zero-stat unknown-book creature husk", () => {
+    expect(unknownBookHuskDropFamily(husk())).toBe(true);
+  });
+
+  it("does not match a non-creature category", () => {
+    expect(unknownBookHuskDropFamily(husk({ category: "hazard" }))).toBe(false);
+  });
+
+  it("does not match a KNOWN book", () => {
+    expect(
+      unknownBookHuskDropFamily(husk({ source: { book: "Bestiary", license: "unknown" } })),
+    ).toBe(false);
+  });
+
+  it("does not match a non-empty body", () => {
+    expect(
+      unknownBookHuskDropFamily(
+        husk({ body: [{ kind: "paragraph", children: [] }] as unknown as BlockNode[] }),
+      ),
+    ).toBe(false);
+  });
+
+  it("does not match a husk carrying real facets", () => {
+    expect(unknownBookHuskDropFamily(husk({ facets: { hp: 10 } }))).toBe(false);
+  });
+
+  it("does not match a husk carrying real traits", () => {
+    expect(unknownBookHuskDropFamily(husk({ traits: ["animal"] }))).toBe(false);
+  });
+});
+
+describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => {
+  it("drops a journal-section-header entity even though it IS AoN-backed (proseOnly) — the override, same shape as activationDropFamily", () => {
+    const debris = entity({
+      id: "ancestry/common",
+      category: "ancestry",
+      slug: "common",
+      name: "Common",
+      proseOnly: true,
+      source: { book: "Foundry Journal: Ancestries", license: "unknown" },
+    });
+    const { reports, report } = collector();
+    const result = applyAonPrimaryDrop([debris], report);
+    expect(result.keptEntities).toEqual([]);
+    expect(result.accounting.journalSectionHeaderDrop).toBe(1);
+    expect(reports.some((r) => r.cls === "journalSectionHeaderDropped")).toBe(true);
+    // NOT counted in the D29-14/-17 byCategory/totalDropped section (same
+    // "kept separate" posture as activationDrop).
+    expect(result.accounting.totalDropped).toBe(0);
+    expect(result.accounting.byCategory).toEqual([]);
+  });
+
+  it("keeps ancestry/index (non-empty body) despite the FJ book + proseOnly", () => {
+    const index = entity({
+      id: "ancestry/index",
+      category: "ancestry",
+      slug: "index",
+      name: "Ancestries",
+      proseOnly: true,
+      source: { book: "Foundry Journal: Ancestries", license: "unknown" },
+      body: [{ kind: "paragraph", children: [] }] as unknown as BlockNode[],
+    });
+    const { report } = collector();
+    const result = applyAonPrimaryDrop([index], report);
+    expect(result.keptEntities.map((e) => e.id)).toEqual(["ancestry/index"]);
+    expect(result.accounting.journalSectionHeaderDrop).toBe(0);
+  });
+
+  it("drops an unknown-book creature husk even though it would otherwise survive via the creature/hazard carve-out", () => {
+    const husk = entity({
+      id: "creature/flappy",
+      category: "creature",
+      slug: "flappy",
+      name: "Flappy",
+      source: { book: "unknown", license: "unknown" },
+    });
+    const { reports, report } = collector();
+    const result = applyAonPrimaryDrop([husk], report);
+    expect(result.keptEntities).toEqual([]);
+    expect(result.accounting.unknownBookHuskDrop).toBe(1);
+    expect(reports.some((r) => r.cls === "unknownBookHuskDropped")).toBe(true);
+    expect(result.accounting.carveOut).toEqual([]);
+  });
+
+  it("keeps a genuine Foundry-only creature with real content (the Dune Candle shape) despite book:unknown by default — needs facets/traits too", () => {
+    const realCreature = entity({
+      id: "creature/dune-candle",
+      category: "creature",
+      slug: "dune-candle",
+      name: "Dune Candle",
+      source: { book: "unknown", license: "unknown" },
+      facets: { hp: 10 },
+    });
+    const { report } = collector();
+    const result = applyAonPrimaryDrop([realCreature], report);
+    expect(result.keptEntities.map((e) => e.id)).toEqual(["creature/dune-candle"]);
+    expect(result.accounting.unknownBookHuskDrop).toBe(0);
+    expect(result.accounting.carveOut).toEqual([{ category: "creature", kept: 1 }]);
+  });
+});
+
+describe("reconcileInline embed overrides (D29-134, P14 S1)", () => {
+  function embedEntity(embed: {
+    target: string;
+    resolved: boolean;
+    display?: string;
+  }): CodexEntity {
+    return entity({
+      id: "class/summoner",
+      category: "class",
+      slug: "summoner",
+      name: "Summoner",
+      aonUrl: "/Classes.aspx?ID=1",
+      body: [
+        { kind: "paragraph", children: [{ kind: "embed", ...embed }] },
+      ] as unknown as BlockNode[],
+    });
+  }
+
+  it("repoints a resolved-then-dropped embed to its override target, flipping resolved back to true (the target survives)", () => {
+    const holder = embedEntity({ target: "class-feature/angel-eidolon", resolved: true });
+    const survivingTarget = entity({
+      id: "eidolon/angel",
+      category: "eidolon",
+      slug: "angel",
+      name: "Angel",
+      aonUrl: "/Eidolons.aspx?ID=1",
+    });
+    const { reports, report } = collector();
+    const result = applyAonPrimaryDrop([holder, survivingTarget], report);
+    const kept = result.keptEntities.find((e) => e.id === "class/summoner");
+    const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
+    expect(paragraph?.children[0]).toEqual({
+      kind: "embed",
+      target: "eidolon/angel",
+      resolved: true,
+    });
+    expect(reports.some((r) => r.cls === "embedOverrideRepointed")).toBe(true);
+    // The dead pre-collision target ("class-feature/angel-eidolon") was never
+    // itself in the corpus in this test — proves the override fires BEFORE
+    // the ordinary "still unresolved" postDropEmbedBroken path would have.
+    expect(reports.some((r) => r.cls === "postDropEmbedBroken")).toBe(false);
+  });
+
+  it("suppresses the vishkanya self-embed (feat/innate-venom) to an inert empty text node — never counted as unresolved", () => {
+    const holder = embedEntity({ target: "feat/innate-venom", resolved: true });
+    const { reports, report } = collector();
+    const result = applyAonPrimaryDrop([holder], report);
+    const kept = result.keptEntities.find((e) => e.id === "class/summoner");
+    const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
+    expect(paragraph?.children[0]).toEqual({
+      kind: "text",
+      content: "",
+      marks: { bold: false, italic: false, superscript: false },
+    });
+    expect(reports.some((r) => r.cls === "embedOverrideSuppressed")).toBe(true);
+    expect(reports.some((r) => r.cls === "postDropEmbedBroken")).toBe(false);
+  });
+
+  it("an embed with no override entry still falls through to the ordinary postDropEmbedBroken path", () => {
+    const holder = embedEntity({ target: "class-feature/never-joined", resolved: true });
+    const { reports, report } = collector();
+    const result = applyAonPrimaryDrop([holder], report);
+    const kept = result.keptEntities.find((e) => e.id === "class/summoner");
+    const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
+    expect(paragraph?.children[0]).toEqual({
+      kind: "embed",
+      target: "class-feature/never-joined",
+      resolved: false,
+    });
+    expect(reports.some((r) => r.cls === "postDropEmbedBroken")).toBe(true);
   });
 });
