@@ -1,0 +1,25 @@
+[project]
+name = "astra-assay"
+version = "0.0.0"
+description = "assay — quantitative spell power scoring for PF2e homebrew (0030 round 1). Reads the codex Foundry spell-pack snapshot (read-only), extracts damage-axis features per spell, fits a log-linear rank+facet budget model (numpy OLS), and scores a homebrew spell JSON against it."
+requires-python = ">=3.12"
+dependencies = [
+    "astra-config",
+    "astra-observe",
+    "numpy>=2",
+    "pydantic>=2",
+]
+
+[project.scripts]
+assay = "astra_assay.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/astra_assay"]
+
+[tool.uv.sources]
+astra-config = { workspace = true }
+astra-observe = { workspace = true }
