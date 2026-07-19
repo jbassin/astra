@@ -1,6 +1,6 @@
 ---
 name: codex-0029-gotchas
-description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-19 **P11 BACKLOG ROUND BUILT + DEPLOYED + LIVE (6 serial slices, one autonomous orchestrated session): activation-debris drop 1,384 + keep-9 + 55 pointer-strips, 12 name-template renames, whole-doc crossref dedupe 1,167/133 (pin AMENDED from 1,147/123 — raw-markdown ground-truthing beat the review scanner), table cell-fit + 96rem browse, popover hover-bridge, curated 28-nav, loader-side hiddenCount reveal, title-into-header w/ the sr-only-h1×popover-B1 interlock; ⭐ three in-flight bug finds (proseOnly drop scoping · icon padding-inline cascade loss · the P9 pending-heuristic false-negative that would have zero-rowed the /doctrine reveal) + 4 malformed-name actions escape the drop regex (P12); corpus 44,808**; 2026-07-18 P10 statRow+size round same day as its gate-H provenance ("look at aso-berang"): AoN `<row>` wrappers now collapse to a 19th node kind `statRow` at ingest (schema v4) + creature/vehicle header size chip; ⭐ the census's tag-aware-candidacy trap (post-flatten all-paragraph ≠ collapsible — deity pages), the stripMasthead 36%-overlap find, and BOTH adversarial reviews pre-killing a class-name collision + a live-serving deploy wipe + a factually-wrong ancestry chip**; 2026-07-17 P8 density/table round — listings are now flat sortable per-category-column tables (5e.tools register, parchment voice kept), site-wide density pass, exact-name search boost (fireball/heal #1), j/k keyboard, nav carets; ⭐ the proxy-pin class struck AGAIN ×2 (hydrate-window 40 vs heal-ranks-43 → 60; gate-B "full set at 1600px" impossible under the 26rem list-track cap → 58/42 grid amendment) and the adversarial reviews caught the omnibar-8-stub no-op + the j/k history/fetch-spam class pre-build; plus the P6 proxy-population finds, the P5 bind-mount/fixture-fail-soft finds, the P4.5 loaderDeps finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H consolidated re-run (P2–P8) — screenshots delivered
+description: codex (0029) — public-but-noindexed PF2e reference site — 2026-07-19 **P12 BESPOKE CLASS PAGE BUILT + DEPLOYED + LIVE (5e.tools model; /class rail + ClassPage w/ Core Traits/progression/subclass pills/feature stream; stats kind:class schema v5 via the augmentClassStats POST-DROP pass — grants 503/17-null, subclassOptions current-edition UNION; ⭐ the "0 superseded subclasses" pin was FALSE — 108, remasters absorbed into class-feature/ → union mechanism; extract-fixture's canonical-coverage WIPES the hand-spliced virt-* fixtures (recurred) + new-shape fixtures need a fixture-pipeline second source; TanStack search params round-trip string[] not CSV; loreBody carries a SECOND duplicate progression table; closed-details ::details-content content-visibility hides content undisplayable by descendant CSS — latent in /rules too; EntityHeader extracted w/ goldens byte-identical; deploy = checksum-rsync of the determinism-proven scratch corpus, ≤25 s window)**; same day **P11 BACKLOG ROUND BUILT + DEPLOYED + LIVE (6 serial slices, one autonomous orchestrated session): activation-debris drop 1,384 + keep-9 + 55 pointer-strips, 12 name-template renames, whole-doc crossref dedupe 1,167/133 (pin AMENDED from 1,147/123 — raw-markdown ground-truthing beat the review scanner), table cell-fit + 96rem browse, popover hover-bridge, curated 28-nav, loader-side hiddenCount reveal, title-into-header w/ the sr-only-h1×popover-B1 interlock; ⭐ three in-flight bug finds (proseOnly drop scoping · icon padding-inline cascade loss · the P9 pending-heuristic false-negative that would have zero-rowed the /doctrine reveal) + 4 malformed-name actions escape the drop regex (P12); corpus 44,808**; 2026-07-18 P10 statRow+size round same day as its gate-H provenance ("look at aso-berang"): AoN `<row>` wrappers now collapse to a 19th node kind `statRow` at ingest (schema v4) + creature/vehicle header size chip; ⭐ the census's tag-aware-candidacy trap (post-flatten all-paragraph ≠ collapsible — deity pages), the stripMasthead 36%-overlap find, and BOTH adversarial reviews pre-killing a class-name collision + a live-serving deploy wipe + a factually-wrong ancestry chip**; 2026-07-17 P8 density/table round — listings are now flat sortable per-category-column tables (5e.tools register, parchment voice kept), site-wide density pass, exact-name search boost (fireball/heal #1), j/k keyboard, nav carets; ⭐ the proxy-pin class struck AGAIN ×2 (hydrate-window 40 vs heal-ranks-43 → 60; gate-B "full set at 1600px" impossible under the 26rem list-track cap → 58/42 grid amendment) and the adversarial reviews caught the omnibar-8-stub no-op + the j/k history/fetch-spam class pre-build; plus the P6 proxy-population finds, the P5 bind-mount/fixture-fail-soft finds, the P4.5 loaderDeps finds + all prior corpus/join/render/browse/search/tree gotchas. ▶ open: gate H consolidated re-run (P2–P8) — screenshots delivered
 metadata:
   type: project
 ---
@@ -10,6 +10,47 @@ flat TS member `apps/codex` on the strider/site-kit SSR template, **port 10374**
 NOINDEXED (C-1..C-8 in the scope doc). Per-phase specs: **P1 ingest COMPLETE-pending-review** →
 P2 entity pages → P3 faceted browse+search → P4 rules browser → P5 deploy. P2+ get specced
 against the REAL corpus P1 produced.
+
+**P12 BESPOKE CLASS PAGE — BUILT + DEPLOYED + LIVE 2026-07-19** (scope→spec→adversarial ×2
+(OPUS reviewers, stakeholder-directed)→4 serial slices→staged deploy, one session; spec
+`0029-codex-p12-class-page-spec.md` D29-113..120, S1 `21547da` · S2 `ed40bab` · S3 `93fa2e2` ·
+S4 sweep+deploy): `/class` = narrow rail (27 visible / 20 superseded-reveal / 2 miscategorized
+unlisted) + bespoke ClassPage (Core Traits · 1–20 progression table w/ anchor-linked features +
+cadence cells · per-category subclass pill rows w/ inline render + `?subclass=` persistence ·
+level-ordered inlined feature stream · Description w/ the duplicate AoN progression-table
+suppressed). Transform: `stats:{kind:"class"}` (scalar at extract; psychic keyAbility=[];
+attacks.other gated non-empty — present-but-empty on 24/27 raw) + **`augmentClassStats`
+POST-DROP pass** (grants from `system.items` via uuidResolve nulled against the kept set —
+503/17 exact, the 17 = genuinely dropped stubs (cleric's 6 doctrines etc.), NEVER name-match
+rescue (action/exploit-vulnerability is a different doc); subclassOptions = curated map +
+**current-edition UNION**: non-superseded category docs ∪ remasteredAs-targets of superseded —
+because ⭐ **the "0 superseded subclass docs" scoping pin was FALSE: 108, ten categories are
+100% legacy husks whose remasters were ABSORBED into class-feature/ by CATEGORY_EQUIVALENCE**;
+barbarian 9+6 · sorcerer 18+10 · cleric current == its 2 remaster targets); schemaVersion 5;
+class search rows + `_index.json` byte-stable → **no reindex at deploy** (proven by recomputing
+Pagefind payloads). ⭐ THE P12 finds: **`extract-fixture`'s canonical-coverage step wipes the
+hand-spliced `ritual/virt-*` fixtures** (recurred from P10 — restore surgically, never
+`git checkout HEAD` the whole entities/ tree, which also reverted the new fixture emits once)
++ new-SHAPE fixtures need a **fixture-pipeline second source** (the canonical sweep only
+selects from the real emitted corpus — pre-deploy it lacks the new fields); **TanStack search
+params round-trip `string[]` as a real array, not a CSV string** (probe the pinned router,
+accept both shapes); **`loreBody` carries a second duplicate progression table** on several
+classes (alchemist/cleric/druid/…) — suppression must walk both; **a closed `<details>` hides
+content via `::details-content{content-visibility:hidden}`** that NO descendant display rule
+can undo (rail painted blank on desktop; fix = explicit `::details-content` override) — **the
+same latent bug sits unfixed in /rules' RulesLayout sidebar** (follow-up candidate);
+`EntityHeader` extracted from the monolithic EntityPage w/ all 7 goldens byte-identical (the
+popover `.popover-hint` contract — 1,066 class-feature→class crossrefs — now rides the shared
+header). The OPUS adversarial pair pre-killed 4 blockers (the superseded-union redesign; the
+extract-time-impossible augment placement; the nonexistent "emit-Zod referential" precedent;
+the unsatisfiable "reuse header without forking") + killed a 28-vs-27 phantom pin and the
+missed loaderDeps/dehydration-×2/ToC-is-a-passive-DOM-scan contracts. Deploy: image FIRST →
+**checksum-rsync of the determinism-proven S4 scratch corpus** (recorded mechanism deviation;
+30-path delta) → `just up` — **window ≤25 s** (vs P11's 82 s); SigNoz all /class routes
+hasError:false, 0 ERROR logs. Class pages carry 3 pre-existing AoN-literal prose h1s (the P11
+gate-H flag, not a P12 regression). An engineer ran a `git stash` round-trip mid-slice despite
+the brief (harmless — popped clean; the ban stays load-bearing); the S1 engineer was
+API-error-killed mid-final-check and resumed cleanly via SendMessage.
 
 **P11 BUILT + DEPLOYED + LIVE 2026-07-19 — six serial slices S1 `0f2a452` (transform/search) ·
 S2 `0d015ac` (tables/facets/filter/rules) · S3 `a271419` (popovers/scrollbars) · S4 `52a046e`

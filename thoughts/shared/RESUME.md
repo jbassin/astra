@@ -36,7 +36,56 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `13b99b6`, 2026-07-19 — codex (0029) P11 BACKLOG ROUND BUILT + DEPLOYED + LIVE: all six slices in one autonomous orchestrated session (scope+spec were 2026-07-18); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P11 review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of 2026-07-19 — codex (0029) P12 BESPOKE CLASS PAGE BUILT + DEPLOYED + LIVE: stakeholder-directed round (5e.tools class-page model), scope→spec→OPUS-adversarial-×2→4 serial slices→staged deploy in ONE session; ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P12 review; heartwood ON HOLD)
+
+> **✅ codex (0029) P12 — bespoke class page, all live on codex.iridi.cc:**
+> 1. **Provenance:** stakeholder: "special interface for some data types — look at how
+>    5e.tools does classes." Studied live on a local 5etools-src serve (CF-challenge recipe);
+>    R1–R4 resolved same day (class only · pills → inline render · full feature prose inline ·
+>    /class itself becomes the bespoke surface w/ a narrow rail, mobile-imperfection
+>    sanctioned). Scope `…/research/2026-07-19-codex-0029-p12-class-page-thoughts.md`
+>    (`19261bb`), spec `…/specs/0029-codex-p12-class-page-spec.md` D29-113..120 FINAL
+>    `8560880`, status now BUILT + DEPLOYED w/ per-gate evidence in §6.
+> 2. **The OPUS adversarial pair pre-killed 4 blockers** (first opus-reviewer use):
+>    the scoping "0 superseded subclass docs" pin was FALSE (108; ten categories are 100%
+>    legacy husks whose remasters were ABSORBED into class-feature/ → the current-edition
+>    UNION mechanism); grantedFeatures/subclassOptions are extract-time-impossible → the
+>    `augmentClassStats` post-drop pass; the cited emit-Zod referential precedent doesn't
+>    exist; EntityPage's header was un-reusable-without-forking → the `EntityHeader`
+>    extraction (goldens stayed byte-identical). Plus loaderDeps, dehydration-×2 budget,
+>    ToC-is-a-passive-scan, 28-vs-27 phantom.
+> 3. **Build (one reviewed commit per slice):** S1 `21547da` (stats kind:class schema v5,
+>    augment pass, grants 503/17-null exact, subclassOptions union — barbarian 9+6/sorcerer
+>    18+10/cleric==2 targets; fixture-pipeline second source after the canonical-coverage
+>    sweep WIPED the virt-* fixtures AND silently reverted the new emits once) ·
+>    S2 `ed40bab` (resolveClassPageData w/ slim feature projection + unified embed map
+>    (worst case 46/100, commander), /class route pair w/ loaderDeps+head, rail 27/20/2) ·
+>    S3 `93fa2e2` (ClassPage + EntityHeader extraction; finds: TanStack search params
+>    round-trip string[] not CSV; loreBody carries a SECOND duplicate progression table;
+>    closed-`<details>` `::details-content` content-visibility blanked the rail — same
+>    latent bug in /rules' sidebar, follow-up candidate) · S4 (sweep both lanes green +
+>    README + build record).
+> 4. **Deploy (sanctioned):** image first → checksum-rsync of the determinism-proven scratch
+>    corpus (30-path delta; recorded mechanism deviation) → `just up`; **window ≤25 s**.
+>    Live gates C–G all PASS (fighter 20-row/16-anchor progression, cleric unlinked stubs +
+>    2 remaster pills, barbarian toggle→URL→reload, rail 27→47, popover-hint proof,
+>    summoner 387 KB/79 KB gz, SigNoz all routes hasError:false + 0 ERROR). Class pages
+>    carry 3 pre-existing AoN-literal prose h1s (the P11 gate-H flag, NOT a P12 regression).
+> - **▶ NEXT: gate H — the ONE consolidated P2–P12 stakeholder review at
+>   `https://codex.iridi.cc`.** P12 adds to the review register: the class-page composition
+>   itself, the `/rules` `::details-content` latent bug (fix candidate), the 2 miscategorized
+>   `class/` docs (unlisted, P13 candidates), subclass pill names are doc names ("Animal",
+>   not "Animal Instinct"). Carried: P11's 4 malformed-name actions, class multi-h1,
+>   backrefs scoped-unstarted. Pre-existing residue rides: 7 ssrSmoke fails on main;
+>   virtualization-guard flake.
+> - heartwood still ⏸ ON HOLD; other open items unchanged (webhook rotation, Class-A
+>   alerting breadth, scribe ASR cost telemetry).
+
+---
+
+### Previous section (2026-07-19, earlier) — P11 round (superseded above)
+
+## (was) Current state (as of `13b99b6`, 2026-07-19 — codex (0029) P11 BACKLOG ROUND BUILT + DEPLOYED + LIVE: all six slices in one autonomous orchestrated session (scope+spec were 2026-07-18); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P11 review; heartwood ON HOLD)
 
 > **✅ codex (0029) P11 — backlog round (tables, data quality, popovers, nav, density), all live:**
 > 1. **Spec** `…/specs/0029-codex-p11-backlog-round-spec.md` D29-98..112, status BUILT +

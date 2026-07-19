@@ -1,8 +1,8 @@
 # 0029 codex P12 — bespoke class page (5e.tools model) — NLSpec
 
-**Status:** BUILT (2026-07-19) — S1–S3 landed, S4 sweep complete; deploy pending. All four
-slices (`21547da`/`ed40bab`/`93fa2e2` + this sweep) shipped serially same-session; gates A/B met
-with evidence in §6 (gates C–G ride the orchestrator's staged deploy). Was: FINAL (2026-07-19)
+**Status:** BUILT + DEPLOYED (2026-07-19) — all four slices (`21547da`/`ed40bab`/`93fa2e2` +
+the S4 sweep) shipped serially same-session; gates A–G met with evidence in §6; live on
+codex.iridi.cc (≤25 s degraded window). Gate H rides the consolidated P2–P12 review. Was: FINAL (2026-07-19)
 — adversarially reviewed ×2 (opus; independent lenses:
 transform/mechanism, product/runtime). **4 blockers + 9 minors/nits ALL folded below.**
 The reviews' headline catches: the draft's "0 superseded subclass docs" pin was FALSE —
@@ -439,12 +439,37 @@ sweep + docs; two scratch driver scripts (`_p12s4-scratch-transform.ts`,
 `_p12s4-scratch-search-row.ts`) were created and deleted from `apps/codex/scripts/` in-place,
 never committed.
 
-**Deploy + live gate (TODO — orchestrator fills after the staged deploy, D29-116's build-image-
-first / one in-place transform / no-reindex / `just up` order):**
-- Deploy window: TODO
-- Gate C (structural truth, live vs. raw): TODO
-- Gate D (subclasses): TODO
-- Gate E (rail + fail-soft): TODO
-- Gate F (weights + mobile): TODO
-- Gate G (telemetry + deploy): TODO
-- Gate H: rides the consolidated stakeholder review (P2–P12) — TODO
+**Deploy + live gate (orchestrator-run 2026-07-19, D29-116 staged order — image built FIRST,
+then the corpus update, then immediate `just up`; no reindex):**
+- **Mechanism note (recorded deviation, equivalent artifact):** the in-place corpus update was
+  applied as a **checksum-rsync of the S4 determinism-proven `p12-run1` scratch corpus**
+  (delta = the proven 30 paths; end state byte-identical to an in-place transform per the ×2
+  determinism proof) instead of re-running the multi-minute transform against the live mount —
+  chosen to shrink the degraded window. **Window measured: ≤25 s** (rsync <1 s → `just up`
+  done 13 s → bespoke page confirmed through the edge on the first 5 s poll; vs P11's 82 s).
+  Live `manifest.json` schemaVersion 5 confirmed pre-restart.
+- **Gate C PASS (live, Playwright DOM):** /class/fighter 20 progression rows, 16 stream
+  headings == 16 table anchors, "Advanced … Trained" attacks, NO subclass section;
+  /class/cleric "First Doctrine" present + NOT linked; /class/psychic "Chosen at 1st level";
+  weights show exactly-one suppressed progression table (S4's scratch census held live).
+  **h1 note:** /class/fighter shows 1 sr-only h1 + 3 AoN-literal prose h1s ("Roleplaying the
+  Fighter", "Initial Proficiencies", "Class Features") — the PRE-EXISTING class-category
+  condition already flagged at P11 gate H (creature baseline = 1 ✓); rides to gate H, not a
+  P12 regression.
+- **Gate D PASS:** barbarian 9 pills default (Animal…Superstition) → toggle Fury renders
+  inline + URL `?subclass=["instinct/fury"]` (router array shape) + survives reload; 15 pills
+  under `?superseded=1`; witch two labeled rows (Lesson, Patron); sorcerer 18 pills, NO
+  draconic-exemplar; fighter no section; popover from /class-feature/bravery's class link
+  opens WITH title (the `.popover-hint` proof).
+- **Gate E PASS:** rail 27 default / 47 under `?superseded=1` (27+20); investigator@legacy
+  renders the generic pane INSIDE the shell with the rail; /class/draconic-connections
+  reachable-but-unlisted (SigNoz shows it served 200); table anchors scroll; ToC lists
+  sections + Level-N features.
+- **Gate F PASS:** /class/summoner (heaviest) 386,643 B decoded / 78,989 B gz — inside the
+  accepted P4 weight class (heaviest sidebar host was 414,846/80,424), dehydration ×2
+  acknowledged and absorbed by the slim feature projection; 390 px: no h-scroll, rail
+  disclosure works.
+- **Gate G PASS:** `astra.codex` `SSR GET /class*` spans on all new routes (fighter, cleric,
+  barbarian, witch, sorcerer, psychic, summoner, both @legacy forms, /class), all
+  `hasError:false`; ERROR/FATAL logs since deploy: **0 rows**.
+- Gate H: rides the ONE consolidated stakeholder review (now P2–P12).
