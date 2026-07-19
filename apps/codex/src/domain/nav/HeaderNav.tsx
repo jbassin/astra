@@ -8,7 +8,7 @@ import {
   type ReactElement,
 } from "react";
 
-import { humanizeSlug } from "@/domain/render/text";
+import { displayCategoryName } from "@/domain/render/displayCategoryName";
 
 import { NAV_ITEMS, type NavItem } from "./navData";
 
@@ -165,7 +165,7 @@ function NavPanel({
             }}
             onKeyDown={(e) => dd.onItemKeyDown(e, index)}
           >
-            {humanizeSlug(category)}
+            {displayCategoryName(category)}
           </a>
         </li>
       ))}

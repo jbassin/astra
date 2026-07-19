@@ -23,13 +23,27 @@ import { renderToStaticMarkup } from "react-dom/server";
 
 import { EntityPage } from "../src/domain/render/entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "../src/domain/render/fixtureLoader";
+import { createHeadingIdAssigner } from "../src/domain/render/headingIds";
 import type { RenderCtx } from "../src/domain/render/nodes";
 import type { CodexEntity } from "../src/schema/entity";
 
 const GOLDENS_ROOT = join(import.meta.dirname, "..", "goldens");
 
+/**
+ * D29-109b (P11 S5, #15) — a FRESH `headingId` assigner per call: `ctx` here
+ * is `loadFixtureRenderEnv()`'s ONE shared embed-resolver/trait-index
+ * object, reused across all 7 goldens below (cheap, stateless data) — but
+ * heading-id collision tracking is PER-PAGE state, so baking it into that
+ * shared `ctx` would leak collisions across unrelated fixture entities
+ * (e.g. two different goldens both happening to have a "Description"
+ * heading would wrongly see the second one suffixed `-2`). Spreading a new
+ * assigner in on every call keeps each golden's id space independent,
+ * matching production (one `EntityRenderPane` render = one page = one
+ * assigner, `EntityRenderPane.tsx`'s own comment).
+ */
 function renderEntityPage(entity: CodexEntity, ctx: RenderCtx): string {
-  return renderToStaticMarkup(createElement(EntityPage, { entity, ctx }));
+  const pageCtx: RenderCtx = { ...ctx, headingId: createHeadingIdAssigner() };
+  return renderToStaticMarkup(createElement(EntityPage, { entity, ctx: pageCtx }));
 }
 
 function page(title: string, bodyHtml: string): string {

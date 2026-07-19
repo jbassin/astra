@@ -4,7 +4,7 @@ import type { CodexEntity } from "../../schema/entity";
 import type { CodexNode } from "../../schema/nodes";
 import { type ActionCost, ErrorChip } from "../../ui";
 import { CodexActionGlyph } from "./actionGlyph";
-import { capitalize } from "./text";
+import { capitalize, collectText } from "./text";
 import { CodexTraitPills } from "./traits";
 
 /**
@@ -43,6 +43,17 @@ export interface RenderCtx {
    * embed at depth 0 must not recurse forever even if the depth check were
    * ever relaxed). */
   visitedEmbeds: ReadonlySet<string>;
+  /** D29-109b (P11 S5, #15) — a per-PAGE heading-id assigner
+   * (`headingIds.ts`'s `createHeadingIdAssigner()`), called with a
+   * heading's plain text to get its `id`. Optional: a bare `rootRenderCtx`
+   * call (most existing unit tests, and any future direct construction)
+   * carries no assigner, so the heading case renders with no `id` at all —
+   * only the page-level composition roots (`EntityRenderPane.tsx`,
+   * `scripts/regen-goldens.ts`) spread a fresh one in per page, since it
+   * MUST be reset per page (never shared across two different entities'
+   * renders — see that file's own comment on why goldens can't just reuse
+   * the shared fixture-env `ctx`). */
+  headingId?: (text: string) => string;
 }
 
 /** The root ctx for rendering an entity's own top-level `body`/`loreBody`/
@@ -365,8 +376,12 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
     case "heading": {
       const depth = Math.min(Math.max(node.level, 1), 6);
       const Tag = `h${depth}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+      // D29-109b (P11 S5, #15) — SSR-visible anchor id, absent entirely when
+      // no per-page assigner is wired (`ctx.headingId` optional, see
+      // `RenderCtx`'s own doc comment).
+      const id = ctx.headingId?.(collectText(node.children));
       return (
-        <Tag key={key} className="codex-heading">
+        <Tag key={key} id={id} className="codex-heading">
           {renderNodes(node.children, ctx)}
           {node.meta !== undefined ? <span className="codex-heading-meta">{node.meta}</span> : null}
         </Tag>

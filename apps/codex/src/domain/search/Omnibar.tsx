@@ -31,7 +31,8 @@ import {
 } from "react";
 
 import { collidingNames } from "@/domain/browse/filterEngine";
-import { humanizeSlug } from "@/domain/render/text";
+import { displayCategoryName } from "@/domain/render/displayCategoryName";
+import { capitalize } from "@/domain/render/text";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
 import { EditionIcon } from "@/ui";
@@ -242,6 +243,18 @@ export function Omnibar(): ReactElement {
           {item.level !== undefined ? (
             <span className="codex-listing-level">Lvl {item.level}</span>
           ) : null}
+          {/* D29-101c render half (P11 S5) — rarity + owning class ONLY
+              (level already rendered above; category rides the group
+              header, the draft's per-row category would have duplicated
+              it). Both are the S1-built `meta.rarity`/`meta.class` search
+              index fields, already carried unrendered on
+              `SearchDisplayResult` since S1. */}
+          {item.rarity !== undefined ? (
+            <span className="codex-rarity">{capitalize(item.rarity)}</span>
+          ) : null}
+          {item.class !== undefined ? (
+            <span className="codex-listing-class">{item.class}</span>
+          ) : null}
           <EditionIcon edition={item.edition === "remaster" ? "remaster" : "legacy"} />
         </a>
       </li>
@@ -279,7 +292,9 @@ export function Omnibar(): ReactElement {
               ) : null}
               {groups.map((group) => (
                 <div key={group.category} className="codex-omnibar-group">
-                  <h4 className="codex-omnibar-group-title">{humanizeSlug(group.category)}</h4>
+                  <h4 className="codex-omnibar-group-title">
+                    {displayCategoryName(group.category)}
+                  </h4>
                   <ul>{group.items.map(renderRow)}</ul>
                 </div>
               ))}

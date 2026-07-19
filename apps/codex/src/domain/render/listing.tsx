@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 
 import type { CategoryDirectoryData } from "../../server/directoryData";
-import { humanizeSlug } from "./text";
+import { displayCategoryName } from "./displayCategoryName";
 
 /**
  * D29-27 — the category directory's presentation, now living at the demoted
@@ -42,7 +42,7 @@ export function CategoryDirectory({ data }: { data: CategoryDirectoryData }): Re
           <ul className="codex-directory-list">
             {group.categories.map(({ category, count }) => (
               <li key={category}>
-                <a href={`/${category}`}>{humanizeSlug(category)}</a>
+                <a href={`/${category}`}>{displayCategoryName(category)}</a>
                 <span className="codex-directory-count">{count.toLocaleString()}</span>
               </li>
             ))}

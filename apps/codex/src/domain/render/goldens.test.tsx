@@ -8,6 +8,7 @@ import { describe, expect, it } from "vitest";
 import type { CodexEntity } from "../../schema/entity";
 import { EntityPage } from "./entityPage";
 import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
+import { createHeadingIdAssigner } from "./headingIds";
 import type { RenderCtx } from "./nodes";
 
 /**
@@ -20,8 +21,12 @@ import type { RenderCtx } from "./nodes";
 
 const GOLDENS_ROOT = join(import.meta.dirname, "../../../goldens");
 
+// D29-109b (P11 S5) — mirrors `scripts/regen-goldens.ts`'s own
+// `renderEntityPage` EXACTLY (a fresh per-call `headingId` assigner, never
+// baked into the shared fixture-env `ctx`) — see that file's comment.
 function renderEntityPage(entity: CodexEntity, ctx: RenderCtx): string {
-  return renderToStaticMarkup(createElement(EntityPage, { entity, ctx }));
+  const pageCtx: RenderCtx = { ...ctx, headingId: createHeadingIdAssigner() };
+  return renderToStaticMarkup(createElement(EntityPage, { entity, ctx: pageCtx }));
 }
 
 function page(title: string, bodyHtml: string): string {

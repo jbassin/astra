@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import type { CodexEntity } from "../../schema/entity";
 import type { BlockNode, CodexNode, InlineNode, TextMarks } from "../../schema/nodes";
+import { createHeadingIdAssigner } from "./headingIds";
 import { noEmbeds, renderNodes, rootRenderCtx } from "./nodes";
 
 const PLAIN_MARKS: TextMarks = { bold: false, italic: false, superscript: false };
@@ -69,6 +70,25 @@ describe("nodes.tsx: per-kind totality (D29-24)", () => {
   it("heading: level clamps into h1..h6", () => {
     const out = html([{ kind: "heading", level: 9, children: [text("x")] }]);
     expect(out.startsWith("<h6")).toBe(true);
+  });
+
+  it("heading: no `id` at all when ctx carries no headingId assigner (the default, most callers)", () => {
+    const out = html([{ kind: "heading", level: 2, children: [text("Description")] }]);
+    expect(out).not.toContain(" id=");
+  });
+
+  it("heading: D29-109b — an `id` is assigned via ctx.headingId when wired, from the heading's PLAIN text", () => {
+    const ctx = { ...baseCtx(), headingId: createHeadingIdAssigner() };
+    const out = html([{ kind: "heading", level: 2, children: [text("Cast a Spell!")] }], ctx);
+    expect(out).toContain('id="cast-a-spell"');
+  });
+
+  it("heading: repeated heading text on the SAME ctx collides -> -2 suffix", () => {
+    const ctx = { ...baseCtx(), headingId: createHeadingIdAssigner() };
+    const first = html([{ kind: "heading", level: 2, children: [text("Description")] }], ctx);
+    const second = html([{ kind: "heading", level: 2, children: [text("Description")] }], ctx);
+    expect(first).toContain('id="description"');
+    expect(second).toContain('id="description-2"');
   });
 
   it("list: ordered/unordered with nested-array items", () => {

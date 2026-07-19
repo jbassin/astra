@@ -4,7 +4,9 @@ import type { EntityPageData } from "../../server/entityPageData";
 import { Popover } from "../components/islands/Popover";
 import { AttachedSidebars } from "./AttachedSidebars";
 import { EntityPage } from "./entityPage";
-import { rootRenderCtx } from "./nodes";
+import { createHeadingIdAssigner } from "./headingIds";
+import { type RenderCtx, rootRenderCtx } from "./nodes";
+import { TableOfContents } from "./TableOfContents";
 
 /**
  * P4.5 S4 (D29-49) — the entity-render composition shared by BOTH the
@@ -42,15 +44,30 @@ export function EntityRenderPane({
   standalone?: boolean;
 }): ReactElement {
   const { entity, embeds, knownTraitIds, attachedSidebars } = data;
-  const ctx = rootRenderCtx({
+  const baseCtx = rootRenderCtx({
     resolveEmbed: (targetId) => embeds[targetId],
     knownTraitIds: new Set(knownTraitIds),
   });
+  // D29-109b (P11 S5, #15) — a FRESH per-page heading-id assigner every
+  // time this component renders: `EntityRenderPane` is the one composition
+  // root that always corresponds to exactly one page (one request, one
+  // mount) for both the standalone entity route AND the split-view right
+  // pane, so creating it here (rather than baking it into `rootRenderCtx`
+  // itself, which the goldens loader calls ONCE and reuses across many
+  // fixture entities — see `scripts/regen-goldens.ts`'s own comment) keeps
+  // collision tracking correctly scoped to THIS page, never leaking across
+  // an unrelated render.
+  const ctx: RenderCtx = { ...baseCtx, headingId: createHeadingIdAssigner() };
   return (
     <>
       {/* D29-28: hover cards mount here too — the split-view right pane IS
           an entity page render, same posture as the standalone route. */}
       <Popover />
+      {/* D29-109b — the "On this page" ToC box, standalone routes only
+          (entity page + rules doc, both of which pass `standalone` here;
+          the split-view right pane and any embedded/golden context omit
+          it, same gate `EntityPage`'s own h1-visibility uses). */}
+      {standalone ? <TableOfContents /> : null}
       <EntityPage entity={entity} ctx={ctx} standalone={standalone} />
       {attachedSidebars !== undefined ? (
         <AttachedSidebars sidebars={attachedSidebars} superseded={superseded} ctx={ctx} />

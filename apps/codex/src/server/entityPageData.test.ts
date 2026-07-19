@@ -13,12 +13,32 @@ import { resolveEntityPageData } from "./entityPageData";
 describe("resolveEntityPageData (D29-23/-25)", () => {
   const reader = createCorpusReader(fixtureCorpusRoot());
 
-  it("resolves a plain entity with no embeds", () => {
+  it("resolves a plain entity with no BODY embeds, but the D29-109a edition-pointer prefetch still populates the map", () => {
+    // `spell/heal` has no `embed` nodes in its body, but DOES carry a
+    // `legacyOf: ["spell/heal@legacy"]` pointer — D29-109a (P11 S5, #14)
+    // folds that into this SAME prefetch map (`EditionBanner`'s pointer-box
+    // name resolves through it), so `embeds` is no longer `{}` for this
+    // entity even though it carries zero body embeds.
     const data = resolveEntityPageData(reader, { category: "spell", slug: "heal" });
     expect(data).not.toBeNull();
     expect(data?.entity.id).toBe("spell/heal");
-    expect(data?.embeds).toEqual({});
+    expect(Object.keys(data?.embeds ?? {})).toEqual(["spell/heal@legacy"]);
+    expect(data?.embeds["spell/heal@legacy"]?.id).toBe("spell/heal@legacy");
     expect(data?.embedCapHit).toBe(false);
+  });
+
+  it("an unresolvable remasteredAs/legacyOf pointer fail-softs — never thrown, simply absent from embeds (D29-109a)", () => {
+    // `class/investigator@legacy` carries `remasteredAs: ["class/investigator"]`,
+    // but `class/investigator` (the remaster target) has NO fixture file —
+    // post-D29-98 stripping keeps this near-zero in the real corpus, but
+    // the fixture happens to demonstrate the belt-and-braces fail-soft path
+    // for free. This must NOT throw, and must NOT appear as an embeds key.
+    const data = resolveEntityPageData(reader, {
+      category: "class",
+      slug: "investigator@legacy",
+    });
+    expect(data).not.toBeNull();
+    expect(data?.embeds["class/investigator"]).toBeUndefined();
   });
 
   it("prefetches the depth-0 embed targets a real fixture entity carries", () => {

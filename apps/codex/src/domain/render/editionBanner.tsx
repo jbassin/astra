@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
 import { EditionIcon } from "../../ui";
+import type { RenderCtx } from "./nodes";
 
 /**
  * D29-22/-26 — every page shows an edition icon; a legacy member with
@@ -12,15 +13,31 @@ export function EditionPill({ entity }: { entity: CodexEntity }): ReactElement {
   return <EditionIcon edition={entity.edition} />;
 }
 
-function EntityIdLink({ id }: { id: string }): ReactElement {
+/**
+ * D29-109a (P11 S5, #14) — the pointer-box name: `Name (Book)` resolved via
+ * `ctx.resolveEmbed` (the SAME depth-0 embed-prefetch map `entityPageData
+ * .ts`'s `entityEmbedTargetIds` now also seeds with `remasteredAs`/
+ * `legacyOf` ids — no second server round-trip). Raw-id fail-soft when the
+ * target isn't in the map: post-D29-98 edition-pointer stripping (S1) keeps
+ * genuine dangling pointers near-zero, so this is belt-and-braces, not the
+ * common case.
+ */
+function EntityIdLink({ id, ctx }: { id: string; ctx: RenderCtx }): ReactElement {
+  const target = ctx.resolveEmbed(id);
   return (
     <a href={`/${id}`} data-crossref="" data-crossref-target={id}>
-      {id}
+      {target ? `${target.name} (${target.source.book})` : id}
     </a>
   );
 }
 
-export function EditionBanner({ entity }: { entity: CodexEntity }): ReactElement | null {
+export function EditionBanner({
+  entity,
+  ctx,
+}: {
+  entity: CodexEntity;
+  ctx: RenderCtx;
+}): ReactElement | null {
   if (entity.remasteredAs !== undefined && entity.remasteredAs.length > 0) {
     return (
       <div
@@ -31,7 +48,7 @@ export function EditionBanner({ entity }: { entity: CodexEntity }): ReactElement
         {entity.remasteredAs.map((id, i) => (
           <span key={id}>
             {i > 0 ? ", " : ""}
-            <EntityIdLink id={id} />
+            <EntityIdLink id={id} ctx={ctx} />
           </span>
         ))}
       </div>
@@ -46,7 +63,7 @@ export function EditionBanner({ entity }: { entity: CodexEntity }): ReactElement
         {entity.legacyOf.map((id, i) => (
           <span key={id}>
             {i > 0 ? ", " : ""}
-            <EntityIdLink id={id} />
+            <EntityIdLink id={id} ctx={ctx} />
           </span>
         ))}{" "}
         (legacy version)

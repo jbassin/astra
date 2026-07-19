@@ -20,7 +20,6 @@ import type { EntityPageData } from "@/server/entityPageData";
 import { Button, EditionIcon, Input } from "@/ui";
 import { cx } from "@/ui/cx";
 
-import { humanizeSlug } from "../render/text";
 import { activeFilterPills } from "./activeFilterPills";
 import {
   columnsFor,
@@ -820,7 +819,7 @@ export function BrowseListing({
             ) : (
               <BrowseEmptyState
                 onClearFilters={handleClear}
-                noun={humanizeSlug(category).toLowerCase()}
+                noun={displayCategoryName(category).toLowerCase()}
               />
             )
           ) : (
@@ -855,8 +854,8 @@ export function BrowseListing({
             <p className="codex-entry-pane-placeholder">Select a row to preview it here.</p>
           ) : entryData === null || entryData === undefined ? (
             <p className="codex-entry-pane-message">
-              &ldquo;{entrySlug}&rdquo; wasn&rsquo;t found in {humanizeSlug(category).toLowerCase()}
-              .
+              &ldquo;{entrySlug}&rdquo; wasn&rsquo;t found in{" "}
+              {displayCategoryName(category).toLowerCase()}.
             </p>
           ) : !entryVisible ? (
             <div className="codex-entry-pane-message">

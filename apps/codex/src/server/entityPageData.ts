@@ -109,7 +109,10 @@ export interface EntityPageData {
 
 /** Every depth-0 embed target reachable from an entity's own body/loreBody/
  * embedded-item bodies (the exact set `collectEmbedTargetIds` computes for each),
- * deduplicated, in first-encountered order. */
+ * PLUS (D29-109a, P11 S5, #14) its own `remasteredAs`/`legacyOf` pointer ids —
+ * `EditionBanner`'s pointer-box name resolves through this SAME prefetch map
+ * (`ctx.resolveEmbed`), no second server round-trip. Deduplicated, in
+ * first-encountered order. */
 function entityEmbedTargetIds(entity: CodexEntity): string[] {
   const ids = new Set<string>();
   for (const id of collectEmbedTargetIds(entity.body)) ids.add(id);
@@ -119,6 +122,8 @@ function entityEmbedTargetIds(entity: CodexEntity): string[] {
       for (const id of collectEmbedTargetIds(item.body)) ids.add(id);
     }
   }
+  for (const id of entity.remasteredAs ?? []) ids.add(id);
+  for (const id of entity.legacyOf ?? []) ids.add(id);
   return [...ids];
 }
 

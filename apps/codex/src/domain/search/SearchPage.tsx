@@ -36,7 +36,8 @@ import {
 
 import { BrowseEmptyState } from "@/domain/browse/EmptyState";
 import { collidingNames } from "@/domain/browse/filterEngine";
-import { capitalize, humanizeSlug } from "@/domain/render/text";
+import { displayCategoryName } from "@/domain/render/displayCategoryName";
+import { capitalize } from "@/domain/render/text";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import { recordSearch } from "@/server/telemetryFns";
 import { EditionIcon } from "@/ui";
@@ -296,7 +297,7 @@ export function SearchPage({
             title="Category"
             counts={filterCounts.category}
             selected={state.category}
-            labelOf={humanizeSlug}
+            labelOf={displayCategoryName}
             onToggle={(v) => toggleDimension("category", v)}
           />
           <FilterSection
@@ -400,9 +401,14 @@ function SearchResultRow({
         ) : null}
       </a>
       <span className="codex-listing-source">
-        {humanizeSlug(item.category)}
+        {displayCategoryName(item.category)}
         {item.level !== undefined ? ` · Lvl ${item.level}` : ""}
         {item.rarity !== undefined ? ` · ${capitalize(item.rarity)}` : ""}
+        {/* D29-101c render half (P11 S5) — the owning-class label (S1's
+            `meta.class`, class-feature entities), the one field `/search`
+            rows were still missing (rarity/level/category already
+            rendered). */}
+        {item.class !== undefined ? ` · ${item.class}` : ""}
         <span title={item.book}> · {abbreviateBook(item.book) ?? item.book}</span>
       </span>
       <EditionIcon edition={item.edition === "remaster" ? "remaster" : "legacy"} />

@@ -731,3 +731,138 @@ navData.test}.{ts,tsx}`, `src/domain/render/{EntityRenderPane,entityPage}.tsx`,
 `src/server/directoryData.test.ts`, `src/ssrSmoke.test.ts`, `src/styles/globals.css`; new
 `src/domain/nav/{HeaderTitle,HeaderTitle.test}.tsx`,
 `src/domain/render/{displayCategoryName,displayCategoryName.test}.ts`.
+
+**S5 (search meta render + polish batch, D29-101c-render + D29-109) — all six sub-decisions
+landed, CI green, live-verified against a spare-port production server + a scratch search
+index.** Omnibar rows gain rarity + owning class (level already rendered, category rides the
+group header — the draft's per-row category duplicate stays struck); `/search` rows gain
+class (rarity/level/category already rendered pre-S5) — both consume S1's already-wired
+`meta.class`/`meta.rarity` on `SearchDisplayResult`, S5 only renders them. `entityPageData.ts`'s
+`entityEmbedTargetIds` folds `remasteredAs`/`legacyOf` into the SAME embeds prefetch (no
+second round-trip); `EditionBanner` takes `ctx`, renders `Name (Book)` via `ctx.resolveEmbed`,
+raw-id fail-soft. New `headingIds.ts` (GitHub-slugger-style — reuses the existing ingest-lane
+`sluggify`, already shaped right, rather than reimplementing — + a per-page `-2`/`-3` collision
+assigner) wired into `nodes.tsx`'s heading case, `entityPage.tsx`'s Lore h2, and
+`AttachedSidebars.tsx`'s h2/h3; a FRESH assigner is created per page render
+(`EntityRenderPane.tsx`; `regen-goldens.ts`/`goldens.test.tsx` mirror this per-golden-call,
+since both share ONE ctx across all 7 fixture entities and baking collision state into that
+shared ctx would leak ids across unrelated pages). New `TableOfContents.tsx` — a pure client
+island (SSR renders nothing, `Popover.tsx`'s own posture), scans `.codex-entity-page` for
+`h2..h6[id]` post-hydration, mounts a collapsible "On this page" box at ≥8 headings; mounted in
+`EntityRenderPane` gated on `standalone`, which structurally places it inside
+`.codex-rules-main` for rules docs for free (no second code path). `entityPage.tsx` renders
+"Find everything with this trait →" → `/search?traits=<entity.slug>` for `category === "trait"`.
+`displayCategoryName` wired at the 8 remaining enumerated sites (S4 had already wired header
+title/listing h1/route `<title>`). `router.tsx`'s `DefaultNotFoundComponent` (now exported)
+derives the attempted slug via a new pure `slugFromPathname` (mirrors `HeaderTitle.tsx`'s own
+pure-fn/thin-wrapper split), adds "Search for "<slug>" →" → `/search?q=<slug>`.
+
+**Golden churn set, hand-checked (not assumed):** `creature-dragon.html` — 1 diff op, `id=
+"adult-adamantine-dragon"` on the one body h2, correct. `spell-heal.html` — 2 diff ops, bare
+ids `spell/heal@legacy`/`spell/heal` replaced with `Heal (Core Rulebook)`/`Heal (Player Core)`,
+correct. `class-investigator.html` — 44 diff ops, ALL pure inserts (Python `difflib` opcode-type
+set == `{insert}` — no text/structure moved), one `id=` per heading, exactly one legitimate
+`-2` collision (`initial-proficiencies-2`), zero id duplicates, correct.
+`creature-dragon-spellcaster.html`/`weapon-chakri.html`/`feat-camouflage-coat.html`/
+`rules-nature-crafting.html` — byte-identical (`cmp`), zero churn (no headings/pointers in
+those fixtures' render paths).
+
+**Verification matrix (spare port 10399, never stopping the live `astra-codex` container —
+confirmed healthy throughout via `docker ps`; `data/corpus`/`data/search` never touched):** a
+scratch search index was built via a throwaway `scratch-build-search.ts` calling the existing
+`buildSearchIndex(reader, outDir)` — pure over its `(reader, outDir)` inputs — against the
+CURRENT (pre-P11-transform) `data/corpus` read-only, writing to a scratch outDir (46,192 pages,
+~30s); `config.kdl`'s codex `port`/`data-path` were temporarily edited to point at a scratch
+dir (symlinked `corpus` → the real one, `search/pagefind` → the scratch build) and FULLY
+REVERTED (`git checkout --`, confirmed zero diff) before finishing; the scratch script deleted.
+Omnibar "shield block" (scratch index): 8 distinguishable rows (PC1 Druid/PC1 Fighter/bare
+PC1/PC2 Champion/BC Commander/BC Guardian/G&G-R Inventor/WoI Exemplar). Leads-to excerpt
+(scratch index): "Fledgling Flight" now excerpts real body prose, not the heading. fireball/heal
+rank #1 (scratch index, mechanism itself untouched by S1 either way). `/search?traits=fire`
+(no q): 539 total (20 shown + 519 remaining) — **against the LIVE (pre-drop) index too**, since
+the traits filter predates P11; not zero, proving S1's null-query fix live. Trait cross-nav:
+`/trait/fire` → click → `/search?traits=fire`, end-to-end. `/spell/heal` pointer box: "Heal
+(Core Rulebook)"/"Heal (Player Core)", live corpus. Pointer-box fail-soft: proven via the golden
++ 5 new unit tests only — the live (untransformed) corpus predates S1's drop, so no genuine
+dangling pointer is reachable yet. ToC: `/class/investigator` (87 links, open, anchor-click
+updates the hash), `/rules/chapter-1-introduction` (13 links, confirmed mounted INSIDE
+`.codex-rules-main`), `/feat/camouflage-coat` (<8 headings, none). Heading ids in SSR HTML:
+confirmed via `curl -a` (the documented "React SSR binary-grep" gotcha — non-ASCII bytes need
+`-a`). Route `<title>` on `/hunters-edge`: "Hunter's Edge · codex". Garbage URL 404 + search
+link: both a single-segment path (`/totally-not-a-real-category`, resolved through the dynamic
+`/$category/` route's own server-side notFound) and a genuinely router-unmatched multi-segment
+path (`/nonexistent/gibberish/path`), both live. One h1/document: holds on every page checked
+EXCEPT `class/investigator` (remaster, non-`@legacy`) — see the gate-H flag below.
+
+**▶ THREE items S6 must re-prove post-reindex** (all scratch-index-verified here, not live-index
+— the real reindex will move the numbers): omnibar rarity+class rendering (unaffected by the
+drop itself, but re-verify against the real index build), leads-to exclusion (same), and the
+`/search?traits=fire` total — measured **539** here (pre-drop corpus, includes the ~1,384
+activation-debris entities S1's drop removes) vs the spec's own **686**-scale pin for the
+POST-drop corpus; not a discrepancy, just two different corpus states — S6 re-measures at the
+real number.
+
+**`displayCategoryName` 8-site checklist (all verified via the `hunters-edge` → "Hunter's Edge"
+apostrophe override):** nav labels (`HeaderNav.tsx` `NavPanel`, code-verified — hunters-edge
+isn't in the curated 28, exercised via other categories rendering correctly) · listing
+h1/header title (S4, unchanged) · route `<title>` (S4, unchanged) · entityPage type tag
+(`entityPage.tsx`, live: `/hunters-edge/flurry` → "Hunter's Edge") · `/categories` links
+(`listing.tsx`, live: "Hunter's Edge" → `/hunters-edge`) · Omnibar group titles (`Omnibar.tsx`,
+code-verified — live attempt intercepted by the D29-81 name-match pin, hunters-edge entities
+matched exactly and landed in "Name matches" instead of a category group) · SearchPage meta
+(`SearchPage.tsx`, live: Category filter checkbox "Hunter's Edge 4" + row text "Hunter's Edge ·
+Common") · BrowseListing empty-state noun (`BrowseListing.tsx`, live: "No hunter's edge match
+the current filters.") **+ a bonus (not spec-enumerated, same file/pattern): the entry-pane
+"wasn't found in X" message, live-verified "wasn't found in hunter's edge."**
+
+**Deviations (all four recorded, not silently done — orchestrator-accepted):** (1) the
+BrowseListing entry-pane not-found message also wired to `displayCategoryName` — identical
+category-name-in-lowercase-prose pattern, same file/decision as the spec's own enumerated
+noun. (2) `EditionBanner`'s `Name (Book)` uses the FULL book title, never abbreviated (matches
+`Citation`'s own convention — the spec text didn't specify). (3) the ToC scan scope is
+`.codex-entity-page` only (body + Lore, since Lore nests inside that article) — deliberately
+EXCLUDES `AttachedSidebars`' own h2/h3 (a sibling `<section>` outside the article) from the
+"on this page" list, to avoid a new wrapping DOM element around `EntityRenderPane`'s two
+siblings; those headings still get real SSR anchor ids (directly linkable), just aren't listed
+in the ToC. (4) heading-id assignment applies uniformly regardless of embed depth (inside an
+inlined embed card too) — simplest consistent behavior, not explicitly excluded.
+
+**⭐ Gate-H flag, found not caused:** `class/investigator` (remaster, NOT `@legacy` — a
+different entity from the golden's fixture pick) carries 3 literal `level: 1` headings in its
+real AoN body, rendering 3 extra `<h1>` tags beyond the standalone entity name — a pre-existing
+structural fact (verified: the `Math.min(Math.max(node.level,1),6)` level→tag clamp in
+`nodes.tsx` is untouched by this slice, only `id=` was added to whatever tag was already being
+rendered). Every OTHER page checked (`spell/heal`, `creature/adamantine-dragon-adult`,
+`rules/chapter-1-introduction`, `class/investigator@legacy`, `feat/camouflage-coat`) holds
+exactly one h1 — S4's invariant is not regressed, this is an isolated real-corpus a11y gap for
+gate H to consider, not S5's to fix.
+
+**Tests:** new `headingIds.test.ts` (11 cases), `TableOfContents.test.tsx` (6 cases),
+`router.test.tsx` (13 cases — pure `slugFromPathname` + `DefaultNotFoundComponent` mounted
+against a SYNTHETIC router, since the real `getRouter()` route tree is server-fn-backed and
+throws "No Start context found in AsyncLocalStorage" outside the actual request runtime,
+`entityPageData.ts`'s own documented gotcha — a single-segment path like
+`/totally-not-a-real-slug` genuinely matches the dynamic `/$category/` route rather than going
+unmatched, so only a real production server can prove that path end-to-end, done above via
+Playwright); plus additions to `nodes.test.tsx` (heading id wiring/collision), `entityPage
+.test.tsx` (trait cross-nav), `editionBanner.test.tsx` (5 new pointer-box cases incl.
+fail-soft), `entityPageData.test.ts` (rewrote the "no embeds" pin now that `spell/heal`'s
+`legacyOf` populates it + added the fail-soft case).
+
+**CI:** `tsc --noEmit` (codex) clean; `vp run -r typecheck` 32/32 clean; `oxlint --type-aware
+--deny-warnings --threads=4 apps libs/ts` clean; `format:check` clean (oxfmt auto-fixed 4
+files' formatting only, re-diffed to confirm no logic change). `vp run -r test` 26 tasks — 2
+failed, both pre-existing/environmental: codex's 7 `ssrSmoke.test.ts` failures (exact-NAME
+match to the documented `$category/ browse route`×5 + `?entry= deep link`×2 residue) and
+`akasha-frontend` exit 137 (OOM under the 26-way parallel run — re-ran isolated, 13/13 files /
+56/56 tests pass, akasha-frontend untouched by this slice). `vp run -r build` 26/26 clean. The
+`routeTree.gen.ts` flap recurred once (build lane) — reverted before commit.
+
+**Files:** modified `goldens/{class-investigator,creature-dragon,spell-heal}.html`,
+`scripts/regen-goldens.ts`, `src/domain/browse/BrowseListing.tsx`,
+`src/domain/nav/HeaderNav.tsx`, `src/domain/render/{AttachedSidebars,EntityRenderPane,
+displayCategoryName,editionBanner,editionBanner.test,entityPage,entityPage.test,goldens.test,
+listing,nodes,nodes.test}.{ts,tsx}`, `src/domain/search/{Omnibar,SearchPage}.tsx`,
+`src/router.tsx`, `src/server/{entityPageData,entityPageData.test}.ts`; new `src/domain/render/
+{headingIds,headingIds.test,TableOfContents,TableOfContents.test}.{ts,tsx}`,
+`src/router.test.tsx`.

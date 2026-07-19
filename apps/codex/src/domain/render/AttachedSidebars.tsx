@@ -53,7 +53,9 @@ export function AttachedSidebars({
 
   return (
     <section className="codex-attached-sidebars" aria-label="Related sidebars">
-      <h2 className="codex-heading">Sidebars</h2>
+      <h2 className="codex-heading" id={ctx.headingId?.("Sidebars")}>
+        Sidebars
+      </h2>
       {hiddenCount > 0 ? (
         <p className="codex-rules-hidden-note">
           {hiddenCount === sidebars.length ? `all ${hiddenCount} hidden` : `${hiddenCount} hidden`}
@@ -61,7 +63,7 @@ export function AttachedSidebars({
       ) : null}
       {visible.map((sidebar) => (
         <aside key={sidebar.id} className="codex-card codex-attached-sidebar">
-          <h3 className="codex-attached-sidebar-title">
+          <h3 className="codex-attached-sidebar-title" id={ctx.headingId?.(sidebar.name)}>
             {sidebar.name}
             {sidebar.superseded ? <EditionIcon edition="legacy" /> : null}
           </h3>

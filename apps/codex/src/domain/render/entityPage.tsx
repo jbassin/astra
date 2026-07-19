@@ -4,6 +4,7 @@ import type { CodexEntity } from "../../schema/entity";
 import { SIZE_LABELS } from "../browse/facetDefs";
 import { categoryGroupOf } from "./categoryGroup";
 import { Citation } from "./citation";
+import { displayCategoryName } from "./displayCategoryName";
 import { EditionBanner, EditionPill } from "./editionBanner";
 import {
   EquipmentFacetHeader,
@@ -14,7 +15,7 @@ import {
 } from "./facetHeader";
 import { type RenderCtx, renderNodes } from "./nodes";
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
-import { capitalize, humanizeSlug } from "./text";
+import { capitalize } from "./text";
 import { CodexTraitPills } from "./traits";
 
 /**
@@ -39,7 +40,10 @@ const AON_SITE_ROOT = "https://2e.aonprd.com";
  * optional (D29-3), so the tag degrades to the bare category label rather
  * than omitting the whole row. */
 function entityTypeTag(entity: CodexEntity): string {
-  const label = humanizeSlug(entity.category);
+  // D29-109d (P11 S5, #19) — `displayCategoryName`, not the bare
+  // `humanizeSlug` this used before: `entityTypeTag`'s label IS the
+  // category name (the seam's own enumerated "entityPage type tag" site).
+  const label = displayCategoryName(entity.category);
   return entity.level !== undefined ? `${label} ${entity.level}` : label;
 }
 
@@ -52,6 +56,20 @@ function entityTypeTag(entity: CodexEntity): string {
  * hazard's `facets.size` is 81% Foundry default-fill noise with no AoN
  * precedent for displaying it. */
 const SIZE_CHIP_CATEGORIES: ReadonlySet<string> = new Set(["creature", "vehicle"]);
+
+/** D29-109c (P11 S5, #16) — the trait-page dead-end fix: "Find everything
+ * with this trait" links to the filter-only `/search?traits=<trait>` view
+ * (S1's null-query fix, D29-101c, is what makes that a real, non-empty
+ * result set). */
+function TraitCrossNav({ trait }: { trait: string }): ReactElement {
+  return (
+    <p className="codex-trait-cross-nav">
+      <a href={`/search?traits=${encodeURIComponent(trait)}`}>
+        Find everything with this trait &rarr;
+      </a>
+    </p>
+  );
+}
 
 /**
  * D29-112 (P11 S4) — `standalone` (default `false`, so every existing
@@ -119,7 +137,7 @@ export function EntityPage({
             </a>
           ) : null}
         </div>
-        <EditionBanner entity={entity} />
+        <EditionBanner entity={entity} ctx={ctx} />
       </header>
 
       {/* D29-72 (P7): when an AoN body is present, the AoN prose is the
@@ -151,6 +169,16 @@ export function EntityPage({
       {group === "equipment" ? <EquipmentFacetHeader entity={entity} ctx={ctx} /> : null}
       {group === "feat" ? <FeatFacetHeader entity={entity} ctx={ctx} /> : null}
       {group === "generic" ? <GenericFacetLine entity={entity} ctx={ctx} /> : null}
+      {/* D29-109c (P11 S5, #16) — trait pages only; the lowest-risk
+          dead-end fix (per-category links are OUT, future memo). Links to
+          `/search?traits=<slug>`, which the S1 null-query fix
+          (`SearchPage.tsx`'s D29-101c) makes a genuinely non-empty
+          filter-only result set. `entity.slug` (not `entity.id`) is the
+          bare trait TOKEN every OTHER entity's own `traits`/`filters.
+          traits` array carries (`build-search.ts`'s `foldTrait` is a
+          lowercase fold of that same token — trait entity slugs are
+          already lowercase, D29-1 identity). */}
+      {entity.category === "trait" ? <TraitCrossNav trait={entity.slug} /> : null}
 
       {entity.body.length === 0 && entity.embeddedItems !== undefined ? (
         <EmbeddedItemSections items={entity.embeddedItems} ctx={ctx} />
@@ -160,7 +188,7 @@ export function EntityPage({
 
       {entity.loreBody !== undefined ? (
         <section className="codex-card codex-card-prose codex-lore">
-          <h2>Lore</h2>
+          <h2 id={ctx.headingId?.("Lore")}>Lore</h2>
           <div className="codex-content">{renderNodes(entity.loreBody, ctx)}</div>
         </section>
       ) : null}

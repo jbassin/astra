@@ -15,14 +15,17 @@ import { humanizeSlug } from "./text";
  * mismatches the scope doc found live in AoN glossary category-PAGES that
  * aren't themselves nav/listing top-level categories — out of scope here.
  *
- * S4 consumes this in exactly the sites D29-112 itself calls out: the root
+ * S4 consumed this in exactly the sites D29-112 itself called out: the root
  * header's title (`HeaderTitle.tsx`), the listing's in-content h1
  * (`BrowseListing.tsx`), and the `/{category}` route's own `<title>`
- * (`routes/$category/index.tsx`). D29-109d's own remaining consumer list
- * (nav labels, entityPage type tag, `/categories` links, Omnibar group
- * titles, SearchPage meta, the BrowseListing empty-state noun) is S5's job
- * — deliberately NOT touched here, so a diff against this slice's scope
- * stays legible.
+ * (`routes/$category/index.tsx`). D29-109d (P11 S5) wires the remaining
+ * enumerated consumer list: nav labels (`HeaderNav.tsx`'s `NavPanel`),
+ * `entityPage.tsx`'s `entityTypeTag`, `/categories` links (`listing.tsx`'s
+ * `CategoryDirectory`), Omnibar group titles + SearchPage's Category filter
+ * labels/result-row category text (`Omnibar.tsx`/`SearchPage.tsx`), and the
+ * BrowseListing empty-state noun (+ its sibling entry-pane "wasn't found in
+ * X" message, the same category-name-in-prose pattern, S5-added for
+ * consistency though the spec's own enumerated list names only the noun).
  */
 const CATEGORY_NAME_OVERRIDES: Readonly<Record<string, string>> = {
   "hunters-edge": "Hunter's Edge",

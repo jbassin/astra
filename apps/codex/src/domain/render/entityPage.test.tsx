@@ -73,3 +73,17 @@ describe("entityPage.tsx: header size chip (P10, D29-95)", () => {
     expect(out).not.toContain("codex-entity-size");
   });
 });
+
+describe("entityPage.tsx: trait cross-nav (D29-109c, P11 S5, #16)", () => {
+  it("a trait page renders the 'Find everything with this trait' link to /search?traits=<slug>", () => {
+    const entity = { ...makeEntity("trait", {}), slug: "fire" };
+    const out = html(entity);
+    expect(out).toContain('href="/search?traits=fire"');
+    expect(out).toContain("Find everything with this trait");
+  });
+
+  it("every OTHER category renders no trait cross-nav at all", () => {
+    const out = html(makeEntity("spell", {}));
+    expect(out).not.toContain("codex-trait-cross-nav");
+  });
+});
