@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes, ReactElement } from "react";
+import { forwardRef } from "react";
+import type { ButtonHTMLAttributes } from "react";
 
 import { cx } from "./cx";
 
@@ -12,18 +13,24 @@ const VARIANT_CLASS = {
  * with the gothic lib's `Button`. `variant="solid"` is the maroon
  * call-to-action fill; `ghost` (the default) is the quiet tan/transparent
  * outline. Always sets an explicit `type`.
+ *
+ * P13 S2 (D29-123) — widened to `forwardRef`, same additive-only posture as
+ * `Input`'s own P13 S1 widening (`Input.tsx`'s own doc comment): the
+ * "Filters" toggle button needs a real DOM node so open/close can move
+ * focus back onto it (`BrowseListing.tsx`'s own focus-management effect).
+ * Every existing prop-only call site is byte-identical; `ref` was simply
+ * inaccessible before.
  */
-export function Button({
-  variant = "ghost",
-  type,
-  className,
-  ...props
-}: ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "solid" | "ghost" }): ReactElement {
+export const Button = forwardRef<
+  HTMLButtonElement,
+  ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "solid" | "ghost" }
+>(function Button({ variant = "ghost", type, className, ...props }, ref) {
   return (
     <button
+      ref={ref}
       type={type ?? "button"}
       className={cx("codex-ui-button", VARIANT_CLASS[variant], className)}
       {...props}
     />
   );
-}
+});

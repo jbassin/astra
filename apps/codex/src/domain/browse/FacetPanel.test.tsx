@@ -53,7 +53,15 @@ const ROWS: IndexRow[] = [
 ];
 
 function renderPanel(state: BrowseFilterState = emptyFilterState()) {
-  return render(<FacetPanel category="feat" rows={ROWS} state={state} onChange={vi.fn()} />);
+  return render(
+    <FacetPanel
+      category="feat"
+      rows={ROWS}
+      state={state}
+      onChange={vi.fn()}
+      onSupersededReveal={vi.fn()}
+    />,
+  );
 }
 
 describe("FacetPanel range widgets — no 'Must have a value' checkbox anywhere (D29-61(c))", () => {
@@ -151,6 +159,7 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         rows={twoBookRows}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     expect(screen.queryByRole("button", { name: "Search Source" })).toBeNull();
@@ -163,6 +172,7 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         rows={MANY_SOURCE_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     expect(screen.getByText("GMG")).not.toBeNull();
@@ -180,6 +190,7 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         rows={MANY_SOURCE_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     const input = expandOptionSearch("Source");
@@ -199,6 +210,7 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         rows={MANY_SOURCE_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     const labels = screen.getAllByText(/^(CRB|GMG)$/).map((el) => el.textContent);
@@ -212,6 +224,7 @@ describe("FacetPanel: Source section (D29-107 a/b, D29-125 OptionSearch)", () =>
         rows={MANY_SOURCE_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     const input = expandOptionSearch("Source");
@@ -234,6 +247,7 @@ describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 re
         rows={MANY_TRAIT_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     expect(screen.getByText("fire")).not.toBeNull();
@@ -251,6 +265,7 @@ describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 re
         rows={MANY_TRAIT_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     expect(screen.getByText("click to require · again to exclude · again to reset")).not.toBeNull();
@@ -261,7 +276,15 @@ describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 re
       ...emptyFilterState(),
       traits: { include: new Set(["fire"]), exclude: new Set(["cold"]) },
     };
-    render(<FacetPanel category="feat" rows={MANY_TRAIT_ROWS} state={state} onChange={vi.fn()} />);
+    render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_TRAIT_ROWS}
+        state={state}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+      />,
+    );
     expect(screen.getByRole("button", { name: "fire — required" })).not.toBeNull();
     expect(screen.getByRole("button", { name: "cold — excluded" })).not.toBeNull();
     expect(screen.getByRole("button", { name: "magical" })).not.toBeNull();
@@ -273,7 +296,13 @@ describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 re
       traits: { include: new Set(["magical"]), exclude: new Set() },
     };
     const { container } = render(
-      <FacetPanel category="feat" rows={MANY_TRAIT_ROWS} state={state} onChange={vi.fn()} />,
+      <FacetPanel
+        category="feat"
+        rows={MANY_TRAIT_ROWS}
+        state={state}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+      />,
     );
     const chipTexts = [...container.querySelectorAll(".codex-trait-chip")].map((el) =>
       el.textContent?.replace(/\d+$/, "").trim(),
@@ -291,6 +320,7 @@ describe("FacetPanel: Traits section (D29-107a, D29-125 OptionSearch, D29-127 re
         rows={manyTraitRows}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     expect(container.querySelectorAll(".codex-trait-chips li")).toHaveLength(
@@ -319,6 +349,7 @@ describe("FacetPanel: Rarity section (D29-107c rank order + D29-126 chips + D29-
         rows={RARITY_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     const rarityHeading = screen.getByText("Rarity");
@@ -341,6 +372,7 @@ describe("FacetPanel: Rarity section (D29-107c rank order + D29-126 chips + D29-
         rows={RARITY_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     const button = screen.getByRole("button", { name: /Common/ });
@@ -361,6 +393,7 @@ describe("FacetPanel: Edition section (D29-126 icon + VISIBLE text)", () => {
         rows={editionRows}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     // Scoped to the label span's OWN direct text-node child — `EditionIcon`'s
@@ -395,6 +428,7 @@ describe("FacetPanel: derived enum facet humanization + 'Unspecified (N)' (D29-1
         rows={CREATURE_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     expect(screen.getByText("Medium")).not.toBeNull();
@@ -410,6 +444,7 @@ describe("FacetPanel: derived enum facet humanization + 'Unspecified (N)' (D29-1
         rows={CREATURE_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     expect(screen.getByText("Unspecified (1)")).not.toBeNull();
@@ -422,7 +457,13 @@ describe("FacetPanel: derived enum facet humanization + 'Unspecified (N)' (D29-1
       row({ id: "feat/b", name: "B", facets: { itemCategory: "ancestry" } }),
     ];
     render(
-      <FacetPanel category="feat" rows={featRows} state={emptyFilterState()} onChange={vi.fn()} />,
+      <FacetPanel
+        category="feat"
+        rows={featRows}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+      />,
     );
     expect(screen.getByText("Class Feature")).not.toBeNull();
     expect(screen.queryByText("classfeature")).toBeNull();
@@ -437,6 +478,7 @@ describe("FacetPanel: custom checkbox styling hook (D29-126) present without rem
         rows={MANY_SOURCE_ROWS}
         state={emptyFilterState()}
         onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
       />,
     );
     const sourceHeading = screen.getByText("Source");
@@ -445,5 +487,168 @@ describe("FacetPanel: custom checkbox styling hook (D29-126) present without rem
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
     const checkboxes = within(section!).getAllByRole("checkbox");
     expect(checkboxes.length).toBeGreaterThan(0);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P13 S2 (D29-124) — active-section value-count badge + per-section clear ×.
+// ---------------------------------------------------------------------------
+
+describe("FacetPanel: active-section badge + per-section clear (D29-124)", () => {
+  const RARITY_ROWS: IndexRow[] = [
+    row({ id: "condition/a", name: "A", rarity: "unique" }),
+    row({ id: "condition/b", name: "B", rarity: "common" }),
+    row({ id: "condition/c", name: "C", rarity: "rare" }),
+    row({ id: "condition/d", name: "D", rarity: "uncommon" }),
+  ];
+
+  it("an inactive section (no selection) renders neither a badge nor a clear ×", () => {
+    render(
+      <FacetPanel
+        category="condition"
+        rows={RARITY_ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+      />,
+    );
+    const rarityHeading = screen.getByText("Rarity");
+    const section = rarityHeading.closest("section");
+    expect(section).not.toBeNull();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
+    expect(within(section!).queryByLabelText("Clear Rarity")).toBeNull();
+    expect(section?.querySelector(".codex-facet-title-badge")).toBeNull();
+  });
+
+  it("a single-value selection (an enum core dimension, Rarity) shows a '1' badge and a working per-section clear", () => {
+    const state: BrowseFilterState = { ...emptyFilterState(), rarity: new Set(["common"]) };
+    const onChange = vi.fn();
+    render(
+      <FacetPanel
+        category="condition"
+        rows={RARITY_ROWS}
+        state={state}
+        onChange={onChange}
+        onSupersededReveal={vi.fn()}
+      />,
+    );
+    const rarityHeading = screen.getByText("Rarity");
+    const section = rarityHeading.closest("section");
+    expect(section).not.toBeNull();
+    // Scoped to the TITLE badge specifically (`.codex-facet-title-badge`) —
+    // a bare `getByText("1")` would also match a chip's own per-option
+    // count span, an unrelated "1".
+    expect(section?.querySelector(".codex-facet-title-badge")?.textContent).toBe("1");
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
+    const clearButton = within(section!).getByLabelText("Clear Rarity");
+    fireEvent.click(clearButton);
+    expect(onChange).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- exercised above
+    const updater = onChange.mock.calls[0]![0] as (prev: BrowseFilterState) => BrowseFilterState;
+    expect(updater(state).rarity.size).toBe(0); // withoutDimension — only rarity cleared
+  });
+
+  it("a multi-value enum selection's badge counts every selected value, not just whether any is set", () => {
+    const state: BrowseFilterState = {
+      ...emptyFilterState(),
+      traits: { include: new Set(["fire", "cold"]), exclude: new Set(["magical"]) },
+    };
+    render(
+      <FacetPanel
+        category="feat"
+        rows={MANY_TRAIT_ROWS}
+        state={state}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+      />,
+    );
+    const traitsHeading = screen.getByText("Traits");
+    const section = traitsHeading.closest("section");
+    expect(section).not.toBeNull();
+    expect(section?.querySelector(".codex-facet-title-badge")?.textContent).toBe("3"); // 2 include + 1 exclude
+  });
+
+  it("an active range facet (Level) shows a '1' badge (not the raw min/max count) and clears via the same ×", () => {
+    const state: BrowseFilterState = { ...emptyFilterState(), level: { min: 2, max: 5 } };
+    const onChange = vi.fn();
+    render(
+      <FacetPanel
+        category="feat"
+        rows={ROWS}
+        state={state}
+        onChange={onChange}
+        onSupersededReveal={vi.fn()}
+      />,
+    );
+    const levelHeading = screen.getByText("Level");
+    const section = levelHeading.closest("section");
+    expect(section).not.toBeNull();
+    expect(section?.querySelector(".codex-facet-title-badge")?.textContent).toBe("1");
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
+    fireEvent.click(within(section!).getByLabelText("Clear Level"));
+    expect(onChange).toHaveBeenCalledTimes(1);
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- exercised above
+    const updater = onChange.mock.calls[0]![0] as (prev: BrowseFilterState) => BrowseFilterState;
+    expect(updater(state).level).toEqual({});
+  });
+
+  it("the Superseded section never carries a badge or clear × (its own checkbox is its clear affordance, D29-129)", () => {
+    const state: BrowseFilterState = { ...emptyFilterState(), superseded: true };
+    render(
+      <FacetPanel
+        category="feat"
+        rows={ROWS}
+        state={state}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+      />,
+    );
+    const supersededHeading = screen.getByText("Including superseded");
+    const section = supersededHeading.closest("section");
+    expect(section).not.toBeNull();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- asserted above
+    expect(within(section!).queryByLabelText(/^Clear /)).toBeNull();
+    expect(section?.querySelector(".codex-facet-title-badge")).toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P13 S2 (D29-129 consolidation) — the Superseded toggle writes through
+// `onSupersededReveal`, NEVER `onChange`, and the blue callout explainer is
+// gone (a one-line muted caption replaces it).
+// ---------------------------------------------------------------------------
+
+describe("FacetPanel: Superseded section consolidation (D29-129)", () => {
+  it("the blue callout explainer is gone; a plain muted caption replaces it", () => {
+    const { container } = render(
+      <FacetPanel
+        category="feat"
+        rows={ROWS}
+        state={emptyFilterState()}
+        onChange={vi.fn()}
+        onSupersededReveal={vi.fn()}
+      />,
+    );
+    expect(container.querySelector(".codex-facet-superseded-explainer")).toBeNull();
+    expect(container.querySelector(".codex-callout-blue")).toBeNull();
+    expect(container.querySelector(".codex-facet-superseded-caption")).not.toBeNull();
+  });
+
+  it("toggling the checkbox calls onSupersededReveal directly — NEVER the general onChange path (the resetScroll divergence this consolidation fixes)", () => {
+    const onChange = vi.fn();
+    const onSupersededReveal = vi.fn();
+    render(
+      <FacetPanel
+        category="feat"
+        rows={ROWS}
+        state={emptyFilterState()}
+        onChange={onChange}
+        onSupersededReveal={onSupersededReveal}
+      />,
+    );
+    const checkbox = screen.getByLabelText("Include superseded content");
+    fireEvent.click(checkbox);
+    expect(onSupersededReveal).toHaveBeenCalledWith(true);
+    expect(onChange).not.toHaveBeenCalled();
   });
 });

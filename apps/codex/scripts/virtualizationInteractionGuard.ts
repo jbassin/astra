@@ -596,6 +596,291 @@ try {
     if (popup) await popup.close();
     await context.close();
   }
+
+  // ---------------------------------------------------------------------
+  // P13 S2 (D29-123/124) — the pane-swap cases: NET-NEW coverage (this
+  // guard had ZERO filter coverage before this slice). Real-Chromium-only
+  // territory the same way the rest of this file is (jsdom can't drive
+  // `<dialog>`'s native Escape-to-cancel behavior at all, and can't verify
+  // an actual absence of a window-scroll jump the way a real browser can).
+  // ---------------------------------------------------------------------
+
+  // --- Case: opening the pane doesn't move the listing's own scroll -------
+  {
+    const context = await browser.newContext({ viewport: VIEWPORT });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+    await page.locator(".codex-listing-row").first().waitFor();
+    await waitInteractiveViaProbe(page);
+    await page.evaluate(() => window.scrollTo(0, 1200));
+    await page.waitForTimeout(150);
+    const scrollBefore = await page.evaluate(() => window.scrollY);
+    const filtersButton = page.getByRole("button", { name: /^Filters/ });
+    // A plain in-page `.click()` (bypassing Playwright's own actionability
+    // "scroll target into view first" step, which a locator `.click()`
+    // performs automatically): the Filters button lives in the page's
+    // (non-sticky) header, well above a 1200px scroll position, so a
+    // locator click here would confound the very thing this case measures
+    // — found live: the FIRST version of this case scrolled to 1200, then
+    // called `filtersButton.click()`, which itself scrolled the page back
+    // toward the button before the click landed, making "opening the pane"
+    // look like it caused the reset when the TEST's own auto-scroll did.
+    await filtersButton.evaluate((el) => (el as HTMLElement).click());
+    await page.locator(".codex-filter-pane").waitFor();
+    const scrollAfter = await page.evaluate(() => window.scrollY);
+    check(
+      "opening Filters on the two-column tier swaps in .codex-filter-pane (no <dialog> modal)",
+      await page.locator(".codex-filter-pane").isVisible(),
+    );
+    check(
+      "opening the pane never moves the listing's own window scroll position",
+      Math.abs(scrollAfter - scrollBefore) < 4,
+      `before=${scrollBefore} after=${scrollAfter}`,
+    );
+    check(
+      "the Filters button reflects aria-expanded=true while the pane is open",
+      (await filtersButton.getAttribute("aria-expanded")) === "true",
+    );
+    const closeButton = page.getByRole("button", { name: "Close filters" });
+    check(
+      "opening the pane moves focus onto its own ✕ button",
+      await closeButton.evaluate((el) => el === document.activeElement),
+    );
+    await context.close();
+  }
+
+  // --- Case: toggling a facet inside the pane narrows the listing live ----
+  {
+    const context = await browser.newContext({ viewport: VIEWPORT });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+    await page.locator(".codex-listing-row").first().waitFor();
+    await waitInteractiveViaProbe(page);
+    const countBefore = await page.locator(".codex-listing-count").textContent();
+    await page.getByRole("button", { name: /^Filters/ }).click();
+    await page.locator(".codex-filter-pane").waitFor();
+    // Edition is always present (core dimension, chip row, D29-126) — a
+    // real, corpus-size-agnostic toggle every category carries.
+    const editionChip = page
+      .locator(".codex-filter-pane .codex-toggle-chip")
+      .filter({ hasText: /Remaster|Legacy/ })
+      .first();
+    await editionChip.click();
+    await page.waitForTimeout(200);
+    const countAfter = await page.locator(".codex-listing-count").textContent();
+    check(
+      "toggling a facet inside the open pane updates the toolbar count row live",
+      countBefore !== countAfter,
+      `before="${countBefore}" after="${countAfter}"`,
+    );
+    await context.close();
+  }
+
+  // --- Case: row click while filtering closes the pane, shows the preview -
+  {
+    const context = await browser.newContext({ viewport: VIEWPORT });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+    await page.locator(".codex-listing-row").first().waitFor();
+    await waitInteractiveViaProbe(page);
+    await page.getByRole("button", { name: /^Filters/ }).click();
+    await page.locator(".codex-filter-pane").waitFor();
+    const row = page.locator(".codex-listing-row").nth(4);
+    const slug = await row.locator(".codex-listing-name").getAttribute("data-entry-slug");
+    await row.locator(".codex-listing-name").click();
+    await page.waitForTimeout(150);
+    check(
+      "row click while filtering closes the pane",
+      !(await page.locator(".codex-filter-pane").isVisible()),
+    );
+    check(
+      "...and shows that entry's preview instead",
+      entryParam(page.url()) === slug &&
+        (await page.locator(".codex-entry-pane-content").isVisible()),
+    );
+    await context.close();
+  }
+
+  // --- Case: j/k inert while focus is inside the pane; normal from the list
+  {
+    const context = await browser.newContext({ viewport: VIEWPORT });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+    await page.locator(".codex-listing-row").first().waitFor();
+    await waitInteractiveViaProbe(page); // lands row 1
+    await page.getByRole("button", { name: /^Filters/ }).click();
+    await page.locator(".codex-filter-pane").waitFor();
+    const closeButton = page.getByRole("button", { name: "Close filters" });
+    check(
+      "focus lands on the pane's ✕ at open",
+      await closeButton.evaluate((el) => el === document.activeElement),
+    );
+    await page.keyboard.press("j");
+    check(
+      "j/k with focus inside the pane is inert (focus stays on ✕, no row stole it)",
+      await closeButton.evaluate((el) => el === document.activeElement),
+    );
+    await page.keyboard.press("Escape");
+    await page.locator(".codex-filter-pane").waitFor({ state: "detached" });
+    check("Esc (pane, no OptionSearch expanded) closes the pane", true);
+    check(
+      "closing returns focus to the Filters button",
+      await page
+        .getByRole("button", { name: /^Filters/ })
+        .evaluate((el) => el === document.activeElement),
+    );
+    // Now from the LIST side: j/k moves selection and does NOT reopen the pane.
+    await page.keyboard.press("j");
+    const { slug } = await poll(
+      () => focusedRowIndex(page),
+      (r) => r.slug !== null,
+    );
+    check(
+      "j/k from the list moves real focus and does not swap in the pane",
+      slug !== null && !(await page.locator(".codex-filter-pane").isVisible()),
+    );
+    await context.close();
+  }
+
+  // --- Case: Esc sequencing — an expanded OptionSearch collapses first ----
+  {
+    const context = await browser.newContext({ viewport: VIEWPORT });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+    await page.locator(".codex-listing-row").first().waitFor();
+    await waitInteractiveViaProbe(page);
+    await page.getByRole("button", { name: /^Filters/ }).click();
+    await page.locator(".codex-filter-pane").waitFor();
+    const searchToggle = page.locator(".codex-filter-pane .codex-option-search-toggle").first();
+    const hasOptionSearch = (await searchToggle.count()) > 0;
+    if (hasOptionSearch) {
+      await searchToggle.click();
+      const input = page.locator(".codex-filter-pane .codex-option-search-input").first();
+      await input.waitFor();
+      await input.focus();
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(100);
+      check(
+        "first Esc collapses the expanded OptionSearch, pane stays open",
+        (await page.locator(".codex-filter-pane .codex-option-search-input").count()) === 0 &&
+          (await page.locator(".codex-filter-pane").isVisible()),
+      );
+      await page.keyboard.press("Escape");
+      await page.locator(".codex-filter-pane").waitFor({ state: "detached" });
+      check("second Esc closes the pane", true);
+    } else {
+      check(
+        "Esc sequencing case — no OptionSearch cleared the threshold on this category (skipped, not a failure)",
+        true,
+      );
+    }
+    await context.close();
+  }
+
+  // --- Case: the Superseded pane toggle has scroll PARITY with the toolbar
+  // reveal (D29-129 consolidation — BOTH write through the SAME
+  // `onSupersededReveal` functional-merge path with `resetScroll: false`,
+  // so both must produce IDENTICAL scroll behavior, not just identical
+  // state). NOT a near-zero-drift assertion (found live probing this case:
+  // revealing a substantial run of superseded rows while scrolled deep
+  // shifts `window.scrollY` by a few hundred px on /ritual EVEN VIA THE
+  // PRE-EXISTING, already-shipped toolbar control — ordinary browser
+  // content-reflow from a big row-count change while scrolled, nothing to
+  // do with `resetScroll`. The actual regression D29-129 fixes is the
+  // toolbar/pane controls DISAGREEING — a `resetScroll: true` divergence
+  // would snap ONE of them back toward `scrollY === 0` while the other
+  // doesn't; this asserts they land at the SAME place, not that neither
+  // moves at all).
+  {
+    async function scrollAfterSupersededToggle(via: "pane" | "toolbar"): Promise<number | null> {
+      const context = await browser.newContext({ viewport: VIEWPORT });
+      const page = await context.newPage();
+      await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+      await page.locator(".codex-listing-row").first().waitFor();
+      await waitInteractiveViaProbe(page);
+      await page.evaluate(() => window.scrollTo(0, 1200));
+      await page.waitForTimeout(150);
+      let control;
+      if (via === "pane") {
+        // Programmatic click (see the earlier pane-open case's own comment
+        // on why a locator `.click()` on the off-screen header button
+        // would confound a scroll measurement) — opens the pane without
+        // moving scroll itself (proven by that earlier case).
+        await page
+          .getByRole("button", { name: /^Filters/ })
+          .evaluate((el) => (el as HTMLElement).click());
+        await page.locator(".codex-filter-pane").waitFor();
+        control = page.getByLabel("Include superseded content");
+      } else {
+        control = page.locator(".codex-rules-superseded-toggle").first();
+      }
+      const hasControl = (await control.count()) > 0;
+      if (!hasControl) {
+        await context.close();
+        return null;
+      }
+      await control.evaluate((el) => (el as HTMLElement).click());
+      await page.waitForTimeout(200);
+      const scrollAfter = await page.evaluate(() => window.scrollY);
+      await context.close();
+      return scrollAfter;
+    }
+
+    const viaPane = await scrollAfterSupersededToggle("pane");
+    const viaToolbar = await scrollAfterSupersededToggle("toolbar");
+    if (viaPane === null || viaToolbar === null) {
+      check(
+        "Superseded scroll-parity case — /ritual has no superseded rows to reveal (skipped, not a failure)",
+        true,
+      );
+    } else {
+      check(
+        "the pane's Superseded toggle has scroll PARITY with the toolbar reveal (D29-129 behavioral identity)",
+        Math.abs(viaPane - viaToolbar) < 4,
+        `viaPane=${viaPane} viaToolbar=${viaToolbar}`,
+      );
+    }
+  }
+
+  // --- Case: tier-cross while open closes the panel ------------------------
+  {
+    const context = await browser.newContext({ viewport: VIEWPORT });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+    await page.locator(".codex-listing-row").first().waitFor();
+    await waitInteractiveViaProbe(page);
+    await page.getByRole("button", { name: /^Filters/ }).click();
+    await page.locator(".codex-filter-pane").waitFor();
+    // Narrow below the 56.0625rem (~897px) split-view breakpoint.
+    await page.setViewportSize({ width: 500, height: 900 });
+    await page.waitForTimeout(300);
+    check(
+      "narrowing the viewport past the split-view breakpoint while open closes the panel",
+      !(await page.locator(".codex-filter-pane").isVisible()) &&
+        (await page.getByRole("button", { name: /^Filters/ }).getAttribute("aria-expanded")) ===
+          "false",
+    );
+    await context.close();
+  }
+
+  // --- Case: the narrow tier gets the bottom sheet, not the pane -----------
+  {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 } });
+    const page = await context.newPage();
+    await page.goto(`${BASE}/ritual`, { waitUntil: "load" });
+    await page.locator(".codex-listing-row").first().waitFor();
+    await page.getByRole("button", { name: /^Filters/ }).click();
+    await page.locator(".codex-filter-drawer[open]").waitFor();
+    check(
+      "the narrow (390px) tier opens the <dialog> sheet, not .codex-filter-pane",
+      !(await page.locator(".codex-filter-pane").isVisible()),
+    );
+    check(
+      "...and the sheet's sticky footer Done button is present",
+      await page.getByRole("button", { name: "Done" }).isVisible(),
+    );
+    await context.close();
+  }
 } finally {
   await browser.close();
   await server.close(true);

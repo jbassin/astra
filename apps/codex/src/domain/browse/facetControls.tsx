@@ -22,6 +22,8 @@ import type { OptionCount } from "./filterEngine";
 export function FacetSection({
   title,
   titleExtra,
+  activeCount,
+  onClear,
   children,
 }: {
   title: string;
@@ -31,6 +33,21 @@ export function FacetSection({
    * `<h3>` inside one flex row (not a wrapping element) so `OptionSearch`
    * can stay a plain component returning a Fragment. */
   titleExtra?: ReactNode;
+  /** P13 S2 (D29-124) — "active sections show a value-count badge on the
+   * title + a per-section clear ×": the number of currently-selected values
+   * for this dimension (an active range counts as 1 — `isRangeFilterActive`
+   * over a `RangeFilter`, `filterEngine.ts`). `0`/`undefined` renders
+   * NEITHER the badge nor the clear button — every caller passes the real
+   * count unconditionally, this component gates on it being truthy so a
+   * facet with no active selection stays exactly as plain as it always was
+   * (`SupersededSection`, D29-129, deliberately never passes this — its own
+   * checkbox already IS the clear affordance). */
+  activeCount?: number;
+  /** Required whenever `activeCount` is truthy (the caller's own dimension
+   * -scoped clear, `withoutDimension` in every real call site — the SAME
+   * "state minus one dimension" helper `activeFilterPills.ts`'s per-pill
+   * remove action already reuses, `filterEngine.ts`). */
+  onClear?: () => void;
   // P11 S2 (D29-107a) — widened from `ReactElement | null` to `ReactNode`:
   // a `filterable` `CoreEnumSection`/`TraitsSection` now renders TWO
   // siblings (the type-ahead `Input` + the option list), wrapped in a
@@ -46,8 +63,21 @@ export function FacetSection({
   return (
     <section className="codex-facet-section">
       <div className="codex-facet-title-row">
-        <h3 className="codex-facet-title">{title}</h3>
+        <h3 className="codex-facet-title">
+          {title}
+          {activeCount ? <span className="codex-facet-title-badge">{activeCount}</span> : null}
+        </h3>
         {titleExtra}
+        {activeCount ? (
+          <button
+            type="button"
+            className="codex-facet-section-clear"
+            aria-label={`Clear ${title}`}
+            onClick={onClear}
+          >
+            <span aria-hidden="true">×</span>
+          </button>
+        ) : null}
       </div>
       {children}
     </section>
@@ -162,7 +192,23 @@ export function OptionSearch({
           }}
           onKeyDown={(e) => {
             if (e.key === "Escape") {
+              // P13 S2 (D29-123 Esc sequencing) — `stopPropagation()` alone
+              // is NOT enough here: this app hydrates via `hydrateRoot(
+              // document, ...)` (the TanStack Start client entry), so
+              // React's OWN top-level event delegation listener lives on
+              // `document` itself, the EXACT SAME node the pane-swap's own
+              // Esc-closes-the-pane listener (`BrowseListing.tsx`) attaches
+              // to independently. `stopPropagation()` only blocks
+              // propagation to ANCESTOR nodes — for two listeners on the
+              // SAME node, it does nothing; only `stopImmediatePropagation()`
+              // on the underlying native event stops a LATER-registered
+              // sibling listener on that same node from also firing for
+              // this exact keydown. Found live running the interaction
+              // guard's own Esc-sequencing case: without this, the FIRST
+              // Escape collapsed the search AND closed the whole pane in
+              // one keystroke.
               e.stopPropagation();
+              e.nativeEvent.stopImmediatePropagation();
               collapse();
             }
           }}

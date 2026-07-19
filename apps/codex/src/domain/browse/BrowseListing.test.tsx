@@ -159,6 +159,34 @@ class FakeResizeObserver {
   }
 }
 
+/** P13 S2 (D29-123) — the reactive counterpart to `mockSplitViewViewport`:
+ * that helper is a STATIC stand-in (no `change` events ever fire), fine for
+ * every pre-P13 click-time `matchMedia` read, but `useTwoColumnFilterTier`
+ * (`BrowseListing.tsx`) needs a `MediaQueryList` that can actually FIRE a
+ * `change` event mid-test to exercise "tier-crossing while open closes the
+ * panel" — jsdom has no real `matchMedia` at all (same gap
+ * `mockSplitViewViewport`'s own comment documents), so this is a
+ * capture-the-listener stand-in, same posture as `FakeResizeObserver` above. */
+class FakeMediaQueryList {
+  matches: boolean;
+  media = "";
+  private readonly listeners: Array<(e: MediaQueryListEvent) => void> = [];
+  constructor(matches: boolean) {
+    this.matches = matches;
+  }
+  addEventListener(_type: string, cb: (e: MediaQueryListEvent) => void): void {
+    this.listeners.push(cb);
+  }
+  removeEventListener(_type: string, cb: (e: MediaQueryListEvent) => void): void {
+    const i = this.listeners.indexOf(cb);
+    if (i !== -1) this.listeners.splice(i, 1);
+  }
+  trigger(matches: boolean): void {
+    this.matches = matches;
+    for (const cb of this.listeners) cb({ matches } as MediaQueryListEvent);
+  }
+}
+
 function StatefulHarness() {
   const [state, setState] = useState<BrowseFilterState>(emptyFilterState());
   return (
@@ -575,6 +603,13 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
     fireEvent.click(filtersButton);
     const chip = screen.getByRole("button", { name: /agile/ });
     fireEvent.click(chip); // include "agile" -> filters Alpha OUT of the visible list
+    // P13 S2 (D29-123) — "opening... preserves `?entry=`... closing restores
+    // the still-selected preview": no `matchMedia` mock is installed in this
+    // describe block, so `isTwoColumnTier` reads its SSR-safe default
+    // (`true`) — the pane occupies the entry-pane cell while open, hiding
+    // the preview WITHOUT touching `entry` at all; close it (the pane's own
+    // ✕) to prove the selection survived underneath the whole time.
+    fireEvent.click(screen.getByRole("button", { name: "Close filters" }));
     // Alpha is no longer in the filtered listing, but the right pane still
     // renders it — the fail-soft "not shown under current filters" case, not
     // a silent deselect.
@@ -594,29 +629,111 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
 });
 
 describe("BrowseListing active-filter pills + drawer (P4.5 S4, D29-49)", () => {
+  afterEach(() => {
+    // P13 S2 (D29-123) — undo any per-test `matchMedia` stand-in rather than
+    // leaking it into later tests (only the row-click-closes-the-pane case
+    // below installs one, but a thrown assertion mid-test would otherwise
+    // skip an inline cleanup line).
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
   it("no pills render with an empty filter state", () => {
     render(<StatefulHarness />);
     expect(screen.queryByLabelText("Active filters")).toBeNull();
   });
 
-  it("an active facet selection renders a removable pill, and 'Clear all' clears it", () => {
+  it("an active facet selection renders a removable pill, and the pill row's 'Clear all' clears it", () => {
     render(<StatefulHarness />);
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
     fireEvent.click(screen.getByRole("button", { name: /fire/ }));
     expect(screen.getByLabelText("Active filters")).not.toBeNull();
     expect(screen.getByText("1 of 3 shown")).not.toBeNull();
+    // P13 S2 (D29-123) — DELIBERATELY CHANGED PIN: "Clear all" is no longer
+    // unique — the pane header (D29-124) carries its OWN "Clear all" too.
+    // Close the pane (the Filters toggle) first, disambiguating back down
+    // to the pills row's own button, exactly like a real user would (they
+    // can't see two "Clear all"s at once either — only one container is
+    // ever live, D29-123's own "exactly one container" pin).
+    fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
     fireEvent.click(screen.getByRole("button", { name: "Clear all" }));
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
     expect(screen.queryByLabelText("Active filters")).toBeNull();
   });
 
-  it("the drawer contains the unmodified FacetPanel (aside) and opening it never mutates state", () => {
+  it("P13 S2 (D29-123) — DELIBERATELY CHANGED PIN: the pane (not a <dialog>) carries the unmodified FacetPanel on the two-column tier, and opening it never mutates state", () => {
     render(<StatefulHarness />);
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
-    expect(document.querySelector("dialog .codex-facet-panel")).not.toBeNull();
-    // no filter got applied just by opening the drawer.
+    // No `matchMedia` mock in this describe block -> `isTwoColumnTier` reads
+    // its SSR-safe default (`true`) -> the pane, not the dialog, is the live
+    // container (D29-123's own "two-column tier" branch) — the OLD pin here
+    // was `document.querySelector("dialog .codex-facet-panel")`.
+    expect(document.querySelector(".codex-filter-pane .codex-facet-panel")).not.toBeNull();
+    expect(document.querySelector("dialog .codex-facet-panel")).toBeNull();
+    // no filter got applied just by opening the pane.
     expect(screen.getByText("3 of 3 shown")).not.toBeNull();
+  });
+
+  it("P13 S2 (D29-123) — the Filters button toggles aria-expanded and returns to it on close", () => {
+    render(<StatefulHarness />);
+    const filtersButton = screen.getByRole("button", { name: /^Filters/ });
+    expect(filtersButton.getAttribute("aria-expanded")).toBe("false");
+    fireEvent.click(filtersButton);
+    expect(filtersButton.getAttribute("aria-expanded")).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Close filters" }));
+    expect(filtersButton.getAttribute("aria-expanded")).toBe("false");
+    expect(document.activeElement).toBe(filtersButton); // D29-123: close -> focus returns to the Filters button
+  });
+
+  it("P13 S2 (D29-123) — opening focuses the pane's ✕ button", () => {
+    render(<StatefulHarness />);
+    fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
+    expect(document.activeElement).toBe(screen.getByRole("button", { name: "Close filters" }));
+  });
+
+  it("P13 S2 (D29-123) — row click while filtering closes the pane and shows that entry's preview", () => {
+    mockSplitViewViewport(true);
+    render(<StatefulHarness />);
+    fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
+    expect(document.querySelector(".codex-filter-pane")).not.toBeNull();
+    fireEvent.click(screen.getByText("Alpha"), { detail: 1 });
+    expect(document.querySelector(".codex-filter-pane")).toBeNull();
+  });
+
+  it("P13 S2 (D29-123) — the focus-after-mount effect never steals focus from an open pane", () => {
+    render(<StatefulHarness />);
+    // Focus a row first (so the focus-after-mount effect has a persisted
+    // `focusedSlug` to act on), then open the pane and change a facet — a
+    // facet toggle changes `visible`/`virtualRows`, which is exactly the
+    // dependency this effect used to re-fire on unconditionally.
+    fireEvent.keyDown(document, { key: "j" });
+    const alpha = screen.getByText("Alpha").closest("a");
+    expect(document.activeElement).toBe(alpha);
+    fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
+    const closeButton = screen.getByRole("button", { name: "Close filters" });
+    expect(document.activeElement).toBe(closeButton); // opening moved focus here
+    fireEvent.click(screen.getByRole("button", { name: /fire/ })); // narrows `visible` -> would re-fire the guarded effect
+    expect(document.activeElement).toBe(closeButton); // still here — never yanked back onto a row
+  });
+});
+
+describe("BrowseListing pane-swap tier-cross (P13 S2, D29-123)", () => {
+  afterEach(() => {
+    Reflect.deleteProperty(window, "matchMedia");
+  });
+
+  it("tier-crossing while open closes the panel", () => {
+    const mql = new FakeMediaQueryList(true);
+    window.matchMedia = vi.fn().mockReturnValue(mql) as unknown as typeof window.matchMedia;
+    render(<StatefulHarness />);
+    const filtersButton = screen.getByRole("button", { name: /^Filters/ });
+    fireEvent.click(filtersButton);
+    expect(document.querySelector(".codex-filter-pane")).not.toBeNull();
+    act(() => {
+      mql.trigger(false); // window narrows below the split-view breakpoint
+    });
+    expect(filtersButton.getAttribute("aria-expanded")).toBe("false");
+    expect(document.querySelector(".codex-filter-pane")).toBeNull();
   });
 });
 
@@ -774,6 +891,11 @@ function PreviewHarness({
 describe("BrowseListing keyboard nav + hint (D29-82)", () => {
   afterEach(() => {
     vi.useRealTimers();
+    // P13 S2 (D29-123) — undo any per-test `matchMedia` stand-in
+    // (`mockSplitViewViewport`) rather than leaking it into later tests in
+    // this describe block, same convention `BrowseListing split view`'s own
+    // afterEach documents.
+    Reflect.deleteProperty(window, "matchMedia");
   });
 
   it("j moves focus onto the first row anchor, then the next; k moves back", () => {
@@ -812,7 +934,26 @@ describe("BrowseListing keyboard nav + hint (D29-82)", () => {
     expect(document.activeElement).toBe(input); // unchanged — "j" was free to type
   });
 
-  it("guard: j/k are inert while focus sits inside the open filter drawer <dialog>", () => {
+  // P13 S2 (D29-123) — DELIBERATELY CHANGED PIN, meaning preserved: "j/k
+  // inert while focus is in filter UI" now covers BOTH live containers
+  // (`FILTER_UI_SELECTOR`, `BrowseListing.tsx`), not just a `<dialog>` — no
+  // `matchMedia` mock here means `isTwoColumnTier` defaults `true`, so the
+  // live container is the PANE (`.codex-filter-pane`, no "Done" button
+  // there — that's sheet-only, D29-124), and the close button (always
+  // present in both variants) is the stand-in focus target instead of the
+  // old sheet-only "Done".
+  it("guard: j/k are inert while focus sits inside the open filter pane", () => {
+    render(<PreviewHarness onEntryPreview={() => {}} />);
+    fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
+    const closeButton = screen.getByRole("button", { name: "Close filters" });
+    closeButton.focus();
+    expect(document.activeElement).toBe(closeButton);
+    fireEvent.keyDown(document, { key: "j" });
+    expect(document.activeElement).toBe(closeButton); // no row anchor stole focus
+  });
+
+  it("guard: j/k are inert while focus sits inside the open filter SHEET <dialog> (narrow tier)", () => {
+    mockSplitViewViewport(false); // forces the narrow tier -> the sheet, not the pane
     render(<PreviewHarness onEntryPreview={() => {}} />);
     fireEvent.click(screen.getByRole("button", { name: /^Filters/ }));
     const doneButton = screen.getByRole("button", { name: "Done" });

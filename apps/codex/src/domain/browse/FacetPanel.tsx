@@ -24,6 +24,7 @@ import {
   editionValueOf,
   enumOptionCounts,
   facetValueOf,
+  isRangeFilterActive,
   levelValueOf,
   missingCount,
   rangeBounds,
@@ -31,13 +32,13 @@ import {
   scalarOptionCounts,
   setFacetRange,
   setLevelRange,
-  setSupersededFilter,
   sortOptionsFor,
   sourceBookValueOf,
   toggleCoreEnumOption,
   toggleFacetEnumOption,
   traitOptionCounts,
   traitTriState,
+  withoutDimension,
   type BrowseFilterState,
   type CoreEnumDimension,
   type RangeFilter,
@@ -124,7 +125,11 @@ function DerivedFacetSection({
     const bounds = rangeBounds(rows, facetValueOf(facetKey));
     const value = state.facetRange.get(facetKey) ?? {};
     return (
-      <FacetSection title={def.label}>
+      <FacetSection
+        title={def.label}
+        activeCount={isRangeFilterActive(value) ? 1 : 0}
+        onClear={() => onChange((prev) => withoutDimension(prev, { kind: "facet", key: facetKey }))}
+      >
         <RangeInputs
           value={value}
           bounds={bounds}
@@ -156,6 +161,8 @@ function DerivedFacetSection({
           onQueryChange={setQuery}
         />
       }
+      activeCount={selected.size}
+      onClear={() => onChange((prev) => withoutDimension(prev, { kind: "facet", key: facetKey }))}
     >
       {sorted.length <= CHIP_MAX_OPTIONS ? (
         <>
@@ -255,6 +262,8 @@ function CoreEnumSection({
           onQueryChange={setQuery}
         />
       }
+      activeCount={selected.size}
+      onClear={() => onChange((prev) => withoutDimension(prev, { kind: dimension }))}
     >
       {sorted.length <= CHIP_MAX_OPTIONS ? (
         <ToggleChipRow
@@ -290,7 +299,11 @@ function LevelSection({
   const bounds = rangeBounds(rows, levelValueOf);
   const missing = countMissingByValue(ambient, levelValueOf);
   return (
-    <FacetSection title="Level">
+    <FacetSection
+      title="Level"
+      activeCount={isRangeFilterActive(state.level) ? 1 : 0}
+      onClear={() => onChange((prev) => withoutDimension(prev, { kind: "level" }))}
+    >
       <RangeInputs
         value={state.level}
         bounds={bounds}
@@ -354,6 +367,8 @@ function TraitsSection({
           onQueryChange={setQuery}
         />
       }
+      activeCount={state.traits.include.size + state.traits.exclude.size}
+      onClear={() => onChange((prev) => withoutDimension(prev, { kind: "traits" }))}
     >
       <p className="codex-facet-hint">click to require · again to exclude · again to reset</p>
       <ul className="codex-trait-chips">
@@ -393,33 +408,43 @@ function TraitsSection({
 }
 
 // ---------------------------------------------------------------------------
-// P4.5 D29-48 (adversarial M6) — the superseded-visibility control. UNTOUCHED
-// this slice (D29-129's consolidation onto the toolbar's `resetScroll:false`
-// path + callout deletion is S2's job, D29-124/129-consolidation).
+// P13 S2 (D29-129 consolidation) — the superseded-visibility control: ONE
+// control identity, same `?superseded=` state as the toolbar's own reveal
+// button (`BrowseListing.tsx`'s `SupersededRevealControl`). The blue
+// callout explainer DIES (was the loudest element in the panel per the
+// spec's own Problem statement); a one-line muted caption replaces it.
+// CRITICAL (the review's own catch): this writes through `onSupersededReveal`
+// — the SAME functional-merge, `resetScroll: false` navigate the toolbar
+// control already uses (`routes/$category/index.tsx`'s own doc comment on
+// that prop) — NEVER through the general `onChange`/`setSupersededFilter`
+// path, which would route through `onStateChange`'s default `resetScroll:
+// true` and yank a long, already-scrolled listing back to the top just for
+// widening this one toggle (the exact divergence the review caught). No
+// badge/clear × here (D29-124 scopes that to real facet DIMENSIONS; this
+// section's own checkbox already IS its own clear affordance).
 // ---------------------------------------------------------------------------
 
 function SupersededSection({
   state,
-  onChange,
+  onSupersededReveal,
 }: {
   state: BrowseFilterState;
-  onChange: StateUpdater;
+  onSupersededReveal: (superseded: boolean) => void;
 }): ReactElement {
   return (
     <FacetSection title={state.superseded ? "Including superseded" : "Current edition"}>
       <div className="codex-facet-superseded">
-        <p className="codex-callout-blue codex-facet-superseded-explainer">
-          Current edition &mdash; previous-edition content that was never remastered still shows;
-          &ldquo;Include superseded&rdquo; reveals replaced versions.
-        </p>
         <label className="codex-facet-option">
           <input
             type="checkbox"
             checked={state.superseded}
-            onChange={(e) => onChange((prev) => setSupersededFilter(prev, e.target.checked))}
+            onChange={(e) => onSupersededReveal(e.target.checked)}
           />
           <span className="codex-facet-option-label">Include superseded content</span>
         </label>
+        <p className="codex-facet-superseded-caption">
+          Previous-edition content that was never remastered still shows either way.
+        </p>
       </div>
     </FacetSection>
   );
@@ -434,11 +459,17 @@ export function FacetPanel({
   rows,
   state,
   onChange,
+  onSupersededReveal,
 }: {
   category: string;
   rows: readonly IndexRow[];
   state: BrowseFilterState;
   onChange: StateUpdater;
+  /** P13 S2 (D29-129 consolidation) — the Superseded section's own control
+   * writes through THIS, not `onChange` — see `SupersededSection`'s own
+   * comment for why. Threaded straight from `BrowseListing`'s own prop of
+   * the same name (the toolbar reveal's callback), never re-derived. */
+  onSupersededReveal: (superseded: boolean) => void;
 }): ReactElement {
   const derivedKeys = facetKeysFor(category);
   return (
@@ -473,7 +504,7 @@ export function FacetPanel({
         valueOf={editionValueOf}
         labelOf={editionOptionLabel}
       />
-      <SupersededSection state={state} onChange={onChange} />
+      <SupersededSection state={state} onSupersededReveal={onSupersededReveal} />
       {derivedKeys.map((key) => {
         const def = facetDefFor(key) ?? {
           key,

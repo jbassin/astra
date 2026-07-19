@@ -1072,6 +1072,15 @@ select:focus-visible,
   .codex-entry-pane {
     display: none;
   }
+  /* P13 S2 (D29-123) — belt-and-suspenders: `isTwoColumnFilterTier`
+     (`BrowseListing.tsx`) already tracks this SAME breakpoint reactively
+     and stops rendering `.codex-filter-pane` here once it flips (the sheet
+     takes over instead), but this mirrors `.codex-entry-pane`'s own
+     defensive CSS hide for the brief pre-effect window every client mount
+     has (the SSR-safe default assumes two-column). */
+  .codex-filter-pane {
+    display: none;
+  }
 }
 
 /* P8 S2 — `/search` (`SearchPage.tsx`) reuses this SAME class for an
@@ -1132,54 +1141,153 @@ select:focus-visible,
   color: var(--color-link-hover);
 }
 
-/* --- P4.5 S4 (D29-49): the filter drawer — a native `<dialog>` wrapping
-   the UNMODIFIED `FacetPanel` (still renders its own `<aside>` inside);
-   only the container changed. --- */
-/* P4.5 S5 (D29-50): drawer chrome polish — the gold/parchment voice (a
-   maroon top accent bar echoing `.codex-card-stat`'s own convention, a
-   gold-frame border instead of the plain rule-bright one, a slightly
-   heavier/warmer backdrop than the flat black wash). */
+/* --- P4.5 S4 (D29-49), restyled P13 S2 (D29-123/124) — the narrow-tier
+   filter SHEET: a native `<dialog>` wrapping the UNMODIFIED `FacetPanel`
+   (still renders its own `<aside>` inside). The two-column tier no longer
+   uses this element for VISIBLE chrome at all (the pane below owns that
+   instead — the dialog stays mounted-but-empty there, `BrowseListing.tsx`'s
+   own doc comment), so this is now purely the MOBILE bottom-sheet look:
+   full width, anchored to the viewport bottom (`inset-block-end`), slides
+   up rather than the old centered-modal treatment. --- */
 .codex-filter-drawer {
-  /* Explicit centering rather than relying on the UA `dialog:modal` default
-     (inconsistent across engines once the content approaches viewport
-     height, verified via a real-browser screenshot — a tall facet list
-     otherwise pins to the top-left instead of centering). */
   position: fixed;
-  inset: 0;
-  margin: auto;
+  inset-inline: 0;
+  inset-block-end: 0;
+  margin: auto auto 0;
   border: 1px solid var(--color-gold-frame);
   border-top: 4px solid var(--color-heading-maroon);
-  border-radius: 0.3rem;
+  border-radius: 0.5rem 0.5rem 0 0;
   padding: 0;
   background-color: var(--color-elevated);
   color: var(--color-ink);
-  width: min(28rem, 92vw);
-  max-width: min(28rem, 92vw);
+  width: 100%;
+  max-width: 100%;
   max-height: 85vh;
   height: fit-content;
-  box-shadow: 0 12px 32px rgb(0 0 0 / 30%);
+  box-shadow: 0 -8px 24px rgb(0 0 0 / 30%);
 }
 .codex-filter-drawer::backdrop {
   background-color: rgb(35 31 26 / 55%);
 }
+/* P13 S2 (D29-124) — the sheet's own flex-column wrapper (header/body/
+   footer, `.codex-filter-pane-*` below — SHARED with the desktop pane's own
+   wrapper, `.codex-filter-pane`): NOT `display:flex` on the `<dialog>`
+   element itself (a real cascade trap — an unconditional author `display`
+   declaration on `dialog` would out-rank the UA's OWN `dialog:not([open])
+   {display:none}` closed-state rule, since normal-author beats normal-UA
+   regardless of specificity, making a CLOSED dialog visible; a plain child
+   div sidesteps the whole question). */
 .codex-filter-drawer-body {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
-  padding: 1.25rem;
-  overflow-y: auto;
   max-height: 85vh;
-}
-.codex-filter-drawer .codex-facet-panel {
-  position: static;
+  overflow: hidden;
 }
 
+/* P13 S2 (D29-124) — the dead `position: sticky` (this panel's own body no
+   longer scrolls independently; its HOST — `.codex-filter-pane`/the sheet
+   body below — owns the ONE scroll region) + the drawer-scoped
+   `position: static` override it needed both die together. */
 .codex-facet-panel {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+}
+
+/* P13 S2 (D29-123) — the two-column-tier pane-swap occupant: renders in the
+   SAME grid cell `.codex-entry-pane` normally occupies (mutually exclusive,
+   `BrowseListing.tsx`'s own ternary — never both at once). Own header/body
+   scroll region (below) rather than the entry pane's sticky/overflow
+   treatment, since it needs a sticky-feeling HEADER (Clear all/✕) the entry
+   pane never had — plain flex column + `overflow:hidden` on the host, the
+   inner body owns the actual scrollbar, same pattern as the sheet above. */
+.codex-filter-pane {
   position: sticky;
   top: 1rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-height: calc(100vh - 2rem);
+  border: 1px solid var(--color-gold-frame);
+  border-top: 4px solid var(--color-heading-maroon);
+  border-radius: 0.3rem;
+  background-color: var(--color-elevated);
+  overflow: hidden;
+}
+
+/* P13 S2 (D29-124) — shared pane/sheet chrome: sticky-FEELING header (Clear
+   all + ✕ ONLY — no count, the toolbar row is canonical) via plain flex
+   (`flex: none` on header/footer, `flex: 1` + its own scroll on the body —
+   no actual `position: sticky` needed inside an already-non-scrolling flex
+   column, sidesteps the whole sticky-in-overflow-container class of bugs). */
+.codex-filter-pane-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex: none;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+.codex-filter-pane-clear-all {
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  color: var(--color-link);
+  background: none;
+  border: none;
+  padding: 0.2rem 0.3rem;
+  cursor: pointer;
+  text-decoration: underline;
+}
+.codex-filter-pane-clear-all:hover {
+  color: var(--color-link-hover);
+}
+.codex-filter-pane-clear-all:disabled {
+  color: var(--color-ink-faint);
+  text-decoration: none;
+  cursor: default;
+}
+.codex-filter-pane-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-gold-rule);
+  background: transparent;
+  color: var(--color-ink-dim);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.codex-filter-pane-close:hover {
+  border-color: var(--color-gold-frame-dark);
+  color: var(--color-ink);
+}
+/* P13 S2 (D29-124) — the ONE scroll region: replaces the per-section
+   `.codex-facet-options` 14rem scrollboxes (below) entirely. */
+.codex-filter-pane-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
+}
+/* Sheet-only (the desktop pane has no footer — its own ✕/Filters-toggle
+   already close it, D29-123). */
+.codex-filter-pane-footer {
+  flex: none;
+  padding: 0.75rem 1.1rem;
+  border-top: 1px solid var(--color-rule);
+}
+.codex-filter-pane-footer .codex-ui-button {
+  width: 100%;
 }
 .codex-facet-section {
   border-bottom: 1px solid var(--color-rule);
@@ -1212,6 +1320,44 @@ select:focus-visible,
 .codex-facet-title-row .codex-facet-title {
   margin-bottom: 0;
 }
+/* P13 S2 (D29-124) — the active-section value-count badge + per-section
+   clear × (`FacetSection`, `facetControls.tsx`): a small pill inline with
+   the title text, and a quiet ghost × sharing the title row's flex line. */
+.codex-facet-title-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.1rem;
+  height: 1.1rem;
+  padding: 0 0.3rem;
+  margin-left: 0.4rem;
+  border-radius: 999px;
+  background-color: var(--color-heading-maroon);
+  color: var(--pill-text);
+  font-size: 0.68rem;
+  letter-spacing: 0;
+  text-transform: none;
+  vertical-align: middle;
+}
+.codex-facet-section-clear {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 0.1rem 0.3rem;
+  border: none;
+  background: transparent;
+  color: var(--color-ink-faint);
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.codex-facet-section-clear:hover {
+  color: var(--color-heading-maroon);
+}
+/* P13 S2 (D29-124) — the per-section `max-height: 14rem` inner scrollbox
+   DIES: the pane/sheet body (`.codex-filter-pane-body` above) is now the
+   ONE scroll region, so every option list just flows. */
 .codex-facet-options {
   list-style: none;
   display: flex;
@@ -1220,11 +1366,6 @@ select:focus-visible,
      now carries the spacing, mirroring `.codex-listing-row`'s "0 gap, row
      owns its own padding" convention rather than compounding both. */
   gap: 0;
-  max-height: 14rem;
-  overflow-y: auto;
-  /* D29-106 (#13d): themed scrollbar — one of the 6 regions. */
-  scrollbar-width: thin;
-  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 .codex-facet-option {
   display: flex;
@@ -1285,20 +1426,30 @@ select:focus-visible,
   margin-top: 0.4rem;
 }
 
-/* --- P4.5 S5 (D29-50): the D29-48/M6 superseded-visibility explainer copy
-   (`FacetPanel.tsx`'s `SupersededSection`) — an "informational notice," the
-   BLUE callout family per the spec's own mapping note (`.codex-callout-blue`,
-   shared with the edition banner above). Previously unstyled. --- */
+/* --- P13 S2 (D29-129 consolidation): `FacetPanel.tsx`'s `SupersededSection`
+   (browse) is now a plain toggle row + a one-line muted caption — the loud
+   BLUE explainer callout DIES from THIS panel specifically. The
+   `.codex-facet-superseded-explainer`/`.codex-callout-blue` RULE below is
+   kept (not deleted) — `SearchPage.tsx` still hand-copies its own callout
+   using this exact class pair (D29-130's SearchPage consumption is S3's
+   job, out of S2 scope — deleting the shared rule here would silently
+   unstyle that still-live markup before S3 lands). --- */
 .codex-facet-superseded {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.5rem;
 }
 .codex-facet-superseded-explainer {
   padding: 0.6rem 0.75rem;
   font-size: 0.78rem;
   line-height: 1.4;
   color: var(--color-ink-dim);
+}
+.codex-facet-superseded-caption {
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--color-ink-faint);
+  font-style: italic;
 }
 
 /* P13 S1 (D29-127): the inner `max-height`/`overflow-y` scrollbox DIES — the
@@ -1795,6 +1946,34 @@ select:focus-visible,
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+}
+/* P13 S2 (D29-124) — the base `.codex-facet-panel` rule dropped its
+   `position: sticky` (dead weight in the browse pane/sheet, which now wraps
+   it in their OWN dedicated scroll region — a sticky element as the sole
+   content of a scrolling container has nowhere left to stick past). `/search`
+   is a DIFFERENT layout (a narrow facet aside beside a taller results
+   column, `SearchPage.tsx`, out of this slice's scope — D29-130's
+   consumption lands S3) that still wants the aside to follow the page
+   scroll — scoped back here rather than touching the shared rule/
+   `SearchPage.tsx` itself, same "scope the override, don't touch the
+   other route" convention `.codex-search-shell .codex-browse-layout`
+   (above) already documents. */
+.codex-search-shell .codex-facet-panel {
+  position: sticky;
+  top: 1rem;
+}
+/* Same reasoning as the sticky override above, for the OTHER half of
+   D29-124's browse-only cleanup: the per-section `max-height: 14rem`
+   scrollbox on `.codex-facet-options` (below) also dies at the shared-rule
+   level (the browse pane/sheet's own single scroll region replaces it) —
+   `/search`'s aside has no such single-scroll-region wrapper of its own
+   (out of S2 scope), so it keeps the original bounded-per-section
+   treatment, scoped back here. */
+.codex-search-shell .codex-facet-options {
+  max-height: 14rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 .codex-search-query {
   display: flex;

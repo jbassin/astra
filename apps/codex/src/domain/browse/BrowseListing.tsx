@@ -99,6 +99,47 @@ function focusAnchorForSlug(container: HTMLElement, slug: string): boolean {
 }
 
 /**
+ * P13 S2 (D29-123) — a reactive read of the SAME breakpoint `SPLIT_VIEW_MEDIA`
+ * (above) already gates at click-time in `handleRowClick`/`handleRowBodyClick`
+ * below: whether the two-column `.codex-browse-layout` grid — and therefore
+ * the entry-pane grid cell the pane-swap needs to occupy — exists AT ALL
+ * right now. Deliberately NOT `useNarrowListingContainer`'s container-width
+ * flag (600px, measuring `.codex-listing-pane` alone): that flag reads
+ * "wide" (`narrow === false`) for a mid-width SINGLE-COLUMN viewport (the
+ * pane easily clears 600px once it's the only column, well before the
+ * `max-width: 56rem` grid collapse that actually hides `.codex-entry-pane`
+ * kicks in) — reusing it verbatim would try to render the pane into a cell
+ * CSS has already `display: none`d, an invisible panel, not "the sheet" the
+ * spec's own Risk section documents as the actual outcome at that width
+ * ("56rem collapse means a mid-width desktop window gets the sheet... 56rem
+ * boundary pinned in a test", gate D) — this hook is what makes that literal.
+ * SSR-safe default `true` (assume two-column/wide): harmless either way
+ * since `filtersOpen` is itself client-only-true (below), so this value is
+ * never consulted before a real `matchMedia` reading has landed.
+ */
+function useTwoColumnFilterTier(): boolean {
+  const [isTwoColumn, setIsTwoColumn] = useState(true);
+  useEffect(() => {
+    if (typeof window === "undefined" || typeof window.matchMedia !== "function") return;
+    const mql = window.matchMedia(SPLIT_VIEW_MEDIA);
+    setIsTwoColumn(mql.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsTwoColumn(e.matches);
+    mql.addEventListener("change", onChange);
+    return () => mql.removeEventListener("change", onChange);
+  }, []);
+  return isTwoColumn;
+}
+
+/** P13 S2 (D29-123) — j/k suppression + the focus-after-mount steal-guard
+ * both need "is DOM focus currently inside filter UI," covering BOTH
+ * possible live containers (the two-column pane and the narrow-tier
+ * `<dialog>` sheet) — replaces the old bare `closest("dialog")` guard, which
+ * only ever covered the second one and would silently stop covering
+ * anything the moment the pane (not a `<dialog>` at all) became the live
+ * container on desktop. */
+const FILTER_UI_SELECTOR = "dialog, .codex-filter-pane";
+
+/**
  * P8 S1 (D29-78) — "the compact set applies whenever the LIST CONTAINER is
  * narrow ... via container query or measured width — keyed to the
  * container, never the viewport." A `ResizeObserver` on the listing pane
@@ -251,26 +292,80 @@ export function BrowseListing({
   // no debounce needed, `applyFilters` over a few thousand rows is well
   // under a frame (measured — see the spec's §5 F perf gate).
   const [queryText, setQueryText] = useState(state.query);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  // P13 S2 (D29-123) — renamed from `drawerOpen`: local component state,
+  // client-only-true (the SSR/first-hydration-pass value is always `false`
+  // — see the file-level `filtersOpen` prop doc below in the JSX for the
+  // SSR-posture proof this relies on), NOT URL state (matches the old
+  // dialog's own non-shareable behavior, spec's own note).
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const listingPaneRef = useRef<HTMLDivElement>(null);
   const narrow = useNarrowListingContainer(listingPaneRef);
+  const isTwoColumnTier = useTwoColumnFilterTier();
   const entrySlugRef = useRef(entrySlug);
   useEffect(() => {
     entrySlugRef.current = entrySlug;
   }, [entrySlug]);
+
+  // P13 S2 (D29-123) — refs for the open/close focus-management effect
+  // (declared much further down, deliberately — see that effect's own
+  // comment for why): the JSX below needs these ref objects attached to the
+  // real buttons regardless of where the EFFECT that reads them lives.
+  const filtersButtonRef = useRef<HTMLButtonElement>(null);
+  const filterCloseButtonRef = useRef<HTMLButtonElement>(null);
+  const wasFiltersOpenRef = useRef(false);
 
   // Native `<dialog>` owns its own open/close semantics (Esc, backdrop via
   // the `::backdrop` pseudo-element, native focus-trap + focus-return) —
   // this effect is just the one-way React-state -> imperative-DOM bridge;
   // `onClose` (below) is the DOM -> React-state bridge for the Esc/backdrop
   // paths that don't go through our own "Filters"/"Done" buttons.
+  //
+  // P13 S2 (D29-123) — the dialog is now NARROW-TIER ONLY (the two-column
+  // tier renders the pane inline instead, never opening this element at
+  // all): `shouldShowModal` folds that in, so a `filtersOpen` flip on the
+  // two-column tier never calls `showModal()`. The SAME effect also
+  // implements "tier-crossing while open closes the panel" (pinned,
+  // D29-123) — detected via `prevIsTwoColumnRef`, checked and acted on
+  // FIRST (a single early `return`) so a live tier flip can never also fall
+  // through into the `shouldShowModal` branch below and momentarily
+  // re-open a sheet on the SAME commit it's supposed to be closing.
+  const prevIsTwoColumnRef = useRef(isTwoColumnTier);
   useEffect(() => {
+    const tierChanged = prevIsTwoColumnRef.current !== isTwoColumnTier;
+    prevIsTwoColumnRef.current = isTwoColumnTier;
     const dialog = dialogRef.current;
+    if (tierChanged && filtersOpen) {
+      setFiltersOpen(false);
+      if (dialog?.open) dialog.close();
+      return;
+    }
     if (!dialog) return;
-    if (drawerOpen && !dialog.open) dialog.showModal();
-    if (!drawerOpen && dialog.open) dialog.close();
-  }, [drawerOpen]);
+    const shouldShowModal = filtersOpen && !isTwoColumnTier;
+    if (shouldShowModal && !dialog.open) dialog.showModal();
+    if (!shouldShowModal && dialog.open) dialog.close();
+  }, [filtersOpen, isTwoColumnTier]);
+
+  // P13 S2 (D29-123) — Esc sequencing on the two-column-tier PANE (no
+  // `<dialog>` there to lean on the native cancel/close-watcher path the
+  // narrow-tier sheet uses instead, see the effect above): a plain
+  // `document`-level keydown listener, active only while the pane is
+  // actually the live container. "An expanded `OptionSearch` collapses
+  // first, a second Esc closes the pane second" falls out of ordinary DOM
+  // event bubbling with NO extra state here — `OptionSearch`'s own Esc
+  // handler (`facetControls.tsx`) already calls `e.stopPropagation()` when
+  // it collapses itself, which (React's synthetic events call the
+  // underlying native `stopPropagation` too) stops the SAME keydown from
+  // ever reaching this `document` listener; only once the input has
+  // collapsed (unmounted) does a later Esc press bubble all the way up.
+  useEffect(() => {
+    if (!filtersOpen || !isTwoColumnTier) return;
+    function onKeyDown(e: globalThis.KeyboardEvent): void {
+      if (e.key === "Escape") setFiltersOpen(false);
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [filtersOpen, isTwoColumnTier]);
 
   // P8 S1 (D29-78) — the per-category column model, memoized on the same
   // (category, rows) pair `columnsFor` itself only needs (its two coverage
@@ -537,10 +632,24 @@ export function BrowseListing({
     // adding a parallel `onKeyDown` handler. Letting it through here means
     // Enter always fully navigates, even in split view where a MOUSE click
     // on the same anchor intercepts into the `?entry=` preview below.
+    //
+    // P13 S2 (D29-123) — "Enter-on-focused-row while filtering closes the
+    // pane": needs NO explicit handling here — this early return means
+    // Enter takes the native full-navigation path unconditionally (the
+    // browser leaves this page entirely), which trivially "closes" any open
+    // pane by unmounting the whole component; there is no in-page preview
+    // state left to reconcile.
     if (e.detail === 0) return;
     if (typeof window === "undefined" || !window.matchMedia(SPLIT_VIEW_MEDIA).matches) return; // mobile: full nav
     e.preventDefault();
     onEntrySelect(rowSlug(row, category));
+    // P13 S2 (D29-123) — "row click while filtering closes the pane and
+    // shows that entry's preview (selection wins)": this branch only ever
+    // executes on the desktop split-view path (the two guards above already
+    // filtered out mobile-nav and keyboard-Enter-native-nav), so closing
+    // here is always the right call, unconditionally — a no-op re-render
+    // when the pane wasn't open at all.
+    setFiltersOpen(false);
   }
 
   /** P9 S2 (D29-90, stakeholder amendment) — the whole-row click target:
@@ -572,6 +681,7 @@ export function BrowseListing({
       return;
     }
     onEntrySelect(rowSlug(row, category));
+    setFiltersOpen(false); // P13 S2 (D29-123) — see `handleRowClick`'s own comment above
     // D29-90 — "move DOM focus to that row's name anchor so j/k continues
     // from the clicked row"; the anchor is already mounted (this row was
     // just clicked), so a direct synchronous focus call suffices — no need
@@ -654,12 +764,55 @@ export function BrowseListing({
   // is already focused (`focusAnchorForSlug`'s own guard) or isn't mounted
   // yet (the common case for most renders — this effect just fires again
   // next time `virtualRows` changes, until the target eventually mounts).
+  //
+  // P13 S2 (D29-123 review blocker) — guarded on `filtersOpen`: EVERY facet
+  // toggle inside the pane/sheet re-renders this component, which can change
+  // `virtualRows` (the visible set narrowed/widened) — without this guard,
+  // this effect would fire on that SAME re-render and yank real DOM focus
+  // off whatever the user is actively interacting with inside the filter UI
+  // (an `OptionSearch` input, a checkbox) and onto a row anchor, mid-click/
+  // mid-keystroke. `filtersOpen` alone is enough (not "focus-within-pane"):
+  // the pane/sheet is the ONLY thing that can be open at all, so gating on
+  // "is it open" is equivalent to "is focus plausibly inside it" here and
+  // needs no extra DOM query. See `BrowseListing.test.tsx`'s own proof.
   useEffect(() => {
     if (focusedSlug === undefined) return;
+    if (filtersOpen) return;
     const container = listingPaneRef.current;
     if (!container) return;
     focusAnchorForSlug(container, focusedSlug);
-  }, [focusedSlug, virtualRows]);
+  }, [focusedSlug, virtualRows, filtersOpen]);
+
+  // P13 S2 (D29-123) — open -> the pane/sheet's own ✕; close -> back to the
+  // "Filters" toggle button (spec's own "Focus:" bullet). A plain
+  // was-open-last-render ref (not a dependency-array trick) distinguishes an
+  // actual open<->close TRANSITION from every other re-render this component
+  // goes through while `filtersOpen` itself hasn't changed. `preventScroll:
+  // true` (found live running the interaction guard's own new pane-swap
+  // cases): the SAME UA "scroll a newly-focused element into view" behavior
+  // `focusAnchorForSlug`'s own comment documents.
+  //
+  // DECLARED AFTER the row-refocus effect immediately above on purpose (a
+  // real bug found live running the interaction guard): both effects share
+  // `filtersOpen` in their dependency array, so a close (Escape/✕/row-click)
+  // fires BOTH in the SAME commit — React runs a component's effects in
+  // DECLARATION order, and the row-refocus effect's own `filtersOpen` guard
+  // only blocks it WHILE open; the instant `filtersOpen` flips back to
+  // `false`, that guard clears and it happily re-focuses whatever row was
+  // active BEFORE the pane ever opened (a stale `focusedSlug` a j-scan set
+  // minutes earlier survives untouched the whole time the pane was open).
+  // With this effect declared EARLIER (as first written), the row-refocus
+  // effect ran AFTER it in the same commit and silently stole focus back
+  // onto that row, defeating "closing returns focus to the Filters button."
+  // Declaring this one LAST guarantees it always has the final word.
+  useEffect(() => {
+    if (filtersOpen && !wasFiltersOpenRef.current) {
+      filterCloseButtonRef.current?.focus({ preventScroll: true });
+    } else if (!filtersOpen && wasFiltersOpenRef.current) {
+      filtersButtonRef.current?.focus({ preventScroll: true });
+    }
+    wasFiltersOpenRef.current = filtersOpen;
+  }, [filtersOpen]);
 
   // P9 S2 (D29-85) — j/k resolve the next/prev row purely off `visible` +
   // `focusedSlugRef` (the SYNCHRONOUS ref above — read fresh on every
@@ -677,10 +830,16 @@ export function BrowseListing({
   // link activation, `handleRowClick`'s own `e.detail === 0` early-return
   // above). Guard: inert while `document.activeElement` is a form control
   // (covers the Omnibar's own `<input>` too — typing "j"/"k" there must
-  // never hijack focus) or sits inside an open `<dialog>` (the filter
-  // drawer), and inert on narrow containers (S1's own `narrow` tier state —
-  // no preview pane to browse into there; matches split view's own
-  // container-driven posture, D29-78).
+  // never hijack focus) or sits inside the live filter UI (P13 S2, D29-123
+  // — `FILTER_UI_SELECTOR` covers BOTH possible containers, the narrow-tier
+  // `<dialog>` sheet AND the two-column-tier `.codex-filter-pane`; the old
+  // bare `closest("dialog")` guard died here — a desktop pane isn't a
+  // `<dialog>` at all, and the P4.5-era `BrowseListing.test.tsx:815`-area
+  // pin's MEANING — "j/k inert while focus is in filter UI" — is preserved
+  // under the new selector, only the container shape changed), and inert on
+  // narrow containers (S1's own `narrow` tier state — no preview pane to
+  // browse into there; matches split view's own container-driven posture,
+  // D29-78).
   useEffect(() => {
     if (narrow) return;
     function onKeyDown(e: globalThis.KeyboardEvent) {
@@ -690,7 +849,7 @@ export function BrowseListing({
       if (active instanceof HTMLElement) {
         const tag = active.tagName;
         if (tag === "INPUT" || tag === "SELECT" || tag === "TEXTAREA") return;
-        if (active.closest("dialog")) return;
+        if (active.closest(FILTER_UI_SELECTOR)) return;
       }
       if (visible.length === 0) return;
       e.preventDefault();
@@ -763,7 +922,17 @@ export function BrowseListing({
             value={queryText}
             onChange={handleQueryChange}
           />
-          <Button type="button" onClick={() => setDrawerOpen(true)}>
+          {/* P13 S2 (D29-123) — the Filters button is now a real TOGGLE
+              (`aria-expanded` + a solid visual state while open), not a
+              one-way "open the drawer" trigger — closing again is the same
+              button, mirroring the ✕/Esc/row-click close paths below. */}
+          <Button
+            type="button"
+            ref={filtersButtonRef}
+            variant={filtersOpen ? "solid" : "ghost"}
+            aria-expanded={filtersOpen}
+            onClick={() => setFiltersOpen((open) => !open)}
+          >
             Filters{pills.length > 0 ? ` (${pills.length})` : ""}
           </Button>
         </div>
@@ -842,45 +1011,92 @@ export function BrowseListing({
           )}
         </div>
 
-        {/* P4.5 S4 (D29-49) — the split-view right pane. CSS-hidden (not
-            React-conditional) at/below the split-view breakpoint
-            (`globals.css`), so a deep link's SSR HTML always contains the
-            full entity body regardless of the requester's viewport (the
-            curl-provable acceptance gate) — only the CSS visually hides it
-            on a narrow screen, where row taps never populate `entry` in the
-            first place (real content, `display:none`, never removed from
-            the DOM). */}
-        <div className="codex-entry-pane" aria-live="polite">
-          {entrySlug === undefined ? (
-            <p className="codex-entry-pane-placeholder">Select a row to preview it here.</p>
-          ) : entryData === null || entryData === undefined ? (
-            <p className="codex-entry-pane-message">
-              &ldquo;{entrySlug}&rdquo; wasn&rsquo;t found in{" "}
-              {displayCategoryName(category).toLowerCase()}.
-            </p>
-          ) : !entryVisible ? (
-            <div className="codex-entry-pane-message">
-              <p>{entryData.entity.name} isn&rsquo;t shown under the current filters.</p>
-              <a href={canonicalHref(entryData, state.superseded)}>Open full page →</a>
+        {/* P13 S2 (D29-123) — the pane-swap: on the two-column tier, opening
+            the Filters button moves the panel content HERE (the SAME grid
+            cell `.codex-entry-pane` normally occupies) instead of the
+            `<dialog>` below — mutually exclusive with the entry-pane branch
+            (never both; provable from the boolean conditions alone: this
+            branch needs `filtersOpen && isTwoColumnTier` true, the dialog's
+            own branch below needs `isTwoColumnTier && filtersOpen` FALSE —
+            the exact negation), so `FacetPanel` still only ever has one
+            live-rendered instance. `?entry=`/`entryData` are untouched by
+            opening — closing (✕/Filters toggle/Esc/row-click) simply falls
+            back to this SAME ternary's other branch, restoring the
+            still-selected preview with no extra state to reconcile. */}
+        {filtersOpen && isTwoColumnTier ? (
+          <div className="codex-filter-pane">
+            <FilterPaneHeader
+              hasActiveFilters={pills.length > 0}
+              onClearAll={handleClear}
+              onClose={() => setFiltersOpen(false)}
+              closeButtonRef={filterCloseButtonRef}
+            />
+            <div className="codex-filter-pane-body">
+              <FacetPanel
+                category={category}
+                rows={rows}
+                state={state}
+                onChange={onStateChange}
+                onSupersededReveal={onSupersededReveal}
+              />
             </div>
-          ) : (
-            <div className="codex-entry-pane-content">
-              <a
-                className="codex-entry-pane-open-link"
-                href={canonicalHref(entryData, state.superseded)}
-              >
-                Open full page →
-              </a>
-              <EntityRenderPane data={entryData} superseded={state.superseded} />
-            </div>
-          )}
-        </div>
+          </div>
+        ) : (
+          /* P4.5 S4 (D29-49) — the split-view right pane. CSS-hidden (not
+             React-conditional) at/below the split-view breakpoint
+             (`globals.css`), so a deep link's SSR HTML always contains the
+             full entity body regardless of the requester's viewport (the
+             curl-provable acceptance gate) — only the CSS visually hides it
+             on a narrow screen, where row taps never populate `entry` in the
+             first place (real content, `display:none`, never removed from
+             the DOM). P13 S2 — `aria-live="polite"` now scopes to ONLY this
+             branch (never the filter pane above): a live region hosting
+             filter-panel interactions would flood assistive tech on every
+             facet toggle (D29-124 review catch); this ternary already keeps
+             the two as separate sibling subtrees, so no attribute-toggling
+             was needed, only the split itself. */
+          <div className="codex-entry-pane" aria-live="polite">
+            {entrySlug === undefined ? (
+              <p className="codex-entry-pane-placeholder">Select a row to preview it here.</p>
+            ) : entryData === null || entryData === undefined ? (
+              <p className="codex-entry-pane-message">
+                &ldquo;{entrySlug}&rdquo; wasn&rsquo;t found in{" "}
+                {displayCategoryName(category).toLowerCase()}.
+              </p>
+            ) : !entryVisible ? (
+              <div className="codex-entry-pane-message">
+                <p>{entryData.entity.name} isn&rsquo;t shown under the current filters.</p>
+                <a href={canonicalHref(entryData, state.superseded)}>Open full page →</a>
+              </div>
+            ) : (
+              <div className="codex-entry-pane-content">
+                <a
+                  className="codex-entry-pane-open-link"
+                  href={canonicalHref(entryData, state.superseded)}
+                >
+                  Open full page →
+                </a>
+                <EntityRenderPane data={entryData} superseded={state.superseded} />
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* D29-49 — the filter drawer: a native `<dialog>` wrapping the
-          UNMODIFIED `FacetPanel` section tree (container swap only, `<aside>`
-          -> `<dialog>` — `FacetPanel` itself is untouched, still renders its
-          own `<aside>` inside this). Opening never mutates `state` — every
+      {/* D29-49, P13 S2 (D29-123) — the narrow-tier filter SHEET: a native
+          `<dialog>` wrapping the UNMODIFIED `FacetPanel` section tree
+          (`<aside>` inside, untouched). SSR posture (review blocker, pinned):
+          the `<dialog>` host + `FacetPanel` stay UNCONDITIONALLY MOUNTED
+          here — the condition below is `isTwoColumnTier && filtersOpen`
+          (render `null`), never a bare `filtersOpen` gate, so at SSR
+          (`filtersOpen` is ALWAYS false pre-hydration/on the first client
+          pass) this evaluates to `false && filtersOpen` = false regardless
+          of `isTwoColumnTier`'s own SSR-default value — FacetPanel renders,
+          dialog stays closed (no `showModal()` call), exactly matching
+          "today." Only once a user opens the panel ON THE TWO-COLUMN TIER
+          does this go empty ("the dialog host stays mounted, empty" — its
+          content lives in the pane above instead); on the narrow tier this
+          is the live, visible sheet. Opening never mutates `state` — every
           facet change already writes straight to the URL live, same as
           before; "Done"/Esc/backdrop are purely dismissive. */}
       {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-noninteractive-element-interactions -- native `<dialog>` "click the ::backdrop to dismiss" idiom: `<dialog>` IS the interactive/modal element (not a plain div), Escape already closes it via the same `onClose`, and this onClick only ever fires for a genuine backdrop click (the `e.target === dialogRef.current` guard). */}
@@ -888,18 +1104,75 @@ export function BrowseListing({
         ref={dialogRef}
         className="codex-filter-drawer"
         aria-label="Filters"
-        onClose={() => setDrawerOpen(false)}
+        onClose={() => setFiltersOpen(false)}
         onClick={(e) => {
-          if (e.target === dialogRef.current) setDrawerOpen(false); // backdrop click
+          if (e.target === dialogRef.current) setFiltersOpen(false); // backdrop click
         }}
       >
-        <div className="codex-filter-drawer-body">
-          <FacetPanel category={category} rows={rows} state={state} onChange={onStateChange} />
-          <Button type="button" variant="solid" onClick={() => setDrawerOpen(false)}>
-            Done
-          </Button>
-        </div>
+        {isTwoColumnTier && filtersOpen ? null : (
+          <div className="codex-filter-drawer-body">
+            <FilterPaneHeader
+              hasActiveFilters={pills.length > 0}
+              onClearAll={handleClear}
+              onClose={() => setFiltersOpen(false)}
+              closeButtonRef={filterCloseButtonRef}
+            />
+            <div className="codex-filter-pane-body">
+              <FacetPanel
+                category={category}
+                rows={rows}
+                state={state}
+                onChange={onStateChange}
+                onSupersededReveal={onSupersededReveal}
+              />
+            </div>
+            <div className="codex-filter-pane-footer">
+              <Button type="button" variant="solid" onClick={() => setFiltersOpen(false)}>
+                Done
+              </Button>
+            </div>
+          </div>
+        )}
       </dialog>
+    </div>
+  );
+}
+
+/** P13 S2 (D29-124) — the pane/sheet's shared sticky header: "Clear all" +
+ * ✕ ONLY, never a count (the toolbar count row is canonical + un-occluded
+ * under pane-swap — D29-124's own review blocker). Module-scope (not an
+ * inline nested component) so oxlint's `no-unstable-nested-components` stays
+ * quiet, same convention `editionOptionLabel` (`FacetPanel.tsx`) documents. */
+function FilterPaneHeader({
+  hasActiveFilters,
+  onClearAll,
+  onClose,
+  closeButtonRef,
+}: {
+  hasActiveFilters: boolean;
+  onClearAll: () => void;
+  onClose: () => void;
+  closeButtonRef: RefObject<HTMLButtonElement | null>;
+}): ReactElement {
+  return (
+    <div className="codex-filter-pane-header">
+      <button
+        type="button"
+        className="codex-filter-pane-clear-all"
+        onClick={onClearAll}
+        disabled={!hasActiveFilters}
+      >
+        Clear all
+      </button>
+      <button
+        type="button"
+        ref={closeButtonRef}
+        className="codex-filter-pane-close"
+        aria-label="Close filters"
+        onClick={onClose}
+      >
+        <span aria-hidden="true">×</span>
+      </button>
     </div>
   );
 }
