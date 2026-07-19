@@ -19,6 +19,17 @@ describe("resolveCategoryDirectory (D29-27)", () => {
     expect(allCategories.sort()).toEqual([...reader.categories()].sort());
   });
 
+  // D29-110 (P11 S4): the header nav curates down to 28 categories
+  // (`navData.test.ts`) — `/categories` (this data layer) is what now
+  // surfaces the FULL census, so it gets its own explicit "exactly 88" pin
+  // rather than relying solely on "matches whatever the fixture carries"
+  // above (that assert would still pass if the fixture itself regressed to
+  // fewer categories; this one is independent of the fixture's own count).
+  it("D29-110: /categories still surfaces all 88 real corpus categories, unaffected by the nav's curation", () => {
+    const allCategories = data.groups.flatMap((g) => g.categories.map((c) => c.category));
+    expect(allCategories.length).toBe(88);
+  });
+
   it("groups creature/hazard/spell/feat categories into their own named group", () => {
     const groupOf = (cat: string) =>
       data.groups.find((g) => g.categories.some((c) => c.category === cat))?.group;

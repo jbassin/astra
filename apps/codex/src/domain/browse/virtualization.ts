@@ -93,6 +93,20 @@ export interface WindowedCategoryListing {
    * imported) only because it's three lines of arithmetic over `rows`, not
    * worth a shared export for. */
   eligibleCount: number;
+  /** D29-111 (P11 S4, the reveal-control "N hidden" seam) — the total count
+   * of `superseded` rows in this category, INDEPENDENT of the CURRENT
+   * `superseded` toggle (unlike `eligibleCount` above, which flips meaning
+   * with the toggle) — a fixed per-category total, mirroring `/rules`'s own
+   * `RulesTreeBook.hiddenWhenLegacyOff`. Computed HERE, loader-side, over
+   * the FULL corpus row set the loader already has on hand: a locally
+   * computed count over the ≤60 windowed rows `BrowseListing.tsx` ships to
+   * the client would be WRONG on a cold load (most of the category's
+   * superseded rows sort outside that window), and SSR-vs-client would
+   * disagree once the full array lands (the hydration-mismatch class this
+   * whole windowing scheme exists to avoid) — so this rides the exact same
+   * override-prop plumbing `totalCount`/`eligibleCount`/`entryVisible`
+   * already established. */
+  hiddenCount: number;
   /** Whether the requested `?entry=` row passes the CURRENT filter state —
    * `undefined` when no `entrySlug` was given. `BrowseListing.tsx`'s own
    * `entryVisible` normally derives from `rows.find(...)`, which only works
@@ -142,6 +156,7 @@ export function computeWindowedListing(
       : comparatorForSort(cols, sortBaseKey);
   const visible = sortRows(applyFilters(rows, state), state.sort, sortComparator);
   const eligibleCount = state.superseded ? rows.length : rows.filter((r) => !r.superseded).length;
+  const hiddenCount = rows.filter((r) => r.superseded).length;
   const { startIndex, endIndex } = initialWindowRange(visible.length);
   const entryId = entrySlug !== undefined ? `${category}/${entrySlug}` : undefined;
   return {
@@ -149,6 +164,7 @@ export function computeWindowedListing(
     rows: visible.slice(startIndex, endIndex),
     totalCount: visible.length,
     eligibleCount,
+    hiddenCount,
     entryVisible: entryId !== undefined ? visible.some((r) => r.id === entryId) : undefined,
   };
 }

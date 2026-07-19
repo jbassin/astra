@@ -1,27 +1,30 @@
 /**
- * P4.5 S2 (D29-47) — the global header nav's information architecture: every
- * one of the 88 real corpus categories assigned to exactly one of the spec's
- * 6 dropdown groups, plus the "Rules" split control's own direct-link
- * category and the "Sources" aggregate direct link. Copied verbatim from the
- * spec's §2 D29-47 table — do not re-derive; the categories were
- * adversarially re-verified against `data/corpus/` at spec-review time (zero
- * drift). A conformance test (`navData.test.ts`) asserts the module's
- * category union equals the full 88-entry corpus category list exactly.
+ * P4.5 S2 (D29-47), CURATED P11 S4 (D29-110, R5, #13f) — the global header
+ * nav's information architecture. D29-47 originally assigned every one of
+ * the 88 real corpus categories to a dropdown group; D29-110 curates that
+ * down to a 28-category AoN-mirroring set — the long tail (bloodline,
+ * doctrine, muse, the class-subsystem categories, the 10 default-empty/thin
+ * categories, …) demotes to `/categories` + the omnibar + in-context links
+ * (stakeholder-sanctioned: link/search-only reachability is fine for them).
  *
- * `NAV_ITEMS` is the SINGLE source of the grouping — imported by
- * `HeaderNav.tsx` (the header island) and its own conformance test. The
- * "Everything" catch-all's 3 categories (`article`/`sidebar`/`source`) are
- * the ui-map's "structural, not ordinarily browsable" long tail; they get a
- * real dropdown here too (not a special case) — same render path as every
- * other group.
+ * "Rules"/"Sources"/"All categories" are now all bare `kind: "link"` items
+ * carrying NO `categories` of their own — the old Rules split control (a
+ * `<summary>`-adjacent caret trigger disclosing an 8-category dropdown
+ * tail) is GONE, since Rules no longer has a dropdown at all
+ * (`HeaderNav.tsx`'s old `RulesNavItem`/this file's old `tailCategoriesFor`
+ * are deleted with it — dead code once no `kind: "link"` item carries
+ * `categories`). "Everything" (the `article`/`sidebar`/`source` structural
+ * catch-all) is replaced by "All categories", a bare link to `/categories`
+ * — the full 88-category directory, which is what now surfaces the whole
+ * corpus (this module's own union no longer does).
  *
- * **The Rules split control (adversarial M4):** a `<summary>` can't be an
- * `<a>`, so "Rules" is the one `kind: "link"` item that ALSO carries
- * `categories` — its own `rules` category (the item's `href` target) PLUS
- * its 8-category dropdown tail, all in one array so `allNavCategories()`'s
- * union stays exactly 88 without a second field just for this one item.
- * `tailCategoriesFor()` is how a renderer gets JUST the tail (excludes the
- * item's own href-derived self-category).
+ * `NAV_ITEMS` is the SINGLE source of the curated grouping — imported by
+ * `HeaderNav.tsx` (the header island) and its own conformance test.
+ * `allNavCategories()`'s union is now the CURATED 28, a strict SUBSET of the
+ * real 88 (`navData.test.ts` asserts subset-membership + an exact count of
+ * 28; the corpus-census 88 assert stays, anchoring that subset check —
+ * `directoryData.test.ts` separately pins that `/categories` still surfaces
+ * the full 88).
  */
 export interface NavItem {
   readonly label: string;
@@ -36,69 +39,26 @@ export const NAV_ITEMS: readonly NavItem[] = [
     kind: "dropdown",
     categories: [
       "class",
-      "class-feature",
-      "class-kit",
-      "class-sample",
       "ancestry",
       "heritage",
       "background",
       "feat",
       "archetype",
-      "animal-companion",
-      "animal-companion-advanced",
-      "animal-companion-specialization",
-      "animal-companion-unique",
-      "eidolon",
-      "familiar-ability",
-      "familiar-specific",
-      "bloodline",
-      "instinct",
-      "racket",
-      "muse",
-      "doctrine",
-      "methodology",
-      "hunters-edge",
-      "arcane-school",
-      "arcane-thesis",
-      "druidic-order",
-      "patron",
-      "mystery",
-      "lesson",
-      "research-field",
-      "tenet",
-      "way",
-      "element",
-      "conscious-mind",
-      "subconscious-mind",
-      "draconic-exemplar",
-      "deviant-ability-classification",
-      "cause",
-      "innovation",
+      "skill",
+      "condition",
+      "action",
+      "trait",
     ],
   },
   {
     label: "Spells",
     kind: "dropdown",
-    categories: ["spell", "ritual", "domain", "tradition"],
+    categories: ["spell", "ritual"],
   },
   {
     label: "Equipment",
     kind: "dropdown",
-    categories: [
-      "equipment",
-      "weapon",
-      "weapon-group",
-      "armor",
-      "armor-group",
-      "shield",
-      "item-bonus",
-      "relic",
-      "set-relic",
-      "implement",
-      "siege-weapon",
-      "vehicle",
-      "campsite-meal",
-    ],
+    categories: ["equipment", "weapon", "armor", "shield", "vehicle"],
   },
   {
     label: "GM",
@@ -106,41 +66,23 @@ export const NAV_ITEMS: readonly NavItem[] = [
     categories: [
       "creature",
       "creature-family",
-      "creature-ability",
-      "creature-adjustment",
-      "creature-theme-template",
       "hazard",
-      "weather-hazard",
       "warfare-army",
-      "warfare-tactic",
       "kingdom-event",
       "kingdom-structure",
-      "apparition",
-      "cult-activity",
       "curse",
       "disease",
     ],
   },
   {
+    label: "Setting",
+    kind: "dropdown",
+    categories: ["deity", "plane", "language"],
+  },
+  {
     label: "Rules",
     kind: "link",
     href: "/rules",
-    categories: [
-      "rules",
-      "condition",
-      "action",
-      "trait",
-      "skill",
-      "skill-general-action",
-      "category-page",
-      "language",
-      "style",
-    ],
-  },
-  {
-    label: "Setting",
-    kind: "dropdown",
-    categories: ["deity", "deity-category", "plane", "epithet", "hellknight-order"],
   },
   {
     label: "Sources",
@@ -148,25 +90,17 @@ export const NAV_ITEMS: readonly NavItem[] = [
     href: "/sources",
   },
   {
-    label: "Everything",
-    kind: "dropdown",
-    categories: ["article", "sidebar", "source"],
+    label: "All categories",
+    kind: "link",
+    href: "/categories",
   },
 ];
 
-/** The category union across every nav item's `categories` — the
- * conformance test's LHS (must equal the full 88-entry corpus category list
- * exactly: every category assigned, none twice, none dropped). */
+/** The category union across every nav item's `categories` — the curated 28
+ * (D29-110), a strict subset of the real 88-category corpus. Every
+ * `kind: "link"` item (Rules/Sources/All categories) now carries no
+ * `categories` at all, so this is exactly the 5 dropdown groups' own
+ * category lists concatenated. */
 export function allNavCategories(): readonly string[] {
   return NAV_ITEMS.flatMap((item) => item.categories ?? []);
-}
-
-/** For a `kind: "link"` item that ALSO carries `categories` (only "Rules"
- * today — the split control), the dropdown TAIL excludes the item's own
- * `href`-derived self-category (the plain link's target, e.g. `rules` for
- * `href: "/rules"`). A `kind: "dropdown"` item's `categories` are already
- * the full tail (no self-category to exclude). */
-export function tailCategoriesFor(item: NavItem): readonly string[] {
-  const self = item.href?.replace(/^\//, "");
-  return (item.categories ?? []).filter((category) => category !== self);
 }

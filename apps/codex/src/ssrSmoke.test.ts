@@ -4,6 +4,7 @@ import path from "node:path";
 
 import { beforeAll, describe, expect, it } from "vitest";
 
+import { allNavCategories } from "@/domain/nav/navData";
 import { createCorpusReader, fixtureCorpusRoot } from "@/server/corpusFs";
 
 /**
@@ -487,7 +488,7 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
     expect(html).toContain('content="noindex"');
   });
 
-  it("/rules/{slug} still falls through to the $category/$slug route (static /rules doesn't shadow it)", async () => {
+  it("/rules/{slug} still falls through to the $category/$slug route (static /rules doesn't shadow it) — the entity route has no listing title", async () => {
     const { status, html } = await get("/rules/tools-of-play");
     expect(status).toBe(200);
     expect(html).toContain("Tools of Play");
@@ -496,6 +497,16 @@ describe("/rules tree browser (D29-40 tier 3)", () => {
     // here even though S3 (below) now ALSO renders a `codex-rules-tree`
     // (the sidebar reuses that same island, so its class alone no longer
     // distinguishes the two routes post-S3).
+    //
+    // P11 S4 (D29-112) re-word: `codex-listing-title` is no longer proof of
+    // "this page has NO listing chrome anywhere in the corpus" — the class
+    // stays in the SSR DOM on LISTING routes now too (sr-only, not
+    // `display:none`, so the root header's own visible title has a
+    // corresponding a11y-tree/document-outline heading). This assert is
+    // narrower than it reads: it only proves the ENTITY route specifically
+    // carries no listing title (which was always true, sr-only or not — a
+    // `$category/$slug` render never mounted `BrowseListing` in the first
+    // place), not that the class is absent from the whole app.
     expect(html).not.toContain("codex-listing-title");
     expect(html).toContain("codex-entity-page");
   });
@@ -755,16 +766,22 @@ describe("/ the R4 landing page (D29-47 tier 3)", () => {
     expect(html).not.toContain("Every entity lives at");
   });
 
-  it("the header nav renders on the landing page: every one of the 88 nav categories resolves to a real anchor (no-JS reachability, D29-47 B)", async () => {
+  it("the header nav renders on the landing page: every one of the curated 28 nav categories resolves to a real anchor (no-JS reachability, D29-47/D29-110)", async () => {
     const { html } = await get("/");
     expect(html).toContain("codex-header-nav");
-    const reader = createCorpusReader(fixtureCorpusRoot());
-    for (const category of reader.categories()) {
+    // D29-110 (P11 S4): the nav no longer spans all 88 real corpus
+    // categories — it's curated down to 28 (`navData.ts`'s own union); the
+    // full 88 is what `/categories` surfaces now (the test right above this
+    // describe block's own "lists every one of the 88" assert, unchanged).
+    expect(allNavCategories().length).toBe(28);
+    for (const category of allNavCategories()) {
       expect(html, `nav is missing href="/${category}"`).toContain(`href="/${category}"`);
     }
-    // the Rules split control's own link + the Sources direct link.
+    // Rules/Sources/All categories are all bare direct links now (D29-110:
+    // the old Rules split control/dropdown tail is gone).
     expect(html).toContain('href="/rules"');
     expect(html).toContain('href="/sources"');
+    expect(html).toContain('href="/categories"');
   });
 
   it("zero hydration/render errors on the landing page", async () => {

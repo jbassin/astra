@@ -75,7 +75,12 @@ function EntityRouteComponent() {
   // AND on the split-view right pane (`BrowseListing.tsx`) — never on the
   // bare listing rows themselves (spec's own reasoning for restricting the
   // mount point away from an 8k-row list).
-  const page = <EntityRenderPane data={data} superseded={superseded} />;
+  //
+  // D29-112 (P11 S4) — `standalone`: this IS the standalone entity route
+  // (as opposed to the split-view right pane, which omits the prop) — the
+  // root header now carries the visible title (`HeaderTitle.tsx`), so the
+  // in-content h1 renders sr-only here (`EntityPage`'s own doc comment).
+  const page = <EntityRenderPane data={data} superseded={superseded} standalone />;
 
   // P4 S3 (D29-41): the tree sidebar/trail/pager wrap ONLY rules entity
   // pages carrying a resolved `rulesNav` — every other category's page is

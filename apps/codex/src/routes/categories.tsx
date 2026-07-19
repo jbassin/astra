@@ -9,9 +9,11 @@ import { getCategoryDirectory } from "@/server/corpusFns";
  * server fn + `CategoryDirectory` component, unchanged data shape — only the
  * route file and its surrounding page chrome moved here; the landing page
  * (`/`) now owns the R4 tiles + hero search instead. Still THROWAWAY (no
- * facet UI, no pagination, no sort options) — this is the "Everything"
- * nav dropdown's target and the landing page's own "browse all categories"
- * link.
+ * facet UI, no pagination, no sort options) — this is the header nav's
+ * "All categories" link target (D29-110 renamed/curated the old
+ * "Everything" dropdown down to this one bare link — /categories itself is
+ * unaffected, still the full 88-category directory) and the landing page's
+ * own "browse all categories" link.
  */
 export const Route = createFileRoute("/categories")({
   loader: () => getCategoryDirectory(),

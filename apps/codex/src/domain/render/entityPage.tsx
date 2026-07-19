@@ -53,7 +53,31 @@ function entityTypeTag(entity: CodexEntity): string {
  * precedent for displaying it. */
 const SIZE_CHIP_CATEGORIES: ReadonlySet<string> = new Set(["creature", "vehicle"]);
 
-export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCtx }): ReactElement {
+/**
+ * D29-112 (P11 S4) — `standalone` (default `false`, so every existing
+ * caller — the regen-goldens script's bare `EntityPage`, `entityPage.test.
+ * tsx`, the split-view entry pane via `EntityRenderPane` — keeps rendering
+ * the h1 fully VISIBLE, byte-identical, no prop threading required of
+ * them): `true` ONLY for the standalone `/{category}/{slug}` route (via
+ * `EntityRenderPane`), where the root header now carries the VISIBLE title
+ * instead (`HeaderTitle.tsx`) — the in-content h1 stays in the SSR DOM
+ * (document outline + a11y tree intact) but renders sr-only, via the
+ * `codex-entity-name-standalone` modifier class (`globals.css`). The
+ * popover (`Popover.tsx`) clones this exact STANDALONE page's SSR HTML
+ * wholesale, so the cloned h1 carries this SAME modifier — `globals.css`'s
+ * `.popover-inner .codex-entity-name-standalone` override re-shows it there
+ * (the review's headline B1 catch: a bare, unscoped sr-only rule on this
+ * class would have killed the popover's title site-wide).
+ */
+export function EntityPage({
+  entity,
+  ctx,
+  standalone = false,
+}: {
+  entity: CodexEntity;
+  ctx: RenderCtx;
+  standalone?: boolean;
+}): ReactElement {
   const group = categoryGroupOf(entity.category);
   return (
     <article
@@ -68,7 +92,13 @@ export function EntityPage({ entity, ctx }: { entity: CodexEntity; ctx: RenderCt
             (`.codex-entity-title-row`, globals.css), with the trait pill
             row immediately below it per the same section. */}
         <div className="codex-entity-title-row">
-          <h1 className="codex-entity-name">{entity.name}</h1>
+          <h1
+            className={
+              standalone ? "codex-entity-name codex-entity-name-standalone" : "codex-entity-name"
+            }
+          >
+            {entity.name}
+          </h1>
           <span className="codex-entity-type-tag">{entityTypeTag(entity)}</span>
         </div>
         <div className="codex-entity-meta-row">

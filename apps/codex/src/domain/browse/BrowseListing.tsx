@@ -12,6 +12,7 @@ import {
   type RefObject,
 } from "react";
 
+import { displayCategoryName } from "@/domain/render/displayCategoryName";
 import { EntityRenderPane } from "@/domain/render/EntityRenderPane";
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
@@ -162,12 +163,14 @@ export function BrowseListing({
   totalCount,
   eligibleCountOverride,
   entryVisibleOverride,
+  hiddenCountOverride,
   state,
   onStateChange,
   entrySlug,
   entryData,
   onEntrySelect,
   onEntryPreview,
+  onSupersededReveal,
   restoredScrollY,
 }: {
   category: string;
@@ -194,6 +197,12 @@ export function BrowseListing({
    * verifying this slice, `virtualization.ts`'s own doc comment on
    * `WindowedCategoryListing.entryVisible`). */
   entryVisibleOverride?: boolean;
+  /** D29-111 (P11 S4) — same pending-window override pattern as
+   * `eligibleCountOverride` above, for the reveal control's "N hidden"
+   * total: a locally-computed count over ≤60 windowed rows is WRONG on a
+   * cold load (see `virtualization.ts`'s own doc comment on
+   * `WindowedCategoryListing.hiddenCount`). */
+  hiddenCountOverride?: number;
   state: BrowseFilterState;
   onStateChange: FilterStateUpdater;
   /** The raw corpus id SEGMENT from `?entry=` (identical format to the
@@ -215,6 +224,17 @@ export function BrowseListing({
    * "component reports, route navigates" split as `onEntrySelect`, but
    * REPLACE instead of push (never adds a history entry). */
   onEntryPreview: (slug: string) => void;
+  /** D29-111 (P11 S4) — the superseded-reveal control's own navigate: the
+   * ROUTE performs a FUNCTIONAL search merge (`search: (prev) => ({...prev,
+   * superseded})`) with `resetScroll: false` — deliberately NOT routed
+   * through `onStateChange` (which the general facet-write path uses,
+   * ordinary `resetScroll: true` included): revealing/hiding superseded
+   * rows isn't a new search, and jumping the user back to the top of a
+   * long, already-scrolled listing just to widen the edition filter would
+   * be jarring (measured, the review's own reasoning) — this is its own
+   * "component reports, route navigates" callback, same split as
+   * `onEntrySelect`/`onEntryPreview` above. */
+  onSupersededReveal: (superseded: boolean) => void;
   /** P9 S2 (D29-84) — the current URL's window scroll-restoration entry
    * (`scrollY`), if TanStack's `useElementScrollRestoration` found one — the
    * ROUTE reads it (that hook needs real router context, which this
@@ -295,6 +315,12 @@ export function BrowseListing({
     () => (state.superseded ? rows.length : rows.filter((r) => !r.superseded).length),
     [rows, state.superseded],
   );
+  // D29-111 (P11 S4) — the reveal control's "N hidden" total: a fixed
+  // per-category count, deliberately NOT keyed on `state.superseded` (unlike
+  // `localEligibleCount` above) — see `virtualization.ts`'s own doc comment
+  // on `WindowedCategoryListing.hiddenCount` for why this needs the same
+  // override-prop treatment as `eligibleCount`.
+  const localHiddenCount = useMemo(() => rows.filter((r) => r.superseded).length, [rows]);
   // D29-87 (R3) — "N of N shown" counts the ARRAY, not the mounted DOM;
   // `totalCount`/`eligibleCountOverride` (set by the route ONLY during the
   // D29-89 pending window) keep that count line reading the eventual TRUE
@@ -302,6 +328,7 @@ export function BrowseListing({
   // window alone would give.
   const displayTotalCount = totalCount ?? visible.length;
   const displayEligibleCount = eligibleCountOverride ?? localEligibleCount;
+  const displayHiddenCount = hiddenCountOverride ?? localHiddenCount;
   const visibleIds = useMemo(() => new Set(visible.map((r) => r.id)), [visible]);
   const pills = useMemo(
     () => activeFilterPills(state, category, onStateChange),
@@ -698,11 +725,30 @@ export function BrowseListing({
   return (
     <div className="codex-listing">
       <header className="codex-listing-header">
-        <h1 className="codex-listing-title">{humanizeSlug(category)}</h1>
+        {/* D29-112 (P11 S4) — the root header now carries the VISIBLE title
+            (`HeaderTitle.tsx`, resolved via `useMatches`/`params.category`);
+            this in-content h1 stays in the SSR DOM (document outline + a11y
+            tree intact, `globals.css`'s sr-only rule on this class) purely
+            for that reason — exactly one visible h1 per document, matching
+            the entity route's own `codex-entity-name-standalone` posture.
+            Still `displayCategoryName` (D29-109d, created early by this
+            same decision), same as the header's own title text and this
+            route's `<title>`. */}
+        <h1 className="codex-listing-title">{displayCategoryName(category)}</h1>
+        {/* D29-112 — count line + hint + the D29-111 reveal control + the
+            search input + Filters button compact to ONE slim row
+            (`.codex-listing-count-row` extended, `.codex-listing-controls`
+            deleted) now that the h1 above is out of the visual flow —
+            reclaims the ~120px the two used to cost stacked. */}
         <div className="codex-listing-count-row">
           <p className="codex-listing-count">
             {displayTotalCount.toLocaleString()} of {displayEligibleCount.toLocaleString()} shown
           </p>
+          <SupersededRevealControl
+            superseded={state.superseded}
+            hiddenCount={displayHiddenCount}
+            onReveal={onSupersededReveal}
+          />
           {/* P8 S3 (D29-82) — desktop-only hint, right of the count line;
               hidden under the same narrow-container condition that drops
               the split view/compact columns (S1's own `narrow` tier state):
@@ -711,8 +757,6 @@ export function BrowseListing({
           {!narrow ? (
             <p className="codex-listing-hint">Ctrl+K search · j/k browse · enter open</p>
           ) : null}
-        </div>
-        <div className="codex-listing-controls">
           <Input
             type="search"
             aria-label="Filter by name"
@@ -750,7 +794,28 @@ export function BrowseListing({
       <div className="codex-browse-layout">
         <div className="codex-listing-pane" ref={listingPaneRef}>
           {visible.length === 0 ? (
-            displayEligibleCount === 0 ? (
+            // D29-111 (R3, #13/#3e/#3f) — the 10 all-superseded categories
+            // (e.g. /doctrine) used to render the honest-but-misleading
+            // "Nothing in this category yet." even though every entry DOES
+            // exist, just superseded-hidden; distinguish that case from a
+            // GENUINELY empty category (zero entries, superseded or not —
+            // `displayEligibleCount === 0` under the WIDENED toggle too) and
+            // from the ordinary filtered-to-zero case (`BrowseEmptyState`,
+            // unchanged).
+            !state.superseded && displayHiddenCount > 0 && displayEligibleCount === 0 ? (
+              <div className="codex-empty-state">
+                <p>
+                  All {displayHiddenCount.toLocaleString()} entries here are superseded (legacy).
+                </p>
+                <button
+                  type="button"
+                  className="codex-rules-superseded-toggle"
+                  onClick={() => onSupersededReveal(true)}
+                >
+                  Show {displayHiddenCount.toLocaleString()} hidden (superseded) &rarr;
+                </button>
+              </div>
+            ) : displayEligibleCount === 0 ? (
               <p className="codex-listing-empty-category">Nothing in this category yet.</p>
             ) : (
               <BrowseEmptyState
@@ -836,6 +901,48 @@ export function BrowseListing({
         </div>
       </dialog>
     </div>
+  );
+}
+
+/** D29-111 (P11 S4, R3, #13/#3e/#3f) — the count row's superseded-reveal
+ * control: "N of N shown" honesty comes from the note, not the denominator
+ * (the denominator keeps its existing "visible under the current toggle"
+ * meaning, `displayEligibleCount` above). Reuses the `/rules` inline
+ * toggle's OWN classes (`codex-rules-superseded-toggle`/
+ * `codex-rules-hidden-note`, `routes/rules.tsx`) rather than inventing
+ * parallel `codex-listing-*` ones — same visual language site-wide for "some
+ * content here is superseded-hidden," and zero new CSS. Renders nothing at
+ * all when the category carries no superseded rows (`hiddenCount === 0`),
+ * matching `/rules`'s own `totalHidden > 0 ? … : null` guard. */
+function SupersededRevealControl({
+  superseded,
+  hiddenCount,
+  onReveal,
+}: {
+  superseded: boolean;
+  hiddenCount: number;
+  onReveal: (superseded: boolean) => void;
+}): ReactElement | null {
+  if (hiddenCount === 0) return null;
+  if (superseded) {
+    return (
+      <button
+        type="button"
+        className="codex-rules-superseded-toggle"
+        onClick={() => onReveal(false)}
+      >
+        Hide superseded &larr;
+      </button>
+    );
+  }
+  return (
+    <button
+      type="button"
+      className="codex-rules-superseded-toggle codex-rules-hidden-note"
+      onClick={() => onReveal(true)}
+    >
+      Show {hiddenCount.toLocaleString()} hidden (superseded) &rarr;
+    </button>
   );
 }
 

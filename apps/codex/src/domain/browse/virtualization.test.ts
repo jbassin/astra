@@ -93,6 +93,49 @@ describe("computeWindowedListing (D29-89 — the loader's SSR-only windowed proj
     expect(on.eligibleCount).toBe(6);
   });
 
+  // D29-111 (P11 S4) — `hiddenCount`: the reveal control's "N hidden" total,
+  // fixed per category and INDEPENDENT of the superseded toggle (unlike
+  // `eligibleCount` above, which flips meaning with it).
+  describe("hiddenCount (D29-111)", () => {
+    it("counts every superseded row in the category, regardless of the superseded toggle", () => {
+      const rows = [
+        ...manyRows(5),
+        row({ id: "feat/legacy-a", name: "Zzz A", superseded: true }),
+        row({ id: "feat/legacy-b", name: "Zzz B", superseded: true }),
+      ];
+      const off = computeWindowedListing("feat", rows, {});
+      expect(off.hiddenCount).toBe(2);
+      const on = computeWindowedListing("feat", rows, { superseded: true });
+      expect(on.hiddenCount).toBe(2); // unchanged — a fixed per-category total
+    });
+
+    it("is 0 for a category with no superseded rows at all", () => {
+      const result = computeWindowedListing("feat", manyRows(5), {});
+      expect(result.hiddenCount).toBe(0);
+    });
+
+    it("is computed over the FULL row set, not just the windowed slice (a >60-row all-superseded category)", () => {
+      // Every row superseded — mirrors the "all N entries here are
+      // superseded" empty-state case (e.g. the real corpus's /doctrine),
+      // scaled past the 60-row SSR window so a windowed-slice-only count
+      // would undercount it.
+      const rows = manyRows(90).map((r) => Object.assign(r, { superseded: true }));
+      const result = computeWindowedListing("feat", rows, {});
+      expect(result.rows).toHaveLength(0); // nothing passes the default superseded-off filter
+      expect(result.hiddenCount).toBe(90);
+      expect(result.eligibleCount).toBe(0);
+    });
+
+    it("a query filter never narrows hiddenCount — it's category-wide, not filtered-view-wide", () => {
+      const rows = [
+        ...manyRows(5),
+        row({ id: "feat/legacy", name: "Superseded Row", superseded: true }),
+      ];
+      const result = computeWindowedListing("feat", rows, { q: "no-such-substring" });
+      expect(result.hiddenCount).toBe(1);
+    });
+  });
+
   // P9 S1 — `entryVisible`: found live (a fresh `?entry=` deep link beyond
   // the SSR window incorrectly rendered "isn't shown under the current
   // filters" under NO active filter at all) while verifying this slice

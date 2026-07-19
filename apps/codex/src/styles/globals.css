@@ -242,8 +242,47 @@ select:focus-visible,
   color: var(--color-gold-rule);
   text-decoration: none;
 }
-/* --- P4.5 S2 (D29-47): the global header nav — 6 category dropdowns + the
-   Rules split control + the bare Sources link. Every dropdown panel is
+/* D29-112 (P11 S4) — replaces `.site-brand` on listing/entity/rules routes
+   (`HeaderTitle.tsx`): a small home glyph (the site's own `favicon.svg`
+   mark — no new SVG asset) + the resolved title text. `min-width: 0` on
+   both this and the text span below is what lets the text actually SHRINK
+   below its own intrinsic width inside the `.site-head` flex row (a flex
+   item's default `min-width: auto` would otherwise floor it at the full
+   text's width, defeating the ellipsis and pushing the row wider instead —
+   "ellipsizes, never wraps the bar taller," D29-112's own mobile
+   requirement). `flex: 1 1 auto` lets it claim the row's remaining space
+   (after the nav/Omnibar) while still being free to shrink to 0 basis. */
+.site-header-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  flex: 1 1 auto;
+}
+.site-home-glyph {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+}
+.site-home-glyph img {
+  display: block;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+.site-header-title-text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-heading-maroon);
+  font-family: var(--font-heading), serif;
+  font-variant-caps: small-caps;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+/* --- P4.5 S2 (D29-47), curated P11 S4 (D29-110): the global header nav —
+   5 category dropdowns + the bare Rules/Sources/All categories links.
+   Every dropdown panel is
    ALWAYS rendered (never conditionally mounted) — `:hover` is the no-JS
    reveal, `.codex-nav-panel-open` is the click/keyboard-driven one JS adds;
    a JS-disabled client still reaches every category link because the
@@ -260,7 +299,6 @@ select:focus-visible,
   align-items: stretch;
 }
 .codex-nav-trigger,
-.codex-nav-link,
 .codex-nav-plain-link {
   display: inline-flex;
   align-items: center;
@@ -276,36 +314,16 @@ select:focus-visible,
   white-space: nowrap;
 }
 .codex-nav-trigger:hover,
-.codex-nav-link:hover,
 .codex-nav-plain-link:hover {
   color: var(--color-heading-maroon);
   text-decoration: none;
 }
-.codex-nav-item-split {
-  gap: 0;
-}
-.codex-nav-link {
-  padding-right: 0.1rem;
-}
-.codex-nav-caret {
-  /* P8 S2 (D29-80): de-chrome the UA default `<button>` skin — root cause of
-     the measured "2px outset black + gray fill" — padding/size unchanged. */
-  appearance: none;
-  border: none;
-  background: none;
-  font: inherit;
-  color: inherit;
-  cursor: pointer;
-  padding-left: 0.15rem;
-  padding-right: 0.4rem;
-  font-size: 0.65rem;
-}
-/* P8 S2 (D29-80b): the same `▾` affordance on every OTHER dropdown trigger
+/* P8 S2 (D29-80b): the `▾` affordance on every dropdown trigger
    (`NavDropdown`'s `.codex-nav-trigger`, `HeaderNav.tsx`) — an aria-hidden
-   glyph span INSIDE the existing trigger button, matching the Rules split
-   control's caret voice/size (`.codex-nav-caret`'s own 0.65rem) without
-   touching that button's own class (a `.codex-nav-trigger` is a single tab
-   stop, unlike Rules' two — D29-47/M4 stays intact). */
+   glyph span INSIDE the existing trigger button (D29-110: the old Rules
+   split control's OWN separate caret button/`.codex-nav-caret` is gone —
+   Rules is a bare link now, same as Sources/All categories — so this is
+   the only caret voice left). */
 .codex-nav-trigger-caret {
   margin-left: 0.3rem;
   font-size: 0.65rem;
@@ -504,12 +522,50 @@ select:focus-visible,
   padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--color-rule);
 }
+/* D29-112 (P11 S4) — once the h1 above is pulled sr-only (the
+   `.codex-entity-name-standalone` rule below), it's removed from the flex
+   flow entirely, leaving the type-tag as the row's ONLY remaining flex
+   item — `justify-content: space-between` with a single item collapses to
+   flex-start (per spec, a single flex item can't have "space between"
+   itself), so the tag would float alone-left instead of staying at the
+   row's right edge. `:has()` scopes the fix to exactly that case — the
+   split-view/regen-goldens render (h1 still visible, two real flex items)
+   keeps its original `space-between` untouched. */
+.codex-entity-title-row:has(.codex-entity-name-standalone) {
+  justify-content: flex-end;
+}
 .codex-entity-name {
   color: var(--color-heading-maroon);
   font-family: var(--font-heading), serif;
   font-variant-caps: small-caps;
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 600;
+}
+/* D29-112 — the standalone entity route's own h1 stays in the SSR DOM
+   (document outline + a11y tree intact) but renders sr-only: the root
+   header now carries the VISIBLE title (`HeaderTitle.tsx`,
+   `useMatches`-derived), so this modifier removes the in-content h1 from
+   the visual flow without `display:none`/`visibility:hidden` (either of
+   which would ALSO drop it from the outline/AT, not just the viewport —
+   the standard "sr-only" clip-box technique instead). Applies ONLY when
+   `EntityPage`'s own `standalone` prop is true (the entity ROUTE) — the
+   split-view entry pane and the regen-goldens script both render the bare
+   `codex-entity-name` class with the title fully visible, unaffected.
+   `.popover-inner .codex-entity-name-standalone` (below, near the popover
+   rules) overrides this back to visible — the popover clones the
+   STANDALONE page's SSR HTML wholesale, so the cloned h1 carries this
+   SAME modifier, and a bare/unscoped sr-only rule here would have killed
+   the popover's title site-wide (the review's headline B1 catch). */
+.codex-entity-name-standalone {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 .codex-entity-type-tag {
   flex: none;
@@ -858,24 +914,44 @@ select:focus-visible,
   border-bottom: 1px solid var(--color-rule);
   margin-bottom: 0.5rem;
 }
+/* D29-112 (P11 S4) — the in-content h1 stays in the SSR DOM (document
+   outline + a11y tree intact) but renders sr-only, unconditionally: the
+   root header now carries the VISIBLE listing title (`HeaderTitle.tsx`,
+   `displayCategoryName(params.category)`) on every `/{category}` listing —
+   there's no "embedded" listing context that still needs this h1 visible
+   (`BrowseListing` has exactly one production call site, the listing
+   route), unlike the entity h1's two-consumer split. Same sr-only
+   technique as `.codex-entity-name-standalone` above (kept as a separate
+   rule rather than a shared utility class — this selector needs no `:has()`
+   layout companion, the row below was never `space-between`-keyed on two
+   items the way the entity title row was). */
 .codex-listing-title {
-  color: var(--color-heading-maroon);
-  font-family: var(--font-heading), serif;
-  font-variant-caps: small-caps;
-  font-size: clamp(1.5rem, 4vw, 2rem);
-  font-weight: 600;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
-/* P8 S3 (D29-82) — the count line + the desktop-only keyboard hint share
-   one row, hint pushed to the far right (`justify-content: space-between`);
-   `.codex-listing-hint` isn't rendered at all under the narrow-container
-   condition (React-conditional, `BrowseListing.tsx`), so no extra
-   breakpoint rule is needed here. */
+/* P8 S3 (D29-82), P11 S4 (D29-112) — the count line, the D29-111
+   superseded-reveal control, the desktop-only keyboard hint, the
+   quick-filter search input, and the Filters button all fold into this ONE
+   slim row now (`.codex-listing-controls` — the old second stacked block —
+   is DELETED, folded in here) — the sr-only h1 above no longer needs a
+   `space-between` partner, so this switches to a plain wrapping flex row;
+   the Filters button keeps its own `margin-left: auto` to stay pinned to
+   the row's right edge regardless of how many optional pieces (hint/reveal
+   note) render before it. `.codex-listing-hint` isn't rendered at all under
+   the narrow-container condition (React-conditional, `BrowseListing.tsx`),
+   so no extra breakpoint rule is needed here. */
 .codex-listing-count-row {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
   margin-top: 0.15rem;
 }
 .codex-listing-count {
@@ -888,17 +964,10 @@ select:focus-visible,
   font-size: 0.78rem;
   letter-spacing: 0.02em;
 }
-.codex-listing-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.5rem;
-}
-.codex-listing-controls input[type="search"] {
+.codex-listing-count-row input[type="search"] {
   max-width: 16rem;
 }
-.codex-listing-controls .codex-ui-button {
+.codex-listing-count-row .codex-ui-button {
   margin-left: auto;
 }
 
@@ -2054,15 +2123,35 @@ select:focus-visible,
    render-from-nodes path exists — `.popover-hint` is the whole
    `.codex-entity-page` article, see `entityPage.tsx`), so the cloned page's
    h1 lands inside `.popover-inner` at its full standalone size unless
-   re-scaled here. Scoped to the plain `.codex-entity-name` selector — D29-112
-   (S4, not yet built) adds a `codex-entity-name-standalone` modifier + a
-   sr-only rule for the LIVE standalone page; until S4 lands this rule (and
-   D29-112's own sr-only rule) targets the same bare class, so it keeps
-   applying once S4 adds the modifier alongside it (S4's job to tighten the
-   selector, not to re-show a hidden title — the popover must NEVER lose its
-   title, the review's headline B1 catch). */
+   re-scaled here. Scoped to the plain `.codex-entity-name` selector — this
+   rule alone is untouched by D29-112 (S4): it still applies whether or not
+   the modifier below is also present on the same element. */
 .popover-inner .codex-entity-name {
   font-size: 1.1rem;
+}
+/* D29-112 (S4, now built) — THE B1 interlock: the popover clones the
+   STANDALONE page's SSR HTML verbatim, so the cloned h1 carries the SAME
+   `codex-entity-name-standalone` modifier the live standalone page's own h1
+   does (`entityPage.tsx`'s `standalone` prop) — meaning the bare, unscoped
+   `.codex-entity-name-standalone { sr-only }` rule above would ALSO hide the
+   popover's clone, since that rule matches by class alone regardless of
+   ancestor. This descendant selector's higher specificity (0,2,0 vs the
+   bare rule's 0,1,0) wins REGARDLESS of source order, undoing every sr-only
+   property back to a normal, visible, in-flow inline element — the popover
+   must NEVER lose its title (the review's headline B1 catch; verified live
+   at S4 build time: `.codex-entity-name` inside `.popover-inner` computed
+   `display: inline` / fully visible while the standalone page's OWN copy of
+   the same h1 computed the sr-only 1px clip-box). */
+.popover-inner .codex-entity-name-standalone {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+  border: 0;
 }
 /* D29-105b: the edition banner ("This page has a newer/older edition...")
    is page-level chrome, not summary content — hide it inside the compact

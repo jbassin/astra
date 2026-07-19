@@ -1,8 +1,9 @@
 /// <reference types="vite/client" />
-import { createRootRoute, HeadContent, Link, Outlet, Scripts } from "@tanstack/react-router";
+import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 import { HeaderNav } from "@/domain/nav/HeaderNav";
+import { HeaderTitle } from "@/domain/nav/HeaderTitle";
 import { Omnibar } from "@/domain/search/Omnibar";
 import { GlyphDefs } from "@/ui";
 
@@ -65,12 +66,17 @@ function RootComponent() {
             HTML streaming) — first thing in `<body>`, before the header. */}
         <GlyphDefs />
         <header className="site-head">
-          <Link to="/" className="site-brand">
-            codex
-          </Link>
-          {/* D29-47 — the global category nav (6 dropdowns + the Rules split
-              control + Sources), replacing the old brand+tagline header.
-              Spans all 88 real corpus categories, `navData.ts` owns the
+          {/* D29-112 (P11 S4) — the wordmark is now conditional: listing/
+              entity/rules routes show the RESOLVED page title (+ a home
+              glyph carrying the same `Link to="/"` the wordmark always
+              did) instead; landing/`/search`/`/categories`/`/sources` keep
+              the plain wordmark, unchanged. SSR-clean (`useMatches`-driven,
+              no effect) — see `HeaderTitle.tsx`. */}
+          <HeaderTitle />
+          {/* P4.5 S2 (D29-47), curated P11 S4 (D29-110) — the global
+              category nav (5 dropdowns + the bare Rules/Sources/All
+              categories links), replacing the old brand+tagline header.
+              Spans the curated 28-category set; `navData.ts` owns the
               grouping. */}
           <HeaderNav />
           {/* D29-36 — the header search omnibar, present on every page. */}

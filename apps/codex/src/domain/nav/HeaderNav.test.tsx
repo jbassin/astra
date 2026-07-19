@@ -17,32 +17,27 @@ import { describe, expect, it } from "vitest";
 import { HeaderNav } from "./HeaderNav";
 import { allNavCategories } from "./navData";
 
-describe("HeaderNav (D29-47)", () => {
-  it("renders every one of the 88 nav-assigned categories as a real <a href>", () => {
+describe("HeaderNav (D29-47, curated P11 S4 D29-110)", () => {
+  it("renders every one of the 28 curated categories as a real <a href>", () => {
     render(<HeaderNav />);
+    expect(allNavCategories().length).toBe(28);
     for (const category of allNavCategories()) {
       const expectedHref = `/${category}`;
       const anchors = screen
         .getAllByRole("menuitem")
         .filter((el) => (el as HTMLAnchorElement).getAttribute("href") === expectedHref);
-      const directLink =
-        category === "rules" ? screen.queryByRole("link", { name: "Rules" }) : null;
       expect(
-        anchors.length > 0 || directLink !== null,
+        anchors.length,
         `"${category}" (${expectedHref}) has no rendered anchor`,
-      ).toBe(true);
+      ).toBeGreaterThan(0);
     }
   });
 
-  it("the Rules split control renders a plain link AND a separate caret trigger, in that tab order", () => {
+  it("Rules renders as a bare direct link, no caret/dropdown (D29-110: the split control is gone)", () => {
     render(<HeaderNav />);
     const link = screen.getByRole("link", { name: "Rules" });
-    const caret = screen.getByRole("button", { name: "Rules categories" });
-    expect(link.tagName).toBe("A");
     expect(link.getAttribute("href")).toBe("/rules");
-    expect(caret.tagName).toBe("BUTTON");
-    // link precedes caret in the DOM (and therefore in tab order).
-    expect(link.compareDocumentPosition(caret) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Rules categories" })).toBeNull();
   });
 
   it("Sources renders as a bare direct link, no caret/dropdown", () => {
@@ -50,6 +45,13 @@ describe("HeaderNav (D29-47)", () => {
     const link = screen.getByRole("link", { name: "Sources" });
     expect(link.getAttribute("href")).toBe("/sources");
     expect(screen.queryByRole("button", { name: "Sources categories" })).toBeNull();
+  });
+
+  it("All categories renders as a bare direct link to /categories (replaces the old Everything dropdown)", () => {
+    render(<HeaderNav />);
+    const link = screen.getByRole("link", { name: "All categories" });
+    expect(link.getAttribute("href")).toBe("/categories");
+    expect(screen.queryByRole("button", { name: "All categories categories" })).toBeNull();
   });
 
   it("a dropdown trigger opens on click and shows its panel", () => {
@@ -66,8 +68,8 @@ describe("HeaderNav (D29-47)", () => {
     trigger.focus();
     fireEvent.keyDown(trigger, { key: "Enter" });
     expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    // "Spells" -> spell/ritual/domain/tradition; the first tail category
-    // (`navData.ts`'s own order) is "spell" -> humanized "Spell".
+    // "Spells" -> spell/ritual; the first tail category (`navData.ts`'s own
+    // order) is "spell" -> humanized "Spell".
     const firstItem = screen.getByRole("menuitem", { name: "Spell" });
     expect(document.activeElement).toBe(firstItem);
   });
@@ -80,7 +82,10 @@ describe("HeaderNav (D29-47)", () => {
     const first = screen.getByRole("menuitem", { name: "Deity" });
     expect(document.activeElement).toBe(first);
     fireEvent.keyDown(first, { key: "ArrowDown" });
-    const second = screen.getByRole("menuitem", { name: "Deity Category" });
+    // D29-110: Setting's curated tail is [deity, plane, language] — "Deity
+    // Category" is no longer in the curated set, so the second item is now
+    // "Plane".
+    const second = screen.getByRole("menuitem", { name: "Plane" });
     expect(document.activeElement).toBe(second);
   });
 
@@ -103,18 +108,5 @@ describe("HeaderNav (D29-47)", () => {
     fireEvent.keyDown(trigger, { key: "Escape" });
     expect(trigger.getAttribute("aria-expanded")).toBe("false");
     expect(document.activeElement).toBe(trigger);
-  });
-
-  it("the Rules caret follows the same keyboard contract as a plain dropdown trigger", () => {
-    render(<HeaderNav />);
-    const caret = screen.getByRole("button", { name: "Rules categories" });
-    caret.focus();
-    fireEvent.keyDown(caret, { key: "ArrowDown" });
-    expect(caret.getAttribute("aria-expanded")).toBe("true");
-    const firstTailItem = screen.getByRole("menuitem", { name: "Condition" });
-    expect(document.activeElement).toBe(firstTailItem);
-    fireEvent.keyDown(firstTailItem, { key: "Escape" });
-    expect(caret.getAttribute("aria-expanded")).toBe("false");
-    expect(document.activeElement).toBe(caret);
   });
 });

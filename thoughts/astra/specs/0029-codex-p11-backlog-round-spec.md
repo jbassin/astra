@@ -590,3 +590,144 @@ sanctioned procedure.
 
 **Files:** modified `src/domain/components/islands/Popover.tsx`, `src/styles/globals.css`;
 new `src/domain/components/islands/Popover.test.tsx`.
+
+**S4 (nav + reveal + title-into-header, D29-110/111/112) — all three decisions landed, CI
+green, heaviest UX slice of the round, verified live against the production build + real
+corpus (spare port 10399 — the live `astra-codex` container on 10374 was never stopped this
+time, per S3's own process-note recommendation).** `NAV_ITEMS` curated to the 28-category
+AoN-mirroring set (Player 10 / Spells 2 / Equipment 5 / GM 8 / Setting 3 dropdowns + bare
+Rules/Sources/All-categories links — script-reverified all 28 slugs against
+`data/corpus/manifest.json`: 28 present, 0 missing, 0 dupes, corpus 88 total); the old Rules
+split control (`RulesNavItem`/`tailCategoriesFor`, D29-47's adversarial M4) is deleted as dead
+code once no `kind:"link"` item carries a dropdown tail, taking its CSS
+(`.codex-nav-item-split`/`.codex-nav-caret`/`.codex-nav-link`) with it. Conformance rewrite
+touched exactly the three files the spec named — `navData.test.ts` (union-equality + the old
+`=== 88` nav-count assert deleted, corpus-census `=== 88` kept as the subset anchor, new
+curated-⊆-88 + `=== 28` asserts added), `HeaderNav.test.tsx:21`, and a new
+`directoryData.test.ts` assert pinning `/categories` at exactly 88 (independent of the
+fixture's own count) — plus a fourth the spec didn't enumerate but the change broke for real:
+`ssrSmoke.test.ts`'s landing-page nav test previously asserted all 88 hrefs reachable via the
+header nav, now rewritten to the curated 28 (a genuine would-have-failed case caught by the
+full local suite, not pre-existing residue).
+
+**`hiddenCount`** threaded end-to-end exactly like `eligibleCountOverride`
+(`WindowedCategoryListing`/`computeWindowedListing` in `virtualization.ts` → the loader →
+`BrowseListing`'s new `hiddenCountOverride` prop). The count row gains a
+`SupersededRevealControl` reusing `/rules`'s own `codex-rules-superseded-toggle`/
+`codex-rules-hidden-note` classes verbatim (D29-111's own "the /rules idiom" — zero new CSS,
+recorded deviation #1: the spec didn't spell out reuse-vs-invent, reuse chosen and accepted) +
+a distinct all-superseded empty state (`.codex-empty-state`, reused) reading "All N entries
+here are superseded (legacy)." with its own reveal CTA. The reveal navigate is a NEW
+`onSupersededReveal` callback (functional search merge, `search: (prev) => ({...prev,
+superseded})`, `resetScroll: false`) deliberately bypassing the general `onStateChange` path,
+which doesn't set `resetScroll: false` and would jar the user back to the top on every reveal.
+
+**⭐ THE S4 find — the P9 `pending` heuristic's blind spot, found live verifying D29-111, not
+spec-anticipated:** the pre-existing gate `data.rows.length < data.totalCount` (D29-89) is
+`false` whenever the SSR-windowed *visible* set already fits inside one window — true for any
+small category, and, critically, for an ALL-superseded category, where `visible` is empty and
+`0 < 0` reads `false`. This silently skipped BOTH the count-line override props AND the
+post-hydration full-array fetch, so `/doctrine` under the naive first implementation showed a
+correct-looking "Show 2 hidden (superseded) →" but clicking it revealed **zero rows** — the
+hidden rows were never fetched to the client at all (`computeWindowedListing` filters
+BEFORE slicing, so superseded rows are never in the windowed `rows` array regardless of
+category size). Root-caused and reproduced live (curl + Playwright, real corpus): SSR HTML for
+`/doctrine` read "0 of 0 shown" / "Nothing in this category yet." despite
+`manifest.categoryCounts.doctrine === 2` and both rows genuinely superseded on disk. Fixed by
+adding an explicit `windowed: true | false` flag to the loader's return (`routes/$category/
+index.tsx`), replacing the size-comparison heuristic everywhere it drove the fetch-trigger
+effect and the override props — `windowed` is size-independent and answers the real question
+("was this payload ever filtered/sliced server-side") the old heuristic only coincidentally
+answered. Re-verified live post-fix: `/doctrine` SSR now reads "All 2 entries here are
+superseded (legacy)." + a working reveal (2 of 2 shown, both rows render, scroll position
+preserved 800→837px, `sort`/`f.actionCost`/`entry` all preserved through the toggle on
+`/spell` too). Orchestrator-accepted as a real correctness find, not scope creep — the
+plumbing-first slice ordering (D29-111's own "new plumbing first" text) is exactly what
+surfaced it before deploy.
+
+**`displayCategoryName` (D29-109d) seam created early**, per the spec's own cross-slice note
+(S5 hasn't landed yet) — an override map over `humanizeSlug`, seeded from
+`data/corpus/category-page/*.json` divergences: script-verified against the real corpus that
+`hunters-edge` → "Hunter's Edge" is the SOLE divergence among the 88 real categories (matching
+D-19's own finding exactly, re-derived not assumed). Consumed at the three sites D29-112 itself
+calls out (not D29-109d's full remaining list, deliberately deferred to S5): the header title
+(`HeaderTitle.tsx`), the listing's in-content h1 (`BrowseListing.tsx`), and the `/{category}`
+route's own `<title>` (`routes/$category/index.tsx` — live-verified: `/doctrine` → "Doctrine ·
+codex", `/hunters-edge`-shaped category names would resolve the override the same way, per
+unit test).
+
+**Heading policy:** `EntityPage`/`EntityRenderPane` gained an optional `standalone` prop
+(default `undefined`/falsy → visible h1, byte-identical for every existing caller — the
+regen-goldens script, `entityPage.test.tsx`, the split-view entry pane); the entity ROUTE
+(`$category/$slug.tsx`) is the only caller passing `standalone`, giving its h1 a
+`codex-entity-name-standalone` sr-only modifier (`position:absolute` clip-box, kept in the SSR
+DOM/a11y-tree/document-outline, never `display:none`). The listing h1
+(`.codex-listing-title`) is unconditionally sr-only (one production call site, no split
+needed) — `/rules`'s own `<h1 className="codex-listing-title">` inherited this for free via
+the shared class name, exactly matching D29-112's "applies on listing + entity + rules routes"
+without a second code change. `.codex-entity-title-row:has(.codex-entity-name-standalone)`
+flips the orphaned type-tag from `space-between` to `flex-end` — live-verified on
+`/spell/heal`: `justify-content: flex-end`, tag's right edge flush with the row's right edge.
+
+**⭐ THE B1 popover interlock — proven live, not just unit-asserted:** hovering the `Healing`
+trait crossref on `/spell/heal` opened the panel with the cloned `.codex-entity-name
+.codex-entity-name-standalone` h1 computed `position: static`, `display: block`, a real
+non-zero bounding box, font-size `17.6px` (the D29-105b compact 1.1rem scale) — i.e. fully
+VISIBLE despite carrying the same sr-only modifier class the live standalone page's own h1
+renders invisible. The higher-specificity `.popover-inner .codex-entity-name-standalone`
+override (0,2,0 vs the bare rule's 0,1,0) wins regardless of source order, exactly the
+mechanism the spec's B1 warning demanded.
+
+**Header title + wordmark, live-verified across all 5 route classes:** listing (`/feat` →
+"Feat"), entity standalone (`/spell/heal` → "Heal"), rules doc (`/rules/chapter-1-introduction`
+→ "Chapter 1: Introduction", breadcrumb leaf ALSO reads "Chapter 1: Introduction" — the
+accepted duplication, confirmed present not just theorized), `/rules` itself (→ "Rules"),
+landing/`/search`/`/sources` (wordmark "codex" intact, home glyph absent in wordmark mode).
+Home glyph (`favicon.svg` reused as the icon, no new SVG/GlyphDefs symbol) → `Link to="/"` on
+every title-mode page. Exactly one `<h1>` confirmed via `document.querySelectorAll` on all 5
+classes (listing, entity standalone, rules doc, `/rules`, landing). 390px mobile: a real
+56-char entity name (`Advanced Eltha Embercall (9-10)/Eltha Embercall (11-12)`) truncated
+correctly (`scrollWidth 435 > clientWidth 330`, single line — height exactly equals
+line-height, never wraps taller), zero horizontal scroll on both an entity page and a listing
+page at 390px.
+
+**Goldens: byte-identical, verified TWICE** (once after the initial implementation, once again
+after the windowed-flag fix) via `diff -rq` against a pre-change copy — zero churn either time,
+confirming D29-112 never touched the goldens' own render path (all 7 fixtures call `EntityPage`
+with no `standalone` prop, defaulting to the pre-existing visible-h1 behavior).
+
+**Guards:** row-height drift guard — clean, 24.00px pitch, every scoped cell-fit OK.
+Virtualization interaction guard — 21/22 cases always pass; the "reload restores the same deep
+scroll position (within ~8 rows)" case flaked 1-of-3 local runs (before=1600 after=1356,
+~244px/~10-row drift, just past the 200px tolerance) — re-run twice more, passed once and
+failed once again, always the SAME single case, matching the pre-documented
+`codex-virtualization-interaction-guard` CI-env flake exactly (not a new/deterministic
+regression from this slice's header-height changes). **Recorded for S6: do not re-litigate
+this flake** — it is the same pre-existing residue class, now also reproduced locally,
+orchestrator-accepted.
+
+**Deviations (both accepted, not silently done):** (1) the windowed-flag fix (above) — a real
+bug fix inside this decision's own stated ripple ("virtualization.ts + the loader are in this
+decision's ripple"), not a scope expansion. (2) the superseded-reveal control reuses `/rules`'s
+own CSS classes verbatim rather than inventing `codex-listing-*` equivalents — zero new CSS,
+matches "the /rules idiom" literally.
+
+**CI:** `tsc --noEmit` (codex) clean; `vp run -r typecheck` 32/32 clean; `oxlint --type-aware
+--deny-warnings --threads=4 apps libs/ts` clean (one `no-map-spread` finding in this slice's
+own new test, fixed via `Object.assign`); `format:check` clean (854 files); `vp run -r test`
+26 tasks — codex 1971/1978 (7 failures, exact-NAME match to the documented pre-existing
+`ssrSmoke.test.ts` residue — 5 in the `$category/ browse route tier 3` block + 2 in the
+`?entry= deep link tier 3` block); one unrelated flake, `akasha-frontend#test` exit 137
+(SIGKILL/OOM under the 26-way parallel run) — re-ran in isolation, 12/12 files / 56/56 tests
+pass (identical counts to S3's own citation of this same flake); not caused by this slice
+(akasha-frontend untouched). `vp run -r build` 26/26 clean. The `routeTree.gen.ts` flap
+recurred twice (once per `vp run` invocation) — reverted both times before commit per the
+sanctioned procedure.
+
+**Files:** modified `src/domain/browse/{BrowseListing,BrowseListing.test,virtualization,
+virtualization.test}.{ts,tsx}`, `src/domain/nav/{HeaderNav,HeaderNav.test,navData,
+navData.test}.{ts,tsx}`, `src/domain/render/{EntityRenderPane,entityPage}.tsx`,
+`src/routes/{__root,categories,$category/index,$category/$slug}.tsx`,
+`src/server/directoryData.test.ts`, `src/ssrSmoke.test.ts`, `src/styles/globals.css`; new
+`src/domain/nav/{HeaderTitle,HeaderTitle.test}.tsx`,
+`src/domain/render/{displayCategoryName,displayCategoryName.test}.ts`.

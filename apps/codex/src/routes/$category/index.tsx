@@ -15,6 +15,7 @@ import {
   type BrowseSearch,
 } from "@/domain/browse/urlState";
 import { computeWindowedListing } from "@/domain/browse/virtualization";
+import { displayCategoryName } from "@/domain/render/displayCategoryName";
 import type { IndexRow } from "@/schema/entity";
 
 /**
@@ -75,6 +76,19 @@ import type { IndexRow } from "@/schema/entity";
  * loader behaves as today"). `CategoryIndexComponent`'s own effect (below)
  * is what fetches the FULL array back in for the one case that stays
  * genuinely partial — a cold SSR load nobody has navigated away from yet.
+ *
+ * D29-111 (P11 S4) — the loader's return also carries an explicit
+ * `windowed: true | false` flag (see its own inline comment at each
+ * `return`): a real bug, found live verifying the superseded-reveal
+ * control, is why this exists — `data.rows.length < data.totalCount` (the
+ * ORIGINAL signal for "this payload is still partial") is FALSE whenever
+ * the visible-filtered set already fits inside one window, which is true
+ * for any small category AND for any category where the current filter
+ * (including the default superseded-off gate) excludes everything — in
+ * both cases the windowed `rows` array never contains the rows outside
+ * that filter, no matter how the count comparison reads. `windowed` is the
+ * honest, size-independent replacement signal both the post-hydration
+ * full-array fetch and the `BrowseListing` override props now key off.
  */
 export const Route = createFileRoute("/$category/")({
   validateSearch: (search: Record<string, unknown>): BrowseSearch => validateBrowseSearch(search),
@@ -95,19 +109,45 @@ export const Route = createFileRoute("/$category/")({
         location.search as BrowseSearch,
         deps.entry,
       );
-      return { ...windowed, entry };
+      // D29-111 (P11 S4, a real bug found live verifying this decision) —
+      // `windowed: true` marks this payload's `rows` as a WINDOWED,
+      // ALREADY-FILTERED projection (`computeWindowedListing` applies the
+      // superseded/query/facet gate BEFORE slicing to the window — see that
+      // function's own doc comment): hidden rows are NEVER present in
+      // `rows` here, no matter how small the category. The pre-D29-111
+      // `pending` check below (`data.rows.length < data.totalCount`) is the
+      // WRONG signal for "do we still need the full array" — it's false
+      // whenever the visible-filtered set already fits inside one window
+      // (a small category, OR — the case that actually surfaced this live —
+      // an ALL-superseded category, where `visible` is empty and
+      // `0 < 0` is false), which used to skip BOTH the count-line override
+      // props AND the post-hydration full-array fetch, so clicking "Show N
+      // hidden (superseded)" revealed literally nothing (the hidden rows
+      // were never fetched at all) even though the count line (once fixed)
+      // would have correctly said "N hidden." An explicit flag, set true
+      // ONLY on this genuinely server-windowed branch, is what makes both
+      // the fetch-trigger and the override props key off "was this payload
+      // windowed at all," not a size comparison that coincidentally lies.
+      return { ...windowed, entry, windowed: true as const };
     }
     return {
       category: listing.category,
       rows: listing.rows,
       totalCount: listing.rows.length,
       eligibleCount: listing.rows.length,
+      hiddenCount: listing.rows.filter((r) => r.superseded).length,
       entryVisible: undefined,
       entry,
+      // D29-111 — a client-executed loader run always ships the FULL raw
+      // array already (`listing.rows` verbatim, no windowing/filtering) —
+      // never needs the post-hydration re-fetch, and every override prop
+      // above is redundant-but-harmless with what `BrowseListing` would
+      // compute locally anyway.
+      windowed: false as const,
     };
   },
   head: ({ loaderData }) =>
-    loaderData ? { meta: [{ title: `${loaderData.category} · codex` }] } : {},
+    loaderData ? { meta: [{ title: `${displayCategoryName(loaderData.category)} · codex` }] } : {},
   component: CategoryIndexComponent,
 });
 
@@ -125,22 +165,26 @@ function CategoryIndexComponent() {
   // supplies" split `onEntrySelect`/`onEntryPreview` already use in reverse.
   const restoredWindowEntry = useElementScrollRestoration({ getElement: () => window });
 
-  // P9 S1 (D29-89) — the post-hydration full-array fetch: `data.rows` is a
-  // windowed SSR projection whenever `data.rows.length < data.totalCount`
-  // (client-executed loader runs never leave this true — see the loader's
-  // own comment). `memoizedListing` is the EXISTING client listing path
-  // (`listingClient.ts`) every SPA navigation already fetches through — its
-  // module-level memo means this costs nothing extra once a real navigation
-  // (row click, category switch) happens to trigger the same fetch anyway.
-  // Depends on the whole `data` object rather than picking fields: any
-  // refire this causes beyond the one that matters is a no-op (`data.rows`
-  // is ALREADY the full array by then, so the `pending` guard below returns
-  // immediately and `fullRows` just gets reset to a value `data.rows`
-  // already equals).
+  // P9 S1 (D29-89), fixed under D29-111 (P11 S4) — the post-hydration
+  // full-array fetch: `data.rows` is a windowed, ALREADY-FILTERED SSR
+  // projection whenever `data.windowed` is true (see the loader's own
+  // comment on that flag — `data.rows.length < data.totalCount` used to be
+  // this effect's own trigger condition, which was WRONG for any category
+  // whose visible-filtered set fits in one window, superseded rows
+  // included: those rows are never in `data.rows` regardless of size, so
+  // this effect must always run for a windowed payload, not just when the
+  // count comparison happens to say "more to come"). `memoizedListing` is
+  // the EXISTING client listing path (`listingClient.ts`) every SPA
+  // navigation already fetches through — its module-level memo means this
+  // costs nothing extra once a real navigation (row click, category
+  // switch) happens to trigger the same fetch anyway. Depends on the whole
+  // `data` object rather than picking fields: any refire this causes
+  // beyond the one that matters is a no-op for a client-executed run
+  // (`data.windowed` is false there, so this returns immediately).
   const [fullRows, setFullRows] = useState<readonly IndexRow[] | null>(null);
   useEffect(() => {
     setFullRows(null);
-    if (data.rows.length >= data.totalCount) return;
+    if (!data.windowed) return;
     let cancelled = false;
     void memoizedListing(data.category).then((full) => {
       if (!cancelled && full) setFullRows(full.rows);
@@ -151,7 +195,7 @@ function CategoryIndexComponent() {
   }, [data]);
 
   const rows = fullRows ?? data.rows;
-  const pending = fullRows === null && data.rows.length < data.totalCount;
+  const pending = fullRows === null && data.windowed;
 
   return (
     // P11 S2 (D29-103) — `.wrap-browse` (96rem cap), not `.wrap-wide`
@@ -165,6 +209,7 @@ function CategoryIndexComponent() {
         totalCount={pending ? data.totalCount : undefined}
         eligibleCountOverride={pending ? data.eligibleCount : undefined}
         entryVisibleOverride={pending ? data.entryVisible : undefined}
+        hiddenCountOverride={pending ? data.hiddenCount : undefined}
         state={state}
         entrySlug={search.entry}
         entryData={data.entry}
@@ -199,6 +244,22 @@ function CategoryIndexComponent() {
           // focus had fallen back to `<body>` a few hundred ms after a j-scan
           // stopped — the row was scrolled to, then un-scrolled back to top).
           void navigate({ search: { ...search, entry: slug }, replace: true, resetScroll: false });
+        }}
+        onSupersededReveal={(superseded) => {
+          // D29-111 — a FUNCTIONAL search merge (`prev` is the CURRENT full
+          // `BrowseSearch`, whatever it is): preserves every other active
+          // param (q/traits/sort/entry/facets/…) verbatim, unlike `/rules`'s
+          // own toggle (`routes/rules.tsx`), which can get away with a
+          // whole-search REPLACE only because that route has no facet panel
+          // at all. `resetScroll: false` — revealing/hiding superseded rows
+          // isn't a new search; see `BrowseListing.tsx`'s own doc comment on
+          // `onSupersededReveal` for why this bypasses the general
+          // `onStateChange` path above (which doesn't set it).
+          void navigate({
+            search: (prev) => ({ ...prev, superseded: superseded || undefined }),
+            replace: true,
+            resetScroll: false,
+          });
         }}
       />
     </main>

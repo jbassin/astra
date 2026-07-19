@@ -10,14 +10,16 @@ import {
 
 import { humanizeSlug } from "@/domain/render/text";
 
-import { NAV_ITEMS, tailCategoriesFor, type NavItem } from "./navData";
+import { NAV_ITEMS, type NavItem } from "./navData";
 
 const HOVER_OPEN_DELAY_MS = 120;
 
 /**
- * P4.5 S2 (D29-47) — the global header nav: 6 category dropdowns + the
- * "Rules" split control + the bare "Sources" link, spanning all 88 real
- * corpus categories (`navData.ts` owns the grouping). No headless-UI
+ * P4.5 S2 (D29-47), CURATED P11 S4 (D29-110) — the global header nav: 5
+ * category dropdowns (Player/Spells/Equipment/GM/Setting) + the bare
+ * "Rules"/"Sources"/"All categories" links, spanning the CURATED 28-category
+ * set (`navData.ts` owns the grouping — the long tail lives at
+ * `/categories`/the omnibar/in-context links instead). No headless-UI
  * dependency (repo idiom, scope doc §7 risks) — every dropdown panel is a
  * real, ALWAYS-rendered `<ul>` of `<a>` tags; a JS-disabled client reaches
  * every category link because the panel's no-JS reveal is pure CSS
@@ -28,6 +30,13 @@ const HOVER_OPEN_DELAY_MS = 120;
  * Tab reaches the trigger; Enter/Space/ArrowDown opens + focuses the first
  * item; ArrowUp/ArrowDown move focus within; Escape closes + returns focus
  * to the trigger; Tab out of an open panel closes it.
+ *
+ * D29-110 also DELETES the old Rules split control (a plain `<a>` label
+ * plus a separate caret `<button>` disclosing an 8-category dropdown tail,
+ * adversarial M4 from D29-47): "Rules" is a bare `kind: "link"` item now,
+ * same shape as "Sources"/"All categories", so it renders via the plain
+ * `PlainNavLink` branch below like every other bare link — no dropdown, no
+ * caret, no second tab stop.
  */
 function useDropdown(itemCount: number) {
   const [open, setOpen] = useState(false);
@@ -186,56 +195,18 @@ function NavDropdown({ item }: { item: NavItem }): ReactElement {
       >
         {item.label}
         {/* P8 S2 (D29-80b): the same `▾` affordance every dropdown trigger
-            now carries, matching the Rules split control's own caret
-            voice/size (`.codex-nav-caret`) — aria-hidden so the button's
-            accessible name stays just `item.label` (unchanged from before
-            this, still matched by `getByRole("button", {name: item.label})`
-            in tests and by AT). */}
+            carries — aria-hidden so the button's accessible name stays just
+            `item.label` (unchanged from before this, still matched by
+            `getByRole("button", {name: item.label})` in tests and by AT).
+            D29-110: this was originally described as matching the Rules
+            split control's own separate caret — that control (and its
+            `.codex-nav-caret` class) is gone now, Rules being a bare link
+            like every other non-dropdown item. */}
         <span aria-hidden="true" className="codex-nav-trigger-caret">
           ▾
         </span>
       </button>
       <NavPanel categories={categories} label={item.label} dd={dd} />
-    </div>
-  );
-}
-
-/** D29-47's adversarial M4 split control: "Rules" is a plain `<a
- * href="/rules">` label with a SEPARATE caret `<button>` as the disclosure
- * trigger for its 8-category tail — a `<summary>`/dropdown-trigger can't
- * also be a real link, so the label and the trigger are two distinct tab
- * stops (link first, caret second), each following its own half of the
- * contract (the link navigates natively; the caret follows the same
- * dropdown keyboard contract as every other trigger above). No-JS: the link
- * always works; the tail categories are also reachable via `/categories`
- * when the caret's disclosure needs JS the client doesn't have. */
-function RulesNavItem({ item }: { item: NavItem }): ReactElement {
-  const tail = tailCategoriesFor(item);
-  const dd = useDropdown(tail.length);
-  return (
-    <div
-      className="codex-nav-item codex-nav-item-split"
-      ref={dd.containerRef}
-      onMouseEnter={dd.onMouseEnter}
-      onMouseLeave={dd.onMouseLeave}
-      onBlur={dd.onContainerBlur}
-    >
-      <a href={item.href} className="codex-nav-link">
-        {item.label}
-      </a>
-      <button
-        type="button"
-        ref={dd.triggerRef}
-        className="codex-nav-caret"
-        aria-haspopup="true"
-        aria-expanded={dd.open}
-        aria-label={`${item.label} categories`}
-        onClick={dd.toggle}
-        onKeyDown={dd.onTriggerKeyDown}
-      >
-        <span aria-hidden="true">▾</span>
-      </button>
-      <NavPanel categories={tail} label={item.label} dd={dd} />
     </div>
   );
 }
@@ -251,13 +222,13 @@ function PlainNavLink({ item }: { item: NavItem }): ReactElement {
 export function HeaderNav(): ReactElement {
   return (
     <nav className="codex-header-nav" aria-label="Category navigation">
-      {NAV_ITEMS.map((item) => {
-        if (item.kind === "dropdown") return <NavDropdown key={item.label} item={item} />;
-        if ((item.categories?.length ?? 0) > 0) {
-          return <RulesNavItem key={item.label} item={item} />;
-        }
-        return <PlainNavLink key={item.label} item={item} />;
-      })}
+      {NAV_ITEMS.map((item) =>
+        item.kind === "dropdown" ? (
+          <NavDropdown key={item.label} item={item} />
+        ) : (
+          <PlainNavLink key={item.label} item={item} />
+        ),
+      )}
     </nav>
   );
 }

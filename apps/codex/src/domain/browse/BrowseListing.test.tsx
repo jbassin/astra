@@ -115,6 +115,9 @@ function Harness({
       }}
       onEntrySelect={(slug) => setSearch((prev) => ({ ...prev, entry: slug }))}
       onEntryPreview={(slug) => setSearch((prev) => ({ ...prev, entry: slug }))}
+      onSupersededReveal={(superseded) =>
+        setSearch((prev) => ({ ...prev, superseded: superseded || undefined }))
+      }
     />
   );
 }
@@ -166,6 +169,7 @@ function StatefulHarness() {
       onStateChange={(updater) => setState((prev) => updater(prev))}
       onEntrySelect={() => {}}
       onEntryPreview={() => {}}
+      onSupersededReveal={(superseded) => setState((prev) => ({ ...prev, superseded }))}
     />
   );
 }
@@ -217,6 +221,7 @@ describe("BrowseListing (D29-35)", () => {
           onStateChange={() => {}}
           onEntrySelect={() => {}}
           onEntryPreview={() => {}}
+          onSupersededReveal={() => {}}
         />
       );
     }
@@ -236,6 +241,7 @@ describe("BrowseListing (D29-35)", () => {
         onStateChange={() => {}}
         onEntrySelect={() => {}}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     const names = screen
@@ -271,6 +277,7 @@ describe("BrowseListing (D29-35)", () => {
         onStateChange={() => {}}
         onEntrySelect={() => {}}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     const links = screen.getAllByRole("link").map((el) => el.textContent ?? "");
@@ -292,10 +299,151 @@ describe("BrowseListing (D29-35)", () => {
         onStateChange={() => {}}
         onEntrySelect={() => {}}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     // no filter active -> both visible (the "—" bucket stays by default)
     expect(screen.getByText("2 of 2 shown")).not.toBeNull();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// D29-111 (P11 S4, R3, #13/#3e/#3f) — the superseded-reveal control: the
+// count-row's "Show N hidden (superseded) →"/"Hide superseded ←" toggle, and
+// the all-superseded empty-state copy for the 10 real-corpus categories with
+// zero non-superseded rows (e.g. /doctrine).
+// ---------------------------------------------------------------------------
+
+describe("BrowseListing: superseded-reveal control (D29-111)", () => {
+  it("renders no reveal control at all when the category has no superseded rows", () => {
+    render(<StatefulHarness />);
+    expect(screen.queryByText(/hidden \(superseded\)/)).toBeNull();
+    expect(screen.queryByText("Hide superseded")).toBeNull();
+  });
+
+  it("superseded off, hidden > 0 -> 'Show N hidden (superseded) →'; clicking it reveals the rows", () => {
+    const withSuperseded: IndexRow[] = [
+      ...ROWS,
+      row({ id: "feat/delta", name: "Delta", superseded: true }),
+      row({ id: "feat/echo", name: "Echo", superseded: true }),
+    ];
+    function Fixture() {
+      const [state, setState] = useState<BrowseFilterState>(emptyFilterState());
+      return (
+        <BrowseListing
+          category="feat"
+          rows={withSuperseded}
+          state={state}
+          onStateChange={(updater) => setState((prev) => updater(prev))}
+          onEntrySelect={() => {}}
+          onEntryPreview={() => {}}
+          onSupersededReveal={(superseded) => setState((prev) => ({ ...prev, superseded }))}
+        />
+      );
+    }
+    render(<Fixture />);
+    expect(screen.getByText("3 of 3 shown")).not.toBeNull();
+    const reveal = screen.getByRole("button", { name: /Show 2 hidden \(superseded\)/ });
+    expect(screen.queryByText("Delta")).toBeNull();
+    fireEvent.click(reveal);
+    expect(screen.getByText("5 of 5 shown")).not.toBeNull();
+    expect(screen.getByText("Delta")).not.toBeNull();
+    expect(screen.getByText("Echo")).not.toBeNull();
+    // widened -> the control flips to the reverse-direction link.
+    expect(screen.getByRole("button", { name: "Hide superseded ←" })).not.toBeNull();
+    expect(screen.queryByText(/Show 2 hidden/)).toBeNull();
+  });
+
+  it("clicking 'Hide superseded ←' narrows back", () => {
+    const withSuperseded: IndexRow[] = [
+      ...ROWS,
+      row({ id: "feat/delta", name: "Delta", superseded: true }),
+    ];
+    function Fixture() {
+      const [state, setState] = useState<BrowseFilterState>({
+        ...emptyFilterState(),
+        superseded: true,
+      });
+      return (
+        <BrowseListing
+          category="feat"
+          rows={withSuperseded}
+          state={state}
+          onStateChange={(updater) => setState((prev) => updater(prev))}
+          onEntrySelect={() => {}}
+          onEntryPreview={() => {}}
+          onSupersededReveal={(superseded) => setState((prev) => ({ ...prev, superseded }))}
+        />
+      );
+    }
+    render(<Fixture />);
+    expect(screen.getByText("4 of 4 shown")).not.toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Hide superseded ←" }));
+    expect(screen.getByText("3 of 3 shown")).not.toBeNull();
+    expect(screen.queryByText("Delta")).toBeNull();
+  });
+
+  it("all rows superseded (the all-superseded empty state, e.g. /doctrine): distinct copy from the ordinary empty category, plus its own reveal control", () => {
+    const allSuperseded: IndexRow[] = [
+      row({ id: "doctrine/a", name: "A", superseded: true }),
+      row({ id: "doctrine/b", name: "B", superseded: true }),
+    ];
+    function Fixture() {
+      const [state, setState] = useState<BrowseFilterState>(emptyFilterState());
+      return (
+        <BrowseListing
+          category="doctrine"
+          rows={allSuperseded}
+          state={state}
+          onStateChange={(updater) => setState((prev) => updater(prev))}
+          onEntrySelect={() => {}}
+          onEntryPreview={() => {}}
+          onSupersededReveal={(superseded) => setState((prev) => ({ ...prev, superseded }))}
+        />
+      );
+    }
+    render(<Fixture />);
+    expect(screen.getByText("All 2 entries here are superseded (legacy).")).not.toBeNull();
+    expect(screen.queryByText("Nothing in this category yet.")).toBeNull();
+    // the empty-state's own CTA (distinct element from the header bar's copy
+    // of the same control — both present, `getAllByRole` not `getByRole`).
+    const reveals = screen.getAllByRole("button", { name: /Show 2 hidden \(superseded\)/ });
+    expect(reveals.length).toBeGreaterThanOrEqual(1);
+    fireEvent.click(reveals[0] as HTMLElement);
+    expect(screen.getByText("A")).not.toBeNull();
+    expect(screen.getByText("B")).not.toBeNull();
+  });
+
+  it("a genuinely empty category (zero rows, superseded or not) keeps the plain 'Nothing in this category yet.' copy", () => {
+    render(
+      <BrowseListing
+        category="feat"
+        rows={[]}
+        state={emptyFilterState()}
+        onStateChange={() => {}}
+        onEntrySelect={() => {}}
+        onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
+      />,
+    );
+    expect(screen.getByText("Nothing in this category yet.")).not.toBeNull();
+    expect(screen.queryByText(/superseded \(legacy\)/)).toBeNull();
+  });
+
+  it("hiddenCountOverride wins over the locally-computed count while present (the P9 SSR-window pending case)", () => {
+    render(
+      <BrowseListing
+        category="feat"
+        rows={ROWS} // no superseded rows locally
+        hiddenCountOverride={7}
+        state={emptyFilterState()}
+        onStateChange={() => {}}
+        onEntrySelect={() => {}}
+        onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
+      />,
+    );
+    expect(screen.getByText(/Show 7 hidden \(superseded\)/)).not.toBeNull();
   });
 });
 
@@ -318,6 +466,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         onStateChange={() => {}}
         onEntrySelect={onEntrySelect}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     const link = screen.getByText("Alpha");
@@ -341,6 +490,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         onStateChange={() => {}}
         onEntrySelect={onEntrySelect}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     const link = screen.getByText("Alpha").closest("a") as HTMLAnchorElement;
@@ -364,6 +514,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         onStateChange={() => {}}
         onEntrySelect={onEntrySelect}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     fireEvent.click(screen.getByText("Alpha"), { detail: 1 }); // a real mouse click
@@ -379,6 +530,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         onStateChange={() => {}}
         onEntrySelect={() => {}}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     expect(within(plain.container).getByText("Alpha").closest("a")?.getAttribute("href")).toBe(
@@ -395,6 +547,7 @@ describe("BrowseListing split view (P4.5 S4, D29-49)", () => {
         onStateChange={() => {}}
         onEntrySelect={() => {}}
         onEntryPreview={() => {}}
+        onSupersededReveal={() => {}}
       />,
     );
     expect(within(widened.container).getByText("Alpha").closest("a")?.getAttribute("href")).toBe(
@@ -611,6 +764,9 @@ function PreviewHarness({
       }}
       onEntrySelect={(slug) => setSearch((prev) => ({ ...prev, entry: slug }))}
       onEntryPreview={onEntryPreview}
+      onSupersededReveal={(superseded) =>
+        setSearch((prev) => ({ ...prev, superseded: superseded || undefined }))
+      }
     />
   );
 }
