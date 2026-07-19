@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of 2026-07-19 — codex (0029) P13 FILTER PANEL REDESIGN BUILT + DEPLOYED + LIVE in one session (tester-feedback round, pane-swap); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P13 review; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `770efbc`, 2026-07-19 — codex (0029) P13 FILTER PANEL REDESIGN BUILT + DEPLOYED + LIVE in one session (tester-feedback round, pane-swap; slices `c60bdbe`/`f443d31`/`713c138`/`0d7765f`, all pushed, tree clean); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P13 review — a stakeholder action, no build work pending; heartwood ON HOLD)
 
 > **✅ codex (0029) P13 — filter panel redesign, all live on codex.iridi.cc:**
 > 1. **Provenance:** testers: "the aesthetics and ux of the filter panel are very poor."
