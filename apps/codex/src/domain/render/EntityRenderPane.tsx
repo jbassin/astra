@@ -6,7 +6,6 @@ import { AttachedSidebars } from "./AttachedSidebars";
 import { EntityPage } from "./entityPage";
 import { createHeadingIdAssigner } from "./headingIds";
 import { type RenderCtx, rootRenderCtx } from "./nodes";
-import { TableOfContents } from "./TableOfContents";
 
 /**
  * P4.5 S4 (D29-49) — the entity-render composition shared by BOTH the
@@ -63,11 +62,14 @@ export function EntityRenderPane({
       {/* D29-28: hover cards mount here too — the split-view right pane IS
           an entity page render, same posture as the standalone route. */}
       <Popover />
-      {/* D29-109b — the "On this page" ToC box, standalone routes only
-          (entity page + rules doc, both of which pass `standalone` here;
-          the split-view right pane and any embedded/golden context omit
-          it, same gate `EntityPage`'s own h1-visibility uses). */}
-      {standalone ? <TableOfContents /> : null}
+      {/* P14 S2 (D29-137) — the "On this page" ToC is dropped everywhere
+          (stakeholder-directed, mirrors the P12 class-page deletion
+          `7829f29`): `.codex-toc` had NO CSS at all, so the `<details>`
+          rendered as a full-width unstyled 1440x624px strip pushing the
+          article ~620px down. Every standalone page's own fixed section
+          order + real heading anchors is the in-page-navigation substitute
+          (ancestry pages lose the box; stakeholder-accepted). This was the
+          last mount — `TableOfContents.tsx` itself is deleted too. */}
       <EntityPage entity={entity} ctx={ctx} standalone={standalone} />
       {attachedSidebars !== undefined ? (
         <AttachedSidebars sidebars={attachedSidebars} superseded={superseded} ctx={ctx} />

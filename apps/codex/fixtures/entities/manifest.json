@@ -26,7 +26,7 @@
     "category-page": 1,
     "cause": 1,
     "class": 5,
-    "class-feature": 22,
+    "class-feature": 24,
     "class-kit": 1,
     "class-sample": 1,
     "condition": 1,
@@ -103,6 +103,6 @@
     "tag": "fixture"
   },
   "schemaVersion": 5,
-  "totalEntityCount": 233,
+  "totalEntityCount": 235,
   "totalSizeBytes": 1316351
 }

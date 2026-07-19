@@ -17,6 +17,64 @@
         }
       ],
       "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Basic Lesson",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "You have learned a basic lesson from your patron. Once per day, you can request simple guidance, granting a plus one status bonus to a single skill check of your choice.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Weapon Specialization",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "content": "P14 S2 (D29-135) fixture stub — this paragraph deliberately does NOT restate class-feature/weapon-specialization's own prose, proving the Description-strip's belt-and-suspenders rule: a heading NAME match alone (this heading is literally \"Weapon Specialization\", matching witch's own level-13 grant) must never strip a section whose actual content differs.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
     }
   ],
   "category": "class",
@@ -28,6 +86,177 @@
     ]
   },
   "id": "class/witch",
+  "loreBody": [
+    {
+      "kind": "paragraph",
+      "children": [
+        {
+          "kind": "text",
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class/witch\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "children": [
+        {
+          "kind": "text",
+          "content": "Basic Lesson",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "children": [
+        {
+          "kind": "embed",
+          "target": "class-feature/basic-lesson",
+          "resolved": true
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "children": [
+        {
+          "kind": "text",
+          "content": "Witch Basics",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "children": [
+        {
+          "kind": "text",
+          "content": "P12 S1 (D29-113..120) fixture stub — \"class/witch\"'s real prose is trimmed to stay inside the fixture byte budget; only its stats/facets/id shape is exercised.",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "kind": "heading",
+      "level": 2,
+      "children": [
+        {
+          "kind": "text",
+          "content": "Witch's Patron Bond",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    },
+    {
+      "kind": "table",
+      "rows": [
+        {
+          "header": true,
+          "cells": [
+            [
+              {
+                "kind": "text",
+                "content": "Bond Tier",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "content": "Effect",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ]
+        },
+        {
+          "header": false,
+          "cells": [
+            [
+              {
+                "kind": "text",
+                "content": "Minor Bond",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "content": "You gain a +1 circumstance bonus to Deception checks made against your patron's chosen rivals.",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ]
+        },
+        {
+          "header": false,
+          "cells": [
+            [
+              {
+                "kind": "text",
+                "content": "Greater Bond",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ],
+            [
+              {
+                "kind": "text",
+                "content": "Once per week, you may commune with your patron for a single cryptic sentence of guidance.",
+                "marks": {
+                  "bold": false,
+                  "italic": false,
+                  "superscript": false
+                }
+              }
+            ]
+          ]
+        }
+      ]
+    }
+  ],
   "name": "Witch",
   "rarity": "common",
   "slug": "witch",
@@ -120,6 +349,11 @@
         "level": 1,
         "name": "Witch Spellcasting",
         "targetId": null
+      },
+      {
+        "level": 3,
+        "name": "Basic Lesson",
+        "targetId": "class-feature/basic-lesson-2"
       },
       {
         "level": 5,

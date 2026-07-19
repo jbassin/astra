@@ -67,7 +67,7 @@ describe("ClassPage: root + header (D29-119)", () => {
     expect(html).toContain("Fighter");
   });
 
-  it("mounts under .codex-entity-page (the ToC's own scan root)", async () => {
+  it("mounts under .codex-entity-page", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     expect(html).toContain("codex-entity-page");
   });
@@ -200,6 +200,68 @@ describe("ClassPage: description suppression (D29-119)", () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     expect(html).toContain(">Description<");
     expect(html).toContain("fixture stub");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P14 S2 (D29-135) — the loreBody-bearing class fixture (witch, extended):
+// preamble + a base-slug feature embed whose SUFFIXED sibling is witch's own
+// grant + a nested unique table, all proving the mechanisms end-to-end
+// through the real `resolveClassPageData` -> `ClassPage` pipeline (not just
+// the pure `loreDedupe.test.ts` unit coverage).
+// ---------------------------------------------------------------------------
+
+const LORE_CARD_RE = /<section class="codex-card codex-card-prose codex-lore">[\s\S]*?<\/section>/;
+
+function loreCardHtml(html: string): string | undefined {
+  return LORE_CARD_RE.exec(html)?.[0];
+}
+
+describe("ClassPage: Description extension — stream-covered feature-heading sections (D29-135)", () => {
+  it("witch: the body's 'Basic Lesson' section (name-matches the grant AND covered by its stream body) is stripped from the Description", async () => {
+    const { html } = await renderClassPage(loadClass("witch"));
+    // The prose survives ONCE, in the feature stream (the granted-feature
+    // card, not the Description section) — never twice.
+    const occurrences = (html.match(/basic lesson from your patron/gi) ?? []).length;
+    expect(occurrences).toBe(1);
+  });
+
+  it("witch: a heading merely SHARING a grant's name ('Weapon Specialization'), with genuinely different prose under it, SURVIVES in the Description — name match alone never strips", async () => {
+    const { html } = await renderClassPage(loadClass("witch"));
+    expect(html).toContain("proving the Description-strip's belt-and-suspenders rule");
+  });
+});
+
+describe("ClassPage: Lore card suppression + base-slug embed matching (D29-135)", () => {
+  it("witch: the loreBody preamble (duplicating the body's own fixture-stub sentence) does not survive into the Lore card", async () => {
+    const { html } = await renderClassPage(loadClass("witch"));
+    const lore = loreCardHtml(html);
+    expect(lore === undefined || !lore.includes("fixture stub")).toBe(true);
+  });
+
+  it("witch: the embed-only 'Basic Lesson' restatement (bare collision-base-slug target) is stripped — the WRONG (Investigator) doc's text never renders anywhere on the page", async () => {
+    const { html } = await renderClassPage(loadClass("witch"));
+    // `class-feature/basic-lesson` (bare) resolves to a DIFFERENT class's
+    // doc than witch's own suffixed grant (`class-feature/basic-lesson-2`)
+    // — proves base-slug matching, not exact-id membership (the review
+    // blocker: exact-id matching is a no-op for exactly this shape).
+    expect(html).not.toContain("COLLISION-FAMILY WINNER");
+    expect(html).not.toContain("Investigator");
+  });
+
+  it('witch: the genuinely unique "Witch\'s Patron Bond" table SURVIVES into the Lore card (the Versatile-Vial-shaped canary)', async () => {
+    const { html } = await renderClassPage(loadClass("witch"));
+    const lore = loreCardHtml(html);
+    expect(lore).toBeDefined();
+    expect(lore).toContain("Patron Bond");
+    expect(lore).toContain("Minor Bond");
+    expect(lore).toContain("Greater Bond");
+  });
+
+  it("witch: the plain body-covered dup section ('Witch Basics', no embed involved) also suppresses — proving the shingle-coverage path independent of base-slug stripping", async () => {
+    const { html } = await renderClassPage(loadClass("witch"));
+    const lore = loreCardHtml(html);
+    expect(lore === undefined || !lore.includes("Witch Basics")).toBe(true);
   });
 });
 

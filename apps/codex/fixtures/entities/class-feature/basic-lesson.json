@@ -1,0 +1,57 @@
+{
+  "aonUrl": "/Classes.aspx?ID=901",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "P14 S2 (D29-135) fixture stub — this is the COLLISION-FAMILY WINNER (bare, unsuffixed) \"class-feature/basic-lesson\" doc, deliberately belonging to a DIFFERENT class (Investigator) than witch's own suffixed sibling \"class-feature/basic-lesson-2\" — proves base-slug embed stripping doesn't care which family member a lore embed happens to resolve to.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 1,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 1
+  },
+  "id": "class-feature/basic-lesson",
+  "level": 1,
+  "mastheadExtra": [
+    {
+      "label": "Class",
+      "value": [
+        {
+          "content": " Investigator",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Basic Lesson",
+  "rarity": "common",
+  "slug": "basic-lesson",
+  "source": {
+    "book": "Player Core",
+    "license": "ORC",
+    "page": 209
+  },
+  "traits": [
+    "investigator"
+  ]
+}

@@ -1,6 +1,7 @@
 import type { ReactElement, ReactNode } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
+import { formatFacetValue } from "../browse/formatFacetValue";
 import { CodexActionGlyph } from "./actionGlyph";
 import { type RenderCtx, renderNodes } from "./nodes";
 import { humanizeFacetKey } from "./text";
@@ -329,16 +330,30 @@ export function FeatFacetHeader({
 // second set — this is the one render-side exclusion list.
 const SPILLOVER_KEYS: ReadonlySet<string> = new Set(["featLevel", "rank", "itemCategory"]);
 
+/**
+ * P14 S2 (D29-138) — routes every generic-group facet VALUE through the P13
+ * humanizer (`formatFacetValue`) instead of a bare `String(v)`: fixes raw
+ * Foundry/enum codes like ancestry/vehicle/warfare-army's `size: "med"`
+ * showing as "Size: med" instead of "Size: Medium", plus the
+ * stringified-list leak ("['arcane', 'divine']") on any array-typed facet.
+ * `formatFacetValue` is zero-import/pure (its own file header); imported
+ * directly rather than `facetDefs.ts`'s heavier `humanizedLabelFor` (spec's
+ * own layering note — `domain/render` already imports from `domain/browse`
+ * elsewhere, `EntityHeader.tsx`/`ClassPage.tsx`, an established seam, not a
+ * new one). An array humanizes EACH element independently (then joins with
+ * ", ") rather than the whole array as one blob — the same shape
+ * `formatFacetValue`'s own internal stringified-list handling produces for
+ * the string-typed case just below it. Facet KEYS/structure/styling are
+ * unchanged — only the rendered VALUE text differs. */
 function fmtFacetValue(v: unknown): string | null {
   if (Array.isArray(v)) {
-    const joined = v
+    const parts = v
       .filter((x) => x !== null && x !== undefined)
-      .map(String)
-      .join(", ");
-    return joined.length > 0 ? joined : null;
+      .map((x) => formatFacetValue(String(x)));
+    return parts.length > 0 ? parts.join(", ") : null;
   }
   if (v === null || v === undefined) return null;
-  return String(v);
+  return formatFacetValue(String(v));
 }
 
 /**

@@ -458,3 +458,107 @@ describe("nodes.tsx: D29-25 embed inlining, depth 1, cycle-guarded", () => {
     expect(out).toContain("Ghost");
   });
 });
+
+describe("nodes.tsx: D29-136 (P14 S2) — embed fail-soft NEVER renders node.target", () => {
+  it("unresolved with NO display renders nothing at all (not the raw target)", () => {
+    const out = html([
+      { kind: "embed", target: "class-feature/advanced-alchemy", resolved: false },
+    ]);
+    expect(out).toBe("");
+    expect(out).not.toContain("class-feature/advanced-alchemy");
+  });
+
+  it("resolved:true, resolver has no data, NO display -> also renders nothing", () => {
+    const out = html(
+      [{ kind: "embed", target: "class-feature/versatile-vials", resolved: true }],
+      baseCtx(),
+    );
+    expect(out).toBe("");
+    expect(out).not.toContain("class-feature/versatile-vials");
+  });
+
+  it("a display string still renders (the fail-soft floor, unchanged) — never a link either way", () => {
+    const out = html([{ kind: "embed", target: "class-feature/witch-lessons", resolved: false }]);
+    expect(out).not.toContain("class-feature/witch-lessons");
+    const withDisplay = html([
+      { kind: "embed", target: "class-feature/witch-lessons", resolved: false, display: "Lessons" },
+    ]);
+    expect(withDisplay).toContain("Lessons");
+    expect(withDisplay).not.toContain("<a ");
+  });
+
+  it("sweep: rendered output never contains a category/slug-shaped embed target anywhere, resolved or not, with or without display", () => {
+    const cases: CodexNode[] = [
+      { kind: "embed", target: "class-feature/oracular-curse", resolved: false },
+      { kind: "embed", target: "class-feature/bloodline-spells", resolved: true },
+      { kind: "embed", target: "class-feature/champions-aura", resolved: false, display: "Aura" },
+    ];
+    for (const node of cases) {
+      const out = html([node], baseCtx());
+      expect(out).not.toMatch(/class-feature\/[a-z-]+/);
+    }
+  });
+});
+
+/** Strips HTML tags, for the D29-139 tests below that want plain heading
+ * TEXT content — distinct from `text()` above (the InlineNode builder); a
+ * differently-named local helper avoids shadowing it. */
+function plainText(markup: string): string {
+  return markup.replace(/<[^>]+>/g, "");
+}
+
+describe("nodes.tsx: D29-139 (P14 S2) — heading inline-run whitespace normalization", () => {
+  it('["Chemical Hardiness","Level 11"] (no boundary space) -> "Chemical Hardiness Level 11"', () => {
+    const out = plainText(
+      html([
+        { kind: "heading", level: 2, children: [text("Chemical Hardiness"), text("Level 11")] },
+      ]),
+    );
+    expect(out).toBe("Chemical Hardiness Level 11");
+  });
+
+  it('["Double Brew ","Level 9"] (already has a boundary space) stays single-spaced', () => {
+    const out = plainText(
+      html([{ kind: "heading", level: 2, children: [text("Double Brew "), text("Level 9")] }]),
+    );
+    expect(out).toBe("Double Brew Level 9");
+  });
+
+  it("a heading with only ONE text child is untouched", () => {
+    const out = plainText(html([{ kind: "heading", level: 2, children: [text("Solo Heading")] }]));
+    expect(out).toBe("Solo Heading");
+  });
+
+  it("a non-text neighbor (crossref) resets adjacency — no space inserted around it", () => {
+    const out = html(
+      [
+        {
+          kind: "heading",
+          level: 2,
+          children: [
+            text("See "),
+            { kind: "crossref", targetId: "rules/example", display: "Example" },
+            text(" for details"),
+          ],
+        },
+      ],
+      baseCtx(),
+    );
+    expect(out).toContain("See <a");
+    expect(out).toContain("Example</a> for details");
+  });
+
+  it("headings-only: paragraph inline flow with the same no-space boundary is UNCHANGED", () => {
+    const out = html([para(text("Chemical Hardiness"), text("Level 11"))]);
+    expect(out).toBe("<p>Chemical HardinessLevel 11</p>");
+  });
+
+  it("the SSR-visible anchor id is derived from the NORMALIZED (joined) text, not the raw pre-join text", () => {
+    const ctx = { ...baseCtx(), headingId: createHeadingIdAssigner() };
+    const out = html(
+      [{ kind: "heading", level: 2, children: [text("Chemical Hardiness"), text("Level 11")] }],
+      ctx,
+    );
+    expect(out).toContain('id="chemical-hardiness-level-11"');
+  });
+});

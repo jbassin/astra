@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import type { CodexEntity } from "../../schema/entity";
 import type { Facets } from "../../schema/entity";
 import { EntityPage } from "./entityPage";
+import { loadFixtureRenderEnv, requireEntity } from "./fixtureLoader";
 import { noEmbeds, rootRenderCtx } from "./nodes";
 
 /**
@@ -71,6 +72,25 @@ describe("entityPage.tsx: header size chip (P10, D29-95)", () => {
   it("creature with NO facets.size renders no size element (absent facet, never an empty span)", () => {
     const out = html(makeEntity("creature", {}));
     expect(out).not.toContain("codex-entity-size");
+  });
+});
+
+describe("entityPage.tsx: GenericFacetLine humanization on the real anadi fixture (P14 S2, D29-138)", () => {
+  it("ancestry/anadi renders 'Size: Medium', never the raw facets.size code ('med')", () => {
+    // Review note (spec): no committed golden covers ANY GenericFacetLine
+    // category — this is the one explicit render-level proof for D29-138,
+    // against the REAL anadi fixture (facets.size: "med", per the fixture
+    // file itself), not a synthetic entity. The label renders in its own
+    // `<strong>` (the D29-50 bold-label grammar), so the raw HTML has a tag
+    // boundary between "Size:" and "Medium" — strip tags first, same idiom
+    // `facetHeader.test.tsx`'s own `text()` helper uses.
+    const { byId, ctx } = loadFixtureRenderEnv();
+    const anadi = requireEntity(byId, "ancestry/anadi");
+    expect(anadi.facets.size).toBe("med"); // the predicate's own input, pinned
+    const rendered = renderToStaticMarkup(<EntityPage entity={anadi} ctx={ctx} />);
+    const plainText = rendered.replace(/<[^>]+>/g, "");
+    expect(plainText).toContain("Size: Medium");
+    expect(plainText).not.toContain("Size: med");
   });
 });
 

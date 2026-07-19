@@ -32,8 +32,14 @@ import {
 } from "./classProgression";
 import { EntityHeader } from "./EntityHeader";
 import { createHeadingIdAssigner } from "./headingIds";
+import {
+  collisionBaseSlug,
+  reportLoreSuppression,
+  stripCoveredFeatureSections,
+  suppressLoreSections,
+} from "./loreDedupe";
 import { type RenderCtx, renderNodes, rootRenderCtx } from "./nodes";
-import { humanizeSlug } from "./text";
+import { collectText, humanizeSlug } from "./text";
 
 /** A codex id (`{category}/{slug}`) split client-side, WITHOUT importing
  * `server/entityPageData.ts`'s own `splitCodexId` (that module pulls in
@@ -462,7 +468,9 @@ export function ClassPage({
   );
   const descriptionId = ctx.headingId?.("Description");
 
-  const { body: descriptionBody, suppressedCount } = stripClassProgressionTable(entity.body);
+  const { body: bodyAfterProgressionStrip, suppressedCount } = stripClassProgressionTable(
+    entity.body,
+  );
   if (suppressedCount !== 1) {
     // Belt-and-braces (D29-119's own "assert exactly-one" text) — measured
     // exactly 1 on all 27 real stats-bearing classes; a future re-snapshot
@@ -472,18 +480,43 @@ export function ClassPage({
         `table to suppress from the Description body, found ${suppressedCount}.`,
     );
   }
+  // P14 S2 (D29-135) — completes P12's own declared "dedup'd Description"
+  // intent: `entity.body`'s own "Class Features" chapter restates each
+  // granted feature's prose a SECOND time (the stream above is the first),
+  // under a heading matching the feature's own name — strip any such
+  // section whose prose the stream's OWN feature body covers (belt-and-
+  // suspenders: a heading that merely shares a feature's name, with
+  // genuinely different prose under it, survives untouched).
+  const grantedBaseSlugs = new Set(grantedFeatures.map((f) => collisionBaseSlug(f.id)));
+  const streamReferenceText = grantedFeatures.map((f) => collectText(f.body)).join(" ");
+  const { body: descriptionBody } = stripCoveredFeatureSections(
+    bodyAfterProgressionStrip,
+    grantedFeatures,
+  );
+
   // Real-corpus finding (S3 build verification, `alchemist`/several others):
   // `loreBody` (a merged Foundry JOURNAL page — D29-8, e.g. alchemist's own
   // "Roleplaying the Alchemist" entry) independently restates the SAME
   // proficiency-summary + progression table a second time when present —
   // the identical redundancy-with-the-structured-render concern D29-119's
   // suppression predicate targets, just via a SECOND source document rather
-  // than `entity.body` itself. Stripped the same way; no exactly-one
-  // assertion here (unlike `entity.body` above) since this isn't one of the
-  // spec's own measured/pinned counts — `loreBody` itself is optional and
-  // not every class carries one.
-  const loreBody =
-    entity.loreBody !== undefined ? stripClassProgressionTable(entity.loreBody).body : undefined;
+  // than `entity.body` itself. Its own duplicate progression table is
+  // stripped the same way first; the P14 S2 suppression pass (D29-135) then
+  // runs per-heading-section over what's left, ALSO removing (a) any embed
+  // node restating a granted feature by its collision-base slug (a lore
+  // embed carries the bare base slug — e.g. "class-feature/perception-
+  // expertise" — while the post-D29-132 stream targetId is suffixed, e.g.
+  // "-8"; exact-id membership would be a no-op here) and (b) any section
+  // whose remaining prose the widened reference text (body + every granted
+  // feature's own stream body) covers.
+  const loreResult =
+    entity.loreBody !== undefined
+      ? suppressLoreSections(stripClassProgressionTable(entity.loreBody).body, entity.body, {
+          grantedBaseSlugs,
+          extraReferenceText: streamReferenceText,
+        })
+      : undefined;
+  if (loreResult) reportLoreSuppression(entity.id, loreResult);
 
   return (
     <article
@@ -536,12 +569,12 @@ export function ClassPage({
       {/* Same convention as `EntityPage` — additive (several real classes DO
           carry `loreBody`, e.g. alchemist's "Roleplaying the Alchemist"
           journal merge, verified against the real corpus) — never silently
-          drop it. `loreBody` above already had its own duplicate
-          progression table stripped, same predicate as Description's. */}
-      {loreBody !== undefined ? (
+          drop it. D29-135 — the whole card (heading included) is omitted
+          when suppression eats every section, not just left empty. */}
+      {loreResult !== undefined && loreResult.nodes.length > 0 ? (
         <section className="codex-card codex-card-prose codex-lore">
           <h2 id={ctx.headingId?.("Lore")}>Lore</h2>
-          <div className="codex-content">{renderNodes(loreBody, ctx)}</div>
+          <div className="codex-content">{renderNodes(loreResult.nodes, ctx)}</div>
         </section>
       ) : null}
 

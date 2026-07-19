@@ -1,0 +1,57 @@
+{
+  "aonUrl": "/Classes.aspx?ID=16",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You have learned a basic lesson from your patron. Once per day, you can request simple guidance, granting a plus one status bonus to a single skill check of your choice.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "class-feature",
+  "edition": "remaster",
+  "facets": {
+    "actionCost": "passive",
+    "featLevel": 3,
+    "itemCategory": "classfeature",
+    "prerequisites": [],
+    "rank": 3
+  },
+  "id": "class-feature/basic-lesson-2",
+  "level": 3,
+  "mastheadExtra": [
+    {
+      "label": "Class",
+      "value": [
+        {
+          "content": " Witch",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Basic Lesson",
+  "rarity": "common",
+  "slug": "basic-lesson-2",
+  "source": {
+    "book": "Advanced Player's Guide",
+    "license": "ORC",
+    "page": 94
+  },
+  "traits": [
+    "witch"
+  ]
+}

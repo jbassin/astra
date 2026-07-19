@@ -1,7 +1,7 @@
 import { Fragment, type ReactElement, type ReactNode } from "react";
 
 import type { CodexEntity } from "../../schema/entity";
-import type { CodexNode } from "../../schema/nodes";
+import type { CodexNode, InlineNode } from "../../schema/nodes";
 import { type ActionCost, ErrorChip } from "../../ui";
 import { CodexActionGlyph } from "./actionGlyph";
 import { capitalize, collectText } from "./text";
@@ -170,6 +170,45 @@ function humanizeSlug(slug: string): string {
 }
 
 // ---------------------------------------------------------------------------
+// D29-139 (P14 S2) — heading inline-run whitespace normalization
+// ---------------------------------------------------------------------------
+
+/** `true` when `prev` and `next` need a space inserted between them — i.e.
+ * NEITHER already ends/starts with whitespace of its own. Never doubles an
+ * existing boundary space (`"Double Brew "` + `"Level 9"` stays
+ * single-spaced); reviewer-measured on the real corpus: 48 headings carry a
+ * no-whitespace boundary, 0 are mid-word joins (the second run never starts
+ * lowercase) — a space insertion is always correct. */
+function boundaryNeedsSpace(prev: string, next: string): boolean {
+  if (prev.length === 0 || next.length === 0) return false;
+  return !/\s$/.test(prev) && !/^\s/.test(next);
+}
+
+/** Adjacent inline TEXT runs in a HEADING's children join with exactly one
+ * space when their shared boundary carries none (`nodes.tsx`'s heading case
+ * only — paragraph/inline flow elsewhere is untouched, per spec). Only
+ * text-to-text boundaries are touched: a non-text neighbor (crossref, an
+ * action glyph, ...) resets adjacency, same posture as every other
+ * inline-node boundary in this renderer. Real corpus cause: the AoN
+ * `<title right=…>` extraction sometimes splits a heading into two
+ * verbatim text runs with no space of their own between them ("Chemical
+ * Hardiness"+"Level 11"). */
+function normalizeHeadingChildren(children: readonly InlineNode[]): InlineNode[] {
+  const out: InlineNode[] = [];
+  for (const child of children) {
+    const prev = out[out.length - 1];
+    if (prev !== undefined && prev.kind === "text" && child.kind === "text") {
+      if (boundaryNeedsSpace(prev.content, child.content)) {
+        out.push({ ...child, content: ` ${child.content}` });
+        continue;
+      }
+    }
+    out.push(child);
+  }
+  return out;
+}
+
+// ---------------------------------------------------------------------------
 // D29-50 (P4.5 S5) — the tan "in-world artifact" callout ornament (style doc
 // §3.2): a thin double-hairline rule bracketing the box top+bottom, flared
 // into a small inward-pointing chevron at both ends. The corpus's
@@ -225,28 +264,38 @@ function embedRendersAsBlock(node: Extract<CodexNode, { kind: "embed" }>, ctx: R
   return true;
 }
 
+/** D29-136 (P14 S2) — NEVER render `node.target` (a raw internal id/slug,
+ * e.g. "class-feature/advanced-alchemy", is not user-facing prose): both
+ * the genuinely-unresolved branch and the defensive resolved-but-
+ * unprefetched branch below render `display ?? nothing`. The draft's
+ * `buildEmbedNode` `display` capture was dropped at spec time (0/2,714 real
+ * `@Embed[...]` uses carry a `{label}` — zero coverage, and it was
+ * transform code misfiled in the render slice); this fail-soft carries the
+ * remaining ~6 genuinely-absent-on-AoN cases alone (most of which also sit
+ * inside a lore section D29-135's suppression already removes — this is
+ * the defensive floor, not the user-visible fix). */
+function unresolvedEmbedFallback(display: string | undefined, key: number): ReactNode {
+  if (display === undefined) return null;
+  return (
+    <span key={key} data-embed-unresolved="">
+      {display}
+    </span>
+  );
+}
+
 function renderEmbed(
   node: Extract<CodexNode, { kind: "embed" }>,
   key: number,
   ctx: RenderCtx,
 ): ReactNode {
-  const fallbackText = node.display ?? node.target;
   if (!node.resolved) {
-    return (
-      <span key={key} data-embed-unresolved="">
-        {fallbackText}
-      </span>
-    );
+    return unresolvedEmbedFallback(node.display, key);
   }
   const target = ctx.resolveEmbed(node.target);
   if (!target) {
     // Defensive fail-soft: `resolved: true` but the injected resolver has no
     // data for it (e.g. a fixture/dev gap) — same rendering as unresolved.
-    return (
-      <span key={key} data-embed-unresolved="">
-        {fallbackText}
-      </span>
-    );
+    return unresolvedEmbedFallback(node.display, key);
   }
   if (ctx.embedDepth > 0 || ctx.visitedEmbeds.has(node.target)) {
     // D29-25 depth cap + cycle guard: already inside an inlined body ->
@@ -376,13 +425,20 @@ function renderNode(node: CodexNode, key: number, ctx: RenderCtx): ReactNode {
     case "heading": {
       const depth = Math.min(Math.max(node.level, 1), 6);
       const Tag = `h${depth}` as "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+      // D29-139 (P14 S2) — headings only, never paragraph/inline flow: the
+      // AoN `<title right=…>` extraction (`aonMarkup.ts`) sometimes splits
+      // a heading into two adjacent verbatim text runs with no whitespace
+      // of their own at the boundary ("Chemical Hardiness"+"Level 11" ->
+      // "Chemical HardinessLevel 11" un-normalized); normalize BEFORE
+      // computing the id, so the anchor id and the visible text agree.
+      const children = normalizeHeadingChildren(node.children);
       // D29-109b (P11 S5, #15) — SSR-visible anchor id, absent entirely when
       // no per-page assigner is wired (`ctx.headingId` optional, see
       // `RenderCtx`'s own doc comment).
-      const id = ctx.headingId?.(collectText(node.children));
+      const id = ctx.headingId?.(collectText(children));
       return (
         <Tag key={key} id={id} className="codex-heading">
-          {renderNodes(node.children, ctx)}
+          {renderNodes(children, ctx)}
           {node.meta !== undefined ? <span className="codex-heading-meta">{node.meta}</span> : null}
         </Tag>
       );
@@ -542,3 +598,7 @@ export { CodexTraitPills };
 // path for tests asserting the totality gate.
 export const RENDER_ERROR_ATTR = "data-render-error";
 export { ErrorChip };
+
+// D29-139 — exported for direct unit testing (nodes.test.tsx); the heading
+// case above is the one production call site.
+export { normalizeHeadingChildren };

@@ -10,6 +10,7 @@ import {
   MastheadExtraFallback,
   SpellFacetHeader,
 } from "./facetHeader";
+import { reportLoreSuppression, suppressLoreSections } from "./loreDedupe";
 import { type RenderCtx, renderNodes } from "./nodes";
 import { CreatureStatblock, EmbeddedItemSections, HazardStatblock } from "./statblock";
 
@@ -64,6 +65,19 @@ export function EntityPage({
   standalone?: boolean;
 }): ReactElement {
   const group = categoryGroupOf(entity.category);
+
+  // P14 S2 (D29-135) — the Lore card's own duplicate-section suppression:
+  // `loreBody` restates near-total chunks of `body` (76/77 real loreBody
+  // docs measured >50% doc-level overlap); this keeps only the genuinely
+  // unique delta (a shisk-shaped "Heritages" section, "You Might..."/
+  // "Others Probably..." stays visible in the BODY copy only — never
+  // asserted present here). No `grantedBaseSlugs`/`extraReferenceText` on
+  // this generic page (that's ClassPage's own extension, below) — a plain
+  // body-vs-loreBody shingle test.
+  const loreResult =
+    entity.loreBody !== undefined ? suppressLoreSections(entity.loreBody, entity.body) : undefined;
+  if (loreResult) reportLoreSuppression(entity.id, loreResult);
+
   return (
     <article
       className="codex-entity-page popover-hint"
@@ -118,10 +132,12 @@ export function EntityPage({
 
       <div className="codex-content codex-body">{renderNodes(entity.body, ctx)}</div>
 
-      {entity.loreBody !== undefined ? (
+      {/* D29-135 — the whole card (heading included) is omitted when
+          suppression eats every section, not just left empty. */}
+      {loreResult !== undefined && loreResult.nodes.length > 0 ? (
         <section className="codex-card codex-card-prose codex-lore">
           <h2 id={ctx.headingId?.("Lore")}>Lore</h2>
-          <div className="codex-content">{renderNodes(entity.loreBody, ctx)}</div>
+          <div className="codex-content">{renderNodes(loreResult.nodes, ctx)}</div>
         </section>
       ) : null}
     </article>

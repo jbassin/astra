@@ -140,7 +140,9 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
     const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
     expect(out).toContain("AC: 20");
     expect(out).toContain("HP: 80");
-    expect(out).toContain("Size: lg");
+    // P14 S2 (D29-138) — routed through `formatFacetValue`: "Size: lg" is
+    // now the humanized "Size: Large" (the raw code never reaches the UI).
+    expect(out).toContain("Size: Large");
   });
 
   it("excludes featLevel/rank even when present as spillover on a non-feat/non-spell category", () => {
