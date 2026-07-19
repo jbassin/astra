@@ -812,6 +812,24 @@ select:focus-visible,
      carries — same `--density-page-pad` token, lockstep (see its comment). */
   padding: var(--density-page-pad);
 }
+/* P11 S2 (D29-103) — `routes/$category/index.tsx` (the `/{category}` browse
+   listing) ONLY swaps `.wrap-wide` for this wider variant: the listing
+   table's emergent width was capped at ≈617px (58fr of `.wrap-wide`'s
+   72rem, `.codex-browse-layout`'s own comment) regardless of viewport —
+   same padding/centering as `.wrap-wide`, just a wider cap (96rem instead
+   of 72rem) so a genuinely wide viewport can render more of the table
+   uncramped. Scoped to this ONE route file on purpose (never `.codex-
+   browse-layout` itself, and never a bare rename of `.wrap-wide`) — /search,
+   /rules, /sources all still import `.wrap-wide` directly (verified via a
+   repo-wide grep before this change) and must keep their own narrower
+   measure; leaking this class onto them would be the P8 `.codex-browse-
+   layout`-reuse gotcha's cousin (0029 spec's own framing). */
+.wrap-browse {
+  width: 100%;
+  max-width: 96rem;
+  margin: 0 auto;
+  padding: var(--density-page-pad);
+}
 /* P8 S2 (D29-77): the title block + controls row consolidate to one line
    each — spacing tightened so the total lead-in above the first table row
    lands ≤ 300px at 1600×900 (measured 440px pre-P8; S1 already brought it
@@ -1348,11 +1366,39 @@ select:focus-visible,
   font-size: 0.85em;
 }
 /* The edition icon: a fixed narrow END cell, never a labeled column
-   (D29-78) — no `<button>`/sort affordance, just the glyph, centered. */
+   (D29-78) — no `<button>`/sort affordance, just the glyph, centered. `width`
+   stays on the BARE class (matches both `<th>` and `<td>`, both carrying
+   this class) — `table-layout: fixed` sizes the whole column off the
+   `<thead>` cell alone, so the `<th>` MUST keep an explicit width here too.
+   P11 S2 (D29-102) — widened: the icon itself (`.codex-edition-icon`,
+   `globals.css` above) is `0.95em` square, but this column's OLD `1.4em`
+   width minus its own `0.35rem`-per-side `padding-inline` left a content
+   box of a fraction of a pixel under border-box sizing (measured ≈0.125px
+   live) — strictly narrower than the glyph it holds, clipping it outright.
+   `calc(0.95em + 0.9rem)` fits the glyph (`0.95em`, `EditionIcon.tsx`) plus
+   its own two `0.35rem` paddings (`0.7rem`) with a `0.2rem` buffer against
+   sub-pixel rounding — verified against the real corpus via
+   `rowHeightDriftGuard.ts`'s scoped cell-fit assert. */
 .codex-listing-col-icon {
-  width: 1.4em;
-  padding-inline: 0.35rem;
+  width: calc(0.95em + 0.9rem);
   text-align: center;
+}
+/* `padding-inline` is split into its OWN, separately-qualified rule — LOAD-
+   BEARING, not a style nit: the bare `.codex-listing-col-icon` selector is
+   LESS specific (0,1,0) than `.codex-listing-table th, .codex-listing-table
+   td` above (0,1,1) — the SAME cascade-loss trap `.codex-listing-table
+   td.codex-listing-col-name` (below) already documents fighting once — so
+   an unqualified `padding-inline: 0.35rem` here silently LOST to that
+   rule's `padding: 4px 0.5rem` shorthand (both set the same underlying
+   physical/logical padding properties, CSS Logical Properties' "cascaded
+   together" rule) and the real applied padding stayed 0.5rem/side the whole
+   time regardless of this rule's own number — caught live by
+   `rowHeightDriftGuard.ts` measuring the real `getComputedStyle` padding as
+   `4px 8px`, not `4px 5.6px`. Qualified on BOTH `th`/`td` (unlike the width
+   rule above, this one needs the extra specificity to win at all). */
+.codex-listing-table th.codex-listing-col-icon,
+.codex-listing-table td.codex-listing-col-icon {
+  padding-inline: 0.35rem;
 }
 /* Condensed-truncate treatment (D29-78): spell Cast's time-string/
    unenumerated-composite fallback + Range's abbreviated-but-still-long

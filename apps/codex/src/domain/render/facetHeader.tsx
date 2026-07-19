@@ -318,7 +318,16 @@ export function FeatFacetHeader({
 // outside its home group").
 // ---------------------------------------------------------------------------
 
-const SPILLOVER_KEYS: ReadonlySet<string> = new Set(["featLevel", "rank"]);
+// P11 S2 (D29-104) — `itemCategory` joins the spillover set: `GenericFacetLine`
+// was dumping the raw internal-taxonomy facet key ("Item Category: …") on
+// every one of the ~80 other categories' pages (measured leak: 1,594
+// entities/5 categories — class-feature/deity/action/familiar-ability/
+// creature-ability; equipment's OWN itemCategory is unaffected, it routes to
+// the bespoke `EquipmentFacetHeader` above, a separate render path this
+// component never touches). `featLevel`/`rank` are the pre-existing D29-26
+// spillover pair (facet-mirroring quirk on Foundry-merged entities); never a
+// second set — this is the one render-side exclusion list.
+const SPILLOVER_KEYS: ReadonlySet<string> = new Set(["featLevel", "rank", "itemCategory"]);
 
 function fmtFacetValue(v: unknown): string | null {
   if (Array.isArray(v)) {
@@ -332,6 +341,39 @@ function fmtFacetValue(v: unknown): string | null {
   return String(v);
 }
 
+/**
+ * P11 S2 (D29-104) — two more generic-group facet keys need bespoke
+ * (non-"Key: value") rendering rather than `fmtFacetValue`'s plain-text
+ * grammar:
+ *   - `valued` (condition, 42/98 carry it, `Facets.valued: boolean`) is a
+ *     flag, not a labeled value — render the bare word "Valued" ONLY when
+ *     `true` (never "Valued: false"/"Valued: true"); `false`/absent render
+ *     nothing, same as any other unpopulated facet.
+ *   - `actionCost` (the generic-group survivors of the same field
+ *     `FeatFacetHeader` already special-cases, e.g. creature-ability's
+ *     generic-group members) renders via `CodexActionGlyph` — the
+ *     `FeatFacetHeader` idiom — instead of "Action Cost: passive" text.
+ *     Recorded + accepted: the majority generic-group value is `passive`
+ *     (762/1,131), which renders as the bare unlabeled glyph-span, matching
+ *     `FeatFacetHeader`'s own golden-pinned rendering of the same value.
+ * Returns `undefined` for any OTHER key — the caller falls through to the
+ * plain generic renderer.
+ */
+function specialFacetPart(key: string, value: unknown): ReactElement | null | undefined {
+  if (key === "valued") {
+    return value === true ? <Part key="valued">Valued</Part> : null;
+  }
+  if (key === "actionCost") {
+    if (typeof value !== "string" || value.trim() === "") return null;
+    return (
+      <Part key="actionCost">
+        <CodexActionGlyph raw={value} />
+      </Part>
+    );
+  }
+  return undefined;
+}
+
 export function GenericFacetLine({
   entity,
   ctx,
@@ -343,6 +385,11 @@ export function GenericFacetLine({
   const shownLabels = new Set<string>();
   const parts: ReactNode[] = entries
     .map(([key, value]) => {
+      const special = specialFacetPart(key, value);
+      if (special !== undefined) {
+        if (special !== null) shownLabels.add(normLabel(humanizeFacetKey(key)));
+        return special;
+      }
       const text = fmtFacetValue(value);
       if (text === null) return null;
       // The generic key->value convention keeps its original "Key: value"

@@ -165,6 +165,62 @@ describe("GenericFacetLine (the ~80 other categories)", () => {
 });
 
 // ---------------------------------------------------------------------------
+// P11 S2 (D29-104): the three GenericFacetLine leak/special-render fixes —
+// itemCategory joins SPILLOVER_KEYS, `valued` renders as a bare word only
+// when true, `actionCost` renders via the FeatFacetHeader glyph idiom.
+// ---------------------------------------------------------------------------
+
+describe("GenericFacetLine: itemCategory spillover suppression (D29-104)", () => {
+  it("itemCategory never leaks on a non-equipment generic-group entity (e.g. deity)", () => {
+    const entity = entityWith("deity", { itemCategory: "deity", ac: 10 });
+    const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
+    expect(out).not.toMatch(/Item Category/);
+    expect(out).toContain("AC: 10");
+  });
+});
+
+describe("GenericFacetLine: `valued` renders as a bare word only when true (D29-104)", () => {
+  it("valued: true -> the single word 'Valued', no colon/value text", () => {
+    const entity = entityWith("condition", { valued: true });
+    const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
+    expect(out).toContain("Valued");
+    expect(out).not.toContain("Valued:");
+    expect(out).not.toMatch(/Valued\s*true/);
+  });
+
+  it("valued: false -> renders nothing at all, never 'Valued: false'", () => {
+    const entity = entityWith("condition", { valued: false, ac: 1 });
+    const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
+    expect(out).not.toMatch(/Valued/);
+    expect(out).toContain("AC: 1");
+  });
+
+  it("valued absent -> renders nothing (same as any other unpopulated facet)", () => {
+    const entity = entityWith("condition", { ac: 1 });
+    const out = text(renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />));
+    expect(out).not.toMatch(/Valued/);
+  });
+});
+
+describe("GenericFacetLine: `actionCost` renders via the action-glyph idiom (D29-104)", () => {
+  it("a real action cost renders an ActionGlyph <svg>, not 'Action Cost: 2' text", () => {
+    const entity = entityWith("creature-ability", { actionCost: "2" });
+    const html = renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />);
+    expect(html).toContain("<svg");
+    expect(text(html)).not.toContain("Action Cost");
+  });
+
+  it("'passive' (the majority generic-group value, 762/1,131) renders as bare unlabeled text, matching FeatFacetHeader's own idiom", () => {
+    const entity = entityWith("creature-ability", { actionCost: "passive" });
+    const html = renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />);
+    expect(html).not.toContain("<svg");
+    const out = text(html);
+    expect(out).toContain("passive");
+    expect(out).not.toContain("Action Cost");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // D29-62 (R3, P6): mastheadExtra rendering across all 5 call sites
 // ---------------------------------------------------------------------------
 

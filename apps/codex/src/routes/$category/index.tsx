@@ -154,7 +154,11 @@ function CategoryIndexComponent() {
   const pending = fullRows === null && data.rows.length < data.totalCount;
 
   return (
-    <main className="wrap-wide">
+    // P11 S2 (D29-103) — `.wrap-browse` (96rem cap), not `.wrap-wide`
+    // (72rem): scoped to THIS route file only — /search/​/rules/​/sources all
+    // still use `.wrap-wide` directly and must keep their own narrower
+    // measure (`globals.css`'s own comment on `.wrap-browse`).
+    <main className="wrap-browse">
       <BrowseListing
         category={data.category}
         rows={rows}

@@ -574,6 +574,56 @@ export const rarityValueOf = (row: IndexRow): string | undefined => row.rarity;
 export const sourceBookValueOf = (row: IndexRow): string | undefined => row.source.book;
 export const editionValueOf = (row: IndexRow): string | undefined => row.edition;
 
+// ---------------------------------------------------------------------------
+// P11 S2 (D29-107 b/c) — option-list re-sorts for two `FacetPanel.tsx` CoreEnum
+// sections. Both take `scalarOptionCounts`'s already-tallied output and
+// re-order it; they never change WHICH options appear, only their order.
+// ---------------------------------------------------------------------------
+
+/** D29-107(b): Source options sort by the DISPLAYED label (case-insensitive),
+ * not `scalarOptionCounts`'s default raw-value alphabetical order — the
+ * Source section renders `abbreviateBook(book) ?? book`, so sorting on the
+ * raw `book` string put entries in an order that looked arbitrary next to
+ * their own displayed abbreviations. `labelOf` is the SAME projection the
+ * section renders with (never re-derived here) — `abbreviateBook()`
+ * returning `undefined` means `labelOf` itself already falls back to the
+ * full title (never a literal "(undefined)" reaching this sort or the
+ * render). */
+export function sortOptionsByLabel(
+  options: readonly OptionCount[],
+  labelOf: (value: string) => string,
+): OptionCount[] {
+  return [...options].sort((a, b) =>
+    labelOf(a.value).toLowerCase().localeCompare(labelOf(b.value).toLowerCase()),
+  );
+}
+
+/** D29-107(c): Rarity's tier order — `{common, uncommon, rare, unique}` — is
+ * a SORT over whatever values `scalarOptionCounts` already found present in
+ * the rows, never a whitelist/enumerated option SOURCE: an order array used
+ * to drive the option list itself would silently vanish any value it didn't
+ * name (`unique` alone is 2,031 measured real entities). An unrecognized
+ * rarity value (the `rarity` field is `z.string().optional()`, not a closed
+ * enum — real data-quality slop is possible) sorts LAST, alphabetically
+ * among itself. */
+const RARITY_RANK: Readonly<Record<string, number>> = {
+  common: 0,
+  uncommon: 1,
+  rare: 2,
+  unique: 3,
+};
+
+export function sortOptionsByRarityRank(options: readonly OptionCount[]): OptionCount[] {
+  return [...options].sort((a, b) => {
+    const ra = RARITY_RANK[a.value];
+    const rb = RARITY_RANK[b.value];
+    if (ra !== undefined && rb !== undefined) return ra - rb;
+    if (ra !== undefined) return -1;
+    if (rb !== undefined) return 1;
+    return a.value.localeCompare(b.value);
+  });
+}
+
 /** Missing-value count for any `valueOf`-shaped accessor (the `level`
  * counterpart of `missingCount`, which is keyed on a `facets.*` key). */
 export function countMissingByValue<T>(

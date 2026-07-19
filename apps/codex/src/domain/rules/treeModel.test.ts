@@ -8,6 +8,7 @@ import {
   filterTreeByQuery,
   nodeKeyFor,
   pruneForSuperseded,
+  sortBooksForDisplay,
 } from "./treeModel";
 
 function node(overrides: Partial<TreeNode> & Pick<TreeNode, "name">): TreeNode {
@@ -309,5 +310,47 @@ describe("dfsPreOrder (S3 pager reuse)", () => {
   it("a childless root is a single-element result", () => {
     const tree: TreeNode[] = [node({ name: "Whetstones", id: "rules/whetstones" })];
     expect(dfsPreOrder(tree)).toHaveLength(1);
+  });
+});
+
+describe("sortBooksForDisplay (D29-108b — the /rules book display order)", () => {
+  it("the four remaster cores sort first, in their fixed reading order, regardless of input order", () => {
+    const books = [
+      { book: "Monster Core" },
+      { book: "GM Core" },
+      { book: "Player Core 2" },
+      { book: "Player Core" },
+    ];
+    expect(sortBooksForDisplay(books).map((b) => b.book)).toEqual([
+      "Player Core",
+      "Player Core 2",
+      "GM Core",
+      "Monster Core",
+    ]);
+  });
+
+  it("every other book falls through to alphabetical-by-full-title, after the cores", () => {
+    const books = [{ book: "Zoo of Zeals" }, { book: "Ancestry Guide" }, { book: "GM Core" }];
+    expect(sortBooksForDisplay(books).map((b) => b.book)).toEqual([
+      "GM Core",
+      "Ancestry Guide",
+      "Zoo of Zeals",
+    ]);
+  });
+
+  it("no cores present -> pure alphabetical, unaffected", () => {
+    const books = [{ book: "Secrets of Magic" }, { book: "Battlecry!" }, { book: "Dark Archive" }];
+    expect(sortBooksForDisplay(books).map((b) => b.book)).toEqual([
+      "Battlecry!",
+      "Dark Archive",
+      "Secrets of Magic",
+    ]);
+  });
+
+  it("input array is not mutated", () => {
+    const books = [{ book: "Monster Core" }, { book: "GM Core" }];
+    const copy = [...books];
+    sortBooksForDisplay(books);
+    expect(books).toEqual(copy);
   });
 });

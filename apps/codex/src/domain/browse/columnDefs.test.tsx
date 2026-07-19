@@ -373,6 +373,32 @@ describe("columnDefs: cell renderers", () => {
 // either).
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// P11 S2 (D29-102) — every non-Name column's border-box `width` must leave
+// room for its own `padding: 4px 0.5rem` cell padding, not just its p99
+// rendered-character-count (the pre-fix state left ~3px of actual content
+// room on some columns under border-box sizing).
+// ---------------------------------------------------------------------------
+
+describe("columnDefs: non-Name widths reserve the cell's own padding (D29-102)", () => {
+  it("every non-Name column's width is a calc() adding 1rem (the two 0.5rem cell paddings)", () => {
+    const cols = [
+      ...columnsFor("spell", [row({ id: "spell/a", name: "A", level: 1 })]),
+      ...columnsFor("creature", [row({ id: "creature/a", name: "A", level: 1 })]),
+      ...columnsFor("equipment", [row({ id: "equipment/a", name: "A", level: 0 })]),
+      ...columnsFor("feat", [row({ id: "feat/a", name: "A", level: 1 })]),
+      ...columnsFor("condition", [row({ id: "condition/a", name: "A", rarity: "common" })]),
+    ];
+    for (const col of cols) {
+      if (col.key === "name") {
+        expect(col.width, col.key).toBeUndefined();
+        continue;
+      }
+      expect(col.width, col.key).toMatch(/^calc\(\d+ch \+ 1rem\)$/);
+    }
+  });
+});
+
 describe("columnDefs: Source and Range are not sortable", () => {
   it("Source", () => {
     const cols = columnsFor("spell", [row({ id: "spell/a", name: "A", level: 1 })]);

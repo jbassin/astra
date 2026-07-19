@@ -458,3 +458,60 @@ remeasurement is D29-102/S2 territory, out of S1's scope.
 `extract-fixture.ts`), search (`build-search.ts`, `pagefindClient.ts`, `SearchPage.tsx` +
 tests), and the 46,192→44,808 comment sweep (`columnDefs.tsx`/`.test.tsx`, `urlState.ts`,
 `facetKeys.ts`, `ssrSmoke.test.ts`, `build-search.ts`/`.test.ts`).
+
+**S2 (listing tables + facet header + filter dialog + rules fixes, D29-102/103/104/107/108) —
+all five decisions landed, CI green.** Column `calc(Nch + 1rem)` widths (border-box padding
+compensation) + `.wrap-browse` (96rem, `routes/$category/index.tsx` ONLY — verified `.wrap-wide`
+still serves /search//rules//sources) + `SPILLOVER_KEYS`+itemCategory/valued-bare-word/
+actionCost-glyph + Traits+Source type-ahead + Source label-sort + Rarity rank-sort + rules
+zero-match guard + core-first book headers, all built and locally live-verified via Playwright
+against the real corpus (screenshots + DOM assertions, not curl|grep).
+
+**Two live-caught deviations (both real-corpus-only, invisible against the fixture — recorded in
+place, not silently done):** (1) the edition-icon column's `padding-inline: 0.35rem` was losing
+the CSS cascade to `.codex-listing-table th, .codex-listing-table td`'s higher-specificity
+`padding: 4px 0.5rem` shorthand — the SAME trap `.codex-listing-col-name` already documents —
+so the real applied padding stayed `4px 8px` regardless of this rule's own number; split into a
+separately-qualified `.codex-listing-table th.codex-listing-col-icon, …td.codex-listing-col-icon`
+rule (width stays on the bare class, since `table-layout: fixed` needs it on `<th>` too), final
+width `calc(0.95em + 0.9rem)`. (2) Source's `9ch` (p99=8+1ch) still clipped the real corpus's
+"COCA-ECPG" (9 chars, uppercase+hyphen-heavy — `ch` is pinned to the "0" glyph's width, narrower
+than this string's real per-character average) — bumped to `10ch` (still comfortably under
+Source's own max=18, so the genuine long tail still ellipsis-truncates by design).
+
+**Drift-guard PASS matrix (real corpus, both routes × both viewports, post-fix):** FULL
+(1600px) `/feat` row height 24px, cell-fit `[level, actionCost, source, icon]` PASS; COMPACT
+(375px) `/feat` `[level, source, icon]` PASS; FULL (1600px) `/creature`
+`[level, hp, ac, size, source, icon]` PASS; COMPACT (375px) `/creature`
+`[level, source, icon]` PASS. `rarity` is structurally unexercised by this guard (no real
+category shares a scoped Rarity column with either named route) — carried into gate H's S6
+live-sweep checklist (hand-check a rarity-carrying category) per orchestrator note.
+
+**Goldens: zero churn, confirmed not assumed** — grepped all 7 for "Item Category"/"Valued"/
+"Action Cost" BEFORE touching code (0 hits), then regenerated all 7 post-change and diffed
+byte-identical against pre-change copies.
+
+**`.codex-entry-pane` readability (D29-103's derive-at-build call): no cap needed.** Live-measured
+at 1920px under `.wrap-browse`: entry pane 608px (58/42 split of the 96rem-capped, padded,
+gapped container) — well under `.codex-entity-page`'s own 52rem (832px) prose cap regardless of
+viewport width (the container's own max-width bounds it, not the viewport). Verified both by
+arithmetic and a live Playwright screenshot of a long-prose feat page in split view — comfortable
+line lengths, no degradation; no `.codex-entry-pane` CSS change made.
+
+**D29-108 book order — live-proven against the real 45-book corpus:** exact rendered order
+`Player Core (PC1) → Player Core 2 (PC2) → GM Core (GMC) → Monster Core (MC) →
+Advanced Player's Guide (APG) → Ancestry Guide (LOAG) → Battlecry! (BC) → …` (alphabetical by
+full title for the remaining 41). Zero-match guard live-proven: a nonsense query zeroes every
+`.codex-rules-book` section; a real partial query narrows correctly (8/45 for "crafting").
+
+**CI:** `vp run -r typecheck` 32/32 clean; `oxlint --type-aware --deny-warnings --threads=4`
+clean; `oxfmt --check` clean; `vp run -r test` 26/26 tasks — codex 1940/1947, the 7 failures
+matching the documented pre-existing `ssrSmoke.test.ts` residue by NAME not just count; `vp run
+-r build` 26/26 clean. The `routeTree.gen.ts` flap recurred once (build lane) — reverted before
+commit.
+
+**Files:** modified `scripts/rowHeightDriftGuard.ts`;
+`src/domain/browse/{columnDefs,columnDefs.test,FacetPanel,FacetPanel.test,filterEngine,
+filterEngine.test}.{ts,tsx}`; `src/domain/render/{facetHeader,facetHeader.test}.tsx`;
+`src/domain/rules/{RulesTree,RulesTree.test,treeModel,treeModel.test}.{ts,tsx}`;
+`src/routes/$category/index.tsx`; `src/styles/globals.css`. No new files.

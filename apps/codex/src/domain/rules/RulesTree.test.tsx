@@ -73,11 +73,13 @@ describe("RulesTree (D29-40)", () => {
     localStorage.clear();
   });
 
-  it("renders every book name (abbreviation-with-fallback, R10/D29-68) + edition icon/license pill", () => {
+  it("renders every book name as full title + abbreviation (D29-108b), full name also on title", () => {
     render(<RulesTree books={[GMG_LIKE]} superseded={false} />);
-    // "Gamemastery Guide" curates to "GMG" — the heading shows the
-    // abbreviation, the full name stays available via `title`.
-    const heading = screen.getByText("GMG");
+    // "Gamemastery Guide" curates to "GMG" — the heading shows BOTH the
+    // full title and the abbreviation ("Gamemastery Guide (GMG)"), never
+    // the abbreviation alone; the full name is also on `title` (redundant,
+    // harmless, kept for hover-tooltip convention).
+    const heading = screen.getByText("Gamemastery Guide (GMG)");
     expect(heading).not.toBeNull();
     expect(heading.getAttribute("title")).toBe("Gamemastery Guide");
     // "Legacy" appears twice: the book-level edition icon AND the root
@@ -133,8 +135,8 @@ describe("RulesTree (D29-40)", () => {
 
   it("a fully-superseded book renders as a collapsed 'all N hidden' header, never silently dropped", () => {
     render(<RulesTree books={[FULLY_HIDDEN_BOOK]} superseded={false} />);
-    // "Dark Archive" curates to "DA" (R10/D29-68).
-    expect(screen.getByText("DA")).not.toBeNull();
+    // "Dark Archive" curates to "DA" (R10/D29-68); heading is full+abbrev.
+    expect(screen.getByText("Dark Archive (DA)")).not.toBeNull();
     expect(screen.getByText("all 2 hidden")).not.toBeNull();
     expect(screen.queryByText("Root A")).toBeNull();
     expect(screen.queryByText("Root B")).toBeNull();
@@ -157,6 +159,43 @@ describe("RulesTree (D29-40)", () => {
     expect(screen.getByText("Item Quirks")).not.toBeNull();
     expect(screen.getByText("Chapter 2: Tools")).not.toBeNull(); // ancestor kept
     expect(screen.queryByText("Building Creatures")).toBeNull(); // non-matching sibling pruned
+  });
+
+  it("D29-108a: a book with zero matches under an active text-query filter renders nothing at all, not an empty header", () => {
+    render(<RulesTree books={[GMG_LIKE]} superseded={true} />);
+    const input = screen.getByPlaceholderText("Filter rules by name…");
+    fireEvent.change(input, { target: { value: "no such node anywhere" } });
+    // The whole book section vanishes — no lingering "Gamemastery Guide
+    // (GMG)" header, no OGL license pill, nothing.
+    expect(screen.queryByText(/Gamemastery Guide/)).toBeNull();
+    expect(screen.queryByText("OGL")).toBeNull();
+  });
+
+  it("D29-108b: book display order is the four remaster cores (in order), then alphabetical by full title", () => {
+    const zBook = book({ book: "Zoo of Zeals" });
+    const aBook = book({ book: "Ancestry Guide" });
+    const gmCore = book({ book: "GM Core" });
+    const monsterCore = book({ book: "Monster Core" });
+    const playerCore2 = book({ book: "Player Core 2" });
+    const playerCore = book({ book: "Player Core" });
+    render(
+      <RulesTree
+        books={[zBook, aBook, gmCore, monsterCore, playerCore2, playerCore]}
+        superseded={false}
+      />,
+    );
+    const headings = screen.getAllByRole("heading", { level: 2 }).map((h) => h.textContent);
+    // Book headings are full-title(+abbreviation) per D29-108b; "Zoo of
+    // Zeals" is a fictional title with no curated abbreviation -> title
+    // alone (never a literal "(undefined)").
+    expect(headings).toEqual([
+      "Player Core (PC1)",
+      "Player Core 2 (PC2)",
+      "GM Core (GMC)",
+      "Monster Core (MC)",
+      "Ancestry Guide (LOAG)",
+      "Zoo of Zeals",
+    ]);
   });
 
   it("collapse state persists across a re-render (localStorage round-trip)", () => {

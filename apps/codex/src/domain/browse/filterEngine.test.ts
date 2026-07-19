@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
 
 import {
@@ -28,6 +29,8 @@ import {
   setLevelRange,
   setQuery,
   setSort,
+  sortOptionsByLabel,
+  sortOptionsByRarityRank,
   sortRows,
   sourceBookValueOf,
   toggleCoreEnumOption,
@@ -35,6 +38,7 @@ import {
   traitOptionCounts,
   traitTriState,
   type BrowseFilterState,
+  type OptionCount,
 } from "./filterEngine";
 
 function row(overrides: Partial<IndexRow> & Pick<IndexRow, "id" | "name">): IndexRow {
@@ -624,5 +628,80 @@ describe("filterEngine: core scalar option counts (rarity/source.book/edition)",
   it("countMissingByValue counts level-less rows (the level facet's own missing bucket)", () => {
     const levelRows = [row({ id: "a", name: "A", level: 1 }), row({ id: "b", name: "B" })];
     expect(countMissingByValue(levelRows, levelValueOf)).toBe(1);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// P11 S2 (D29-107 b/c) — the two CoreEnumSection option re-sorts.
+// ---------------------------------------------------------------------------
+
+describe("sortOptionsByLabel (D29-107b — Source sorts by its DISPLAYED label)", () => {
+  it("sorts by the label projection, case-insensitively — NOT the raw value", () => {
+    // Raw values pre-sorted the OTHER way round by `scalarOptionCounts`'s own
+    // alphabetical-on-raw-value order; the label projection reverses it.
+    const options: OptionCount[] = [
+      { value: "zzz-raw-first", count: 1 },
+      { value: "aaa-raw-second", count: 1 },
+    ];
+    const labelOf = (v: string) => (v === "zzz-raw-first" ? "Alpha" : "Beta");
+    expect(sortOptionsByLabel(options, labelOf).map((o) => o.value)).toEqual([
+      "zzz-raw-first", // labeled "Alpha" -> sorts first
+      "aaa-raw-second", // labeled "Beta"
+    ]);
+  });
+
+  it("real Source shape: abbreviateBook() output orders 'CRB' before 'GMG', independent of the raw book-title order", () => {
+    const options: OptionCount[] = [
+      { value: "Gamemastery Guide", count: 3 }, // abbreviates to "GMG"
+      { value: "Core Rulebook", count: 5 }, // abbreviates to "CRB"
+    ];
+    const sorted = sortOptionsByLabel(options, (v) => abbreviateBook(v) ?? v);
+    expect(sorted.map((o) => o.value)).toEqual(["Core Rulebook", "Gamemastery Guide"]);
+  });
+
+  it("a book with no abbreviation sorts by its own full title, never a literal '(undefined)'", () => {
+    const options: OptionCount[] = [
+      { value: "Core Rulebook", count: 1 }, // "CRB"
+      { value: "Some Unlisted Zine", count: 1 }, // no curated/generated abbreviation
+    ];
+    const sorted = sortOptionsByLabel(options, (v) => abbreviateBook(v) ?? v);
+    expect(sorted.map((o) => o.value)).toEqual(["Core Rulebook", "Some Unlisted Zine"]);
+  });
+});
+
+describe("sortOptionsByRarityRank (D29-107c — a SORT, never a whitelist)", () => {
+  it("orders common < uncommon < rare < unique, regardless of input/count order", () => {
+    const options: OptionCount[] = [
+      { value: "unique", count: 2031 },
+      { value: "rare", count: 10 },
+      { value: "common", count: 100 },
+      { value: "uncommon", count: 50 },
+    ];
+    expect(sortOptionsByRarityRank(options).map((o) => o.value)).toEqual([
+      "common",
+      "uncommon",
+      "rare",
+      "unique",
+    ]);
+  });
+
+  it("never drops a value the way an order-array option SOURCE would — unique survives even alone", () => {
+    const options: OptionCount[] = [{ value: "unique", count: 2031 }];
+    expect(sortOptionsByRarityRank(options)).toEqual(options);
+  });
+
+  it("an unrecognized rarity value sorts LAST, alphabetically among itself", () => {
+    const options: OptionCount[] = [
+      { value: "zeta-unknown", count: 1 },
+      { value: "common", count: 1 },
+      { value: "alpha-unknown", count: 1 },
+      { value: "rare", count: 1 },
+    ];
+    expect(sortOptionsByRarityRank(options).map((o) => o.value)).toEqual([
+      "common",
+      "rare",
+      "alpha-unknown",
+      "zeta-unknown",
+    ]);
   });
 });

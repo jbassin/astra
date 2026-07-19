@@ -186,6 +186,35 @@ export function filterTreeByQuery(nodes: readonly TreeNode[], query: string): Tr
 }
 
 /**
+ * P11 S2 (D29-108b) — the `/rules` book display order: the four remaster
+ * core books first, in this fixed reading order, then every other book
+ * alphabetical by its own full title. `books.sort` at ingest
+ * (`src/ingest/rulesTree.ts`) already orders remaster-edition books before
+ * legacy ones — this is a RENDER-lane re-sort on top of that (no ingest/
+ * corpus-regen ripple; `RulesTree.tsx` applies it to whatever `books` array
+ * its route loader hands it), hardcoding ONLY the four core names per the
+ * spec's own instruction — every other book (including every other remaster
+ * book) falls through to the alphabetical branch untouched. Generic over
+ * `{ book: string }` so it's usable without a `RulesTreeBook` fixture. */
+const CORE_BOOK_ORDER: readonly string[] = [
+  "Player Core",
+  "Player Core 2",
+  "GM Core",
+  "Monster Core",
+];
+
+export function sortBooksForDisplay<T extends { book: string }>(books: readonly T[]): T[] {
+  return [...books].sort((a, b) => {
+    const ai = CORE_BOOK_ORDER.indexOf(a.book);
+    const bi = CORE_BOOK_ORDER.indexOf(b.book);
+    if (ai !== -1 && bi !== -1) return ai - bi;
+    if (ai !== -1) return -1;
+    if (bi !== -1) return 1;
+    return a.book.localeCompare(b.book);
+  });
+}
+
+/**
  * A flat DFS pre-order walk of a book's tree (root, then its children
  * depth-first, left to right — the array order the builder already emits
  * `children` in, D29-39's "Node arrays … emitted in FINAL order (DFS-ready)"

@@ -1,4 +1,4 @@
-import type { ReactElement, ReactNode } from "react";
+import { useState, type ReactElement, type ReactNode } from "react";
 
 import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { IndexRow } from "@/schema/entity";
@@ -22,6 +22,8 @@ import {
   setFacetRange,
   setLevelRange,
   setSupersededFilter,
+  sortOptionsByLabel,
+  sortOptionsByRarityRank,
   sourceBookValueOf,
   toggleCoreEnumOption,
   toggleFacetEnumOption,
@@ -30,6 +32,7 @@ import {
   cycleTraitFilter,
   type BrowseFilterState,
   type CoreEnumDimension,
+  type OptionCount,
   type RangeFilter,
 } from "./filterEngine";
 
@@ -44,7 +47,16 @@ function FacetSection({
   children,
 }: {
   title: string;
-  children: ReactElement | null;
+  // P11 S2 (D29-107a) — widened from `ReactElement | null` to `ReactNode`:
+  // a `filterable` `CoreEnumSection`/`TraitsSection` now renders TWO
+  // siblings (the type-ahead `Input` + the option list), wrapped in a
+  // Fragment — a Fragment element is always truthy, so the `!children`
+  // "hide the whole section when empty" gate below intentionally no longer
+  // fires for those two sections (the type-ahead input itself must stay
+  // visible even when it has filtered the option list down to zero matches,
+  // so the reader can clear it) — every OTHER (non-filterable) caller still
+  // passes a single `ReactElement | null` exactly as before, unaffected.
+  children: ReactNode;
 }): ReactElement | null {
   if (!children) return null;
   return (
@@ -52,6 +64,35 @@ function FacetSection({
       <h3 className="codex-facet-title">{title}</h3>
       {children}
     </section>
+  );
+}
+
+/**
+ * P11 S2 (D29-107a) — the shared per-section type-ahead: a plain
+ * client-substring filter (case-insensitive, no fuzzy/typo tolerance),
+ * mirroring `RulesTree.tsx`'s own `/rules` quick-filter idiom (`Input
+ * type="search"`, local component state, no URL/router involvement — the
+ * j/k dialog guard already ignores `INPUT`/`SELECT`/`TEXTAREA` targets,
+ * `BrowseListing.tsx:666`, so this is safe inside the filter `<dialog>`
+ * without any guard change).
+ */
+function TypeAheadInput({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (next: string) => void;
+}): ReactElement {
+  return (
+    <Input
+      type="search"
+      aria-label={label}
+      placeholder={label}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
   );
 }
 
@@ -209,6 +250,9 @@ function CoreEnumSection({
   onChange,
   valueOf,
   labelOf,
+  sortOptions,
+  filterable = false,
+  labelTextOf,
 }: {
   title: string;
   dimension: CoreEnumDimension;
@@ -221,19 +265,59 @@ function CoreEnumSection({
    * caller (Rarity) leaves this unset and keeps the plain identity label
    * it always had. Edition (below) supplies the `EditionIcon` glyph. */
   labelOf?: (value: string) => ReactNode;
+  /** D29-107(b/c) — an optional re-sort of `scalarOptionCounts`'s already-
+   * tallied option list (never a re-derivation of WHICH options appear —
+   * see `filterEngine.ts`'s own doc comments on both real callers, Source's
+   * label sort and Rarity's rank sort). Omitted -> the pre-existing raw-
+   * value alphabetical order (Edition, unaffected by this round). */
+  sortOptions?: (options: readonly OptionCount[]) => readonly OptionCount[];
+  /** D29-107(a) — Source's own per-section type-ahead (Traits gets its own
+   * copy below, since it doesn't route through this shared component at
+   * all). Omitted/false everywhere else (Rarity/Edition: too few options to
+   * need one). */
+  filterable?: boolean;
+  /** Plain-STRING projection of a value for the type-ahead's substring
+   * match — distinct from `labelOf` (which may return rich `ReactNode`,
+   * e.g. Edition's `<EditionIcon>`, though Edition never sets `filterable`
+   * so never needs this). Required when `filterable` is true. */
+  labelTextOf?: (value: string) => string;
 }): ReactElement | null {
   const ambient = ambientRows(rows, state, { kind: dimension });
-  const options = scalarOptionCounts(ambient, valueOf);
+  const rawOptions = scalarOptionCounts(ambient, valueOf);
+  const options = sortOptions ? sortOptions(rawOptions) : rawOptions;
   const selected = state[dimension];
+  const [query, setQuery] = useState("");
+  const q = query.trim().toLowerCase();
+  const visibleOptions =
+    filterable && q !== ""
+      ? options.filter((opt) => (labelTextOf?.(opt.value) ?? opt.value).toLowerCase().includes(q))
+      : options;
   return (
     <FacetSection title={title}>
-      <EnumOptionList
-        options={options}
-        selected={selected}
-        missing={0}
-        labelOf={labelOf ?? ((v) => v)}
-        onToggle={(v) => onChange((prev) => toggleCoreEnumOption(prev, dimension, v))}
-      />
+      {filterable ? (
+        <>
+          <TypeAheadInput
+            label={`Filter ${title.toLowerCase()}`}
+            value={query}
+            onChange={setQuery}
+          />
+          <EnumOptionList
+            options={visibleOptions}
+            selected={selected}
+            missing={0}
+            labelOf={labelOf ?? ((v) => v)}
+            onToggle={(v) => onChange((prev) => toggleCoreEnumOption(prev, dimension, v))}
+          />
+        </>
+      ) : (
+        <EnumOptionList
+          options={visibleOptions}
+          selected={selected}
+          missing={0}
+          labelOf={labelOf ?? ((v) => v)}
+          onToggle={(v) => onChange((prev) => toggleCoreEnumOption(prev, dimension, v))}
+        />
+      )}
     </FacetSection>
   );
 }
@@ -274,11 +358,18 @@ function TraitsSection({
 }): ReactElement | null {
   const ambient = ambientRows(rows, state, { kind: "traits" });
   const options = traitOptionCounts(ambient);
+  const [query, setQuery] = useState("");
   if (options.length === 0) return null;
+  // D29-107(a) — the same client-substring type-ahead as Source, applied to
+  // the trait chip list (its own `<ul>`, not `EnumOptionList` — traits are
+  // tri-state chips, not checkboxes, D29-61's own idiom).
+  const q = query.trim().toLowerCase();
+  const visibleOptions = q === "" ? options : options.filter((opt) => opt.value.includes(q));
   return (
     <FacetSection title="Traits">
+      <TypeAheadInput label="Filter traits" value={query} onChange={setQuery} />
       <ul className="codex-trait-chips">
-        {options.map((opt) => {
+        {visibleOptions.map((opt) => {
           const tri = traitTriState(state.traits, opt.value);
           return (
             <li key={opt.value}>
@@ -362,6 +453,7 @@ export function FacetPanel({
         state={state}
         onChange={onChange}
         valueOf={rarityValueOf}
+        sortOptions={sortOptionsByRarityRank}
       />
       <TraitsSection rows={rows} state={state} onChange={onChange} />
       <CoreEnumSection
@@ -372,6 +464,9 @@ export function FacetPanel({
         onChange={onChange}
         valueOf={sourceBookValueOf}
         labelOf={(v) => abbreviateBook(v) ?? v}
+        labelTextOf={(v) => abbreviateBook(v) ?? v}
+        sortOptions={(opts) => sortOptionsByLabel(opts, (v) => abbreviateBook(v) ?? v)}
+        filterable
       />
       <CoreEnumSection
         title="Edition"

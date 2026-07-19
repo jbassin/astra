@@ -392,7 +392,19 @@ const LEVEL_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: true,
   render: renderLevel,
-  width: "3ch", // p99=2 ("-2".."28") + 1ch buffer
+  // P11 S2 (D29-102) — every non-Name `ch` width below is wrapped
+  // `calc(Nch + 1rem)`: the fixed-layout `width` on `<th>` is a BORDER-BOX
+  // measurement (site-wide `box-sizing: border-box`), but the `ch` figure
+  // above is a raw rendered-VALUE-character-count measurement that never
+  // accounted for the cell's own `padding: 4px 0.5rem` (`globals.css`) — so
+  // every column was clipping its own padding out of its content box (a
+  // live-measured, near-total loss on some columns, e.g. the level `<th>`'s
+  // ~19px border-box left ~3px of actual content room). `1rem` = the two
+  // `0.5rem` horizontal cell paddings; the `ch` comment above each column
+  // stays the untouched original p99/max measurement, unaffected by this
+  // fix (see this slice's own build report for the drift-guard proof this
+  // doesn't just move the clip elsewhere).
+  width: "calc(3ch + 1rem)", // p99=2 ("-2".."28") + 1ch buffer
 };
 
 // Not sortable (D29-78's enumerated sortable-comparator list — numeric HP/
@@ -405,7 +417,16 @@ const SOURCE_COLUMN: ColumnDef = {
   sortable: false,
   compact: true,
   render: renderSource,
-  width: "9ch", // p99=8 (abbreviateBook() output) + 1ch buffer
+  // P11 S2 (D29-102) drift-guard find: `9ch` (p99=8 + 1ch buffer) genuinely
+  // clipped the real corpus's "COCA-ECPG" (9 chars, p99+1) — `ch` is a
+  // per-font approximation pinned to the "0" glyph's width (this file's own
+  // "measure, don't guess" comment above), and this uppercase-heavy,
+  // hyphen-bearing abbreviation renders wider per-character than that. `10ch`
+  // (one MORE ch than the original p99+1ch design) absorbs that glyph-width
+  // slop — verified against the real corpus via `rowHeightDriftGuard.ts`'s
+  // scoped cell-fit assert; still comfortably under this column's own
+  // max=18 (the genuine long tail still ellipsis-truncates, by design).
+  width: "calc(10ch + 1rem)",
 };
 
 const RARITY_COLUMN: ColumnDef = {
@@ -416,7 +437,7 @@ const RARITY_COLUMN: ColumnDef = {
   comparator: { rank: ["common", "uncommon", "rare", "unique"] },
   compact: false,
   render: renderRarity,
-  width: "9ch", // p99=8 ("Uncommon") + 1ch buffer
+  width: "calc(9ch + 1rem)", // p99=8 ("Uncommon") + 1ch buffer
 };
 
 const CAST_COLUMN: ColumnDef = {
@@ -430,7 +451,7 @@ const CAST_COLUMN: ColumnDef = {
   // Icon-shaped, not text-shaped — a single/composite `ActionGlyph` (small,
   // fixed) or (the 4.6% fallback tail) a `.codex-col-truncate`d time-string
   // — 8ch comfortably fits a two-glyph composite + its "or"/"to" connective.
-  width: "8ch",
+  width: "calc(8ch + 1rem)",
 };
 
 const RANGE_COLUMN: ColumnDef = {
@@ -440,7 +461,7 @@ const RANGE_COLUMN: ColumnDef = {
   sortable: false,
   compact: false,
   render: renderRange,
-  width: "10ch", // p99=9 raw (pre-abbreviation, so a bit generous post-"ft")
+  width: "calc(10ch + 1rem)", // p99=9 raw (pre-abbreviation, so a bit generous post-"ft")
 };
 
 const SIZE_COLUMN: ColumnDef = {
@@ -451,7 +472,7 @@ const SIZE_COLUMN: ColumnDef = {
   comparator: { rank: ["tiny", "sm", "med", "lg", "huge", "grg"] },
   compact: false,
   render: renderSize,
-  width: "5ch", // p99=4 ("HUGE") + 1ch buffer
+  width: "calc(5ch + 1rem)", // p99=4 ("HUGE") + 1ch buffer
 };
 
 const HP_COLUMN: ColumnDef = {
@@ -462,7 +483,7 @@ const HP_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderNumeric("hp"),
-  width: "4ch", // p99=3 + 1ch buffer
+  width: "calc(4ch + 1rem)", // p99=3 + 1ch buffer
 };
 
 const AC_COLUMN: ColumnDef = {
@@ -473,7 +494,7 @@ const AC_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderNumeric("ac"),
-  width: "3ch", // p99=2 + 1ch buffer
+  width: "calc(3ch + 1rem)", // p99=2 + 1ch buffer
 };
 
 const PRICE_COLUMN: ColumnDef = {
@@ -484,7 +505,7 @@ const PRICE_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderPrice,
-  width: "9ch", // p99=8 + 1ch buffer
+  width: "calc(9ch + 1rem)", // p99=8 + 1ch buffer
 };
 
 const BULK_COLUMN: ColumnDef = {
@@ -495,7 +516,7 @@ const BULK_COLUMN: ColumnDef = {
   comparator: "numeric",
   compact: false,
   render: renderNumeric("bulk"),
-  width: "4ch", // p99=3 + 1ch buffer
+  width: "calc(4ch + 1rem)", // p99=3 + 1ch buffer
 };
 
 const ACTIONS_COLUMN: ColumnDef = {
@@ -508,7 +529,7 @@ const ACTIONS_COLUMN: ColumnDef = {
   render: renderActionCost,
   // "Passive" (7ch, italic text) is the MODAL rendered form (see the
   // shared-columns comment above) — 8ch fits it with a 1ch buffer.
-  width: "8ch",
+  width: "calc(8ch + 1rem)",
 };
 
 const TYPE_COLUMN: ColumnDef = {
@@ -519,7 +540,7 @@ const TYPE_COLUMN: ColumnDef = {
   comparator: "text",
   compact: false,
   render: renderItemCategory,
-  width: "9ch", // p99=8 ("Ancestry") + 1ch buffer
+  width: "calc(9ch + 1rem)", // p99=8 ("Ancestry") + 1ch buffer
 };
 
 // ---------------------------------------------------------------------------

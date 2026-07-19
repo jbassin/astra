@@ -13,7 +13,13 @@ import { abbreviateBook } from "@/domain/sources/abbreviations";
 import type { RulesTreeBook, TreeNode } from "@/schema/rulesTree";
 import { EditionIcon, Input } from "@/ui";
 
-import { computeOpen, filterTreeByQuery, nodeKeyFor, pruneForSuperseded } from "./treeModel";
+import {
+  computeOpen,
+  filterTreeByQuery,
+  nodeKeyFor,
+  pruneForSuperseded,
+  sortBooksForDisplay,
+} from "./treeModel";
 
 const STORAGE_KEY = "codex:rulesTree";
 
@@ -75,7 +81,7 @@ export function RulesTree({
         onChange={(e) => setQueryText(e.target.value)}
       />
       <div className="codex-rules-books">
-        {books.map((book) => (
+        {sortBooksForDisplay(books).map((book) => (
           <RulesBookSection
             key={book.book}
             book={book}
@@ -105,7 +111,7 @@ function RulesBookSection({
   currentId: string | undefined;
   savedOpen: ReadonlyMap<string, boolean>;
   onToggle: (key: string) => void;
-}): ReactElement {
+}): ReactElement | null {
   const supersededPruned = useMemo(
     () => pruneForSuperseded(book.nodes, superseded, currentId),
     [book.nodes, superseded, currentId],
@@ -128,11 +134,29 @@ function RulesBookSection({
   // never silently drop the section.
   const allHidden = !superseded && supersededPruned.length === 0 && book.hiddenWhenLegacyOff > 0;
 
+  // P11 S2 (D29-108a) — mirrors the `allHidden` case above: a book whose
+  // filtered tree comes back EMPTY under an active text-query filter (no
+  // node anywhere in this book matches) renders NOTHING at all — the whole
+  // component returns `null`, not just an empty `<ul>` under a lingering
+  // header (`RulesTree.test.tsx`'s new "zero matches" case). Placed after
+  // every hook call above (React's rules-of-hooks — an early return may
+  // never precede a hook in the same render).
+  if (filterActive && visibleNodes.length === 0) return null;
+
+  // P11 S2 (D29-108b) — full title + abbreviation when one exists
+  // ("Battlecry! (BC)"), else the title alone (never the abbreviation ALONE
+  // — the abbreviation-only heading was the actual gap; `title=` still
+  // carries the full name too, now redundant with the visible text but
+  // harmless, kept for the hover-tooltip convention every other abbreviated
+  // surface in this file already uses).
+  const abbrev = abbreviateBook(book.book);
+  const bookHeading = abbrev !== undefined ? `${book.book} (${abbrev})` : book.book;
+
   return (
     <section className="codex-rules-book" data-book={book.book}>
       <header className="codex-rules-book-header">
         <h2 className="codex-heading" title={book.book}>
-          {abbreviateBook(book.book) ?? book.book}
+          {bookHeading}
         </h2>
         <EditionIcon edition={book.edition} />
         <span
