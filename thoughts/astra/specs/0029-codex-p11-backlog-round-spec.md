@@ -866,3 +866,68 @@ listing,nodes,nodes.test}.{ts,tsx}`, `src/domain/search/{Omnibar,SearchPage}.tsx
 `src/router.tsx`, `src/server/{entityPageData,entityPageData.test}.ts`; new `src/domain/render/
 {headingIds,headingIds.test,TableOfContents,TableOfContents.test}.{ts,tsx}`,
 `src/router.test.tsx`.
+
+### S6 — consolidated sweep + deploy (2026-07-19)
+
+**Pre-deploy sweep (gate B):** Python lane fully green (ruff check/format, ty, pytest
+360/360). TS lane green: `vp run -r typecheck` 32/32, oxlint (`--threads=4`) clean,
+format:check 859 files clean, `vp run -r test` 26 tasks with ONLY the documented residue
+(codex 2009/2016 — the 7 `ssrSmoke.test.ts` fails matched BY NAME: `$category/ browse route
+(D29-35 tier 3)`×5 + `?entry= deep link tier 3`×2; akasha-frontend exit-137 OOM under
+26-way parallel, isolated re-run 56/56), `vp run -r build` 26/26. Both local guards PASS
+against the real corpus pre-deploy: row-height drift guard (24.00px, cell-fit clean both
+routes × both viewports), interaction guard 22/22 ×2 runs — the reload-scroll flake did
+not reproduce. `routeTree.gen.ts` flap reverted. No config edits (guards self-host on
+ports 5361/5362).
+
+**Deploy (D29-97 staged order, orchestrator-executed under explicit user sanction):**
+(a) `docker compose build codex` FIRST · (b) one in-place `pnpm --filter @astra/codex
+transform` from the committed snapshots (deliberately NOT `codex-refresh` — no snapshot
+re-fetch) · gate-A pin check on the live corpus BEFORE reindex — **all 8 pins exact**:
+totalEntityCount 44,808 / categories 88 / action 2,641 / activationDropped 1,384 /
+digitFamily 160 / nameTemplateResolved 12 / adjacentCrossrefDeduped 1,167/133 /
+editionPointersStripped 55 · (c) `just codex-search-index` — 44,808 pages, 31.2 s ·
+(d) `just up` — container healthy. **Measured degraded window: 82 s** (wipe → recreate
+complete; P10's band was 77–91 s). Edge assertions: `equipment/vorpal` 200 (keep-list
+resolvable), `/action/1-minute-interact` 404 (dropped URL), `/action/interact-142` renders
+with NO edition banner (pointer-strip proof — absence, not raw-id fail-soft), real-corpus
+dragon marker through the edge (fixture fail-soft trap negative).
+
+**Live gates C–G (read-only verification agent, Playwright DOM asserts through the edge):**
+- **C PASS** — zero clipped max-bounded cells at 1440/1920 on /feat + /creature; table
+  784px@1440 / 840px@1920 (> 617px floor); 390px no h-scroll, Name dominant (234px vs
+  35/79/25). The S2-flagged rarity hand-check ran on **/ritual** (fallback-group rarity
+  column): zero clipped, values render.
+- **D PASS w/ one residual** — /action 2,483 visible + 158 hidden = 2,641 == pin; first 9
+  rows are exactly the keep-list in ID order; full corpus scan: 0 paren-family survivors
+  outside keep-9, 0 digit-family survivors per the spec regex; 0 unresolved `<%…%>`
+  templates corpus-wide; Sarenrae "Cosmic Caravan" ×1; knowledge-domain Deities 98
+  crossrefs 0 adjacent dupes; no "Item Category" on deity; drained shows bare "Valued".
+  **Residual (pre-existing, NOT this round's regex scope, gate-H/P12 candidate): 4
+  malformed-name action entities** — `action/1-minute` ("1 minute"),
+  `action/1-minute-manipulate-6` ("1 minute (manipulate" — no closing paren),
+  `action/1-minute-command-interact` ("1 minute (command, Interact"), `action/u`
+  ("</u>") — truncated/corrupted names that escape both drop families.
+- **E PASS** — popover title visible (B1), gold-frame border #c2a46d computed, hover
+  bridge >1 s, wheel scrollTop 0→300, close ~300 ms (past the 200 ms grace), banner
+  display:none in-popover, scrollbar-color themed on all 6 regions, nav panel 384 px =
+  min(70vh,24rem). Note: post-curation no live dropdown exceeds the panel height (Player
+  =10 items) — the scroll path is formula-verified, no longer exercised by real content.
+- **F PASS** — nav = 28 curated + Rules/Sources/All categories; /categories 88/88 vs
+  manifest keys; /doctrine "All 2 entries here are superseded (legacy)." + reveal →
+  `?superseded=true`, both rows render; /spell "Show 799 hidden (superseded) →" and
+  reveal PRESERVES `?sort=level`; header titles + home glyph on listing/entity/rules;
+  landing + /search keep the wordmark; exactly one h1 on /feat, /spell/heal, /rules, /
+  (class/investigator exception stands as recorded in S5); interaction guard 22/22.
+- **G PASS** — omnibar "shield block" rows distinguishable by rarity + owning class (the
+  three PC1 rows differ); `/search?traits=fire` empty-q = **686** (the S1 pin exactly —
+  S5's 539 was the pre-drop index, now superseded); fireball #1 + heal #1 through the
+  real UI (verified the boost lives in pagefindClient — raw pagefind.js gives the wrong
+  top hit by design); "Fledgling Flight" excerpt clean of "leads to..."; SigNoz
+  `astra.codex` 0 ERROR/FATAL over 1 h + 6 h windows, service stats 543 calls / 0 errors.
+
+**S5 re-prove trio: all re-proven live post-reindex** (omnibar rarity+class · leads-to
+exclusion · traits scale 686).
+
+**Deviations:** none. The only repo change in S6 is this build-record entry (the transform
+writes only gitignored `data/`).
