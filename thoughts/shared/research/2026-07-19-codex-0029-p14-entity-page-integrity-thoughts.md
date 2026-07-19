@@ -25,8 +25,10 @@ counts below are real-corpus reads dated 2026-07-19 (corpus at 44,808 docs).
    cite the *identical* shared Foundry Item uuid, so no uuid map alone can disambiguate.
 3. **27 unresolved embeds render raw slugs as visible prose** ("class-feature/advanced-alchemy" as
    literal body text on `/class/alchemist`; 9 docs affected incl. summoner's 13 eidolon embeds).
-   16/27 have a real corpus target under a different id; 10 are genuinely prose-only on AoN (no
-   standalone doc exists); 1 is self-referential-redundant (vishkanya).
+   20/27 have a real corpus target under a different id; 6 are genuinely prose-only on AoN (no
+   standalone doc exists); 1 is self-referential-redundant (vishkanya). *(Corrected 2026-07-19
+   post-commit: the workstream summary said 16/10 but its own itemized table sums to 20/6/1 —
+   orchestrator re-verified all 20 targets exist on disk; the table is authoritative.)*
 4. **Journal-header debris rows.** `/ancestry` lists "Common"/"Uncommon" (+ an unlisted "Rare", +
    `archetype/archetypes`) — zero-body Foundry-journal section dividers ingested as entities.
    Bonus family: 5 zero-stat `creature/*` husks with `book:"unknown"` (daji-level-1/3/5, flappy,
@@ -111,11 +113,12 @@ unjoined-residue, already fail-soft as plain progression text); the class progre
 - Grants: **520 rows total = 503 resolved + 17 null**; ambiguous-family 350; **wrong 164 · correct
   180 · undeterminable 6** (inventor ×1, investigator ×2, magus ×1, thaumaturge ×2). Per-class
   wrong counts in the workstream-B script output (worst: magus 11/12, bard 10/14, druid 10/12).
-- Unresolved embeds: **27 in 9 docs** → 16 repointable (13 `eidolon/<slug>` + 3 `innovation/
-  <slug>` + `feat/advanced-alchemy` + `feat/quick-alchemy` + `rules/{basic,advanced}-undead-
-  benefits` — exact table in the workstream-C report) · 10 genuinely absent (versatile-vials,
-  champions-aura, revelation-spells, oracular-curse, bloodline-spells, witch-lessons + 4 more of
-  those across docs) · 1 self-referential (vishkanya innate-venom, text already inline).
+- Unresolved embeds: **27 in 9 docs** → 20 repointable (13 `eidolon/<slug>` + 3 `innovation/
+  <slug>` + `feat/advanced-alchemy` + `action/quick-alchemy` + `rules/{basic,advanced}-undead-
+  benefits` — exact table in the workstream-C report; all 20 targets orchestrator-verified on
+  disk) · 6 genuinely absent (versatile-vials, champions-aura, revelation-spells,
+  oracular-curse, bloodline-spells, witch-lessons) · 1 self-referential (vishkanya
+  innate-venom, text already inline).
 - Debris: journal-header family **exactly 4** (`ancestry/{common,uncommon,rare}`,
   `archetype/archetypes`) — predicate `proseOnly && book.startsWith("Foundry Journal:") &&
   body.length===0`, **zero false positives** vs the other 20 FJ docs (16 real archetype essays +
@@ -156,12 +159,12 @@ unjoined-residue, already fail-soft as plain progression text); the class progre
 - **R5 — unresolved embeds: NARROW repoint + renderer fail-soft. Staff-locked (no URL churn).**
   (a) A hand-curated dead-target → real-id override table (shape of `join-aliases.json`) applied
   where `patchEmbed`/`reconcileInline` would otherwise leave an embed unresolved — repoints the
-  16; the vishkanya self-embed is suppressed (text already inline). The *structural* alternative
+  20; the vishkanya self-embed is suppressed (text already inline). The *structural* alternative
   (extend `CLASS_SUBSYSTEM_CATEGORIES`, suffix-strip normalization) is REJECTED this round: it
   re-categorizes real entities and churns URLs. (b) `renderEmbed` never renders `node.target`:
   unresolved embeds with no `display` render nothing (the section heading above already names the
-  feature — verified on all 10 remaining cases); mirror `brokenRef`'s display discipline. Gate:
-  exactly 10 unresolved embeds post-fix, all prose-only-on-AoN, none visible as slugs.
+  feature — verified on all 6 remaining cases); mirror `brokenRef`'s display discipline. Gate:
+  exactly 6 unresolved embeds post-fix, all prose-only-on-AoN, none visible as slugs.
 - **R6 — generic facet humanization + heading join. Staff-locked (mechanical).**
   `GenericFacetLine.fmtFacetValue` → route through `formatFacetValue` (also fixes the
   stringified-list leak); keep the label styling, semantics unchanged; D29-95's chip exclusion
@@ -189,7 +192,7 @@ unjoined-residue, already fail-soft as plain progression text); the class progre
 1. **S1 — transform lane** (corpus-changing, one regen at slice end): grants disambiguation (§5) ·
    both debris drop-families (R4) · the embed override table + vishkanya suppression (R5a).
    Deterministic transform re-run over existing snapshots (no re-fetch); gate on the §5 pins + the
-   16→10 embed count + 44,808−9 = 44,799 doc count (re-pin at spec time) + byte-stability of
+   27→6 embed count + 44,808−9 = 44,799 doc count (re-pin at spec time) + byte-stability of
    untouched categories.
 2. **S2 — render lane** (no corpus dependency, parallel-safe with S1): lore section suppression +
    ClassPage stream/Description dedup (R1) · embed fail-soft (R5b) · ToC removal (R2) ·
