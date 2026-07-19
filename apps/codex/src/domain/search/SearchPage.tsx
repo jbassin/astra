@@ -153,8 +153,14 @@ export function SearchPage({
     setSearching(true);
     timerRef.current = window.setTimeout(() => {
       void recordSearch({ data: { surface: "page" } }).catch(() => undefined);
+      // D29-101c: pass `null` (not `""`) when the trimmed query is empty —
+      // measured live, `pf.search("", {filters})` returns 0 results
+      // regardless of filters, while `pf.search(null, {filters})` returns
+      // the filter-only set (686-scale) — without this, filter-only
+      // `/search` (incl. the D29-109c trait link) is dead.
+      const trimmedQuery = state.query.trim();
       void pf
-        .search(state.query, { filters: pagefindFilters(state) })
+        .search(trimmedQuery.length > 0 ? state.query : null, { filters: pagefindFilters(state) })
         .catch(() => null)
         .then(async (res) => {
           if (token !== tokenRef.current) return;

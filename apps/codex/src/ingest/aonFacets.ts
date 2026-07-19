@@ -281,6 +281,63 @@ function required(docId: string, field: string, value: string | undefined): stri
 }
 
 // ---------------------------------------------------------------------------
+// D29-99: AoN name-template resolution
+// ---------------------------------------------------------------------------
+
+export type ReportFn = (cls: string, detail: string) => void;
+
+const TRAITS_GLYPH_RE = /<%TRAITS%\d+%%>([\s\S]*?)<%END>/g;
+const ACTION_TYPES_GLYPH_RE = /<%ACTION\.TYPES#(\d+)%%>/g;
+
+/** The pinned `<%ACTION.TYPES#N%%>` -> action-cost-phrase table (D29-99) — NO
+ * repo mapping source exists for this glyph (the census stores only
+ * already-resolved verbatim strings), and a naive `#N -> "N Actions"` guess
+ * is off-by-one on every one of the 9 real docs that carry the glyph (AoN's
+ * own id space is shifted). Derived instead from those same 9 docs' own
+ * pre-resolved `markdown` field. */
+const ACTION_TYPES_LABELS: ReadonlyMap<number, string> = new Map([
+  [2, "Single Action"],
+  [3, "Two Actions"],
+  [4, "Three Actions"],
+]);
+
+/** Resolves AoN's raw glyph-template forms in a doc's `name` (D29-99,
+ * `aonFacets.ts:362`'s own seam) — called BEFORE `required()` so a
+ * template-only name still counts as present. `<%TRAITS%N%%>display<%END>`
+ * is a trait-linked span (the numeric N is an AoN-internal trait id,
+ * irrelevant here — only the `display` text between the tags survives);
+ * `<%ACTION.TYPES#N%%>` is an action-cost phrase, resolved via the pinned
+ * table above. Verified: across the full 43,684-doc snapshot, both glyph
+ * forms appear ONLY on `action`-category docs, never a third template form.
+ * Report-counts `nameTemplateResolved` exactly once per doc whose raw name
+ * actually contained a glyph (never double-counts a doc carrying both glyph
+ * kinds) — the report is the caller's audit trail for the D29-99 pin
+ * (exactly 12 real docs). A raw name with NO glyph is returned unchanged,
+ * report untouched. */
+function resolveNameTemplates(raw: string, docId: string, report: ReportFn): string {
+  TRAITS_GLYPH_RE.lastIndex = 0;
+  ACTION_TYPES_GLYPH_RE.lastIndex = 0;
+  const hadTemplate = TRAITS_GLYPH_RE.test(raw) || ACTION_TYPES_GLYPH_RE.test(raw);
+  TRAITS_GLYPH_RE.lastIndex = 0;
+  ACTION_TYPES_GLYPH_RE.lastIndex = 0;
+  if (!hadTemplate) return raw;
+
+  let resolved = raw.replace(TRAITS_GLYPH_RE, (_match, display: string) => display);
+  resolved = resolved.replace(ACTION_TYPES_GLYPH_RE, (_match, numStr: string) => {
+    const label = ACTION_TYPES_LABELS.get(Number(numStr));
+    if (label === undefined) {
+      throw new AonFacetError(
+        docId,
+        `unknown <%ACTION.TYPES#${numStr}%%> id in name template (no pinned label)`,
+      );
+    }
+    return label;
+  });
+  report("nameTemplateResolved", `${docId}: "${raw}" -> "${resolved}"`);
+  return resolved;
+}
+
+// ---------------------------------------------------------------------------
 // pre-extraction skip predicate
 // ---------------------------------------------------------------------------
 
@@ -356,10 +413,25 @@ function extractItemCategory(category: string, raw: unknown): string | undefined
  * Pure: extracts + validates one AoN ES hit into an `AonDocMeta`. Throws
  * `AonFacetError` for a doc missing `name`/`url`/`release_date`/
  * `primary_source` (verified universal — a miss is drift, not residue).
+ *
+ * `report` is optional (defaults to a no-op) — only the real transform run
+ * and any test specifically exercising D29-99 need to observe the
+ * `nameTemplateResolved` counter; the ~40 pre-existing call sites across this
+ * module's own test file and `join.test.ts` construct fixtures that never
+ * carry a glyph-template name, so they're left unchanged (an explicit
+ * `ReportFn` at every one of those call sites would be pure churn with no
+ * behavioral value — a deliberate, minimal-footprint deviation from the
+ * rest of this pipeline's "report is always threaded explicitly" convention,
+ * recorded here rather than silently done).
  */
-export function extractAonMeta(category: string, hit: AonHit): AonDocMeta {
+export function extractAonMeta(
+  category: string,
+  hit: AonHit,
+  report: ReportFn = () => {},
+): AonDocMeta {
   const src = hit._source;
-  const name = required(hit._id, "name", readString(src.name));
+  const rawName = required(hit._id, "name", readString(src.name));
+  const name = resolveNameTemplates(rawName, hit._id, report);
   const url = required(hit._id, "url", readString(src.url));
   const releaseDate = required(hit._id, "release_date", readString(src.release_date));
   const primaryBookRaw = required(hit._id, "primary_source", readString(src.primary_source));

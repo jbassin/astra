@@ -358,4 +358,85 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
     expect(result.reportJson?.statsCoverage.creature.length).toBeGreaterThan(0);
     expect(result.reportJson?.statsCoverage.hazard.length).toBeGreaterThan(0);
   });
+
+  describe("P11 S1 (D29-98/-99/-100) — end-to-end fixture regression coverage", () => {
+    it("D29-98 family (i): a paren-leading AoN-only action ('(arcane)') is dropped end-to-end", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const actionFiles = readdirSync(join(corpusRoot, "action")).filter(
+        (f) => f !== "_index.json",
+      );
+      expect(actionFiles.some((f) => f.includes("arcane"))).toBe(false);
+      expect(result.reportJson?.dropAccounting.activationDrop.parenFamily).toBeGreaterThanOrEqual(
+        1,
+      );
+    });
+
+    it("D29-99/D29-98 overlap: a TRAITS-glyph-templated name resolves to '10 minutes (concentrate, manipulate)' and is THEN dropped as digit family (ii)", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      expect(
+        result.reportJson?.dropAccounting.activationDrop.digitFamilyNames.some((n) =>
+          n.includes("10 minutes (concentrate, manipulate)"),
+        ),
+      ).toBe(true);
+      // nameTemplateResolved fires at extract time even though the entity is
+      // dropped downstream — the extract -> join -> drop order (D29-98's own
+      // "resolved names for free" note).
+      expect(result.reportJson?.reportCounts.nameTemplateResolved).toBeGreaterThanOrEqual(1);
+    });
+
+    it("D29-99: an ACTION.TYPES-glyph-templated name resolves via the PINNED table (not the naive off-by-one) and survives (neither drop family)", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const entity = JSON.parse(
+        readFileSync(
+          join(
+            corpusRoot,
+            "action",
+            "single-action-envision-or-two-actions-command-envision-teleportation.json",
+          ),
+          "utf8",
+        ),
+      );
+      expect(entity.name).toBe(
+        "Single Action envision; or Two Actions command, envision (teleportation)",
+      );
+    });
+
+    it("D29-100: the naga domain page's duplicate Ravithra masthead crossref (legacy+remaster repoint) collapses to one", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const naga = JSON.parse(readFileSync(join(corpusRoot, "domain", "naga.json"), "utf8"));
+      const deities = naga.mastheadExtra?.find((m: { label: string }) => m.label === "Deities");
+      const ravithraCrossrefs = deities.value.filter(
+        (n: { kind: string; targetId?: string }) =>
+          n.kind === "crossref" && n.targetId === "deity/ravithra",
+      );
+      expect(ravithraCrossrefs).toHaveLength(1);
+      expect(result.reportJson?.adjacentCrossrefDedupe.totalOccurrences).toBeGreaterThanOrEqual(1);
+      expect(result.reportJson?.adjacentCrossrefDedupe.entitiesTouched).toBeGreaterThanOrEqual(1);
+    });
+
+    it("D29-101b prerequisite: the fixture carries a real 'leads to...' heading + crossref paragraph (feat/fledgling-flight), for build-search.test.ts's own exclusion proof", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const feat = JSON.parse(
+        readFileSync(join(corpusRoot, "feat", "fledgling-flight.json"), "utf8"),
+      );
+      const headingIdx = feat.body.findIndex(
+        (n: { kind: string; children?: Array<{ content?: string }> }) =>
+          n.kind === "heading" && n.children?.[0]?.content === "Fledgling Flight leads to...",
+      );
+      expect(headingIdx).toBeGreaterThanOrEqual(0);
+      const next = feat.body[headingIdx + 1];
+      expect(next.kind).toBe("paragraph");
+      expect(next.children.some((c: { kind: string }) => c.kind === "crossref")).toBe(true);
+    });
+  });
 });

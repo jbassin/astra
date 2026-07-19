@@ -19,10 +19,11 @@
     {
       "book": "Ancestry Guide",
       "categoryCounts": {
+        "feat": 1,
         "heritage": 1
       },
       "edition": "legacy",
-      "entityCount": 1,
+      "entityCount": 2,
       "license": "OGL"
     },
     {

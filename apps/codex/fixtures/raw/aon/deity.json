@@ -1,0 +1,615 @@
+{
+  "category": "deity",
+  "hits": [
+    {
+      "_id": "deity-313",
+      "_source": {
+        "anathema": "kill a harmless snake or swan, spurn friends due to jealousy or romantic competition, betray your offspring, separate lovers",
+        "area_of_concern": [
+          " family",
+          "fertility",
+          "snakes",
+          "sorcery"
+        ],
+        "area_of_concern_raw": " family, fertility, snakes, sorcery",
+        "attribute": [
+          "Wisdom",
+          "Charisma"
+        ],
+        "category": "deity",
+        "cleric_spell": [
+          "Charm",
+          "Invisibility",
+          "Lightning Bolt",
+          "Reflective Scales",
+          "Subconscious Suggestion",
+          "Mislead",
+          "Contingency",
+          "Confusing Colors",
+          "Wrathful Storm"
+        ],
+        "deity": [
+          "Nalinivati"
+        ],
+        "deity_category": "Tian Gods",
+        "deity_category_markdown": "[Tian Gods](/DeityCategories.aspx?ID=16)",
+        "deity_category_order": "2Tian Gods",
+        "divine_font": [
+          "Harm",
+          "Heal"
+        ],
+        "divine_font_markdown": "[Harm](/Spells.aspx?ID=146) or [Heal](/Spells.aspx?ID=148)",
+        "domain": [
+          "Dragon",
+          "Family",
+          "Glyph",
+          "Magic",
+          "Naga",
+          "Passion"
+        ],
+        "domain_alternate": [
+          "Family",
+          "Glyph"
+        ],
+        "domain_alternate_markdown": "[Family](/Domains.aspx?ID=74), [Glyph](/Domains.aspx?ID=109)",
+        "domain_markdown": "[Dragon](/Domains.aspx?ID=106), [Family](/Domains.aspx?ID=74), [Glyph](/Domains.aspx?ID=109), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Passion](/Domains.aspx?ID=88)",
+        "domain_primary": [
+          "Dragon",
+          "Magic",
+          "Naga",
+          "Passion"
+        ],
+        "domain_primary_markdown": "[Dragon](/Domains.aspx?ID=106), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Passion](/Domains.aspx?ID=88)",
+        "edict": "seek out magic and use it, use poison, heal poisons, bear or adopt children, raise snakes",
+        "epithet": "The Serpent's Kiss",
+        "exclude_from_search": false,
+        "favored_weapon": [
+          "jaw",
+          "Urumi"
+        ],
+        "favored_weapon_markdown": "[jaw](/Weapons.aspx?ID=356) or [Urumi](/Weapons.aspx?ID=306)",
+        "id": "deity-313",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "deity-181"
+        ],
+        "markdown": "<title level=\"1\" right=\"Deity \" pfs=\"Standard\">\r\n[Nalinivati](/Deities.aspx?ID=313)\r\n(The Serpent's Kiss)\r\n</title>\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n**Source** [Divine Mysteries Web Supplement](/Sources.aspx?ID=237) pg. 21\n\nNalinivati is an unusual daughter of Ravithra, born a simple snake rather than a naga. Her ascent to godhood is a story of dedication to craft, knowledge, and community. As a powerful sorceress, she became the first queen of Nagajor. She cared deeply for her lovers and even deeper for her children. She also cared for the snakes around her and took in those who were lost and without family. She created communities with structure that helped sustain her ambitions and pushed others to pursue magical knowledge. She later transformed herself into a naga to further protect and nurture those she loved, proving to herself and everyone else that dedication and curiosity, with a sprinkle of strong magic, can break all barriers. Upon reaching godhood, she saw to reward those who wished to also care for others, give their next generation a life of love and ambition, and take in those less fortunate.\n\n Nalinivati is depicted as a large naga with colorful scales and features, her body shimmering in mesmerizing patterns. Her body fluidly shifts between more humanoid or more snake-like depending on who she's communing with and whether she wishes to comfort or to terrify them. Nalinivati is adorned with jewelry and flowers given to her as gifts from her worshippers, while trinkets, crafts, and books hang off her waist. She is also often paired with Daikitsu, the Lady of Foxes, with whom Nalinivati shares a long history of intimate platonic friendship. They are honored as deities of fertility, and Daikitsu's shrines are often adorned with colorful scales or books as a sign of respect between goddesses.\n\n Many people pray to Nalinivati when trying to start a family, giving offerings of meat and milk to wild snakes. Those same families will continue to pray to her when their children begin their studies. Adherents who pursue arcane studies will keep pet snakes as familiars to gain Nalinivati's sorcerous favor.\n\n Nalinivati's thirst for arcane knowledge and her own ascent into godhood eventually led her to her own act of creation: nagaji. Inspired by, and a little in spite of, Daikitsu's affection and relationship towards her kitsune, Nalinivati quickly poured her love and care into her creation of nagaji, giving them the image of her own ophidian ancestors.\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Category** [Tian Gods](/DeityCategories.aspx?ID=16)\r\n\r\n**Edicts** seek out magic and use it, use poison, heal poisons, bear or adopt children, raise snakes\r\n\r\n**Anathema** kill a harmless snake or swan, spurn friends due to jealousy or romantic competition, betray your offspring, separate lovers\r\n\r\n**Area of Concern**\r\n family, fertility, snakes, sorcery\n\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n<title level=\"2\">Devotee Benefits</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**[Divine Attribute](/Backgrounds.aspx?ID=132)**\r\nWisdom or Charisma\r\n\r\n**Divine Font** [Harm](/Spells.aspx?ID=146) or [Heal](/Spells.aspx?ID=148)\r\n\r\n**Divine Sanctification**  can choose holy or unholy\r\n\r\n**Divine Skill** [Arcana](/Skills.aspx?ID=35)\r\n\r\n**Favored Weapon** [jaw](/Weapons.aspx?ID=356) or [Urumi](/Weapons.aspx?ID=306)\r\n\r\n**Domains** [Dragon](/Domains.aspx?ID=106), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Passion](/Domains.aspx?ID=88)\r\n\r\n**[Alternate Domains](/Rules.aspx?ID=802)** [Family](/Domains.aspx?ID=74), [Glyph](/Domains.aspx?ID=109)\r\n\r\n**Cleric Spells**\n\n- **1st**\r\n[Charm](/Spells.aspx?ID=1463)\n\n- **2nd**\r\n[Invisibility](/Spells.aspx?ID=1577)\n\n- **3rd**\r\n[Lightning Bolt](/Spells.aspx?ID=1586)\n\n- **4th**\r\n[Reflective Scales](/Spells.aspx?ID=2362)\n\n- **5th**\r\n[Subconscious Suggestion](/Spells.aspx?ID=1692)\n\n- **6th**\r\n[Mislead](/Spells.aspx?ID=1605)\n\n- **7th**\r\n[Contingency](/Spells.aspx?ID=1472)\n\n- **8th**\r\n[Confusing Colors](/Spells.aspx?ID=1980)\n\n- **9th**\r\n[Wrathful Storm](/Spells.aspx?ID=1759)\n\n</column>",
+        "name": "Nalinivati",
+        "pfs": "Standard",
+        "primary_source": "Divine Mysteries Web Supplement",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Divine Mysteries Web Supplement pg. 21",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2024-11-20",
+        "resistance": {},
+        "sanctification": [
+          "holy",
+          "unholy"
+        ],
+        "sanctification_raw": " can choose holy or unholy",
+        "search_markdown": "<additional-info>\r\n**Source** [Divine Mysteries Web Supplement](/Sources.aspx?ID=237) pg. 21\r\n\r\n**Divine Font** Harm or Heal\r\n\r\n**Divine Skill** [Arcana](/Skills.aspx?ID=35)\r\n\r\n**Favored Weapon** [jaw](/Weapons.aspx?ID=356) or [Urumi](/Weapons.aspx?ID=306)\r\n\r\n**Domains** [Dragon](/Domains.aspx?ID=106), [Family](/Domains.aspx?ID=74), [Glyph](/Domains.aspx?ID=109), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Passion](/Domains.aspx?ID=88)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nNalinivati is an unusual daughter of Ravithra, born a simple snake rather than a naga. Her ascent to godhood is a story of dedication to craft, …\r\n</summary>",
+        "skill": [
+          "Arcana"
+        ],
+        "skill_markdown": "[Arcana](/Skills.aspx?ID=35)",
+        "skill_mod": {},
+        "source": [
+          "Divine Mysteries Web Supplement"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Divine Mysteries Web Supplement](/Sources.aspx?ID=237) pg. 21",
+        "source_raw": [
+          "Divine Mysteries Web Supplement pg. 21"
+        ],
+        "speed": {},
+        "spell": [
+          "Charm",
+          "Invisibility",
+          "Lightning Bolt",
+          "Reflective Scales",
+          "Subconscious Suggestion",
+          "Mislead",
+          "Contingency",
+          "Confusing Colors",
+          "Wrathful Storm"
+        ],
+        "spell_markdown": "[Charm](/Spells.aspx?ID=1463), [Confusing Colors](/Spells.aspx?ID=1980), [Contingency](/Spells.aspx?ID=1472), [Invisibility](/Spells.aspx?ID=1577), [Lightning Bolt](/Spells.aspx?ID=1586), [Mislead](/Spells.aspx?ID=1605), [Reflective Scales](/Spells.aspx?ID=2362), [Subconscious Suggestion](/Spells.aspx?ID=1692), [Wrathful Storm](/Spells.aspx?ID=1759)",
+        "summary": "Nalinivati is an unusual daughter of Ravithra, born a simple snake rather than a naga. Her ascent to godhood is a story of dedication to craft, …",
+        "summary_markdown": "Nalinivati is an unusual daughter of Ravithra, born a simple snake rather than a naga. Her ascent to godhood is a story of dedication to craft, …",
+        "text": "\nNalinivati (The Serpent's Kiss) Source Divine Mysteries Web Supplement pg. 21 Nalinivati is an unusual daughter of Ravithra, born a simple snake rather than a naga. Her ascent to godhood is a story of dedication to craft, knowledge, and community. As a powerful sorceress, she became the first queen of Nagajor. She cared deeply for her lovers and even deeper for her children. She also cared for the snakes around her and took in those who were lost and without family. She created communities with structure that helped sustain her ambitions and pushed others to pursue magical knowledge. She later transformed herself into a naga to further protect and nurture those she loved, proving to herself and everyone else that dedication and curiosity, with a sprinkle of strong magic, can break all barriers. Upon reaching godhood, she saw to reward those who wished to also care for others, give their next generation a life of love and ambition, and take in those less fortunate. Nalinivati is depicted as a large naga with colorful scales and features, her body shimmering in mesmerizing patterns. Her body fluidly shifts between more humanoid or more snake-like depending on who she's communing with and whether she wishes to comfort or to terrify them. Nalinivati is adorned with jewelry and flowers given to her as gifts from her worshippers, while trinkets, crafts, and books hang off her waist. She is also often paired with Daikitsu, the Lady of Foxes, with whom Nalinivati shares a long history of intimate platonic friendship. They are honored as deities of fertility, and Daikitsu's shrines are often adorned with colorful scales or books as a sign of respect between goddesses. Many people pray to Nalinivati when trying to start a family, giving offerings of meat and milk to wild snakes. Those same families will continue to pray to her when their children begin their studies. Adherents who pursue arcane studies will keep pet snakes as familiars to gain Nalinivati's sorcerous favor. Nalinivati's thirst for arcane knowledge and her own ascent into godhood eventually led her to her own act of creation: nagaji. Inspired by, and a little in spite of, Daikitsu's affection and relationship towards her kitsune, Nalinivati quickly poured her love and care into her creation of nagaji, giving them the image of her own ophidian ancestors. Category Tian Gods Edicts seek out magic and use it, use poison, heal poisons, bear or adopt children, raise snakes Anathema kill a harmless snake or swan, spurn friends due to jealousy or romantic competition, betray your offspring, separate lovers Area of Concern family, fertility, snakes, sorcery Devotee Benefits Divine Attribute Wisdom or Charisma Divine Font Harm or Heal Divine Sanctification can choose holy or unholy Divine Skill Arcana Favored Weapon jaw or Urumi Domains Dragon, Magic, Naga, Passion Alternate Domains Family, Glyph Cleric Spells - 1st Charm - 2nd Invisibility - 3rd Lightning Bolt - 4th Reflective Scales - 5th Subconscious Suggestion - 6th Mislead - 7th Contingency - 8th Confusing Colors - 9th Wrathful Storm\n",
+        "type": "Deity",
+        "url": "/Deities.aspx?ID=313",
+        "weakness": {}
+      },
+      "sort": [
+        "nalinivati",
+        "/deities.aspx?id=313"
+      ]
+    },
+    {
+      "_id": "deity-218",
+      "_source": {
+        "alignment": "LN",
+        "anathema": "make decisions erratically or randomly, provide aid to Vasaghati or her followers, engage in treachery",
+        "area_of_concern": [
+          "judgment",
+          "karma",
+          "law",
+          "vengeance"
+        ],
+        "area_of_concern_raw": "judgment, karma, law, vengeance",
+        "attribute": [
+          "Intelligence",
+          "Wisdom"
+        ],
+        "category": "deity",
+        "cleric_spell": [
+          "Charm",
+          "Animal Form",
+          "Clairvoyance"
+        ],
+        "deity": [
+          "Ravithra"
+        ],
+        "deity_category": "Other Gods",
+        "deity_category_markdown": "[Other Gods](/DeityCategories.aspx?ID=2)",
+        "deity_category_order": "2Other Gods",
+        "divine_font": [
+          "Harm"
+        ],
+        "divine_font_markdown": "[Harm](/Spells.aspx?ID=146)",
+        "domain": [
+          "Ambition",
+          "Fate",
+          "Naga",
+          "Sorrow",
+          "Soul",
+          "Truth"
+        ],
+        "domain_alternate": [
+          "Ambition",
+          "Soul"
+        ],
+        "domain_alternate_markdown": "[Ambition](/Domains.aspx?ID=1), [Soul](/Domains.aspx?ID=51)",
+        "domain_markdown": "[Ambition](/Domains.aspx?ID=1), [Fate](/Domains.aspx?ID=12), [Naga](/Domains.aspx?ID=58), [Sorrow](/Domains.aspx?ID=50), [Soul](/Domains.aspx?ID=51), [Truth](/Domains.aspx?ID=32)",
+        "domain_primary": [
+          "Fate",
+          "Naga",
+          "Sorrow",
+          "Truth"
+        ],
+        "domain_primary_markdown": "[Fate](/Domains.aspx?ID=12), [Naga](/Domains.aspx?ID=58), [Sorrow](/Domains.aspx?ID=50), [Truth](/Domains.aspx?ID=32)",
+        "edict": "enforce karma's pitiless judgment, shame fools, kill traitors, pursue the Chalice of Amrit",
+        "epithet": "The Mother of Nagas;  The Chalice-Bearer",
+        "exclude_from_search": false,
+        "favored_weapon": [
+          "jaws",
+          "Light Mace"
+        ],
+        "favored_weapon_markdown": "[jaws](/Weapons.aspx?ID=1) or [Light Mace](/Weapons.aspx?ID=5)",
+        "follower_alignment": [
+          "LG",
+          "LN",
+          "N",
+          "LE"
+        ],
+        "icon_image": "/Images/Deities/Ravithra.png",
+        "id": "deity-218",
+        "image": [
+          "/Images/Deities/Ravithra.png"
+        ],
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Deity \" pfs=\"Standard\">\r\n[Ravithra](/Deities.aspx?ID=218)\r\n(The Mother of Nagas;  The Chalice-Bearer)\r\n</title>\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\n\r\n<traits>\r\n<trait label=\"LN\" url=\"/Rules.aspx?ID=95\" />\r\n</traits>\r\n\r\n**Source** [Impossible Lands](/Sources.aspx?ID=146) pg. 318\n\nThe Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants boons only to mortal champions who seek to topple the treacherous and to restore her to her rightful role.\n\n<column gap=\"tiny\">\r\n\r\n**Category** [Other Gods](/DeityCategories.aspx?ID=2)\r\n\r\n**Edicts** enforce karma's pitiless judgment, shame fools, kill traitors, pursue the Chalice of Amrit\r\n\r\n**Anathema** make decisions erratically or randomly, provide aid to Vasaghati or her followers, engage in treachery\r\n\r\n**Area of Concern**\r\njudgment, karma, law, vengeance\r\n\r\n**Follower Alignments**\r\nLG, LN, N, LE\n\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n<image src=\"/images/Deities/Ravithra.png\" />\r\n</column>\r\n\r\n</row>\r\n<title level=\"2\">Devotee Benefits</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**[Divine Attribute](/Backgrounds.aspx?ID=132)**\r\nIntelligence or Wisdom\r\n\r\n**Divine Font** [Harm](/Spells.aspx?ID=146)\r\n\r\n**Divine Sanctification**  can choose holy or unholy\r\n\r\n**Divine Skill** [Occultism](/Skills.aspx?ID=11)\r\n\r\n**Favored Weapon** [jaws](/Weapons.aspx?ID=1) or [Light Mace](/Weapons.aspx?ID=5)\r\n\r\n**Domains** [Fate](/Domains.aspx?ID=12), [Naga](/Domains.aspx?ID=58), [Sorrow](/Domains.aspx?ID=50), [Truth](/Domains.aspx?ID=32)\r\n\r\n**[Alternate Domains](/Rules.aspx?ID=802)** [Ambition](/Domains.aspx?ID=1), [Soul](/Domains.aspx?ID=51)\r\n\r\n**Cleric Spells**\n\n- **1st**\r\n[Charm](/Spells.aspx?ID=34)\n\n- **2nd**\r\n[Animal Form](/Spells.aspx?ID=10)\r\n(snake only)\n\n- **4th**\r\n[Clairvoyance](/Spells.aspx?ID=40)\n\n</column>",
+        "name": "Ravithra",
+        "pfs": "Standard",
+        "primary_source": "Impossible Lands",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Impossible Lands pg. 318",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2022-11-16",
+        "remaster_id": [
+          "deity-620"
+        ],
+        "resistance": {},
+        "sanctification": [
+          "holy",
+          "unholy"
+        ],
+        "sanctification_raw": " can choose holy or unholy",
+        "search_markdown": "<additional-info>\r\n**Source** [Impossible Lands](/Sources.aspx?ID=146) pg. 318\r\n\r\n**Divine Font** Harm\r\n\r\n**Divine Skill** [Occultism](/Skills.aspx?ID=11)\r\n\r\n**Favored Weapon** [jaws](/Weapons.aspx?ID=1) or [Light Mace](/Weapons.aspx?ID=5)\r\n\r\n**Domains** [Ambition](/Domains.aspx?ID=1), [Fate](/Domains.aspx?ID=12), [Naga](/Domains.aspx?ID=58), [Sorrow](/Domains.aspx?ID=50), [Soul](/Domains.aspx?ID=51), [Truth](/Domains.aspx?ID=32)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nThe Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants …\r\n</summary>",
+        "skill": [
+          "Occultism"
+        ],
+        "skill_markdown": "[Occultism](/Skills.aspx?ID=11)",
+        "skill_mod": {},
+        "source": [
+          "Impossible Lands"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Impossible Lands](/Sources.aspx?ID=146) pg. 318",
+        "source_raw": [
+          "Impossible Lands pg. 318"
+        ],
+        "speed": {},
+        "spell": [
+          "Charm",
+          "Animal Form",
+          "Clairvoyance"
+        ],
+        "spell_markdown": "[Animal Form](/Spells.aspx?ID=10), [Charm](/Spells.aspx?ID=34), [Clairvoyance](/Spells.aspx?ID=40)",
+        "summary": "The Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants …",
+        "summary_markdown": "The Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants …",
+        "text": "\nRavithra (The Mother of Nagas; The Chalice-Bearer) Source Impossible Lands pg. 318 The Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants boons only to mortal champions who seek to topple the treacherous and to restore her to her rightful role. Category Other Gods Edicts enforce karma's pitiless judgment, shame fools, kill traitors, pursue the Chalice of Amrit Anathema make decisions erratically or randomly, provide aid to Vasaghati or her followers, engage in treachery Area of Concern judgment, karma, law, vengeance Follower Alignments LG, LN, N, LE Devotee Benefits Divine Attribute Intelligence or Wisdom Divine Font Harm Divine Sanctification can choose holy or unholy Divine Skill Occultism Favored Weapon jaws or Light Mace Domains Fate, Naga, Sorrow, Truth Alternate Domains Ambition, Soul Cleric Spells - 1st Charm - 2nd Animal Form (snake only) - 4th Clairvoyance\n",
+        "trait": [
+          "LN"
+        ],
+        "trait_raw": [
+          "LN"
+        ],
+        "type": "Deity",
+        "url": "/Deities.aspx?ID=218",
+        "weakness": {}
+      },
+      "sort": [
+        "ravithra",
+        "/deities.aspx?id=218"
+      ]
+    },
+    {
+      "_id": "deity-620",
+      "_source": {
+        "anathema": "Make decisions erratically or randomly, provide aid to Vasaghati or her followers, engage in treachery",
+        "area_of_concern": [
+          "Judgment",
+          "karma",
+          "law",
+          "vengeance"
+        ],
+        "area_of_concern_raw": "Judgment, karma, law, vengeance",
+        "attribute": [
+          "Intelligence",
+          "Wisdom"
+        ],
+        "category": "deity",
+        "cleric_spell": [
+          "Charm",
+          "Animal Form",
+          "Clairvoyance"
+        ],
+        "deity": [
+          "Ravithra"
+        ],
+        "deity_category": "Vudrani Gods",
+        "deity_category_markdown": "[Vudrani Gods](/DeityCategories.aspx?ID=17)",
+        "deity_category_order": "2Vudrani Gods",
+        "divine_font": [
+          "Harm"
+        ],
+        "divine_font_markdown": "[Harm](/Spells.aspx?ID=146)",
+        "domain": [
+          "Ambition",
+          "Fate",
+          "Naga",
+          "Sorrow",
+          "Soul",
+          "Truth"
+        ],
+        "domain_alternate": [
+          "Ambition",
+          "Soul"
+        ],
+        "domain_alternate_markdown": "[Ambition](/Domains.aspx?ID=64), [Soul](/Domains.aspx?ID=118)",
+        "domain_markdown": "[Ambition](/Domains.aspx?ID=64), [Fate](/Domains.aspx?ID=75), [Naga](/Domains.aspx?ID=113), [Sorrow](/Domains.aspx?ID=117), [Soul](/Domains.aspx?ID=118), [Truth](/Domains.aspx?ID=95)",
+        "domain_primary": [
+          "Fate",
+          "Naga",
+          "Sorrow",
+          "Truth"
+        ],
+        "domain_primary_markdown": "[Fate](/Domains.aspx?ID=75), [Naga](/Domains.aspx?ID=113), [Sorrow](/Domains.aspx?ID=117), [Truth](/Domains.aspx?ID=95)",
+        "edict": "Enforce karma’s pitiless judgment, shame fools, kill traitors, pursue the Chalice of Amrit",
+        "epithet": "The Chalice-Bearer",
+        "exclude_from_search": false,
+        "favored_weapon": [
+          "jaw"
+        ],
+        "favored_weapon_markdown": "[jaw](/Weapons.aspx?ID=356)",
+        "id": "deity-620",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "deity-218"
+        ],
+        "markdown": "<title level=\"1\" right=\"Deity \" pfs=\"Standard\">\r\n[Ravithra](/Deities.aspx?ID=620)\r\n(The Chalice-Bearer)\r\n</title>\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 322\n\nThe Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants boons only to mortal champions who seek to topple the treacherous and to restore her to her rightful role.\n\n<column gap=\"tiny\">\r\n\r\n**Category** [Vudrani Gods](/DeityCategories.aspx?ID=17)\r\n\r\n**Edicts** Enforce karma’s pitiless judgment, shame fools, kill traitors, pursue the Chalice of Amrit\r\n\r\n**Anathema** Make decisions erratically or randomly, provide aid to Vasaghati or her followers, engage in treachery\r\n\r\n**Area of Concern**\r\nJudgment, karma, law, vengeance\n\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n<title level=\"2\">Devotee Benefits</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**[Divine Attribute](/Backgrounds.aspx?ID=132)**\r\nIntelligence or Wisdom\r\n\r\n**Divine Font** [Harm](/Spells.aspx?ID=146)\r\n\r\n**Divine Sanctification**  can choose holy or unholy\r\n\r\n**Divine Skill** [Occultism](/Skills.aspx?ID=44)\r\n\r\n**Favored Weapon** [jaw](/Weapons.aspx?ID=356)\r\n\r\n**Domains** [Fate](/Domains.aspx?ID=75), [Naga](/Domains.aspx?ID=113), [Sorrow](/Domains.aspx?ID=117), [Truth](/Domains.aspx?ID=95)\r\n\r\n**[Alternate Domains](/Rules.aspx?ID=802)** [Ambition](/Domains.aspx?ID=64), [Soul](/Domains.aspx?ID=118)\r\n\r\n**Cleric Spells**\n\n- **1st**\r\n[Charm](/Spells.aspx?ID=1463)\n\n- **2nd**\r\n[Animal Form](/Spells.aspx?ID=1440)\r\n(snake only)\n\n- **4th**\r\n[Clairvoyance](/Spells.aspx?ID=1466)\n\n</column>",
+        "name": "Ravithra",
+        "pfs": "Standard",
+        "primary_source": "Divine Mysteries",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Divine Mysteries pg. 322",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2025-01-30",
+        "religious_symbol": "Gilded sun wheel",
+        "resistance": {},
+        "sacred_animal": "Snake",
+        "sacred_color": [
+          "silver",
+          "white"
+        ],
+        "sanctification": [
+          "holy",
+          "unholy"
+        ],
+        "sanctification_raw": " can choose holy or unholy",
+        "search_markdown": "<additional-info>\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 322\r\n\r\n**Divine Font** Harm\r\n\r\n**Divine Skill** [Occultism](/Skills.aspx?ID=44)\r\n\r\n**Favored Weapon** [jaw](/Weapons.aspx?ID=356)\r\n\r\n**Domains** [Ambition](/Domains.aspx?ID=64), [Fate](/Domains.aspx?ID=75), [Naga](/Domains.aspx?ID=113), [Sorrow](/Domains.aspx?ID=117), [Soul](/Domains.aspx?ID=118), [Truth](/Domains.aspx?ID=95)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nThe Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants …\r\n</summary>",
+        "skill": [
+          "Occultism"
+        ],
+        "skill_markdown": "[Occultism](/Skills.aspx?ID=44)",
+        "skill_mod": {},
+        "source": [
+          "Divine Mysteries"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Divine Mysteries](/Sources.aspx?ID=234) pg. 322",
+        "source_raw": [
+          "Divine Mysteries pg. 322"
+        ],
+        "speed": {},
+        "spell": [
+          "Charm",
+          "Animal Form",
+          "Clairvoyance"
+        ],
+        "spell_markdown": "[Animal Form](/Spells.aspx?ID=1440), [Charm](/Spells.aspx?ID=1463), [Clairvoyance](/Spells.aspx?ID=1466)",
+        "summary": "The Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants …",
+        "summary_markdown": "The Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants …",
+        "text": "\nRavithra (The Chalice-Bearer) Source Divine Mysteries pg. 322 The Mother of Nagas, the Karmic Pillar, and the Chalice-Bearer of the danavas, Ravithra was decapitated and brought low by treachery. She grants boons only to mortal champions who seek to topple the treacherous and to restore her to her rightful role. Category Vudrani Gods Edicts Enforce karma’s pitiless judgment, shame fools, kill traitors, pursue the Chalice of Amrit Anathema Make decisions erratically or randomly, provide aid to Vasaghati or her followers, engage in treachery Area of Concern Judgment, karma, law, vengeance Devotee Benefits Divine Attribute Intelligence or Wisdom Divine Font Harm Divine Sanctification can choose holy or unholy Divine Skill Occultism Favored Weapon jaw Domains Fate, Naga, Sorrow, Truth Alternate Domains Ambition, Soul Cleric Spells - 1st Charm - 2nd Animal Form (snake only) - 4th Clairvoyance\n",
+        "type": "Deity",
+        "url": "/Deities.aspx?ID=620",
+        "weakness": {}
+      },
+      "sort": [
+        "ravithra",
+        "/deities.aspx?id=620"
+      ]
+    },
+    {
+      "_id": "deity-601",
+      "_source": {
+        "anathema": "Be obvious with your lies, reveal the truth without benefit",
+        "area_of_concern": [
+          "Emotional manipulation",
+          "emptiness",
+          "ignorance"
+        ],
+        "area_of_concern_raw": "Emotional manipulation, emptiness, ignorance",
+        "attribute": [
+          "Intelligence",
+          "Charisma"
+        ],
+        "category": "deity",
+        "cleric_spell": [
+          "Charm",
+          "Distracting Chatter",
+          "Subconscious Suggestion"
+        ],
+        "deity": [
+          "Velgaas"
+        ],
+        "deity_category": "Sakhil Tormentors",
+        "deity_category_markdown": "[Sakhil Tormentors](/DeityCategories.aspx?ID=31)",
+        "deity_category_order": "2Sakhil Tormentors",
+        "divine_font": [
+          "Harm"
+        ],
+        "divine_font_markdown": "[Harm](/Spells.aspx?ID=146)",
+        "domain": [
+          "Knowledge",
+          "Magic",
+          "Naga",
+          "Nothingness",
+          "Passion",
+          "Trickery"
+        ],
+        "domain_alternate": [
+          "Magic",
+          "Naga"
+        ],
+        "domain_alternate_markdown": "[Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113)",
+        "domain_markdown": "[Knowledge](/Domains.aspx?ID=80), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Nothingness](/Domains.aspx?ID=114), [Passion](/Domains.aspx?ID=88), [Trickery](/Domains.aspx?ID=94)",
+        "domain_primary": [
+          "Knowledge",
+          "Nothingness",
+          "Passion",
+          "Trickery"
+        ],
+        "domain_primary_markdown": "[Knowledge](/Domains.aspx?ID=80), [Nothingness](/Domains.aspx?ID=114), [Passion](/Domains.aspx?ID=88), [Trickery](/Domains.aspx?ID=94)",
+        "edict": "Be sweet with lies and cruel with truths, corrupt the good intentions of others, master the art of manipulation",
+        "epithet": "Minds in the Dark",
+        "exclude_from_search": false,
+        "favored_weapon": [
+          "Spiked Chain"
+        ],
+        "favored_weapon_markdown": "[Spiked Chain](/Weapons.aspx?ID=417)",
+        "id": "deity-601",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Deity \" pfs=\"Restricted\">\r\n[Velgaas](/Deities.aspx?ID=601)\r\n(Minds in the Dark)\r\n</title>\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 320\n\nMany an idealist with great hopes to change the world has had their dreams realized by meeting a handsome stranger on the road. Velgaas, who might be mistaken for a [nagaji](/Ancestries.aspx?ID=54) with his scaled skin and forked tongue, takes great care to learn their altruistic desires, then carefully plants the seeds of destruction into their kind hearts. Charities become cesspools of corruption, laboratories convert into dens of torture, and peaceful protests spiral into mob violence. \n\nVelgaas is the most methodical of the sahkil tormentors, preying on good intentions to fulfill his own evil designs. He rules over the aspects of emotional manipulation, emptiness, and ignorance, carefully selecting each word and action to best ingratiate himself with an unsuspecting victim. A honeyed tongue is his weapon, a mask of sincerity his shield. Few of the unfortunate souls who cross his path would ever believe how deeply he’s manipulated them. \n\nCorrupt politicians and courtiers are among Velgaas’s followers, but he prizes most the ones who fall into his hands unknowingly. The well-meaning authorities he influences might crack down on crime by way of an oppressive city guard or falsify evidence to finally execute a dangerous criminal.\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Category** [Sakhil Tormentors](/DeityCategories.aspx?ID=31)\r\n\r\n**Edicts** Be sweet with lies and cruel with truths, corrupt the good intentions of others, master the art of manipulation\r\n\r\n**Anathema** Be obvious with your lies, reveal the truth without benefit\r\n\r\n**Area of Concern**\r\nEmotional manipulation, emptiness, ignorance\n\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n<title level=\"2\">Devotee Benefits</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**[Divine Attribute](/Backgrounds.aspx?ID=132)**\r\nIntelligence or Charisma\r\n\r\n**Divine Font** [Harm](/Spells.aspx?ID=146)\r\n\r\n**Divine Sanctification**  must choose unholy\r\n\r\n**Divine Skill** [Deception](/Skills.aspx?ID=38)\r\n\r\n**Favored Weapon** [Spiked Chain](/Weapons.aspx?ID=417)\r\n\r\n**Domains** [Knowledge](/Domains.aspx?ID=80), [Nothingness](/Domains.aspx?ID=114), [Passion](/Domains.aspx?ID=88), [Trickery](/Domains.aspx?ID=94)\r\n\r\n**[Alternate Domains](/Rules.aspx?ID=802)** [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113)\r\n\r\n**Cleric Spells**\n\n- **1st**\r\n[Charm](/Spells.aspx?ID=1463)\n\n- **3rd**\r\n[Distracting Chatter](/Spells.aspx?ID=895)\n\n- **5th**\r\n[Subconscious Suggestion](/Spells.aspx?ID=1692)\n\n</column>",
+        "name": "Velgaas",
+        "pfs": "Restricted",
+        "primary_source": "Divine Mysteries",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Divine Mysteries pg. 320",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2025-01-30",
+        "religious_symbol": "Black drops of poison trickling from an ear",
+        "resistance": {},
+        "sacred_animal": "Snake",
+        "sacred_color": [
+          "purple",
+          "red"
+        ],
+        "sanctification": [
+          "unholy"
+        ],
+        "sanctification_raw": " must choose unholy",
+        "search_markdown": "<additional-info>\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 320\r\n\r\n**Divine Font** Harm\r\n\r\n**Divine Skill** [Deception](/Skills.aspx?ID=38)\r\n\r\n**Favored Weapon** [Spiked Chain](/Weapons.aspx?ID=417)\r\n\r\n**Domains** [Knowledge](/Domains.aspx?ID=80), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Nothingness](/Domains.aspx?ID=114), [Passion](/Domains.aspx?ID=88), [Trickery](/Domains.aspx?ID=94)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nMany an idealist with great hopes to change the world has had their dreams realized by meeting a handsome stranger on the road. Velgaas, who might be …\r\n</summary>",
+        "skill": [
+          "Deception"
+        ],
+        "skill_markdown": "[Deception](/Skills.aspx?ID=38)",
+        "skill_mod": {},
+        "source": [
+          "Divine Mysteries"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Divine Mysteries](/Sources.aspx?ID=234) pg. 320",
+        "source_raw": [
+          "Divine Mysteries pg. 320"
+        ],
+        "speed": {},
+        "spell": [
+          "Charm",
+          "Distracting Chatter",
+          "Subconscious Suggestion"
+        ],
+        "spell_markdown": "[Charm](/Spells.aspx?ID=1463), [Distracting Chatter](/Spells.aspx?ID=895), [Subconscious Suggestion](/Spells.aspx?ID=1692)",
+        "summary": "Many an idealist with great hopes to change the world has had their dreams realized by meeting a handsome stranger on the road. Velgaas, who might be …",
+        "summary_markdown": "Many an idealist with great hopes to change the world has had their dreams realized by meeting a handsome stranger on the road. Velgaas, who might be …",
+        "text": "\nVelgaas (Minds in the Dark) Source Divine Mysteries pg. 320 Many an idealist with great hopes to change the world has had their dreams realized by meeting a handsome stranger on the road. Velgaas, who might be mistaken for a nagaji with his scaled skin and forked tongue, takes great care to learn their altruistic desires, then carefully plants the seeds of destruction into their kind hearts. Charities become cesspools of corruption, laboratories convert into dens of torture, and peaceful protests spiral into mob violence. Velgaas is the most methodical of the sahkil tormentors, preying on good intentions to fulfill his own evil designs. He rules over the aspects of emotional manipulation, emptiness, and ignorance, carefully selecting each word and action to best ingratiate himself with an unsuspecting victim. A honeyed tongue is his weapon, a mask of sincerity his shield. Few of the unfortunate souls who cross his path would ever believe how deeply he’s manipulated them. Corrupt politicians and courtiers are among Velgaas’s followers, but he prizes most the ones who fall into his hands unknowingly. The well-meaning authorities he influences might crack down on crime by way of an oppressive city guard or falsify evidence to finally execute a dangerous criminal. Category Sakhil Tormentors Edicts Be sweet with lies and cruel with truths, corrupt the good intentions of others, master the art of manipulation Anathema Be obvious with your lies, reveal the truth without benefit Area of Concern Emotional manipulation, emptiness, ignorance Devotee Benefits Divine Attribute Intelligence or Charisma Divine Font Harm Divine Sanctification must choose unholy Divine Skill Deception Favored Weapon Spiked Chain Domains Knowledge, Nothingness, Passion, Trickery Alternate Domains Magic, Naga Cleric Spells - 1st Charm - 3rd Distracting Chatter - 5th Subconscious Suggestion\n",
+        "type": "Deity",
+        "url": "/Deities.aspx?ID=601",
+        "weakness": {}
+      },
+      "sort": [
+        "velgaas",
+        "/deities.aspx?id=601"
+      ]
+    },
+    {
+      "_id": "deity-422",
+      "_source": {
+        "anathema": "Cultivate or maintain a garden of nonpoisonous plants, intentionally harm a venomous serpent not in self-defense",
+        "area_of_concern": [
+          "Incurable afflictions",
+          "poisons",
+          "toxicity"
+        ],
+        "area_of_concern_raw": "Incurable afflictions, poisons, toxicity",
+        "attribute": [
+          "Constitution",
+          "Wisdom"
+        ],
+        "category": "deity",
+        "cleric_spell": [
+          "Spider Sting",
+          "Toxic Cloud",
+          "Monstrosity Form"
+        ],
+        "deity": [
+          "Vorasha"
+        ],
+        "deity_category": "Daemon Harbingers",
+        "deity_category_markdown": "[Daemon Harbingers](/DeityCategories.aspx?ID=25)",
+        "deity_category_order": "2Daemon Harbingers",
+        "divine_font": [
+          "Harm"
+        ],
+        "divine_font_markdown": "[Harm](/Spells.aspx?ID=146)",
+        "domain": [
+          "Decay",
+          "Dragon",
+          "Magic",
+          "Naga",
+          "Pain",
+          "Water"
+        ],
+        "domain_alternate": [
+          "Naga",
+          "Pain"
+        ],
+        "domain_alternate_markdown": "[Naga](/Domains.aspx?ID=113), [Pain](/Domains.aspx?ID=87)",
+        "domain_markdown": "[Decay](/Domains.aspx?ID=104), [Dragon](/Domains.aspx?ID=106), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Pain](/Domains.aspx?ID=87), [Water](/Domains.aspx?ID=98)",
+        "domain_primary": [
+          "Decay",
+          "Dragon",
+          "Magic",
+          "Water"
+        ],
+        "domain_primary_markdown": "[Decay](/Domains.aspx?ID=104), [Dragon](/Domains.aspx?ID=106), [Magic](/Domains.aspx?ID=82), [Water](/Domains.aspx?ID=98)",
+        "edict": "Lay your enemies low through deceit and subtlety, preserve your patience for longterm goals, venerate all scaled creatures",
+        "epithet": "The Ophidian",
+        "exclude_from_search": false,
+        "favored_weapon": [
+          "Spiked Chain"
+        ],
+        "favored_weapon_markdown": "[Spiked Chain](/Weapons.aspx?ID=417)",
+        "id": "deity-422",
+        "is_standard_ancestry_feat": false,
+        "markdown": "<title level=\"1\" right=\"Deity \" pfs=\"Restricted\">\r\n[Vorasha](/Deities.aspx?ID=422)\r\n(The Ophidian)\r\n</title>\r\n\r\n<row gap=\"medium\">\r\n<column gap=\"medium\" flex=\"1 1 400px\">\r\n\r\n<traits>\r\n\r\n</traits>\r\n\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 302\n\nVorasha is considered the most powerful of the daemonic harbingers likely because of her close ties to [Trelmarixian](/Deities.aspx?ID=137), the Rider of Famine. Some say that he has had a subtle influence on the Ophidian’s rise through the ranks. However, Vorasha has plans of her own to become a Rider in her own right, focusing on poisons and incurable toxins. She schemes from the Writhing Palace, a vast garden of poisonous plants infested with venomous serpents. Because this domain lies wholly within the Withered Court, Trelmarixian’s realm, Vorasha suspects the Rider of Famine is aware of her every move. \n\nVorasha appears as a scaled draconic humanoid with clawed hands and feet. She has a tangle of scarlet-and-emerald snakes as hair that are constantly writhing. As the Lady of Toxicity, she wears a flowing green gown that drips with poisons.\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Category** [Daemon Harbingers](/DeityCategories.aspx?ID=25)\r\n\r\n**Edicts** Lay your enemies low through deceit and subtlety, preserve your patience for longterm goals, venerate all scaled creatures\r\n\r\n**Anathema** Cultivate or maintain a garden of nonpoisonous plants, intentionally harm a venomous serpent not in self-defense\r\n\r\n**Area of Concern**\r\nIncurable afflictions, poisons, toxicity\n\n</column>\r\n\r\n</column>\r\n\r\n<column gap=\"medium\">\r\n\r\n</column>\r\n\r\n</row>\r\n<title level=\"2\">Devotee Benefits</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**[Divine Attribute](/Backgrounds.aspx?ID=132)**\r\nConstitution or Wisdom\r\n\r\n**Divine Font** [Harm](/Spells.aspx?ID=146)\r\n\r\n**Divine Sanctification**  must choose unholy\r\n\r\n**Divine Skill** [Nature](/Skills.aspx?ID=43)\r\n\r\n**Favored Weapon** [Spiked Chain](/Weapons.aspx?ID=417)\r\n\r\n**Domains** [Decay](/Domains.aspx?ID=104), [Dragon](/Domains.aspx?ID=106), [Magic](/Domains.aspx?ID=82), [Water](/Domains.aspx?ID=98)\r\n\r\n**[Alternate Domains](/Rules.aspx?ID=802)** [Naga](/Domains.aspx?ID=113), [Pain](/Domains.aspx?ID=87)\r\n\r\n**Cleric Spells**\n\n- **1st**\r\n[Spider Sting](/Spells.aspx?ID=1684)\n\n- **5th**\r\n[Toxic Cloud](/Spells.aspx?ID=1722)\n\n- **8th**\r\n[Monstrosity Form](/Spells.aspx?ID=1608)\n\n</column>",
+        "name": "Vorasha",
+        "pfs": "Restricted",
+        "primary_source": "Divine Mysteries",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Divine Mysteries pg. 302",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2025-01-30",
+        "religious_symbol": "Ouroboros and jackal head",
+        "resistance": {},
+        "sacred_animal": "Viper",
+        "sacred_color": [
+          "green",
+          "yellow"
+        ],
+        "sanctification": [
+          "unholy"
+        ],
+        "sanctification_raw": " must choose unholy",
+        "search_markdown": "<additional-info>\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 302\r\n\r\n**Divine Font** Harm\r\n\r\n**Divine Skill** [Nature](/Skills.aspx?ID=43)\r\n\r\n**Favored Weapon** [Spiked Chain](/Weapons.aspx?ID=417)\r\n\r\n**Domains** [Decay](/Domains.aspx?ID=104), [Dragon](/Domains.aspx?ID=106), [Magic](/Domains.aspx?ID=82), [Naga](/Domains.aspx?ID=113), [Pain](/Domains.aspx?ID=87), [Water](/Domains.aspx?ID=98)\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nVorasha is considered the most powerful of the daemonic harbingers likely because of her close ties to  Trelmarixian , the Rider of Famine. Some say …\r\n</summary>",
+        "skill": [
+          "Nature"
+        ],
+        "skill_markdown": "[Nature](/Skills.aspx?ID=43)",
+        "skill_mod": {},
+        "source": [
+          "Divine Mysteries"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Divine Mysteries](/Sources.aspx?ID=234) pg. 302",
+        "source_raw": [
+          "Divine Mysteries pg. 302"
+        ],
+        "speed": {},
+        "spell": [
+          "Spider Sting",
+          "Toxic Cloud",
+          "Monstrosity Form"
+        ],
+        "spell_markdown": "[Monstrosity Form](/Spells.aspx?ID=1608), [Spider Sting](/Spells.aspx?ID=1684), [Toxic Cloud](/Spells.aspx?ID=1722)",
+        "summary": "Vorasha is considered the most powerful of the daemonic harbingers likely because of her close ties to  Trelmarixian , the Rider of Famine. Some say …",
+        "summary_markdown": "Vorasha is considered the most powerful of the daemonic harbingers likely because of her close ties to  Trelmarixian , the Rider of Famine. Some say …",
+        "text": "\nVorasha (The Ophidian) Source Divine Mysteries pg. 302 Vorasha is considered the most powerful of the daemonic harbingers likely because of her close ties to Trelmarixian, the Rider of Famine. Some say that he has had a subtle influence on the Ophidian’s rise through the ranks. However, Vorasha has plans of her own to become a Rider in her own right, focusing on poisons and incurable toxins. She schemes from the Writhing Palace, a vast garden of poisonous plants infested with venomous serpents. Because this domain lies wholly within the Withered Court, Trelmarixian’s realm, Vorasha suspects the Rider of Famine is aware of her every move. Vorasha appears as a scaled draconic humanoid with clawed hands and feet. She has a tangle of scarlet-and-emerald snakes as hair that are constantly writhing. As the Lady of Toxicity, she wears a flowing green gown that drips with poisons. Category Daemon Harbingers Edicts Lay your enemies low through deceit and subtlety, preserve your patience for longterm goals, venerate all scaled creatures Anathema Cultivate or maintain a garden of nonpoisonous plants, intentionally harm a venomous serpent not in self-defense Area of Concern Incurable afflictions, poisons, toxicity Devotee Benefits Divine Attribute Constitution or Wisdom Divine Font Harm Divine Sanctification must choose unholy Divine Skill Nature Favored Weapon Spiked Chain Domains Decay, Dragon, Magic, Water Alternate Domains Naga, Pain Cleric Spells - 1st Spider Sting - 5th Toxic Cloud - 8th Monstrosity Form\n",
+        "type": "Deity",
+        "url": "/Deities.aspx?ID=422",
+        "weakness": {}
+      },
+      "sort": [
+        "vorasha",
+        "/deities.aspx?id=422"
+      ]
+    }
+  ]
+}

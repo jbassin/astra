@@ -88,7 +88,7 @@ describe("columnDefs: totality (D29-78 acceptance gate A)", () => {
   // NOTE: a "no column ever renders every row as an em-dash" check is NOT
   // run against the fixture corpus here — that invariant is guaranteed by
   // `facetKeys.ts`'s own emit-time ≥40%-coverage classifier over the REAL
-  // 46,192-entity corpus (independently verified for every group below,
+  // 44,808-entity corpus (independently verified for every group below,
   // this slice's own report), not something a 1-3-row-per-category FIXTURE
   // sample can reproduce (e.g. the fixture's single `equipment`/
   // `creature-ability` row happens to lack `price`/`bulk`/`actionCost` —

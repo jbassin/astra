@@ -1,0 +1,136 @@
+{
+  "category": "action",
+  "hits": [
+    {
+      "_id": "action-2910",
+      "_source": {
+        "actions": "Single Action",
+        "actions_number": 2,
+        "category": "action",
+        "exclude_from_search": true,
+        "frequency": "once per hour",
+        "id": "action-2910",
+        "is_standard_ancestry_feat": false,
+        "markdown": "**Activate—Starlit Transformation** <actions string=\"Single Action\" /> ([arcane](/Traits.aspx?ID=534)) **Frequency** once per hour;   **Effect** Light swirls around you, transforming your armor, clothing, and a single weapon in your possession into a specific alternate outfit. While your equipment might look dramatically different, it functions as normal. If someone attempts to discern your identity, they must use a [Seek](/Actions.aspx?ID=2301) action to attempt a [Perception](/Rules.aspx?ID=2298) check against your [Deception](/Skills.aspx?ID=38) DC, as if you were using the [Impersonate](/Actions.aspx?ID=2388) action. Your Deception DC against such attempts is 20 + your proficiency modifier instead of the normal DC. Unlike with Impersonate, you don’t have to attempt a Deception check to interact with someone to conceal your identity—a check happens only if someone else specifically tries to uncover it. You remain in your sentinel form for 10 minutes or until you use Starlit Transformation again to change back to your normal form. \r\n\r\nWhile you're in sentinel form, your transformed weapon shines with starlight and gains a +1 status bonus to damage rolls with the weapon. You can fling bolts of starlight from your weapon with a Strike action, using your melee attack modifier with the weapon. These bolts deal 1d4 force damage, have a range of 60 feet, are affected by your weapon runes, and have the [arcane](/Traits.aspx?ID=534) and [force](/Traits.aspx?ID=610) traits.",
+        "name": "(arcane)",
+        "primary_source": "Tian Xia Character Guide",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Tian Xia Character Guide pg. 94",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2024-08-28",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Tian Xia Character Guide](/Sources.aspx?ID=230) pg. 94\r\n\r\n**Frequency**\r\nonce per hour\n\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nLight swirls around you, transforming your armor, clothing, and a single weapon in your possession into a specific alternate outfit. While your …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Tian Xia Character Guide"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Tian Xia Character Guide](/Sources.aspx?ID=230) pg. 94",
+        "source_raw": [
+          "Tian Xia Character Guide pg. 94"
+        ],
+        "speed": {},
+        "summary": "Light swirls around you, transforming your armor, clothing, and a single weapon in your possession into a specific alternate outfit. While your …",
+        "summary_markdown": "Light swirls around you, transforming your armor, clothing, and a single weapon in your possession into a specific alternate outfit. While your …",
+        "text": " Activate—Starlit Transformation Single Action (arcane) Frequency once per hour; Effect Light swirls around you, transforming your armor, clothing, and a single weapon in your possession into a specific alternate outfit. While your equipment might look dramatically different, it functions as normal. If someone attempts to discern your identity, they must use a Seek action to attempt a Perception check against your Deception DC, as if you were using the Impersonate action. Your Deception DC against such attempts is 20 + your proficiency modifier instead of the normal DC. Unlike with Impersonate, you don’t have to attempt a Deception check to interact with someone to conceal your identity—a check happens only if someone else specifically tries to uncover it. You remain in your sentinel form for 10 minutes or until you use Starlit Transformation again to change back to your normal form. While you're in sentinel form, your transformed weapon shines with starlight and gains a +1 status bonus to damage rolls with the weapon. You can fling bolts of starlight from your weapon with a Strike action, using your melee attack modifier with the weapon. These bolts deal 1d4 force damage, have a range of 60 feet, are affected by your weapon runes, and have the arcane and force traits.",
+        "trait_markdown": "",
+        "type": "Action",
+        "url": "/Actions.aspx?ID=2910",
+        "weakness": {}
+      },
+      "sort": [
+        "(arcane)",
+        "/actions.aspx?id=2910"
+      ]
+    },
+    {
+      "_id": "action-4171",
+      "_source": {
+        "category": "action",
+        "exclude_from_search": true,
+        "frequency": "once per hour",
+        "id": "action-4171",
+        "is_standard_ancestry_feat": false,
+        "markdown": "**Activate** <actions string=\"\" /> <actions string=\"Single Action\" /> envision; or <actions string=\"Two Actions\" /> command, envision ([teleportation](/Traits.aspx?ID=710)) **Frequency** once per hour;   **Effect** You teleport up to 30 feet to an unoccupied space you can see. If you used 2 actions, you can teleport up to 60 feet.",
+        "name": "<%ACTION.TYPES#2%%> envision; or <%ACTION.TYPES#3%%> command, envision (teleportation)",
+        "primary_source": "Treasure Vault",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Treasure Vault pg. 189",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2023-02-22",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Treasure Vault](/Sources.aspx?ID=320) pg. 189\r\n\r\n**Frequency**\r\nonce per hour\n\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou teleport up to 30 feet to an unoccupied space you can see. If you used 2 actions, you can teleport up to 60 feet.\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Treasure Vault"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Treasure Vault](/Sources.aspx?ID=320) pg. 189",
+        "source_raw": [
+          "Treasure Vault pg. 189"
+        ],
+        "speed": {},
+        "summary": "You teleport up to 30 feet to an unoccupied space you can see. If you used 2 actions, you can teleport up to 60 feet.",
+        "summary_markdown": "You teleport up to 30 feet to an unoccupied space you can see. If you used 2 actions, you can teleport up to 60 feet.",
+        "text": " Activate Single Action envision; or Two Actions command, envision (teleportation) Frequency once per hour; Effect You teleport up to 30 feet to an unoccupied space you can see. If you used 2 actions, you can teleport up to 60 feet.",
+        "trait_markdown": "",
+        "type": "Action",
+        "url": "/Actions.aspx?ID=4171",
+        "weakness": {}
+      },
+      "sort": [
+        "<%action.types#2%%> envision; or <%action.types#3%%> command, envision (teleportation)",
+        "/actions.aspx?id=4171"
+      ]
+    },
+    {
+      "_id": "action-2461",
+      "_source": {
+        "category": "action",
+        "exclude_from_search": true,
+        "frequency": "twice per day",
+        "id": "action-2461",
+        "is_standard_ancestry_feat": false,
+        "markdown": "**Activate—Scrying** <actions string=\"\" /> 10 minutes ([concentrate](/Traits.aspx?ID=32), [manipulate](/Traits.aspx?ID=104)) **Frequency** twice per day;   **Effect** The crystal ball casts a DC 33 [_scrying_](/Spells.aspx?ID=268) spell to your specifications.",
+        "name": "10 minutes (<%TRAITS%32%%>concentrate<%END>, <%TRAITS%104%%>manipulate<%END>)",
+        "primary_source": "GM Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "GM Core pg. 273",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2023-11-15",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [GM Core](/Sources.aspx?ID=218) pg. 273\r\n\r\n**Frequency**\r\ntwice per day\n\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nThe crystal ball casts a DC 33   scrying   spell to your specifications.\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "GM Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[GM Core](/Sources.aspx?ID=218) pg. 273",
+        "source_raw": [
+          "GM Core pg. 273"
+        ],
+        "speed": {},
+        "summary": "The crystal ball casts a DC 33   scrying   spell to your specifications.",
+        "summary_markdown": "The crystal ball casts a DC 33   scrying   spell to your specifications.",
+        "text": " Activate—Scrying 10 minutes (concentrate, manipulate) Frequency twice per day; Effect The crystal ball casts a DC 33 scrying spell to your specifications.",
+        "trait_markdown": "",
+        "type": "Action",
+        "url": "/Actions.aspx?ID=2461",
+        "weakness": {}
+      },
+      "sort": [
+        "10 minutes (<%traits%32%%>concentrate<%end>, <%traits%104%%>manipulate<%end>)",
+        "/actions.aspx?id=2461"
+      ]
+    }
+  ]
+}

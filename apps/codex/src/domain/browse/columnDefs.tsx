@@ -54,8 +54,13 @@ export interface ColumnDef {
    * the CSS2.1 fixed-layout algorithm sizes each column off an explicit
    * width on a cell in the table's FIRST row, i.e. `<thead>`, not every
    * `<tbody>` cell). Chosen from a one-time 99th-percentile RENDERED-value-
-   * width measurement against the real 46,192-row corpus (`measure, don't
-   * guess` — see this slice's own build report for the raw numbers), plus a
+   * width measurement against the real corpus (46,192 rows at measurement
+   * time; P11 S1 dropped ~1,384 nameless `action` debris entities, ~44,808
+   * post-drop — the columns measured here (never `action`-only facets like
+   * castTime/range) are not expected to shift, but NOT re-measured this
+   * round; a future column-width slice should re-run the measurement rather
+   * than trust this note — `measure, don't guess` — see this slice's own
+   * build report for the raw numbers), plus a
    * 1ch safety buffer; genuine outliers beyond that still degrade gracefully
    * via the `.codex-listing-table td`'s own `overflow: hidden;
    * text-overflow: ellipsis` (below). `undefined` for `NAME_COLUMN` only —
@@ -336,7 +341,11 @@ function renderRange(row: IndexRow): ReactNode {
 // shared columns (identical across every group that carries them)
 //
 // P9 S1 (D29-86) — `width` below is a one-time 99th-percentile RENDERED-
-// value-CHARACTER-COUNT measurement against the real 46,192-row corpus
+// value-CHARACTER-COUNT measurement against the real corpus (46,192 rows at
+// measurement time; P11 S1 dropped ~1,384 nameless `action` debris
+// entities, ~44,808 post-drop — the raw n=/p99/max figures below are the
+// ORIGINAL measurement, NOT re-run this round; a future column-width slice
+// should re-measure rather than trust this note stale)
 // (`ch` is inherently a per-font approximation even for a measured value —
 // the established convention `.codex-col-truncate { max-width: 14rem }`
 // already used before this slice), +1ch safety buffer, +1ch again where the
@@ -344,7 +353,7 @@ function renderRange(row: IndexRow): ReactNode {
 // doesn't carry. Raw p99/max, measured via a throwaway script against
 // `apps/codex/data/corpus/` (not committed — corpus-derived, hermeticity,
 // gate G):
-//   source (ALL categories, abbreviateBook() output): n=46,192 p99=8 max=18
+//   source (ALL categories, abbreviateBook() output): n=46,192 (pre-P11) p99=8 max=18
 //   level (ALL categories): p99=2 max=2
 //   spell.castTime (raw facet, pre-glyph): p99=10 max=13
 //   spell.range (raw facet, pre-"feet"->"ft" abbreviation): p99=9 max=46

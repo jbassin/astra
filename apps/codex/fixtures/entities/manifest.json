@@ -52,7 +52,7 @@
     "equipment": 1,
     "familiar-ability": 1,
     "familiar-specific": 1,
-    "feat": 2,
+    "feat": 3,
     "hazard": 1,
     "hellknight-order": 1,
     "heritage": 1,
@@ -103,6 +103,6 @@
     "tag": "fixture"
   },
   "schemaVersion": 4,
-  "totalEntityCount": 203,
-  "totalSizeBytes": 1157963
+  "totalEntityCount": 204,
+  "totalSizeBytes": 1273670
 }

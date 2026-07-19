@@ -1,0 +1,82 @@
+{
+  "aonUrl": "/Feats.aspx?ID=2649",
+  "body": [
+    {
+      "children": [
+        {
+          "content": "You can fly through the air in short bursts. You Fly. If you don't normally have a fly Speed, you gain a fly Speed of 15 feet for this movement. If you aren't on solid ground at the end of this movement, you fall.",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "paragraph"
+    },
+    {
+      "children": [
+        {
+          "content": "Fledgling Flight leads to...",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ],
+      "kind": "heading",
+      "level": 2
+    },
+    {
+      "children": [
+        {
+          "display": "Juvenile Flight",
+          "kind": "crossref",
+          "targetId": "feat/juvenile-flight"
+        }
+      ],
+      "kind": "paragraph"
+    }
+  ],
+  "category": "feat",
+  "edition": "legacy",
+  "facets": {
+    "actionCost": "1",
+    "featLevel": 1,
+    "itemCategory": "ancestry",
+    "prerequisites": [],
+    "rank": 1
+  },
+  "id": "feat/fledgling-flight",
+  "level": 1,
+  "mastheadExtra": [
+    {
+      "label": "Frequency",
+      "value": [
+        {
+          "content": " once per round",
+          "kind": "text",
+          "marks": {
+            "bold": false,
+            "italic": false,
+            "superscript": false
+          }
+        }
+      ]
+    }
+  ],
+  "name": "Fledgling Flight",
+  "rarity": "common",
+  "slug": "fledgling-flight",
+  "source": {
+    "book": "Ancestry Guide",
+    "license": "OGL",
+    "page": 136
+  },
+  "traits": [
+    "strix"
+  ]
+}

@@ -35,6 +35,7 @@ import {
 } from "../src/ingest/aonFacets";
 import { buildAonLinkTable, normalizeUrlKey, type LinkTableDoc } from "../src/ingest/aonLinkTable";
 import { normalizeBookNames } from "../src/ingest/bookNormalize";
+import { collapseAdjacentCrossrefs } from "../src/ingest/dedupeCrossrefs";
 import { applyAonPrimaryDrop } from "../src/ingest/drop";
 import {
   emitCorpus,
@@ -281,7 +282,7 @@ function loadAonSide(snapshotDir: string, report: ReportFn, hardFailures: HardFa
         continue;
       }
       try {
-        const meta = extractAonMeta(snap.category, hit as unknown as AonHit);
+        const meta = extractAonMeta(snap.category, hit as unknown as AonHit, report);
         metas.push(meta);
         const markdown = hit._source.markdown;
         if (typeof markdown === "string" && markdown.trim().length > 0) {
@@ -387,14 +388,22 @@ export function runTransform(paths: TransformPaths): TransformResult {
     report,
   });
 
-  // D29-14/-17: drop every Foundry-only entity except the creature/hazard
-  // carve-out — S5c, the last P1.5 pass before emit.
+  // D29-14/-17/-98: drop every Foundry-only entity except the creature/
+  // hazard carve-out, PLUS (D29-98, P11 S1) the widened AoN-only activation-
+  // debris families — S5c, the last P1.5 pass before emit.
   const dropResult = applyAonPrimaryDrop(joinResult.entities, report);
+
+  // D29-100 (P11 S1): whole-document adjacent-crossref dedupe — drop.ts-
+  // adjacent (same pipeline stage, right after the drop pass, on its kept
+  // set) so a dedupe target that itself got dropped this run never needs
+  // separate reconciliation (the drop pass's own `reconcileCrossrefs` already
+  // downgraded any now-dangling crossref to `brokenRef` before this runs).
+  const dedupeResult = collapseAdjacentCrossrefs(dropResult.keptEntities, report);
 
   // D29-61(a) (R9, P6): the ingest-time "missing level -> 0" default — runs
   // on the FINAL (post-drop) entity set, since R4's ritual move has already
   // settled every entity's final `category` by this point in the pipeline.
-  const levelDefaultResult = applyLevelDefault(dropResult.keptEntities, report);
+  const levelDefaultResult = applyLevelDefault(dedupeResult.entities, report);
 
   // ---- P4 (D29-39) S1: book-name normalize -> sidebar reverse-join ----
   // Both passes run BEFORE emit — the corpus on disk (entity files +
@@ -489,6 +498,10 @@ export function runTransform(paths: TransformPaths): TransformResult {
     join: joinResult,
     finalEntities,
     dropAccounting: dropResult.accounting,
+    adjacentCrossrefDedupe: {
+      totalOccurrences: dedupeResult.totalOccurrences,
+      entitiesTouched: dedupeResult.entitiesTouched,
+    },
     foundrySnapshotDocCount: foundry.entities.size,
     // Deliberately the RAW extracted count (pre-D29-18-dedup) — matches
     // `foundrySnapshotDocCount`'s own "how big was the snapshot" framing;

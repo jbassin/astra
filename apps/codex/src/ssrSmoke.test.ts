@@ -194,7 +194,7 @@ describe("$category/$slug route (D29-22/-23/-25/-29 tier 3)", () => {
  * actionCost=reaction, creature family+level+humanized size, equipment
  * per-10 price, spell tradition+rank, hazard-reuses-creature-panel, a
  * facet-less long-tail category, real click-to-settled-DOM latency) is
- * proven separately against the live 46,192-entity corpus via a headless
+ * proven separately against the live 44,808-entity corpus via a headless
  * browser (see the P3 S3 session report) — this suite is CI's hermetic,
  * deterministic, corpus-size-agnostic gate.
  */
@@ -398,7 +398,7 @@ describe("$category/ split-view browse: ?entry= deep link (P4.5 S4, D29-49 tier 
  * breadcrumb-less synthetic root). A static route smoke, same posture as
  * the `$category/` suite above — the FULL real-corpus interaction gates
  * (INTERIOR-level ordering, click-to-expand, latency) are proven separately
- * against the live 46,192-entity corpus (see the session report); this
+ * against the live 44,808-entity corpus (see the session report); this
  * proves the route itself: static-route precedence over `$category`, the
  * loader wiring, and root-level SSR content (roots always render — only
  * their CHILDREN default-collapse, so a deep node's link isn't asserted

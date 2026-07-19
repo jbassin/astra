@@ -381,3 +381,91 @@ describe("aonSkipReason: the empty-name fragment class (53 real docs)", () => {
     expect(aonSkipReason(readFixture("spell-heal-legacy"))).toBeUndefined();
   });
 });
+
+describe("extractAonMeta: D29-99 name-template resolution (P11 S1)", () => {
+  function actionHit(id: string, name: string): AonHit {
+    return {
+      _id: id,
+      _source: {
+        name,
+        url: `/Actions.aspx?ID=${id}`,
+        release_date: "2020-01-01",
+        primary_source: "Core Rulebook",
+      },
+    };
+  }
+
+  it("resolves <%TRAITS%N%%>display<%END> to the display text, dropping the trait id", () => {
+    const meta = extractAonMeta(
+      "action",
+      actionHit(
+        "action-3231",
+        "(<%TRAITS%561%%>concentrate<%END>, <%TRAITS%645%%>manipulate<%END>)",
+      ),
+    );
+    expect(meta.name).toBe("(concentrate, manipulate)");
+    expect(meta.slug).toBe("concentrate-manipulate");
+  });
+
+  it("resolves <%ACTION.TYPES#N%%> via the pinned table (2/3/4 -> Single/Two/Three Actions, NOT the naive off-by-one 'N Actions')", () => {
+    const meta = extractAonMeta(
+      "action",
+      actionHit(
+        "action-4171",
+        "<%ACTION.TYPES#2%%> envision; or <%ACTION.TYPES#3%%> command, envision (teleportation)",
+      ),
+    );
+    expect(meta.name).toBe(
+      "Single Action envision; or Two Actions command, envision (teleportation)",
+    );
+  });
+
+  it("resolves BOTH glyph forms in the same name, and the D29-98 overlap case ('10 minutes (concentrate, manipulate)') lands in the digit drop family after resolution", () => {
+    const meta = extractAonMeta(
+      "action",
+      actionHit(
+        "action-2461",
+        "10 minutes (<%TRAITS%32%%>concentrate<%END>, <%TRAITS%104%%>manipulate<%END>)",
+      ),
+    );
+    expect(meta.name).toBe("10 minutes (concentrate, manipulate)");
+  });
+
+  it("throws AonFacetError on an unknown <%ACTION.TYPES#N%%> id (no pinned label — never silently guesses)", () => {
+    expect(() =>
+      extractAonMeta("action", actionHit("action-9999", "<%ACTION.TYPES#5%%> (concentrate)")),
+    ).toThrow(AonFacetError);
+  });
+
+  it("report-counts nameTemplateResolved exactly once per templated doc (never double-counts a doc with both glyph kinds)", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const report = (cls: string, detail: string): void => {
+      reports.push({ cls, detail });
+    };
+    extractAonMeta(
+      "action",
+      actionHit(
+        "action-2461",
+        "10 minutes (<%TRAITS%32%%>concentrate<%END>, <%TRAITS%104%%>manipulate<%END>)",
+      ),
+      report,
+    );
+    expect(reports.filter((r) => r.cls === "nameTemplateResolved")).toHaveLength(1);
+  });
+
+  it("a plain (non-templated) name is untouched and reports nothing", () => {
+    const reports: Array<{ cls: string; detail: string }> = [];
+    const report = (cls: string, detail: string): void => {
+      reports.push({ cls, detail });
+    };
+    const meta = extractAonMeta("action", actionHit("action-1", "Stride"), report);
+    expect(meta.name).toBe("Stride");
+    expect(reports).toEqual([]);
+  });
+
+  it("report defaults to a no-op when the caller passes none (back-compat for the ~40 pre-existing call sites)", () => {
+    expect(() =>
+      extractAonMeta("action", actionHit("action-3231", "(<%TRAITS%561%%>concentrate<%END>)")),
+    ).not.toThrow();
+  });
+});

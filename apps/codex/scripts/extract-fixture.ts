@@ -254,6 +254,59 @@ const REQUIRED_AON_PICKS: readonly AonPick[] = [
     reason: "P4: 'In Service to the Unknown' — attaches to the shared class-16 url (M8 case)",
   },
   { category: "source", id: "source-1", reason: "P4: 'Core Rulebook' — the D29-44 source entity" },
+  // P11 S1 (D29-98/-99/-100) — fixture-level regression coverage for all
+  // three P11 ingest mechanisms, currently ZERO at fixture level.
+  {
+    category: "action",
+    id: "action-2910",
+    reason: "D29-98 family (i): paren-leading nameless-activation debris '(arcane)' — dropped",
+  },
+  {
+    category: "action",
+    id: "action-4171",
+    reason:
+      "D29-99 name-template resolution: ACTION.TYPES glyph resolves to a name in NEITHER drop family (survives, renamed)",
+  },
+  {
+    category: "action",
+    id: "action-2461",
+    reason:
+      "D29-99/D29-98 overlap: TRAITS-glyph template resolves to '10 minutes (concentrate, manipulate)' — a family (ii) drop AFTER resolution",
+  },
+  {
+    category: "domain",
+    id: "domain-113",
+    reason:
+      "D29-100 adjacent-crossref dedupe: Naga domain's Deities masthead double-links Ravithra (legacy ID=218 + remaster ID=620 both repoint to deity/ravithra)",
+  },
+  {
+    category: "deity",
+    id: "deity-313",
+    reason: "Nalinivati (remaster) — domain-113's Deities masthead target",
+  },
+  {
+    category: "deity",
+    id: "deity-218",
+    reason: "Ravithra (legacy) — domain-113's duplicate masthead link, repoints to deity-620",
+  },
+  {
+    category: "deity",
+    id: "deity-620",
+    reason: "Ravithra (remaster) — domain-113's duplicate masthead link target",
+  },
+  { category: "deity", id: "deity-601", reason: "Velgaas — domain-113's Deities masthead target" },
+  { category: "deity", id: "deity-422", reason: "Vorasha — domain-113's Deities masthead target" },
+  {
+    category: "feat",
+    id: "feat-2649",
+    reason:
+      "D29-101b leads-to exclusion: 'Fledgling Flight leads to...' heading + crossref paragraph",
+  },
+  {
+    category: "feat",
+    id: "feat-2653",
+    reason: "Juvenile Flight — resolves feat-2649's 'leads to...' crossref target",
+  },
 ];
 
 // ---------------------------------------------------------------------------
@@ -697,6 +750,12 @@ const REQUIRED_CANONICAL_IDS: readonly string[] = [
   // zero embeddedItems, so the S2 vehicle item-section-suppression test
   // can't run hermetically without this.
   "vehicle/armored-sleigh",
+  // P11 S1 (D29-101b): a real "leads to..." prerequisite-chain heading +
+  // crossref paragraph — `build-search.test.ts`'s end-to-end proof that the
+  // excluded excerpt text never lands in the search index. (`class-feature/
+  // ability-boosts-15`, already required above, already covers D29-101a's
+  // `meta.class` mechanism — it carries a real `Class` mastheadExtra entry.)
+  "feat/fledgling-flight",
 ];
 
 function buildCanonicalCoverage(corpusRoot: string, remainingBudget: number): number {

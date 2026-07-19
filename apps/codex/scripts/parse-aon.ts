@@ -70,7 +70,7 @@ for (const file of categoryFiles) {
       continue;
     }
     try {
-      metas.push(extractAonMeta(snap.category, hit as unknown as AonHit));
+      metas.push(extractAonMeta(snap.category, hit as unknown as AonHit, report));
     } catch (e) {
       hardFailures.push(`[meta] ${snap.category}/${hit._id}: ${String(e)}`);
     }

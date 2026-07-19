@@ -274,7 +274,7 @@ function loadAon(): AonSide {
     for (const hit of snap.hits) {
       if (aonSkipReason(hit as unknown as AonHit) !== undefined) continue;
       try {
-        const meta = extractAonMeta(snap.category, hit as unknown as AonHit);
+        const meta = extractAonMeta(snap.category, hit as unknown as AonHit, report);
         metas.push(meta);
         const markdown = hit._source.markdown;
         if (typeof markdown === "string" && markdown.trim().length > 0) {
@@ -453,6 +453,11 @@ function main(): void {
     join: result,
     finalEntities: dropResult.keptEntities,
     dropAccounting: dropResult.accounting,
+    // P11 S1 (D29-100): this dev tool predates the dedupe pass too (same
+    // "predates X, empty stats keep the report shape valid" posture as the
+    // bookNormalization/sidebarAttachment/rulesTree/sourcesIndex stand-ins
+    // below — `transform.ts` is the real orchestrator that actually runs it).
+    adjacentCrossrefDedupe: { totalOccurrences: 0, entitiesTouched: 0 },
     foundrySnapshotDocCount: foundry.entities.size,
     aonSnapshotDocCount: aon.metas.length,
     // P4 (D29-39): this dev tool predates the S1 rules-tree/sidebar/book-

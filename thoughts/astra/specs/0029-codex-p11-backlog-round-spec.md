@@ -383,5 +383,78 @@ state — no parallel worktrees this round)
 
 ## 6. Build record
 
-(To be filled per slice — commits, gate evidence, report counters incl. every
-derive-at-build pin's final value, deviations.)
+**S1 (transform + search-build, D29-98..101) — real-corpus 2× scratch transform, `data/corpus`
+untouched throughout (verified: `manifest.json.totalEntityCount` stayed 46,192 on disk).**
+Determinism: 2 independent scratch runs, `diff -rq` over 44,901 files — **byte-identical**.
+
+**Derive-at-build pins (final, all explained):** total **44,808** (46,192 baseline − 1,384
+new activationDropped, exact); categories **88** (exact); action finalOut **2,641**;
+`activationDropped` **1,384** = parenFamily **1,224** (1,233 measured incl. 9 keeps − 9 = exact)
++ digitFamily **160** (independently cross-checked via raw AoN snapshot scan and fresh-corpus
+scan, both agree — supersedes the spec's un-censused ≈163 estimate); `nameTemplateResolved`
+**12** (exact hard-pin match); `postDropEditionPointerStripped` **55**, not the narrow-predicate
+56 — traced exactly: `action/1-minute-concentrate-manipulate-17` (a kept→dropped pointer OWNER
+under the narrow predicate) is itself a digit-family drop under the WIDENED predicate, so its
+`remasteredAs` edge vanishes with its own owner instead of being counted as stripped; D29-99
+churn confirmed live — the six "Cast a Spell…" docs resolved into exactly two 3-member
+`-2`/`-3` collision groups, matching the spec's prediction verbatim. Gates: crossrefs into the
+drop set **0**; whole-document re-scan **0**; `equipment/vorpal` (kept-entity crossref) still
+resolves; `action/interact-142` carries no dangling edition pointer; Sarenrae body lists
+"Cosmic Caravan" exactly once; `domain/knowledge-domain` masthead carries zero adjacent dupes.
+
+**`adjacentCrossrefDeduped` AMENDED (P6 "ship the mechanism, amend the pins" precedent):**
+measured **1,167 occurrences / 133 entities**, not the spec's review-measured 1,147/123.
+Independently verified at the epicenter: a regex scan of `domain/knowledge-domain`'s RAW AoN
+markdown (source-of-truth, no codex code involved) found **38** genuine duplicate pairs, not
+37 — the engineer's `collapseAdjacentCrossrefs` also reports 38 for that entity, matching the
+raw-markdown ground truth exactly. The spec's own review pin undercounted by a small margin;
+1,167/133 is recorded as the authoritative pin going forward, backed by the re-scan==0 gate
+(idempotent — no residual dupes anywhere in the output corpus).
+
+**Bug found + fixed via this derivation (not spec-anticipated):** the first-pass
+`activationDropFamily` fired on ANY `action`-category entity matching a drop-family name shape,
+not just AoN-only ones — a handful of genuine Foundry adventure-specific actions (e.g.
+`"(Affinity Ablaze) Arms of Balance: Walking the Cardinal Paths"`, from
+`packs/pf2e/adventure-specific-actions/`) also start with `(` and were being misclassified as
+`activationDropped` (same end-state either way — the pre-existing D29-14/17 pass would have
+dropped them anyway as unjoined Foundry-only residue — but the ACCOUNTING was wrong). Fixed by
+scoping the predicate to `proseOnly === true`, matching D29-98's literal "AoN-only" wording;
+verified all 9 keep-list entities are themselves `proseOnly: true`, confirming the scope.
+Regression test added (`drop.test.ts`).
+
+**Fixture regen** (`extract-fixture.ts`, new `REQUIRED_AON_PICKS`): `action-2910` "(arcane)"
+(paren-family drop) · `action-4171` (ACTION.TYPES template → survives renamed, non-drop-family)
+· `action-2461` (TRAITS template → "10 minutes (concentrate, manipulate)", the D29-99/-98
+overlap case, dropped after resolution) · `domain-113` "Naga" + `deity-313/218/620/601/422`
+(the dedupe epicenter — Ravithra legacy+remaster repoint to one target) · `feat-2649`/`feat-2653`
+(Fledgling Flight / Juvenile Flight, the leads-to exclusion case; `feat/fledgling-flight` also
+added to `REQUIRED_CANONICAL_IDS` for `build-search.test.ts`'s end-to-end proof —
+`class-feature/ability-boosts-15`, already required, covers `meta.class` for free). virt-001..90
+restored from git + `ritual/_index.json`/`manifest.json` re-spliced by hand per the P10 §6
+procedure (a full `git checkout` of `ritual/` came out byte-identical to HEAD, confirming the
+regen reproduces committed content exactly); `manifest.json` patched to `ritual: 96`,
+`totalEntityCount: 204`, `totalSizeBytes` recomputed from actual on-disk bytes.
+
+**CI:** `tsc --noEmit` clean (codex + `vp run -r typecheck` repo-wide, 32 tasks); `oxlint
+--threads=4` clean (the documented OOM workaround); `oxfmt --check` clean; `vp run -r test`
+repo-wide — 1917/1924 tests pass, the 7 failures all in `ssrSmoke.test.ts`'s
+`$category/ browse route (D29-35 tier 3)` block, same signature/count/location as the
+documented pre-existing residue (accepted, no stash A/B required); `vp run -r build` repo-wide
+clean; Playwright `virtualizationInteractionGuard.ts` (P9 guard) — all 22 cases PASS against
+the real corpus. A `vp run` side effect regenerated `apps/heartwood-frontend/src/
+routeTree.gen.ts` (the documented flap) — reverted before commit.
+
+**Deviations (both minor, recorded not silently done):** (1) `extractAonMeta` takes `report`
+as an OPTIONAL 3rd param (default no-op) rather than required, to avoid touching ~40
+pre-existing fixture-shaped call sites in `aonFacets.test.ts`/`join.test.ts` that never
+exercise D29-99 — real call sites (`transform.ts`/`dev-join.ts`/`parse-aon.ts`) all pass it
+explicitly. (2) `columnDefs.tsx`'s two historical p99/max width-measurement comments were
+annotated as stale/NOT re-measured (rather than silently rewriting the cited numbers) — that
+remeasurement is D29-102/S2 territory, out of S1's scope.
+
+**Files:** new `src/ingest/dedupeCrossrefs.ts`/`.test.ts`,
+`src/domain/search/SearchPage.test.tsx`, 4 new/updated fixture files; modified across ingest
+(`drop.ts`, `aonFacets.ts`, `report.ts` + tests, `transform.ts`, `dev-join.ts`, `parse-aon.ts`,
+`extract-fixture.ts`), search (`build-search.ts`, `pagefindClient.ts`, `SearchPage.tsx` +
+tests), and the 46,192→44,808 comment sweep (`columnDefs.tsx`/`.test.tsx`, `urlState.ts`,
+`facetKeys.ts`, `ssrSmoke.test.ts`, `build-search.ts`/`.test.ts`).

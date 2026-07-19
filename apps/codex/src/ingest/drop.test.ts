@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import type { CodexEntity } from "../schema/entity";
 import type { BlockNode, CodexNode } from "../schema/nodes";
-import { applyAonPrimaryDrop, isDropCandidate } from "./drop";
+import { activationDropFamily, applyAonPrimaryDrop, isDropCandidate } from "./drop";
 
 function entity(
   overrides: Partial<CodexEntity> & Pick<CodexEntity, "id" | "category" | "slug" | "name">,
@@ -287,6 +287,252 @@ describe("applyAonPrimaryDrop", () => {
       kind: "brokenRef",
       target: "boon/gone",
       display: "Gone",
+    });
+  });
+});
+
+describe("activationDropFamily (D29-98, P11 S1 — widened activation drop)", () => {
+  it("family (i): a paren-leading AoN-only action name", () => {
+    expect(
+      activationDropFamily({
+        id: "action/arcane-99",
+        category: "action",
+        name: "(arcane)",
+        proseOnly: true,
+      }),
+    ).toBe("paren");
+  });
+
+  it("family (ii): a digit-leading name with a parenthesized activation string", () => {
+    expect(
+      activationDropFamily({
+        id: "action/envision-interact-70",
+        category: "action",
+        name: "1 minute (envision, Interact)",
+        proseOnly: true,
+      }),
+    ).toBe("digit");
+    expect(
+      activationDropFamily({
+        id: "action/ten-min-99",
+        category: "action",
+        name: "10 minutes (concentrate, manipulate)",
+        proseOnly: true,
+      }),
+    ).toBe("digit");
+  });
+
+  it("a digit-leading name with NO parenthesized string is not family (ii)", () => {
+    expect(
+      activationDropFamily({
+        id: "action/level-3-99",
+        category: "action",
+        name: "3rd-level spell",
+        proseOnly: true,
+      }),
+    ).toBeUndefined();
+  });
+
+  it("the 9-entity keep-list survives despite matching family (i)", () => {
+    for (const id of [
+      "action/manipulate",
+      "action/concentrate",
+      "action/concentration",
+      "action/command",
+      "action/concentrate-manipulate",
+      "action/envision",
+      "action/concentration-3",
+      "action/concentration-4",
+      "action/spellshape",
+    ]) {
+      expect(
+        activationDropFamily({ id, category: "action", name: "(manipulate)", proseOnly: true }),
+      ).toBeUndefined();
+    }
+  });
+
+  it("non-action categories never match, even with a paren-leading name", () => {
+    expect(
+      activationDropFamily({
+        id: "condition/frightened",
+        category: "condition",
+        name: "(frightened)",
+        proseOnly: true,
+      }),
+    ).toBeUndefined();
+  });
+
+  it("a Foundry-native/merged action entity is NEVER touched, even with a paren-leading name (D29-98 is AoN-only-scoped — real corpus finding: adventure-specific-actions carry names like '(Affinity Ablaze) Arms of Balance: …')", () => {
+    expect(
+      activationDropFamily({
+        id: "action/affinity-ablaze-arms-of-balance",
+        category: "action",
+        name: "(Affinity Ablaze) Arms of Balance: Walking the Cardinal Paths",
+        proseOnly: undefined,
+      }),
+    ).toBeUndefined();
+    expect(
+      activationDropFamily({
+        id: "action/merged-paren-name",
+        category: "action",
+        name: "(arcane)",
+        proseOnly: undefined, // merged (has aonUrl) but NOT proseOnly
+      }),
+    ).toBeUndefined();
+  });
+
+  it("an ordinary action name (neither family) is untouched", () => {
+    expect(
+      activationDropFamily({
+        id: "action/stride",
+        category: "action",
+        name: "Stride",
+        proseOnly: true,
+      }),
+    ).toBeUndefined();
+  });
+});
+
+describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () => {
+  it("drops a paren-named (family i) AoN-only action even though it IS AoN-backed", () => {
+    const debris = entity({
+      id: "action/arcane-99",
+      category: "action",
+      slug: "arcane-99",
+      name: "(arcane)",
+      proseOnly: true,
+    });
+    const { reports, report } = collector();
+    const result = applyAonPrimaryDrop([debris], report);
+    expect(result.keptEntities).toEqual([]);
+    expect(result.accounting.activationDrop.total).toBe(1);
+    expect(result.accounting.activationDrop.parenFamily).toBe(1);
+    expect(result.accounting.activationDrop.digitFamily).toBe(0);
+    expect(reports.some((r) => r.cls === "activationDropped")).toBe(true);
+  });
+
+  it("drops a digit-named (family ii) AoN-only action and lists it in digitFamilyNames", () => {
+    const debris = entity({
+      id: "action/ten-min-99",
+      category: "action",
+      slug: "ten-min-99",
+      name: "10 minutes (concentrate, manipulate)",
+      proseOnly: true,
+    });
+    const { report } = collector();
+    const result = applyAonPrimaryDrop([debris], report);
+    expect(result.keptEntities).toEqual([]);
+    expect(result.accounting.activationDrop.digitFamily).toBe(1);
+    expect(result.accounting.activationDrop.digitFamilyNames).toEqual([
+      "action/ten-min-99: 10 minutes (concentrate, manipulate)",
+    ]);
+  });
+
+  it("keeps a keep-list entity despite matching family (i)", () => {
+    const kept = entity({
+      id: "action/manipulate",
+      category: "action",
+      slug: "manipulate",
+      name: "(manipulate)",
+      proseOnly: true,
+    });
+    const { report } = collector();
+    const result = applyAonPrimaryDrop([kept], report);
+    expect(result.keptEntities.map((e) => e.id)).toEqual(["action/manipulate"]);
+    expect(result.accounting.activationDrop.total).toBe(0);
+  });
+
+  it("activation-dropped entities do NOT count toward the D29-14/-17 byCategory/totalDropped accounting", () => {
+    const debris = entity({
+      id: "action/arcane-99",
+      category: "action",
+      slug: "arcane-99",
+      name: "(arcane)",
+      proseOnly: true,
+    });
+    const { report } = collector();
+    const result = applyAonPrimaryDrop([debris], report);
+    expect(result.accounting.totalDropped).toBe(0);
+    expect(result.accounting.byCategory).toEqual([]);
+  });
+
+  it("strips a dangling remasteredAs pointer off a surviving entity when its target is activation-dropped", () => {
+    const survivor = entity({
+      id: "action/interact-142",
+      category: "action",
+      slug: "interact-142",
+      name: "Interact",
+      aonUrl: "/Actions.aspx?ID=142",
+      remasteredAs: ["action/concentrate-manipulate-78"],
+    });
+    const droppedTarget = entity({
+      id: "action/concentrate-manipulate-78",
+      category: "action",
+      slug: "concentrate-manipulate-78",
+      name: "(concentrate, manipulate)",
+      proseOnly: true,
+    });
+    const { reports, report } = collector();
+    const result = applyAonPrimaryDrop([survivor, droppedTarget], report);
+    expect(result.keptEntities.map((e) => e.id)).toEqual(["action/interact-142"]);
+    const kept = result.keptEntities[0];
+    expect(kept?.remasteredAs).toBeUndefined();
+    expect(result.accounting.editionPointersStripped).toBe(1);
+    expect(reports.some((r) => r.cls === "postDropEditionPointerStripped")).toBe(true);
+  });
+
+  it("leaves a remasteredAs pointer untouched when its target survives", () => {
+    const survivor = entity({
+      id: "action/interact-142",
+      category: "action",
+      slug: "interact-142",
+      name: "Interact",
+      aonUrl: "/Actions.aspx?ID=142",
+      remasteredAs: ["action/manipulate"],
+    });
+    const target = entity({
+      id: "action/manipulate",
+      category: "action",
+      slug: "manipulate",
+      name: "(manipulate)",
+      proseOnly: true,
+    });
+    const { report } = collector();
+    const result = applyAonPrimaryDrop([survivor, target], report);
+    const kept = result.keptEntities.find((e) => e.id === "action/interact-142");
+    expect(kept?.remasteredAs).toEqual(["action/manipulate"]);
+    expect(result.accounting.editionPointersStripped).toBe(0);
+  });
+
+  it("a keep-list entity's own crossref into another dropped entity still downgrades to brokenRef (drop + dedupe compose)", () => {
+    const crossrefNode: CodexNode = {
+      kind: "crossref",
+      targetId: "action/arcane-99",
+      display: "Arcane",
+    };
+    const kept = entity({
+      id: "spell/heal",
+      category: "spell",
+      slug: "heal",
+      name: "Heal",
+      aonUrl: "/Spells.aspx?ID=1",
+      body: [{ kind: "paragraph", children: [crossrefNode as never] }] as unknown as BlockNode[],
+    });
+    const debris = entity({
+      id: "action/arcane-99",
+      category: "action",
+      slug: "arcane-99",
+      name: "(arcane)",
+      proseOnly: true,
+    });
+    const { report } = collector();
+    const result = applyAonPrimaryDrop([kept, debris], report);
+    const survivor = result.keptEntities.find((e) => e.id === "spell/heal");
+    const paragraph = survivor?.body[0] as { children: CodexNode[] } | undefined;
+    expect(paragraph?.children[0]).toEqual({
+      kind: "brokenRef",
+      target: "action/arcane-99",
+      display: "Arcane",
     });
   });
 });

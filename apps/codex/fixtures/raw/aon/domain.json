@@ -1,0 +1,70 @@
+{
+  "category": "domain",
+  "hits": [
+    {
+      "_id": "domain-113",
+      "_source": {
+        "advanced_domain_spell": "Show the Path",
+        "advanced_domain_spell_markdown": "[Show the Path](/Spells.aspx?ID=2400)",
+        "category": "domain",
+        "deity": [
+          "Nalinivati",
+          "Ravithra",
+          "Ravithra",
+          "Velgaas",
+          "Vorasha"
+        ],
+        "deity_markdown": "[Nalinivati](/Deities.aspx?ID=313), [Ravithra](/Deities.aspx?ID=218), [Ravithra](/Deities.aspx?ID=620), [Velgaas](/Deities.aspx?ID=601), [Vorasha](/Deities.aspx?ID=422)",
+        "domain": [
+          "Naga"
+        ],
+        "domain_markdown": "[Naga](/Domains.aspx?ID=113)",
+        "domain_spell": "Chastising Retort",
+        "domain_spell_markdown": "[Chastising Retort](/Spells.aspx?ID=2399)",
+        "exclude_from_search": false,
+        "id": "domain-113",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "domain-58"
+        ],
+        "markdown": "<title level=\"1\" right=\"Domain \" pfs=\"Standard\">[Naga](/Domains.aspx?ID=113)</title>\r\n\r\n<column gap=\"tiny\">\r\n\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 267\n\n**Deities**\r\n[Nalinivati](/Deities.aspx?ID=313), [Ravithra](/Deities.aspx?ID=218), [Ravithra](/Deities.aspx?ID=620), [Velgaas](/Deities.aspx?ID=601), [Vorasha](/Deities.aspx?ID=422)\r\n\r\n**Domain Spell** [Chastising Retort](/Spells.aspx?ID=2399)\r\n\r\n**Advanced Domain Spell** [Show the Path](/Spells.aspx?ID=2400)\n\n</column>\r\n\r\nLike many nagas, you believe you understand your place in the Universe, try to help those who don’t, and dissuade those who would serve to fool others into straying from their purpose.",
+        "name": "Naga",
+        "pfs": "Standard",
+        "primary_source": "Divine Mysteries",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Divine Mysteries pg. 267",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2025-01-30",
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Divine Mysteries](/Sources.aspx?ID=234) pg. 267\r\n\r\n**Deities**\r\n[Nalinivati](/Deities.aspx?ID=313), [Ravithra](/Deities.aspx?ID=218), [Ravithra](/Deities.aspx?ID=620), [Velgaas](/Deities.aspx?ID=601), [Vorasha](/Deities.aspx?ID=422)\r\n\r\n<row gap=\"medium\">\r\n**Domain Spell** [Chastising Retort](/Spells.aspx?ID=2399)\r\n\r\n**Advanced Domain Spell** [Show the Path](/Spells.aspx?ID=2400)\r\n</row>\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nLike many nagas, you believe you understand your place in the Universe, try to help those who don’t, and dissuade those who would serve to fool others into straying from their purpose.\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Divine Mysteries"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Divine Mysteries](/Sources.aspx?ID=234) pg. 267",
+        "source_raw": [
+          "Divine Mysteries pg. 267"
+        ],
+        "speed": {},
+        "spell": [
+          "Show the Path",
+          "Chastising Retort"
+        ],
+        "summary": "Like many nagas, you believe you understand your place in the Universe, try to help those who don’t, and dissuade those who would serve to fool others into straying from their purpose.",
+        "summary_markdown": "Like many nagas, you believe you understand your place in the Universe, try to help those who don’t, and dissuade those who would serve to fool others into straying from their purpose.",
+        "text": " Naga Source Divine Mysteries pg. 267 Deities Nalinivati, Ravithra, Ravithra, Velgaas, Vorasha Domain Spell Chastising Retort Advanced Domain Spell Show the Path Like many nagas, you believe you understand your place in the Universe, try to help those who don’t, and dissuade those who would serve to fool others into straying from their purpose.",
+        "type": "Domain",
+        "url": "/Domains.aspx?ID=113",
+        "weakness": {}
+      },
+      "sort": [
+        "naga",
+        "/domains.aspx?id=113"
+      ]
+    }
+  ]
+}

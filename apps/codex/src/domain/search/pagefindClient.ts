@@ -49,7 +49,12 @@ export interface PagefindSearchOptions {
 export interface PagefindApi {
   options?: (o: Record<string, unknown>) => Promise<void>;
   init?: () => void;
-  search: (term: string, options?: PagefindSearchOptions) => Promise<PagefindSearchResponse>;
+  /** `term` accepts `null` (P11 D29-101c) — Pagefind's own real API supports
+   * a null query for filter-only search; measured live: an EMPTY STRING
+   * query returns 0 results even with filters set (686-scale with `null`),
+   * so filter-only `/search` (incl. the D29-109c trait link) is dead
+   * without callers passing `null` for an empty/whitespace-only query. */
+  search: (term: string | null, options?: PagefindSearchOptions) => Promise<PagefindSearchResponse>;
   /** Whole-index (unfiltered) per-dimension value->count map — `/search`'s
    * filter-panel option source (D29-36: "sourced from `pagefind.filters()`
    * counts"). Absent from the hand-rolled type in a couple of very old
@@ -121,6 +126,9 @@ export interface SearchDisplayResult {
   book: string;
   level?: string;
   rarity?: string;
+  /** D29-101a/c (P11 S1) — the owning-class label (`meta.class`,
+   * class-feature entities only). */
+  class?: string;
   excerpt?: string;
 }
 
@@ -134,6 +142,7 @@ export function toDisplayResult(fragment: PagefindSearchFragment): SearchDisplay
     book: fragment.meta.book ?? "",
     level: fragment.meta.level,
     rarity: fragment.meta.rarity,
+    class: fragment.meta.class,
     excerpt: fragment.excerpt,
   };
 }

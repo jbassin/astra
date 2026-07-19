@@ -53,6 +53,13 @@ export interface SizeTotals {
   entityFileCount?: number;
 }
 
+/** D29-100 (P11 S1): see `ReportInput.adjacentCrossrefDedupe`'s own doc
+ * comment. */
+export interface AdjacentCrossrefDedupeStats {
+  totalOccurrences: number;
+  entitiesTouched: number;
+}
+
 export interface ReportInput {
   /** Every `report(cls, detail)` call across the WHOLE run (Foundry parse +
    * AoN parse + join), one shared counter — the caller threads a single
@@ -74,8 +81,15 @@ export interface ReportInput {
    * Foundry-only entity). */
   finalEntities: readonly CodexEntity[];
   /** S5c: the D29-14 drop-accounting section's data (per-category dropped
-   * counts + the D29-17 carve-out kept counts). */
+   * counts + the D29-17 carve-out kept counts + D29-98's activation-drop
+   * sub-section). */
   dropAccounting: DropAccounting;
+  /** D29-100 (P11 S1): the whole-document adjacent-crossref dedupe pass's
+   * stats — `totalOccurrences` is the 1,147-occurrence pin (also visible via
+   * the generic `adjacentCrossrefDeduped` reportCounts class, one call per
+   * occurrence); `entitiesTouched` is the separate 123-entity pin, which has
+   * no generic-counter equivalent. */
+  adjacentCrossrefDedupe: AdjacentCrossrefDedupeStats;
   foundrySnapshotDocCount: number;
   aonSnapshotDocCount: number;
   sizeTotals?: SizeTotals;
@@ -450,8 +464,10 @@ export interface ReportJson {
   variantCount: number;
   reportCounts: Record<string, number>;
   sizeTotals: SizeTotals;
-  /** S5c/D29-14: the drop-accounting section. */
+  /** S5c/D29-14/-98: the drop-accounting section. */
   dropAccounting: DropAccounting;
+  /** D29-100 (P11 S1): the adjacent-crossref-dedupe pass's stats. */
+  adjacentCrossrefDedupe: AdjacentCrossrefDedupeStats;
   /** D29-19 (P1.6): `character`-typed Actors excluded before assembly
    * (`reportCounts.excludedActors` — pulled out to its own top-level field
    * since spec §9 calls it out by name, not just generic residue). */
@@ -522,6 +538,7 @@ export function buildReportJson(input: ReportInput): ReportJson {
     ),
     sizeTotals: input.sizeTotals ?? {},
     dropAccounting: input.dropAccounting,
+    adjacentCrossrefDedupe: input.adjacentCrossrefDedupe,
     excludedActorsCount: input.reportCounts.get("excludedActors") ?? 0,
     statsCoverage: computeStatsCoverage(input.finalEntities),
     facetCoverage: computeFacetCoverage(input.finalEntities),
@@ -804,6 +821,35 @@ export function buildReportMarkdown(json: ReportJson): string {
           json.dropAccounting.carveOut.map((c) => [c.category, c.kept]),
         )
       : "No carve-out entities in this run.",
+    "",
+  );
+
+  lines.push("## Activation-debris drop pass (D29-98, P11 S1)", "");
+  lines.push(
+    `Widened drop of AoN-only \`action\` entities whose (RESOLVED, post-D29-99) name matches either family: (i) starts with \`(\` — the "(manipulate)" shape; (ii) starts with a digit AND contains a parenthesized activation string — the "1 hour (envision, Interact)" shape. The 9-entity keep-list (\`action/manipulate\`, \`concentrate\`, \`concentration\`, \`command\`, \`concentrate-manipulate\`, \`envision\`, \`concentration-3\`, \`concentration-4\`, \`spellshape\`) survives regardless (real inbound crossrefs/embeds). **${json.dropAccounting.activationDrop.total}** dropped — **${json.dropAccounting.activationDrop.parenFamily}** family (i) / **${json.dropAccounting.activationDrop.digitFamily}** family (ii). Dangling \`remasteredAs\`/\`legacyOf\` edges into the FULL drop set (activation ∪ AoN-primary) stripped off survivors: **${json.dropAccounting.editionPointersStripped}**.`,
+    "",
+  );
+  lines.push(
+    "### Family (ii) — every digit-leading dropped name (orchestrator eyeball review)",
+    "",
+  );
+  lines.push(
+    "The widened family-(ii) predicate is new and un-censused at spec time — every dropped name is listed here in FULL (never capped) for review before the S1 commit.",
+    "",
+  );
+  lines.push(
+    json.dropAccounting.activationDrop.digitFamilyNames.length > 0
+      ? mdTable(
+          ["id: name"],
+          json.dropAccounting.activationDrop.digitFamilyNames.map((n) => [n]),
+        )
+      : "No family-(ii) names dropped this run.",
+    "",
+  );
+
+  lines.push("## Adjacent-crossref dedupe (D29-100, P11 S1)", "");
+  lines.push(
+    `Whole-document post-join pre-emit walk over body + loreBody + embeddedItems + mastheadExtra + hazard stats.disable/routine/reset — collapses RUNS of crossref nodes with identical targetId and equivalent (apostrophe/case-folded) display, separated only by whitespace/punctuation-only text, to one crossref + one separator. **${json.adjacentCrossrefDedupe.totalOccurrences}** duplicate occurrences collapsed across **${json.adjacentCrossrefDedupe.entitiesTouched}** entities (epicenter: \`domain/*\` "Deities" masthead lists).`,
     "",
   );
 

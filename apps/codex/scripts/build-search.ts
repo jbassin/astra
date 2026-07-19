@@ -1,7 +1,7 @@
 // D29-34 (P3 S2) — the offline Pagefind index build over the corpus.
 //
 // HOST-ONLY: the native Pagefind indexer peaks at ~3.8 GB RSS during
-// `writeFiles` at the full 46,192-entity corpus (measured, spec §1/§6) —
+// `writeFiles` at the full 44,808-entity corpus (measured, spec §1/§6) —
 // this script must NEVER be wired into `vite build`, a CI lane, or a Docker
 // build step (P5's compose/bind-mount design inherits this constraint
 // unchanged). Run it via `just codex-search-index` (host only).
@@ -29,6 +29,7 @@ import { loadConfig } from "@astra/config";
 import * as pagefind from "pagefind";
 
 import { collectText, statsText } from "../src/domain/render/text";
+import type { CodexNode } from "../src/schema/nodes";
 import { createCorpusReader, type CorpusReader } from "../src/server/corpusFs";
 
 /** Trait case-folding for the search FILTER only (D29-32/D29-34: "trait
@@ -38,6 +39,52 @@ import { createCorpusReader, type CorpusReader } from "../src/server/corpusFs";
  * stay verbatim; only the filter value is folded. */
 function foldTrait(trait: string): string {
   return trait.toLowerCase();
+}
+
+// ---------------------------------------------------------------------------
+// D29-101b (P11 S1): "leads to..." exclusion — AoN's navigational
+// prerequisite-chain heading ("Fledgling Flight leads to...") + its trailing
+// crossref-link paragraph ("Juvenile Flight") index as pure noise that
+// clobbers a real query's excerpt (measured 1,404 instances, ALL top-level
+// heading+one-paragraph shaped, zero in loreBody — `entity.body` only).
+// `collectText` has no skip hook of its own, so this pre-filters the
+// TOP-LEVEL `body` array before it's ever handed to `collectText`.
+// ---------------------------------------------------------------------------
+
+const LEADS_TO_RE = / leads to\.\.\.$/i;
+
+function isCrossrefBearingParagraph(node: CodexNode): boolean {
+  return node.kind === "paragraph" && node.children.some((c) => c.kind === "crossref");
+}
+
+function isLeadsToHeading(node: CodexNode): boolean {
+  return node.kind === "heading" && LEADS_TO_RE.test(collectText([node]));
+}
+
+/** Drops every top-level `heading` node matching `/ leads to\.\.\.$/i`
+ * PLUS the immediately-following crossref-bearing paragraph, from a
+ * top-level `body` array only (never recurses — the pattern is by
+ * construction top-level-only, verified zero false positives / zero
+ * loreBody occurrences against the real corpus). */
+function stripLeadsTo(body: readonly CodexNode[]): CodexNode[] {
+  const result: CodexNode[] = [];
+  let i = 0;
+  while (i < body.length) {
+    const node = body[i];
+    const next = body[i + 1];
+    if (
+      node !== undefined &&
+      isLeadsToHeading(node) &&
+      next !== undefined &&
+      isCrossrefBearingParagraph(next)
+    ) {
+      i += 2;
+      continue;
+    }
+    if (node !== undefined) result.push(node);
+    i += 1;
+  }
+  return result;
 }
 
 // S4 (D29-36) real-corpus finding, recorded here so it isn't re-attempted
@@ -86,7 +133,7 @@ export async function buildSearchIndex(
       const slug = row.id.slice(category.length + 1);
       const entity = reader.entity(category, slug);
 
-      const bodyText = collectText(entity.body);
+      const bodyText = collectText(stripLeadsTo(entity.body));
       const loreText = entity.loreBody !== undefined ? collectText(entity.loreBody) : "";
       // Category-gated per D29-34's "a statsText() for creature/hazard": since
       // S1's gap extractors, hp/size/ac/save facet fields also appear on
@@ -110,6 +157,14 @@ export async function buildSearchIndex(
       };
       if (row.level !== undefined) meta.level = String(row.level);
       if (row.rarity !== undefined) meta.rarity = row.rarity;
+      // D29-101a (P11 S1): the owning-class label, off the `Class`
+      // mastheadExtra entry (~1,254 class-feature entities) — values carry a
+      // measured leading space, hence the `.trim()`.
+      const classEntry = entity.mastheadExtra?.find((m) => m.label === "Class");
+      if (classEntry !== undefined) {
+        const className = collectText(classEntry.value).trim();
+        if (className.length > 0) meta.class = className;
+      }
 
       const filters: Record<string, string[]> = {
         category: [category],

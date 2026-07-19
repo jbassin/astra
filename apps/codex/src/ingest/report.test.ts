@@ -166,7 +166,22 @@ describe("computeFinalCategoryCounts / license / edition / proseOnly / variant",
   });
 });
 
-const EMPTY_DROP_ACCOUNTING: DropAccounting = { totalDropped: 0, byCategory: [], carveOut: [] };
+const EMPTY_ACTIVATION_DROP = {
+  total: 0,
+  parenFamily: 0,
+  digitFamily: 0,
+  digitFamilyNames: [],
+};
+
+const EMPTY_DROP_ACCOUNTING: DropAccounting = {
+  totalDropped: 0,
+  byCategory: [],
+  carveOut: [],
+  activationDrop: EMPTY_ACTIVATION_DROP,
+  editionPointersStripped: 0,
+};
+
+const EMPTY_ADJACENT_CROSSREF_DEDUPE = { totalOccurrences: 0, entitiesTouched: 0 };
 
 function baseInput(overrides: Partial<ReportInput>): ReportInput {
   return {
@@ -176,6 +191,7 @@ function baseInput(overrides: Partial<ReportInput>): ReportInput {
     join: joinResult({}),
     finalEntities: [],
     dropAccounting: EMPTY_DROP_ACCOUNTING,
+    adjacentCrossrefDedupe: EMPTY_ADJACENT_CROSSREF_DEDUPE,
     foundrySnapshotDocCount: 28636,
     aonSnapshotDocCount: 43684,
     bookNormalization: EMPTY_BOOK_NORMALIZATION,
@@ -326,6 +342,8 @@ describe("buildReportJson", () => {
       totalDropped: 536,
       byCategory: [{ category: "boon", dropped: 240 }],
       carveOut: [{ category: "creature", kept: 2242 }],
+      activationDrop: EMPTY_ACTIVATION_DROP,
+      editionPointersStripped: 0,
     };
     const json = buildReportJson(baseInput({ dropAccounting }));
     expect(json.dropAccounting).toEqual(dropAccounting);
@@ -414,6 +432,8 @@ describe("buildReportMarkdown", () => {
         { category: "creature", kept: 2242 },
         { category: "hazard", kept: 660 },
       ],
+      activationDrop: EMPTY_ACTIVATION_DROP,
+      editionPointersStripped: 0,
     };
     const json = buildReportJson(baseInput({ dropAccounting }));
     const md = buildReportMarkdown(json);
@@ -430,6 +450,49 @@ describe("buildReportMarkdown", () => {
     const md = buildReportMarkdown(json);
     expect(md).toContain("Nothing dropped.");
     expect(md).toContain("No carve-out entities in this run.");
+  });
+
+  it("D29-98 (P11 S1): renders the activation-drop section, incl. the FULL family-(ii) name list", () => {
+    const dropAccounting: DropAccounting = {
+      totalDropped: 0,
+      byCategory: [],
+      carveOut: [],
+      activationDrop: {
+        total: 1387,
+        parenFamily: 1224,
+        digitFamily: 163,
+        digitFamilyNames: [
+          "action/envision-interact-70: 1 minute (envision, Interact)",
+          "action/ten-min-99: 10 minutes (concentrate, manipulate)",
+        ],
+      },
+      editionPointersStripped: 55,
+    };
+    const json = buildReportJson(baseInput({ dropAccounting }));
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("Activation-debris drop pass");
+    expect(md).toContain("1387");
+    expect(md).toContain("1224");
+    expect(md).toContain("163");
+    expect(md).toContain("55");
+    expect(md).toContain("action/envision-interact-70: 1 minute (envision, Interact)");
+    expect(md).toContain("action/ten-min-99: 10 minutes (concentrate, manipulate)");
+  });
+
+  it("D29-98: renders the 'no family-(ii) names dropped' placeholder when the list is empty", () => {
+    const json = buildReportJson(baseInput({}));
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("No family-(ii) names dropped this run.");
+  });
+
+  it("D29-100 (P11 S1): renders the adjacent-crossref-dedupe section", () => {
+    const json = buildReportJson(
+      baseInput({ adjacentCrossrefDedupe: { totalOccurrences: 1147, entitiesTouched: 123 } }),
+    );
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("Adjacent-crossref dedupe");
+    expect(md).toContain("1147");
+    expect(md).toContain("123");
   });
 
   it("D29-19/-20 (P1.6): renders the excludedActors count + the statblock coverage tables", () => {

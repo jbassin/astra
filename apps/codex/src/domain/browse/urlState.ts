@@ -215,7 +215,7 @@ export function encodeRangeParam(filter: RangeFilter): string | undefined {
 // comma (traits, actionCost, size, ...) — but `creature.family` does 380
 // times over (e.g. `"Dragon, Black"`) and `source.book` does 240 times
 // (e.g. titles with an embedded subtitle comma) — measured against the real
-// 46,192-entity corpus. A bare `.split(",")` silently shredded those into
+// 44,808-entity corpus. A bare `.split(",")` silently shredded those into
 // two bogus tokens, so `f.family=Dragon, Black` (or any `book=` selection
 // naming such a title) matched NOTHING. Backslash-escaping a literal `,`
 // (and `\` itself) at the STRING level — independent of URL percent-

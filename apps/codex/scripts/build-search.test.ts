@@ -15,7 +15,7 @@ import { buildSearchIndex } from "./build-search";
  * `os.tmpdir()` dir (never `fixtures/` or `data/`, D29-12: CI has no
  * `data/` at all). `pagefind` is a plain npm devDependency, so this needs
  * zero network and zero host-only machinery — the ~3.8 GB RSS sharp edge
- * only shows up at the REAL corpus's 46,192-entity scale (S2's host gate,
+ * only shows up at the REAL corpus's 44,808-entity scale (S2's host gate,
  * not here).
  */
 
@@ -118,5 +118,63 @@ describe("buildSearchIndex over the committed fixture corpus (CI-hermetic)", () 
         .includes(wantedUrl),
     );
     expect(found).toBe(true);
+  });
+
+  /** Decompresses+parses every `.pf_fragment` file and returns the one whose
+   * `url` matches `"/<id>"` — the shared lookup the D29-101 tests below use
+   * (mirrors the "url round-trips" test's own decompress-and-scan idiom).
+   * Each decompressed fragment carries a short opaque Pagefind magic-prefix
+   * (`"pagefind_dcd"`, verified) before the JSON body — sliced off by
+   * locating the first `{`, same defensive posture as parsing any
+   * length-prefixed wire format. */
+  function findFragment(outDir: string, id: string): Record<string, unknown> | undefined {
+    const fragmentDir = join(outDir, "fragment");
+    const wantedUrl = `/${id}`;
+    for (const f of readdirSync(fragmentDir)) {
+      const raw = gunzipSync(readFileSync(join(fragmentDir, f))).toString("utf8");
+      const jsonStart = raw.indexOf("{");
+      const parsed = JSON.parse(raw.slice(jsonStart)) as { url: string };
+      if (parsed.url === wantedUrl) return parsed;
+    }
+    return undefined;
+  }
+
+  it("D29-101a (P11 S1): meta.class carries the trimmed Class mastheadExtra label", async () => {
+    const outDir = freshOutDir();
+    const reader = createCorpusReader(fixtureCorpusRoot());
+    await buildSearchIndex(reader, outDir);
+    // `class-feature/ability-boosts-15` (P4 fixture pick) carries a real
+    // `Class` mastheadExtra entry in the real corpus (verified: "Witch").
+    const fragment = findFragment(outDir, "class-feature/ability-boosts-15");
+    expect(fragment).toBeDefined();
+    const meta = fragment?.meta as Record<string, string> | undefined;
+    expect(meta?.class).toBeDefined();
+    expect(meta?.class).not.toMatch(/^\s|\s$/); // trimmed, no leading/trailing whitespace
+  });
+
+  it("D29-101a: an entity with no Class mastheadExtra label carries no meta.class", async () => {
+    const outDir = freshOutDir();
+    const reader = createCorpusReader(fixtureCorpusRoot());
+    await buildSearchIndex(reader, outDir);
+    const fragment = findFragment(outDir, "spell/heal");
+    expect(fragment).toBeDefined();
+    const meta = fragment?.meta as Record<string, string> | undefined;
+    expect(meta?.class).toBeUndefined();
+  });
+
+  it("D29-101b (P11 S1): a 'leads to...' heading + its crossref paragraph never lands in the indexed content", async () => {
+    const outDir = freshOutDir();
+    const reader = createCorpusReader(fixtureCorpusRoot());
+    await buildSearchIndex(reader, outDir);
+    // `feat/fledgling-flight` (P11 S1 fixture pick) carries a real "Fledgling
+    // Flight leads to..." heading + a "Juvenile Flight" crossref paragraph.
+    const fragment = findFragment(outDir, "feat/fledgling-flight");
+    expect(fragment).toBeDefined();
+    const content = fragment?.content as string | undefined;
+    expect(content?.toLowerCase()).not.toContain("leads to");
+    expect(content).not.toContain("Juvenile Flight");
+    // The entity's OWN prose (the paragraph before the excluded heading)
+    // stays indexed — this isn't a wholesale content wipe.
+    expect(content).toContain("You Fly");
   });
 });

@@ -89,6 +89,7 @@ describe("toDisplayResult", () => {
       book: "Player Core",
       level: "1",
       rarity: "common",
+      class: undefined,
       excerpt: "<mark>Heal</mark> a creature.",
     });
   });
@@ -98,6 +99,26 @@ describe("toDisplayResult", () => {
       fragment({ meta: { category: "spell", edition: "remaster", book: "x" } }),
     );
     expect(d.name).toBe("/spell/heal");
+  });
+
+  it("D29-101a/c (P11 S1): projects meta.class when present", () => {
+    const d = toDisplayResult(
+      fragment({
+        meta: {
+          title: "Ability Boosts",
+          category: "class-feature",
+          edition: "remaster",
+          book: "Player Core",
+          class: "Witch",
+        },
+      }),
+    );
+    expect(d.class).toBe("Witch");
+  });
+
+  it("D29-101a/c: class is undefined when meta carries no class key", () => {
+    const d = toDisplayResult(fragment({}));
+    expect(d.class).toBeUndefined();
   });
 });
 

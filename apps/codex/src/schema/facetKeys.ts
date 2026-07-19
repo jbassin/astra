@@ -32,7 +32,7 @@ import type { Facets } from "./entity";
  * than by inspection. `prerequisites` (feat, cardinality 1,811 — free prose)
  * is likewise explicitly excluded, never a facet.
  *
- * ## Per-category provenance (measured against the real 46,192-entity/
+ * ## Per-category provenance (measured against the real 44,808-entity/
  * 88-category corpus this slice — S1 — was built against; re-verify against
  * a fresh `report.md` facet-coverage section after any corpus refresh)
  *

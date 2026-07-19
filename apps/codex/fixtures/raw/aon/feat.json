@@ -60,6 +60,125 @@
         "camoflage coat",
         "/feats.aspx?id=5337"
       ]
+    },
+    {
+      "_id": "feat-2649",
+      "_source": {
+        "actions": "Single Action",
+        "actions_number": 2,
+        "category": "feat",
+        "exclude_from_search": false,
+        "feat": [
+          "Fledgling Flight"
+        ],
+        "feat_markdown": "Fledgling Flight",
+        "frequency": "once per round",
+        "id": "feat-2649",
+        "is_standard_ancestry_feat": false,
+        "level": 1,
+        "markdown": "<title\r\n    level=\"1\"\r\n    right=\"Feat 1\"\r\n    pfs=\"Standard\"\r\n>\r\n[Fledgling Flight](/Feats.aspx?ID=2649) <actions string=\"Single Action\" />\r\n</title>\n\n<traits>\r\n<trait label=\"Strix\" url=\"/Traits.aspx?ID=342\" />\r\n</traits>\r\n\r\n<column gap=\"tiny\">\n\n**Source** [Ancestry Guide](/Sources.aspx?ID=74) pg. 136\n\n**Frequency**\r\nonce per round\n\n</column>\r\n\r\n---\r\n\r\nYou can fly through the air in short bursts. You Fly. If you don't normally have a fly Speed, you gain a fly Speed of 15 feet for this movement. If you aren't on solid ground at the end of this movement, you fall.\n\n<title level=\"2\">Fledgling Flight leads to...</title>\r\n[Juvenile Flight](/Feats.aspx?ID=2653)",
+        "name": "Fledgling Flight",
+        "pfs": "Standard",
+        "primary_source": "Ancestry Guide",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Ancestry Guide pg. 136",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2021-02-24",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n<trait label=\"Strix\" url=\"/Traits.aspx?ID=342\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Ancestry Guide](/Sources.aspx?ID=74) pg. 136\n\n**Frequency**\r\nonce per round\n\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou can fly through the air in short bursts at half your land Speed.\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Ancestry Guide"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Ancestry Guide](/Sources.aspx?ID=74) pg. 136",
+        "source_raw": [
+          "Ancestry Guide pg. 136"
+        ],
+        "speed": {},
+        "summary": "You can fly through the air in short bursts at half your land Speed.",
+        "summary_markdown": "You can fly through the air in short bursts at half your land Speed.",
+        "text": "<title level=\"1\" right=\"Feat 1\" pfs=\"Standard\" > Fledgling Flight Single Action Source Ancestry Guide pg. 136 Frequency once per round --- You can fly through the air in short bursts. You Fly. If you don't normally have a fly Speed, you gain a fly Speed of 15 feet for this movement. If you aren't on solid ground at the end of this movement, you fall. Fledgling Flight leads to... Juvenile Flight",
+        "trait": [
+          "Strix"
+        ],
+        "trait_group": [
+          "Ancestry"
+        ],
+        "trait_markdown": "[Strix](/Traits.aspx?ID=342)",
+        "trait_raw": [
+          "Strix"
+        ],
+        "type": "Feat",
+        "url": "/Feats.aspx?ID=2649",
+        "weakness": {}
+      },
+      "sort": [
+        "fledgling flight",
+        "/feats.aspx?id=2649"
+      ]
+    },
+    {
+      "_id": "feat-2653",
+      "_source": {
+        "category": "feat",
+        "exclude_from_search": false,
+        "feat": [
+          "Juvenile Flight"
+        ],
+        "feat_markdown": "Juvenile Flight",
+        "id": "feat-2653",
+        "is_standard_ancestry_feat": false,
+        "level": 5,
+        "markdown": "<title\r\n    level=\"1\"\r\n    right=\"Feat 5\"\r\n    pfs=\"Standard\"\r\n>\r\n[Juvenile Flight](/Feats.aspx?ID=2653) <actions string=\"\" />\r\n</title>\n\n<traits>\r\n<trait label=\"Strix\" url=\"/Traits.aspx?ID=342\" />\r\n</traits>\r\n\r\n<column gap=\"tiny\">\n\n**Source** [Ancestry Guide](/Sources.aspx?ID=74) pg. 137\n\n**Prerequisites**\r\n[Fledgling Flight](/Feats.aspx?ID=2649)\n\n</column>\r\n\r\n---\r\n\r\nYour wings become stronger, allowing you to fly farther.  The fly Speed you gain from Fledgling Flight increases to 25 feet.\n\n<title level=\"2\">Juvenile Flight leads to...</title>\r\n[Fully Flighted](/Feats.aspx?ID=2657)",
+        "name": "Juvenile Flight",
+        "pfs": "Standard",
+        "prerequisite": "Fledgling Flight",
+        "prerequisite_markdown": "[Fledgling Flight](/Feats.aspx?ID=2649)",
+        "primary_source": "Ancestry Guide",
+        "primary_source_category": "Lost Omens",
+        "primary_source_raw": "Ancestry Guide pg. 137",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2021-02-24",
+        "resistance": {},
+        "search_markdown": "<traits>\r\n<trait label=\"Strix\" url=\"/Traits.aspx?ID=342\" />\r\n</traits>\r\n\r\n<additional-info>\r\n**Source** [Ancestry Guide](/Sources.aspx?ID=74) pg. 137\n\n**Prerequisites**\r\n[Fledgling Flight](/Feats.aspx?ID=2649)\n\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou unfold your wings for travel and can keep them unfolded for 10 minutes.\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Ancestry Guide"
+        ],
+        "source_category": [
+          "Lost Omens"
+        ],
+        "source_markdown": "[Ancestry Guide](/Sources.aspx?ID=74) pg. 137",
+        "source_raw": [
+          "Ancestry Guide pg. 137"
+        ],
+        "speed": {},
+        "summary": "You unfold your wings for travel and can keep them unfolded for 10 minutes.",
+        "summary_markdown": "You unfold your wings for travel and can keep them unfolded for 10 minutes.",
+        "text": "<title level=\"1\" right=\"Feat 5\" pfs=\"Standard\" > Juvenile Flight Source Ancestry Guide pg. 137 Prerequisites Fledgling Flight --- Your wings become stronger, allowing you to fly farther. The fly Speed you gain from Fledgling Flight increases to 25 feet. Juvenile Flight leads to... Fully Flighted",
+        "trait": [
+          "Strix"
+        ],
+        "trait_group": [
+          "Ancestry"
+        ],
+        "trait_markdown": "[Strix](/Traits.aspx?ID=342)",
+        "trait_raw": [
+          "Strix"
+        ],
+        "type": "Feat",
+        "url": "/Feats.aspx?ID=2653",
+        "weakness": {}
+      },
+      "sort": [
+        "juvenile flight",
+        "/feats.aspx?id=2653"
+      ]
     }
   ]
 }
