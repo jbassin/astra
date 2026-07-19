@@ -13,10 +13,29 @@
  * route change so the new page's links get bound and the old ones torn down.
  * Mounted ONLY on the entity route (`$category/$slug.tsx`) per D29-28 —
  * listing rows navigate, they don't get hover cards.
+ *
+ * D29-105a (S3): interaction was dead — the popover clipped pointer events
+ * (`.popover { pointer-events: none }`, `globals.css`) and closed INSTANTLY on
+ * trigger `mouseleave` (no timer at all), so a user could never move the
+ * mouse from the trigger link into the panel itself (wheel-scroll, clicking
+ * an inner crossref). Fix = `pointer-events: auto` on `.active-popover`
+ * (CSS-only, `globals.css`) + a short GRACE_DELAY_MS close timer here, paired
+ * with a hover bridge bound on the popover element itself: entering the
+ * panel cancels the pending close, leaving it re-schedules one. Switching
+ * directly between two DIFFERENT trigger links stays instant (`showPopover`
+ * already closes the previous one synchronously) — only the
+ * trigger↔panel transition gets the grace window.
  */
 import { computePosition, flip, inline, shift } from "@floating-ui/dom";
 import { useRouterState } from "@tanstack/react-router";
 import { useEffect } from "react";
+
+/** D29-105a: long enough for a deliberate trigger→panel mouse move (the
+ * panel typically opens a few px from the cursor), short enough that an
+ * accidental miss doesn't leave a stale card lingering. 200ms matches the
+ * feel of the akasha-frontend source's own (absent) affordance — chosen, not
+ * measured; tune at gate H if it reads too snappy/sluggish live. */
+const GRACE_DELAY_MS = 200;
 
 const canonicalRegex = /<link rel="canonical" href="([^"]*)">/;
 
@@ -41,16 +60,45 @@ function normalizeRelativeURLs(el: Document, destination: string | URL) {
     rebase(i, "src", destination);
 }
 
-function initPopovers(): () => void {
+export function initPopovers(): () => void {
   const parser = new DOMParser();
   let activeAnchor: HTMLAnchorElement | null = null;
+  let closeTimer: ReturnType<typeof setTimeout> | null = null;
 
   const clearActivePopover = () => {
     activeAnchor = null;
     for (const p of document.querySelectorAll(".popover")) p.classList.remove("active-popover");
   };
 
+  const cancelScheduledClose = () => {
+    if (closeTimer === null) return;
+    clearTimeout(closeTimer);
+    closeTimer = null;
+  };
+
+  // D29-105a: the grace-delay close — mouseleave (trigger OR panel) starts
+  // this instead of closing synchronously, so a mouse move from one to the
+  // other (either direction) lands inside the window and cancels it via
+  // `cancelScheduledClose`.
+  const scheduleClose = () => {
+    cancelScheduledClose();
+    closeTimer = setTimeout(() => {
+      closeTimer = null;
+      clearActivePopover();
+    }, GRACE_DELAY_MS);
+  };
+
+  // D29-105a: bound once per popover element, at creation (elements are
+  // reused across repeat hovers of the same target via the `prev` lookup
+  // below — binding here, not per-onEnter-call, avoids piling up duplicate
+  // listeners on reuse).
+  const bindPanelHoverBridge = (popoverElement: HTMLElement) => {
+    popoverElement.addEventListener("mouseenter", cancelScheduledClose);
+    popoverElement.addEventListener("mouseleave", scheduleClose);
+  };
+
   async function onEnter(link: HTMLAnchorElement, ev: MouseEvent) {
+    cancelScheduledClose();
     activeAnchor = link;
     if (link.dataset.noPopover === "true") return;
     const { clientX, clientY } = ev;
@@ -97,6 +145,7 @@ function initPopovers(): () => void {
     const popoverElement = document.createElement("div");
     popoverElement.id = popoverId;
     popoverElement.classList.add("popover");
+    bindPanelHoverBridge(popoverElement);
     const popoverInner = document.createElement("div");
     popoverInner.classList.add("popover-inner");
     popoverInner.dataset.contentType = contentType ?? undefined;
@@ -134,14 +183,18 @@ function initPopovers(): () => void {
   for (const link of links) {
     const enter = (ev: MouseEvent) => void onEnter(link, ev);
     link.addEventListener("mouseenter", enter);
-    link.addEventListener("mouseleave", clearActivePopover);
+    // D29-105a: was `clearActivePopover` directly (instant close, no window
+    // for the mouse to reach the panel) — now the grace-delay schedule, with
+    // the panel-hover bridge above cancelling it on re-entry.
+    link.addEventListener("mouseleave", scheduleClose);
     bound.push([link, enter]);
   }
 
   return () => {
+    cancelScheduledClose();
     for (const [link, enter] of bound) {
       link.removeEventListener("mouseenter", enter);
-      link.removeEventListener("mouseleave", clearActivePopover);
+      link.removeEventListener("mouseleave", scheduleClose);
     }
     for (const p of document.querySelectorAll(".popover")) p.remove();
   };

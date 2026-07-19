@@ -32,6 +32,16 @@ html {
     radial-gradient(ellipse at center, transparent 55%, var(--color-page-vignette) 100%),
     linear-gradient(var(--color-void), var(--color-page-bg-alt));
   background-attachment: fixed;
+  /* D29-106 (#13d): themed scrollbar for the DOCUMENT scroll — the listing
+     pane is NOT an inner scroll region (P9 windows via the document
+     scrollbar itself), so `:root`/`html` is one of the 6 regions the spec
+     measured, not an oversight. Full-width (no `scrollbar-width: thin` —
+     that's reserved for the 5 compact INNER regions below), Firefox via
+     `scrollbar-color`; the `::-webkit-scrollbar*` fallback for Chromium/
+     Safari is consolidated with the inner regions further down (zero
+     pre-existing scrollbar rules anywhere in this file before this pass —
+     verified). */
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 body {
   display: flex;
@@ -307,7 +317,13 @@ select:focus-visible,
   left: 0;
   z-index: 30;
   min-width: 13rem;
-  max-height: 24rem;
+  /* D29-110 (#10): was a flat `24rem` — on a ~900px-tall viewport that alone
+     already exceeds the available room below the header, clipping a
+     dropdown's tail items; `min(70vh, 24rem)` caps by BOTH the viewport
+     (so it never overruns a short window) and the prior flat ceiling (so it
+     never grows past the original design size on a tall one), reaching
+     beyond the first 12 items on a 900px-tall viewport per gate E. */
+  max-height: min(70vh, 24rem);
   overflow-y: auto;
   list-style: none;
   padding: 0.4rem 0;
@@ -315,6 +331,9 @@ select:focus-visible,
   border: 1px solid var(--color-gold-rule);
   border-radius: 0.2rem;
   box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+  /* D29-106 (#13d): themed scrollbar — one of the 6 regions. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 .codex-nav-item:hover .codex-nav-panel,
 .codex-nav-panel-open {
@@ -995,6 +1014,10 @@ select:focus-visible,
   overflow-y: auto;
   padding: 0.25rem clamp(0.5rem, 2vw, 1.5rem);
   border-left: 1px solid var(--color-rule);
+  /* D29-106 (#13d): themed scrollbar — one of the 6 regions (the split-view
+     entry pane IS an inner scroll region, unlike the listing pane itself). */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 .codex-entry-pane-placeholder,
 .codex-entry-pane-message {
@@ -1086,6 +1109,9 @@ select:focus-visible,
   gap: 0;
   max-height: 14rem;
   overflow-y: auto;
+  /* D29-106 (#13d): themed scrollbar — one of the 6 regions. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 .codex-facet-option {
   display: flex;
@@ -1154,6 +1180,9 @@ select:focus-visible,
   gap: 0.3rem;
   max-height: 14rem;
   overflow-y: auto;
+  /* D29-106 (#13d): themed scrollbar — one of the 6 regions. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 .codex-trait-chip {
   display: inline-flex;
@@ -1991,6 +2020,12 @@ select:focus-visible,
 .popover.active-popover {
   visibility: visible;
   opacity: 1;
+  /* D29-105a: the whole point of the interaction fix — while inactive the
+     popover stays `pointer-events: none` (never intercepts clicks/wheel on
+     whatever's underneath before it's shown); once active it must accept
+     pointer events itself, else the mouse can never reach `.popover-inner`
+     to scroll it or the panel-hover bridge (Popover.tsx) never fires. */
+  pointer-events: auto;
 }
 .popover-inner {
   max-width: 28rem;
@@ -1998,12 +2033,98 @@ select:focus-visible,
   overflow-y: auto;
   padding: 1rem 1.25rem;
   background: var(--color-elevated);
-  border: 1px solid var(--color-rule);
+  /* D29-105c: was `--color-rule` (translucent hairline) — unify with the
+     Filters dialog's solid gold-frame border (`.codex-filter-drawer`,
+     above); the background already shared `--color-elevated`, so this is
+     the one remaining inconsistency the spec's review isolated. No sitewide
+     `--color-elevated` retune (explicitly out of scope). */
+  border: 1px solid var(--color-gold-frame);
   border-radius: 0.4rem;
   box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
   font-size: 0.85rem;
+  /* D29-106: themed scrollbar for this inner scroll region (one of the 6). */
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-frame) var(--color-void);
 }
 .popover-inner img {
   max-width: 100%;
   height: auto;
+}
+/* D29-105b: the popover clones the STANDALONE page's SSR HTML wholesale (no
+   render-from-nodes path exists — `.popover-hint` is the whole
+   `.codex-entity-page` article, see `entityPage.tsx`), so the cloned page's
+   h1 lands inside `.popover-inner` at its full standalone size unless
+   re-scaled here. Scoped to the plain `.codex-entity-name` selector — D29-112
+   (S4, not yet built) adds a `codex-entity-name-standalone` modifier + a
+   sr-only rule for the LIVE standalone page; until S4 lands this rule (and
+   D29-112's own sr-only rule) targets the same bare class, so it keeps
+   applying once S4 adds the modifier alongside it (S4's job to tighten the
+   selector, not to re-show a hidden title — the popover must NEVER lose its
+   title, the review's headline B1 catch). */
+.popover-inner .codex-entity-name {
+  font-size: 1.1rem;
+}
+/* D29-105b: the edition banner ("This page has a newer/older edition...")
+   is page-level chrome, not summary content — hide it inside the compact
+   popover clone (the standalone page keeps it, untouched). */
+.popover-inner .codex-edition-banner {
+  display: none;
+}
+
+/* --- D29-106 (#13d): scrollbar theming, WebKit/Blink fallback --- Firefox
+   reads `scrollbar-color`/`scrollbar-width` (set per-region above, right
+   alongside each region's own rules); Chromium/Safari instead need the
+   `::-webkit-scrollbar*` pseudo-elements, which don't compose with a bare
+   custom-property declaration, so they're consolidated here in one pass
+   across all 6 regions rather than repeated 6×. Palette: track
+   `--color-void`, thumb the gold-frame family, hover the maroon accent
+   (`--color-accent`, aliased to `--color-heading-maroon` in tokens.css) —
+   matches the Firefox declarations above exactly. Verified zero
+   pre-existing `::-webkit-scrollbar` rules anywhere in this file before
+   this pass. --- */
+html::-webkit-scrollbar {
+  width: 14px;
+  height: 14px;
+}
+html::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+html::-webkit-scrollbar-thumb {
+  background-color: var(--color-gold-frame);
+  border: 3px solid var(--color-void);
+  border-radius: 7px;
+}
+html::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-accent);
+}
+
+.codex-facet-options::-webkit-scrollbar,
+.codex-trait-chips::-webkit-scrollbar,
+.codex-nav-panel::-webkit-scrollbar,
+.popover-inner::-webkit-scrollbar,
+.codex-entry-pane::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.codex-facet-options::-webkit-scrollbar-track,
+.codex-trait-chips::-webkit-scrollbar-track,
+.codex-nav-panel::-webkit-scrollbar-track,
+.popover-inner::-webkit-scrollbar-track,
+.codex-entry-pane::-webkit-scrollbar-track {
+  background: var(--color-void);
+}
+.codex-facet-options::-webkit-scrollbar-thumb,
+.codex-trait-chips::-webkit-scrollbar-thumb,
+.codex-nav-panel::-webkit-scrollbar-thumb,
+.popover-inner::-webkit-scrollbar-thumb,
+.codex-entry-pane::-webkit-scrollbar-thumb {
+  background-color: var(--color-gold-frame);
+  border-radius: 4px;
+}
+.codex-facet-options::-webkit-scrollbar-thumb:hover,
+.codex-trait-chips::-webkit-scrollbar-thumb:hover,
+.codex-nav-panel::-webkit-scrollbar-thumb:hover,
+.popover-inner::-webkit-scrollbar-thumb:hover,
+.codex-entry-pane::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-accent);
 }

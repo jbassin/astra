@@ -515,3 +515,78 @@ commit.
 filterEngine.test}.{ts,tsx}`; `src/domain/render/{facetHeader,facetHeader.test}.tsx`;
 `src/domain/rules/{RulesTree,RulesTree.test,treeModel,treeModel.test}.{ts,tsx}`;
 `src/routes/$category/index.tsx`; `src/styles/globals.css`. No new files.
+
+**S3 (popovers + scrollbars, D29-105/106) — both decisions landed, CI green.** D29-105a
+(interaction): `Popover.tsx`'s instant `clearActivePopover()` on trigger `mouseleave` (no
+timer existed) replaced with a **200ms grace-delay close timer** (`GRACE_DELAY_MS`, chosen not
+measured — long enough for a deliberate trigger→panel move, short enough not to leave a stale
+card lingering; tunable at gate H if it reads snappy/sluggish live) + a **panel hover bridge**
+(`mouseenter`/`mouseleave` bound on the `.popover` element itself, once at creation since
+elements are reused across repeat hovers of the same target via the `prev` lookup — binding
+per-onEnter-call would have piled up duplicate listeners); `initPopovers` exported for
+testability (previously module-private, zero coverage). CSS: `.popover.active-popover {
+pointer-events: auto }` (was `none` even when active — the actual root cause of "dead to
+pointer events," wheel included). D29-105b (compact): `.popover-inner .codex-entity-name {
+font-size: 1.1rem }` scoped to the **plain class**, not a `-standalone` modifier — D29-112
+(S4) hasn't landed yet, so per the spec's own cross-slice note this rule targets the bare
+`codex-entity-name` selector and stays live once S4 adds the modifier alongside it (S4's job
+is to tighten the selector, never to re-show a hidden title). `.popover-inner
+.codex-edition-banner { display: none }`. D29-105c (border): `.popover-inner` border
+`--color-rule` → `var(--color-gold-frame)`, matching `.codex-filter-drawer`. D29-106
+(scrollbars): `scrollbar-color`/`scrollbar-width: thin` (the last omitted on `:root`/`html`
+per spec) added to all 6 measured regions — `html` (`:root`'s the document scroll, covers the
+P9 windowed listing), `.codex-facet-options`, `.codex-trait-chips`, `.codex-nav-panel`,
+`.popover-inner`, `.codex-entry-pane` — plus a consolidated `::-webkit-scrollbar/-track/
+-thumb(:hover)` fallback block (Chromium/Safari don't read `scrollbar-color`). Palette:
+track `--color-void`, thumb `--color-gold-frame`, hover `--color-accent` (maroon alias).
+`.codex-nav-panel` max-height `24rem` → `min(70vh, 24rem)` (#10, same slice per §4's list).
+
+**Live gate-E verification (production build, real corpus, local port 10374 — see process
+note below):** hovering the `Healing` trait crossref on `/spell/heal` opened the panel with
+**pointer-events computed `auto`**, border computed `rgb(194, 164, 109)` = `#c2a46d` =
+`--color-gold-frame` exactly, edition banner present in the DOM at `display: none`, and — the
+review's headline B1 catch — **the cloned title stayed visible**: `.codex-entity-name`
+text "Healing" at computed `17.6px` (1.1rem against the 16px root, the compact scale applied).
+Panel-hover bridge: moved into `.popover-inner`, panel stayed `active-popover` past 1s (≫ the
+200ms grace window). Wheel: a long popover (`/creature/red-dragon-adult`'s
+cinder-dragon-adult crossref, `scrollHeight` 4728 vs `clientHeight` 350) scrolled via a real
+`page.mouse.wheel` — `scrollTop` 0→300, panel stayed open throughout (pointer-events: auto
+letting the wheel reach it). Close: moved the mouse off both trigger and panel — still open
+at 50ms, closed at 300ms (past the 200ms grace, not instant). `scrollbar-color` computed
+`rgb(194, 164, 109) rgb(238, 231, 216)` (gold-frame/void) confirmed on all 6 regions
+(`document.documentElement`, `.codex-nav-panel`, `.popover-inner`, `.codex-facet-options`,
+`.codex-trait-chips`, `.codex-entry-pane`), `scrollbar-width: thin` on the 5 inner ones. Nav
+panel at 1280×900 (Player dropdown, 39 items — un-curated pending S4's D29-110): computed
+`max-height: 384px` = `min(70vh, 24rem)`; `scrollHeight` 1203 vs `clientHeight` 382; scrolled
+the panel to bottom and confirmed the **39th item became visible within bounds** — items
+beyond 12 are genuinely reachable, not just numerically capped the same as before (the
+`min()` formula's own benefit is on viewports shorter than ~549px tall; at 900px the themed,
+always-rendered scrollbar is what makes the pre-existing `overflow-y: auto` reach
+discoverable).
+
+**Process note (recorded, not a fault to fix now):** verification needed the production
+server on port 10374 (`config.kdl`'s fixed `codex.port`, no PORT env override — `vite dev`
+doesn't serve `staticMounts`/pagefind, so a production `build && start` was required), which
+collided with the live `astra-codex` Docker container already bound to that port. The
+container was stopped for the session, the local server verified against, then the container
+was restarted and confirmed healthy — a brief live-site downtime window resulted. Orchestrator
+confirmed the container recovered healthy. Future slices needing a local production server
+should bind a different port for verification rather than stopping the live container.
+
+**Tests:** new `Popover.test.tsx` (jsdom, duck-typed `fetch`/`Response` mock — not the real
+classes, which aren't guaranteed present under vitest's jsdom environment — + `vi.useFakeTimers`
+for the grace-delay assertions): open-with-title, grace-delay close (not instant), panel-hover
+bridge cancels the close, leaving the panel re-schedules and fires. 4/4 pass.
+
+**CI:** `tsc --noEmit` (codex) clean; `vp run -r typecheck` 32/32 clean; `oxlint --type-aware
+--deny-warnings --threads=4 apps libs/ts` clean; `format:check` clean (850 files); `vp run -r
+test` 26 tasks — codex 1944/1951 (7 failures, exact-NAME match to the documented pre-existing
+`ssrSmoke.test.ts` residue, zero delta from S2's count baseline once the 4 new Popover tests
+are added); one unrelated flake, `akasha-frontend#test` exit 137 (SIGKILL/OOM under the
+26-way parallel run) — re-ran in isolation, 12/12 files / 56/56 tests pass; not caused by this
+slice (akasha-frontend untouched) — accepted by the orchestrator as environmental. `vp run -r
+build` 26/26 clean. The `routeTree.gen.ts` flap recurred once — reverted before commit per the
+sanctioned procedure.
+
+**Files:** modified `src/domain/components/islands/Popover.tsx`, `src/styles/globals.css`;
+new `src/domain/components/islands/Popover.test.tsx`.
