@@ -222,3 +222,27 @@ no persistent/incap/passive) = **34 spells**, vs the **rider family** = 230. Fin
   axis before refitting multipliers.
 - **Recover the prose action-scaling family** (force barrage class) + overlay variants
   (heal/harm) via per-variant scoring.
+
+## 7. Rounds 2–3 outcome (2026-07-19) — where the experiment converged
+
+**Round 2** (spec `0030-assay-round2-spec.md`, BUILT `6d77fa7`/`4098bff`): effect extraction
+layer (four degree-attribution rules, overlay per-variant, inline-@Damage, manual scaling
+family) + marginal rider pricing. Ladder V4′ PASS (±6% of 7×rank at r≥3); V1′–V3′ FAIL with
+the architectural diagnosis: marginal rider prices (learned from hybrids) cannot fund a
+control spell's entire slot (fear −0.82, slow −2.29, synesthesia −4.05).
+**Round 3** (spec `0030-assay-round3-spec.md`): the control-side generative fit was KILLED
+pre-build by adversarial review evidence (best ~24% within ±½ rank vs the 60% gate; atom
+usage saturates from r4 while budget grows — effect-spell power lives in unmodeled QUALITY,
+not extractable atom identity). Stakeholder fork → comparables + prior card (BUILT
+`3783473`/`5ea0e5e`): payload-restoring extraction fixes (case-fold ~84 spells incl.
+Sleep's whole effect; en-dash +28; 7 spells un-skipped), per-row hostility routing
+(158 hostile / 81 beneficial / 20 named-ambiguous), deterministic comparables (top-5 +
+rank RANGE, never a point score), prior-anchored price card. Gates: V-B/V-C/V-D PASS;
+V-A 40% vs 70% quantitatively but the qualitative neighbor check passes (fear's neighbors
+are fear-family) — same architectural truth, honestly recorded.
+
+**The converged product:** damage/hybrid homebrew → quantitative in-band score against the
+validated budget ladder; hostile effect homebrew → comparables + prior card; everything
+else → typed ledger. The generative effect-fit is tombstoned (round-3 spec §3) until a
+schema captures effect quality. Round-4 candidates: buff-side comparables, summons,
+forced-movement atoms, a codex surface.
