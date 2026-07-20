@@ -333,3 +333,31 @@ exactly (222/263/0/20/29/n=14/curve/round-3-beneficial-81) or is explicitly fram
 own status header as "re-derive at build" territory (the buff-population component counts, which
 the promotion fix was EXPECTED to move) — every delta from the pre-fix draft numbers is enumerated
 above with its mechanism, not silently absorbed.
+
+### §6b — Track B + integration + deploy record (orchestrator, 2026-07-20)
+
+- **Track B `1b16072`:** schema (Zod, strict), `assayFs.ts` loader (no fixture fallback,
+  cache-on-success, warn-once), `assayBlock.tsx` (field-presence rendering — covers
+  hybrids naturally), EntityPageData optional-field wiring (single seam serves standalone
+  page + `?entry=` preview pane), fixture artifact all kinds/edges, compose third bind.
+  W-E proven pre-integration: dist deleted + rebuilt (P12), 2,339/2,346 — the 7 fails =
+  the known main baseline; all 7 flagship goldens byte-exact untouched.
+- **Integration `fa05880`:** the 13-code reasonCode copy map completed on the codex side
+  (Track B correctly shipped only the spec-named code + safe fallback — cross-track enum
+  reconciled by the orchestrator, the flagged seam); `codex-refresh` regenerates + places
+  the artifact (export has no `--out` flag — recipe copies from `apps/assay/out/`).
+- **Deploy (stakeholder-flagged, sanctioned "do it"):** image rebuild + codex-scoped
+  compose up (never blanket `just up` — P14). Window **12 s**, healthy, all THREE binds
+  mounted. **W-F live (Playwright DOM, edge): fireball "Power: in band. EV 21 vs budget
+  23.3 at rank 3" · heroism "Comparable spells: Levitate, …" · scrying curated long-cast
+  copy · magic-missile@superseded NO block (corpus-only doc negative check) · SigNoz
+  astra.codex ERROR count 0 (1h).**
+- **Incidents (recorded):** a 33-hour stale `node server.ts` dev process from a prior
+  session held :10399 with a dead in-memory build (chunks deleted by later rebuilds →
+  500s) — killed; local prod-server smoke replaced by the vitest ssrSmoke run against the
+  real artifact (26/26; the 7 baseline fails are fixture-env-only and vanish on real
+  data). `.claude/settings.local.json` carries pre-existing format drift both engineers
+  correctly left uncommitted.
+- **Gate-H register addition:** the Assay (experimental) block on spell pages (incl. the
+  `?entry=` preview pane), the 13-entry reason copy, heroism-class buff neighbor quality
+  (mixed-rank lists are expected — rank ranges are wide by honest design).
