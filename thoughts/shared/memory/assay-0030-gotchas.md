@@ -60,3 +60,26 @@ session's WIP TS files block your docs commit → verify own files clean, `--no-
 
 **▶ Round-4 candidates (unstarted):** buff-side comparables (needs target-prose maturity),
 summon/wall sub-models, forced-movement atoms (command is ledgered), a codex surface.
+
+**ROUND 4 (2026-07-20) BUILT + DEPLOYED + LIVE** — buff+summon coverage + THE CODEX
+SURFACE (spec `0030-assay-round4-spec.md` D30-35..41; Track A `b053df5` py · Track B
+`1b16072` ts, PARALLEL disjoint-ownership tracks in one tree · integration `fa05880` ·
+records `4946acc`): spell-effects join (222/263/0 by item NAME — "Spell Effect: X", a
+colon kills naive regexes; evaluate `@item.level` exprs at the SPELL's base rank, NEVER
+the effect item's own level field — 29/263 disagree; predicates gate atoms — mystic armor
+has NO saves atom at rank 1; heightened-stripped text UNDERCOUNTS refs, scan raw), buff
+comparables (pop 185 constructive: beneficial ∪ beneficial raw-modifier ∪ promoted
+ref-bearing skips; sure strike/blur mutual #1), summon bands (n=14, 13/14 exact vs the
+GM Screen journal curve), export 1,144 entries (349 quant/148 comp/123 buff/524 ledger,
+13 typed reasonCodes each w/ curated codex copy — the P13 formatFacetValue lesson),
+codex `assayFs` loader (NO corpusFs-style fixture fallback — absent→absent) + optional-
+field AssayBlock (goldens byte-identical untouched; one seam serves page + `?entry=`
+pane). Deploy: image rebuild + codex-scoped compose, 12 s window, W-F Playwright live
+(fireball in-band 21/23.3 · heroism comparables · scrying curated copy · legacy-doc
+negative) + SigNoz 0 ERROR. ⭐ finds: a 33h STALE `node server.ts` dev process held a
+dead in-memory build on :10399 (rebuilds deleted its chunks → convincing 500 shells —
+check `ss -tlnp` before blaming fresh code); the 7 baseline ssrSmoke fails are
+FIXTURE-ENV-ONLY (vanish against real data); cross-track enum seams (reasonCode) need
+an integration reconcile step — schema contracts pin SHAPE, not vocabularies;
+`codex-refresh` now regenerates+places the artifact. Register for gate H: the Assay
+block + wide buff rank-ranges (honest by design).
