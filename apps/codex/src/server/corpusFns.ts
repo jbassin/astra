@@ -10,7 +10,7 @@
 
 import { createServerFn } from "@tanstack/react-start";
 
-import { getAssayReader } from "./assayFs";
+import { emptyAssayReader } from "./assayFs";
 import {
   type ClassPageData,
   type ClassRailData,
@@ -33,10 +33,11 @@ import { resolveSourcesIndex, type SourcesIndexData } from "./sourcesIndexData";
 export const getEntityPage = createServerFn({ method: "GET" })
   .validator((input: { category: string; slug: string }) => input)
   .handler(({ data }): EntityPageData | null =>
-    // D30-39/40 — the one real `AssayReader` call site: every OTHER caller of
-    // `resolveEntityPageData` (goldens, tests, `regen-goldens.ts`) uses that
-    // function's own `emptyAssayReader` default instead.
-    resolveEntityPageData(getCorpusReader(), data, getAssayReader()),
+    // D30-39/40 — the one real `AssayReader` call site. The assay surface is ON
+    // HOLD (stakeholder, 2026-07-20): wired to `emptyAssayReader` so the block
+    // never displays; the loader/component/artifact machinery stays intact.
+    // Revisit = swap back to `getAssayReader()` from "./assayFs".
+    resolveEntityPageData(getCorpusReader(), data, emptyAssayReader),
   );
 
 /** S3 (D29-27) — the category directory, served at `/categories` since
