@@ -42,7 +42,7 @@ export function EntityRenderPane({
   superseded: boolean;
   standalone?: boolean;
 }): ReactElement {
-  const { entity, embeds, knownTraitIds, attachedSidebars } = data;
+  const { entity, embeds, knownTraitIds, attachedSidebars, assay } = data;
   const baseCtx = rootRenderCtx({
     resolveEmbed: (targetId) => embeds[targetId],
     knownTraitIds: new Set(knownTraitIds),
@@ -70,7 +70,12 @@ export function EntityRenderPane({
           order + real heading anchors is the in-page-navigation substitute
           (ancestry pages lose the box; stakeholder-accepted). This was the
           last mount — `TableOfContents.tsx` itself is deleted too. */}
-      <EntityPage entity={entity} ctx={ctx} standalone={standalone} />
+      {/* D30-39/40 — `assay` flows through the SAME `EntityPageData` this
+          pane already destructures above, so the split-view `?entry=`
+          preview pane renders the Assay block exactly like the standalone
+          route (accepted, recorded in the spec's status header — "DOES
+          appear in the ?entry= preview pane"). */}
+      <EntityPage entity={entity} ctx={ctx} standalone={standalone} assay={assay} />
       {attachedSidebars !== undefined ? (
         <AttachedSidebars sidebars={attachedSidebars} superseded={superseded} ctx={ctx} />
       ) : null}

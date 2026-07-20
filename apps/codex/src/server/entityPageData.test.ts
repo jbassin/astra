@@ -1,7 +1,19 @@
+import { join } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
+import { createAssayReader, emptyAssayReader } from "./assayFs";
 import { createCorpusReader, fixtureCorpusRoot } from "./corpusFs";
 import { resolveEntityPageData } from "./entityPageData";
+
+/** `apps/codex/fixtures/assay/spell-power.json` — the committed D30-39/40
+ * assay fixture, keyed against the SAME `fixtures/entities/spell/*` ids
+ * this file's own `reader` above already resolves (`spell/heal`,
+ * `spell/force-barrage`, `spell/heal@legacy`), so a corpus-fixture entity
+ * lookup and an assay-fixture lookup can be exercised together in one
+ * `resolveEntityPageData` call, the exact "one server-side pass" shape
+ * production wiring (`corpusFns.ts`'s `getEntityPage`) uses. */
+const ASSAY_READER = createAssayReader(join(import.meta.dirname, "../../fixtures"));
 
 /**
  * D29-25/D29-29 tier 3 — `resolveEntityPageData`'s embed-prefetch + trait-index
@@ -263,5 +275,49 @@ describe("resolveEntityPageData rulesNav (D29-41 — trail/sidebar/pager)", () =
     const data = resolveEntityPageData(reader, { category: "rules", slug: "nature-crafting-3" });
     expect(data?.rulesNav?.book.book).toBe("Treasure Vault");
     expect(data?.rulesNav?.book.nodes.length).toBeGreaterThan(0);
+  });
+});
+
+describe("resolveEntityPageData: assay wiring (D30-39/40)", () => {
+  const reader = createCorpusReader(fixtureCorpusRoot());
+
+  it("the default 2-arg call (every EXISTING call site) never populates assay, even for a spell", () => {
+    const data = resolveEntityPageData(reader, { category: "spell", slug: "heal" });
+    expect(data?.assay).toBeUndefined();
+  });
+
+  it("an injected AssayReader populates `assay` for a spell with a real entry", () => {
+    const data = resolveEntityPageData(reader, { category: "spell", slug: "heal" }, ASSAY_READER);
+    expect(data?.assay?.kind).toBe("quantitative");
+    expect(data?.assay?.verdict).toBe("in band");
+  });
+
+  it("a spell with NO assay entry resolves with `assay` absent (fail-soft, never a thrown error)", () => {
+    const data = resolveEntityPageData(
+      reader,
+      { category: "spell", slug: "magic-missile" },
+      ASSAY_READER,
+    );
+    expect(data?.entity.id).toBe("spell/magic-missile");
+    expect(data?.assay).toBeUndefined();
+  });
+
+  it("a NON-spell entity never gets an assay lookup at all, even with a real reader wired in (Spell category only, D30-40)", () => {
+    const data = resolveEntityPageData(
+      reader,
+      { category: "creature", slug: "adamantine-dragon-adult" },
+      ASSAY_READER,
+    );
+    expect(data?.assay).toBeUndefined();
+  });
+
+  it("emptyAssayReader (the entityPageData.ts default) behaves identically to omitting the third arg", () => {
+    const withDefault = resolveEntityPageData(reader, { category: "spell", slug: "heal" });
+    const withExplicitEmpty = resolveEntityPageData(
+      reader,
+      { category: "spell", slug: "heal" },
+      emptyAssayReader,
+    );
+    expect(withDefault?.assay).toBe(withExplicitEmpty?.assay);
   });
 });

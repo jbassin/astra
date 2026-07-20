@@ -50,3 +50,42 @@ describe("EntityRenderPane: size chip drawer inheritance (P10, D29-95)", () => {
     expect(screen.getByText("Large")).not.toBeNull();
   });
 });
+
+// D30-39/40 — the assay block is accepted to appear in the `?entry=`
+// split-view preview pane too (spec status header: "DOES appear in the
+// ?entry= preview pane [...] accepted, recorded"), since this pane and the
+// standalone route both flow through this SAME `EntityRenderPane` over one
+// `EntityPageData` payload — no separate wiring needed, this proves it.
+const SPELL_DATA_WITH_ASSAY: EntityPageData = {
+  entity: {
+    id: "spell/test-drawer-spell",
+    slug: "test-drawer-spell",
+    category: "spell",
+    name: "Test Drawer Spell",
+    edition: "remaster",
+    source: { book: "Test Book", license: "ORC" },
+    traits: [],
+    body: [],
+    facets: {},
+  },
+  embeds: {},
+  knownTraitIds: [],
+  embedCapHit: false,
+  assay: {
+    kind: "quantitative",
+    rank: 1,
+    population: "beneficial",
+    verdict: "in band",
+    ev: 4,
+    budget: 4,
+  },
+};
+
+describe("EntityRenderPane: assay block inheritance (D30-39/40)", () => {
+  it("the split-view drawer renders the Assay block the same way the standalone route would", async () => {
+    renderWithRouter(() => <EntityRenderPane data={SPELL_DATA_WITH_ASSAY} superseded={false} />);
+    await screen.findByText("Test Drawer Spell");
+    expect(screen.getByText("(experimental)")).not.toBeNull();
+    expect(screen.getByText(/Power: in band/)).not.toBeNull();
+  });
+});

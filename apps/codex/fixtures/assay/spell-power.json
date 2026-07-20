@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "entries": {
+    "spell/heal": {
+      "kind": "quantitative",
+      "rank": 1,
+      "population": "beneficial",
+      "verdict": "in band",
+      "residualRanks": 0.1,
+      "ev": 4.2,
+      "budget": 4
+    },
+    "spell/heal@legacy": {
+      "kind": "ledger",
+      "rank": 1,
+      "population": null,
+      "reasonCode": "no-comparable-profile"
+    },
+    "spell/force-barrage": {
+      "kind": "quantitative",
+      "rank": 1,
+      "population": "hostile",
+      "verdict": "+0.6 ranks hot",
+      "residualRanks": 0.6,
+      "ev": 5,
+      "budget": 4.5,
+      "comparables": [
+        { "id": "spell/magic-missile", "name": "Magic Missile", "rank": 1 },
+        { "id": "spell/energy-beam", "name": "Energy Beam", "rank": 9 }
+      ],
+      "rankRange": [1, 9]
+    },
+    "spell/synthetic-buff-comparables-example": {
+      "kind": "buff-comparables",
+      "rank": 3,
+      "population": "beneficial",
+      "comparables": [{ "id": "spell/heroism", "name": "Heroism", "rank": 3 }],
+      "rankRange": [3, 3],
+      "variants": [
+        {
+          "label": "Heightened (6th)",
+          "kind": "buff-comparables",
+          "rank": 6,
+          "population": "beneficial",
+          "comparables": [{ "id": "spell/heroism", "name": "Heroism", "rank": 3 }],
+          "rankRange": [3, 3]
+        }
+      ]
+    },
+    "spell/unknown-reason-example": {
+      "kind": "ledger",
+      "rank": 2,
+      "population": null,
+      "reasonCode": "some-future-code-not-in-the-curated-map"
+    },
+    "spell/summon-example": {
+      "kind": "quantitative",
+      "rank": 4,
+      "population": "summon",
+      "verdict": "in band",
+      "ev": 20,
+      "budget": 20,
+      "summonBand": { "baseLevel": 4, "curveLevel": 3, "delta": 1 }
+    }
+  }
+}

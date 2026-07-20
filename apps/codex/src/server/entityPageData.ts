@@ -11,8 +11,10 @@
 // is what actually keeps `node:fs`/`@astra/config` out.
 import { collectEmbedTargetIds } from "../domain/render/nodes";
 import { dfsPreOrder } from "../domain/rules/treeModel";
+import type { AssayEntry } from "../schema/assay";
 import type { CodexEntity } from "../schema/entity";
 import type { RulesTreeBook, RulesTreeFile, TreeNode } from "../schema/rulesTree";
+import { type AssayReader, emptyAssayReader } from "./assayFs";
 import { CorpusNotFoundError, type CorpusReader } from "./corpusFs";
 
 /** Spec §6 risk: "the loader caps inlined targets (e.g. 100/page, report-logged in
@@ -109,6 +111,15 @@ export interface EntityPageData {
    * the entity has no `attachedSidebars` field OR every id failed to
    * resolve. */
   attachedSidebars?: AttachedSidebarView[];
+  /** D30-39/40 — the assay verdict artifact, looked up by this entity's own
+   * `id` (`spell/<slug>`, D30-38's export key). Set ONLY for
+   * `entity.category === "spell"` (D30-40's own "Spell category only"),
+   * absent (never a `null`-valued key) when the entity isn't a spell, has
+   * no entry in the artifact, or the whole artifact is absent/malformed
+   * (`AssayReader`'s own fail-soft, D30-39) — every one of those collapses
+   * to "render nothing," the same optional-field convention `rulesNav`/
+   * `attachedSidebars` already use above. */
+  assay?: AssayEntry;
 }
 
 /** Every depth-0 embed target reachable from an entity's own body/loreBody/
@@ -234,10 +245,19 @@ export function resolveRulesNav(
  * request/`RouterProvider` context (verified: calling one directly under plain
  * vitest throws "No Start context found in AsyncLocalStorage"), so
  * `corpusFns.ts`'s server fn stays a thin wrapper over this.
+ *
+ * D30-39/40 — `assayReader` defaults to `emptyAssayReader` (always
+ * `undefined`): every EXISTING 2-arg call site (the 7 flagship goldens'
+ * bare construction, this file's own many direct-call tests,
+ * `regen-goldens.ts`) keeps resolving `assay` to absent with zero changes,
+ * which is exactly D30-40's "goldens/fixtures byte-identical untouched"
+ * requirement — `corpusFns.ts`'s real `getEntityPage` server fn is the one
+ * caller that supplies a real reader (`getAssayReader()`).
  */
 export function resolveEntityPageData(
   reader: CorpusReader,
   input: { category: string; slug: string },
+  assayReader: AssayReader = emptyAssayReader,
 ): EntityPageData | null {
   let entity: CodexEntity;
   try {
@@ -285,6 +305,11 @@ export function resolveEntityPageData(
 
   const attachedSidebars = resolveAttachedSidebars(reader, entity);
 
+  // D30-40: "Spell category only" — never even ask the reader for a
+  // non-spell entity (an assay entry keyed by a non-spell id would be a
+  // genuine cross-track contract bug, not something to render defensively).
+  const assay = entity.category === "spell" ? assayReader.entry(entity.id) : undefined;
+
   return {
     entity,
     embeds,
@@ -292,6 +317,7 @@ export function resolveEntityPageData(
     embedCapHit,
     ...(rulesNav ? { rulesNav } : {}),
     ...(attachedSidebars ? { attachedSidebars } : {}),
+    ...(assay ? { assay } : {}),
   };
 }
 

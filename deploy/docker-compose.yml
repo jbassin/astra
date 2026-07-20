@@ -295,9 +295,17 @@ services:
     # `just codex-refresh` outside artifacts/ — no artifacts-init change, no seed
     # recipe. Fresh-host caveat: Docker auto-creates a missing bind source as root,
     # which would serve the fixture corpus until `codex-refresh` runs once.
+    # D30-41 (0030 round 4): a THIRD identical-path `:ro` bind for the
+    # `apps/assay` verdict artifact (`assay/spell-power.json`) — same
+    # D29-53 convention as the two below. NO fixture fallback on the codex
+    # side (D30-39): this dir can be absent/empty pre-integration, and the
+    # server just renders every spell page without its Assay block until
+    # `assay export-codex` places the real artifact + `just codex-refresh`
+    # restarts this container to pick it up (D30-39's cache-on-success).
     volumes:
       - /ruby/data/experiments/astra/apps/codex/data/corpus:/ruby/data/experiments/astra/apps/codex/data/corpus:ro
       - /ruby/data/experiments/astra/apps/codex/data/search:/ruby/data/experiments/astra/apps/codex/data/search:ro
+      - /ruby/data/experiments/astra/apps/codex/data/assay:/ruby/data/experiments/astra/apps/codex/data/assay:ro
     networks: [signoz-net]
     healthcheck:
       test: ["CMD", "node", "-e", "await fetch('http://localhost:10374/').then(r=>process.exit(r.ok?0:1))"]

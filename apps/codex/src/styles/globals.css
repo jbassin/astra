@@ -861,6 +861,40 @@ select:focus-visible,
   margin-top: 1.5rem;
 }
 
+/* D30-40 — the assay round-4 experimental verdict card (`assayBlock.tsx`),
+   spell-only, styled as an ordinary `codex-card-prose` (same gold top-rule
+   as Lore above) with a small muted "(experimental)" tag beside its own
+   heading and a lightly-indented left rule for its own `variants[]`
+   sub-lines (D30-40's "variants render as sub-lines"). */
+.codex-assay {
+  margin-top: 1.5rem;
+}
+.codex-assay-tag {
+  font-family: var(--font-condensed), sans-serif;
+  font-size: 0.7rem;
+  font-weight: 400;
+  font-variant-caps: normal;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--color-ink-faint);
+}
+.codex-assay-line {
+  margin: var(--density-content-margin) 0;
+}
+.codex-assay-ledger {
+  color: var(--color-ink-dim);
+  font-style: italic;
+}
+.codex-assay-variant {
+  margin-top: 0.6rem;
+  padding-left: 0.75rem;
+  border-left: 2px solid var(--color-rule);
+}
+.codex-assay-variant-label {
+  margin: 0 0 0.2rem;
+  font-size: 0.9rem;
+}
+
 /* --- P2 S3: the category directory (`/`, unchanged by P3) --- */
 /* P4 S4 (D29-43): the "Sources index" entry, beside the category groups. */
 .codex-directory-extra {
