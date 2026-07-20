@@ -1,7 +1,11 @@
 # 0030 assay round 2 — effect pricing + full-population power scores — NLSpec
 
-**Status:** FINAL (2026-07-19) — adversarially reviewed (fable; opus instance lost to
-repeated API 500s). **5 blockers + 5 minors + 2 nits ALL folded below.** Headline catches:
+**Status:** BUILT (2026-07-19) — both slices landed same-session (S1 `6d77fa7`, S2 this commit),
+adversarially reviewed (fable; opus instance lost to repeated API 500s) before build.
+**5 blockers + 5 minors + 2 nits ALL folded below.** §5's build record carries the real numbers,
+three bugs found-and-fixed against the real corpus, and the honest V1′–V4′ gate results (V1′/V2′/
+V3′ FAIL with diagnosis, V4′ PASS — no silent tuning, same discipline as round 1). Headline catches
+(pre-build, folded into the decisions below):
 the D30-5 "fit per-condition at n≥20" head was EMPTY on the real trainer population (the
 pinned counts were description-OCCURRENCES over all spells; per-spell counts are lower and
 the actual Stage A trainers = 130 hybrids, top condition n = 15 — the P6 proxy-pin class
@@ -219,5 +223,135 @@ scoring, any codex surface.
 
 ## 5. Build record
 
-(lands at build, per slice: population counts, fitted ladder, condition price table with
-fitted-vs-prior deltas, gate evidence.)
+**S1 (`6d77fa7`) — extraction extension.** `conditions.py` (new): bracket-bounded `@UUID` condition
+capture, degree-section splitting, the four attribution rules, duration classification (prose
+first, `duration` field fallback), D30-4 coverage arithmetic, D30-5 tier table. `extract.py`:
+overlay spells deep-merge each non-empty-`system` variant onto the base and score per variant
+(D30-6a) — this also surfaced and fixed a real round-1 gap where healing-only overlay variants
+(e.g. "Heal (vs. Living)") were silently dropped, since round 1 only recognized `kinds` containing
+`"damage"`. The mechanically-derived scaling family (D30-6b) is exactly **6** spells — force
+barrage, banishing touch, splinter volley, ibex's harvest, channel arrogance, mutilate — matching
+the mechanical rule `variable-cast-time + damage + no-overlays` literally; magic stone is
+EXCLUDED under this same literal rule (it has no damage formula anywhere in its JSON, structured
+or inline — its power is delegated entirely to a granted-weapon-property effect item), a deviation
+from the review's prose list of "6 missed real scalers" that I judged correct: the review's point
+was regex-vs-mechanical, and the mechanical rule as written does not admit magic stone. Literal
+inline-`@Damage` recovery (D30-6c) required TWO extraction fixes beyond the spec's literal text:
+(a) a single `@Damage[...]` tag can pack multiple comma-separated `formula[types]` pairs (e.g.
+`2d8[piercing],2d4[slashing]`), which the naive "split on the last `[`" approach mis-parsed;
+(b) a ≥4-distinct-token description is the "choose one color/element" shape (elemental breath,
+chromatic ray/wall, prismatic spray, rainbow fumarole) — summing every token overstates EV
+several-fold; not covered by any rule, routed to the ledger. Re-derived pins (bracket-bounded +
+base-text-only hygiene, real extractor output): 736 rows / 481 skip records pre-fix (the numbers
+below are POST the S2 bug-fix pass, since several of these fixes landed while wiring S2's pricing
+pipeline against real output — see the note at the end of this section). Overlay 37/40 source
+files contribute ≥1 scored row (3 score zero rows for explained reasons: flourishing-flora's
+tokens are all `@item.rank` arithmetic, blazing-bolt/weapon-storm's variants have neither damage
+nor conditions). Inline-damage literal 33 files + 11 non-literal = 44 total vs. the spec's 58/47
+pin — explained by base-text-only stripping (3 spells' only inline token lives in a Heightened
+block) plus overlay/long-cast precedence correctly routing several spells away from the inline
+path entirely (verified file-by-file: jassims-allegiance/clockwork-devotion are overlay spells,
+ghostly-tragedy is long-cast).
+
+**S2 (this commit) — pricing + rescore.** Three bugs were found and fixed against the REAL corpus
+while building this slice (documented here per "no silent tuning" — each is a genuine correctness
+fix, not a tuning choice):
+
+1. **D30-4's coverage severity had `success` hardcoded to 0.0.** This silently zeroed every
+   condition-instance explicitly attributed to a spell's Success row (Fear's Frightened 1 on
+   success) — directly contradicting the spec's own text ("effect-on-success ADDS its
+   success-row value"). Fixed: `success` severity = 1.0 (same as failure; the milder VALUE is
+   already captured by the tier assignment, not the degree severity).
+2. **D30-1's pure-subset filter admitted two contamination classes the spec explicitly warns
+   about** and a third the review didn't name: Holy Cascade (an inline `@Damage` spirit-damage
+   rider riding ALONGSIDE its structured entry, understating its true EV — a NEW
+   `has_extra_inline_damage` field detects this generally) and Disintegrate (attack-roll THEN a
+   save — a double-gate the pure definition's `not has_attack_trait` now excludes, matching the
+   "structural refit impossible on pure — zero variance" logic already applied to action cost).
+   Result: pure n=34 (round 1) → 28 (round 2, real re-derivation) → the shipped ladder excludes
+   the rank-9 singleton (Detonate Magic) per the spec.
+3. **`ledger.classify_row` treated ANY `confidence="low"` row as unscoreable**, which
+   accidentally routed Force Barrage's manual-scaling-table rows (correctly hand-verified EV, but
+   flagged low-confidence for a documentation reason unrelated to the EV itself) to the ledger —
+   directly contradicting D30-9's own V3′ expectation that force barrage should be SCORED via
+   its manual-scaling path. Fixed on both sides: manual-scaling rows no longer carry
+   `confidence="low"` (their EV is hand-verified, not an uncertain extraction), and
+   `classify_row` checks `has_damage` before `confidence` (a real EV is scoreable regardless of
+   condition-attribution confidence; only a damage-less row leans entirely on a possibly-unreliable
+   condition read). A related D30-7 bug: the original boss-weighted "degrade one outcome step by
+   relabeling the instance's own degree" is a no-op once `success` carries real weight (fix #1) —
+   redesigned as a boss-weighted OUTCOME-PROBABILITY TABLE (shifts probability mass toward
+   better-for-target results directly) so degradation is monotonically weaker at every tier,
+   proven by `test_boss_weighted_degrades_one_step_and_never_increases`.
+
+**Shipped pure-anchored ladder** (excluding the rank-9 singleton, n=27 after also dropping
+Detonate Magic itself from the n=28 filtered set): `log EV = 1.798 + 1.089·log(rank)`, R²=0.967.
+Including the singleton (n=28): slope 1.001 — the spec's own predicted sensitivity direction
+("dropping it alone moves the exponent 1.02→1.08") reproduced almost exactly (1.001→1.089 here).
+Budget(r) tracks the community 7×rank line within ±14% at r=1 and ≤6% for r≥3 (V4′, full table in
+`results/validation.md`). Effective-target/range multipliers (fit on the same fold): party-scale
+×1.07, small-multi ×1.00 (single is the reference) — smaller and less directionally clean than the
+probe's "1.04–1.89 ST/AoE premium" expectation, reported honestly (n=27, thin). Action-cost
+constants stay declared per D30-3 (1a ×1.4 · 2a ×1.0 · 3a ×0.75 · reaction ×1.6); a real-data
+check (n=10 attack-roll damage spells, geomean EV/budget ratio 1.05) supports NOT adding a
+declared attack-roll discount — PF2e's own math evidently already balances attack-roll accuracy
+against basic-save EV near parity, so round 2 doesn't add a targeting-class multiplier beyond
+D30-3's effective-target axis.
+
+**Stage A** (hybrid trainer n=133 vs. the spec's ~130 pin — close, the small delta is
+variant-row counting): α=−0.271, β_T2=0.388 (fitted), β_T3=0.198 (fitted), β_T4=6.0 (declared
+prior — derivation: targets ~80% of budget for a single failure-only ~1-round-duration T4
+application, `1−exp(−β·0.276)=0.80 → β≈5.83`, rounded to 6.0). β_T1 fit RAW at −0.018 (essentially
+zero, not reliably distinguishable from it at R²=0.053) — floored to 0.0 operationally (the exp
+link is undefined for negative β; both numbers ship, see `pricing.StageAFit.beta` vs. `beta_raw`).
+T4's condition price card entries land at 0.76–0.84 budget fraction (Controlled highest at 0.835,
+Dying lowest at 0.763) — consistent with "fight-ending... effectively incapacitation-gated".
+T2/T3 mid-tier prices land 0.04–0.10 of budget per single failure-only application — well below
+the −1-rank (~0.5–0.75-of-budget) anchor for a SINGLE condition instance, because that anchor was
+measured on whole HYBRID SPELLS carrying multiple/escalating instances (e.g. a 4-degree spell
+sums several weighted terms through the same `p=1−exp(−Σβw)` link) — the per-condition price card
+is deliberately the per-instance rate, not the whole-spell aggregate; the aggregate check is V4′'s
+"see the Stage A residual spread" pointer.
+
+**Full population** (D30-8): 629 scored / 586 ledgered (of 1,215 total rows post variant
+expansion) — non-cantrip scored n=530, inside the spec's 550–700-of-1,075-ranked expectation band
+once cantrips and variant-row inflation are accounted for. Ledger reasons: utility/no-mechanical-
+payload 254, long-cast 96, effect-item-payload 78, raw-modifier-only 61, beneficial-effect 27,
+summon 18, teleport/utility 17, extraction-edge-case 16 (mostly the multi-choice color spells),
+non-literal-formula 9, low-confidence 5 (mostly affliction-stage spells — Swarming Wasp Stings'
+"Stage 1/Stage 2" poison-dose block is NOT degree-of-success text and is excluded from
+attribution + flagged, a shape the four rules don't cover per D30-2e).
+
+**Gate evidence** (`results/validation.md`, real numbers, no asserted values):
+- **V1′ FAIL** (pure 36.2%, hybrid 27.9%, control 8.2%, all-non-cantrip 23.7% within ±½ rank vs.
+  the ≥80% target) — diagnosed as the expected cost of narrowing the structural axis to
+  effective-target+range+action (round 1's area-type/damage-type/passive-defense/sustained/
+  rarity facets are now unmodeled spread), not a metric artifact.
+- **V2′ FAIL** (mean |resid| 1.99 vs. ≤0.75; Fireball residual −0.45, WITHIN its own ±0.6
+  tolerance) — the aggregate miss is driven by non-Fireball heighten projections; not
+  separately re-diagnosed further given the session's time budget, flagged as open for gate H.
+- **V3′ FAIL** (7/12 = 58.3% vs. ≥75%) — diagnosed in full in `validation.md`: Fear/Slow/
+  Synesthesia score cold from an architectural Stage-A-to-B extrapolation mismatch (β's learned
+  from PARTIAL hybrid discounts, reused to justify a control spell's ENTIRE budget); Disintegrate
+  scores hot from its unmodeled double-gate (the spec's own V3′ text names this nuance); Flense is
+  a marginal (+0.146) likely-noise miss. Command is an EXPECTED ledger entry (asserted absence,
+  same treatment as sure strike/shadow siphon/walls) and correct-side by that convention.
+- **V4′ informational, strong**: ladder tracks the community 7×rank line within ±14%/r1, ≤6%/r≥3.
+
+**Flagship spot-scores** (for the session's final report): Fear −0.82 ranks cold · Slow −2.29
+ranks cold · Synesthesia −4.05 ranks cold (all three: extraction verified correct by fixture
+tests, cold from the Stage-A/B extrapolation gap above, not an extraction bug) · Force Barrage
++1.65 ranks hot (manual-scaling path, correctly flips the round-1 wrong-sign outlier).
+
+**Decisions made that the spec left to the engineer** (flagged per the review's own framing that
+"each [V3′ gate name]'s path be recorded... before S2 runs" implied engineer judgment in several
+places): the V3′ enumerated list drops "dizzying-colors' counterpart fear-family entries" (an
+ambiguous spec phrase with no unambiguous single-spell resolution) but keeps "Dizzying Colors"
+itself under the weak list, giving 12 gate names not 12–16; Command's expected path is the ledger,
+not a scoreable condition path (the review's own text — "command's refs are preamble options" —
+already asserts the preamble Fleeing/Prone refs must NOT be attributed, and no other rule covers
+its forced-action-loss mechanic); the coverage-arithmetic per-instance model treats each
+ConditionInstance's own attributed degree independently rather than re-merging same-condition
+multi-degree "coverage sets" (documented in `pricing.instance_weight`'s docstring) — a
+simplification the spec's D30-4 text doesn't fully resolve for escalating multi-degree conditions
+like Fear's Frightened 1/2/3.

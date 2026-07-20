@@ -62,6 +62,12 @@ _INLINE_DAMAGE_RE = re.compile(r"@Damage\[((?:[^\[\]]|\[[^\]]*\])*)\]")
 #: alone since they never start a new match.
 _INLINE_FORMULA_COMPONENT_RE = re.compile(r"([^,\[\]]+)\[[^\]]*\]")
 _TARGET_COUNT_RE = re.compile(r"\btarget(?:s)?\s+up\s+to\s+(\d+)\b", re.IGNORECASE)
+#: >=N distinct @Damage tokens in one description is the "choose one of
+#: several colors/elements" shape (elemental breath=8, rainbow fumarole=7,
+#: prismatic spray/chromatic ray/chromatic wall=4), not a genuinely-additive
+#: multi-stage effect (implement-of-destruction=3, undertow=2) — see the
+#: skip reason this guards.
+_INLINE_MULTI_CHOICE_THRESHOLD = 4
 
 
 def _parse_inline_token(tok: str) -> tuple[bool, float]:
@@ -147,6 +153,12 @@ class SpellFeatures(BaseModel):
     #: D30-8(ii) — this row's `ev` is a healing total, priced 1:1 against the
     #: damage budget (a declared assumption, always flagged downstream).
     is_healing: bool = False
+    #: D30-1 pure-subset contamination guard — an inline @Damage[...] token
+    #: present ALONGSIDE structured damage (Holy Cascade's spirit-damage rider
+    #: against unholy creatures is the named round-1 contaminant: its
+    #: structured `ev` understates the spell's real output, so it must never
+    #: be treated as "pure" even though every other pure-subset flag is off).
+    has_extra_inline_damage: bool = False
     damage_types: list[str]
     damage_type_class: DamageTypeClass
     persistent_ev: float
@@ -308,12 +320,23 @@ def _classify_effective_target(
     return EffectiveTarget.SINGLE
 
 
-def _is_summon(name: str, traits: list[str]) -> bool:
+_ARRIVE_DEPART_RE = re.compile(
+    r"<strong>\s*Arrive\s*</strong>.*<strong>\s*Depart\s*</strong>", re.DOTALL
+)
+
+
+def _is_summon(name: str, traits: list[str], description: str = "") -> bool:
     """Summons are their own sub-model (out of round-2 scope, §3) — excluded
     from inline-damage recovery even when they carry literal @Damage tokens
-    (a summoned creature's whole attack menu, not the spell's own EV)."""
+    (a summoned creature's whole attack menu, not the spell's own EV).
+    Creatively-named "summon a mythic being briefly" spells (Beseech
+    Arcanotheign, Garden of the Green Man's Growth) don't match the
+    name/trait heuristic but share the Arrive/Depart two-event structure —
+    summing both events' damage double-counts two separate temporal beats."""
     lname = name.lower()
-    return lname.startswith("summon ") or "summon" in [t.lower() for t in traits]
+    if lname.startswith("summon ") or "summon" in [t.lower() for t in traits]:
+        return True
+    return bool(_ARRIVE_DEPART_RE.search(description))
 
 
 def _deep_merge(base: Any, overlay: Any) -> Any:
@@ -472,6 +495,7 @@ def extract_single(
 
     description = (sysd.get("description") or {}).get("value", "") or ""
     base_text = conditions.strip_heightened(description)
+    has_extra_inline_damage = bool(plain) and bool(_INLINE_DAMAGE_RE.search(base_text))
 
     defense = sysd.get("defense") or {}
     save = defense.get("save")
@@ -499,11 +523,31 @@ def extract_single(
         # D30-8(ii): healing EV prices 1:1 against the damage budget (a
         # declared assumption, flagged on every such row in the ledger).
         ev = healing_ev
-    elif not is_long_cast and not _is_summon(name, traits):
+    elif not is_long_cast and not _is_summon(name, traits, base_text):
         # Inline-@Damage recovery (D30-6c) — only when there's no structured
         # plain-damage entry, and only for genuinely literal formulas.
-        inline_tokens = _INLINE_DAMAGE_RE.findall(base_text)
+        # Degree-aware (Undertaker's 40/success · 80/failure · 160/crit-fail
+        # is the SAME basic-save-style scaling structured damage already
+        # represents via a single "failure-tier" formula — search the
+        # failure section only when degree markup exists, else the base
+        # text, matching the structured-damage convention rather than
+        # summing every degree's damage as if simultaneous).
+        ds = conditions.split_degree_sections(base_text)
+        search_text = ds.sections.get("failure", base_text) if ds.sections else base_text
+        inline_tokens = _INLINE_DAMAGE_RE.findall(search_text)
         if inline_tokens:
+            if len(inline_tokens) >= _INLINE_MULTI_CHOICE_THRESHOLD:
+                # >=4 distinct @Damage tokens is the "choose one of several
+                # colors/elements" shape (elemental breath, chromatic ray,
+                # prismatic spray, rainbow fumarole) — summing every token
+                # massively overstates EV (you deal ONE branch's damage, not
+                # all of them); round-1's "sum multi-entry damage" convention
+                # (cataclysm) is for genuinely-additive structured entries,
+                # not this. Not covered by any recovery rule — unscored.
+                return skip(
+                    f"inline-damage multi-choice ({len(inline_tokens)} tokens, "
+                    "likely choose-one — summing would overstate EV)"
+                )
             literal_evs = []
             all_literal = True
             for tok in inline_tokens:
@@ -576,6 +620,7 @@ def extract_single(
         ev=ev,
         has_structured_damage=has_structured_damage,
         is_healing=is_healing,
+        has_extra_inline_damage=has_extra_inline_damage,
         damage_types=damage_types,
         damage_type_class=damage_type_class,
         persistent_ev=persistent_ev,
@@ -711,7 +756,13 @@ def extract_spell_variants(data: dict[str, Any], file: str) -> list[SpellFeature
                     "variant_label": label,
                     "parent_name": name,
                     "recovery_path": "manual-scaling",
-                    "confidence": "low",
+                    # NOT confidence="low": the EV is hand-verified (that's
+                    # the point of the table), not an uncertain extraction —
+                    # `recovery_path` already flags it as an override for
+                    # anyone auditing the ledger. `confidence="low"` is
+                    # reserved for D30-2e's "the four rules couldn't resolve
+                    # this" case, which must still route to the ledger even
+                    # when a spell also happens to have real damage EV.
                 }
                 if target_override is not None:
                     updates["effective_target"] = target_override

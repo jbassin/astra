@@ -274,6 +274,13 @@ _DEGREE_HEADING_RE = re.compile(
     re.IGNORECASE,
 )
 _HEIGHTENED_SPLIT_RE = re.compile(r"<hr\s*/?>\s*<p>\s*<strong>\s*Heightened", re.IGNORECASE)
+#: Affliction stage-progression blocks (poison/disease "Stage 1"/"Stage 2"
+#: dosing, e.g. Swarming Wasp Stings) are NOT degree-of-success text — the
+#: degree splitter's last section (Critical Failure) otherwise swallows every
+#: stage's conditions as if they all applied simultaneously at one degree.
+#: Not one of the four attribution rules (D30-2e uncovered shape) — truncate
+#: before it and flag low confidence rather than mis-attribute.
+_AFFLICTION_STAGE_RE = re.compile(r"<strong>\s*Stage\s+\d+\s*</strong>", re.IGNORECASE)
 _AS_FAILURE_RE = re.compile(r"^\s*(?:<p>)?\s*As\s+failure\b", re.IGNORECASE)
 _AFFECTED_RE = re.compile(r"\bis\s+affected\b|\baffected\s+for\b", re.IGNORECASE)
 _STATUS_MOD_RE = re.compile(
@@ -396,6 +403,15 @@ def extract_condition_instances(
     degree-split base text (Heightened already excluded by the caller)."""
     result = ExtractionResult()
     base_text = description_html
+    affliction_match = _AFFLICTION_STAGE_RE.search(base_text)
+    if affliction_match:
+        base_text = base_text[: affliction_match.start()]
+        result.low_confidence = True
+        result.notes.append(
+            "affliction stage-progression block excluded — not covered by the "
+            "four rules (D30-2e); the spell's true severity lives in the "
+            "stage doses, unpriced by this pipeline"
+        )
     ds = split_degree_sections(base_text)
 
     # Status/circumstance modifiers (D30-2d) are captured regardless of

@@ -96,11 +96,18 @@ def test_overlay_variant_ignition() -> None:
 
 
 def test_overlay_variant_elemental_breath() -> None:
+    """Six damage-type overlay variants, but each shares the SAME base
+    description listing all 8 breath-weapon damage tokens together — the
+    inline-damage multi-choice guard (>=4 tokens) correctly declines to sum
+    them (that would overstate every color's EV ~8x), so each variant is a
+    typed skip rather than a mis-scored row."""
     from astra_assay.extract import extract_spell_variants
 
     variants = extract_spell_variants(load("elemental-breath.json"), "elemental-breath.json")
     assert len(variants) == 6  # six damage-type choices
-    assert all(isinstance(v, SpellFeatures) for v in variants)
+    skips = [v for v in variants if isinstance(v, SkipRecord)]
+    assert len(skips) == len(variants)
+    assert all("multi-choice" in v.reason for v in skips)
 
 
 def test_overlay_variant_telekinetic_projectile_attack_cantrip() -> None:
@@ -447,7 +454,9 @@ def test_manual_scaling_family_force_barrage() -> None:
     assert by_action[ActionBucket.TWO].ev == pytest.approx(7.0)
     assert by_action[ActionBucket.THREE].ev == pytest.approx(10.5)
     assert all(v.recovery_path == "manual-scaling" for v in by_action.values())
-    assert all(v.confidence == "low" for v in by_action.values())
+    # Hand-verified EV, not an uncertain extraction — stays high-confidence so
+    # it scores (ledger.classify_row) rather than diverting to the ledger.
+    assert all(v.confidence == "high" for v in by_action.values())
 
 
 def test_overlay_variant_count_excludes_empty_system_ignition() -> None:
