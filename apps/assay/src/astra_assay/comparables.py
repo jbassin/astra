@@ -56,6 +56,18 @@ INCAP_MISMATCH_MULTIPLIER = 0.5
 _EV_BAND_LOW = 0.33
 _EV_BAND_MID = 0.66
 
+#: D30-38 (round 4) — the similarity floor. Round 3's `top_comparables`
+#: always returned SOMETHING (top-k by `(-similarity, name)`), which for a
+#: target whose atom vector shares NOTHING real with the corpus degenerates
+#: to every candidate scoring 0.0 and the "top-5" becoming pure alphabetical
+#: junk — indistinguishable from a real match at a glance. Below this floor
+#: (or zero shared non-tier atoms), a caller must treat the target as having
+#: NO usable comparables (D30-38: `kind:"ledger"`, `reasonCode:
+#: "no-comparable-profile"`) rather than print the junk top-5. This is the
+#: SAME latent bug in both the hostile-condition engine (present since round
+#: 3) and the new buff engine — one fix, both callers.
+SIMILARITY_FLOOR = 0.1
+
 _TIER_PREFIX = "tier:"
 
 
@@ -70,6 +82,13 @@ class ComparableProfile:
     range_bucket: RangeBucket
     ev_band: str | None
     incapacitation: bool
+    #: D30-38 (round 4) — the source file's relative path (`SpellFeatures.
+    #: file`), the join key onto a codex slug (`Path(file).stem`, per the
+    #: P1 finding that a pack file's basename IS `sluggify(name)` — 0
+    #: disagreements over the whole real corpus). Empty for a profile built
+    #: from a homebrew spell with no on-disk file (`assay score`'s LOO path
+    #: never needs a slug).
+    file: str = ""
 
 
 def _ev_band(row: SpellFeatures, ladder: pricing.LadderFit) -> str | None:
@@ -118,6 +137,7 @@ def build_profile(row: SpellFeatures, ladder: pricing.LadderFit) -> ComparablePr
         range_bucket=row.range_bucket,
         ev_band=_ev_band(row, ladder),
         incapacitation=row.incapacitation,
+        file=row.file,
     )
 
 
@@ -180,6 +200,10 @@ class ComparableMatch:
     similarity: float
     shared_atoms: list[str]
     differing_atoms: list[str]
+    #: D30-38 — the matched profile's own `file` (for the codex id join;
+    #: `""` when the corpus profile predates this field, e.g. an old
+    #: committed fixture in a test that never set it).
+    file: str = ""
 
 
 def top_comparables(
@@ -202,9 +226,19 @@ def top_comparables(
         p_atoms = _non_tier_atoms(p)
         shared = sorted(target_atoms & p_atoms)
         differing = sorted(target_atoms ^ p_atoms)
-        matches.append(ComparableMatch(p.name, p.rank, sim, shared, differing))
+        matches.append(ComparableMatch(p.name, p.rank, sim, shared, differing, p.file))
     matches.sort(key=lambda m: (-m.similarity, m.name))
     return matches[:k]
+
+
+def has_usable_comparables(matches: list[ComparableMatch]) -> bool:
+    """D30-38's similarity floor: the #1 match must clear
+    `SIMILARITY_FLOOR` (0.1) AND share at least one non-tier atom — else
+    treat the target as having NO usable comparables at all (both engines)."""
+    if not matches:
+        return False
+    best = matches[0]
+    return best.similarity >= SIMILARITY_FLOOR and len(best.shared_atoms) >= 1
 
 
 @dataclass(frozen=True)
@@ -226,9 +260,12 @@ def comparables_for(
     """D30-23's induced rank RANGE — min–max of the top-k's ranks, median
     highlighted, never a point score. The r10 extrapolation warning (review
     F9: zero hostile r10 trainers) fires whenever ANY of the top-k ranks is
-    9 or 10 — the range touches the thin/unobserved top of the ladder."""
+    9 or 10 — the range touches the thin/unobserved top of the ladder.
+    D30-38: below the similarity floor, this returns NO matches at all
+    (`has_usable_comparables` would say so too — callers that need the
+    typed reason should call that directly)."""
     matches = top_comparables(target, corpus, k=k, exclude_name=exclude_name)
-    if not matches:
+    if not has_usable_comparables(matches):
         return ComparablesResult()
     ranks = [m.rank for m in matches]
     return ComparablesResult(
@@ -268,6 +305,7 @@ def profile_to_json(p: ComparableProfile) -> dict:
         "range_bucket": p.range_bucket.value,
         "ev_band": p.ev_band,
         "incapacitation": p.incapacitation,
+        "file": p.file,
     }
 
 
@@ -282,4 +320,5 @@ def profile_from_json(d: dict) -> ComparableProfile:
         range_bucket=RangeBucket(d["range_bucket"]),
         ev_band=d["ev_band"],
         incapacitation=d["incapacitation"],
+        file=d.get("file", ""),
     )

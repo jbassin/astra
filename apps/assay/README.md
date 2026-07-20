@@ -148,9 +148,55 @@ proof) and V-C (routing proof) both pass with exact/near-exact real-corpus numbe
 commit `3783473` and `validation.md`). V-D (damage-side carry) is byte-identical to round 2's
 shipped ladder.
 
-## Out of scope (round 4+, per the spec §3)
+## Round 4: buff comparables + summon bands + the codex export
 
-Beneficial-buff comparables/pricing (needs target-prose maturity first), summon/wall/terrain
-sub-models, forced-movement atoms, any generative control-spell fit (dead until a schema captures
-effect QUALITY, not just identity), effect-item buffs without numeric prose, teleportation/utility
-valuation, focus-spell band comparison, ritual scoring, legacy-spell scoring, any codex surface.
+**Provenance:** `thoughts/astra/specs/0030-assay-round4-spec.md` (D30-35..38). Three additions on
+top of round 3's engine, all Track A (assay-only) — the codex-side render lives in
+`apps/codex/**`, out of this app's scope.
+
+1. **Spell-effect join** (`effects.py`, D30-35) — every spell's description is scanned for
+   `@UUID[Compendium.pf2e.spell-effects.Item.<Name>]` refs (colon-tolerant, bracket-bounded); the
+   referenced item's `system.rules` (FlatModifier/TempHP/Resistance/Weakness/BaseSpeed/DamageDice)
+   become a per-selector atom vector, evaluated at the **spell's own base rank** (never the effect
+   item's own `level` field — they disagree on 29/263 real joined pairs). `@item.level`/
+   `@spell.rank` expressions cover the ternary family, closed-form arithmetic
+   (`2*@item.level`/`ceil`/`floor`/`clamped`/`match…when…btwn`), and flag `expr-unresolved` for
+   runtime-only shapes (`@actor.*`, mustache `{item|flags...}`); a level-family predicate
+   (`gte(parent:level, N)`) gates the atom at base rank, anything else tags it `conditional`.
+   Multi-effect spells (20 real corpus cases) collapse to a base variant per a small documented
+   merge rule (degree-split keeps the failure row; duration/rank-heightened variants and
+   `Effect: X Immunity` markers are dropped; a genuine choice-of-N fan — Animal Form's 13 shapes —
+   is tagged, profile suppressed, same treatment as BattleForm).
+2. **Buff population + comparables** (`buffs.py`, D30-36) — every row `ledger.classify_row` routes
+   `beneficial-effect` now includes raw-modifier-only rows (Heroism, Protection) and effect-join
+   PROMOTED rows (spells that were pure `no-priceable-effect` skips before the join — Mystic Armor,
+   Mountain Resilience, Resist Energy, …) routed through the SAME D30-22 hostility test (a
+   hostile-shaped promoted row, e.g. Blood Vendetta, still lands hostile, never beneficial — the
+   join gives it its first priceable signal, not a beneficial default). Comparables reuse
+   `comparables.py`'s engine wholesale on a beneficial-only atom vector (buffs never carry a
+   damage EV band) — a hard population firewall, never mixed with the hostile corpus.
+3. **Summon band check** (`summons.py`, D30-37) — the 14 real summon-TRAIT main-list spells (fixed
+   a dead round-2/3 regex that could never match), base max-level parsed from prose (en-dash
+   tolerant), checked against the GM Screen journal's own declared curve (STOP on drift).
+4. **Codex export** (`export.py`, D30-38) — `assay export-codex` builds the cross-track contract
+   artifact, `apps/assay/out/spell-power.json` (gitignored, reproducible — the orchestrator places
+   a copy into `apps/codex/data/assay/` at integration; this app never writes there itself). One
+   entry per spell FILE (`spell/<slug>`, slug = the file's own basename), multi-row files collapse
+   to one entry with the rest under `variants[]`; a documented reason-code map keeps internal
+   ledger prose off the wire; a similarity floor (below 0.1 OR zero shared atoms) degrades a
+   comparables miss to a typed `no-comparable-profile` ledger entry instead of an alphabetical-junk
+   top-5 (fixed in BOTH the hostile and buff engines).
+
+```bash
+uv run assay price          # now also builds the buff corpus + writes out/spell-power.json
+uv run assay export-codex   # rebuild the export artifact alone, off the committed corpora
+```
+
+See `results/validation.md`'s "Round 4 gates" section (W-A..W-D) for the real re-derived numbers.
+
+## Out of scope (still, per the spec §3/round-4 status header)
+
+Wall/terrain sub-models, forced-movement atoms, any generative control-spell fit (dead until a
+schema captures effect QUALITY, not just identity), teleportation/utility valuation, focus-spell
+band comparison, ritual scoring, legacy-spell scoring. The codex RENDER surface
+(`apps/codex/**`'s Assay block) is Track B's own scope, spec'd alongside but not built here.

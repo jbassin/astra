@@ -579,15 +579,15 @@ Total ledgered (any reason): 657
 | Reason | Count | Examples |
 |---|---|---|
 | utility/no-mechanical-payload | 250 | Approximate, Deep Breath, Detect Magic, Detect Metal, Draw Moisture |
+| beneficial-effect | 185 | Bullhorn, Eat Fire, Glamorize, Glowing Trail, Guidance |
 | long-cast (out of combat-damage scope) | 96 | Read Aura, Alarm, Breadcrumbs, Disguise Magic, Foraging Friends |
-| beneficial-effect | 81 | Eat Fire, Glowing Trail, Root Reading, Ant Haul, Carryall |
-| effect-item payload | 75 | Bullhorn, Inside Ropes, Light, Read the Air, Rousing Splash |
-| raw-modifier-only (not priced — D30-5 restricts severity to condition tiers) | 65 | Figment, Forbidding Ward, Glamorize, Guidance, Infectious Enthusiasm |
-| routing-ambiguous | 20 | Invoke True Name, Stabilize, Confetti Cloud (variant 1), Confetti Cloud (variant 2), Confetti Cloud (variant 3) |
+| routing-ambiguous | 35 | Figment, Forbidding Ward, Invoke True Name, Light, Protect Companion |
+| raw-modifier-only (not priced — D30-5 restricts severity to condition tiers) | 23 | Airburst, Bane, Celestial Accord, Ill Omen, Infuse Vitality |
 | summon | 18 | Summon Instrument, Summon Animal, Summon Construct, Summon Fey, Summon Lesser Servitor |
-| teleport/utility | 17 | Fated Confrontation, Far-Flung Fetch, Warping Pull, Behold the Weave, Rally Point |
 | extraction edge case | 16 | Chromatic Ray, Chromatic Wall, Elemental Breath (Metal), Elemental Breath (Earth), Elemental Breath (Air) |
+| teleport/utility | 14 | Fated Confrontation, Far-Flung Fetch, Behold the Weave, Rally Point, Infiltrator's Tunnel |
 | non-literal formula (@item.rank arithmetic) | 9 | Flourishing Flora (Roots), Flourishing Flora (Flowers), Flourishing Flora (Cacti), Flourishing Flora (Fruits), Bloodspray Curse |
 | low-confidence extraction | 5 | Advanced Scurvy, Blister Bomb, Internal Insurrection, Pest Swarm, Abyssal Plague |
 | wall/terrain | 5 | Wall of Shrubs, Wall of Shadow, Wall of Water, Wall of Stone, Wall of Metal |
+| effect-item payload | 1 | Mirror Image |
 

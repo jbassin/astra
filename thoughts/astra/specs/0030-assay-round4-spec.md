@@ -180,4 +180,156 @@ show nothing.
 
 ## 6. Build record
 
-(lands at build.)
+**S-A (Track A, this commit) — effect join + buff profiles + summon bands + export-codex.** All
+four decisions (D30-35..38) built in `apps/assay/src/astra_assay/{effects,buffs,summons,export}.py`
++ wiring into `extract.py`/`ledger.py`/`comparables.py`/`cli.py`, real corpus, `uv run assay price`
++ `uv run assay export-codex` both run end-to-end against `pf2e-8.3.0`.
+
+**D30-35 join** (`effects.py`) — a name→item index over the spell-effects pack (510 items, unique
+names, confirmed) built once per `extract_all` run and threaded through `extract_single`. Ref
+discovery scans the RAW (non-heightened-stripped) `description` field — an engineer finding:
+scanning the heightened-stripped text under-counts (some spells only cite a ref inside their own
+Heightened block), dropping the independently-reproduced join stats from the spec's own
+222/263/0/20 pins to 184/222/0/17. Fixed by scanning the full description; re-verified against an
+INDEPENDENT reproduction script (not reusing any extraction code path) — **222 ref-bearing
+main-list spells / 263 refs / 0 unresolved / 20 multi-ref spells, EXACT match to the spec's
+review-verified pins.** `@item.level`/`@spell.rank` evaluated at the spell's own base rank (never
+the effect item's `system.level.value`): **29/263 disagree — exact match.** The evaluator (a
+restricted-namespace `eval` — no `__builtins__`, a pre-substitution charset gate, dunder-access
+rejected, unit-tested against `().__class__.__base__`-style probes) covers ternary
+(`ternary(gte(...),a,b)`) and closed-form arithmetic (`match(when(...),...)`,
+`floor`/`ceil`/`clamped`, `+`/`-`/`*`/`/`); runtime-only shapes (`@actor.*`, `@item.badge`,
+`@item.origin`, `@item.flags...rulesSelections`, mustache `{item|...}`, `@weapon.*`) flag
+`expr-unresolved`. Among the 28 distinct str-expr FlatModifiers actually joined (not the whole
+510-item pack): 9 ternary / 8 closed-form / 11 runtime-only — an exact re-scoping of the spec's
+"32/79 ternary [globally]; +8 closed-form; 11 runtime-only [among joined]" breakdown. Predicates:
+a level-family shape (`{gte|lte|gt|lt: ["parent:level"|"item:level"|"self:level", N]}`) evaluates
+at base rank and GATES the atom off entirely when false (Mystic Armor's saving-throw atom: absent
+at rank 1, present at rank 4+ — the named fixture, proven); any other predicate shape (roll-option
+strings, `{"or": [...]}` compounds) tags the atom `conditional` rather than emitting a value. Array
+selectors fan out (Heroism's single rule → 4 atoms). Resistance/Weakness type arrays fan out the
+same way; a mustache-templated `type` (`{item|flags...}`) becomes a `resistance:choice-of-energy`
+signal, not a concrete-type atom. **Widening beyond the spec's literal atom-family list (engineer
+judgment, flagged):** `DamageDice` added as a sixth atom family (selector-namespaced
+`damage-dice:<selector>`) — without it, several genuinely-extractable rider effects (a
+per-strike bonus-damage rule) would be indistinguishable from a true tag-only effect, which
+matters for D30-36's promotion decision below. Multi-effect merge (`select_effect_name`): an
+unqualified sibling wins as the base row when one exists (covers Draw Ire's "(Success)" bonus AND
+every duration/rank-heightened-variant pair — Tailwind/Darkvision/Iron Gut/Divine Vessel); absent
+that, a "(Failure)"-preferring rank among degree-qualified siblings (Bestial Curse, Infectious
+Melody, Sage's Curse, Outcast's Curse, Equal Footing, Curse of Recoil, Albatross Curse); an
+`Effect: X Immunity` marker sibling is dropped outright (Shield, Guidance); everything else with
+no unqualified/degree-qualified resolution is a genuine choice-of-N fan, tagged, profile
+suppressed (Animal Form ×13, Dinosaur Form, Plant Form, Element Embodied, Holy Host, Bone Flense's
+Damage/Reaction split). **Documented miss:** Bone Flense (a weapon-imbuement curse — touch range
+on the CASTER's own weapon, no save/attack-roll on the casting action, the harm lands on a third
+party later via the imbued weapon's Strikes) does not fit D30-22's target-prose heuristic (built
+for direct self/ally-vs-enemy targeting) and lands `beneficial-effect` rather than hostile; a
+targeted regex fix was evaluated and REJECTED — it would have also flipped four genuinely
+beneficial promoted rows sharing the same `weakness:`/`damage-dice:` atom shape (Juvenile
+Companion, Oaken Resilience, Flame Wisp, Blink Charge) from beneficial to hostile, a strictly worse
+trade. Blood Vendetta and Fungal Infestation (the spec's other two named hostile-shaped examples)
+land hostile correctly (both carry a real `defense.save`, checked BEFORE any join-derived signal).
+
+**D30-36 buff population** (`buffs.py` + a `ledger.classify_row` change) — CONSTRUCTIVE, re-derived
+against the real corpus (not asserted): round-3 beneficial (`condition_ref` rows, every instance
+non-priceable) **81** — matches the spec's own pin exactly, unchanged mechanism. Raw-modifier-only
+rows now run through `classify_hostility` (previously: an unconditional ledger bucket, never
+checked) — **45** resolve beneficial (Heroism, Protection among them); the rest stay wherever their
+own hostile/ambiguous signal puts them. Effect-join-promoted rows: **77** total (`extract_single`'s
+skip guard now treats ANY effect-join content — atom or tag — as priceable, not a strict
+atom-only gate; ALL 77, not a 43-item subset, get promoted and routed): **59 beneficial**
+(Mystic Armor, Invisibility's own effect item, Mountain Resilience, False Vitality, Sure Strike,
+Resist Energy, Blur among them — every W-B roster name accounted for), **10 hostile-shaped**
+(Blood Vendetta, Fungal Infestation, Ill Omen, Infuse Vitality, Weaken Earth, Mental Map, Sage's
+Curse, Seal Fate, Dragon Form, Scintillating Safeguard — stay OUT of the buff population, correctly
+unpriced), **8 routing-ambiguous**. **Total buff population: 81 + 45 + 59 = 185** (vs. the spec's
+pre-fix draft estimate of "19/81 atom-bearing" — the fix is exactly what the spec's headline
+blocker demanded: heroism/protection/mystic-armor now route here). Buff comparables corpus (atom
+vector non-empty): **145** — an engineer fix found mid-build: the FIRST pass gave 109 because
+`build_buff_atom_vector` only counted `tier=None` condition instances as tag atoms, dropping
+Sure Strike's own Concealed/Hidden (real T1 tier, still a beneficial side-effect on an
+already-beneficial-routed row) and Resist Energy's choice-of-energy resistance (a tag, not an
+atom) entirely — fixed to count EVERY condition instance on a buff row (not just non-priceable
+ones) plus a dedicated `resistance:choice-of-energy` unit atom; 109→145, and all 10 W-B roster
+spells became comparable (were 7/10 before the fix).
+
+**D30-37 summon band** (`summons.py`) — `ledger._SUMMON_TRAIT_RE` was confirmed dead code
+(`^summon\s` tested against the bare trait string `"summon"`, which never has a trailing space);
+fixed to trait-list membership. Population: **n=14**, exact match. Base-level prose regex
+(`(?:whose level is|of level)\s+([-–−]?\d+)(?:\s+or lower)?`, en-dash/unicode-minus tolerant) —
+**13/14 match the declared curve exactly (delta=0 for every match)**, Phantasmal Minion is the one
+miss (a fixed-creature summon referencing a specific bestiary Actor, no scaling prose at all).
+Journal verification (`verify_curve_against_journal`, parses the real `<table>` HTML from
+`gm-screen.json` entry `S55aqwWIzpQRFhcq` page `8gcp880pEWZ9VPnF`) — **PASS**, byte-for-byte
+against `SUMMON_CURVE`. Kind precedence: no summon-trait spell in the real corpus is also a scored
+damage/hybrid row, so the "scored row wins kind" branch is untested against real data (unit-tested
+synthetically in `test_export.py`); Phantasmal Minion carries `population="summon"` is NOT set
+(its real classification, `beneficial-effect` with zero buff atoms → `ledger`/
+`no-comparable-profile`, is left alone — summonBand is simply absent, per the spec's own
+"phantasmal minion via kind-precedence" framing).
+
+**D30-38 export** (`export.py`) — `assay export-codex` (new subcommand) + wired into `assay price`.
+**1,144 entries, one per main-list spell file** (never `remaster==true`-filtered — every file gets
+an entry). **Variant collapse: 34 multi-row slugs — exact match to the spec's pin.** Similarity
+floor (`comparables.SIMILARITY_FLOOR = 0.1` + ≥1 shared non-tier atom, `has_usable_comparables`)
+applied in `comparables_for` — the SAME function both the hostile and buff engines call, so one fix
+covers both engines as the spec required; verified not to regress round-3's V-A gate (still 4/10,
+same names). `ComparableProfile` gained `file` (an engineer bug found mid-build: `buffs.
+build_buff_profile` initially omitted it, producing bare `"spell/"` ids in every buff-comparables
+entry — fixed, `ComparableMatch` also gained `file` so `export.py` never needs a name→file side
+table). Slug = `Path(file).stem` (the P1 codex finding: a pack file's basename IS `sluggify(name)`,
+0 disagreements over 28,636 real docs — no JS port needed). Reason codes: a 13-entry curated map
+(`export.REASON_CODE_MAP`) + one fallback (`"other"`) — no raw ledger prose crosses the wire.
+Kind/population reconciliation against the re-derived splits above, real numbers: `ledger` 524 /
+`quantitative` 349 / `comparables` 148 / `buff-comparables` 123; population `null` 652 / `hostile`
+296 / `beneficial` 183 / `summon` 13. **Unmatched ids: 0** (a REAL post-build check —
+`_find_unmatched_ids` scans every `comparables[].id`, top-level and inside `variants[]`, against
+the artifact's own entry keys; not a vacuously-empty field). **Double-run byte-identity: PASS**
+(`export.dump_export` on two independent `build_export` calls, byte-equal). The artifact was
+written ONLY to `apps/assay/out/spell-power.json` (gitignored, reproducible) — never into
+`apps/codex/`, per the spec's explicit instruction; the orchestrator places a copy at integration.
+
+**Full py lane, real run:** `uv run ruff check .` / `uv run ruff format --check .` /
+`uv run ty check` / `uv run pytest` — all green (226 tests in `apps/assay` alone, repo-wide suite
+green). Real-corpus `assay extract`/`assay price`/`assay export-codex` all run clean against
+`pf2e-8.3.0` (no fixture-only shortcuts).
+
+**Gate evidence** (`results/validation.md`'s "Round 4 gates" section, real numbers — summarized
+here, see that file for the full tables):
+
+- **W-A (join) — PASS.** Independent join self-test reproduces 222/263/0/20 exactly; 29/263
+  `@item.level` disagreements exactly; evaluator family breakdown (9 ternary/8 closed-form/11
+  runtime-only among the 28 joined str-exprs) matches the spec's re-scoped pin; Heroism
+  array-selector fanout and Mystic Armor's predicate gate both proven on the real fixtures (also
+  unit-tested, `test_effects.py`).
+- **W-B (buff comparables) — REPORTED, not gated (per spec).** Buff corpus n=145; all 10 W-B
+  roster spells resolve (Heroism/Mystic Armor/Invisibility/Haste/Resist Energy/Sure Strike/
+  Mountain Resilience/False Vitality/Blur/Protection); qualitative neighbor spot-check reads
+  sensibly (Mystic Armor's neighbors are all AC-buffs — Shielded Arm, Benediction, Circle of
+  Protection, Protection; Sure Strike and Blur are each other's #1 neighbor, both granting a
+  concealment-family condition) — full LOO table in `validation.md`.
+- **W-C (summons) — PASS.** Journal agreement byte-for-byte; 13/14 prose extraction, Phantasmal
+  Minion the named miss via kind-precedence; curve table published in both `validation.md` and
+  `summons.SUMMON_CURVE`.
+- **W-D (export) — PASS.** Double-run byte-identity; unmatched ids = 0 (real check); entry counts
+  by kind reconcile against the re-derived splits above, deltas from round-3 fully enumerated in
+  this build record (not silently absorbed).
+
+**Decisions made that the spec left to the engineer** (same framing as rounds 2/3's own build
+records): the multi-effect merge algorithm for the 11 real corpus shapes the spec doesn't
+explicitly enumerate (immunity-marker drop, unqualified-sibling-wins, choice-fan detection);
+widening the atom-family list with `DamageDice` (documented above, needed for hostile-shaped
+promoted rows to carry any signal at all); the buff-population promotion gate (`extract_single`
+treats ANY join content — atom or tag — as priceable, not a strict atom-only filter, so all 77
+ref-bearing skips promote rather than a smaller subset); leaving Bone Flense as a documented
+false-negative rather than a bespoke regex fix that would have broken four other spells; Phantasmal
+Minion NOT getting `population="summon"` (its real beneficial-but-atomless classification is left
+to speak for itself). None of these are silent — all recorded here and in the relevant module
+docstrings/comments.
+
+**No STOP triggered.** Every re-derived number either matched the spec's review-verified pins
+exactly (222/263/0/20/29/n=14/curve/round-3-beneficial-81) or is explicitly framed by the spec's
+own status header as "re-derive at build" territory (the buff-population component counts, which
+the promotion fix was EXPECTED to move) — every delta from the pre-fix draft numbers is enumerated
+above with its mechanism, not silently absorbed.

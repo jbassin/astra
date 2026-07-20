@@ -1,0 +1,2146 @@
+[
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "resistance:fire": 5.0,
+      "tag:Concealed": 1.0,
+      "tag:Unconscious": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/eat-fire.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Eat Fire",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:certain-tasks": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/glamorize.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Glamorize",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/glowing-trail.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Glowing Trail",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "modifier:attack": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/guidance.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Guidance",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:attack": 1.0,
+      "modifier:{item|flags.system.rulesSelections.infectiousEnthusiasm}": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/infectious-enthusiasm.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Infectious Enthusiasm",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:performance": 1.0,
+      "modifier:performance-checks": 1.0,
+      "modifier:stealth": -4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/musical-accompaniment.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Musical Accompaniment",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:the-initial-check": 1.0,
+      "tag:Hidden": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "cantrip/root-reading.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Root Reading",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "modifier:ac-until-the-start-of-your-next-turn": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/shield.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Shield",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "modifier:attack": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/time-sense.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Time Sense",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:all-speeds": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "cantrip/warp-step.json",
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Warp Step",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Encumbered": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/ant-haul.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ant Haul",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:initiative": 1.0,
+      "modifier:its-next-initiative-roll": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/anticipate-peril.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Anticipate Peril",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:ac": 1.0,
+      "modifier:ac-while-within-the-emanation": 1.0
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "file": "rank-1/benediction.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Benediction",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 1.0,
+      "modifier:{item|flags.system.rulesSelections.save}": 1.0,
+      "modifier:{item|flags.system.rulesSelections.skill}": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/beseech-the-sphinx.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Beseech the Sphinx",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:attack": 1.0,
+      "modifier:attack-roll": 1.0
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "file": "rank-1/bless.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Bless",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/carryall.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Carryall",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Friendly": 1.0,
+      "tag:Helpful": 2.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-1/charm.json",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Charm",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "temp-hp": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/endure.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Endure",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:this-stealth-check": 2.0,
+      "tag:Hidden": 1.0,
+      "tag:Invisible": 1.0,
+      "tag:Observed": 1.0,
+      "tag:Undetected": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/flashy-disappearance.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Flashy Disappearance",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:land-speed": 30.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/fleet-step.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Fleet Step",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:deception-checks-to-prevent-others-from-": 4.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-1/illusory-disguise.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Illusory Disguise",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Hidden": 1.0,
+      "tag:Invisible": 1.0,
+      "tag:Undetected": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/invisible-item.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Invisible Item",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Broken": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/item-facade.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Item Facade",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "weakness:physical": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/juvenile-companion.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Juvenile Companion",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Grabbed": 1.0,
+      "tag:Immobilized": 1.0,
+      "tag:Restrained": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/liberating-command.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Liberating Command",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:checks-to-open-the-door": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/lock.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Lock",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Broken": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/mending.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mending",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:ac": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/mystic-armor.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mystic Armor",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:games-lore-checks-to-gamble": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/nudge-the-odds.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Nudge the Odds",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/phantasmal-minion.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Phantasmal Minion",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "modifier:the-recall-knowledge-check": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/pocket-library.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Pocket Library",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:ac": 1.0,
+      "modifier:saving-throw": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/protection.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Protection",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:ac": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/shielded-arm.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shielded Arm",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/spirit-ward.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Spirit Ward",
+    "range_bucket": "varies",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Concealed": 1.0,
+      "tag:Hidden": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/sure-strike.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sure Strike",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:land-speed": 10.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/tailwind.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Tailwind",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:deception": 2.0,
+      "modifier:deception-checks": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/thicket-of-knives.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Thicket of Knives",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Unconscious": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-1/thoughtful-gift.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Thoughtful Gift",
+    "range_bucket": "le120",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Enfeebled": 1.0,
+      "tag:Immobilized": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-10/avatar.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Avatar",
+    "range_bucket": "touch-self",
+    "rank": 10
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Enfeebled": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/animal-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Animal Form",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Concealed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/blur.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blur",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "damage-dice:claws-of-the-otter-damage": 1.0,
+      "modifier:attack": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/claws-of-the-otter.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Claws of the Otter",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Fleeing": 1.0,
+      "tag:Frightened": 1.0,
+      "tag:Stupefied": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/clear-mind.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Clear Mind",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Grabbed": 1.0,
+      "tag:Immobilized": 1.0,
+      "tag:Restrained": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-2/coiling-dance.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Coiling Dance",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Broken": 1.0,
+      "tag:Hidden": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/dismantle.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Dismantle",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0,
+      "tag:Undetected": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/empty-pack.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Empty Pack",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:damage-rolls-on-melee-strikes": 2.0,
+      "tag:Clumsy": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/enlarge.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Enlarge",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "temp-hp": 10.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/false-vitality.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "False Vitality",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:deception-checks-to-impersonate-an-undea": 2.0,
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-2/falsify-heat.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Falsify Heat",
+    "range_bucket": "le60",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "damage-dice:strike-damage": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/flame-wisp.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Flame Wisp",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "resistance:physical": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/hidebound.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Hidebound",
+    "range_bucket": "le60",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:deception-checks-to-pass-as-a-generic-me": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/humanoid-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Humanoid Form",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Concealed": 1.0,
+      "tag:Hidden": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/illusory-shroud.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Illusory Shroud",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:all-checks-for-the-remaining-duration": 1.0,
+      "modifier:perception": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/impeccable-flow.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Impeccable Flow",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Hidden": 1.0,
+      "tag:Invisible": 1.0,
+      "tag:Undetected": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/invisibility.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Invisibility",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "1.5",
+    "atom_vector": {
+      "modifier:attack": 1.0,
+      "modifier:damage-against-that-creature": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/kgalaserkes-axes.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Kgalaserke's Axes",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Quickened": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/loose-times-arrow.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Loose Time's Arrow",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Slowed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/magnetic-repulsion.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Magnetic Repulsion",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:impersonate-an-undead-but-physically-int": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/mimic-undead.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mimic Undead",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:bludgeoning": 2.0,
+      "resistance:piercing": 2.0,
+      "weakness:fire": 3.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/oaken-resilience.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Oaken Resilience",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Unfriendly": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-2/paranoia.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Paranoia",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:stealth-checks-to-hide-while-in-dim-ligh": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/penumbral-disguise.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Penumbral Disguise",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Off-Guard": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/rapid-adaptation.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rapid Adaptation",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:choice-of-energy": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/resist-energy.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Resist Energy",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Clumsy": 1.0,
+      "tag:Enfeebled": 1.0,
+      "tag:Stupefied": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/restoration.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Restoration",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:checks-you-make-to-disbelieve-illusions": 2.0,
+      "tag:Concealed": 1.0,
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/see-the-unseen.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "See the Unseen",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:do-so": 2.0,
+      "modifier:saving-throw": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/slough-skin.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Slough Skin",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Blinded": 1.0,
+      "tag:Dazzled": 1.0,
+      "tag:Deafened": 1.0,
+      "tag:Enfeebled": 1.0,
+      "tag:Sickened": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/sound-body.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sound Body",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-2/spirit-sense.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Spirit Sense",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:deception-checks-to-impersonate-you-and-": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/summoners-visage.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Summoner's Visage",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Clumsy": 1.0,
+      "tag:Grabbed": 1.0,
+      "tag:Paralyzed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/sure-footing.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sure Footing",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "resistance:all-damage": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-2/warping-pull.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Warping Pull",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "modifier:ac": 1.0,
+      "modifier:attack": 1.0,
+      "modifier:saving-throw": 1.0
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "file": "rank-3/circle-of-protection.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Circle of Protection",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/clairaudience.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Clairaudience",
+    "range_bucket": "gt120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:choice-of-energy": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/elemental-absorption.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Elemental Absorption",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Confused": 1.0
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "file": "rank-3/focusing-hum.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Focusing Hum",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Quickened": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-3/haste.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Haste",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:attack": 2.0,
+      "modifier:perception": 1.0,
+      "modifier:saving-throw": 1.0,
+      "modifier:skill-check": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/heroism.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Heroism",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Enfeebled": 1.0,
+      "tag:Immobilized": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/insect-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Insect Form",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:attack": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/levitate.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Levitate",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "modifier:saving-throw": 2.0,
+      "tag:Concealed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/safe-passage.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Safe Passage",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:piercing": 5.0,
+      "resistance:slashing": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/sand-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sand Form",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-3/shared-invisibility.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shared Invisibility",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Grabbed": 1.0,
+      "tag:Immobilized": 1.0,
+      "tag:Restrained": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/strength-of-mind.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Strength of Mind",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:all-defenses-against-auditory-effects": 2.0,
+      "modifier:attack": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/tempest-cloak.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Tempest Cloak",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Stupefied": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/time-jump.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Time Jump",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:ac-against-the-foe": 6.0,
+      "modifier:ac-against-the-foe-for-the-remaining-dur": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/warding-aggression.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Warding Aggression",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/web-of-eyes.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Web of Eyes",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Concealed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-3/whirling-scarves.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Whirling Scarves",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Clumsy": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/aerial-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Aerial Form",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/clairvoyance.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Clairvoyance",
+    "range_bucket": "gt120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/dawnflowers-light.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Dawnflower's Light",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Enfeebled": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/dinosaur-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Dinosaur Form",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:perception": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/discern-lies.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Discern Lies",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:attack": 1.0,
+      "tag:Prone": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-4/elemental-gift.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Elemental Gift",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Concealed": 1.0,
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/elemental-sense.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Elemental Sense",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Grabbed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/elephant-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Elephant Form",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Helpful": 1.0,
+      "tag:Indifferent": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-4/favorable-review.json",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Favorable Review",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:all-damage": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/flicker.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Flicker",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:attack": 2.0,
+      "modifier:fortitude": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-4/girzanjes-march.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Girzanje's March",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:acid": 5.0,
+      "resistance:cold": 5.0,
+      "resistance:electricity": 5.0,
+      "resistance:piercing": 5.0,
+      "tag:Concealed": 1.0,
+      "weakness:bludgeoning": 5.0,
+      "weakness:sonic": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/glass-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Glass Form",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:physical": 5.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/mountain-resilience.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mountain Resilience",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:perception": 2.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-4/movanic-glimmer.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Movanic Glimmer",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Indifferent": 1.0,
+      "tag:Unfriendly": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/outcasts-curse.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Outcast's Curse",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Doomed": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-4/peaceful-bubble.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Peaceful Bubble",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "modifier:saving-throw": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/prophets-luck.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Prophet's Luck",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Grabbed": 1.0,
+      "tag:Immobilized": 1.0,
+      "tag:Restrained": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/unfettered-movement.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Unfettered Movement",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:physical": 8.0,
+      "speed:fly": 10.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/vapor-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Vapor Form",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Encumbered": 1.0,
+      "tag:Prone": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/variable-gravity.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Variable Gravity",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Quickened": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-4/winning-streak.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Winning Streak",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "modifier:saving-throw": 4.0,
+      "modifier:{item|flags.system.rulesSelections.blessingOfDefianceSave}": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/blessing-of-defiance.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blessing of Defiance (variant 1)",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 4.0,
+      "modifier:{item|flags.system.rulesSelections.blessingOfDefianceSave}": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/blessing-of-defiance.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blessing of Defiance (variant 2)",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "modifier:saving-throw": 4.0,
+      "modifier:{item|flags.system.rulesSelections.blessingOfDefianceSave}": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/blessing-of-defiance.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blessing of Defiance (variant 3)",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "damage-dice:{item|flags.system.rulesSelections.weapon}-damage": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/blink-charge.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blink Charge",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 4.0,
+      "resistance:void": 10.0,
+      "tag:Doomed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/death-ward.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Death Ward",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/drop-dead.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Drop Dead",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "tag:Controlled": 1.0,
+      "tag:Fascinated": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/ectoplasmic-expulsion.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ectoplasmic Expulsion",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Helpful": 1.0,
+      "tag:Indifferent": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-5/glimmer-of-charm.json",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Glimmer of Charm",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:land-speed": 10.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/moon-frenzy.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Moon Frenzy",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Enfeebled": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/plant-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Plant Form",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 1.0,
+      "tag:Confused": 1.0,
+      "tag:Controlled": 1.0,
+      "tag:Fleeing": 1.0,
+      "tag:Stunned": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/rallying-banner.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rallying Banner",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-5/scouting-eye.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Scouting Eye",
+    "range_bucket": "varies",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-6/daemon-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Daemon Form",
+    "range_bucket": "touch-self",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-6/mislead.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mislead",
+    "range_bucket": "touch-self",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Petrified": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-6/stone-to-flesh.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Stone to Flesh",
+    "range_bucket": "touch-self",
+    "rank": 6
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-6/wall-of-force.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wall of Force",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 2.0,
+      "temp-hp": 12.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-6/zealous-conviction.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Zealous Conviction",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 1.0,
+      "tag:Deafened": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/angel-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Angel Form",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Dazzled": 1.0,
+      "tag:Stupefied": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/cosmic-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cosmic Form",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:melee-strike-damage": 2.0,
+      "modifier:saving-throw": 1.0,
+      "modifier:strike-damage": 1.0,
+      "resistance:choice-of-energy": 1.0,
+      "temp-hp": 40.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/divine-vessel.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Divine Vessel",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Concealed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/ethereal-jaunt.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ethereal Jaunt",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-7/lifewood-cage.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Lifewood Cage",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/planar-palace.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Planar Palace",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Blinded": 1.0,
+      "tag:Dazzled": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/power-word-blind.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Power Word Blind",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:acid": 5.0,
+      "resistance:electricity": 5.0,
+      "resistance:fire": 5.0,
+      "resistance:force": 5.0,
+      "resistance:mental": 5.0,
+      "resistance:poison": 5.0,
+      "resistance:sonic": 5.0,
+      "tag:Blinded": 1.0,
+      "tag:Dazzled": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/prismatic-armor.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Prismatic Armor",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Dying": 1.0,
+      "tag:Unconscious": 1.0,
+      "tag:Wounded": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-7/regenerate.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Regenerate",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-8/disappearance.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Disappearance",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "resistance:physical": 10.0,
+      "tag:Fatigued": 1.0,
+      "tag:Paralyzed": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-8/ferrous-form.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ferrous Form",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:saving-throw": 4.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-8/hidden-mind.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Hidden Mind",
+    "range_bucket": "le30",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:attack": 4.0,
+      "modifier:saving-throw": 2.0,
+      "tag:Prone": 1.0,
+      "tag:Quickened": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "file": "rank-8/musical-shift.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Musical Shift",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "tag:Stunned": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-8/power-word-stun.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Power Word Stun",
+    "range_bucket": "le30",
+    "rank": 8
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "tag:Quickened": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-8/summon-deific-herald.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Summon Deific Herald",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "modifier:initiative": 2.0,
+      "tag:Off-Guard": 1.0,
+      "tag:Undetected": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-9/foresight.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Foresight",
+    "range_bucket": "touch-self",
+    "rank": 9
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "modifier:attack": 2.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-9/prismatic-shield.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Prismatic Shield",
+    "range_bucket": "touch-self",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "tag:Invisible": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "file": "rank-9/proliferating-eyes.json",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Proliferating Eyes",
+    "range_bucket": "touch-self",
+    "rank": 9
+  }
+]

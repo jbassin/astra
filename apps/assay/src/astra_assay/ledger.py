@@ -30,7 +30,11 @@ _TELEPORT_RE = re.compile(
 )
 _WALL_RE = re.compile(r"\bwall of\b|\bwall\b.{0,20}\bcreates?\b", re.IGNORECASE)
 _SPELL_EFFECTS_RE = re.compile(r"Compendium\.pf2e\.spell-effects")
-_SUMMON_TRAIT_RE = re.compile(r"^summon\s", re.IGNORECASE)
+#: D30-37 fix (round 4) — the round-2/3 regex (`^summon\s`) was DEAD CODE: it
+#: matched against each bare TRAIT STRING itself (e.g. `"summon"`), which
+#: never starts with "summon " (a trailing space) — `^summon\s` can never
+#: match the 6-character trait word "summon". The real signal is TRAIT-LIST
+#: MEMBERSHIP: `"summon" in traits` (case-insensitive).
 
 #: D30-22's beneficial-side target-prose signal ("self/touch/willing-or-ally
 #: target prose"). "Hostile" qualifiers veto it outright.
@@ -127,12 +131,32 @@ def classify_row(row: SpellFeatures) -> str | None:
         return "routing-ambiguous"
     if row.condition_ref:
         # every instance is beneficial/non-control (D30-8i: buffs go to the
-        # ledger — Stage B's coverage arithmetic is undefined for them).
+        # ledger — Stage B's coverage arithmetic is undefined for them). This
+        # bucket IS component 1 of D30-36's buff population (`buffs.py`
+        # re-reads it by this exact reason string).
         return "beneficial-effect"
-    if row.status_modifiers:
-        # a raw numeric status/circumstance modifier with no condition ref at
-        # all — D30-5 restricts severity pricing to the condition-tier table,
-        # so a bare modifier has no priced path.
+    has_buff_signal = bool(row.status_modifiers) or bool(
+        row.effect_profile is not None and (row.effect_profile.atoms or row.effect_profile.tags)
+    )
+    if has_buff_signal:
+        # D30-36 (round 4) — a raw status/circumstance modifier OR a joined
+        # effect's atoms/tags, with NO condition ref at all, still needs the
+        # SAME D30-22 hostility routing every condition-bearing row gets
+        # (heroism/protection are exactly this shape — Heroism's own
+        # description reads as a plain "+1 status bonus" line, no @UUID
+        # condition ref anywhere). `classify_hostility` already generalizes
+        # correctly here: an empty `condition_instances` list makes its
+        # "all-unconditional" check vacuously true, so only the hostile-
+        # signal / friendly-target tests actually decide.
+        hostility = classify_hostility(row)
+        if hostility == "beneficial":
+            return "beneficial-effect"
+        if hostility == "ambiguous":
+            return "routing-ambiguous"
+        # hostile-shaped raw-modifier/effect-only rows (Bone Flense, Blood
+        # Vendetta, Fungal Infestation among them) stay unpriced — D30-5
+        # restricts severity pricing to the condition-tier table, and this
+        # branch by definition carries no tiered condition instance.
         return "raw-modifier-only (not priced — D30-5 restricts severity to condition tiers)"
     return "no-priceable-effect"  # shouldn't occur (S1 would have skipped it)
 
@@ -153,7 +177,7 @@ def classify_unpriced_skip(data: dict, reason: str) -> str:
     name = str(data.get("name", ""))
     desc = str((sysd.get("description") or {}).get("value", "") or "")
 
-    if name.lower().startswith("summon ") or any(_SUMMON_TRAIT_RE.match(t) for t in traits):
+    if name.lower().startswith("summon ") or "summon" in [t.lower() for t in traits]:
         return "summon"
     if _WALL_RE.search(name) or ("wall" in traits) or _WALL_RE.search(desc[:200]):
         return "wall/terrain"

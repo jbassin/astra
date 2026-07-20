@@ -622,3 +622,86 @@ def test_homebrew_effect_spell_end_to_end_through_comparables() -> None:
     # Dread Gaze shares Frightened/Fleeing atoms with Fear specifically —
     # Fear should be the (or a) closest match by construction.
     assert result.matches[0].name == "Fear"
+
+
+# ---------------------------------------------------------------------------
+# Round 4 (D30-35/36) — spell-effect join wired into extraction, promoted
+# SkipRecords, hostile-shaped promotion.
+# ---------------------------------------------------------------------------
+
+
+def _effect_index() -> dict:
+    import json as _json
+
+    effects_dir = FIXTURES / "spell-effects"
+    index: dict = {}
+    for path in effects_dir.glob("*.json"):
+        doc = _json.loads(path.read_text(encoding="utf-8"))
+        index[doc["name"]] = doc
+    return index
+
+
+def test_heroism_join_promotes_raw_modifier_row_with_authoritative_atoms() -> None:
+    """Heroism has no @UUID condition ref at all (a plain '+1 status bonus'
+    prose line) — round 1-3 routed it 'raw-modifier-only' off a partial
+    regex match. With the effect join wired in, it carries an authoritative
+    effect_profile (Heroism's own FlatModifier, array-selector fanout) and
+    still lands 'beneficial-effect' (D30-22 routing, unchanged mechanism)."""
+    from astra_assay import ledger
+    from astra_assay.extract import extract_spell
+
+    data = load("heroism.json")
+    r = extract_spell(data, "heroism.json", effect_index=_effect_index())
+    assert isinstance(r, SpellFeatures)
+    assert r.effect_profile is not None
+    assert r.effect_profile.atoms["modifier:attack"] == 1.0
+    assert ledger.classify_row(r) == "beneficial-effect"
+
+
+def test_blood_vendetta_promoted_skip_lands_hostile() -> None:
+    """D30-36's promoted-SkipRecord routing, exercised on a REAL corpus
+    hostile-shaped example: Blood Vendetta carries only PERSISTENT damage
+    (ev stays 0, round 1-3's `plain`-only EV rule) and a real structured
+    `defense.save` — round 1-3 skipped it entirely ('no-priceable-effect');
+    with the effect join wired in it becomes a real row and, because
+    `has_save=True`, D30-22 routes it hostile — NEVER into the buff
+    population, even though the join gave it its first-ever priceable
+    signal."""
+    from astra_assay import ledger
+    from astra_assay.extract import extract_spell
+
+    data = load("blood-vendetta.json")
+    idx = _effect_index()
+    assert "Spell Effect: Blood Vendetta (Failure)" in idx
+    r = extract_spell(data, "blood-vendetta.json", effect_index=idx)
+    assert isinstance(r, SpellFeatures)
+    assert r.ev == 0.0
+    assert r.recovery_path == "effect-join"
+    assert r.has_save is True
+    assert ledger.classify_hostility(r) == "hostile"
+    assert ledger.classify_row(r) == (
+        "raw-modifier-only (not priced — D30-5 restricts severity to condition tiers)"
+    )
+
+
+def test_blood_vendetta_skipped_without_the_join() -> None:
+    """Same fixture, no effect index — reproduces the round 1-3 behavior
+    exactly (the join is what changes the outcome, not an unrelated fix)."""
+    from astra_assay.extract import extract_spell
+
+    data = load("blood-vendetta.json")
+    r = extract_spell(data, "blood-vendetta.json")
+    assert isinstance(r, SkipRecord)
+
+
+def test_summon_fey_trait_membership_not_name_prefix() -> None:
+    """D30-37's fixed `_SUMMON_TRAIT_RE` — Summon Fey carries the trait
+    'summon' (not '^summon '-prefixed, which was the round-2/3 dead-code
+    regex's actual test) and has no priceable damage/conditions of its own,
+    so it's still a SkipRecord — but `ledger.classify_unpriced_skip` must
+    sub-classify it 'summon' via real trait membership."""
+    from astra_assay import ledger
+
+    data = load("summon-fey.json")
+    reason = ledger.classify_unpriced_skip(data, "no-priceable-effect (x)")
+    assert reason == "summon"

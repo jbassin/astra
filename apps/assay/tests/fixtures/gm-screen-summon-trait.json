@@ -1,0 +1,28 @@
+{
+  "_id": "S55aqwWIzpQRFhcq",
+  "name": "GM Screen",
+  "pages": [
+    {
+      "_id": "8gcp880pEWZ9VPnF",
+      "category": null,
+      "image": {},
+      "name": "Summon Trait",
+      "sort": 2012500,
+      "src": null,
+      "system": {},
+      "text": {
+        "content": "<p>Spells with the summon trait can conjure creatures, typically ones with a particular trait. Such creatures can be found in Monster Core and similar books. Unless noted otherwise, the creature must be common, it gains the summoned trait, and it must appear in an unoccupied space in range large enough to contain it. The highest level of creature the spell can summon depends on the rank of the spell, as listed below. The spell can still summon a creature of a lower level if you so choose. These rules apply only to spells that have the summon trait; other spells that call or conjure items or beings but that don't have the trait, like summon instrument, work as explained in the spell.</p><table border=\"1\" class=\"pf2e remaster\"><thead><tr style=\"text-align:right\"><th>Spell Rank</th><th>Maximum Creature Level</th></tr></thead><tbody><tr><td>1st</td><td>\u20131</td></tr><tr><td>2nd</td><td>1</td></tr><tr><td>3rd</td><td>2</td></tr><tr><td>4th</td><td>3</td></tr><tr><td>5th</td><td>5</td></tr><tr><td>6th</td><td>7</td></tr><tr><td>7th</td><td>9</td></tr><tr><td>8th</td><td>11</td></tr><tr><td>9th</td><td>13</td></tr><tr><td>10th</td><td>15</td></tr></tbody></table><p><span style=\"float:right\"><em>Pathfinder Player Core pg. 360</em></span></p>",
+        "format": 1
+      },
+      "title": {
+        "level": 2,
+        "show": true
+      },
+      "type": "text",
+      "video": {
+        "controls": true,
+        "volume": 0.5
+      }
+    }
+  ]
+}

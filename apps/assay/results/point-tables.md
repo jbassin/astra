@@ -212,3 +212,37 @@ side-by-side against round 2's pure-anchored ladder above.
 | 9 | see `README.md` / git history | 66.09 |
 | 10 | see `README.md` / git history | 74.13 |
 
+---
+
+## Buff prior card (D30-36, round 4)
+
+**No pricing — the round-1 generative-fit tombstone stands.** Buff spells are now comparables citizens (see `results/buff-comparables-corpus.json` + the W-B section in `validation.md`); this section is PACK-CURVE ANCHORS ONLY — labeled priors, illustrating how a few well-known official buffs scale, never a fitted price. Every value below is the SAME `effects.build_effect_profile` evaluation the join itself uses (D30-35), just re-run at a handful of illustrative ranks to show the curve — the spell's own base-rank row in the export/comparables corpus carries only the FIRST point; the heightened tiers live in this card ONLY, by design.
+
+### Heroism — attack/save/skill/Perception status bonus
+
+| Rank | Value |
+|---|---|
+| 3 | 1 |
+| 6 | 2 |
+| 9 | 3 |
+
+### Mystic Armor — AC item bonus
+
+| Rank | Value |
+|---|---|
+| 1 | 1 |
+| 4 | 1 |
+| 6 | 2 |
+| 10 | 3 |
+
+### Mountain Resilience — physical resistance
+
+| Rank | Value |
+|---|---|
+| 5 | 5 |
+| 6 | 10 |
+| 8 | 15 |
+| 10 | 20 |
+
+Resistance-per-rank family: Mountain Resilience above is the named anchor (physical resistance ternary curve); the SAME rule shape (a nested `ternary(gte(@item.level,N),...)` over a `Resistance` rule) recurs across the pack (Eat Fire, Tomorrow's Dawn, Safe Passage, …) — see `results/buff-comparables-corpus.json`'s `resistance:*` atom keys for the full roster, each independently join-derived, none hand-tabled.
+

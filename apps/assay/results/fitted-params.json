@@ -236,5 +236,24 @@
         "w_repr": 0.27599999999999997
       }
     }
+  },
+  "round4": {
+    "buff_corpus_n": 145,
+    "export_deterministic": true,
+    "export_entry_count": 1144,
+    "export_kind_counts": {
+      "buff-comparables": 123,
+      "comparables": 148,
+      "ledger": 524,
+      "quantitative": 349
+    },
+    "export_population_counts": {
+      "beneficial": 183,
+      "hostile": 296,
+      "null": 652,
+      "summon": 13
+    },
+    "export_variant_collapse_count": 34,
+    "summon_curve_verified": true
   }
 }

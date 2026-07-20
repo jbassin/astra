@@ -35,7 +35,7 @@ from typing import Any
 
 from pydantic import BaseModel
 
-from . import conditions
+from . import conditions, effects
 from .dice import parse_formula
 
 #: Damage types treated as "rarely resisted" per the design doc §3 predictor —
@@ -134,6 +134,34 @@ class ConditionInstanceOut(BaseModel):
     tier: str | None
 
 
+class EffectProfileOut(BaseModel):
+    """D30-35 join result, serialized — see `effects.EffectProfile`."""
+
+    effect_name: str
+    base_rank: int
+    atoms: dict[str, float] = {}
+    tags: list[str] = []
+    resistance_choice_of_energy: bool = False
+    duration_class: str | None = None
+    dropped_variant_names: list[str] = []
+    merge_kind: str | None = None
+    has_valueless_rule: bool = False
+
+    @classmethod
+    def from_profile(cls, p: effects.EffectProfile) -> EffectProfileOut:
+        return cls(
+            effect_name=p.effect_name,
+            base_rank=p.base_rank,
+            atoms=dict(p.atoms),
+            tags=list(p.tags),
+            resistance_choice_of_energy=p.resistance_choice_of_energy,
+            duration_class=p.duration_class,
+            dropped_variant_names=list(p.dropped_variant_names),
+            merge_kind=p.merge_kind,
+            has_valueless_rule=p.has_valueless_rule,
+        )
+
+
 class StatusModifierOut(BaseModel):
     delta: str
     kind: str
@@ -228,8 +256,17 @@ class SpellFeatures(BaseModel):
     rarity_flag: bool
     traditions: list[str]
 
+    #: D30-35 (round 4) — the joined `Spell Effect: X` item's rule-derived
+    #: profile (atoms + tags), or ``None`` when the description carries no
+    #: effect ref (or no effect index was supplied — every round-1..3 test
+    #: fixture, which never called this). `@item.level` expressions inside
+    #: are always evaluated at THIS row's own base rank.
+    effect_profile: EffectProfileOut | None = None
+
     #: D30-6 recovery-path tag — None (plain structured damage / condition-only),
-    #: "inline-damage", or "manual-scaling".
+    #: "inline-damage", "manual-scaling", or (round 4) "effect-join" — a row
+    #: with NO own damage/conditions/modifiers whose only priceable content is
+    #: the joined effect's atoms (D30-36's promoted SkipRecords).
     recovery_path: str | None = None
     is_variant: bool = False
     variant_label: str | None = None
@@ -446,6 +483,7 @@ def extract_single(
     is_variant: bool = False,
     variant_label: str | None = None,
     parent_name: str | None = None,
+    effect_index: dict[str, dict[str, Any]] | None = None,
 ) -> SpellFeatures | SkipRecord:
     """One (possibly overlay-merged) spell ``system`` dict → a row or a typed
     skip. This is the shared core; overlay/manual-scaling dispatch lives in
@@ -517,6 +555,18 @@ def extract_single(
     description = (sysd.get("description") or {}).get("value", "") or ""
     base_text = conditions.strip_heightened(description)
     has_extra_inline_damage = bool(plain) and bool(_INLINE_DAMAGE_RE.search(base_text))
+
+    level = (sysd.get("level") or {}).get("value", 0)  # trust level.value over folder path
+
+    # D30-35 (round 4) — the spell-effect join. Ref discovery scans the FULL
+    # (non-heightened-stripped) description — re-derived, real corpus: 222
+    # ref-bearing main-list spells / 263 refs / 0 unresolved / 20 multi-ref
+    # spells, matching the spec's own pins exactly; stripping Heightened
+    # first under-counts (a handful of spells only cite a ref inside their
+    # own Heightened block). `@item.level`/`@spell.rank` are always evaluated
+    # at THIS spell's own base rank (`level`), never the effect item's own
+    # `system.level.value` (29/263 real joined pairs disagree).
+    effect_join = effects.join_effects(description, int(level), effect_index)
 
     target_raw = (sysd.get("target") or {}).get("value", "") or ""
     prose_save_statistic = conditions.detect_prose_save(base_text)
@@ -594,13 +644,37 @@ def extract_single(
 
     has_priceable_damage = ev > 0.0
     has_conditions = bool(cres.instances)
+    #: D30-36 — a joined effect carrying ANY signal (a valued atom, or even
+    #: just a tag) is a genuine mechanical payload the round-1..3 pipeline
+    #: never saw; promoting these out of the skip ledger (`recovery_path=
+    #: "effect-join"` below) is what makes the buff-population fix possible —
+    #: hostility routing then runs on THIS row's own has_save/has_attack_
+    #: trait/target_raw fields exactly as it does for every other row (see
+    #: `ledger.classify_row`'s round-4 branch), so a hostile-shaped promoted
+    #: row (e.g. Bone Flense, Blood Vendetta — both carry a real
+    #: `defense.save`) still lands hostile, never beneficial.
+    has_effect_join_signal = effect_join is not None and (effect_join.atoms or effect_join.tags)
 
     if is_long_cast and not has_conditions and not has_priceable_damage:
         return skip(f"long-cast time ({time_raw!r})")
-    if not has_priceable_damage and not has_conditions and not cres.modifiers:
+    if (
+        not has_priceable_damage
+        and not has_conditions
+        and not cres.modifiers
+        and not has_effect_join_signal
+    ):
         if rejected_reasons:
             return skip("; ".join(sorted(set(rejected_reasons))))
         return skip("no-priceable-effect (no damage, no conditions, no modifiers)")
+
+    if (
+        recovery_path is None
+        and not has_priceable_damage
+        and not has_conditions
+        and not cres.modifiers
+        and has_effect_join_signal
+    ):
+        recovery_path = "effect-join"
 
     if has_attack_trait:
         targeting_class = TargetingClass.ATTACK_ROLL
@@ -627,8 +701,6 @@ def extract_single(
     rarity = traits_node.get("rarity", "common")
     rarity_flag = rarity != "common"
     traditions = traits_node.get("traditions") or []
-
-    level = (sysd.get("level") or {}).get("value", 0)  # trust level.value over folder path
 
     heightening_interval, heightening_delta_ev = _extract_heightening(
         sysd, plain_keys | healing_keys
@@ -710,10 +782,16 @@ def extract_single(
         parent_name=parent_name,
         heightening_interval=heightening_interval,
         heightening_delta_ev=heightening_delta_ev,
+        effect_profile=EffectProfileOut.from_profile(effect_join) if effect_join else None,
     )
 
 
-def extract_spell(data: dict[str, Any], file: str) -> SpellFeatures | SkipRecord:
+def extract_spell(
+    data: dict[str, Any],
+    file: str,
+    *,
+    effect_index: dict[str, dict[str, Any]] | None = None,
+) -> SpellFeatures | SkipRecord:
     """Single-result convenience wrapper (used by ``assay score`` and most
     round-1 tests): overlay spells score their FIRST non-empty variant;
     manual-scaling-family spells score their base extraction unmodified (a
@@ -733,12 +811,22 @@ def extract_spell(data: dict[str, Any], file: str) -> SpellFeatures | SkipRecord
             )
         merged_data, label = variants[0]
         return extract_single(
-            merged_data, file, is_variant=True, variant_label=label, parent_name=data.get("name")
+            merged_data,
+            file,
+            is_variant=True,
+            variant_label=label,
+            parent_name=data.get("name"),
+            effect_index=effect_index,
         )
-    return extract_single(data, file)
+    return extract_single(data, file, effect_index=effect_index)
 
 
-def extract_spell_variants(data: dict[str, Any], file: str) -> list[SpellFeatures | SkipRecord]:
+def extract_spell_variants(
+    data: dict[str, Any],
+    file: str,
+    *,
+    effect_index: dict[str, dict[str, Any]] | None = None,
+) -> list[SpellFeatures | SkipRecord]:
     """Full population-aware dispatch (D30-6a/b): overlay spells expand to
     one row per non-empty variant (overlay precedence beats every other
     recovery path); manual-scaling-family spells expand to one row per
@@ -758,14 +846,19 @@ def extract_spell_variants(data: dict[str, Any], file: str) -> list[SpellFeature
             ]
         return [
             extract_single(
-                merged_data, file, is_variant=True, variant_label=label, parent_name=name
+                merged_data,
+                file,
+                is_variant=True,
+                variant_label=label,
+                parent_name=name,
+                effect_index=effect_index,
             )
             for merged_data, label in variants
         ]
 
     stem = Path(file).stem.lower()
     if stem in MANUAL_SCALING_TABLE:
-        base_result = extract_single(data, file)
+        base_result = extract_single(data, file, effect_index=effect_index)
         table = MANUAL_SCALING_TABLE[stem]
         out: list[SpellFeatures | SkipRecord] = []
         if isinstance(base_result, SkipRecord):
@@ -812,7 +905,7 @@ def extract_spell_variants(data: dict[str, Any], file: str) -> list[SpellFeature
                 )
         return out
 
-    return [extract_single(data, file)]
+    return [extract_single(data, file, effect_index=effect_index)]
 
 
 def _extract_heightening(
@@ -842,18 +935,34 @@ def _extract_heightening(
     return int(interval), total
 
 
+def build_effect_index_from_snapshot(spells_dir: Path) -> dict[str, dict[str, Any]]:
+    """D30-35 — the spell-effects pack sits at a sibling path of
+    ``spells_dir`` (``.../packs/pf2e/spells/spells`` -> ``.../packs/pf2e/
+    spell-effects``, both under the same version-dir snapshot). Missing
+    entirely (a stale/partial snapshot) -> an empty index, fail-soft (no
+    joins, same as round 1-3's behavior)."""
+    spell_effects_dir = spells_dir.parent.parent / "spell-effects"
+    if not spell_effects_dir.is_dir():
+        return {}
+    docs = [load_spell_json(p) for p in sorted(spell_effects_dir.glob("*.json"))]
+    return effects.build_effect_index(docs)
+
+
 def extract_all(spells_dir: Path) -> ExtractResult:
     """Extract every main-slot spell JSON under ``spells_dir`` (population
     pass — uses ``extract_spell_variants``, so overlay/manual-scaling spells
-    contribute multiple rows)."""
+    contribute multiple rows). D30-35 (round 4): also loads the spell-effects
+    pack ONCE and joins it into every row."""
     from .snapshot import iter_spell_files
+
+    effect_index = build_effect_index_from_snapshot(spells_dir)
 
     rows: list[SpellFeatures] = []
     skipped: list[SkipRecord] = []
     for path in iter_spell_files(spells_dir):
         data = load_spell_json(path)
         rel = str(path.relative_to(spells_dir))
-        for result in extract_spell_variants(data, rel):
+        for result in extract_spell_variants(data, rel, effect_index=effect_index):
             if isinstance(result, SkipRecord):
                 skipped.append(result)
             else:

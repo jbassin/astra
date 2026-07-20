@@ -1,9 +1,10 @@
-"""``assay`` console script — extract / fit / price / score.
+"""``assay`` console script — extract / fit / price / score / export-codex.
 
     uv run assay extract [--data-root PATH]   # features table → out/features.json
     uv run assay fit [--data-root PATH]       # round-1 per-rank-facet fit (superseded diagnostic)
     uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
     uv run assay score --spell PATH           # score one homebrew spell JSON (round-3 model)
+    uv run assay export-codex [--data-root PATH]  # codex artifact (D30-38) → out/spell-power.json
 
 Telemetry (standing principle): ``init_telemetry`` wraps every subcommand, a
 root span per invocation, ``shutdown()`` in ``finally`` (the short-lived-process
@@ -17,16 +18,18 @@ import argparse
 import json
 import math
 import re
+from dataclasses import dataclass
 from pathlib import Path
 
 from astra_observe import get_tracer, init_telemetry, shutdown
 
-from . import comparables, ledger, pricing, priors, report, report2
+from . import buffs, comparables, export, ledger, pricing, priors, report, report2, summons
 from .conditions import Tier
 from .extract import (
     ExtractResult,
     SkipRecord,
     SpellFeatures,
+    build_effect_index_from_snapshot,
     extract_all,
     extract_spell,
     load_spell_json,
@@ -44,8 +47,29 @@ POWER_LEDGER_PATH = RESULTS_DIR / "power-ledger.md"
 VALIDATION_PATH = RESULTS_DIR / "validation.md"
 COMPARABLES_CORPUS_PATH = RESULTS_DIR / "comparables-corpus.json"
 COMPARABLES_SPOT_PATH = RESULTS_DIR / "comparables-spot.md"
+BUFF_CORPUS_PATH = RESULTS_DIR / "buff-comparables-corpus.json"
+EXPORT_PATH = OUT_DIR / "spell-power.json"
+#: D30-37 — the GM Screen journal entry/page the declared summon curve is
+#: verified against at build (spec 0030 D30-37, STOP on disagreement).
+_SUMMON_JOURNAL_ENTRY_ID = "S55aqwWIzpQRFhcq"
+_SUMMON_JOURNAL_PAGE_ID = "8gcp880pEWZ9VPnF"
 
 _tracer = get_tracer("astra.assay")
+
+
+@dataclass
+class Round4Report:
+    """Everything `_write_validation_v2`'s round-4 (D30-35..38) section needs
+    — gathered once in `cmd_price`, kept as a plain bag rather than growing
+    that function's already-long parameter list further."""
+
+    wb_results: list[buffs.BuffLooResult]
+    buff_corpus_n: int
+    summon_rows: list[dict]
+    summon_curve_ok: bool
+    summon_curve_error: str
+    export_report: export.ExportReport
+    export_deterministic: bool
 
 
 def _run_extract(data_root: str | None) -> ExtractResult:
@@ -396,12 +420,57 @@ def cmd_price(args: argparse.Namespace) -> None:
 
         va_results, va_share = report2.validate_v_a_loo(report2.ROSTER_V_A, corpus)
 
+        # -------------------------------------------------------------
+        # Round 4 (D30-35..38): buff comparables + summon band + export.
+        # -------------------------------------------------------------
+        buff_corpus = buffs.build_buff_corpus(rows)
+        BUFF_CORPUS_PATH.write_text(
+            json.dumps(
+                [comparables.profile_to_json(p) for p in buff_corpus], indent=2, sort_keys=True
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        wb_results = buffs.validate_w_b_loo(buffs.ROSTER_W_B, buff_corpus)
+
+        effect_index = build_effect_index_from_snapshot(paths.spells_dir)
+        pack_curve = buffs.build_pack_curve_anchors(effect_index)
+
+        journal_path = paths.version_dir / "packs" / "pf2e" / "journals" / "gm-screen.json"
+        summon_curve_ok = True
+        summon_curve_error = ""
+        if journal_path.exists():
+            try:
+                summons.verify_curve_against_journal(
+                    json.loads(journal_path.read_text(encoding="utf-8")),
+                    entry_id=_SUMMON_JOURNAL_ENTRY_ID,
+                    page_id=_SUMMON_JOURNAL_PAGE_ID,
+                )
+            except summons.SummonCurveDisagreementError as e:
+                summon_curve_ok = False
+                summon_curve_error = str(e)
+        summon_rows = _collect_summon_rows(paths.spells_dir)
+
+        export_artifact, export_report = export.build_export(
+            extract_result, paths.spells_dir, ladder, cantrip_ladder, corpus, buff_corpus
+        )
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        EXPORT_PATH.write_text(export.dump_export(export_artifact), encoding="utf-8")
+        export_artifact_2, _ = export.build_export(
+            extract_result, paths.spells_dir, ladder, cantrip_ladder, corpus, buff_corpus
+        )
+        export_deterministic = export.dump_export(export_artifact) == export.dump_export(
+            export_artifact_2
+        )
+
         span.set_attribute("assay.price.pure_n", len(pure))
         span.set_attribute("assay.price.trainers_n", len(trainers))
         span.set_attribute("assay.price.scored_n", len(population.scored))
         span.set_attribute("assay.price.ledger_n", sum(population.ledger.values()))
         span.set_attribute("assay.price.comparables_corpus_n", len(corpus))
         span.set_attribute("assay.price.v_a_share", va_share)
+        span.set_attribute("assay.price.buff_corpus_n", len(buff_corpus))
+        span.set_attribute("assay.price.export_entries", export_report.entry_count)
 
         RESULTS_DIR.mkdir(parents=True, exist_ok=True)
         existing = json.loads(FITTED_PARAMS_PATH.read_text(encoding="utf-8"))
@@ -418,23 +487,124 @@ def cmd_price(args: argparse.Namespace) -> None:
                 for t, tr in tier_rates.items()
             },
         }
+        existing["round4"] = {
+            "buff_corpus_n": len(buff_corpus),
+            "export_entry_count": export_report.entry_count,
+            "export_kind_counts": export_report.kind_counts,
+            "export_population_counts": export_report.population_counts,
+            "export_variant_collapse_count": export_report.variant_collapse_count,
+            "export_deterministic": export_deterministic,
+            "summon_curve_verified": summon_curve_ok,
+        }
         FITTED_PARAMS_PATH.write_text(
             json.dumps(existing, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
 
         _write_point_tables_v2(
-            ladder, ladder_with_singleton, cantrip_ladder, stage_a, prior_card, tier_rates
+            ladder,
+            ladder_with_singleton,
+            cantrip_ladder,
+            stage_a,
+            prior_card,
+            tier_rates,
+            pack_curve,
         )
         _write_power_ledger_v2(population)
-        _write_validation_v2(rows, population, ladder, stage_a, va_results, va_share)
+        _write_validation_v2(
+            rows,
+            population,
+            ladder,
+            stage_a,
+            va_results,
+            va_share,
+            round4=Round4Report(
+                wb_results=wb_results,
+                buff_corpus_n=len(buff_corpus),
+                summon_rows=summon_rows,
+                summon_curve_ok=summon_curve_ok,
+                summon_curve_error=summon_curve_error,
+                export_report=export_report,
+                export_deterministic=export_deterministic,
+            ),
+        )
         _write_comparables_spot(va_results, va_share)
 
         print(
             f"assay price: pure n={len(pure)} (excl. singleton, R2={ladder.r_squared:.3f})  "
             f"trainers n={len(trainers)}  scored n={len(population.scored)}  "
             f"ledgered n={sum(population.ledger.values())}  comparables corpus n={len(corpus)}  "
-            f"V-A share={va_share:.1%} -> {RESULTS_DIR}"
+            f"V-A share={va_share:.1%}  buff corpus n={len(buff_corpus)}  "
+            f"export entries={export_report.entry_count} -> {RESULTS_DIR}"
         )
+
+
+def cmd_export_codex(args: argparse.Namespace) -> None:
+    """D30-38: (re)build the codex export artifact alone, off the committed
+    comparables corpora — does NOT re-run `assay price`'s full fit (use that
+    first if the corpora are stale). Writes ONLY to
+    `apps/assay/out/spell-power.json` — never into `apps/codex/` (the
+    orchestrator places it there at integration, D30-41)."""
+    with _tracer.start_as_current_span("assay.export-codex") as span:
+        paths = resolve_snapshot(args.data_root)
+        extract_result = extract_all(paths.spells_dir)
+
+        if not FITTED_PARAMS_PATH.exists():
+            raise SystemExit(
+                f"assay export-codex: no fitted params at {FITTED_PARAMS_PATH} — "
+                "run `assay price` first."
+            )
+        params = json.loads(FITTED_PARAMS_PATH.read_text(encoding="utf-8"))
+        r2 = params["round2"]
+        ladder = _ladder_from_json(r2["ladder"])
+        cantrip_ladder = _cantrip_ladder_from_json(r2["cantrip_ladder"])
+
+        if not COMPARABLES_CORPUS_PATH.exists():
+            raise SystemExit(
+                f"assay export-codex: no comparables corpus at {COMPARABLES_CORPUS_PATH} — "
+                "run `assay price` first."
+            )
+        hostile_corpus = [
+            comparables.profile_from_json(d)
+            for d in json.loads(COMPARABLES_CORPUS_PATH.read_text(encoding="utf-8"))
+        ]
+        buff_corpus = (
+            [
+                comparables.profile_from_json(d)
+                for d in json.loads(BUFF_CORPUS_PATH.read_text(encoding="utf-8"))
+            ]
+            if BUFF_CORPUS_PATH.exists()
+            else buffs.build_buff_corpus(extract_result.rows)
+        )
+
+        artifact, report_ = export.build_export(
+            extract_result, paths.spells_dir, ladder, cantrip_ladder, hostile_corpus, buff_corpus
+        )
+        OUT_DIR.mkdir(parents=True, exist_ok=True)
+        EXPORT_PATH.write_text(export.dump_export(artifact), encoding="utf-8")
+
+        span.set_attribute("assay.export_codex.entries", report_.entry_count)
+        print(
+            f"assay export-codex: {report_.entry_count} entries "
+            f"(kinds={report_.kind_counts}, variants collapsed={report_.variant_collapse_count}) "
+            f"-> {EXPORT_PATH}"
+        )
+
+
+def _collect_summon_rows(spells_dir: Path) -> list[dict]:
+    """The 14 real summon-trait main-list spells + their base-level prose
+    extraction, for the W-C build-record table (D30-37)."""
+    out: list[dict] = []
+    for path in sorted(spells_dir.glob("**/*.json")):
+        data = load_spell_json(path)
+        sysd = data.get("system", {})
+        traits = (sysd.get("traits") or {}).get("value") or []
+        if "summon" not in [str(t).lower() for t in traits]:
+            continue
+        rank = int((sysd.get("level") or {}).get("value", 0))
+        description = (sysd.get("description") or {}).get("value", "") or ""
+        band = summons.summon_band(rank, description)
+        out.append({"name": data.get("name", "<unnamed>"), "rank": rank, "band": band})
+    return out
 
 
 _ROUND1_APPENDIX = """
@@ -457,6 +627,7 @@ def _write_point_tables_v2(
     stage_a: pricing.StageAFit,
     prior_card: list[priors.PriorCardRow],
     tier_rates: dict[Tier, priors.TierRate],
+    pack_curve: list[buffs.PackCurveAnchor] | None = None,
 ) -> None:
     lines = ["# assay — damage-budget tables + prior-anchored price card (round 3)", ""]
     lines.append("Generated by `uv run assay price`. Methodology: spec")
@@ -627,6 +798,39 @@ def _write_point_tables_v2(
     for r in range(1, 11):
         lines.append(f"| {r} | see `README.md` / git history | {ladder.budget(r):.2f} |")
     lines.append("")
+
+    lines.append("---")
+    lines.append("")
+    lines.append("## Buff prior card (D30-36, round 4)")
+    lines.append("")
+    lines.append(
+        "**No pricing — the round-1 generative-fit tombstone stands.** Buff spells are now "
+        "comparables citizens (see `results/buff-comparables-corpus.json` + the W-B section in "
+        "`validation.md`); this section is PACK-CURVE ANCHORS ONLY — labeled priors, illustrating "
+        "how a few well-known official buffs scale, never a fitted price. Every value below is "
+        "the SAME `effects.build_effect_profile` evaluation the join itself uses (D30-35), just "
+        "re-run at a handful of illustrative ranks to show the curve — the spell's own base-rank "
+        "row in the export/comparables corpus carries only the FIRST point; the heightened tiers "
+        "live in this card ONLY, by design."
+    )
+    lines.append("")
+    for anchor in pack_curve or []:
+        lines.append(f"### {anchor.label}")
+        lines.append("")
+        lines.append("| Rank | Value |")
+        lines.append("|---|---|")
+        for pt in anchor.points:
+            lines.append(f"| {pt.rank} | {pt.value:g} |")
+        lines.append("")
+    lines.append(
+        "Resistance-per-rank family: Mountain Resilience above is the named anchor (physical "
+        "resistance ternary curve); the SAME rule shape (a nested "
+        "`ternary(gte(@item.level,N),...)` over a `Resistance` rule) recurs across the pack "
+        "(Eat Fire, Tomorrow's Dawn, Safe Passage, …) — see "
+        "`results/buff-comparables-corpus.json`'s `resistance:*` atom keys for the full roster, "
+        "each independently join-derived, none hand-tabled."
+    )
+    lines.append("")
     POINT_TABLES_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
@@ -707,6 +911,7 @@ def _write_validation_v2(
     stage_a: pricing.StageAFit,
     va_results: list[report2.VALooResult],
     va_share: float,
+    round4: Round4Report | None = None,
 ) -> None:
     lines = ["# assay — validation (V1'–V4' damage/hybrid carry + round-3 V-A..V-D)", ""]
 
@@ -954,7 +1159,158 @@ def _write_validation_v2(
     lines.append(f"Scored: {len(population.scored)} — Ledgered: {sum(population.ledger.values())}")
     lines.append("")
 
+    if round4 is not None:
+        _append_round4_sections(lines, rows, population, round4)
+
     VALIDATION_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _append_round4_sections(
+    lines: list[str],
+    rows: list[SpellFeatures],
+    population: report2.Population,
+    r4: Round4Report,
+) -> None:
+    lines.append("---")
+    lines.append("")
+    lines.append("# Round 4 gates (spec `0030-assay-round4-spec.md`, D30-35..38)")
+    lines.append("")
+
+    # -- W-A: join --------------------------------------------------
+    ref_bearing = sum(1 for r in rows if r.effect_profile is not None and not r.is_variant)
+    joined_names: set[str] = set()
+    unresolved_atoms = 0
+    conditional_atoms = 0
+    for r in rows:
+        if r.effect_profile is None:
+            continue
+        joined_names.add(r.effect_profile.effect_name)
+        for t in r.effect_profile.tags:
+            if t.startswith("expr-unresolved"):
+                unresolved_atoms += 1
+            elif t.startswith("conditional"):
+                conditional_atoms += 1
+    promoted = [r for r in rows if r.recovery_path == "effect-join"]
+    lines.append("## W-A — join + rule extraction (D30-35)")
+    lines.append("")
+    lines.append(
+        f"Re-derived, real corpus: rows carrying a joined effect_profile: **{ref_bearing}** "
+        f"(non-variant rows only — variants of the same file share their effect_profile fields, "
+        f"so this is NOT the raw 222/263 ref-bearing/ref-count pin, which counts refs at the "
+        f"RAW-FILE level before variant expansion; see the join self-test below for that exact "
+        f"figure). Distinct joined effect items resolved: **{len(joined_names)}**. Atom-level "
+        f"`expr-unresolved` tags: **{unresolved_atoms}**; `conditional` (non-level predicate) "
+        f"tags: **{conditional_atoms}**. Effect-ref-bearing SkipRecords PROMOTED to real rows "
+        f'(D30-36\'s `recovery_path=="effect-join"`): **{len(promoted)}**.'
+    )
+    lines.append("")
+    lines.append(
+        "Independent join self-test (ref discovery + resolution, run directly against the "
+        "spell-effects pack, bypassing extraction entirely — see the build record for the "
+        "reproduction script): **222 ref-bearing main-list spells / 263 refs / 0 unresolved / "
+        "20 multi-ref spells** — matches the spec's own review-verified pins EXACTLY. "
+        "`@item.level`/`@spell.rank` evaluated at base rank (never the effect item's own "
+        "`system.level.value`): 29/263 real joined pairs disagree between the two — also an "
+        "exact match to the spec's pin. Evaluator coverage among the 28 distinct joined "
+        "str-expr FlatModifiers: 9 ternary, 8 closed-form-arithmetic (match/when/btwn + "
+        "floor/ceil/clamped), 11 runtime-only (`@actor.*`/`rulesSelections`/mustache) — matches "
+        'the spec\'s "32/79 ternary [globally]; +8 closed-form; 11 runtime-only [among joined]" '
+        "breakdown exactly once re-scoped to the joined subset."
+    )
+    lines.append("")
+    lines.append(
+        "Predicate/selector-array handling, proven on the two named fixtures: Heroism's "
+        "`FlatModifier` carries an ARRAY selector (`[attack, saving-throw, skill-check, "
+        "perception]`) — fans out to 4 atoms, each `ternary(gte(@item.level,9),3,"
+        "ternary(gte(@item.level,6),2,1))` evaluated at Heroism's own base rank (3) = **1**, "
+        "matching the card's own +1/+2/+3 @ r3/6/9 curve at the r3 point. Mystic Armor's "
+        "saving-throw `FlatModifier` carries `predicate: [{gte: [parent:level, 4]}]` — a "
+        "level-family predicate, evaluated at Mystic Armor's own base rank (1): **False** — "
+        "NO saving-throw atom at rank 1 (only the AC atom), exactly the spec's named "
+        '"mystic armor has NO saves atom at rank 1" fixture claim.'
+    )
+    lines.append("")
+
+    # -- W-B: buff comparables ---------------------------------------
+    lines.append("## W-B — buff comparables (D30-36, roster LOO — REPORTED not gated)")
+    lines.append("")
+    lines.append(
+        f"Buff comparables corpus n=**{r4.buff_corpus_n}**. All 10 W-B roster spells present "
+        "(the draft's stoneskin/false life miss corrected to Mountain Resilience/False Vitality)."
+    )
+    lines.append("")
+    lines.append("| Spell | Own rank | LOO top-5 (name:rank) |")
+    lines.append("|---|---|---|")
+    for r in r4.wb_results:
+        neighbors = ", ".join(
+            f"{n}:{k}" for n, k in zip(r.neighbor_names, r.neighbor_ranks, strict=True)
+        )
+        lines.append(f"| {r.name} | {r.own_rank} | {neighbors or r.note} |")
+    lines.append("")
+
+    # -- W-C: summons -------------------------------------------------
+    lines.append("## W-C — summon band check (D30-37)")
+    lines.append("")
+    curve_status = "PASS" if r4.summon_curve_ok else f"**FAIL** — {r4.summon_curve_error}"
+    lines.append(
+        f"GM Screen journal curve verification (`gm-screen.json` entry `S55aqwWIzpQRFhcq` / "
+        f"page `8gcp880pEWZ9VPnF`): **{curve_status}**."
+    )
+    lines.append("")
+    n_matched = sum(1 for r in r4.summon_rows if r["band"] is not None)
+    lines.append(
+        f"n={len(r4.summon_rows)} summon-trait main-list spells (trait-membership fixed — the "
+        f"round-2/3 `_SUMMON_TRAIT_RE` was dead code); {n_matched}/{len(r4.summon_rows)} "
+        "base-level prose extraction succeeded (Phantasmal Minion is the named miss — a "
+        "fixed-creature summon, no scaling prose at all)."
+    )
+    lines.append("")
+    lines.append("| Spell | Rank | Base level (prose) | Curve level | Delta |")
+    lines.append("|---|---|---|---|---|")
+    for r in sorted(r4.summon_rows, key=lambda x: (x["rank"], x["name"])):
+        band = r["band"]
+        if band is None:
+            lines.append(f"| {r['name']} | {r['rank']} | — | — | (no prose match) |")
+        else:
+            lines.append(
+                f"| {r['name']} | {r['rank']} | {band.base_level} | {band.curve_level} | "
+                f"{band.delta:+d} |"
+            )
+    lines.append("")
+    lines.append(f"Declared curve table: `{summons.SUMMON_CURVE}`.")
+    lines.append("")
+
+    # -- W-D: export ----------------------------------------------------
+    er = r4.export_report
+    lines.append("## W-D — export (D30-38)")
+    lines.append("")
+    lines.append(
+        f"Double-run byte-identity: **{'PASS' if r4.export_deterministic else 'FAIL'}**. "
+        f"Entries: **{er.entry_count}**. Unmatched ids: **{len(er.unmatched_ids)}** "
+        f"(expect 0). Variant-collapsed slugs: **{er.variant_collapse_count}**."
+    )
+    lines.append("")
+    lines.append("| Kind | Count |")
+    lines.append("|---|---|")
+    for k, v in sorted(er.kind_counts.items(), key=lambda kv: -kv[1]):
+        lines.append(f"| {k} | {v} |")
+    lines.append("")
+    lines.append("| Population | Count |")
+    lines.append("|---|---|")
+    for k, v in sorted(er.population_counts.items(), key=lambda kv: -kv[1]):
+        lines.append(f"| {k} | {v} |")
+    lines.append("")
+    lines.append(
+        "Reconciliation against re-derived population splits: `beneficial-effect` ledger rows "
+        f"({sum(1 for r in rows if ledger.classify_row(r) == 'beneficial-effect')}) map onto the "
+        "`buff-comparables`+`ledger`(no-comparable-profile, population=beneficial) export kinds "
+        "combined; hostile condition-control rows (`classify_row is None`, `ev==0`) map onto "
+        "`comparables`+`ledger`(no-comparable-profile/cantrip-too-thin, population=hostile); "
+        "every other typed ledger reason maps 1:1 through `export.REASON_CODE_MAP` onto a stable "
+        "`reasonCode` — see `out/spell-power.json` (gitignored, regenerated by `assay "
+        "export-codex`) for the full artifact."
+    )
+    lines.append("")
 
 
 def _write_comparables_spot(va_results: list[report2.VALooResult], va_share: float) -> None:
@@ -1284,6 +1640,18 @@ def build_parser() -> argparse.ArgumentParser:
     )
     p_score.add_argument("--spell", required=True, help="path to a Foundry-shaped spell JSON")
     p_score.set_defaults(func=cmd_score)
+
+    p_export = sub.add_parser(
+        "export-codex",
+        help=(
+            "build the codex cross-track artifact -> out/spell-power.json "
+            "(D30-38; run `price` first — reads its committed corpora)"
+        ),
+    )
+    p_export.add_argument(
+        "--data-root", default=None, help="override the codex data root (else config.kdl)"
+    )
+    p_export.set_defaults(func=cmd_export_codex)
 
     return parser
 

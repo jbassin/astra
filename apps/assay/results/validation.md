@@ -92,29 +92,44 @@ See the S1 commit (`3783473`, `feat(assay): S1 payload fixes + hostility routing
 
 The four mandated routing fixtures (real corpus, `tests/fixtures/`) all land correctly — proven end-to-end in `test_assay_extract.py`'s `test_routing_*` tests: **Belittling Boast → hostile** (its `hostile_area_phrase` flag wins over the empty-range/touch-self trap), **Overwhelming Memory → hostile** (prose-save detected despite `defense.save` being structurally null), **Haste → beneficial-effect** (Quickened is excluded from tier assignment entirely — the pre-existing bypass), **Invisibility → beneficial** (Undetected/Hidden DO carry real tiers here, exercising `classify_hostility` directly).
 
-Route counts (ev=0.0 rows, real corpus post-S1-fix): **{'hostile': 158, 'beneficial-effect': 81, 'routing-ambiguous': 20}**.
+Route counts (ev=0.0 rows, real corpus post-S1-fix): **{'hostile': 158, 'beneficial-effect': 185, 'routing-ambiguous': 35}**.
 
-Named `routing-ambiguous` list (20):
+Named `routing-ambiguous` list (35):
 
+- Animate Rope
 - Beseech Arcanotheign
+- Bind Undead
+- Chameleon Coat
 - Cloud Dragon's Cloak
 - Confetti Cloud (variant 1)
 - Confetti Cloud (variant 2)
 - Confetti Cloud (variant 3)
+- Domora's Defense
 - Faerie Fire
+- Figment
+- Forbidding Ward
+- Forceful Hand
+- Gray Shadow
+- Helpful Reload
 - Helpful Wood Spirits
 - Holy Host
 - Invoke True Name
+- Knock
+- Light
 - Martyr's Intervention
 - Mist
 - Momentary Recovery
+- Organsight
 - Prismatic Wall
+- Protect Companion
 - Quicken Time
 - Raise Dead
+- Soothing Blossoms
 - Stabilize
 - Summon Warden of the Wild
 - Tangling Creepers
 - The Four Hunters
+- Thundering Dominance
 - Unholy Army
 
 Damage-side non-regression: Fireball's V2′ spot-check above is unchanged from round 2 (the pure-damage population and ladder are byte-identical); no damage-side extraction path was touched by S1.
@@ -126,4 +141,78 @@ Pure-damage ladder: n=27, slope=1.0892, intercept=1.7979 — byte-identical to r
 ## Ledger summary
 
 Scored: 558 — Ledgered: 657
+
+---
+
+# Round 4 gates (spec `0030-assay-round4-spec.md`, D30-35..38)
+
+## W-A — join + rule extraction (D30-35)
+
+Re-derived, real corpus: rows carrying a joined effect_profile: **206** (non-variant rows only — variants of the same file share their effect_profile fields, so this is NOT the raw 222/263 ref-bearing/ref-count pin, which counts refs at the RAW-FILE level before variant expansion; see the join self-test below for that exact figure). Distinct joined effect items resolved: **209**. Atom-level `expr-unresolved` tags: **29**; `conditional` (non-level predicate) tags: **134**. Effect-ref-bearing SkipRecords PROMOTED to real rows (D30-36's `recovery_path=="effect-join"`): **77**.
+
+Independent join self-test (ref discovery + resolution, run directly against the spell-effects pack, bypassing extraction entirely — see the build record for the reproduction script): **222 ref-bearing main-list spells / 263 refs / 0 unresolved / 20 multi-ref spells** — matches the spec's own review-verified pins EXACTLY. `@item.level`/`@spell.rank` evaluated at base rank (never the effect item's own `system.level.value`): 29/263 real joined pairs disagree between the two — also an exact match to the spec's pin. Evaluator coverage among the 28 distinct joined str-expr FlatModifiers: 9 ternary, 8 closed-form-arithmetic (match/when/btwn + floor/ceil/clamped), 11 runtime-only (`@actor.*`/`rulesSelections`/mustache) — matches the spec's "32/79 ternary [globally]; +8 closed-form; 11 runtime-only [among joined]" breakdown exactly once re-scoped to the joined subset.
+
+Predicate/selector-array handling, proven on the two named fixtures: Heroism's `FlatModifier` carries an ARRAY selector (`[attack, saving-throw, skill-check, perception]`) — fans out to 4 atoms, each `ternary(gte(@item.level,9),3,ternary(gte(@item.level,6),2,1))` evaluated at Heroism's own base rank (3) = **1**, matching the card's own +1/+2/+3 @ r3/6/9 curve at the r3 point. Mystic Armor's saving-throw `FlatModifier` carries `predicate: [{gte: [parent:level, 4]}]` — a level-family predicate, evaluated at Mystic Armor's own base rank (1): **False** — NO saving-throw atom at rank 1 (only the AC atom), exactly the spec's named "mystic armor has NO saves atom at rank 1" fixture claim.
+
+## W-B — buff comparables (D30-36, roster LOO — REPORTED not gated)
+
+Buff comparables corpus n=**145**. All 10 W-B roster spells present (the draft's stoneskin/false life miss corrected to Mountain Resilience/False Vitality).
+
+| Spell | Own rank | LOO top-5 (name:rank) |
+|---|---|---|
+| Heroism | 3 | Levitate:3, Musical Shift:8, Prismatic Shield:9, Time Sense:1, Guidance:1 |
+| Mystic Armor | 1 | Shielded Arm:1, Benediction:1, Circle of Protection:3, Protection:1, Aerial Form:4 |
+| Invisibility | 2 | Invisible Item:1, Empty Pack:2, Flashy Disappearance:1, Carryall:1, Disappearance:8 |
+| Haste | 3 | Loose Time's Arrow:2, Winning Streak:4, Summon Deific Herald:8, Musical Shift:8, Aerial Form:4 |
+| Resist Energy | 2 | Elemental Absorption:3, Divine Vessel:7, Aerial Form:4, Angel Form:7, Animal Form:2 |
+| Sure Strike | 1 | Illusory Shroud:2, Blur:2, Ethereal Jaunt:7, Whirling Scarves:3, Dismantle:2 |
+| Mountain Resilience | 4 | Ferrous Form:8, Hidebound:2, Vapor Form:4, Aerial Form:4, Angel Form:7 |
+| False Vitality | 2 | Divine Vessel:7, Endure:1, Zealous Conviction:6, Aerial Form:4, Angel Form:7 |
+| Blur | 2 | Ethereal Jaunt:7, Whirling Scarves:3, Elemental Sense:4, Illusory Shroud:2, Sure Strike:1 |
+| Protection | 1 | Daemon Form:6, Dawnflower's Light:4, Hidden Mind:8, Spirit Sense:2, Spirit Ward:1 |
+
+## W-C — summon band check (D30-37)
+
+GM Screen journal curve verification (`gm-screen.json` entry `S55aqwWIzpQRFhcq` / page `8gcp880pEWZ9VPnF`): **PASS**.
+
+n=14 summon-trait main-list spells (trait-membership fixed — the round-2/3 `_SUMMON_TRAIT_RE` was dead code); 13/14 base-level prose extraction succeeded (Phantasmal Minion is the named miss — a fixed-creature summon, no scaling prose at all).
+
+| Spell | Rank | Base level (prose) | Curve level | Delta |
+|---|---|---|---|---|
+| Phantasmal Minion | 1 | — | — | (no prose match) |
+| Summon Animal | 1 | -1 | -1 | +0 |
+| Summon Construct | 1 | -1 | -1 | +0 |
+| Summon Fey | 1 | -1 | -1 | +0 |
+| Summon Lesser Servitor | 1 | -1 | -1 | +0 |
+| Summon Plant or Fungus | 1 | -1 | -1 | +0 |
+| Summon Undead | 1 | -1 | -1 | +0 |
+| Summon Elemental | 2 | 1 | 1 | +0 |
+| Summon Celestial | 5 | 5 | 5 | +0 |
+| Summon Dragon | 5 | 5 | 5 | +0 |
+| Summon Entity | 5 | 5 | 5 | +0 |
+| Summon Fiend | 5 | 5 | 5 | +0 |
+| Summon Giant | 5 | 5 | 5 | +0 |
+| Summon Monitor | 5 | 5 | 5 | +0 |
+
+Declared curve table: `{1: -1, 2: 1, 3: 2, 4: 3, 5: 5, 6: 7, 7: 9, 8: 11, 9: 13, 10: 15}`.
+
+## W-D — export (D30-38)
+
+Double-run byte-identity: **PASS**. Entries: **1144**. Unmatched ids: **0** (expect 0). Variant-collapsed slugs: **34**.
+
+| Kind | Count |
+|---|---|
+| ledger | 524 |
+| quantitative | 349 |
+| comparables | 148 |
+| buff-comparables | 123 |
+
+| Population | Count |
+|---|---|
+| null | 652 |
+| hostile | 296 |
+| beneficial | 183 |
+| summon | 13 |
+
+Reconciliation against re-derived population splits: `beneficial-effect` ledger rows (185) map onto the `buff-comparables`+`ledger`(no-comparable-profile, population=beneficial) export kinds combined; hostile condition-control rows (`classify_row is None`, `ev==0`) map onto `comparables`+`ledger`(no-comparable-profile/cantrip-too-thin, population=hostile); every other typed ledger reason maps 1:1 through `export.REASON_CODE_MAP` onto a stable `reasonCode` — see `out/spell-power.json` (gitignored, regenerated by `assay export-codex`) for the full artifact.
 
