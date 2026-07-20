@@ -65,7 +65,14 @@ def cmd_extract(args: argparse.Namespace) -> None:
 
 
 def _fit_population(rows: list[SpellFeatures], *, cantrip: bool) -> tuple[DesignMatrix, FitResult]:
-    pop = [r for r in rows if r.is_cantrip == cantrip]
+    # Round 1's log-linear rank+facet fit is damage-axis-only (unchanged, per
+    # S1's "no model changes"). Round 2's extraction pass now also emits
+    # condition-only control rows (ev=0.0, no damage at all) into the same
+    # features table — those feed the NEW round-2 pricing pipeline
+    # (pricing.py), never this log(ev) fit, so they're excluded here exactly
+    # as they were implicitly excluded (via a round-1 extract-time skip)
+    # before round 2 existed.
+    pop = [r for r in rows if r.is_cantrip == cantrip and r.ev > 0.0]
     dm = build_design_matrix(pop, include_rank_ladder=not cantrip)
     return dm, fit_ols(dm)
 
