@@ -6,9 +6,10 @@ computed against the real extracted corpus (no asserted numbers).
 from __future__ import annotations
 
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
+from . import comparables as comparables_mod
 from . import ledger as ledger_mod
 from . import pricing
 from .conditions import Tier, within_tier_offset
@@ -379,3 +380,67 @@ def validate_v4_prime(ladder: pricing.LadderFit) -> list[V4PrimeRow]:
         delta = (b - community) / community * 100 if community else 0.0
         out.append(V4PrimeRow(r, b, community, GM_CORE_ANCHORS.get(r), delta))
     return out
+
+
+# ---------------------------------------------------------------------------
+# Round 3 — V-A comparables leave-one-out gate (spec 0030 D30-25)
+# ---------------------------------------------------------------------------
+
+#: The V-A enumerated roster (spec D30-25's own list, official spell names).
+ROSTER_V_A: tuple[str, ...] = (
+    "Fear",
+    "Slow",
+    "Synesthesia",
+    "Paralyze",
+    "Confusion",
+    "Blindness",
+    "Overwhelming Presence",
+    "Synaptic Pulse",
+    "Dizzying Colors",
+    "Stupefy",
+)
+
+
+@dataclass
+class VALooResult:
+    name: str
+    own_rank: int | None
+    neighbor_ranks: list[int] = field(default_factory=list)
+    neighbor_names: list[str] = field(default_factory=list)
+    median_neighbor_rank: float | None = None
+    within_one: bool = False
+    note: str = ""
+
+
+def validate_v_a_loo(
+    roster: tuple[str, ...], corpus: list[comparables_mod.ComparableProfile]
+) -> tuple[list[VALooResult], float]:
+    """D30-25 V-A: for each roster spell, its OWN corpus row is excluded
+    (leave-one-out) before computing its top-5 comparables; PASS iff the
+    top-5's median rank sits within ±1 of the spell's own rank. Target:
+    ≥70% of the roster passes."""
+    by_name = {p.name: p for p in corpus}
+    results: list[VALooResult] = []
+    for name in roster:
+        target = by_name.get(name)
+        if target is None:
+            results.append(VALooResult(name, None, note="not found in the comparables corpus"))
+            continue
+        res = comparables_mod.comparables_for(target, corpus, k=5, exclude_name=name)
+        if not res.matches:
+            results.append(VALooResult(name, target.rank, note="no comparables returned"))
+            continue
+        within = abs(res.rank_median - target.rank) <= 1.0
+        results.append(
+            VALooResult(
+                name=name,
+                own_rank=target.rank,
+                neighbor_ranks=[m.rank for m in res.matches],
+                neighbor_names=[m.name for m in res.matches],
+                median_neighbor_rank=res.rank_median,
+                within_one=within,
+            )
+        )
+    n_pass = sum(1 for r in results if r.within_one)
+    share = n_pass / len(results) if results else float("nan")
+    return results, share

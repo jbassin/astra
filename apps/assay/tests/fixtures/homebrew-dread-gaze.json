@@ -1,0 +1,30 @@
+{
+    "_id": "homebrewDreadGazeAAA",
+    "name": "Test Dread Gaze",
+    "system": {
+        "area": null,
+        "cost": { "value": "" },
+        "counteraction": false,
+        "damage": {},
+        "defense": {
+            "save": { "basic": false, "statistic": "will" }
+        },
+        "description": {
+            "value": "<p>You lock eyes with the target, filling it with dread; it must attempt a Will save.</p><hr /><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target is @UUID[Compendium.pf2e.conditionitems.Item.Frightened]{Frightened 2}.</p><p><strong>Critical Failure</strong> The target is @UUID[Compendium.pf2e.conditionitems.Item.Frightened]{Frightened 3} and @UUID[Compendium.pf2e.conditionitems.Item.Fleeing] for 1 round.</p>"
+        },
+        "duration": { "sustained": false, "value": "varies" },
+        "level": { "value": 2 },
+        "publication": { "license": "OGL", "remaster": true, "title": "Homebrew" },
+        "range": { "value": "30 feet" },
+        "requirements": "",
+        "rules": [],
+        "target": { "value": "1 creature" },
+        "time": { "value": "2" },
+        "traits": {
+            "rarity": "common",
+            "traditions": ["occult"],
+            "value": ["emotion", "fear", "mental"]
+        }
+    },
+    "type": "spell"
+}

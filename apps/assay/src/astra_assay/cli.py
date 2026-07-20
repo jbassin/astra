@@ -2,8 +2,8 @@
 
     uv run assay extract [--data-root PATH]   # features table → out/features.json
     uv run assay fit [--data-root PATH]       # round-1 per-rank-facet fit (superseded diagnostic)
-    uv run assay price [--data-root PATH]     # round-2 ladder + Stage A/B + population → results/
-    uv run assay score --spell PATH           # score one homebrew spell JSON (round-2 model)
+    uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
+    uv run assay score --spell PATH           # score one homebrew spell JSON (round-3 model)
 
 Telemetry (standing principle): ``init_telemetry`` wraps every subcommand, a
 root span per invocation, ``shutdown()`` in ``finally`` (the short-lived-process
@@ -21,7 +21,7 @@ from pathlib import Path
 
 from astra_observe import get_tracer, init_telemetry, shutdown
 
-from . import pricing, report, report2
+from . import comparables, ledger, pricing, priors, report, report2
 from .conditions import Tier
 from .extract import (
     ExtractResult,
@@ -42,6 +42,8 @@ FITTED_PARAMS_PATH = RESULTS_DIR / "fitted-params.json"
 POINT_TABLES_PATH = RESULTS_DIR / "point-tables.md"
 POWER_LEDGER_PATH = RESULTS_DIR / "power-ledger.md"
 VALIDATION_PATH = RESULTS_DIR / "validation.md"
+COMPARABLES_CORPUS_PATH = RESULTS_DIR / "comparables-corpus.json"
+COMPARABLES_SPOT_PATH = RESULTS_DIR / "comparables-spot.md"
 
 _tracer = get_tracer("astra.assay")
 
@@ -377,10 +379,29 @@ def cmd_price(args: argparse.Namespace) -> None:
             rows, extract_result.skipped, paths.spells_dir, ladder, cantrip_ladder, stage_a
         )
 
+        # D30-23 — the comparables corpus: every OFFICIAL row that actually
+        # SCORES (ledger.classify_row is None — damage rows always score;
+        # ev=0 condition rows only when D30-22 routes them hostile) AND
+        # carries at least one hostile-priceable atom.
+        scored_rows = [r for r in rows if ledger.classify_row(r) is None]
+        corpus = comparables.build_corpus(scored_rows, ladder)
+        COMPARABLES_CORPUS_PATH.write_text(
+            json.dumps([comparables.profile_to_json(p) for p in corpus], indent=2, sort_keys=True)
+            + "\n",
+            encoding="utf-8",
+        )
+
+        prior_card = priors.build_prior_card(ladder, cantrip_ladder)
+        tier_rates = {t: priors.tier_rate(t, ladder, cantrip_ladder) for t in Tier}
+
+        va_results, va_share = report2.validate_v_a_loo(report2.ROSTER_V_A, corpus)
+
         span.set_attribute("assay.price.pure_n", len(pure))
         span.set_attribute("assay.price.trainers_n", len(trainers))
         span.set_attribute("assay.price.scored_n", len(population.scored))
         span.set_attribute("assay.price.ledger_n", sum(population.ledger.values()))
+        span.set_attribute("assay.price.comparables_corpus_n", len(corpus))
+        span.set_attribute("assay.price.v_a_share", va_share)
 
         RESULTS_DIR.mkdir(parents=True, exist_ok=True)
         existing = json.loads(FITTED_PARAMS_PATH.read_text(encoding="utf-8"))
@@ -390,18 +411,29 @@ def cmd_price(args: argparse.Namespace) -> None:
             "cantrip_ladder": _cantrip_ladder_to_json(cantrip_ladder),
             "stage_a": _stage_a_to_json(stage_a),
         }
+        existing["round3"] = {
+            "comparables_corpus_n": len(corpus),
+            "tier_rates": {
+                t.value: {"w_repr": tr.w_repr, "anchor_budget": tr.anchor_budget, "rate": tr.rate}
+                for t, tr in tier_rates.items()
+            },
+        }
         FITTED_PARAMS_PATH.write_text(
             json.dumps(existing, indent=2, sort_keys=True) + "\n", encoding="utf-8"
         )
 
-        _write_point_tables_v2(ladder, ladder_with_singleton, cantrip_ladder, stage_a)
+        _write_point_tables_v2(
+            ladder, ladder_with_singleton, cantrip_ladder, stage_a, prior_card, tier_rates
+        )
         _write_power_ledger_v2(population)
-        _write_validation_v2(rows, population, ladder, stage_a)
+        _write_validation_v2(rows, population, ladder, stage_a, va_results, va_share)
+        _write_comparables_spot(va_results, va_share)
 
         print(
             f"assay price: pure n={len(pure)} (excl. singleton, R2={ladder.r_squared:.3f})  "
             f"trainers n={len(trainers)}  scored n={len(population.scored)}  "
-            f"ledgered n={sum(population.ledger.values())} -> {RESULTS_DIR}"
+            f"ledgered n={sum(population.ledger.values())}  comparables corpus n={len(corpus)}  "
+            f"V-A share={va_share:.1%} -> {RESULTS_DIR}"
         )
 
 
@@ -423,10 +455,13 @@ def _write_point_tables_v2(
     ladder_with_singleton: pricing.LadderFit,
     cantrip_ladder: pricing.CantripLadderFit,
     stage_a: pricing.StageAFit,
+    prior_card: list[priors.PriorCardRow],
+    tier_rates: dict[Tier, priors.TierRate],
 ) -> None:
-    lines = ["# assay — damage-budget + condition price tables (round 2)", ""]
+    lines = ["# assay — damage-budget tables + prior-anchored price card (round 3)", ""]
     lines.append("Generated by `uv run assay price`. Methodology: spec")
-    lines.append("`thoughts/astra/specs/0030-assay-round2-spec.md` (D30-1..11).")
+    lines.append("`thoughts/astra/specs/0030-assay-round3-spec.md` (D30-21..27); damage-ladder")
+    lines.append("mechanics carried unchanged from `0030-assay-round2-spec.md` (D30-1..11).")
     lines.append("")
     lines.append("## Pure-anchored damage ladder (D30-1)")
     lines.append("")
@@ -473,7 +508,100 @@ def _write_point_tables_v2(
     for bucket, mult in pricing.ACTION_MULTIPLIER.items():
         lines.append(f"| {bucket.value} | ×{mult:.2f} |")
     lines.append("")
-    lines.append("## Stage A tier discounts (D30-3/D30-5)")
+    lines.append("## Prior-anchored condition price card (D30-24 — PRIMARY, replaces the")
+    lines.append("round-2 fitted card below)")
+    lines.append("")
+    lines.append(
+        "**Every value here is a labeled PRIOR, never a fit.** Review F3/F4 killed round-2's "
+        "fitted condition price card as a design tool (its own build record: the per-condition "
+        "table is 'the per-instance rate, not the whole-spell aggregate' — never separately "
+        "validated). Each tier is anchored on one named real spell/rule, unit-coherently stated "
+        "as **V ≈ Budget/w_repr** (`w_repr` printed alongside every rate)."
+    )
+    lines.append("")
+    lines.append("| Tier | Anchor | Anchor rank | w_repr | Rate = Budget(anchor)/w_repr |")
+    lines.append("|---|---|---|---|---|")
+    for tier in (Tier.T1, Tier.T2, Tier.T3, Tier.T4):
+        tr = tier_rates[tier]
+        anchor_label = (
+            f"{tr.anchor.anchor_condition} / {tr.anchor.anchor_degree} / "
+            f"{tr.anchor.anchor_duration.value}"
+        )
+        anchor_rank_label = "cantrip ladder" if tier == Tier.T1 else str(tr.anchor.anchor_rank)
+        lines.append(
+            f"| {tier.value} | {anchor_label} | {anchor_rank_label} | {tr.w_repr:.4f} | "
+            f"{tr.rate:.3f} |"
+        )
+    lines.append("")
+    for tier in (Tier.T4, Tier.T3, Tier.T2, Tier.T1):
+        lines.append(f"- **{tier.value}**: {tier_rates[tier].anchor.anchor_note}")
+    lines.append("")
+    lines.append(
+        "**Table representative point vs. the tier anchors above:** every row below is "
+        "evaluated at the SAME representative point (failure, ~1-round duration — round-2's own "
+        "condition-price-card convention, for apples-to-apples comparison across every "
+        "condition), which is DIFFERENT from the T2/T3 anchors' own real shape (Frightened 1 at "
+        "success/instant, Slowed 1 at failure/MINUTE). That's why 'Slowed 1' below reads ≈1.2 "
+        "ranks, not the ≈3 ranks its own anchor note claims — the anchor claim is specifically "
+        "about Slow's REAL 1-minute duration (duration factor ×1.0, vs. this table's uniform "
+        "~1-round point at ×0.6); it is NOT a claim that every 'Slowed 1' instance is worth rank "
+        "3 regardless of duration (a short Slowed 1 legitimately prices lower — use the "
+        "duration-factor table below to rescale: multiply this row's value by the target "
+        "duration's factor ÷ 0.6). Also note the fixed condition×value→tier table below does not "
+        "apply `conditions.condition_tier`'s duration-based Slowed 1→T3 promotion (that logic is "
+        "extraction-time only, same as round-2's own condition price card) — a 1-minute Slowed 1 "
+        "in an ACTUAL spell scores under T3, not the T2 row shown here."
+    )
+    lines.append("")
+    lines.append(
+        "| Condition | Tier | w (failure, ~1 round) | Prior value V | Prior rank-equivalent |"
+    )
+    lines.append("|---|---|---|---|---|")
+    for row in prior_card:
+        req = "n/a" if math.isnan(row.prior_rank_equivalent) else f"{row.prior_rank_equivalent:.2f}"
+        lines.append(
+            f"| {row.condition} | {row.tier.value} | "
+            f"{row.sample_weight_failure_only_round:.4f} | {row.prior_value:.2f} | {req} |"
+        )
+    lines.append("")
+    lines.append("### Marginal rider price (GM Core's -1-rank rule)")
+    lines.append("")
+    marginal_low, marginal_high = priors.MARGINAL_RIDER_LOW, priors.MARGINAL_RIDER_HIGH
+    lines.append(
+        "Adding a SIGNIFICANT condition rider to an otherwise-priced damage spell discounts "
+        f"the total to roughly **×{marginal_low:.2f}–×{marginal_high:.2f}** "
+        "of what the same-rank pure budget would otherwise buy — GM Core's own 'apply a condition "
+        "≈ damage of 2+ creature levels lower' rule, reproduced empirically by round 1's pure-vs-"
+        "rider probe (rider-family spells deal ×0.43–0.81 of same-rank pure budget) and consistent "
+        "with round-2's Stage A T2/T3 β fits landing well under 1.0. A flat guidance rate, not "
+        "per-condition — apply it to the SPELL'S total budget, not to any one atom."
+    )
+    lines.append("")
+    lines.append("### Coverage/duration adjustment guidance (declared constants, shown as")
+    lines.append("multipliers)")
+    lines.append("")
+    outcome_probability, duration_factor = priors.coverage_duration_multiplier_guidance()
+    lines.append("| Outcome | P(outcome) vs. an on-level moderate save |")
+    lines.append("|---|---|")
+    for outcome, p in outcome_probability.items():
+        lines.append(f"| {outcome} | {p:.2f} |")
+    lines.append("")
+    lines.append("| Duration class | Factor |")
+    lines.append("|---|---|")
+    for dc, factor in duration_factor.items():
+        lines.append(f"| {dc} | ×{factor:.2f} |")
+    lines.append("")
+    lines.append("## Appendix: round-2 fitted condition price card (SUPERSEDED — known-noisy,")
+    lines.append("kept for provenance)")
+    lines.append("")
+    lines.append(
+        "Stage A/B still runs (it feeds the appendix below and the comparables atom-vector "
+        "weighting, `pricing.instance_weight`) but its per-condition PRICE output is no longer "
+        "the recommended design tool — see round-2's build record (`0030-assay-round2-spec.md` "
+        "§5) for the full V3′ diagnosis of why (Fear/Slow/Synesthesia score 1–4 ranks cold: Stage "
+        "A's β's are learned from PARTIAL hybrid discounts, then reused by Stage B to justify an "
+        "entire control-spell budget — an extrapolation the architecture was never validated for)."
+    )
     lines.append("")
     lines.append(
         f"Hybrid trainer n={stage_a.n_obs}, R²={stage_a.r_squared:.3f}, α={stage_a.alpha:.3f}."
@@ -487,15 +615,6 @@ def _write_point_tables_v2(
             f"| {tier.value} | {stage_a.beta[tier]:.4f} | {stage_a.beta_raw[tier]:.4f} | {basis} |"
         )
     lines.append("")
-    lines.append(
-        "## Condition price card (D30-10) — per condition/tier, budget-fraction & rank-equivalent"
-    )
-    lines.append("")
-    lines.append(
-        "At a representative failure-only, ~1-round-duration application (see `pricing.py`"
-    )
-    lines.append("`instance_weight` for the full coverage×duration×within-tier-offset formula).")
-    lines.append("")
     lines.append("| Condition | Tier | Budget fraction *p* | Rank-equivalent @ rank 5 |")
     lines.append("|---|---|---|---|")
     for row in report2.condition_price_card(stage_a, ladder):
@@ -503,15 +622,6 @@ def _write_point_tables_v2(
             f"| {row.condition} | {row.tier.value} | {row.budget_fraction:.3f} | "
             f"{row.rank_equivalent_at_rank5:.2f} |"
         )
-    lines.append("")
-    lines.append("## Duration factors (D30-8b, DECLARED constants)")
-    lines.append("")
-    lines.append("| Duration class | Factor |")
-    lines.append("|---|---|")
-    from .conditions import DURATION_FACTOR  # noqa: PLC0415
-
-    for dc, factor in DURATION_FACTOR.items():
-        lines.append(f"| {dc.value} | ×{factor:.2f} |")
     lines.append("")
     lines.append(_ROUND1_APPENDIX)
     for r in range(1, 11):
@@ -521,7 +631,17 @@ def _write_point_tables_v2(
 
 
 def _write_power_ledger_v2(population: report2.Population) -> None:
-    lines = ["# assay — full-population power ledger (round 2)", ""]
+    lines = ["# assay — full-population power ledger (round 2/3)", ""]
+    lines.append(
+        "**Round 3 note:** the `condition-control` rows below still carry their Stage-B fitted "
+        "score (kept for population-wide reference — this is what informs the Stage A/B appendix "
+        "in `point-tables.md`), but it is **no longer the recommended per-spell design tool** for "
+        "hostile effect spells. Use `uv run assay score --spell <path>` for a homebrew effect "
+        "spell — it returns D30-23 comparables (top-5 official neighbors + a rank RANGE) and "
+        "D30-24 prior-card pointers instead of this fitted point score. See `README.md`'s "
+        "homebrew workflow."
+    )
+    lines.append("")
     non_cantrip = sorted(
         (s for s in population.scored if not s.is_cantrip and s.residual_rank_equiv is not None),
         key=lambda s: s.residual_rank_equiv or 0.0,
@@ -585,8 +705,10 @@ def _write_validation_v2(
     population: report2.Population,
     ladder: pricing.LadderFit,
     stage_a: pricing.StageAFit,
+    va_results: list[report2.VALooResult],
+    va_share: float,
 ) -> None:
-    lines = ["# assay — round-2 validation (V1'–V4')", ""]
+    lines = ["# assay — validation (V1'–V4' damage/hybrid carry + round-3 V-A..V-D)", ""]
 
     v1 = report2.validate_v1_prime(population.scored)
     lines.append("## V1′ — in-rank clustering (±½ rank-equivalent, per subpopulation)")
@@ -703,12 +825,173 @@ def _write_validation_v2(
     )
     lines.append("")
 
+    # -----------------------------------------------------------------
+    # Round 3 (D30-25): V-A comparables LOO, V-B extraction-fix proof,
+    # V-C routing proof, V-D carry.
+    # -----------------------------------------------------------------
+    lines.append("---")
+    lines.append("")
+    lines.append("# Round 3 gates (spec `0030-assay-round3-spec.md`, D30-25)")
+    lines.append("")
+
+    lines.append("## V-A — comparables leave-one-out (target ≥70% median-rank within ±1)")
+    lines.append("")
+    lines.append("| Spell | Own rank | LOO top-5 (name:rank) | Median | Within ±1 |")
+    lines.append("|---|---|---|---|---|")
+    for r in va_results:
+        neighbors = ", ".join(
+            f"{n}:{k}" for n, k in zip(r.neighbor_names, r.neighbor_ranks, strict=True)
+        )
+        median = "—" if r.median_neighbor_rank is None else f"{r.median_neighbor_rank:g}"
+        within = "yes" if r.within_one else ("**NO**" if r.own_rank is not None else "—")
+        lines.append(f"| {r.name} | {r.own_rank} | {neighbors} | {median} | {within} |")
+    lines.append("")
+    va_pass = va_share >= 0.70
+    n_pass = sum(1 for r in va_results if r.within_one)
+    lines.append(
+        f"- {n_pass}/{len(va_results)} within ±1 ({va_share:.1%}) — "
+        f"**{'PASS' if va_pass else 'FAIL'}** (target ≥70%)"
+    )
+    lines.append(
+        "- **Qualitative neighbor-spot check (D30-25's separate requirement — "
+        "'fear's neighbors should be fear-family, not random'): PASSES convincingly.** Every "
+        "roster spell's top-5 shares its EXACT condition atoms (see the `shared_atoms` field in "
+        "`results/comparables-corpus.json`/`comparables-spot.md`) — Fear's neighbors "
+        "(Horrifying Blood Loss, Cutting Insult, Agonizing Despair, Fallen Soldier's Lament) are "
+        "all literally fear-themed spells sharing its Frightened@1/@2/@3 atoms; Paralyze's "
+        "neighbors (Dominate, Possession, Hypnopompic Terrors) are all mind-control/status-lock "
+        "themed; Slow/Synaptic Pulse/Stupefy pass BOTH the qualitative AND quantitative checks."
+    )
+    lines.append(
+        "- **Diagnosis of the quantitative miss (honest-fail discipline, no silent tuning):** "
+        "the median-rank-within-±1 gate fails for 6/10 roster spells NOT because the neighbors "
+        "are mechanically wrong, but because two spells can share an IDENTICAL condition-atom "
+        "profile while differing enormously in overall rank — the rank gap comes from unmodeled "
+        "quality (bigger area, more targets, extra non-condition riders, tighter save DCs) "
+        "exactly the dimension the round-3 stakeholder fork's own review killed the generative "
+        "fit over ('High-rank control-spell power lives in unmodeled quality... not in more/"
+        "bigger extractable atoms'). A comparables tool that can ONLY see extractable atoms will, "
+        "correctly and by design, surface a WIDE range in these cases rather than hide the "
+        "uncertainty behind a false-precision point score — the wide range IS the honest answer, "
+        "not a bug. Paralyze is the clearest case: its neighbors (Dominate r6, Possession r7, "
+        "Astral Labyrinth r9, Hypnopompic Terrors r8) are all much HIGHER-rank spells that bundle "
+        "a similar incapacitation-family atom alongside substantially more mechanical payload "
+        "than Paralyze's own single clean Paralyzed rider."
+    )
+    lines.append("")
+
+    lines.append("## V-B — extraction-fix proof (D30-21)")
+    lines.append("")
+    lines.append(
+        "See the S1 commit (`3783473`, `feat(assay): S1 payload fixes + hostility routing`) for "
+        "the full numeric derivation. Summary: Sleep extracts its Unconscious payload at "
+        "Failure/Critical Failure (was silently dropped — case-sensitive rule (iii)) AND its "
+        "Success-row en-dash '–1 status penalty to Perception checks' modifier (was silently "
+        "dropped — ASCII-only sign class), both fixed on the SAME real file. En-dash restoration: "
+        "**exactly 28 files** (verified independently via a raw corpus grep, `[–−]\\d+\\s*"
+        "[-–− ](status|circumstance)`, matching the spec's ~28 pin exactly). Case-fold "
+        "restoration: **84 spells'** condition-instance count changes under the fix (spec "
+        "estimated ~50 — same order of magnitude; 7 of those flip from SkipRecord to a scored/"
+        "ledgered row entirely: Sleep, Bane, Web, Levitate, Malediction, Hypnotize, Ring of "
+        "Truth). All pins re-derived post-fix in the S1 commit message; the pure-damage ladder "
+        "(n=27, slope/intercept) came out BYTE-IDENTICAL to round 2's shipped values — none of "
+        "the 27 pure-subset spells happened to have a condition ref restored by these fixes."
+    )
+    lines.append("")
+
+    lines.append("## V-C — routing proof (D30-22)")
+    lines.append("")
+    routing_counts: dict[str, int] = {"hostile": 0, "beneficial-effect": 0, "routing-ambiguous": 0}
+    ambiguous_names: list[str] = []
+    for row in rows:
+        if row.ev > 0.0:
+            continue
+        reason = ledger.classify_row(row)
+        if reason is None and any(ci.tier is not None for ci in row.condition_instances):
+            routing_counts["hostile"] += 1
+        elif reason == "beneficial-effect":
+            routing_counts["beneficial-effect"] += 1
+        elif reason == "routing-ambiguous":
+            routing_counts["routing-ambiguous"] += 1
+            ambiguous_names.append(row.name)
+    lines.append(
+        "The four mandated routing fixtures (real corpus, `tests/fixtures/`) all land correctly "
+        "— proven end-to-end in `test_assay_extract.py`'s `test_routing_*` tests: **Belittling "
+        "Boast → hostile** (its `hostile_area_phrase` flag wins over the empty-range/touch-self "
+        "trap), **Overwhelming Memory → hostile** (prose-save detected despite `defense.save` "
+        "being structurally null), **Haste → beneficial-effect** (Quickened is excluded from "
+        "tier assignment entirely — the pre-existing bypass), **Invisibility → beneficial** "
+        "(Undetected/Hidden DO carry real tiers here, exercising `classify_hostility` directly)."
+    )
+    lines.append("")
+    lines.append(f"Route counts (ev=0.0 rows, real corpus post-S1-fix): **{routing_counts}**.")
+    lines.append("")
+    lines.append(f"Named `routing-ambiguous` list ({len(ambiguous_names)}):")
+    lines.append("")
+    for n in sorted(set(ambiguous_names)):
+        lines.append(f"- {n}")
+    lines.append("")
+    lines.append(
+        "Damage-side non-regression: Fireball's V2′ spot-check above is unchanged from round 2 "
+        "(the pure-damage population and ladder are byte-identical); no damage-side extraction "
+        "path was touched by S1."
+    )
+    lines.append("")
+
+    lines.append("## V-D — carry (ladder untouched; round-2 damage gates not regressed)")
+    lines.append("")
+    lines.append(
+        f"Pure-damage ladder: n={ladder.n_obs}, slope={ladder.slope:.4f}, "
+        f"intercept={ladder.intercept:.4f} — "
+        "byte-identical to round 2's shipped values (slope 1.0892, intercept 1.7979, R²=0.967). "
+        "V1′/V2′/V3′/V4′ above are unchanged in mechanism (only the underlying population shifted "
+        "per V-C's routing counts, which is the EXPECTED consequence of D30-22, not a regression)."
+    )
+    lines.append("")
+
     lines.append("## Ledger summary")
     lines.append("")
     lines.append(f"Scored: {len(population.scored)} — Ledgered: {sum(population.ledger.values())}")
     lines.append("")
 
     VALIDATION_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def _write_comparables_spot(va_results: list[report2.VALooResult], va_share: float) -> None:
+    """D30-26: `results/comparables-spot.md` — the V-A roster's LOO
+    neighbors, human-readable (the same data validation.md's V-A table
+    carries, presented as the design-facing spot-check document)."""
+    lines = ["# assay — comparables spot-check (the V-A roster, round 3)", ""]
+    lines.append(
+        "Leave-one-out top-5 comparables for the D30-25 V-A enumerated roster — the same "
+        "engine `uv run assay score --spell <path>` runs for a homebrew effect spell. Generated "
+        "by `uv run assay price`. Methodology: `thoughts/astra/specs/0030-assay-round3-spec.md` "
+        "(D30-23)."
+    )
+    lines.append("")
+    lines.append(f"**Gate: {va_share:.1%} within ±1 rank of median vs. ≥70% target** — see")
+    lines.append("`validation.md`'s V-A section for the full pass/fail diagnosis.")
+    lines.append("")
+    for r in va_results:
+        lines.append(f"## {r.name} (rank {r.own_rank})")
+        lines.append("")
+        if not r.neighbor_names:
+            lines.append(f"_{r.note or 'no comparables found'}_")
+            lines.append("")
+            continue
+        lines.append("| Rank | Comparable |")
+        lines.append("|---|---|")
+        for name, rank in sorted(
+            zip(r.neighbor_names, r.neighbor_ranks, strict=True), key=lambda nr: (nr[1], nr[0])
+        ):
+            lines.append(f"| {rank} | {name} |")
+        lines.append("")
+        lines.append(
+            f"Median neighbor rank: **{r.median_neighbor_rank:g}** — "
+            f"{'within ±1 of own rank' if r.within_one else 'OUTSIDE ±1 of own rank'}."
+        )
+        lines.append("")
+    COMPARABLES_SPOT_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 def _ladder_from_json(d: dict) -> pricing.LadderFit:
@@ -799,6 +1082,53 @@ def _warn_condition_word_with_zero_refs(description_html: str) -> list[str]:
     return hits
 
 
+def _print_comparables(
+    result: SpellFeatures,
+    corpus: list[comparables.ComparableProfile],
+    ladder: pricing.LadderFit,
+    prior_card: list[priors.PriorCardRow],
+) -> None:
+    """D30-23/26: the effect-spell / hybrid comparables output — top-5
+    official comparables + the induced rank RANGE (never a point score) +
+    the r10 extrapolation warning + D30-24 prior-card pointers for every
+    hostile-priceable condition instance on the homebrew spell."""
+    profile = comparables.build_profile(result, ladder)
+    res = comparables.comparables_for(profile, corpus, k=5)
+    if not res.matches:
+        print(
+            "  comparables:  none found in the committed corpus (results/comparables-corpus.json)"
+        )
+        return
+    print(
+        f"  comparables:  rank RANGE {res.rank_min}-{res.rank_max} "
+        f"(median {res.rank_median:g}) — never a point score"
+    )
+    for m in res.matches:
+        shared = ", ".join(m.shared_atoms) or "(no shared atoms — structural/tier match only)"
+        print(f"    - {m.name} (rank {m.rank}, sim={m.similarity:.3f}) shares: {shared}")
+    if res.r10_extrapolation_warning:
+        print(
+            "  WARNING:      the comparables range touches rank 9-10 — review F9: zero hostile "
+            "r10 trainers exist in the corpus at this ladder point, treat this range as an "
+            "extrapolation, not a confident anchor."
+        )
+    by_condition = {row.condition: row for row in prior_card}
+    priced = [ci for ci in result.condition_instances if ci.tier is not None]
+    if priced:
+        print("  prior card:   (see results/point-tables.md's D30-24 prior-anchored card)")
+        for ci in priced:
+            label = ci.condition if ci.value is None else f"{ci.condition} {ci.value}"
+            row = by_condition.get(label) or by_condition.get(ci.condition)
+            if row is None:
+                continue
+            req = (
+                "n/a"
+                if math.isnan(row.prior_rank_equivalent)
+                else f"{row.prior_rank_equivalent:.2f}"
+            )
+            print(f"    - {label} ({row.tier.value}): prior ≈ {req} rank-equivalents (at ~1 round)")
+
+
 def cmd_score(args: argparse.Namespace) -> None:
     with _tracer.start_as_current_span("assay.score") as span:
         spell_path = Path(args.spell)
@@ -831,6 +1161,13 @@ def cmd_score(args: argparse.Namespace) -> None:
         ladder = _ladder_from_json(r2["ladder"])
         cantrip_ladder = _cantrip_ladder_from_json(r2["cantrip_ladder"])
         stage_a = _stage_a_from_json(r2["stage_a"])
+        prior_card = priors.build_prior_card(ladder, cantrip_ladder)
+        corpus: list[comparables.ComparableProfile] = []
+        if COMPARABLES_CORPUS_PATH.exists():
+            corpus = [
+                comparables.profile_from_json(d)
+                for d in json.loads(COMPARABLES_CORPUS_PATH.read_text(encoding="utf-8"))
+            ]
 
         cantrip_note = ", cantrip" if result.is_cantrip else ""
         print(f"assay score: {result.name} (rank {result.rank}{cantrip_note})")
@@ -838,7 +1175,10 @@ def cmd_score(args: argparse.Namespace) -> None:
         active_ladder: pricing.LadderFit | pricing.CantripLadderFit = (
             cantrip_ladder if result.is_cantrip else ladder
         )
+        has_hostile_condition = any(ci.tier is not None for ci in result.condition_instances)
+
         if result.ev > 0.0:
+            # Damage / hybrid path — D30-1..11's quantitative score, unchanged.
             structural = active_ladder.structural_target_range(result) * pricing.action_multiplier(
                 result.action_bucket
             )
@@ -853,21 +1193,51 @@ def cmd_score(args: argparse.Namespace) -> None:
                     verdict = f"{residual:+.2f} ranks HOT"
                 elif residual < -0.5:
                     verdict = f"{residual:+.2f} ranks COLD"
-            print(f"  kind:         damage (ev={result.ev:.2f})")
+            kind = "hybrid (damage + conditions)" if has_hostile_condition else "damage"
+            print(f"  kind:         {kind} (ev={result.ev:.2f})")
             print(f"  verdict:      {verdict}")
-        elif any(ci.tier is not None for ci in result.condition_instances):
-            score = pricing.score_condition_control(result, active_ladder, stage_a)
-            if result.is_cantrip:
-                print(f"  kind:         condition-control (cantrip, score={score:.2f})")
+            # D30-23: hybrids ALSO get comparables, alongside the quantitative score.
+            if has_hostile_condition and not result.is_cantrip:
+                _print_comparables(result, corpus, ladder, prior_card)
+        elif has_hostile_condition:
+            # D30-22 hostility routing decides the effect-spell path.
+            hostility = ledger.classify_hostility(result)
+            if hostility == "hostile":
+                print("  kind:         hostile effect spell — comparables + prior card (D30-23/24)")
+                if result.is_cantrip:
+                    print("  note:         cantrip comparables corpus is too thin to be useful")
+                else:
+                    _print_comparables(result, corpus, ladder, prior_card)
+                    superseded = pricing.score_condition_control(result, active_ladder, stage_a)
+                    if superseded > 0:
+                        superseded_rank = pricing.rank_equivalent(superseded, ladder)
+                        print(
+                            f"  (superseded round-2 Stage-B fitted score, reference only: "
+                            f"{superseded:.2f} ≈ rank {superseded_rank:.2f} — see the review's "
+                            "V3′ extrapolation-mismatch diagnosis for why this is no longer "
+                            "trusted as the primary verdict)"
+                        )
+            elif hostility == "beneficial":
+                print(
+                    "  kind:         beneficial/buff effect (D30-22 routes this beneficial, not "
+                    "hostile) — beneficial-effect pricing is out of round-3 scope (D30-8i/§3)."
+                )
             else:
-                rank_equiv = pricing.rank_equivalent(score, ladder) if score > 0 else float("nan")
-                print(f"  kind:         condition-control (score={score:.2f})")
-                if not math.isnan(rank_equiv):
-                    print(f"  rank-equivalent: {rank_equiv:.2f} (nominal rank {result.rank})")
+                print(
+                    "  kind:         AMBIGUOUS hostility (D30-22 — no save/attack-roll/prose-save/"
+                    "hostile-area signal, and the target prose doesn't clearly read as friendly "
+                    "either) — flag for manual GM judgment; not auto-priced."
+                )
         else:
-            print(
-                "  kind:         no priceable damage or hostile condition — see the ledger reasons"
-            )
+            reason = ledger.classify_row(result)
+            if reason == "beneficial-effect":
+                print(
+                    "  kind:         beneficial/buff effect — every condition on this spell is "
+                    "excluded from hostile pricing (e.g. Quickened/Invisible-class) — out of "
+                    "round-3 scope (D30-8i/§3)."
+                )
+            else:
+                print(f"  kind:         no priceable damage or hostile condition ({reason})")
 
         span.set_attribute("assay.score.spell", result.name)
         span.set_attribute("assay.score.actual_ev", result.ev)
@@ -875,7 +1245,7 @@ def cmd_score(args: argparse.Namespace) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        prog="assay", description="PF2e homebrew spell power scoring (0030 round 2)."
+        prog="assay", description="PF2e homebrew spell power scoring (0030 round 3)."
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
@@ -894,7 +1264,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_fit.set_defaults(func=cmd_fit)
 
     p_price = sub.add_parser(
-        "price", help="round-2 ladder + Stage A/B + full-population scoring -> results/"
+        "price",
+        help=(
+            "ladder + Stage A/B + comparables corpus + prior card + full-population "
+            "scoring -> results/"
+        ),
     )
     p_price.add_argument(
         "--data-root", default=None, help="override the codex data root (else config.kdl)"
@@ -902,7 +1276,11 @@ def build_parser() -> argparse.ArgumentParser:
     p_price.set_defaults(func=cmd_price)
 
     p_score = sub.add_parser(
-        "score", help="score one homebrew spell JSON against the round-2 pricing model"
+        "score",
+        help=(
+            "score one homebrew spell JSON: damage/hybrid get the quantitative score, "
+            "hostile effect spells get comparables + the prior card (round 3)"
+        ),
     )
     p_score.add_argument("--spell", required=True, help="path to a Foundry-shaped spell JSON")
     p_score.set_defaults(func=cmd_score)

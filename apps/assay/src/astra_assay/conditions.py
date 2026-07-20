@@ -162,6 +162,18 @@ def within_tier_offset(name: str) -> float:
     return _WITHIN_TIER_OFFSET.get(name, 1.0)
 
 
+def atom_key(condition: str, value: int | None) -> str:
+    """D30-23's "condition×value" atom identity — a stable string key for
+    the comparables engine's atom vector. Valued-typed conditions
+    (`_VALUED_TIER`) key on their effective value (unvalued refs default to
+    1, matching `condition_tier`'s own default); flat conditions key on the
+    bare name."""
+    if condition in _VALUED_TIER:
+        v = value if value is not None else 1
+        return f"{condition}@{v}"
+    return condition
+
+
 # ---------------------------------------------------------------------------
 # Duration classification (D30-2c / D30-8b)
 # ---------------------------------------------------------------------------

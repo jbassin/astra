@@ -582,3 +582,43 @@ def test_routing_invisibility_beneficial() -> None:
     assert any(ci.tier is not None for ci in r.condition_instances)
     assert ledger.classify_hostility(r) == "beneficial"
     assert ledger.classify_row(r) == "beneficial-effect"
+
+
+def test_homebrew_effect_spell_end_to_end_through_comparables() -> None:
+    """D30-27's mandated hermetic test: a homebrew effect spell scored
+    end-to-end (extract -> D30-22 routing -> D30-23 comparables), against a
+    small synthetic corpus built from the ALREADY-COMMITTED real-corpus
+    fixtures (fear.json/paralyze.json/slow.json) — no snapshot access."""
+    from astra_assay import comparables, ledger, pricing
+
+    homebrew = extract("homebrew-dread-gaze.json")
+    assert isinstance(homebrew, SpellFeatures)
+    assert homebrew.ev == 0.0
+    assert any(ci.tier is not None for ci in homebrew.condition_instances)
+    assert ledger.classify_hostility(homebrew) == "hostile"
+    assert ledger.classify_row(homebrew) is None  # scoreable, not ledgered
+
+    corpus_rows: list[SpellFeatures] = []
+    for fixture in ("fear.json", "paralyze.json", "slow.json"):
+        row = extract(fixture)
+        assert isinstance(row, SpellFeatures)
+        corpus_rows.append(row)
+    ladder = pricing.LadderFit(
+        intercept=1.0,
+        slope=1.0,
+        effective_target_coef={},
+        range_coef={},
+        n_obs=27,
+        r_squared=0.97,
+        excluded_singletons=True,
+    )
+    corpus = comparables.build_corpus(corpus_rows, ladder)
+    assert len(corpus) == 3  # all three are hostile-priceable candidates
+
+    profile = comparables.build_profile(homebrew, ladder)
+    result = comparables.comparables_for(profile, corpus, k=5)
+    assert result.matches  # a real range comes back, never a bare point score
+    assert result.rank_min <= result.rank_median <= result.rank_max
+    # Dread Gaze shares Frightened/Fleeing atoms with Fear specifically —
+    # Fear should be the (or a) closest match by construction.
+    assert result.matches[0].name == "Fear"

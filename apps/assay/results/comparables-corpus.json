@@ -1,0 +1,4818 @@
+[
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.22000000000000003,
+      "tier:T3": 0.22000000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Daze",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.36000000000000004,
+      "tier:T1": 0.36000000000000004
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Haunting Hymn",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Off-Guard": 0.17,
+      "tier:T2": 0.17
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Spout",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Tangle Vine",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.17,
+      "tier:T1": 0.17
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Timber",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fatigued": 0.17,
+      "tier:T1": 0.17
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Torturous Trauma",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.19,
+      "tier:T2": 0.19
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Vitality Lash",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.19,
+      "tier:T2": 0.19
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": true,
+    "name": "Void Warp",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Prone": 0.5,
+      "tier:T2": 0.5
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Aqueous Blast",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Grabbed": 1.05,
+      "Immobilized": 1.0,
+      "Restrained": 1.05,
+      "tier:T2": 1.05,
+      "tier:T3": 2.05
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Armor of Thorn and Claw",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.22799999999999998,
+      "Clumsy@2": 0.22799999999999998,
+      "Clumsy@3": 0.0855,
+      "Confused": 0.10800000000000001,
+      "Stupefied@1": 0.252,
+      "Stupefied@2": 0.252,
+      "Stupefied@3": 0.09450000000000001,
+      "tier:T2": 0.48,
+      "tier:T3": 0.768
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Befuddle",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.27599999999999997,
+      "Dazzled": 0.0,
+      "tier:T3": 0.27599999999999997
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Briny Bolt",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.51,
+      "tier:T1": 0.51
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Camel Spit",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Off-Guard": 0.4845,
+      "tier:T2": 0.4845
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Curse of Recoil",
+    "range_bucket": "le120",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.38,
+      "Enfeebled@2": 0.14250000000000002,
+      "tier:T2": 0.38,
+      "tier:T3": 0.14250000000000002
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Dehydrate",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.6325,
+      "Dazzled": 0.544,
+      "Stunned@1": 0.6050000000000001,
+      "tier:T1": 0.544,
+      "tier:T3": 1.2375
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Dizzying Colors",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stupefied@1": 0.42000000000000004,
+      "tier:T2": 0.42000000000000004
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "D\u00e9j\u00e0 Vu",
+    "range_bucket": "le120",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.19,
+      "Enfeebled@2": 0.38,
+      "Enfeebled@3": 0.14250000000000002,
+      "tier:T2": 0.19,
+      "tier:T3": 0.5225
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Enfeeble",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.5700000000000001,
+      "Clumsy@2": 0.14250000000000002,
+      "tier:T2": 0.5700000000000001,
+      "tier:T3": 0.14250000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Equal Footing",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fleeing": 0.0855,
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.09000000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.37550000000000006
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Fear",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.95,
+      "tier:T2": 0.95
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Flense",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Gravitational Pull (variant 1)",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Gravitational Pull (variant 2)",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Gravitational Pull (variant 3)",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.4,
+      "tier:T2": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Grease",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.3315,
+      "tier:T1": 0.3315
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Gritty Wheeze",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "tier:T2": 0.275
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Gust of Wind",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.85,
+      "tier:T1": 0.85
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Horizon Thunder Sphere (variant 1)",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Dazzled": 0.85,
+      "tier:T1": 0.85
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Horizon Thunder Sphere (variant 2)",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Horizon Thunder Sphere (variant 3)",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 1.02,
+      "tier:T1": 1.02
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Inkshot",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Kinetic Ram (variant 1)",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Kinetic Ram (variant 2)",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Kinetic Ram (variant 3)",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Encumbered": 0.7600000000000001,
+      "tier:T1": 0.7600000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Leaden Steps",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.204,
+      "Sickened@1": 0.24,
+      "tier:T1": 0.44399999999999995
+    },
+    "effective_target": "small-multi",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Noxious Vapors",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Dazzled": 0.40375000000000005,
+      "Off-Guard": 0.23375,
+      "tier:T1": 0.40375000000000005,
+      "tier:T2": 0.23375
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Overselling Flourish",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.55,
+      "Sickened@2": 0.15000000000000002,
+      "tier:T1": 0.55,
+      "tier:T2": 0.15000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Phantom Pain",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.204,
+      "tier:T1": 0.204
+    },
+    "effective_target": "small-multi",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rainbow's End",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Stunned@1": 0.09900000000000002,
+      "Stupefied@1": 0.252,
+      "Stupefied@2": 0.09450000000000001,
+      "tier:T2": 0.252,
+      "tier:T3": 0.19350000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Schadenfreude",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.17250000000000001,
+      "Dazzled": 0.4675,
+      "tier:T1": 0.4675,
+      "tier:T3": 0.17250000000000001
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Scouring Sand",
+    "range_bucket": "le60",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Off-Guard": 0.17,
+      "Prone": 0.275,
+      "tier:T2": 0.445
+    },
+    "effective_target": "small-multi",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shockwave",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Blinded": 0.10350000000000001,
+      "Dazzled": 0.204,
+      "tier:T1": 0.204,
+      "tier:T3": 0.10350000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Signal Skyrocket",
+    "range_bucket": "gt120",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Unconscious": 0.6090000000000001,
+      "tier:T4": 0.6090000000000001
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Sleep",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Off-Guard": 0.4675,
+      "tier:T2": 0.4675
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Swampcall",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.15000000000000002,
+      "tier:T3": 0.15000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Tether",
+    "range_bucket": "le30",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.425,
+      "tier:T1": 0.425
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Threefold Limb (Ice)",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.425,
+      "tier:T1": 0.425
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Threefold Limb (Liquid Water)",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.425,
+      "tier:T1": 0.425
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Threefold Limb (Steam)",
+    "range_bucket": "touch-self",
+    "rank": 1
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.22799999999999998,
+      "tier:T2": 0.22799999999999998
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Thunderstrike",
+    "range_bucket": "le120",
+    "rank": 1
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Clumsy@1": 0.0855,
+      "Drained@1": 0.09000000000000001,
+      "Enfeebled@1": 0.0855,
+      "Fleeing": 0.0855,
+      "Frightened@1": 0.09000000000000001,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.2,
+      "Frightened@4": 0.09000000000000001,
+      "Sickened@1": 0.09000000000000001,
+      "Stupefied@1": 0.09450000000000001,
+      "tier:T1": 0.09000000000000001,
+      "tier:T2": 0.44550000000000006,
+      "tier:T3": 0.5755
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Conquering Soldiers (Depart)",
+    "range_bucket": "gt120",
+    "rank": 10
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Clumsy@1": 0.0855,
+      "Drained@1": 0.09000000000000001,
+      "Enfeebled@1": 0.0855,
+      "Fleeing": 0.0855,
+      "Frightened@1": 0.09000000000000001,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.2,
+      "Frightened@4": 0.09000000000000001,
+      "Sickened@1": 0.09000000000000001,
+      "Stupefied@1": 0.09450000000000001,
+      "tier:T1": 0.09000000000000001,
+      "tier:T2": 0.44550000000000006,
+      "tier:T3": 0.5755
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Conquering Soldiers (Arrive)",
+    "range_bucket": "gt120",
+    "rank": 10
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Grabbed": 1.26,
+      "Immobilized": 1.2,
+      "Prone": 1.2,
+      "Restrained": 1.26,
+      "tier:T2": 2.46,
+      "tier:T3": 2.46
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Garden of the Green Man's Growth",
+    "range_bucket": "le120",
+    "rank": 10
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Drained@2": 0.2,
+      "Sickened@2": 0.2,
+      "tier:T2": 0.2,
+      "tier:T3": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Jassim's Allegiance (Depart)",
+    "range_bucket": "gt120",
+    "rank": 10
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Drained@2": 0.2,
+      "Sickened@2": 0.2,
+      "tier:T2": 0.2,
+      "tier:T3": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Jassim's Allegiance (Arrive)",
+    "range_bucket": "gt120",
+    "rank": 10
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.57,
+      "Clumsy@2": 0.57,
+      "Enfeebled@1": 0.57,
+      "Immobilized": 0.6,
+      "tier:T2": 1.14,
+      "tier:T3": 1.17
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Nature Incarnate",
+    "range_bucket": "touch-self",
+    "rank": 10
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.95,
+      "tier:T2": 0.95
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Primal Herd",
+    "range_bucket": "le30",
+    "rank": 10
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Immobilized": 1.0,
+      "Prone": 1.0,
+      "Sickened@2": 1.0,
+      "Slowed@1": 1.0,
+      "Stunned@3": 1.1,
+      "tier:T2": 2.0,
+      "tier:T3": 2.0,
+      "tier:T4": 1.1
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Summon Kaiju",
+    "range_bucket": "gt120",
+    "rank": 10
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stupefied@1": 0.252,
+      "tier:T2": 0.252
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Albatross Curse",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.7260000000000001,
+      "tier:T3": 0.7260000000000001
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Animus Mine",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Blinded": 0.10350000000000001,
+      "Dazzled": 0.204,
+      "tier:T1": 0.204,
+      "tier:T3": 0.10350000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ash Cloud",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.07500000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blistering Invective",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Enfeebled@1": 0.19,
+      "Enfeebled@2": 0.07125000000000001,
+      "Prone": 0.47500000000000003,
+      "tier:T2": 0.665,
+      "tier:T3": 0.07125000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Boneshaker (variant 1)",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.19,
+      "Enfeebled@2": 0.07125000000000001,
+      "Prone": 0.47500000000000003,
+      "tier:T2": 0.665,
+      "tier:T3": 0.07125000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Boneshaker (variant 2)",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.38,
+      "Drained@1": 0.4,
+      "Enfeebled@1": 0.38,
+      "Stupefied@1": 0.42000000000000004,
+      "tier:T2": 1.58
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Bralani Referendum",
+    "range_bucket": "le60",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.07500000000000001,
+      "tier:T1": 0.2,
+      "tier:T2": 0.07500000000000001
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Breath of Drought",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Prone": 0.4,
+      "tier:T2": 0.4
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Carrion Mire",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.5830000000000001,
+      "tier:T3": 0.5830000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Charitable Urge",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cutting Insult",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.7380000000000001,
+      "tier:T1": 0.7380000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Deafness",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dying": 0.2,
+      "tier:T4": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Death Knell",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.24,
+      "tier:T3": 0.24
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Entangling Flora",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "tier:T2": 0.275
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Expeditious Excavation",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Exploding Earth",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.17250000000000001,
+      "Dazzled": 0.544,
+      "tier:T1": 0.544,
+      "tier:T3": 0.17250000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Fear the Sun",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Fatigued": 0.765,
+      "tier:T1": 0.765
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Feast of Ashes",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Off-Guard": 0.34,
+      "tier:T2": 0.34
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Frog Tongue",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.275,
+      "tier:T1": 0.2,
+      "tier:T2": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ghoulish Cravings",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.275,
+      "Frightened@3": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.35000000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Horrifying Blood Loss",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.6715,
+      "tier:T1": 0.6715
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ignite Fireworks",
+    "range_bucket": "le60",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.09000000000000001,
+      "Slowed@1": 0.2,
+      "tier:T2": 0.29000000000000004
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Laughing Fit",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Confused": 0.10800000000000001,
+      "Stupefied@3": 0.252,
+      "tier:T3": 0.36
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Manifestation of Spirits",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mark of Blood",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.44000000000000006,
+      "Stunned@2": 0.16500000000000004,
+      "tier:T3": 0.6050000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mind Games",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.35100000000000003,
+      "Stunned@1": 0.16500000000000004,
+      "tier:T1": 0.35100000000000003,
+      "tier:T3": 0.16500000000000004
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Noise Blast",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.4,
+      "tier:T3": 0.4
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Osseous Cage",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.22000000000000003,
+      "tier:T1": 0.22000000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Phantasmal Treasure",
+    "range_bucket": "le60",
+    "rank": 2
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Dazzled": 0.17,
+      "tier:T1": 0.17
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Pyrefowl Rebuke",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Blinded": 0.27599999999999997,
+      "tier:T3": 0.27599999999999997
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Radiant Field",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.38,
+      "tier:T2": 0.38
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Reaper's Lantern",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.4,
+      "tier:T2": 0.4
+    },
+    "effective_target": "small-multi",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rime Slick",
+    "range_bucket": "le60",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "tier:T2": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sea Surge",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Prone": 1.0,
+      "tier:T2": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Steel Fortifications",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.475,
+      "tier:T2": 0.475
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sticky Fire",
+    "range_bucket": "le60",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stupefied@1": 0.21000000000000002,
+      "Stupefied@2": 0.42000000000000004,
+      "Stupefied@3": 0.15750000000000003,
+      "tier:T2": 0.21000000000000002,
+      "tier:T3": 0.5775000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Stupefy",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.4,
+      "Frightened@3": 0.15000000000000002,
+      "tier:T2": 0.4,
+      "tier:T3": 0.15000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Teeth to Terror",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Blinded": 0.27599999999999997,
+      "Dazzled": 0.204,
+      "tier:T1": 0.204,
+      "tier:T3": 0.27599999999999997
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "The Queen's Rainbow",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Dazzled": 0.8075000000000001,
+      "tier:T1": 0.8075000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Veil of Spirits",
+    "range_bucket": "le120",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "tier:T1": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Vomit Swarm",
+    "range_bucket": "touch-self",
+    "rank": 2
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Immobilized": 0.09000000000000001,
+      "tier:T3": 0.09000000000000001
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Web",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.275,
+      "tier:T1": 0.2,
+      "tier:T2": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "With Friends like These",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Off-Guard": 0.23375,
+      "Slowed@1": 0.07500000000000001,
+      "tier:T2": 0.30875
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Worm's Repast",
+    "range_bucket": "le30",
+    "rank": 2
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Agonizing Despair",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.4,
+      "Frightened@2": 0.4,
+      "Frightened@3": 0.15000000000000002,
+      "tier:T2": 0.4,
+      "tier:T3": 0.55
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Annunciation of the Outer Gate",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Immobilized": 0.15000000000000002,
+      "tier:T3": 0.15000000000000002
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Antlion Trap",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.897,
+      "tier:T3": 0.897
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Blindness",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.38,
+      "Clumsy@2": 0.5225,
+      "Paralyzed": 0.6325,
+      "tier:T2": 0.38,
+      "tier:T3": 0.5225,
+      "tier:T4": 0.6325
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Coral Scourge",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stupefied@1": 0.34650000000000003,
+      "tier:T2": 0.34650000000000003
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Crisis of Faith (Vs. Divine)",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Fatigued": 0.765,
+      "tier:T1": 0.765
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cup of Dust",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.22799999999999998,
+      "Enfeebled@1": 0.22799999999999998,
+      "tier:T2": 0.45599999999999996
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Curse of Lost Time",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Prone": 0.4,
+      "tier:T2": 0.4
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cyclone Rondo",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.608,
+      "Enfeebled@2": 0.14250000000000002,
+      "Fatigued": 0.6715,
+      "tier:T1": 0.6715,
+      "tier:T2": 0.608,
+      "tier:T3": 0.14250000000000002
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Day's Weight",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Disruptive Transfer",
+    "range_bucket": "varies",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fleeing": 0.0855,
+      "Frightened@1": 0.29000000000000004,
+      "Frightened@2": 0.2,
+      "tier:T2": 0.29000000000000004,
+      "tier:T3": 0.28550000000000003
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Eagle's Cry",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.7260000000000001,
+      "tier:T1": 0.7260000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Enthrall",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.22799999999999998,
+      "tier:T2": 0.22799999999999998
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Envenom Companion",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.4485,
+      "Dazzled": 0.1275,
+      "Deafened": 0.35100000000000003,
+      "tier:T1": 0.47850000000000004,
+      "tier:T3": 0.4485
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Firework Blast",
+    "range_bucket": "gt120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.4,
+      "Sickened@2": 0.15000000000000002,
+      "tier:T1": 0.4,
+      "tier:T2": 0.15000000000000002
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Gasping Marsh",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.6050000000000001,
+      "tier:T1": 0.6050000000000001
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Hypnotize",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.24,
+      "Frightened@2": 0.4,
+      "Frightened@3": 0.15000000000000002,
+      "Off-Guard": 0.6715,
+      "Paralyzed": 0.17250000000000001,
+      "Stunned@1": 0.6050000000000001,
+      "tier:T2": 0.9115,
+      "tier:T3": 1.1550000000000002,
+      "tier:T4": 0.17250000000000001
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Impending Doom",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.33,
+      "Frightened@2": 0.15000000000000002,
+      "Slowed@1": 0.73,
+      "Slowed@2": 0.15000000000000002,
+      "tier:T2": 0.6599999999999999,
+      "tier:T3": 0.7000000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Infectious Ennui",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.35100000000000003,
+      "tier:T1": 0.35100000000000003
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mad Monkeys",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.7505,
+      "Slowed@1": 0.07500000000000001,
+      "tier:T2": 0.8254999999999999
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Magical Fetters",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.2,
+      "Sickened@3": 0.07500000000000001,
+      "tier:T1": 0.2,
+      "tier:T2": 0.2,
+      "tier:T3": 0.07500000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Noxious Metals",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Immobilized": 0.4,
+      "tier:T3": 0.4
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Oneiric Mire",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Paralyzed": 0.69,
+      "Stunned@1": 0.66,
+      "tier:T3": 0.66,
+      "tier:T4": 0.69
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ooze Form",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.8075000000000001,
+      "Fascinated": 1.0450000000000002,
+      "Frightened@1": 0.9500000000000001,
+      "Stupefied@2": 0.5775000000000001,
+      "Stupefied@3": 0.15750000000000003,
+      "tier:T1": 1.8525000000000003,
+      "tier:T2": 0.9500000000000001,
+      "tier:T3": 0.7350000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Overwhelming Memory",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Paralyzed": 0.4485,
+      "Stunned@1": 0.22000000000000003,
+      "tier:T3": 0.22000000000000003,
+      "tier:T4": 0.4485
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Paralyze",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.54,
+      "tier:T1": 0.54
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Percussive Impact",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.6325,
+      "Dazzled": 0.34,
+      "tier:T1": 0.34,
+      "tier:T3": 0.6325
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Pyrotechnics",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Blinded": 0.27599999999999997,
+      "Dazzled": 0.204,
+      "tier:T1": 0.204,
+      "tier:T3": 0.27599999999999997
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Radiant Globe",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.08250000000000002,
+      "Slowed@1": 0.275,
+      "tier:T1": 0.08250000000000002,
+      "tier:T2": 0.275
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Roaring Applause",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stupefied@2": 0.15750000000000003,
+      "tier:T3": 0.15750000000000003
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sculpt Sound",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.4,
+      "tier:T2": 0.4
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sea of Thought",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Off-Guard": 0.40375000000000005,
+      "tier:T2": 0.40375000000000005
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shadow Projectile",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Immobilized": 0.55,
+      "Prone": 0.15000000000000002,
+      "tier:T2": 0.15000000000000002,
+      "tier:T3": 0.55
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shifting Sand",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 1.0,
+      "tier:T3": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sign of Conviction",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.64,
+      "Slowed@2": 0.15000000000000002,
+      "tier:T2": 0.24,
+      "tier:T3": 0.55
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Slow",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.3315,
+      "tier:T1": 0.3315
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sparkleskin",
+    "range_bucket": "touch-self",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.8,
+      "Sickened@2": 0.15000000000000002,
+      "Slowed@1": 0.55,
+      "tier:T1": 0.8,
+      "tier:T2": 0.15000000000000002,
+      "tier:T3": 0.55
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Stinking Cloud",
+    "range_bucket": "le120",
+    "rank": 3
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "tier:T2": 0.275
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Unseasonable Squall",
+    "range_bucket": "le60",
+    "rank": 3
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Dazzled": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wall of Radiance",
+    "range_bucket": "le30",
+    "rank": 3
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Stupefied@1": 0.42000000000000004,
+      "tier:T2": 0.42000000000000004
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Anathematic Reprisal",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Immobilized": 0.07500000000000001,
+      "tier:T3": 0.07500000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Anchoring Air",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stupefied@1": 0.252,
+      "Stupefied@2": 0.252,
+      "Stupefied@4": 0.09450000000000001,
+      "tier:T2": 0.252,
+      "tier:T3": 0.34650000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Aromatic Lure",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.855,
+      "tier:T2": 0.855
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Bestial Curse",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Grabbed": 0.15750000000000003,
+      "Prone": 0.55,
+      "tier:T2": 0.7075000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Bridge of Vines",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Encumbered": 0.44000000000000006,
+      "tier:T1": 0.44000000000000006
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Bursting Bloom",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@2": 0.4,
+      "tier:T2": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Call The Blood",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Fascinated": 0.627,
+      "tier:T1": 0.627
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Channel Arrogance (1 action)",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Fascinated": 0.627,
+      "tier:T1": 0.627
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Channel Arrogance (3 actions)",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Drained@1": 0.55,
+      "Drained@2": 0.18000000000000002,
+      "Enfeebled@1": 0.5225,
+      "Enfeebled@2": 0.22799999999999998,
+      "tier:T2": 1.0725,
+      "tier:T3": 0.40800000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Chroma Leach",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.85,
+      "tier:T1": 0.85
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Chromatic Armor",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.7589999999999999,
+      "Dazzled": 0.204,
+      "tier:T1": 0.204,
+      "tier:T3": 0.7589999999999999
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cinder Swarm (Fireflies)",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.7589999999999999,
+      "Dazzled": 0.204,
+      "tier:T1": 0.204,
+      "tier:T3": 0.7589999999999999
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cinder Swarm (Fire Ants)",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Confused": 0.66,
+      "Stunned@1": 0.44000000000000006,
+      "tier:T3": 1.1
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Confusion",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.09000000000000001,
+      "Paralyzed": 0.10350000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.29000000000000004,
+      "tier:T4": 0.10350000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Deathless March",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.07500000000000001,
+      "Slowed@1": 0.07500000000000001,
+      "tier:T1": 0.2,
+      "tier:T2": 0.15000000000000002
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Divine Wrath",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.14250000000000002,
+      "Enfeebled@1": 0.14250000000000002,
+      "Off-Guard": 0.8075000000000001,
+      "Stupefied@1": 0.5775000000000001,
+      "tier:T2": 1.6700000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Entangle Fate",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.4,
+      "Frightened@2": 0.4,
+      "tier:T2": 0.4,
+      "tier:T3": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Fallen Soldier's Lament",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Grabbed": 0.5775000000000001,
+      "tier:T2": 0.5775000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Grasp of the Deep",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Grabbed": 0.42000000000000004,
+      "Restrained": 0.15750000000000003,
+      "tier:T2": 0.42000000000000004,
+      "tier:T3": 0.15750000000000003
+    },
+    "effective_target": "small-multi",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Grasping Earth",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Doomed@1": 0.55,
+      "tier:T2": 0.55
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Implement of Destruction",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Undetected": 0.264,
+      "tier:T2": 0.264
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Infectious Melody",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Prone": 0.55,
+      "tier:T2": 0.55
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Life's Flowing River",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.4,
+      "tier:T1": 0.4
+    },
+    "effective_target": "party-scale",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Life's Fresh Bloom",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.6050000000000001,
+      "Off-Guard": 0.1275,
+      "Slowed@1": 0.24,
+      "tier:T1": 0.6050000000000001,
+      "tier:T2": 0.3675
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Luring Wail",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.39,
+      "tier:T3": 0.39
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mantis's Grasp",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.275,
+      "tier:T1": 0.2,
+      "tier:T2": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mercurial Stride",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Restrained": 0.15750000000000003,
+      "Slowed@1": 0.55,
+      "tier:T3": 0.7075
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Morass of Ages",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Drained@2": 0.18000000000000002,
+      "Fatigued": 0.5609999999999999,
+      "tier:T1": 0.5609999999999999,
+      "tier:T3": 0.18000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Nightmare",
+    "range_bucket": "planetary-unlimited",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.35100000000000003,
+      "Sickened@1": 0.24,
+      "Sickened@2": 0.15000000000000002,
+      "tier:T1": 0.591,
+      "tier:T2": 0.15000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Painful Vibrations",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Off-Guard": 0.51,
+      "Slowed@1": 0.6,
+      "tier:T2": 1.1099999999999999
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Phantasmal Protagonist",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.204,
+      "tier:T1": 0.204
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Radiant Beam",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.27599999999999997,
+      "Dazzled": 0.204,
+      "tier:T1": 0.204,
+      "tier:T3": 0.27599999999999997
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Radiant Heart of Devotion",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.26125,
+      "Clumsy@2": 0.19,
+      "Immobilized": 0.2,
+      "Restrained": 0.07875000000000001,
+      "tier:T2": 0.26125,
+      "tier:T3": 0.46875
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ranage's Circle",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Concealed": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rust Cloud",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sanguine Mist",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "tier:T2": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shape Stone",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Grabbed": 1.05,
+      "tier:T2": 1.05
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Snake Fangs",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.79,
+      "Stunned@3": 0.08250000000000002,
+      "tier:T2": 0.24,
+      "tier:T3": 0.55,
+      "tier:T4": 0.08250000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Spiritual Anamnesis",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fatigued": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Stifling Stillness",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.9500000000000001,
+      "Sickened@2": 0.15000000000000002,
+      "Slowed@1": 0.55,
+      "tier:T1": 0.9500000000000001,
+      "tier:T2": 0.15000000000000002,
+      "tier:T3": 0.55
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Tomorrow's Dawn",
+    "range_bucket": "touch-self",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.63,
+      "tier:T2": 0.48,
+      "tier:T3": 0.15000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Tortoise and the Hare",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.33,
+      "tier:T3": 0.33
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Vampiric Maiden",
+    "range_bucket": "le30",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.36300000000000004,
+      "Stupefied@1": 0.5985,
+      "Stupefied@2": 0.15750000000000003,
+      "tier:T1": 0.36300000000000004,
+      "tier:T2": 0.5985,
+      "tier:T3": 0.15750000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Vision of Beauty",
+    "range_bucket": "le60",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fleeing": 0.07125000000000001,
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.2,
+      "Frightened@4": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.34625000000000006
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Vision of Death",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Concealed": 0.85,
+      "tier:T1": 0.85
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wall of Fire",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.425,
+      "tier:T1": 0.425
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wall Of Mirrors",
+    "range_bucket": "le120",
+    "rank": 4
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.4,
+      "Frightened@2": 0.55,
+      "Stunned@1": 0.16500000000000004,
+      "tier:T2": 0.4,
+      "tier:T3": 0.7150000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ancestral Winds",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Doomed@1": 0.2,
+      "Doomed@2": 0.2,
+      "Doomed@3": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Bandit's Doom",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Banishment",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 1.0,
+      "tier:T2": 1.0
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Belittling Boast",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Grabbed": 1.05,
+      "tier:T2": 1.05
+    },
+    "effective_target": "party-scale",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Black Tentacles",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "tier:T2": 0.275
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blazing Fissure",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 1.15,
+      "tier:T3": 1.15
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Blinding Foam",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.425,
+      "tier:T1": 0.425
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Boomerang Shot",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.27599999999999997,
+      "Stunned@1": 0.09900000000000002,
+      "tier:T3": 0.375
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cloak of Colors",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Confused": 0.66,
+      "Stunned@1": 0.44000000000000006,
+      "tier:T3": 1.1
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Confusing Cry",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.51,
+      "tier:T1": 0.51
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Diadem of Divine Radiance",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.264,
+      "tier:T1": 0.264
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Flames of Ego",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Slowed@1": 0.24,
+      "Slowed@2": 0.09000000000000001,
+      "tier:T2": 0.24,
+      "tier:T3": 0.09000000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Freezing Rain",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.07500000000000001,
+      "tier:T1": 0.2,
+      "tier:T2": 0.07500000000000001
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Grisly Growths",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.55,
+      "Off-Guard": 0.1275,
+      "tier:T2": 0.1275,
+      "tier:T3": 0.55
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Impaling Spike",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.09000000000000001,
+      "Slowed@1": 0.4,
+      "tier:T2": 0.09000000000000001,
+      "tier:T3": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Infectious Comedy",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fleeing": 0.22799999999999998,
+      "Frightened@2": 0.24,
+      "tier:T3": 0.46799999999999997
+    },
+    "effective_target": "small-multi",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Invoke Spirits",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.95,
+      "Fascinated": 1.1,
+      "Sickened@1": 1.0,
+      "tier:T1": 2.1,
+      "tier:T2": 0.95
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mantle of the Unwavering Heart",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.47500000000000003,
+      "Sickened@2": 0.07500000000000001,
+      "Slowed@1": 0.275,
+      "tier:T1": 0.47500000000000003,
+      "tier:T2": 0.35000000000000003
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mariner's Curse",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.55,
+      "Sickened@2": 0.15000000000000002,
+      "tier:T1": 0.55,
+      "tier:T2": 0.15000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mirecloak",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.4,
+      "tier:T2": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mirror Malefactors",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Clumsy@1": 0.5985,
+      "Clumsy@2": 0.45599999999999996,
+      "Deafened": 0.999,
+      "tier:T1": 0.999,
+      "tier:T2": 0.5985,
+      "tier:T3": 0.45599999999999996
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Pressure Zone",
+    "range_bucket": "gt120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dying": 0.4,
+      "tier:T4": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Ravening Maw",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.07500000000000001,
+      "tier:T2": 0.07500000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Repelling Pulse",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Drained@1": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rip the Spirit (variant 1)",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Drained@1": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rip the Spirit (variant 2)",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Drained@1": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rip the Spirit (variant 3)",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.17,
+      "tier:T1": 0.17
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Scouring Pulse",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Frightened@1": 0.24,
+      "Frightened@2": 0.24,
+      "Frightened@3": 0.09000000000000001,
+      "Stunned@1": 0.264,
+      "Stunned@2": 0.09900000000000002,
+      "tier:T2": 0.24,
+      "tier:T3": 0.693
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shock and Awe",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Grabbed": 0.5775000000000001,
+      "tier:T2": 0.5775000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Slither",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.4,
+      "Slowed@2": 0.15000000000000002,
+      "tier:T3": 0.55
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Stagnate Time",
+    "range_bucket": "le120",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "Stunned@1": 0.08250000000000002,
+      "tier:T2": 0.275,
+      "tier:T3": 0.08250000000000002
+    },
+    "effective_target": "small-multi",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Stormburst",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.36300000000000004,
+      "Stunned@2": 0.264,
+      "tier:T3": 0.627
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Synaptic Pulse",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@3": 0.7505,
+      "Concealed": 0.6715,
+      "Stunned@2": 0.08250000000000002,
+      "tier:T1": 0.6715,
+      "tier:T3": 0.833
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Synesthesia",
+    "range_bucket": "le30",
+    "rank": 5
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Grabbed": 0.252,
+      "Prone": 0.2,
+      "Restrained": 0.09450000000000001,
+      "tier:T2": 0.452,
+      "tier:T3": 0.09450000000000001
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Transmute Rock And Mud",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Grabbed": 0.252,
+      "Restrained": 0.09450000000000001,
+      "tier:T2": 0.252,
+      "tier:T3": 0.09450000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wall of Flesh",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.24,
+      "tier:T2": 0.24
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wave of Despair",
+    "range_bucket": "touch-self",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.44000000000000006,
+      "tier:T3": 0.44000000000000006
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Whispers of a Dead Goddess",
+    "range_bucket": "le60",
+    "rank": 5
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Arrow Salvo",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Confused": 0.18000000000000002,
+      "Dazzled": 0.4675,
+      "tier:T1": 0.4675,
+      "tier:T3": 0.18000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Blanket of Stars",
+    "range_bucket": "touch-self",
+    "rank": 6
+  },
+  {
+    "action_bucket": "reaction",
+    "atom_vector": {
+      "Hidden": 0.18000000000000002,
+      "tier:T1": 0.18000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Blinding Fury",
+    "range_bucket": "le60",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.95,
+      "Drained@1": 1.0,
+      "Enfeebled@1": 0.95,
+      "Stupefied@1": 1.05,
+      "tier:T2": 3.95
+    },
+    "effective_target": "party-scale",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Bounty of the Sky",
+    "range_bucket": "touch-self",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "Sickened@2": 0.07500000000000001,
+      "tier:T1": 0.2,
+      "tier:T2": 0.07500000000000001
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Cast into Time",
+    "range_bucket": "touch-self",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.2,
+      "tier:T1": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Cursed Metamorphosis",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Controlled": 0.25,
+      "Stunned@1": 0.22000000000000003,
+      "tier:T3": 0.22000000000000003,
+      "tier:T4": 0.25
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Dominate",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.36000000000000004,
+      "tier:T1": 0.36000000000000004
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Explosive Barrage",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.49000000000000005,
+      "tier:T2": 0.09000000000000001,
+      "tier:T3": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Fateful Condemnation",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Restrained": 0.42000000000000004,
+      "tier:T3": 0.42000000000000004
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Frost Pillar",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.38,
+      "Clumsy@2": 0.38,
+      "tier:T2": 0.38,
+      "tier:T3": 0.38
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Frozen Fog",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.72,
+      "Slowed@2": 0.18000000000000002,
+      "Stupefied@1": 0.756,
+      "Stupefied@2": 0.18900000000000003,
+      "tier:T2": 0.996,
+      "tier:T3": 0.8490000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Heinous Future",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.9,
+      "Slowed@2": 0.07500000000000001,
+      "tier:T2": 0.24,
+      "tier:T3": 0.7350000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Lignify",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.07500000000000001,
+      "Slowed@1": 0.275,
+      "tier:T2": 0.47500000000000003,
+      "tier:T3": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Missed Cue",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stupefied@2": 0.252,
+      "Stupefied@4": 0.21000000000000002,
+      "tier:T3": 0.462
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Never Mind",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.264,
+      "tier:T3": 0.264
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Pain of Ages",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Petrified": 0.792,
+      "Slowed@1": 0.9,
+      "Slowed@2": 0.07500000000000001,
+      "tier:T2": 0.24,
+      "tier:T3": 0.7350000000000001,
+      "tier:T4": 0.792
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Petrify",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.44000000000000006,
+      "tier:T3": 0.44000000000000006
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Phantasmal Calamity",
+    "range_bucket": "gt120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.24,
+      "tier:T3": 0.24
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Rose's Thorns",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.14250000000000002,
+      "tier:T2": 0.14250000000000002
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Seize Identity",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Frightened@2": 0.2,
+      "tier:T3": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Skeleton Army (Depart)",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Frightened@2": 0.2,
+      "tier:T3": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Skeleton Army (Arrive)",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@1": 0.627,
+      "Drained@1": 0.66,
+      "Enfeebled@1": 0.627,
+      "Stupefied@1": 0.6930000000000001,
+      "tier:T2": 2.6069999999999998
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Tanglecurse",
+    "range_bucket": "le30",
+    "rank": 6
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Confused": 0.18000000000000002,
+      "tier:T3": 0.18000000000000002
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Temporal Ward",
+    "range_bucket": "touch-self",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.7380000000000001,
+      "tier:T1": 0.7380000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Utter Destruction",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.6325,
+      "tier:T3": 0.6325
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Vibrant Pattern",
+    "range_bucket": "le120",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Slowed@1": 0.275,
+      "Slowed@2": 0.07500000000000001,
+      "Slowed@3": 0.275,
+      "tier:T2": 0.275,
+      "tier:T3": 0.35000000000000003
+    },
+    "effective_target": "small-multi",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Vitrifying Blast",
+    "range_bucket": "le60",
+    "rank": 6
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.29000000000000004,
+      "Frightened@2": 0.2,
+      "Off-Guard": 0.07650000000000001,
+      "tier:T2": 0.36650000000000005,
+      "tier:T3": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Attacked from Within",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Clumsy@3": 0.38,
+      "Encumbered": 0.32000000000000006,
+      "tier:T1": 0.32000000000000006,
+      "tier:T3": 0.38
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Chrysopoetic Curse",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.85,
+      "tier:T1": 0.85
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Control Sand",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Concealed": 0.34,
+      "tier:T1": 0.34
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Dancing Fountain",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.14250000000000002,
+      "Enfeebled@2": 0.38,
+      "Paralyzed": 0.17250000000000001,
+      "tier:T2": 0.14250000000000002,
+      "tier:T3": 0.38,
+      "tier:T4": 0.17250000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Divine Decree",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.08625000000000001,
+      "tier:T3": 0.08625000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Eclipse Burst",
+    "range_bucket": "gt120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Concealed": 0.07650000000000001,
+      "Fascinated": 0.539,
+      "Paralyzed": 0.10350000000000001,
+      "Stupefied@2": 0.42000000000000004,
+      "Stupefied@4": 0.09450000000000001,
+      "tier:T1": 0.6155,
+      "tier:T3": 0.5145000000000001,
+      "tier:T4": 0.10350000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Entrancing Eyes",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Deafened": 0.24750000000000005,
+      "Drained@2": 0.07500000000000001,
+      "Sickened@2": 0.2,
+      "Sickened@3": 0.2,
+      "Sickened@4": 0.07500000000000001,
+      "Stunned@1": 0.08250000000000002,
+      "tier:T1": 0.24750000000000005,
+      "tier:T2": 0.2,
+      "tier:T3": 0.43250000000000005
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Final Fate of the Locust Host",
+    "range_bucket": "gt120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Heaving Earth",
+    "range_bucket": "le120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Prone": 0.55,
+      "Unconscious": 0.5775000000000001,
+      "tier:T2": 0.55,
+      "tier:T4": 0.5775000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "low",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Indolent Haze",
+    "range_bucket": "le120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@2": 0.55,
+      "tier:T3": 0.55
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Mask of Terror",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.20700000000000002,
+      "tier:T3": 0.20700000000000002
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Moonburst",
+    "range_bucket": "gt120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Dazzled": 0.6715,
+      "Stupefied@1": 0.42000000000000004,
+      "Stupefied@2": 0.15750000000000003,
+      "tier:T1": 0.6715,
+      "tier:T2": 0.42000000000000004,
+      "tier:T3": 0.15750000000000003
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Pollen Pods",
+    "range_bucket": "le120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Controlled": 0.6875,
+      "tier:T4": 0.6875
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Possession",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Concealed": 0.408,
+      "tier:T1": 0.408
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shadow Raid",
+    "range_bucket": "le120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Hidden": 0.9,
+      "Unconscious": 1.05,
+      "tier:T1": 0.9,
+      "tier:T4": 1.05
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Shock to the System",
+    "range_bucket": "le30",
+    "rank": 7
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Fleeing": 0.0855,
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.09000000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.37550000000000006
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Summon Stampede",
+    "range_bucket": "le120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.20700000000000002,
+      "tier:T3": 0.20700000000000002
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sunburst",
+    "range_bucket": "gt120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "Stunned@1": 0.08250000000000002,
+      "tier:T2": 0.275,
+      "tier:T3": 0.08250000000000002
+    },
+    "effective_target": "small-multi",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "10-foot Burst",
+    "range_bucket": "gt120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "Stunned@1": 0.08250000000000002,
+      "tier:T2": 0.275,
+      "tier:T3": 0.08250000000000002
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "30-foot Line",
+    "range_bucket": "gt120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Drained@1": 0.2,
+      "Drained@2": 0.2,
+      "Drained@3": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Tempest of Shades",
+    "range_bucket": "le120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Concealed": 0.425,
+      "Hidden": 0.45,
+      "tier:T1": 0.875
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "True Target",
+    "range_bucket": "le60",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.44000000000000006,
+      "tier:T3": 0.44000000000000006
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Vacuum",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Deafened": 0.4950000000000001,
+      "Stunned@1": 0.6050000000000001,
+      "Stunned@3": 0.16500000000000004,
+      "tier:T1": 0.4950000000000001,
+      "tier:T3": 0.6050000000000001,
+      "tier:T4": 0.16500000000000004
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Vibrant Vibrato",
+    "range_bucket": "touch-self",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Confused": 0.9359999999999999,
+      "tier:T3": 0.9359999999999999
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Warp Mind",
+    "range_bucket": "le120",
+    "rank": 7
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Immobilized": 0.07500000000000001,
+      "Slowed@1": 0.275,
+      "tier:T2": 0.275,
+      "tier:T3": 0.07500000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Arctic Rift",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Drained@2": 0.2,
+      "Drained@3": 0.07500000000000001,
+      "tier:T3": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Boil Blood",
+    "range_bucket": "le60",
+    "rank": 8
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Fascinated": 0.6380000000000001,
+      "tier:T1": 0.6380000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Burning Blossoms",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.24,
+      "Frightened@3": 0.2,
+      "Frightened@4": 0.07500000000000001,
+      "tier:T2": 0.24,
+      "tier:T3": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "mid",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Canticle of Everlasting Grief",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Confused": 0.66,
+      "Stunned@1": 0.16500000000000004,
+      "tier:T3": 0.8250000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Confusing Colors",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.2,
+      "tier:T2": 0.2
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Deluge",
+    "range_bucket": "gt120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 1.15,
+      "Controlled": 1.25,
+      "tier:T3": 1.15,
+      "tier:T4": 1.25
+    },
+    "effective_target": "small-multi",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Divine Aura",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.24,
+      "tier:T2": 0.24
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Earthquake",
+    "range_bucket": "gt120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.49000000000000005,
+      "Stunned@1": 0.09900000000000002,
+      "Stunned@2": 0.22000000000000003,
+      "tier:T2": 0.49000000000000005,
+      "tier:T3": 0.31900000000000006
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Falling Sky",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@1": 0.39,
+      "Frightened@2": 0.2,
+      "Paralyzed": 0.4485,
+      "tier:T2": 0.39,
+      "tier:T3": 0.2,
+      "tier:T4": 0.4485
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Hypnopompic Terrors",
+    "range_bucket": "le30",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.95,
+      "Immobilized": 1.0,
+      "Paralyzed": 1.15,
+      "Slowed@1": 1.0,
+      "Stunned@1": 1.1,
+      "tier:T2": 0.95,
+      "tier:T3": 3.1,
+      "tier:T4": 1.15
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Monstrosity Form",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Drained@2": 0.2,
+      "tier:T3": 0.2
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Polar Ray",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.22000000000000003,
+      "Stunned@2": 0.08250000000000002,
+      "tier:T3": 0.30250000000000005
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Spirit Song",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Enfeebled@1": 0.45599999999999996,
+      "Enfeebled@2": 0.22799999999999998,
+      "Enfeebled@3": 0.171,
+      "Stupefied@1": 0.504,
+      "Stupefied@2": 0.252,
+      "Stupefied@3": 0.18900000000000003,
+      "tier:T2": 0.96,
+      "tier:T3": 0.8400000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Spiritual Epidemic",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.07500000000000001,
+      "tier:T2": 0.07500000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Sudden Transposition",
+    "range_bucket": "touch-self",
+    "rank": 8
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Stupefied@2": 0.252,
+      "tier:T3": 0.252
+    },
+    "effective_target": "single",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Summon Archmage",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Deafened": 0.9,
+      "Prone": 1.0,
+      "tier:T1": 0.9,
+      "tier:T2": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Summon Elemental Herald",
+    "range_bucket": "le120",
+    "rank": 8
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 1.056,
+      "Stunned@3": 0.19800000000000004,
+      "tier:T3": 1.056,
+      "tier:T4": 0.19800000000000004
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Astral Labyrinth",
+    "range_bucket": "le120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Frightened@2": 0.2,
+      "Frightened@4": 0.2,
+      "Slowed@1": 0.2,
+      "tier:T2": 0.2,
+      "tier:T3": 0.4
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Call Fluxwraith",
+    "range_bucket": "le120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Stunned@1": 0.7040000000000001,
+      "tier:T3": 0.7040000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Divinity Leech",
+    "range_bucket": "le30",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Off-Guard": 0.204,
+      "tier:T2": 0.204
+    },
+    "effective_target": "party-scale",
+    "ev_band": "low",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Nature's Enmity",
+    "range_bucket": "le120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fascinated": 0.22000000000000003,
+      "tier:T1": 0.22000000000000003
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Overwhelming Presence",
+    "range_bucket": "touch-self",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Confused": 0.42000000000000004,
+      "tier:T3": 0.42000000000000004
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Phantasmagoria",
+    "range_bucket": "le120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "1",
+    "atom_vector": {
+      "Dying": 1.0,
+      "tier:T4": 1.0
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Power Word Kill",
+    "range_bucket": "le30",
+    "rank": 9
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Concealed": 1.02,
+      "Deafened": 1.08,
+      "tier:T1": 2.1
+    },
+    "effective_target": "party-scale",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Storm of Vengeance",
+    "range_bucket": "gt120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Concealed": 0.85,
+      "Dazzled": 0.85,
+      "Drained@2": 1.0,
+      "Drained@4": 1.0,
+      "Enfeebled@2": 0.95,
+      "Enfeebled@3": 0.95,
+      "Enfeebled@4": 0.95,
+      "Fleeing": 0.95,
+      "Frightened@1": 1.0,
+      "Frightened@3": 1.0,
+      "Frightened@4": 1.0,
+      "tier:T1": 1.7,
+      "tier:T2": 1.0,
+      "tier:T3": 7.8
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Summon Ancient Fleshforged",
+    "range_bucket": "gt120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Sickened@1": 0.48,
+      "Sickened@2": 0.18000000000000002,
+      "Slowed@1": 0.66,
+      "tier:T1": 0.48,
+      "tier:T2": 0.18000000000000002,
+      "tier:T3": 0.66
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Trim the Blight",
+    "range_bucket": "touch-self",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.275,
+      "tier:T2": 0.275
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Undertaker",
+    "range_bucket": "le30",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Blinded": 0.10350000000000001,
+      "Confused": 0.10800000000000001,
+      "Frightened@2": 0.09000000000000001,
+      "Stunned@1": 0.09900000000000002,
+      "Stupefied@1": 0.09450000000000001,
+      "Stupefied@4": 0.09450000000000001,
+      "tier:T2": 0.09450000000000001,
+      "tier:T3": 0.49500000000000005
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": true,
+    "is_cantrip": false,
+    "name": "Unfathomable Song",
+    "range_bucket": "le120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Frightened@2": 0.2,
+      "Frightened@3": 0.4,
+      "Frightened@4": 0.15000000000000002,
+      "tier:T3": 0.7500000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Unspeakable Shadow",
+    "range_bucket": "le120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Prone": 0.4,
+      "Restrained": 0.07875000000000001,
+      "tier:T2": 0.4,
+      "tier:T3": 0.07875000000000001
+    },
+    "effective_target": "single",
+    "ev_band": null,
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Upheaval",
+    "range_bucket": "gt120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Drained@1": 0.2,
+      "Drained@4": 0.07500000000000001,
+      "tier:T2": 0.2,
+      "tier:T3": 0.07500000000000001
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wails of the Damned",
+    "range_bucket": "touch-self",
+    "rank": 9
+  },
+  {
+    "action_bucket": "2",
+    "atom_vector": {
+      "Fleeing": 0.07125000000000001,
+      "Frightened@1": 0.2,
+      "Frightened@2": 0.275,
+      "tier:T2": 0.2,
+      "tier:T3": 0.34625000000000006
+    },
+    "effective_target": "single",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Weird",
+    "range_bucket": "le120",
+    "rank": 9
+  },
+  {
+    "action_bucket": "3",
+    "atom_vector": {
+      "Concealed": 0.85,
+      "tier:T1": 0.85
+    },
+    "effective_target": "party-scale",
+    "ev_band": "high",
+    "incapacitation": false,
+    "is_cantrip": false,
+    "name": "Wrathful Storm",
+    "range_bucket": "gt120",
+    "rank": 9
+  }
+]
