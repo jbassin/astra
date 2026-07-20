@@ -483,6 +483,18 @@ codex-refresh:
     echo "codex-refresh: building the search index..."
     just codex-search-index
     echo ""
+    # D30-41: regenerate the assay spell-power artifact against the fresh corpus
+    # (the container restart below is also what flushes assayFs's per-process
+    # cache). Guarded: a checkout without the assay env still refreshes codex.
+    echo "codex-refresh: regenerating the assay artifact (D30-41)..."
+    if uv run assay export-codex; then
+      mkdir -p apps/codex/data/assay
+      cp apps/assay/out/spell-power.json apps/codex/data/assay/spell-power.json
+      echo "codex-refresh: assay artifact regenerated + placed."
+    else
+      echo "codex-refresh: assay export failed or unavailable — keeping the previous artifact." >&2
+    fi
+    echo ""
     echo "codex-refresh: done. report.md summary:"
     head -n 40 apps/codex/data/corpus/report.md
     echo ""

@@ -41,6 +41,27 @@ import type { RenderCtx } from "./nodes";
 const LEDGER_REASON_COPY: Readonly<Record<string, string>> = {
   "no-comparable-profile":
     "There isn't a close enough comparable spell in the corpus to judge this one against yet.",
+  utility:
+    "This is a utility spell — its value isn't damage or a measurable battlefield effect, so it isn't scored.",
+  "long-cast":
+    "This spell casts over minutes or longer, outside the combat-turn economy the power model measures.",
+  ambiguous:
+    "This spell's targeting doesn't parse cleanly as hostile or beneficial, so it isn't scored.",
+  "unpriced-modifier": "This spell's payload is a numeric modifier the model doesn't price yet.",
+  summon: "Summoning spells are judged by their summon level band rather than a power score.",
+  "teleport-utility":
+    "Teleportation and travel effects aren't scored — their value isn't comparable to damage or conditions.",
+  "extraction-edge-case":
+    "This spell's mechanics couldn't be extracted cleanly enough to score honestly.",
+  "non-literal-formula":
+    "This spell's damage scales by a formula the extractor can't evaluate, so it isn't scored.",
+  "low-confidence":
+    "The extracted mechanics for this spell are low-confidence, so it isn't scored rather than mis-scored.",
+  "wall-terrain":
+    "Wall and terrain effects aren't scored — their value depends on positioning, not a measurable budget.",
+  "effect-item-payload":
+    "This spell's payload lives in a linked effect the model doesn't price yet.",
+  "cantrip-too-thin": "Too few comparable cantrips exist to judge this one against.",
 };
 
 const LEDGER_FALLBACK_COPY =
