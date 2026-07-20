@@ -139,6 +139,13 @@ class StatusModifierOut(BaseModel):
     kind: str
     direction: str
     target_stat: str
+    #: D30-21c — was dropped at serialization entirely (the source dataclass
+    #: field existed but was always "unknown"); now a real per-section degree
+    #: / duration pair. Modifier pricing stays prior-only territory (D30-24)
+    #: — these fields feed the build record's "hostile penalty-modifier
+    #: rows" pin and the prior card's narrative, not the Stage A/B fit.
+    degree: str = "unknown"
+    duration: str = "instant"
 
 
 class SpellFeatures(BaseModel):
@@ -177,6 +184,20 @@ class SpellFeatures(BaseModel):
     area_type: str | None
     area_value_ft: float
     effective_target: EffectiveTarget = EffectiveTarget.SINGLE
+
+    #: D30-21d — `system.target.value` prose verbatim (e.g. "1 creature",
+    #: "" for area-only spells like Belittling Boast) — a D30-22 routing
+    #: input, never read before round 3.
+    target_raw: str = ""
+    #: D30-21d — a save described only in prose ("must attempt a Will
+    #: save") when `defense.save` is structurally null (Overwhelming
+    #: Memory's shape). `has_prose_save` feeds D30-22's hostile disjunct.
+    has_prose_save: bool = False
+    prose_save_statistic: str | None = None
+    #: D30-21d — "each creature"/"each enemy" phrasing (Belittling Boast's
+    #: Demoralize-linked emanation) — the other D30-22 hostile disjunct for
+    #: rows with no structured or prose save at all.
+    hostile_area_phrase: bool = False
 
     action_raw: str
     action_numeric: float | None
@@ -497,6 +518,10 @@ def extract_single(
     base_text = conditions.strip_heightened(description)
     has_extra_inline_damage = bool(plain) and bool(_INLINE_DAMAGE_RE.search(base_text))
 
+    target_raw = (sysd.get("target") or {}).get("value", "") or ""
+    prose_save_statistic = conditions.detect_prose_save(base_text)
+    hostile_area_phrase = conditions.detect_hostile_area_phrase(base_text)
+
     defense = sysd.get("defense") or {}
     save = defense.get("save")
     has_save = bool(save)
@@ -637,6 +662,10 @@ def extract_single(
         area_type=area_type,
         area_value_ft=area_value_ft,
         effective_target=effective_target,
+        target_raw=target_raw,
+        has_prose_save=prose_save_statistic is not None,
+        prose_save_statistic=prose_save_statistic,
+        hostile_area_phrase=hostile_area_phrase,
         action_raw=time_raw,
         action_numeric=action_numeric,
         action_bucket=action_bucket,
@@ -659,7 +688,12 @@ def extract_single(
         ],
         status_modifiers=[
             StatusModifierOut(
-                delta=m.delta, kind=m.kind, direction=m.direction, target_stat=m.target_stat
+                delta=m.delta,
+                kind=m.kind,
+                direction=m.direction,
+                target_stat=m.target_stat,
+                degree=m.degree,
+                duration=m.duration.value,
             )
             for m in cres.modifiers
         ],

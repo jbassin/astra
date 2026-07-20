@@ -23,7 +23,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
-from .extract import SkipRecord, SpellFeatures
+from .extract import RangeBucket, SkipRecord, SpellFeatures
 
 _TELEPORT_RE = re.compile(
     r"\bteleport|\bdimension door\b|\bplane shift\b|\btranslocat", re.IGNORECASE
@@ -31,6 +31,73 @@ _TELEPORT_RE = re.compile(
 _WALL_RE = re.compile(r"\bwall of\b|\bwall\b.{0,20}\bcreates?\b", re.IGNORECASE)
 _SPELL_EFFECTS_RE = re.compile(r"Compendium\.pf2e\.spell-effects")
 _SUMMON_TRAIT_RE = re.compile(r"^summon\s", re.IGNORECASE)
+
+#: D30-22's beneficial-side target-prose signal ("self/touch/willing-or-ally
+#: target prose"). "Hostile" qualifiers veto it outright.
+_FRIENDLY_TARGET_RE = re.compile(r"\b(self|yourself|willing|ally|allies)\b", re.IGNORECASE)
+_HOSTILE_TARGET_RE = re.compile(r"\b(enemy|enemies|unwilling|hostile creature)\b", re.IGNORECASE)
+_PLAIN_CREATURE_COUNT_RE = re.compile(r"^\d+\s+creatures?$", re.IGNORECASE)
+
+#: The four degree keys treated as "not a graduated degree-of-success outcome"
+#: for D30-22's "all-unconditional degrees" test — `on-hit` (an attack-roll
+#: spell's single hit branch) reads the same as `unconditional` here (neither
+#: is a save-outcome ladder).
+_NON_GRADUATED_DEGREES = frozenset({"unconditional", "on-hit"})
+
+
+def _is_friendly_target(row: SpellFeatures) -> bool:
+    """D30-22's beneficial target-prose test. **Engineer judgment (S1 build
+    record):** the spec's literal "self/touch/willing-or-ally" wording is a
+    strict substring match on none of Haste's real target text ("1
+    creature", range 30 ft — no literal "willing"/"ally" word at all), yet
+    Haste is a mandated-beneficial fixture. Resolved via PF2e's own design
+    convention: a spell with NO save/attack-roll/prose-save/hostile-area
+    signal (already ruled out by the caller before this runs) that targets a
+    plain "N creature(s)" is, by construction, a cooperative buff — PF2e
+    never ships an unconditional, ungated debuff on an arbitrary target.
+    Touch/self range is the clean case; a hostile-qualified target ("each
+    enemy", "unwilling creature") still vetoes it."""
+    target = row.target_raw or ""
+    if _HOSTILE_TARGET_RE.search(target):
+        return False
+    if row.range_bucket == RangeBucket.TOUCH_SELF:
+        return True
+    if _FRIENDLY_TARGET_RE.search(target):
+        return True
+    return bool(_PLAIN_CREATURE_COUNT_RE.match(target.strip()))
+
+
+def classify_hostility(row: SpellFeatures) -> str:
+    """D30-22 — per-ROW hostility routing (overlay variants can differ; each
+    variant row carries its own `has_save`/`condition_instances`/etc., so no
+    extra plumbing is needed beyond calling this per row).
+
+    Hostile is checked FIRST and short-circuits: Belittling Boast's empty
+    `range.value` string parses to `RangeBucket.TOUCH_SELF` (see
+    `extract.parse_range`), which — if the beneficial check ran first —
+    would wrongly read as "touch/self" beneficial targeting. Its
+    `hostile_area_phrase` flag ("Each creature that becomes Frightened...")
+    must win before the touch-self signal is ever consulted."""
+    hostile_signal = (
+        row.has_save or row.has_attack_trait or row.has_prose_save or row.hostile_area_phrase
+    )
+    if hostile_signal:
+        return "hostile"
+
+    all_unconditional = all(ci.degree in _NON_GRADUATED_DEGREES for ci in row.condition_instances)
+    if all_unconditional and _is_friendly_target(row):
+        return "beneficial"
+
+    # Ambiguous bucket (review F13 gate-integrity guard): resolve toward
+    # hostile only when a tiered condition sits at a real graduated degree
+    # (some save-like structure exists even though no save/attack/prose-save
+    # signal was found); otherwise this is a genuine "routing-ambiguous"
+    # ledger case, named in the build record.
+    any_tiered_conditional = any(
+        ci.tier is not None and ci.degree not in _NON_GRADUATED_DEGREES
+        for ci in row.condition_instances
+    )
+    return "hostile" if any_tiered_conditional else "ambiguous"
 
 
 def classify_row(row: SpellFeatures) -> str | None:
@@ -49,7 +116,15 @@ def classify_row(row: SpellFeatures) -> str | None:
         return "low-confidence extraction"
     hostile_conditions = [ci for ci in row.condition_instances if ci.tier is not None]
     if hostile_conditions:
-        return None  # condition-only control spell — scored via Stage B
+        # D30-22: a tier-priceable condition instance exists, but tier
+        # assignment alone no longer implies "route hostile" — the explicit
+        # per-row hostility classification decides.
+        hostility = classify_hostility(row)
+        if hostility == "hostile":
+            return None  # condition-only control spell — scored via Stage B
+        if hostility == "beneficial":
+            return "beneficial-effect"
+        return "routing-ambiguous"
     if row.condition_ref:
         # every instance is beneficial/non-control (D30-8i: buffs go to the
         # ledger — Stage B's coverage arithmetic is undefined for them).

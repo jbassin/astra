@@ -160,3 +160,108 @@ def test_classify_unpriced_skip_long_cast_passthrough() -> None:
     assert ledger.classify_unpriced_skip({}, "long-cast time ('1 minute')") == (
         "long-cast (out of combat-damage scope)"
     )
+
+
+# ---------------------------------------------------------------------------
+# D30-22 — classify_hostility (synthetic rows; real fixtures live in
+# test_assay_extract.py's routing-fixture tests).
+# ---------------------------------------------------------------------------
+
+
+def _hostile_condition(degree: str = "failure") -> ConditionInstanceOut:
+    return ConditionInstanceOut(
+        condition="Frightened", value=1, degree=degree, duration="round", rule="direct", tier="T2"
+    )
+
+
+def test_classify_hostility_touch_self_range_does_not_shortcut_beneficial() -> None:
+    """The Belittling Boast guard, isolated: an empty range string parses to
+    touch-self (see `extract.parse_range`), which must NOT read as
+    beneficial targeting when `hostile_area_phrase` is set — hostile is
+    checked first and wins outright."""
+    row = _base_row("emanation-debuff", 0.0).model_copy(
+        update={
+            "has_save": False,
+            "condition_ref": True,
+            "condition_instances": [
+                ConditionInstanceOut(
+                    condition="Frightened",
+                    value=None,
+                    degree="unconditional",
+                    duration="minute",
+                    rule="default-unconditional",
+                    tier="T2",
+                )
+            ],
+            "range_bucket": RangeBucket.TOUCH_SELF,
+            "target_raw": "",
+            "hostile_area_phrase": True,
+        }
+    )
+    assert ledger.classify_hostility(row) == "hostile"
+
+
+def test_classify_hostility_beneficial_target_prose() -> None:
+    row = _base_row("haste-like", 0.0).model_copy(
+        update={
+            "has_save": False,
+            "condition_ref": True,
+            "condition_instances": [
+                ConditionInstanceOut(
+                    condition="Enfeebled",
+                    value=1,
+                    degree="unconditional",
+                    duration="minute",
+                    rule="default-unconditional",
+                    tier="T2",
+                )
+            ],
+            "range_bucket": RangeBucket.LE30,
+            "target_raw": "1 willing creature",
+        }
+    )
+    assert ledger.classify_hostility(row) == "beneficial"
+
+
+def test_classify_hostility_ambiguous_bucket_falls_through() -> None:
+    """No hostile signal, no clean beneficial target, and the only tiered
+    condition sits at an unconditional degree (no graduated save-like
+    structure to resolve toward hostile) — the genuinely ambiguous case,
+    routed to the named ledger bucket."""
+    row = _base_row("weird-spell", 0.0).model_copy(
+        update={
+            "has_save": False,
+            "condition_ref": True,
+            "condition_instances": [
+                ConditionInstanceOut(
+                    condition="Enfeebled",
+                    value=1,
+                    degree="unconditional",
+                    duration="minute",
+                    rule="default-unconditional",
+                    tier="T2",
+                )
+            ],
+            "range_bucket": RangeBucket.LE30,
+            "target_raw": "each enemy",  # vetoes the friendly-target read
+        }
+    )
+    assert ledger.classify_hostility(row) == "ambiguous"
+    assert ledger.classify_row(row) == "routing-ambiguous"
+
+
+def test_classify_hostility_ambiguous_resolves_hostile_with_graduated_degree() -> None:
+    """Same no-signal shape, but the tiered condition sits at a REAL
+    graduated degree ("failure") — resolved toward hostile per the D30-22
+    ambiguous-bucket fallback rule."""
+    row = _base_row("graduated-no-save", 0.0).model_copy(
+        update={
+            "has_save": False,
+            "condition_ref": True,
+            "condition_instances": [_hostile_condition(degree="failure")],
+            "range_bucket": RangeBucket.LE30,
+            "target_raw": "each enemy",
+        }
+    )
+    assert ledger.classify_hostility(row) == "hostile"
+    assert ledger.classify_row(row) is None

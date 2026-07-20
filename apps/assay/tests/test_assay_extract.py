@@ -477,3 +477,108 @@ def test_overlay_variant_count_excludes_empty_system_execute() -> None:
     assert len(data["system"]["overlays"]) == 2
     variants = extract_spell_variants(data, "execute.json")
     assert len(variants) == 1
+
+
+# ---------------------------------------------------------------------------
+# S1 (round 3) — D30-21 payload-restoring fixes + D30-22 routing fixtures,
+# real corpus provenance (pf2e-8.3.0 snapshot, committed verbatim).
+# ---------------------------------------------------------------------------
+
+
+def test_sleep_case_fold_and_en_dash_restore_the_full_payload() -> None:
+    """Sleep is the flagship D30-21 fixture: its entire Unconscious payload
+    (plain-text 'falls unconscious' repeats at Failure/Critical Failure) was
+    silently dropped by the case-sensitive rule (iii), AND its Success-row
+    '–1 status penalty to Perception checks' used an en-dash the old regex
+    never matched. Both fixes land on the same real file."""
+    r = extract("sleep.json")
+    assert isinstance(r, SpellFeatures)
+    by_degree = {i.degree: (i.condition, i.tier) for i in r.condition_instances}
+    assert by_degree["failure"] == ("Unconscious", "T4")
+    assert by_degree["critical-failure"] == ("Unconscious", "T4")
+    assert len(r.status_modifiers) == 1
+    mod = r.status_modifiers[0]
+    assert mod.delta == "-1"
+    assert mod.degree == "success"
+    # Sleep structurally has a save, so it was already high-confidence and
+    # routed hostile even pre-fix — the fix restores PAYLOAD, not routing.
+    assert r.confidence == "high"
+    assert r.has_save is True
+
+
+def test_overwhelming_memory_prose_save_detected() -> None:
+    """Overwhelming Memory: `defense.save` is structurally null, but the
+    description literally reads 'The target must attempt a Will save.' —
+    D30-21d's prose-save detection (review F2/F10: this spell must route
+    hostile despite the missing structured save)."""
+    r = extract("overwhelming-memory.json")
+    assert isinstance(r, SpellFeatures)
+    assert r.has_save is False
+    assert r.has_prose_save is True
+    assert r.prose_save_statistic == "Will"
+
+
+def test_belittling_boast_hostile_area_phrase_detected() -> None:
+    """Belittling Boast: no structured save, empty `range.value` (parses to
+    touch-self — the D30-22 trap), but its Demoralize-linked emanation reads
+    'Each creature that becomes Frightened...' — the hostile-area-phrase
+    flag that must win over the touch-self signal."""
+    r = extract("belittling-boast.json")
+    assert isinstance(r, SpellFeatures)
+    assert r.has_save is False
+    assert r.hostile_area_phrase is True
+    assert r.range_bucket == RangeBucket.TOUCH_SELF  # the trap, confirmed present
+
+
+def test_target_raw_extracted_from_system_target() -> None:
+    r = extract("overwhelming-memory.json")
+    assert isinstance(r, SpellFeatures)
+    assert r.target_raw == "1 creature"
+
+
+# ---------------------------------------------------------------------------
+# D30-22 — the four mandated routing fixtures, real corpus, end-to-end
+# through ledger.classify_row / classify_hostility.
+# ---------------------------------------------------------------------------
+
+
+def test_routing_belittling_boast_hostile_not_beneficial() -> None:
+    from astra_assay import ledger
+
+    r = extract("belittling-boast.json")
+    assert isinstance(r, SpellFeatures)
+    assert ledger.classify_hostility(r) == "hostile"
+    assert ledger.classify_row(r) is None  # scored, not ledgered
+
+
+def test_routing_overwhelming_memory_hostile() -> None:
+    from astra_assay import ledger
+
+    r = extract("overwhelming-memory.json")
+    assert isinstance(r, SpellFeatures)
+    assert ledger.classify_hostility(r) == "hostile"
+    assert ledger.classify_row(r) is None
+
+
+def test_routing_haste_beneficial() -> None:
+    from astra_assay import ledger
+
+    r = extract("haste.json")
+    assert isinstance(r, SpellFeatures)
+    # Haste's only condition (Quickened) is tier=None (BENEFICIAL_OR_NON_CONTROL)
+    # — it never reaches classify_hostility, routing beneficial by the
+    # earlier `condition_ref` branch. Assert the OBSERVABLE outcome.
+    assert ledger.classify_row(r) == "beneficial-effect"
+
+
+def test_routing_invisibility_beneficial() -> None:
+    """Invisibility's Undetected/Hidden DO carry tier assignments (they're
+    real flat-tier conditions in the table) — this fixture exercises the
+    classify_hostility path directly, not the tier=None bypass Haste uses."""
+    from astra_assay import ledger
+
+    r = extract("invisibility.json")
+    assert isinstance(r, SpellFeatures)
+    assert any(ci.tier is not None for ci in r.condition_instances)
+    assert ledger.classify_hostility(r) == "beneficial"
+    assert ledger.classify_row(r) == "beneficial-effect"

@@ -12,6 +12,9 @@ from astra_assay.conditions import (
     classify_duration,
     condition_tier,
     coverage_weight,
+    detect_hostile_area_phrase,
+    detect_prose_save,
+    extract_condition_instances,
     split_degree_sections,
 )
 
@@ -96,3 +99,111 @@ def test_attribution_rule_values_distinct() -> None:
     # (round-tripped through JSON in SpellFeatures.condition_instances).
     values = {r.value for r in AttributionRule}
     assert len(values) == len(list(AttributionRule))
+
+
+# ---------------------------------------------------------------------------
+# D30-21a — case-insensitive rule (iii)
+# ---------------------------------------------------------------------------
+
+
+def test_plain_repeat_case_insensitive_sleep_shape() -> None:
+    """Sleep's real shape: 'Unconscious' ref'd via @UUID in the preamble,
+    then the Failure/Critical Failure sections repeat it in plain LOWERCASE
+    prose ("falls unconscious"). Before D30-21a this was silently dropped
+    (the plain-repeat regex was case-sensitive)."""
+    html = (
+        "<p>A creature that falls "
+        "@UUID[Compendium.pf2e.conditionitems.Item.Unconscious] from this spell.</p><hr />"
+        "<p><strong>Success</strong> Nothing happens.</p>"
+        "<p><strong>Failure</strong> The creature falls unconscious.</p>"
+        "<p><strong>Critical Failure</strong> The creature falls unconscious for longer.</p>"
+    )
+    result = extract_condition_instances(
+        html, spell_duration_value="", has_save=True, has_attack_trait=False
+    )
+    by_degree = {i.degree: i.condition for i in result.instances}
+    assert by_degree.get("failure") == "Unconscious"
+    assert by_degree.get("critical-failure") == "Unconscious"
+
+
+# ---------------------------------------------------------------------------
+# D30-21b — en-dash / unicode-minus modifier sign
+# ---------------------------------------------------------------------------
+
+
+def test_status_modifier_en_dash_sign() -> None:
+    """The corpus's copy-edited prose uses an en-dash for negative modifiers
+    (Sleep: '–1 status penalty to Perception checks') — the ASCII-only
+    `[+-]` class silently missed these (~28 spells, D30-21b pin)."""
+    html = "<p>The creature takes a –1 status penalty to Perception checks for 1 round.</p>"
+    result = extract_condition_instances(
+        html, spell_duration_value="", has_save=False, has_attack_trait=False
+    )
+    assert len(result.modifiers) == 1
+    mod = result.modifiers[0]
+    assert mod.delta == "-1"  # normalized to ASCII
+    assert mod.kind == "status"
+    assert mod.direction == "penalty"
+
+
+def test_status_modifier_unicode_minus_sign() -> None:
+    html = "<p>The creature takes a −2 circumstance penalty to AC for 1 minute.</p>"
+    result = extract_condition_instances(
+        html, spell_duration_value="", has_save=False, has_attack_trait=False
+    )
+    assert len(result.modifiers) == 1
+    assert result.modifiers[0].delta == "-2"
+
+
+# ---------------------------------------------------------------------------
+# D30-21c — modifier degree + duration attribution
+# ---------------------------------------------------------------------------
+
+
+def test_status_modifier_degree_and_duration_attribution() -> None:
+    """A modifier living inside a specific degree section now carries THAT
+    degree (was always 'unknown') and a duration classified from its own
+    section's prose (Sleep's Success-row shape: '-1 status penalty ... for
+    1 round')."""
+    html = (
+        "<p>Preamble text.</p><hr />"
+        "<p><strong>Success</strong> The creature takes a -1 status penalty "
+        "to Perception checks for 1 round.</p>"
+        "<p><strong>Failure</strong> The creature falls unconscious.</p>"
+    )
+    result = extract_condition_instances(
+        html, spell_duration_value="", has_save=True, has_attack_trait=False
+    )
+    mods = [m for m in result.modifiers if m.target_stat == "Perception checks"]
+    assert len(mods) == 1
+    assert mods[0].degree == "success"
+    assert mods[0].duration == DurationClass.ROUND
+
+
+def test_status_modifier_no_degree_markup_uses_default_degree() -> None:
+    """No degree markup at all (Belittling Boast's shape) — the modifier
+    gets the same no-markup default degree as condition instances
+    (unconditional/failure/on-hit)."""
+    html = "<p>Each creature takes a -1 circumstance penalty to AC for 1 minute.</p>"
+    result = extract_condition_instances(
+        html, spell_duration_value="1 minute", has_save=False, has_attack_trait=False
+    )
+    assert len(result.modifiers) == 1
+    assert result.modifiers[0].degree == "unconditional"
+    assert result.modifiers[0].duration == DurationClass.MINUTE
+
+
+# ---------------------------------------------------------------------------
+# D30-21d — prose-save + hostile-area-phrase detection
+# ---------------------------------------------------------------------------
+
+
+def test_detect_prose_save_overwhelming_memory_shape() -> None:
+    assert detect_prose_save("The target must attempt a Will save.") == "Will"
+    assert detect_prose_save("No save mentioned here.") is None
+
+
+def test_detect_hostile_area_phrase() -> None:
+    assert detect_hostile_area_phrase("Each creature that becomes Frightened...")
+    assert detect_hostile_area_phrase("Each enemy in the burst takes damage.")
+    assert not detect_hostile_area_phrase("You gain a +1 status bonus to AC.")

@@ -283,11 +283,47 @@ _HEIGHTENED_SPLIT_RE = re.compile(r"<hr\s*/?>\s*<p>\s*<strong>\s*Heightened", re
 _AFFLICTION_STAGE_RE = re.compile(r"<strong>\s*Stage\s+\d+\s*</strong>", re.IGNORECASE)
 _AS_FAILURE_RE = re.compile(r"^\s*(?:<p>)?\s*As\s+failure\b", re.IGNORECASE)
 _AFFECTED_RE = re.compile(r"\bis\s+affected\b|\baffected\s+for\b", re.IGNORECASE)
+#: D30-21b — the sign character class now accepts en-dash (–, common in
+#: the corpus's copy-edited prose, e.g. Sleep's "–1 status penalty") and
+#: the unicode minus sign (−), not just ASCII hyphen-minus. ~28 spells
+#: were silently missed under the ASCII-only class (S1 re-derived pin, see
+#: the build record).
 _STATUS_MOD_RE = re.compile(
-    r"([+-]\s?\d+)\s*[- ](status|circumstance)\s+(penalty|bonus)\s+to\s+"
+    r"([+\-–−]\s?\d+)\s*[-–− ](status|circumstance)\s+(penalty|bonus)\s+to\s+"
     r"([A-Za-z][A-Za-z '/]*?)(?=\s+for\s+\d|[.,<]|$)",
     re.IGNORECASE,
 )
+_PROSE_SAVE_RE = re.compile(
+    r"must\s+(?:attempt|succeed at|make)\s+an?\s+([A-Za-z]+)\s+save", re.IGNORECASE
+)
+#: D30-21d — a hostile-area phrasing signal ("each creature"/"each enemy"):
+#: an area (or linked-check) spell whose target framing is plainly
+#: adversarial even with no structured `defense.save` at all (Belittling
+#: Boast's Demoralize-linked emanation is the named fixture).
+_HOSTILE_AREA_RE = re.compile(r"\beach\s+(?:creature|enemy|enemies|target)\b", re.IGNORECASE)
+
+
+def detect_prose_save(text: str) -> str | None:
+    """D30-21d: the "must attempt a &lt;save&gt; save" family — a save that
+    never populates the structured ``defense.save`` field (Overwhelming
+    Memory's shape: `defense: null`, but "The target must attempt a Will
+    save." sits right in the prose)."""
+    m = _PROSE_SAVE_RE.search(text or "")
+    return m.group(1).title() if m else None
+
+
+def detect_hostile_area_phrase(text: str) -> bool:
+    """D30-21d: "each creature"/"each enemy" phrasing (see `_HOSTILE_AREA_RE`)."""
+    return bool(_HOSTILE_AREA_RE.search(text or ""))
+
+
+def _normalize_delta_sign(raw: str) -> str:
+    """En-dash/unicode-minus -> ASCII hyphen-minus, whitespace stripped —
+    keeps `StatusModifier.delta` a clean, comparable string regardless of
+    which sign glyph the source prose used."""
+    s = raw.replace(" ", "")
+    return s.replace("–", "-").replace("−", "-")
+
 
 _DEGREE_ORDER = ("critical-success", "success", "failure", "critical-failure")
 _LABEL_TO_KEY = {
@@ -352,7 +388,18 @@ class StatusModifier:
     kind: str  # "status" | "circumstance"
     direction: str  # "penalty" | "bonus"
     target_stat: str
+    #: D30-21c — which degree-of-success section this modifier's own text
+    #: sits in ("preamble" when found outside any degree section; one of
+    #: `_DEGREE_ORDER` otherwise; "unconditional"/"failure"/"on-hit" when the
+    #: spell has no degree markup at all, mirroring `ConditionInstance`'s
+    #: no-markup default rule). Previously always "unknown" and dropped at
+    #: serialization — modifier pricing stays prior-only territory (D30-24),
+    #: but the attribution is now real, not a placeholder.
     degree: str
+    #: D30-21c — duration class from the OWNING section's own prose first,
+    #: the spell-level `duration.value` fallback (same rule as
+    #: `ConditionInstance.duration`).
+    duration: DurationClass
 
 
 @dataclass
@@ -381,10 +428,18 @@ _PLAIN_NAME_RE_CACHE: dict[str, re.Pattern[str]] = {}
 
 def _plain_mentions(text: str, name: str) -> bool:
     """A bare condition name in prose, NOT inside an @UUID tag (those are
-    already captured by `_find_direct_refs`) — rule (iii)."""
+    already captured by `_find_direct_refs`) — rule (iii).
+
+    D30-21a: case-INSENSITIVE (the S1 payload-restoring fix — the corpus
+    routinely spells a repeated condition name lowercase mid-sentence, e.g.
+    Sleep's Failure/Critical Failure "The creature falls unconscious.",
+    while the @UUID tag it repeats is title-cased "Unconscious". The
+    original case-sensitive pattern silently dropped ~50 spells' worth of
+    plain-text repeats — Sleep's entire unconscious payload among them, see
+    the S1 build record)."""
     pattern = _PLAIN_NAME_RE_CACHE.get(name)
     if pattern is None:
-        pattern = re.compile(rf"(?<!Item\.){re.escape(name)}\b")
+        pattern = re.compile(rf"(?<!Item\.){re.escape(name)}\b", re.IGNORECASE)
         _PLAIN_NAME_RE_CACHE[name] = pattern
     # Strip UUID tags first so a display label like `{Frightened 2}` (which
     # legitimately contains the name) isn't double-counted as a plain repeat.
@@ -414,33 +469,42 @@ def extract_condition_instances(
         )
     ds = split_degree_sections(base_text)
 
-    # Status/circumstance modifiers (D30-2d) are captured regardless of
-    # degree-markup shape — run this before any early return.
-    for m in _STATUS_MOD_RE.finditer(base_text):
-        result.modifiers.append(
-            StatusModifier(
-                delta=m.group(1).replace(" ", ""),
-                kind=m.group(2).lower(),
-                direction=m.group(3).lower(),
-                target_stat=m.group(4).strip(),
-                degree="unknown",
+    def _scan_modifiers(text: str, degree: str) -> None:
+        """D30-21c — status/circumstance modifiers now carry the DEGREE of
+        the section they were found in (was always "unknown", dropped at
+        serialization) and a real DURATION classified from that same
+        section's own prose (prose-first, spell-level `duration.value`
+        fallback — identical rule to `ConditionInstance.duration`)."""
+        duration = classify_duration(text, spell_duration_value)
+        for m in _STATUS_MOD_RE.finditer(text):
+            result.modifiers.append(
+                StatusModifier(
+                    delta=_normalize_delta_sign(m.group(1)),
+                    kind=m.group(2).lower(),
+                    direction=m.group(3).lower(),
+                    target_stat=m.group(4).strip(),
+                    degree=degree,
+                    duration=duration,
+                )
             )
-        )
 
     preamble_refs = _find_direct_refs(ds.preamble)
 
     if not ds.sections:
         # No degree markup: default-failure (save exists) / default-on-hit
         # (attack-roll spell) over refs found anywhere in the base text.
-        refs = _find_direct_refs(base_text)
-        if not refs:
-            return result
+        # Modifiers share the same no-markup default degree (D30-21c) —
+        # scanned over the whole base text, same as the condition refs.
         if has_save:
             degree, rule = "failure", AttributionRule.DEFAULT_FAILURE
         elif has_attack_trait:
             degree, rule = "on-hit", AttributionRule.DEFAULT_ON_HIT
         else:
             degree, rule = "unconditional", AttributionRule.DEFAULT_UNCONDITIONAL
+        _scan_modifiers(base_text, degree)
+        refs = _find_direct_refs(base_text)
+        if not refs:
+            return result
         duration = classify_duration(base_text, spell_duration_value)
         for name, value in refs:
             result.instances.append(
@@ -461,12 +525,15 @@ def extract_condition_instances(
     for sect_text in ds.sections.values():
         all_direct_names |= {n for n, _ in _find_direct_refs(sect_text)}
 
+    _scan_modifiers(ds.preamble, "preamble")
+
     seen_degrees: dict[str, list[ConditionInstance]] = {}
 
     for key in _DEGREE_ORDER:
         sect_text = ds.sections.get(key)
         if sect_text is None:
             continue
+        _scan_modifiers(sect_text, key)
         instances: list[ConditionInstance] = []
 
         if _AS_FAILURE_RE.match(sect_text) and "failure" in seen_degrees:
