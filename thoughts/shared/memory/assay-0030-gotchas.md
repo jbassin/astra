@@ -83,3 +83,10 @@ FIXTURE-ENV-ONLY (vanish against real data); cross-track enum seams (reasonCode)
 an integration reconcile step — schema contracts pin SHAPE, not vocabularies;
 `codex-refresh` now regenerates+places the artifact. Register for gate H: the Assay
 block + wide buff rank-ranges (honest by design).
+
+**⏸ SURFACE ON HOLD (2026-07-20, `8db3a0a`):** stakeholder revisited the representation —
+the codex Assay block is HIDDEN not removed (one-line unwire: `corpusFns.ts` passes
+`emptyAssayReader`; all machinery + artifact + bind intact; redeployed + live-verified
+absent, SigNoz 0 ERROR). Revisit = swap back to `getAssayReader()` + redeploy, but
+re-scope the REPRESENTATION with the stakeholder first. The assay CLI tool itself stays
+fully live for design-table use.

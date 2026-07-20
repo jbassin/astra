@@ -361,3 +361,14 @@ above with its mechanism, not silently absorbed.
 - **Gate-H register addition:** the Assay (experimental) block on spell pages (incl. the
   `?entry=` preview pane), the 13-entry reason copy, heroism-class buff neighbor quality
   (mixed-rank lists are expected — rank ranges are wide by honest design).
+
+### §6c — surface ON HOLD (stakeholder, 2026-07-20)
+
+Post-gate stakeholder call: the block's representation wasn't what was wanted — **the codex
+surface is ON HOLD, hidden not removed** (`8db3a0a`): `corpusFns.ts` wires
+`emptyAssayReader` at the one production call site, so the block never renders; the
+loader/component/tests/artifact/compose-bind/`codex-refresh` machinery all stay intact.
+Redeployed (image rebuild + codex-scoped up), live-verified absent on fireball + heroism,
+SigNoz 0 ERROR. Revisit = swap the one import back to `getAssayReader()` + redeploy; the
+representation design goes back through scope when picked up. The gate-H register entry
+for the block is WITHDRAWN (nothing user-visible remains).
