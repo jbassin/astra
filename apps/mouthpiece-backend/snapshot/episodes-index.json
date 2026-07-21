@@ -18754,6 +18754,600 @@
           "text": "...Yeah, okay. Someone does."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-7-20",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 12,
+      "isMain": true,
+      "date": "2026-7-20",
+      "dateSortKey": 20260720,
+      "title": "Sleeping Giants and Sacred Hunches",
+      "episodeTitle": "Sleeping Giants and Sacred Hunches",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "After rebalancing the psychic's mind and settling debts across the Strider's surface factions, the party weighs two threats lurking deep within the machine: a dormant clan of skinwalkers tended by a dying heart called Lifeline, and a waking clan that holds Anzu's sister among its ranks. Argyle's prayers nearly shatter a hag's curse but fall one roll short, while Anzu finds an unexpected ally in the Protectorate's Yao — a believer that the Voidsong is Aurelia herself, crying out from the horizon. Choosing to strike the sleeping foe before it wakes, the party descends into a pristine, electrified hospital ward where chitinous Makers and flesh-piloted drones guard the true kin in their vats. Combat erupts amid black tentacles, silence, and calm, and the session closes mid-fight with the outcome hanging in the balance.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, but you have to start with the psychic thing, because that sets the tone for everything Anzu does this session, and I think Josh was right to do it — the class was genuinely broken, not in the fun way, and Anzu's been suffering for it for weeks."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The class wasn't broken. It was undertuned. There's a difference."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — that's literally what I said."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You said \"genuinely broken,\" which implies it was non-functional. It was functional, it was just weaker than it should have been relative to the other casters at the table. And Josh's fix — letting him unleash psyche on round one, letting him extend it by spending health, bumping spell slots to three per level — that's a significant power jump, and I think it's worth asking whether he overcorrected."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Overcorrected? The guy could only use his class feature on rounds two and three, and then he got stupefied for his trouble. Rounds four and five he's just — he's a worse wizard. That's not undertuned, that's — that's a hostage situation. The class is holding its own mechanic hostage. And Josh saw it, he compared it to the Decay instinct barbarian, which is doing basically the same damage for free, and he was like, yeah, this is silly."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The barbarian comparison is fair. I'll give you that. The damage output on unleash psyche is comparable and the barbarian pays way less for it. But bumping spell slots to three on top of the unleash psyche changes? That's two buffs stacked. He could've done one or the other and seen where it landed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Or — and hear me out — he could've done both, because the class needed both, and also Johnny has three spell slots per level and nobody's crying about Johnny."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Johnny's a bard. Different chassis, different spell list, different — you can't just compare slot counts across classes like they're interchangeable."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And yet that's exactly what Josh did when he made the call, so — look, the point is Anzu's been limping through combat for sessions and you could feel it at the table, Tanner was — you could hear it in his voice, he loved the concept, the psychic flavor, the mind stuff, but the mechanics just weren't delivering, and this session finally gave him the tools to actually do the thing his character is supposed to do."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm not arguing against the fix. I'm saying it's a lot of fix all at once and we won't know if it's too much until we see it in real combat, which — speaking of which, we did see it, at the end."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "We did! And it was great. But before we get there — okay, so the other thing at the top of the session is the strategic decision, which I think is the most interesting debate of the night, and I want to talk about it before we get into the Yao stuff and the curse stuff, because it frames everything."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The sleeping clan versus the waking clan."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right. So the Machine God tells them there are two groups of Herald followers left. One's dormant, sleeping, on the third floor near the surface, more powerful individually. The other's awake, sprawling, spread across multiple sections of the Strider, and that's where Anzu's sister is. Eight tengu over there, by the way — eight, which is — that's a lot of sisters."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's not eight sisters. It's eight tengu, and not all of them are necessarily connected to Anzu's sister. The Machine God said they're not all linked. But yes, the point stands: the waking clan is where the personal stakes are."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the party chooses the sleeping clan. They go for the dormant threat first. And I think that's the right call, by the way — you strike the sleeping giant before it wakes up, you don't poke the wasp nest that's already buzzing —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But that's the thing. The sleeping clan is described as more powerful individually. You're choosing to fight the stronger enemy because you might catch them off guard. That's a gamble, not a strategy. If they wake up mid-fight, you've just picked a fight with the stronger group on their home turf."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But that's exactly why you do it now! While they're asleep, while the keepers are the only ones standing watch, while the true kin are still in their vats. You go in, you smash the vats, you kill the heart — Lifeline, the dying heart running the hospital — and you're out. The alternative is you leave a ticking time bomb behind you while you go chase the waking clan across half the Strider, and then when you come back, guess what, they're awake, and now you're fighting both."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That assumes the two clans are on a shared timer, which we don't know. The Machine God said the dormant group would activate when the Strider reaches its destination. That's months away. You had time."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Had time! You had — you're on a giant moving machine heading toward a wall on the horizon, and you \"had time.\" That's — Maeve, that's what every horror movie character says right before the thing they left behind catches up."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm saying the urgency is manufactured. Argyle even admits it — he says \"I just feel like it's stronger,\" and then he goes \"I don't know why I would think it's stronger.\" That's not tactical reasoning. That's fear. And Johnny — Johnny says it feels like these encounters were designed so there's no correct choice, and honestly that's the most honest read of the whole conversation. The GM gave them two bad options and they picked the one that felt less immediately scary."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And that's — okay, that's a fair point about Argyle's reasoning, it was gut, it was instinct, but sometimes instinct is right. The sleeping thing is scarier. It's scarier because you don't know what it is, you don't know what it becomes when it wakes up, and the Machine God — who is not exactly an unreliable narrator here — he says \"surely you can learn how to kill something that is asleep\" with this incredible like — that's dripping with contempt, by the way, that line."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He also says he would have its position, meaning he'd absorb Lifeline's territory if they clear it. So he has a vested interest in sending them there. That's not corruption, necessarily, but it's not neutral advice either."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, come on, he's — the Machine God is an ancient heart from Aurelia's original party, he's been trapped down here for seven hundred years, he's not scheming for real estate. He's — if anything he's being helpful because they're doing the thing he needs done."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's an ancient heart from Aurelia's original party who immediately, when given the chance, expanded his territory by absorbing the spider clan's domain. And now he's pointing them at another heart he could absorb. Pattern."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I — okay, that's — that's a fair pattern. I don't love that you're right about that. But I still think the tactical call is sound. You hit the sleeping target, you remove a future threat, and you give yourself one less front when things inevitably go sideways up top. Which they will, because — have you seen what's happening on the surface?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which brings us to the Yao conversation, which is where I want to spend some real time, because that scene is doing more work than anything else this session."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, absolutely. So Anzu goes to the Protectorate — finally, by the way, he didn't even know they had a phone, which is incredible, he's been on this Strider for — how long, and he hasn't called his dad, he didn't know there was a phone —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He knew. He just didn't think the phone worked across the horizon, which is a reasonable assumption given that the Strider is traveling through the void."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He could've asked."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He could have. He didn't. That's character, not ignorance. Anzu is avoidant. He ran away from his family, he's not calling his father, and the sister situation is forcing him to confront that. That's good writing."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, right. So he goes to the Protectorate, and first of all — the Protectorate base is gorgeous. The water feature, the zen garden, the cushions, the sand pit where Tamara is just — just destroying her own people in melee, she's unarmed, they've got weapons, and she's beating them bloody. While Yao sits on a cushion and sketches her. It's — that's such a vivid picture."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And it's very Brithwinian. The Chorath Engineering aesthetic, the function-meets-faith design philosophy. It's not just flavor, it tells you who these people are. They're a private army with a religious conviction and an interior decorator."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Yao — Yao is the scene. He's gruff, he's not chatty, but when Anzu brings up the Voidsong, he just — he opens up, and his theory is that the Voidsong is Aurelia. Not metaphorically. Literally. The true Aurelia, trapped on the horizon, singing for believers to come save her. The one in Calaria is an impostor."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Dissident Church of Brithwyn. It's a real belief. It's not Yao being eccentric — Brithwyn split from Calaria partly over the question of whether the Pontifex is a true reincarnation. Yao's faith is culturally grounded, it's not a crackpot theory he came up with alone."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And here's where I think the scene gets really interesting, because Anzu doesn't confirm or deny. He says \"I can feel their urgency,\" he says it feels like a call for help, but he doesn't commit to it being Aurelia. And Yao is — he's fine with that. He says something like \"it doesn't matter if it turns out to be the prophet of another religion, it'll still be a good deed.\" Which is — that's a remarkably generous theological position for a believer."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a remarkably pragmatic one. He doesn't need the Voidsong to be Aurelia. He needs it to be real, and he needs to go toward it. The theology is the motivation, not the destination. And I think that's a more sophisticated faith than what we see from the Iridescent Church back in Calaria, where the theology IS the power structure."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But here's my question — and I think this is where the real debate is — do we buy it? Is the Voidsong actually Aurelia? Because Yao has a piece of her armor, passed down mentor to student for seven hundred years, and that's — that's a real artifact. That's not a belief, that's a physical object with a provable chain of custody. And Anzu has his void paper with the imprinted Voidsong on it. If those two things resonate with each other —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You're doing the thing. You're building a case out of two data points and getting excited."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'm — I'm theorizing!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You're theorizing with insufficient data. We have a believer's interpretation, a sacred artifact, and some void paper. We also have Cato's theory, which Yao dismisses. We have Iconoclasm, which was founded by Voidsong listeners. We have the Machine God, who was part of Aurelia the First's original party and doesn't claim to know who's singing. If the Machine God — who was literally there — doesn't say \"oh yes, that's Aurelia,\" then why should Yao's faith be more reliable?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Because the Machine God was trapped! He was cut off, he was captured, he doesn't have full information. He even says he doesn't know if many people carry this belief. And Yao — Yao is coming from a tradition, from a culture, from seven hundred years of Dissident Church theology that specifically says the Pontifex is false. That's not one guy's hunch."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a culture's hunch. Seven hundred years of hunch. And I'll remind you — the Dissident Church also doesn't have Aurelia standing in front of them confirming anything. They believe. That's what faith is. But faith is not evidence."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And yet faith is what's driving this entire campaign. Every player character heard the Voidsong. They're all here because of it. If you dismiss Yao's belief as just faith, you have to dismiss the party's entire motivation too."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm not dismissing it. I'm saying it's unconfirmed, and the scene is more interesting if it stays unconfirmed. The moment we learn the Voidsong is definitively Aurelia, or definitively not, the question collapses. Right now it's live. And I like it live."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "... okay. Okay, I'll give you that. The ambiguity is the point. But I want the armor scene to happen — I want Anzu to bring the void paper back to Yao's place and see if it reacts to the armor. That's a moment that's coming, and I think it's going to be huge."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Maybe. Or maybe Josh just lets you sit with it. Either way — we should talk about Argyle and the curse, because that's the other major beat before the dive, and I have feelings about it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the curse. So Argyle goes to the Scale with Benny — by the way, dragging Benny along as a bodyguard for an eight-hour ritual, and Benny just — he just sits there. For eight hours. He's a nine-year-old android sitting in a pillbox watching a guy pray."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He could've sparred with Bishop. He chose not to. That's on Benny."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So Argyle's trying to break Lance's curse. Lance is the Scale's sniper, he's been cursed by — it turns out — a coven of nighthags, which is a lot of hag. And Argyle's got this level seven break curse ritual, it's an eight-hour procedure, counteract check against the curse. And he rolls a thirty-two."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is a success. Not a critical success. And the curse is rank five, which means a success doesn't cut it. He needed a crit."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Josh — Josh describes it beautifully, right, there's this moment where color comes back to Lance's skin, you can see it working, and then it just — slides back. The sallowness returns. It's so close. And Argyle's — he's devastated."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He's not devastated. He says \"I'll be back.\" He's annoyed."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He's devastated on the inside! And then — then he comes back the next day, he casts heroism on himself for the extra edge, he rolls again, and he gets a thirty-seven."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And he needed a thirty-eight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He needed a thirty-eight! One point! One single point short of a critical success, and he even — he burns his hero point trying to reroll, and it doesn't work. It's — that's heartbreaking. That's the cruelest thing Josh has done all session, and Josh does a lot of cruel things."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's not cruelty. It's the rules. The counteract rank is half his level, rounded up, which is four. A rank four counteract against a rank five effect needs a critical success, and thirty-seven is a success, not a crit. The math is the math."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the narrative — the narrative is that this curse is just out of reach. He's one level away from having the rank he needs, and you can feel it. It's so close. And Lance — Lance is just sitting there, he's been through this before, he's used to failed exorcisms, he offers to help draw the circle. That's — that's a man who's given up hope and is just going through the motions for the cleric's benefit."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And here's my question: should Argyle have spent two days on this? He went back on day two, spent another eight hours, burned spells, burned a hero point, and got nothing. Meanwhile, they're on a clock. The tithe is coming. The Strider is moving. Things are happening on the surface — Grayson's expanding into Garrick Textiles territory, Amber Call is forming alliances, Red is warning about weapons moving through back channels back in Calaria. And Argyle is in a basement trying to fix one sniper's curse."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's one sniper's curse, but it's also — it's about building the Scale alliance. You go, you help, you show good faith, you demonstrate that your cleric is willing to spend sixteen hours over two days trying to heal their guy. That's investment. That's relationship capital."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Is it? Because Bishop says no when Argyle invites them to move in. They're staying put. They're keeping their territory. They don't want to be absorbed into your compound. So what did sixteen hours of praying actually buy you?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It bought — okay, it bought — look, it bought goodwill, it bought — Bishop says \"if things go bad, we'll drive over.\" That's something. That's — in a crisis, they're coming to you. That's not nothing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a conditional promise from an ally who won't consolidate. I'd call that something, but not much."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fine. But the emotional read of the scene — the failed curse, the near-miss, Lance's quiet resignation — that's the payoff, and it's a great scene regardless of the strategic value. Sometimes you do the good thing because it's the good thing, not because it pays off in energy credits."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And sometimes you spend two days on a side quest while the clock ticks. I'm not saying it's wrong. I'm saying there's a cost, and the party doesn't always acknowledge the cost."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fair. Fair. Okay — so before the dive, we've got the research scene. Anzu's trying to figure out how to reverse the Voidsong harmony that's got his sister. And Josh sets this up as a skill challenge — Benny's doing record keeping, pulling from Pyrolyte's data, Johnny's doing music theory to look for destructive frequencies, and Anzu's the primary researcher on occultism."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Johnny's music theory angle is clever. The Voidsong is literally a song. Looking for counter-frequencies, harmonics that could disrupt it — that's not cheese, that's applying the right lens to the problem."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And they roll well — not amazing, but well enough — and Josh tells them the truth, which is: this is not a one-day project. Smart people in Faerin Prime have been working on this for months and gotten nowhere publicly. Anzu's looking at five days minimum just to get a baseline of information, and that's before any actual countermeasure."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is why the decision to go after the sleeping clan makes more sense than you're giving it credit for. Anzu can do five days of research while the party handles the dive. He said any downtime he has goes to this. It's parallel processing. You don't have to choose between the research and the dive — you just have to accept that the research is a long-term project with no guaranteed payoff."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And that's — that's a real tension, right? Because Anzu's sister is in the waking clan. Every day he spends researching is a day she's still under the harmony. But he also can't help her if he doesn't understand how the harmony works. So he's choosing between time and knowledge, and neither one is safe."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Johnny's sandwich situation — did you catch that?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The sandwiches! Oh my god, so Johnny's been sending sandwiches down the elevator to Marin, the mongrel folk guy in the undercroft, right? And the deal is, if the sandwich comes back with a note, Marin's alive. If it doesn't — no note means dead. So day one, sandwich goes down, note comes back. Day two, sandwich goes down, no note."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Sandwich is gone, no note. Marin might be dead. And Johnny just — stops sending sandwiches."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "\"No more sandwiches.\" Just like that. He meal-prepped for a week and he's just done. It's — it's funny and it's grim at the same time."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's very Johnny. He cares just enough to send the sandwich, not enough to go check on the guy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's not — okay, maybe. But the dive itself — let's talk about the dive. Because this is where the session goes from political maneuvering to full dungeon crawl, and the tonal shift is — it's sharp."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It should be. They've been doing surface politics for sessions. Going back into the Strider is a different mode. And Josh signals it immediately with the environment."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The cleanliness! Oh, it's so creepy. They've been walking through the Undercroft for sessions now, right? Dust, rust, oil spills, mineral deposits, steam, broken walls, mongrel folk doing maintenance. And suddenly — pristine. Spotless. Repaired walls. Working electric lights. Electricity! In a seven-hundred-year-old machine, and there's a working circuit network powering bright white lights like it's a hospital."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Because it is a hospital. The Machine God told them — it was a medical center. And the heart running it is called Lifeline. The name alone tells you what it was, and the state of the place tells you something's still maintaining it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But not maintaining it well. Lifeline is dying, or not quite sane, as the Machine God puts it. So you've got this pristine hospital with a dying heart, and it's being — it's being curated, essentially, by these skinwalkers. The keepers. The ones who maintain the true kin in their vats while they sleep."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the true kin — these are the original invaders from seven hundred years ago. The ones that came in with Herald. They're asleep, they're waiting for the Strider to reach its destination, and they're being tended. That's not a dungeon, that's a nursery."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "A nursery for body snatchers! They're — what did Josh call them — small, ropey, worm-like creatures that wear people's skin. Skinwalkers. And they pilot flesh drones, mindless beings that have minds but no souls. Neither holy nor unholy. No universal weakness. That's — that's a nightmare setup."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Anzu's occultism check confirms — these are oogathals. The same kind of skinwalkers they encountered early in the campaign. So this isn't new lore, it's a return. The party has seen these before, briefly, and now they're walking into the nest."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then the combat starts, and — okay, so the setup is: pristine hallway, double doors, button to open, they can hear something dragging on the other side. Benny opens the door, sees vats — rows of vats with the true kin floating in them, preserved. And then immediately gets hit with a fear spell, which he shakes off, and then — black tentacles. Everywhere."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Maker cast black tentacles. Which is — first of all, that's a high-level spell for something described as a chitinous crab-thing. And it targeted their fortitude DC with spell attack rolls, which is unusual. Most spells target reflex or will. Fortitude for a tentacle grapple is weird and clever."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But Josh rolls terribly. He rolls a natural one on the attack against Benny. The tentacles just — whoosh, miss. Everybody saves. It's — the tension of the moment is incredible and then it just deflates because the dice said no."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But the strategic value of the tentacles is still there even when they miss. It's area denial. The party has to go through that space to reach the Maker and the skinwalkers, and every square of it is dangerous. The miss just means they didn't get grabbed this round. Next round, it's still there."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Johnny — Johnny's play here is — okay, so Johnny does three things. First he throws silence on Benny, which is genius because the Maker is a spellcaster. Silence on the melee fighter means the caster can't cast. The Maker tries to cast synesthesia on Benny and just — can't. It's silenced. Josh has to pivot to just biting Benny's head off instead."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Forty-two points of damage on that bite, by the way. And a poison save. That Maker is not a joke."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No, it's — that thing hits like a truck. And then Johnny — Johnny does this incredible sequence. He spell dances — which is a flourish action where he moves and casts — and he uses performance to moonwalk away from the enemies, which beats everyone's perception DC, and then he climbs up on top of one of the vats — rolls an acrobatics check to not break the glass — gets a forty-seven, just glides up there like it's nothing — and then casts calm as a flourish cast on a ten-foot burst, hitting two of the skin drones while avoiding Argyle."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And both of them fail. One fails, one critically fails. The one that critically failed can't even react to hostile actions. It just stands there, gets squeezed by the tentacles, and takes it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Johnny's — Johnny's so proud of himself, he yells out \"this is Johnny's best turn ever!\" and he's right! It is! It's a — moonwalk, acrobatics, flourish calm, positioning, debuff — it's a full toolbox turn from a bard who keeps finding new ways to be useful."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "But here's the thing — he's on top of a vat. A glass vat containing one of the true kin. And the skin drones can't break the vats, which the party discovers, but that doesn't mean the vats are invincible. If something bigger hits them, or if the Maker gets loose from the silence — and the silence is on Benny, so if Benny moves or goes down —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — oh, that's a really good point. The silence is on Benny, and Benny is up in the Maker's face. If Benny goes down, or if he has to move to get healed, the silence moves with him, and the Maker can start casting again. That's a ticking clock within the combat."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the Maker has already shown it can do forty-two damage in a single bite. Benny's taking persistent bleed. He got synesthesia on him at one point — clumsy three, concealed everything, concentration checks. Johnny's casting soothe on him, but that's one action per round he has to sustain, and he's also sustaining calm. He's juggling three balls, and if he drops one —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Then it all falls apart. The calm breaks, the silence moves, the Maker starts casting, and they're standing on top of glass vats full of sleeping alien invaders. That's — that's a beautiful tactical situation. It's fragile. Everything the party has built this round is fragile."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And we don't see it resolve. The session ends mid-combat. Argyle hasn't even had his full turn yet. We don't know if the vats break, we don't know if the Maker goes down, we don't know if the true kin wake up. It's a cliffhanger in the truest sense."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And — can I just say — the thing with the grub gloves. Benny, when he's hurt, he switches targets to the ugathal — the skin drone — because he knows he can hit it, and the grub gloves heal him on a hit. But the heal is random — it's three d-tens, and he needs to roll low to get a big heal, because it's — it's inverse, right, the lower you roll the more you heal? And he rolls high. Gets fourteen healing when he could've gotten — what, up to thirty? And then he takes three bleed damage at the start of his next turn and fails the recovery check. He's net negative. The mechanics are fighting him."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's Benny's problem this fight — he's built for damage, and the damage is working, but the enemies are hitting back harder than he can self-sustain, and his utility options are limited. Sixty damage on the crit against the Maker and it's still standing because it's soulless, so holy damage doesn't apply. That's — the party's usual advantage is just negated here."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Argyle — Argyle is the holy damage guy, right? He's the champion. He's got Divine Wrath, he's got holy water, he crit-killed two Oculums and an Orus back in the forsaken sector fight. But here? The enemies have no souls. They're not undead, they're not unholy. They're just — flesh. Meat puppets with minds but no divine alignment. And Argyle's whole toolkit is built around exploiting alignment."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which is why the combat feels harder than the numbers suggest. The party's usual optimizations don't apply. They're fighting neutral soulless constructs in a hospital run by a dying heart, and their holy champion is just a guy with a shield."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I — okay, that's a great summary, actually. \"Their holy champion is just a guy with a shield.\" That's — that's the whole fight in one line."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the silence strategy is clever but it's a band-aid. Benny can't keep the Maker locked down forever. Sooner or later the Maker gets a turn where Benny's not adjacent, or the silence wears off, or Benny goes down, and then it's synesthesia and mindfog and whatever else that thing can do, all at once."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But that's why you want to kill it fast. And that's why Benny's up there — he crit for sixty and it wasn't enough, but next turn he gets another shot, and Anzu's telekinetic projectile hit for thirty-eight, and Johnny's got spiritual armament going. They're grinding it down. It's — it's a race."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "A race they might lose. The session ends with multiple party members bleeding, Benny clumsy from synesthesia, Argyle's full turn still pending, and at least two skin drones still active even if the calm is holding them. And we haven't even seen what Lifeline does. The heart. The dying, half-mad heart that runs this place. If that thing wakes up or reacts to the combat —"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Then it's a whole new fight on top of this one. And that's — look, I know we always say this, but next session is going to be — it's going to be a bloodbath. One way or the other."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or the calm holds, the silence holds, they grind it out, and it's fine. Not every cliffhanger ends in catastrophe."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "When has that ever been true at this table?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Fair point."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Look, the — the thing I keep coming back to is the tonal shift. You go from Yao's zen garden and water features to — to black tentacles and flesh drones and a crab thing biting a child's head off. That's — that's the Strider, right? The surface is politics and belief and alliance-building, and underneath it's just — meat and machines and old gods sleeping in glass. And the party is straddling both, and eventually they're going to have to pick which one matters more."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They won't pick. That's the whole structure of the campaign. The surface and the depths are the same problem at different scales. Who do you trust, what do you kill, what's worth saving. The Yao conversation and the vat room are the same question — is the thing you believe in real, and what are you willing to do about it?"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And that's — that's why this session works even though half of it is setup and the combat doesn't resolve. Because the question doesn't resolve either. The Voidsong is still singing. The sister is still out there. The sleeping things are still in their vats. And the party is standing on top of glass, bleeding, hoping the silence holds."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It won't."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No. No, it probably won't."
+        }
+      ]
     }
   ]
 }
