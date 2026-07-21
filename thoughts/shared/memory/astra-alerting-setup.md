@@ -25,6 +25,29 @@ spurious 🟢 recovery on the next live tick). Diagnosis gotcha: the Claude Code
 own mount namespace (host FUSE mounts invisible in `/proc/mounts`) — verify mount presence
 with `dangerouslyDisableSandbox` or from a real shell.
 
+**UPDATE 2026-07-20 — the VANISHED mount now AUTO-REMEDIATES (`d843e6a`), not just detect-and-page.**
+The 2026-07-13 fix detected the vanished mount but stayed page-only, so when it recurred it sat
+page-only for ~5 days until a manual `sudo systemctl restart gdrive.service` (found only because the
+2026-7-20 session recording didn't appear — the mount had been gone since ~7-15; no sessions landed
+in between so nothing was actually lost, but ingest was blind). Root state confirmed: `gdrive.service`
+**active/running (daemon PID alive) yet ZERO fuse mount in mountinfo** — `Restart=always` can't fire
+because the process never died, and the wedge-path `remediate_mount` bailed ("nothing to remediate":
+`find_fuse_mount` empty → no conn to abort, no mountpoint to unmount). **Fix: `remediate_mount` now
+branches on the vanished case** (empty `find_fuse_mount`) and forces the daemon to remount via new
+`restart_gdrive()`: **primary** `sudo -n /usr/bin/systemctl restart gdrive.service` (also revives a
+fully-dead/inactive unit); **fallback** signal the live daemon's `MainPID` (`systemctl show -p MainPID`
+is readable unprivileged; a **same-uid kill** is allowed since `gdrive.service` runs `User=jbassin` →
+`Restart=always` respawns it), so the common alive-but-mountless case self-heals **even without** the
+sudo rule. Shares the existing remediate debounce + `WATCHDOG_REMEDIATE=0` kill-switch + `ALERT_DRY_RUN`.
+**The sudo primary needs a one-time ROOT install:** `deploy/systemd/sudoers.d/astra-gdrive` (a single
+narrowly-scoped `jbassin ALL=(root) NOPASSWD: /usr/bin/systemctl restart gdrive.service`) via
+**`just alert-sudoers-install`** (visudo-validated before touching /etc, mode 0440) — INSTALLED + verified
+2026-07-20 (`sudo -n -l` shows it allowed). Script-only edit to alert-notify.sh (units ExecStart the
+in-repo path → live on the next 15-min tick, no `alert-install`). Dry-run test: point `CRAIG_DROP_DIR`
+at a non-fuse path + `ALERT_DRY_RUN=1` → now emits "would force-restart gdrive.service (mount vanished
+from mountinfo)" where it used to say "nothing to remediate". Recovery message class went 🟠 "was
+wedged" → "was down" (covers both).
+
 **UPDATE 2026-07-08 (later) — the wedge recurred; watchdog now AUTO-REMEDIATES it.** The
 ocamlfuse daemon wedged again (kernel conn 54 held 130 unanswered requests; ~20 craig-sync
 probes + a Claude instance in D state). Manual fix that worked, now automated in
