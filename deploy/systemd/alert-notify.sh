@@ -46,6 +46,18 @@ CONFIRM_GAP_S="${WATCHDOG_CONFIRM_GAP_S:-5}"
 REMEDIATE_DEBOUNCE_S="${WATCHDOG_REMEDIATE_DEBOUNCE_S:-3600}"
 REMOUNT_WAIT_S="${WATCHDOG_REMOUNT_WAIT_S:-45}"
 
+# The VANISHED-mount case (2026-07-20) is a DIFFERENT failure than the wedge above: the
+# ocamlfuse daemon stays alive but its FUSE mount detaches, so it drops out of mountinfo
+# entirely. Restart=always never fires (the process never died) and the abort/unmount path
+# has nothing to target (no connection, no mountpoint) — it sat page-only for days. The fix
+# is to force gdrive.service to re-establish the mount. `systemctl restart` on this
+# system-scope unit needs root, so the primary path is a narrowly-scoped NOPASSWD sudoers
+# drop-in (deploy/systemd/sudoers.d/astra-gdrive → `just alert-sudoers-install`, a one-time
+# root step); the fallback signals the live daemon by MainPID (a same-uid kill the watchdog
+# CAN send unprivileged → Restart=always respawns it), so the common alive-daemon case
+# self-heals even before that rule is installed.
+GDRIVE_UNIT="${WATCHDOG_GDRIVE_UNIT:-gdrive.service}"
+
 # Class C `failure` debounce window. A wedged host dependency (e.g. the Drive FUSE mount)
 # makes a 5-min timer's unit fail every tick forever — 610 pages in the incident that
 # prompted this. Unlike transition() below, a persistent hard failure never "changes
@@ -188,6 +200,24 @@ find_fuse_mount() {
     END { if (best_mp != "") print best_dev, best_mp }' /proc/self/mountinfo
 }
 
+# Force gdrive.service to re-establish a VANISHED mount (see the GDRIVE_UNIT note above).
+# Echoes the method it used and returns 0 if it kicked a restart, 1 if it couldn't do
+# anything. Does NOT wait for the mount — the caller polls mountinfo. Prefers a clean
+# `systemctl restart` (also revives a fully-dead/inactive unit, which an unprivileged kill
+# can't) via the NOPASSWD drop-in; falls back to signalling the live daemon's MainPID so
+# the alive-but-mountless case self-heals without that rule.
+restart_gdrive() {
+  if run_bounded 30 sudo -n /usr/bin/systemctl restart "$GDRIVE_UNIT" >/dev/null 2>&1; then
+    echo "sudo systemctl restart $GDRIVE_UNIT"; return 0
+  fi
+  local pid; pid="$(systemctl show "$GDRIVE_UNIT" -p MainPID --value 2>/dev/null)"
+  if [ -n "$pid" ] && [ "$pid" != "0" ] && kill -0 "$pid" 2>/dev/null; then
+    kill "$pid" 2>/dev/null || true
+    echo "signalled $GDRIVE_UNIT MainPID $pid (Restart=always respawns it)"; return 0
+  fi
+  return 1
+}
+
 # Attempt to heal a wedged Drive FUSE mount. Echoes a human summary either way; returns 0
 # only when the mount came back AND answers a bounded probe. Ordering matters: the abort
 # is what frees existing D-state waiters and makes the daemon exit so Restart= respawns it;
@@ -206,7 +236,31 @@ remediate_mount() {
   fi
   read -r dev mp <<<"$(find_fuse_mount)" || true
   if [ -z "${mp:-}" ]; then
-    echo "no FUSE mount found above '$DRIVE_MOUNT' in mountinfo — nothing to remediate"
+    # VANISHED mount (daemon alive, mount gone from mountinfo): no connection to abort and
+    # no mountpoint to unmount — force gdrive.service to remount instead.
+    if [ "${ALERT_DRY_RUN:-}" = "1" ]; then
+      echo "[dry-run] would force-restart $GDRIVE_UNIT (mount vanished from mountinfo)"; return 1
+    fi
+    printf '%s' "$now" >"$f"
+    log "mount vanished from mountinfo — forcing $GDRIVE_UNIT restart"
+    local how waited=0
+    if ! how="$(restart_gdrive)"; then
+      echo "mount vanished but could not restart $GDRIVE_UNIT (no passwordless sudo + no live daemon to signal) — run: sudo systemctl restart $GDRIVE_UNIT"
+      return 1
+    fi
+    while [ "$waited" -lt "$REMOUNT_WAIT_S" ]; do
+      [ -n "$(find_fuse_mount)" ] && break
+      sleep 3; waited=$((waited + 3))
+    done
+    if [ -z "$(find_fuse_mount)" ]; then
+      echo "$how, but no FUSE mount reappeared above '$DRIVE_MOUNT' in ${REMOUNT_WAIT_S}s — check $GDRIVE_UNIT"
+      return 1
+    fi
+    if run_bounded 20 bash -c 'ls "$1" >/dev/null 2>&1' _ "$DRIVE_MOUNT"; then
+      echo "Drive mount had vanished (daemon alive, Restart= never fired); $how; remounted and '$DRIVE_MOUNT' answers again"
+      return 0
+    fi
+    echo "$how; a mount reappeared but '$DRIVE_MOUNT' is still unresponsive"
     return 1
   fi
   minor="${dev#*:}"
@@ -280,7 +334,7 @@ run_watchdog() {
     # Healed within one tick. Post the orange remediation notice and record state ok
     # directly (skipping transition() so a wedge-then-fix inside one tick doesn't also
     # emit a confusing red/green pair).
-    post "🟠 **astra watchdog auto-remediated** — Drive mount was wedged: $fix"
+    post "🟠 **astra watchdog auto-remediated** — Drive mount was down: $fix"
     mkdir -p "$STATE_DIR"; printf 'ok' >"$STATE_DIR/mount.state"
   else
     transition mount bad "$reason — auto-remediation: $fix"

@@ -316,6 +316,21 @@ alert-install:
     systemctl --user enable --now astra-watchdog.timer
     echo "installed. watchdog schedule:"; systemctl --user list-timers astra-watchdog.timer --no-pager
     echo "smoke-test a Discord page with: deploy/systemd/alert-notify.sh test"
+    echo "one-time root step for vanished-mount auto-remediation: just alert-sudoers-install"
+
+# One-time ROOT step: install the NOPASSWD sudoers drop-in that lets the watchdog
+# force-restart gdrive.service when the Drive mount VANISHES (daemon alive but mount
+# detached — Restart=always can't fire). Validates with visudo before installing so a
+# bad file can never lock sudo. Prompts for your password (system-scope install).
+alert-sudoers-install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    src=deploy/systemd/sudoers.d/astra-gdrive
+    sudo visudo -cf "$src"                       # syntax-check BEFORE touching /etc
+    sudo install -o root -g root -m 0440 "$src" /etc/sudoers.d/astra-gdrive
+    echo "installed /etc/sudoers.d/astra-gdrive; verifying passwordless restart is allowed:"
+    sudo -n /usr/bin/systemctl restart gdrive.service && echo "OK — watchdog can now self-heal a vanished mount"
 
 # Migrate faerrin's historical episode CATALOG (script + digest) into astra's
 # episodes corpus (step 2 — catalog union), so episodes_index + the snapshot include

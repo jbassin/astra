@@ -1,0 +1,7 @@
+# Let the astra liveness watchdog (astra-watchdog.service, user scope, runs as jbassin)
+# force-restart the Google Drive FUSE mount when it VANISHES — the daemon stays alive but
+# its mount detaches, so gdrive.service's own Restart=always never fires and the watchdog's
+# unprivileged kill can only help if the daemon is still running. This one NOPASSWD entry,
+# scoped to exactly this unit + action, lets the watchdog also revive a fully-dead unit.
+# Install to /etc/sudoers.d/astra-gdrive, mode 0440 (`just alert-sudoers-install`).
+jbassin ALL=(root) NOPASSWD: /usr/bin/systemctl restart gdrive.service
