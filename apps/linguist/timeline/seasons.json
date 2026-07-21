@@ -7,36 +7,36 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Blood and Badges",
-          "arc_summary": "The party forms in Hallia, takes courier jobs, and stumbles into a conspiracy of Ugathul infiltrators, illegal augury, and necromantic experiments — culminating in a devastating near-total party kill at the Crowded Flea while ambushing the Roundhat Gang.",
+          "title": "Delivery Boys",
+          "arc_summary": "The party takes their first courier and consultant jobs in Hallia, investigating Ugathul impersonators, Embercall's radar dishes, and the illegal augury causing perpetual rain — culminating in the discovery of Master Grayson's necromantic manor beneath the sewers.",
           "episode_dates": [
             "2025-8-28",
             "2025-10-20",
             "2025-10-27",
             "2025-11-4",
             "2025-11-11",
-            "2025-11-18",
-            "2025-12-2"
+            "2025-11-18"
           ]
         },
         {
           "number": 2,
           "title": "The Black and White",
-          "arc_summary": "Surviving the TPK through the void between life and death, the party meets the entity Aut, is resurrected at a cost, and pursues vengeance against Hlarf and Tywelwyn Leatherhide — killing both and uncovering a cosmic conspiracy of six gods attempting to crack the Firmament via radar dishes.",
+          "arc_summary": "A catastrophic TPK at the Crowded Flea sends the party through death and the void between worlds, where they meet the entity Aut, resurrect, and exact revenge on Hlarf — then assault Tywelwyn Leatherhide and uncover the Thessian gods' plan to crack the firmament.",
           "episode_dates": [
+            "2025-12-2",
             "2025-12-9",
             "2025-12-16",
             "2025-12-23",
             "2025-12-30",
-            "2026-1-6",
-            "2026-1-13"
+            "2026-1-6"
           ]
         },
         {
           "number": 3,
           "title": "The Pilgrimage",
-          "arc_summary": "The party attends a mysterious pilgrimage gathering at Ragged Roost, competes in gladiatorial trials and scavenger puzzles to earn a keystone, and trades a stolen Kellan Quinn painting to a Heart for passage aboard a colossal Strider bound for the Void Side Wall.",
+          "arc_summary": "Rescuing Anaïs reveals the cosmic family called the Narrative; the party attends a mysterious pilgrimage gathering, competes in a keystone scavenger hunt, and secures passage aboard a colossal Strider bound for the Void Side Wall.",
           "episode_dates": [
+            "2026-1-13",
             "2026-1-20",
             "2026-1-27",
             "2026-2-3",
@@ -48,7 +48,7 @@
         {
           "number": 4,
           "title": "Cracks in the Firmament",
-          "arc_summary": "Argyle returns from the dead in divided form, the party enters extended downtime, and a sewer expedition beneath Teller's Run reveals a fracture in reality where an imprisoned god looms — leading the party to bomb the research operation and flee as ash rains over the city.",
+          "arc_summary": "During months of downtime, the party investigates a hairline fracture in reality beneath Teller's Run, uncovers a conspiracy to shatter the firmament, bombs the research facility, and departs Hallia aboard the Strider.",
           "episode_dates": [
             "2026-3-9",
             "2026-3-16",
@@ -59,8 +59,8 @@
         },
         {
           "number": 5,
-          "title": "Aboard the Providence",
-          "arc_summary": "The party embarks on the Strider pilgrimage, creates their own Fane-heart named Eerie, builds a coalition of allied factions, and survives the devastating weekly tithe of Voidsong energy that wrings a weaker faction to death and unleashes void portals onto the Strider.",
+          "title": "The Strider",
+          "arc_summary": "Aboard the colossal walking city, the party creates a heart, navigates deadly faction politics and the weekly tithe of Voidsong energy, and descends into the Undercroft to ally with an ancient Machine God against the Herald's cultists.",
           "episode_dates": [
             "2026-5-7",
             "2026-5-11",
@@ -68,18 +68,12 @@
             "2026-5-25",
             "2026-6-1",
             "2026-6-8",
-            "2026-6-18"
-          ]
-        },
-        {
-          "number": 6,
-          "title": "Heart of the Spider",
-          "arc_summary": "The party descends deep into the Strider's Undercroft to recover a stolen artifact, battling through mongrel folk and spider cultists of Herald, ultimately awakening an ancient Machine God and forging an alliance to purge the Strider of remaining cultists.",
-          "episode_dates": [
+            "2026-6-18",
             "2026-6-22",
             "2026-6-29",
             "2026-7-6",
-            "2026-7-13"
+            "2026-7-13",
+            "2026-7-20"
           ]
         }
       ]
@@ -106,17 +100,10 @@
       "seasons": [
         {
           "number": 1,
-          "title": "The Fall of the Terror",
-          "arc_summary": "The 8th-grade heroes of Cagley Middle descend into the Terror of Cagley's lair and slay the shadow demon, saving their town — and a new team of high-ranking Scale operatives is dispatched to a shattered Joker World to investigate a mysterious slip-shielded structure.",
+          "title": "The Joker World Expedition",
+          "arc_summary": "The Cagley Middle heroes conclude their shadow-demon hunt, and four elite Scale operatives are dispatched to a shattered Joker World where they battle fiend swarms, breach the demonic installation called the Quorum, and ultimately free the trapped divine entity Voice of Many from its fiendish captors before escaping back to headquarters.",
           "episode_dates": [
-            "2025-6-9"
-          ]
-        },
-        {
-          "number": 2,
-          "title": "The Quorum and the Voice of Many",
-          "arc_summary": "The Scale team infiltrates the fiend-built Quorum structure, battles through its demonic defenders, and descends through a bloodfall portal to rescue Voice of Many — a trapped divine entity and heir to the Judge — fighting a desperate defense to free it and escape back to headquarters.",
-          "episode_dates": [
+            "2025-6-9",
             "2025-6-16",
             "2025-6-23"
           ]
@@ -131,7 +118,7 @@
         {
           "number": 1,
           "title": "The Verdant Expanse",
-          "arc_summary": "Convox detectives travel to the logging town of Wrenford to investigate husk-murders linked to a mysterious visitor, then follow a feyrock necklace deep into the mile-tall Verdant Expanse where they battle fey creatures, rescue a lost child, and defeat a fey court — only to learn the huskification curse continues unabated.",
+          "arc_summary": "The convox detectives travel to Wrenford to investigate husk-murders linked to a fey stone necklace, then venture deep into the mile-tall Verdant Expanse where they rescue a lost boy, survive supernatural forest hazards, and destroy a fey court — only to learn the huskification curse continues unabated.",
           "episode_dates": [
             "2025-9-11",
             "2025-9-18"
@@ -140,7 +127,7 @@
         {
           "number": 2,
           "title": "The Gloaming Codex",
-          "arc_summary": "The investigation shifts back to the city as the convox traces fey stone through a jeweler's conference to a ritual murder scene, where they discover the Gloaming Codex — a book that pulls the entire party into its pages to fight for survival against carnivorous ink and cursed thoughts.",
+          "arc_summary": "Returning to Hallia, the detectives follow fey stone leads to a jeweler's conference and uncover a ritual killer's apartment, where a cursed book called the Gloaming Codex pulls the entire party into its pages to fight for survival against carnivorous ink and cursed thoughts.",
           "episode_dates": [
             "2025-9-25"
           ]
@@ -169,8 +156,8 @@
       "seasons": [
         {
           "number": 1,
-          "title": "Season 1",
-          "arc_summary": "The Sedecium fire team of Old Man Scrazzy, Lieutenant Foral, and Ozzie undertakes perilous missions across the slip — investigating a derelict orbital station to uncover the Thessian Esoterica's interest in a massive magical spike near the Astra's core, and then raiding the divine essence of a freshly-killed god before the God Eater Harrow can consume it entirely.",
+          "title": "Sedecium's Vanguard",
+          "arc_summary": "A three-agent Sedecium fire team — the wizard Old Man Scrazzy, goblin gunslinger Lieutenant Foral, and orcish guardian Ozzie — investigates a slip-sunken orbital observatory uncovering a Thessian conspiracy, then undertakes a daring raid on a freshly-killed god's corpse to steal divine essence before the God Eater Harrow can finish consuming it.",
           "episode_dates": [
             "2026-4-6",
             "2026-4-27"
@@ -194,5 +181,5 @@
       ]
     }
   ],
-  "inputs_hash": "ac95c04119106245ef38fc544a92e96c41485a841bd282bf0703fa881198de36"
+  "inputs_hash": "5a720cc6860f19c411395490c60a2a43b7857abbabaf7e7c905448d8e1380f70"
 }
