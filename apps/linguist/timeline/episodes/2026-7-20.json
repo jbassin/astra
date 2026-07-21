@@ -1,0 +1,67 @@
+{
+  "date": "2026-7-20",
+  "show": "through-a-song-darkly",
+  "summary": {
+    "title": "The Pristine Hospital — Descent Into the Sleeping Clan",
+    "synopsis": "The party plans their next move atop the Strider — debating whether to strike the sleeping or waking clan — while Anzu seeks answers about the Voidsong from the Protectorate and Argyle attempts to break Lance's curse at the Scale. After two days of prep and research, the party descends into the Strider's third floor to assault the sleeping clan's hospital stronghold, ruled by the dying heart Lifeline, and find themselves in a chaotic mid-combat standoff against skinwalkers, flesh drones, and a spell-slinging chitinous Maker.",
+    "key_beats": [
+      "Argyle convenes a war-room planning meeting. The party discusses voidward progress (~150,000 of a needed 300,000) and debates attacking the sleeping clan versus the waking clan (where Anzu's sister resides). They consult the Machine God, who reveals the sleeping clan is individually more powerful but vulnerable if caught unawares, while the waking clan sprawls across multiple sections with at least eight Tengu among them.",
+      "Anzu visits the Protectorate and meets with Yao, who reveals the Brithwyn belief that the true Aurelia is trapped on the horizon and the Voidsong is her cry for help. Yao also discloses that Amber Call is forming alliances against the Iridescent Church and offers Anzu access to a piece of Aurelia's armor, passed down through generations of mentors.",
+      "Argyle and Benny visit the Scale. Argyle performs an 8-hour Break Curse ritual on Lance (cursed by a Coven of Nighthags) but rolls a 32 — a success but not a critical, falling short of the needed 38. He resolves to try again the next day. Bishop declines to relocate, preferring to hold their territorial wedge between Iridescent Church blocks.",
+      "Day two: Argyle retries Break Curse with heroism but rolls a 37 — maddeningly one point short of the critical threshold. Meanwhile, Anzu begins a multi-day research project into reversing the Voidsong harmony affecting his sister, assisted by Benny (record-keeping lore from Pyrelight archives) and Johnny (music theory via performance). Josh frames it as a skill challenge; Anzu commits to five days of work through the end of the cycle.",
+      "Johnny sends sandwich-laden elevator runs to Marin in the undercroft. Day one returns a note; day two returns no note, and Johnny stops sending.",
+      "The party decides to descend into the Strider to attack the sleeping clan before the tithe. The Machine God provides intel: the enemy are oogathals — ropey worm-like skinwalkers who pilot mindless flesh drones and wear stolen skin. They inhabit a former hospital on the third floor, ruled by a dying heart called Lifeline.",
+      "The party navigates the Strider's labyrinthine interior (described as a nightmarish 3D maze of switchbacks and chutes) and reaches an eerily pristine section with working electricity and bright white lights — contrasting sharply with the rest of the decayed Strider. They find closed double doors.",
+      "Combat erupts in the hospital. The Maker (a chitinous crab-like spellcaster) opens with black tentacles and an illusion. Johnny casts Silence on Benny (making him a walking anti-magic zone), moonwalks up a vat, and casts Calm — incapacitating two skin drones. Benny uses Sudden Leap to vault a vat and reach the Maker but misses his attacks. The Maker bites Benny for 42 damage and activates its Mindfog Aura. Anzu unleashes psyche and casts Vampiric Feast. Combat remains unresolved at session's end."
+    ],
+    "characters_present": [
+      "Argyle",
+      "Benny",
+      "Johnny (Red)",
+      "Anzu",
+      "Machine God",
+      "Yao",
+      "Tamara",
+      "Bishop",
+      "Lance",
+      "Lifeline",
+      "The Maker",
+      "Oogathals",
+      "Skin Drones",
+      "Marin"
+    ],
+    "locations": [
+      "The Strider (party's Fane/compound)",
+      "The Protectorate's base (walled compound with zen garden, water features, sparring sandpit)",
+      "The Scale's pillbox fortress",
+      "The Strider's third floor — Lifeline's hospital domain (pristine, electrified hallways leading to a vat-filled medical chamber)",
+      "The undercroft (Marin's elevator)"
+    ],
+    "factions": [
+      "The Party",
+      "The Protectorate",
+      "The Scale",
+      "Amber Call",
+      "Iridescent Church",
+      "Pale Lantern",
+      "Hildebrandt",
+      "Garrick Textiles",
+      "The Sleeping Clan (Oogathals)",
+      "The Waking Clan",
+      "Iconoclasm"
+    ],
+    "items": [
+      "The Map",
+      "Voidsong Void Paper",
+      "Sentience Distributor",
+      "Aurelia's Armor Piece (Yao's talisman)",
+      "Benny's Nodachi",
+      "Kadou's Item Scanner (in progress)",
+      "Grub Gloves",
+      "Break Curse ritual materials",
+      "Silence spell (cast on Benny)",
+      "Spiritual Armament"
+    ],
+    "cliffhanger": "Combat is mid-resolution in the sleeping clan's hospital. The party is scattered across vat-tops and platforms amid black tentacles on the floor. Benny is adjacent to the Maker with synesthesia and bleed, two skin drones are calmed (one grabbed by tentacles), and multiple oogathals and a skin skitter remain active. The session pauses at the top of the initiative order with no clear resolution in sight."
+  }
+}
