@@ -210,3 +210,26 @@ creation, summoning, gravity), and damage-type traits (bludgeoning, piercing). `
 `extradimensional`, `move` verified OFFICIAL against the Foundry snapshot vocabulary and
 kept. Stakeholder: a later curation sweep may deliberately re-add custom traits; the
 baseline stays strict official-vocab + the 8 homebrew schools.
+
+## 10. Item 6 — deep-COLD effect-dominant hybrids (2026-07-22, one-at-a-time stakeholder session)
+
+The pool: the 11 hybrids at −3.0 ranks or colder (per `score-homebrew` at session start),
+coldest first — Forceful Onslaught −5.85 · Touch of Madness −5.35 · Monstrous Copy: Tail
+−4.48 · Cerebral Disruption −4.44 · Monstrous Copy: Stinger −4.38 · Focus Break −4.33 ·
+Eldrich Horror −4.07 · Monstrous Copy: Tentacle −3.56 · Solar Rebuke −3.47 · Repetitious
+Trauma −3.16 · Grey Frost −3.04. (Carnage −2.98 sits on the line; raised as a borderline at
+the end.) A hybrid at ~−1 is HEALTHY (the rider pays ≈1 rank; the GM Core exchange rate) —
+these are the ones where the effect has to earn the slot on its own.
+
+**Resolutions:**
+
+- **Forceful Onslaught r7 (−5.85 → recorded LENS ARTIFACT, dice/mechanics untouched):**
+  double artifact — a per-Strike 2d6 rider priced against the r7 per-cast budget (the §4a
+  weapon-engine class) AND *prevented* Unconscious refs promoted as payloads (comparables
+  came back Sleep/Power Word Kill — nonsense for a party buff). Probe with damage stripped
+  routes `buff`, range 1–9, r7 comfortably inside. Manual buff read vs heroism r6: rich but
+  rank-appropriate (paid by touch/2A/1-min/martial-target). The one real defect was residual
+  5e dying text — the 0-HP clause + heighten rewritten PF2e-native (dying as normal, conscious
+  until start of next turn, recovery checks, can't be stabilized while conscious; heighten =
+  no dying until the unconscious turn, outright-kill effects still kill). Score unchanged
+  −5.85 (text-only), 41st revisions deviation.
