@@ -74,10 +74,18 @@ honest low-information, not misses; review manually like ledger rows.
 The action cost is a **mechanical inheritance of 5e casting time** (action→2A 121/131,
 bonus→1A/2A, reaction→"1A", minutes→3A+), never a design lever. Three worklists:
 
-1. **Reaction repairs (5 spells, 3 broken):** only Lend Time + Dead Ringer survived as true
-   reactions. **Deja Vu, Disperse Magic, Solar Rebuke** encode as plain 1-action spells —
-   Disperse Magic lost its trigger entirely. As written that's a power *increase* (proactive
-   use, no trigger constraint). Restore `reaction` cast + explicit Trigger lines.
+1. **Reaction repairs — DONE 2026-07-21 (the first canonical-store edits; see
+   `homebrew/revisions.md`).** CORRECTION to this doc's earlier claim: all three carried
+   their triggers in PROSE — nothing was lost semantically; the defect was encoding-only
+   (`cast = 1 action` structurally, trigger buried mid-paragraph instead of the standard
+   leading Trigger line Lend Time/Dead Ringer got). Repaired: Deja Vu, Disperse Magic,
+   Solar Rebuke -> `time.value: reaction` + Trigger line. Deja Vu content calls
+   (stakeholder): widened trigger KEPT w/ wording fix (the retry rider was unreachable as
+   drafted), SAME-TYPE echo restored (mental trait dropped — it gated the whole spell off
+   mindless creatures), fortune -> misfortune, materials dropped (Remaster has none —
+   set-wide policy). Bonus: Disperse Magic's Remaster-invalid `abjuration` school trait
+   dropped. Post-repair: Deja Vu -0.68 (re-measure any dice bump vs this), Solar Rebuke
+   -3.47 (item-6 spell), Disperse Magic buff-path (no damage verdict).
 2. **Variable-action candidates (the missing PF2e idiom — zero spells use it):**
    **Magic Re-Missiles** (−2.60 COLD at fixed cast; the official Force Barrage it apes is
    *defined* by 1/2/3-action scaling — adopting that pattern likely fixes its COLD verdict
@@ -143,7 +151,7 @@ starting point there.
 ## 7. Suggested worklist order
 
 1. §2 HOT list (9 spells) — nerf or re-cost; over-ranked §3 rows (5) — re-rank down.
-2. §4.1 reaction repairs (3) — mechanical fixes, no judgment needed.
+2. ~~§4.1 reaction repairs~~ DONE (first store edits, 2026-07-21).
 3. §3 under-ranked buffs (3) — free player-facing upgrades.
 4. ~~The systemic §1 policy decision~~ RESOLVED per-spell-mix — execute §4a's sheet.
 5. §4.2 variable-action redesigns (Magic Re-Missiles first — likely a strict improvement).
