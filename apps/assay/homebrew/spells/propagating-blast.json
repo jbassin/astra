@@ -20,7 +20,7 @@
       "value": 30
     },
     "cost": {
-      "value": "any melee weapon wielded or held"
+      "value": ""
     },
     "counteraction": false,
     "damage": {},
@@ -48,7 +48,7 @@
     "range": {
       "value": "30 feet"
     },
-    "requirements": "",
+    "requirements": "You are wielding or holding a melee weapon",
     "rules": [],
     "target": {
       "value": ""

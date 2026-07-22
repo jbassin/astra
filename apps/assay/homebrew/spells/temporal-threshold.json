@@ -18,7 +18,7 @@
   "system": {
     "area": null,
     "cost": {
-      "value": "a small broken key (not consumed)"
+      "value": ""
     },
     "counteraction": false,
     "damage": {},

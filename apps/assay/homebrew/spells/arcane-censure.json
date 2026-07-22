@@ -15,7 +15,7 @@
   "system": {
     "area": null,
     "cost": {
-      "value": "a diamond worth 1,000 gp (consumed)"
+      "value": ""
     },
     "counteraction": false,
     "damage": {},

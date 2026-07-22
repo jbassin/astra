@@ -17,7 +17,7 @@
   "system": {
     "area": null,
     "cost": {
-      "value": "a shard of Lasinium worth at least 1,000 gp (consumed)"
+      "value": ""
     },
     "counteraction": false,
     "damage": {},

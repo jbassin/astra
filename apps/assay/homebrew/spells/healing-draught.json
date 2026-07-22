@@ -17,7 +17,7 @@
   "system": {
     "area": null,
     "cost": {
-      "value": "a sealed, opaque glass bottle (returned at end of duration)"
+      "value": ""
     },
     "counteraction": false,
     "damage": {
@@ -51,7 +51,7 @@
     "range": {
       "value": "touch"
     },
-    "requirements": "",
+    "requirements": "You have a sealed, opaque glass bottle to hold the draught",
     "rules": [],
     "target": {
       "value": "1 bottle held in hand"

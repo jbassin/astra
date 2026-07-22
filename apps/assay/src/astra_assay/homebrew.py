@@ -741,6 +741,18 @@ def _success_tiers_html(success_tiers: dict[str, Any] | None) -> str:
     return "".join(parts)
 
 
+def _strip_trait_glosses(description_html: str, traits: set[str]) -> str:
+    """Drop parenthetical glosses that merely restate a trait the spell
+    already carries — "… onlookers (subtle)", "… save (Incapacitation)"
+    (stakeholder 2026-07-22: the trait line is the source of truth; the
+    inline echo is noise). Only EXACT single-trait parentheticals are
+    stripped; anything with more words is real prose and untouched."""
+    out = description_html
+    for t in traits:
+        out = re.sub(rf"\s*\(\s*{re.escape(t)}\s*\)", "", out, flags=re.IGNORECASE)
+    return out
+
+
 # ---------------------------------------------------------------------------
 # Top-level conversion
 # ---------------------------------------------------------------------------
@@ -847,6 +859,15 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
     lead_in_html = _paragraphs_html(lead_in_promoted)
     tiers_html = _success_tiers_html(spell.get("successTiers"))
     description_html = lead_in_html + tiers_html + heighten_appendix
+    description_html = _strip_trait_glosses(description_html, traits)
+
+    # Stakeholder policy 2026-07-22 (Remaster has no material components):
+    # standard-cast spells carry NO cost — only ritual-shaped long casts
+    # ("1 minute"/"10 minutes"/"1 day …") keep a Cost line, mirroring PF2e's
+    # own spells-vs-rituals split.
+    cost_value = str(spell.get("cost") or "")
+    if cost_value and time_value in ("1", "2", "3", "reaction"):
+        cost_value = ""
 
     residual = _residual_condition_words(description_html)
     if residual:
@@ -857,7 +878,7 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
 
     system: dict[str, Any] = {
         "area": area_dict,
-        "cost": {"value": spell.get("cost") or ""},
+        "cost": {"value": cost_value},
         "counteraction": False,
         "damage": damage_entries,
         "defense": defense_dict,
@@ -1009,6 +1030,7 @@ _DIFF_FIELDS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("traits.value", ("traits", "value")),
     ("traits.traditions", ("traits", "traditions")),
     ("cost.value", ("cost", "value")),
+    ("requirements", ("requirements",)),
 )
 
 

@@ -17,7 +17,7 @@
   "system": {
     "area": null,
     "cost": {
-      "value": "blank pages or surfaces sufficient to hold the copied material"
+      "value": ""
     },
     "counteraction": false,
     "damage": {},
@@ -46,7 +46,7 @@
     "range": {
       "value": "touch"
     },
-    "requirements": "",
+    "requirements": "You have blank pages or surfaces sufficient to hold the copied material",
     "rules": [],
     "target": {
       "value": "1 written or drawn document"
