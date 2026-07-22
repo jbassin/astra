@@ -286,3 +286,17 @@ these are the ones where the effect has to earn the slot on its own.
   on the Stunned atom). Stakeholder A: damage + heighten removed, reliable-breaker degree
   structure KEPT (a deliberate conversion invention worth keeping), Stunned 1 / Stunned 2 +
   sustain-lockout riders kept as the psychic-shock flavor.
+- **Eldritch Horror r9 (−4.07 → −2.47 residual = ENGINE ARTIFACT, dice untouched; renamed
+  from "Eldrich"):** the §4a sustained-engine class — the 8d6 is PER ROUND inside the
+  portal, and the whole engine (4 tendril spell attacks/round, grab+drag, the removal
+  itself) is extractor-invisible; comparables matched on Stunned@1 (noise). The 500-ft
+  range bucket alone was 1.6 ranks of the COLD reading (probed). Stakeholder C+rename:
+  range 500→120 (5e was 150; sniper-portal reading killed); the TWO DROPPED 5e clauses
+  restored PF2e-natively (single-action Athletics/Escape vs spell DC to climb out ·
+  spell-end = everyone inside reappears, alive or dead — as seeded, a swallowed creature
+  had NO exit, a de facto permanent banish on an attack roll); the incapacitation prose
+  gloss replaced with clean extradimensional-removal text (trait kept); the max-HP "void
+  drain" converted to native cumulative Drained 1 (max 4), crit-fail = as failure +
+  Stunned 1; "Eldrich"→"Eldritch" (stakeholder: a ten-year-old typo; file renamed,
+  seededFrom pairing intact per the Force Drumfire precedent). −2.47 residual accepted —
+  per-round engine output vs per-cast budget.
