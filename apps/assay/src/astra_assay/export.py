@@ -143,7 +143,7 @@ def _attach_hostile_comparables(
     entry["rankRange"] = [res.rank_min, res.rank_max]
 
 
-def _build_entry_for_row(
+def build_entry_for_row(
     row: SpellFeatures,
     *,
     ladder: pricing.LadderFit,
@@ -153,6 +153,12 @@ def _build_entry_for_row(
     is_summon_trait: bool,
     raw_description: str,
 ) -> dict[str, Any]:
+    """Public (not `_`-prefixed): this is the one place the round-2..4
+    scoring mechanism (quantitative verdict / comparables range / buff
+    comparables / typed ledger) is fully assembled into a JSON-shaped entry —
+    `build_export` uses it for the codex artifact, and `homebrew.py`'s
+    `score-homebrew` reuses it verbatim per spell (the "same code path as
+    `assay score`" requirement, without shelling out)."""
     reason = ledger.classify_row(row)
     entry: dict[str, Any]
 
@@ -305,7 +311,7 @@ def build_export(
         if file in rows_by_file:
             rows = rows_by_file[file]
             primary, others = _pick_primary(rows)
-            entry = _build_entry_for_row(
+            entry = build_entry_for_row(
                 primary,
                 ladder=ladder,
                 cantrip_ladder=cantrip_ladder,
@@ -318,7 +324,7 @@ def build_export(
                 report.variant_collapse_count += 1
                 variants = []
                 for o in sorted(others, key=lambda r: r.variant_label or r.name):
-                    v_entry = _build_entry_for_row(
+                    v_entry = build_entry_for_row(
                         o,
                         ladder=ladder,
                         cantrip_ladder=cantrip_ladder,

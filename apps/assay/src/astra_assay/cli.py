@@ -1,10 +1,18 @@
-"""``assay`` console script — extract / fit / price / score / export-codex.
+"""``assay`` console script — extract / fit / price / score / export-codex /
+convert-homebrew / score-homebrew.
 
     uv run assay extract [--data-root PATH]   # features table → out/features.json
     uv run assay fit [--data-root PATH]       # round-1 per-rank-facet fit (superseded diagnostic)
     uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
     uv run assay score --spell PATH           # score one homebrew spell JSON (round-3 model)
     uv run assay export-codex [--data-root PATH]  # codex artifact (D30-38) → out/spell-power.json
+    uv run assay convert-homebrew             # vendored run_balance 176 -> out/homebrew/<slug>.json
+    uv run assay score-homebrew               # convert + score all 176 -> out/homebrew/scores.json
+
+The last two live in ``homebrew.py`` (registered via
+``homebrew.register_subparsers``) — the adapter for the vendored
+``vendor/run_balance/pf2e_converted_spells`` bespoke-schema conversion set;
+see that module's docstring.
 
 Telemetry (standing principle): ``init_telemetry`` wraps every subcommand, a
 root span per invocation, ``shutdown()`` in ``finally`` (the short-lived-process
@@ -23,7 +31,18 @@ from pathlib import Path
 
 from astra_observe import get_tracer, init_telemetry, shutdown
 
-from . import buffs, comparables, export, ledger, pricing, priors, report, report2, summons
+from . import (
+    buffs,
+    comparables,
+    export,
+    homebrew,
+    ledger,
+    pricing,
+    priors,
+    report,
+    report2,
+    summons,
+)
 from .conditions import Tier
 from .extract import (
     ExtractResult,
@@ -1652,6 +1671,8 @@ def build_parser() -> argparse.ArgumentParser:
         "--data-root", default=None, help="override the codex data root (else config.kdl)"
     )
     p_export.set_defaults(func=cmd_export_codex)
+
+    homebrew.register_subparsers(sub)
 
     return parser
 

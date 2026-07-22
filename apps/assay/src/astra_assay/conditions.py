@@ -136,6 +136,20 @@ _WITHIN_TIER_OFFSET: dict[str, float] = {
 }
 
 
+#: The full condition-name vocabulary this module recognizes (valued + flat),
+#: exposed for callers that need to promote plain-English condition mentions
+#: to `@UUID[...]` markup themselves — e.g. `homebrew.py`'s bespoke-schema
+#: adapter, which authors every spell's description programmatically rather
+#: than relying on a human to hand-write the tag (the README's "condition
+#: markup contract"). Mirrors `cli.py`'s own hand-maintained `_CONDITION_WORDS`
+#: (kept there for the zero-refs warning check — not reused directly to avoid
+#: a homebrew<->cli import edge).
+ALL_CONDITION_NAMES: frozenset[str] = frozenset(_FLAT_TIER) | frozenset(_VALUED_TIER)
+#: The subset that carries a numeric value (`Frightened 2`, `Slowed 1`, …) —
+#: an unvalued mention defaults to value 1 (see `condition_tier` above).
+VALUED_CONDITION_NAMES: frozenset[str] = frozenset(_VALUED_TIER)
+
+
 def condition_tier(name: str, value: int | None, duration: DurationClass) -> Tier | None:
     """Condition name (+ value, + owning duration class) -> Tier, or ``None``
     for a condition excluded from hostile pricing (D30-5/D30-8i)."""
