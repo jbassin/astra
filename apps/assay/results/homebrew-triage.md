@@ -63,8 +63,13 @@ Nominal rank OUTSIDE the induced comparable range:
 
 - **Over-ranked:** Illusory Illusion 6 vs [2–4] · Legend Killer 7 vs [3–6] · Haunt 4 vs [1–2]
   · Checkpoint 9 vs [1–7] · **Monstrous Copy: Shell 9 vs [1–3]** (the starkest miss in the set)
-- **Under-ranked (free upgrades available):** Body Enhancement: Sense 1 vs [2–4] · Body
-  Enhancement: Mind 2 vs [4–8] · Suspension 3 vs [4–8]
+- **Under-ranked — RESOLVED 2026-07-22 (item 3, stakeholder):** Body Enhancement: Sense
+  KEPT at rank 1 (comps overruled — the buff lens matched on bonus atoms and can't see how
+  narrow the scopes are; deliberately under Darkvision) · Body Enhancement: Mind kept rank 2
+  but **Will/Perception bonuses +2→+1** (Heroism calibration: +2 saves is Heroism's RANK-6
+  tier; ladder shifted, H9 max +3/+2) · Suspension **rank 3→4 + 5-minute non-sustained**
+  (a true Fly sidegrade — indoor combat is always within 30 ft of a surface, so it was
+  functionally flight one rank before PF2e's deliberate flight gate)
 
 16 comparables + 3 buffs sit tight-in-range (healthy). 21 rows have wide ranges (span ≥6) —
 honest low-information, not misses; review manually like ledger rows.
@@ -158,7 +163,7 @@ starting point there.
 
 1. §2 HOT list (9 spells) — nerf or re-cost; over-ranked §3 rows (5) — re-rank down.
 2. ~~§4.1 reaction repairs~~ DONE (first store edits, 2026-07-21).
-3. §3 under-ranked buffs (3) — free player-facing upgrades.
+3. ~~§3 under-ranked buffs~~ DONE 2026-07-22 (Sense kept; Mind +1; Suspension r4/5-min).
 4. ~~The systemic §1 policy decision~~ RESOLVED per-spell-mix — execute §4a's sheet.
 5. §4.2 variable-action redesigns (Magic Re-Missiles first — likely a strict improvement).
 6. Deep-COLD effect-dominant hybrids — decide per spell whether the effect earns the slot.
