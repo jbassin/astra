@@ -300,3 +300,14 @@ these are the ones where the effect has to earn the slot on its own.
   Stunned 1; "Eldrich"→"Eldritch" (stakeholder: a ten-year-old typo; file renamed,
   seededFrom pairing intact per the Force Drumfire precedent). −2.47 residual accepted —
   per-round engine output vs per-cast budget.
+- **Monstrous Copy: Tentacle r5 (−3.56 → recorded LENS ARTIFACT, dice untouched; venom
+  legalized):** the §4a per-Strike engine (2d8 EV 9 vs the ~35 r5 budget; two Paralyzed
+  atoms at prior 5.0 each = most of the phantom COLD). The real defect: an ILLEGAL
+  affliction — auto-escalating stages shaken off by a DC 5 flat check (80% — the mechanic
+  mostly deleted its own spell), no max duration, "Paralyzed 1 minute" inside 1-round
+  stages. Stakeholder A: Tentacle Venom rewritten to the Stinger-precedent legal block one
+  tier down (Fort vs spell DC · max 6 rounds · S1 Enfeebled 1 + Clumsy 1 · S2/S3 Paralyzed
+  1 round; crit-fail = stage-2 entry), 8th heighten keeps only 3d10 (flat-check rider died
+  with the mechanic). Grapple-gating kept as the real guard (the conversion's own good
+  normalization of 5e's hit-equals-grappled). Incapacitation trait offered, declined —
+  family runs without it.
