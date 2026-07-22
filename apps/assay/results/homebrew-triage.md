@@ -242,3 +242,12 @@ these are the ones where the effect has to earn the slot on its own.
   curse" doesn't exist → curse-targeting effects / 4th-rank+ Cleanse Affliction @UUID),
   monthly repeat save deliberately KEPT (player-facing escape valve). Degrees rewritten
   damage-free; crit-fail confusion round untouched.
+- **Monstrous Copy: Tail r7 (−4.48 → recorded LENS ARTIFACT, dice untouched; 8th heighten
+  trimmed; duration resolved family-wide):** the §4a per-Strike engine class — 3d10/Strike
+  (EV 16.5) priced vs the r7 per-cast budget, and the once-per-round hit-gated save-gated
+  stun rider priced at full per-cast weight (comparables matched on the Stunned atom:
+  Daze/Animus Mine — noise). Manual read: rank-appropriate next to the trimmed Shell r9.
+  Stakeholder C: the 8th heighten's twice-per-round stun DROPPED (3d12 bump kept — the stun
+  stays strictly once/round at every rank); the 5e-concentration `sustained:true` inheritance
+  flipped to flat 1 minute FAMILY-WIDE (Tail/Stinger/Tentacle/Claws now match Shell; text
+  never mentioned sustaining; probed scoring-neutral).
