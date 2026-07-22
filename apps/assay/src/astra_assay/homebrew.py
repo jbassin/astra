@@ -1103,23 +1103,36 @@ def homebrew_revisions(store_dir: Path | None = None) -> RevisionsReport:
         for path in sorted(store_dir.glob("*.json")):
             store_by_slug[path.stem] = json.loads(path.read_text(encoding="utf-8"))
 
+    # Pair store docs to baseline via the seeded provenance flag, falling
+    # back to the file stem — a stakeholder RENAME (name + filename) must
+    # keep its baseline pairing (and show up as a `name:` deviation), not
+    # orphan into missing+extra.
+    store_by_baseline_key: dict[str, tuple[str, dict[str, Any]]] = {}
+    for stem, doc in store_by_slug.items():
+        seeded = ((doc.get("flags") or {}).get("assay") or {}).get("seededFrom") or {}
+        key = _slugify(str(seeded.get("convertedName") or "")) or stem
+        store_by_baseline_key[key] = (stem, doc)
+
     deviations: list[SpellDeviation] = []
     for slug, baseline_doc in baseline_by_slug.items():
-        store_doc = store_by_slug.get(slug)
-        if store_doc is None:
+        hit = store_by_baseline_key.get(slug)
+        if hit is None:
             continue
+        stem, store_doc = hit
         fields = diff_spell(store_doc, baseline_doc)
         if fields:
             deviations.append(
-                SpellDeviation(slug=slug, name=str(store_doc.get("name", slug)), fields=fields)
+                SpellDeviation(slug=stem, name=str(store_doc.get("name", stem)), fields=fields)
             )
 
     return RevisionsReport(
         store_count=len(store_by_slug),
         baseline_count=len(baseline_by_slug),
         deviations=sorted(deviations, key=lambda d: d.name),
-        missing_from_store=sorted(set(baseline_by_slug) - set(store_by_slug)),
-        extra_in_store=sorted(set(store_by_slug) - set(baseline_by_slug)),
+        missing_from_store=sorted(set(baseline_by_slug) - set(store_by_baseline_key)),
+        extra_in_store=sorted(
+            stem for key, (stem, _) in store_by_baseline_key.items() if key not in baseline_by_slug
+        ),
     )
 
 

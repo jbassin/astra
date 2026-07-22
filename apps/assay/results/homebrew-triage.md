@@ -39,13 +39,13 @@ consequence: they'd feel weak next to Paizo picks at the same rank.
 
 | Spell | Rank | Verdict | Note |
 |---|---|---|---|
-| Extraplanar Beam | 6 | +2.30 | hybrid; also carries a rider on top |
-| Healing Draught | 6 | +1.86 | healing — caveat §6.2; official heal prices the same way, so this is comparable-apples |
+| Extraplanar Beam | 6 | ~~+2.30~~ RESOLVED at item 5 — 6d12, dazzled/blinded tiers, 120-ft line, in band |
+| Healing Draught | 6 | ~~+1.86~~ RESOLVED at item 5 — HP kept (below heal 2A); mass-cure -> counteract |
 | Cone of Decay | 6 | +1.45 | pure damage |
 | Darkseeker's Aura | 5 | +1.02 | pure damage |
 | Hypercompression | 6 | +0.74 | hybrid |
 | Divine Regression | 7 | +0.73 | pure |
-| Extraplanar Pulse | 7 | +0.65 | hybrid (sibling of Beam — the Extraplanar family runs hot as a series) |
+| Extraplanar Pulse | 2 | +0.65 | hybrid; double-gated (attack then save) — LEFT as-is at item 5 (rank was misprinted 7 here) |
 | Tag | 4 | +0.64 | pure |
 | Oblivion | 9 | +0.58 | hybrid + incapacitation — double-check the trait gates it |
 
@@ -91,11 +91,18 @@ bonus→1A/2A, reaction→"1A", minutes→3A+), never a design lever. Three work
    set-wide policy). Bonus: Disperse Magic's Remaster-invalid `abjuration` school trait
    dropped. Post-repair: Deja Vu -0.68 (re-measure any dice bump vs this), Solar Rebuke
    -3.47 (item-6 spell), Disperse Magic buff-path (no damage verdict).
-2. **Variable-action candidates (the missing PF2e idiom — zero spells use it):**
-   **Magic Re-Missiles** (−2.60 COLD at fixed cast; the official Force Barrage it apes is
-   *defined* by 1/2/3-action scaling — adopting that pattern likely fixes its COLD verdict
-   for free), **Healing Draught** (heal's 1/2/3-action pattern is the genre template), and
-   the Extraplanar family (its HOT could resolve as "current numbers at 3 actions").
+2. **Variable-action candidates — RESOLVED 2026-07-22 (item 5; scrutiny dissolved most of it):**
+   Magic Re-Missiles is NOT a fixed-cast nuke — the conversion is a faithful SUSTAINED
+   re-fire engine (each Sustain re-launches all missiles; per-action output ≥ Force Barrage);
+   its COLD verdict reclassified as the sustained-lens artifact; **renamed Force Drumfire**
+   (stakeholder), design kept. Healing Draught: variable actions don't fit the potion
+   identity; HP is BELOW official heal 2A (57 vs 75) — the real fix was the no-check
+   mass-cure -> **counteract one disease or poison**. Extraplanar Beam (the real HOT):
+   **6d12 + Dazzled on failure / Blinded on crit fail, 120-ft line** (stakeholder), now in
+   band. Pulse (+0.65, double-gated) and Planar Pyre (−0.68 = the healthy hybrid rate)
+   untouched. ⚠ CORRECTION: the "resolve HOT as 3 actions" idea below is BACKWARDS under
+   the model's declared action constants (3A lowers expected EV — reads HOTTER); +1 action
+   remains a real-table nerf but assay cannot credit it.
 3. **Cost re-banding before touching dice:** for each §2 HOT row, +1 action is a legitimate
    nerf that preserves the dice; for mild COLDs (−1-ish), dropping to 1A (single-target
    short-range ones) is a buff that preserves flavor. Assay's action-cost constants make
@@ -165,6 +172,19 @@ starting point there.
 2. ~~§4.1 reaction repairs~~ DONE (first store edits, 2026-07-21).
 3. ~~§3 under-ranked buffs~~ DONE 2026-07-22 (Sense kept; Mind +1; Suspension r4/5-min).
 4. ~~The systemic §1 policy decision~~ RESOLVED per-spell-mix — execute §4a's sheet.
-5. §4.2 variable-action redesigns (Magic Re-Missiles first — likely a strict improvement).
+5. ~~§4.2 variable-action redesigns~~ DONE 2026-07-22 (Drumfire kept-as-engine; Draught counteract; Beam 6d12/120ft dazzled-blinded).
 6. Deep-COLD effect-dominant hybrids — decide per spell whether the effect earns the slot.
 7. The 73-ledger manual pool, seeded by his balanceBullets.
+
+## 8. Voice sweep (2026-07-22, stakeholder-directed)
+
+Set-wide scan for out-of-world/editor voice in descriptions. **13 spells fixed**, catch-all
+rescan now CLEAN: the "no clean analog / designed from the rank-N budget" conversion-note
+leak (Checkpoint, Move the Cosmic Wheel, Outside of Time, Worldweaver) · the "associated
+with X / conversion noted as unusual / see notes" catalog paragraphs (Almonk's Retribution,
+Laixa's Expert Intuition, Djura's Divine Protection) · series cross-marketing (Extraplanar
+Beam, Sphere of Ruin — mechanic kept, re-voiced) · e.g./explainer asides (Force Drumfire,
+Awkward, Swap, Nightfall). Bonus 5e-isms fixed in passing: Djura's "death-saving throws" ->
+recovery checks; Excavation's percentile collapse -> DC 7 flat check (+1/5 ft). Legitimate
+official-style "such as" examples were deliberately KEPT (Cone of Silence, Erase, Taboo,
+Suspension, etc.).

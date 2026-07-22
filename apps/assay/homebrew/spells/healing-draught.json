@@ -34,7 +34,7 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>You twist luck and life-force into the bottle you hold, creating a powerful healing draught that crystallizes fate into medicine. The bottle instantly fills with a shimmering, golden healing potion. Any creature that uses an Interact action to consume the potion during the spell's duration regains 6d8+30 HP and is cured of any diseases and poisons of rank 6 or lower currently affecting it. Once consumed, the potion is gone; if not consumed by the end of the duration, the draught fades and the bottle is returned empty.</p><p>Only one Healing Draught can exist at a time from a given caster; casting this spell again while a previous draught exists causes the previous one to immediately fade.</p><hr /><p><strong>Heightened (+1)</strong> The healing increases by 1d8+8.</p>"
+      "value": "<p>You twist luck and life-force into the bottle you hold, creating a powerful healing draught that crystallizes fate into medicine. The bottle instantly fills with a shimmering, golden healing potion. Any creature that uses an Interact action to consume the potion during the spell's duration regains 6d8+30 HP, and the draught attempts to counteract one disease or one poison affecting the drinker, using your spellcasting modifier. Once consumed, the potion is gone; if not consumed by the end of the duration, the draught fades and the bottle is returned empty.</p><p>Only one Healing Draught can exist at a time from a given caster; casting this spell again while a previous draught exists causes the previous one to immediately fade.</p><hr /><p><strong>Heightened (+1)</strong> The healing increases by 1d8+8.</p>"
     },
     "duration": {
       "sustained": false,

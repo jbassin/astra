@@ -15,7 +15,7 @@
   "system": {
     "area": {
       "type": "line",
-      "value": 100
+      "value": 120
     },
     "cost": {
       "value": ""
@@ -25,7 +25,7 @@
       "0": {
         "applyMod": false,
         "category": null,
-        "formula": "8d12",
+        "formula": "6d12",
         "kinds": [
           "damage"
         ],
@@ -40,7 +40,7 @@
       }
     },
     "description": {
-      "value": "<p>You open a conduit to the space between planes, firing a beam of pulsing violet-white light harvested from the interplanar void. This beam is part of the Extraplanar series — a set of spells that channel the same interplanar radiance at different scales: Extraplanar Pulse (rank 2) sends a burst of this energy from a central point, and Extraplanar Beam projects it as a focused line.</p><p>Each creature in the line takes 8d12 vitality damage. A creature that critically fails its save is also @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn; this blindness is caused by the overwhelming interplanar light.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d12.</p>"
+      "value": "<p>You open a conduit to the space between planes, firing a beam of pulsing violet-white light harvested from the interplanar void.</p><p>Each creature in the line takes 6d12 vitality damage.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d12.</p>"
     },
     "duration": {
       "sustained": false,
@@ -62,7 +62,7 @@
       "title": "Homebrew (run_balance)"
     },
     "range": {
-      "value": "100 feet"
+      "value": "120 feet"
     },
     "requirements": "",
     "rules": [],
