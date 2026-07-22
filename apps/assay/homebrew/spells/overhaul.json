@@ -61,7 +61,7 @@
       "value": "3 hours"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "rare",
       "traditions": [
         "arcane",
         "occult"
@@ -70,8 +70,7 @@
         "concentrate",
         "manipulate",
         "memetics",
-        "polymorph",
-        "rare"
+        "polymorph"
       ]
     }
   },

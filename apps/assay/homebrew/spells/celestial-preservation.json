@@ -56,7 +56,7 @@
       "value": "1 hour"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "rare",
       "traditions": [
         "arcane",
         "divine",
@@ -65,8 +65,7 @@
       "value": [
         "chronomancy",
         "concentrate",
-        "manipulate",
-        "rare"
+        "manipulate"
       ]
     }
   },

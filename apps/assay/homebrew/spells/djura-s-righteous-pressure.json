@@ -76,17 +76,15 @@
       "value": "2"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "uncommon",
       "traditions": [
         "divine"
       ],
       "value": [
-        "abjuration",
         "concentrate",
         "holy",
         "kosmoturgy",
-        "manipulate",
-        "uncommon"
+        "manipulate"
       ]
     }
   },

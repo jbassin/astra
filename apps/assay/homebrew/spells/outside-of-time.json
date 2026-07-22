@@ -47,7 +47,7 @@
       "value": "2"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "rare",
       "traditions": [
         "arcane",
         "occult"
@@ -55,9 +55,7 @@
       "value": [
         "chronomancy",
         "concentrate",
-        "manipulate",
-        "rare",
-        "temporal"
+        "manipulate"
       ]
     }
   },

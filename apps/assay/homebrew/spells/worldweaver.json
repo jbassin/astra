@@ -50,7 +50,7 @@
       "value": "1 day (ritual, 16 casters required)"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "rare",
       "traditions": [
         "arcane",
         "divine",
@@ -60,9 +60,7 @@
       "value": [
         "concentrate",
         "manipulate",
-        "rare",
-        "seraphic",
-        "temporal"
+        "seraphic"
       ]
     }
   },

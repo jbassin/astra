@@ -55,7 +55,7 @@
       "value": "2"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "rare",
       "traditions": [
         "arcane",
         "divine",
@@ -66,8 +66,6 @@
         "concentrate",
         "healing",
         "manipulate",
-        "rare",
-        "temporal",
         "vitality"
       ]
     }

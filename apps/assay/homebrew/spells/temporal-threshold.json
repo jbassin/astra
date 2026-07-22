@@ -55,7 +55,7 @@
       "value": "2"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "rare",
       "traditions": [
         "arcane",
         "occult"
@@ -65,9 +65,7 @@
         "concentrate",
         "force",
         "incapacitation",
-        "manipulate",
-        "rare",
-        "trap"
+        "manipulate"
       ]
     }
   },

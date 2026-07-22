@@ -783,6 +783,50 @@ def _school_trait(spell: dict[str, Any]) -> str | None:
     return raw if raw in _HOMEBREW_SCHOOLS else None
 
 
+#: Trait hygiene (stakeholder 2026-07-22, homebrew item 1): the vendor traits
+#: arrays mix in words that aren't PF2e spell traits. Rarity keywords are
+#: LIFTED into the rarity field (ascending precedence — the last hit wins),
+#: tradition names are FOLDED into `traits.traditions`, and the rest are
+#: STRIPPED: standard 5e school traits (policy — only the 8 homebrew schools
+#: ride; `illusion` is absent here because it IS an official Remaster spell
+#: trait), custom strays, and damage-type traits (damage lives in
+#: `system.damage`). A later curation sweep may deliberately re-add custom
+#: traits; the baseline stays strict official-vocab + schools.
+_RARITY_KEYWORDS = ("uncommon", "rare", "unique")
+_TRADITION_NAMES = frozenset({"arcane", "divine", "occult", "primal"})
+_STRIPPED_TRAITS = frozenset(
+    {
+        "abjuration",
+        "conjuration",
+        "divination",
+        "enchantment",
+        "evocation",
+        "necromancy",
+        "transmutation",
+        "time",
+        "temporal",
+        "trap",
+        "creation",
+        "summoning",
+        "gravity",
+        "bludgeoning",
+        "piercing",
+        "slashing",
+    }
+)
+
+
+def _hygiene_traits(traits: set[str]) -> tuple[set[str], str, set[str]]:
+    """Split a raw trait set into (kept traits, rarity, extra traditions)."""
+    rarity = "common"
+    for kw in _RARITY_KEYWORDS:
+        if kw in traits:
+            rarity = kw
+    extra_traditions = traits & _TRADITION_NAMES
+    kept = traits - set(_RARITY_KEYWORDS) - _TRADITION_NAMES - _STRIPPED_TRAITS
+    return kept, rarity, extra_traditions
+
+
 @dataclass
 class ConvertedSpell:
     name: str
@@ -812,6 +856,8 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
     school = _school_trait(spell)
     if school is not None:
         traits.add(school)
+
+    traits, rarity, extra_traditions = _hygiene_traits(traits)
 
     defense_raw = spell.get("defense")
     defense_dict, add_attack_trait, defense_warnings = _map_defense(defense_raw)
@@ -892,8 +938,10 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
         "target": {"value": spell.get("targets") or ""},
         "time": {"value": time_value},
         "traits": {
-            "rarity": "common",
-            "traditions": sorted(str(t).lower() for t in (spell.get("traditions") or [])),
+            "rarity": rarity,
+            "traditions": sorted(
+                {str(t).lower() for t in (spell.get("traditions") or [])} | extra_traditions
+            ),
             "value": sorted(traits),
         },
     }

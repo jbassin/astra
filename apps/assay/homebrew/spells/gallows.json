@@ -60,7 +60,7 @@
       "value": "10 minutes"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "rare",
       "traditions": [
         "arcane",
         "occult"
@@ -69,7 +69,6 @@
         "concentrate",
         "manipulate",
         "planara",
-        "rare",
         "teleportation"
       ]
     }

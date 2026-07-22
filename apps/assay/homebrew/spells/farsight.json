@@ -55,7 +55,7 @@
       "value": "1 minute"
     },
     "traits": {
-      "rarity": "common",
+      "rarity": "uncommon",
       "traditions": [
         "arcane",
         "occult"
@@ -63,11 +63,9 @@
       "value": [
         "concentrate",
         "detection",
-        "divination",
         "manipulate",
         "memetics",
-        "scrying",
-        "uncommon"
+        "scrying"
       ]
     }
   },
