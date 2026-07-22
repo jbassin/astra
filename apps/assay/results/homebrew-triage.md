@@ -37,17 +37,20 @@ consequence: they'd feel weak next to Paizo picks at the same rank.
 
 ## 2. The short HOT list (real balance concerns, review first)
 
-| Spell | Rank | Verdict | Note |
+ALL RESOLVED 2026-07-22 (item 1, stakeholder session; ranks below corrected to the store's
+actual values — the original table's rank column had misprints):
+
+| Spell | Rank | Verdict | Resolution (item 1 unless noted) |
 |---|---|---|---|
-| Extraplanar Beam | 6 | ~~+2.30~~ RESOLVED at item 5 — 6d12, dazzled/blinded tiers, 120-ft line, in band |
-| Healing Draught | 6 | ~~+1.86~~ RESOLVED at item 5 — HP kept (below heal 2A); mass-cure -> counteract |
-| Cone of Decay | 6 | +1.45 | pure damage |
-| Darkseeker's Aura | 5 | +1.02 | pure damage |
-| Hypercompression | 6 | +0.74 | hybrid |
-| Divine Regression | 7 | +0.73 | pure |
-| Extraplanar Pulse | 2 | +0.65 | hybrid; double-gated (attack then save) — LEFT as-is at item 5 (rank was misprinted 7 here) |
-| Tag | 4 | +0.64 | pure |
-| Oblivion | 9 | +0.58 | hybrid + incapacitation — double-check the trait gates it |
+| Extraplanar Beam | 6 | ~~+2.30~~ | item 5 — 6d12, dazzled/blinded tiers, 120-ft line, in band |
+| Healing Draught | 6 | ~~+1.86~~ | item 5 — HP kept (below heal 2A); mass-cure -> counteract |
+| Cone of Decay | 7 | ~~+1.45~~ | KEPT 8d10 — verdict = undead-crit-fail 4d10 counted at full weight (base alone −1.18, riders pay it); not-halved caveat dropped |
+| Darkseeker's Aura | 4 | ~~+1.02~~ | dice KEPT (aura-engine lens artifact; burst alone in band); resist 10 acid dropped |
+| Hypercompression | 8 | ~~+0.74~~ | 10d10->8d10 per tick (recurring-zone idiom; −0.88/tick intended) + orb-move trigger clarified |
+| Divine Regression | 2 | ~~+0.73~~ | 4d8->3d8, in band (rider rides on the Fort-save agency) |
+| Extraplanar Pulse | 2 | ~~+0.65~~ | KEPT explicitly — double-gated rider + shallow r2 ladder = artifact |
+| Tag | 4 | ~~+0.64~~ | dice KEPT (probabilistic detonation = artifact); action-mode transfer targeting fixed |
+| Oblivion | 5 | ~~+0.58~~ | 6d6+6d6 KEPT; 5e self-risk restored (caster in blast), sacrifice now grants chosen creatures +1 save tier |
 
 Coldest damage rows (candidates for dice growth or structure tightening, worst first):
 Forceful Onslaught −5.85 · Touch of Madness −5.35 · Monstrous Copy: Tail −4.48 · Cerebral
@@ -61,8 +64,14 @@ too; their damage being vestigial may be fine *if* the effect carries the slot.)
 
 Nominal rank OUTSIDE the induced comparable range:
 
-- **Over-ranked:** Illusory Illusion 6 vs [2–4] · Legend Killer 7 vs [3–6] · Haunt 4 vs [1–2]
-  · Checkpoint 9 vs [1–7] · **Monstrous Copy: Shell 9 vs [1–3]** (the starkest miss in the set)
+- **Over-ranked — RESOLVED 2026-07-22 (item 1, stakeholder):** Illusory Illusion **6->3**
+  (overtuned; now mid-range of [2–4]) · Legend Killer **REDESIGNED r7->5** (PF2e-native: 1A,
+  flat 1-min, save tiers deny mythic abilities/Mythic Points then reactions, Stunned 1 crit
+  fail; all 5e legendary-action/LR text gone) · Haunt KEPT 4 ([1–2] = teleport-engine lens
+  artifact; 6th-rank Hidden-arrival rider dropped) · Checkpoint KEPT 9 (slot is the gate —
+  the scrubbed 1,000 gp premise deliberately NOT restored; 5e full-HP cast requirement
+  restored) · Monstrous Copy: Shell KEPT 9 ([1–3] = atom-match artifact; AC +3->+2 official
+  ceiling, heighten dropped, Tarrasque -> Armageddon Engine)
 - **Under-ranked — RESOLVED 2026-07-22 (item 3, stakeholder):** Body Enhancement: Sense
   KEPT at rank 1 (comps overruled — the buff lens matched on bonus atoms and can't see how
   narrow the scopes are; deliberately under Darkvision) · Body Enhancement: Mind kept rank 2
@@ -168,7 +177,7 @@ starting point there.
 
 ## 7. Suggested worklist order
 
-1. §2 HOT list (9 spells) — nerf or re-cost; over-ranked §3 rows (5) — re-rank down.
+1. ~~§2 HOT list + §3 over-ranked rows~~ DONE 2026-07-22 (item 1; all 12 stakeholder-decided — see §2/§3 resolutions).
 2. ~~§4.1 reaction repairs~~ DONE (first store edits, 2026-07-21).
 3. ~~§3 under-ranked buffs~~ DONE 2026-07-22 (Sense kept; Mind +1; Suspension r4/5-min).
 4. ~~The systemic §1 policy decision~~ RESOLVED per-spell-mix — execute §4a's sheet.
