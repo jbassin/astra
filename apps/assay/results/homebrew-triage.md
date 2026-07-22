@@ -277,3 +277,12 @@ these are the ones where the effect has to earn the slot on its own.
   Tail heighten precedent); the once-per-round gate was OFFERED and DECLINED (venom stays
   every-hit; affliction re-exposure rules self-limit). Post-edit routing hybrid→quantitative
   (stage-block conditions no longer promote), same −4.38.
+- **Focus Break r5 (−4.33 → invented damage DROPPED; now `comparables 1-9`):** the 5e
+  original was explicitly no-damage ("The energy does no damage") — the conversion invented
+  a NO-SAVE 2d6 mental + 1d6/rank heighten on top of a near-guaranteed chassis (target loses
+  its sustained effect even on a SUCCESSFUL save; only crit success protects). The real
+  payload — no-counteract, no-rank-ceiling shutdown of a sustained effect by attacking the
+  SUSTAINER — is extractor-invisible; the verdict was pure chip artifact (Daze r1 sim 0.87
+  on the Stunned atom). Stakeholder A: damage + heighten removed, reliable-breaker degree
+  structure KEPT (a deliberate conversion invention worth keeping), Stunned 1 / Stunned 2 +
+  sustain-lockout riders kept as the psychic-shock flavor.
