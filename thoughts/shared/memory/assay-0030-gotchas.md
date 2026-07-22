@@ -97,10 +97,40 @@ user's 5e spells + the friend's complete PF2e conversions) → adapter → **CAN
 `apps/assay/homebrew/spells/` (176 COMMITTED Foundry-shaped docs = THE source of truth;
 eventual codex source + Foundry module). Commands: `seed-homebrew` (--force-guarded) ·
 `score-homebrew` (store-only) · `homebrew-revisions` → committed `homebrew/revisions.md`
-(30 deviations = every stakeholder edit; pairing follows `flags.assay.seededFrom` so
+(every stakeholder edit; pairing follows `flags.assay.seededFrom` so
 renames don't orphan — Magic Re-Missiles → Force Drumfire proved it). Paper trail:
-`apps/assay/results/homebrew-triage.md` (worklist; items 2/3/4/5 + voice sweep DONE,
-**1/6/7 OPEN**).
+`apps/assay/results/homebrew-triage.md` (worklist; items 1/2/3/4/5 + voice sweep +
+trait-hygiene sweep DONE, **6/7 OPEN**).
+
+**ITEM 1 DONE (2026-07-22, `dabbb24`…`3a2d6a7`, 13 commits):** 12 spells (7 HOT + 5
+over-ranked) one-at-a-time — resolutions in triage §2/§3. ⭐ **Process: the stakeholder
+REJECTED AskUserQuestion batches for spell review** — the format he wants: full
+description + what-the-conversion-changed (diff vs the 5e original in
+`vendor/…/base_spells_5e/gen_homebrew.json`) + why-out-of-band + options w/ recommended
+lean, ONE spell per message, decide in chat. ⭐ New LENS-ARTIFACT classes confirmed:
+conditional-rider damage partitions counted at FULL weight (Cone of Decay's
+undead-crit-fail 4d10 = the whole +1.45; base alone −1.18); probabilistic-trigger
+payloads priced as guaranteed (Tag detonation starts 10%); recurring zones priced per
+CAST — per-tick dice should sit BELOW the one-shot line (Hypercompression 10d10→8d10,
+−0.88/tick intended, Flaming Sphere idiom). ⭐ PF2e-native mappings that unlock 5e-ism
+redesigns: 5e legendary actions/resistance → Remaster MYTHIC (mythic trait + Mythic
+Points — Legend Killer r5 redesign keyed off it); Tarrasque → **Armageddon Engine**.
+⚠ The triage §2 table's RANK column had misprints — trust the store JSON, never the doc
+table. Measuring variants = temp-edit store files → `score-homebrew` → `git checkout --
+homebrew/spells/` (never commit probes).
+
+**TRAIT-HYGIENE SWEEP (same day, `a84d07d`):** vendor traits arrays hide FOUR misfiling
+classes the school-policy (which only guarded `originalSchool`) missed: rarity keywords
+in traits.value w/ rarity FIELD still common (10 rare/4 uncommon — friend's intent
+silently presenting common); tradition names as traits (primal ×22/occult ×9/divine ×5
+→ folded into traits.traditions); standard 5e school traits riding the arrays
+(abjuration ×14 etc.); damage-type traits. Fix = `_hygiene_traits()` in the ADAPTER +
+surgical store sweep in LOCKSTEP (93 docs, 0 score drift, 0 new revisions deviations —
+one old hand-edit got SUBSUMED into policy, the architecture rule working). Verify
+candidate traits against the OFFICIAL vocab built from the codex Foundry snapshot
+(68 spell traits; `illusion`/`extradimensional`/`move` ARE official — don't strip on
+vibes). Stakeholder: a later curated sweep may re-add custom traits; baseline stays
+strict official+8-schools.
 
 **⭐ THE architecture rule: set-wide POLICY lives in the ADAPTER (baseline), per-spell
 JUDGMENT lives in the STORE** — school traits (8 homebrew schools from originalSchool),

@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `8cc766e`, 2026-07-22 — assay (0030) ROUND 5: the HOMEBREW SPELL CONVERSION project — the user's 176 5e homebrew spells + friend jmnario's PF2e conversions vendored, adapter built, CANONICAL STORE live, worklist items 2/3/4/5 DONE + voice sweep; ▶ NEXT = worklist item 1 (HOT/over-ranked review) or 6/7; codex gate H still the open codex item; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `3a2d6a7`, 2026-07-22 — assay (0030) ROUND 5: the HOMEBREW SPELL CONVERSION project — worklist items 1/2/3/4/5 + voice sweep + TRAIT-HYGIENE sweep ALL DONE (item 1 = 12 spells stakeholder-decided one-at-a-time, 13 commits, all pushed); ▶ NEXT = worklist item 6 (deep-COLD effect hybrids) or 7 (73-ledger manual pool); codex gate H still the open codex item; heartwood ON HOLD)
 
 > **✅ assay (0030) R5 — homebrew conversion triage + canonical store, 2026-07-21→22, all pushed:**
 > 1. **Vendored** `github.com/jmnario/run_balance` → `apps/assay/vendor/run_balance/`
@@ -56,17 +56,25 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 >    revisions.md stays hand-edit-only — currently **30 deviating spells**, all
 >    stakeholder-decided in-session.
 > 4. **Worklist state** (`apps/assay/results/homebrew-triage.md`, the paper trail):
+>    ~~1~~ HOT + over-ranked (2026-07-22, 12 spells one-at-a-time — triage §2/§3 hold
+>    per-spell resolutions; headliners: Legend Killer REDESIGNED PF2e-native r7→5
+>    (mythic-ability/Mythic-Point denial — the 5e legendary-action analog), Illusory
+>    Illusion 6→3, Oblivion self-risk restored + sacrifice→+1-save-tier, Hypercompression
+>    8d10/tick recurring-zone idiom, Shell AC+2/Armageddon Engine, Checkpoint full-HP
+>    cast req; 4 verdicts recorded as lens artifacts, dice untouched) ·
 >    ~~2~~ reaction repairs · ~~3~~ under-ranked buffs (Mind +1, Suspension r4/5-min) ·
 >    ~~4~~ per-spell-mix dice/range sheet APPLIED (7 in band + Summon Heart 11d10) ·
 >    ~~5~~ (Force Drumfire kept-as-engine · Healing Draught cure→counteract · Beam 6d12/
->    120ft/dazzled-blinded) · **voice sweep** 13 spells de-editorialized (4 leaked
->    conversion notes; catch-all regex now CLEAN) · set-wide: 8 school traits, materials
->    scrub (ritual-keep), Remaster fixes (death saves→recovery checks, %→flat check).
->    **▶ OPEN: item 1** (7 HOT + 5 over-ranked incl. Monstrous Copy: Shell 9→[1–3]) ·
->    **item 6** (deep-COLD effect hybrids, read via comparables) · **item 7** (73-spell
->    ledger manual pool + 21 wide-range rows) · residue (cheap ritual props). Then: codex
->    ingest as a new source (needs scoping: licenseMap + Foundry-only join) + Foundry
->    compendium module + the joint review with the friend (revisions.md is the artifact).
+>    120ft/dazzled-blinded) · **voice sweep** 13 spells de-editorialized ·
+>    **trait-hygiene sweep** (triage §9: rarity→FIELD 10r/4u, traditions folded, 5e
+>    schools + customs + damage-types stripped; 93 docs, adapter+store lockstep, 0 score
+>    drift, 0 new deviations; stakeholder wants a later curated re-add sweep) · set-wide:
+>    8 school traits, materials scrub (ritual-keep), Remaster fixes.
+>    **▶ OPEN: item 6** (deep-COLD effect hybrids, read via comparables) · **item 7**
+>    (73-spell ledger manual pool + 21 wide-range rows) · residue (cheap ritual props).
+>    Then: codex ingest as a new source (needs scoping: licenseMap + Foundry-only join) +
+>    Foundry compendium module + the joint review with the friend (revisions.md is the
+>    artifact).
 > 5. **Process:** interactive stakeholder-decision loop (AskUserQuestion batches, measure
 >    A/B through the REAL scorer before proposing, apply+commit per decision) — detail in
 >    [[assay-0030-gotchas]].
