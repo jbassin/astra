@@ -233,3 +233,12 @@ these are the ones where the effect has to earn the slot on its own.
   until start of next turn, recovery checks, can't be stabilized while conscious; heighten =
   no dying until the unconscious turn, outright-kill effects still kill). Score unchanged
   −5.85 (text-only), 41st revisions deviation.
+- **Touch of Madness r8 (−5.35 → chip damage DROPPED, curse kept; now `comparables 4-9`, in
+  range):** the chip-damage-on-effect-spell artifact — 4d6 (EV 14) priced against the r8
+  budget while the curse is the spell. Official anchor Never Mind r6 (curse+incapacitation,
+  failure = Stupefied 4 unlimited, no damage) proves permanent-on-plain-failure is official
+  idiom; +2 ranks pays for the no-casting lock + trusting/follow-orders rider. Stakeholder B:
+  4d6 removed (Never Mind idiom, pure 5e inheritance), removal text Remaster-fixed ("remove
+  curse" doesn't exist → curse-targeting effects / 4th-rank+ Cleanse Affliction @UUID),
+  monthly repeat save deliberately KEPT (player-facing escape valve). Degrees rewritten
+  damage-free; crit-fail confusion round untouched.
