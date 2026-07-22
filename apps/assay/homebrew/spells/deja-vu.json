@@ -22,7 +22,7 @@
       "0": {
         "applyMod": false,
         "category": null,
-        "formula": "4d6",
+        "formula": "5d6",
         "kinds": [
           "damage"
         ],
@@ -37,7 +37,7 @@
       }
     },
     "description": {
-      "value": "<p><strong>Trigger</strong> A creature within range is damaged by an attack or effect, or succeeds at a saving throw against one.</p><p>You twist time to force a creature to relive the worst moment of its recent past. The target must attempt a Will save against your spell DC.</p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> If the trigger dealt the target damage, the target takes damage of the same type equal to the triggering damage, up to a maximum of 4d6. If the trigger was the target succeeding at a saving throw, it must immediately retry that save with a -2 status penalty, applying the new result (even if it is worse).</p><p><strong>Critical Failure</strong> As failure, but the echoed damage is treated as if all dice rolled their maximum value, and the save retry takes a -4 status penalty.</p><hr /><p><strong>Heightened (+1)</strong> The maximum echoed damage increases by 1d6.</p>"
+      "value": "<p><strong>Trigger</strong> A creature within range is damaged by an attack or effect, or succeeds at a saving throw against one.</p><p>You twist time to force a creature to relive the worst moment of its recent past. The target must attempt a Will save against your spell DC.</p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> If the trigger dealt the target damage, the target takes damage of the same type equal to the triggering damage, up to a maximum of 5d6. If the trigger was the target succeeding at a saving throw, it must immediately retry that save with a -2 status penalty, applying the new result (even if it is worse).</p><p><strong>Critical Failure</strong> As failure, but the echoed damage is treated as if all dice rolled their maximum value, and the save retry takes a -4 status penalty.</p><hr /><p><strong>Heightened (+1)</strong> The maximum echoed damage increases by 1d6.</p>"
     },
     "duration": {
       "sustained": false,

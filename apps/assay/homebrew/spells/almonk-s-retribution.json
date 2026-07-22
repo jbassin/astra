@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -27,7 +27,7 @@
       "0": {
         "applyMod": false,
         "category": null,
-        "formula": "6d6",
+        "formula": "11d6",
         "kinds": [
           "damage"
         ],
@@ -42,7 +42,7 @@
       }
     },
     "description": {
-      "value": "<p>Almonk discovered this spell while studying the residue of destroyed magical conduits: the Weave itself ignites when its threads are forcibly redirected. You ignite the magical ether in a 30-foot-radius sphere centered on a point you can see within range. The burning ether persists as long as you sustain the spell.</p><p>Whenever a creature within the area casts a spell or uses a magical ability that requires its own concentration or manipulate action, the ether scorches them. That creature must attempt a Fortitude save. Their spell or ability functions normally regardless of the save result \u2014 Almonk's Retribution punishes, it does not interrupt.</p><p>This spell is associated with the mage Almonk and is typically encountered as a focus spell for practitioners of anti-magic doctrine. Its conversion to a standard spell slot is noted as unusual.</p><p><strong>Critical Success</strong> The creature takes no damage.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes 6d6 fire damage.</p><p><strong>Critical Failure</strong> The creature takes 12d6 fire damage.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 1d6.</p>"
+      "value": "<p>Almonk discovered this spell while studying the residue of destroyed magical conduits: the Weave itself ignites when its threads are forcibly redirected. You ignite the magical ether in a 30-foot-radius sphere centered on a point you can see within range. The burning ether persists as long as you sustain the spell.</p><p>Whenever a creature within the area casts a spell or uses a magical ability that requires its own concentration or manipulate action, the ether scorches them. That creature must attempt a Fortitude save. Their spell or ability functions normally regardless of the save result — Almonk's Retribution punishes, it does not interrupt.</p><p>This spell is associated with the mage Almonk and is typically encountered as a focus spell for practitioners of anti-magic doctrine. Its conversion to a standard spell slot is noted as unusual.</p><p><strong>Critical Success</strong> The creature takes no damage.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes 11d6 fire damage.</p><p><strong>Critical Failure</strong> The creature takes 12d6 fire damage.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 1d6.</p>"
     },
     "duration": {
       "sustained": true,

@@ -97,7 +97,13 @@ bonus→1A/2A, reaction→"1A", minutes→3A+), never a design lever. Three work
    this checkable per spell — rerun `score-homebrew` after any edit.
 
 
-### 4a. Item-4 RESOLVED (2026-07-21, stakeholder call: per-spell mix) — the decision sheet
+### 4a. Item-4 RESOLVED + APPLIED (sheet approved 2026-07-21; edits landed 2026-07-22 — see `homebrew/revisions.md`)
+
+**Applied:** Falling Star 11d6 · Almonk's Retribution 11d6 · Sapping Lightning 9d12 ·
+Elemental Sink 3d4 · Acupuncture 5d6 · Deja Vu cap 5d6 (re-measured post-reaction, in band) ·
+Spawn Abyssal Sprite range 500→120 ft · Summon Heart **11d10** (stakeholder call — lands
+−1.13, the intended residual: the death rider's unmodeled price). All others in band.
+**Still open from the sheet:** Magic Re-Missiles (item-5 redesign).
 
 No blanket sweep. The 19 COLD pure-damage rows split: **9 genuine nukes** (sheet below, both
 options re-scored through the real `assay score`), **5 weapon/morph** (Claws, Divine Razor,
