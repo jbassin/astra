@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You redirect incoming magical energy back into the surrounding field. This spell is cast as a reaction when you are forced to attempt a saving throw against a spell or magical effect. You gain a +2 circumstance bonus to the triggering saving throw. Additionally, if the triggering effect would deal damage and normally allows you to take half damage on a success, you instead take no damage on a success and half damage on a failure (the basic save degrees shift one step in your favor for the damage roll only).</p><hr /><p><strong>Heightened (4th)</strong> The circumstance bonus to the triggering save increases to +3, and you can also grant the bonus to one adjacent ally who is also targeted by the same effect.</p>"
+      "value": "<p><strong>Trigger</strong> You are forced to attempt a saving throw against a spell or magical effect.</p><p>You redirect incoming magical energy back into the surrounding field. You gain a +2 circumstance bonus to the triggering saving throw. Additionally, if the triggering effect would deal damage and normally allows you to take half damage on a success, you instead take no damage on a success and half damage on a failure (the basic save degrees shift one step in your favor for the damage roll only).</p><hr /><p><strong>Heightened (4th)</strong> The circumstance bonus to the triggering save increases to +3, and you can also grant the bonus to one adjacent ally who is also targeted by the same effect.</p>"
     },
     "duration": {
       "sustained": false,
@@ -52,7 +52,7 @@
       "value": "you"
     },
     "time": {
-      "value": "1"
+      "value": "reaction"
     },
     "traits": {
       "rarity": "common",
@@ -61,7 +61,6 @@
         "occult"
       ],
       "value": [
-        "abjuration",
         "concentrate",
         "manipulate"
       ]

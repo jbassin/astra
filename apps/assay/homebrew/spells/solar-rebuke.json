@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -39,7 +39,7 @@
       }
     },
     "description": {
-      "value": "<p>You call a searing lance of solar light from the peak of Elysium in response to being harmed. This spell can only be cast as a reaction triggered when a creature within 60 feet that you can see deals damage to you.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes 2d10 vitality damage.</p><p><strong>Failure</strong> The creature takes 5d10 vitality damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.</p><p><strong>Critical Failure</strong> The creature takes 10d10 vitality damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 2d10 (and doubles on critical failure).</p>"
+      "value": "<p><strong>Trigger</strong> A creature within 60 feet that you can see deals damage to you.</p><p>You call a searing lance of solar light from the peak of Elysium to strike down your attacker.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes 2d10 vitality damage.</p><p><strong>Failure</strong> The creature takes 5d10 vitality damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.</p><p><strong>Critical Failure</strong> The creature takes 10d10 vitality damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 2d10 (and doubles on critical failure).</p>"
     },
     "duration": {
       "sustained": false,
@@ -62,7 +62,7 @@
       "value": "1 creature that damaged you this turn"
     },
     "time": {
-      "value": "1"
+      "value": "reaction"
     },
     "traits": {
       "rarity": "common",
