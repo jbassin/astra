@@ -14,7 +14,7 @@ from __future__ import annotations
 import json
 
 from astra_assay import comparables, homebrew, ledger
-from astra_assay.extract import ActionBucket, SpellFeatures, extract_spell
+from astra_assay.extract import ActionBucket, SkipRecord, SpellFeatures, extract_spell
 
 RESULTS_DIR = homebrew.RESULTS_DIR
 
@@ -165,6 +165,192 @@ def test_build_damage_none_found() -> None:
     entries, is_healing, _warnings = homebrew._build_damage(spell)
     assert entries == {}
     assert not is_healing
+
+
+def test_build_damage_paren_reversed_shape() -> None:
+    """Antimagic Shroud's real shape: "...takes full damage (2d4 force)."
+    — dice INSIDE a parenthetical after the word "damage", not the usual
+    dice-then-type-then-"damage" order."""
+    entries = homebrew._extract_damage_dice(
+        "The triggering caster takes full damage (2d4 force) as the shroud detonates."
+    )
+    assert entries == [("2d4", "force")]
+
+
+def test_build_damage_paren_multi_component() -> None:
+    """Tag's successTiers shape: "damage (2d8 fire + 2d8 mental, rounded
+    down)" — two dice components in one parenthetical."""
+    entries = homebrew._extract_damage_dice("Half damage (2d8 fire + 2d8 mental, rounded down).")
+    assert set(entries) == {("2d8", "fire"), ("2d8", "mental")}
+
+
+# ---------------------------------------------------------------------------
+# Bug fix (orchestrator round 2): self-inflicted damage must not count as
+# the spell's output EV — real 5-spell population, real prose.
+# ---------------------------------------------------------------------------
+
+
+def test_self_damage_deal_x_to_yourself_excluded() -> None:
+    """Extra Motivation's real shape."""
+    self_pairs, output_pairs = homebrew._split_self_and_output_dice(
+        "You may choose to also deal 4d6 void damage to yourself "
+        "(this damage ignores resistance and immunity)."
+    )
+    assert self_pairs == [("4d6", "void")]
+    assert output_pairs == []
+
+
+def test_self_damage_you_take_excluded() -> None:
+    """Lesser Wish / Take Me Instead's real shape."""
+    self_pairs, output_pairs = homebrew._split_self_and_output_dice(
+        "On a failure, the corpse is unaffected. You take 2d8 void damage (no save) "
+        "from the strain of the attempt."
+    )
+    assert self_pairs == [("2d8", "void")]
+    assert output_pairs == []
+
+
+def test_self_damage_paragraph_chain_without_repeated_anchor() -> None:
+    """Lesser Wish's real telescoped-penalty paragraph: the second sentence
+    ("The third, 2d6 mental damage.") never repeats "you take" — the WHOLE
+    paragraph containing the anchor is self-damage, not just the anchored
+    sentence."""
+    text = (
+        "Each time you cast this in the same day, the strain builds. The first "
+        "casting each day is free. The second casting, you take 1d6 mental damage. "
+        "The third, 2d6 mental damage. Each subsequent casting adds 1d6."
+    )
+    self_pairs, output_pairs = homebrew._split_self_and_output_dice(text)
+    assert set(self_pairs) == {("1d6", "mental"), ("2d6", "mental")}
+    assert output_pairs == []
+
+
+def test_self_damage_multi_dice_same_clause_hellforging_shape() -> None:
+    """Hellforging's real shape: TWO dice chained by "and" inside one "you
+    take" clause, both self-directed."""
+    self_pairs, output_pairs = homebrew._split_self_and_output_dice(
+        "On a failure, you take 3d10 psychic damage and 2d10 mental damage as "
+        "uncontrolled energies surge through you."
+    )
+    assert set(self_pairs) == {("3d10", "mental"), ("2d10", "mental")}  # psychic -> mental alias
+    assert output_pairs == []
+
+
+def test_self_damage_mixed_spell_keeps_real_output_damage() -> None:
+    """Solar Rebuke's real shape (isolated per-tier text, no self-damage
+    anchor at all): a spell whose real enemy damage sits in a SEPARATE,
+    unanchored paragraph must be untouched — "only the self-directed dice
+    must be excluded, not the whole spell." """
+    self_pairs, output_pairs = homebrew._split_self_and_output_dice(
+        "The creature takes 5d10 vitality damage and is dazzled until the start of your next turn."
+    )
+    assert self_pairs == []
+    assert output_pairs == [("5d10", "vitality")]
+
+
+def test_extra_motivation_end_to_end_no_longer_quantitative() -> None:
+    """A spell whose ONLY dice are self-directed must fall through to
+    ledger/effect routing, not score as if the self-cost were output EV —
+    Extra Motivation has no other damage/condition content at all, so once
+    its self-damage is excluded it's a genuine extraction dead-end
+    (SkipRecord), never a quantitative SpellFeatures row."""
+    c = homebrew.convert_spell(_vendored("Extra Motivation"))
+    result = extract_spell(c.foundry, "extra-motivation.json")
+    assert isinstance(result, SkipRecord)
+    assert "no-priceable-effect" in result.reason
+    assert any("self-directed" in w for w in c.warnings)
+
+
+def test_solar_rebuke_end_to_end_keeps_real_enemy_damage() -> None:
+    """The "mixed" spell: Solar Rebuke's real 5d10 vitality damage to the
+    enemy must survive the self-damage-exclusion fix untouched."""
+    c = homebrew.convert_spell(_vendored("Solar Rebuke"))
+    result = extract_spell(c.foundry, "solar-rebuke.json")
+    assert isinstance(result, SpellFeatures)
+    assert result.ev == 27.5  # 5d10
+    assert not any("self-directed" in w for w in c.warnings)
+
+
+def test_antimagic_shroud_end_to_end_unaffected_by_self_damage_fix() -> None:
+    """Regression guard: Antimagic Shroud's "the first time YOU TAKE damage"
+    trigger phrase sits in the same undivided paragraph as its real "2d4
+    force" output damage — the paren-damage fix must isolate the real
+    damage into its own (anchor-free) `successTiers` candidate before the
+    self-damage paragraph scan ever runs, so it must NOT be excluded."""
+    c = homebrew.convert_spell(_vendored("Antimagic Shroud"))
+    result = extract_spell(c.foundry, "antimagic-shroud.json")
+    assert isinstance(result, SpellFeatures)
+    assert result.ev == 5.0  # 2d4
+    assert not any("self-directed" in w for w in c.warnings)
+
+
+def test_attraction_end_to_end_recovers_paren_damage() -> None:
+    """Attraction's real shape ("full damage (2d6 bludgeoning)") was
+    previously missed entirely (no dice found -> ledgered) — the
+    paren-damage fix recovers it as real quantitative EV."""
+    c = homebrew.convert_spell(_vendored("Attraction"))
+    result = extract_spell(c.foundry, "attraction.json")
+    assert isinstance(result, SpellFeatures)
+    assert result.ev == 7.0  # 2d6
+
+
+# ---------------------------------------------------------------------------
+# Bug fix (orchestrator round 2): roll-on-a-table spells must not sum every
+# table entry's dice as if they all applied simultaneously.
+# ---------------------------------------------------------------------------
+
+
+def test_table_roll_anchor_truncates_search_text() -> None:
+    text = (
+        "For each of the three rays, roll 1d8 on the following table to determine "
+        "its effect.\n\n5. Enervation Ray. On a failure, the target takes 6d10 void "
+        "damage (12d10 on a critical failure; half on a success)."
+    )
+    m = homebrew._TABLE_ROLL_ANCHOR_RE.search(text)
+    assert m is not None
+    truncated = text[: m.start()]
+    assert homebrew._extract_damage_dice(truncated) == []
+
+
+def test_monstrous_copy_eye_stalks_end_to_end_table_dice_excluded() -> None:
+    """The task's worst outlier: summed every table entry's dice as one EV
+    (88, +10.53 ranks HOT). After the fix it must not price as pure damage
+    — its condition content (Fascinated/Frightened/Slowed/Unconscious/
+    Grabbed/Petrified, still promoted) routes it instead."""
+    c = homebrew.convert_spell(_vendored("Monstrous Copy: Eye Stalks"))
+    assert any("table-roll" in w for w in c.warnings)
+    result = extract_spell(c.foundry, "eye-stalks.json")
+    assert isinstance(result, SpellFeatures)
+    assert result.ev == 0.0
+    # the table's condition atoms are still real, extracted-normally content
+    assert any(ci.condition == "Frightened" for ci in result.condition_instances)
+    assert any(ci.condition == "Petrified" for ci in result.condition_instances)
+
+
+# ---------------------------------------------------------------------------
+# Question 3: healing rows mirror the official pipeline's own treatment
+# (scored 1:1 against the SAME damage ladder, D30-8(ii)) — this module adds
+# an `isHealing` triage field on top, without changing the scoring math.
+# ---------------------------------------------------------------------------
+
+
+def test_healing_draught_scores_like_damage_but_flagged() -> None:
+    if not homebrew.FITTED_PARAMS_PATH.exists():
+        return
+    results = homebrew.score_all()
+    by_name = {r["name"]: r for r in results}
+    r = by_name["Healing Draught"]
+    assert r["isHealing"] is True
+    assert r["kind"] == "quantitative"  # unchanged from the official export.py contract
+    assert r["ev"] == 57.0  # 6d8+30, unchanged — the scoring math is NOT touched
+
+
+def test_non_healing_quantitative_row_flagged_false() -> None:
+    if not homebrew.FITTED_PARAMS_PATH.exists():
+        return
+    results = homebrew.score_all()
+    by_name = {r["name"]: r for r in results}
+    assert by_name["Falling Star"]["isHealing"] is False
 
 
 # ---------------------------------------------------------------------------

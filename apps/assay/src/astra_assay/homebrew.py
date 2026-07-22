@@ -238,17 +238,82 @@ _DICE_DAMAGE_RE = re.compile(
 _HEAL_RE = re.compile(rf"regains?\s+({_DICE_TOKEN})\s*(?:HP|hit\s+points?)", re.IGNORECASE)
 
 
+#: The reversed shape: "...takes full damage (2d4 force)." / "double damage
+#: (4d4 force)" / "damage (2d8 fire + 2d8 mental, rounded down)" — a
+#: parenthetical AFTER the word "damage" instead of a dice-then-type-then-
+#: "damage" run (real corpus: Antimagic Shroud, Attraction, Tag, Temporal
+#: Threshold/Discharge, Deja Vu — 7 spells, verified via corpus scan).
+#: `+`/`,`-separated components inside the parens each get their own dice
+#: check (Tag's "2d8 fire + 2d8 mental" is two components in one paren).
+_DAMAGE_PAREN_RE = re.compile(r"damage\s*\(([^)]*)\)", re.IGNORECASE)
+_PAREN_COMPONENT_SPLIT_RE = re.compile(r"[+,]")
+_PAREN_DICE_RE = re.compile(rf"({_DICE_TOKEN})\s*([a-z]+)?", re.IGNORECASE)
+
+
 def _extract_damage_dice(text: str) -> list[tuple[str, str]]:
     """Every `<dice> [<type>] damage` mention in `text` -> `(formula, type)`
-    pairs; `type` is `"untyped"` when no recognized damage-type word sits
-    between the dice and the word "damage"."""
+    pairs (both the `NdM damage` and `damage (NdM type)` shapes); `type` is
+    `"untyped"` when no recognized damage-type word sits with the dice."""
     out: list[tuple[str, str]] = []
     for m in _DICE_DAMAGE_RE.finditer(text):
         formula = _dice_to_formula(m.group(1))
         word = (m.group(2) or "").lower()
         dtype = _DAMAGE_TYPE_ALIASES.get(word, word)
         out.append((formula, dtype if dtype in _DAMAGE_TYPES else "untyped"))
+    for m in _DAMAGE_PAREN_RE.finditer(text):
+        for component in _PAREN_COMPONENT_SPLIT_RE.split(m.group(1)):
+            dm = _PAREN_DICE_RE.search(component)
+            if not dm:
+                continue
+            formula = _dice_to_formula(dm.group(1))
+            word = (dm.group(2) or "").lower()
+            dtype = _DAMAGE_TYPE_ALIASES.get(word, word)
+            out.append((formula, dtype if dtype in _DAMAGE_TYPES else "untyped"))
     return out
+
+
+#: Self-inflicted-cost phrasing (the vendor's own words, real 5-spell
+#: population: "deal 4d6 void damage to yourself" (Extra Motivation),
+#: "you take 1d6 mental damage" / "you take 2d10... and 2d10 mental damage"
+#: (Lesser Wish/Hellforging/Take Me Instead) — plus the two more variants a
+#: real spell could plausibly use ("to itself", "damage to you", covering a
+#: reflexive-caster or self-summon-directed cost) that don't currently
+#: appear in this vendor set but match the same shape.
+_SELF_DAMAGE_ANCHOR_RE = re.compile(
+    r"\byou take\b|\bdamage to (?:yourself|itself)\b|\bdamage to you\b", re.IGNORECASE
+)
+#: "Roll 1d8 on the following table..." (Monstrous Copy: Eye Stalks) —
+#: everything from this phrase onward is a numbered effect-table listing,
+#: not the spell's own direct output; only ONE real spell in the vendor set
+#: uses this shape (verified via corpus scan), but the pattern generalizes.
+_TABLE_ROLL_ANCHOR_RE = re.compile(
+    r"\broll\s+\d+d\d+\s+on\s+the\s+following\s+table\b", re.IGNORECASE
+)
+
+
+def _split_self_and_output_dice(text: str) -> tuple[list[tuple[str, str]], list[tuple[str, str]]]:
+    """Paragraph-level self-damage exclusion. A self-damage anchor anywhere
+    in a paragraph marks EVERY dice mention in that SAME paragraph as
+    self-directed — the vendor corpus's own convention: a self-damage
+    clause is narrated as its own paragraph/sentence run, and a telescoped
+    continuation (Lesser Wish: "you take 1d6 mental damage. The third, 2d6
+    mental damage." — the second sentence never repeats "you take") shares
+    that paragraph without re-anchoring. Paragraphs with no anchor are
+    entirely output damage — this is why the exclusion must be scoped to
+    the paragraph, never the whole spell (a "mixed" spell like Solar Rebuke,
+    whose real enemy damage sits in an ISOLATED `successTiers` string with
+    no self-damage anchor at all, is untouched by construction)."""
+    self_pairs: list[tuple[str, str]] = []
+    output_pairs: list[tuple[str, str]] = []
+    for para in re.split(r"\n\s*\n", text):
+        pairs = _extract_damage_dice(para)
+        if not pairs:
+            continue
+        if _SELF_DAMAGE_ANCHOR_RE.search(para):
+            self_pairs.extend(pairs)
+        else:
+            output_pairs.extend(pairs)
+    return self_pairs, output_pairs
 
 
 def _build_damage(spell: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], bool, list[str]]:
@@ -263,7 +328,14 @@ def _build_damage(spell: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], boo
     narrative, `successTiers` is all prose-only "half/full/double damage").
     A pure-healing spell (`"regains NdM(+K) HP"`, no damage dice found at
     all) recovers as a single `kinds:["healing"]` entry, D30-8(ii)'s 1:1
-    healing-vs-damage-budget convention."""
+    healing-vs-damage-budget convention.
+
+    Two exclusions run before dice are counted toward EV, both real-corpus
+    findings from the orchestrator's batch review: a roll-on-a-table
+    listing (Monstrous Copy: Eye Stalks) is not the spell's own direct
+    output, and a self-inflicted-cost clause (Extra Motivation, Lesser
+    Wish, Hellforging, Take Me Instead) is a price paid by the CASTER, not
+    an effect on the target — neither belongs in `system.damage`."""
     warnings: list[str] = []
     defense_raw = (spell.get("defense") or "").lower()
     is_attack = "spell attack roll" in defense_raw
@@ -281,12 +353,30 @@ def _build_damage(spell: dict[str, Any]) -> tuple[dict[str, dict[str, Any]], boo
             )
         )
         candidate = success_tiers.get(preferred) or success_tiers.get(fallback) or ""
-        if candidate and _DICE_DAMAGE_RE.search(candidate):
+        # `_extract_damage_dice` (not the bare `_DICE_DAMAGE_RE` pattern) —
+        # must also recognize the "damage (NdM type)" reversed shape
+        # (Antimagic Shroud's "takes full damage (2d4 force)"), else this
+        # falls through to the full `description` and a self-damage/table
+        # anchor elsewhere in that longer text can wrongly taint real
+        # output damage that happens to share its paragraph.
+        if candidate and _extract_damage_dice(candidate):
             section = candidate
     if not section:
         section = description
 
-    dice_pairs = _extract_damage_dice(section)
+    table_match = _TABLE_ROLL_ANCHOR_RE.search(section)
+    if table_match:
+        warnings.append("table-roll spell — table-entry dice excluded from EV")
+        section = section[: table_match.start()]
+
+    self_pairs, dice_pairs = _split_self_and_output_dice(section)
+    if self_pairs:
+        excluded = ", ".join(f"{formula} {dtype}" for formula, dtype in self_pairs)
+        warnings.append(
+            f"excluded {len(self_pairs)} self-directed damage dice from EV ({excluded}) — "
+            "a cost paid by the caster, not the spell's output"
+        )
+
     if not dice_pairs:
         heal_match = _HEAL_RE.search(description)
         if heal_match:
@@ -824,7 +914,19 @@ def score_all() -> list[dict[str, Any]]:
     """Convert (fresh, never reads `out/homebrew/*.json` back — the JSON
     files `convert-homebrew` writes are a human-inspectable byproduct, not
     an intermediate this reads) and score all 176 through
-    `export.build_entry_for_row`, one Python call per spell, no subprocess."""
+    `export.build_entry_for_row`, one Python call per spell, no subprocess.
+
+    Healing rows are NOT scored differently from damage rows — this
+    mirrors the official pipeline exactly: `report2.py`'s own
+    `_damage_row_kind` labels a healing row `"healing"` but scores it
+    through the SAME `has_damage = row.ev > 0.0` / ladder-budget path as
+    any other damage row (D30-8(ii)'s declared 1:1 healing-vs-damage-budget
+    convention — see `extract.py`'s `is_healing` docstring); `export.
+    build_entry_for_row` (reused here) carries no healing distinction of
+    its own at all (`entry["kind"]` is `"quantitative"` either way). This
+    module adds an `isHealing` field on top (sourced straight from
+    `SpellFeatures.is_healing`) purely for scores.json triage segmentation
+    — the scoring math itself is untouched, matching official behavior."""
     ladder, cantrip_ladder, hostile_corpus, buff_corpus = _load_ladder_and_corpora()
     results: list[dict[str, Any]] = []
     for c in convert_all():
@@ -851,6 +953,7 @@ def score_all() -> list[dict[str, Any]]:
                     "rawSkipReason": result.reason,
                     "actionBucket": None,
                     "isReaction": str(sysd["time"]["value"]).lower() == "reaction",
+                    "isHealing": False,
                     "routing": f"ledger:{reason_code}",
                 }
             )
@@ -872,6 +975,7 @@ def score_all() -> list[dict[str, Any]]:
         record["isCantrip"] = result.is_cantrip
         record["actionBucket"] = result.action_bucket.value
         record["isReaction"] = result.action_bucket == ActionBucket.REACTION
+        record["isHealing"] = result.is_healing
         results.append(record)
     return results
 
