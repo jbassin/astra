@@ -88,6 +88,31 @@ bonus→1A/2A, reaction→"1A", minutes→3A+), never a design lever. Three work
    short-range ones) is a buff that preserves flavor. Assay's action-cost constants make
    this checkable per spell — rerun `score-homebrew` after any edit.
 
+
+### 4a. Item-4 RESOLVED (2026-07-21, stakeholder call: per-spell mix) — the decision sheet
+
+No blanket sweep. The 19 COLD damage rows split: **9 genuine nukes** (sheet below, both
+options re-scored through the real `assay score`), **6 weapon/morph + 4 sustained/charge
+spells reclassified OUT** (per-Strike/per-round dice vs per-cast budget = lens artifact;
+review them with the buff/manual pool), 1 utility misroute (Artist's Rendition).
+
+| Spell | Now | Baseline | A: range→120 | B: grow dice | Call |
+|---|---|---|---|---|---|
+| Falling Star r5 | 10d6, 500 ft | −0.65 | +0.77 HOT overshoot | **11d6 in band** | B |
+| Almonk's Retribution r5 | 6d6, 500 ft | −2.28 | −1.39 still COLD | **11d6 in band** | B |
+| Sapping Lightning r7 | 8d12, 500 ft | −0.74 | +1.30 HOT overshoot | **9d12 in band** | B |
+| Magic Re-Missiles r4 | 1d4+1 ×3 | −2.60 | n/a | 6d4+1 in band | prefer item-5 Force-Barrage 1/2/3A redesign |
+| Summon Heart r6 | 8d10 | −2.37 | n/a | 13d10 in band | death rider unpriced — some COLD is correct; ~10–11d10 |
+| Spawn Abyssal Sprite r7 | 12d6 chain | −1.52 | **in band** | 15d6 in band | chain output unmodeled — prefer A or leave; NOT 15d6 |
+| Elemental Sink r1 | 1d4 | −0.74 | n/a | **3d4 in band** | B |
+| Acupuncture r2 | 4d6 | −0.73 | n/a | **5d6 in band** | B |
+| Deja Vu r2 | 4d6 | −0.51 | n/a | 5d6 in band | repair reaction encoding FIRST (item 2), then re-score |
+
+Model facts the sheet rests on (measured, not assumed): area size within a shape is
+invisible to the fit (burst 30→20 = no verdict change — but still gameplay-stronger, don't
+treat as free); the only structural lever is the RANGE bucket and it is blunt (500→120
+overshoots mild COLDs straight to HOT); dice growth re-bands cleanly at every depth.
+
 ## 5. The two review lenses barely overlap (good)
 
 His `_conversion_notes.json` flags 44 spells with `checklistFailures`; only **8** of those
@@ -117,8 +142,7 @@ starting point there.
 1. §2 HOT list (9 spells) — nerf or re-cost; over-ranked §3 rows (5) — re-rank down.
 2. §4.1 reaction repairs (3) — mechanical fixes, no judgment needed.
 3. §3 under-ranked buffs (3) — free player-facing upgrades.
-4. The systemic §1 policy decision: tighten structure vs grow dice — one call, then sweep
-   the mild COLDs with it (biggest single lever on the set).
+4. ~~The systemic §1 policy decision~~ RESOLVED per-spell-mix — execute §4a's sheet.
 5. §4.2 variable-action redesigns (Magic Re-Missiles first — likely a strict improvement).
 6. Deep-COLD effect-dominant hybrids — decide per spell whether the effect earns the slot.
 7. The 73-ledger manual pool, seeded by his balanceBullets.
