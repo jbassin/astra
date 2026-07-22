@@ -749,9 +749,9 @@ def _success_tiers_html(success_tiers: dict[str, Any] | None) -> str:
 #: has no school traits, but these are CUSTOM schools from the original 5e
 #: system and ride every spell as a custom trait (future codex facet /
 #: Foundry-module trait). Sourced from `convertedFromSpiritOf.originalSchool`.
-#: STANDARD 5e schools are deliberately NOT carried (the one `D (Divination)`
-#: spell, Connection, stays school-traitless — pending a stakeholder homebrew
-#: school assignment).
+#: STANDARD 5e schools are deliberately NOT carried; the one `D (Divination)`
+#: spell, Connection, was assigned `memetics` by the stakeholder (2026-07-22)
+#: as a STORE edit — visible in `homebrew/revisions.md`, not baseline-derived.
 _HOMEBREW_SCHOOLS = frozenset(
     {
         "antillurgy",
