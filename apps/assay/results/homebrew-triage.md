@@ -91,10 +91,13 @@ bonus→1A/2A, reaction→"1A", minutes→3A+), never a design lever. Three work
 
 ### 4a. Item-4 RESOLVED (2026-07-21, stakeholder call: per-spell mix) — the decision sheet
 
-No blanket sweep. The 19 COLD damage rows split: **9 genuine nukes** (sheet below, both
-options re-scored through the real `assay score`), **6 weapon/morph + 4 sustained/charge
-spells reclassified OUT** (per-Strike/per-round dice vs per-cast budget = lens artifact;
-review them with the buff/manual pool), 1 utility misroute (Artist's Rendition).
+No blanket sweep. The 19 COLD pure-damage rows split: **9 genuine nukes** (sheet below, both
+options re-scored through the real `assay score`), **5 weapon/morph** (Claws, Divine Razor,
+Grosteque Selfshape, Festering Slick, Horns) **+ 4 sustained/charge** (Solar Fury, Righteous
+Pressure, Kosmoturgist's Weapon, Planar Shield) **reclassified OUT** (per-Strike/per-round
+dice vs per-cast budget = lens artifact; review them with the buff/manual pool), 1 utility
+misroute (Artist's Rendition). The 17 COLD hybrids are item 6, not here — a hybrid ~−1 is
+HEALTHY (the rider pays ≈1 rank); only the −3-and-colder ones need the item-6 judgment.
 
 | Spell | Now | Baseline | A: range→120 | B: grow dice | Call |
 |---|---|---|---|---|---|
