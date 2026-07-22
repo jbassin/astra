@@ -266,3 +266,14 @@ these are the ones where the effect has to earn the slot on its own.
   retrofitted onto Touch of Madness. Still carrying legacy/loose removal text, to be
   converted as each comes up for review (mostly the item-7 pool): arcane-censure,
   divine-regression, fast-forward, poisoned-backflow, taboo.
+- **Monstrous Copy: Stinger r8 (−4.38 → recorded LENS ARTIFACT, dice untouched; affliction
+  legalized; 9th-heighten rider dropped):** the §4a per-Strike engine again (1d4+4d10/Strike,
+  EV 24.5 vs the ~58 r8 budget; Enfeeble-r1-as-top-comparable = atom noise). The real defect
+  was a MALFORMED affliction — stage 2 undefined (yet crit-fail entered there), no max
+  duration, and persistent-damage "flat check DC 15" language afflictions don't use.
+  Stakeholder A+trim: Hutijin Venom rewritten as a legal block (Fort vs spell DC · max 6
+  rounds · S1/S2 Enfeebled 2 + Clumsy 2 · S3 Paralyzed 1 round; crit-fail = stage-2 entry,
+  native idiom); the 9th heighten keeps ONLY the 6d10 bump (Drained 2 rider dropped, the
+  Tail heighten precedent); the once-per-round gate was OFFERED and DECLINED (venom stays
+  every-hit; affliction re-exposure rules self-limit). Post-edit routing hybrid→quantitative
+  (stage-block conditions no longer promote), same −4.38.
