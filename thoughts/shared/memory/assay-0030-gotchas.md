@@ -109,4 +109,12 @@ mean −2.4); action cost is a mechanical 5e-casting-time inheritance (3 of 5 re
 broken to plain 1A, zero variable-action spells — Magic Re-Missiles COLD *because* it
 lacks the Force Barrage 1/2/3A pattern); his 44 checklist flags ∩ assay verdict flags
 = only 8 (complementary lenses). oxfmt ignorePatterns needs `**/assay/vendor/**`
-(vendored JSON stays byte-identical, the codex/data precedent).
+(vendored JSON stays byte-identical, the codex/data precedent). ▶ CANONICAL STORE
+(stakeholder model, eventual codex source + Foundry module): `apps/assay/homebrew/spells/`
+= 176 COMMITTED Foundry-shaped docs, THE single source of truth — `assay seed-homebrew`
+(refuses overwrite w/o --force; provenance in `flags.assay.seededFrom`), `score-homebrew`
+reads the store, `assay homebrew-revisions` → committed `homebrew/revisions.md` diff vs a
+fresh vendor re-conversion (0-deviation on seed = determinism proof); vendor/ is
+provenance-only; oxfmt ignores `**/assay/homebrew/**` (oxfmt's array line-fill can't be
+reproduced from json.dumps). Worklist state: item 4 RESOLVED per-spell-mix (§4a sheet in
+homebrew-triage.md); items 1/2/3/5/6/7 open; NO spell edits applied yet (stakeholder-gated).
