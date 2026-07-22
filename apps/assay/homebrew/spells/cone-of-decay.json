@@ -1,0 +1,100 @@
+{
+  "_id": "hb7a1ce9807813bc",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Cone of Decay",
+        "originalName": "Cone of Decay",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Cone of Decay",
+  "system": {
+    "area": {
+      "type": "cone",
+      "value": 60
+    },
+    "cost": {
+      "value": "a carrion beetle (material component)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You unleash a tide of temporal decay from your outstretched hand, accelerating decomposition in everything it touches. All unattended, nonliving, organic matter (wood, leather, cloth, food, rope) in the cone crumbles to dust immediately. Creatures in the cone take 8d10 void damage from the ravaging decomposition (basic Fortitude save). On a failure, the creature's nonmagical organic gear (clothing, leather armor, food, drink, rope) is destroyed; on a critical failure, nonmagical metal gear also takes a \u22121 item penalty to its relevant statistics (AC for armor, attack and damage for weapons) that persists until repaired. Undead in the cone that critically fail also take an additional 4d10 void damage that is not halved.</p><p><strong>Critical Success</strong> The creature takes no damage and its gear is unaffected.</p><p><strong>Success</strong> The creature takes half damage and its gear is unaffected.</p><p><strong>Failure</strong> The creature takes full damage and its nonmagical organic gear is destroyed.</p><p><strong>Critical Failure</strong> The creature takes double damage, its nonmagical organic gear is destroyed, and its nonmagical metal gear takes a permanent \u22121 item penalty to relevant statistics. Undead take an additional 4d10 void damage.</p><hr /><p><strong>Heightened (+1)</strong> The base void damage increases by 1d10.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d10"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

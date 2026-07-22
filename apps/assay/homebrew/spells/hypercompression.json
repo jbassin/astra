@@ -1,0 +1,85 @@
+{
+  "_id": "hb451accb5e4bea4",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Hypercompression",
+        "originalName": "Hypercompression",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Hypercompression",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 30
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "10d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "bludgeoning"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You condense gravity into a hyper-dense orb at a point you can see within range. The orb fills a 10-foot emanation with absolute darkness that no light \u2014 mundane or magical \u2014 can pierce. The area within 30 feet of the orb counts as difficult terrain for any creature moving away from the orb.</p><p>When a creature comes within 30 feet of the orb for the first time on a turn or starts its turn there, it must attempt a Fortitude save or be pulled 10 feet toward the orb (an effect that can move the creature into the darkness).</p><p>When a creature comes within 5 feet of the orb for the first time on a turn or starts its turn there, the crushing gravity deals 10d10 bludgeoning damage (basic Fortitude save). On a critical failure, the creature is also @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed} (DC equal to your spell DC to Escape).</p><p>While you sustain the spell, you can move the orb up to 20 feet at the start of each of your turns (a free action as part of Sustaining). Small or smaller unsecured nonmagical objects within 5 feet of the orb are automatically destroyed at the end of each of your turns.</p><p><strong>Critical Success</strong> The creature takes no damage and is not pulled.</p><p><strong>Success</strong> The creature takes half damage and is not pulled.</p><p><strong>Failure</strong> The creature takes full damage and, if within 30 ft, is pulled 10 feet toward the orb.</p><p><strong>Critical Failure</strong> The creature takes double damage, is pulled 10 feet toward the orb, and is @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed} (Escape DC = your spell DC).</p><hr /><p><strong>Heightened (+1)</strong> The damage at 5 feet increases by 1d10.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 8
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "darkness",
+        "gravity",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

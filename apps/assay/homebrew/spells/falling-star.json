@@ -1,0 +1,90 @@
+{
+  "_id": "hb0db95d220e7c33",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Falling Star",
+        "originalName": "Falling Star",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Falling Star",
+  "system": {
+    "area": {
+      "type": "burst",
+      "value": 30
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "10d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "vitality"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You draw a sliver of pure, solid phlogiston from a luminous plane and let it fall to a point you can see within range. The shard detonates in a silent, blinding flare, and creatures in the area must scatter from the falling light. The shard deals 10d6 vitality damage to creatures in the area. The detonation also creates bright light in a 100-foot emanation from the point of impact until the end of your next turn; this light counts as natural sunlight for the purpose of effects that depend on it.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "2d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "500 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "light",
+        "manipulate",
+        "vitality"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,95 @@
+{
+  "_id": "hb1a6a5d9201c71e",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Oblivion",
+        "originalName": "Oblivion",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Oblivion",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 40
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "6d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "6d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "bludgeoning"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You rapidly compress and expand the space around you, exerting extreme force on surrounding creatures. Each creature in the emanation (the caster is not affected) takes 6d6 void damage and 6d6 bludgeoning damage from the spatial shockwave.</p><p>**Optional sacrifice.** Before rolling damage, you may choose to take 10 void damage yourself (ignoring your own resistance and immunity to void damage, if any). If you do, you select a number of creatures in the area up to your spellcasting ability modifier (minimum 1). Those creatures automatically succeed on the saving throw against this spell (they take no damage).</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage and is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p><hr /><p><strong>Heightened (+1)</strong> Both the void damage and the bludgeoning damage each increase by 1d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "bludgeoning",
+        "concentrate",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

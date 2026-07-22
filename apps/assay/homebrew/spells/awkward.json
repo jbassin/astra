@@ -1,0 +1,78 @@
+{
+  "_id": "hbf7d4c2e58cb882",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Awkward",
+        "originalName": "Awkward",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Awkward",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You cause a creature to temporarily lose its social and physical confidence, making it obliviously @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy}. The targeted creature must attempt a Will save. If the effect takes hold, the creature is unaware that it is performing poorly \u2014 it cannot use reactions to reroll or improve its affected checks because it does not notice the problem.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The creature is affected by awkwardness. It takes a \u20131 status penalty to attack rolls, Charisma-based skill checks, and Charisma-based saving throws. It also cannot benefit from fortune effects (such as rolling twice and taking the higher result) on those rolls, because it is unaware the performance is going poorly.</p><p><strong>Critical Failure</strong> As failure, but the penalty increases to \u20132 and also applies to Dexterity-based saving throws (the creature's bodily confidence is also impaired).</p><hr /><p><strong>Heightened (6th)</strong> On a failure, the penalty increases to \u20132 (and \u20133 on a critical failure). The spell no longer requires Sustain \u2014 it lasts for 1 minute without concentration.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "6": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "emotion",
+        "enchantment",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

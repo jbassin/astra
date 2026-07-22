@@ -1,0 +1,70 @@
+{
+  "_id": "hb206fea3f923997",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Forceful Charge",
+        "originalName": "Forceful Charge",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Forceful Charge",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>Cosmic force propels you in a straight line with terrifying momentum. When you Cast this Spell, you Stride up to your full Speed in a straight line. You can move through the spaces of creatures during this movement. Each creature whose space you move through must attempt a Reflex save against your spell DC.</p><p>You ignore difficult terrain during this Stride and do not trigger Reactive Strikes from creatures you move through during the Stride.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is knocked @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard} until the end of your next turn.</p><p><strong>Failure</strong> The creature is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone} and becomes @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard} until the end of your next turn.</p><p><strong>Critical Failure</strong> The creature is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}, becomes @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard} until the end of your next turn, and takes 4d6 bludgeoning damage.</p><hr /><p><strong>Heightened (+1)</strong> The damage on a critical failure increases by 2d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "divine",
+        "manipulate",
+        "move"
+      ]
+    }
+  },
+  "type": "spell"
+}

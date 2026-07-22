@@ -1,0 +1,74 @@
+{
+  "_id": "hba1d53e8f07830e",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Thaumaturgic Inhibition",
+        "originalName": "Thaumaturgic Inhibition",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Thaumaturgic Inhibition",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 60
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You weave antillurgic interference through the ambient aether, throttling spellcasting within the sphere. Any creature other than you that casts a spell while within the 60-foot emanation must attempt a DC equal to your spell DC check using its key spellcasting attribute. On a failure, the spell is cast as if using the lowest possible spell slot that could produce it (minimum rank 1), and the spell's damage dice each roll one lower than normal (minimum 1 per die). On a success, the spell takes effect normally. The emanation does not move with you; it is centered on the point where you cast the spell.</p><hr /><p><strong>Heightened (8th)</strong> The emanation moves with you and affects your own higher-rank slots unless you expend a free action each round to maintain your connection to the weave.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "8": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

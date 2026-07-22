@@ -1,0 +1,79 @@
+{
+  "_id": "hbcddbc062a66ec0",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Summon Servant",
+        "originalName": "Summon Servant",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Summon Servant",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You strike a small metal tuning fork and bind a flicker of extraplanar spirit to your service. You summon a level \u22121 creature with the construct trait to an unoccupied space within range. The summoned servant acts on your initiative count, and you direct it as part of Sustaining the spell. Replace any physical damage on the chosen stat block's Strikes with force damage to represent the spirit's incorporeal nature. The servant lacks free will and follows only the Attack and Stride orders you give it.</p><hr /><p><strong>Heightened (2nd)</strong> The summoned spirit can be a level 1 creature.</p><p><strong>Heightened (3rd)</strong> Level 2 creature.</p><p><strong>Heightened (4th)</strong> Level 3 creature.</p><p><strong>Heightened (5th)</strong> Level 5 creature.</p><p><strong>Heightened (6th)</strong> Level 7 creature.</p><p><strong>Heightened (7th)</strong> Level 9 creature.</p><p><strong>Heightened (8th)</strong> Level 11 creature.</p><p><strong>Heightened (9th)</strong> Level 13 creature.</p><p><strong>Heightened (10th)</strong> Level 15 creature.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "10": {},
+        "2": {},
+        "3": {},
+        "4": {},
+        "5": {},
+        "6": {},
+        "7": {},
+        "8": {},
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "3"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "summon"
+      ]
+    }
+  },
+  "type": "spell"
+}

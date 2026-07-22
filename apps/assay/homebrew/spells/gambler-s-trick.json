@@ -1,0 +1,65 @@
+{
+  "_id": "hb6687fc5d77aa0f",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Gambler's Trick",
+        "originalName": "Gambler's Trick",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Gambler's Trick",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You gently tug the threads of probability to nudge a single, minor act of chance in your favor. When you Cast this Spell, choose one of the following minor random events that is actively occurring within range: a coin flip, a die roll (a d4 through d20) used for a non-critical game of chance or minor contest, a card draw from a shuffled deck, or an equivalent petty act of fortune. You choose the result of the event from among the event's possible outcomes. This spell cannot affect attack rolls, skill checks, saving throws, initiative, or any other mechanical resolution, and it has no effect in combat. The fortune trait on this spell means that additional fortune effects cannot further alter the chosen result.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 minor chance event within range"
+    },
+    "time": {
+      "value": "1"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "cantrip",
+        "concentrate",
+        "fortune",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

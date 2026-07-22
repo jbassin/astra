@@ -1,0 +1,75 @@
+{
+  "_id": "hbf33bbffe1c31cd",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Zone of Minimization",
+        "originalName": "Zone of Minimization",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Zone of Minimization",
+  "system": {
+    "area": {
+      "type": "burst",
+      "value": 20
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You saturate an area with antillurgic energy that collapses all damage potential within it to its barest minimum. While you sustain this spell, creatures inside the burst deal minimum damage on all of their damage rolls (each die result counts as 1, flat bonuses are unaffected). This effect applies to all creatures inside the zone regardless of alliance, including you.</p><p>A creature that leaves the zone is no longer affected. A creature that enters the zone is immediately subject to the effect. The zone does not affect damage from spells or abilities that originate entirely outside the zone (though creatures inside who cast spells deal minimum damage with those spells' damage rolls as well).</p><hr /><p><strong>Heightened (9th)</strong> Flat damage bonuses are also minimized (treat as 0 instead of their normal value).</p><p><strong>Heightened (10th)</strong> The burst radius increases to 30 feet.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "10": {},
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 8
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

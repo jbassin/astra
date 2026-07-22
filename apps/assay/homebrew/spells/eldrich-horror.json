@@ -1,0 +1,86 @@
+{
+  "_id": "hb4b77c0a5f590a1",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'Reflex save (initial); Fortitude save (while within the portal)'"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Eldrich Horror",
+        "originalName": "Eldrich Horror",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Eldrich Horror",
+  "system": {
+    "area": {
+      "type": "burst",
+      "value": 10
+    },
+    "cost": {
+      "value": "a black pearl worth at least 500 gp (consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You tear open a portal to the Far Realms on the floor or ground at a point you can see within range. The portal is a 10-foot-radius circle. Creatures standing in the portal's space when it appears must attempt a Reflex save or be pulled through immediately; on a success they leap to the nearest safe space as the portal irises open.</p><p>Four alien tendrils emerge from the portal. Each round when you Cast the Spell and at the start of each of your turns while you Sustain it, each tendril attempts to grab one creature within 30 feet of the portal (you choose targets); make a spell attack roll for each tendril. A hit creature is @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed} (Escape DC = your spell DC) and is dragged 10 feet toward the portal. A tendril that already has a creature @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed} drags it an additional 10 feet toward the portal instead of making a new attack.</p><p>Creatures inside the portal are in the Far Realms and are considered extradimensionally removed (incapacitation: they cannot act normally in this plane). At the start of each of their turns inside the portal, they must attempt a Fortitude save against your spell DC.</p><p><strong>Critical Success</strong> The creature inside the portal takes no damage this round.</p><p><strong>Success</strong> The creature takes 4d6 void damage.</p><p><strong>Failure</strong> The creature takes 8d6 void damage and its maximum HP is reduced by the same amount (void drain).</p><p><strong>Critical Failure</strong> The creature takes 8d6 void damage, its maximum HP is reduced by the same amount, and it is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 9
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "500 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "3"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "extradimensional",
+        "incapacitation",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,78 @@
+{
+  "_id": "hb02212c428983ed",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "cast time '3 hours' isn't a shape assay's own action-time parser recognizes \u2014 defaults to the 2-action structural multiplier",
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Overhaul",
+        "originalName": "Overhaul",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Overhaul",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a drafting table and 1,000 gp worth of metallic inks, which the spell consumes"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>Over the course of three hours of painstaking work, you deconstruct and rebuild the physical form of a living humanoid creature. A willing creature may choose to fail all saving throws (treating the result as critical failure for each). An unwilling creature must attempt three separate Fortitude saving throws \u2014 one at the end of the first hour, one at the end of the second hour, and one at the end of the third hour; if any save succeeds, the spell ends with no effect and the partially-begun transformation is reversed harmlessly.</p><p>If all three saves fail (or the creature chose to fail), the creature's ancestry changes to a randomly determined humanoid ancestry (the GM determines this, typically by rolling on a table of available ancestries in the setting). The creature retains all of its abilities, class features, proficiencies, and memories, but its ancestry traits, ability boosts, and ancestry feats change to match its new form. Appearance features such as height, weight, age, and coloration are under the caster's direction.</p><p>This is a permanent polymorph. It can be reversed only by a spell that removes curses of rank 6 or higher, or by casting Overhaul again.</p><p><strong>Critical Success</strong> The creature is unaffected for that hour's phase.</p><p><strong>Success</strong> The creature is unaffected for that hour's phase; the spell ends.</p><p><strong>Failure</strong> That phase of the transformation proceeds.</p><p><strong>Critical Failure</strong> That phase of the transformation proceeds; the creature also takes 2d10 void damage from the stress of restructuring.</p><hr /><p><strong>Heightened (7th)</strong> You may direct the ancestry outcome, choosing from ancestries you are familiar with, rather than having the GM determine it randomly.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "permanent"
+    },
+    "heightening": {
+      "levels": {
+        "7": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 living humanoid creature"
+    },
+    "time": {
+      "value": "3 hours"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "polymorph",
+        "rare"
+      ]
+    }
+  },
+  "type": "spell"
+}

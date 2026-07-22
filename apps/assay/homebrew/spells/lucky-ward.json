@@ -1,0 +1,83 @@
+{
+  "_id": "hbe97bf34f35200c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'Will save (enemies only)'",
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Lucky Ward",
+        "originalName": "Lucky Ward",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Lucky Ward",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 30
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You twist the threads of fate in a dome around yourself so that fortune favors your companions and turns its back on your foes. Allies in the emanation gain a +1 status bonus to attack rolls. Each enemy in the area when you Cast the Spell \u2014 and each enemy that enters or starts its turn in the area afterward \u2014 must attempt a Will save; resolve the save separately for each enemy, and once an enemy has rolled, it doesn't roll again from this casting.</p><p><strong>Critical Success</strong> The enemy is unaffected and is temporarily immune for 10 minutes.</p><p><strong>Success</strong> The enemy is unaffected.</p><p><strong>Failure</strong> The enemy takes a -1 status penalty to attack rolls while inside the emanation.</p><p><strong>Critical Failure</strong> As failure, and the penalty also applies to the enemy's saving throws while inside the emanation.</p><hr /><p><strong>Heightened (6th)</strong> The status bonus and penalty both increase to +2 / -2.</p><p><strong>Heightened (9th)</strong> Both increase to +3 / -3.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "6": {},
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "aura",
+        "concentrate",
+        "emotion",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

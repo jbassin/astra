@@ -1,0 +1,82 @@
+{
+  "_id": "hb2c5866c390f8af",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Acupuncture",
+        "originalName": "Acupuncture",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Acupuncture",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a thin, sharp needle (not consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "piercing"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You summon a cluster of fine arcane needles and drive them into a target's pressure points from range. Make a spell attack roll against the target. On a hit, the target takes 4d6 piercing damage and cannot regain HP until the start of your next turn (this suppresses all healing, including fast healing, regeneration, and healing spells \u2014 the target simply takes no benefit from healing effects while the needles are active). Additionally, on a hit you gain a single flash of insight about the target's resistances; you learn one of the following (your choice): a damage vulnerability, a damage resistance, or a damage immunity the target possesses. On a critical hit, the information-gathering grants two items from the list instead of one.</p><hr /><p><strong>Heightened (+1)</strong> The piercing damage increases by 2d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 round"
+    },
+    "heightening": {
+      "damage": {
+        "0": "2d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "attack",
+        "concentrate",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

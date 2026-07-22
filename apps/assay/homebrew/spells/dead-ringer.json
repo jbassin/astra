@@ -1,0 +1,72 @@
+{
+  "_id": "hb2a8168c6dfe34c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Dead Ringer",
+        "originalName": "Dead Ringer",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Dead Ringer",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>Trigger: You succeed at a saving throw or are missed by a Strike.</p><p>You make your foes see what they want to see. You instantly turn invisible and an illusory duplicate appears in your exact position, apparently undergoing a horrific fate corresponding to the effect you just evaded \u2014 struck down, poisoned, burned, etc. The illusion makes you appear to have died dramatically. The duplicate remains in place for the duration.</p><p>You remain invisible for the duration, or until you make an attack roll or Cast a Spell. Physical interaction with the duplicate reveals it to be an illusion, as objects and creatures pass through it. A creature that uses an Interact action to examine the duplicate can attempt a Perception check against your spell DC to discern it as an illusion; if the check succeeds, that creature can see through the duplicate.</p><p>When the invisibility ends (because you attacked or cast a spell), the duplicate also vanishes.</p><hr /><p><strong>Heightened (6th)</strong> Your invisibility persists for 1 minute after you attack or cast a spell (rather than ending immediately).</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 hour"
+    },
+    "heightening": {
+      "levels": {
+        "6": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "reaction"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "illusion",
+        "manipulate",
+        "visual"
+      ]
+    }
+  },
+  "type": "spell"
+}

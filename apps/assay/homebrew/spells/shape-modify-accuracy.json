@@ -1,0 +1,72 @@
+{
+  "_id": "hb6390eb7244cdc5",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Shape Modify: Accuracy",
+        "originalName": "Shape Modify: Accuracy",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Shape Modify: Accuracy",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a preserved eye (consumed)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You draw upon the collective's memory of wildshaping to refine your current form. You must be in wild shape (or another polymorph effect) to Cast this Spell; if you are not, the spell fails with no effect. You sharpen the senses of your current form, trading raw striking power for precision. For the duration, your unarmed Strikes in your current form gain a +2 circumstance bonus to attack rolls, but deal 2d6 less damage (minimum 1). If this penalty would reduce the damage to 1, the attack still deals 1 damage. This spell ends immediately when you leave your polymorphed form.</p><hr /><p><strong>Heightened (5th)</strong> The circumstance bonus to attack rolls increases to +3.</p><p><strong>Heightened (7th)</strong> The circumstance bonus to attack rolls increases to +4, and the damage penalty is reduced to 1d6 less.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "until your wild shape ends"
+    },
+    "heightening": {
+      "levels": {
+        "5": {},
+        "7": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "1"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "morph",
+        "primal"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,71 @@
+{
+  "_id": "hb22c3cf5741de30",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Return Spell",
+        "originalName": "Return Spell",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Return Spell",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a bent willow wrapped with strands of gut (material component)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You weave a ward of antimagic deflection around a willing creature. For the duration, when a spell that requires a saving throw targets the warded creature, the creature can use its reaction to attempt to reflect the spell. The warded creature rolls its saving throw against the reflected spell. On a success, the spell rebounds to the original caster, who must also attempt the saving throw against their own spell (using the same DC). On a failure, the spell takes full effect on the warded creature. Each time the spell rebounds, both parties have already made one save; after each has made three saving throws total (six between both parties), the spell dissipates harmlessly regardless of results. If the reflected spell has an area that partially covers the warded creature, only the portion targeting the warded creature is reflected; the rest functions normally on other targets in the area. The reaction to initiate reflection can be used once per round.</p><hr /><p><strong>Heightened (9th)</strong> The warded creature can use the reaction twice per round and the spell can rebound up to four times total per triggered spell.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "8 hours"
+    },
+    "heightening": {
+      "levels": {
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 willing creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

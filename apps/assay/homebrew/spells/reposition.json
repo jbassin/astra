@@ -1,0 +1,70 @@
+{
+  "_id": "hb35d611194788b5",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Reposition",
+        "originalName": "Reposition",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Reposition",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You twist the fabric of space around a creature you can see within range, teleporting it up to 10 feet to an unoccupied space you can see. The movement can pass through the spaces of other creatures but cannot pass through solid obstructions. The movement does not trigger reactions. If the target is a willing ally, no save is required. If the target is unwilling or hostile, it can attempt a Fortitude save to resist.</p><p><strong>Critical Success</strong> The hostile creature is unaffected.</p><p><strong>Success</strong> The hostile creature is unaffected.</p><p><strong>Failure</strong> The creature is teleported up to 10 feet to a space you choose.</p><p><strong>Critical Failure</strong> The creature is teleported up to 20 feet to a space you choose, and is @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard} until the end of its next turn.</p><hr /><p><strong>Heightened (+1)</strong> The maximum teleportation distance increases by 10 feet.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "teleportation"
+      ]
+    }
+  },
+  "type": "spell"
+}

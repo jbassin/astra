@@ -12,11 +12,23 @@ via ``uv run assay price``, never regenerated here).
 from __future__ import annotations
 
 import json
+from pathlib import Path
 
+import pytest
 from astra_assay import comparables, homebrew, ledger
 from astra_assay.extract import ActionBucket, SkipRecord, SpellFeatures, extract_spell
 
 RESULTS_DIR = homebrew.RESULTS_DIR
+
+
+@pytest.fixture(scope="module")
+def seeded_store(tmp_path_factory: pytest.TempPathFactory) -> Path:
+    """A TEMPORARY canonical store, seeded once per test module run from the
+    real vendored baseline — tests must never read/write the real committed
+    `apps/assay/homebrew/spells/` store."""
+    store_dir = tmp_path_factory.mktemp("homebrew_store") / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    return store_dir
 
 
 def _spell(**overrides: object) -> dict:
@@ -334,10 +346,10 @@ def test_monstrous_copy_eye_stalks_end_to_end_table_dice_excluded() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_healing_draught_scores_like_damage_but_flagged() -> None:
+def test_healing_draught_scores_like_damage_but_flagged(seeded_store: Path) -> None:
     if not homebrew.FITTED_PARAMS_PATH.exists():
         return
-    results = homebrew.score_all()
+    results = homebrew.score_all(store_dir=seeded_store)
     by_name = {r["name"]: r for r in results}
     r = by_name["Healing Draught"]
     assert r["isHealing"] is True
@@ -345,10 +357,10 @@ def test_healing_draught_scores_like_damage_but_flagged() -> None:
     assert r["ev"] == 57.0  # 6d8+30, unchanged — the scoring math is NOT touched
 
 
-def test_non_healing_quantitative_row_flagged_false() -> None:
+def test_non_healing_quantitative_row_flagged_false(seeded_store: Path) -> None:
     if not homebrew.FITTED_PARAMS_PATH.exists():
         return
-    results = homebrew.score_all()
+    results = homebrew.score_all(store_dir=seeded_store)
     by_name = {r["name"]: r for r in results}
     assert by_name["Falling Star"]["isHealing"] is False
 
@@ -768,10 +780,10 @@ def test_convert_all_176_without_crash() -> None:
             assert isinstance(w, str) and w
 
 
-def test_score_all_176_without_crash_and_routes_everything() -> None:
+def test_score_all_176_without_crash_and_routes_everything(seeded_store: Path) -> None:
     if not homebrew.FITTED_PARAMS_PATH.exists():
         return
-    results = homebrew.score_all()
+    results = homebrew.score_all(store_dir=seeded_store)
     assert len(results) == 176
     valid_top = {"quantitative", "hybrid", "comparables", "buff", "ledger"}
     for r in results:
@@ -780,12 +792,161 @@ def test_score_all_176_without_crash_and_routes_everything() -> None:
         assert isinstance(r["warnings"], list)
 
 
-def test_scores_json_is_valid_json_after_cli_write(tmp_path, monkeypatch) -> None:  # type: ignore[no-untyped-def]
+def test_scores_json_is_valid_json_after_cli_write(seeded_store: Path) -> None:
     """`score_all`'s output round-trips through `json.dumps` cleanly (the
     same serialization `cmd_score_homebrew` writes to `out/homebrew/scores.json`)."""
     if not homebrew.FITTED_PARAMS_PATH.exists():
         return
-    results = homebrew.score_all()
+    results = homebrew.score_all(store_dir=seeded_store)
     text = json.dumps(results, indent=2, sort_keys=True)
     round_tripped = json.loads(text)
     assert len(round_tripped) == len(results)
+
+
+# ---------------------------------------------------------------------------
+# Round 3: the canonical, committed, hand-editable store — seeding,
+# round-trip fidelity, and the revisions (diff) report.
+# ---------------------------------------------------------------------------
+
+
+def test_seed_refuses_to_overwrite_without_force(tmp_path: Path) -> None:
+    store_dir = tmp_path / "spells"
+    report1 = homebrew.seed_homebrew(store_dir=store_dir)
+    assert len(report1.seeded) == 176
+    assert report1.skipped_existing == []
+
+    # Simulate a hand edit on one file, then re-seed without --force.
+    one = next(store_dir.glob("*.json"))
+    original_text = one.read_text(encoding="utf-8")
+    hand_edited = original_text.replace('"rules": []', '"rules": ["hand-edited-marker"]')
+    assert hand_edited != original_text
+    one.write_text(hand_edited, encoding="utf-8")
+
+    report2 = homebrew.seed_homebrew(store_dir=store_dir)
+    assert report2.seeded == []
+    assert len(report2.skipped_existing) == 176
+    # the hand edit must survive an unforced re-seed untouched.
+    assert one.read_text(encoding="utf-8") == hand_edited
+
+
+def test_seed_force_overwrites_existing_files(tmp_path: Path) -> None:
+    store_dir = tmp_path / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    one = next(store_dir.glob("*.json"))
+    one.write_text('{"name": "clobber me"}', encoding="utf-8")
+
+    report = homebrew.seed_homebrew(store_dir=store_dir, force=True)
+    assert len(report.seeded) == 176
+    assert report.skipped_existing == []
+    # every file, including the hand-edited one, is back to the fresh bake.
+    assert '"clobber me"' not in one.read_text(encoding="utf-8")
+
+
+def test_seed_writes_provenance_flags(tmp_path: Path) -> None:
+    store_dir = tmp_path / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    doc = json.loads((store_dir / "falling-star.json").read_text(encoding="utf-8"))
+    seeded_from = doc["flags"]["assay"]["seededFrom"]
+    assert seeded_from["repo"] == "run_balance"
+    assert seeded_from["commit"] == "efc8e310210a2577411c62ee95f09a58ef79f164"
+    assert seeded_from["convertedName"] == "Falling Star"
+    assert seeded_from["originalName"]
+    assert isinstance(doc["flags"]["assay"]["adapterWarnings"], list)
+
+
+def test_seeded_doc_round_trips_through_extract_spell_identically(tmp_path: Path) -> None:
+    """The `flags` block a seeded doc carries must be inert to extraction —
+    a store doc and the plain in-memory `convert_spell` output (no flags at
+    all) must produce byte-identical `SpellFeatures`."""
+    store_dir = tmp_path / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    seeded_doc = json.loads((store_dir / "falling-star.json").read_text(encoding="utf-8"))
+    assert "flags" in seeded_doc  # sanity: the thing we're testing tolerance of is present
+
+    baseline = homebrew.convert_spell(_vendored("Falling Star")).foundry
+    result_seeded = extract_spell(seeded_doc, "falling-star.json")
+    result_baseline = extract_spell(baseline, "falling-star.json")
+    assert isinstance(result_seeded, SpellFeatures)
+    assert isinstance(result_baseline, SpellFeatures)
+    assert result_seeded.model_dump() == result_baseline.model_dump()
+
+
+def test_flags_pass_through_extraction_harmlessly() -> None:
+    """A generic sanity check independent of the store: `extract_spell`
+    never reads `data["flags"]` at all — any flags shape is inert."""
+    spell = _spell(
+        defense="basic Reflex",
+        description="You deal 3d6 fire damage in a burst.",
+        area="20-foot burst",
+    )
+    c = homebrew.convert_spell(spell)
+    plain = c.foundry
+    flagged = dict(plain)
+    flagged["flags"] = {"assay": {"seededFrom": {"repo": "run_balance", "commit": "deadbeef"}}}
+    r_plain = extract_spell(plain, "x.json")
+    r_flagged = extract_spell(flagged, "x.json")
+    assert isinstance(r_plain, SpellFeatures)
+    assert isinstance(r_flagged, SpellFeatures)
+    assert r_plain.model_dump() == r_flagged.model_dump()
+
+
+def test_score_all_reads_the_store_not_the_vendor_file(tmp_path: Path) -> None:
+    """`score_all` must not silently fall back to converting the vendor
+    file — an empty/missing store is a hard error."""
+    if not homebrew.FITTED_PARAMS_PATH.exists():
+        return
+    empty_store = tmp_path / "spells"
+    empty_store.mkdir()
+    with pytest.raises(SystemExit):
+        homebrew.score_all(store_dir=empty_store)
+
+
+def test_revisions_reports_zero_on_a_fresh_seed(tmp_path: Path) -> None:
+    store_dir = tmp_path / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    report = homebrew.homebrew_revisions(store_dir=store_dir)
+    assert report.store_count == 176
+    assert report.baseline_count == 176
+    assert report.deviations == []
+    assert report.missing_from_store == []
+    assert report.extra_in_store == []
+
+
+def test_revisions_reports_a_synthetic_edit(tmp_path: Path) -> None:
+    store_dir = tmp_path / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    path = store_dir / "falling-star.json"
+    doc = json.loads(path.read_text(encoding="utf-8"))
+    doc["system"]["damage"]["0"]["formula"] = "12d6"  # a hand edit: buff the damage
+    path.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+
+    report = homebrew.homebrew_revisions(store_dir=store_dir)
+    assert len(report.deviations) == 1
+    dev = report.deviations[0]
+    assert dev.slug == "falling-star"
+    assert any("damage" in f for f in dev.fields)
+
+
+def test_revisions_reports_missing_and_extra(tmp_path: Path) -> None:
+    store_dir = tmp_path / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    (store_dir / "falling-star.json").unlink()
+    (store_dir / "not-a-real-baseline-spell.json").write_text(
+        json.dumps({"name": "Ghost Spell", "system": {}, "type": "spell"}), encoding="utf-8"
+    )
+
+    report = homebrew.homebrew_revisions(store_dir=store_dir)
+    assert "falling-star" in report.missing_from_store
+    assert "not-a-real-baseline-spell" in report.extra_in_store
+    assert report.deviations == []  # the 174 untouched spells still match exactly
+
+
+def test_write_revisions_md_is_readable(tmp_path: Path) -> None:
+    store_dir = tmp_path / "spells"
+    homebrew.seed_homebrew(store_dir=store_dir)
+    report = homebrew.homebrew_revisions(store_dir=store_dir)
+    out_path = tmp_path / "revisions.md"
+    homebrew._write_revisions_md(report, out_path)
+    text = out_path.read_text(encoding="utf-8")
+    assert "0 deviations" in text or "**0" in text
+    assert "_none_" in text

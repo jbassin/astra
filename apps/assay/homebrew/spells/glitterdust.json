@@ -1,0 +1,76 @@
+{
+  "_id": "hb27e79fe0bc2021",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Glitterdust",
+        "originalName": "Glitterdust",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Glitterdust",
+  "system": {
+    "area": {
+      "type": "cone",
+      "value": 30
+    },
+    "cost": {
+      "value": "a handful of glitter"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You hurl a cloud of tiny golden shards from the luminous spaces between planes in a 30-foot cone, covering all creatures and objects in the area with a persistent glittering coat.</p><p>Any creature that starts its turn in the area, or that moves into the area, is immediately coated. The coating does not wash off on its own during the spell's duration. Coated creatures and objects cannot benefit from the invisible condition or similar concealment tied to their visibility \u2014 they shed light equivalent to a candle and are always visible, even if they would otherwise be @UUID[Compendium.pf2e.conditionitems.Item.Undetected]{Undetected}. Attack rolls against coated creatures and objects do not suffer the miss chance from concealment due to invisibility or magical darkness.</p><p>Additionally, when a creature is first coated (when it fails its Fortitude save), it may be @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded}:</p><p><strong>Critical Success</strong> The glitter fails to coat the creature; it is completely unaffected.</p><p><strong>Success</strong> The creature is coated with glitter and cannot benefit from the invisible condition or concealment from invisibility or magical darkness, but is not blinded.</p><p><strong>Failure</strong> The creature is coated and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} for 1 minute. The creature attempts a Fortitude save at the end of each turn; on a success, the @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} condition ends (but the coating persists).</p><p><strong>Critical Failure</strong> As failure, and the creature cannot attempt saves to end the @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} condition for the first 3 rounds.</p><hr /><p><strong>Heightened (+2)</strong> The cone increases by 15 feet (45 feet at rank 5, 60 feet at rank 7, etc.).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "light",
+        "manipulate",
+        "visual"
+      ]
+    }
+  },
+  "type": "spell"
+}

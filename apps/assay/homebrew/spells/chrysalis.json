@@ -1,0 +1,71 @@
+{
+  "_id": "hb0f65aeff4a3833",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Chrysalis",
+        "originalName": "Chrysalis",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Chrysalis",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a silken cocoon, which is consumed"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You dramatically accelerate the flow of time around a willing creature, allowing it to compress an 8-hour long rest into a single hour while you and other companions continue at normal speed. The target is wrapped in a thick, iridescent cocoon and does not need to eat or drink during this time. At the end of the hour, the target emerges as if it had just completed a full 8-hour rest (recovering HP per its normal rest rules, regaining daily abilities, clearing most conditions that rest removes, and so on).</p><p>While within the cocoon, the target is completely cut off from external stimuli \u2014 it cannot perceive the outside world, cannot take actions, cannot speak or be spoken to, and is not aware of what happens outside. The cocoon is fragile: it has AC 10, Hardness 5, and 20 HP. If the cocoon is destroyed, the spell ends immediately and the target emerges @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2} (until the end of its next turn) without having gained the benefits of the rest.</p><p>This spell can only be cast outside of combat or when there is no active threat to the caster.</p><hr /><p><strong>Heightened (8th)</strong> The cocoon's HP increases to 40 and its Hardness increases to 10. The cast time remains 10 minutes but the cocoon is visually imperceptible to creatures that succeed at a DC 30 Perception check.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 hour"
+    },
+    "heightening": {
+      "levels": {
+        "8": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 willing creature"
+    },
+    "time": {
+      "value": "10 minutes"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "time"
+      ]
+    }
+  },
+  "type": "spell"
+}

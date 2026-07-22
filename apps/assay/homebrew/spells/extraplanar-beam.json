@@ -1,0 +1,90 @@
+{
+  "_id": "hb818ef6eb9436d2",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Extraplanar Beam",
+        "originalName": "Extraplanar Beam",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Extraplanar Beam",
+  "system": {
+    "area": {
+      "type": "line",
+      "value": 100
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d12",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "vitality"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You open a conduit to the space between planes, firing a beam of pulsing violet-white light harvested from the interplanar void. This beam is part of the Extraplanar series \u2014 a set of spells that channel the same interplanar radiance at different scales: Extraplanar Pulse (rank 2) sends a burst of this energy from a central point, and Extraplanar Beam projects it as a focused line.</p><p>Each creature in the line takes 8d12 vitality damage. A creature that critically fails its save is also @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn; this blindness is caused by the overwhelming interplanar light.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d12.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d12"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "100 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "light",
+        "manipulate",
+        "vitality"
+      ]
+    }
+  },
+  "type": "spell"
+}

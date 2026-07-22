@@ -1,0 +1,69 @@
+{
+  "_id": "hb809496bc15073d",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Sphere of Ruin",
+        "originalName": "Sphere of Ruin",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Sphere of Ruin",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "an iridescent gem worth 500 gp (consumed)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You summon a swirling iridescent sliver of Ruin \u2014 a one-foot sphere of chaotic unreality \u2014 adjacent to a creature you can see within range. At the end of each of your turns while you sustain this spell, the sphere moves up to 30 feet toward its current target; it can fly and pass through solid objects and creatures, though it cannot end its movement inside a solid object. When the sphere occupies the same space as a creature for the first time on a turn, that creature must attempt a Will save against your spell DC.</p><p>As a single action, you can redirect the sphere to a new creature you can see; the sphere then pursues that target instead.</p><p>The sphere is paired with Sphere of Preservation (rank 6): while both spells are sustained by the same caster simultaneously, the Ruin sphere's save DC increases by 2.</p><p><strong>Critical Success</strong> The creature is unaffected and is temporarily immune to this casting for 10 minutes.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> Roll 1d6 to determine the effect: 1\u20133: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}; 4\u20135: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} until the start of your next turn (incapacitation); 6: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} until the start of your next turn.</p><p><strong>Critical Failure</strong> Roll 1d6 to determine the effect: 1\u20133: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2}; 4\u20135: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} for 1 round (incapacitation) and must attempt a Will save at the start of its next turn to end the confusion; 6: the creature Strides in a random direction using its full Speed and falls @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone} at the destination.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "incapacitation",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

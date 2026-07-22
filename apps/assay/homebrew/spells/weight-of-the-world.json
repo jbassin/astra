@@ -1,0 +1,72 @@
+{
+  "_id": "hb02fd624d4f1f03",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Weight of the World",
+        "originalName": "Weight of the World",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Weight of the World",
+  "system": {
+    "area": {
+      "type": "burst",
+      "value": 60
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You call down the weight of existence upon those around a chosen point, crushing their movement and resolve. Each creature in the area must attempt a Fortitude saving throw.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature's Speed is reduced by 10 feet for 1 round.</p><p><strong>Failure</strong> The creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} for 1 minute and takes a \u20132 status penalty to attack rolls and Strength-based skill checks. At the end of each of its turns, the affected creature can attempt a new Fortitude save; on a success, the effect ends.</p><p><strong>Critical Failure</strong> As failure, but the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 2} for 1 minute and the status penalty increases to \u20133.</p><hr /><p><strong>Heightened (+2)</strong> The burst radius increases by 10 feet.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

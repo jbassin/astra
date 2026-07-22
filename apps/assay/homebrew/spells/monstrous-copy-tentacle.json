@@ -1,0 +1,86 @@
+{
+  "_id": "hbe6dd8fcfdd4755",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Monstrous Copy: Tentacle",
+        "originalName": "Monstrous Copy: Tentacle",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Monstrous Copy: Tentacle",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d8",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "piercing"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You draw upon your knowledge of monsters to fight like them, reshaping one of your limbs into a sinuous, prehensile tentacle. You grow a tentacle unarmed Strike that deals 2d8 piercing damage and has the agile, disarm, grapple, magical, reach (15 feet), trip, and unarmed traits. You are trained with this attack, and if your weapon proficiency with martial weapons is higher than your unarmed proficiency, your tentacle uses that proficiency instead.</p><p>When you successfully Grapple or maintain a Grapple against a creature using this tentacle, you can inject paralytic venom into the creature as part of the same action. The creature must attempt a Fortitude save against your spell DC.</p><p>Critical Success: The creature is unaffected and is temporarily immune to this poison for 24 hours.<br />Success: The creature is unaffected.<br />Failure: The creature is afflicted with tentacle venom (stage 1: @UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled 1} and @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 1} for 1 round; stage 2: @UUID[Compendium.pf2e.conditionitems.Item.Paralyzed]{Paralyzed} for 1 round; stage 3: @UUID[Compendium.pf2e.conditionitems.Item.Paralyzed]{Paralyzed} for 1 minute; each stage lasts 1 round; the creature can attempt a DC 5 flat check each round to reduce the stage by 1).<br />Critical Failure: As failure, but the creature begins at stage 2.</p><hr /><p><strong>Heightened (6th)</strong> The tentacle's base damage increases to 2d10 piercing.</p><p><strong>Heightened (7th)</strong> The tentacle's base damage increases to 3d8 piercing.</p><p><strong>Heightened (8th)</strong> The tentacle's base damage increases to 3d10 piercing, and the venom's DC flat check increases from DC 5 to DC 10 (harder to shake off).</p><p><strong>Heightened (9th)</strong> The tentacle's base damage increases to 4d8 piercing.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "6": {},
+        "7": {},
+        "8": {},
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "morph",
+        "poison",
+        "primal"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,86 @@
+{
+  "_id": "hbaa9f9b6f21564c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "defense text 'spell attack roll' implies an attack-roll spell but the source traits list lacked 'attack' \u2014 added it (required for assay's targeting_class classification)",
+        "range text 'melee' (normalized 'melee') isn't a shape assay's own range parser recognizes \u2014 bucketed 'varies', may misprice the structural range multiplier"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Distorted Mark",
+        "originalName": "Distorted Mark",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Distorted Mark",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "1d4",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "sonic"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You speak a short sonic invocation and strike with your melee weapon, weaving a lattice of compressed space around the target. Make a melee weapon Strike as part of Casting the Spell; if the weapon Strike misses, the spell fails. On a hit, the Strike deals its normal damage and the target is marked with a destabilized spatial resonance until the start of your next turn. While the mark persists, the next time the target takes damage from a melee Strike by a creature other than you, the mark decompresses with a thunderous crack, dealing 1d4 sonic damage to the target (no save).</p><hr /><p><strong>Heightened (+2)</strong> The decompression damage increases by 1d4.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "until the start of your next turn"
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d4"
+      },
+      "interval": 2,
+      "type": "interval"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "melee"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "attack",
+        "cantrip",
+        "concentrate",
+        "manipulate",
+        "sonic"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,76 @@
+{
+  "_id": "hb2821ffcce3be06",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "mixed '+N' and fixed-rank heightening triggers on the same spell \u2014 Foundry heightening is one shape per spell, not structurally represented (kept as a description appendix only)"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Festering Slick",
+        "originalName": "Festering Slick",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Festering Slick",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "3d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You speak a word of antillurgic power and coat a melee weapon you are holding with a slick of festering void energy. For the duration of the spell, the weapon has the following property:</p><p>**On the first time the weapon hits a living creature**, the slick creeps from the blade into the wound. The creature takes an additional 3d6 void damage. Additionally, it becomes afflicted with festering corruption \u2014 it cannot regain Hit Points (from any source: spells, abilities, potions, natural healing) until the start of your next turn after the spell ends. Once the slick has triggered against a creature, it cannot trigger against any creature again (the slick is expended).</p><p>After the slick triggers, the spell continues to suppress healing on the affected creature until the duration expires, even if the weapon is dropped or you stop sustaining the spell. You can sustain the spell to maintain the healing suppression; if you stop sustaining, the healing suppression on the affected creature ends immediately.</p><hr /><p><strong>Heightened (+1)</strong> The void damage on trigger increases by 1d6.</p><p><strong>Heightened (5th)</strong> The slick can trigger twice (once per hit, up to two separate creatures) before it is expended.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 melee weapon you are holding"
+    },
+    "time": {
+      "value": "1"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,78 @@
+{
+  "_id": "hbb63caa85a4e79e",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Ashen Pack",
+        "originalName": "Ashen Pack",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Ashen Pack",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "fire"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>With a gesture, you draw upon deep planar heat to summon three spectral flaming wolves made of living ash into unoccupied spaces within 30 feet of you. The wolves act on your initiative. When you Sustain this spell, you can Command one wolf to rush to a target within 60 feet of you. That wolf makes a melee spell attack roll against the target using your spell attack modifier. On a hit, the target takes 4d6 fire damage. On a critical hit, the target takes double damage and is also knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}. After attacking, the wolf immediately returns to your space.</p><p>Each wolf has AC equal to your spell DC, 1 Hit Point, and is destroyed if it takes any damage or is blocked from returning to your space after attacking. The spell ends when all three wolves are lost, or when it is no longer sustained.</p><hr /><p><strong>Heightened (+1)</strong> The fire damage of each wolf's attack increases by 1d6.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "3"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "fire",
+        "manipulate",
+        "summon"
+      ]
+    }
+  },
+  "type": "spell"
+}

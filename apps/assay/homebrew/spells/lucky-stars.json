@@ -1,0 +1,66 @@
+{
+  "_id": "hb6a80f64676ad80",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Lucky Stars",
+        "originalName": "Lucky Stars",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Lucky Stars",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You pluck three small pockets of fate from the air, manifesting as sparkling stars orbiting your head. You have 3 star charges that persist for the duration.</p><p>Whenever you attempt an attack roll, skill check, Perception check, or saving throw, you can spend 1 star charge as a free action to roll an additional d20. You may choose which result to use. You can spend a star charge after you roll but before the outcome is determined.</p><p>Whenever an attack roll is made against you, you can spend 1 star charge as a free action (even during another creature's turn) to roll a d20 and force the attacker to use the lower result (misfortune effect). You cannot spend star charges for both fortune and misfortune on the same roll.</p><p>The stars fade when all charges are spent or the duration expires.</p><hr /><p><strong>Heightened (+2)</strong> You gain 1 additional star charge when you cast this spell (starting with 4 at rank 5, 5 at rank 7, etc.).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "fortune",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,85 @@
+{
+  "_id": "hbc3577054cdba72",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Focus Break",
+        "originalName": "Focus Break",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Focus Break",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "mental"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You project a ripple of disruptive antimagic energy at a creature maintaining a sustained spell or other concentration-dependent magical effect. The creature must attempt a Fortitude saving throw. Regardless of the result, the target also takes 2d6 mental damage (no save) from the psychic shock of the disruption.</p><p><strong>Critical Success</strong> The creature is unaffected and the magical effect it was sustaining continues normally.</p><p><strong>Success</strong> The creature's sustained spell or effect ends immediately.</p><p><strong>Failure</strong> The creature's sustained spell or effect ends immediately, and the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p><p><strong>Critical Failure</strong> The creature's sustained spell or effect ends immediately, the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2}, and it cannot sustain or concentrate on any magical effect until the start of its next turn.</p><hr /><p><strong>Heightened (+1)</strong> The mental damage increases by 1d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature currently Sustaining a spell or concentrating on a magical effect"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

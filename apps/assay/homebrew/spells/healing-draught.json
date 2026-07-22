@@ -1,0 +1,77 @@
+{
+  "_id": "hb136df8a472de08",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Healing Draught",
+        "originalName": "Healing Draught",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Healing Draught",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a sealed, opaque glass bottle (returned at end of duration)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "6d8+30",
+        "kinds": [
+          "healing"
+        ],
+        "materials": [],
+        "type": "vitality"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You twist luck and life-force into the bottle you hold, creating a powerful healing draught that crystallizes fate into medicine. The bottle instantly fills with a shimmering, golden healing potion. Any creature that uses an Interact action to consume the potion during the spell's duration regains 6d8+30 HP and is cured of any diseases and poisons of rank 6 or lower currently affecting it. Once consumed, the potion is gone; if not consumed by the end of the duration, the draught fades and the bottle is returned empty.</p><p>Only one Healing Draught can exist at a time from a given caster; casting this spell again while a previous draught exists causes the previous one to immediately fade.</p><hr /><p><strong>Heightened (+1)</strong> The healing increases by 1d8+8.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "10 minutes"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 bottle held in hand"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "healing",
+        "manipulate",
+        "vitality"
+      ]
+    }
+  },
+  "type": "spell"
+}

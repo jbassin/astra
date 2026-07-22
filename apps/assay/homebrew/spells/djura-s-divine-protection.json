@@ -1,0 +1,63 @@
+{
+  "_id": "hbc06803f2fc69ed",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Djura's Divine Protection",
+        "originalName": "Djura's Divine Protection",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Djura's Divine Protection",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>Djura's signature ward compresses a layer of air to the density of tempered steel around the bodies of your allies. For the duration, each target gains resistance 10 to bludgeoning, piercing, and slashing damage, as well as resistance 10 to force damage. Additionally, each target gains a +2 status bonus to death-saving throws (the flat checks made when @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying}).</p><p>This is a named spell in the Djura tradition. In PF2e, it is recommended as a focus spell for the Djura class archetype \u2014 see notes.</p><hr /><p><strong>Heightened (+1)</strong> The resistance increases by 5.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "10 minutes"
+    },
+    "level": {
+      "value": 9
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "up to 8 willing creatures"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

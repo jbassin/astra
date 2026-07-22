@@ -1,0 +1,83 @@
+{
+  "_id": "hbbd3f3cc37295c8",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Spawn Abyssal Sprite",
+        "originalName": "Spawn Abyssal Sprite",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Spawn Abyssal Sprite",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a finger bone of a demon (consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "12d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You crack a demon's finger bone and hurl an abyssal bolt of void energy at a creature you can see within range. Make a spell attack roll against the target. On a hit, the bolt deals 12d6 void damage (double on a critical hit). The bolt then leaps to another creature of your choice within 30 feet of the previous target that has not already been struck by this casting; make a new spell attack roll for each subsequent target. The chain continues until you miss or no eligible target remains within 30 feet of the last target struck.</p><hr /><p><strong>Heightened (+1)</strong> The initial damage increases by 2d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "2d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "500 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature, then chaining to additional creatures"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "attack",
+        "concentrate",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

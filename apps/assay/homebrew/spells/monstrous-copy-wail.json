@@ -1,0 +1,88 @@
+{
+  "_id": "hb4b6c4971fec163",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Monstrous Copy: Wail",
+        "originalName": "Monstrous Copy: Wail",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Monstrous Copy: Wail",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 20
+    },
+    "cost": {
+      "value": "a strand of banshee hair (consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d8",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "sonic"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You draw upon your knowledge of the Banshee, reshaping your vocal cords into a monstrous approximation of its spectral wail. You unleash a bone-chilling keening cry that pierces the mind of all who hear it. Each creature in the area must attempt a Fortitude saving throw. A creature that is @UUID[Compendium.pf2e.conditionitems.Item.Deafened]{Deafened} is immune to this spell.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes 4d8 sonic damage.</p><p><strong>Failure</strong> The creature takes 8d8 sonic damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 2} for 1 minute.</p><p><strong>Critical Failure</strong> The creature takes 16d8 sonic damage, is @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 4} for 1 minute, and is @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} for 1 minute. The creature can attempt a DC 15 flat check at the end of each of its turns to recover from the @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} condition.</p><hr /><p><strong>Heightened (+1)</strong> The damage on each tier increases by 1d8 / 2d8 / 4d8 (success / failure / critical failure).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "primal"
+      ],
+      "value": [
+        "auditory",
+        "concentrate",
+        "incapacitation",
+        "manipulate",
+        "mental",
+        "morph",
+        "primal",
+        "sonic"
+      ]
+    }
+  },
+  "type": "spell"
+}

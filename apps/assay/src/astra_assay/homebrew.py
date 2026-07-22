@@ -2,15 +2,26 @@
 (``vendor/run_balance/pf2e_converted_spells/all_spells_pf2e.json``, bespoke
 schema documented in ``vendor/run_balance/plan.md``'s "Output JSON schema")
 onto the Foundry ``system`` shape ``extract.py``/``cli.py``'s ``assay score``
-already reads.
+already reads — AND the canonical, committed, hand-editable store that
+adapter output seeds ONE TIME.
 
-Two subcommands (registered in ``cli.py``, mirroring its subparser pattern):
+**Architecture (round 3):** ``apps/assay/homebrew/spells/<slug>.json`` is
+now the single source of truth for the 176 homebrew spells going forward
+(committed; eventual consumers: codex ingest, possibly a Foundry compendium
+module). The vendored bespoke schema is provenance-only from here on —
+nothing downstream of the store reads it. Three subcommands (registered in
+``cli.py``, mirroring its subparser pattern):
 
-    uv run assay convert-homebrew   # -> out/homebrew/<slug>.json (one per spell)
-    uv run assay score-homebrew     # convert (fresh) + score all 176 -> out/homebrew/scores.json
+    uv run assay seed-homebrew        # ONE-TIME: vendor -> the committed store (refuses to
+                                       #   overwrite an existing file without --force)
+    uv run assay score-homebrew       # reads the STORE (never converts from vendor) ->
+                                       #   out/homebrew/scores.json (gitignored, reproducible)
+    uv run assay homebrew-revisions   # diffs the store against a fresh vendor re-conversion ->
+                                       #   apps/assay/homebrew/revisions.md (committed)
 
-Both are gitignored, reproducible derived artifacts (same convention as
-``out/features.json``/``out/spell-power.json``).
+A single spell's canonical file also scores through the existing
+``uv run assay score --spell <path>`` (its ``flags`` key is inert to
+extraction — see ``test_homebrew.py``'s round-trip test).
 
 **Design constraints this module works under** (see the per-function
 docstrings for the reasoning):
@@ -61,9 +72,20 @@ APP_ROOT = Path(__file__).resolve().parents[2]  # src/astra_assay/homebrew.py ->
 VENDOR_SPELLS_PATH = (
     APP_ROOT / "vendor" / "run_balance" / "pf2e_converted_spells" / "all_spells_pf2e.json"
 )
+#: The canonical, COMMITTED, hand-editable store (round 3) — never under
+#: out/. `apps/assay/homebrew/` is a plain data directory (distinct from
+#: this MODULE's own path, `apps/assay/src/astra_assay/homebrew.py` — no
+#: filesystem collision), sibling to `vendor/`/`results/`/`out/`.
+HOMEBREW_DIR = APP_ROOT / "homebrew"
+HOMEBREW_STORE_DIR = HOMEBREW_DIR / "spells"
+HOMEBREW_REVISIONS_PATH = HOMEBREW_DIR / "revisions.md"
 OUT_DIR = APP_ROOT / "out"
 HOMEBREW_OUT_DIR = OUT_DIR / "homebrew"
 HOMEBREW_SCORES_PATH = HOMEBREW_OUT_DIR / "scores.json"
+#: The upstream commit the store was seeded from (`vendor/run_balance/
+#: VENDORED.md`) — stamped into every seeded doc's `flags.assay.seededFrom`.
+_VENDOR_REPO = "run_balance"
+_VENDOR_COMMIT = "efc8e310210a2577411c62ee95f09a58ef79f164"
 #: Duplicated from ``cli.py`` deliberately (not imported): ``cli.py`` imports
 #: THIS module to register the new subcommands, so a `from .cli import ...`
 #: here would be a cli<->homebrew import cycle. These are one-line Path
@@ -835,7 +857,7 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
 def load_vendored_spells() -> list[dict[str, Any]]:
     if not VENDOR_SPELLS_PATH.exists():
         raise SystemExit(
-            f"assay convert-homebrew: vendored spell set not found at {VENDOR_SPELLS_PATH}"
+            f"assay seed-homebrew: vendored spell set not found at {VENDOR_SPELLS_PATH}"
         )
     data = json.loads(VENDOR_SPELLS_PATH.read_text(encoding="utf-8"))
     return data["spell"]
@@ -843,6 +865,268 @@ def load_vendored_spells() -> list[dict[str, Any]]:
 
 def convert_all() -> list[ConvertedSpell]:
     return [convert_spell(s) for s in load_vendored_spells()]
+
+
+# ---------------------------------------------------------------------------
+# Canonical store seeding (round 3) — a ONE-TIME write of the adapter's own
+# output into `apps/assay/homebrew/spells/<slug>.json`, committed. Never
+# alters spell content: `seed_homebrew` is byte-faithful to `convert_spell`
+# plus a `flags.assay` block (provenance + the adapter warnings generated at
+# seed time, since `score-homebrew` no longer re-converts — see
+# `homebrew_revisions` for the determinism proof of this claim).
+# ---------------------------------------------------------------------------
+
+
+def _seed_flags(spell: dict[str, Any], warnings: list[str]) -> dict[str, Any]:
+    """`flags.assay.seededFrom` is the task's literal shape (repo/commit/
+    originalName/convertedName); `adapterWarnings` rides alongside it so a
+    human reviewing a store file can see what the adapter flagged at seed
+    time without needing to re-run the converter. Both are inert to
+    `extract_spell` (it never reads `data["flags"]` — see the module
+    docstring / `test_flags_pass_through_extraction_harmlessly`)."""
+    original_name = (spell.get("convertedFromSpiritOf") or {}).get("originalName") or spell["name"]
+    return {
+        "assay": {
+            "seededFrom": {
+                "repo": _VENDOR_REPO,
+                "commit": _VENDOR_COMMIT,
+                "originalName": original_name,
+                "convertedName": spell["name"],
+            },
+            "adapterWarnings": list(warnings),
+        }
+    }
+
+
+@dataclass
+class SeedReport:
+    seeded: list[str] = field(default_factory=list)
+    skipped_existing: list[str] = field(default_factory=list)
+    total_warnings: int = 0
+
+
+def seed_homebrew(*, force: bool = False, store_dir: Path | None = None) -> SeedReport:
+    """Write every vendored spell's Foundry-shaped conversion into the
+    canonical store, ONE TIME per file — refuses to overwrite an existing
+    file unless `force=True` (the store is hand-editable; a casual re-run
+    must never clobber a stakeholder's edit). `store_dir` is overridable for
+    tests; production code always uses `HOMEBREW_STORE_DIR`."""
+    store_dir = store_dir or HOMEBREW_STORE_DIR
+    store_dir.mkdir(parents=True, exist_ok=True)
+    report = SeedReport()
+    for spell in load_vendored_spells():
+        slug = _slugify(spell["name"])
+        path = store_dir / f"{slug}.json"
+        if path.exists() and not force:
+            report.skipped_existing.append(slug)
+            continue
+        c = convert_spell(spell)
+        doc = dict(c.foundry)
+        doc["flags"] = _seed_flags(spell, c.warnings)
+        path.write_text(json.dumps(doc, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+        report.seeded.append(slug)
+        report.total_warnings += len(c.warnings)
+    return report
+
+
+def load_homebrew_store(store_dir: Path | None = None) -> list[tuple[str, dict[str, Any]]]:
+    """`(slug, doc)` for every canonical-store file, sorted by slug —
+    `score-homebrew`'s ONLY read of spell content (no vendor conversion at
+    score time, per the round-3 architecture change)."""
+    store_dir = store_dir or HOMEBREW_STORE_DIR
+    if not store_dir.is_dir() or not any(store_dir.glob("*.json")):
+        raise SystemExit(
+            f"assay score-homebrew: no canonical store at {store_dir} — "
+            "run `assay seed-homebrew` first."
+        )
+    return [
+        (path.stem, json.loads(path.read_text(encoding="utf-8")))
+        for path in sorted(store_dir.glob("*.json"))
+    ]
+
+
+# ---------------------------------------------------------------------------
+# Revisions report (round 3) — diffs the canonical store against a FRESH
+# in-memory re-conversion of the vendored baseline. Read-only: never writes
+# to the store, only to `revisions.md`.
+# ---------------------------------------------------------------------------
+
+
+def _strip_flags(doc: dict[str, Any]) -> dict[str, Any]:
+    return {k: v for k, v in doc.items() if k != "flags"}
+
+
+def _get_path(d: dict[str, Any], path: tuple[str, ...]) -> Any:
+    cur: Any = d
+    for key in path:
+        if not isinstance(cur, dict):
+            return None
+        cur = cur.get(key)
+    return cur
+
+
+#: (human label, system-dict path) — everything the task explicitly names
+#: ("formula, range, cast time, description-length delta, etc.") plus the
+#: rest of `convert_spell`'s output shape, so a hand-edit anywhere is caught.
+_DIFF_FIELDS: tuple[tuple[str, tuple[str, ...]], ...] = (
+    ("defense", ("defense",)),
+    ("area", ("area",)),
+    ("range.value", ("range", "value")),
+    ("target.value", ("target", "value")),
+    ("duration", ("duration",)),
+    ("time.value", ("time", "value")),
+    ("level.value", ("level", "value")),
+    ("heightening", ("heightening",)),
+    ("traits.value", ("traits", "value")),
+    ("traits.traditions", ("traits", "traditions")),
+    ("cost.value", ("cost", "value")),
+)
+
+
+def diff_spell(store_doc: dict[str, Any], baseline_doc: dict[str, Any]) -> list[str]:
+    """Field-level deviation summary between a canonical-store doc (a
+    stakeholder may have hand-edited it) and a fresh in-memory re-conversion
+    of the vendored baseline. `flags` is stripped from both sides first —
+    provenance/diagnostics metadata is never a content deviation (the store
+    always carries it, the freshly-converted baseline never does, so a raw
+    comparison would falsely flag EVERY spell)."""
+    a = _strip_flags(store_doc).get("system") or {}
+    b = _strip_flags(baseline_doc).get("system") or {}
+    diffs: list[str] = []
+
+    if store_doc.get("name") != baseline_doc.get("name"):
+        diffs.append(f"name: {baseline_doc.get('name')!r} -> {store_doc.get('name')!r}")
+
+    def _damage_shape(sysd: dict[str, Any]) -> dict[str, tuple[Any, Any, tuple[Any, ...]]]:
+        return {
+            k: (v.get("formula"), v.get("type"), tuple(v.get("kinds") or ()))
+            for k, v in (sysd.get("damage") or {}).items()
+        }
+
+    a_dmg, b_dmg = _damage_shape(a), _damage_shape(b)
+    if a_dmg != b_dmg:
+        diffs.append(f"damage: {b_dmg!r} -> {a_dmg!r}")
+
+    for label, path in _DIFF_FIELDS:
+        av, bv = _get_path(a, path), _get_path(b, path)
+        if av != bv:
+            diffs.append(f"{label}: {bv!r} -> {av!r}")
+
+    a_desc = ((a.get("description") or {}).get("value")) or ""
+    b_desc = ((b.get("description") or {}).get("value")) or ""
+    if a_desc != b_desc:
+        delta = len(a_desc) - len(b_desc)
+        diffs.append(
+            f"description: length delta {delta:+d} chars (store={len(a_desc)}, "
+            f"baseline={len(b_desc)})"
+        )
+
+    return diffs
+
+
+@dataclass
+class SpellDeviation:
+    slug: str
+    name: str
+    fields: list[str]
+
+
+@dataclass
+class RevisionsReport:
+    store_count: int
+    baseline_count: int
+    deviations: list[SpellDeviation]
+    missing_from_store: list[str]
+    extra_in_store: list[str]
+
+
+def homebrew_revisions(store_dir: Path | None = None) -> RevisionsReport:
+    """Diff the canonical store against a fresh in-memory re-conversion of
+    the vendored baseline — never regenerates or overwrites the store
+    itself. Right after `seed_homebrew`, this must report 0 deviations
+    (the seed's own determinism proof)."""
+    store_dir = store_dir or HOMEBREW_STORE_DIR
+    baseline_by_slug = {c.slug: c.foundry for c in convert_all()}
+    store_by_slug: dict[str, dict[str, Any]] = {}
+    if store_dir.is_dir():
+        for path in sorted(store_dir.glob("*.json")):
+            store_by_slug[path.stem] = json.loads(path.read_text(encoding="utf-8"))
+
+    deviations: list[SpellDeviation] = []
+    for slug, baseline_doc in baseline_by_slug.items():
+        store_doc = store_by_slug.get(slug)
+        if store_doc is None:
+            continue
+        fields = diff_spell(store_doc, baseline_doc)
+        if fields:
+            deviations.append(
+                SpellDeviation(slug=slug, name=str(store_doc.get("name", slug)), fields=fields)
+            )
+
+    return RevisionsReport(
+        store_count=len(store_by_slug),
+        baseline_count=len(baseline_by_slug),
+        deviations=sorted(deviations, key=lambda d: d.name),
+        missing_from_store=sorted(set(baseline_by_slug) - set(store_by_slug)),
+        extra_in_store=sorted(set(store_by_slug) - set(baseline_by_slug)),
+    )
+
+
+def _write_revisions_md(report: RevisionsReport, path: Path) -> None:
+    exact = report.store_count - len(report.deviations) - len(report.extra_in_store)
+    lines = ["# assay — homebrew canonical-store revisions", ""]
+    lines.append(
+        "Generated by `uv run assay homebrew-revisions`. Diffs "
+        "`apps/assay/homebrew/spells/*.json` (the canonical, hand-editable store) against a "
+        "FRESH in-memory re-conversion of the vendored run_balance baseline "
+        "(`vendor/run_balance/pf2e_converted_spells/all_spells_pf2e.json`, adapter = "
+        "`homebrew.convert_spell`) — never regenerates or overwrites the store itself."
+    )
+    lines.append("")
+    lines.append(
+        "**Determinism check:** right after `assay seed-homebrew`, this must read **0 "
+        "deviations** (the store is byte-faithful to the adapter's own baseline output, "
+        "`flags` provenance aside — see `homebrew.diff_spell`)."
+    )
+    lines.append("")
+    lines.append("## Summary")
+    lines.append("")
+    lines.append(f"- Baseline spells (vendored): {report.baseline_count}")
+    lines.append(f"- Store spells: {report.store_count}")
+    lines.append(f"- Matching baseline exactly (0 deviations): {exact}")
+    lines.append(f"- Deviating (hand-edited): {len(report.deviations)}")
+    lines.append(f"- Missing from store (never seeded): {len(report.missing_from_store)}")
+    lines.append(f"- Extra in store (no vendor baseline match): {len(report.extra_in_store)}")
+    lines.append("")
+
+    if report.missing_from_store:
+        lines.append("## Missing from store")
+        lines.append("")
+        for slug in report.missing_from_store:
+            lines.append(f"- {slug}")
+        lines.append("")
+
+    if report.extra_in_store:
+        lines.append("## Extra in store (no vendor baseline)")
+        lines.append("")
+        for slug in report.extra_in_store:
+            lines.append(f"- {slug}")
+        lines.append("")
+
+    lines.append("## Deviations")
+    lines.append("")
+    if not report.deviations:
+        lines.append("_none_")
+        lines.append("")
+    else:
+        for d in report.deviations:
+            lines.append(f"### {d.name} (`{d.slug}`)")
+            lines.append("")
+            for f in d.fields:
+                lines.append(f"- {f}")
+            lines.append("")
+
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 
 # ---------------------------------------------------------------------------
@@ -910,11 +1194,17 @@ def _routing_for(entry: dict[str, Any], *, has_hostile_condition: bool) -> str:
     return str(kind)
 
 
-def score_all() -> list[dict[str, Any]]:
-    """Convert (fresh, never reads `out/homebrew/*.json` back — the JSON
-    files `convert-homebrew` writes are a human-inspectable byproduct, not
-    an intermediate this reads) and score all 176 through
+def score_all(store_dir: Path | None = None) -> list[dict[str, Any]]:
+    """Read the CANONICAL STORE (never converts from vendor at score time,
+    per the round-3 architecture change — `load_homebrew_store` is the only
+    spell-content read here) and score every doc through
     `export.build_entry_for_row`, one Python call per spell, no subprocess.
+    `store_dir` is overridable for tests; production code always reads
+    `HOMEBREW_STORE_DIR`.
+
+    Per-spell adapter warnings no longer come from a fresh conversion —
+    they were recorded once at seed time into `flags.assay.adapterWarnings`
+    (see `_seed_flags`) and are read back from the doc itself here.
 
     Healing rows are NOT scored differently from damage rows — this
     mirrors the official pipeline exactly: `report2.py`'s own
@@ -929,16 +1219,19 @@ def score_all() -> list[dict[str, Any]]:
     — the scoring math itself is untouched, matching official behavior."""
     ladder, cantrip_ladder, hostile_corpus, buff_corpus = _load_ladder_and_corpora()
     results: list[dict[str, Any]] = []
-    for c in convert_all():
-        data = c.foundry
-        sysd = data["system"]
-        description_html = sysd["description"]["value"]
-        result = extract_spell(data, f"homebrew/{c.slug}.json")
+    for slug, data in load_homebrew_store(store_dir):
+        sysd = data.get("system") or {}
+        description_html = ((sysd.get("description") or {}).get("value")) or ""
+        name = str(data.get("name", slug))
+        adapter_warnings = list(
+            (((data.get("flags") or {}).get("assay") or {}).get("adapterWarnings")) or []
+        )
+        result = extract_spell(data, f"homebrew/{slug}.json")
 
         record: dict[str, Any] = {
-            "name": c.name,
-            "slug": c.slug,
-            "warnings": list(c.warnings),
+            "name": name,
+            "slug": slug,
+            "warnings": adapter_warnings,
             "defense": sysd.get("defense"),
         }
 
@@ -946,13 +1239,14 @@ def score_all() -> list[dict[str, Any]]:
             reason_code = export.reason_code_for(ledger.classify_unpriced_skip(data, result.reason))
             record.update(
                 {
-                    "rank": int(sysd["level"]["value"]),
-                    "isCantrip": "cantrip" in sysd["traits"]["value"],
+                    "rank": int((sysd.get("level") or {}).get("value", 0)),
+                    "isCantrip": "cantrip" in ((sysd.get("traits") or {}).get("value") or []),
                     "kind": "ledger",
                     "reasonCode": reason_code,
                     "rawSkipReason": result.reason,
                     "actionBucket": None,
-                    "isReaction": str(sysd["time"]["value"]).lower() == "reaction",
+                    "isReaction": str((sysd.get("time") or {}).get("value", "")).lower()
+                    == "reaction",
                     "isHealing": False,
                     "routing": f"ledger:{reason_code}",
                 }
@@ -985,26 +1279,45 @@ def score_all() -> list[dict[str, Any]]:
 # ---------------------------------------------------------------------------
 
 
-def cmd_convert_homebrew(args: argparse.Namespace) -> None:
-    with _tracer.start_as_current_span("assay.convert-homebrew") as span:
-        converted = convert_all()
-        HOMEBREW_OUT_DIR.mkdir(parents=True, exist_ok=True)
-        total_warnings = 0
-        n_with_warnings = 0
-        for c in converted:
-            path = HOMEBREW_OUT_DIR / f"{c.slug}.json"
-            path.write_text(
-                json.dumps(c.foundry, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-            )
-            if c.warnings:
-                n_with_warnings += 1
-                total_warnings += len(c.warnings)
-
-        span.set_attribute("assay.convert_homebrew.spells", len(converted))
-        span.set_attribute("assay.convert_homebrew.warnings", total_warnings)
+def cmd_seed_homebrew(args: argparse.Namespace) -> None:
+    with _tracer.start_as_current_span("assay.seed-homebrew") as span:
+        report = seed_homebrew(force=args.force)
+        span.set_attribute("assay.seed_homebrew.seeded", len(report.seeded))
+        span.set_attribute("assay.seed_homebrew.skipped_existing", len(report.skipped_existing))
+        span.set_attribute("assay.seed_homebrew.warnings", report.total_warnings)
         print(
-            f"assay convert-homebrew: {len(converted)} spells -> {HOMEBREW_OUT_DIR} "
-            f"({total_warnings} adapter warnings across {n_with_warnings} spells)"
+            f"assay seed-homebrew: seeded {len(report.seeded)} spell(s) -> {HOMEBREW_STORE_DIR} "
+            f"({report.total_warnings} adapter warnings recorded into flags.assay)"
+        )
+        if report.skipped_existing:
+            suffix = "" if args.force else " (pass --force to overwrite — DESTROYS hand edits)"
+            preview = ", ".join(report.skipped_existing[:10])
+            more = (
+                f", … +{len(report.skipped_existing) - 10} more"
+                if len(report.skipped_existing) > 10
+                else ""
+            )
+            print(
+                f"  {len(report.skipped_existing)} already present, left untouched{suffix}: "
+                f"{preview}{more}"
+            )
+
+
+def cmd_homebrew_revisions(args: argparse.Namespace) -> None:
+    with _tracer.start_as_current_span("assay.homebrew-revisions") as span:
+        report = homebrew_revisions()
+        HOMEBREW_DIR.mkdir(parents=True, exist_ok=True)
+        _write_revisions_md(report, HOMEBREW_REVISIONS_PATH)
+        span.set_attribute("assay.homebrew_revisions.store_count", report.store_count)
+        span.set_attribute("assay.homebrew_revisions.deviations", len(report.deviations))
+        span.set_attribute(
+            "assay.homebrew_revisions.missing_from_store", len(report.missing_from_store)
+        )
+        print(
+            f"assay homebrew-revisions: {report.store_count} store spells vs "
+            f"{report.baseline_count} vendor baseline — {len(report.deviations)} deviation(s), "
+            f"{len(report.missing_from_store)} missing from store, "
+            f"{len(report.extra_in_store)} extra in store -> {HOMEBREW_REVISIONS_PATH}"
         )
 
 
@@ -1049,14 +1362,35 @@ def cmd_score_homebrew(args: argparse.Namespace) -> None:
 
 
 def register_subparsers(sub: argparse._SubParsersAction) -> None:
-    p_convert = sub.add_parser(
-        "convert-homebrew",
-        help="convert the vendored run_balance 176-spell set -> out/homebrew/<slug>.json",
+    p_seed = sub.add_parser(
+        "seed-homebrew",
+        help=(
+            "ONE-TIME seed: vendored run_balance 176 -> the committed canonical store "
+            "apps/assay/homebrew/spells/<slug>.json (never overwrites an existing file "
+            "without --force)"
+        ),
     )
-    p_convert.set_defaults(func=cmd_convert_homebrew)
+    p_seed.add_argument(
+        "--force",
+        action="store_true",
+        help="overwrite existing store files (DESTROYS hand edits) — off by default",
+    )
+    p_seed.set_defaults(func=cmd_seed_homebrew)
 
     p_score = sub.add_parser(
         "score-homebrew",
-        help="convert + score all vendored homebrew spells -> out/homebrew/scores.json",
+        help=(
+            "score every spell in the canonical homebrew store (never converts from "
+            "vendor) -> out/homebrew/scores.json"
+        ),
     )
     p_score.set_defaults(func=cmd_score_homebrew)
+
+    p_revisions = sub.add_parser(
+        "homebrew-revisions",
+        help=(
+            "diff the canonical homebrew store against a fresh vendor re-conversion -> "
+            "apps/assay/homebrew/revisions.md"
+        ),
+    )
+    p_revisions.set_defaults(func=cmd_homebrew_revisions)

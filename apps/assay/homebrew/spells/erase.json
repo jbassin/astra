@@ -1,0 +1,71 @@
+{
+  "_id": "hbf9423825bbdc0b",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Erase",
+        "originalName": "Erase",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Erase",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You touch an object or surface bearing writing, drawing, or inscription and erase it entirely. The writing vanishes as if it had never been made; the underlying object or surface is completely unharmed. You can erase up to 100 pages of text or a surface area of up to 50 square feet in one casting. Mundane writing is erased automatically. Magical writing (including glyphs, sigils, and spellbook pages) is also erased; if the writing was a prepared magical effect (such as a glyph of warding), erasing it counteracts the effect at the spell's rank (rank 1 counteract). The object or surface appears virgin to all mundane inspection; a Detect Magic or Recall Knowledge check against your spell DC reveals only that something has been erased.</p><hr /><p><strong>Heightened (3rd)</strong> You can erase magical writing from prepared scrolls and formula books; a magical scroll erased this way is destroyed without activating.</p><p><strong>Heightened (5th)</strong> You can erase runes and property runes inscribed on weapons and armor; each rune erased is permanently destroyed.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "levels": {
+        "3": {},
+        "5": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 written or inscribed object or surface"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,88 @@
+{
+  "_id": "hb4f5ac1bf764d0d",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Deja Vu",
+        "originalName": "Deja Vu",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Deja Vu",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a small mirror (not consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "mental"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You twist time to force a creature to relive the worst moment of its recent past. This spell is cast as a reaction triggered when a creature within range is the target of an attack or fails a saving throw. The target must attempt a Will save against your spell DC. On a failure, the target takes mental damage equal to the damage of the triggering attack (if any), up to a maximum of 4d6 mental damage. If the trigger was a saving throw the target succeeded at, on a failed Will save the target must also immediately retry that saving throw with a -2 status penalty, applying the new result (even if it is worse).</p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target takes mental damage up to 4d6 (matching the triggering hit's damage, capped at 4d6). If the trigger was a saving throw the target succeeded at, it must retry the save with a -2 status penalty.</p><p><strong>Critical Failure</strong> The target takes the maximum mental damage (4d6, treated as if all dice rolled their max value) and, if the trigger was a saving throw, must retry it with a -4 status penalty.</p><hr /><p><strong>Heightened (+1)</strong> The maximum mental damage increases by 1d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "1"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "fortune",
+        "manipulate",
+        "mental",
+        "time"
+      ]
+    }
+  },
+  "type": "spell"
+}

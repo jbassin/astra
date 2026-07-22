@@ -1,0 +1,78 @@
+{
+  "_id": "hb21402ad97461d3",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Fast-Forward",
+        "originalName": "Fast-Forward",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Fast-Forward",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You reach into a creature's personal timeline and hurl it decades into the future, leaving its body wizened, aged, and @UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled} while its mind remains trapped in the present. The target must attempt a Fortitude saving throw. This spell has the curse trait \u2014 it can be removed by effects that remove curses of rank 6 or higher (such as Remove Curse heightened to rank 6).</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature's apparent age advances rapidly and then snaps back over 1 round. It is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} until the start of your next turn.</p><p><strong>Failure</strong> The creature is cursed with accelerated aging. It takes a \u20132 status penalty to Strength, Dexterity, and Constitution-based rolls (attack rolls, skill checks, saving throws) and its Speed is reduced by 10 feet. This curse persists until removed.</p><p><strong>Critical Failure</strong> As failure, but the penalty is \u20133 to all affected rolls and the Speed reduction is 20 feet. Additionally, the creature is @UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled 2} for 1 minute.</p><hr /><p><strong>Heightened (8th)</strong> On a failure, the creature is also @UUID[Compendium.pf2e.conditionitems.Item.Drained]{Drained 2} (permanent until the curse is removed). On a critical failure, it is @UUID[Compendium.pf2e.conditionitems.Item.Drained]{Drained 3} instead.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "until removed"
+    },
+    "heightening": {
+      "levels": {
+        "8": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "curse",
+        "incapacitation",
+        "manipulate",
+        "time"
+      ]
+    }
+  },
+  "type": "spell"
+}

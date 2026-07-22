@@ -1,0 +1,72 @@
+{
+  "_id": "hb84900179967f0b",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "area text not structurally parseable, left unmapped (effective-target classification falls back to the description's own target-count heuristic): 'a straight wall up to 60 feet long and 20 feet high, or a ring 20 feet in diameter and 20 feet high, 1 foot thick'",
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Wall of Time",
+        "originalName": "Wall of Time",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Wall of Time",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You tear a rift in linear time and shape it into a translucent, rippling wall of temporal energy at a point within range. The wall is intangible \u2014 creatures can move through it freely \u2014 but crossing it costs significant action economy.</p><p>**Crossing the wall.** A creature that crosses the wall (in either direction) must expend an additional action to do so; if the creature crosses as part of a Stride, that Stride counts as having moved an additional 10 feet of difficult terrain.</p><p>**Ranged attacks.** Nonmagical ranged attacks that cross the wall automatically miss. Magical ranged attacks that cross the wall must succeed at a flat check (DC 11) or miss.</p><p>**Sustained effect.** Each round you Sustain this spell, you may move the wall up to 20 feet along the ground (the wall cannot be flipped or reoriented, only slid).</p><hr /><p><strong>Heightened (7th)</strong> The wall also imposes a Fortitude save (DC = your spell DC) on any creature that passes through it; on a failure, the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} until the start of its next turn.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "7": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "time"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,91 @@
+{
+  "_id": "hb55bfeabad7b5d4",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Carnage",
+        "originalName": "Carnage",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Carnage",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "6d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You tear open the fabric of space and fling yourself across the battlefield in a single brutal arc, bringing your weapon to bear against everything in reach. When you Cast this Spell, you immediately teleport up to 120 feet to an unoccupied space you can see, then make a single melee Strike against every creature adjacent to you in your new location (roll once, apply to all). Each creature struck takes an additional 6d6 force damage from the spatial rupture (Fortitude basic save for the force damage; your weapon Strike still resolves normally). On a critical failure at the Fortitude save, the creature is also @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1} from the crushing concussive force.</p><p>While you sustain this spell (up to 1 minute), you can use the following action once per turn.</p><p>**Continued Carnage** (1 action): Teleport up to 60 feet to an unoccupied space you can see, then make a single Strike against every adjacent creature. Each struck creature takes an additional 4d6 force damage (basic Fortitude; @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1} on crit fail).</p><p><strong>Critical Success</strong> The creature takes no force damage from the spatial rupture.</p><p><strong>Success</strong> The creature takes half force damage.</p><p><strong>Failure</strong> The creature takes full force damage.</p><p><strong>Critical Failure</strong> The creature takes double force damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 8
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "all creatures in your reach after teleporting"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "force",
+        "incapacitation",
+        "manipulate",
+        "teleportation"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,68 @@
+{
+  "_id": "hb6583c67bde0775",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Thaumaturgic Obstruction",
+        "originalName": "Thaumaturgic Obstruction",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Thaumaturgic Obstruction",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 60
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You envelope yourself in a field of temporal-aetheric drag that slows the casting process for all spellcasters other than yourself within range. While you sustain this spell, any creature within the 60-foot emanation (other than you) that casts a spell requires one additional action beyond the spell's normal casting time. Spells that normally require 1 action to cast require 2 actions; spells requiring 2 actions require 3 actions; spells requiring 3 actions cannot be cast at all while within the emanation. Free-action and reaction spells are unaffected. The emanation moves with you.</p><hr /><p><strong>Heightened (+2)</strong> The emanation radius increases by 30 feet (90 feet at 8th, 120 feet at 10th).</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

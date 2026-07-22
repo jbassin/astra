@@ -1,0 +1,102 @@
+{
+  "_id": "hb731777619935ee",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Blades of Bone",
+        "originalName": "Blades of Bone",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Blades of Bone",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a needle made from bone (not consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "3d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "piercing"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "piercing"
+      },
+      "2": {
+        "applyMod": false,
+        "category": null,
+        "formula": "1d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "piercing"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You turn your gestalt wildshaping energy inward, forcing long, curved spurs of hardened bone to erupt from your skin at joints, knuckles, elbows, shoulders, and knees. The spurs are razor-sharp and cause significant damage to anything that presses against them.</p><p>While this spell is active, you gain the following benefits:<br />- When you successfully Grapple a creature, you deal 3d6 piercing damage to that creature in addition to the Grapple's effects.<br />- At the start of each of your turns while you have a creature @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed}, that creature takes 2d6 piercing damage.<br />- Any creature that hits you with an unarmed strike or natural attack takes 1d6 piercing damage (no save).</p><p>This spell has the morph trait and does not suppress your normal polymorph or wildshape capabilities (the spurs modify, not replace, your form).</p><hr /><p><strong>Heightened (7th)</strong> The initial Grapple damage increases to 4d6, the per-turn grab damage increases to 3d6, and creatures you have @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed} also take a -1 circumstance penalty to saves against your spells.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "7": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "morph",
+        "primal"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,67 @@
+{
+  "_id": "hb8b3b4377adfe8f",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Rewind and Playback",
+        "originalName": "Rewind and Playback",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Rewind and Playback",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You reach through time and pull a creature's wounds backward, rewinding the damage into the past and redirecting it through yourself as a conduit. The target regains up to 3d8+24 Hit Points (your choice of how many to restore, up to the maximum). You then take void damage equal to the number of Hit Points restored; this damage cannot be reduced by any means, but it can be healed normally after you take it.</p><p>This spell cannot restore more than 3d8+24 Hit Points per casting. The damage you take is not subject to resistances, immunities, or damage reduction.</p><hr /><p><strong>Heightened (+1)</strong> The maximum healing increases by 1d8+8.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 willing living creature other than yourself"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "chronomancy",
+        "concentrate",
+        "healing",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

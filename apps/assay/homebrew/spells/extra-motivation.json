@@ -1,0 +1,68 @@
+{
+  "_id": "hb0ec8d22b5dc3ea",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "excluded 1 self-directed damage dice from EV (4d6 void) \u2014 a cost paid by the caster, not the spell's output"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Extra Motivation",
+        "originalName": "Extra Motivation",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Extra Motivation",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You bend fate for a final surge of magical energy, recovering expended spells and resources. You recover up to 3 expended spell slots of rank 5 or lower. You may immediately prepare them as if you had just completed your daily preparations for those specific slots (the spells in those slots must be spells you have already prepared or have in your repertoire).</p><p>**Greater Surge (optional, decided at casting):** You may choose to also deal 4d6 void damage to yourself (this damage ignores resistance and immunity and cannot be reduced in any way). If you do, you additionally recover the expended uses of up to 2 class abilities that normally recharge on a daily rest (choose abilities you have used since your last daily preparation). You cannot benefit from Greater Surge if this casting would reduce you below 1 HP (the offer evaporates).</p><p>Once you Cast this Spell, you cannot Cast it again until your next daily preparation, even if you have an available rank-9 slot.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 9
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "fortune",
+        "manipulate",
+        "uncommon"
+      ]
+    }
+  },
+  "type": "spell"
+}

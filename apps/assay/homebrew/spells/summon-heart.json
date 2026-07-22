@@ -1,0 +1,87 @@
+{
+  "_id": "hbc7a3d57a14a1d0",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Summon Heart",
+        "originalName": "Summon Heart",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Summon Heart",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You exert a crushing gravitational pull on a living creature's vital core, compressing and tearing inward. The target takes 8d10 void damage. If this damage reduces the target to 0 Hit Points, it is immediately slain \u2014 its heart (or functional equivalent) is ripped free and appears in your free hand; this is a death effect.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage. If this reduces the creature to 0 Hit Points, it is immediately slain as described above.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d10.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d10"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 living creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "death",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

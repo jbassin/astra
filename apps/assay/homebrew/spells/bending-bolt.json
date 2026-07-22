@@ -1,0 +1,84 @@
+{
+  "_id": "hbeb0e1603c5a6b2",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Bending Bolt",
+        "originalName": "Bending Bolt",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Bending Bolt",
+  "system": {
+    "area": {
+      "type": "line",
+      "value": 120
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "electricity"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>A stroke of lightning blasts out from you in a 120-foot line, 5 feet wide. Each creature in the line must attempt a basic Reflex save, taking 8d6 electricity damage.</p><p>Before rolling, you may specify a single 90-degree inflection point anywhere along the line. The line changes direction at that point, allowing you to bend the bolt around corners, through doorways, or along irregular corridors. Each segment of the line must be at least 5 feet long. The total path length cannot exceed 120 feet regardless of the number of bends.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage.</p><hr /><p><strong>Heightened (+1)</strong> You can add one additional 90-degree inflection point to the line (2 bends at rank 5, 3 bends at rank 6, etc.). Each inflection point must be at least 5 feet from the previous one. The damage also increases by 2d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "electricity",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

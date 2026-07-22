@@ -1,0 +1,75 @@
+{
+  "_id": "hbd99a3cba590b5b",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Disrupt Movement",
+        "originalName": "Disrupt Movement",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Disrupt Movement",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You send ripples of contracted space toward up to three creatures you can see within range. Each target must attempt a Reflex save against your spell DC.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The creature's Speed is halved and it takes a -1 circumstance penalty to Reflex saves and Acrobatics checks for as long as the spell is sustained (up to 1 minute). At the end of each of its turns, the creature can attempt a new Reflex save against your spell DC to end the effect on itself.</p><p><strong>Critical Failure</strong> As failure, but the Speed reduction is to 0 and the circumstance penalty is -2.</p><hr /><p><strong>Heightened (3rd)</strong> You can target up to 5 creatures, and the critical failure effect also causes the target to be @UUID[Compendium.pf2e.conditionitems.Item.Immobilized]{Immobilized} (rather than Speed 0) until it succeeds at its end-of-turn save.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "3": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "up to 3 creatures"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

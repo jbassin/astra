@@ -1,0 +1,91 @@
+{
+  "_id": "hbf204b2ddd5cf8c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Solar Fury",
+        "originalName": "Solar Fury",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Solar Fury",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 20
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "fire"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You become a conduit for the searing light of a solar plane, your body blazing with such intensity that you shed bright light in a 60-foot radius and dim light for a further 60 feet; this counts as sunlight. While Solar Fury is active, you gain immunity to fire damage. Each creature that begins its turn within the 20-foot emanation takes 4d6 fire damage (basic Reflex save). You may Sustain the spell on your turn to maintain the aura; each round you sustain it, creatures within the area at the start of that sustain action are again subject to the damage.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage.</p><hr /><p><strong>Heightened (+1)</strong> The fire damage increases by 1d6.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "fire",
+        "light",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

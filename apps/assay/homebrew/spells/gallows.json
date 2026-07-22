@@ -1,0 +1,77 @@
+{
+  "_id": "hba07429e07d250b",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Gallows",
+        "originalName": "Gallows",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Gallows",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You press your palm to the creature and bind its death to a structure within your line of sight, weaving a planar tether that will drag the creature's body to the gallows-site upon its death. The target must attempt a Will save.</p><p>For the duration, if the target dies, its body is instantly teleported to the designated structure (which must be within 500 feet when you cast the spell and must be a fixed constructed object such as a wall, pillar, archway, or frame). The body arrives bound to the structure by shimmering planar cords. The soul and its fate are unaffected \u2014 only the physical body is relocated.</p><p>The designated structure must be within your line of sight when you cast the spell. You can only have one Gallows binding active at a time; casting it again automatically ends the previous binding.</p><p>This spell is a ritual in all but name \u2014 it carries significant weight and should be cast with solemn intent. Its rare rarity reflects that knowledge of such binding magic is not freely shared.</p><p><strong>Critical Success</strong> The creature is unaffected and is temporarily immune to Gallows for 1 week.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The Gallows binding takes hold for the duration.</p><p><strong>Critical Failure</strong> As failure, and the creature is aware of the binding and is afflicted with a vague dread; it takes a -1 status penalty to Will saves for 1 week.</p><hr /><p><strong>Heightened (6th)</strong> You can designate any structure you have visited personally within 100 miles, not just one in your line of sight. The spell's duration becomes until your next daily preparations.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 year"
+    },
+    "heightening": {
+      "levels": {
+        "6": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "10 minutes"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "rare",
+        "teleportation"
+      ]
+    }
+  },
+  "type": "spell"
+}

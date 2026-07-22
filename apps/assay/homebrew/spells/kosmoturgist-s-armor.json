@@ -1,0 +1,64 @@
+{
+  "_id": "hbfa68fb739e960d",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Kosmoturgist's Armor",
+        "originalName": "Kosmoturgist's Armor",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Kosmoturgist's Armor",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You compress the ambient air around a creature you touch, hardening it into a near-solid shell of force-locked atmosphere. For the duration, the target gains resistance 10 to bludgeoning, piercing, slashing, and force damage. The resistance applies to all four types simultaneously; the shell does not stack with other resistance effects of the same type (highest applies). You cannot have this spell active on more than one creature at a time \u2014 casting it again ends the previous casting.</p><hr /><p><strong>Heightened (+1)</strong> The resistance increases by 5 (to 15 at 7th, 20 at 8th, etc.).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "10 minutes"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 willing creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

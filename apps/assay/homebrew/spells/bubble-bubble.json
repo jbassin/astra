@@ -1,0 +1,73 @@
+{
+  "_id": "hb22c6dec8ceaa82",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Bubble Bubble",
+        "originalName": "Bubble Bubble",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Bubble Bubble",
+  "system": {
+    "area": {
+      "type": "burst",
+      "value": 5
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You summon a bubble from the Feywild that floats rapidly toward a point within range and detonates. All creatures within 5 feet of the point of impact must attempt a Reflex save. Creatures hit are covered with viscous Feywild goop.</p><p>A creature covered in bubble goop is @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 1} and takes a \u201310-foot penalty to its Speeds. It cannot Cast a Spell with the manipulate trait. The goop remains until the creature uses a single Interact action to make an Athletics or Acrobatics check against your spell DC to scrape it off (success removes the goop).</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The creature is covered in bubble goop (@UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 1}, \u201310 ft Speed, cannot cast manipulate spells) until it scrapes it off as described above.</p><p><strong>Critical Failure</strong> As failure, and the penalty worsens to @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 2}.</p><hr /><p><strong>Heightened (+1)</strong> You can create one additional bubble, targeting a different 5-foot burst within range. Each bubble requires its own Reflex saves from creatures in that burst.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "varies (see below)"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

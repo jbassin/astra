@@ -1,0 +1,69 @@
+{
+  "_id": "hb67f6f0c095093d",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Reduce Resistivity",
+        "originalName": "Reduce Resistivity",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Reduce Resistivity",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You tear at the magical defenses of a target creature, leaving its arcane shielding in tatters. The creature must attempt a Fortitude saving throw.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes a \u20131 status penalty to saving throws against spells for 1 round.</p><p><strong>Failure</strong> The creature takes a \u20132 status penalty to saving throws against spells for 1 minute. Additionally, the first time the creature benefits from its resistance to a damage type during this duration, that resistance is reduced by 5 until the end of its next turn.</p><p><strong>Critical Failure</strong> As failure, but the penalty is \u20133 to saving throws against spells, and all of the creature's resistances to damage are reduced by 5 for the duration.</p><hr /><p><strong>Heightened (+2)</strong> The status penalty to saving throws against spells on failure increases by 1 (to \u20133 on failure, \u20134 on critical failure), and the resistance reduction increases by 5.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,89 @@
+{
+  "_id": "hbee9213f369d534",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Sapping Lightning",
+        "originalName": "Sapping Lightning",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Sapping Lightning",
+  "system": {
+    "area": {
+      "type": "line",
+      "value": 120
+    },
+    "cost": {
+      "value": "a piece of blackened amber (material component)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d12",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "electricity"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You unleash a beam of antillurgic energy from your fingertips in a sizzling 120-foot line. Each creature in the line takes 8d12 electricity damage (basic Reflex save). Additionally, any creature that fails the save also loses access to its highest-rank currently prepared or spontaneous spell slot until the end of its next turn \u2014 it cannot cast that spell for that duration (the slot is not consumed, just suppressed). Creatures with innate spellcasting instead find their highest-rank innate spell temporarily suppressed (cannot be used until the end of their next turn). Creatures without spellcasting are unaffected by the suppression.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage and its spellcasting is not suppressed.</p><p><strong>Failure</strong> The creature takes full damage and its highest-rank spell slot is suppressed until the end of its next turn.</p><p><strong>Critical Failure</strong> The creature takes double damage and its two highest-rank spell slots are suppressed until the end of its next turn.</p><hr /><p><strong>Heightened (+1)</strong> The electricity damage increases by 1d12.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d12"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "500 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "electricity",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

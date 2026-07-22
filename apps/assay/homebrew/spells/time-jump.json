@@ -1,0 +1,70 @@
+{
+  "_id": "hbc932cb2a76a7b5",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Time Jump",
+        "originalName": "Time Jump",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Time Jump",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You grab hold of the target and thrust it forward in time. The target must attempt a Fortitude save. On a failure, the creature disappears from the current moment for a duration determined by the save result (see below). While displaced in time, the target cannot act, cannot be targeted, and does not exist from the perspective of the current timeline. When the target returns, it appears in the space it occupied when displaced (or the nearest unoccupied space); it is unaware that any time has passed and any ongoing effects it was subject to (except those that expired during the displacement) resume as normal.</p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target disappears until the start of its next turn.</p><p><strong>Failure</strong> The target disappears for 1d4+1 rounds. At the start of each round after the first, it may attempt a new Fortitude save to return early (success = reappears at start of its turn that round).</p><p><strong>Critical Failure</strong> The target disappears for 1d4+2 rounds with no intermediate save to return early.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "varies (see text)"
+    },
+    "level": {
+      "value": 8
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "incapacitation",
+        "manipulate",
+        "rare",
+        "temporal"
+      ]
+    }
+  },
+  "type": "spell"
+}

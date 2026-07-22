@@ -1,0 +1,107 @@
+{
+  "_id": "hbf060c6cb0f2f10",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'basic Reflex (Control mode) or spell attack roll (Attack/Defend modes)'"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Kosmoturgist's Weapon",
+        "originalName": "Kosmoturgist's Weapon",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Kosmoturgist's Weapon",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a necklace of pure precious metal (material component)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "3d10+8",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "3d10+8",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      },
+      "2": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You compress a volume of space into a floating ethereal weapon of force that persists for the duration. On the round you cast the spell, and as a 1-action activity (concentrate) on each subsequent turn, you can move the weapon up to 20 feet and choose one mode: Attack: The weapon makes a melee spell attack roll. On a hit, the struck creature takes 3d10+8 force damage (double damage on a critical hit). Defend: The weapon takes position adjacent to a creature of your choice within its reach. Until the start of your next turn, the first hostile creature that moves to be adjacent to the protected creature is attacked by the weapon (spell attack roll; 3d10+8 force damage on a hit). Control: The weapon spins rapidly. Each creature in or adjacent to the weapon's space must attempt a basic Reflex save; on a failure they take 4d10 force damage. You cannot have more than one Kosmoturgist's Weapon active at a time.</p><p><strong>Critical Success</strong> Unaffected (Control mode only).</p><p><strong>Success</strong> Half damage (Control mode only).</p><p><strong>Failure</strong> Full damage (Control mode only).</p><p><strong>Critical Failure</strong> Double damage (Control mode only).</p><hr /><p><strong>Heightened (+1)</strong> Attack and Defend mode damage increases by 1d10; Control mode damage increases by 1d10.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d10"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "force",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

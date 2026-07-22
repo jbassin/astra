@@ -1,0 +1,82 @@
+{
+  "_id": "hb431d8e5a14d634",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Divine Regression",
+        "originalName": "Divine Regression",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Divine Regression",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d8",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You reverse the flow of vital energy within a creature, weaponizing its own capacity for recovery. Make a melee spell attack roll against the target. On a hit, the target takes 4d8 void damage and is afflicted with Reversed Vitality for 1 minute. While afflicted, any time the target would regain HP from any source (healing spells, fast healing, regeneration, potions, the Treat Wounds activity targeting it), it instead takes void damage equal to the amount it would have healed, and regains no HP. At the end of each of the target's turns, it can attempt a Fortitude save against your spell DC; a success reduces the duration remaining by half (treating partial minutes as full), and a critical success ends the effect immediately. The affliction also ends if a remove curse spell or a spell of rank 4 or higher with the healing trait is used to counteract it (counteract rank 2).</p><hr /><p><strong>Heightened (+1)</strong> The initial void damage increases by 1d8.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d8"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "attack",
+        "concentrate",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

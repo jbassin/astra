@@ -1,0 +1,71 @@
+{
+  "_id": "hbfa8071ba511728",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Talk the Talk",
+        "originalName": "Talk the Talk",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Talk the Talk",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You are suddenly granted the ability to say exactly the right thing in social situations. For the duration, you instinctively know basic public information about any person you can see and interact with: their name, title, immediate family relationships, and publicly known interests \u2014 anything they would freely disclose in a casual public setting. You don't need to make a Recall Knowledge or Society check to access this information; it simply surfaces in your mind as you engage.</p><p>This grants you a +2 status bonus to Society and Diplomacy checks to blend into social gatherings you wouldn't normally belong to, as you can speak familiarly with strangers about themselves and the social context.</p><p>When the spell ends, you forget any information that was granted to you magically at the start of the spell. Information you personally learned during the hour \u2014 names you heard people say aloud, secrets whispered in your presence \u2014 remains.</p><hr /><p><strong>Heightened (5th)</strong> The +2 status bonus increases to +3, and the information now includes private social affiliations, known enemies, and recent notable activities \u2014 anything the subject would discuss in a semi-private setting with peers.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 hour"
+    },
+    "heightening": {
+      "levels": {
+        "5": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "divination",
+        "subtle"
+      ]
+    }
+  },
+  "type": "spell"
+}

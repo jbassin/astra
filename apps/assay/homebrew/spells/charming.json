@@ -1,0 +1,80 @@
+{
+  "_id": "hb786f732f2f023b",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Charming",
+        "originalName": "Charming",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Charming",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You twist fate to project an aura of irresistible charisma, bending the perceptions of every creature that can see you within 30 feet. Each affected creature must attempt a Will save. Creatures you or your companions are currently in combat with attempt this save with a +2 circumstance bonus.</p><p>A charmed creature regards you as a trusted, friendly acquaintance. It will not willingly harm you and will interpret your requests charitably, though it is not compelled to obey commands. Charmed creatures have no memory of being charmed at the end of the spell \u2014 the friendship simply fades away.</p><p>The charm ends early for an individual creature if you or your companions take a hostile action against that specific creature.</p><p><strong>Critical Success</strong> The creature is unaffected and is temporarily immune to Charming for 24 hours.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The creature is @UUID[Compendium.pf2e.conditionitems.Item.Fascinated]{Fascinated} by you for 1 round (emotion, mental), then treats you as a friendly acquaintance for the remaining duration. The creature is not compelled to follow orders, only to regard you well.</p><p><strong>Critical Failure</strong> As failure, but the creature is also @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 1} for 1 hour (the overwhelming charm overwhelms their judgment). It must also succeed at a Will save (DC 5 lower than your spell DC) before taking any hostile action against you \u2014 on failure, the hostile action fails.</p><hr /><p><strong>Heightened (7th)</strong> The duration increases to 24 hours.</p><p><strong>Heightened (9th)</strong> The charmed condition becomes more profound: charmed creatures also follow non-harmful requests as though from a trusted ally (GM adjudicates). Duration becomes 1 week.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 hour"
+    },
+    "heightening": {
+      "levels": {
+        "7": {},
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "all creatures in range that can see you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "emotion",
+        "incapacitation",
+        "manipulate",
+        "mental",
+        "occult"
+      ]
+    }
+  },
+  "type": "spell"
+}

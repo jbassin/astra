@@ -1,0 +1,85 @@
+{
+  "_id": "hbfebc9e7a4d05d6",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'spell attack roll, then Fortitude'"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Extraplanar Pulse",
+        "originalName": "Extraplanar Pulse",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Extraplanar Pulse",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "vitality"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You hurl a ball of pulsing violet light harvested from the space between planes. Make a ranged spell attack roll against the target. On a hit, the target takes 4d6 vitality damage. Additionally, on a hit the target must attempt a Fortitude save against your spell DC; on a failure, the planar energy saturates the target, causing it to become @UUID[Compendium.pf2e.conditionitems.Item.Sickened]{Sickened 1} for 1 minute. On a critical failure of the Fortitude save, the target is @UUID[Compendium.pf2e.conditionitems.Item.Sickened]{Sickened 2}. The target can spend an action to attempt a Fortitude save to reduce the @UUID[Compendium.pf2e.conditionitems.Item.Sickened]{Sickened} condition by 1 (minimum 0). On a critical hit with the attack roll, the Fortitude save is made at a -2 status penalty.</p><hr /><p><strong>Heightened (+1)</strong> The vitality damage increases by 2d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "damage": {
+        "0": "2d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "attack",
+        "concentrate",
+        "manipulate",
+        "vitality"
+      ]
+    }
+  },
+  "type": "spell"
+}

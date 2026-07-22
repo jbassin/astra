@@ -1,0 +1,93 @@
+{
+  "_id": "hbcb6efc84a111fd",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Djura's Righteous Pressure",
+        "originalName": "Djura's Righteous Pressure",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Djura's Righteous Pressure",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 30
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "vitality"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You radiate a great holy pressure that is anathema to undead and fiends. The emanation moves with you. Any undead or fiend that starts its turn inside the emanation or enters the emanation must immediately attempt a Fortitude save. Once a creature attempts this save against a given round of the aura, it is not forced to save again until the start of its next turn.</p><p>Creatures hit by this aura also take 2d6 vitality damage (which is only harmful to undead as normal for vitality damage).</p><p><strong>Critical Success</strong> The creature is unaffected and not pushed.</p><p><strong>Success</strong> The creature takes half vitality damage but is not pushed.</p><p><strong>Failure</strong> The creature takes full vitality damage and is pushed 5 feet directly away from you. It cannot willingly move back into the emanation until the start of its next turn.</p><p><strong>Critical Failure</strong> The creature takes double vitality damage and is pushed 10 feet directly away from you. It cannot willingly move back into the emanation until the start of its next turn.</p><hr /><p><strong>Heightened (6th)</strong> The aura also affects humanoids with the evil trait (not merely undead and fiends). The vitality damage increases by 2d6.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "6": {
+          "damage": {
+            "0": "2d6"
+          }
+        }
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "holy",
+        "manipulate",
+        "uncommon"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,75 @@
+{
+  "_id": "hb814605c64a5c1c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Connection",
+        "originalName": "Connection",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Connection",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a pearl worth 50 gp (consumed)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You raise a conch to your ear and speak the name of a creature you know well, opening a thread of telepathic contact between you. For the duration, you and the target can exchange thoughts at the speed of conversation; each side recognizes the other as the sender if you already know each other, and the exchange is silent and invisible to onlookers (subtle). The connection works at any distance on the same plane. If the target is on a different plane than you, each individual exchanged thought has a 5% chance of failing to arrive.</p><hr /><p><strong>Heightened (7th)</strong> You can include up to 3 willing creatures you know in the connection; any participant can communicate with any other. Material cost increases to a pearl worth 100 gp.</p><p><strong>Heightened (8th)</strong> Duration becomes 1 hour and the planar miss chance drops to 1%.</p><p><strong>Heightened (9th)</strong> You can include up to 8 willing creatures. Material cost increases to a pearl worth 200 gp.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "10 minutes"
+    },
+    "heightening": {
+      "levels": {
+        "7": {},
+        "8": {},
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "planetary"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 willing creature you know personally"
+    },
+    "time": {
+      "value": "1 minute"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "mental",
+        "subtle"
+      ]
+    }
+  },
+  "type": "spell"
+}

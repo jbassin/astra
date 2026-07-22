@@ -1,0 +1,82 @@
+{
+  "_id": "hbb1bf9b7625a6f1",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Repetitious Trauma",
+        "originalName": "Repetitious Trauma",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Repetitious Trauma",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "6d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "untyped"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You twist the strands of time to force a creature to relive a damaging moment over and over. On the round you cast this spell and each round you Sustain it, the target must attempt a Will saving throw. The damage type each round is the most recent damage type dealt to the target before this spell was cast (or, if unknown, the caster chooses). Each round's save is rolled separately.</p><p><strong>Critical Success</strong> The creature is unaffected this round.</p><p><strong>Success</strong> The creature takes 3d6 damage of the relived type.</p><p><strong>Failure</strong> The creature takes 6d6 damage of the relived type.</p><p><strong>Critical Failure</strong> The creature takes 12d6 damage of the relived type and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 2d6 (and double on critical failure).</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "mental",
+        "time"
+      ]
+    }
+  },
+  "type": "spell"
+}

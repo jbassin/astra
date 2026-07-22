@@ -1,0 +1,93 @@
+{
+  "_id": "hbf2b1e0200c210c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Monstrous Copy: Stinger",
+        "originalName": "Monstrous Copy: Stinger",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Monstrous Copy: Stinger",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a thorn (any; consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "1d4",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "piercing"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "poison"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You draw upon your knowledge of the Hutijin, growing a 10-foot tail tipped with a devastating venomous stinger. You grow a stinger unarmed Strike that deals 1d4 piercing damage plus 4d10 poison damage and has the magical, reach (10 feet), and unarmed traits. You are trained with this attack, and if your weapon proficiency with martial weapons is higher than your unarmed proficiency, your stinger uses that proficiency instead.</p><p>When you hit a creature with your stinger Strike, the creature must attempt a Fortitude save against your spell DC.</p><p><strong>Critical Success</strong> The creature is unaffected and is temporarily immune to this poison for 24 hours.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The creature is afflicted with Hutijin's venom (@UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled 2} and @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 2}, escalating to paralysis at stage 3 after 2 rounds).</p><p><strong>Critical Failure</strong> As failure, but the creature begins at stage 2 and the flat check to recover is DC 15.</p><hr /><p><strong>Heightened (9th)</strong> The stinger's poison damage increases to 6d10, and stage 3 of Hutijin's venom now also inflicts @UUID[Compendium.pf2e.conditionitems.Item.Drained]{Drained 2} in addition to paralysis.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 8
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "morph",
+        "poison",
+        "primal"
+      ]
+    }
+  },
+  "type": "spell"
+}

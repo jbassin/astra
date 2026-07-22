@@ -1,0 +1,66 @@
+{
+  "_id": "hba1f39c8cba62bf",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Incensed Bestial Rage",
+        "originalName": "Incensed Bestial Rage",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Incensed Bestial Rage",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You tap into the collective memory of generations of shapeshifters, pushing your wild form to its most primal extreme. You must be in a battle form created by a polymorph spell of rank 3 or lower (such as Animal Form heightened to rank 4 or Insect Form) to cast this spell; it enhances that existing form rather than replacing it.</p><p>While Incensed Bestial Rage is active, your battle form gains the following benefits and drawbacks:<br />- Your unarmed Strikes from the battle form deal 2d6 additional damage.<br />- Your battle form's AC is reduced by 2 (the rage makes your movements aggressive and predictable).<br />- You gain 20 temporary HP.<br />- You gain a +2 status bonus to Athletics checks.<br />- You cannot use the Sustain action to alter the details of the original polymorph spell; the incensed form is locked in its most feral configuration.</p><p>This effect ends when your underlying battle form ends.</p><hr /><p><strong>Heightened (+2)</strong> The additional damage increases by 1d6 and the temporary HP increases by 10.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "1"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "morph",
+        "polymorph",
+        "primal"
+      ]
+    }
+  },
+  "type": "spell"
+}

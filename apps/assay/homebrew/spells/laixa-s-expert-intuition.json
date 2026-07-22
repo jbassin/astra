@@ -1,0 +1,71 @@
+{
+  "_id": "hbe3b006e1ab00ee",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Laixa's Expert Intuition",
+        "originalName": "Laixa's Expert Intuition",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Laixa's Expert Intuition",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>Laixa's insight sharpens your mind to an uncanny acuity, allowing you to pierce deceptions with preternatural certainty. For the duration, when you Sense Motive to detect a lie or notice a deception, you may use 15 as your Perception check result if your roll is lower than 15 (this is a fortune effect that replaces the lower result, not an addition to it). If your Perception modifier for Sense Motive would result in a total of 15 or higher anyway, this spell provides no mechanical benefit but the check still benefits from the heightened awareness of the spell's effect.</p><p>In addition, while this spell is active you cannot be magically compelled or enchanted into believing false information you have already consciously identified as false during the duration (though new deceptions presented after you cast the spell that you have not examined are not automatically rejected).</p><p>This spell is associated with the mnemetic sage Laixa and is typically encountered as a focus spell for practitioners of her method. Its conversion to a standard spell slot is noted as unusual.</p><hr /><p><strong>Heightened (6th)</strong> The minimum Perception result for Sense Motive checks increases to 20, and you also gain the same minimum result on Diplomacy checks to read emotions and Deception checks to recognize that someone else is using Deception (if the GM calls for such a check).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 hour"
+    },
+    "heightening": {
+      "levels": {
+        "6": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "detection",
+        "mental",
+        "occult"
+      ]
+    }
+  },
+  "type": "spell"
+}

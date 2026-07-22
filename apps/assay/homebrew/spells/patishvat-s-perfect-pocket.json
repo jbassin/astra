@@ -1,0 +1,72 @@
+{
+  "_id": "hb45d28a3db3bc71",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Patishvat's Perfect Pocket",
+        "originalName": "Patishvat's Perfect Pocket",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Patishvat's Perfect Pocket",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a small velvet bag (consumed)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You fold a small pocket of extraplanar space and anchor it to your person. The pocket can hold any number of objects that individually fit within a 5-foot cube, up to a combined weight of 150 pounds. The pocket does not count against your Bulk unless a single item exceeds 4 Bulk, in which case that item's excess Bulk counts normally. You can stow or retrieve a single held or worn item into or from the pocket as a single action with the manipulate trait. Objects stored in the pocket experience no passage of time and are perfectly preserved. Living creatures cannot be placed in the pocket; the spell automatically fails if attempted on a living creature.</p><p>The pocket is invisible to normal senses. A creature with Truesight can see it as a faint opaque orb orbiting your head. If the spell is dispelled or you die, all contents are deposited in a pile in your space (or the nearest unoccupied space).</p><hr /><p><strong>Heightened (3rd)</strong> The weight limit increases to 500 pounds and items of up to 10 Bulk individually can be stored.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "until dispelled"
+    },
+    "heightening": {
+      "levels": {
+        "3": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "1 minute"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "extradimensional",
+        "manipulate",
+        "teleportation"
+      ]
+    }
+  },
+  "type": "spell"
+}

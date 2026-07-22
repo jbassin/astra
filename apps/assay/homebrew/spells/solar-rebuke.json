@@ -1,0 +1,81 @@
+{
+  "_id": "hbd840032d1325d7",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Solar Rebuke",
+        "originalName": "Solar Rebuke",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Solar Rebuke",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "5d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "vitality"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You call a searing lance of solar light from the peak of Elysium in response to being harmed. This spell can only be cast as a reaction triggered when a creature within 60 feet that you can see deals damage to you.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes 2d10 vitality damage.</p><p><strong>Failure</strong> The creature takes 5d10 vitality damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.</p><p><strong>Critical Failure</strong> The creature takes 10d10 vitality damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 2d10 (and doubles on critical failure).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature that damaged you this turn"
+    },
+    "time": {
+      "value": "1"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "divine",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "light",
+        "vitality"
+      ]
+    }
+  },
+  "type": "spell"
+}

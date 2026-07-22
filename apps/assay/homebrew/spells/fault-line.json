@@ -1,0 +1,90 @@
+{
+  "_id": "hb05cd170fd3eb0f",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Fault Line",
+        "originalName": "Fault Line",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Fault Line",
+  "system": {
+    "area": {
+      "type": "line",
+      "value": 60
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "8d10",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "bludgeoning"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You rupture the ground along a line, splitting the earth and hurling debris in a shockwave of bludgeoning force. Each creature in the affected line takes 8d10 bludgeoning damage from the seismic upheaval. All spaces in the line become difficult terrain (rubble and fissures), which persist permanently. The difficult terrain can be cleared by spending 1 minute of work per 5-foot square.</p><p><strong>Critical Success</strong> The creature takes no damage and is not knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p><p><strong>Success</strong> The creature takes half damage and is not knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p><p><strong>Failure</strong> The creature takes full damage and is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p><p><strong>Critical Failure</strong> The creature takes double damage and is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}; it also cannot stand up until the start of its next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d10 and the line increases in length by 10 feet.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "2d10"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 6
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "500 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "primal"
+      ],
+      "value": [
+        "bludgeoning",
+        "concentrate",
+        "earth",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

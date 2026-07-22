@@ -1,0 +1,75 @@
+{
+  "_id": "hbaef5030c3ecc46",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Bodydouble",
+        "originalName": "Bodydouble",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Bodydouble",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You fold space around yourself, creating a flickering double that exists simultaneously where you stand and where you project it. The double occupies the same space as you when the spell is cast. The double has no physical presence and cannot be attacked, damaged, or interacted with by creatures. It appears only at the moment of an attack or spell cast, visible as a brief spatial shimmer.</p><p>Each time you Sustain this spell, you can take one of the following actions:</p><p>**Project (1 action):** You shift the double to any point within 20 feet of you. The double remains projected until the start of your next turn unless you return it sooner.</p><p>**Strike or Cast from Double (free action, once per round):** When you make a Strike or Cast a Spell with a range other than self or touch, you may use the double's current location as the origin point for that action (measuring range, area, and line of sight from the double's position instead of your own).</p><p>The double collapses if it would be more than 30 feet from you at any time. Creatures may attempt a Perception check against your spell DC to realize the double is illusory (this check is triggered when they witness the spell's effect).</p><hr /><p><strong>Heightened (5th)</strong> You can project the double up to 40 feet away. The double also functions as a cover source (you can take cover relative to the double's position).</p><p><strong>Heightened (7th)</strong> You can maintain two doubles simultaneously. Each double can be the source of separate Strikes or Spells (once per double per round). Both doubles must remain within 30 feet of you.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "5": {},
+        "7": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "illusion",
+        "manipulate",
+        "teleportation",
+        "visual"
+      ]
+    }
+  },
+  "type": "spell"
+}

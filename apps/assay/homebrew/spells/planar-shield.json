@@ -1,0 +1,78 @@
+{
+  "_id": "hb2b5d5fd17c14bd",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "mixed '+N' and fixed-rank heightening triggers on the same spell \u2014 Foundry heightening is one shape per spell, not structurally represented (kept as a description appendix only)"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Planar Shield",
+        "originalName": "Planar Shield",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Planar Shield",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "vitality"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You condense raw phlogiston \u2014 the luminous substance between planes \u2014 onto your shield or held weapon, forming a flickering shell of planar light. The spell stores 4 charges. While this spell is active, you can expend a charge as a reaction (trigger: you are hit by a melee attack while holding your shield or the weapon you imbued) to release a burst of phlogiston that scorches attackers and nearby foes.</p><p>When you expend a charge in this way, each creature within 5 feet of you (including the attacker) takes 2d6 vitality damage with no save. This is not a spell attack \u2014 it is an automatic burst. When all 4 charges are expended, the spell ends.</p><hr /><p><strong>Heightened (+1)</strong> The damage per charge increases by 1d6 (for example, at rank 3 each burst deals 3d6 vitality damage).</p><p><strong>Heightened (5th)</strong> The number of charges increases to 6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "until expended (up to 1 hour)"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "light",
+        "manipulate",
+        "vitality"
+      ]
+    }
+  },
+  "type": "spell"
+}

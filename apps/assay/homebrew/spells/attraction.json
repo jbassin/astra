@@ -1,0 +1,88 @@
+{
+  "_id": "hb135be24350e9ea",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Attraction",
+        "originalName": "Attraction",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Attraction",
+  "system": {
+    "area": {
+      "type": "emanation",
+      "value": 15
+    },
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "bludgeoning"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>You concentrate gravitational force around your body, pulling nearby creatures violently toward you. Each creature in the area must attempt a basic Fortitude save against your spell DC. On a failure, the creature is also pulled up to 10 feet toward you (stopping if it would enter your space or be blocked by a solid obstruction); this forced movement does not trigger reactions. On a critical failure, the creature is pulled 20 feet toward you instead.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage but is not pulled.</p><p><strong>Failure</strong> The creature takes full damage (2d6 bludgeoning) and is pulled up to 10 feet toward you.</p><p><strong>Critical Failure</strong> The creature takes double damage (4d6 bludgeoning) and is pulled up to 20 feet toward you.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d6.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d6"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

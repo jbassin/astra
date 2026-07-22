@@ -1,17 +1,23 @@
 """``assay`` console script — extract / fit / price / score / export-codex /
-convert-homebrew / score-homebrew.
+seed-homebrew / score-homebrew / homebrew-revisions.
 
     uv run assay extract [--data-root PATH]   # features table → out/features.json
     uv run assay fit [--data-root PATH]       # round-1 per-rank-facet fit (superseded diagnostic)
     uv run assay price [--data-root PATH]     # ladder + Stage A/B + comparables + priors → results/
-    uv run assay score --spell PATH           # score one homebrew spell JSON (round-3 model)
+    uv run assay score --spell PATH           # score one spell JSON (round-3 model; also
+                                               #   scores a single canonical homebrew store file)
     uv run assay export-codex [--data-root PATH]  # codex artifact (D30-38) → out/spell-power.json
-    uv run assay convert-homebrew             # vendored run_balance 176 -> out/homebrew/<slug>.json
-    uv run assay score-homebrew               # convert + score all 176 -> out/homebrew/scores.json
+    uv run assay seed-homebrew [--force]      # ONE-TIME: vendored run_balance 176 -> the
+                                               #   committed canonical store homebrew/spells/
+    uv run assay score-homebrew               # score the canonical store -> out/homebrew/
+                                               #   scores.json
+    uv run assay homebrew-revisions           # diff the store vs. a fresh vendor re-conversion
+                                               #   -> homebrew/revisions.md
 
-The last two live in ``homebrew.py`` (registered via
+The last three live in ``homebrew.py`` (registered via
 ``homebrew.register_subparsers``) — the adapter for the vendored
-``vendor/run_balance/pf2e_converted_spells`` bespoke-schema conversion set;
+``vendor/run_balance/pf2e_converted_spells`` bespoke-schema conversion set
+plus the canonical, committed, hand-editable homebrew spell store it seeds;
 see that module's docstring.
 
 Telemetry (standing principle): ``init_telemetry`` wraps every subcommand, a

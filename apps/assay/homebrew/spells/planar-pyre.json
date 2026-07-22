@@ -1,0 +1,93 @@
+{
+  "_id": "hb60f2d0bc0f099a",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Planar Pyre",
+        "originalName": "Planar Pyre",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Planar Pyre",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "3d8",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "fire"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "3d8",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "piercing"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>You call forth shards of planar crystal coated in phlogiston from the ground around a target of your choosing. Crystalline spikes erupt upward, impaling the target. The target takes 3d8 fire damage and 3d8 piercing damage on a failed basic Reflex save.</p><p>On a failure, the target is also @UUID[Compendium.pf2e.conditionitems.Item.Restrained]{Restrained} (@UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed} and @UUID[Compendium.pf2e.conditionitems.Item.Immobilized]{Immobilized}) until the start of your next turn by the crystalline spikes. Huge or larger creatures treat the result of their saving throw one degree of success better (they are harder to impale).</p><p>If the target is slain by this spell, the spikes do not fade \u2014 they remain as mundane crystalline shards.</p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target takes half damage and is not restrained.</p><p><strong>Failure</strong> The target takes full damage and is @UUID[Compendium.pf2e.conditionitems.Item.Restrained]{Restrained} until the start of your next turn.</p><p><strong>Critical Failure</strong> The target takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Restrained]{Restrained} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> Both the fire damage and the piercing damage each increase by 1d8.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature or object"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult",
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "fire",
+        "manipulate",
+        "piercing"
+      ]
+    }
+  },
+  "type": "spell"
+}

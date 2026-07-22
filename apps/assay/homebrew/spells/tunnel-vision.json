@@ -1,0 +1,72 @@
+{
+  "_id": "hb95e476b2f8d873",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Tunnel Vision",
+        "originalName": "Tunnel Vision",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Tunnel Vision",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a handful of caltrops (consumed)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You imbue a willing creature with an acute foresight that sharpens its reflexes just before danger strikes. For the duration, the target gains a +1 status bonus to initiative rolls. If the target's initiative result is a critical success (a natural 20 or 10 or more above the DC), it also acts before enemies on the first round even if initiative ties would normally resolve otherwise. Additionally, once during the duration, the target can invoke the foresight as a free action at the start of a combat to roll initiative twice and take the higher result (the fortune trait applies; additional fortune effects cannot further alter the roll). Once the fortune effect is used, only the +1 status bonus remains.</p><hr /><p><strong>Heightened (3rd)</strong> The status bonus to initiative increases to +2, and the fortune re-roll can be used twice instead of once.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "8 hours"
+    },
+    "heightening": {
+      "levels": {
+        "3": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 willing creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "fortune",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

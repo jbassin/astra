@@ -1,0 +1,72 @@
+{
+  "_id": "hb0f649b305461e8",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'basic Reflex (when an orb detonates)'",
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Containment Orbs",
+        "originalName": "Containment Orbs",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Containment Orbs",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>Three small orbs of multicolored force orbit you. When you cast Containment Orbs, assign each orb one magical tradition (arcane, divine, occult, or primal). Each orb can absorb the next spell of its assigned tradition that targets you or includes you in its area, negating that spell entirely. An orb can absorb only one spell and is then loaded. You can Sustain the spell each round to keep the orbs active. As a 2-action activity (concentrate, manipulate), you can cause a loaded orb to detonate: all creatures within 20 feet of you take force damage equal to 3d6 per rank of the absorbed spell (basic Reflex save using your spell DC). Each detonated orb is destroyed. When the spell ends, any remaining orbs (loaded or empty) dissolve harmlessly.</p><p><strong>Critical Success</strong> The creature takes no damage.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage.</p><hr /><p><strong>Heightened (+1)</strong> You gain one additional orb (4 orbs at 8th, 5 at 9th, etc.).</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "10 minutes"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "force",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

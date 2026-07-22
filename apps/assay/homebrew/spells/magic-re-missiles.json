@@ -1,0 +1,86 @@
+{
+  "_id": "hb6cfdea1fa47149",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Magic Re-Missiles",
+        "originalName": "Magic Re-Missiles",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Magic Re-Missiles",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a handful of glass marbles (consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "1d4+1",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      },
+      "1": {
+        "applyMod": false,
+        "category": null,
+        "formula": "1d4+1",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You trap three force missiles in a chronomantic loop, causing them to return to your side after each impact rather than dissipating. When you Cast this Spell, choose up to 3 creatures you can see within range. You launch one missile at each chosen creature; each missile automatically hits and deals 1d4+1 force damage. You can choose to concentrate multiple missiles on fewer targets (e.g., all three on one target).</p><p>After the missiles impact, they snap back to orbit you, hovering visibly. On subsequent turns, Sustaining this spell launches all orbiting missiles again at any combination of creatures you can see within range (you choose new targets each time), each missile again dealing 1d4+1 force damage. If a missile impacts a shield spell effect (such as that created by the Shield cantrip's block reaction), that missile is dispelled and removed from play permanently.</p><p>The missiles disappear when the spell ends.</p><hr /><p><strong>Heightened (+2)</strong> The number of missiles increases by 1 (5 missiles at rank 6, 6 missiles at rank 8, and so on).</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "up to 3 creatures"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "force",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,73 @@
+{
+  "_id": "hb91ef0c1608b20c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'Will save (enemies only)'",
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Reset",
+        "originalName": "Reset",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Reset",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>A burst of temporal energy ripples outward from you, seizing the threads of fate around each target and forcing a re-evaluation of their place in the combat order. For each target, the effect depends on whether they are your ally or your enemy:</p><p>**Ally:** The target may immediately reroll their initiative, taking the higher of the new roll or their current initiative value (this is a fortune effect). This takes effect at the start of the next round.</p><p>**Enemy:** The target must attempt a Will save. On a failure, you force them to reroll their initiative, and you choose which of the two results applies (this is a misfortune effect). On a success, the target is unaffected. New initiative results take effect at the start of the next round.</p><p>A creature can only be affected by Reset once per encounter.</p><p><strong>Critical Success</strong> The enemy is unaffected and temporarily immune to Reset for 24 hours.</p><p><strong>Success</strong> The enemy is unaffected.</p><p><strong>Failure</strong> You choose which of the two rolled initiative values applies to the enemy.</p><p><strong>Critical Failure</strong> As failure, and the enemy also becomes @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard} to all creatures until the end of its next turn as temporal disorientation washes over it.</p><hr /><p><strong>Heightened (+1)</strong> The number of targets increases by 1.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "up to 4 creatures"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "fortune",
+        "manipulate",
+        "misfortune",
+        "occult"
+      ]
+    }
+  },
+  "type": "spell"
+}

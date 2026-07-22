@@ -1,0 +1,71 @@
+{
+  "_id": "hb96829bf3b0a26d",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Bound Minds",
+        "originalName": "Bound Minds",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Bound Minds",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "two halves of a locket or necklace (consumed)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You spend an hour inscribing a memetic link between two willing creatures who each hold half of a shared token. Upon completion, the two creatures are mentally linked for the duration. Each linked creature is always aware of the other's precise location (accurate enough to navigate directly to the other even while blindfolded, through walls, or across planes). Each linked creature continuously senses the other's general physical condition (healthy, injured, grievously @UUID[Compendium.pf2e.conditionitems.Item.Wounded]{Wounded}, @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying}) and emotional state (calm, @UUID[Compendium.pf2e.conditionitems.Item.Frightened]{Frightened}, joyful, enraged). This awareness does not convey sensory information about surroundings. A creature can be under only one Bound Minds link at a time; casting this spell while an existing link is active breaks the previous link. The two recipients cannot be part of two separate links simultaneously.</p><hr /><p><strong>Heightened (9th)</strong> The duration becomes unlimited (permanent until counteracted or willingly ended by both linked creatures).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 year"
+    },
+    "heightening": {
+      "levels": {
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 7
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "2 willing creatures (including you or not)"
+    },
+    "time": {
+      "value": "1 hour"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

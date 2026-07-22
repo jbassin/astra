@@ -1,0 +1,82 @@
+{
+  "_id": "hb63d2f50f78832d",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Touch of Madness",
+        "originalName": "Touch of Madness",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Touch of Madness",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a handful of coal dust (consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "4d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "mental"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You overwhelm a creature's mind with a cascade of contradictory impulses and shattered cognition. The target takes 4d6 mental damage and must attempt a Will save. On a failure, the target is also afflicted with the Fractures of Madness curse: it becomes @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 4}, cannot Cast Spells, and treats all non-hostile creatures as friendly (following the last spoken order given to it unless compliance would cause self-harm). The curse persists indefinitely but can be ended by the spell remove curse (rank 4 or higher), or a rank-9 healing or restoration spell. The target may attempt a new Will save to end the curse at each monthly interval.</p><p><strong>Critical Success</strong> The target takes no mental damage and is unaffected by the curse.</p><p><strong>Success</strong> The target takes half mental damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 2} for 1 minute (no curse).</p><p><strong>Failure</strong> The target takes full mental damage and is afflicted with the Fractures of Madness curse (@UUID[Compendium.pf2e.conditionitems.Item.Stupefied]{Stupefied 4}, cannot Cast Spells, treats non-hostiles as friendly).</p><p><strong>Critical Failure</strong> As failure, and the target immediately Strides toward the nearest visible creature and attacks it, regardless of allegiance (as the confusion condition for 1 round), before the longer-term curse takes hold.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "varies (permanent until counteracted)"
+    },
+    "level": {
+      "value": 8
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "curse",
+        "incapacitation",
+        "linguistic",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

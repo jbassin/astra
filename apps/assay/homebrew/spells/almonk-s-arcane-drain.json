@@ -1,0 +1,70 @@
+{
+  "_id": "hbe1670e534c97fc",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Almonk's Arcane Drain",
+        "originalName": "Almonk's Arcane Drain",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Almonk's Arcane Drain",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>A silvery ray of disruptive energy shoots from your outstretched hand, tearing at the target's connection to arcane or spiritual power. The target must attempt a Will saving throw. This spell has no effect on creatures that lack spell slots or focus points.</p><p><strong>Critical Success</strong> The target is unaffected and is temporarily immune to Almonk's Arcane Drain for 1 day.</p><p><strong>Success</strong> The target loses one 1st-rank spell slot or 1 focus point (target's choice).</p><p><strong>Failure</strong> The target loses its highest available spell slot of rank 4 or lower (or the next lower rank if that one is exhausted, down to rank 1; or 1 focus point if no slots remain).</p><p><strong>Critical Failure</strong> As failure, but the target loses two spell slots (highest available, working downward) instead of one.</p><hr /><p><strong>Heightened (+1)</strong> The maximum rank of spell slot the target can lose on a failure increases by 1 (so at rank 4 it targets a 5th-rank slot or lower, at rank 5 a 6th-rank slot or lower, etc.).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "120 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature with spell slots or focus points"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,77 @@
+{
+  "_id": "hb95c6c65b22df87",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Forensic Analysis",
+        "originalName": "Forensic Analysis",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Forensic Analysis",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a polished monocle (consumed on first casting to create the Compendium)"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You translate a sliver of a creature's soul into readable text, inscribing it into a magical Compendium of Statistics and Secrets that you conjure on the first casting. The Compendium materializes as a small, floating tome visible only to you; it persists indefinitely but contains no information until you cast this spell. On subsequent castings you choose one of two modes.</p><p>Statistics Mode: You learn one of the following about the target: its creature type, one damage resistance or immunity, one damage weakness, its highest or lowest saving throw modifier (your choice), or the approximate level of its greatest or weakest ability score. The result is recorded in the Compendium under the creature's entry.</p><p>Secrets Mode: The target must attempt a Will saving throw.</p><p><strong>Critical Success</strong> The target is unaffected and immediately knows you attempted to read its mind.</p><p><strong>Success</strong> The target is unaffected and immediately knows you attempted to read its mind.</p><p><strong>Failure</strong> You learn one secret (a single yes-or-no answer) from the target's psyche, recorded in the Compendium.</p><p><strong>Critical Failure</strong> You learn two secrets (each a yes-or-no answer) from the target's psyche, recorded in the Compendium.</p><hr /><p><strong>Heightened (4th)</strong> In Secrets Mode you may ask open-ended questions (not just yes/no); the target answers truthfully to the best of its knowledge. In Statistics Mode you learn two statistics per casting instead of one.</p><p><strong>Heightened (6th)</strong> In Secrets Mode you may ask up to three open-ended questions. You may also cast the spell in Statistics Mode and Secrets Mode simultaneously in the same action, using only one casting.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": ""
+    },
+    "heightening": {
+      "levels": {
+        "4": {},
+        "6": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "60 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "1"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "divination",
+        "mental"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -129,6 +129,38 @@ markup**, not plain English:
   otherwise silently score as pure damage (an overscore), since the pricing model has nothing to
   key its condition-tier lookup on.
 
+## The homebrew canonical store (`homebrew/spells/`)
+
+`apps/assay/homebrew/spells/<slug>.json` is the **single source of truth** for the campaign's 176
+homebrew spells going forward — one Foundry-shaped JSON per spell, **committed**, and meant to be
+hand-edited directly (balance repairs, reaction-trigger fixes, dice tweaks — whatever a stakeholder
+decides). It was seeded once from the vendored `run_balance` conversion set
+(`vendor/run_balance/`, see below) via the adapter in `homebrew.py`; the vendor directory is
+**provenance-only** from here on — nothing downstream reads it.
+
+```bash
+uv run assay seed-homebrew            # ONE-TIME: vendor -> the store. Refuses to overwrite an
+                                       #   existing file (--force to intentionally re-bake one/all)
+uv run assay score-homebrew           # scores every spell IN THE STORE (never touches vendor/) ->
+                                       #   out/homebrew/scores.json (gitignored, reproducible)
+uv run assay homebrew-revisions       # diffs the store against a FRESH vendor re-conversion ->
+                                       #   homebrew/revisions.md (committed) — field-level summary
+                                       #   of every hand edit (formula/range/cast time/description
+                                       #   length/…); reads "0 deviations" right after a fresh seed
+uv run assay score --spell homebrew/spells/<slug>.json   # score one store file directly
+```
+
+**The loop:** seed once → hand-edit spells in the store as balance decisions land → `assay
+score-homebrew` to see the current scoring picture → `assay homebrew-revisions` to see exactly
+which spells deviate from the original conversion and how, before those edits go live anywhere
+downstream (codex ingest, a possible Foundry compendium module). `seed-homebrew --force` re-bakes
+from vendor and **destroys any hand edits** — it exists for a genuine "start over" only.
+
+Every store file carries a `flags.assay` block: `seededFrom` (`repo`/`commit`/`originalName`/
+`convertedName` — provenance back to the exact vendored commit) and `adapterWarnings` (recorded
+once at seed time, since `score-homebrew` no longer re-runs the adapter — see below). Both are
+inert to `extract_spell`, which never reads `data["flags"]` at all.
+
 ## Validation verdicts (see `results/validation.md` for the real numbers)
 
 **Round 2 gates (V1′–V4′, damage/hybrid axis, carried unchanged):** all report honest misses with

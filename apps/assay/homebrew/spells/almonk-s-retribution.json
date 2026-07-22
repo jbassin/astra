@@ -1,0 +1,84 @@
+{
+  "_id": "hb1141d41f263fea",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Almonk's Retribution",
+        "originalName": "Almonk's Retribution",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Almonk's Retribution",
+  "system": {
+    "area": {
+      "type": "burst",
+      "value": 30
+    },
+    "cost": {
+      "value": "a pinch of ash from a cremated spellcaster (not consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "6d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "fire"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "fortitude"
+      }
+    },
+    "description": {
+      "value": "<p>Almonk discovered this spell while studying the residue of destroyed magical conduits: the Weave itself ignites when its threads are forcibly redirected. You ignite the magical ether in a 30-foot-radius sphere centered on a point you can see within range. The burning ether persists as long as you sustain the spell.</p><p>Whenever a creature within the area casts a spell or uses a magical ability that requires its own concentration or manipulate action, the ether scorches them. That creature must attempt a Fortitude save. Their spell or ability functions normally regardless of the save result \u2014 Almonk's Retribution punishes, it does not interrupt.</p><p>This spell is associated with the mage Almonk and is typically encountered as a focus spell for practitioners of anti-magic doctrine. Its conversion to a standard spell slot is noted as unusual.</p><p><strong>Critical Success</strong> The creature takes no damage.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes 6d6 fire damage.</p><p><strong>Critical Failure</strong> The creature takes 12d6 fire damage.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 1d6.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "500 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "fire",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -1,0 +1,72 @@
+{
+  "_id": "hb5287bed3707a39",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Instant Exit",
+        "originalName": "Instant Exit",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Instant Exit",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You rip open a shimmering, door-shaped portal on a flat surface you can see within range. Any creature that deliberately Strides or Steps through the portal during the duration (including you) is instantly teleported to a random unoccupied location within 1,000 feet. The destination is determined randomly the first time any creature passes through, and all subsequent creatures that pass through during the same casting arrive at the same location. The portal is visible and any creature can observe it before choosing whether to step through.</p><p>At the end of the duration (the end of your next turn), the portal closes and disappears.</p><p>When the first creature passes through the portal, roll a d20. On a 1, the portal malfunctions and instead leads to a random plane as determined by the GM; this outcome applies to all creatures that pass through during the casting.</p><hr /><p><strong>Heightened (5th)</strong> The destination range increases to 5,000 feet, and you may choose whether all creatures that step through arrive at the same location or each one arrives at a different random location within that range.</p><p><strong>Heightened (7th)</strong> The malfunction result on the d20 expands to 1\u20133, and you can set a rough directional preference for the destination (GM chooses the exact location within \u00b190 degrees of your indicated direction).</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 round"
+    },
+    "heightening": {
+      "levels": {
+        "5": {},
+        "7": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": ""
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "teleportation"
+      ]
+    }
+  },
+  "type": "spell"
+}

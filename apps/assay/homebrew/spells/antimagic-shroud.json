@@ -1,0 +1,87 @@
+{
+  "_id": "hbfb92e58265e98d",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Antimagic Shroud",
+        "originalName": "Antimagic Shroud",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Antimagic Shroud",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d4",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "force"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": true,
+        "statistic": "reflex"
+      }
+    },
+    "description": {
+      "value": "<p>A black, translucent shroud of absorbed magical energy clings to your body. The shroud persists for the duration or until it triggers. The first time you take damage from a spell or magical effect while the shroud is active, the shroud violently erupts outward toward the source of that spell, and the spell ends. The creature that targeted you with that spell must attempt a basic Reflex save against your spell DC; on a failure it takes 2d4 force damage as the shroud's energy detonates outward. Whether the Reflex save succeeds or fails, the shroud dissipates after it triggers.</p><p><strong>Critical Success</strong> The triggering caster takes no damage.</p><p><strong>Success</strong> The triggering caster takes half damage.</p><p><strong>Failure</strong> The triggering caster takes full damage (2d4 force).</p><p><strong>Critical Failure</strong> The triggering caster takes double damage (4d4 force).</p><hr /><p><strong>Heightened (+1)</strong> The retributive damage increases by 1d4.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "10 minutes"
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d4"
+      },
+      "interval": 1,
+      "type": "interval"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "occult"
+      ],
+      "value": [
+        "abjuration",
+        "concentrate",
+        "force",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

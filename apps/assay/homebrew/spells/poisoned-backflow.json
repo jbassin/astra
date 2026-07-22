@@ -1,0 +1,83 @@
+{
+  "_id": "hb7626e325d54a51",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "mixed '+N' and fixed-rank heightening triggers on the same spell \u2014 Foundry heightening is one shape per spell, not structurally represented (kept as a description appendix only)"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Poisoned Backflow",
+        "originalName": "Poisoned Backflow",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Poisoned Backflow",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a dark thread (not consumed)"
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "3d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "void"
+      }
+    },
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
+    "description": {
+      "value": "<p>You lay your hand on a creature and poison the thread that ties it to the magical fabric of the world. The target is cursed unless it succeeds at a Will saving throw.</p><p>While cursed, each time the target restores Hit Points to another creature by Casting a Spell with the healing trait, the backflowing taint tears through it, dealing 3d6 void damage to the cursed target. This damage occurs once per healing spell cast, regardless of how many creatures the healing spell affects. The curse does not trigger on healing potions consumed by the target or on natural healing.</p><p>The curse can be removed by remove curse, cleanse affliction, or any effect that removes magical curses at or above rank 2.</p><p><strong>Critical Success</strong> The target is unaffected and becomes temporarily immune to this spell for 24 hours.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target is cursed for 1 day.</p><p><strong>Critical Failure</strong> The target is cursed for 1 day and immediately takes 3d6 void damage.</p><hr /><p><strong>Heightened (+1)</strong> The void damage increases by 1d6.</p><p><strong>Heightened (5th)</strong> The curse also triggers when the target uses the Aid action to help another creature regain Hit Points.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "1 day"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine",
+        "occult"
+      ],
+      "value": [
+        "concentrate",
+        "curse",
+        "manipulate",
+        "void"
+      ]
+    }
+  },
+  "type": "spell"
+}

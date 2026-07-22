@@ -1,0 +1,70 @@
+{
+  "_id": "hbc7dd3ed011ca4c",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Gift of the Archmage",
+        "originalName": "Gift of the Archmage",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Gift of the Archmage",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": "a palm-sized chunk of unrefined Orichalcum ore worth at least 500 gp, which is consumed"
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You compress one of your own prepared or known spells of rank 4 or lower into a shimmering arcane singularity and transfer it into a willing creature. The spell must be one you have prepared (if you prepare spells) or one you know (if you have a spell repertoire); it must be rank 4 or lower. You lose access to that spell until the gift is used or the duration ends: if you prepared the spell, the slot is expended; if you know it via a repertoire, you treat yourself as having one fewer spell slot of that rank for the duration.</p><p>The recipient gains the ability to cast the gifted spell exactly once, using your spell DC and spell attack modifier. The recipient must supply any material components or costs the spell normally requires. When the recipient casts the spell, it uses their actions and their position (not yours). The recipient must use the gifted spell by the end of their next daily preparations or the gift fades unused.</p><hr /><p><strong>Heightened (7th)</strong> The maximum rank of the spell you can gift increases to 6.</p><p><strong>Heightened (9th)</strong> The maximum rank of the spell you can gift increases to 8.</p>"
+    },
+    "duration": {
+      "sustained": false,
+      "value": "until used or next daily preparations"
+    },
+    "heightening": {
+      "levels": {
+        "7": {},
+        "9": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 willing creature"
+    },
+    "time": {
+      "value": "1 minute"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}

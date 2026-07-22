@@ -1,0 +1,82 @@
+{
+  "_id": "hbb5498a49a04d76",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Grosteque Selfshape",
+        "originalName": "Grosteque Selfshape",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Grosteque Selfshape",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {
+      "0": {
+        "applyMod": false,
+        "category": null,
+        "formula": "2d6",
+        "kinds": [
+          "damage"
+        ],
+        "materials": [],
+        "type": "untyped"
+      }
+    },
+    "defense": null,
+    "description": {
+      "value": "<p>You funnel your gestalt wildshaping energy outward rather than inward, distorting and massively enlarging your form beyond its natural limits. Your size becomes Large (or as large as the available space safely allows if insufficient room exists). Your equipment and worn items grow proportionally with you. You gain 15 temporary hit points when you Cast the Spell, and you gain 5 temporary hit points at the start of each of your turns while this spell is sustained (these do not stack with the initial grant; only the highest current value applies).</p><p>While in this form, your unarmed Strikes and weapon Strikes deal an additional 2d6 damage of the damage type appropriate to the weapon or unarmed attack. Your reach increases by 5 feet. You are unable to use the Wildshape action or cast polymorph spells while Grosteque Selfshape is active.</p><hr /><p><strong>Heightened (6th)</strong> Your size becomes Huge (or as large as space allows), the additional Strike damage increases to 3d6, you gain 20 temporary hit points on cast, and 10 temporary hit points at the start of each of your turns.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "heightening": {
+      "levels": {
+        "6": {}
+      },
+      "type": "fixed"
+    },
+    "level": {
+      "value": 4
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "self"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "you"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "primal"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate",
+        "morph",
+        "primal"
+      ]
+    }
+  },
+  "type": "spell"
+}

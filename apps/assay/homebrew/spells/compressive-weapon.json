@@ -1,0 +1,64 @@
+{
+  "_id": "hb37db8db40c574e",
+  "flags": {
+    "assay": {
+      "adapterWarnings": [
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+      ],
+      "seededFrom": {
+        "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
+        "convertedName": "Compressive Weapon",
+        "originalName": "Compressive Weapon",
+        "repo": "run_balance"
+      }
+    }
+  },
+  "name": "Compressive Weapon",
+  "system": {
+    "area": null,
+    "cost": {
+      "value": ""
+    },
+    "counteraction": false,
+    "damage": {},
+    "defense": null,
+    "description": {
+      "value": "<p>You compress the intervening space between yourself and a target creature, creating a spatial shortcut through which your weapon's reach always finds the target. Choose a weapon you are wielding when you Cast this Spell. While the spell is sustained, you can make Strikes with that weapon against the designated target as if the target were within the weapon's normal reach, regardless of its actual distance from you (up to the spell's range of 30 feet). The weapon still requires line of effect. You cannot use this spell to make Strikes against targets beyond 30 feet. If you move or the target moves beyond 30 feet, the spell ends.</p><hr /><p><strong>Heightened (+1)</strong> The range of the compressive reach increases by 10 feet.</p>"
+    },
+    "duration": {
+      "sustained": true,
+      "value": "1 minute"
+    },
+    "level": {
+      "value": 2
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Homebrew (run_balance)"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "requirements": "",
+    "rules": [],
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane",
+        "divine"
+      ],
+      "value": [
+        "concentrate",
+        "manipulate"
+      ]
+    }
+  },
+  "type": "spell"
+}
