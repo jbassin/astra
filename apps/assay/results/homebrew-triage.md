@@ -251,3 +251,18 @@ these are the ones where the effect has to earn the slot on its own.
   stays strictly once/round at every rank); the 5e-concentration `sustained:true` inheritance
   flipped to flat 1 minute FAMILY-WIDE (Tail/Stinger/Tentacle/Claws now match Shell; text
   never mentioned sustaining; probed scoring-neutral).
+- **Cerebral Disruption r9 (−4.44 → chip damage DROPPED, curse kept; now `comparables 5-9`,
+  in range):** Touch of Madness's r9 sibling — chip-damage artifact (failure-only 9d6, EV
+  31.5 vs the ~66 r9 budget) STACKED with the Eye-Stalks roll-a-table artifact (all six d6
+  curse rows priced as if they land; prior card showed Confused ×5). Anchor Unfathomable
+  Song r9 sim 0.75. Stakeholder C: 9d6 dropped (the invented stand-in for 5e's Int drain);
+  the CONVERSION BUG fixed — 5e's "frightened of you" row had been dropped and phobia
+  duplicated at rows 1+6, entry 2's "about creatures" narrowing reverted to auto-crit-fail
+  Int-based checks; success aligned to the sibling (Stupefied 2 for 1 MINUTE, not 24 h);
+  crit-fail's Stupefied-5-flat-check micro-rule simplified to Confused 1 round; legacy
+  names → Cleanse Affliction / Sound Body @UUIDs; "ability-score loss" gloss removed.
+- **⭐ STANDING CONVENTION (stakeholder, this session): curse removal text must specify a
+  successful COUNTERACT CHECK against the spell's rank.** Applied to Cerebral Disruption +
+  retrofitted onto Touch of Madness. Still carrying legacy/loose removal text, to be
+  converted as each comes up for review (mostly the item-7 pool): arcane-censure,
+  divine-regression, fast-forward, poisoned-backflow, taboo.
