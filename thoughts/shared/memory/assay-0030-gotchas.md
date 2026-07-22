@@ -90,3 +90,23 @@ the codex Assay block is HIDDEN not removed (one-line unwire: `corpusFns.ts` pas
 absent, SigNoz 0 ERROR). Revisit = swap back to `getAssayReader()` + redeploy, but
 re-scope the REPRESENTATION with the stakeholder first. The assay CLI tool itself stays
 fully live for design-table use.
+
+**ROUND 5 — HOMEBREW CONVERSION TRIAGE (2026-07-21):** vendored jmnario/run_balance
+(`apps/assay/vendor/run_balance/`, SHAs in VENDORED.md — 176 of the user's 5e homebrew
+spells + his friend's complete PF2e conversions, bespoke schema) + built the adapter
+(`homebrew.py`, `assay convert-homebrew`/`score-homebrew`; scoring reuses
+`export.build_entry_for_row` renamed public). Triage: `results/homebrew-triage.md`.
+⭐ Adapter trap classes found by running the real batch: self-inflicted-damage costs
+parsed as output EV (5 spells; "4d6 void to yourself" made a utility spell read
+−6.8 COLD); roll-a-table spells summing the whole table (Eye Stalks EV 88, +10.5);
+healing on the damage ladder (official heal does the same — tagged `isHealing`, kept);
+reversed parenthetical "damage (NdM type)" shape; negated condition mentions ("is not
+Blinded") must not promote; caster-vs-target has NO axis in the extractor (Take Me
+Instead's self-cost conditions route it buff — known false row). THE findings: his
+conversions are SYSTEMICALLY COLD (pure mean −1.42, 0/23 in-band — 5e structural
+generosity (range/area) carried 1:1 without paying dice; hybrids double-paid riders,
+mean −2.4); action cost is a mechanical 5e-casting-time inheritance (3 of 5 reactions
+broken to plain 1A, zero variable-action spells — Magic Re-Missiles COLD *because* it
+lacks the Force Barrage 1/2/3A pattern); his 44 checklist flags ∩ assay verdict flags
+= only 8 (complementary lenses). oxfmt ignorePatterns needs `**/assay/vendor/**`
+(vendored JSON stays byte-identical, the codex/data precedent).
