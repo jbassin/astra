@@ -36,7 +36,49 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `5ecb628`, 2026-07-19 — codex (0029) P14 ENTITY-PAGE INTEGRITY ROUND BUILT + DEPLOYED + LIVE in one session (scope → spec → opus adversarial ×2 → S1 `dbb6cbb` transform · S2 `5ecb628` render · S3 orchestrator deploy ≈70 s window); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P14 review — a stakeholder action, no build work pending; NOTE: a separate 0030 "assay" workstream is in flight in ANOTHER session (its `d3095d3` + working-tree files ride this branch — don't touch); heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `8cc766e`, 2026-07-22 — assay (0030) ROUND 5: the HOMEBREW SPELL CONVERSION project — the user's 176 5e homebrew spells + friend jmnario's PF2e conversions vendored, adapter built, CANONICAL STORE live, worklist items 2/3/4/5 DONE + voice sweep; ▶ NEXT = worklist item 1 (HOT/over-ranked review) or 6/7; codex gate H still the open codex item; heartwood ON HOLD)
+
+> **✅ assay (0030) R5 — homebrew conversion triage + canonical store, 2026-07-21→22, all pushed:**
+> 1. **Vendored** `github.com/jmnario/run_balance` → `apps/assay/vendor/run_balance/`
+>    (byte-identical, SHAs in VENDORED.md, oxfmt ignore) — the user's 176 5e spells
+>    (8 homebrew schools) + the friend's complete bespoke-schema PF2e conversions.
+> 2. **Adapter** (`homebrew.py`, engineer-built, 2 fix rounds): bespoke → Foundry `system`
+>    shape; prose dice, condition promotion to @UUID (negation-guarded), 21-variant defense
+>    normalization. **Batch verdict:** conversions systemically COLD (0/23 pure in-band,
+>    structure carried 1:1 without paying dice); action costs mechanically inherited;
+>    3/5 reactions structurally broken; zero variable-action spells.
+> 3. **CANONICAL STORE** (stakeholder architecture, eventual codex source + Foundry module):
+>    `apps/assay/homebrew/spells/*.json` = 176 committed Foundry-shaped docs, THE source of
+>    truth; `seed-homebrew` (--force-guarded) · `score-homebrew` (reads store) ·
+>    `homebrew-revisions` → committed `homebrew/revisions.md` diff vs fresh vendor baseline
+>    (pairing follows `flags.assay.seededFrom` so RENAMES don't orphan). Set-wide POLICIES
+>    live in the ADAPTER (school traits · cost-only-on-long-casts · trait-gloss strip) so
+>    revisions.md stays hand-edit-only — currently **30 deviating spells**, all
+>    stakeholder-decided in-session.
+> 4. **Worklist state** (`apps/assay/results/homebrew-triage.md`, the paper trail):
+>    ~~2~~ reaction repairs · ~~3~~ under-ranked buffs (Mind +1, Suspension r4/5-min) ·
+>    ~~4~~ per-spell-mix dice/range sheet APPLIED (7 in band + Summon Heart 11d10) ·
+>    ~~5~~ (Force Drumfire kept-as-engine · Healing Draught cure→counteract · Beam 6d12/
+>    120ft/dazzled-blinded) · **voice sweep** 13 spells de-editorialized (4 leaked
+>    conversion notes; catch-all regex now CLEAN) · set-wide: 8 school traits, materials
+>    scrub (ritual-keep), Remaster fixes (death saves→recovery checks, %→flat check).
+>    **▶ OPEN: item 1** (7 HOT + 5 over-ranked incl. Monstrous Copy: Shell 9→[1–3]) ·
+>    **item 6** (deep-COLD effect hybrids, read via comparables) · **item 7** (73-spell
+>    ledger manual pool + 21 wide-range rows) · residue (cheap ritual props). Then: codex
+>    ingest as a new source (needs scoping: licenseMap + Foundry-only join) + Foundry
+>    compendium module + the joint review with the friend (revisions.md is the artifact).
+> 5. **Process:** interactive stakeholder-decision loop (AskUserQuestion batches, measure
+>    A/B through the REAL scorer before proposing, apply+commit per decision) — detail in
+>    [[assay-0030-gotchas]].
+> - **▶ codex: gate H unchanged** (the ONE consolidated P2–P14 review, stakeholder action);
+>   assay codex-block still ⏸ HIDDEN (`8db3a0a`); heartwood ⏸ ON HOLD; webhook rotation,
+>   Class-A alerting breadth, scribe ASR cost telemetry unchanged.
+
+---
+
+### Previous section (2026-07-19) — codex P14 (superseded above)
+
+## (was) Current state (as of `5ecb628`, 2026-07-19 — codex (0029) P14 ENTITY-PAGE INTEGRITY ROUND BUILT + DEPLOYED + LIVE in one session (scope → spec → opus adversarial ×2 → S1 `dbb6cbb` transform · S2 `5ecb628` render · S3 orchestrator deploy ≈70 s window); ▶ THE ONLY OPEN ITEM = gate H, now the ONE consolidated P2–P14 review — a stakeholder action, no build work pending; NOTE: a separate 0030 "assay" workstream is in flight in ANOTHER session (its `d3095d3` + working-tree files ride this branch — don't touch); heartwood ON HOLD)
 
 > **✅ codex (0029) P14 — entity-page integrity round, all live on codex.iridi.cc:**
 > 1. **Provenance:** stakeholder: "Two pages for you to investigate, `/ancestry?entry=shisk`

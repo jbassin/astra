@@ -91,30 +91,56 @@ absent, SigNoz 0 ERROR). Revisit = swap back to `getAssayReader()` + redeploy, b
 re-scope the REPRESENTATION with the stakeholder first. The assay CLI tool itself stays
 fully live for design-table use.
 
-**ROUND 5 — HOMEBREW CONVERSION TRIAGE (2026-07-21):** vendored jmnario/run_balance
-(`apps/assay/vendor/run_balance/`, SHAs in VENDORED.md — 176 of the user's 5e homebrew
-spells + his friend's complete PF2e conversions, bespoke schema) + built the adapter
-(`homebrew.py`, `assay convert-homebrew`/`score-homebrew`; scoring reuses
-`export.build_entry_for_row` renamed public). Triage: `results/homebrew-triage.md`.
-⭐ Adapter trap classes found by running the real batch: self-inflicted-damage costs
-parsed as output EV (5 spells; "4d6 void to yourself" made a utility spell read
-−6.8 COLD); roll-a-table spells summing the whole table (Eye Stalks EV 88, +10.5);
-healing on the damage ladder (official heal does the same — tagged `isHealing`, kept);
-reversed parenthetical "damage (NdM type)" shape; negated condition mentions ("is not
-Blinded") must not promote; caster-vs-target has NO axis in the extractor (Take Me
-Instead's self-cost conditions route it buff — known false row). THE findings: his
-conversions are SYSTEMICALLY COLD (pure mean −1.42, 0/23 in-band — 5e structural
-generosity (range/area) carried 1:1 without paying dice; hybrids double-paid riders,
-mean −2.4); action cost is a mechanical 5e-casting-time inheritance (3 of 5 reactions
-broken to plain 1A, zero variable-action spells — Magic Re-Missiles COLD *because* it
-lacks the Force Barrage 1/2/3A pattern); his 44 checklist flags ∩ assay verdict flags
-= only 8 (complementary lenses). oxfmt ignorePatterns needs `**/assay/vendor/**`
-(vendored JSON stays byte-identical, the codex/data precedent). ▶ CANONICAL STORE
-(stakeholder model, eventual codex source + Foundry module): `apps/assay/homebrew/spells/`
-= 176 COMMITTED Foundry-shaped docs, THE single source of truth — `assay seed-homebrew`
-(refuses overwrite w/o --force; provenance in `flags.assay.seededFrom`), `score-homebrew`
-reads the store, `assay homebrew-revisions` → committed `homebrew/revisions.md` diff vs a
-fresh vendor re-conversion (0-deviation on seed = determinism proof); vendor/ is
-provenance-only; oxfmt ignores `**/assay/homebrew/**` (oxfmt's array line-fill can't be
-reproduced from json.dumps). Worklist state: item 4 RESOLVED per-spell-mix (§4a sheet in
-homebrew-triage.md); items 1/2/3/5/6/7 open; NO spell edits applied yet (stakeholder-gated).
+**ROUND 5 — THE HOMEBREW CONVERSION PROJECT (2026-07-21→22, `7ede558`…`8cc766e`):** vendored
+jmnario/run_balance (`apps/assay/vendor/`, byte-identical, SHAs in VENDORED.md — 176 of the
+user's 5e spells + the friend's complete PF2e conversions) → adapter → **CANONICAL STORE**
+`apps/assay/homebrew/spells/` (176 COMMITTED Foundry-shaped docs = THE source of truth;
+eventual codex source + Foundry module). Commands: `seed-homebrew` (--force-guarded) ·
+`score-homebrew` (store-only) · `homebrew-revisions` → committed `homebrew/revisions.md`
+(30 deviations = every stakeholder edit; pairing follows `flags.assay.seededFrom` so
+renames don't orphan — Magic Re-Missiles → Force Drumfire proved it). Paper trail:
+`apps/assay/results/homebrew-triage.md` (worklist; items 2/3/4/5 + voice sweep DONE,
+**1/6/7 OPEN**).
+
+**⭐ THE architecture rule: set-wide POLICY lives in the ADAPTER (baseline), per-spell
+JUDGMENT lives in the STORE** — school traits (8 homebrew schools from originalSchool),
+cost-only-on-long-casts (ritual-keep), trait-gloss stripping all baseline-side, so
+revisions.md stays hand-edit-only. oxfmt ignores `**/assay/homebrew/**` (json.dumps can't
+reproduce its array line-fill) + `**/assay/vendor/**`.
+
+**⭐ Adapter/lens artifact classes (run the real batch to find them):** self-inflicted-damage
+costs parsed as output EV (5 spells, −6.8 "COLD" utility spell); roll-a-table spells summing
+the whole table (Eye Stalks EV 88); healing on the damage ladder (official heal does the
+same — `isHealing` tag); sustained-engine + weapon-morph + per-round-aura spells mis-lensed
+by per-cast budgets (Force Drumfire, Kosmoturgist's Weapon, Solar Fury — NEVER "fix" their
+dice); caster-vs-target has NO extractor axis (Take Me Instead routes buff falsely);
+negated conditions ("is not Blinded") must not promote; reversed parenthetical
+"damage (NdM type)" shape.
+
+**⭐ Model quirks that flip design intuition (measure, don't assume):** the declared action
+constants make 3A spells EXPECT LESS EV (a 3A conversion reads HOTTER, not cooler — "+1
+action as nerf" is real at the table but assay can't credit it) and reactions expect MORE
+(×1.6 — Deja Vu went −0.51→−0.68 on repair); area size within a shape is INVISIBLE to the
+fit (burst 30→20 = no change) while the RANGE bucket is a blunt >1-rank lever (500→120
+overshoots mild COLDs to HOT); the ladder trains on BASE-rank rows only, so heightened
+official benchmarks (Lightning Bolt r6 = 7d12 line) read HOT — Beam settled at 6d12 (model)
+after the stakeholder call, not 7d12 (benchmark).
+
+**⭐ THE batch findings:** his conversions are SYSTEMICALLY COLD (pure mean −1.42, 0/23
+in-band — 5e structural generosity carried 1:1 without paying dice; hybrids double-paid
+riders −2.4); action cost was a mechanical 5e-casting-time inheritance (3/5 reactions
+structurally broken to 1A — prose triggers survived, encoding didn't); zero variable-action
+spells; his 44 checklist flags ∩ assay flags = only 8 (complementary lenses). **The
+voice-leak class:** conversion notes INSIDE spell text ("no clean analog in standard PF2e —
+designed from the rank-9 budget", "see notes") on 7 spells + series cross-marketing +
+explainer asides — 13 fixed, catch-all regex now CLEAN (`no clean analog|see notes|noted
+as|budget|anchored to|…`). Bonus 5e-isms: "death-saving throws"→recovery checks;
+percentile collapse→flat check; "verbal component"→"requires speech"; flat-footed alias.
+
+**Process pattern that worked:** interactive per-spell stakeholder loop — present full text
++ his notes + comparables evidence, batch decisions via AskUserQuestion, measure every A/B
+through the REAL `assay score` before proposing, apply + commit + regenerate revisions per
+decision. Stakeholder calls logged in triage doc + commit messages. Set-wide policies:
+Remaster = no materials (except long-cast ritual Costs), no school traits except the 8
+HOMEBREW schools (standard-school spells like Connection get stakeholder-assigned homes —
+memetics), trait line is source of truth (no prose glosses).
