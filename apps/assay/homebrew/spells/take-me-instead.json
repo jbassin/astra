@@ -3,8 +3,8 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "excluded 1 self-directed damage dice from EV (2d8 void) \u2014 a cost paid by the caster, not the spell's output",
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "excluded 1 self-directed damage dice from EV (2d8 void) — a cost paid by the caster, not the spell's output",
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -66,6 +66,7 @@
       "value": [
         "concentrate",
         "healing",
+        "mercuromancy",
         "vitality"
       ]
     }

@@ -745,6 +745,31 @@ def _success_tiers_html(success_tiers: dict[str, Any] | None) -> str:
 # Top-level conversion
 # ---------------------------------------------------------------------------
 
+#: The author's homebrew magic schools (stakeholder 2026-07-22): PF2e Remaster
+#: has no school traits, but these are CUSTOM schools from the original 5e
+#: system and ride every spell as a custom trait (future codex facet /
+#: Foundry-module trait). Sourced from `convertedFromSpiritOf.originalSchool`.
+#: STANDARD 5e schools are deliberately NOT carried (the one `D (Divination)`
+#: spell, Connection, stays school-traitless — pending a stakeholder homebrew
+#: school assignment).
+_HOMEBREW_SCHOOLS = frozenset(
+    {
+        "antillurgy",
+        "chronomancy",
+        "gestalt",
+        "kosmoturgy",
+        "memetics",
+        "mercuromancy",
+        "planara",
+        "seraphic",
+    }
+)
+
+
+def _school_trait(spell: dict[str, Any]) -> str | None:
+    raw = str((spell.get("convertedFromSpiritOf") or {}).get("originalSchool") or "").lower()
+    return raw if raw in _HOMEBREW_SCHOOLS else None
+
 
 @dataclass
 class ConvertedSpell:
@@ -771,6 +796,10 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
     traits = {str(t).lower() for t in (spell.get("traits") or [])}
     if is_cantrip:
         traits.add("cantrip")
+
+    school = _school_trait(spell)
+    if school is not None:
+        traits.add(school)
 
     defense_raw = spell.get("defense")
     defense_dict, add_attack_trait, defense_warnings = _map_defense(defense_raw)

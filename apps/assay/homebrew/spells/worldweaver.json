@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "cast time '1 day (ritual, 16 casters required)' isn't a shape assay's own action-time parser recognizes \u2014 defaults to the 2-action structural multiplier",
+        "cast time '1 day (ritual, 16 casters required)' isn't a shape assay's own action-time parser recognizes — defaults to the 2-action structural multiplier",
         "area text not structurally parseable, left unmapped (effective-target classification falls back to the description's own target-count heuristic): 'the cosmos'"
       ],
       "seededFrom": {
@@ -24,7 +24,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>The most profound working of magic possible, Worldweaver requires the coordinated effort of sixteen spellcasters each capable of casting rank-9 spells. The casters form a ring around an eight-pointed star drawn in alchemical chalk on a level surface in a circle 30 feet in diameter. The intertwined sliver of Ruin and slice of Preservation are placed at the center and consumed when the ritual completes.</p><p>When the casting concludes, the cosmos resets entirely \u2014 the universe rewinds to before the current creation and runs forward again in continuous progression until it reaches the present moment. During this rewinding-and-progressing, each of the sixteen casters may alter one event in history. The change must be a single discrete event (examples: 'this person is never born,' 'this battle's outcome is reversed,' 'this artifact is never created,' 'this planar incursion is turned back at its origin'). There is no limit on the scope of any one change, but each caster may make only one change, and compound consequences of all changes resolve through the natural progression of causality in the new timeline.</p><p>All sixteen casters, by virtue of having cast the ritual, retain their memories of the previous timeline. No other being retains such memories unless specifically included as one caster's single change ('this person remembers the prior timeline').</p><p>Worldweaver cannot be counteracted by any effect of rank 9 or lower. A second casting of Worldweaver itself could alter or undo the changes from a prior casting.</p><p>This spell has no clean analog in standard PF2e magic \u2014 designed from the rank-10 reality-warping budget anchored to Wish/Remake rituals.</p>"
+      "value": "<p>The most profound working of magic possible, Worldweaver requires the coordinated effort of sixteen spellcasters each capable of casting rank-9 spells. The casters form a ring around an eight-pointed star drawn in alchemical chalk on a level surface in a circle 30 feet in diameter. The intertwined sliver of Ruin and slice of Preservation are placed at the center and consumed when the ritual completes.</p><p>When the casting concludes, the cosmos resets entirely — the universe rewinds to before the current creation and runs forward again in continuous progression until it reaches the present moment. During this rewinding-and-progressing, each of the sixteen casters may alter one event in history. The change must be a single discrete event (examples: 'this person is never born,' 'this battle's outcome is reversed,' 'this artifact is never created,' 'this planar incursion is turned back at its origin'). There is no limit on the scope of any one change, but each caster may make only one change, and compound consequences of all changes resolve through the natural progression of causality in the new timeline.</p><p>All sixteen casters, by virtue of having cast the ritual, retain their memories of the previous timeline. No other being retains such memories unless specifically included as one caster's single change ('this person remembers the prior timeline').</p><p>Worldweaver cannot be counteracted by any effect of rank 9 or lower. A second casting of Worldweaver itself could alter or undo the changes from a prior casting.</p><p>This spell has no clean analog in standard PF2e magic — designed from the rank-10 reality-warping budget anchored to Wish/Remake rituals.</p>"
     },
     "duration": {
       "sustained": false,
@@ -61,6 +61,7 @@
         "concentrate",
         "manipulate",
         "rare",
+        "seraphic",
         "temporal"
       ]
     }

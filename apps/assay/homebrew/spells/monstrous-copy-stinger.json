@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -82,6 +82,7 @@
       ],
       "value": [
         "concentrate",
+        "gestalt",
         "manipulate",
         "morph",
         "poison",

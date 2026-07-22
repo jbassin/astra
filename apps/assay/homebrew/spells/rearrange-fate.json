@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You grant a willing creature the ability to take control of their own immediate fate. The creature rolls two d20s and notes both results. For the next two d20 rolls the creature makes during the spell's duration, it must use those pre-rolled results \u2014 but it can choose which pre-rolled result applies to which roll. The creature cannot roll d20s normally for these two rolls; it draws from its fate pool instead. Any unused fate results are lost when the spell ends.</p><p>A creature can only benefit from one casting of Rearrange Fate at a time.</p><hr /><p><strong>Heightened (+1)</strong> You can target 1 additional willing creature.</p>"
+      "value": "<p>You grant a willing creature the ability to take control of their own immediate fate. The creature rolls two d20s and notes both results. For the next two d20 rolls the creature makes during the spell's duration, it must use those pre-rolled results — but it can choose which pre-rolled result applies to which roll. The creature cannot roll d20s normally for these two rolls; it draws from its fate pool instead. Any unused fate results are lost when the spell ends.</p><p>A creature can only benefit from one casting of Rearrange Fate at a time.</p><hr /><p><strong>Heightened (+1)</strong> You can target 1 additional willing creature.</p>"
     },
     "duration": {
       "sustained": false,
@@ -58,7 +58,8 @@
       "value": [
         "concentrate",
         "fortune",
-        "manipulate"
+        "manipulate",
+        "mercuromancy"
       ]
     }
   },

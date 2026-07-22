@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -28,7 +28,7 @@
       }
     },
     "description": {
-      "value": "<p>You lay your hands on a sleeping or @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} creature and draw out a temporary echo of its mind \u2014 a ghostly impression that will answer your questions in the target's native language as long as you sustain the spell. The target's body remains motionless and unaware of the interrogation. The echo answers from memory alone; it knows everything the target knew at the time of casting but cannot access anything the target has since learned.</p><p>The target must attempt a Will saving throw. A sleeping creature (as opposed to one magically @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious}) attempts this save with a \u20132 circumstance penalty.</p><p><strong>Critical Success</strong> The echo does not form. The target wakes if it was sleeping and becomes aware an attempt was made to enter its mind.</p><p><strong>Success</strong> The echo does not form. The target remains @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} and unaware.</p><p><strong>Failure</strong> The echo forms and answers your questions for the duration. Particularly sensitive secrets may trigger a secondary Will save (DC equal to the spell's DC) from the echo to resist answering.</p><p><strong>Critical Failure</strong> The echo forms and answers all questions fully, with no secondary save granted for sensitive topics.</p><hr /><p><strong>Heightened (4th)</strong> You can target a creature that is merely asleep (magically or naturally) without the \u20132 circumstance penalty on its Will save. Additionally, the spell's duration increases to sustained up to 1 hour.</p><p><strong>Heightened (6th)</strong> The target need not be @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} or sleeping; it may be awake but @UUID[Compendium.pf2e.conditionitems.Item.Restrained]{Restrained} and unable to speak. The secondary save for sensitive secrets is no longer granted.</p>"
+      "value": "<p>You lay your hands on a sleeping or @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} creature and draw out a temporary echo of its mind — a ghostly impression that will answer your questions in the target's native language as long as you sustain the spell. The target's body remains motionless and unaware of the interrogation. The echo answers from memory alone; it knows everything the target knew at the time of casting but cannot access anything the target has since learned.</p><p>The target must attempt a Will saving throw. A sleeping creature (as opposed to one magically @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious}) attempts this save with a –2 circumstance penalty.</p><p><strong>Critical Success</strong> The echo does not form. The target wakes if it was sleeping and becomes aware an attempt was made to enter its mind.</p><p><strong>Success</strong> The echo does not form. The target remains @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} and unaware.</p><p><strong>Failure</strong> The echo forms and answers your questions for the duration. Particularly sensitive secrets may trigger a secondary Will save (DC equal to the spell's DC) from the echo to resist answering.</p><p><strong>Critical Failure</strong> The echo forms and answers all questions fully, with no secondary save granted for sensitive topics.</p><hr /><p><strong>Heightened (4th)</strong> You can target a creature that is merely asleep (magically or naturally) without the –2 circumstance penalty on its Will save. Additionally, the spell's duration increases to sustained up to 1 hour.</p><p><strong>Heightened (6th)</strong> The target need not be @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} or sleeping; it may be awake but @UUID[Compendium.pf2e.conditionitems.Item.Restrained]{Restrained} and unable to speak. The secondary save for sensitive secrets is no longer granted.</p>"
     },
     "duration": {
       "sustained": true,
@@ -69,6 +69,7 @@
       "value": [
         "concentrate",
         "divination",
+        "memetics",
         "mental",
         "subtle"
       ]

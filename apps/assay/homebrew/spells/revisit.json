@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You rewind your own personal timeline to a location you occupied within the last 10 minutes, snapping back to that position in an instant. You teleport to any unoccupied location you personally occupied within the last 10 minutes. You arrive with the exact momentum you had at the moment you left that location \u2014 if you were running, you continue running; if you were falling, you continue falling (though you choose direction again). Any equipment you carry teleports with you. You cannot teleport into a space that is currently occupied by a solid object.</p><hr /><p><strong>Heightened (7th)</strong> You can revisit a location you occupied within the last hour, and you can bring up to 2 willing creatures who are adjacent to you at the time of casting.</p>"
+      "value": "<p>You rewind your own personal timeline to a location you occupied within the last 10 minutes, snapping back to that position in an instant. You teleport to any unoccupied location you personally occupied within the last 10 minutes. You arrive with the exact momentum you had at the moment you left that location — if you were running, you continue running; if you were falling, you continue falling (though you choose direction again). Any equipment you carry teleports with you. You cannot teleport into a space that is currently occupied by a solid object.</p><hr /><p><strong>Heightened (7th)</strong> You can revisit a location you occupied within the last hour, and you can bring up to 2 willing creatures who are adjacent to you at the time of casting.</p>"
     },
     "duration": {
       "sustained": false,
@@ -61,6 +61,7 @@
         "occult"
       ],
       "value": [
+        "chronomancy",
         "concentrate",
         "manipulate",
         "teleportation",

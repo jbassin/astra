@@ -4,7 +4,7 @@
     "assay": {
       "adapterWarnings": [
         "area text not structurally parseable, left unmapped (effective-target classification falls back to the description's own target-count heuristic): '100-foot-by-100-foot slab of rock, 10 feet thick'",
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -24,7 +24,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You rip a massive slab of bare rock from the ground (or from beneath a body of water) and levitate it 10 feet above the terrain. The slab is 100 feet to a side and 10 feet thick; creatures or objects standing on the ground where it rises must succeed at a DC 25 Reflex save or be carried aloft. The slab floats at a height of 10 feet. As a 2-action activity (concentrate, manipulate) you can issue a movement command; the slab moves up to 10 feet in any direction you specify, continuing in that direction each round at the same speed until you command it to stop or it reaches a barrier. The slab has AC 10, Hardness 14, and 300 HP per 10\u00d710-foot section. The effect is permanent \u2014 the slab remains floating until destroyed.</p><hr /><p><strong>Heightened (9th)</strong> The slab is 200 feet to a side and can be commanded to move at 20 feet per round.</p>"
+      "value": "<p>You rip a massive slab of bare rock from the ground (or from beneath a body of water) and levitate it 10 feet above the terrain. The slab is 100 feet to a side and 10 feet thick; creatures or objects standing on the ground where it rises must succeed at a DC 25 Reflex save or be carried aloft. The slab floats at a height of 10 feet. As a 2-action activity (concentrate, manipulate) you can issue a movement command; the slab moves up to 10 feet in any direction you specify, continuing in that direction each round at the same speed until you command it to stop or it reaches a barrier. The slab has AC 10, Hardness 14, and 300 HP per 10×10-foot section. The effect is permanent — the slab remains floating until destroyed.</p><hr /><p><strong>Heightened (9th)</strong> The slab is 200 feet to a side and can be commanded to move at 20 feet per round.</p>"
     },
     "duration": {
       "sustained": false,
@@ -64,6 +64,7 @@
       "value": [
         "concentrate",
         "earth",
+        "kosmoturgy",
         "manipulate",
         "transmutation"
       ]

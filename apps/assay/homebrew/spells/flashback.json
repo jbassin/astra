@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -34,7 +34,7 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>You touch a willing creature and guide its mind back to a specific memory it experienced within the last 24 hours. While you sustain the spell, the target relives that memory in vivid detail, becoming @UUID[Compendium.pf2e.conditionitems.Item.Paralyzed]{Paralyzed} as its attention fully occupies the recalled moment \u2014 it is aware of its surroundings as if from far away (it can hear but sounds seem distant). You and up to 5 additional willing creatures you designate may share in observing the memory, perceiving it as if through the target's senses (sight, hearing, and any special senses the target possessed at the time). While sharing the memory, you and any observers are @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} but are otherwise free to act. The spell ends immediately if you stop sustaining it. If the spell ends unexpectedly (you are incapacitated), the primary target takes 1d6 mental damage (no save) from the abrupt severance.</p><hr /><p><strong>Heightened (3rd)</strong> The memory window extends to 1 week, and observers may also speak into the memory as a whisper the primary target hears (they cannot interact or change events).</p>"
+      "value": "<p>You touch a willing creature and guide its mind back to a specific memory it experienced within the last 24 hours. While you sustain the spell, the target relives that memory in vivid detail, becoming @UUID[Compendium.pf2e.conditionitems.Item.Paralyzed]{Paralyzed} as its attention fully occupies the recalled moment — it is aware of its surroundings as if from far away (it can hear but sounds seem distant). You and up to 5 additional willing creatures you designate may share in observing the memory, perceiving it as if through the target's senses (sight, hearing, and any special senses the target possessed at the time). While sharing the memory, you and any observers are @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} but are otherwise free to act. The spell ends immediately if you stop sustaining it. If the spell ends unexpectedly (you are incapacitated), the primary target takes 1d6 mental damage (no save) from the abrupt severance.</p><hr /><p><strong>Heightened (3rd)</strong> The memory window extends to 1 week, and observers may also speak into the memory as a whisper the primary target hears (they cannot interact or change events).</p>"
     },
     "duration": {
       "sustained": true,
@@ -75,6 +75,7 @@
         "concentrate",
         "incapacitation",
         "manipulate",
+        "memetics",
         "mental"
       ]
     }

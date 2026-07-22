@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "mixed '+N' and fixed-rank heightening triggers on the same spell \u2014 Foundry heightening is one shape per spell, not structurally represented (kept as a description appendix only)"
+        "mixed '+N' and fixed-rank heightening triggers on the same spell — Foundry heightening is one shape per spell, not structurally represented (kept as a description appendix only)"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -66,6 +66,7 @@
       "value": [
         "concentrate",
         "force",
+        "kosmoturgy",
         "manipulate"
       ]
     }

@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "excluded 1 self-directed damage dice from EV (4d6 void) \u2014 a cost paid by the caster, not the spell's output"
+        "excluded 1 self-directed damage dice from EV (4d6 void) — a cost paid by the caster, not the spell's output"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -60,6 +60,7 @@
         "concentrate",
         "fortune",
         "manipulate",
+        "mercuromancy",
         "uncommon"
       ]
     }

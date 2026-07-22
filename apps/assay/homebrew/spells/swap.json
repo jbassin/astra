@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -28,7 +28,7 @@
       }
     },
     "description": {
-      "value": "<p>You twist the fabric of space, swapping the positions of two creatures both within range. If both targets are willing, no save is required and the swap happens automatically. If either target is unwilling, that creature must attempt a Fortitude save.</p><p><strong>Critical Success</strong> The unwilling creature is unaffected; it stays in place. The other target (if it was willing) also stays in its original position since the swap requires both participants.</p><p><strong>Success</strong> The unwilling creature resists; neither creature is moved.</p><p><strong>Failure</strong> Both creatures are instantly transposed to each other's positions. The teleportation does not provoke reactions. Each creature retains its current facing, velocity, and any carried momentum.</p><p><strong>Critical Failure</strong> As failure. Additionally, the unwilling creature is @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard} until the start of its next turn as it reorients.</p><hr /><p><strong>Heightened (+1)</strong> You can target 1 additional creature with this spell. Eligible pairs can be swapped simultaneously (e.g., at rank 4, three creatures can be swapped as two pairs sharing positions, or one trio in a cyclic shift \u2014 the caster decides the configuration).</p>"
+      "value": "<p>You twist the fabric of space, swapping the positions of two creatures both within range. If both targets are willing, no save is required and the swap happens automatically. If either target is unwilling, that creature must attempt a Fortitude save.</p><p><strong>Critical Success</strong> The unwilling creature is unaffected; it stays in place. The other target (if it was willing) also stays in its original position since the swap requires both participants.</p><p><strong>Success</strong> The unwilling creature resists; neither creature is moved.</p><p><strong>Failure</strong> Both creatures are instantly transposed to each other's positions. The teleportation does not provoke reactions. Each creature retains its current facing, velocity, and any carried momentum.</p><p><strong>Critical Failure</strong> As failure. Additionally, the unwilling creature is @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard} until the start of its next turn as it reorients.</p><hr /><p><strong>Heightened (+1)</strong> You can target 1 additional creature with this spell. Eligible pairs can be swapped simultaneously (e.g., at rank 4, three creatures can be swapped as two pairs sharing positions, or one trio in a cyclic shift — the caster decides the configuration).</p>"
     },
     "duration": {
       "sustained": false,
@@ -61,6 +61,7 @@
       ],
       "value": [
         "concentrate",
+        "kosmoturgy",
         "manipulate",
         "teleportation"
       ]

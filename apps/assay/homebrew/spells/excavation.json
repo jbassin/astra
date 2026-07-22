@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You channel power from the Plane of Earth, allowing you to excavate terrain at a rapid rate. For the duration, once per round as part of Sustaining the spell, you can excavate a cube up to 10 feet on each side of earth, sand, unworked stone, or mud within range. The removed material is returned to the Plane of Earth. You can expand an existing hole or start a new one. This spell cannot affect artificially constructed stone or masonry (such as building walls, castle foundations, or worked stone floors).</p><p>You can also use this spell to tunnel through earth. If you create a tunnel longer than 10 feet, it has a 30% chance of collapsing (roll 1d20; a result of 1\u20136 means collapse), with an additional 5% per 5 feet beyond 30 feet total tunnel length, unless the tunnel is braced or structurally supported. Creatures normally have enough time to react automatically when you dig beneath them; no saving throw is required to avoid falling into a newly excavated space.</p><hr /><p><strong>Heightened (+1)</strong> The volume you can excavate each round increases by a 5-foot-cube (a 15-foot cube at rank 5, a 20-foot cube at rank 6, etc.).</p>"
+      "value": "<p>You channel power from the Plane of Earth, allowing you to excavate terrain at a rapid rate. For the duration, once per round as part of Sustaining the spell, you can excavate a cube up to 10 feet on each side of earth, sand, unworked stone, or mud within range. The removed material is returned to the Plane of Earth. You can expand an existing hole or start a new one. This spell cannot affect artificially constructed stone or masonry (such as building walls, castle foundations, or worked stone floors).</p><p>You can also use this spell to tunnel through earth. If you create a tunnel longer than 10 feet, it has a 30% chance of collapsing (roll 1d20; a result of 1–6 means collapse), with an additional 5% per 5 feet beyond 30 feet total tunnel length, unless the tunnel is braced or structurally supported. Creatures normally have enough time to react automatically when you dig beneath them; no saving throw is required to avoid falling into a newly excavated space.</p><hr /><p><strong>Heightened (+1)</strong> The volume you can excavate each round increases by a 5-foot-cube (a 15-foot cube at rank 5, a 20-foot cube at rank 6, etc.).</p>"
     },
     "duration": {
       "sustained": false,
@@ -57,7 +57,8 @@
       "value": [
         "concentrate",
         "earth",
-        "manipulate"
+        "manipulate",
+        "planara"
       ]
     }
   },

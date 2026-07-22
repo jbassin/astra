@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -31,7 +31,7 @@
       }
     },
     "description": {
-      "value": "<p>You channel fate's desire for chaos into a single provocative word or gesture, directing it at a crowd or group of at least 10 creatures within the burst. Each creature in the area must attempt a Will saving throw. The effect varies by how many targets critically fail their saves: if 3 or more critically fail, a general brawl erupts among all creatures that failed their saves.</p><p><strong>Critical Success</strong> The creature is unaffected and recognizes the magical attempt.</p><p><strong>Success</strong> The creature is briefly irritated and takes a \u20131 status penalty to Will saving throws against emotion effects for 1 round.</p><p><strong>Failure</strong> The creature is incited to aggression. For 1 minute, it must spend at least 1 action on its turn making a Strike against the nearest creature (other than the caster). If there is no valid target, this compulsion fades harmlessly that round.</p><p><strong>Critical Failure</strong> As failure, and the creature immediately uses its reaction (if available) to Stride toward the nearest creature other than the caster and make a Strike against it.</p><hr /><p><strong>Heightened (+2)</strong> The burst radius increases by 10 feet and the minimum group size decreases by 2.</p>"
+      "value": "<p>You channel fate's desire for chaos into a single provocative word or gesture, directing it at a crowd or group of at least 10 creatures within the burst. Each creature in the area must attempt a Will saving throw. The effect varies by how many targets critically fail their saves: if 3 or more critically fail, a general brawl erupts among all creatures that failed their saves.</p><p><strong>Critical Success</strong> The creature is unaffected and recognizes the magical attempt.</p><p><strong>Success</strong> The creature is briefly irritated and takes a –1 status penalty to Will saving throws against emotion effects for 1 round.</p><p><strong>Failure</strong> The creature is incited to aggression. For 1 minute, it must spend at least 1 action on its turn making a Strike against the nearest creature (other than the caster). If there is no valid target, this compulsion fades harmlessly that round.</p><p><strong>Critical Failure</strong> As failure, and the creature immediately uses its reaction (if available) to Stride toward the nearest creature other than the caster and make a Strike against it.</p><hr /><p><strong>Heightened (+2)</strong> The burst radius increases by 10 feet and the minimum group size decreases by 2.</p>"
     },
     "duration": {
       "sustained": false,
@@ -68,7 +68,8 @@
         "incapacitation",
         "linguistic",
         "manipulate",
-        "mental"
+        "mental",
+        "mercuromancy"
       ]
     }
   },

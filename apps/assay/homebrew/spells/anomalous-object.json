@@ -4,8 +4,8 @@
     "assay": {
       "adapterWarnings": [
         "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'spell attack roll (if attended)'",
-        "defense text 'spell attack roll (if attended)' implies an attack-roll spell but the source traits list lacked 'attack' \u2014 added it (required for assay's targeting_class classification)",
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "defense text 'spell attack roll (if attended)' implies an attack-roll spell but the source traits list lacked 'attack' — added it (required for assay's targeting_class classification)",
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -25,7 +25,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You reach through time to retrieve a duplicate of a touched object from another moment in the timestream, superimposing two temporal instances of the same object. While sustained, you hold both the original and the duplicate simultaneously. Any effect that affects one version (damage, charges spent, magical alterations) also affects the other \u2014 the two share one state. If either version is destroyed, both are destroyed. If the object is currently held or @UUID[Compendium.pf2e.conditionitems.Item.Controlled]{Controlled} by another creature, you must succeed at a spell attack roll against that creature's AC to touch it; on a failure the spell is lost. When the spell ends, the duplicate dissolves.</p><hr /><p><strong>Heightened (9th)</strong> The object can be up to 4 Bulk and the duration extends to sustained up to 8 hours.</p>"
+      "value": "<p>You reach through time to retrieve a duplicate of a touched object from another moment in the timestream, superimposing two temporal instances of the same object. While sustained, you hold both the original and the duplicate simultaneously. Any effect that affects one version (damage, charges spent, magical alterations) also affects the other — the two share one state. If either version is destroyed, both are destroyed. If the object is currently held or @UUID[Compendium.pf2e.conditionitems.Item.Controlled]{Controlled} by another creature, you must succeed at a spell attack roll against that creature's AC to touch it; on a failure the spell is lost. When the spell ends, the duplicate dissolves.</p><hr /><p><strong>Heightened (9th)</strong> The object can be up to 4 Bulk and the duration extends to sustained up to 8 hours.</p>"
     },
     "duration": {
       "sustained": true,
@@ -64,6 +64,7 @@
       ],
       "value": [
         "attack",
+        "chronomancy",
         "concentrate",
         "manipulate",
         "transmutation"

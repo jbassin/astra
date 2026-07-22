@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You imprint a temporal checkpoint on the target's life-force, recording its current vitality. For the duration, the target carries this temporal anchor.</p><p>If the target would be reduced to 0 HP or would die outright (including death effects, Massacre's death-on-crit-fail, or similar) at any point during the duration, instead of @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} or falling @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious}, the checkpoint activates: the target immediately regains HP equal to 9d8+72 (as a rank-9 2-action Heal), any @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} and @UUID[Compendium.pf2e.conditionitems.Item.Wounded]{Wounded} conditions are removed, and the temporal anchor is consumed (the spell ends). The target's position does not change when the checkpoint activates.</p><p>The checkpoint activates only once per casting and then the spell ends. If the duration expires without the checkpoint triggering, the spell ends with no effect.</p><p>This spell has no clean analog in standard PF2e \u2014 designed from the rank-9 healing budget anchored to Heal (rank 9: 9d8 + 72).</p><hr /><p><strong>Heightened (10th)</strong> The checkpoint restores the target to full HP instead of a fixed amount, and the duration increases to 8 hours.</p>"
+      "value": "<p>You imprint a temporal checkpoint on the target's life-force, recording its current vitality. For the duration, the target carries this temporal anchor.</p><p>If the target would be reduced to 0 HP or would die outright (including death effects, Massacre's death-on-crit-fail, or similar) at any point during the duration, instead of @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} or falling @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious}, the checkpoint activates: the target immediately regains HP equal to 9d8+72 (as a rank-9 2-action Heal), any @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} and @UUID[Compendium.pf2e.conditionitems.Item.Wounded]{Wounded} conditions are removed, and the temporal anchor is consumed (the spell ends). The target's position does not change when the checkpoint activates.</p><p>The checkpoint activates only once per casting and then the spell ends. If the duration expires without the checkpoint triggering, the spell ends with no effect.</p><p>This spell has no clean analog in standard PF2e — designed from the rank-9 healing budget anchored to Heal (rank 9: 9d8 + 72).</p><hr /><p><strong>Heightened (10th)</strong> The checkpoint restores the target to full HP instead of a fixed amount, and the duration increases to 8 hours.</p>"
     },
     "duration": {
       "sustained": false,
@@ -62,6 +62,7 @@
         "primal"
       ],
       "value": [
+        "chronomancy",
         "concentrate",
         "healing",
         "manipulate",

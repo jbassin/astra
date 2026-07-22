@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -28,7 +28,7 @@
       }
     },
     "description": {
-      "value": "<p>Your touch floods the target's mind with a dreamlike haze, erasing memory of identity and purpose. The target retains all physical abilities, skills, and spell slots, but cannot remember who they are, their companions, their mission, or any details of their life before this moment.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} about the current situation for 1 round (as the confusion condition, but limited to 1 round) as the haze briefly washes over it.</p><p><strong>Failure</strong> The creature loses all memory of its identity and recent past for the duration. A hostile creature affected this way forgets why it was fighting and becomes indifferent to the caster and the caster's allies for 1 minute (as a non-magical indifference; it resumes hostility if attacked). It treats its allies as strangers. A creature under this effect can attempt a new Will saving throw at the end of each hour; on a success, the effect ends.</p><p><strong>Critical Failure</strong> As failure, but the creature forgets its identity for the full duration with no hourly saves. It also takes a \u20132 status penalty to attack rolls and skill checks while the fugue persists, as its actions feel detached and purposeless.</p><hr /><p><strong>Heightened (7th)</strong> The spell can target up to 3 creatures, each of which makes a separate Will save.</p>"
+      "value": "<p>Your touch floods the target's mind with a dreamlike haze, erasing memory of identity and purpose. The target retains all physical abilities, skills, and spell slots, but cannot remember who they are, their companions, their mission, or any details of their life before this moment.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} about the current situation for 1 round (as the confusion condition, but limited to 1 round) as the haze briefly washes over it.</p><p><strong>Failure</strong> The creature loses all memory of its identity and recent past for the duration. A hostile creature affected this way forgets why it was fighting and becomes indifferent to the caster and the caster's allies for 1 minute (as a non-magical indifference; it resumes hostility if attacked). It treats its allies as strangers. A creature under this effect can attempt a new Will saving throw at the end of each hour; on a success, the effect ends.</p><p><strong>Critical Failure</strong> As failure, but the creature forgets its identity for the full duration with no hourly saves. It also takes a –2 status penalty to attack rolls and skill checks while the fugue persists, as its actions feel detached and purposeless.</p><hr /><p><strong>Heightened (7th)</strong> The spell can target up to 3 creatures, each of which makes a separate Will save.</p>"
     },
     "duration": {
       "sustained": false,
@@ -68,6 +68,7 @@
         "concentrate",
         "incapacitation",
         "manipulate",
+        "memetics",
         "mental"
       ]
     }

@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon your knowledge of the Tarrasque, growing a dense, iridescent carapace of supernaturally reflective shell. For the duration, you gain the following benefits:</p><p>- You gain a +3 circumstance bonus to AC.<br />- You gain resistance 15 to physical damage (bludgeoning, piercing, and slashing).<br />- You gain the Deflecting Shell reaction.</p><p>Deflecting Shell [reaction] Trigger: A ranged spell attack roll targets you, a line spell would pass through your space, or you would be targeted by a spell that requires a ranged attack roll; Frequency: once per round. Effect: Roll 1d6. On a 1\u20135, you are unaffected by the triggering effect. On a 6, you are unaffected and you can redirect the effect as though it originated from your space, choosing new targets or direction within the spell's original range.</p><hr /><p><strong>Heightened (10th)</strong> The duration increases to 10 minutes. The physical resistance increases to 20. The Deflecting Shell reaction can be used twice per round.</p>"
+      "value": "<p>You draw upon your knowledge of the Tarrasque, growing a dense, iridescent carapace of supernaturally reflective shell. For the duration, you gain the following benefits:</p><p>- You gain a +3 circumstance bonus to AC.<br />- You gain resistance 15 to physical damage (bludgeoning, piercing, and slashing).<br />- You gain the Deflecting Shell reaction.</p><p>Deflecting Shell [reaction] Trigger: A ranged spell attack roll targets you, a line spell would pass through your space, or you would be targeted by a spell that requires a ranged attack roll; Frequency: once per round. Effect: Roll 1d6. On a 1–5, you are unaffected by the triggering effect. On a 6, you are unaffected and you can redirect the effect as though it originated from your space, choosing new targets or direction within the spell's original range.</p><hr /><p><strong>Heightened (10th)</strong> The duration increases to 10 minutes. The physical resistance increases to 20. The Deflecting Shell reaction can be used twice per round.</p>"
     },
     "duration": {
       "sustained": false,
@@ -61,6 +61,7 @@
       ],
       "value": [
         "concentrate",
+        "gestalt",
         "manipulate",
         "morph",
         "primal"

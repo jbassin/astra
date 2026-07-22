@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>Djura's signature ward compresses a layer of air to the density of tempered steel around the bodies of your allies. For the duration, each target gains resistance 10 to bludgeoning, piercing, and slashing damage, as well as resistance 10 to force damage. Additionally, each target gains a +2 status bonus to death-saving throws (the flat checks made when @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying}).</p><p>This is a named spell in the Djura tradition. In PF2e, it is recommended as a focus spell for the Djura class archetype \u2014 see notes.</p><hr /><p><strong>Heightened (+1)</strong> The resistance increases by 5.</p>"
+      "value": "<p>Djura's signature ward compresses a layer of air to the density of tempered steel around the bodies of your allies. For the duration, each target gains resistance 10 to bludgeoning, piercing, and slashing damage, as well as resistance 10 to force damage. Additionally, each target gains a +2 status bonus to death-saving throws (the flat checks made when @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying}).</p><p>This is a named spell in the Djura tradition. In PF2e, it is recommended as a focus spell for the Djura class archetype — see notes.</p><hr /><p><strong>Heightened (+1)</strong> The resistance increases by 5.</p>"
     },
     "duration": {
       "sustained": false,
@@ -55,6 +55,7 @@
       ],
       "value": [
         "concentrate",
+        "kosmoturgy",
         "manipulate"
       ]
     }

@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -34,7 +34,7 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>You infuse a creature with explosive gravitational momentum, pressing beyond the limits of ordinary physiology. For the duration, the target gains a +2 status bonus to attack rolls, Athletics checks, and Fortitude saving throws. The target deals an additional 2d6 force damage on all weapon Strikes. At the start of each of the target's turns, it gains 10 temporary Hit Points (these are refreshed each turn; they do not stack with themselves). Finally, when the target would be reduced to 0 Hit Points, it does not fall @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} on that turn only \u2014 it remains conscious and may act normally until the start of its next turn, at which point it falls @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} if still at 0 HP. The target continues to make death saving throws normally while at 0 HP; this effect cannot stabilize the target.</p><hr /><p><strong>Heightened (9th)</strong> The additional Strike damage increases to 3d6, and the target gains immunity to the @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} condition for the first round after being reduced to 0 HP (still makes death saves; still loses immediately at @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} 4).</p>"
+      "value": "<p>You infuse a creature with explosive gravitational momentum, pressing beyond the limits of ordinary physiology. For the duration, the target gains a +2 status bonus to attack rolls, Athletics checks, and Fortitude saving throws. The target deals an additional 2d6 force damage on all weapon Strikes. At the start of each of the target's turns, it gains 10 temporary Hit Points (these are refreshed each turn; they do not stack with themselves). Finally, when the target would be reduced to 0 Hit Points, it does not fall @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} on that turn only — it remains conscious and may act normally until the start of its next turn, at which point it falls @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} if still at 0 HP. The target continues to make death saving throws normally while at 0 HP; this effect cannot stabilize the target.</p><hr /><p><strong>Heightened (9th)</strong> The additional Strike damage increases to 3d6, and the target gains immunity to the @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} condition for the first round after being reduced to 0 HP (still makes death saves; still loses immediately at @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} 4).</p>"
     },
     "duration": {
       "sustained": false,
@@ -73,6 +73,7 @@
       ],
       "value": [
         "concentrate",
+        "kosmoturgy",
         "manipulate",
         "polymorph",
         "transmutation"

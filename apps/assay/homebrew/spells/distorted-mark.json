@@ -3,8 +3,8 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "defense text 'spell attack roll' implies an attack-roll spell but the source traits list lacked 'attack' \u2014 added it (required for assay's targeting_class classification)",
-        "range text 'melee' (normalized 'melee') isn't a shape assay's own range parser recognizes \u2014 bucketed 'varies', may misprice the structural range multiplier"
+        "defense text 'spell attack roll' implies an attack-roll spell but the source traits list lacked 'attack' — added it (required for assay's targeting_class classification)",
+        "range text 'melee' (normalized 'melee') isn't a shape assay's own range parser recognizes — bucketed 'varies', may misprice the structural range multiplier"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -77,6 +77,7 @@
         "attack",
         "cantrip",
         "concentrate",
+        "kosmoturgy",
         "manipulate",
         "sonic"
       ]
