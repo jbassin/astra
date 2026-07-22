@@ -28,20 +28,15 @@
       }
     },
     "description": {
-      "value": "<p>You drag temporal drag around a mighty creature, robbing it of the speed needed to perform its signature legendary deeds. The target must attempt a Fortitude save. The target cannot use Legendary Resistance to automatically succeed at this save. While the spell is sustained, an affected creature repeats the save at the end of each of its turns, regaining use of one reaction on a success (including legendary actions if using that subsystem); it must succeed twice in a row to fully end the effect.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature loses access to one reaction until the end of its next turn (its slowest or most recently used reaction, GM's choice).</p><p><strong>Failure</strong> The creature loses access to all reactions (including legendary actions / reactions) for the duration or until it succeeds at the end-of-turn saves. It can still act normally on its turn.</p><p><strong>Critical Failure</strong> As failure, and the creature is also @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} for the duration.</p><hr /><p><strong>Heightened (9th)</strong> The range increases to 120 feet, and the target cannot use Legendary Resistance while this spell is active.</p>"
+      "value": "<p>Time thickens around a mighty creature, dragging at its limbs and dulling the edge of its greatness. The target must attempt a Fortitude save.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> For the duration, the creature can't use mythic abilities (abilities with the mythic trait) or spend Mythic Points.</p><p><strong>Failure</strong> As success, and the creature also can't take reactions.</p><p><strong>Critical Failure</strong> As failure, and the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p>"
     },
     "duration": {
-      "sustained": true,
+      "sustained": false,
       "value": "1 minute"
     },
-    "heightening": {
-      "levels": {
-        "9": {}
-      },
-      "type": "fixed"
-    },
+    "heightening": null,
     "level": {
-      "value": 7
+      "value": 5
     },
     "publication": {
       "license": "OGL",
@@ -57,7 +52,7 @@
       "value": "1 creature"
     },
     "time": {
-      "value": "2"
+      "value": "1"
     },
     "traits": {
       "rarity": "common",
@@ -68,8 +63,6 @@
       "value": [
         "chronomancy",
         "concentrate",
-        "manipulate",
-        "mental",
         "time"
       ]
     }
