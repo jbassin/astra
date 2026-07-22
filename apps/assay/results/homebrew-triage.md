@@ -197,3 +197,16 @@ Awkward, Swap, Nightfall). Bonus 5e-isms fixed in passing: Djura's "death-saving
 recovery checks; Excavation's percentile collapse -> DC 7 flat check (+1/5 ft). Legitimate
 official-style "such as" examples were deliberately KEPT (Cone of Silence, Erase, Taboo,
 Suspension, etc.).
+
+## 9. Trait-hygiene sweep (2026-07-22, stakeholder-directed; landed with item 1)
+
+Set-wide, adapter + store in lockstep (93 docs touched, 0 score drift, 0 new revisions
+deviations): rarity keywords lifted from traits.value into the rarity FIELD (10 rare /
+4 uncommon — the friend's intent, previously presenting as common); tradition names
+(primal x22, occult x9, divine x5) folded into traits.traditions; STRIPPED = standard 5e
+school traits (abjuration/divination/transmutation/enchantment — the standing policy,
+now enforced against the vendor traits arrays too), custom strays (time, temporal, trap,
+creation, summoning, gravity), and damage-type traits (bludgeoning, piercing). `illusion`,
+`extradimensional`, `move` verified OFFICIAL against the Foundry snapshot vocabulary and
+kept. Stakeholder: a later curation sweep may deliberately re-add custom traits; the
+baseline stays strict official-vocab + the 8 homebrew schools.
