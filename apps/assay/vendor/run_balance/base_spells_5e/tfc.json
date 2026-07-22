@@ -1,0 +1,3034 @@
+{
+  "_meta": {
+    "sources": [
+      {
+        "json": "tfc",
+        "abbreviation": "TFC",
+        "full": "The Floating Cup",
+        "color": "228b22",
+        "authors": [
+          "Josh Bassin"
+        ],
+        "convertedBy": [
+          "Josh Bassin",
+          "Ilyfr"
+        ],
+        "version": "0.4.0",
+        "url": "",
+        "targetSchema": "1.1.2"
+      }
+    ],
+    "dateAdded": 1634086999
+  },
+  "spell": [
+    {
+      "name": "Connection",
+      "level": 5,
+      "school": "D",
+      "time": [
+        {
+          "number": 1,
+          "unit": "minute"
+        }
+      ],
+      "range": {
+        "type": "special"
+      },
+      "duration": [
+        {
+          "type": "timed",
+          "duration": {
+            "type": "hour",
+            "amount": 1,
+            "upTo": true
+          },
+          "concentration": true
+        }
+      ],
+      "classes": {
+        "fromClassList": [
+          {
+            "name": "Bard",
+            "source": "PHB"
+          },
+          {
+            "name": "Cleric",
+            "source": "PHB"
+          },
+          {
+            "name": "Wizard",
+            "source": "PHB"
+          }
+        ]
+      },
+      "entries": [
+        "You open a connection to a willing creature with which you are familiar. Throughout the duration of the spell, you and the creature may communicate through telepathy. The creature hears the message in its mind, recognizes you as the sender if it knows you, and can answer in a like manner immediately.",
+        "You can send the message across any distance and even to other planes of existence, but if the target is on a different plane than you, there is a 5 percent chance that the message doesn't arrive.",
+        "While casting the spell, or while the spell is active, you may add additional willing creatures to the Connection. To do so expend a 3rd level or higher spell slot per creature."
+      ],
+      "source": "tfc",
+      "components": {
+        "v": true,
+        "s": true,
+        "m": {
+          "text": "a conch shell and a pearl worth 500gp",
+          "cost": 50000
+        }
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Staff of Minor Striking",
+      "weight": 4,
+      "tier": "Minor",
+      "rarity": "Rare",
+      "source": "tfc",
+      "reqAttune": true,
+      "entries": [
+        "This staff can be wielded as a magic quarterstaff that grants a +1 bonus to attack and damage rolls made with it.",
+        "The staff has 3 charges. When you hit with a melee attack using it, you can expend any number of charges. For each charge you expend, the target takes an extra {@damage 1d6} radiant damage. The staff regains all expended charges daily at dawn."
+      ],
+      "charges": 3,
+      "staff": true
+    },
+    {
+      "name": "Inverse Driftglobe",
+      "wondrous": true,
+      "weight": 1,
+      "tier": "Minor",
+      "rarity": "Uncommon",
+      "source": "tfc",
+      "entries": [
+        "This small sphere of thick glass weighs 1 pound. If you are within 60 feet of it, you can speak its command word and cause it to emanate the {@spell darkness} spell. Once used, the {@spell darkness} effect can't be used again until the next dawn.",
+        "You can speak another command word as an action to make the shadowed globe rise into the air and float no more than 5 feet off the ground. The globe hovers in this way until you or another creature grasps it. If you move more than 60 feet from the hovering globe, it follows you until it is within 60 feet of you. It takes the shortest route to do so. If prevented from moving, the globe sinks gently to the ground and becomes inactive, and its light winks out."
+      ],
+      "attachedSpells": [
+        "darkness"
+      ]
+    },
+    {
+      "name": "Pyroconverger",
+      "wondrous": true,
+      "rarity": "Uncommon",
+      "source": "tfc",
+      "entries": [
+        "A Pyroconverger is a foot long black wrought iron sculpture of a scorpion with a metallic tube driven into the mouth and a trigger on the tail.",
+        "The scorpion carries 5 charges, which recharge on a long rest of the most recent person to use the device. When the trigger is pulled, a charge is expended and a burst of green flame fills the area of a ten foot cone in front of the device. All creatures caught in the cone must attempt a DC 13 Dexterity saving throw or take {@damage 6d6} fire damage and have their movement be reduced by half. On a successful save, the creature takes {@damage 4d6} fire damage and its movement is unaffected. If all creatures succeed on their saving throw, an additional charge is lost.",
+        "Should the device lose all of its charges, it will explode on initiative count 20, causing those in a 20 foot radius around it to take {@damage 12d6} fire damage and make a DC 13 Dexterity saving throw against being knocked prone."
+      ],
+      "savingThrow": [
+        "dexterity"
+      ]
+    },
+    {
+      "name": "Patishvat's Corrupting Pamphlet",
+      "wondrous": true,
+      "weight": 5,
+      "rarity": "Artifact",
+      "source": "tfc",
+      "reqAttune": true,
+      "entries": [
+        "An artifact from before the Sundering, back when the Order was active. Patishvat's Corrupting Pamphlet is a masterwork of hundreds of layers of different kinds of magic, most of which made by techniques no longer known to mortals.",
+        "The Pamphlet was said to have contained information on how to locate Patishvat's mobile wizard tower, likely for recruiting the strong mages that could pass the trials administered by the Pamphlet. However, over the years the magic inside the artifact has run rampant, changing the words inside to gibberish and corrupting the trials into their most simple functions. A skilled wizard, artificer, or enchanter might be able to restore the original functionality given enough time, however.",
+        "Now all that remains of the pamphlet are its storage and duplication abilities, which can still provide immense functionality in the right hands.",
+        {
+          "name": "Duplication",
+          "type": "entries",
+          "entries": [
+            "Likely a remainder of the Pamphlet's ability to generate foes for its trials, the artifact can create perfect duplications of any creature that touches it. A non-attuned creature that touches the Pamphlet must succeed on a Wisdom saving throw against a 13 DC or the artifact will materialize a clone, expending one of its three charges to do so. The clone is identical in every way to the original except that it is vulnerable to force damage, hostile to everyone but prioritizes targeting its original, and will dissipate exactly one hour after its creation. The same creature cannot be cloned more than once in a 24 hour span. The Pamphlet's charges are restored at dawn."
+          ]
+        },
+        {
+          "name": "Capture",
+          "type": "entries",
+          "entries": [
+            "A fragment of the Pamphlet's trial generation functionality, the artifact can store and release creatures within its pages. The wielder of the pamphlet may hold it against a creature of Huge or smaller size for one minute, at the end of which the creature makes a Wisdom saving throw against 15 DC. On a failure, the creature is drawn into the Pamphlet. The Pamphlet has ten units of storage, where the size of a creature is represented by an amount shown in the table below.",
+            {
+              "type": "table",
+              "caption": "Stored Creature Sizes",
+              "colLabels": [
+                "Units",
+                "Size"
+              ],
+              "colStyles": [
+                "col-2 text-center",
+                "col-10 text-center"
+              ],
+              "rows": [
+                [
+                  "1",
+                  "Tiny"
+                ],
+                [
+                  "2",
+                  "Small"
+                ],
+                [
+                  "4",
+                  "Medium"
+                ],
+                [
+                  "8",
+                  "Large"
+                ],
+                [
+                  "10",
+                  "Huge"
+                ]
+              ]
+            },
+            "While stored inside the Pamphlet, the creature has no need for food, water, or sleep, but does still age. As an action you may release one creature from the pamphlet into an open space within five feet. When the Pamphlet is used in this way, the Duplication effect does not occur."
+          ]
+        },
+        "When the Pamphlet is the target of a {@spell Dispel Magic} spell, all of its charges are expended harmlessly, and any creatures stored within are immediately released."
+      ]
+    },
+    {
+      "name": "Nightpiercer",
+      "weight": 6,
+      "baseItem": "greatsword|phb",
+      "rarity": "Artifact",
+      "source": "tfc",
+      "type": "M",
+      "reqAttune": "by a champion of Tempus",
+      "weaponCategory": "martial",
+      "property": [
+        "H",
+        "2H"
+      ],
+      "dmg1": "2d6",
+      "dmgType": "S",
+      "bonusWeapon": "+2",
+      "entries": [
+        "Granted to those most trusted by the Shard of Harmony Tempus, Nightpiercer is a twin-bladed greatsword made of a vibrant red-tinted metal. The hilt has a circular gap where it meets the two blades. Its scabbard is decorated with motifs of flames and sunlight.",
+        "You gain a +2 bonus to attack and damage rolls made with this magic weapon. It has the following additional properties:",
+        {
+          "name": "Beaconlight",
+          "type": "entries",
+          "entries": [
+            "As a bonus action on your turn you may ignite Nightpiercer. Doing so causes flames to gather in the hilt and spread up the blades.",
+            "While Beaconlight is active you deal an additional {@dice 2d6} fire damage on a hit."
+          ]
+        },
+        {
+          "name": "Bloodlight",
+          "type": "entries",
+          "entries": [
+            "When you activate Beaconlight some of Tempus' flame flows through your body, as it does with the sword. Your eyes and veins glow as the energy surges through you.",
+            "While Beaconlight is active the fire in your blood burns away poison and bolsters your resolve, giving you immunity to poison and advantage on saves against being {@condition Frightened}"
+          ]
+        },
+        {
+          "name": "Tempus' Guidance",
+          "type": "entries",
+          "entries": [
+            "While you hold this weapon you have a stronger connection to Tempus. When you cast the spells {@spell Guidance} or {@spell Resistance} on yourself you may use a {@dice 1d6} for your bonus instead of the standard die."
+          ]
+        },
+        {
+          "name": "Sanctuary's Blessing",
+          "type": "entries",
+          "entries": [
+            "Nightpiercer is intrinsically tied to the Chantry. As an action you may grant Tempus' protection to another willing creature. Doing so both transfers the knowledge of where the Chantry is, as well as allows them to bypass the Champion's Trials.",
+            "Creatures under the effect of Sancuary's Blessing have the effects of {@spell Find the Path} targeting the Chantry until they arrive."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Dawn's Herald",
+      "weight": 6,
+      "baseItem": "greatsword|phb",
+      "rarity": "Artifact",
+      "source": "tfc",
+      "type": "M",
+      "reqAttune": "by a champion of Tempus",
+      "weaponCategory": "martial",
+      "property": [
+        "H",
+        "2H"
+      ],
+      "dmg1": "2d6",
+      "dmgType": "S",
+      "bonusWeapon": "+3",
+      "entries": [
+        "A fragment of Tempus itself, Dawn's Herald is the greatest boon that the shard can grant. Dawn's Herald is a twin-bladed greatsword made of a radiant, pure-white metal. The hilt has a circular gap where it meets the two blades, with a red gemstone suspended in the center. Its scabbard is decorated with motifs of flames and sunlight.",
+        "You gain a +3 bonus to attack and damage rolls made with this magic weapon. It has the following additional properties:",
+        {
+          "name": "Beaconlight",
+          "type": "entries",
+          "entries": [
+            "While you wield Dawn's Herald, light appears to bend around you, and colors in your proximity grow more intense. When you hit a creature with a melee attack with this weapon, you deal an additional {@dice 3d6} radiant damage. This damage overcomes immunity and resistances.",
+            "In addition, the power in the blade bolsters you against that which would weaken you. While the blade is on your person you are immune to disease, poison damage, and the {@condition frightened} condition."
+          ]
+        },
+        {
+          "name": "Tempus' Might",
+          "type": "entries",
+          "entries": [
+            "While you hold this weapon you have a much stronger connection to Tempus. When you cast the spells {@spell Guidance} or {@spell Resistance} on yourself you may use a {@dice 1d8} for your bonus instead of the standard die.",
+            "In addition, when you cast these spells on another creature, they may use a {@dice 1d6} for their bonus instead of the standard die."
+          ]
+        },
+        {
+          "name": "Pierce the Mortal Coil",
+          "type": "entries",
+          "entries": [
+            "You can give yourself a +20 bonus to a single melee attack roll you make, as you target a creature's cognitive essence. If this attack reduces the creature's health to 0, their soul is rendered and they perish instantly. A creature who dies in this manner cannot be revived by any method.",
+            "Once you use this ability, you can't use it again until you finish a short rest."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Runic Sun Blade",
+      "source": "tfc",
+      "baseItem": "longsword|phb",
+      "type": "M",
+      "tier": "major",
+      "rarity": "very rare",
+      "reqAttune": true,
+      "weight": 3,
+      "weaponCategory": "martial",
+      "property": [
+        "F",
+        "V"
+      ],
+      "dmg1": "1d8",
+      "dmgType": "R",
+      "dmg2": "1d10",
+      "bonusWeapon": "+2",
+      "entries": [
+        "This item appears to be a longsword hilt. While grasping the hilt, you can use a bonus action to cause a blade of pure radiance to spring into existence, or make the blade disappear. While the blade exists, this magic longsword has the finesse property. If you are proficient with {@item shortsword|phb|shortswords} or {@item longsword|phb|longswords}, you are proficient with the runic sun blade. You gain a +2 bonus to attack and damage rolls made with this weapon.",
+        "The sword's luminous blade emits bright light in a 15-foot radius and dim light for an additional 15 feet. While the blade persists, you can use a bonus action to expand or reduce its radius of bright and dim light by 5 feet each, to a maximum of 30 feet each or a minimum of 10 feet each.",
+        "The sword has a slot at the top into which a circular lens can be placed. The color of the lens -- as well as the rune inscribed on it -- modifies the blade that is brought into existance. The blade is designed to make changing the lens quick, and can be done as a bonus action. The blade was found with a box containing the following lenses:",
+        {
+          "name": "ᛞ (Dawn)",
+          "type": "entries",
+          "entries": [
+            "When the ᛞ rune is slotted the blade is a bright yellow. The light emitted by the blade is sunlight, the blade deals radiant damage, and when you hit an undead with it the target takes an extra {@dice 1d8} radiant damage."
+          ]
+        },
+        {
+          "name": "ᛖ (Death)",
+          "type": "entries",
+          "entries": [
+            "When the ᛖ rune is slotted the blade is a deep black. The blade deals necrotic damage, and as a reaction to a successful melee attack against you or an ally within 5 feet you may flood them with necrotic energy, dealing {@dice 3d6} necrotic damage."
+          ]
+        },
+        {
+          "name": "ᛚ (Water)",
+          "type": "entries",
+          "entries": [
+            "When the ᛚ rune is slotted the blade is a light blue. The blade deals cold damage, and while you are holding the extended blade you have resistance to fire damage. As a reaction to an ally within 30 feet receiving fire damage you may extend your fire resistance to them until the end of your next turn."
+          ]
+        },
+        {
+          "name": "ᚻ (Air)",
+          "type": "entries",
+          "entries": [
+            "When the ᚻ rune is slotted the blade is invisible. The blade deals force damage, and while you are holding the extended blade you have a flying speed of 20 feet. In addition while the ᚻ rune is slotted and the sword is retracted you have advantage on Dexterity (Stealth) checks."
+          ]
+        },
+        {
+          "name": "ᛉ (Protection)",
+          "type": "entries",
+          "entries": [
+            "When the ᛉ rune is slotted the blade is dark brown. The blade deals thunder damage, and grants you immunity to being {@condition Paralyzed}, {@condition Petrified}, and knocked {@condition Prone}. In addition, as a reaction to an ally within 30 feet being damaged by an attack you may reduce the damage to 1, but you take half the damage prevented in this way. The damage you take can't be reduced in any way. You may use this reaction a number of times equal to your Constitution modifier."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Radiance",
+      "source": "tfc",
+      "baseItem": "longsword|phb",
+      "type": "M",
+      "tier": "major",
+      "rarity": "very rare",
+      "reqAttune": true,
+      "weight": 3,
+      "weaponCategory": "martial",
+      "property": [
+        "F",
+        "V"
+      ],
+      "dmg1": "1d8",
+      "dmgType": "R",
+      "dmg2": "1d10",
+      "bonusWeapon": "+3",
+      "entries": [
+        "A fragment of Pelor itself, Radiance is the greatest boon the shard can grant. The sword appears to be a longsword hilt, but while grasping the hilt, you can use a bonus action to cause a blade of pure radiance to spring into existence, or make the blade disappear. While the blade exists, this magic longsword has the finesse property. If you are proficient with {@item shortsword|phb|shortswords} or {@item longsword|phb|longswords}, you are proficient with the Radiance. You gain a +3 bonus to attack and damage rolls made with this weapon.",
+        "The sword's luminous blade emits bright light in a 15-foot radius and dim light for an additional 15 feet. While the blade persists, you can use a bonus action to expand or reduce its radius of bright and dim light by 5 feet each, to a maximum of 30 feet each or a minimum of 10 feet each.",
+        "The sword has a slot at the top into which a circular lens can be placed. The color of the lens -- as well as the rune inscribed on it -- modifies the blade that is brought into existance. The blade is designed to make changing the lens quick, and can be done as a bonus action. The blade was found with a box containing the following lenses:",
+        {
+          "name": "ᛞ (Dawn)",
+          "type": "entries",
+          "entries": [
+            "When the ᛞ rune is slotted the blade is a bright yellow. The light emitted by the blade is sunlight, the blade deals radiant damage, and when you hit an undead with it the target takes an extra {@dice 2d8} radiant damage."
+          ]
+        },
+        {
+          "name": "ᛖ (Death)",
+          "type": "entries",
+          "entries": [
+            "When the ᛖ rune is slotted the blade is a deep black. The blade deals necrotic damage, and as a reaction to a successful melee attack against you or an ally within 5 feet you may flood them with necrotic energy, dealing {@dice 4d6} necrotic damage."
+          ]
+        },
+        {
+          "name": "ᛚ (Water)",
+          "type": "entries",
+          "entries": [
+            "When the ᛚ rune is slotted the blade is a light blue. The blade deals cold damage, and while you are holding the extended blade you have immunity to fire damage. As a reaction to an ally within 30 feet receiving fire damage you may extend your fire immunity to them until the end of your next turn."
+          ]
+        },
+        {
+          "name": "ᚻ (Air)",
+          "type": "entries",
+          "entries": [
+            "When the ᚻ rune is slotted the blade is invisible. The blade deals force damage, and while you are holding the extended blade you have a flying speed of 40 feet. In addition while the ᚻ rune is slotted and the sword is retracted you have advantage on Dexterity (Stealth) checks."
+          ]
+        },
+        {
+          "name": "ᛉ (Protection)",
+          "type": "entries",
+          "entries": [
+            "When the ᛉ rune is slotted the blade is dark brown. The blade deals thunder damage, and grants you immunity to being {@condition Paralyzed}, {@condition Petrified}, and knocked {@condition Prone}. In addition, as a reaction to an ally within 30 feet being damaged by an attack you may reduce the damage to 1, but you take half the damage prevented in this way. The damage you take can't be reduced in any way. You may use this reaction a number of times equal to your Constitution modifier."
+          ]
+        },
+        {
+          "name": "ᛃ (Growth)",
+          "type": "entries",
+          "entries": [
+            "When the ᛃ rune is slotted the blade is light red. The blade deals slashing damage, and for a minute after equipping this rune you double in size, and are considered Large. You have advantage on strength checks and saving throws. Your attacks in this form deal an additional {@dice 1d10} damage.",
+            "When you use this rune it loses its charge, and cannot be used again until after a long rest."
+          ]
+        },
+        {
+          "name": "ᛟ (Foresight)",
+          "type": "entries",
+          "entries": [
+            "When the ᛟ rune is slotted the blade is a deep purple. The blade deals slashing damage, and for a minute after equipping this rune you enter a prophetic state. Until the state ends, when you or another creature you can see within 60 feet of you makes an attack roll, a saving throw, or an ability check, you can use your reaction to cause the roll to have advantage or disadvantage. You may do this 3 times before the trance ends.",
+            "When you use this rune it loses its charge, and cannot be used again until after a long rest."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Hearthstaff",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "Artifact",
+      "reqAttune": "by a druid of the Circle of Wildfire",
+      "weight": 4,
+      "weaponCategory": "simple",
+      "property": [
+        "V"
+      ],
+      "dmg1": "1d6",
+      "dmgType": "B",
+      "dmg2": "1d8",
+      "bonusWeapon": "+2",
+      "bonusSpellAttack": "+2",
+      "recharge": "dawn",
+      "charges": 10,
+      "staff": true,
+      "entries": [
+        "This staff can be wielded as a magic quarterstaff that grants a +2 bonus to attack and damage rolls made with it. While attuned, you have a +2 bonus to spell attack rolls and resistance to fire damage.",
+        "The staff has 10 charges for the following properties. It regains {@dice 1d6 + 4} expended charges daily at dawn. If you expend the last charge, roll a {@dice d20}. On a 1, the staff bursts into flames before crumbling to ash.",
+        {
+          "type": "entries",
+          "name": "Bounty of the Wild",
+          "entries": [
+            "Each morning, {@dice 3d12} Goodberries (as from the {@spell Goodberry} spell) sprout along the staff. At the end of each day, any remaining Goodberries lose their magic, wither, and fall from the staff."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Sheltering Flame",
+          "entries": [
+            "As an action you can expend two charges to cause flames to run along the staff for one minute. These flames shed bright light in a 5-foot radius and dim light for an additional 10 feet. If this light overlaps with any area of magical darkness created by a spell of 4th level or lower, the spell which created this darkness is dispelled. Any ally of yours that starts its turn in this light with less than half their maximum health regains 1d8 hit points. Healing can be done in this way a number of times equal to 3 + your spellcasting ability modifier. Any enemy of yours that starts its turn within this radius takes 1d8 fire damage. You can end this effect early. Once this effect ends it cannot be used again until the next dawn."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Spells",
+          "entries": [
+            "You can use an action to expend 1 or more of the staff's charges to cast one of the following spells from it, using your spell save DC: {@spell animal friendship} (1 charge), {@spell awaken} (5 charges), {@spell barkskin} (2 charges), {@spell locate animals or plants} (2 charges), {@spell speak with animals} (1 charge), {@spell speak with plants} (3 charges), or {@spell wall of thorns} (6 charges).",
+            "You can also use an action to cast the {@spell pass without trace} spell from the staff without using any charges."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Tree Form",
+          "entries": [
+            "You can use an action to plant one end of the staff in fertile earth and expend 1 charge to transform the staff into a healthy tree. The tree is 60 feet tall, has a 10-foot-diameter trunk, and its branches spread out in a 30-foot radius canopy. The tree radiates powerful auras of both abjuration and transmutation magic if targeted by {@spell detect magic}. Each dawn 3d100 Goodberries sprout along its branches. A non-sentient creature that rests beneath its branches for eight hours gains the benefits of {@spell awaken}. Any creature beneath its canopy gains the following benefit:",
+            {
+              "type": "list",
+              "items": [
+                "Attack rolls made against you have disadvantage, and you have advantage on saving throws",
+                "You cannot be targeted by the {@spell dream} or {@spell scrying} spells",
+                "You can communicate with any other creature beneath the canopy as though you shared a language"
+              ]
+            },
+            "While touching the tree and using another action to speak its command word, you return the staff to normal. Any creature in the tree falls when it reverts to a staff."
+          ]
+        }
+      ],
+      "attachedSpells": [
+        "pass without trace",
+        "animal friendship",
+        "awaken",
+        "barkskin",
+        "locate animals or plants",
+        "speak with animals",
+        "speak with plants",
+        "wall of thorns"
+      ]
+    },
+    {
+      "name": "Lanternsap Staff",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "Artifact",
+      "reqAttune": "by a druid of the Circle of Wildfire",
+      "weight": 4,
+      "weaponCategory": "simple",
+      "property": [
+        "V"
+      ],
+      "dmg1": "1d6",
+      "dmgType": "B",
+      "dmg2": "1d8",
+      "bonusWeapon": "+3",
+      "bonusSpellAttack": "+3",
+      "recharge": "dawn",
+      "charges": 10,
+      "staff": true,
+      "entries": [
+        "A fragment of Melora itself, the Lanternsap Staff is the greatest boon the shard can grant. The staff is made of a gnarled, dark wood. A faint red glow, as if veins of lava flow within the staff, can be seen.",
+        "This staff can be wielded as a magic quarterstaff that grants a +3 bonus to attack and damage rolls made with it. While attuned, you have a +3 bonus to spell attack rolls and immunity to fire damage.",
+        "The staff has 10 charges for the following properties. It regains {@dice 1d6 + 4} expended charges daily at dawn.",
+        {
+          "type": "entries",
+          "name": "Bounty of the Wild",
+          "entries": [
+            "Each morning, {@dice 3d12} Goodberries (as from the {@spell Goodberry} spell) sprout along the staff. At the end of each day, any remaining Goodberries lose their magic, wither, and fall from the staff."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Sheltering Flame",
+          "entries": [
+            "As an action you can expend two charges to cause flames to run along the staff for one minute. These flames shed bright light in a 5-foot radius and dim light for an additional 10 feet. If this light overlaps with any area of magical darkness created by a spell of 4th level or lower, the spell which created this darkness is dispelled. Any ally of yours that starts its turn in this light with less than half their maximum health regains 1d8 hit points. Healing can be done in this way a number of times equal to 3 + your spellcasting ability modifier. Any enemy of yours that starts its turn within this radius takes 1d8 fire damage. You can end this effect early. Once this effect ends it cannot be used again until the next dawn."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Spells",
+          "entries": [
+            "You can use an action to expend 1 or more of the staff's charges to cast one of the following spells from it, using your spell save DC: {@spell animal friendship} (1 charge), {@spell awaken} (5 charges), {@spell barkskin} (2 charges), {@spell locate animals or plants} (2 charges), {@spell speak with animals} (1 charge), {@spell speak with plants} (3 charges), or {@spell wall of thorns} (6 charges).",
+            "You can also use an action to cast the {@spell pass without trace} spell from the staff without using any charges."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Tree Form",
+          "entries": [
+            "You can use an action to plant one end of the staff in fertile earth and expend 1 charge to transform the staff into a healthy tree. The tree is 60 feet tall, has a 10-foot-diameter trunk, and its branches spread out in a 30-foot radius canopy. The tree radiates powerful auras of both abjuration and transmutation magic if targeted by {@spell detect magic}. Each dawn 3d100 Goodberries sprout along its branches. A non-sentient creature that rests beneath its branches for eight hours gains the benefits of {@spell awaken}. Any creature beneath its canopy gains the following benefit:",
+            {
+              "type": "list",
+              "items": [
+                "Attack rolls made against you have disadvantage, and you have advantage on saving throws",
+                "You cannot be targeted by the {@spell dream} or {@spell scrying} spells",
+                "You can communicate with any other creature beneath the canopy as though you shared a language"
+              ]
+            },
+            "While touching the tree and using another action to speak its command word, you return the staff to normal. Any creature in the tree falls when it reverts to a staff."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Torch Form",
+          "entries": [
+            "You can use an action to plant one end of the staff in fertile earth and expend 2 charges to transform the staff into a great torch, fashioned out of a tree. The torch is 60 feet tall, has a 10-foot-diameter trunk, and its light spreads out in a 120-foot radius canopy. The torch radiates powerful auras of both abjuration and evocation magic if targeted by {@spell detect magic}. You and your allies gain the following benefits while within the torchlight:",
+            {
+              "type": "list",
+              "items": [
+                "Fire damage from spells or magical effects ignore resistance.",
+                "Spells with range \"touch\" can effect any other ally within the torchlight.",
+                "When regaining hit points by any method, the amount regained is the maximum possible."
+              ]
+            },
+            "In addition, you still gain the effects of wielding the staff while within the torchlight.",
+            "While touching the torch and using another action to speak its command word, you return the staff to normal."
+          ]
+        }
+      ],
+      "attachedSpells": [
+        "pass without trace",
+        "animal friendship",
+        "awaken",
+        "barkskin",
+        "locate animals or plants",
+        "speak with animals",
+        "speak with plants",
+        "wall of thorns"
+      ]
+    },
+    {
+      "name": "Djura's Manual of Fighting Discipline",
+      "wondrous": true,
+      "weight": 2,
+      "rarity": "Very Rare",
+      "source": "tfc",
+      "reqAttune": false,
+      "entries": [
+        "This book's magically charged pages are filled with Djura's detailed descriptions and illustrations that teach unique styles of combat. If you spend 48 hours over a period of 6 days or fewer studying the book's contents and practicing its guidelines, you gain one of the following Advanced Fighting Styles:",
+        {
+          "type": "list",
+          "items": [
+            {
+              "name": "Advanced Simplicity",
+              "entries": [
+                "Your attacks made with simple weapons score a critical hit on a roll of 19 or 20."
+              ]
+            },
+            {
+              "name": "Crushing Blows",
+              "entries": [
+                "When you score a critical hit using a melee weapon that has the heavy property, the target takes extra bludgeoning damage equal to 5 + the ability score modifier you used for your attack and damage rolls."
+              ]
+            },
+            {
+              "name": "Net Mastery",
+              "entries": [
+                "When you throw a net, its normal and long range is doubled. In addition, the first time that a creature attempts to escape from a net that you threw, the escape DC is equal to 8 + your proficiency bonus + your Strength or Dexterity modifier (your choice), unless it's already higher."
+              ]
+            },
+            {
+              "name": "Quick Shot",
+              "entries": [
+                "You gain a special reach with ranged weapons called a firing reach that's a number of feet equal to 5 + your normal reach. While you are wielding a ranged weapon, other creatures provoke an opportunity attack from you when they move out of your firing reach."
+              ]
+            },
+            {
+              "name": "Readied Bulwark",
+              "entries": [
+                "You gain a +2 bonus to AC against opportunity attacks while holding a shield."
+              ]
+            },
+            {
+              "name": "Versatile Expert",
+              "entries": [
+                "When you hit with an attack using a weapon that has the versatile property, you can use the two-handed damage die even if you're only wielding the weapon with one hand."
+              ]
+            }
+          ]
+        },
+        "You can't take an Advanced Fighting Style option more than once, even if you later get to choose again. Once the book has been used to grant an Advanced Fighting Style, it loses its magic, but regains it in a century."
+      ]
+    },
+    {
+      "name": "Tenebrous Grimoire",
+      "source": "tfc",
+      "rarity": "legendary",
+      "reqAttune": "by a wizard",
+      "wondrous": true,
+      "weight": 3,
+      "entries": [
+        "The Tenebrous Grimoire is a black leather tome with a silver gilding that slowly shifts over time. The book feels slightly warm to the touch, and if one puts their ear up to the cover the sound of a beating heart can be heard. The tome has an infinite number of pages, is three inches thick, eight inches wide, twelve inches long, and weighs three pounds.",
+        {
+          "type": "entries",
+          "name": "Unquenchable Thirst",
+          "entries": [
+            "The tome quickly assimilates any information it comes into contact with. While holding this book you can cast {@spell Copy|tfc} without spending a spell slot and ignoring the material component. The copied document is added to the contents of the tome."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Arcane Connection",
+          "entries": [
+            "You can use the grimoire as your spellcasting focus and spellbook, and you can scribe new spells into it as normal. When you prepare wizard spells using the grimoire, the number of wizard spells you can prepare increases by 2.",
+            "In addition, when you use your Arcane Recovery feature, you can increase the number of spell slot levels you regain by 1."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Tenebric Enhancement",
+          "entries": [
+            "When using the Grimoire as your spellcasting focus you gain a +2 bonus to spell attack rolls and to the saving throw DCs of your wizard spells."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Arcana Infinitum",
+      "source": "tfc",
+      "rarity": "artifact",
+      "reqAttune": "by a wizard",
+      "wondrous": true,
+      "weight": 3,
+      "entries": [
+        "A fragment of Mystra itself, the Arcana Infinitum is the greatest boon the shard can grant. The tome is a blue leather tome with a silver gilding that slowly shifts over time. The book feels slightly warm to the touch, and if one puts their ear up to the cover the sound of a beating heart can be heard. The tome has an infinite number of pages, is three inches thick, eight inches wide, twelve inches long, and weighs three pounds.",
+        {
+          "type": "entries",
+          "name": "Unquenchable Thirst",
+          "entries": [
+            "The tome quickly assimilates any information it comes into contact with. While holding this book you can cast {@spell Copy|tfc} without spending a spell slot and ignoring the material component. The copied document is added to the contents of the tome."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Arcane Connection",
+          "entries": [
+            "You can use the Arcana Infinitum as your spellcasting focus and spellbook, and you can scribe new spells into it as normal. When you prepare wizard spells using the tome, the number of wizard spells you can prepare increases by 3.",
+            "In addition, when you use your Arcane Recovery feature, you can increase the number of spell slot levels you regain by 3."
+          ]
+        },
+        {
+          "type": "entries",
+          "name": "Blessing of the Weave",
+          "entries": [
+            "When using the Arcana Infinitum as your spellcasting focus you gain a +3 bonus to spell attack rolls and to the saving throw DCs of your wizard spells.",
+            "You also gain advantage on saving throws against spells and magical effects."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Bands of the Found and Lost",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "common",
+      "wondrous": true,
+      "entries": [
+        "The compass-like mechanisms on top of these matching leather bracelets remain motionless until each bracelet is worn by a different creature. While they're worn, each compass points in the direction of the other matching band. It doesn't indicate height or depth. The compasses spin wildly if the two bands are worn on different planes of existence."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Bands-of-the-Found-and-Lost.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Catnip Amulet",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "common",
+      "wondrous": true,
+      "entries": [
+        "This gold and jade amulet seems to draw domestic cats to it. While wearing the necklace, you have advantage on ability checks made to find or call Tiny domestic cats (if there are any) and on Wisdom ({@skill Animal Handling}) checks you make to interact with them."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Catnip-Amulet.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Immovable Button",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "common",
+      "wondrous": true,
+      "entries": [
+        "As a bonus action, you can press this iron shirt button against a piece of fabric and speak its command word, \"hold\". When you do, the button magically attaches to the cloth, fixing itself in place even if it is defying gravity. The button must be attached to a piece of fabric that is either unworn or worn by a willing creature. It can hold up to 500 pounds of weight and magically prevents the cloth from tearing due to tension. More weight causes the button to deactivate and fall.",
+        "A creature can use an action to make a {@dc 20} Strength check, moving the fixed button up to 10 feet on a success. A creature can make a {@dc 10} Intelligence ({@skill Investigation}) check to determine that this button is magical, and if already activated, knows that the fabric around the button can be cut away. The button remains fixed in place for 1 minute before falling. The button's magic is lost once it's been used in this way."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Immovable-Button.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Orator's Quill",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "common",
+      "wondrous": true,
+      "entries": [
+        "This red feather quill generates its own mundane ink and acts on its own as you speak to it. While holding the quill, you can speak its command word as a bonus action to activate it. While activated, the quill magically floats upright and writes the words you speak to it on whatever stationary, nonliving surface it's been placed on. When it reaches the edge of that surface, it begins a new line below before continuing. If the quill reaches the end of the surface, such as a piece of parchment, it taps against the surface expectantly until a new one is provided. You must be within 15 feet of the quill in order to speak to it. If the quill is behind total cover, it cannot understand you. If you speak the quill's command word again, even if you're not holding it, the quill deactivates and falls down. If the quill doesn't write anything for 1 minute, it deactivates on its own."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Orators-Quill.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tote of Tricky Treat Sugarbombs",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "common",
+      "wondrous": true,
+      "entries": [
+        "This canvas bag holds {@dice 5d8 + 10} clove and pumpkin candies inside. A small illusory face appears over the sewn-on pumpkin at night. Each candy has a minor magical effect that lasts for 1 minute unless otherwise specified. Some effects are pleasant, whereas some are mischievous. You can eat a piece of candy using an action. When you do, roll on the table below to determine the candy's effect:",
+        {
+          "type": "table",
+          "caption": "Tricky Treat Sugarbomb Effects",
+          "colLabels": [
+            "d20",
+            "Effect"
+          ],
+          "colStyles": [
+            "col-1 text-center",
+            "col-11"
+          ],
+          "rows": [
+            [
+              "1",
+              "The candy seems to have spoiled, forcing you to succeed on a {@dc 13} Constitution saving throw or spend your action on your next turn retching and reeling."
+            ],
+            [
+              "2",
+              "Your face appears to melt: revealing the skull beneath it. The effect is harmless and illusory."
+            ],
+            [
+              "3",
+              "Any food you eat or water you drink taste like ash and blood, respectively."
+            ],
+            [
+              "4",
+              "Other creatures' eyes appear to be hollowed out and blackened to you."
+            ],
+            [
+              "5",
+              "Your ears turn a different, vibrant color at the start of each of your turns."
+            ],
+            [
+              "6",
+              "Your hair falls out and regrows over the next minute."
+            ],
+            [
+              "7",
+              "Your laughter becomes maniacal, and you have trouble stopping once you've started."
+            ],
+            [
+              "8",
+              "Your pupils resemble a snake's."
+            ],
+            [
+              "9",
+              "You hear a fly near your ear, but you can neither see it nor swat it away."
+            ],
+            [
+              "10",
+              "Your skin turns orange, and light spills forth from your eyes and mouth, casting bright light in a 10-foot radius and dim light for another 10 feet."
+            ],
+            [
+              "11",
+              "Confetti bursts from the top of your head, and small children can be heard laughing."
+            ],
+            [
+              "12",
+              "You sprout tiny, flightless bat wings."
+            ],
+            [
+              "13",
+              "You know the location of the nearest pumpkin within 1 mile."
+            ],
+            [
+              "14",
+              "Nearby crows and ravens land on your shoulders or outstretched arm."
+            ],
+            [
+              "15",
+              "A friendly, floppy wizard hat appears on your head. After 1 minute, it disappears in a cloud of stars."
+            ],
+            [
+              "16",
+              "Any alcohol in your stomach or that you drink becomes nonalcoholic."
+            ],
+            [
+              "17",
+              "Your voice becomes smooth and golden, allowing you to add your proficiency bonus to Charisma ({@skill Performance}) checks to sing. If you are already proficient with this skill, you add double your proficiency bonus instead."
+            ],
+            [
+              "18",
+              "Any food you eat or water you drink tastes delicious and reminds you of your favorite pastimes."
+            ],
+            [
+              "19",
+              "You gain darkvision out to a range of 30 feet. If you already have darkvision, its range is increased by 30 feet."
+            ],
+            [
+              "20",
+              "You can magically sense if someone is possessed, and you can see creatures that are invisible."
+            ]
+          ]
+        }
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Tote-of-Tricky-Treat-Sugarbombs.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Candle of Anti-Light",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "common",
+      "wondrous": true,
+      "entries": [
+        "While burning, this dark candle sheds magical darkness in a 10-foot radius. It can be lit for up to 1 hour before it's consumed and can be snuffed or relit like a normal candle as a bonus action. Completely covering the candle with something opaque contains the darkness. A creature with darkvision can't see through this darkness, and nonmagical light can't illuminate it."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Candle-of-Anti-Light.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Dragon's Call",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "uncommon",
+      "wondrous": true,
+      "ability": {
+        "choose": [
+          {
+            "from": [
+              "int",
+              "wis",
+              "cha"
+            ],
+            "count": 1
+          }
+        ]
+      },
+      "entries": [
+        "This ear cuff imparts a deeper understanding of draconic history and language upon its wearer. While wearing the ear cuff, you can understand and speak Draconic. In addition, you gain a +1 bonus to any Charisma, Intelligence, or Wisdom ability check you make that involves dragon-related lore."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Dragons-Call.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Eye of the Bookwurm",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "uncommon",
+      "wondrous": true,
+      "entries": [
+        "This small, glass sphere is enchanted with weak divination magics to help you find specific words or phrases in writing. It has a stylized iris etched into the glass.",
+        "You can use a bonus action to speak the eye's command word aloud, followed by the word or phrase you're searching for. The word or phrase magically appears and floats within the sphere. By holding the eye in a free hand, your vision becomes magically enhanced to subconsciously highlight the word or phrase you searched for in a green light wherever you see it. Once you've used the eye's ability for the first time, you can change the word or phrase as many times as you like for the next hour, after which the item can't be used again until the following dawn."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Eye-of-the-Bookwurm.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Lucky Lower",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "uncommon",
+      "wondrous": true,
+      "charges": 2,
+      "entries": [
+        "This electrum coin has a smiling human woman's face on one side (heads) and a scowling fiendish woman's face on the other (tails). While you're within 30 feet of the coin, you can summon it to either your hand or pocket by speaking its command word as a bonus action. Despite its unique appearance, this coin can be spent like a normal coin.",
+        {
+          "name": "Fate Flip",
+          "entries": [
+            "This coin has 2 charges. You can attempt to regain expended charges once every 24 hours by {@chance 50|flipping a coin|Recharge}. The coin regains all expended charges if it's heads, or 0 if it's tails. When the coin is on your person and your total for an attack roll, ability check, or saving throw is 10 or lower, you can expend 1 of the coin's charges to channel its magic and forge your own luck. When you do, {@chance 50|flip a coin|Fate Flip}. If it's heads, roll a {@dice d10} and add it to the total of your roll. If it's tails, you subtract {@dice 1d10} from the total instead. The coin loses this property if using it in this way reduces the total of your roll to 0 or lower."
+          ]
+        }
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Fortunes-Fivepence.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Funeral Marchers",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "uncommon",
+      "wondrous": true,
+      "entries": [
+        "While wearing these black leather boots, you can choose to not fall {@condition prone} when you're reduced to 0 hit points. While you're {@condition unconscious} and standing in this way, you can walk up to 10 feet on your turn after rolling a death saving throw."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Funeral-Marchers.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Locksmith's Bane",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "uncommon",
+      "wondrous": true,
+      "attachedSpells": [
+        "knock"
+      ],
+      "entries": [
+        "This silver lockpick twists and reorients itself to more easily open locks. You gain a +3 bonus on ability checks you make with this tool in order to pick open a lock. If you roll a 1 on an ability check in this way, the pick casts the {@spell knock} spell on the lock before it turns to dust and is destroyed.",
+        "If you roll a 1 in this way and use an ability to reroll the die or otherwise change the result, the item becomes a nonmagical, mundane lock pick but does not cast the spell or disintegrate."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Locksmiths-Bane.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Set of Entangled Tubes",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "uncommon",
+      "wondrous": true,
+      "entries": [
+        "This drab pair of empty ceramic cylinders are magically linked. Each vessel is 3 inches in diameter and 1 foot tall. Placing an item inside one of the vessels and closing the lid will magically teleport it to the second tube, making a quiet whoosh sound when it does. A similarly quiet thud can be heard when receiving an item. A tube can't send more than 2 pounds of material at a time and can't be used to send a creature. Both vessels must be on the same plane of existence and have their lids closed in order for an item to be teleported between them."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Set-of-Numats-Trick-Tubes.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Boreal Pendant",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "rare",
+      "wondrous": true,
+      "recharge": "dawn",
+      "charges": 3,
+      "attachedSpells": [
+        "charm person",
+        "detect magic",
+        "color spray"
+      ],
+      "entries": [
+        "This enlarged, floating snowflake is magically held in place and changes its shape as temperatures fluctuate. While attuned to the pendant you have resistance to cold damage and give off an aura of cheeriness. The snowflake has 3 charges and regains {@dice 1d4 - 1} expended charges each day at dawn. While wearing it, you can expend 1 of its charges to cast the following spells using a spell save DC of 15:",
+        {
+          "type": "table",
+          "caption": "Boreal Pendant Spells",
+          "colLabels": [
+            "Charges",
+            "Spells"
+          ],
+          "colStyles": [
+            "col-1 text-center",
+            "col-11"
+          ],
+          "rows": [
+            [
+              "1",
+              "{@spell charm person}, {@spell color spray}, {@spell detect magic}"
+            ]
+          ]
+        },
+        "If you expend the pendant's last charge, roll a d20. On a 1, the snowflake melts into a puddle of water. After 1 year, the pendant reforms around the magical golden brackets that hold it in place."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Boreal-Pendant.jpg"
+            }
+          }
+        ]
+      },
+      "resist": [
+        "cold"
+      ]
+    },
+    {
+      "name": "Set of Entangled Scribe Candles",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "rare",
+      "wondrous": true,
+      "entries": [
+        "This pair of candles are magically linked and never seems to run out of wick.",
+        "You can light one of the candles to cause it to burn with a blue flame. By holding parchment over the flame, any ink on the page is burnt off, leaving the paper unmarked. When you finish using the candle in this way, you can extinguish the flame as you normally would. Once you do, the linked candle suddenly comes alight with a normal, orange fire, that cannot be extinguished by nonmagical means. The newly lit candle gives off a faint lavender scent. By holding a plain piece of parchment over the orange flame, the ink from the first piece of parchment is magically burnt onto the new one as the candle heats it. Once all the ink has been transcribed onto new parchment in this way, the orange flame winks out.",
+        "The candles seemingly transmit information in a more resilient way than other methods, piercing through thick layers of lead."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Set-of-Secret-Scribe-Candles.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Shadowshawl",
+      "source": "tfc",
+      "tier": "major",
+      "rarity": "uncommon",
+      "wondrous": true,
+      "entries": [
+        "This light gray shawl is made of thick fabric that looks like woven spider webs. While wearing this shawl with its hood up, your face is hidden within a small pocket of magical darkness. You can see through this darkness from beneath the hood as if it were nonmagical. If you have the Sunlight Sensitivity trait, you are unaffected by the trait while the hood is up. Pulling the hood up or down requires an action."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Shadowshawl.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Fragment of the Cold Radiance",
+      "source": "tfc",
+      "weight": 3,
+      "tier": "major",
+      "rarity": "very rare",
+      "wondrous": true,
+      "entries": [
+        "This smooth, egg-shaped crystal is about 6 inches tall, weighs 3 pounds, and sheds bright light out to 20 feet and dim light for an additional 20 feet. The light is sunlight. You can touch the crystal and mentally control its brightness as a bonus action to enlarge, reduce, or snuff out the light's reach up to its maximum range.",
+        "While holding the crystal, you can speak its command word as an action to cause it to release a wave of bright light. The wave of light washes over creatures not behind total cover within a 60-foot radius from the crystal. Undead creatures and fiends affected by the wave of bright light must make a {@dc 16} Constitution saving throw. On a failed save, a creature takes {@damage 8d6} radiant damage and is {@condition blinded} until the end of your next turn. On a success, it takes half as much damage and is not blinded. Friendly living creatures of your choice within the wave of bright light regain {@dice 4d6} hit points.",
+        "Once this property of the crystal has been used, its light dims and can't be used again until the next dawn. While its light is dimmed in this way, it sheds bright light out to a maximum of 10 feet and dim light for an additional 10 feet."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Fragment-of-Elder-Starlight.jpg"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Null Chalk",
+      "source": "tfc",
+      "tier": "minor",
+      "rarity": "very rare",
+      "wondrous": true,
+      "entries": [
+        "This drab pouch contains {@dice 1d4 + 1} sticks of dull gray chalk. The chalk feels slightly tingly to the touch.",
+        "As an action, you can touch 1 of the sticks of chalk to the ground, wall, or ceiling to magically create a line that is up to 50 feet long and 1 foot thick. The line extends from your location in the direction and shape of your choice. You can shape the line in any way you choose so long as it makes one continuous path along the surface or similar adjacent surfaces. Once a stick of chalk has been used in this way, it disintegrates into a pile of fine, nonmagical powder.",
+        "Magical effects can't cross this line. The line's effect extends 20 feet perpendicularly from the surface on which the line is drawn. Targets on the other side of the line are considered to have full cover for the purpose of being targeted by spells or magical effects. Magical items that cross the line become mundane and nonmagical for 1 round.",
+        "The first time a celestial, elemental, fey, fiend, or undead creature attempts to cross the line on a turn, that creature must make a {@dc 16} Charisma saving throw. On a failed save, the creature's movement speed becomes 0 until the start of its next turn, is forced backward up to 10 feet away from the line, and takes {@damage 2d8} force damage. On a successful save, a creature takes half as much damage, and its speed is unaffected as it passes through the line. If the line cuts through a creature's space when it appears, the creature is pushed to one side of the line (your choice).",
+        "This effect lasts for 8 hours or until a break of at least one foot is made in the line, which causes it to instantly lose all magical properties. A creature can spend 1 minute to smudge, smear, erase, or otherwise remove the line enough to disable its effects. When targeted by the {@spell dispel magic} spell, the line is treated as if it were a 6th-level spell. If the line is dispelled in this way, its effects are disabled for 1 minute."
+      ],
+      "fluff": {
+        "images": [
+          {
+            "type": "image",
+            "href": {
+              "type": "external",
+              "url": "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master/_img/TGS1/Null-Chalk.jpg"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "monster": [
+    {
+      "name": "Djura Lightbringer",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "half-orc"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        {
+          "ac": 21,
+          "from": [
+            "divine aegis"
+          ]
+        }
+      ],
+      "hp": {
+        "formula": "20d6 + 100",
+        "average": 170
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 24,
+      "dex": 18,
+      "con": 20,
+      "int": 10,
+      "wis": 18,
+      "cha": 10,
+      "save": {
+        "wis": "+4",
+        "str": "+7"
+      },
+      "skill": {
+        "athletics": "+7",
+        "perception": "+4"
+      },
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 14,
+      "immune": [
+        "necrotic",
+        "poison"
+      ],
+      "languages": [
+        "Common",
+        "Orc"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Djura is a talented spellcaster and can Manifest the below spells. Her spell save DC is 19 and her spell attack bonus is +11."
+          ],
+          "will": [
+            "{@spell detect evil and good}",
+            "{@spell invisibility}"
+          ],
+          "daily": {
+            "3e": [
+              "{@spell blade barrier}",
+              "{@spell dispel evil and good}",
+              "{@spell djura's divine razor|tfc}",
+              "{@spell djura's righteous pressure|tfc}"
+            ],
+            "1e": [
+              "{@spell commune}",
+              "{@spell control weather}",
+              "{@spell djura's divine protection|tfc}"
+            ]
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "trait": [
+        {
+          "name": "Everlife",
+          "entries": [
+            "Djura has been cursed with eternal life. When she is killed, the imprint of her soul upon the weave re-exerts itself, restoring her soul back into her body after {@dice 1d4} hours. Should there be no body to return to, a new one is formed at the closest safe spot, as decided by the Weave."
+          ]
+        },
+        {
+          "name": "Divine Awareness",
+          "entries": [
+            "Djura knows if she hears a lie."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "Djura can make two weapon attacks with her Godly Extant."
+          ]
+        },
+        {
+          "name": "Godly Extant Swipe",
+          "entries": [
+            "{@atk mw} {@hit 15} to hit, reach 5 ft., one target. {@h}22 ({@damage 4d6 + 8}) magical slashing damage."
+          ]
+        },
+        {
+          "name": "Godly Extant Throw",
+          "entries": [
+            "{@atk rw} {@hit 13} to hit, range 150/600 ft., one target. {@h}23 ({@damage 3d8 + 10}) piercing damage."
+          ]
+        },
+        {
+          "name": "Healing Touch (4/Day)",
+          "entries": [
+            "Djura touches another creature. The target magically regains 40 ({@damage 8d8 + 4}) hit points and is freed from any curse, disease, poison, blindness, or deafness."
+          ]
+        }
+      ],
+      "senseTags": [
+        "D"
+      ],
+      "languageTags": [
+        "C",
+        "O"
+      ],
+      "damageTags": [
+        "P"
+      ],
+      "resist": [
+        {
+          "resist": [
+            "radiant"
+          ]
+        },
+        {
+          "resist": [
+            "bludgeoning",
+            "piercing",
+            "slashing"
+          ],
+          "note": "from non-magical attacks"
+        }
+      ],
+      "conditionImmune": [
+        "charmed",
+        "exhaustion",
+        "frightened",
+        "poisoned"
+      ],
+      "reaction": [
+        {
+          "name": "Generate Divinity",
+          "entries": [
+            "As a reaction when Djura hits with any weapon, she may generate divine energy and channel it into the weapon, dealing an additional {@damage 6d8} radiant damage."
+          ]
+        }
+      ],
+      "miscTags": [
+        "MW",
+        "RW"
+      ],
+      "actionTags": [
+        "Multiattack"
+      ]
+    },
+    {
+      "name": "Laixa Channof",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "human"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        {
+          "ac": 16,
+          "from": [
+            "{@item elven chain}"
+          ]
+        }
+      ],
+      "hp": {
+        "formula": "13d6 + 39",
+        "average": 84
+      },
+      "speed": {
+        "walk": 30,
+        "fly": {
+          "number": 15,
+          "condition": "(hover)"
+        },
+        "canHover": true
+      },
+      "str": 8,
+      "dex": 10,
+      "con": 16,
+      "int": 24,
+      "wis": 14,
+      "cha": 10,
+      "save": {
+        "int": "+10",
+        "con": "+8"
+      },
+      "skill": {
+        "arcana": "+15",
+        "history": "+15",
+        "nature": "+15",
+        "religion": "+15"
+      },
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 12,
+      "immune": [
+        "radiant"
+      ],
+      "languages": [
+        "Common",
+        "Abyssal",
+        "Celestial",
+        "Dwarvish",
+        "Infernal",
+        "Merfolk",
+        "Sylvan",
+        "Orc"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Laixa is an experienced Wizard and can cast spells up to 9th level. Their spell save DC is 21 and their spell attack bonus is +13."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell dancing lights}",
+                "{@spell fire bolt}",
+                "{@spell light}",
+                "{@spell mage hand}",
+                "{@spell prestidigitation}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell mage armor}",
+                "{@spell magic missile}",
+                "{@spell shield}",
+                "{@spell silent image}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell arcane lock}",
+                "{@spell cloud of daggers}",
+                "{@spell darkvision}",
+                "{@spell laixa's historical tracker|tfc}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell counterspell}",
+                "{@spell dispel magic}",
+                "{@spell fireball}"
+              ],
+              "slots": 3
+            },
+            "4": {
+              "spells": [
+                "{@spell hallucinatory terrain}",
+                "{@spell laixa's expert intuition|tfc}",
+                "{@spell polymorph}",
+                "{@spell reset|tfc}"
+              ],
+              "slots": 3
+            },
+            "5": {
+              "spells": [
+                "{@spell geas}",
+                "{@spell repetitious trauma|tfc}",
+                "{@spell wall of force}"
+              ],
+              "slots": 3
+            },
+            "6": {
+              "spells": [
+                "{@spell chain lightning}",
+                "{@spell globe of invulnerability}",
+                "{@spell programmed illusion}"
+              ],
+              "slots": 2
+            },
+            "7": {
+              "spells": [
+                "{@spell anomalous object|tfc}",
+                "{@spell symbol}",
+                "{@spell teleport}"
+              ],
+              "slots": 2
+            },
+            "8": {
+              "spells": [
+                "{@spell maze}",
+                "{@spell mind blank}"
+              ],
+              "slots": 1
+            },
+            "9": {
+              "spells": [
+                "{@spell checkpoint|tfc}",
+                "{@spell meteor swarm}"
+              ],
+              "slots": 1
+            }
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "trait": [
+        {
+          "name": "Everlife",
+          "entries": [
+            "Laixa has been cursed with eternal life. When she is killed, the imprint of her soul upon the weave re-exerts itself, restoring her soul back into her body after {@dice 1d4} hours. Should there be no body to return to, a new one is formed at the closest safe spot, as decided by the Weave."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Temporal Awareness",
+          "entries": [
+            "You can add your Intelligence modifier to your initiative rolls."
+          ]
+        }
+      ],
+      "senseTags": [
+        "D"
+      ],
+      "languageTags": [
+        "C",
+        "AB",
+        "CE",
+        "D",
+        "I",
+        "S",
+        "O"
+      ],
+      "damageTags": [
+        "P"
+      ],
+      "spellcastingTags": [
+        "CW"
+      ],
+      "reaction": [
+        {
+          "name": "Chronal Shift",
+          "entries": [
+            "You can magically exert limited control over the flow of time around a creature. As a reaction, after you or a creature you can see within 30 feet of you makes an attack roll, an ability check, or a saving throw, you can force the creature to reroll. You make this decision after you see whether the roll succeeds or fails. The target must use the result of the second roll.\n",
+            "You can use this ability twice, and you regain any expended uses when you finish a long rest."
+          ]
+        },
+        {
+          "name": "Convergent Future",
+          "entries": [
+            "You can peer through possible futures and magically pull one of them into events around you, ensuring a particular outcome. When you or a creature you can see within 60 feet of you makes an attack roll, an ability check, or a saving throw, you can use your reaction to ignore the die roll and decide whether the number rolled is the minimum needed to succeed or one less than that number (your choice).",
+            "When you use this feature, you gain one level of {@condition exhaustion}. Only by finishing a long rest can you remove a level of {@condition exhaustion} gained in this way."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Ronin Hawklow",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "human"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        17
+      ],
+      "hp": {
+        "formula": "16d10 + 48",
+        "average": 136
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 10,
+      "dex": 20,
+      "con": 16,
+      "int": 10,
+      "wis": 15,
+      "cha": 8,
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 17,
+      "languages": [
+        "Common",
+        "Draconic",
+        "Dwarvish",
+        "Giant",
+        "Undercommon"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Ronin is a 16th level Ranger and can cast spells up to 4th level. His spell save DC is 15 and his spell attack bonus is +7."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell control flames|XGE}",
+                "{@spell mage hand}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell absorb elements|XGE}",
+                "{@spell cure wounds}",
+                "{@spell disguise self}",
+                "{@spell find familiar}",
+                "{@spell hunter's mark}",
+                "{@spell zephyr strike|XGE}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell healing spirit|XGE}",
+                "{@spell rope trick}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell fear}",
+                "{@spell flame arrows|XGE}",
+                "{@spell nondetection}",
+                "{@spell water breathing}"
+              ],
+              "slots": 3
+            },
+            "4": {
+              "spells": [
+                "{@spell freedom of movement}",
+                "{@spell greater invisibility}",
+                "{@spell stoneskin}"
+              ],
+              "slots": 2
+            }
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "senseTags": [
+        "D"
+      ],
+      "languageTags": [
+        "C",
+        "E",
+        "GI",
+        "P"
+      ],
+      "damageTags": [
+        "S",
+        "P"
+      ],
+      "spellcastingTags": [
+        "CR"
+      ],
+      "save": {
+        "str": "+5",
+        "dex": "+10",
+        "wis": "+7"
+      },
+      "skill": {
+        "athletics": "+5",
+        "insight": "+7",
+        "investigation": "+5",
+        "perception": "+7",
+        "survival": "+7",
+        "stealth": "+10"
+      },
+      "bonus": [
+        {
+          "name": "Fragment of Shadow",
+          "entries": [
+            "As a bonus action, while within dim light or darkness, Ronin may teleport up to 30 feet, so long as his destination is also in dim light or darkness."
+          ]
+        }
+      ],
+      "trait": [
+        {
+          "name": "Sharpshooter",
+          "entries": [
+            "Attacking at long range doesn't impose disadvantage on Ronin's ranged weapon attack rolls and his ranged weapon attacks ignore half cover and three-quarters cover.",
+            "Before he makes an attack with a ranged weapon that he is proficient with, he can choose to take a -5 penalty to the attack roll. If the attack hits, he adds +10 to the attack’s damage."
+          ]
+        },
+        {
+          "name": "Umbral Sight",
+          "entries": [
+            "Ronin is adept at evading creatures that rely on darkvision. While in darkness, he is {@condition invisible} to any creature that relies on darkvision to see him in that darkness."
+          ]
+        },
+        {
+          "name": "Dread Ambusher",
+          "entries": [
+            "Ronin can add his wisdom to his initiative rolls.",
+            "At the start of Ronin's first turn of each combat, his walking speed increases by 10 feet, which lasts until the end of his turn. If he takes the Attack action on that turn, he can make one additional weapon attack as part of that action. If that attack hits, the target takes an additional {@damage 1d8} damage."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "As part of the Attack action on Ronin's turn, he may make two attacks with any weapon."
+          ]
+        },
+        {
+          "name": "Shortsword",
+          "entries": [
+            "{@atk mw} {@hit 11} to hit, reach 5 ft., one target. {@h}9 ({@damage 1d6 + 6}) slashing damage."
+          ]
+        },
+        {
+          "name": "Raven's Right",
+          "entries": [
+            "{@atk rw} {@hit 14} to hit, range 150/600 ft., one target. {@h}26 ({@damage 3d8 + 13}) piercing damage.",
+            "On a hit, Ronin may teleport to where the arrow landed."
+          ]
+        }
+      ],
+      "miscTags": [
+        "MW",
+        "RW"
+      ],
+      "actionTags": [
+        "Multiattack"
+      ]
+    },
+    {
+      "name": "Kyrin Myrdil",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "half-elf"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        13
+      ],
+      "hp": {
+        "formula": "16d6 + 32",
+        "average": 88
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 8,
+      "dex": 16,
+      "con": 14,
+      "int": 12,
+      "wis": 13,
+      "cha": 20,
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 16,
+      "immune": [
+        "lightning"
+      ],
+      "languages": [
+        "Common",
+        "Elvish",
+        "Giant",
+        "Primordial"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Kyrin is a 16th level Sorcerer and can cast spells up to 8th level. His spell save DC is 18 and his spell attack bonus is +10."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell fire bolt}",
+                "{@spell message}",
+                "{@spell minor illusion}",
+                "{@spell shape water|XGE}",
+                "{@spell shocking grasp}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell chromatic orb}",
+                "{@spell shield}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell mirror image}",
+                "{@spell shatter}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell haste}",
+                "{@spell lightning bolt}",
+                "{@spell thunder step|XGE}"
+              ],
+              "slots": 3
+            },
+            "4": {
+              "spells": [
+                "{@spell ice storm}",
+                "{@spell storm sphere|XGE}",
+                "{@spell watery sphere|XGE}"
+              ],
+              "slots": 3
+            },
+            "5": {
+              "spells": [
+                "{@spell control winds|XGE}",
+                "{@spell creation}"
+              ],
+              "slots": 2
+            },
+            "6": {
+              "spells": [
+                "{@spell chain lightning}",
+                "{@spell investiture of wind|XGE}"
+              ],
+              "slots": 1
+            },
+            "7": {
+              "spells": [
+                "{@spell prismatic spray}",
+                "{@spell whirlwind|XGE}"
+              ],
+              "slots": 1
+            },
+            "8": {
+              "spells": [
+                "{@spell sunburst}"
+              ],
+              "slots": 1
+            }
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "action": [
+        {
+          "name": "Careful Spell (2/Day)",
+          "entries": [
+            "When Kyrin casts a spell that forces other creatures to make a saving throw, he can protect some of those creatures from the spell's full force. Choose five creatures. A chosen creature automatically succeeds on its saving throw against the spell."
+          ]
+        },
+        {
+          "name": "Quickened Spell (2/Day)",
+          "entries": [
+            "When Kyrin casts a spell that has a casting time of 1 action, he can change the casting time to 1 bonus action for this casting."
+          ]
+        },
+        {
+          "name": "Twinned Spell (1/Day)",
+          "entries": [
+            "When Kyrin casts a spell that targets only one creature and doesn't have a range of self, he can target a second creature in range with the same spell. To be eligible, a spell must be incapable of targeting more than one creature at the spell's current level."
+          ]
+        },
+        {
+          "name": "Heightened Spell (1/Day)",
+          "entries": [
+            "When Kyrin casts a spell that forces a creature to make a saving throw to resist its effects, he can give one target of the spell disadvantage on its first saving throw made against the spell."
+          ]
+        }
+      ],
+      "senseTags": [
+        "D"
+      ],
+      "languageTags": [
+        "C",
+        "E",
+        "GI",
+        "P"
+      ],
+      "damageTags": [
+        "L"
+      ],
+      "spellcastingTags": [
+        "CS"
+      ],
+      "skill": {
+        "arcana": "+6",
+        "perception": "+6",
+        "persuasion": "+10",
+        "sleight of hand": "+8",
+        "survival": "+6"
+      },
+      "save": {
+        "con": "+7",
+        "cha": "+10"
+      },
+      "resist": [
+        "thunder"
+      ],
+      "reaction": [
+        {
+          "name": "Storm's Fury",
+          "entries": [
+            "When Kyrin is hit by a melee attack, he can use your reaction to deal 16 lightning damage to the attacker. The attacker must also make a Strength saving throw against Kyrin's sorcerer spell save DC. On a failed save, the attacker is pushed in a straight line up to 20 feet away from him."
+          ]
+        }
+      ],
+      "trait": [
+        {
+          "name": "Heart of the Storm",
+          "entries": [
+            "Whenever Kyrin starts casting a spell of 1st level or higher that deals lightning or thunder damage, stormy magic erupts from him. This eruption causes creatures of Kyrin's choice that he can see within 10 feet of him to take 8 lightning or thunder damage (choose each time this ability activates)."
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Cain Halvard",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "aasimar"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        24
+      ],
+      "hp": {
+        "formula": "16d10 + 48",
+        "average": 136
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 20,
+      "dex": 8,
+      "con": 16,
+      "int": 10,
+      "wis": 10,
+      "cha": 16,
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 10,
+      "languages": [
+        "Common",
+        "Celestial",
+        "Draconic",
+        "Infernal",
+        "Sylvan"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Cain is a 16th level Paladin and can cast spells up to 4th level. His spell save DC is 16 and his spell attack bonus is +8."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell light}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell bane}",
+                "{@spell ceremony|XGE}",
+                "{@spell command}",
+                "{@spell divine favor}",
+                "{@spell heroism}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell branding smite}",
+                "{@spell hold person}",
+                "{@spell lesser restoration}",
+                "{@spell zone of truth}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell aura of vitality}",
+                "{@spell blinding smite}",
+                "{@spell crusader's mantle}",
+                "{@spell haste}"
+              ],
+              "slots": 3
+            },
+            "4": {
+              "spells": [
+                "{@spell aura of life}",
+                "{@spell aura of purity}",
+                "{@spell banishment}",
+                "{@spell staggering smite}"
+              ],
+              "slots": 2
+            }
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "senseTags": [
+        "D"
+      ],
+      "languageTags": [
+        "C",
+        "CE",
+        "DR",
+        "I",
+        "S"
+      ],
+      "damageTags": [
+        "S",
+        "R"
+      ],
+      "spellcastingTags": [
+        "CP"
+      ],
+      "save": {
+        "wis": "+5",
+        "cha": "+8"
+      },
+      "skill": {
+        "athletics": "+10",
+        "insight": "+5",
+        "persuasion": "+8",
+        "religion": "+5"
+      },
+      "resist": [
+        "necrotic",
+        "radiant"
+      ],
+      "conditionImmune": [
+        {
+          "special": "disease"
+        }
+      ],
+      "bonus": [
+        {
+          "name": "Vow of Enmity (3/Day)",
+          "entries": [
+            "As a bonus action, Cain can utter a vow of enmity against a creature he can see within 10 feet of him. He gains advantage on attack rolls against the creature for 1 minute or until it drops to 0 hit points or falls {@condition unconscious}. Cain can only maintain one vow at a time.",
+            "When a creature under the effect of Cain's Vow of Enmity makes an attack, he can use his reaction to make a melee weapon attack against that creature if it is within range."
+          ]
+        }
+      ],
+      "trait": [
+        {
+          "name": "Aura of Protection",
+          "entries": [
+            "Whenever Cain or a friendly creature within 10 feet of him must make a saving throw, the creature gains a +3 bonus to the saving throw. You must be conscious to grant this bonus."
+          ]
+        },
+        {
+          "name": "Divine Smite",
+          "entries": [
+            "When Cain hits a creature with a melee weapon attack, he can expend one spell slot to deal radiant damage to the target, in addition to the weapon's damage. The extra damage is {@dice 2d8} for a 1st-level spell slot, plus {@dice 1d8} for each spell level higher than 1st, to a maximum of {@dice 5d8}. The damage increases by {@dice 1d8} if the target is an undead or a fiend, to a maximum of {@dice 6d8}."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "As part of the Attack action on Cane's turn, he may make two attacks."
+          ]
+        },
+        {
+          "name": "Raven's Presence",
+          "entries": [
+            "{@atk mw} {@hit 10} to hit, reach 5 ft., one target. {@h}19 ({@damage 2d8 + 10}) slashing damage, plus 3 ({@damage 1d6}) radiant damage."
+          ]
+        },
+        {
+          "name": "Lay on Hands",
+          "entries": [
+            "As an action, Cain can touch a creature and draw power from a pool of 80 hit points to restore a number of hit points to that creature, up to the maximum amount remaining in his pool. Cain may only distribute hit points in multiples of 10."
+          ]
+        },
+        {
+          "name": "Cleansing Touch (3/Day)",
+          "entries": [
+            "Cain can use his action to end one spell on himself or on one willing creature that you touch."
+          ]
+        },
+        {
+          "name": "Necrotic Shroud (1/Day)",
+          "entries": [
+            "Cain can use his action to unleash the divine energy within himself, causing his eyes to turn into pools of darkness and two skeletal, ghostly, flightless wings to sprout from his back. The instant he transforms, other creatures within 10 feet of him that can see him must succeed on a Charisma saving throw ({@dc 16}) or become {@condition frightened} of Cain until the end of his next turn.",
+            "Cain's transformation lasts for 1 minute or until he ends it as a bonus action. During it, once on each of his turns, he can deal 16 extra radiant damage to one target when he deals damage to it with an attack or a spell."
+          ]
+        }
+      ],
+      "actionTags": [
+        "Multiattack"
+      ],
+      "miscTags": [
+        "MW"
+      ],
+      "conditionInflict": [
+        "frightened"
+      ]
+    },
+    {
+      "name": "Hellforged Titan",
+      "source": "tfc",
+      "size": "H",
+      "type": "construct",
+      "alignment": [
+        "L",
+        "N"
+      ],
+      "ac": [
+        {
+          "ac": 20,
+          "from": [
+            "natural armor"
+          ]
+        }
+      ],
+      "hp": {
+        "average": 125,
+        "formula": "10d12 + 60"
+      },
+      "speed": {
+        "walk": 40
+      },
+      "str": 23,
+      "dex": 8,
+      "con": 22,
+      "int": 3,
+      "wis": 11,
+      "cha": 1,
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 10,
+      "immune": [
+        "poison",
+        "psychic"
+      ],
+      "vulnerable": [
+        "radiant"
+      ],
+      "conditionImmune": [
+        "charmed",
+        "exhaustion",
+        "frightened",
+        "paralyzed",
+        "petrified",
+        "poisoned"
+      ],
+      "languages": [
+        "Common"
+      ],
+      "cr": "8",
+      "trait": [
+        {
+          "name": "Platforms",
+          "entries": [
+            "The Hellforged Titan has two platforms built into its chassis. One Medium or smaller creature can ride on each platform without squeezing. To make a melee attack against a target within 5 feet of the warforged, they must use spears or weapons with reach and the target must be Large or larger."
+          ]
+        },
+        {
+          "name": "Siege Monster",
+          "entries": [
+            "The Hellforged Titan deals double damage to objects and structures."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "The Hellforged Titan makes one axehand attack and one hammerfist attack."
+          ]
+        },
+        {
+          "name": "Axehand",
+          "entries": [
+            "{@atk mw} {@hit 9} to hit, reach 10 ft., one target. {@h}19 ({@damage 3d8 + 6}) slashing damage, plus 11 ({@damage 2d10}) slashing damage if the target is {@condition prone}."
+          ]
+        },
+        {
+          "name": "Hammerfist",
+          "entries": [
+            "{@atk mw} {@hit 9} to hit, reach 10 ft., one target. {@h}19 ({@damage 3d8 + 6}) bludgeoning damage. If the target is a creature, it must succeed on a {@dc 17} Strength saving throw or be knocked {@condition prone}."
+          ]
+        },
+        {
+          "name": "Sweeping Axe {@recharge}",
+          "entries": [
+            "The Hellforged Titan makes a sweep with its axehand, and each creature within 10 feet of it must make a {@dc 17} Dexterity saving throw. A creature takes 19 ({@damage 3d8 + 6}) slashing damage on a failed save, or half as much damage on a successful one."
+          ]
+        }
+      ],
+      "traitTags": [
+        "Siege Monster"
+      ],
+      "senseTags": [
+        "D"
+      ],
+      "actionTags": [
+        "Multiattack"
+      ],
+      "damageTags": [
+        "S",
+        "B"
+      ],
+      "miscTags": [
+        "MW",
+        "RCH"
+      ]
+    },
+    {
+      "name": "Kallista",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "level": 13,
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "tiefling"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        {
+          "ac": 17,
+          "from": [
+            "{@item studded leather armor|phb}"
+          ]
+        }
+      ],
+      "hp": {
+        "formula": "13d8 + 39",
+        "average": 97
+      },
+      "speed": {
+        "walk": 45
+      },
+      "str": 8,
+      "dex": 20,
+      "con": 16,
+      "int": 14,
+      "wis": 9,
+      "cha": 14,
+      "save": {
+        "dex": "+10",
+        "cha": "+7"
+      },
+      "skill": {
+        "acrobatics": "+10",
+        "deception": "+7",
+        "investigation": "+7",
+        "performance": "+7",
+        "persuasion": "+7",
+        "sleight of hand": "+10",
+        "stealth": "+15"
+      },
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 10,
+      "resist": [
+        "fire"
+      ],
+      "languages": [
+        "Common",
+        "Infernal"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Kallista is a 13th level Arcane Trickster, and can cast spells up to 3rd level. Her spell save DC is 15 and her spell attack bonus is +7."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell mage hand}",
+                "{@spell message}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell absorb elements|XGE}",
+                "{@spell disguise self}",
+                "{@spell magic missile}",
+                "{@spell unseen servant}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell blindness/deafness}",
+                "{@spell darkness}",
+                "{@spell mirror image}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell thunder step|XGE}",
+                "{@spell vampiric touch}"
+              ],
+              "slots": 2
+            }
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "trait": [
+        {
+          "name": "Evasion",
+          "entries": [
+            "If Kallista is subjected to an effect that allows her to make a Dexterity saving throw to take only half damage, Kallista instead takes no damage if she succeeds on the saving throw, and only half damage if she fails."
+          ]
+        },
+        {
+          "name": "Sneak Attack",
+          "entries": [
+            "Once per turn, Kallista deals an extra {@damage 7d6} damage when she hits a target with a weapon attack and has advantage on the attack roll, or when the target is within 5 feet of an ally of Kallista that isn't {@condition incapacitated} and Kallista doesn't have disadvantage on the attack roll."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "Kallista makes three attacks with {@item Bracer of Flying Daggers|wdh} or two attacks with her {@item +1 Shortbow|dmg}."
+          ]
+        },
+        {
+          "name": "Bracer of Flying Daggers",
+          "entries": [
+            "{@atk rw} Kallista pulls a magic returning dagger from her {@item Bracer of Flying Daggers|wdh}. {@hit 10} to hit, range 20/60 ft., one target. {@h}9 ({@damage 1d4 + 7}) piercing damage and 2 ({@damage 1d4}) poison damage."
+          ]
+        },
+        {
+          "name": "+1 Shortbow",
+          "entries": [
+            "{@atk rw} {@hit 11} to hit, range 80/320 ft., one target. {@h}9 ({@damage 1d6 + 6}) piercing damage."
+          ]
+        }
+      ],
+      "bonus": [
+        {
+          "name": "Cunning Action",
+          "entries": [
+            "Kallista can take a bonus action on each of her turns in combat. This action can be used only to take the {@action Dash}, {@action Disengage}, or {@action Hide} action."
+          ]
+        },
+        {
+          "name": "Steady Aim",
+          "entries": [
+            "As a bonus action, Kallista gives herself advantage on her next attack roll on the current turn. She can use this bonus action only if she hasn't moved during this turn, and after she uses the bonus action, her speed is 0 until the end of the current turn."
+          ]
+        }
+      ],
+      "reaction": [
+        {
+          "name": "Uncanny Dodge",
+          "entries": [
+            "When an attacker that Kallista can see hits her with an attack, she can use her reaction to halve the attack's damage against her."
+          ]
+        },
+        {
+          "name": "Coin of Fate",
+          "entries": [
+            "Kallista has the uncanny ability to dodge otherwise unavoidable attacks. As a reaction to a successful attack roll against her AC, she can flip the Coin of Fate ({@dice 1d4}). An even result is a heads, causing the attack to miss entirely. An odd result is a tails, causing the coin to disappear completely. The Coin has a 50% chance to reappear after a long rest."
+          ]
+        }
+      ],
+      "tokenUrl": "https://i.imgur.com/phMoa4T.png",
+      "traitTags": [
+        "Sneak Attack"
+      ],
+      "senseTags": [
+        "D"
+      ],
+      "actionTags": [
+        "Multiattack"
+      ],
+      "languageTags": [
+        "C",
+        "I"
+      ],
+      "damageTags": [
+        "I",
+        "P"
+      ],
+      "miscTags": [
+        "RNG",
+        "RW"
+      ],
+      "conditionInflict": [
+        "incapacitated"
+      ]
+    },
+    {
+      "name": "Excellence",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "level": 13,
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "tiefling"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        {
+          "ac": 16,
+          "from": [
+            "{@item elven chain}"
+          ]
+        }
+      ],
+      "hp": {
+        "formula": "13d6 + 39",
+        "average": 84
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 8,
+      "dex": 10,
+      "con": 16,
+      "int": 20,
+      "wis": 14,
+      "cha": 10,
+      "save": {
+        "int": "+10",
+        "con": "+8"
+      },
+      "skill": {
+        "arcana": "+15",
+        "history": "+15",
+        "nature": "+15",
+        "religion": "+15"
+      },
+      "senses": [
+        "darkvision 60 ft."
+      ],
+      "passive": 12,
+      "immune": [
+        "radiant"
+      ],
+      "languages": [
+        "Common",
+        "Abyssal",
+        "Celestial",
+        "Dwarvish",
+        "Infernal",
+        "Merfolk",
+        "Sylvan"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Excellence is a 13th level Wizard, and can cast spells up to 7th level. Their spell save DC is 18 and their spell attack bonus is +10."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell acid splash}",
+                "{@spell fire bolt}",
+                "{@spell frostbite|XGE}",
+                "{@spell lightning lure|TCE}",
+                "{@spell prestidigitation}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell chromatic orb}",
+                "{@spell color spray}",
+                "{@spell ice knife|XGE}",
+                "{@spell shield}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell mind spike|XGE}",
+                "{@spell misty step}",
+                "{@spell Snilloc's snowball swarm|XGE}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell blink}",
+                "{@spell fireball}",
+                "{@spell tidal wave|XGE}",
+                "{@spell vampiric touch}"
+              ],
+              "slots": 3
+            },
+            "4": {
+              "spells": [
+                "{@spell confusion}",
+                "{@spell Evard's black tentacles}",
+                "{@spell sickening radiance|XGE}"
+              ],
+              "slots": 3
+            },
+            "5": {
+              "spells": [
+                "{@spell enervation|XGE}",
+                "{@spell negative energy flood|XGE}"
+              ],
+              "slots": 2
+            },
+            "6": {
+              "spells": [
+                "{@spell Otiluke's freezing sphere}",
+                "{@spell sunbeam}"
+              ],
+              "slots": 1
+            },
+            "7": {
+              "spells": [
+                "{@spell crown of stars|XGE}",
+                "{@spell prismatic spray}"
+              ],
+              "slots": 1
+            }
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "trait": [
+        {
+          "name": "Sunken Consciousness",
+          "entries": [
+            "Excellence enters a trancelike state when casting spells or entering combat. It is extremely difficult to shake them out of their fugue, giving them advantage on Constitution saving throws to maintain concentration."
+          ]
+        },
+        {
+          "name": "Hairline Trigger",
+          "entries": [
+            "Excellence is always prepared for danger. They cannot be surprised and may use their Intelligence to roll for initiative."
+          ]
+        },
+        {
+          "name": "Forced Adaptability",
+          "entries": [
+            "Excellence can alter their spellcasting to match any situation. When they cast a spell using a spell slot of 1st level or higher that deals acid, cold, fire, force, lightning, necrotic, radiant, or thunder damage they can instead substitute another damage type from that list. They may do this 5 times a long rest."
+          ]
+        },
+        {
+          "name": "Compulsory Evolution",
+          "entries": [
+            "When Excellence casts a spell with a spell slot and the spell requires a saving throw, they can change the saving throw from one ability score to another of their choice. Once they change a saving throw in this way, they can't do so again until they finish a short or long rest."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Rapid Recovery",
+          "entries": [
+            "Excellence can force themself to keep fighting, for a cost. Excellence may take a point of {@condition exhaustion} to recover some spell slots, where the combined level of the spell slots may not exceed 5. Excellence may take on more points of {@condition exhaustion} to recover more spell slots as part of this action."
+          ]
+        },
+        {
+          "name": "Brutal Cast",
+          "entries": [
+            "Excellence can overload their magic, increasing its raw force. As part of this action cast a spell with a single target and a casting time of one action, and spend an additional 1st-level spell slot. The damage of the spell is increased by {@damage 2d10} force damage for that casting."
+          ]
+        },
+        {
+          "name": "Careful Cast",
+          "entries": [
+            "Excellence can focus their magic, greatly increasing its effective range. As part of this action cast a spell with a ranged spell attack, a range of at least 30ft, and a casting time of one action, and spend an additional 2nd-level spell slot. The range of the spell is 3 miles for that casting."
+          ]
+        },
+        {
+          "name": "Desperate Cast",
+          "entries": [
+            "Excellence can force their will into their magic, enhancing its potency. As part of this action cast a spell with a saving throw and a casting time of one action, and spend an additional 3rd-level spell slot. Excellence has a +2 bonus to their DC for that casting."
+          ]
+        }
+      ],
+      "tokenUrl": "https://i.imgur.com/NP3A76f.png",
+      "senseTags": [
+        "D"
+      ],
+      "languageTags": [
+        "AB",
+        "C",
+        "CE",
+        "D",
+        "I",
+        "S"
+      ],
+      "damageTags": [
+        "P"
+      ],
+      "spellcastingTags": [
+        "CW"
+      ]
+    },
+    {
+      "name": "Marvin Androu",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "level": 13,
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "human"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        {
+          "ac": 16,
+          "from": [
+            "{@spell mage armor}"
+          ]
+        }
+      ],
+      "hp": {
+        "formula": "13d6 + 13",
+        "average": 58
+      },
+      "speed": {
+        "walk": 30
+      },
+      "str": 8,
+      "dex": 16,
+      "con": 12,
+      "int": 8,
+      "wis": 16,
+      "cha": 20,
+      "save": {
+        "con": "+6",
+        "cha": "+10"
+      },
+      "skill": {
+        "stealth": "+8",
+        "persuasion": "+10",
+        "perception": "+8",
+        "insight": "+8",
+        "performance": "+10"
+      },
+      "senses": [
+        "truesight 30 ft."
+      ],
+      "passive": 18,
+      "languages": [
+        "Common",
+        "Abyssal",
+        "Celestial"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Marvin is a 13th level Sorcerer and can cast spells up to 7th level. His spell save DC is 18 and his spell attack bonus is +10."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell eldritch blast}",
+                "{@spell guidance}",
+                "{@spell light}",
+                "{@spell resistance}",
+                "{@spell toll the dead|XGE}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell bane}",
+                "{@spell bless}",
+                "{@spell chaos bolt|XGE}",
+                "{@spell cure wounds}",
+                "{@spell shield}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell aid}",
+                "{@spell blindness/deafness}",
+                "{@spell silence}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell beacon of hope}",
+                "{@spell lightning bolt}",
+                "{@spell mass healing word}"
+              ],
+              "slots": 3
+            },
+            "4": {
+              "spells": [
+                "{@spell greater invisibility}",
+                "{@spell guardian of faith}",
+                "{@spell wall of fire}"
+              ],
+              "slots": 3
+            },
+            "5": {
+              "spells": [
+                "{@spell greater restoration}",
+                "{@spell mass cure wounds}"
+              ],
+              "slots": 2
+            },
+            "6": {
+              "spells": [
+                "{@spell eyebite}"
+              ],
+              "slots": 1
+            },
+            "7": {
+              "spells": [
+                "{@spell divine word}"
+              ],
+              "slots": 1
+            }
+          },
+          "constant": [
+            "{@spell mage armor}, built up over centuries exposed to the magic in the archive"
+          ],
+          "type": "spellcasting"
+        }
+      ],
+      "trait": [
+        {
+          "name": "Sorcery Points",
+          "entries": [
+            "Marvin has thirteen sorcery points he can expend to improve the characteristics of his spellcasting. These regenerate on a long rest."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Adjacent Spell",
+          "entries": [
+            "When Marvin casts a spell that has a range of touch, he can spend 1 sorcery point to make the range of the spell 30 feet."
+          ]
+        },
+        {
+          "name": "Distant Spell",
+          "entries": [
+            "When Marvin casts a spell that has a range of 5 feet or greater, he can spend 1 sorcery point to double the range of the spell."
+          ]
+        },
+        {
+          "name": "Extended Spell",
+          "entries": [
+            "When Marvin casts a spell that has a duration of 1 minute or longer, he can spend 1 sorcery point to double its duration, to a maximum duration of 24 hours."
+          ]
+        },
+        {
+          "name": "Heightened Spell",
+          "entries": [
+            "When Marvin casts a spell that forces a creature to make a saving throw to resist its effects, he can spend 3 sorcery points to give one target of the spell disadvantage on its first saving throw made against the spell."
+          ]
+        },
+        {
+          "name": "Holy Spell",
+          "entries": [
+            "When Marvin casts a spell that heals a creature, he can spend 1 sorcery point to reroll any of the healing dice."
+          ]
+        }
+      ],
+      "mythicHeader": [
+        "When one of Marvin's allies that he can see within 60 feet reaches 0 hitpoints, Marvin may choose to release all of the dormant magical energy in his body in a single Radiant Burst. Doing so expends all of Marvin's spell slots and reduces him to 0 hitpoints. When Marvin falls unconscious in this fashion he may not be magically healed and must begin making death saving throws."
+      ],
+      "mythic": [
+        {
+          "name": "Radiant Burst",
+          "entries": [
+            "Strands of radiant energy shoot out of Marvin's body, latching onto his allies and imbuing them with vigor. Marvin may divide 700 points of healing energy between his allies within 60 feet. In addition, all allies within 60 feet are cured of all status effects."
+          ]
+        }
+      ],
+      "tokenUrl": "https://i.imgur.com/D9g6JhV.png",
+      "senseTags": [
+        "U"
+      ],
+      "languageTags": [
+        "AB",
+        "C",
+        "CE"
+      ],
+      "damageTags": [
+        "P"
+      ],
+      "spellcastingTags": [
+        "CS"
+      ]
+    },
+    {
+      "name": "Caraok Lyrr",
+      "shortName": true,
+      "group": "Volkantum",
+      "isNpc": true,
+      "isNamedCreature": true,
+      "source": "tfc",
+      "level": 13,
+      "size": "M",
+      "type": {
+        "type": "humanoid",
+        "tags": [
+          "merfolk"
+        ]
+      },
+      "alignment": null,
+      "ac": [
+        {
+          "ac": 20,
+          "from": [
+            "{@item +2 plate armor}"
+          ]
+        }
+      ],
+      "hp": {
+        "formula": "13d10 + 65",
+        "average": 136
+      },
+      "speed": {
+        "walk": 30,
+        "swim": 30
+      },
+      "str": 20,
+      "dex": 14,
+      "con": 16,
+      "int": 14,
+      "wis": 8,
+      "cha": 8,
+      "save": {
+        "str": "+10",
+        "con": "+8"
+      },
+      "skill": {
+        "history": "+7",
+        "nature": "+7",
+        "acrobatics": "+7",
+        "athletics": "+10"
+      },
+      "passive": 9,
+      "resist": [
+        "fire"
+      ],
+      "languages": [
+        "Common",
+        "Merfolk"
+      ],
+      "spellcasting": [
+        {
+          "name": "Spellcasting",
+          "headerEntries": [
+            "Caraok is a 13th level Eldritch Knight, and can cast spells up to 3rd level. His spell save DC is 15 and his spell attack bonus is +7."
+          ],
+          "spells": {
+            "0": {
+              "spells": [
+                "{@spell booming blade|TCE}",
+                "{@spell green-flame blade|TCE}",
+                "{@spell message}"
+              ]
+            },
+            "1": {
+              "spells": [
+                "{@spell absorb elements|XGE}",
+                "{@spell expeditious retreat}",
+                "{@spell shield}",
+                "{@spell snare|XGE}"
+              ],
+              "slots": 4
+            },
+            "2": {
+              "spells": [
+                "{@spell dragon's breath|XGE}",
+                "{@spell misty step}",
+                "{@spell shadow blade|XGE}"
+              ],
+              "slots": 3
+            },
+            "3": {
+              "spells": [
+                "{@spell dispel magic}",
+                "{@spell haste}"
+              ],
+              "slots": 2
+            }
+          },
+          "type": "spellcasting"
+        }
+      ],
+      "trait": [
+        {
+          "name": "Eldritch Strike",
+          "entries": [
+            "Caraok's blade cuts through a creature's magical defenses. When he hits a creature with a weapon attack, that creature has disadvantage on the next saving throw it makes against a spell Caraok casts before the end of his next turn."
+          ]
+        },
+        {
+          "name": "Action Surge",
+          "entries": [
+            "Caraok digs in for an extra burst of energy, and can take another action on this turn. This trait may only be used once before a short or long rest is required to recharge it."
+          ]
+        }
+      ],
+      "action": [
+        {
+          "name": "Multiattack",
+          "entries": [
+            "Caraok can make up to three attacks with his bound greatsword {@item Frost Brand Greatsword|dmg|Glacier}."
+          ]
+        },
+        {
+          "name": "Glacier",
+          "entries": [
+            "{@atk mw} {@hit 12} to hit, reach 5 ft., one target. {@h}18 ({@damage 3d6 + 8}) cold damage. Caraok may reroll 1s or 2s on this weapon's attack, but must keep the new roll."
+          ]
+        }
+      ],
+      "bonus": [
+        {
+          "name": "War Magic",
+          "entries": [
+            "When Caraok casts a cantrip as his action, he may make a single attack as a bonus action."
+          ]
+        },
+        {
+          "name": "Second Wind",
+          "entries": [
+            "Once per short or long rest Caraok may take a moment to regain his composure, recovering 18 ({@dice 1d10 + 13}) health."
+          ]
+        }
+      ],
+      "tokenUrl": "https://i.imgur.com/UE6KaCt.png",
+      "actionTags": [
+        "Multiattack"
+      ],
+      "languageTags": [
+        "C"
+      ],
+      "damageTags": [
+        "C"
+      ],
+      "miscTags": [
+        "MW"
+      ]
+    }
+  ]
+}

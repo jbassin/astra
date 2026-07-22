@@ -25,6 +25,7 @@
     "**/public/**",
     "**/*.sdPlugin/**",
     "**/codex/data/**",
-    "**/codex/fixtures/**"
+    "**/codex/fixtures/**",
+    "**/assay/vendor/**"
   ]
 }
