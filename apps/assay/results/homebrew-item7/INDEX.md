@@ -109,7 +109,8 @@ Magic Mailbox / Remake precedent).
 | flashback | **Full ladder restored (A)** — H2 1 week · H3 1 month + whisper · H4 1 year · H5 any memory ever; observers stay dazzled (C declined); severance-trigger flag = FALSE POSITIVE (correct sustain mapping); in band at r1 | `f443665` |
 | forensic-analysis | **Cooldown + mood descriptor restored (A)** — 24h per-target Secrets lockout (the anti-spam valve) + live-updating mood line back; crit-fail unaware clause added for tier consistency; 2-secrets crit-fail + focus-spell directive kept | `cf2f3a4` |
 | let-s-start-a-fight | **Improvised-only restored (A)** — brawlers attack with improvised objects/unarmed, don't draw weapons (the identity + damage governor); redundant 3-crit-fail brawl sentence deleted; no-revoke flavor line added; Will-save replacement of GM-fiat kept wholesale | `90c05cd` |
-| tunnel-vision | **Exclusivity restored + tiebreak trimmed (B)** — "Cast again → prior casting ends" (kills the party-wide 8-hour stack at r1); invented crit-success tiebreak clause deleted; status+fortune mechanism and bonus-size heighten axis kept | see commit |
+| tunnel-vision | **Exclusivity restored + tiebreak trimmed (B)** — "Cast again → prior casting ends" (kills the party-wide 8-hour stack at r1); invented crit-success tiebreak clause deleted; status+fortune mechanism and bonus-size heighten axis kept | `0fcaee4` |
+| mark-of-protection | **Keep as converted (A)** — one of the cleanest conversions in the pool; multi-mark narrowing accepted (one reaction/round means 5e's N marks bought flexibility, which H6 restores); Interpose formalization correct | (log-only) |
 
 ## Status
 
