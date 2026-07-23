@@ -114,7 +114,8 @@ Magic Mailbox / Remake precedent).
 | farsight | **Rank 4 kept, text hardened (A)** — sigils must be drawn in person (his own overridable, kills remote placement); circle-bound perception made explicit (the honest analog of the deleted concentration lock); Scrying-r6 concern governed | `3ac1358` |
 | reduce-resistivity | **Keep as-is (A)** — effect-on-success + 1A→2A flags = FALSE POSITIVES (Slow idiom, systemic mapping); invented resistance-shred kept as antillurgy identity, prices fine at r5 | (log-only) |
 | reflective-defense | **Editor voice deleted (A)** — the voice-sweep escapee sentence removed; immunity→resistance-30-magical-only redesign kept wholesale (converter-documented lever, H9 restores scope) | `ece3165` |
-| mystic-negation | **Counteract legalized + burnout restored (B)** — "counteract rank 5, using your spellcasting counteract modifier" (his own checklistFailure fixed); sphere winks out after its third successful counteract (5e success-counted governor back) | see commit |
+| mystic-negation | **Counteract legalized + burnout restored (B)** — "counteract rank 5, using your spellcasting counteract modifier" (his own checklistFailure fixed); sphere winks out after its third successful counteract (5e success-counted governor back) | `e5debf1` |
+| patishvat-s-perfect-pocket | **Stasis dropped entirely (A-variant)** — invented time-preservation sentence deleted, no spoilage softener (stakeholder call); until-dispelled + counteract-r1 valve + 1-min cast all kept as the honest r1 package | see commit |
 
 ## Status
 
