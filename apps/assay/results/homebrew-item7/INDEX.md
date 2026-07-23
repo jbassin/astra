@@ -83,6 +83,21 @@ need no action.
 - **Fast lane** (everything else — no content deltas found beyond the set-wide classes
   above; expect keep-as-is + structural fixes).
 
+## Review decisions (running log, started 2026-07-23)
+
+**Set-wide rule (stakeholder):** casts **over 1 hour convert to rituals** (the hard
+>1-hour boundary — official data has no spell above 1 hour; the exactly-1-hour trio
+bound-minds/celestial-preservation/excavation stays spell-side on the Create Food /
+Magic Mailbox / Remake precedent).
+
+| Spell | Decision | Commit |
+|---|---|---|
+| hellforging | **Ritual conversion (A)** — rank-7 ritual, Creature Creation table levels (10–11 @r7 … 16–17 @r10), Arcana/Occultism (master) + 1 Crafting secondary, binding clause @r9+, 50k gp premium kept | `08c72e5` |
+| overhaul | **Ritual conversion (A-variant)** — rank-5 ritual, Arcana/Occultism (expert) + 1 Medicine secondary; gauntlet re-organed Reflex→Will→Fort; H7 deleted; crit success = choose ancestry | `549a34e` |
+| worldweaver | **Ritual encoding (A + mythic trait)** — Wish-pattern rank-10 ritual, 15 secondaries, Wish-register ladder; content clauses kept verbatim | `6ce6089` |
+| artist-s-rendition | **Keep (C)** — misroute artifact recorded; lead-sheet doorway clause restored; energy damage stays static | `dcc8cb8` |
+| body-enhancement-horns | **Keep as-is (A)** — §4a weapon/morph artifact recorded; redesign rank-fair next to Claws of the Otter r2; vendor-notes "level 1" claim = errata only (source is level 2) | (log-only) |
+
 ## Status
 
 - 2026-07-22: collation complete — 108/108 dossiers written by 14 agents (0 missing 5e
