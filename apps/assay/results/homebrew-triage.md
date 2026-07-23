@@ -311,3 +311,13 @@ these are the ones where the effect has to earn the slot on its own.
   with the mechanic). Grapple-gating kept as the real guard (the conversion's own good
   normalization of 5e's hit-equals-grappled). Incapacitation trait offered, declined —
   family runs without it.
+- **Solar Rebuke r5→r6 (−3.47 → recorded REACTION-CONSTANT ARTIFACT; type fixed
+  vitality→fire):** the conversion's radiant→vitality type map was a functional landmine —
+  Remaster vitality only harms void-healing creatures, so the spell dealt ZERO against
+  living attackers on every degree (assay is type-applicability blind; the real defect ran
+  opposite the verdict). Most of the COLD was the ×1.6 reaction constant (the Deja Vu
+  precedent). Stakeholder B+rank: fire damage (Holy Light lineage; trait swapped
+  vitality→fire), degrees to half/full/double grammar, heighten softened 2d10→+1d10/rank
+  (now structural — pure bump), and RANK RAISED 5→6 (stakeholder: reaction economy at
+  full 2A-grade dice pays a premium). Post-edit reading −4.47 at r6 is the artifact
+  deepened by the bump — true residual vs a 2A r6 expectation ≈ −1.5, accepted.
