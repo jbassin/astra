@@ -103,7 +103,8 @@ Magic Mailbox / Remake precedent).
 | grosteque-selfshape | **Keep as-is (A)** — §4a morph artifact recorded; conversion judged genuinely good (deliberate 2d8→2d6 trim, Enlarge-package reach, sensible polymorph lockout, standard invented H6); no Clumsy drawback added | (log-only) |
 | kosmoturgist-s-weapon | **Defend cover restored (A)** — guarded creature gains lesser cover (+1 AC) until your next turn, the dropped half of 5e Defend; flat +8 kept (battle-form idiom); artifact recorded (score unchanged −1.36) | `4608223` |
 | monstrous-copy-claws | **Keep as-is (A)** — §4a per-Strike artifact recorded per the MC: Tail family precedent; half-speed stone burrow kept (deliberate buff over 5e quarter); no dice trim, no combat/exploration split | (log-only) |
-| planar-shield | **Trigger line formatted (A)** — granted reaction restructured as "Planar Burst (reaction) Trigger/Effect" per store idiom; shield-or-weapon broadening kept; no-save burst kept; artifact recorded (score unchanged −0.85) | see commit |
+| planar-shield | **Trigger line formatted (A)** — granted reaction restructured as "Planar Burst (reaction) Trigger/Effect" per store idiom; shield-or-weapon broadening kept; no-save burst kept; artifact recorded (score unchanged −0.85) | `5cd0099` |
+| solar-fury | **Double trigger fixed (A)** — sustain-action re-trigger removed; Sustain maintains, damage is turn-start only (5e cadence restored, double-dip killed); 4d6/immunity/sunlight kept; artifact recorded (score unchanged −3.97) | see commit |
 
 ## Status
 
