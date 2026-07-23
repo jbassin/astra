@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -28,11 +28,16 @@
       }
     },
     "description": {
-      "value": "<p>You curse one creature you touch, sealing a forbidden topic inside their mind. Choose one taboo: either the act of lying, or a specific narrow topic (a particular witnessed event, a specific location, or a specific named individual — the GM has final say that the topic is sufficiently specific). The creature must attempt a Will save.</p><p>If the curse takes hold, whenever the target attempts to speak about the forbidden topic, its tongue swells grotesquely and protrudes from its mouth, rendering it unable to speak for 1d4 minutes. The tongue returns to normal size on its own after 1d4 minutes. Magical effects that remove curses (such as Remove Curse or a successful counteract check) end this spell.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The curse takes hold. The creature cannot speak about the forbidden topic; attempting to do so triggers the swollen-tongue effect (unable to speak for 1d4 minutes).</p><p><strong>Critical Failure</strong> As failure, and the creature is unaware of the specific trigger — it doesn't know what topic has been taboo'd until it triggers the effect for the first time.</p><hr /><p><strong>Heightened (+2)</strong> You may designate up to 2 taboos on the same creature, or target 1 additional creature with a single taboo each.</p>"
+      "value": "<p>You curse one creature you touch, sealing a forbidden topic inside their mind. Choose one taboo: either the act of lying, or a specific narrow topic (a particular witnessed event, a specific location, or a specific named individual \u2014 the GM has final say that the topic is sufficiently specific). The creature must attempt a Will save.</p><p>If the curse takes hold, whenever the target attempts to speak about the forbidden topic, its tongue swells grotesquely and protrudes from its mouth, rendering it unable to speak for 1d4 minutes. The tongue returns to normal size on its own after 1d4 minutes. Magical effects that remove curses (such as Remove Curse or a successful counteract check) end this spell.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The curse takes hold. The creature cannot speak about the forbidden topic; attempting to do so triggers the swollen-tongue effect (unable to speak for 1d4 minutes).</p><p><strong>Critical Failure</strong> As failure, and the creature is unaware of the specific trigger \u2014 it doesn't know what topic has been taboo'd until it triggers the effect for the first time.</p><hr /><p><strong>Heightened (+2)</strong> You may designate up to 2 taboos on the same creature, or target 1 additional creature with a single taboo each.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "1 week"
+    },
+    "heightening": {
+      "damage": {},
+      "interval": 2,
+      "type": "interval"
     },
     "level": {
       "value": 3

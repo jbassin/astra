@@ -3,9 +3,9 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "excluded 2 self-directed damage dice from EV (3d10 mental, 2d10 mental) — a cost paid by the caster, not the spell's output",
-        "cast time '24 hours' isn't a shape assay's own action-time parser recognizes — defaults to the 2-action structural multiplier",
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
+        "excluded 2 self-directed damage dice from EV (3d10 mental, 2d10 mental) \u2014 a cost paid by the caster, not the spell's output",
+        "cast time '24 hours' isn't a shape assay's own action-time parser recognizes \u2014 defaults to the 2-action structural multiplier",
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,9 +23,14 @@
     },
     "counteraction": false,
     "damage": {},
-    "defense": null,
+    "defense": {
+      "save": {
+        "basic": false,
+        "statistic": "will"
+      }
+    },
     "description": {
-      "value": "<p>You spend 24 hours inscribing an arcane contract into the core of a prepared mechanical body, binding a sliver of extraplanar will to animate it. At the end of the casting period, attempt a DC 25 Will saving throw. On a failure, you take 3d10 psychic damage and 2d10 mental damage as uncontrolled energies surge through you; you may choose to continue the casting and attempt the save again at the start of each subsequent hour (taking damage on each failure), or you may abandon the casting (destroying the core and the mechanical body). On a success, you complete the inscription and animate the construct. The resulting Hellforged Titan (use an appropriate construct stat block of level 14) is friendly toward you but is not under your control — it has its own will and motivations shaped by the contract you inscribed.</p><hr /><p><strong>Heightened (9th)</strong> The construct's level increases to 16 and you may write one binding clause into the contract, compelling the construct to follow one standing order (no combat-suicidal orders permitted).</p>"
+      "value": "<p>You spend 24 hours inscribing an arcane contract into the core of a prepared mechanical body, binding a sliver of extraplanar will to animate it. At the end of the casting period, attempt a DC 25 Will saving throw. On a failure, you take 3d10 psychic damage and 2d10 mental damage as uncontrolled energies surge through you; you may choose to continue the casting and attempt the save again at the start of each subsequent hour (taking damage on each failure), or you may abandon the casting (destroying the core and the mechanical body). On a success, you complete the inscription and animate the construct. The resulting Hellforged Titan (use an appropriate construct stat block of level 14) is friendly toward you but is not under your control \u2014 it has its own will and motivations shaped by the contract you inscribed.</p><hr /><p><strong>Heightened (9th)</strong> The construct's level increases to 16 and you may write one binding clause into the contract, compelling the construct to follow one standing order (no combat-suicidal orders permitted).</p>"
     },
     "duration": {
       "sustained": false,

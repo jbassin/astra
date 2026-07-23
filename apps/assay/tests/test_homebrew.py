@@ -672,6 +672,168 @@ def test_map_heightening_empty() -> None:
 
 
 # ---------------------------------------------------------------------------
+# batch-0 (2026-07-22): the 10 named-spell heightening fallbacks + the one
+# named multi-partition fix — every OTHER spell's `_map_heightening` output
+# must stay byte-identical (see the module's `_HEIGHTEN_*_NAMES` docstrings
+# for why these are scoped by name, not generalized).
+# ---------------------------------------------------------------------------
+
+
+def test_map_heightening_damage_fallback_scoped_to_ashen_pack() -> None:
+    """The intervening-clause damage delta ("damage OF EACH WOLF'S ATTACK
+    increases by") only resolves for the one named spell — an unrelated
+    spell with the identical shape stays appendix-only, matching pre-batch-0
+    behavior exactly."""
+    base_damage = {"0": {"formula": "4d6", "type": "fire"}}
+    structured, _, warnings = homebrew._map_heightening(
+        [{"trigger": "+1", "text": "The fire damage of each wolf's attack increases by 1d6."}],
+        base_damage,
+        spell_name="Ashen Pack",
+    )
+    assert structured == {"type": "interval", "interval": 1, "damage": {"0": "1d6"}}
+    assert warnings == []
+
+    structured2, _, warnings2 = homebrew._map_heightening(
+        [{"trigger": "+1", "text": "The fire damage of each wolf's attack increases by 1d6."}],
+        base_damage,
+        spell_name="Some Other Spell",
+    )
+    assert structured2 is None
+    assert warnings2 and "not a pure damage bump" in warnings2[0]
+
+
+def test_map_heightening_area_fallback_scoped_to_lyrrs_shell() -> None:
+    area = {"type": "emanation", "value": 100}
+    structured, _, warnings = homebrew._map_heightening(
+        [{"trigger": "+1", "text": "The radius of the shell increases by 100 feet."}],
+        {},
+        area=area,
+        spell_name="Lyrr's Chronomantic Shell",
+    )
+    assert structured == {"type": "interval", "interval": 1, "area": 100, "damage": {}}
+    assert warnings == []
+
+
+def test_map_heightening_empty_key_names_get_key_presence_not_dropped() -> None:
+    """Non-damage/non-area content the `interval` schema has no field for
+    (verified against the pf2e-8.3.0 snapshot's own `damage: {}` interval
+    precedent, e.g. Endure) — key now PRESENT with empty damage, matching
+    the fixed-rank branch's own always-emit-the-key convention, instead of
+    silently omitting `system.heightening` entirely."""
+    structured, _, warnings = homebrew._map_heightening(
+        [{"trigger": "+2", "text": "You gain 1 additional star charge."}],
+        {},
+        spell_name="Lucky Stars",
+    )
+    assert structured == {"type": "interval", "interval": 2, "damage": {}}
+    assert warnings and "empty damage" in warnings[0]
+
+
+def test_map_heightening_all_partitions_scoped_to_kosmoturgists_weapon() -> None:
+    """Kosmoturgist's Weapon's own heighten text bumps all 3 damage modes by
+    the same delta; the general path (any OTHER multi-partition spell) still
+    only ever writes `base_key` — proven against Cone of Decay's real shape
+    (a 2-partition spell whose heighten text names only its base partition)."""
+    base_damage = {
+        "0": {"formula": "3d10+8"},
+        "1": {"formula": "3d10+8"},
+        "2": {"formula": "4d10"},
+    }
+    structured, _, _ = homebrew._map_heightening(
+        [{"trigger": "+1", "text": "Attack and Defend mode damage increases by 1d10."}],
+        base_damage,
+        spell_name="Kosmoturgist's Weapon",
+    )
+    assert structured == {
+        "type": "interval",
+        "interval": 1,
+        "damage": {"0": "1d10", "1": "1d10", "2": "1d10"},
+    }
+
+    cone_damage = {"0": {"formula": "8d10"}, "1": {"formula": "4d10"}}
+    structured2, _, _ = homebrew._map_heightening(
+        [{"trigger": "+1", "text": "The base void damage increases by 1d10."}],
+        cone_damage,
+        spell_name="Cone of Decay",
+    )
+    assert structured2 == {"type": "interval", "interval": 1, "damage": {"0": "1d10"}}
+
+
+# ---------------------------------------------------------------------------
+# Markdown-bold cleanup (batch-0): paired `**text**` -> `<strong>text</strong>`
+# ---------------------------------------------------------------------------
+
+
+def test_convert_markdown_bold_pairs() -> None:
+    assert (
+        homebrew._convert_markdown_bold("Before **Bold Label:** after")
+        == "Before <strong>Bold Label:</strong> after"
+    )
+
+
+def test_convert_markdown_bold_no_markers_is_noop() -> None:
+    assert homebrew._convert_markdown_bold("Plain text, no markers.") == "Plain text, no markers."
+
+
+def test_convert_spell_strips_markdown_bold_from_description() -> None:
+    spell = _spell(description="Effects:\n\n**Detail:** Something happens.")
+    c = homebrew.convert_spell(spell)
+    desc = c.foundry["system"]["description"]["value"]
+    assert "**" not in desc
+    assert "<strong>Detail:</strong>" in desc
+
+
+# ---------------------------------------------------------------------------
+# `Damage: NdM type` labeled line (batch-0, Propagating Blast) — anchored to
+# paragraph/line start so it can't false-match mid-sentence "Full damage: X"
+# phrasing (Tag's real successTiers shape; a regression caught during batch-0
+# review, see `_DAMAGE_LABEL_RE`'s docstring).
+# ---------------------------------------------------------------------------
+
+
+def test_damage_label_line_own_paragraph_matches() -> None:
+    assert homebrew._extract_damage_dice("Damage: 2d8 force.") == [("2d8", "force")]
+
+
+def test_damage_label_mid_sentence_does_not_match() -> None:
+    """The exact Tag regression this batch introduced and then fixed: a
+    bare unanchored `Damage:` scan would match here too and silently steer
+    `_build_damage` away from the (correct) full-description fallback."""
+    assert homebrew._extract_damage_dice("Full damage: 5d8 fire + 5d8 mental.") == []
+
+
+# ---------------------------------------------------------------------------
+# Free-text defense override (batch-0, Hellforging/Raise Island) — a save
+# mentioned only in description prose, never the bespoke schema's own
+# structured `defense` field.
+# ---------------------------------------------------------------------------
+
+
+def test_free_text_defense_override_hellforging() -> None:
+    spell = _spell(
+        name="Hellforging",
+        defense=None,
+        description="Attempt a DC 25 Will saving throw.",
+    )
+    c = homebrew.convert_spell(spell)
+    assert c.foundry["system"]["defense"] == {"save": {"basic": False, "statistic": "will"}}
+    assert any("promoted from free-text" in w for w in c.warnings)
+
+
+def test_free_text_defense_override_not_applied_to_other_spells() -> None:
+    """The same free-text-save symptom on an unnamed spell stays unmapped —
+    scoped by name (see `_FREE_TEXT_DEFENSE_OVERRIDES`'s docstring for why
+    this isn't generalized to the other 7 vendor spells sharing it)."""
+    spell = _spell(
+        name="Some Other Spell",
+        defense=None,
+        description="Attempt a DC 20 Fortitude save.",
+    )
+    c = homebrew.convert_spell(spell)
+    assert c.foundry["system"]["defense"] is None
+
+
+# ---------------------------------------------------------------------------
 # End-to-end: real vendored fixtures (Falling Star, Glitterdust — the task's
 # mandated spot-checks) through the SAME `extract_spell` the official corpus
 # uses.

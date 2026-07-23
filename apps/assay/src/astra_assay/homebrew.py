@@ -271,11 +271,27 @@ _DAMAGE_PAREN_RE = re.compile(r"damage\s*\(([^)]*)\)", re.IGNORECASE)
 _PAREN_COMPONENT_SPLIT_RE = re.compile(r"[+,]")
 _PAREN_DICE_RE = re.compile(rf"({_DICE_TOKEN})\s*([a-z]+)?", re.IGNORECASE)
 
+#: A third shape, distinct from both above: a colon-labeled damage summary
+#: line sitting on its own PARAGRAPH/line outside `successTiers` ("Damage:
+#: 2d8 force.", real corpus: Propagating Blast — the ONLY vendor spell
+#: using this shape, verified via a full corpus scan before adding this
+#: pattern). Anchored to line/paragraph start (`^`/after `\n`) — NOT a bare
+#: `\bDamage:` scan — because that unanchored form false-matches mid-
+#: sentence "Full damage: 5d8 fire + 5d8 mental." (Tag's successTiers
+#: `failure` text), which would flip `_build_damage`'s section choice from
+#: its current (correct, 2-entry) full-description fallback to the
+#: successTiers text and silently drop the second damage component — caught
+#: by the pre-commit revisions.md diff, not by inspection alone.
+_DAMAGE_LABEL_RE = re.compile(
+    rf"(?:^|\n)\s*Damage:\s*({_DICE_TOKEN})\s*([a-z]+)?", re.IGNORECASE | re.MULTILINE
+)
+
 
 def _extract_damage_dice(text: str) -> list[tuple[str, str]]:
     """Every `<dice> [<type>] damage` mention in `text` -> `(formula, type)`
-    pairs (both the `NdM damage` and `damage (NdM type)` shapes); `type` is
-    `"untyped"` when no recognized damage-type word sits with the dice."""
+    pairs (the `NdM damage`, `damage (NdM type)`, and `Damage: NdM type`
+    shapes); `type` is `"untyped"` when no recognized damage-type word sits
+    with the dice."""
     out: list[tuple[str, str]] = []
     for m in _DICE_DAMAGE_RE.finditer(text):
         formula = _dice_to_formula(m.group(1))
@@ -291,6 +307,11 @@ def _extract_damage_dice(text: str) -> list[tuple[str, str]]:
             word = (dm.group(2) or "").lower()
             dtype = _DAMAGE_TYPE_ALIASES.get(word, word)
             out.append((formula, dtype if dtype in _DAMAGE_TYPES else "untyped"))
+    for m in _DAMAGE_LABEL_RE.finditer(text):
+        formula = _dice_to_formula(m.group(1))
+        word = (m.group(2) or "").lower()
+        dtype = _DAMAGE_TYPE_ALIASES.get(word, word)
+        out.append((formula, dtype if dtype in _DAMAGE_TYPES else "untyped"))
     return out
 
 
@@ -491,6 +512,27 @@ def _map_defense(raw: str | None) -> tuple[dict[str, Any] | None, bool, list[str
     return result, add_attack_trait, warnings
 
 
+#: batch-0 scope (2026-07-22 stakeholder decision): TWO named spells carry a
+#: save requirement ONLY in free-text `description` prose — the bespoke
+#: schema's own structured `defense` field is null, so `_map_defense` above
+#: (which only ever reads that field) never sees it. Neither save is
+#: `"basic"` (both are binary succeed/fail-a-specific-consequence, not a
+#: half/full/double damage progression). A corpus-wide probe before this
+#: batch found 9 vendor spells with this same null-`defense`-but-a-save-
+#: mentioned-in-prose symptom; the other 7 (Monstrous Copy: Tail/Stinger/
+#: Tentacle, Forceful Onslaught, Body Enhancement: Mind, Mental Balance,
+#: Djura's Divine Razor) mention their save as a RIDER on an affliction or
+#: secondary effect, not the spell's own primary interaction (several
+#: already legalized/reviewed in item 6) — blindly promoting those to
+#: top-level `system.defense` would misrepresent spells whose primary
+#: interaction is a melee Strike/attack roll. Scoped by name, not
+#: generalized, for the same reason as the heightening fallbacks above.
+_FREE_TEXT_DEFENSE_OVERRIDES: dict[str, tuple[str, bool]] = {
+    "Hellforging": ("will", False),
+    "Raise Island": ("reflex", False),
+}
+
+
 # ---------------------------------------------------------------------------
 # Range / area
 # ---------------------------------------------------------------------------
@@ -597,6 +639,68 @@ _HEIGHTEN_DAMAGE_RE = re.compile(rf"damage\s+increases?\s+by\s+({_DICE_TOKEN})",
 _FIXED_TRIGGER_RE = re.compile(r"^(\d+)(?:st|nd|rd|th)$", re.IGNORECASE)
 _PLUS_TRIGGER_RE = re.compile(r"^\+(\d+)$")
 
+#: batch-0 scope (2026-07-22 stakeholder decision, `results/homebrew-item7/
+#: INDEX.md`): EXACTLY 10 store docs carry Heightened prose with no
+#: `system.heightening` key at all, because their single "+N" heighten
+#: sentence either (a) states a per-rank damage-dice bump that
+#: `_HEIGHTEN_DAMAGE_RE`'s strict "damage increases by" adjacency can't reach
+#: past an intervening clause, (b) states a per-rank AREA-radius bump (also
+#: representable — verified against the pf2e-8.3.0 snapshot: `interval`
+#: heightening's only two representable axes are `damage` and `area`, e.g.
+#: Deluge/Illuminate/Erase Trail), or (c) is genuinely non-damage/non-area
+#: content the schema cannot represent at all (target count, resource
+#: charges, reach distance, healing cap not itself structurally captured —
+#: see `_build_damage`'s docstring for why a caster-facing rider like
+#: Retributive Force's per-Strike bonus or Rewind and Playback's healing cap
+#: never lands in `system.damage` to begin with). A wider population of
+#: ~36 more single-"+N"-entry spells shares the same appendix-only symptom
+#: (several already hand-tuned by prior review sessions — Solar Rebuke,
+#: Repetitious Trauma, Grey Frost, Hypercompression, Gravity Anvil, etc. —
+#: verified via a corpus-wide probe before this batch); broadening either
+#: regex generally was measured to ripple straight into that population
+#: (changing baselines for spells never reviewed for this batch, several
+#: already stakeholder-tuned). Deliberately scoped by name, not generalized —
+#: a future batch's call, not this one's.
+_HEIGHTEN_DAMAGE_FALLBACK_NAMES = frozenset({"Ashen Pack"})
+_HEIGHTEN_AREA_NAMES = frozenset({"Lyrr's Chronomantic Shell"})
+_HEIGHTEN_EMPTY_KEY_NAMES = frozenset(
+    {
+        "Lucky Stars",
+        "Excavation",
+        "Pendulum",
+        "Taboo",
+        "Compressive Weapon",
+        "Retributive Force",
+        "Rewind and Playback",
+        "Incensed Bestial Rage",
+    }
+)
+#: Kosmoturgist's Weapon's own heighten text bumps ALL THREE of its damage
+#: partitions by the same amount ("Attack and Defend mode damage increases by
+#: 1d10; Control mode damage increases by 1d10") — the general single-delta
+#: path below only ever writes `base_key` (partition "0"), which is correct
+#: for the common one-partition-bumped case (Cone of Decay's "base void
+#: damage" text deliberately leaves its second, undead-only partition
+#: unbumped) but wrong here. Scoped by name for the same reason as the three
+#: sets above: a blind apply-to-every-partition rule would silently mis-bump
+#: Cone of Decay/Darkseeker's Aura/Darkseeker's Restraint, none of which are
+#: in this batch.
+_HEIGHTEN_ALL_PARTITIONS_NAMES = frozenset({"Kosmoturgist's Weapon"})
+
+#: A looser damage-delta finder for the one batch-0 damage-bump case whose
+#: dice sits after an intervening clause ("The fire damage OF EACH WOLF'S
+#: ATTACK increases by 1d6") — scoped to `_HEIGHTEN_DAMAGE_FALLBACK_NAMES`
+#: only, see that constant's docstring.
+_HEIGHTEN_DAMAGE_FALLBACK_RE = re.compile(
+    rf"damage\b.{{0,60}}?\bincreases?\s+by\s+({_DICE_TOKEN})", re.IGNORECASE
+)
+#: A radius-increase finder for the one batch-0 area-bump case ("The radius
+#: OF THE SHELL increases by 100 feet") — scoped to `_HEIGHTEN_AREA_NAMES`
+#: only, same reasoning.
+_HEIGHTEN_AREA_FALLBACK_RE = re.compile(
+    r"radius\b.{0,40}?\bincreases?\s+by\s+(\d+)\s*feet", re.IGNORECASE
+)
+
 
 def _heighten_damage_delta(text: str) -> str | None:
     m = _HEIGHTEN_DAMAGE_RE.search(text)
@@ -604,13 +708,20 @@ def _heighten_damage_delta(text: str) -> str | None:
 
 
 def _map_heightening(
-    heightened: list[dict[str, Any]], base_damage: dict[str, dict[str, Any]]
+    heightened: list[dict[str, Any]],
+    base_damage: dict[str, dict[str, Any]],
+    *,
+    area: dict[str, Any] | None = None,
+    spell_name: str | None = None,
 ) -> tuple[dict[str, Any] | None, str, list[str]]:
     """-> (`system.heightening` or None, description-appendix HTML, warnings).
     The appendix is ALWAYS built (mirrors the real corpus, which keeps the
     prose alongside the structured field) and is what
     `conditions.strip_heightened` cuts on — it must start with `<hr />`
-    immediately followed by `<p><strong>Heightened`."""
+    immediately followed by `<p><strong>Heightened`.
+
+    `area`/`spell_name` only ever feed the batch-0 named fallbacks above —
+    every other spell's structural mapping is byte-identical to before."""
     warnings: list[str] = []
     if not heightened:
         return None, "", warnings
@@ -628,18 +739,61 @@ def _map_heightening(
         )
     elif plus_entries:
         if len(plus_entries) == 1:
+            entry_text = plus_entries[0]["text"]
             n_match = _PLUS_TRIGGER_RE.match(plus_entries[0]["trigger"])
-            delta = _heighten_damage_delta(plus_entries[0]["text"])
+            delta = _heighten_damage_delta(entry_text)
+            if not delta and spell_name in _HEIGHTEN_DAMAGE_FALLBACK_NAMES:
+                fb = _HEIGHTEN_DAMAGE_FALLBACK_RE.search(entry_text)
+                delta = _dice_to_formula(fb.group(1)) if fb else None
+
             if n_match and delta and base_key is not None:
+                if spell_name in _HEIGHTEN_ALL_PARTITIONS_NAMES:
+                    structured = {
+                        "type": "interval",
+                        "interval": int(n_match.group(1)),
+                        "damage": dict.fromkeys(base_damage, delta),
+                    }
+                else:
+                    structured = {
+                        "type": "interval",
+                        "interval": int(n_match.group(1)),
+                        "damage": {base_key: delta},
+                    }
+            elif n_match and spell_name in _HEIGHTEN_AREA_NAMES and area is not None:
+                area_m = _HEIGHTEN_AREA_FALLBACK_RE.search(entry_text)
+                if area_m:
+                    structured = {
+                        "type": "interval",
+                        "interval": int(n_match.group(1)),
+                        "area": int(area_m.group(1)),
+                        "damage": {},
+                    }
+            elif n_match and spell_name in _HEIGHTEN_EMPTY_KEY_NAMES:
+                # Genuinely non-damage/non-area content the `interval` schema
+                # has no field for (verified against the official snapshot —
+                # its ONLY two representable axes) — key-presence still made
+                # consistent with the fixed-rank branch below (which always
+                # emits `levels[trigger] = {}` rather than omitting the key),
+                # per the official Endure/Bound in Death/Lock Item precedent
+                # (`damage: {}` interval blocks with no damage anywhere in
+                # the spell — a real, if inconsistently-used, official idiom).
                 structured = {
                     "type": "interval",
                     "interval": int(n_match.group(1)),
-                    "damage": {base_key: delta},
+                    "damage": {},
                 }
-            else:
+
+            if structured is None:
                 warnings.append(
                     "interval ('+N') heightening text is not a pure damage bump — kept as "
                     "a description appendix only, not structurally represented"
+                )
+            elif not (structured.get("damage") or structured.get("area")):
+                warnings.append(
+                    "interval ('+N') heightening text has no structurally-parseable "
+                    "damage/area bump — key emitted with empty damage for key-presence "
+                    "consistency with the fixed-rank branch (batch-0 policy), effect "
+                    "prose stays appendix-only"
                 )
         else:
             warnings.append(
@@ -677,7 +831,7 @@ def _map_heightening(
         promoted_text, _ = promote_conditions(h["text"])
         parts.append(
             f"<p><strong>Heightened ({h['trigger']})</strong> "
-            f"{html.escape(promoted_text, quote=False)}</p>"
+            f"{_convert_markdown_bold(html.escape(promoted_text, quote=False))}</p>"
         )
     return structured, "".join(parts), warnings
 
@@ -706,6 +860,22 @@ _DEGREE_FIELDS = (
 )
 
 
+#: Paired `**text**` markdown markup — a vendor-authoring artifact (20/176
+#: spells; the friend's `pf2e-spell-creator` skill occasionally emits
+#: markdown bold instead of Foundry's own `<strong>` HTML) that survives
+#: `html.escape` byte-for-byte (`*` carries no HTML meaning) straight into
+#: the composed description, rendering as literal asterisks in-client.
+_MARKDOWN_BOLD_RE = re.compile(r"\*\*(.+?)\*\*")
+
+
+def _convert_markdown_bold(escaped_text: str) -> str:
+    """`**text**` -> `<strong>text</strong>`. MUST run on already-escaped
+    text (every call site below feeds it straight out of `html.escape`) —
+    running it first would have the inserted `<strong>` tags themselves
+    escaped right back into literal text."""
+    return _MARKDOWN_BOLD_RE.sub(r"<strong>\1</strong>", escaped_text)
+
+
 def _lead_in_description(description: str, *, has_success_tiers: bool) -> str:
     text = description or ""
     if has_success_tiers:
@@ -724,7 +894,8 @@ def _paragraphs_html(promoted_text: str) -> str:
         para = para.strip()
         if not para:
             continue
-        out.append(f"<p>{html.escape(para, quote=False).replace(chr(10), '<br />')}</p>")
+        bolded = _convert_markdown_bold(html.escape(para, quote=False))
+        out.append(f"<p>{bolded.replace(chr(10), '<br />')}</p>")
     return "".join(out)
 
 
@@ -737,7 +908,10 @@ def _success_tiers_html(success_tiers: dict[str, Any] | None) -> str:
         if not text:
             continue
         promoted_text, _ = promote_conditions(text)
-        parts.append(f"<p><strong>{label}</strong> {html.escape(promoted_text, quote=False)}</p>")
+        parts.append(
+            f"<p><strong>{label}</strong> "
+            f"{_convert_markdown_bold(html.escape(promoted_text, quote=False))}</p>"
+        )
     return "".join(parts)
 
 
@@ -862,6 +1036,14 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
     defense_raw = spell.get("defense")
     defense_dict, add_attack_trait, defense_warnings = _map_defense(defense_raw)
     warnings += defense_warnings
+    if defense_dict is None and not add_attack_trait and name in _FREE_TEXT_DEFENSE_OVERRIDES:
+        statistic, basic = _FREE_TEXT_DEFENSE_OVERRIDES[name]
+        defense_dict = {"save": {"basic": basic, "statistic": statistic}}
+        warnings.append(
+            f"defense promoted from free-text description prose (the structured "
+            f"`defense` field was null) — batch-0 named override: {statistic} save, "
+            f"basic={basic}"
+        )
     if add_attack_trait:
         if "attack" not in traits:
             warnings.append(
@@ -893,7 +1075,7 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
     duration_dict = _map_duration(spell.get("duration"))
 
     heightening_dict, heighten_appendix, heighten_warnings = _map_heightening(
-        spell.get("heightened") or [], damage_entries
+        spell.get("heightened") or [], damage_entries, area=area_dict, spell_name=name
     )
     warnings += heighten_warnings
 

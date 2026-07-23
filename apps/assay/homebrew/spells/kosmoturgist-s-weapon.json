@@ -67,7 +67,9 @@
     },
     "heightening": {
       "damage": {
-        "0": "1d10"
+        "0": "1d10",
+        "1": "1d10",
+        "2": "1d10"
       },
       "interval": 1,
       "type": "interval"
