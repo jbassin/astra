@@ -330,3 +330,15 @@ these are the ones where the effect has to earn the slot on its own.
   (was appendix-only), and the "caster chooses if unknown" hidden buff (always name the
   weakness) → defaults to mental. Post-edit −2.60 = the engine-artifact residual (dice sit
   −0.90 by construction; the hybrid router's Stunned-atom pricing supplies the rest).
+- **Grey Frost r7 (−3.04 → recorded DoT/no-comparables ARTIFACT, dice untouched; rebuilt as
+  a staged AFFLICTION ending in petrification, stakeholder-directed):** the extractor
+  priced the two 3d8 entries per-cast (failure actually delivers initial + ~2-3 ticks +
+  Restrained ≈ on-budget) and found ZERO comparables (no trainer row carries Petrified).
+  Manual anchor: official Petrify r6 — one rank up with damage throughout, in band. The
+  affliction rebuild (failure = stage 1, crit-fail = stage 2): S1 Restrained + 3d8/round
+  (Escape shatters = affliction ends) · S2 Petrified · S3 permanently Petrified (outlasts
+  the spell; thaw clause) — this RESTORES the 5e restrained→frozen escalation the
+  conversion had dropped, dissolves its harsher-than-5e "three CONSECUTIVE saves" tightening
+  into standard affliction recovery, and replaces the sustained-full-minute permanence
+  trigger with stage-3 entry. Max duration 1 min, ends with the spell except at stage 3.
+  Incapacitation trait unchanged. Routing hybrid→quantitative post-edit, same −3.04.
