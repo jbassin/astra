@@ -22,24 +22,13 @@
     },
     "counteraction": false,
     "damage": {},
-    "defense": {
-      "save": {
-        "basic": false,
-        "statistic": "fortitude"
-      }
-    },
+    "defense": null,
     "description": {
-      "value": "<p>Over the course of three hours of painstaking work, you deconstruct and rebuild the physical form of a living humanoid creature. A willing creature may choose to fail all saving throws (treating the result as critical failure for each). An unwilling creature must attempt three separate Fortitude saving throws \u2014 one at the end of the first hour, one at the end of the second hour, and one at the end of the third hour; if any save succeeds, the spell ends with no effect and the partially-begun transformation is reversed harmlessly.</p><p>If all three saves fail (or the creature chose to fail), the creature's ancestry changes to a randomly determined humanoid ancestry (the GM determines this, typically by rolling on a table of available ancestries in the setting). The creature retains all of its abilities, class features, proficiencies, and memories, but its ancestry traits, ability boosts, and ancestry feats change to match its new form. Appearance features such as height, weight, age, and coloration are under the caster's direction.</p><p>This is a permanent polymorph. It can be reversed only through effects that target curses, such as @UUID[Compendium.pf2e.spells-srd.Item.Cleanse Affliction]{Cleanse Affliction} (requiring a successful counteract check against this spell's rank), or by casting Overhaul again.</p><p><strong>Critical Success</strong> The creature is unaffected for that hour's phase.</p><p><strong>Success</strong> The creature is unaffected for that hour's phase; the spell ends.</p><p><strong>Failure</strong> That phase of the transformation proceeds.</p><p><strong>Critical Failure</strong> That phase of the transformation proceeds; the creature also takes 2d10 void damage from the stress of restructuring.</p><hr /><p><strong>Heightened (7th)</strong> You may direct the ancestry outcome, choosing from ancestries you are familiar with, rather than having the GM determine it randomly.</p>"
+      "value": "<p>Over the course of three hours of painstaking work, you deconstruct and rebuild the physical form of a living humanoid creature, who must remain within your reach throughout the casting. An unwilling creature resists the working in stages: it attempts a Reflex save at the end of the first hour, a Will save at the end of the second, and a Fortitude save at the end of the third \u2014 if any of these saves succeeds, the ritual ends with no effect and the partially-begun transformation is reversed harmlessly. A willing creature may forgo these saves.</p><p>If the target does not resist, the outcome depends on your primary check. The transformed creature retains all of its abilities, class features, proficiencies, and memories, but its ancestry traits, ability boosts, and ancestry feats change to match its new form. Appearance features such as height, weight, age, and coloration are under the caster's direction.</p><p>This is a permanent polymorph. It can be reversed only through effects that target curses, such as @UUID[Compendium.pf2e.spells-srd.Item.Cleanse Affliction]{Cleanse Affliction} (requiring a successful counteract check against this spell's rank), or by casting Overhaul again.</p><hr /><p><strong>Critical Success</strong> The transformation is flawless \u2014 you choose the creature's new ancestry from the humanoid ancestries available in the setting.</p><p><strong>Success</strong> The creature's ancestry changes to a randomly determined humanoid ancestry (the GM determines this, typically by rolling on a table of available ancestries in the setting).</p><p><strong>Failure</strong> The ritual fails with no effect.</p><p><strong>Critical Failure</strong> The ritual fails violently partway through; the creature takes 2d10 void damage from the stress of partial restructuring.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "permanent"
-    },
-    "heightening": {
-      "levels": {
-        "7": {}
-      },
-      "type": "fixed"
     },
     "level": {
       "value": 5
@@ -53,6 +42,15 @@
       "value": "touch"
     },
     "requirements": "",
+    "ritual": {
+      "primary": {
+        "check": "Arcana (expert) or Occultism (expert)"
+      },
+      "secondary": {
+        "casters": 1,
+        "checks": "Medicine"
+      }
+    },
     "rules": [],
     "target": {
       "value": "1 living humanoid creature"
@@ -62,13 +60,8 @@
     },
     "traits": {
       "rarity": "rare",
-      "traditions": [
-        "arcane",
-        "occult"
-      ],
+      "traditions": [],
       "value": [
-        "concentrate",
-        "manipulate",
         "memetics",
         "polymorph"
       ]
