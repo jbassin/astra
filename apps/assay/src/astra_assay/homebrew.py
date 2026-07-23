@@ -1259,6 +1259,8 @@ _DIFF_FIELDS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("heightening", ("heightening",)),
     ("traits.value", ("traits", "value")),
     ("traits.traditions", ("traits", "traditions")),
+    ("traits.rarity", ("traits", "rarity")),
+    ("ritual", ("ritual",)),
     ("cost.value", ("cost", "value")),
     ("requirements", ("requirements",)),
 )
