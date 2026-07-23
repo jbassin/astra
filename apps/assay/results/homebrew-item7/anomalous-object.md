@@ -90,3 +90,24 @@ None found in `revisions.md` — Anomalous Object matches the fresh in-memory re
 - Material component drop: jmnario's conversion specifies `cost: "an hourglass (material component)"` (matching the 5e original's `m: "an hourglass"`), but the store's `system.cost.value` is an empty string and `system.requirements` is also empty — the hourglass material component is not represented anywhere in the store (neither structured field nor description prose).
 - The "attack" trait was added per the adapter warning specifically to satisfy assay's own internal targeting-class classification logic, not because it was present in the source data (absent from both the 5e original's traits/tags and from jmnario's conversion's trait list).
 - The 5e original spell (7th level) has no `entriesHigherLevel` text at all — an unusual gap in the source data for a spell this high-rank, worth noting since the PF2e heighten tier (9th rank) has no corresponding 5e text to anchor against.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+Near-verbatim faithful port with two GOOD inventions: the 1-Bulk cap (a governor 5e
+never had) and the H9 tier. Two dossier flags dissolve on inspection: the null
+`system.defense` matches official convention (attack-roll spells don't populate the
+defense field), and the adapter-added `attack` trait — though added for tool reasons —
+lands on the correct official convention anyway (spells with attack rolls carry it, and
+the MAP interaction is right).
+
+The live question is the converter's own overridable: **rarity**. A shared-state
+temporal duplicate of any 1-Bulk object is a plot-bypass machine (keys, letters, seals,
+charged wands) — exactly the class of tool PF2e gates uncommon, and we already accepted
+that logic for Farsight.
+
+- **A. Keep mechanics; set rarity → uncommon** — his own suggestion, Farsight-consistent.
+- **B. A plus swap the attended-object interaction to a Thievery check** — his other
+  overridable; the spell-attack roll is fine and simpler.
+- **C. Keep common** — hands every occult caster a skeleton-key printer at 13th level.
+
+**Lean: A.**

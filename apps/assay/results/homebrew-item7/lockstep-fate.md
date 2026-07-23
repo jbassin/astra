@@ -87,3 +87,27 @@ None. `revisions.md` has no entry for Lockstep Fate — the store matches a fres
 - The converter's own balance bullet cites a "fortune + divination + mental" trait combination as load-bearing for immunity gating, but the store's trait list is `concentrate, fortune, manipulate, mental, mercuromancy` — no "divination" trait is present. The bullet and the structured traits disagree.
 - Both fixed-rank Heightened entries (4th, 6th) are text-only in `system.heightening.levels` (empty `{}` objects) — the adapter cannot structurally represent "hold N rolls" / "target N creatures" as a parseable bump, per its own adapterWarning.
 - Material component ("a pair of identical pebbles") from the 5e original is fully dropped rather than retained as flavor text or a `cost` value.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The mechanic conversion is faithful (one transfer per cast, matching 5e's
+spell-ends-on-transfer), and the crit tiers are good additions — the forced nat-1 on
+crit fail is the fun tier, keep it. The divination-trait discrepancy is a FALSE POSITIVE
+(the school-trait policy strips it; Remaster retired divination anyway — mental+fortune
+gate correctly).
+
+The real item is an internal TEXT CONTRADICTION: "The link ends when you discharge a
+held roll" coexists with "if you have already held a roll, you must discharge it before
+holding another" — if discharge ends the link, there is never another hold. The H4/H6
+tiers (hold two / multi-creature pool) also read muddily against end-on-discharge.
+
+- **A. One tightening pass on the hold/discharge lifecycle** — delete the vestigial
+  re-hold sentence; make H4 read "hold two, choose which to assign on the single
+  discharge" and H6's pool wording consistent with per-creature link ending. Mechanics
+  unchanged.
+- **B. Redesign so the link survives multiple discharges** — a real buff with no 5e
+  basis; unmotivated.
+- **C. Drop the crit-fail nat-1 per his overridable** — it's rare (~5%) and the spell's
+  best moment; keep.
+
+**Lean: A.**

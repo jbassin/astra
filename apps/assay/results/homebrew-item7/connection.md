@@ -99,3 +99,23 @@ This text is **not** byte-identical to jmnario's baseline — see "Prior astra t
 - No residual 5e-isms otherwise (no "bonus action" text, no death-save language).
 - No curse-removal wording, no affliction text, not a reaction (no Trigger line to check).
 - Structured damage field is empty, consistent with the prose.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+**This is the deferred batch-0 conch/pearl decision point.** The official precedent
+settles it: Telepathic Bond (r5, official) provides ongoing planetary multi-party
+telepathy for 8 HOURS with no material cost — so a spam-tax on Connection's weaker
+footprint (10 min, 1 target, cross-planar reach with 5% miss as its one edge) has no
+balance job to do. The stripped pearl stays stripped; the conch line reads fine as pure
+flavor. The converter-notes errata (Sending has no subtle trait, casts in 3A) is
+context only — the spell itself doesn't depend on those claims.
+
+- **A. Keep as-is** — cost stays stripped; the r5 slot is fairly priced against Sending
+  (durative two-way conversation vs one-shot) and under Telepathic Bond (which trades
+  away the cross-planar reach).
+- **B. Bump base duration 10 min → 1 hour** — closes the gap to Telepathic Bond's
+  footprint (then fold H8 into miss-chance-only); a buff with official cover if he feels
+  the base is stingy.
+- **C. Restore the pearl as a policy exception** — no lever left for it to pull.
+
+**Lean: A.**

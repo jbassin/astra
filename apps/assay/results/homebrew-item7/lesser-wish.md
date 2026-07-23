@@ -88,3 +88,25 @@ None recorded. `revisions.md` shows 0 deviations for this spell.
 - Divine tradition access has no counterpart in the 5e class list (Cleric is absent from the 5e Bard/Druid/Seeker/Sorcerer/Warlock/Wizard list).
 - `adapterWarnings` note 2 self-damage dice (1d6, 2d6) are excluded from EV scoring as a caster-paid cost rather than spell output — consistent with the ledger:utility routing.
 - Duration is an empty string rather than an explicit "instantaneous" (jmnario's intermediate conversion used the literal word); the store's convention differs, though it doesn't change the mechanical meaning.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The wholesale redesign was PLAN-DIRECTED (his own note: "rank-2 utility, NOT actual
+wish" — the 5e free-spell-cast mechanic breaks PF2e's slot economy), so the review
+question is the menu's quality, not whether to restore 5e. The menu prices fine (the
+fortune reroll alone ≈ Sure Strike r1; four narrow options justify r2), and the
+deterministic escalating strain is honestly better design than 5e's shrinking-die
+death-roulette while keeping the fiction.
+
+Two nits: option (d)'s wording is self-muddling ("you still expended the slot... without
+spending an additional slot"), and the divine tradition has no 5e-class basis (his
+"fate magic spans all essences" reasoning is defensible, so this is taste).
+
+- **A. Keep the redesign; rewrite option (d) cleanly** — e.g. "you can Cast that Spell
+  again this turn without expending another slot."
+- **B. A plus drop divine from the traditions** — 5e-faithful; only if he wants the
+  narrower access.
+- **C. Restore the shrinking-die death-roulette** — memorable 5e identity but clunky to
+  express in PF2e flat-check terms; the deterministic strain covers the fiction.
+
+**Lean: A.**

@@ -112,3 +112,20 @@ need no action.
   sphere-of-ruin, earworm, monstrous-copy-eye-stalks, take-me-instead, extra-motivation,
   lesser-wish, anomalous-object, connection, ebb-and-flow, lockstep-fate, fault-line.
   Fast-lane spells get their lean live at review (no pre-written section).
+- 2026-07-23: **ENRICHMENT COMPLETE — all 35 judgment-lane dossiers now carry an
+  "## Options & staff lean" section** (the 73 fast-lane spells deliberately get their
+  lean live at review). Recurring findings from the pass: several dossier flags were
+  FALSE POSITIVES against documented policy/idiom (school-trait strips, the 1A→2A
+  systemic cast mapping, effect-on-success non-basic tiers per the Slow precedent,
+  PF2e sustain vs 5e concentration-break semantics, attack-trait/defense-null official
+  conventions); the two deferred batch-0 cost decisions resolved in-dossier (Sphere of
+  Ruin: leave tax stripped, restore the caster-adjacent pursuit start instead;
+  Connection: cost stays stripped on the Telepathic Bond precedent); ⭐ a SET-WIDE
+  question surfaced for the review: hours-long casts as spells vs RITUALS (Overhaul,
+  Hellforging — Hellforging is the poster child: the official Creature Creation Rituals
+  table pins its level-14 output at ritual rank 9, not spell rank 7); genuine text bugs
+  queued: Take Me Instead's "Charisma-based (Diplomacy or Society)" contradiction,
+  Lockstep Fate's hold/discharge lifecycle contradiction, Reflective Defense's embedded
+  editor-voice sentence (voice-sweep escapee). ▶ NEXT: run the review — batch-0's four
+  decisions are DONE; each remaining spell is one pre-built card (dossier + lean),
+  fast-lane cards built live.

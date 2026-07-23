@@ -103,3 +103,23 @@ None found in `revisions.md` — Ebb and Flow matches the fresh in-memory re-con
 - `heightening.levels["5"]` and `["7"]` are both empty objects; both heighten effects (Speed-bonus/radius bump at 5th; Prone-on-crit-fail + late-arrival ally benefit at 7th) live only in the description HTML (per the adapter warning).
 - The store's failure-tier text adds "This persists for 1 round after it leaves the zone" — a lingering-effect clause with no 5e-original basis and not called out explicitly in the converter's preserved/changed-elements lists.
 - Material component "an ant encased in amber" from the 5e original is dropped with no replacement (Remaster convention — no material components).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The conversion is careful and the converter's OWN checklist names the issue: Haste-lite
+for every ally + Slow-lite for every enemy in one zone at rank 3 — the Everything-Spell
+tension — with his own stated remedy: "could reasonably be rank 4 if the combined effect
+proves too strong." The mitigations (weaker-than-Haste buff, Will-gated debuff, 20-ft
+burst, sustained) are real, but both single-target anchors (Haste, Slow) sit at THIS
+rank and the zone does a version of each to multiple creatures. The Will-vs-Fortitude
+flag is taste, not a defect (his temporal-perception reasoning + the mental trait hang
+together); the 1-round lingering clause is a harmless invention.
+
+- **A. Rank 3 → 4** — his own flagged remedy; keeps the full dual-axis design intact and
+  prices the area multiplication. (Comparables routing gives no point score — record the
+  call, no scorer gate applies.)
+- **B. Keep rank 3, drop the ally extra-reaction** — his other overridable; trims the
+  dual axis instead of pricing it.
+- **C. Keep as-is at rank 3** — accepts the Everything-Spell risk he himself flagged.
+
+**Lean: A.**

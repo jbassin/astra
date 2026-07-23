@@ -93,3 +93,25 @@ None found in `revisions.md` — Fault Line matches the fresh in-memory re-conve
 - `heightening.damage = {"0": "2d10"}` structurally represents only the damage half of the "+1: damage increases by 2d10 and the line increases in length by 10 feet" heighten text — the **line-length increase (+10 ft per rank) is not represented in any structured field**, only in the description prose.
 - The 5e original's caster classes are both divine (Cleric, Paladin), but the PF2e tradition list is arcane+primal with **no divine tradition** — a full tradition swap away from the 5e class list, not merely an addition of extra traditions.
 - Range changed from 5e's self-origin line to a PF2e 500-ft-range line — the caster no longer needs to be an endpoint of the line, a functional (not just cosmetic) change to how the spell can be placed.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+At −0.63 this hybrid sits AT the healthy GM-Core rider exchange rate — pricing is fine.
+The prone-on-plain-failure basic-save anti-pattern is converter-flagged, deliberate, and
+compensated (8d10 vs Chain Lightning's riderless 8d12; the permanent terrain is the real
+payload) — keep it. The 500-ft placement range matches the Chain Lightning anchor
+exactly, so that expansion is anchor-consistent.
+
+One consistency item: the tradition swap. 5e casters were Cleric/Paladin (both divine),
+and the kosmoturgy family everywhere else in this set (Kosmoturgist's Weapon/Armor, Mark
+of Protection, the Djura spells) is DIVINE — Fault Line alone shipped arcane+primal with
+no divine at all.
+
+- **A. Keep mechanics; add divine to the traditions** — restores the 5e class lineage
+  and the school family's identity (final list: arcane/divine/primal, or divine/primal
+  if he wants it tighter).
+- **B. Keep as-is** — accepts the family inconsistency.
+- **C. His conservative overridable pair (prone→crit-fail only, 8d10→8d12)** — solves a
+  problem nobody has; the current trade is the more interesting spell.
+
+**Lean: A.**
