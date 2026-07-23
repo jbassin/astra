@@ -89,3 +89,25 @@ Not in `revisions.md`'s deviations list — the store's fields match the fresh a
 - The converter's own overridable/checklist notes flag two unresolved tensions: (1) this may be more PF2e-idiomatic as a focus spell/class feat rather than a general spell, and (2) "until dispelled" duration at rank 1 is an unusual pattern for the rank band, with counteract rank 1 as the stated safety valve.
 - The store's storable-item scope ("a single held or worn item") is narrower than the 5e original's ("any non-living object that fits in a 5x5x5 foot cube") — the store text doesn't restate the 5e original's cube-size language for what counts as storable, relying instead on the Bulk/weight caps.
 - `system.defense` is `null` and there is no target other than the caster — consistent with a pure self-utility effect, no save/defense mechanic needed.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The converter's flagged tensions mostly resolve fine: until-dispelled at r1 is safe
+because the counteract-rank-1 valve means ANY dispel dumps the loot (his stated lever),
+and the 1-minute cast + consumed bag are honest taxes for a permanent knapsack that a
+level-4 Bag of Holding already approximates as an item. The stow-scope narrowing is
+correct PF2e Interact idiom.
+
+The one invention with real bite: **"Objects stored experience no passage of time and
+are perfectly preserved"** — no 5e basis, and it quietly makes a rank-1 slot a permanent
+stasis engine (corpses held for resurrection timers, alchemical items, poisons). That's
+a different spell niche smuggled in.
+
+- **A. Drop the time-stasis sentence** — 5e-faithful; if he wants the charm without the
+  exploit, a softened "mundane goods don't spoil" line keeps the flavor.
+- **B. Keep the stasis** — accept GM adjudication of the corpse/alchemy edge; simpler
+  text, bigger surface.
+- **C. Focus-spell reshape** — his own idiomatic suggestion, but the plan directive
+  (keep as regular spells) already settled this set-wide.
+
+**Lean: A** (with the softened-spoilage line as the sweetener).

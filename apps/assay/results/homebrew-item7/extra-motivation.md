@@ -95,3 +95,24 @@ None found in `revisions.md` — Extra Motivation matches the fresh in-memory re
 - The 5e cost model ("necrotic damage equal to half your current hit points," a percentage-of-current-HP cost) was replaced with a **flat 4d6 void** cost in the conversion — a structurally different scaling behavior (percentage-of-current-HP vs. fixed dice), not merely a damage-type relabel. This is called out narratively in the converter's balance bullets ("4d6 avg ~14 is ~7% of max HP") but the underlying cost *mechanism* changed from "scales with remaining HP" to "fixed regardless of HP."
 - The converter's own anchor claims "no close analog," but Divine Inspiration (rank 8) is an official single-slot spell-recovery precedent not referenced in the notes.
 - No PF2e Wish/Miracle-style safety-valve language (e.g., GM adjudication of consequences) is present — not applicable to this spell's function, noted only for completeness since Wish exists as a rank-10 ritual in the same snapshot.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The dossier's key catch is the COST MECHANISM swap: 5e's Greater Surge cost was void
+damage equal to HALF YOUR CURRENT HP (brutal, scales toward a death spiral — a true
+bargain with fate); the conversion flattened it to 4d6 (~14, which the converter's own
+bullet admits is ~7% of a level-17 caster's HP — symbolic). The recovery payload was
+deliberately trimmed (4→3 slots, 3→2 abilities; keep), and Divine Inspiration r8 (one
+6th-or-lower slot) brackets the pricing — three rank-5 slots for a rank-9 slot + 1/day
+is strong but rank-appropriate. The safety floor ("offer evaporates below 1 HP") is a
+good invention; keep it with either cost.
+
+- **A. Restore the 5e cost: "void damage equal to half your current Hit Points
+  (unreducible)"** — PF2e-expressible, restores the drama that justified the spell, and
+  the 1-HP-floor clause already guards the edge.
+- **B. Keep flat 4d6** — Greater Surge stays a near-free rider at the levels that cast
+  rank 9.
+- **C. A plus restore 5e's 4-slot/3-ability counts** — double-buffing; his trims were
+  sound calibration.
+
+**Lean: A.**

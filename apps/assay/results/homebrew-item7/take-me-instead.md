@@ -96,3 +96,23 @@ Checked `apps/assay/homebrew/revisions.md`: **no entry** for "Take Me Instead" �
 - The converter's own checklist-failures note flags the null saving-throw row as "unusual but not a rules violation" — a skill check (not a saving throw) is this spell's resolution mechanic, which is atypical for a rank-2 spell in the store overall (worth the reviewer knowing this is a self-flagged unusual pattern, not an oversight).
 - No residual 5e-isms in the mechanical language itself ("death saving throws" is fully replaced by "Dying 1" and recovery checks) — clean on that axis. No material-component residue (5e had none — verbal-only).
 - Traits include the custom homebrew school-trait tag "mercuromancy" (mapped from the 5e school field), which has no counterpart in the standard PF2e trait taxonomy.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The buff routing is the documented false-route (adapter caveat: the self-cost reads as a
+target condition) — the wide range is noise; review manually. And manually, this
+conversion is one of the best in the set: the dying-system mapping is faithful
+re-derivation, DC 12→20 fixes 5e's trivial check, advantage→+4 circumstance is the
+standard translation, the invented failure damage adds real tension, and the heighten
+ladder (DC easing + partial-HP returns) is elegant. The r2-resurrection power question is
+answered by the caster's costs (Dying 1 + 1-hour no-heal + the rank-cap on their own
+resurrection).
+
+One genuine TEXT BUG: "a DC 20 Charisma-based skill check (Diplomacy or Society, your
+choice)" — Society is Intelligence-based, so the sentence contradicts itself.
+
+- **A. Keep the design; fix the wording** — either "DC 20 Diplomacy check" alone, or
+  "DC 20 Diplomacy or Society check" with the "Charisma-based" qualifier dropped.
+- **B. Remove the failure damage per his overridable** — the tension is the point; skip.
+
+**Lean: A.**

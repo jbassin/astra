@@ -108,3 +108,28 @@ This means the current store's description text is 65 characters shorter than wh
 - Asymmetric cross-reference: this spell's text explicitly references Sphere of Preservation's synergy bonus, but Sphere of Preservation's own description makes no reciprocal mention of Sphere of Ruin — a reviewer reading either spell in isolation would only learn about the synergy from this side.
 - Curse-removal convention: not applicable — this spell has no curse trait.
 - Traits include the custom homebrew school-trait tag "mercuromancy" (mapped from the 5e school field), which has no counterpart in the standard PF2e trait taxonomy.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+**This is the deferred batch-0 spam-tax decision point** (500 gp consumed gem stripped by
+the cost policy; his balanceBullets call it load-bearing). Key observation: the PF2e
+conversion already self-nerfed relative to 5e in exactly the ways the tax was paying
+for — saves once per turn instead of continuously, a d6 table lighter on hard-stun than
+5e's 50% stun band, the incapacitation trait (bosses save one tier better), and degree
+tiers with crit-success immunity. The tax looks vestigial on this version.
+
+One real fidelity item: the sphere now appears **adjacent to the target** instead of 5e's
+adjacent to YOU — the slow inexorable pursuit was the spell's dread fiction, and the
+caster-adjacent start is also a mild pacing nerf that neatly offsets the lost tax.
+
+- **A. Leave the cost stripped; restore the caster-adjacent start** — pursuit fiction
+  back, first save typically delayed a round, rank 7 carries the rest. No cost-policy
+  exception needed.
+- **B. Restore the 500 gp consumed gem** — his stated lever, as a policy exception;
+  double-taxes an already-toned-down conversion.
+- **C. Both** — strictly harshest; unmotivated.
+
+Minor: the Sphere of Preservation synergy is one-directional in text — add the
+reciprocal sentence to Preservation when its (fast-lane) review comes up.
+
+**Lean: A.**

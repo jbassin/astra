@@ -89,3 +89,19 @@ None found in `revisions.md` — Earworm matches the fresh in-memory re-conversi
 - jmnario's conversion description includes a trailing sentence not present in the store's HTML: "The worm dissolves at the end of the spell's duration. A creature that successfully uses the Seek action against your spell DC can feel the arcane thread and is then aware of the worm's presence." The store's `description.value` ends after the heighten block and omits this sentence entirely — a prose difference between the vendor conversion and the canonical store's current text.
 - jmnario's conversion also includes "You can end your auditory link as a free action at any time without ending the spell" in the failure-tier description, which is likewise absent from the store's failure-tier text ("The worm seats itself. You hear all sounds the target hears for the duration.").
 - `heightening.levels["5"]` and `["7"]` are both empty objects; both heighten effects live only in the description HTML (per the adapter warning).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+**Post-batch-0 note:** every open flag above is RESOLVED — `f91b2d6` restored the
+same-plane rider, the target-unaware clause, the free-action link end, and the Seek
+counterplay sentence to the store. What remains is a well-anchored conversion: 3 ranks
+below Scrying paid for by touch range + audio-only base + a Fort save with an
+awareness-on-success risk; the crit-fail sight tier and the two heighten tiers are good
+PF2e escalation.
+
+- **A. Keep as-is** — effectively a fast-lane spell now.
+- **B. Converter's stricter counterplay overridable** (daily Perception check to feel the
+  thread) — extra bookkeeping with no motivating complaint; the restored Seek clause
+  already provides counterplay.
+
+**Lean: A.**

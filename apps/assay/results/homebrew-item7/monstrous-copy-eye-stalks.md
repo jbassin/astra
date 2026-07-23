@@ -111,3 +111,23 @@ Not in `revisions.md`'s deviations list — the store's description/traits/durat
 - The store keeps the literal trait `gestalt` (the 5e/vendor school name) as a player-facing PF2e trait; it is not a standard published PF2e trait.
 - Adapter warning notes table-roll EV was excluded from any scoring pass and that the 8th/9th heightening text (extra rays, not a pure damage bump) is kept as prose-only, not structurally represented in `heightening`.
 - Reroll-duplicates language ("roll 1d8... Reroll duplicate results until you have three distinct effects") is preserved from 5e but is manual GM/player-tracked, not automated by any structured field.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+Billed as the most mechanically novel spell in the set, and the conversion turns out to
+be one of the most careful: Death Ray removed with stated precedent reasoning (save-or-die
+lives at rank 9, Massacre), Paralyzing Ray folded into the staged Petrification (matching
+the official Petrify r6 idiom and consistent with our Grey Frost affliction precedent),
+incapacitation applied table-wide, damage rays calibrated against the r7 budget, and the
+open-ended 5e ray scaling capped into two fixed tiers. The Will/Fort split being
+unrepresentable in the single structured defense field is a Foundry schema limit — prose
+governs, nothing to fix.
+
+- **A. Keep as-is.**
+- **B. Restore the Death Ray per his overridable** — reintroduces a rank-7 save-or-die
+  the converter deliberately removed for precedent reasons; anti-lean.
+- **C. Nudge incapacitation off the pure-damage rays** — technically over-gated (a
+  higher-level creature saves better even vs plain damage), but per-ray trait splits
+  aren't expressible; the simple table-wide trait is the right call.
+
+**Lean: A.** Fast review despite the page count.
