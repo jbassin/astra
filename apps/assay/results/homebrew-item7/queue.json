@@ -1,0 +1,1082 @@
+[
+  {
+    "slug": "almonk-s-arcane-drain",
+    "name": "Almonk's Arcane Drain",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "almonk-s-arcane-siphon",
+    "name": "Almonk's Arcane Siphon",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "anomalous-object",
+    "name": "Anomalous Object",
+    "rank": 7,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [2, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "arcane-interdiction",
+    "name": "Arcane Interdiction",
+    "rank": 4,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "arcane-tattoo",
+    "name": "Arcane Tattoo",
+    "rank": 3,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "artist-s-rendition",
+    "name": "Artist's Rendition",
+    "rank": 3,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-2.24 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -2.2364485774639777
+  },
+  {
+    "slug": "ashen-pack",
+    "name": "Ashen Pack",
+    "rank": 4,
+    "routing": "hybrid",
+    "poolReason": "wide-range",
+    "verdict": "-1.35 ranks COLD",
+    "rankRange": [1, 9],
+    "residualRanks": -1.352996602264009
+  },
+  {
+    "slug": "bestial-rage",
+    "name": "Bestial Rage",
+    "rank": 3,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "body-enhancement-horns",
+    "name": "Body Enhancement: Horns",
+    "rank": 2,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-1.24 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -1.2364485774639777
+  },
+  {
+    "slug": "bodydouble",
+    "name": "Bodydouble",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "celestial-preservation",
+    "name": "Celestial Preservation",
+    "rank": 4,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "charming-memory",
+    "name": "Charming Memory",
+    "rank": 1,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 7],
+    "residualRanks": null
+  },
+  {
+    "slug": "chrysalis",
+    "name": "Chrysalis",
+    "rank": 6,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [2, 8],
+    "residualRanks": null
+  },
+  {
+    "slug": "compression",
+    "name": "Compression",
+    "rank": 3,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 7],
+    "residualRanks": null
+  },
+  {
+    "slug": "compressive-weapon",
+    "name": "Compressive Weapon",
+    "rank": 2,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "connection",
+    "name": "Connection",
+    "rank": 5,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "containment-orbs",
+    "name": "Containment Orbs",
+    "rank": 7,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "copy",
+    "name": "Copy",
+    "rank": 1,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "dead-ringer",
+    "name": "Dead Ringer",
+    "rank": 4,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "disperse-magic",
+    "name": "Disperse Magic",
+    "rank": 2,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [2, 8],
+    "residualRanks": null
+  },
+  {
+    "slug": "disrupt-movement",
+    "name": "Disrupt Movement",
+    "rank": 1,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "djura-s-divine-protection",
+    "name": "Djura's Divine Protection",
+    "rank": 9,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [2, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "djura-s-divine-razor",
+    "name": "Djura's Divine Razor",
+    "rank": 5,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-3.15 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -3.1518223507500096
+  },
+  {
+    "slug": "djura-s-righteous-pressure",
+    "name": "Djura's Righteous Pressure",
+    "rank": 4,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-2.92 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -2.923154928294385
+  },
+  {
+    "slug": "do-my-bidding",
+    "name": "Do My Bidding",
+    "rank": 7,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "earworm",
+    "name": "Earworm",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "ebb-and-flow",
+    "name": "Ebb and Flow",
+    "rank": 3,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [2, 8],
+    "residualRanks": null
+  },
+  {
+    "slug": "erase",
+    "name": "Erase",
+    "rank": 1,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "excavation",
+    "name": "Excavation",
+    "rank": 4,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "extra-motivation",
+    "name": "Extra Motivation",
+    "rank": 9,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "farsight",
+    "name": "Farsight",
+    "rank": 4,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "fault-line",
+    "name": "Fault Line",
+    "rank": 6,
+    "routing": "hybrid",
+    "poolReason": "wide-range",
+    "verdict": "-0.63 ranks COLD",
+    "rankRange": [1, 8],
+    "residualRanks": -0.627688433204308
+  },
+  {
+    "slug": "festering-slick",
+    "name": "Festering Slick",
+    "rank": 3,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-1.78 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -1.7795447568271219
+  },
+  {
+    "slug": "flashback",
+    "name": "Flashback",
+    "rank": 1,
+    "routing": "hybrid",
+    "poolReason": "wide-range",
+    "verdict": "in band",
+    "rankRange": [1, 8],
+    "residualRanks": -0.39377942488970674
+  },
+  {
+    "slug": "flicker",
+    "name": "Flicker",
+    "rank": 3,
+    "routing": "ledger:teleport-utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "fluid-form",
+    "name": "Fluid Form",
+    "rank": 4,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [2, 8],
+    "residualRanks": null
+  },
+  {
+    "slug": "forensic-analysis",
+    "name": "Forensic Analysis",
+    "rank": 2,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "fumble",
+    "name": "Fumble",
+    "rank": 4,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "gallows",
+    "name": "Gallows",
+    "rank": 4,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "gambler-s-trick",
+    "name": "Gambler's Trick",
+    "rank": 1,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "gift-of-the-archmage",
+    "name": "Gift of the Archmage",
+    "rank": 5,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "grosteque-selfshape",
+    "name": "Grosteque Selfshape",
+    "rank": 4,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-2.85 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -2.8544552723797754
+  },
+  {
+    "slug": "hardlight-bridge",
+    "name": "Hardlight Bridge",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "hellforging",
+    "name": "Hellforging",
+    "rank": 7,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "incensed-bestial-rage",
+    "name": "Incensed Bestial Rage",
+    "rank": 5,
+    "routing": "ledger:no-comparable-profile",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "inquisition",
+    "name": "Inquisition",
+    "rank": 2,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "instant-exit",
+    "name": "Instant Exit",
+    "rank": 4,
+    "routing": "ledger:teleport-utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "jolt",
+    "name": "Jolt",
+    "rank": 5,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "kosmoturgist-s-armor",
+    "name": "Kosmoturgist's Armor",
+    "rank": 6,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "kosmoturgist-s-weapon",
+    "name": "Kosmoturgist's Weapon",
+    "rank": 7,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-1.36 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -1.3611765344608795
+  },
+  {
+    "slug": "laixa-s-expert-intuition",
+    "name": "Laixa's Expert Intuition",
+    "rank": 4,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "laixa-s-historical-tracker",
+    "name": "Laixa's Historical Tracker",
+    "rank": 2,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "left-hand-of-judgment",
+    "name": "Left Hand of Judgment",
+    "rank": 4,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "lend-time",
+    "name": "Lend Time",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "lesser-wish",
+    "name": "Lesser Wish",
+    "rank": 2,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "let-s-start-a-fight",
+    "name": "Let's Start a Fight",
+    "rank": 5,
+    "routing": "ledger:unpriced-modifier",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "lockstep-fate",
+    "name": "Lockstep Fate",
+    "rank": 2,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "lucky-stars",
+    "name": "Lucky Stars",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "lucky-ward",
+    "name": "Lucky Ward",
+    "rank": 2,
+    "routing": "ledger:unpriced-modifier",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "lyrr-s-chronomantic-shell",
+    "name": "Lyrr's Chronomantic Shell",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "macabredanse",
+    "name": "Macabredanse",
+    "rank": 1,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "mark-of-protection",
+    "name": "Mark of Protection",
+    "rank": 4,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "mental-balance",
+    "name": "Mental Balance",
+    "rank": 4,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 8],
+    "residualRanks": null
+  },
+  {
+    "slug": "monstrous-copy-claws",
+    "name": "Monstrous Copy: Claws",
+    "rank": 6,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-3.98 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -3.977707096041855
+  },
+  {
+    "slug": "monstrous-copy-eye-stalks",
+    "name": "Monstrous Copy: Eye Stalks",
+    "rank": 7,
+    "routing": "ledger:no-comparable-profile",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "move-the-cosmic-wheel",
+    "name": "Move the Cosmic Wheel",
+    "rank": 8,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "mystic-negation",
+    "name": "Mystic Negation",
+    "rank": 5,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "nightfall",
+    "name": "Nightfall",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "outside-of-time",
+    "name": "Outside of Time",
+    "rank": 8,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "overhaul",
+    "name": "Overhaul",
+    "rank": 5,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "patishvat-s-perfect-pocket",
+    "name": "Patishvat's Perfect Pocket",
+    "rank": 1,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "pendulum",
+    "name": "Pendulum",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "phlogistic-shield",
+    "name": "Phlogistic Shield",
+    "rank": 4,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "planar-pyre",
+    "name": "Planar Pyre",
+    "rank": 3,
+    "routing": "hybrid",
+    "poolReason": "wide-range",
+    "verdict": "-0.68 ranks COLD",
+    "rankRange": [1, 8],
+    "residualRanks": -0.6789992843085519
+  },
+  {
+    "slug": "planar-shield",
+    "name": "Planar Shield",
+    "rank": 2,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-0.85 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -0.8544552723797756
+  },
+  {
+    "slug": "preserve-foodstuffs",
+    "name": "Preserve Foodstuffs",
+    "rank": 1,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "propagating-blast",
+    "name": "Propagating Blast",
+    "rank": 2,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "raise-island",
+    "name": "Raise Island",
+    "rank": 7,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "rearrange-fate",
+    "name": "Rearrange Fate",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "reduce-resistivity",
+    "name": "Reduce Resistivity",
+    "rank": 5,
+    "routing": "ledger:unpriced-modifier",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "reflective-defense",
+    "name": "Reflective Defense",
+    "rank": 8,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "retributive-force",
+    "name": "Retributive Force",
+    "rank": 1,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "return-spell",
+    "name": "Return Spell",
+    "rank": 7,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "revisit",
+    "name": "Revisit",
+    "rank": 5,
+    "routing": "ledger:teleport-utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "rewind-and-playback",
+    "name": "Rewind and Playback",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "right-hand-of-judgment",
+    "name": "Right Hand of Judgment",
+    "rank": 4,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "shape-modify-accuracy",
+    "name": "Shape Modify: Accuracy",
+    "rank": 3,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "shape-modify-armor",
+    "name": "Shape Modify: Armor",
+    "rank": 3,
+    "routing": "ledger:no-comparable-profile",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "shape-modify-severity",
+    "name": "Shape Modify: Severity",
+    "rank": 3,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "solar-fury",
+    "name": "Solar Fury",
+    "rank": 6,
+    "routing": "quantitative",
+    "poolReason": "reclassified-out",
+    "verdict": "-3.97 ranks COLD",
+    "rankRange": null,
+    "residualRanks": -3.965139678520878
+  },
+  {
+    "slug": "sphere-of-preservation",
+    "name": "Sphere of Preservation",
+    "rank": 6,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "sphere-of-ruin",
+    "name": "Sphere of Ruin",
+    "rank": 7,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [2, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "summon-servant",
+    "name": "Summon Servant",
+    "rank": 1,
+    "routing": "ledger:summon",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "taboo",
+    "name": "Taboo",
+    "rank": 3,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "take-me-instead",
+    "name": "Take Me Instead",
+    "rank": 2,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 7],
+    "residualRanks": null
+  },
+  {
+    "slug": "talk-the-talk",
+    "name": "Talk the Talk",
+    "rank": 3,
+    "routing": "ledger:no-comparable-profile",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "temporal-discharge",
+    "name": "Temporal Discharge",
+    "rank": 4,
+    "routing": "ledger:long-cast",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "temporal-threshold",
+    "name": "Temporal Threshold",
+    "rank": 4,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 8],
+    "residualRanks": null
+  },
+  {
+    "slug": "thaumaturgic-inhibition",
+    "name": "Thaumaturgic Inhibition",
+    "rank": 6,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "thaumaturgic-obstruction",
+    "name": "Thaumaturgic Obstruction",
+    "rank": 6,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "time-jump",
+    "name": "Time Jump",
+    "rank": 8,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "time-loop",
+    "name": "Time Loop",
+    "rank": 6,
+    "routing": "comparables",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "time-step",
+    "name": "Time Step",
+    "rank": 2,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "tunnel-vision",
+    "name": "Tunnel Vision",
+    "rank": 1,
+    "routing": "ledger:no-comparable-profile",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "umbral-assimilation",
+    "name": "Umbral Assimilation",
+    "rank": 6,
+    "routing": "buff",
+    "poolReason": "wide-range",
+    "verdict": null,
+    "rankRange": [1, 9],
+    "residualRanks": null
+  },
+  {
+    "slug": "wall-of-time",
+    "name": "Wall of Time",
+    "rank": 5,
+    "routing": "ledger:wall-terrain",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "worldweaver",
+    "name": "Worldweaver",
+    "rank": 10,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  },
+  {
+    "slug": "zone-of-minimization",
+    "name": "Zone of Minimization",
+    "rank": 8,
+    "routing": "ledger:utility",
+    "poolReason": "ledger",
+    "verdict": null,
+    "rankRange": null,
+    "residualRanks": null
+  }
+]
