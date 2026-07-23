@@ -101,6 +101,7 @@ Magic Mailbox / Remake precedent).
 | djura-s-righteous-pressure | **Vitality → spirit (A)** — converter's own checklist fix + Solar Rebuke precedent; damage now real vs fiends; reentry clause kept flat (C declined); artifact recorded (score unchanged −2.92) | `f154995` |
 | festering-slick | **Living-creature qualifier dropped (A)** — 5e any-hit trigger restored (suppresses undead void healing again); sustain-tied suppression + rank-5 double-trigger kept; artifact recorded (score unchanged −1.78) | `1753266` |
 | grosteque-selfshape | **Keep as-is (A)** — §4a morph artifact recorded; conversion judged genuinely good (deliberate 2d8→2d6 trim, Enlarge-package reach, sensible polymorph lockout, standard invented H6); no Clumsy drawback added | (log-only) |
+| kosmoturgist-s-weapon | **Defend cover restored (A)** — guarded creature gains lesser cover (+1 AC) until your next turn, the dropped half of 5e Defend; flat +8 kept (battle-form idiom); artifact recorded (score unchanged −1.36) | see commit |
 
 ## Status
 
