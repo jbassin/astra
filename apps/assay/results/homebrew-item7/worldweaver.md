@@ -226,3 +226,19 @@ item-6 deep-COLD list (§10).
 - **No structured cost breakdown** — `system.cost.value` bundles both the material-component
   sentence and the "all spell slots of all 16 casters are expended" resource-cost sentence
   into one free-text field; there's no separate field for the caster-slot cost.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+Essentially a faithful port of a campaign-pivot artifact of a spell, and the two
+inventions are both converter-logged with in-fiction reasoning: the counteract-immunity
+clause (rank 10 is the ceiling; a second Worldweaver is the named countermeasure) and the
+second-casting-undoes clause. The voice sweep already stripped the editor-voice tail.
+Wish/Miracle/Alter Reality bracket it — 16 rank-9 casters expending ALL slots is the
+steepest cost in the set; nothing here is abusable by a table that isn't already ending
+its campaign on purpose.
+
+- **A. Keep as-is; strip the trailing empty `<p></p>`** — cosmetic only.
+- **B. Drop the counteract-immunity clause per his overridable** — rules purity at the
+  cost of the fiction; unmotivated for a 16-caster one-shot.
+
+**Lean: A.**

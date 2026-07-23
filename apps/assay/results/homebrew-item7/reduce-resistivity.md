@@ -94,3 +94,22 @@ None found — no `reduce-resistivity` entries in `revisions.md` (matches the fr
 - The store grants a mild effect (–1 status penalty for 1 round) even on a **success**, where the 5e original explicitly does nothing at all on a successful save — this is a real functional expansion of the spell's floor, not just a degree-of-success reformatting.
 - The damage-resistance-reduction mechanic has zero basis in the 5e source text — it's a wholly new secondary payload added during conversion, not adapted from any 5e upcast or base-effect language.
 - Routing is "ledger:unpriced-modifier" — distinct from most of this chunk's other ledger-routed spells (which route as ledger:utility or ledger:long-cast); this spell's resistance-reduction-by-5 and stacking status-penalty mechanics are apparently flagged by the ledger as modifiers without an established pricing convention, consistent with jmnario's own "no clean analog" anchor framing.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+Two of the dossier's flags are FALSE POSITIVES: the effect-on-success tier is standard
+PF2e non-basic-save idiom (Slow — the converter's own anchor — grants Slowed 1 for 1
+round on a SUCCESS), and the 1A→2A cast is the documented systemic 5e-action→2-action
+mapping, not a per-spell choice. The disadvantage→status-penalty translation is correct
+(PF2e has no disadvantage).
+
+The one real judgment call: the resistance-reduction payload (−5 on failure, all
+resistances on crit fail) is wholly invented — no 5e basis. It's flavorful antillurgy
+identity and situational in power; the converter offered removing it as an overridable.
+
+- **A. Keep as-is** — the invented payload rewards targeting resistant enemies, fits the
+  school, and nothing prices as over-budget at r5.
+- **B. Trim the resistance-shred to a pure saves-vs-spells debuff** — simpler, more
+  faithful; loses the spell's only distinctive texture.
+
+**Lean: A.**

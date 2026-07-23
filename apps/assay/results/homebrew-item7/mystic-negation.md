@@ -88,3 +88,26 @@ Not in `revisions.md`'s deviations list — the store's fields match the fresh a
 - The 5e "disappears after countering three spells" cap is absent from the PF2e version entirely — the sphere's only stated end conditions in the store text are the sustained-duration lapsing (no counter-count cap).
 - `system.area` is `null` and `system.target.value` is empty — the "fixed point in space" area concept is only present in prose, per the adapter warning; there is no structured area/target field backing it.
 - `system.defense` is `null` (no save/defense block) — consistent with a counteract-check effect rather than a save effect, but worth noting since most other spells in this chunk populate `defense`.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The binary-negation→counteract-check rework is the right conversion. Two items:
+
+1. **The converter's own checklistFailure is real:** "uses your spell DC as the
+   counteract modifier" isn't legal PF2e — counteracts use your counteract modifier
+   (spellcasting ability + proficiency), not a DC. One-sentence fix: "the sphere attempts
+   to counteract the triggering spell (counteract rank 5, using your spellcasting
+   counteract modifier)."
+2. **The dropped 3-counters burnout cap.** Official precedent cuts both ways: Dispelling
+   Globe r4 runs 10 MINUTES with no counter cap (immobile, self-centered) — so an
+   uncapped sustained-1-minute mobile sphere at r5 isn't out of line; but the burnout was
+   5e's distinctive governor and flavor.
+
+- **A. Fix the counteract wording only** — uncapped is defensible on the Dispelling
+  Globe precedent.
+- **B. A plus restore "the sphere winks out after its third counteract"** — faithful,
+  and differentiates it from Dispelling Globe.
+- **C. Keep the DC-as-modifier text** — ships a mechanic the converter himself flagged
+  as non-functional PF2e; not recommended.
+
+**Lean: A**, B if he wants the burnout texture back.

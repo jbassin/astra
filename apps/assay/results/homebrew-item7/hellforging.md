@@ -88,3 +88,28 @@ None found — `Hellforging` does not appear in `revisions.md`'s deviation list 
 - The `memetics` trait is a custom, non-canonical PF2e trait mirroring the 5e school name — recurring pattern across this homebrew set.
 - The repeat-save cadence changed units entirely (5e: every round; store: every hour) — a much more forgiving retry rate than the source, not merely a renamed mechanic.
 - No death-save, bonus-action, or other Remaster-incompatible 5e-isms remain in the prose; no curse-removal language present.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The dossier's comparables work surfaced the load-bearing fact: PF2e's official Creature
+Creation Rituals table (shared by Animate Object / Create Undead / Create Mycoguardian)
+pins creature level to RITUAL rank — level 14 requires rank 9, not 7. Hellforging at r7
+hands out a level-14 ally (16 at H9). The converter's own overridables concede both
+halves: the level sits above the table, AND "a PF2e downtime ritual is the more idiomatic
+format." This is the strongest ritual-conversion candidate in the entire set: 24-hour
+cast, 50,000 gp component, permanent creation, and every official analog is a ritual on
+that shared table. (This folds into the set-wide long-cast-vs-ritual question raised on
+Overhaul.)
+
+- **A. Convert to a rank-7 ritual on the official pattern** — primary Arcana/Occultism
+  check vs. level-based DC; construct level from the shared table (≈10–11 at rank 7,
+  14–15 when cast at rank 9); failed check = the 3d10+2d10 surge damage, critical
+  failure = the core shatters; friendly-but-uncontrolled preserved verbatim. Most
+  PF2e-native, converter-endorsed.
+- **B. Keep as a spell; align the construct level to the table** (14→~11 base, H9→14) —
+  smaller change, fixes the power outlier, keeps the hourly-save tension mechanic.
+- **C. Keep as-is** — level 14 at r7 justified by cost + friendly-not-controlled; relies
+  entirely on the GM playing the construct as a story actor, and prices a better outcome
+  than the official rank-9 ritual at two ranks less.
+
+**Lean: A** (with B as the low-churn fallback if rituals lose the set-wide question).

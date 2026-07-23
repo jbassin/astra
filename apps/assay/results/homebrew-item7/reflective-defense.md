@@ -86,3 +86,22 @@ None found. The spell name/slug do not appear in `apps/assay/homebrew/revisions.
 - `heightening.levels["9"]` is a structurally empty object (`{}`); the actual heighten text lives only in the HTML description appendix, per the adapter warning. The structured field carries no data of its own.
 - The 5e original's scope ("all magic... any creature") is broader than the conversion's explicit "originates from a spell or magical ability; ... does not apply to weapon Strikes or non-magical effects" restriction — a scope narrowing from the source material, called out by the converter itself as the core balance lever (see checklist failure above).
 - No `@UUID[...]` compendium links appear anywhere in this description (nothing to check for broken/legacy references).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The immunity→resistance-30-magical-only redesign is deliberate, converter-documented
+(checklistFailures names the magical-only restriction as THE balance lever for a
+1-action rank-8 cast), and well-bracketed by Spell Turning r7 / Energy Aegis r7 — keep
+the mechanics wholesale. H9 restoring all-damage scope is a clean ladder.
+
+The one real defect is a **voice-sweep escapee**: the description embeds design
+rationale as player-facing text — "As a 1-action spell with a strong defensive effect,
+this spell is modeled after the reaction-to-defense pattern and is intentionally limited
+to 1 action and 1-round duration." Pure editor voice; the set-wide sweep missed it.
+
+- **A. Delete the editor-voice sentence, mechanics untouched.**
+- **B. A plus restore all-damage scope at base rank** — his own checklist says that
+  version needs 2 actions or a reaction trigger; a real redesign with no complaint
+  motivating it.
+
+**Lean: A.**

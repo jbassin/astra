@@ -102,3 +102,27 @@ Not in `revisions.md`'s deviations list — the store's fields match the fresh a
 - The 5e original's full 18-entry d100 race table is not reproduced in the PF2e description at all; the store text defers entirely to "a table of available ancestries in the setting" with no such table provided anywhere in this spell's data.
 - The adapter warning notes its own action-time parser doesn't recognize "3 hours" and falls back to a 2-action structural multiplier for internal calculation purposes — this is an assay-tooling limitation, not a player-facing field discrepancy (the `time.value` field itself correctly reads "3 hours").
 - The critical-failure 2d10 void damage clause and the three-Fortitude-saves-over-three-hours structure are both converter inventions with no 5e textual precedent, both explicitly acknowledged as such in the converter's own notes (including a checklist failure calling the three-save structure "a custom mechanic with no direct PF2e precedent").
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+**Post-batch-0 note:** the "removes curses of rank 6 or higher" reversal text was already
+converted to the counteract-vs-spell-rank convention by `7839a81` (the "casting Overhaul
+again" valve preserved) — the dossier sections above predate that.
+
+What remains is one structural judgment: the three-Fortitude-saves-over-three-hours
+custom mechanic, which the converter's OWN checklist flags as having no PF2e precedent
+("PF2e rituals handle extended-time magic better — an alternative design would be a
+ritual"). Note this is really a SET-WIDE question: the pool carries 12 ledger:long-cast
+spells, and whether hours-long casts should be rituals is one decision, not twelve. The
+d100 table drop is fine (a setting-ancestry table is campaign property; the store pointer
+is right), and deferring form-choice to H7 is cleaner than 5e's mid-cast Persuasion check.
+
+- **A. Keep as a spell, as-is** — willing use (a player changing ancestry between
+  sessions) is the stated primary case, and the three-save gauntlet makes hostile use
+  near-impossible; the custom shape reads fine.
+- **B. Reshape as a rank-5 ritual** — PF2e-idiomatic for a 3-hour, 1,000 gp, permanent
+  working (and Worldweaver already went ritual); a real restructure, so only worth it if
+  the set-wide long-cast question resolves toward rituals.
+- **C. A plus restore a base-rank influence check** — redundant next to the H7 choice.
+
+**Lean: A**, with the set-wide long-cast-vs-ritual question surfaced once at review.
