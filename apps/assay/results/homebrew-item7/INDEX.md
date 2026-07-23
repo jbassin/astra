@@ -98,7 +98,8 @@ Magic Mailbox / Remake precedent).
 | artist-s-rendition | **Keep (C)** — misroute artifact recorded; lead-sheet doorway clause restored; energy damage stays static | `dcc8cb8` |
 | body-enhancement-horns | **Keep as-is (A)** — §4a weapon/morph artifact recorded; redesign rank-fair next to Claws of the Otter r2; vendor-notes "level 1" claim = errata only (source is level 2) | (log-only) |
 | djura-s-divine-razor | **Reality-cut restored (B)** — melee Strikes reach the cursed creature within 60 ft, ignore cover/concealment; artifact recorded; dice untouched (score unchanged −3.15, reach unmodeled) | `ec2d8fb` |
-| djura-s-righteous-pressure | **Vitality → spirit (A)** — converter's own checklist fix + Solar Rebuke precedent; damage now real vs fiends; reentry clause kept flat (C declined); artifact recorded (score unchanged −2.92) | see commit |
+| djura-s-righteous-pressure | **Vitality → spirit (A)** — converter's own checklist fix + Solar Rebuke precedent; damage now real vs fiends; reentry clause kept flat (C declined); artifact recorded (score unchanged −2.92) | `f154995` |
+| festering-slick | **Living-creature qualifier dropped (A)** — 5e any-hit trigger restored (suppresses undead void healing again); sustain-tied suppression + rank-5 double-trigger kept; artifact recorded (score unchanged −1.78) | see commit |
 
 ## Status
 
