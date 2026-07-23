@@ -101,3 +101,26 @@ None. `revisions.md` has no entry for Forensic Analysis.
 - **Material component dropped without discussion:** the 5e original's "polished monocle" component (called out as "consumed on first casting" in the jmnario intermediate conversion) is entirely absent from the astra store — no `cost.value`, no description mention.
 - `system.heightening.levels."4"` and `."6"` are both empty objects; the entire two-tier heightened-mode-unlock (open questions, dual-mode single-cast) exists only as prose.
 - The `checklistFailures` note flags that a "PF2e-idiomatic conversion is a focus spell" but the spell was "kept as regular spell per plan directive" — worth confirming this directive is still the intended design given the spell's persistent-Compendium, once-per-day-style mechanics that read as focus-spell-shaped.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+**Post-batch-0 note:** the target-unaware clause and the Compendium
+mental-construct/destroyed-on-death text were RESTORED by `f91b2d6` — the dossier's
+sections above predate that. Two 5e drops remain live:
+
+1. **The 24-hour per-target Secrets-Mode cooldown** — jmnario's own mid-stage conversion
+   still had it ("once per day"); the store has no cooldown at all. It's the anti-spam
+   valve: without it a caster can re-probe every round until the failure lands. Balance-real.
+2. **The live-updating mood descriptor** — the Compendium's per-target mood line that
+   updates in range. Pure narrative gold, zero mechanical weight, and it's half the
+   book's charm.
+
+The invented crit-fail 2-secrets tier is good PF2e escalation (keep); the Statistics list
+rework is PF2e-native (keep); focus-spell-shaped is a recorded plan directive (keep).
+
+- **A. Restore both: the 24h Secrets cooldown + the mood-descriptor feature** — both are
+  jmnario intent, one balance-real, one free flavor.
+- **B. Cooldown only** — if the mood tracker feels like bookkeeping.
+- **C. Keep as-is** — leaves the interrogation spammable at r2; not recommended.
+
+**Lean: A.**

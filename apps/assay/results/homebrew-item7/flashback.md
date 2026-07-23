@@ -79,3 +79,25 @@ None. `revisions.md` has no entry for Flashback.
 - The severance-damage trigger was narrowed from "any lost concentration" (5e) to "caster incapacitation only" (conversion) — a scope change not mentioned in `changedElements` as a deliberate narrowing (it's listed only as "damage on abrupt end of concentration ... preserved," which undersells the trigger-condition change).
 - The rank-3 heightening entirely replaces the 5e ladder (7 days/30 days/1 year/any-time across four upgrade levels) with a single flat "1 week" jump plus a new whisper-communication feature that has no 5e basis; `system.heightening.levels."3"` is an empty object in the structured data, so the heightened effect exists only as prose.
 - `incapacitation` trait applied to a spell whose target must already be willing — flagged by the converter's own notes as a design compromise ("even on a willing target... still mandatory to gate abuse"), worth confirming intent since incapacitation traits normally exist to weaken effects against higher-level unwilling targets, a scenario this spell's willing-target requirement precludes.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+In band at r1; the wide range is comparables noise on a utility spell. One dossier flag
+is a FALSE POSITIVE: the "narrowed" severance trigger is actually the correct PF2e
+mapping — 5e's damage-broken concentration has no PF2e analog (sustain can't be broken
+by damage); caster incapacitation IS the involuntary-end case, and a voluntary
+stop-sustaining shouldn't shock anyone. No change needed there. The observer soften
+(deaf+blind → dazzled) is converter-reasoned and fine at r1.
+
+The real loss: 5e's heighten ladder (7 days / 30 days / 1 year / ANY time in the
+target's past at slots 2-5) collapsed to a single rank-3 "1 week" tier — the spell's
+whole high-rank fantasy (reliving any memory ever) is gone.
+
+- **A. Restore the full ladder as fixed-rank tiers** — H2: 1 week · H3: 1 month (+ the
+  whisper feature, kept) · H4: 1 year · H5: any time in the target's past. Faithful,
+  utility-only, no pricing concern.
+- **B. Keep the single r3 tier** — simpler, but drops the signature top end.
+- **C. A plus revert observers to blinded+deafened** — 5e-faithful cost; the converter's
+  soften was deliberate and defensible, so only if fidelity wins.
+
+**Lean: A.**

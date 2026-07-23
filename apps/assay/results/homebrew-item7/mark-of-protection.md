@@ -83,3 +83,20 @@ None. `revisions.md` has no entry for Mark of Protection — the store matches a
 - 5e's unrestricted "mark multiple creatures, one slot each" is narrowed to a single Mark at base rank (multi-mark deferred to 6th-rank heightening) — a genuine scope reduction relative to the 5e source, already acknowledged by the converter's own "overridable" note.
 - The reaction's damage-transfer clause reads "You take the triggering damage instead of the marked creature" with no stated cap or resistance at base rank (the level-based resistance is an 8th-rank-only addition) — the base-rank version can, per its own HP-floor clause, take arbitrarily large single-source damage down to 1 HP.
 - No 5e-isms residue found (no death saves, no "bonus action," no legacy condition names, no material component text to scrub).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+One of the cleanest conversions in the pool — the Interpose reaction with a proper
+Trigger line, the space-blocking physics, and the 120-ft cap are all correct PF2e
+formalizations, and King's Castle r5 / Unexpected Transposition r6 bracket the rank
+comfortably. The flagged multi-mark narrowing is real but smaller than it looks: the
+caster only ever has ONE reaction per round, so 5e's N-marks-for-N-slots bought target
+flexibility, not multiplied protection.
+
+- **A. Keep as converted** — the one-active-mark base + H6 two-mark axis is a coherent
+  PF2e ladder; the reaction economy already self-limits.
+- **B. Restore per-slot multi-mark at base** — 5e-faithful and safe (one reaction/round
+  caps the throughput), but H6 then needs a new payload; more churn than the fidelity
+  gain is worth.
+
+**Lean: A.**

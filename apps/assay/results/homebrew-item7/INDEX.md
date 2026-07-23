@@ -101,3 +101,14 @@ need no action.
   earworm/inquisition/forensic-analysis/laixa-s-expert-intuition/excavation/nightfall/
   awkward, each still judgeable at review. Build delegated to an engineer; store edits
   land as revisions.md deviations for (3)/(4), zero new deviations for (1).
+- 2026-07-23: batch-0 BUILT + pushed (`b737e18` encoding sweep — one routing change,
+  Propagating Blast ledger→quantitative −1.06 COLD, revisions deviation-set unchanged;
+  `7839a81` curse sweep; `f91b2d6` prose restoration — excavation + awkward were verified
+  no-ops, content already present re-voiced). Enrichment IN PROGRESS — "## Options &
+  staff lean" appended so far: the 10 reclassified-out spells + fumble (`e230ab3`).
+  Remaining judgment lane: flashback, forensic-analysis, let-s-start-a-fight,
+  tunnel-vision, mark-of-protection, farsight, reduce-resistivity, reflective-defense,
+  overhaul, worldweaver, mystic-negation, hellforging, patishvat-s-perfect-pocket,
+  sphere-of-ruin, earworm, monstrous-copy-eye-stalks, take-me-instead, extra-motivation,
+  lesser-wish, anomalous-object, connection, ebb-and-flow, lockstep-fate, fault-line.
+  Fast-lane spells get their lean live at review (no pre-written section).

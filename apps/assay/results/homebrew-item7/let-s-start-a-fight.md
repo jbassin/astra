@@ -80,3 +80,30 @@ None recorded. `revisions.md` shows 0 deviations for this spell.
 - The 5e original's "non-weapon item" restriction on the resulting attacks (tankards/chairs/etc.) is dropped; affected creatures now make full Strikes rather than improvised-object attacks — a real change in expected damage output versus the source spell.
 - The 5e original's explicit "the caster is unable to revoke the spell's effects" (non-Dismissable) clause and its "ends when most targets are unconscious" early-termination condition are both absent from the PF2e text.
 - The "3+ critical failures triggers a general brawl" clause sits somewhat redundantly alongside the fact that each critical-failure creature is already individually compelled to Stride-and-Strike the nearest creature — worth checking whether the group-brawl sentence adds anything mechanically distinct from the per-creature failure/critical-failure effects already in force.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The GM-fiat-percentage → per-creature Will save replacement is the RIGHT conversion —
+5e's mechanic is unportable, and the four-tier structure against Confusing Cry r5 (the
+exact-rank official analog) reads rank-fair with the crowd-size gate as the governor.
+Keep the new resolution wholesale.
+
+Two real items:
+1. **The improvised-weapons restriction was dropped** — 5e's brawlers swing "tankards,
+   plates, chairs, stools," never weapons. That clause was BOTH the spell's comedic
+   identity and its damage governor (ordinary Strikes from an armed crowd are far
+   deadlier than the source intends).
+2. The "3+ critical failures → general brawl" sentence is mechanically redundant — every
+   failed-save creature is already individually compelled; the sentence adds no distinct
+   effect.
+
+- **A. Restore improvised-only ("affected creatures attack with improvised objects or
+  unarmed Strikes; they don't draw weapons") + delete the redundant brawl sentence** —
+  optionally re-add the no-revoke line as flavor ("the provocation, once loosed, cannot
+  be recalled").
+- **B. Keep full Strikes** — a deadlier, more sinister spell; a legitimate redesign but
+  a different spell than the source.
+- **C. A plus the mass-unconscious early-end clause** — fiddly bookkeeping; skip unless
+  fidelity wins.
+
+**Lean: A.**

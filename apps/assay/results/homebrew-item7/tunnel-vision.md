@@ -105,3 +105,23 @@ None. This spell does not appear in `apps/assay/homebrew/revisions.md` (0 deviat
 - **Dropped 5e content, not merely reworded (second instance)**: the 5e "only one creature can have this active at a time, globally, per caster" exclusivity clause is also fully absent. The converter's own notes claim this was "converted to 'fortune re-roll is once-per-duration,'" but that substitution constrains a different mechanic (each target's own fortune-reroll count) and does not reproduce any limit on how many different creatures can simultaneously benefit from the caster's castings of this spell.
 - **Material component dropped**: jmnario's intermediate conversion (`all_spells_pf2e.json`) carried `cost: "a handful of caltrops (consumed)"`, directly preserved from the 5e original's material component text. The canonical store's `cost.value` is empty (`""`). Since revisions.md shows 0 deviations for this spell (store matches a fresh adapter re-conversion exactly), the drop is adapter policy, not a hand edit — same pattern as Temporal Threshold and Time Loop.
 - **Routing note**: this spell's routing (`ledger:no-comparable-profile`) is the only one of the eight in this chunk flagged with that specific sub-reason, distinct from the other ledger-routed spells' `ledger:utility`/`ledger:long-cast` — recorded here as a fact for the reviewer's context, no further data available on what specifically produced that routing subtype.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The conversion's mechanism choices are good (status bonus + once-per-duration fortune
+reroll ≈ the 1d8 feel; heighten re-axed to bonus size matches the official Anticipate
+Peril axis). The load-bearing drop is the **exclusivity clause**: 5e allowed only ONE
+active instance per caster; the store has no such limit, so a high-level caster can
+pre-buff the entire party with 8-hour initiative buffs out of rank-1 slots — exactly
+the spam 5e's clause prevented. The official idiom exists verbatim: "If you Cast this
+Spell again, any prior casting of it ends."
+
+Secondary: the invented crit-success initiative-tiebreak clause is bespoke, nonstandard
+rules text with no 5e basis — the fortune reroll already carries the flavor.
+
+- **A. Restore exclusivity (recast-ends-prior) only.**
+- **B. A plus trim the crit-success tiebreak clause** — simpler spell, nothing of the
+  source lost (the clause was invented).
+- **C. Keep as-is** — leaves the party-wide 8-hour stack open at rank 1.
+
+**Lean: B.**

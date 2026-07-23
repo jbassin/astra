@@ -99,3 +99,22 @@ None found in `revisions.md` — Farsight matches the fresh in-memory re-convers
 - `system.cost.value` carries an explicit gp-cost narrative (100 gp/sigil, 250 gp/circle) on a `type: "spell"` item — this differs from most other spells in this chunk (Do My Bidding, Ebb and Flow, Excavation), where 5e material components were dropped entirely under the Remaster no-material-components convention. Farsight instead preserves the costs as a structured `cost.value` field rather than dropping them.
 - The 5e concentration requirement (8 hours of concentration) was dropped without becoming a PF2e sustain — `duration.sustained: false` for a flat 8-hour non-concentration effect. This removes an action-economy cost (competing with other concentration spells) that the 5e original had.
 - `heightening.levels["6"]` is an empty object; the heighten effect lives only in the description HTML (per the adapter warning).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The converter's OWN checklistFailures flags the real issue: at r4 this arguably exceeds
+Scrying r6 (multi-sensor, planetary, 8 hours, NO save), with the gp infrastructure as
+the only governor — and the conversion also silently deleted 5e's biggest cost, the
+8-hour concentration lock. The partial defense the dossier undersells: the caster must
+stand in the circle to perceive anything, which is a real session-scale cost (stationary,
+vulnerable, out of the action) — the honest PF2e analog of the concentration lock.
+
+- **A. Keep rank 4; harden the text per his own overridables** — (1) sigils must be
+  drawn by you, physically present at the location (kills remote-placement exploits, the
+  gap he named); (2) state explicitly that the remote perception functions only while
+  you remain inside the circle (currently implied). With those pinned, the
+  infrastructure + circle-bound costs justify r4 vs Clairvoyance r4's single free eye.
+- **B. Rank 4 → 5** — blunt, and double-charges once A's constraints are explicit.
+- **C. Keep as-is** — leaves the remote-sigil gap his notes warned about.
+
+**Lean: A.**
