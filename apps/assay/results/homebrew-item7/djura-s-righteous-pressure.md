@@ -91,3 +91,24 @@ None found in `revisions.md` — Djura's Righteous Pressure is not listed among 
 - The converter's own `checklistFailures` entry explicitly documents that the vitality damage type "only harms undead (not fiends)" — meaning, per the converter's own admission, the spell's damage component provides **zero mechanical effect against fiends** despite the spell's flavor text and header claiming it's "anathema to undead and fiends" equally. The anti-fiend function relies entirely on the push/can't-reenter mechanism, not the damage.
 - This spell carries an assay verdict (−2.92 ranks COLD) despite `routing: quantitative` and `pool reason: reclassified-out` — i.e., it was scored quantitatively and found underweight, then pulled out of the auto-scored bucket for manual review rather than auto-applying the residual.
 - `adapterWarnings` is empty for this spell, but the heighten-6th structured field only captures the +2d6 damage bump — the target-type widening ("also affects humanoids with the evil trait") is present only in the prose, with no adapter warning flagging this incompleteness (unlike several other item-7 spells, which do carry a warning for equivalent non-damage heighten text).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −2.92 COLD is the §4a sustained-aura artifact. The genuine defect is
+converter-acknowledged in his own checklistFailures: **vitality damage does ZERO to
+fiends**, so a spell whose header claims it is anathema to undead AND fiends mechanically
+blanks half its target list — the exact class item 6 fixed on Solar Rebuke
+(vitality→fire because it dealt zero vs living). The Remaster-native fix here is
+**spirit damage** (his own overridable suggests it): spirit harms both undead and fiends,
+and the spell already carries the holy trait for the anti-unholy interplay.
+
+- **A. 2d6 vitality → 2d6 spirit (heighten bump likewise)** — Solar Rebuke precedent,
+  converter's own suggested fix, makes the damage half real against fiends. Re-run
+  score-homebrew after (damage-type multiplier may shift the residual slightly; expected
+  immaterial, verify don't assume).
+- **B. Keep vitality** — the aura stays push-only against fiends; honest only if the
+  description is rewritten to stop claiming damage-parity.
+- **C. Tighten the reentry clause per his other overridable** — independent, optional.
+
+**Lean: A.** Push mechanics + degrees structure are already good conversions; only the
+damage type needs the fix.

@@ -87,3 +87,26 @@ Checked `apps/assay/homebrew/revisions.md`: **no entry** for "Solar Fury" — 0 
 - No residual 5e-isms (no bonus-action language, no flat-DC-only wording, no material component text) — the description is clean Remaster-consistent prose throughout.
 - No curse-removal, affliction, or reaction-trigger text present — not applicable to this spell.
 - Traits include the custom homebrew school-trait tag "planara" (mapped 1:1 from the 5e school field "planara"), which has no counterpart in the standard PF2e trait taxonomy (Remaster removed spell schools entirely).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −3.97 COLD is the §4a sustained/charge lens artifact (per-round 4d6 vs the per-cast
+r6 budget). The converter's pricing logic is sound: Wall of Fire r4 sets the 4d6/round
+zone precedent, and the +2 ranks buy fire IMMUNITY (official immunity territory is Fiery
+Body r7) + the sunlight rider. Precedent: Darkseeker's Aura (item 1) — aura-engine
+artifact, dice kept.
+
+The real defect is the DOUBLE TRIGGER the dossier flags: turn-start damage AND a
+sustain-action re-trigger coexist, so a creature can be hit twice per round depending on
+initiative order — new text with no 5e basis (5e was turn-start only).
+
+- **A. Record artifact + fix the trigger to turn-start only** — keep 4d6/immunity/
+  sunlight; rewrite so the aura persists while sustained and damages each creature that
+  begins its turn inside it (Sustain maintains, never re-triggers). Restores 5e's exact
+  cadence and kills the double-dip.
+- **B. Keep both triggers** — strictly stronger than the 5e original and double-charges
+  the same round; no design rationale in the converter's notes.
+- **C. Converter's overridable** — drop immunity, raise to 6d6/round; a real redesign
+  with no motivating complaint.
+
+**Lean: A.** Text-only fix, dice untouched, artifact recorded.

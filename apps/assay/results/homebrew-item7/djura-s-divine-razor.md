@@ -82,3 +82,26 @@ None found in `revisions.md` — Djura's Divine Razor is not listed among the 52
 - The spell has the `curse` trait and ends via a Will save the cursed creature can attempt each turn, rather than via the standing PF2e curse-removal convention (counteract check vs. the spell's rank) — there is no counteract-based removal path mentioned anywhere in the description.
 - 5e's ranged-reach/ignore-cover/no-disadvantage clause for attacking the cursed creature was dropped without an adapter warning or a `changedElements` bullet in jmnario's own conversion notes explicitly calling out the cover/disadvantage-immunity loss (the notes mention the melee-Strike-only restriction generally but do not itemize the ignore-cover and no-disadvantage clauses as dropped).
 - This spell carries an assay verdict (−3.15 ranks COLD) despite `routing: quantitative` and `pool reason: reclassified-out` — i.e., it was scored quantitatively and found underweight, then pulled out of the auto-scored bucket for manual review rather than auto-applying the residual.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −3.15 COLD is the §4a weapon-rider artifact (per-Strike curse dice vs the per-cast
+budget) — record it either way. The real decision is the dropped identity clause: 5e's
+cursed target could be attacked "regardless of distance or obstacles" (ignore cover, no
+disadvantage) — the reality-cutting razor WAS the spell. The conversion kept only a
+melee-Strike rider, added an escape save (nerf) and a transfer clause (small buff), so
+the coolest beat is gone uncompensated. Note: the per-turn Will escape save is fine as-is
+— the curse-removal counteract convention governs removal-by-other-effects text, which
+this 1-minute combat curse doesn't have.
+
+- **A. Keep melee-only as converted, record artifact** — playable, but the name and
+  fiction overpromise.
+- **B. Restore the reality-cut PF2e-native** — e.g. your melee Strikes against the cursed
+  creature reach it anywhere within 60 feet, cutting through intervening space and
+  ignoring cover. Bounded (range cap, cursed-target-only), restores the identity;
+  unpriced by the model either way (reach is unmodeled), so no scorer gate applies.
+- **C. B plus trim the initial 3d10 back toward 5e's 2d10** — if restoring reach feels
+  like it needs paying for.
+
+**Lean: B.** The clause is why the spell exists; 60-ft cap + single-cursed-target keeps
+it honest at rank 5.

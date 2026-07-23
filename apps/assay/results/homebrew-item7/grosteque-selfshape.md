@@ -83,3 +83,20 @@ None found — `Grosteque Selfshape` does not appear in `revisions.md`'s deviati
 - The `gestalt` trait is a custom, non-canonical PF2e trait mirroring the 5e school name — recurring pattern across this homebrew set.
 - 5e's ability-modifier-scaling temp HP ("twice your spellcasting modifier") was replaced with a flat non-scaling number; this is a structural design swap, not a straight numeric port.
 - No death-save, bonus-action, or other Remaster-incompatible 5e-isms remain in the prose.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −2.85 COLD is the §4a morph/per-Strike artifact (+2d6 every Strike priced against
+the per-cast budget). Manual read: this conversion is genuinely good — the 2d8→2d6 trim
+was the friend's own balance call, the flat temp-HP replaces 5e's mod-scaling with PF2e
+idiom, +5 ft reach matches the official Enlarge Large-growth package, the polymorph-cast
+lockout is a sensible extension of the wildshape ban, and the invented rank-6 tier is
+standard PF2e practice. Next to Enlarge r2 (+2 status damage) the +2d6 rider is strong,
+but it's two ranks up, sustained (1A/round tax), and locks out the druid's own wildshape.
+
+- **A. Record artifact, keep as-is** — the package is rank-fair with the sustain tax.
+- **B. Add Clumsy 1 while enlarged** — Enlarge-parity drawback if it feels too clean;
+  nothing in the comparables demands it.
+- **C. Restore 5e's 2d8** — anti-lean; the trim was deliberate.
+
+**Lean: A.** Likely the fastest review in the reclassified-out set.

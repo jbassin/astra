@@ -83,3 +83,23 @@ None. `revisions.md` has no entry for Festering Slick.
 - The conversion's "living creature" qualifier on the trigger condition has no 5e-text basis — the 5e original's trigger is "the first time that weapon successfully hits," with no living/undead distinction; the added qualifier narrows applicability (e.g., against constructs/undead) without an explicit design note addressing it.
 - The healing-suppression-tied-to-Sustain mechanic (early termination if you stop sustaining, extension to "start of your next turn after the spell ends" if you do sustain) is new structure not present in the 5e source and not called out in `balanceBullets`, only in the `overridable` list as something that *could* be changed — i.e., the shipped text already contains the overridable-listed variant rather than the plain "ends when spell ends" version described in `preservedElements`.
 - The rank-5 "trigger twice" heightening is a capability add (not a numeric damage bump) layered onto a spell whose 5e original only ever gains more damage per upcast — no discussion of this specific design choice appears in the converter's notes.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −1.78 COLD decomposes cleanly: one-trigger boundedness + the healing-suppression
+rider ≈ the GM Core −1-rank rider exchange, i.e. the §4a weapon-rider artifact — pricing
+is fine. The shipped sustain-tied suppression (stop sustaining → target can heal) is a
+good action-economy tax; keep it even though it's technically the overridable variant.
+
+The real delta: the conversion added a **"living creature" qualifier** to the trigger
+with no 5e basis. It quietly kills the spell's best tactical use — suppressing an
+undead's void/negative healing — and narrows it against constructs, without a design
+note anywhere.
+
+- **A. Record artifact + drop the living-creature qualifier** — restores 5e's
+  any-target trigger; the fiction ("flesh festers") reads fine as corrupting energy on
+  any body. Text-only.
+- **B. Keep as-is** — accept the narrowing as flavor-driven.
+- **C. Converter's Fort-save overridable** — an unmotivated nerf; skip.
+
+**Lean: A.**

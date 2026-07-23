@@ -93,3 +93,24 @@ Per the tool's documented diff direction (baseline → store), the fresh in-memo
 - **Quantitative scorer visibility gap:** the assay `quantitative` routing computed its -3.98-rank COLD verdict from `system.damage`, which holds only the base-rank `2d12 slashing` formula. The 7th/8th/9th-rank heightened damage increases (3d10 → 3d12 → 4d12) exist only in the description prose and are not present anywhere in structured data (`heightening.levels` entries are all empty `{}`). Whether the scorer's residual accounts for the heightened damage trajectory at all, or only ever saw the base-rank 2d12, is not determinable from the store JSON alone — recorded as a factual data-availability gap, not a claim about the scorer's actual behavior.
 - The `duration.sustained: false` value in the current store contradicts a fresh baseline re-conversion (which yields `sustained: true`) per `revisions.md` — a prior hand-edit, not an adapter artifact.
 - No 5e-isms residue found in the prose (no death saves, no "bonus action," no legacy condition names); material component ("a claw") was dropped from the base-rank `cost` field despite jmnario's intermediate conversion having preserved it.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −3.98 COLD is the documented §4a per-Strike-engine lens artifact (per-Strike 2d12
+priced against the per-cast rank-6 budget) — the exact class item 6 resolved for MC: Tail
+(artifact recorded, dice untouched). The family-wide flat-1-minute duration decision is
+already applied here (the sustained→false hand-edit in revisions.md). Manual read: a
+MORPH (keeps your actions/gear, unlike a battle form) granting burrow = land Speed + a
+2d12 sweep Strike with martial-proficiency borrowing + object auto-crit, next to Dragon
+Form r6 (bigger attack suite but a full battle form) and Fiery Body r7 — rich but paid by
+needing your own Strikes.
+
+- **A. Record lens artifact, keep as-is** — matches the Tail/family precedent; base 2d12
+  reads rank-fair for a morph next to the r6/r7 form anchors.
+- **B. Trim base dice (2d12→2d10)** — if the Strike should sit strictly under battle-form
+  damage at the same rank; weakens the spell's combat half with no artifact-model support.
+- **C. Split combat/exploration per jmnario's overridable** — a rank-5 burrow-only 1-hour
+  sibling; net-new spell authoring, out of scope unless the stakeholder wants it.
+
+**Lean: A.** The one thing worth a stakeholder glance: stone-burrow at HALF speed is a
+deliberate buff over 5e's quarter speed (converter-acknowledged) — fine to keep.

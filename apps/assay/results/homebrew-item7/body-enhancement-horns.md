@@ -85,3 +85,21 @@ None. `revisions.md` does not list Body Enhancement: Horns among the 52 hand-edi
 - Structured `system.damage` is frozen at the base 1d8; all heightened die-size increases (1d10/2d8/2d10/3d10) exist only as description prose, per the adapter warning — nothing heightenable shows up outside the description text.
 - No residual 5e-isms (no death saves, no "bonus action" language, no material component text — matches Remaster's no-materials convention).
 - No curse-removal wording, no affliction text, no reaction/Trigger line to check (not a reaction spell).
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −1.24 COLD is the §4a weapon/morph artifact (repeatable Strike vs per-cast budget).
+The conversion is a deliberate full redesign — one-shot 3d12 nuke → BE-family morph
+Strike-grant (1d8, heavier die than Claws/Fangs' 1d6) with the charge flourish as fatal
+d12 + free Shove — and it reads rank-fair next to Claws of the Otter r2. The dossier's
+level mismatch (notes reason from "5e level 1" but the source is level 2) lands harmless:
+rank 2 matches the actual source level anyway — record as vendor-notes errata only.
+
+- **A. Record artifact, keep as-is** — family-consistent, the collapsed charge menu was
+  a stated anti-Everything-Spell choice.
+- **B. Restore knock-prone via the converter's overridable Fort-save** — traditional
+  goring-charge flavor at the cost of the complexity he deliberately avoided.
+- **C. Swap fatal d12 → flat +1d12 on charge** — closer to the 5e menu option, lower
+  crit ceiling.
+
+**Lean: A.**

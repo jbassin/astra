@@ -92,3 +92,27 @@ None found — no `planar-shield` entries in `revisions.md` (matches the fresh b
 - The reaction has no dedicated **Trigger** line separate from the general description prose — the trigger condition ("you are hit by a melee attack while holding your shield or the weapon you imbued") is embedded mid-paragraph rather than called out as a standalone Trigger statement the way official PF2e reaction spells format it (e.g., Pyrefowl Rebuke's dedicated "**Trigger** A creature within 10 feet of you Strikes and deals damage to you.").
 - Heightening mixes an interval trigger (`+1`) with a fixed-rank trigger (`5th`) on the same spell, per the adapter warning — not structurally representable in the current Foundry heightening schema, so `system.heightening` is entirely absent and both rules live only in the description prose appendix.
 - The 5e original had no Verbal component (S only); this carries through cleanly, but the "single damage type radiant→vitality" swap and the shield→shield-or-weapon broadening are both unflagged in `changedElements` beyond the tradition/damage-type note — the weapon-imbuing expansion in particular isn't called out anywhere in jmnario's notes.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −0.85 COLD is the §4a charge-engine artifact (4 reaction charges totaling 8d6 priced
+against one cast) — and −0.85 is already near the healthy hybrid residual anyway. The
+converter's no-save justification (reaction-gated, 4 uses, 5-ft radius) holds up next to
+Fire Shield's no-save retaliation idiom; Pyrefowl Rebuke/Blood Vendetta bracket the
+per-trigger damage fairly.
+
+Two review items, both text-shaped:
+1. The in-spell reaction has no standalone **Trigger** line (the item-2 reaction-repair
+   class, but milder — the CAST is legitimately 2A; only the charge-expenditure reaction
+   needs the official bold-Trigger formatting).
+2. The conversion broadened 5e's shield-only imbue to "shield **or held weapon**,"
+   unflagged in jmnario's notes.
+
+- **A. Record artifact + format the Trigger line; keep the weapon broadening** — the
+  broadening is a usability accommodation for casters who don't run shields; harmless.
+- **B. Also revert to shield-only** — fiction-tight to the phlogiston-on-shield imagery,
+  strictly narrower.
+- **C. Converter's overridable redesign (add basic Reflex, start 4d6)** — unmotivated;
+  the no-save design is the spell's identity.
+
+**Lean: A.**

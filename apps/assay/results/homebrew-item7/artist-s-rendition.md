@@ -100,3 +100,25 @@ None found in `revisions.md` — Artist's Rendition matches the fresh in-memory 
 - Damage-type mismatch: `system.damage["0"].type` is `"untyped"`, but both the 5e original ("deals 1d8 damage of the appropriate type") and the store's own description prose ("deals 1d8 damage of the appropriate type to each creature within 5 feet") describe the damage type as matching whatever energy the drawing depicts (fire, lightning, etc.) — the structured field does not represent this variability and instead hardcodes "untyped."
 - Trait note: "memetics" (the 5e homebrew school name) replaces BOTH of jmnario's "creation" and "transmutation" traits (school-as-trait pattern) — this spell loses two real PF2e traits that jmnario's own conversion notes call standard for the mechanic ("Creation trait added (PF2e standard for spells that produce real objects from nothing)").
 - `system.target.value` is an empty string despite the spell clearly requiring a touched drawing/surface as its subject; the touch interaction is only represented via `range: "touch"`, with no explicit target line.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+The −2.24 COLD is the §4a utility-misroute artifact — the 1d8 energy clause got a
+creation-utility spell priced as a damage spell; routing it here IS the fix. The
+conversion itself is near-verbatim faithful (all caps and penetration limits carried),
+and the two invented heighten tiers are good PF2e practice. The dropped paintbrush is
+fine under the materials policy (the spell operates on any existing drawing — the brush
+was 5e flavor). Trivia-level drops: the lead-sheet doorway clause, the trees/cells/rooms
+examples.
+
+- **A. Keep as-is, record the misroute artifact** — nothing mispriced; ledger-style
+  utility review says rank 3 is right next to Creation r4 (permanence vs material
+  breadth trade).
+- **B. A plus let the energy damage heighten (+1d8 at 5th/7th)** — the converter's own
+  note admits the static 1d8 is "largely irrelevant at rank 3+"; tiny dial, keeps the
+  clause meaningful.
+- **C. Restore the lead-sheet clause** — D&D-lore niche (lead blocks scrying); PF2e has
+  no such convention, skip unless the fiction wants it.
+
+**Lean: A, with B as an easy add** if he wants the energy clause to stay live at high
+ranks.

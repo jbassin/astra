@@ -92,3 +92,26 @@ None. `revisions.md` has no entry for Fumble.
 - The recurring end-of-turn Will save (escape valve on a plain failure) and its removal on critical failure are both entirely new PF2e structure invented for this conversion; the 5e original has no equivalent recurring-save mechanic at all (the curse simply runs the full duration absent a nat-20).
 - `system.heightening.levels."6"` is an empty object; the rank-6 heightened text (Reflex penalty escalation to -3, new Clumsy 1 on crit fail) exists only in the description appendix.
 - The `mercuromancy` trait appears in `system.traits.value` but is *not* among the `traits` array in the jmnario intermediate conversion (which lists `occult` in that slot instead) — worth a cross-check that this is a deliberate astra-side trait addition rather than a copy artifact, since it doesn't appear in `convertedFromSpiritOf.changedElements` as a discussed change.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+Wide-range routing (1-9) is honest low-information; the manual read against Slow r3 /
+Confusion r4 puts the rank-4 slot about right for a non-incapacitation action-tax curse
+with a recovery save. The conversion's added degree tiers and recovery-save structure are
+good PF2e practice. Two real review items, both flagged in this dossier's What-changed:
+
+1. **The narrowed escape valve** (the headline): 5e ended the curse on a nat-20 on ANY
+   triggered roll; the conversion's triggered rolls became Acrobatics checks, which can
+   no longer end it — only the Will saves can. Unacknowledged narrowing.
+2. The movement threshold dropped 20 ft → 10 ft (converter-flagged, 15 ft offered as the
+   overridable middle).
+
+- **A. Restore the escape valve at the checks: "a critical success on any Acrobatics
+  check against this spell also ends the curse"** — restores 5e's any-roll escape in
+  PF2e language; keep 10 ft threshold.
+- **B. A plus threshold 10→15 ft** — if the trigger feels too frequent at the table;
+  the converter's own fallback.
+- **C. Keep as converted** — strictest version; the recovery save already gives agency,
+  so this is defensible, but the narrowing was never a stated design choice.
+
+**Lean: A.** Rank stays 4; text-only.

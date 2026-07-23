@@ -92,3 +92,23 @@ None recorded. `revisions.md` shows 0 deviations for this spell.
 - The closing flavor sentence naming real D&D deities (Bhaal, Mask) is dropped entirely — a correct exclusion, but confirms no replacement homebrew-setting flavor was substituted.
 - Material component present in jmnario's intermediate conversion (`cost` field) but absent from the current store.
 - Pool reason "reclassified-out": this spell carries a priced quantitative COLD verdict (−1.36 ranks) but has been pulled from the pure-damage worklist as a per-mode/per-turn lens artifact rather than a per-cast nuke.
+
+## Options & staff lean (enrichment, 2026-07-23)
+
+**Stale flag note:** batch-0 (`b737e18`) already fixed the heightening gap — the interval
+block now bumps all three damage partitions, matching the prose. The −1.36 COLD is the
+§4a sustained/charge artifact (a per-turn 1A engine over a non-sustained minute priced
+against the per-cast budget); the converter's Spiritual-Weapon-family scaling logic reads
+sound next to Deity's Strike r7 (one 7d12 burst vs ~24 avg per commanded action here).
+
+The one real content drop: 5e's Defend mode granted the guarded creature **partial
+cover**; the conversion kept only the reactive attack. The flat +8 (vs 5e's ability mod)
+is fine — fixed numbers are the PF2e battle-form idiom; don't regress to mod-based.
+
+- **A. Record artifact + restore Defend's cover as lesser cover (+1 AC)** — the PF2e
+  translation of partial cover; one sentence in Defend mode. Dice untouched.
+- **B. Keep as-is** — accept the cover drop as a deliberate trim (nothing in the
+  converter's notes marks it deliberate).
+- **C. Swap +8 → spellcasting modifier** — restores the 5e formula but fights PF2e idiom.
+
+**Lean: A.** Cover was half of Defend's identity in 5e; cheap restore, no pricing impact.
