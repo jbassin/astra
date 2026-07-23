@@ -107,7 +107,8 @@ Magic Mailbox / Remake precedent).
 | solar-fury | **Double trigger fixed (A)** — sustain-action re-trigger removed; Sustain maintains, damage is turn-start only (5e cadence restored, double-dip killed); 4d6/immunity/sunlight kept; artifact recorded (score unchanged −3.97) | `ac74355` |
 | fumble | **Escape valve restored + threshold eased (B)** — crit success on any save OR Acrobatics check ends the curse (5e any-roll escape); movement trigger 10→15 ft (converter's own middle); rank stays 4 (wide-range 1–9 honest low-info) | `f2bccfe` |
 | flashback | **Full ladder restored (A)** — H2 1 week · H3 1 month + whisper · H4 1 year · H5 any memory ever; observers stay dazzled (C declined); severance-trigger flag = FALSE POSITIVE (correct sustain mapping); in band at r1 | `f443665` |
-| forensic-analysis | **Cooldown + mood descriptor restored (A)** — 24h per-target Secrets lockout (the anti-spam valve) + live-updating mood line back; crit-fail unaware clause added for tier consistency; 2-secrets crit-fail + focus-spell directive kept | see commit |
+| forensic-analysis | **Cooldown + mood descriptor restored (A)** — 24h per-target Secrets lockout (the anti-spam valve) + live-updating mood line back; crit-fail unaware clause added for tier consistency; 2-secrets crit-fail + focus-spell directive kept | `cf2f3a4` |
+| let-s-start-a-fight | **Improvised-only restored (A)** — brawlers attack with improvised objects/unarmed, don't draw weapons (the identity + damage governor); redundant 3-crit-fail brawl sentence deleted; no-revoke flavor line added; Will-save replacement of GM-fiat kept wholesale | see commit |
 
 ## Status
 
