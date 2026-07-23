@@ -182,7 +182,7 @@ starting point there.
 3. ~~§3 under-ranked buffs~~ DONE 2026-07-22 (Sense kept; Mind +1; Suspension r4/5-min).
 4. ~~The systemic §1 policy decision~~ RESOLVED per-spell-mix — execute §4a's sheet.
 5. ~~§4.2 variable-action redesigns~~ DONE 2026-07-22 (Drumfire kept-as-engine; Draught counteract; Beam 6d12/120ft dazzled-blinded).
-6. Deep-COLD effect-dominant hybrids — decide per spell whether the effect earns the slot.
+6. ~~Deep-COLD effect-dominant hybrids~~ DONE 2026-07-22 (item 6; 11 + Carnage borderline, one-at-a-time — see §10).
 7. The 73-ledger manual pool, seeded by his balanceBullets.
 
 ## 8. Voice sweep (2026-07-22, stakeholder-directed)
@@ -342,3 +342,22 @@ these are the ones where the effect has to earn the slot on its own.
   into standard affliction recovery, and replaces the sustained-full-minute permanence
   trigger with stage-3 entry. Max duration 1 min, ends with the spell except at stage 3.
   Incapacitation trait unchanged. Routing hybrid→quantitative post-edit, same −3.04.
+- **Carnage r8 (−2.98 borderline, raised at the pool's edge → recorded ENGINE ARTIFACT,
+  dice untouched; action grammar fixed):** the 5e vendor source is BROKEN (its 2nd/3rd/4th-
+  Use escalation list is empty) so the conversion was already a reconstruction, and a good
+  one. The real defect: "while you sustain… you can use the following action" read as
+  Sustain + 1A = 2 actions/turn for the engine — folded into the Sustain itself per official
+  idiom (5e intent "use your action"). MAP clarifier added to opener + Sustain (single
+  attack for MAP, penalty after all resolve); a stray markdown `**` in the HTML died with
+  the rewrite. Dice kept (opener 6d6 vs 5e's 6d12 noted; the engine pays the slot).
+
+**Item 6 CLOSED (2026-07-22): 11 deep-COLD hybrids + the Carnage borderline all resolved.**
+Post-session scoreboard: zero hybrids colder than −3 remain (deepest = Tail −4.48 /
+Stinger −4.38 / Tentacle −3.56 / Eldritch −2.47 residual — all RECORDED artifacts with
+per-spell reasoning above, dice deliberately untouched). Real repairs shipped: 4 chip-
+damage drops (ToM, Cerebral, Focus Break + Eldritch's was structural), 2 illegal
+afflictions legalized + 1 rebuilt-as-affliction (Stinger, Tentacle, Grey Frost), 2 dropped-
+clause restorations (Eldritch escape/spell-end; Cerebral's lost d6 row), 1 dead damage
+type (Solar Rebuke vitality→fire, +rank 6), 1 per-tick re-line (Repetitious 8d6), the
+counteract-check curse CONVENTION, and the morph family's duration/heighten consistency
+pass.
