@@ -88,3 +88,16 @@ need no action.
 - 2026-07-22: collation complete — 108/108 dossiers written by 14 agents (0 missing 5e
   originals; every named official comparable snapshot-verified). Enrichment (options +
   staff lean per spell) pending; batch-0 set-wide decisions above gate parts of it.
+- 2026-07-22: **batch-0 DECIDED (stakeholder)** — verified facts first (planara = the 5e
+  source's own school name, non-issue; markup bug = 20 spells not 4; curse-removal legacy
+  text = exactly 5 spells; the prose-drop class = adapter composes from structured
+  successTiers/heightened, freeform-only sentences drop). Decisions: (1) FULL structural
+  encoding sweep, adapter+store lockstep (heightening ×10 + defense/damage/duration gaps +
+  `**`→`<strong>` ×20), gated on before/after score-homebrew with every routing change
+  reported; (2) Sphere of Ruin's stripped 500 gp spam tax stays stripped — **judge at its
+  spell review** (rank vs restored cost vs other lever); (3) curse-removal convention
+  swept onto all 5 legacy spells now (divine-regression, fast-forward, overhaul,
+  poisoned-backflow, taboo); (4) adapter-dropped freeform mechanics RESTORED now on
+  earworm/inquisition/forensic-analysis/laixa-s-expert-intuition/excavation/nightfall/
+  awkward, each still judgeable at review. Build delegated to an engineer; store edits
+  land as revisions.md deviations for (3)/(4), zero new deviations for (1).
