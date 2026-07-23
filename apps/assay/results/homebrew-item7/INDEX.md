@@ -111,6 +111,7 @@ Magic Mailbox / Remake precedent).
 | let-s-start-a-fight | **Improvised-only restored (A)** — brawlers attack with improvised objects/unarmed, don't draw weapons (the identity + damage governor); redundant 3-crit-fail brawl sentence deleted; no-revoke flavor line added; Will-save replacement of GM-fiat kept wholesale | `90c05cd` |
 | tunnel-vision | **Exclusivity restored + tiebreak trimmed (B)** — "Cast again → prior casting ends" (kills the party-wide 8-hour stack at r1); invented crit-success tiebreak clause deleted; status+fortune mechanism and bonus-size heighten axis kept | `0fcaee4` |
 | mark-of-protection | **Keep as converted (A)** — one of the cleanest conversions in the pool; multi-mark narrowing accepted (one reaction/round means 5e's N marks bought flexibility, which H6 restores); Interpose formalization correct | (log-only) |
+| farsight | **Rank 4 kept, text hardened (A)** — sigils must be drawn in person (his own overridable, kills remote placement); circle-bound perception made explicit (the honest analog of the deleted concentration lock); Scrying-r6 concern governed | see commit |
 
 ## Status
 
