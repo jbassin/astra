@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -28,7 +28,7 @@
       }
     },
     "description": {
-      "value": "<p>You implant a tiny worm woven from arcane thread beneath the skin of a creature, seating it near the creature's ear canal. The target must attempt a Fortitude saving throw.</p><p><strong>Critical Success</strong> The worm fails to seat itself and dissolves. The target senses the attempt.</p><p><strong>Success</strong> The worm dissolves harmlessly. The target feels a brief itching sensation but is unaware of the nature of the attempt.</p><p><strong>Failure</strong> The worm seats itself. You hear all sounds the target hears for the duration.</p><p><strong>Critical Failure</strong> As failure, and you can also see through the target's eyes. You can toggle between auditory-only and auditory-visual as a 1-action concentrate.</p><hr /><p><strong>Heightened (5th)</strong> The worm can also track the target's location; you know the target's current location as if you had cast status on it, as long as you are on the same plane.</p><p><strong>Heightened (7th)</strong> The duration increases to until your next daily preparation. The range to implant the worm increases to 30 feet.</p>"
+      "value": "<p>You implant a tiny worm woven from arcane thread beneath the skin of a creature, seating it near the creature's ear canal. The target must attempt a Fortitude saving throw.</p><p><strong>Critical Success</strong> The worm fails to seat itself and dissolves. The target senses the attempt.</p><p><strong>Success</strong> The worm dissolves harmlessly. The target feels a brief itching sensation but is unaware of the nature of the attempt.</p><p><strong>Failure</strong> The worm seats itself. You hear all sounds the target hears for the duration, as long as you and the target are on the same plane of existence. The target is unaware of the eavesdropping. You can end your auditory link as a free action at any time without ending the spell. The worm dissolves at the end of the spell's duration. A creature that successfully uses the Seek action against your spell DC can feel the arcane thread and is then aware of the worm's presence.</p><p><strong>Critical Failure</strong> As failure, and you can also see through the target's eyes. You can toggle between auditory-only and auditory-visual as a 1-action concentrate.</p><hr /><p><strong>Heightened (5th)</strong> The worm can also track the target's location; you know the target's current location as if you had cast status on it, as long as you are on the same plane.</p><p><strong>Heightened (7th)</strong> The duration increases to until your next daily preparation. The range to implant the worm increases to 30 feet.</p>"
     },
     "duration": {
       "sustained": false,
