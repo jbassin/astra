@@ -97,6 +97,7 @@ Magic Mailbox / Remake precedent).
 | worldweaver | **Ritual encoding (A + mythic trait)** — Wish-pattern rank-10 ritual, 15 secondaries, Wish-register ladder; content clauses kept verbatim | `6ce6089` |
 | artist-s-rendition | **Keep (C)** — misroute artifact recorded; lead-sheet doorway clause restored; energy damage stays static | `dcc8cb8` |
 | body-enhancement-horns | **Keep as-is (A)** — §4a weapon/morph artifact recorded; redesign rank-fair next to Claws of the Otter r2; vendor-notes "level 1" claim = errata only (source is level 2) | (log-only) |
+| djura-s-divine-razor | **Reality-cut restored (B)** — melee Strikes reach the cursed creature within 60 ft, ignore cover/concealment; artifact recorded; dice untouched (score unchanged −3.15, reach unmodeled) | see below |
 
 ## Status
 
