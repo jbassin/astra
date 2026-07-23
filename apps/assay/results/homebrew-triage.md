@@ -321,3 +321,12 @@ these are the ones where the effect has to earn the slot on its own.
   (now structural — pure bump), and RANK RAISED 5→6 (stakeholder: reaction economy at
   full 2A-grade dice pays a premium). Post-edit reading −4.47 at r6 is the artifact
   deepened by the bump — true residual vs a 2A r6 expectation ≈ −1.5, accepted.
+- **Repetitious Trauma r5 (−3.16 → ticks RAISED 6d6→8d6 onto the per-tick line):** the §4a
+  sustained-engine class, but the Hypercompression precedent gave a real yardstick — per-tick
+  dice sit ≈ −0.9 ranks below the one-shot line. 6d6/tick measured −1.86 (UNDER the family
+  rate); 8d6 lands exactly −0.90. Single-target (vs Hypercompression's zone) argues for the
+  full rate; riders are mild (Stunned 1 crit-fail only). Stakeholder B: 8d6/tick, degrees to
+  half/full/double grammar (hardcoded 3d6/12d6 lines died), heighten "+2d6" now STRUCTURAL
+  (was appendix-only), and the "caster chooses if unknown" hidden buff (always name the
+  weakness) → defaults to mental. Post-edit −2.60 = the engine-artifact residual (dice sit
+  −0.90 by construction; the hybrid router's Stunned-atom pricing supplies the rest).

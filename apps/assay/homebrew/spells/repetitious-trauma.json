@@ -24,7 +24,7 @@
       "0": {
         "applyMod": false,
         "category": null,
-        "formula": "6d6",
+        "formula": "8d6",
         "kinds": [
           "damage"
         ],
@@ -39,7 +39,7 @@
       }
     },
     "description": {
-      "value": "<p>You twist the strands of time to force a creature to relive a damaging moment over and over. On the round you cast this spell and each round you Sustain it, the target must attempt a Will saving throw. The damage type each round is the most recent damage type dealt to the target before this spell was cast (or, if unknown, the caster chooses). Each round's save is rolled separately.</p><p><strong>Critical Success</strong> The creature is unaffected this round.</p><p><strong>Success</strong> The creature takes 3d6 damage of the relived type.</p><p><strong>Failure</strong> The creature takes 6d6 damage of the relived type.</p><p><strong>Critical Failure</strong> The creature takes 12d6 damage of the relived type and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 2d6 (and double on critical failure).</p>"
+      "value": "<p>You twist the strands of time to force a creature to relive a damaging moment over and over. On the round you cast this spell and each round you Sustain it, the target must attempt a Will saving throw. The damage type each round is the most recent damage type dealt to the target before this spell was cast (or mental if no damage type is known). Each round's save is rolled separately.</p><p><strong>Critical Success</strong> The creature is unaffected this round.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes 8d6 damage of the relived type.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d6.</p>"
     },
     "duration": {
       "sustained": true,
@@ -76,6 +76,13 @@
         "manipulate",
         "mental"
       ]
+    },
+    "heightening": {
+      "damage": {
+        "0": "2d6"
+      },
+      "interval": 1,
+      "type": "interval"
     }
   },
   "type": "spell"
