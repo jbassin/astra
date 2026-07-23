@@ -200,3 +200,27 @@ malformed afflictions (undefined stages, flat-check recovery language, no max du
 fix = legal stage blocks, the Stinger/Tentacle/Grey Frost pattern; affliction framing can
 RESTORE lost 5e escalation, Grey Frost); markdown `**` inside HTML description fields.
 Rename mechanics proven again: git mv + name field, seededFrom untouched (Eldritch).
+
+**ITEM 7 PREP (2026-07-23, `a385307`…`ffd7ad8`) — the streamlined-review structure
+(stakeholder-designed: agents pre-collate → staff enriches → review runs off cards):**
+pool = **108 not "73+21"** (wide-range set REGREW to 34 post-item-1..6 edits; 9 already
+decided; + the 10 §4a reclassified-out that were explicitly deferred "to the buff/manual
+pool" — always re-derive the pool from the LIVE scorer). 14-agent Workflow wrote 108
+facts-only dossiers (`results/homebrew-item7/`, fixed template, comparables
+snapshot-verified); ⭐ **Workflow `args` never reached the script** (`args.queue`
+undefined → instant fail; inline the data into the persisted script + resume by runId).
+**Batch-0** (4 AskUserQuestion policy decisions — batching OK for POLICY, never for
+spell review): `b737e18` encoding sweep (adapter+store lockstep; ONE routing change
+propagating-blast ledger→quantitative; revisions deviation-set byte-unchanged = the
+lockstep gate) · `7839a81` curse-convention ×5 · `f91b2d6` prose restoration (the
+adapter composes descriptions from jmnario's structured successTiers/heightened —
+freeform-only sentences DROP set-wide; most instances were already deliberately handled,
+~7 real). ⭐ **Enrichment lesson: a third of the 98 collation flags were FALSE POSITIVES
+vs documented policy/idiom** (school-trait strips, 1A→2A systemic map, Slow-precedent
+effect-on-success, sustain-vs-concentration, attack-trait/defense-null conventions) —
+brief agents WITH the policy list next time. ⭐ Set-wide review question queued:
+hours-long casts as spells vs RITUALS (Hellforging: official Creature Creation table =
+level-14 at ritual rank 9, not spell rank 7). ⚠ `diff` + batched-python shell output
+corrupted this session → [[shell-output-reliability]]. ▶ RESUME: run the review
+(one card/message; set-wide ritual Q first, then reclassified-out 10, then judgment
+lane, then 73 fast-lane with live leans).

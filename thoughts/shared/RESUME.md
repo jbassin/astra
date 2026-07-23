@@ -36,7 +36,53 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `d036a35`, 2026-07-22 — assay (0030) ROUND 5: the HOMEBREW SPELL CONVERSION project — worklist items 1–6 + voice sweep + TRAIT-HYGIENE sweep ALL DONE (item 6 = 11 deep-COLD hybrids + the Carnage borderline, one-at-a-time, 12 commits, all pushed); ▶ NEXT = worklist item 7 (73-ledger manual pool + 21 wide-range rows — the LAST worklist item); codex gate H still the open codex item; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `ffd7ad8`, 2026-07-23 — assay (0030) ROUND 5: item 7 PREP COMPLETE — 108-spell pool derived from the LIVE scorer (not the doc's stale 73+21), 108 facts-only dossiers collated by a 14-agent workflow, batch-0 set-wide sweeps BUILT (encoding + curse-convention + prose restoration), all 35 judgment-lane dossiers ENRICHED with options + staff lean; ▶ NEXT = run the item-7 REVIEW itself (one pre-built card per spell, stakeholder decides in chat; open with the set-wide long-cast-vs-RITUAL question); codex gate H still the open codex item; heartwood ON HOLD)
+
+> **✅ assay (0030) R5 — item-7 prep session, 2026-07-23, all pushed (`a385307`…`ffd7ad8`):**
+> 1. **Pool + dossiers:** `apps/assay/results/homebrew-item7/` — `queue.json` (108 =
+>    73 ledger + 25 open wide-range + 10 §4a reclassified-out; derived from live
+>    `score-homebrew`, 9 already-decided wide rows excluded) + 108 per-spell dossiers
+>    (fixed template: 5e original · store conversion · what-changed · balanceBullets ·
+>    snapshot-verified comparables · prior touches · flags) via a 14-agent Workflow
+>    (`a385307`). `INDEX.md` = the triage of all 98 collation flags + review lanes +
+>    running status. ⭐ Workflow gotcha: `args` did NOT reach the script (`args.queue`
+>    undefined, instant fail) — inline the data into the script and resume by runId.
+> 2. **Batch-0 (4 stakeholder decisions, engineer-built):** `b737e18` structural
+>    encoding sweep (adapter+store lockstep — heightening ×10 incl. real interval
+>    blocks for ashen-pack/lyrr's-shell + all 3 kosmoturgist's-weapon partitions,
+>    hellforging/raise-island defense promotion, propagating-blast damage parse,
+>    `**`→`<strong>` ×20; ONE routing change: propagating-blast ledger→quantitative
+>    −1.06; revisions deviation-set byte-unchanged) · `7839a81` curse-removal
+>    convention ×5 (divine-regression/fast-forward/overhaul/poisoned-backflow/taboo →
+>    counteract-vs-spell-rank, valves kept) · `f91b2d6` prose restoration ×5
+>    (earworm/inquisition/forensic-analysis/laixa's/nightfall; excavation+awkward
+>    verified no-ops). Sphere-of-Ruin spam tax: stakeholder chose judge-at-review
+>    (resolved in-dossier: leave stripped, restore caster-adjacent pursuit start).
+> 3. **Enrichment (staff, all 35 judgment-lane dossiers):** each now ends with
+>    "## Options & staff lean". Highlights: several collation flags were FALSE
+>    POSITIVES vs documented policy/idiom (school-trait strips, 1A→2A systemic map,
+>    Slow-precedent success tiers, sustain-vs-concentration semantics, attack-trait/
+>    defense-null official conventions); ⭐ SET-WIDE review question surfaced:
+>    hours-long casts as spells vs RITUALS (Hellforging = poster child — official
+>    Creature Creation table prices its level-14 output at ritual rank 9, not spell
+>    rank 7; Overhaul same direction); text bugs queued (Take Me Instead
+>    Charisma/Society contradiction, Lockstep Fate hold/discharge lifecycle,
+>    Reflective Defense embedded editor-voice — a voice-sweep escapee).
+> 4. **▶ RESUME AT: the review loop.** Format LOCKED: one spell per message (dossier
+>    card + lean), decide in chat, apply+commit per decision, probes via temp store
+>    edits + real scorer. Suggested order: set-wide ritual question → 10
+>    reclassified-out (mostly record-artifact-keep) → rest of judgment lane → 73
+>    fast-lane (leans formed live; expect keep-shaped). After item 7: cheap-ritual-
+>    props residue → codex ingest scoping → Foundry module → joint review w/ friend.
+> 5. ⚠ Environment: bare `diff` + batched multi-`python3` Bash loops returned WRONG
+>    output this session (RTK proxy suspect) — see [[shell-output-reliability]];
+>    use git diff / single-process Python for load-bearing comparisons.
+
+---
+
+### Previous section (2026-07-22) — items 1–6 (superseded above)
+
+## (was) Current state (as of `d036a35`, 2026-07-22 — assay (0030) ROUND 5: the HOMEBREW SPELL CONVERSION project — worklist items 1–6 + voice sweep + TRAIT-HYGIENE sweep ALL DONE (item 6 = 11 deep-COLD hybrids + the Carnage borderline, one-at-a-time, 12 commits, all pushed); ▶ NEXT = worklist item 7 (73-ledger manual pool + 21 wide-range rows — the LAST worklist item); codex gate H still the open codex item; heartwood ON HOLD)
 
 > **✅ assay (0030) R5 — homebrew conversion triage + canonical store, 2026-07-21→22, all pushed:**
 > 1. **Vendored** `github.com/jmnario/run_balance` → `apps/assay/vendor/run_balance/`
