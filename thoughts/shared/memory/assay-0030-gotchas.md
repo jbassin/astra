@@ -174,3 +174,29 @@ decision. Stakeholder calls logged in triage doc + commit messages. Set-wide pol
 Remaster = no materials (except long-cast ritual Costs), no school traits except the 8
 HOMEBREW schools (standard-school spells like Connection get stakeholder-assigned homes —
 memetics), trait line is source of truth (no prose glosses).
+
+**ITEM 6 DONE (2026-07-22, `16f8814`…`d036a35`, 12 commits):** the 11 deep-COLD hybrids
+(≤ −3.0) + the Carnage borderline (−2.98), one-at-a-time. **ALL 12 verdicts decomposed to
+artifact classes — zero true miscostings**; the value was the defects assay wasn't pointing
+at. Resolutions in triage §10. ⭐ New artifact classes confirmed: **prevented-condition
+promotion** (Forceful Onslaught's "does not fall Unconscious" priced as a Sleep-family
+payload — negation guard misses UUID-ref'd preventions); **chip-damage-on-effect-spell**
+(the fix is DROP the dice, Never Mind idiom — official curse spells don't chip; dropping
+also flips routing to honest comparables); **reaction constant deepens with rank bumps**
+(Solar Rebuke r5→6 read −3.47→−4.47 — expectations scale with rank, state the true 2A
+residual when recording); **stage-block conditions don't promote** (legalizing an
+affliction flips routing hybrid→quantitative at the SAME number — expected, not drift).
+⭐ The Hypercompression per-tick line is REUSABLE MATH: tick EV should sit ≈ −0.9 ranks
+below the one-shot ladder (8d6 at r5 lands exactly; solve r = (EV/6.04)^(1/1.089)).
+⭐ **STANDING CONVENTION (stakeholder): curse removal text = successful counteract check
+against the spell's rank** — applied ToM + Cerebral; arcane-censure/divine-regression/
+fast-forward/poisoned-backflow/taboo still carry legacy text, convert as reviewed. Also:
+"remove curse"/"restoration" don't exist in Remaster (→ Cleanse Affliction / Sound Body,
+both verified in the codex snapshot). ⭐ Conversion-bug classes to check EVERY spell for:
+dropped 5e clauses (Eldritch's escape + spell-end = accidental permanent banish; Cerebral's
+lost "frightened of you" d6 row + duplicated phobia); harsher-than-5e tightenings ("three
+CONSECUTIVE saves"); dead Remaster type maps (radiant→vitality = zero damage vs living);
+malformed afflictions (undefined stages, flat-check recovery language, no max duration —
+fix = legal stage blocks, the Stinger/Tentacle/Grey Frost pattern; affliction framing can
+RESTORE lost 5e escalation, Grey Frost); markdown `**` inside HTML description fields.
+Rename mechanics proven again: git mv + name field, seededFrom untouched (Eldritch).

@@ -36,7 +36,7 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `3a2d6a7`, 2026-07-22 — assay (0030) ROUND 5: the HOMEBREW SPELL CONVERSION project — worklist items 1/2/3/4/5 + voice sweep + TRAIT-HYGIENE sweep ALL DONE (item 1 = 12 spells stakeholder-decided one-at-a-time, 13 commits, all pushed); ▶ NEXT = worklist item 6 (deep-COLD effect hybrids) or 7 (73-ledger manual pool); codex gate H still the open codex item; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `d036a35`, 2026-07-22 — assay (0030) ROUND 5: the HOMEBREW SPELL CONVERSION project — worklist items 1–6 + voice sweep + TRAIT-HYGIENE sweep ALL DONE (item 6 = 11 deep-COLD hybrids + the Carnage borderline, one-at-a-time, 12 commits, all pushed); ▶ NEXT = worklist item 7 (73-ledger manual pool + 21 wide-range rows — the LAST worklist item); codex gate H still the open codex item; heartwood ON HOLD)
 
 > **✅ assay (0030) R5 — homebrew conversion triage + canonical store, 2026-07-21→22, all pushed:**
 > 1. **Vendored** `github.com/jmnario/run_balance` → `apps/assay/vendor/run_balance/`
@@ -70,8 +70,20 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 >    schools + customs + damage-types stripped; 93 docs, adapter+store lockstep, 0 score
 >    drift, 0 new deviations; stakeholder wants a later curated re-add sweep) · set-wide:
 >    8 school traits, materials scrub (ritual-keep), Remaster fixes.
->    **▶ OPEN: item 6** (deep-COLD effect hybrids, read via comparables) · **item 7**
->    (73-spell ledger manual pool + 21 wide-range rows) · residue (cheap ritual props).
+>    · ~~**6**~~ deep-COLD hybrids (2026-07-22, 12 spells one-at-a-time, triage §10: ALL
+>    12 verdicts decomposed to artifact classes, ZERO true miscostings — the real repairs
+>    were defects assay wasn't pointing at: 4 chip-damage drops (ToM/Cerebral/Focus Break
+>    now route comparables in-range), 3 affliction legalizations (Stinger/Tentacle venoms;
+>    Grey Frost REBUILT as staged affliction → stage-3 permanent petrification, restoring
+>    5e's lost escalation), Eldritch Horror renamed ("Eldrich" typo) + its dropped
+>    escape/spell-end clauses restored (was a de facto permanent banish), Cerebral's lost
+>    d6 row restored, Solar Rebuke vitality→fire (dealt ZERO vs living) + rank 5→6,
+>    Repetitious Trauma 8d6/tick onto the Hypercompression per-tick line, morph-family
+>    sustained→flat-1-min + heighten trims, Carnage engine folded into Sustain;
+>    ⭐ NEW STANDING CONVENTION: curse removal = counteract check vs the spell's rank —
+>    5 store spells still carry legacy removal text, convert as each is reviewed).
+>    **▶ OPEN: item 7** (73-spell ledger manual pool seeded by his balanceBullets + 21
+>    wide-range comparables rows — the LAST worklist item) · residue (cheap ritual props).
 >    Then: codex ingest as a new source (needs scoping: licenseMap + Foundry-only join) +
 >    Foundry compendium module + the joint review with the friend (revisions.md is the
 >    artifact).
