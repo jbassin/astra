@@ -299,3 +299,45 @@ Named creators: Almonk(antillurgy ×3)/Djura(kosmoturgy ×3)/Laixa(chrono+memeti
 Lyrr/Patishvat/Darkseeker; mercuromancy+gestalt+seraphic have none.
 ▶ NEXT: codex ingest scoping (licenseMap + Foundry-only join + surfacing — scope doc
 first) → Foundry module → joint review (revisions.md = the artifact).
+
+**HOMEBREW → CODEX INGEST (2026-07-24, `9d72157`…`e802927`) — BUILT + DEPLOYED + LIVE one
+session** (scope `61cbf73` → spec D30-42..48 `507390f` adversarial ×2 → S1 `b09a0d6` loader ·
+S2 `8e4f1a1` traits · S3 `37de595` surfacing · S4 orchestrator deploy): the 175-spell store +
+8 school trait pages live on codex.iridi.cc as source **"Liturgy of the Iridite Vol.2"** /
+abbrev **LotI2** — corpus 44,982 (spell 2,633 · ritual 204 · trait 915), official docs
+byte-identical, SigNoz 0 ERROR. ⭐ THE finds:
+- **The M3 collision surface = LEGACY SUPERSEDED AoN-only docs** — homebrew Glitterdust hit
+  `spell/glitterdust` (Core Rulebook legacy, `proseOnly`, remastered→Revealing Light) on the
+  FIRST real run; pack-only sweeps (1,144) can't see the ~1,300 AoN-only spells. Renamed
+  **Glimmerdust** (revisions 121→122). The widened guard (pre-drop + post-drop id spaces) threw
+  cleanly with zero corpus writes — checking homebrew names: sweep the FULL emitted id space.
+- **`.strict()` schemas bite twice**: an `origin:"homebrew"` entity marker OR a `homebrew`
+  manifest key each hard-crash (`CodexEntitySchema` at emit / `parseManifest` before the run) —
+  the keep-arm is a `homebrewIds` SET PARAMETER on `applyAonPrimaryDrop`; the provenance pin
+  lives in report.json, NEVER corpus-manifest.json.
+- **UuidIndex threading is load-bearing**: homebrew assembly ctx must reuse `foundry.index`
+  (built by `loadFoundrySide`) or all 70 `@UUID` docs (192 ref occurrences — doc-count vs
+  ref-count units both true) silently downgrade to brokenRef.
+- **Store basenames ARE the ids**: codex `sluggify` strips apostrophes, store basenames
+  hyphenate — 17/175 diverge (`spell/almonk-s-arcane-drain`), exactly 17 `slugMismatch`
+  reports EXPECTED (0 or ≠17 = a real problem).
+- **Trait source docs are `{name, description}` ONLY** — a stray `level` flips
+  `categoryHasLevelCoverage("trait")` and puts a Lvl column on all 915 /trait rows (column-set
+  invariant test pins it). Trait pages render copy + TraitCrossNav→`/search?traits=<token>`,
+  NOT an in-page spell list; ids = literal trait TOKENS (seraphic, not worldweaver).
+- **Book-level license ≠ entity license**: `deriveBookLicense`'s two tiers (licenseMap; a
+  `source/`-category entity) both need AoN-side presence → LotI2 showed "License unknown" on
+  /sources despite uniform OGL entities → `BOOK_LICENSE_OVERRIDE` beside
+  `PRODUCT_LINE_OVERRIDE` in sourcesIndexBuild.ts (both keyed on post-bookNormalize strings).
+- **`uv sync --frozen` in the dagster image needs EVERY lock member COPY'd** — apps/assay had
+  been a workspace member since R1 with no `COPY apps/assay`; the break stayed LATENT until
+  the first blanket `just up` rebuilt the dagster image (`187087d`). New uv member ⇒ dagster
+  Dockerfile COPY, even for non-pipeline members.
+- Deploy/verify: in-place transform (P11 idiom), NO snapshot re-fetch (P7 drift trap); window
+  ≈439 s incl. the in-window collision-rename cycle; **Pagefind fragments are gzip — grep the
+  DECOMPRESSED bytes** (raw grep false-negatives); virtualized listings prove additions via
+  the TOOLBAR COUNT (ritual 145→148), not SSR row greps; real-corpus determinism ×2 = hash
+  manifest → transform → hash → compare (45,075 files byte-identical).
+- Process: stakeholder delegated trait copy + all decisions mid-build to END-REVIEW — 8 copy
+  blocks staff-authored from a full-store characterization pass; decision ledger = spec §5.
+  ▶ NEXT: stakeholder end-review → Foundry compendium module (same store) → joint review.

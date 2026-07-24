@@ -36,7 +36,46 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `6926bf5`, 2026-07-23 — assay (0030) ROUND 5: **ITEM 7 COMPLETE + the POST-ITEM-7 CURATION SWEEPS ALL DONE** (residue `79942f2` · official-trait pass `187865d` · 500-ft review `6d3c6ae` · tradition passes `7af5e8b`+`6926bf5`); store = 175 spells, revisions.md = 121 deviations, tradition spread occult 118/arcane 109/primal 80/divine 62, all pushed; ▶ NEXT = **codex ingest scoping** (scope doc first: licenseMap + Foundry-only join + surfacing) → Foundry module → joint review w/ friend; codex gate H still open; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `e802927`, 2026-07-24 — assay (0030) ROUND 5: **HOMEBREW → CODEX INGEST BUILT + DEPLOYED + LIVE in one session** (scope `61cbf73` R0–R4 → spec D30-42..48 `507390f` adversarial ×2 → S1 `b09a0d6` · S2 `8e4f1a1` · S3 `37de595` · S4 rename `633b843`+license `cd3ed04`+dagster `187087d`+record `e802927`): the 175-spell "Liturgy of the Iridite Vol.2" store + 8 school trait pages live on codex.iridi.cc, corpus 44,982, all gates A–G met; store = 175 spells, revisions.md = **122** deviations (Glitterdust→**Glimmerdust** S4 rename); ⚠ **STAKEHOLDER END-REVIEW PENDING** — he delegated trait-page copy + all in-flight decisions to a post-build review (list in spec §5); ▶ NEXT = **stakeholder end-review of the ingest round** → Foundry compendium module → joint review w/ friend; codex gate H (P2–P14 + now the homebrew surface) still open; heartwood ON HOLD)
+
+> **✅ assay (0030) R5 — homebrew → codex ingest, 2026-07-24 (`9d72157`…`e802927`, all pushed):**
+> 1. **Pre-ingest store curation (stakeholder-decided live):** Time Jump → **Stolen
+>    Moment** `9d72157` (official rank-3 slug collision) · publication title →
+>    "Liturgy of the Iridite Vol.2" `ef5de24` (adapter+store lockstep, zero new
+>    deviations) · scope doc `61cbf73` (R0 LotI2/`LotI2` · R1 rename · R2 rituals→
+>    `ritual/` · R3 pinned "Homebrew" group · R4 author 8 trait pages).
+> 2. **Spec D30-42..48** `507390f` FINAL after adversarial ×2 (3 blockers: strict-
+>    schema marker → `homebrewIds` param; strict manifest → pin in report.json;
+>    UuidIndex threading for the 70 `@UUID` docs). Build = 3 sonnet slices + S4
+>    orchestrator deploy; spec §5 = the full build record + gate evidence.
+> 3. **⭐ the M3 proxy-pin throw HAPPENED on first real run:** homebrew Glitterdust
+>    vs `spell/glitterdust` = the LEGACY superseded AoN-only Core Rulebook doc —
+>    the population pack-only sweeps can't see. Full-space rescan → only collision;
+>    renamed **Glimmerdust** `633b843` (revisions 121→122). Guard did its job:
+>    named throw, zero corpus writes.
+> 4. **Two unplanned fixes:** `/sources` "License unknown" badge → `BOOK_LICENSE_
+>    OVERRIDE` `cd3ed04` (deriveBookLicense's two tiers both need AoN-side
+>    presence — both reviews missed it) · dagster image build broke on blanket
+>    `just up` → `COPY apps/assay` `187087d` (uv sync --frozen needs every lock
+>    member; latent since assay joined the workspace).
+> 5. **Live state:** corpus spell 2,633 / ritual 204 (148 visible = +3 homebrew) /
+>    trait 915; official docs byte-identical (gate B: 183 added, 0 removed, 7
+>    allowed meta files changed); Pagefind 44,982; SigNoz 0 ERROR; deploy window
+>    ≈439 s (in-place transform, collision-rename cycle inside it).
+> 6. **⚠ Decisions taken on delegated authority (report to stakeholder):** the 8
+>    trait-copy blocks staff-authored + shipped (grounded in a full-store
+>    characterization); Glimmerdust name choice; OGL kept as the license; license
+>    + dagster fixes. Spec §5 "Stakeholder process amendment" is the ledger.
+> - **▶ NEXT: stakeholder end-review** (trait copy on `/trait/<school>` ×8,
+>   Glimmerdust, the Homebrew /sources group) → **Foundry compendium module**
+>   (consumes the same store) → joint review (revisions.md @ 122). codex gate H
+>   unchanged; heartwood ⏸; webhook rotation etc. unchanged.
+
+---
+
+### Previous section (2026-07-23) — post-item-7 sweeps (superseded above)
+
+## (was) Current state (as of `6926bf5`, 2026-07-23 — assay (0030) ROUND 5: **ITEM 7 COMPLETE + the POST-ITEM-7 CURATION SWEEPS ALL DONE** (residue `79942f2` · official-trait pass `187865d` · 500-ft review `6d3c6ae` · tradition passes `7af5e8b`+`6926bf5`); store = 175 spells, revisions.md = 121 deviations, tradition spread occult 118/arcane 109/primal 80/divine 62, all pushed; ▶ NEXT = **codex ingest scoping** (scope doc first: licenseMap + Foundry-only join + surfacing) → Foundry module → joint review w/ friend; codex gate H still open; heartwood ON HOLD)
 
 > **✅ assay (0030) R5 — post-item-7 curation sweeps, 2026-07-23 (`79942f2`…`6926bf5`):**
 > 1. **Cheap-ritual-props residue CLOSED (B)** `79942f2` — Cosmic Wheel's 250-gp attuned
