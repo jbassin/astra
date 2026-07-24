@@ -36,7 +36,36 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `c7e6464`, 2026-07-23 — assay (0030) ROUND 5: **ITEM 7 REVIEW COMPLETE — all 108 pool spells resolved (32 judgment-lane + 3 rituals + 73 fast-lane), the WHOLE worklist 1–7 is DONE**; store = 175 spells (lesser-wish removed), revisions.md = 91 deviations, all pushed; ▶ NEXT = cheap-ritual-props residue sweep (small) → codex ingest scoping (the first new multi-session chunk) → Foundry module → joint review w/ friend; codex gate H still open; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `6926bf5`, 2026-07-23 — assay (0030) ROUND 5: **ITEM 7 COMPLETE + the POST-ITEM-7 CURATION SWEEPS ALL DONE** (residue `79942f2` · official-trait pass `187865d` · 500-ft review `6d3c6ae` · tradition passes `7af5e8b`+`6926bf5`); store = 175 spells, revisions.md = 121 deviations, tradition spread occult 118/arcane 109/primal 80/divine 62, all pushed; ▶ NEXT = **codex ingest scoping** (scope doc first: licenseMap + Foundry-only join + surfacing) → Foundry module → joint review w/ friend; codex gate H still open; heartwood ON HOLD)
+
+> **✅ assay (0030) R5 — post-item-7 curation sweeps, 2026-07-23 (`79942f2`…`6926bf5`):**
+> 1. **Cheap-ritual-props residue CLOSED (B)** `79942f2` — Cosmic Wheel's 250-gp attuned
+>    music box → official Requirements line; Mental Balance's blindfold/scales dropped;
+>    every other cost line verified settled (ritual Costs ×3, Requirements idiom ×3,
+>    consumed-with-gp costs = the Everlight precedent).
+> 2. **Official-trait additions pass** `187865d` — 17 traits / 13 spells, calibrated
+>    against the snapshot (attack ×4 via Spiritual Armament, aura ×5 via Bless idiom,
+>    spirit/force from structured damage, fear+emotion ×2, sleep ×2, darkness,
+>    teleportation); ~50 candidates pruned (negation guards, detect≠inflict, static
+>    emanations, Stunned-1 riders per Slow, official `move`=caster-movement). Zero
+>    score drift set-diff-proven. ⚠ `git diff --no-index` returned FALSELY EMPTY on
+>    differing files — [[shell-output-reliability]] again; single-process Python set-diff
+>    is the trusted comparator.
+> 3. **500-ft range review** `6d3c6ae` — Fireball-class artillery (Almonk's Retribution,
+>    Falling Star) + Illusory Illusion keep 500 ft on official precedent; Gravity Anvil
+>    → 120 ft (Disintegrate register); Sapping Lightning range EMPTIED (own prose =
+>    self-origin line). Both in-band→HOT = the range-bucket artifact, dice untouched.
+> 4. **Tradition passes** `7af5e8b` — 53 spells: chronomancy+planara gain primal
+>    school-wide (5e lineage uniform: Druid 28/28, Ranger 25/25 — Fault Line logic);
+>    mercuromancy → uniformly [divine, occult], ONE exception `6926bf5`: Gift of the
+>    Archmage stays arcane-only (identity; matches vendor → its deviation vanished).
+>    Analysis recorded: the divine "lag" was inherited from 5e (Cleric/Paladin = 57
+>    memberships, 56 in kosmoturgy); the real mismatch was PRIMAL under-grant.
+> 5. **Named-creator inventory** (exploration, no changes): Almonk ×3 antillurgy ·
+>    Djura ×3 kosmoturgy · Laixa ×2 SPANNING chronomancy/memetics · Lyrr ×1
+>    chronomancy · Patishvat ×1 planara · Darkseeker ×2 planara (epithet-ish);
+>    mercuromancy/gestalt/seraphic have NO named creators; Kosmoturgist's/Artist's/
+>    Gambler's are generic possessives.
 
 > **✅ assay (0030) R5 — item-7 review session 2, 2026-07-23 (`975c6fc`…`c7e6464`, 14 commits):**
 > 1. **Judgment lane finished (6 cards):** lesser-wish **REMOVED WHOLESALE** `975c6fc`

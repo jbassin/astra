@@ -277,6 +277,25 @@ held: git mv + name field, seededFrom untouched, differ pairs via provenance);
 fluid-form poison+Stunned immunities and incensed-bestial-rage Fatigued-on-end restored
 (the dropped-COST/dropped-IMMUNITY classes); lucky-ward's dropped ally-save half KEPT
 dropped (load-bearing for rank vs Bless+Bane — a drop can be the correct pricing).
-▶ NEXT: cheap-ritual-props residue sweep (mental-balance blindfold/scales = known
-instance) → codex ingest scoping (licenseMap + Foundry-only join + surfacing — scope
-doc first) → Foundry module → joint review (revisions.md = the artifact).
+**POST-ITEM-7 CURATION SWEEPS (same day, `79942f2`…`6926bf5`) — residue + traits +
+ranges + traditions ALL DONE:** props residue closed (non-consumed props → Requirements
+per official idiom — Remaster killed focus components; consumed-with-gp costs are LEGAL
+on spells, the Everlight ruby-dust precedent); official-trait pass added 17/13-spells
+(calibrate candidates against snapshot exemplars: attack ← Spiritual Armament even for
+granted-attack sustained weapons; aura ← Bless = sustained SELF-CENTERED MOVING
+emanation only; official `move` = caster/ally movement, hostile pulls DON'T carry it;
+prune negation guards + detect≠inflict + Stunned-1 crit riders per Slow); 500-ft
+doctrine: Fireball r3 = 500 ft ARTILLERY class + Illusory Object r1 = 500 ft illusion
+class are the two official 500-ft families — single-target damage caps ~120 (Disintegrate),
+self-origin lines carry NO range; tradition passes: chronomancy+planara + primal
+school-wide (uniform 5e class lineage), mercuromancy → [divine, occult] w/ Gift-of-the-
+Archmage arcane-only exception (vendor-matching edits make deviations VANISH from
+revisions.md — count can go down); ⭐ divine-lag analysis: inherited from 5e source
+(Cleric/Paladin 57 memberships, 56 = kosmoturgy itself), the real conversion gap was
+primal. Spread now occult 118/arcane 109/primal 80/divine 62; revisions 121.
+⚠ `git diff --no-index` returned FALSELY EMPTY on differing files — single-process
+Python set-diff is the trusted comparator ([[shell-output-reliability]]).
+Named creators: Almonk(antillurgy ×3)/Djura(kosmoturgy ×3)/Laixa(chrono+memetics ×2)/
+Lyrr/Patishvat/Darkseeker; mercuromancy+gestalt+seraphic have none.
+▶ NEXT: codex ingest scoping (licenseMap + Foundry-only join + surfacing — scope doc
+first) → Foundry module → joint review (revisions.md = the artifact).
