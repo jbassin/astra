@@ -118,6 +118,7 @@ Magic Mailbox / Remake precedent).
 | patishvat-s-perfect-pocket | **Stasis dropped entirely (A-variant)** — invented time-preservation sentence deleted, no spoilage softener (stakeholder call); until-dispelled + counteract-r1 valve + 1-min cast all kept as the honest r1 package | `346afcd` |
 | sphere-of-ruin | **Tax stays stripped, pursuit restored (A)** — the deferred batch-0 decision CLOSED: sphere appears adjacent to YOU again (dread fiction + pacing brake back); 500 gp gem not restored (conversion already self-nerfed past what the tax paid for); Preservation reciprocal synergy queued for its fast-lane card | `e3f79d6` |
 | earworm | **Keep as-is (A)** — batch-0 already restored all four dropped clauses; anchor math holds (3 below Scrying, paid by touch + audio-only + discovery risk); stricter-counterplay overridable declined | (log-only) |
+| monstrous-copy-eye-stalks | **Keep as-is (A)** — every table deviation reasoned + precedented (Death Ray out per Massacre-r9, Paralyze folded into staged Petrification per Petrify idiom, table-wide incapacitation, capped ray scaling); Will/Fort split = Foundry schema limit, prose governs | (log-only) |
 
 ## Status
 
