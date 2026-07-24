@@ -1113,7 +1113,11 @@ def convert_spell(spell: dict[str, Any]) -> ConvertedSpell:
         "description": {"value": description_html},
         "duration": duration_dict,
         "level": {"value": level_value},
-        "publication": {"license": "OGL", "remaster": True, "title": "Homebrew (run_balance)"},
+        "publication": {
+            "license": "OGL",
+            "remaster": True,
+            "title": "Liturgy of the Iridite Vol.2",
+        },
         "range": {"value": range_value},
         "requirements": "",
         "rules": [],
