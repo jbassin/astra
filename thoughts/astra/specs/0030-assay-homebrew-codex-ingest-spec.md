@@ -1,6 +1,6 @@
 # 0030 assay — homebrew → codex ingest ("Liturgy of the Iridite Vol.2") — NLSpec
 
-**Status:** FINAL (2026-07-24) — adversarially reviewed ×2 (mechanism + surfacing lenses);
+**Status:** BUILT + DEPLOYED + LIVE (2026-07-24, §5) — was FINAL after adversarial review ×2 (mechanism + surfacing lenses);
 **3 blockers + 12 minors/nits ALL folded below.** Blocker catches: (B1) the draft's
 `origin:"homebrew"` entity marker would hard-fail the `.strict()` `CodexEntitySchema.parse` at
 emit for all 175 docs → replaced with a `homebrewIds` set parameter on `applyAonPrimaryDrop`;
@@ -199,6 +199,60 @@ store→revisions.md workflow.
 4. **S4 — sweep + deploy:** gates A–E locally, D30-48 staged deploy, live gates F–G, build
    record §5, RESUME/memory checkpoint.
 
-## 5. Build record
+## 5. Build record (2026-07-24 — BUILT + DEPLOYED + LIVE in one session)
 
-*(filled per slice at build time)*
+**Slices:** S1 `b09a0d6` (loader/reroute/keep-arm/guard/report/fixtures; 2,363 codex tests
+passing, 7 pre-existing ssrSmoke fixture-env fails ride) · S2 `8e4f1a1` (8 trait docs + trait
+assembly; revisions.md re-proven byte-identical, 121 deviations; the extract-fixture virt-* wipe
+struck again and was surgically restored per memory) · S3 `37de595` (override + pinned group +
+abbreviation + backstops; all 324 curated keys verified fixture-covered pre-change) · S4
+orchestrator-run: rename `633b843`, license fix `cd3ed04`, dagster COPY fix, deploy.
+
+**Stakeholder process amendment (recorded):** mid-build the stakeholder delegated the D30-44 copy
+approval and all remaining decision points to END-REVIEW ("go with your lean, tell me after") —
+the 8 copy blocks are staff-authored (grounded in a full-store characterization pass) and shipped
+without pre-approval; gate H's copy approval converts to the stakeholder's end review.
+
+**The predicted M3 throw HAPPENED (first real run):** homebrew Glitterdust collided with
+`spell/glitterdust` — the LEGACY Core Rulebook doc (AoN-only `proseOnly`, superseded →
+Revealing Light), exactly the ~1,300-doc population the pack-only sweep couldn't see. Full-space
+rescan found it was the ONLY collision (183 ids vs 44,799). Resolution per the R1 posture:
+renamed **Glimmerdust** (`633b843`; seededFrom pairing held; revisions 121→122 — glitterdust
+had been deviation-free). The guard did precisely its job: named throw, zero corpus writes.
+
+**Two unplanned fixes, both recorded:** (1) `/sources` rendered "License unknown" for LotI2 —
+`deriveBookLicense`'s two tiers both require AoN-side presence → `BOOK_LICENSE_OVERRIDE`
+(`cd3ed04`, same committed-override posture, unit-tested); a gap both adversarial reviews
+missed. (2) `just up` failed on the DAGSTER image: `uv sync --frozen` requires every lock
+member present and `dagster/Dockerfile` never gained `COPY apps/assay` when assay joined the
+workspace (0030 R1) — latent since then, surfaced by the first blanket rebuild; fixed (+7 MB
+context, no .dockerignore issue).
+
+**Gate evidence:** **A** homebrew in 175+8 → emitted 172 spell + 3 ritual + 8 trait;
+collisionGuardOk; slugMismatch EXACTLY 17; uuidRefs 192 resolved / 0 broken (192 = ref
+occurrences across exactly 70 docs — the spec's "70" was doc-count; independently re-counted,
+both true); corpus spell 2,633 · ritual 204 · trait 915 · total 44,982 = 44,799 + 183. ·
+**B** pre/post sha256 manifest (single-process Python): 183 added = exactly the homebrew set,
+0 removed, changed = exactly the 7 allowed files; every official doc byte-identical. ·
+**C** emit Zod 100% (transform exit 0). · **D** real-corpus determinism ×2: 45,075 files
+byte-identical. · **E** typecheck 32/32, oxlint `--threads=4` clean, oxfmt clean, codex suite
+2,376/2,383 (the 7 = accepted baseline). · **F** live through the edge: stolen-moment /
+glimmerdust / trait/chronomancy all 200 w/ LotI2 citation + school-pill link + copy; NO AoN
+link; `/spell?book=…` = exactly 172 w/ LotI2 abbreviation; `/ritual` toolbar 145→**148** (=
++3 homebrew; rows sit at positions 93/122/203, beyond the SSR window [0,60) by design);
+`/sources` shows the pinned Homebrew group w/ OGL badge; Pagefind fragment for Stolen Moment
+verified (fragments are gzip — grep the DECOMPRESSED bytes); fireball spot-check unchanged. ·
+**G** SigNoz 0 ERROR/FATAL logs, 0 error traces (astra.codex, 1 h window, 2,932 spans
+scanned). · **Deploy** in-place transform (P11 precedent; no snapshot re-fetch — P7 drift
+trap avoided); image-first; host reindex 44,982 pages / 32.7 s; window ≈439 s
+transform-start→container-restart (stretched by the in-window collision-rename cycle + the
+license fix + determinism proof; corpus valid throughout except transient wipe-rewrite
+seconds).
+
+**Residue / notes:** the S1 hand-written fixture bytes were verified canonical-format (sorted-
+key 2-space + LF) in lieu of an extractor byte-diff — a real extractor re-run needs a fresh
+corpus AND would now pull homebrew picks into the canonical-coverage selection (churn); next
+legitimate fixture regen should expect that. `?query=` listing filtering is client-side
+post-hydration (not homebrew-specific). `assay export-codex`/spell-power.json untouched —
+homebrew ids absent, fail-soft, block hidden anyway. Future `just codex-refresh` picks the
+store up automatically (path is a `main()` constant; recipe unchanged).
