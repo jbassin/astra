@@ -362,7 +362,18 @@ type (Solar Rebuke vitality→fire, +rank 6), 1 per-tick re-line (Repetitious 8d
 counteract-check curse CONVENTION, and the morph family's duration/heighten consistency
 pass.
 
-## 11. Sustain sweep (2026-07-25, DRAFT — pending stakeholder session)
+## 11. Sustain sweep (2026-07-25, RUN — stakeholder-ratified same day)
+
+**OUTCOME (`0fa37a8` batch · `afb384a` card 1 · `140baa2` card 2): 22 converted, 24/175
+sustained remain (24/172 non-ritual = 14.0%, vs official 15.4%).** Cards resolved:
+compressive-weapon → **flat 1 minute** (Enlarge r2 precedent over the 5e 3-round option) ·
+dead-ringer → **flat 10 minutes** (Invisibility register; the r4 premium buys the reaction
+trigger + decoy, not 6× duration) · ebb-and-flow → **KEPT sustained** (stakeholder call:
+the fresh 3→4 Everything-Spell pricing included the action tax — recorded as the one
+deliberate idiom exception, not residue). Score set-diff over the batch: 1/175 field
+drift (Disrupt Movement routing label `ledger:utility`→`ledger:unpriced-modifier`, no
+verdicts moved); revisions.md 130→132 deviating (compressive-weapon + dead-ringer newly
+deviating; the batch added 8). Original draft follows.
 
 **Provenance:** stakeholder concern that 5e concentration (≈half of all 5e spells) over-ported
 into PF2e sustain. Measured: the store carries **46/175 sustained (26.3%)** vs the official
