@@ -69,7 +69,8 @@
       "traditions": [
         "arcane",
         "divine",
-        "occult"
+        "occult",
+        "primal"
       ],
       "value": [
         "attack",

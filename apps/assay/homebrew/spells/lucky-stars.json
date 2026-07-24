@@ -56,9 +56,8 @@
     "traits": {
       "rarity": "common",
       "traditions": [
-        "arcane",
-        "occult",
-        "primal"
+        "divine",
+        "occult"
       ],
       "value": [
         "concentrate",

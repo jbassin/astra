@@ -71,7 +71,8 @@
       "rarity": "common",
       "traditions": [
         "arcane",
-        "occult"
+        "occult",
+        "primal"
       ],
       "value": [
         "attack",
