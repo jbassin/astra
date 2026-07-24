@@ -57,7 +57,7 @@
       "value": "<p>You turn your gestalt wildshaping energy inward, forcing long, curved spurs of hardened bone to erupt from your skin at joints, knuckles, elbows, shoulders, and knees. The spurs are razor-sharp and cause significant damage to anything that presses against them.</p><p>While this spell is active, you gain the following benefits:<br />- When you successfully Grapple a creature, you deal 3d6 piercing damage to that creature in addition to the Grapple's effects.<br />- At the start of each of your turns while you have a creature @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed}, that creature takes 2d6 piercing damage.<br />- Any creature that hits you with an unarmed strike or natural attack takes 1d6 piercing damage (no save).</p><p>This spell has the morph trait and does not suppress your normal polymorph or wildshape capabilities (the spurs modify, not replace, your form).</p><hr /><p><strong>Heightened (7th)</strong> The initial Grapple damage increases to 4d6, the per-turn grab damage increases to 3d6, and creatures you have @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed} also take a -1 circumstance penalty to saves against your spells.</p>"
     },
     "duration": {
-      "sustained": true,
+      "sustained": false,
       "value": "1 minute"
     },
     "heightening": {

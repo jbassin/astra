@@ -28,10 +28,10 @@
       }
     },
     "description": {
-      "value": "<p>You cause a creature to temporarily lose its social and physical confidence, making it obliviously @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy}. The targeted creature must attempt a Will save. A creature affected by this spell doesn't notice it is performing poorly and can't use reactions to reroll or improve the affected checks.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The creature is affected by awkwardness. It takes a –1 status penalty to attack rolls, Charisma-based skill checks, and Charisma-based saving throws. It also can't benefit from fortune effects on those rolls.</p><p><strong>Critical Failure</strong> As failure, but the penalty increases to –2 and also applies to Dexterity-based saving throws.</p><hr /><p><strong>Heightened (6th)</strong> On a failure, the penalty increases to –2 (and –3 on a critical failure). The spell no longer requires Sustain — it lasts for 1 minute without concentration.</p>"
+      "value": "<p>You cause a creature to temporarily lose its social and physical confidence, making it obliviously @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy}. The targeted creature must attempt a Will save. A creature affected by this spell doesn't notice it is performing poorly and can't use reactions to reroll or improve the affected checks.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> The creature is affected by awkwardness. It takes a –1 status penalty to attack rolls, Charisma-based skill checks, and Charisma-based saving throws. It also can't benefit from fortune effects on those rolls.</p><p><strong>Critical Failure</strong> As failure, but the penalty increases to –2 and also applies to Dexterity-based saving throws.</p><hr /><p><strong>Heightened (6th)</strong> On a failure, the penalty increases to –2 (and –3 on a critical failure).</p>"
     },
     "duration": {
-      "sustained": true,
+      "sustained": false,
       "value": "1 minute"
     },
     "heightening": {

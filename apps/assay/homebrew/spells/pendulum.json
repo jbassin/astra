@@ -28,10 +28,10 @@
       }
     },
     "description": {
-      "value": "<p>You bend fate to move in perfectly predictable patterns. The target must attempt a Will save.</p><p>While the spell is active, if the target fails its Will save, its d20 results follow a rigid oscillating sequence instead of being random: its first roll is treated as 20, second as 1, third as 19, fourth as 2, fifth as 18, sixth as 3, and so on, alternating between high and low results. The target still makes its roll visibly but replaces the result with the next number in the sequence.</p><p>Sustaining the spell requires you to Concentrate at the start of each of your turns.</p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target's d20 rolls follow the oscillating fate sequence for as long as you sustain this spell (up to 1 minute). The target is aware that something is wrong but cannot determine the pattern.</p><p><strong>Critical Failure</strong> As failure, and the target doesn't realize the sequence is predictable until it has rolled at least twice.</p><hr /><p><strong>Heightened (+2)</strong> You can target 1 additional creature with this spell.</p>"
+      "value": "<p>You bend fate to move in perfectly predictable patterns. The target must attempt a Will save.</p><p>While the spell is active, if the target fails its Will save, its d20 results follow a rigid oscillating sequence instead of being random: its first roll is treated as 20, second as 1, third as 19, fourth as 2, fifth as 18, sixth as 3, and so on, alternating between high and low results. The target still makes its roll visibly but replaces the result with the next number in the sequence.</p><p></p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target's d20 rolls follow the oscillating fate sequence for 1 minute. The target is aware that something is wrong but cannot determine the pattern.</p><p><strong>Critical Failure</strong> As failure, and the target doesn't realize the sequence is predictable until it has rolled at least twice.</p><hr /><p><strong>Heightened (+2)</strong> You can target 1 additional creature with this spell.</p>"
     },
     "duration": {
-      "sustained": true,
+      "sustained": false,
       "value": "1 minute"
     },
     "heightening": {

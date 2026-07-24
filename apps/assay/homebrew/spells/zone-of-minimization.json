@@ -26,10 +26,10 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You saturate an area with antillurgic energy that collapses all damage potential within it to its barest minimum. While you sustain this spell, creatures inside the burst deal minimum damage on all of their damage rolls (each die result counts as 1, flat bonuses are unaffected). This effect applies to all creatures inside the zone regardless of alliance, including you.</p><p>A creature that leaves the zone is no longer affected. A creature that enters the zone is immediately subject to the effect. The zone does not affect damage from spells or abilities that originate entirely outside the zone (though creatures inside who cast spells deal minimum damage with those spells' damage rolls as well).</p><hr /><p><strong>Heightened (9th)</strong> Flat damage bonuses are also minimized (treat as 0 instead of their normal value).</p><p><strong>Heightened (10th)</strong> The burst radius increases to 30 feet.</p>"
+      "value": "<p>You saturate an area with antillurgic energy that collapses all damage potential within it to its barest minimum. For the duration, creatures inside the burst deal minimum damage on all of their damage rolls (each die result counts as 1, flat bonuses are unaffected). This effect applies to all creatures inside the zone regardless of alliance, including you.</p><p>A creature that leaves the zone is no longer affected. A creature that enters the zone is immediately subject to the effect. The zone does not affect damage from spells or abilities that originate entirely outside the zone (though creatures inside who cast spells deal minimum damage with those spells' damage rolls as well).</p><hr /><p><strong>Heightened (9th)</strong> Flat damage bonuses are also minimized (treat as 0 instead of their normal value).</p><p><strong>Heightened (10th)</strong> The burst radius increases to 30 feet.</p>"
     },
     "duration": {
-      "sustained": true,
+      "sustained": false,
       "value": "1 minute"
     },
     "heightening": {

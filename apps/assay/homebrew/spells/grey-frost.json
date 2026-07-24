@@ -52,7 +52,7 @@
       "value": "<p>You channel the brutal cold of the Grey Waste into a creature you touch, flash-freezing its body from the outside in. The target must attempt a Fortitude save.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes 5d8 cold damage.</p><p><strong>Failure</strong> The creature takes 3d8 cold damage and is afflicted with Grey Frost at stage 1.</p><p><strong>Critical Failure</strong> The creature takes 6d8 cold damage and is afflicted with Grey Frost at stage 2.</p><p><strong>Grey Frost</strong>; <strong>Saving Throw</strong> Fortitude against your spell DC; <strong>Maximum Duration</strong> 1 minute (the affliction ends if the spell ends, except at stage 3); <strong>Stage 1</strong> @UUID[Compendium.pf2e.conditionitems.Item.Restrained]{Restrained} as ice encases the creature's limbs (Escape DC equals your spell DC; successfully Escaping shatters the ice and ends the affliction) and 3d8 cold damage (1 round); <strong>Stage 2</strong> @UUID[Compendium.pf2e.conditionitems.Item.Petrified]{Petrified} as the creature becomes a statue of ice (1 round); <strong>Stage 3</strong> the creature is permanently @UUID[Compendium.pf2e.conditionitems.Item.Petrified]{Petrified}, frozen solid — the ice outlasts the spell and remains until the creature is gradually thawed, and it stays frozen only while the ambient temperature remains below freezing.</p><hr /><p><strong>Heightened (+1)</strong> The initial damage on a failure increases by 1d8, and Stage 1's per-round cold damage increases by 1d8.</p>"
     },
     "duration": {
-      "sustained": true,
+      "sustained": false,
       "value": "1 minute"
     },
     "level": {
