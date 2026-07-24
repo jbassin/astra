@@ -116,7 +116,8 @@ Magic Mailbox / Remake precedent).
 | reflective-defense | **Editor voice deleted (A)** — the voice-sweep escapee sentence removed; immunity→resistance-30-magical-only redesign kept wholesale (converter-documented lever, H9 restores scope) | `ece3165` |
 | mystic-negation | **Counteract legalized + burnout restored (B)** — "counteract rank 5, using your spellcasting counteract modifier" (his own checklistFailure fixed); sphere winks out after its third successful counteract (5e success-counted governor back) | `e5debf1` |
 | patishvat-s-perfect-pocket | **Stasis dropped entirely (A-variant)** — invented time-preservation sentence deleted, no spoilage softener (stakeholder call); until-dispelled + counteract-r1 valve + 1-min cast all kept as the honest r1 package | `346afcd` |
-| sphere-of-ruin | **Tax stays stripped, pursuit restored (A)** — the deferred batch-0 decision CLOSED: sphere appears adjacent to YOU again (dread fiction + pacing brake back); 500 gp gem not restored (conversion already self-nerfed past what the tax paid for); Preservation reciprocal synergy queued for its fast-lane card | see commit |
+| sphere-of-ruin | **Tax stays stripped, pursuit restored (A)** — the deferred batch-0 decision CLOSED: sphere appears adjacent to YOU again (dread fiction + pacing brake back); 500 gp gem not restored (conversion already self-nerfed past what the tax paid for); Preservation reciprocal synergy queued for its fast-lane card | `e3f79d6` |
+| earworm | **Keep as-is (A)** — batch-0 already restored all four dropped clauses; anchor math holds (3 below Scrying, paid by touch + audio-only + discovery risk); stricter-counterplay overridable declined | (log-only) |
 
 ## Status
 
