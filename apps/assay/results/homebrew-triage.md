@@ -361,3 +361,91 @@ clause restorations (Eldritch escape/spell-end; Cerebral's lost d6 row), 1 dead 
 type (Solar Rebuke vitality→fire, +rank 6), 1 per-tick re-line (Repetitious 8d6), the
 counteract-check curse CONVENTION, and the morph family's duration/heighten consistency
 pass.
+
+## 11. Sustain sweep (2026-07-25, DRAFT — pending stakeholder session)
+
+**Provenance:** stakeholder concern that 5e concentration (≈half of all 5e spells) over-ported
+into PF2e sustain. Measured: the store carries **46/175 sustained (26.3%)** vs the official
+snapshot's **254/1,652 non-ritual (15.4%)** — and it is NOT a rank-mix artifact (per-rank
+weighting of official rates predicts ~28; we have 46; z≈3.7). PF2e Sustain costs an action
+every round, so residue double-taxes (rank price + action tax); conversely a conversion
+FREES that action, so each is a small buff to be sanity-checked.
+
+**Calibration (all comparables verified against the Foundry snapshot, not taken from
+memory):** official design is NOT simply "active sustain or flat." Three verified families:
+
+- **Sustain earns its action** (keep): Summons, Floating Flame (move), Spiritual
+  Weapon/Armament (re-attack), Dragon Turret, Aqueous Orb/Forceful Hand (move+re-trigger).
+- **Sustained-despite-passive families** (keep on family precedent): self-emanation
+  battlefield effects — Vibrant Vibrato r7 (damaging aura, pure maintenance), Divine Aura
+  r8, Antimagic Field r8; and link/curse maintenance — Cycle of Retribution r1,
+  Synchronize Steps r1, Infectious Ennui r3; and sensory/interrogation links — Painted
+  Scout, Mind Probe. Bless (flat, OPTIONAL Sustain-to-grow) is the r1 ally-aura exception.
+- **Flat-duration classes** (convert when matched): planted zones even with per-round
+  automatic effects (Wall of Fire, Black Tentacles, Toxic Cloud), self-buffs (Haste,
+  Heroism, Fire Shield), wards (Protection, Spell Turning, Dispelling Globe), single-target
+  repeat-save control (Slow, Confusion, Stupefy, Petrify — the petrification engine runs on
+  TARGET saves, no caster tax), weapon coats (Ghostly Weapon), restrain+damage (Slither).
+
+**Disposition — 20 CONVERT (batch-appliable once the set-wide policy is ratified; store
+edits, flag + duration + description scrub of dead Sustain references):**
+
+| spell | r | → | anchor / note |
+|---|---|---|---|
+| almonk's-arcane-siphon | 3 | 1 min flat | Protection/Spell Turning; 5e original was NOT concentration |
+| almonk's-retribution | 5 | 1 min flat | Wall of Fire planted-zone idiom |
+| awkward | 4 | 1 min flat | its OWN Heightened(6th) already removes Sustain — make base consistent, rewrite the H6 line (also kills a literal "without concentration" 5e-ism) |
+| blades-of-bone | 5 | 1 min flat | `morph` trait — the item-6 morph-family flat-1-min rule, missed |
+| blithering-gibberish | 2 | 1 min flat | Stupefy; target's own save = escape valve |
+| containment-orbs | 7 | 10 min flat | Spell Turning (r7 ward, flat 1 h); a 10-MINUTE sustain cap (~100 consecutive Sustains) exists nowhere officially |
+| darkseeker's-aura | 4 | 1 min flat | Armor of Thorn and Claw (passive retaliation aura, flat) |
+| darkseeker's-restraint | 5 | 1 min flat | Slither; its own text says "Sustaining … does not allow the target a new save — the chains simply persist" — delete that sentence too |
+| disrupt-movement | 1 | 1 min flat | minor debuff; 5e original NOT concentration |
+| festering-slick | 3 | 1 min flat | Ghostly Weapon; sustain existed only as a disruption liability on an already-applied debuff |
+| flutterstep | 3 | 1 min flat | Haste-idiom self-buff (orthogonal to the Flicker-rename adjudication) |
+| grey-frost | 7 | drop sustained, 1 min stays | Petrify precedent: the staged engine runs on target saves; the flag contradicts the item-6 rebuild (bug-fix class) |
+| grosteque-selfshape | 4 | 1 min flat | `morph` trait, same missed rule; temp-HP drip becomes "at the start of each of your turns while the spell is in effect" |
+| mystic-negation | 5 | 1 min flat | Dispelling Globe; the move-the-sphere single action stays as-is |
+| oddly-satisfying | 5 | 1 min flat | Slow/Confusion; `incapacitation` trait already caps |
+| pendulum | 3 | 1 min flat | DELETE the verbatim 5e text "Sustaining the spell requires you to Concentrate at the start of each of your turns" — the clearest residue in the set |
+| phlogistic-shield | 4 | 1 min flat | Dispelling Globe/Wall of Force; move-the-lens action stays |
+| retributive-force | 1 | 1 min flat | Fire Shield (flat retaliation self-buff, r4) — reviewer eyeball on r1 riders |
+| time-loop | 6 | 1 min flat | Confusion (repeat-save control, flat); `incapacitation` caps |
+| zone-of-minimization | 8 | 1 min flat | Black Tentacles (stationary auto-zone, flat); r8 damage-nullification power is a separate question if wanted |
+
+**3 STOP cards (real decisions):**
+
+- **compressive-weapon r2** — passive reach window (the literal double-tax case) BUT the 5e
+  original was only 3 rounds of concentration; flat 1 min over-delivers. Options: flat
+  "3 rounds" (5e-faithful) · flat 1 min (idiom-standard) · keep sustained as the throttle.
+- **dead-ringer r4** — no active sustain role, but converting hands **1 hour flat**
+  invisibility + a death-fake off a REACTION (official Invisibility r2 caps at 10 min flat).
+  Options: flat 10 min · keep sustained at 1 h · flat 1 h as-converted.
+- **ebb-and-flow r4** — planted remote zone, pure maintenance (Bless/zone precedent says
+  convert) BUT it was re-ranked 3→4 THIS WEEK for Everything-Spell power; converting
+  strengthens it again. Options: convert + accept · convert + re-check rank · keep sustained
+  as the power throttle.
+
+**23 KEEP:** active sustain (11): ashen-pack, bodydouble, carnage, cone-of-silence
+(Sustain reorients the cone), eldritch-horror, force-drumfire, hypercompression,
+repetitious-trauma, sphere-of-ruin, summon-servant, wall-of-time (move gated BEHIND
+Sustain, unlike mystic-negation/phlogistic-shield). Official sustained-family precedent
+(7): djura's-righteous-pressure (Vibrant Vibrato), elemental-sink (Cycle of Retribution,
+exact rank+shape), fumble (Infectious Ennui), lockstep-fate (Synchronize Steps),
+illusory-illusion (Vibrant Pattern/Confusing Colors), flashback + inquisition (Painted
+Scout/Mind Probe). Emanation family (3): arcane-interdiction, solar-fury,
+thaumaturgic-obstruction (Vibrant Vibrato/Divine Aura/Antimagic Field — high-rank passive
+self-emanations ARE officially sustained; the earlier "borderline" dissolved under
+verified precedent). Deference (2): lucky-ward (Bless-family flat WOULD apply, but the
+r2 pricing was just adjudicated with the ally-save half load-bearing — awareness only),
+sphere-of-preservation (cross-referenced with sphere-of-ruin's counteract interplay).
+
+**Outcome math:** 20 converts → 26/172 sustained = **15.1%**, landing exactly on the
+official 15.4% baseline (all 3 cards converting → 13.4%).
+
+**Protocol when run:** store-only edits (judgment-in-STORE; no adapter change — this is
+per-spell judgment, not a set-wide mechanical transform), one batch commit for ratified
+converts + one commit per card decision; `score-homebrew` set-diff before/after (duration
+feeds the buff lane — drift is EXPECTED on converted buffs, characterize don't assume
+zero); `homebrew-revisions` regen (each convert = a new deviation vs vendor);
+revisions.md stays hand-edit-only.
