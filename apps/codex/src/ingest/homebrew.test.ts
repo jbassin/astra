@@ -10,6 +10,7 @@ import {
   assertNoHomebrewCollisions,
   countHomebrewUuidRefs,
   loadHomebrewSide,
+  loadHomebrewTraits,
   type HardFailure,
 } from "./homebrew";
 import { UuidIndex } from "./uuidResolve";
@@ -83,6 +84,13 @@ function ritualDoc(name: string): Record<string, unknown> {
   return doc;
 }
 
+function traitDoc(
+  name: string,
+  descriptionHtml = "<p>Test trait copy.</p>",
+): Record<string, unknown> {
+  return { name, description: { value: descriptionHtml } };
+}
+
 describe("loadHomebrewSide (D30-42)", () => {
   it("walks in sorted order regardless of filesystem write order", () => {
     const dir = freshHomebrewDir();
@@ -144,6 +152,111 @@ describe("loadHomebrewSide (D30-42)", () => {
     expect(result.entities).toEqual([]);
     expect(hardFailures).toHaveLength(1);
     expect(hardFailures[0]?.path).toBe("bad-doc.json");
+  });
+});
+
+describe("loadHomebrewTraits (D30-44, 0030 S2)", () => {
+  it("walks in sorted order regardless of filesystem write order", () => {
+    const dir = freshHomebrewDir();
+    writeDoc(dir, "seraphic", traitDoc("Seraphic"));
+    writeDoc(dir, "chronomancy", traitDoc("Chronomancy"));
+    writeDoc(dir, "gestalt", traitDoc("Gestalt"));
+    const { report } = collector();
+    const result = loadHomebrewTraits(dir, new UuidIndex(), report, []);
+    expect(result.entities.map((e) => e.id)).toEqual([
+      "trait/chronomancy",
+      "trait/gestalt",
+      "trait/seraphic",
+    ]);
+  });
+
+  it("D30-44: the file basename is the trait token id/slug, never sluggify(name)", () => {
+    const dir = freshHomebrewDir();
+    // "Kosmoturgy Trait" would sluggify to "kosmoturgy-trait" — the basename
+    // wins regardless (same convention as the spell store's D30-42 identity,
+    // but there's no slugMismatch report class here: the token IS the id by
+    // construction, not a basename-vs-sluggify(name) comparison).
+    writeDoc(dir, "kosmoturgy", traitDoc("Kosmoturgy Trait"));
+    const { report } = collector();
+    const result = loadHomebrewTraits(dir, new UuidIndex(), report, []);
+    expect(result.entities[0]?.id).toBe("trait/kosmoturgy");
+    expect(result.entities[0]?.slug).toBe("kosmoturgy");
+    expect(result.entities[0]?.name).toBe("Kosmoturgy Trait");
+  });
+
+  it("D30-44: the exact field set — no level, no proseOnly, no aonUrl — plus the fixed edition/source/rarity", () => {
+    const dir = freshHomebrewDir();
+    writeDoc(dir, "memetics", traitDoc("Memetics"));
+    const { report } = collector();
+    const result = loadHomebrewTraits(dir, new UuidIndex(), report, []);
+    const trait = result.entities[0] as CodexEntity;
+    expect(Object.keys(trait).sort()).toEqual(
+      [
+        "body",
+        "category",
+        "edition",
+        "facets",
+        "id",
+        "name",
+        "rarity",
+        "slug",
+        "source",
+        "traits",
+      ].sort(),
+    );
+    expect(trait).not.toHaveProperty("level");
+    expect(trait).not.toHaveProperty("proseOnly");
+    expect(trait).not.toHaveProperty("aonUrl");
+    expect(trait.category).toBe("trait");
+    expect(trait.edition).toBe("remaster");
+    expect(trait.source).toEqual({ book: "Liturgy of the Iridite Vol.2", license: "OGL" });
+    expect(trait.rarity).toBe("common");
+    expect(trait.traits).toEqual([]);
+    expect(trait.facets).toEqual({});
+  });
+
+  it("parses the description HTML through the real parseFoundryHtml (not a hand-rolled stand-in)", () => {
+    const dir = freshHomebrewDir();
+    writeDoc(
+      dir,
+      "planara",
+      traitDoc("Planara", "<p>Reaches across the <strong>planes</strong>.</p>"),
+    );
+    const { report } = collector();
+    const result = loadHomebrewTraits(dir, new UuidIndex(), report, []);
+    expect(result.entities[0]?.body).toEqual([
+      {
+        kind: "paragraph",
+        children: [
+          {
+            kind: "text",
+            content: "Reaches across the ",
+            marks: { bold: false, italic: false, superscript: false },
+          },
+          {
+            kind: "text",
+            content: "planes",
+            marks: { bold: true, italic: false, superscript: false },
+          },
+          {
+            kind: "text",
+            content: ".",
+            marks: { bold: false, italic: false, superscript: false },
+          },
+        ],
+      },
+    ]);
+  });
+
+  it("pushes a malformed enricher grammar failure onto hardFailures instead of throwing", () => {
+    const dir = freshHomebrewDir();
+    writeDoc(dir, "bad-trait", traitDoc("Bad Trait", "<p>@Bogus[foo]</p>"));
+    const { report } = collector();
+    const hardFailures: HardFailure[] = [];
+    const result = loadHomebrewTraits(dir, new UuidIndex(), report, hardFailures);
+    expect(result.entities).toEqual([]);
+    expect(hardFailures).toHaveLength(1);
+    expect(hardFailures[0]?.path).toBe("bad-trait.json");
   });
 });
 

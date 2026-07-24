@@ -38,6 +38,15 @@ import { createResolveUuid, type UuidIndex } from "./uuidResolve";
  * get BOTH `category` and `id` rebuilt from `spell/<slug>` to
  * `ritual/<slug>` right after assembly — keyed on `system.ritual` PRESENCE
  * only (cast-time text is not a reliable ritual marker, scoping doc §2.1).
+ *
+ * D30-44 (0030 S2): the sibling `loadHomebrewTraits` below walks the 8
+ * committed `apps/assay/homebrew/traits/*.json` school-trait docs (staff-
+ * drafted, stakeholder-approved copy) — a SEPARATE loader, not a widening of
+ * `loadHomebrewSide` above, since the trait store's `{name,description}`
+ * shape isn't a Foundry pack doc and can't go through `assembleFoundryEntity`.
+ * `transform.ts` merges both loaders' entities into one combined set before
+ * the drop pass (`homebrewIds`/`assertNoHomebrewCollisions`/the report
+ * section all see traits and spells/rituals alike).
  */
 
 export type ReportFn = (cls: string, detail: string) => void;
@@ -49,6 +58,11 @@ export interface HardFailure {
 
 const HOMEBREW_PACK_DIR = "spells";
 const RITUAL_CATEGORY = "ritual";
+const TRAIT_CATEGORY = "trait";
+/** The store's own `system.publication.title` (D30-42/-46) — trait source
+ * docs carry no publication block of their own (`{name, description}` only,
+ * D30-44), so the book is hardcoded here rather than read per-doc. */
+const HOMEBREW_BOOK = "Liturgy of the Iridite Vol.2";
 
 /** Mirrors `transform.ts`'s own private `makeCtx` verbatim — duplicated
  * (not imported) to avoid a circular import, same "small, self-contained
@@ -143,6 +157,80 @@ export function loadHomebrewSide(
   }
 
   return { entities, slugMismatchCount };
+}
+
+// ---------------------------------------------------------------------------
+// D30-44 (0030 S2): the 8 school-trait docs
+// ---------------------------------------------------------------------------
+
+/** The trait store doc's own shape (D30-44) — `{name, description:{value}}`
+ * and nothing else, ever (a stray `level` would flip `Lvl` onto every /trait
+ * row site-wide, `columnDefs.ts`'s `categoryHasLevelCoverage`). */
+interface RawHomebrewTraitDoc {
+  name: string;
+  description: { value: string };
+}
+
+export interface HomebrewTraitsSide {
+  entities: CodexEntity[];
+}
+
+/**
+ * Walks `traitsDir` (sorted, same `walkFiles` contract as `loadHomebrewSide`)
+ * and assembles every `*.json` doc into a `trait/<token>` `CodexEntity` —
+ * built directly rather than through `assembleFoundryEntity` (that function's
+ * `RawFoundryDoc` shape — `_id`/`type`/`system.*` — has no analog here; the
+ * trait store's `{name, description}` shape isn't a Foundry pack doc at all).
+ * Identity (D30-44): the file basename IS the trait token (`memetics`,
+ * `kosmoturgy`, ... — never `sluggify(name)`, though the two happen to agree
+ * on all 8 real names; `trait/worldweaver` would dangle the Worldweaver pill
+ * a spell's school pill links to). `rarity:"common"` matches the official
+ * trait rows (`trait/aasimar`) so the /trait Rarity column doesn't em-dash;
+ * `traits:[]`/`facets:{}` — a trait entity has no traits/facets of its own.
+ * No `level`, no `proseOnly` (homebrew rides the D30-43 drop keep-arm, not
+ * the AoN-join `proseOnly` convention). The description HTML is parsed
+ * through the same `parseFoundryHtml`/ctx machinery `loadHomebrewSide` uses
+ * (empty localize map, official `foundryIndex` for `@UUID` resolution — the
+ * real copy carries none, but this is the real parser, not a hand-rolled
+ * one).
+ */
+export function loadHomebrewTraits(
+  traitsDir: string,
+  foundryIndex: UuidIndex,
+  report: ReportFn,
+  hardFailures: HardFailure[],
+): HomebrewTraitsSide {
+  const entities: CodexEntity[] = [];
+
+  for (const file of walkFiles(traitsDir)) {
+    if (!file.relPath.endsWith(".json")) continue;
+    const token = file.relPath.replace(/\.json$/, "");
+    const raw = JSON.parse(readFileSync(file.absPath, "utf8")) as RawHomebrewTraitDoc;
+    const ctx = makeCtx(foundryIndex, new Map(), report);
+    try {
+      const body = parseFoundryHtml(raw.description.value, ctx);
+      entities.push({
+        id: `${TRAIT_CATEGORY}/${token}`,
+        slug: token,
+        category: TRAIT_CATEGORY,
+        name: raw.name,
+        edition: "remaster",
+        source: { book: HOMEBREW_BOOK, license: "OGL" },
+        rarity: "common",
+        traits: [],
+        facets: {},
+        body,
+      });
+    } catch (e) {
+      if (e instanceof EnricherGrammarError || e instanceof FoundryHtmlError) {
+        hardFailures.push({ path: file.relPath, message: e.message });
+        continue;
+      }
+      throw e;
+    }
+  }
+
+  return { entities };
 }
 
 // ---------------------------------------------------------------------------

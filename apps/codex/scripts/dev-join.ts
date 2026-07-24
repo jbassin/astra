@@ -514,8 +514,8 @@ function main(): void {
       subclassOptionsEmitted: 0,
       subclassOptionCounts: [],
     },
-    // D30-46 (0030 S1): this dev tool predates the homebrew ingest too —
-    // empty stand-in, same posture as every other section above.
+    // D30-46 (0030 S1)/D30-44 (0030 S2): this dev tool predates the homebrew
+    // ingest too — empty stand-in, same posture as every other section above.
     homebrew: {
       dir: "(dev-join.ts predates the homebrew ingest)",
       docsIn: 0,
@@ -525,6 +525,9 @@ function main(): void {
       slugMismatchCount: 0,
       collisionGuardOk: true,
       sha256: "",
+      traitsDir: "(dev-join.ts predates the homebrew school-trait ingest)",
+      traitsDocsIn: 0,
+      traitsSha256: "",
     },
   });
   const markdown = buildReportMarkdown(reportJson);

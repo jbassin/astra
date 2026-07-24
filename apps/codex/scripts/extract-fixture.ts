@@ -616,6 +616,28 @@ const HOMEBREW_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
   },
 ];
 
+/** D30-47's 4th synthetic doc (0030 S2, D30-44) — the school-trait shape is
+ * structurally unrelated to the 3 spell-shaped docs above (`{name,
+ * description}`, no `_id`/`type`/`system`), so it's its own small array
+ * rather than folded into `HOMEBREW_FIXTURE_DOCS`. Written to a SEPARATE
+ * `fixtures/raw/homebrew-traits/` dir (mirrors the real store's
+ * `homebrew/traits/` sibling of `homebrew/spells/`) — synthetic, not copied
+ * from the real 8-doc school-trait store (same P12 rationale as the spell
+ * docs above: hand-splicing real assay content into the fixture is the trap
+ * this whole extractor exists to avoid). */
+const HOMEBREW_TRAIT_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
+  {
+    basename: "fixture-school-trait",
+    doc: {
+      name: "Fixture School Trait",
+      description: {
+        value:
+          "<p>A 0030 S2 fixture school-trait doc — synthetic content only, exercises the D30-44 trait assembly path.</p>",
+      },
+    },
+  },
+];
+
 /** D30-47's negative-path collision fixture — deliberately basenamed
  * "fireball" so its homebrew id (`spell/fireball`) collides with the real
  * `spells/spells/rank-3/fireball.json` supplemental Foundry pick above.
@@ -647,10 +669,11 @@ const HOMEBREW_COLLISION_FIXTURE_DOC: HomebrewFixtureDoc = {
 };
 
 /** Writes `fixtures/raw/homebrew/` (3 docs, read by the default pipeline
- * test) and `fixtures/raw/homebrew-collision/` (1 doc, read only by the
- * dedicated negative-path collision test) — wholesale-wiped + rewritten,
- * same "committed fixture, never hand-edited" contract as `buildRawFixture`
- * above. */
+ * test), `fixtures/raw/homebrew-traits/` (1 doc, D30-44/0030 S2, read by the
+ * same default pipeline test), and `fixtures/raw/homebrew-collision/` (1
+ * doc, read only by the dedicated negative-path collision test) —
+ * wholesale-wiped + rewritten, same "committed fixture, never hand-edited"
+ * contract as `buildRawFixture` above. */
 function buildHomebrewFixture(): number {
   const homebrewDir = join(FIXTURE_ROOT, "raw", "homebrew");
   rmSync(homebrewDir, { recursive: true, force: true });
@@ -659,6 +682,15 @@ function buildHomebrewFixture(): number {
   for (const { basename, doc } of HOMEBREW_FIXTURE_DOCS) {
     const content = canonicalJson(doc);
     writeFileSync(join(homebrewDir, `${basename}.json`), content);
+    bytes += Buffer.byteLength(content);
+  }
+
+  const homebrewTraitsDir = join(FIXTURE_ROOT, "raw", "homebrew-traits");
+  rmSync(homebrewTraitsDir, { recursive: true, force: true });
+  mkdirSync(homebrewTraitsDir, { recursive: true });
+  for (const { basename, doc } of HOMEBREW_TRAIT_FIXTURE_DOCS) {
+    const content = canonicalJson(doc);
+    writeFileSync(join(homebrewTraitsDir, `${basename}.json`), content);
     bytes += Buffer.byteLength(content);
   }
 
@@ -1234,6 +1266,7 @@ function buildFixturePipelineCorpus(): string {
     foundrySnapshotDir: join(FIXTURE_ROOT, "raw", "foundry"),
     aonSnapshotDir: join(FIXTURE_ROOT, "raw", "aon"),
     homebrewDir: join(FIXTURE_ROOT, "raw", "homebrew"),
+    homebrewTraitsDir: join(FIXTURE_ROOT, "raw", "homebrew-traits"),
     corpusRoot: outDir,
     aliasesFile: FIXTURE_ALIASES,
     pins: {

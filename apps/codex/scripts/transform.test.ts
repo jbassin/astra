@@ -28,6 +28,8 @@ const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "..", "fixtures")
 const RAW_FOUNDRY = join(FIXTURES, "raw", "foundry");
 const RAW_AON = join(FIXTURES, "raw", "aon");
 const RAW_HOMEBREW = join(FIXTURES, "raw", "homebrew");
+/** D30-44 (0030 S2): the school-trait sibling of `RAW_HOMEBREW`. */
+const RAW_HOMEBREW_TRAITS = join(FIXTURES, "raw", "homebrew-traits");
 /** D30-47: lives OUTSIDE `RAW_HOMEBREW` — the negative-path collision
  * fixture (basename "fireball", colliding with the real official
  * `spell/fireball` fixture pick), read only by the dedicated collision-guard
@@ -52,6 +54,7 @@ function runOnce(corpusRoot: string): TransformResult {
     foundrySnapshotDir: RAW_FOUNDRY,
     aonSnapshotDir: RAW_AON,
     homebrewDir: RAW_HOMEBREW,
+    homebrewTraitsDir: RAW_HOMEBREW_TRAITS,
     corpusRoot,
     aliasesFile: readAliasesFile(),
     pins: FIXTURE_PINS,
@@ -555,20 +558,52 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
       expect(ref?.targetId).toBe("condition/slowed");
     });
 
-    it("D30-46: the report carries a homebrew section reconciling the 3 fixture docs (2 spell / 1 ritual, 1 resolved ref, 0 broken)", () => {
+    it("D30-46: the report carries a homebrew section reconciling the 3 spell-store fixture docs (2 spell / 1 ritual, 1 resolved ref, 0 broken) plus the 1 trait-store fixture doc", () => {
       const result = runOnce(freshCorpusDir());
       expect(result.hardFailures).toEqual([]);
       expect(result.reportJson?.homebrew).toMatchObject({
         dir: RAW_HOMEBREW,
         docsIn: 3,
-        emittedByCategory: { ritual: 1, spell: 2 },
+        emittedByCategory: { ritual: 1, spell: 2, trait: 1 },
         uuidRefsResolved: 1,
         uuidRefsBroken: 0,
         collisionGuardOk: true,
+        traitsDir: RAW_HOMEBREW_TRAITS,
+        traitsDocsIn: 1,
       });
       expect(result.reportJson?.homebrew.sha256).toEqual(expect.any(String));
       expect(result.reportJson?.homebrew.sha256.length).toBeGreaterThan(0);
+      expect(result.reportJson?.homebrew.traitsSha256).toEqual(expect.any(String));
+      expect(result.reportJson?.homebrew.traitsSha256.length).toBeGreaterThan(0);
       expect(result.reportMarkdown).toContain("Homebrew ingest");
+    });
+
+    it("D30-44: the fixture school-trait doc assembles with the exact field set — no level, no proseOnly", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const raw = JSON.parse(
+        readFileSync(join(corpusRoot, "trait", "fixture-school-trait.json"), "utf8"),
+      ) as Record<string, unknown>;
+      expect(CodexEntitySchema.parse(raw)).toMatchObject({
+        id: "trait/fixture-school-trait",
+        slug: "fixture-school-trait",
+        category: "trait",
+        name: "Fixture School Trait",
+        edition: "remaster",
+        source: { book: "Liturgy of the Iridite Vol.2", license: "OGL" },
+        rarity: "common",
+        traits: [],
+        facets: {},
+      });
+      expect(raw.level).toBeUndefined();
+      expect(raw.proseOnly).toBeUndefined();
+      expect(raw.aonUrl).toBeUndefined();
+
+      const traitIndex = JSON.parse(
+        readFileSync(join(corpusRoot, "trait", "_index.json"), "utf8"),
+      ) as Array<{ id: string }>;
+      expect(traitIndex.map((r) => r.id)).toContain("trait/fixture-school-trait");
     });
 
     it("keep-arm regression: the pre-existing 'boon dropped' + 'Dune Candle carve-out survives' behavior is untouched by threading homebrewIds through", () => {
@@ -594,6 +629,7 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
           foundrySnapshotDir: RAW_FOUNDRY,
           aonSnapshotDir: RAW_AON,
           homebrewDir: RAW_HOMEBREW_COLLISION,
+          homebrewTraitsDir: RAW_HOMEBREW_TRAITS,
           corpusRoot: freshCorpusDir(),
           aliasesFile: readAliasesFile(),
           pins: FIXTURE_PINS,

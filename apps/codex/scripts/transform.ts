@@ -63,6 +63,7 @@ import {
   assertNoHomebrewCollisions,
   countHomebrewUuidRefs,
   loadHomebrewSide,
+  loadHomebrewTraits,
 } from "../src/ingest/homebrew";
 import { type JoinAliasesFile, runJoin } from "../src/ingest/join";
 import {
@@ -347,6 +348,11 @@ export interface TransformPaths {
    * image never contains `apps/assay`. The fixture test points this at
    * `apps/codex/fixtures/raw/homebrew`. */
   homebrewDir: string;
+  /** The homebrew school-TRAIT store root (D30-44, 0030 S2) — a SIBLING of
+   * `homebrewDir` (`apps/assay/homebrew/traits/`), resolved the same way
+   * (repo-relative from `import.meta.dirname`, host-run only). The fixture
+   * test points this at `apps/codex/fixtures/raw/homebrew-traits`. */
+  homebrewTraitsDir: string;
   /** Where the deterministic corpus is written (wiped + rewritten wholesale
    * every call, `emit.ts`'s own contract) — real host path
    * `<dataPath>/corpus`; the fixture test points this at a fresh temp dir. */
@@ -396,6 +402,15 @@ export function runTransform(paths: TransformPaths): TransformResult {
   // (B3, the review blocker: an empty index would downgrade all 70
   // ref-bearing homebrew docs to brokenRef).
   const homebrew = loadHomebrewSide(paths.homebrewDir, foundry.index, report, hardFailures);
+  // D30-44 (0030 S2): the 8 school-trait docs — a separate loader (the trait
+  // store's `{name,description}` shape isn't a Foundry pack doc), same
+  // official-`UuidIndex` ctx posture as `loadHomebrewSide` above.
+  const homebrewTraits = loadHomebrewTraits(
+    paths.homebrewTraitsDir,
+    foundry.index,
+    report,
+    hardFailures,
+  );
   const aon = loadAonSide(paths.aonSnapshotDir, report, hardFailures);
 
   if (hardFailures.length > 0) return { hardFailures };
@@ -441,10 +456,12 @@ export function runTransform(paths: TransformPaths): TransformResult {
   // homebrew never enters the AoN join (no aonUrl, no legacyOf/
   // remasteredAs — superseded:false by construction); its entities merge in
   // right here, alongside the official set, so the SAME drop pass's
-  // `homebrewIds` keep-arm is what keeps them alive.
-  const homebrewIds = new Set(homebrew.entities.map((e) => e.id));
+  // `homebrewIds` keep-arm is what keeps them alive. D30-44 (0030 S2): the 8
+  // trait entities ride the exact same arm — one combined entity list.
+  const homebrewEntities = [...homebrew.entities, ...homebrewTraits.entities];
+  const homebrewIds = new Set(homebrewEntities.map((e) => e.id));
   const dropResult = applyAonPrimaryDrop(
-    [...joinResult.entities, ...homebrew.entities],
+    [...joinResult.entities, ...homebrewEntities],
     report,
     homebrewIds,
   );
@@ -565,12 +582,17 @@ export function runTransform(paths: TransformPaths): TransformResult {
   // D30-46 (0030 S1, review blocker B2): the homebrew provenance pin lives
   // in report.json/report.md, NOT `corpus/manifest.json` (`.strict()` —
   // an added key throws at `parseManifest` before the transform even
-  // starts).
+  // starts). D30-44 (0030 S2): `emittedByCategory`/`uuidRefs*` cover the
+  // COMBINED spells+rituals+traits set (a single "what did homebrew emit"
+  // view — `trait: 8` now shows up here); `dir`/`docsIn`/`sha256` stay
+  // scoped to the spells STORE specifically (its own provenance hash), with
+  // the traits store's own provenance split into the `traits*` fields below
+  // rather than conflated into one dir/hash pair spanning two directories.
   const homebrewCategoryCounts: Record<string, number> = {};
-  for (const e of homebrew.entities) {
+  for (const e of homebrewEntities) {
     homebrewCategoryCounts[e.category] = (homebrewCategoryCounts[e.category] ?? 0) + 1;
   }
-  const homebrewUuidRefs = countHomebrewUuidRefs(homebrew.entities);
+  const homebrewUuidRefs = countHomebrewUuidRefs(homebrewEntities);
 
   const reportJson = buildReportJson({
     reportCounts,
@@ -594,6 +616,9 @@ export function runTransform(paths: TransformPaths): TransformResult {
       // `hardFailureCount` doc comment documents for hard failures).
       collisionGuardOk: true,
       sha256: hashDirectory(paths.homebrewDir),
+      traitsDir: paths.homebrewTraitsDir,
+      traitsDocsIn: homebrewTraits.entities.length,
+      traitsSha256: hashDirectory(paths.homebrewTraitsDir),
     },
     adjacentCrossrefDedupe: {
       totalOccurrences: dedupeResult.totalOccurrences,
@@ -648,10 +673,14 @@ function main(): void {
   // `import.meta.dirname` exactly like `aliasesPath` above — NOT
   // `cfg.codex.dataPath` (this isn't fetched data).
   const homebrewDir = join(import.meta.dirname, "..", "..", "assay", "homebrew", "spells");
+  // D30-44 (0030 S2): sibling of `homebrewDir`, resolved exactly the same
+  // way — versioned repo content, host-run only.
+  const homebrewTraitsDir = join(import.meta.dirname, "..", "..", "assay", "homebrew", "traits");
 
   console.log(`transform: Foundry snapshot ${foundrySnapshotDir}`);
   console.log(`transform: AoN snapshot ${aonSnapshotDir}`);
   console.log(`transform: homebrew store ${homebrewDir}`);
+  console.log(`transform: homebrew traits ${homebrewTraitsDir}`);
   console.log(`transform: writing corpus to ${corpusRoot}`);
 
   const started = Date.now();
@@ -659,6 +688,7 @@ function main(): void {
     foundrySnapshotDir,
     aonSnapshotDir,
     homebrewDir,
+    homebrewTraitsDir,
     corpusRoot,
     aliasesFile,
     pins: { foundry: manifest.foundry, aon: manifest.aon },

@@ -117,6 +117,9 @@ const EMPTY_HOMEBREW_SECTION: HomebrewSectionJson = {
   slugMismatchCount: 0,
   collisionGuardOk: true,
   sha256: "",
+  traitsDir: "/fixtures/raw/homebrew-traits",
+  traitsDocsIn: 0,
+  traitsSha256: "",
 };
 
 describe("capList", () => {
@@ -861,27 +864,34 @@ describe("P3 S1 (D29-32/-33): facet coverage / family coverage / superseded brea
         homebrew: {
           dir: "/apps/assay/homebrew/spells",
           docsIn: 175,
-          emittedByCategory: { ritual: 3, spell: 172 },
+          emittedByCategory: { ritual: 3, spell: 172, trait: 8 },
           uuidRefsResolved: 70,
           uuidRefsBroken: 0,
           slugMismatchCount: 17,
           collisionGuardOk: true,
           sha256: "deadbeef",
+          traitsDir: "/apps/assay/homebrew/traits",
+          traitsDocsIn: 8,
+          traitsSha256: "cafef00d",
         },
       }),
     );
     expect(json.homebrew).toEqual({
       dir: "/apps/assay/homebrew/spells",
       docsIn: 175,
-      emittedByCategory: { ritual: 3, spell: 172 },
+      emittedByCategory: { ritual: 3, spell: 172, trait: 8 },
       uuidRefsResolved: 70,
       uuidRefsBroken: 0,
       slugMismatchCount: 17,
       collisionGuardOk: true,
       sha256: "deadbeef",
+      traitsDir: "/apps/assay/homebrew/traits",
+      traitsDocsIn: 8,
+      traitsSha256: "cafef00d",
     });
     const md = buildReportMarkdown(json);
     expect(md).toContain("Homebrew ingest");
+    expect(md).toContain("school-trait docs in");
     expect(md).toContain("175");
     expect(md).toContain("deadbeef");
     expect(md).toContain("OK");

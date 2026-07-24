@@ -116,7 +116,14 @@ export interface ReportInput {
 /** D30-46: `{dir,count,sha256}` (via the existing `hashDirectory`) plus the
  * D30-42/-43 ingest-quality pins — emitted-per-category counts, `@UUID`
  * resolved-as-crossref vs brokenRef, the expected 17 possessive-apostrophe
- * `slugMismatch`es, and the collision-guard result. */
+ * `slugMismatch`es, and the collision-guard result. `dir`/`docsIn`/`sha256`
+ * are scoped to the spells STORE specifically; `emittedByCategory`/
+ * `uuidRefsResolved`/`uuidRefsBroken` cover the COMBINED spells+rituals+
+ * traits set (D30-44, 0030 S2 — a single "what did homebrew emit" view, so
+ * `trait: 8` shows up in `emittedByCategory` alongside `spell`/`ritual`).
+ * `traitsDir`/`traitsDocsIn`/`traitsSha256` are the trait STORE's own
+ * provenance triple, kept separate rather than conflated into one dir/hash
+ * pair spanning two directories. */
 export interface HomebrewSectionJson {
   dir: string;
   docsIn: number;
@@ -126,6 +133,12 @@ export interface HomebrewSectionJson {
   slugMismatchCount: number;
   collisionGuardOk: boolean;
   sha256: string;
+  /** D30-44 (0030 S2): the trait store dir (`apps/assay/homebrew/traits/`). */
+  traitsDir: string;
+  /** D30-44 (0030 S2): docs read in from `traitsDir` (8 on the real store). */
+  traitsDocsIn: number;
+  /** D30-44 (0030 S2): `hashDirectory(traitsDir)`. */
+  traitsSha256: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -1118,9 +1131,13 @@ export function buildReportMarkdown(json: ReportJson): string {
     "",
   );
 
-  lines.push("## Homebrew ingest (D30-42..48, 0030 S1)", "");
+  lines.push("## Homebrew ingest (D30-42..48, 0030 S1/S2)", "");
   lines.push(
     `\`${json.homebrew.dir}\` — **${json.homebrew.docsIn}** docs in, sha256 \`${json.homebrew.sha256}\`. Collision guard: **${json.homebrew.collisionGuardOk ? "OK" : "FAILED"}** (a failure would have aborted the run before this report was built — see D30-43's widened guard).`,
+    "",
+  );
+  lines.push(
+    `Plus \`${json.homebrew.traitsDir}\` (D30-44) — **${json.homebrew.traitsDocsIn}** school-trait docs in, sha256 \`${json.homebrew.traitsSha256}\`.`,
     "",
   );
   lines.push("### Emitted, by category", "");
