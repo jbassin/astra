@@ -30,7 +30,9 @@ WORKDIR /repo
 
 # Workspace manifests + lock first (cached unless they change), then the member sources.
 # Every py member in uv.lock must be present for `uv sync --frozen`: the 6 pipeline apps
-# + all libs/py + ontology. (The TS apps are uv-excluded and intentionally absent.)
+# + assay (a lock member since 0030 even though Dagster never runs it — `uv sync
+# --frozen` refuses a missing member distribution outright) + all libs/py + ontology.
+# (The TS apps are uv-excluded and intentionally absent.)
 COPY pyproject.toml uv.lock ./
 COPY apps/scribe apps/scribe
 COPY apps/linguist apps/linguist
@@ -38,6 +40,7 @@ COPY apps/akasha-backend apps/akasha-backend
 COPY apps/mouthpiece-backend apps/mouthpiece-backend
 COPY apps/heartwood-backend apps/heartwood-backend
 COPY apps/_smoke-substrate apps/_smoke-substrate
+COPY apps/assay apps/assay
 COPY libs/py libs/py
 COPY ontology ontology
 
