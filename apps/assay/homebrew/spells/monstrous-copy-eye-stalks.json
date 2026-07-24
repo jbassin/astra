@@ -68,10 +68,13 @@
       ],
       "value": [
         "concentrate",
+        "emotion",
+        "fear",
         "gestalt",
         "incapacitation",
         "manipulate",
         "morph",
+        "sleep",
         "visual"
       ]
     }

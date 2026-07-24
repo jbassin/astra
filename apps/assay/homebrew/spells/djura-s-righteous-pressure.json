@@ -81,10 +81,12 @@
         "divine"
       ],
       "value": [
+        "aura",
         "concentrate",
         "holy",
         "kosmoturgy",
-        "manipulate"
+        "manipulate",
+        "spirit"
       ]
     }
   },
