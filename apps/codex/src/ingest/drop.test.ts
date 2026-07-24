@@ -121,7 +121,7 @@ describe("applyAonPrimaryDrop", () => {
       entity({ id: "effect/w", category: "effect", slug: "w", name: "W" }),
     ];
     const { report } = collector();
-    const result = applyAonPrimaryDrop(entities, report);
+    const result = applyAonPrimaryDrop(entities, report, new Set());
     expect(result.keptEntities).toEqual([]);
     expect(result.accounting.totalDropped).toBe(4);
     expect(result.accounting.byCategory).toEqual([
@@ -155,7 +155,7 @@ describe("applyAonPrimaryDrop", () => {
       variantOf: "weapon/z",
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([aonOnly, merged, variant], report);
+    const result = applyAonPrimaryDrop([aonOnly, merged, variant], report, new Set());
     expect(result.keptEntities.map((e) => e.id).sort()).toEqual([
       "boon/y",
       "rules/x",
@@ -179,7 +179,7 @@ describe("applyAonPrimaryDrop", () => {
     const hazard = entity({ id: "hazard/trap", category: "hazard", slug: "trap", name: "Trap" });
     const droppedFeat = entity({ id: "feat/x", category: "feat", slug: "x", name: "X" });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([creature, hazard, droppedFeat], report);
+    const result = applyAonPrimaryDrop([creature, hazard, droppedFeat], report, new Set());
     expect(result.keptEntities.map((e) => e.id).sort()).toEqual([
       "creature/beluthus",
       "hazard/trap",
@@ -194,8 +194,100 @@ describe("applyAonPrimaryDrop", () => {
 
   it("report-counts every dropped entity individually (aonPrimaryDrop)", () => {
     const { reports, report } = collector();
-    applyAonPrimaryDrop([entity({ id: "boon/x", category: "boon", slug: "x", name: "X" })], report);
+    applyAonPrimaryDrop(
+      [entity({ id: "boon/x", category: "boon", slug: "x", name: "X" })],
+      report,
+      new Set(),
+    );
     expect(reports.filter((r) => r.cls === "aonPrimaryDrop")).toHaveLength(1);
+  });
+
+  describe("D30-43 (0030 S1, B1): the homebrew keep-arm", () => {
+    it("keeps a Foundry-only homebrew spell that would otherwise be dropped", () => {
+      const homebrewSpell = entity({
+        id: "spell/fixture-homebrew-bolt",
+        category: "spell",
+        slug: "fixture-homebrew-bolt",
+        name: "Fixture Homebrew Bolt",
+      });
+      const { report } = collector();
+      const result = applyAonPrimaryDrop(
+        [homebrewSpell],
+        report,
+        new Set(["spell/fixture-homebrew-bolt"]),
+      );
+      expect(result.keptEntities.map((e) => e.id)).toEqual(["spell/fixture-homebrew-bolt"]);
+      expect(result.accounting.totalDropped).toBe(0);
+    });
+
+    it("a homebrew ritual (already rerouted to ritual/*) is kept the same way", () => {
+      const homebrewRitual = entity({
+        id: "ritual/fixture-homebrew-ritual",
+        category: "ritual",
+        slug: "fixture-homebrew-ritual",
+        name: "Fixture Homebrew Ritual",
+      });
+      const { report } = collector();
+      const result = applyAonPrimaryDrop(
+        [homebrewRitual],
+        report,
+        new Set(["ritual/fixture-homebrew-ritual"]),
+      );
+      expect(result.keptEntities.map((e) => e.id)).toEqual(["ritual/fixture-homebrew-ritual"]);
+    });
+
+    it("an OFFICIAL Foundry-only spell with the SAME shape still drops when its id is NOT in homebrewIds", () => {
+      const officialFoundryOnlySpell = entity({
+        id: "spell/some-official-foundry-only-spell",
+        category: "spell",
+        slug: "some-official-foundry-only-spell",
+        name: "Some Official Foundry-Only Spell",
+      });
+      const { report } = collector();
+      const result = applyAonPrimaryDrop(
+        [officialFoundryOnlySpell],
+        report,
+        new Set(["spell/a-different-homebrew-id"]),
+      );
+      expect(result.keptEntities).toEqual([]);
+      expect(result.accounting.totalDropped).toBe(1);
+    });
+
+    it("the keep-arm fires ahead of the carve-out/AoN-backed decision, but a non-homebrew entity in the SAME batch is unaffected", () => {
+      const homebrewSpell = entity({
+        id: "spell/fixture-homebrew-bolt",
+        category: "spell",
+        slug: "fixture-homebrew-bolt",
+        name: "Fixture Homebrew Bolt",
+      });
+      const officialDroppedFeat = entity({
+        id: "feat/dropped",
+        category: "feat",
+        slug: "dropped",
+        name: "Dropped",
+      });
+      const officialKeptCreature = entity({
+        id: "creature/carved-out",
+        category: "creature",
+        slug: "carved-out",
+        name: "Carved Out",
+        // Real stats, so this doesn't ALSO match unknownBookHuskDropFamily
+        // (book:"unknown" + empty body/facets/traits) — see the pre-existing
+        // "carve-out" test above for the same precedent.
+        facets: { hp: 10 },
+      });
+      const { report } = collector();
+      const result = applyAonPrimaryDrop(
+        [homebrewSpell, officialDroppedFeat, officialKeptCreature],
+        report,
+        new Set(["spell/fixture-homebrew-bolt"]),
+      );
+      expect(result.keptEntities.map((e) => e.id).sort()).toEqual([
+        "creature/carved-out",
+        "spell/fixture-homebrew-bolt",
+      ]);
+      expect(result.accounting.byCategory).toEqual([{ category: "feat", dropped: 1 }]);
+    });
   });
 
   it("post-drop crossref reconciliation: downgrades a crossref pointing at a NOW-dropped entity to brokenRef", () => {
@@ -219,7 +311,7 @@ describe("applyAonPrimaryDrop", () => {
       name: "Dropped Boon",
     });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([survivor, droppedTarget], report);
+    const result = applyAonPrimaryDrop([survivor, droppedTarget], report, new Set());
     expect(result.keptEntities.map((e) => e.id)).toEqual(["spell/heal"]);
     const kept = result.keptEntities.find((e) => e.id === "spell/heal");
     const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
@@ -253,7 +345,7 @@ describe("applyAonPrimaryDrop", () => {
       body: [{ kind: "paragraph", children: [crossrefNode as never] }] as unknown as BlockNode[],
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([holder, target], report);
+    const result = applyAonPrimaryDrop([holder, target], report, new Set());
     const kept = result.keptEntities.find((e) => e.id === "spell/heal");
     const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
     expect(paragraph?.children[0]).toEqual(crossrefNode);
@@ -283,7 +375,7 @@ describe("applyAonPrimaryDrop", () => {
       ],
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([survivor], report);
+    const result = applyAonPrimaryDrop([survivor], report, new Set());
     const kept = result.keptEntities[0];
     const loreParagraph = kept?.loreBody?.[0] as { children: CodexNode[] } | undefined;
     expect(loreParagraph?.children[0]).toEqual({
@@ -414,7 +506,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       proseOnly: true,
     });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([debris], report);
+    const result = applyAonPrimaryDrop([debris], report, new Set());
     expect(result.keptEntities).toEqual([]);
     expect(result.accounting.activationDrop.total).toBe(1);
     expect(result.accounting.activationDrop.parenFamily).toBe(1);
@@ -431,7 +523,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       proseOnly: true,
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([debris], report);
+    const result = applyAonPrimaryDrop([debris], report, new Set());
     expect(result.keptEntities).toEqual([]);
     expect(result.accounting.activationDrop.digitFamily).toBe(1);
     expect(result.accounting.activationDrop.digitFamilyNames).toEqual([
@@ -448,7 +540,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       proseOnly: true,
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([kept], report);
+    const result = applyAonPrimaryDrop([kept], report, new Set());
     expect(result.keptEntities.map((e) => e.id)).toEqual(["action/manipulate"]);
     expect(result.accounting.activationDrop.total).toBe(0);
   });
@@ -462,7 +554,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       proseOnly: true,
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([debris], report);
+    const result = applyAonPrimaryDrop([debris], report, new Set());
     expect(result.accounting.totalDropped).toBe(0);
     expect(result.accounting.byCategory).toEqual([]);
   });
@@ -484,7 +576,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       proseOnly: true,
     });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([survivor, droppedTarget], report);
+    const result = applyAonPrimaryDrop([survivor, droppedTarget], report, new Set());
     expect(result.keptEntities.map((e) => e.id)).toEqual(["action/interact-142"]);
     const kept = result.keptEntities[0];
     expect(kept?.remasteredAs).toBeUndefined();
@@ -509,7 +601,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       proseOnly: true,
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([survivor, target], report);
+    const result = applyAonPrimaryDrop([survivor, target], report, new Set());
     const kept = result.keptEntities.find((e) => e.id === "action/interact-142");
     expect(kept?.remasteredAs).toEqual(["action/manipulate"]);
     expect(result.accounting.editionPointersStripped).toBe(0);
@@ -537,7 +629,7 @@ describe("applyAonPrimaryDrop — D29-98 widened activation drop (P11 S1)", () =
       proseOnly: true,
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([kept, debris], report);
+    const result = applyAonPrimaryDrop([kept, debris], report, new Set());
     const survivor = result.keptEntities.find((e) => e.id === "spell/heal");
     const paragraph = survivor?.body[0] as { children: CodexNode[] } | undefined;
     expect(paragraph?.children[0]).toEqual({
@@ -646,7 +738,7 @@ describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => 
       source: { book: "Foundry Journal: Ancestries", license: "unknown" },
     });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([debris], report);
+    const result = applyAonPrimaryDrop([debris], report, new Set());
     expect(result.keptEntities).toEqual([]);
     expect(result.accounting.journalSectionHeaderDrop).toBe(1);
     expect(reports.some((r) => r.cls === "journalSectionHeaderDropped")).toBe(true);
@@ -667,7 +759,7 @@ describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => 
       body: [{ kind: "paragraph", children: [] }] as unknown as BlockNode[],
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([index], report);
+    const result = applyAonPrimaryDrop([index], report, new Set());
     expect(result.keptEntities.map((e) => e.id)).toEqual(["ancestry/index"]);
     expect(result.accounting.journalSectionHeaderDrop).toBe(0);
   });
@@ -681,7 +773,7 @@ describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => 
       source: { book: "unknown", license: "unknown" },
     });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([husk], report);
+    const result = applyAonPrimaryDrop([husk], report, new Set());
     expect(result.keptEntities).toEqual([]);
     expect(result.accounting.unknownBookHuskDrop).toBe(1);
     expect(reports.some((r) => r.cls === "unknownBookHuskDropped")).toBe(true);
@@ -698,7 +790,7 @@ describe("applyAonPrimaryDrop — D29-133 debris drop-families (P14 S1)", () => 
       facets: { hp: 10 },
     });
     const { report } = collector();
-    const result = applyAonPrimaryDrop([realCreature], report);
+    const result = applyAonPrimaryDrop([realCreature], report, new Set());
     expect(result.keptEntities.map((e) => e.id)).toEqual(["creature/dune-candle"]);
     expect(result.accounting.unknownBookHuskDrop).toBe(0);
     expect(result.accounting.carveOut).toEqual([{ category: "creature", kept: 1 }]);
@@ -733,7 +825,7 @@ describe("reconcileInline embed overrides (D29-134, P14 S1)", () => {
       aonUrl: "/Eidolons.aspx?ID=1",
     });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([holder, survivingTarget], report);
+    const result = applyAonPrimaryDrop([holder, survivingTarget], report, new Set());
     const kept = result.keptEntities.find((e) => e.id === "class/summoner");
     const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
     expect(paragraph?.children[0]).toEqual({
@@ -751,7 +843,7 @@ describe("reconcileInline embed overrides (D29-134, P14 S1)", () => {
   it("suppresses the vishkanya self-embed (feat/innate-venom) to an inert empty text node — never counted as unresolved", () => {
     const holder = embedEntity({ target: "feat/innate-venom", resolved: true });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([holder], report);
+    const result = applyAonPrimaryDrop([holder], report, new Set());
     const kept = result.keptEntities.find((e) => e.id === "class/summoner");
     const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
     expect(paragraph?.children[0]).toEqual({
@@ -766,7 +858,7 @@ describe("reconcileInline embed overrides (D29-134, P14 S1)", () => {
   it("an embed with no override entry still falls through to the ordinary postDropEmbedBroken path", () => {
     const holder = embedEntity({ target: "class-feature/never-joined", resolved: true });
     const { reports, report } = collector();
-    const result = applyAonPrimaryDrop([holder], report);
+    const result = applyAonPrimaryDrop([holder], report, new Set());
     const kept = result.keptEntities.find((e) => e.id === "class/summoner");
     const paragraph = kept?.body[0] as { children: CodexNode[] } | undefined;
     expect(paragraph?.children[0]).toEqual({

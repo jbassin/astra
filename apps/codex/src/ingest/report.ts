@@ -106,6 +106,26 @@ export interface ReportInput {
    * counters (the `entities` array itself isn't needed here — it's already
    * folded into `finalEntities` above by the time the report is built). */
   classStatsAugment: Omit<AugmentClassStatsResult, "entities">;
+  /** D30-46 (0030 S1, review blocker B2): the homebrew ingest provenance —
+   * lives here (report.json/report.md) rather than `corpus/manifest.json`
+   * (`.strict()`, no room for a new key without a hard parse-crash at
+   * `parseManifest`, before the transform even starts). */
+  homebrew: HomebrewSectionJson;
+}
+
+/** D30-46: `{dir,count,sha256}` (via the existing `hashDirectory`) plus the
+ * D30-42/-43 ingest-quality pins — emitted-per-category counts, `@UUID`
+ * resolved-as-crossref vs brokenRef, the expected 17 possessive-apostrophe
+ * `slugMismatch`es, and the collision-guard result. */
+export interface HomebrewSectionJson {
+  dir: string;
+  docsIn: number;
+  emittedByCategory: Record<string, number>;
+  uuidRefsResolved: number;
+  uuidRefsBroken: number;
+  slugMismatchCount: number;
+  collisionGuardOk: boolean;
+  sha256: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -520,6 +540,8 @@ export interface ReportJson {
   sourcesIndex: SourcesIndexStats;
   /** P12 S1 (D29-114/-115): the post-drop class-stats augment pass. */
   classStatsAugment: ClassStatsAugmentJson;
+  /** D30-46 (0030 S1): the homebrew ingest provenance section. */
+  homebrew: HomebrewSectionJson;
 }
 
 function categoryJson(stat: CategoryStat, finalOut: number): CategoryJoinJson {
@@ -579,6 +601,7 @@ export function buildReportJson(input: ReportInput): ReportJson {
     rulesTree: input.rulesTree,
     sourcesIndex: input.sourcesIndex,
     classStatsAugment: classStatsAugmentJson(input.classStatsAugment),
+    homebrew: input.homebrew,
   };
 }
 
@@ -1092,6 +1115,34 @@ export function buildReportMarkdown(json: ReportJson): string {
           ]),
         )
       : "No subclass-mapped classes this run.",
+    "",
+  );
+
+  lines.push("## Homebrew ingest (D30-42..48, 0030 S1)", "");
+  lines.push(
+    `\`${json.homebrew.dir}\` — **${json.homebrew.docsIn}** docs in, sha256 \`${json.homebrew.sha256}\`. Collision guard: **${json.homebrew.collisionGuardOk ? "OK" : "FAILED"}** (a failure would have aborted the run before this report was built — see D30-43's widened guard).`,
+    "",
+  );
+  lines.push("### Emitted, by category", "");
+  const homebrewCategoryEntries = Object.entries(json.homebrew.emittedByCategory);
+  lines.push(
+    homebrewCategoryEntries.length > 0
+      ? mdTable(["category", "count"], homebrewCategoryEntries)
+      : "Nothing emitted this run.",
+    "",
+  );
+  lines.push("### `@UUID` resolution + slug identity", "");
+  lines.push(
+    mdTable(
+      ["resolved (crossref)", "broken", "slugMismatch (basename wins, expected)"],
+      [
+        [
+          json.homebrew.uuidRefsResolved,
+          json.homebrew.uuidRefsBroken,
+          json.homebrew.slugMismatchCount,
+        ],
+      ],
+    ),
     "",
   );
 

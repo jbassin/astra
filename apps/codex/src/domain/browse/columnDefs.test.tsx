@@ -97,6 +97,37 @@ describe("columnDefs: totality (D29-78 acceptance gate A)", () => {
 });
 
 // ---------------------------------------------------------------------------
+// D30-44 (0030 S1): the school-trait level-less guard — a stray `level` on
+// ANY trait row (a future homebrew school-trait doc, e.g.) would flip
+// `categoryHasLevelCoverage("trait")` and put a Lvl column on every /trait
+// row site-wide (the trait category is otherwise uniformly level-less).
+// Synthetic rows (not the fixture corpus) so this test asserts the
+// INVARIANT itself, not a snapshot of the fixture's current content.
+// ---------------------------------------------------------------------------
+
+describe("columnDefs: D30-44 school-trait level-less invariant", () => {
+  it("columnsFor('trait', rows) is unchanged when a level-less trait row is added", () => {
+    const before = columnsFor("trait", [row({ id: "trait/a", name: "A" })]);
+    const after = columnsFor("trait", [
+      row({ id: "trait/a", name: "A" }),
+      row({ id: "trait/memetics", name: "Memetics" }),
+    ]);
+    expect(keysOf(after)).toEqual(keysOf(before));
+    expect(keysOf(before)).not.toContain("level");
+  });
+
+  it("negative control: a trait row WITH a level WOULD flip the Lvl column on (proves the test above actually exercises the guard)", () => {
+    const withoutLevel = columnsFor("trait", [row({ id: "trait/a", name: "A" })]);
+    const withLevel = columnsFor("trait", [
+      row({ id: "trait/a", name: "A" }),
+      row({ id: "trait/bad", name: "Bad", level: 1 }),
+    ]);
+    expect(keysOf(withoutLevel)).not.toContain("level");
+    expect(keysOf(withLevel)).toContain("level");
+  });
+});
+
+// ---------------------------------------------------------------------------
 // group column sets (D29-78's 5 sets), spot-checked against the spec text
 // ---------------------------------------------------------------------------
 

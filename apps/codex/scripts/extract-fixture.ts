@@ -280,6 +280,12 @@ interface AonPick {
 }
 
 const REQUIRED_AON_PICKS: readonly AonPick[] = [
+  {
+    category: "condition",
+    id: "condition-92",
+    reason:
+      "0030 S1 (D30-42, B3): Slowed (remaster) — the AoN join partner for the real conditions/slowed.json Foundry pick, so condition/slowed SURVIVES the AoN-primary drop pass and the homebrew UUID-resolution fixture proof (fixture-warding-glyph.json's @UUID[...conditionitems...Slowed]) resolves as a real crossref, not a post-drop brokenRef",
+  },
   { category: "spell", id: "spell-148", reason: "Heal legacy" },
   { category: "spell", id: "spell-1554", reason: "Heal remaster" },
   { category: "spell", id: "spell-180", reason: "Magic Missile (AoN-only legacy)" },
@@ -517,6 +523,157 @@ const FIXTURE_ALIASES = {
     },
   ],
 };
+
+// ---------------------------------------------------------------------------
+// 4. the homebrew mini fixture (D30-47, 0030 S1)
+// ---------------------------------------------------------------------------
+
+interface HomebrewFixtureDoc {
+  basename: string;
+  doc: Record<string, unknown>;
+}
+
+/** Hand-authored synthetic docs — NOT copied from the real 175-doc
+ * `apps/assay/homebrew/spells/` store, unlike every Foundry/AoN raw pick
+ * above. The real store is versioned assay content, not a codex fetch
+ * snapshot; hand-splicing IT into the fixture would be the exact P12
+ * "hand-spliced fixtures get wiped by a canonical-coverage sweep" trap this
+ * whole extractor exists to avoid. These docs ARE the canonical fixture
+ * source — emitted by this script like everything else under
+ * `fixtures/raw/`, never hand-edited afterward. Three, per D30-47: a plain
+ * spell (no ritual, no `@UUID`), a `system.ritual` ritual (D30-43 reroute),
+ * and a spell bearing a real `@UUID[Compendium.pf2e.conditionitems.Item.
+ * Slowed]` ref — "Slowed" resolves because `conditions/slowed.json` is
+ * already a `SUPPLEMENTAL_FOUNDRY_PICKS` entry above (same official
+ * `UuidIndex` the real store's 70 ref-bearing docs resolve against). */
+const HOMEBREW_FIXTURE_DOCS: readonly HomebrewFixtureDoc[] = [
+  {
+    basename: "fixture-cinder-bolt",
+    doc: {
+      _id: "hbfixture0000001",
+      flags: { assay: { seededFrom: { repo: "fixture" } } },
+      name: "Fixture Cinder Bolt",
+      system: {
+        description: {
+          value:
+            "<p>A 0030 S1 fixture spell (plain, no ritual, no @UUID refs) — synthetic content only.</p>",
+        },
+        level: { value: 1 },
+        publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
+        range: { value: "30 feet" },
+        target: { value: "1 creature" },
+        time: { value: "2" },
+        traits: { rarity: "common", traditions: ["arcane"], value: ["attack", "fire"] },
+      },
+      type: "spell",
+    },
+  },
+  {
+    basename: "fixture-abyssal-forging",
+    doc: {
+      _id: "hbfixture0000002",
+      flags: { assay: { seededFrom: { repo: "fixture" } } },
+      name: "Fixture Abyssal Forging",
+      system: {
+        description: {
+          value:
+            "<p>A 0030 S1 fixture ritual — synthetic content only, exercises the D30-43 ritual reroute.</p>",
+        },
+        level: { value: 5 },
+        publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
+        range: { value: "touch" },
+        ritual: {
+          primary: { check: "Arcana (expert)" },
+          secondary: { casters: 1, checks: "Crafting" },
+        },
+        target: { value: "1 object" },
+        time: { value: "6 hours" },
+        traits: { rarity: "uncommon", traditions: [], value: ["arcane"] },
+      },
+      type: "spell",
+    },
+  },
+  {
+    basename: "fixture-warding-glyph",
+    doc: {
+      _id: "hbfixture0000003",
+      flags: { assay: { seededFrom: { repo: "fixture" } } },
+      name: "Fixture Warding Glyph",
+      system: {
+        description: {
+          value:
+            "<p>A 0030 S1 fixture spell — on a failed save, the target becomes @UUID[Compendium.pf2e.conditionitems.Item.Slowed] for 1 round.</p>",
+        },
+        level: { value: 3 },
+        publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
+        range: { value: "60 feet" },
+        target: { value: "1 creature" },
+        time: { value: "2" },
+        traits: { rarity: "common", traditions: ["divine", "occult"], value: ["mental"] },
+      },
+      type: "spell",
+    },
+  },
+];
+
+/** D30-47's negative-path collision fixture — deliberately basenamed
+ * "fireball" so its homebrew id (`spell/fireball`) collides with the real
+ * `spells/spells/rank-3/fireball.json` supplemental Foundry pick above.
+ * Lives OUTSIDE `fixtures/raw/homebrew/` (a SEPARATE directory the default
+ * pipeline test never points `TransformPaths.homebrewDir` at) so the normal
+ * fixture transform run never sees it — only a dedicated test constructing
+ * its own `TransformPaths` with `homebrewDir` pointed here asserts the
+ * D30-43 collision guard throws. */
+const HOMEBREW_COLLISION_FIXTURE_DOC: HomebrewFixtureDoc = {
+  basename: "fireball",
+  doc: {
+    _id: "hbfixturecollide1",
+    flags: { assay: { seededFrom: { repo: "fixture" } } },
+    name: "Fixture Colliding Fireball",
+    system: {
+      description: {
+        value:
+          "<p>D30-43 negative-path fixture — this basename deliberately collides with the official spell/fireball id.</p>",
+      },
+      level: { value: 3 },
+      publication: { license: "OGL", remaster: true, title: "Liturgy of the Iridite Vol.2" },
+      range: { value: "30 feet" },
+      target: { value: "1 creature" },
+      time: { value: "2" },
+      traits: { rarity: "common", traditions: ["arcane"], value: ["fire"] },
+    },
+    type: "spell",
+  },
+};
+
+/** Writes `fixtures/raw/homebrew/` (3 docs, read by the default pipeline
+ * test) and `fixtures/raw/homebrew-collision/` (1 doc, read only by the
+ * dedicated negative-path collision test) — wholesale-wiped + rewritten,
+ * same "committed fixture, never hand-edited" contract as `buildRawFixture`
+ * above. */
+function buildHomebrewFixture(): number {
+  const homebrewDir = join(FIXTURE_ROOT, "raw", "homebrew");
+  rmSync(homebrewDir, { recursive: true, force: true });
+  mkdirSync(homebrewDir, { recursive: true });
+  let bytes = 0;
+  for (const { basename, doc } of HOMEBREW_FIXTURE_DOCS) {
+    const content = canonicalJson(doc);
+    writeFileSync(join(homebrewDir, `${basename}.json`), content);
+    bytes += Buffer.byteLength(content);
+  }
+
+  const collisionDir = join(FIXTURE_ROOT, "raw", "homebrew-collision");
+  rmSync(collisionDir, { recursive: true, force: true });
+  mkdirSync(collisionDir, { recursive: true });
+  const collisionContent = canonicalJson(HOMEBREW_COLLISION_FIXTURE_DOC.doc);
+  writeFileSync(
+    join(collisionDir, `${HOMEBREW_COLLISION_FIXTURE_DOC.basename}.json`),
+    collisionContent,
+  );
+  bytes += Buffer.byteLength(collisionContent);
+
+  return bytes;
+}
 
 // ---------------------------------------------------------------------------
 // helpers
@@ -1076,6 +1233,7 @@ function buildFixturePipelineCorpus(): string {
   const result = runTransform({
     foundrySnapshotDir: join(FIXTURE_ROOT, "raw", "foundry"),
     aonSnapshotDir: join(FIXTURE_ROOT, "raw", "aon"),
+    homebrewDir: join(FIXTURE_ROOT, "raw", "homebrew"),
     corpusRoot: outDir,
     aliasesFile: FIXTURE_ALIASES,
     pins: {
@@ -1579,6 +1737,10 @@ function main(): void {
   const rawBytes = buildRawFixture(cfg, manifest.foundry.tag, manifest.aon.snapshotDate);
   console.log(`  raw subset: ${rawBytes} bytes`);
 
+  console.log("\nBuilding the homebrew mini fixture (D30-47, 0030 S1)...");
+  const homebrewBytes = buildHomebrewFixture();
+  console.log(`  homebrew subset: ${homebrewBytes} bytes`);
+
   console.log(
     "\nRunning the fixture's own trimmed pipeline (P12 S1 class-stats coverage source)...",
   );
@@ -1588,12 +1750,12 @@ function main(): void {
   const canonicalBytes = buildCanonicalCoverage(
     corpusRoot,
     fixturePipelineCorpusRoot,
-    BUDGET_BYTES - rawBytes,
+    BUDGET_BYTES - rawBytes - homebrewBytes,
   );
   console.log(`  canonical subset: ${canonicalBytes} bytes`);
   rmSync(fixturePipelineCorpusRoot, { recursive: true, force: true });
 
-  const total = rawBytes + canonicalBytes;
+  const total = rawBytes + homebrewBytes + canonicalBytes;
   console.log(`\nTotal fixture size: ${total} bytes (budget ${BUDGET_BYTES} bytes)`);
   if (total > BUDGET_BYTES) fail(`fixture exceeds the ${BUDGET_BYTES}-byte budget`);
   console.log("extract-fixture: OK — coverage matrix satisfied, within budget.");

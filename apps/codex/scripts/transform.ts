@@ -58,6 +58,12 @@ import {
 } from "../src/ingest/foundryEntities";
 import { FoundryHtmlError, parseFoundryHtml } from "../src/ingest/foundryHtml";
 import { walkFiles } from "../src/ingest/fsWalk";
+import { hashDirectory } from "../src/ingest/hash";
+import {
+  assertNoHomebrewCollisions,
+  countHomebrewUuidRefs,
+  loadHomebrewSide,
+} from "../src/ingest/homebrew";
 import { type JoinAliasesFile, runJoin } from "../src/ingest/join";
 import {
   type JournalDoc,
@@ -333,6 +339,14 @@ export interface TransformPaths {
    * real host path `<dataPath>/snapshots/aon/<date>`; fixture test points
    * this at `apps/codex/fixtures/raw/aon`. */
   aonSnapshotDir: string;
+  /** The homebrew store root (D30-42, 0030 S1) — versioned repo content
+   * (`apps/assay/homebrew/spells/`), resolved repo-relative from
+   * `import.meta.dirname` exactly like the `join-aliases.json` precedent
+   * below, NOT via `cfg.codex.dataPath` (config-single-source isn't
+   * violated — this isn't fetched data). Host-run only; the codex Docker
+   * image never contains `apps/assay`. The fixture test points this at
+   * `apps/codex/fixtures/raw/homebrew`. */
+  homebrewDir: string;
   /** Where the deterministic corpus is written (wiped + rewritten wholesale
    * every call, `emit.ts`'s own contract) — real host path
    * `<dataPath>/corpus`; the fixture test points this at a fresh temp dir. */
@@ -377,6 +391,11 @@ export function runTransform(paths: TransformPaths): TransformResult {
   }
 
   const foundry = loadFoundrySide(paths.foundrySnapshotDir, report, hardFailures);
+  // D30-42 (0030 S1): runs AFTER loadFoundrySide — its ctx resolves
+  // `@UUID[...conditionitems...]` refs against the OFFICIAL `foundry.index`
+  // (B3, the review blocker: an empty index would downgrade all 70
+  // ref-bearing homebrew docs to brokenRef).
+  const homebrew = loadHomebrewSide(paths.homebrewDir, foundry.index, report, hardFailures);
   const aon = loadAonSide(paths.aonSnapshotDir, report, hardFailures);
 
   if (hardFailures.length > 0) return { hardFailures };
@@ -418,8 +437,21 @@ export function runTransform(paths: TransformPaths): TransformResult {
 
   // D29-14/-17/-98: drop every Foundry-only entity except the creature/
   // hazard carve-out, PLUS (D29-98, P11 S1) the widened AoN-only activation-
-  // debris families — S5c, the last P1.5 pass before emit.
-  const dropResult = applyAonPrimaryDrop(joinResult.entities, report);
+  // debris families — S5c, the last P1.5 pass before emit. D30-43 (0030 S1):
+  // homebrew never enters the AoN join (no aonUrl, no legacyOf/
+  // remasteredAs — superseded:false by construction); its entities merge in
+  // right here, alongside the official set, so the SAME drop pass's
+  // `homebrewIds` keep-arm is what keeps them alive.
+  const homebrewIds = new Set(homebrew.entities.map((e) => e.id));
+  const dropResult = applyAonPrimaryDrop(
+    [...joinResult.entities, ...homebrew.entities],
+    report,
+    homebrewIds,
+  );
+  // M3-widened hard guard: never a silent overwrite — see
+  // `assertNoHomebrewCollisions`'s own doc comment for the two id spaces
+  // checked and why both are needed.
+  assertNoHomebrewCollisions(homebrewIds, foundry.entities, dropResult.keptEntities);
 
   // D29-100 (P11 S1): whole-document adjacent-crossref dedupe — drop.ts-
   // adjacent (same pipeline stage, right after the drop pass, on its kept
@@ -530,6 +562,16 @@ export function runTransform(paths: TransformPaths): TransformResult {
   const validatedSourcesIndex = SourcesIndexFileSchema.parse(sourcesIndexFile);
   writeCanonicalJson(join(paths.corpusRoot, "sources-index.json"), validatedSourcesIndex);
 
+  // D30-46 (0030 S1, review blocker B2): the homebrew provenance pin lives
+  // in report.json/report.md, NOT `corpus/manifest.json` (`.strict()` —
+  // an added key throws at `parseManifest` before the transform even
+  // starts).
+  const homebrewCategoryCounts: Record<string, number> = {};
+  for (const e of homebrew.entities) {
+    homebrewCategoryCounts[e.category] = (homebrewCategoryCounts[e.category] ?? 0) + 1;
+  }
+  const homebrewUuidRefs = countHomebrewUuidRefs(homebrew.entities);
+
   const reportJson = buildReportJson({
     reportCounts,
     reportExamples,
@@ -537,6 +579,22 @@ export function runTransform(paths: TransformPaths): TransformResult {
     join: joinResult,
     finalEntities,
     dropAccounting: dropResult.accounting,
+    homebrew: {
+      dir: paths.homebrewDir,
+      docsIn: homebrew.entities.length,
+      emittedByCategory: Object.fromEntries(
+        Object.entries(homebrewCategoryCounts).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+      ),
+      uuidRefsResolved: homebrewUuidRefs.resolved,
+      uuidRefsBroken: homebrewUuidRefs.broken,
+      slugMismatchCount: homebrew.slugMismatchCount,
+      // Reaching this line means `assertNoHomebrewCollisions` above didn't
+      // throw — the guard result IS this field (a throw aborts the whole
+      // run before report.json is ever built, same posture the report's own
+      // `hardFailureCount` doc comment documents for hard failures).
+      collisionGuardOk: true,
+      sha256: hashDirectory(paths.homebrewDir),
+    },
     adjacentCrossrefDedupe: {
       totalOccurrences: dedupeResult.totalOccurrences,
       entitiesTouched: dedupeResult.entitiesTouched,
@@ -586,15 +644,21 @@ function main(): void {
   const foundrySnapshotDir = join(cfg.codex.dataPath, "snapshots", "foundry", manifest.foundry.tag);
   const aonSnapshotDir = join(cfg.codex.dataPath, "snapshots", "aon", manifest.aon.snapshotDate);
   const corpusRoot = join(cfg.codex.dataPath, "corpus");
+  // D30-42 (0030 S1): versioned repo content, resolved repo-relative from
+  // `import.meta.dirname` exactly like `aliasesPath` above — NOT
+  // `cfg.codex.dataPath` (this isn't fetched data).
+  const homebrewDir = join(import.meta.dirname, "..", "..", "assay", "homebrew", "spells");
 
   console.log(`transform: Foundry snapshot ${foundrySnapshotDir}`);
   console.log(`transform: AoN snapshot ${aonSnapshotDir}`);
+  console.log(`transform: homebrew store ${homebrewDir}`);
   console.log(`transform: writing corpus to ${corpusRoot}`);
 
   const started = Date.now();
   const result = runTransform({
     foundrySnapshotDir,
     aonSnapshotDir,
+    homebrewDir,
     corpusRoot,
     aliasesFile,
     pins: { foundry: manifest.foundry, aon: manifest.aon },

@@ -427,10 +427,22 @@ function stripEditionPointers(
  * pointers off the survivors, re-validates crossrefs/embeds against the
  * surviving set, and returns both the final entity list AND the
  * drop-accounting the report renders. Pure — no disk I/O.
+ *
+ * D30-43 (0030 S1, review blocker B1) adds a THIRD override, checked ahead
+ * of the other two: `homebrewIds` unconditionally keeps every entity whose
+ * id is in the set — an id-set PARAMETER, never an entity marker field
+ * (`CodexEntitySchema` is `.strict()`; a stray `origin:"homebrew"` field
+ * would hard-fail `emitCorpus`'s `.parse()` for every homebrew doc). Without
+ * this arm a homebrew spell/ritual (Foundry-only by construction: no
+ * `aonUrl`, no `proseOnly`, no `variantOf`) would be dropped by the exact
+ * same D29-14 policy that drops a genuine official Foundry-only spell — the
+ * arm fires BEFORE the AoN-backed/carve-out decision so an official
+ * Foundry-only spell (never in `homebrewIds`) still drops normally.
  */
 export function applyAonPrimaryDrop(
   entities: readonly CodexEntity[],
   report: ReportFn,
+  homebrewIds: ReadonlySet<string>,
 ): DropResult {
   const kept: CodexEntity[] = [];
   const droppedByCategory = new Map<string, number>();
@@ -467,6 +479,11 @@ export function applyAonPrimaryDrop(
       droppedIds.add(e.id);
       unknownBookHuskDropped++;
       report("unknownBookHuskDropped", `${e.id}: ${e.name}`);
+      continue;
+    }
+
+    if (homebrewIds.has(e.id)) {
+      kept.push(e);
       continue;
     }
 

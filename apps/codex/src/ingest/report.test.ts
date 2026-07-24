@@ -20,6 +20,7 @@ import {
   computeProseOnlyCount,
   computeSupersededBreakdown,
   computeVariantCount,
+  type HomebrewSectionJson,
   type ReportInput,
 } from "./report";
 import type { RulesTreeStats } from "./rulesTree";
@@ -105,6 +106,17 @@ const EMPTY_CLASS_STATS_AUGMENT: Omit<AugmentClassStatsResult, "entities"> = {
   grantedFeaturesUnresolved: 0,
   subclassOptionsEmitted: 0,
   subclassOptionCounts: [],
+};
+
+const EMPTY_HOMEBREW_SECTION: HomebrewSectionJson = {
+  dir: "/fixtures/raw/homebrew",
+  docsIn: 0,
+  emittedByCategory: {},
+  uuidRefsResolved: 0,
+  uuidRefsBroken: 0,
+  slugMismatchCount: 0,
+  collisionGuardOk: true,
+  sha256: "",
 };
 
 describe("capList", () => {
@@ -210,6 +222,7 @@ function baseInput(overrides: Partial<ReportInput>): ReportInput {
     rulesTree: EMPTY_RULES_TREE_STATS,
     sourcesIndex: EMPTY_SOURCES_INDEX_STATS,
     classStatsAugment: EMPTY_CLASS_STATS_AUGMENT,
+    homebrew: EMPTY_HOMEBREW_SECTION,
     ...overrides,
   };
 }
@@ -840,5 +853,37 @@ describe("P3 S1 (D29-32/-33): facet coverage / family coverage / superseded brea
     expect(md).toContain("Facet coverage");
     expect(md).toContain("creature.family");
     expect(md).toContain("superseded");
+  });
+
+  it("D30-46 (0030 S1): the homebrew section passes through buildReportJson and renders in buildReportMarkdown", () => {
+    const json = buildReportJson(
+      baseInput({
+        homebrew: {
+          dir: "/apps/assay/homebrew/spells",
+          docsIn: 175,
+          emittedByCategory: { ritual: 3, spell: 172 },
+          uuidRefsResolved: 70,
+          uuidRefsBroken: 0,
+          slugMismatchCount: 17,
+          collisionGuardOk: true,
+          sha256: "deadbeef",
+        },
+      }),
+    );
+    expect(json.homebrew).toEqual({
+      dir: "/apps/assay/homebrew/spells",
+      docsIn: 175,
+      emittedByCategory: { ritual: 3, spell: 172 },
+      uuidRefsResolved: 70,
+      uuidRefsBroken: 0,
+      slugMismatchCount: 17,
+      collisionGuardOk: true,
+      sha256: "deadbeef",
+    });
+    const md = buildReportMarkdown(json);
+    expect(md).toContain("Homebrew ingest");
+    expect(md).toContain("175");
+    expect(md).toContain("deadbeef");
+    expect(md).toContain("OK");
   });
 });

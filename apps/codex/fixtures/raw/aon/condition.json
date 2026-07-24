@@ -1,0 +1,49 @@
+{
+  "category": "condition",
+  "hits": [
+    {
+      "_id": "condition-92",
+      "_source": {
+        "category": "condition",
+        "exclude_from_search": false,
+        "id": "condition-92",
+        "is_standard_ancestry_feat": false,
+        "legacy_id": [
+          "condition-35"
+        ],
+        "markdown": "<title level=\"1\" right=\"Condition\">[Slowed](/Conditions.aspx?ID=92)</title>\r\n\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 446\r\n\r\nYou have fewer actions. Slowed always includes a value. When you regain your actions, reduce the number of actions regained by your slowed value. Because you regain actions at the start of your turn, you don't immediately lose actions if you become slowed during your turn.",
+        "name": "Slowed",
+        "primary_source": "Player Core",
+        "primary_source_category": "Rulebooks",
+        "primary_source_raw": "Player Core pg. 446",
+        "rarity": "common",
+        "rarity_id": 1,
+        "release_date": "2023-11-15",
+        "resistance": {},
+        "search_markdown": "<additional-info>\r\n**Source** [Player Core](/Sources.aspx?ID=216) pg. 446\r\n</additional-info>\r\n\r\n---\r\n\r\n<summary>\r\nYou have fewer actions. Slowed always includes a value. When you regain your actions, reduce the number of actions regained by your slowed value. …\r\n</summary>",
+        "skill_mod": {},
+        "source": [
+          "Player Core"
+        ],
+        "source_category": [
+          "Rulebooks"
+        ],
+        "source_markdown": "[Player Core](/Sources.aspx?ID=216) pg. 446",
+        "source_raw": [
+          "Player Core pg. 446"
+        ],
+        "speed": {},
+        "summary": "You have fewer actions. Slowed always includes a value. When you regain your actions, reduce the number of actions regained by your slowed value. …",
+        "summary_markdown": "You have fewer actions. Slowed always includes a value. When you regain your actions, reduce the number of actions regained by your slowed value. …",
+        "text": " Slowed Source Player Core pg. 446 You have fewer actions. Slowed always includes a value. When you regain your actions, reduce the number of actions regained by your slowed value. Because you regain actions at the start of your turn, you don't immediately lose actions if you become slowed during your turn.",
+        "type": "Condition",
+        "url": "/Conditions.aspx?ID=92",
+        "weakness": {}
+      },
+      "sort": [
+        "slowed",
+        "/conditions.aspx?id=92"
+      ]
+    }
+  ]
+}

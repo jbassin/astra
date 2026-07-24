@@ -1,0 +1,44 @@
+{
+  "_id": "hbfixture0000001",
+  "flags": {
+    "assay": {
+      "seededFrom": {
+        "repo": "fixture"
+      }
+    }
+  },
+  "name": "Fixture Cinder Bolt",
+  "system": {
+    "description": {
+      "value": "<p>A 0030 S1 fixture spell (plain, no ritual, no @UUID refs) — synthetic content only.</p>"
+    },
+    "level": {
+      "value": 1
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Liturgy of the Iridite Vol.2"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane"
+      ],
+      "value": [
+        "attack",
+        "fire"
+      ]
+    }
+  },
+  "type": "spell"
+}

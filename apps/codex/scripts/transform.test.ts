@@ -27,6 +27,12 @@ import { runTransform, type TransformResult } from "./transform";
 const FIXTURES = join(dirname(fileURLToPath(import.meta.url)), "..", "fixtures");
 const RAW_FOUNDRY = join(FIXTURES, "raw", "foundry");
 const RAW_AON = join(FIXTURES, "raw", "aon");
+const RAW_HOMEBREW = join(FIXTURES, "raw", "homebrew");
+/** D30-47: lives OUTSIDE `RAW_HOMEBREW` — the negative-path collision
+ * fixture (basename "fireball", colliding with the real official
+ * `spell/fireball` fixture pick), read only by the dedicated collision-guard
+ * test below. */
+const RAW_HOMEBREW_COLLISION = join(FIXTURES, "raw", "homebrew-collision");
 const ENTITIES_DIR = join(FIXTURES, "entities");
 
 /** A structurally-valid stand-in pin object — `emit.ts` only ever copies
@@ -45,6 +51,7 @@ function runOnce(corpusRoot: string): TransformResult {
   return runTransform({
     foundrySnapshotDir: RAW_FOUNDRY,
     aonSnapshotDir: RAW_AON,
+    homebrewDir: RAW_HOMEBREW,
     corpusRoot,
     aliasesFile: readAliasesFile(),
     pins: FIXTURE_PINS,
@@ -500,6 +507,98 @@ describe("runTransform over the committed fixture (CI-hermetic, zero network/dat
         (m: { label: string }) => m.label === "Class",
       );
       expect(fighterLabel?.value?.[0]?.content?.trim()).toBe("Fighter");
+    });
+  });
+
+  describe("0030 S1 (D30-42/-43/-46/-47) — homebrew ingest, end to end", () => {
+    it("D30-42: the plain homebrew spell assembles with the store basename as its id/slug", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const spell = JSON.parse(
+        readFileSync(join(corpusRoot, "spell", "fixture-cinder-bolt.json"), "utf8"),
+      );
+      expect(spell.id).toBe("spell/fixture-cinder-bolt");
+      expect(spell.slug).toBe("fixture-cinder-bolt");
+      expect(spell.edition).toBe("remaster");
+      expect(spell.source).toEqual({ license: "OGL", book: "Liturgy of the Iridite Vol.2" });
+      // Homebrew never enters the AoN join (D30-43) — no aonUrl, superseded
+      // false by construction.
+      expect(spell.aonUrl).toBeUndefined();
+    });
+
+    it("D30-43: the system.ritual-bearing doc reroutes to ritual/* (both category AND id)", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      // Never emitted under spell/ — the reroute rewrites BOTH fields.
+      expect(() =>
+        readFileSync(join(corpusRoot, "spell", "fixture-abyssal-forging.json"), "utf8"),
+      ).toThrow();
+      const ritual = JSON.parse(
+        readFileSync(join(corpusRoot, "ritual", "fixture-abyssal-forging.json"), "utf8"),
+      );
+      expect(ritual.id).toBe("ritual/fixture-abyssal-forging");
+      expect(ritual.category).toBe("ritual");
+    });
+
+    it("D30-42 (B3): the @UUID[...conditionitems...] ref resolves as a real crossref against the official UuidIndex (not brokenRef)", () => {
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      const spell = JSON.parse(
+        readFileSync(join(corpusRoot, "spell", "fixture-warding-glyph.json"), "utf8"),
+      );
+      const paragraph = spell.body[0] as { children: Array<{ kind: string; targetId?: string }> };
+      const ref = paragraph.children.find((c) => c.kind === "crossref" || c.kind === "brokenRef");
+      expect(ref?.kind).toBe("crossref");
+      expect(ref?.targetId).toBe("condition/slowed");
+    });
+
+    it("D30-46: the report carries a homebrew section reconciling the 3 fixture docs (2 spell / 1 ritual, 1 resolved ref, 0 broken)", () => {
+      const result = runOnce(freshCorpusDir());
+      expect(result.hardFailures).toEqual([]);
+      expect(result.reportJson?.homebrew).toMatchObject({
+        dir: RAW_HOMEBREW,
+        docsIn: 3,
+        emittedByCategory: { ritual: 1, spell: 2 },
+        uuidRefsResolved: 1,
+        uuidRefsBroken: 0,
+        collisionGuardOk: true,
+      });
+      expect(result.reportJson?.homebrew.sha256).toEqual(expect.any(String));
+      expect(result.reportJson?.homebrew.sha256.length).toBeGreaterThan(0);
+      expect(result.reportMarkdown).toContain("Homebrew ingest");
+    });
+
+    it("keep-arm regression: the pre-existing 'boon dropped' + 'Dune Candle carve-out survives' behavior is untouched by threading homebrewIds through", () => {
+      // Both already asserted above (S5c/D29-14, S5c/D29-17) — re-running
+      // `runOnce` here (which now always merges the 3 homebrew fixture docs
+      // in) re-proves those SAME official-content outcomes still hold, i.e.
+      // the D30-43 keep-arm doesn't leak into official drop decisions.
+      const corpusRoot = freshCorpusDir();
+      const result = runOnce(corpusRoot);
+      expect(result.hardFailures).toEqual([]);
+      expect(() =>
+        readFileSync(join(corpusRoot, "boon", "desna-major-boon.json"), "utf8"),
+      ).toThrow();
+      const duneCandle = JSON.parse(
+        readFileSync(join(corpusRoot, "creature", "dune-candle.json"), "utf8"),
+      );
+      expect(duneCandle.id).toBe("creature/dune-candle");
+    });
+
+    it("D30-43 (M3-widened guard): a homebrew id colliding with an official corpus id throws, naming the id", () => {
+      expect(() =>
+        runTransform({
+          foundrySnapshotDir: RAW_FOUNDRY,
+          aonSnapshotDir: RAW_AON,
+          homebrewDir: RAW_HOMEBREW_COLLISION,
+          corpusRoot: freshCorpusDir(),
+          aliasesFile: readAliasesFile(),
+          pins: FIXTURE_PINS,
+        }),
+      ).toThrow(/homebrew id "spell\/fireball" collides with/);
     });
   });
 });

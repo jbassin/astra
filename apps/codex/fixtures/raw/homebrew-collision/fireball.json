@@ -1,0 +1,43 @@
+{
+  "_id": "hbfixturecollide1",
+  "flags": {
+    "assay": {
+      "seededFrom": {
+        "repo": "fixture"
+      }
+    }
+  },
+  "name": "Fixture Colliding Fireball",
+  "system": {
+    "description": {
+      "value": "<p>D30-43 negative-path fixture — this basename deliberately collides with the official spell/fireball id.</p>"
+    },
+    "level": {
+      "value": 3
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Liturgy of the Iridite Vol.2"
+    },
+    "range": {
+      "value": "30 feet"
+    },
+    "target": {
+      "value": "1 creature"
+    },
+    "time": {
+      "value": "2"
+    },
+    "traits": {
+      "rarity": "common",
+      "traditions": [
+        "arcane"
+      ],
+      "value": [
+        "fire"
+      ]
+    }
+  },
+  "type": "spell"
+}

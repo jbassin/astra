@@ -1,0 +1,50 @@
+{
+  "_id": "hbfixture0000002",
+  "flags": {
+    "assay": {
+      "seededFrom": {
+        "repo": "fixture"
+      }
+    }
+  },
+  "name": "Fixture Abyssal Forging",
+  "system": {
+    "description": {
+      "value": "<p>A 0030 S1 fixture ritual — synthetic content only, exercises the D30-43 ritual reroute.</p>"
+    },
+    "level": {
+      "value": 5
+    },
+    "publication": {
+      "license": "OGL",
+      "remaster": true,
+      "title": "Liturgy of the Iridite Vol.2"
+    },
+    "range": {
+      "value": "touch"
+    },
+    "ritual": {
+      "primary": {
+        "check": "Arcana (expert)"
+      },
+      "secondary": {
+        "casters": 1,
+        "checks": "Crafting"
+      }
+    },
+    "target": {
+      "value": "1 object"
+    },
+    "time": {
+      "value": "6 hours"
+    },
+    "traits": {
+      "rarity": "uncommon",
+      "traditions": [],
+      "value": [
+        "arcane"
+      ]
+    }
+  },
+  "type": "spell"
+}

@@ -383,7 +383,11 @@ function main(): void {
   });
   console.log(`  ${result.entities.length} pre-drop entities.`);
 
-  const dropResult = applyAonPrimaryDrop(result.entities, report);
+  // D30-43 (0030 S1): this dev tool predates the homebrew ingest too
+  // (`transform.ts` is the real orchestrator that merges it in) — an empty
+  // keep-set is a no-op here, same "predates X" posture as every other
+  // empty-stand-in below.
+  const dropResult = applyAonPrimaryDrop(result.entities, report, new Set());
   console.log(
     `  ${dropResult.keptEntities.length} final entities (${dropResult.accounting.totalDropped} dropped by the D29-14 AoN-primary pass).`,
   );
@@ -509,6 +513,18 @@ function main(): void {
       grantedFeaturesUnresolved: 0,
       subclassOptionsEmitted: 0,
       subclassOptionCounts: [],
+    },
+    // D30-46 (0030 S1): this dev tool predates the homebrew ingest too —
+    // empty stand-in, same posture as every other section above.
+    homebrew: {
+      dir: "(dev-join.ts predates the homebrew ingest)",
+      docsIn: 0,
+      emittedByCategory: {},
+      uuidRefsResolved: 0,
+      uuidRefsBroken: 0,
+      slugMismatchCount: 0,
+      collisionGuardOk: true,
+      sha256: "",
     },
   });
   const markdown = buildReportMarkdown(reportJson);

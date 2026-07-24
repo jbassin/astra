@@ -550,7 +550,7 @@ describe("runJoin: S5d — inbound AoN links repoint across cross-category merge
   });
 
   it("the D29-14 drop pass reconciliation accepts the repointed ids (merged entities are kept, so repointed crossrefs survive)", () => {
-    const dropResult = applyAonPrimaryDrop(result.entities, report);
+    const dropResult = applyAonPrimaryDrop(result.entities, report, new Set());
     const linker = dropResult.keptEntities.find((e) => e.id === "spell/linker");
     expect(crossrefTargets(linker)).toContain("weapon/accursed-staff");
     expect(crossrefTargets(linker)).toContain("equipment/accursed-staff");
