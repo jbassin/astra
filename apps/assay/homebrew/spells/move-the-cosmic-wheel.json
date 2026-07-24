@@ -18,7 +18,7 @@
       "value": 30
     },
     "cost": {
-      "value": "a music box worth at least 250 gp, attuned to the destination plane (not consumed)"
+      "value": ""
     },
     "counteraction": false,
     "damage": {},
@@ -46,7 +46,7 @@
     "range": {
       "value": "120 feet"
     },
-    "requirements": "",
+    "requirements": "You have a music box worth at least 250 gp attuned to the destination plane",
     "rules": [],
     "target": {
       "value": ""
