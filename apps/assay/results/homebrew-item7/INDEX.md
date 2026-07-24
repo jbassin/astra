@@ -121,7 +121,8 @@ Magic Mailbox / Remake precedent).
 | monstrous-copy-eye-stalks | **Keep as-is (A)** — every table deviation reasoned + precedented (Death Ray out per Massacre-r9, Paralyze folded into staged Petrification per Petrify idiom, table-wide incapacitation, capped ray scaling); Will/Fort split = Foundry schema limit, prose governs | (log-only) |
 | take-me-instead | **Text bug fixed (A1)** — the Charisma/Society contradiction resolved to "DC 20 Diplomacy check" (faithful Persuasion map); failure damage kept; buff routing recorded as the documented false-route | `c4a07f6` |
 | extra-motivation | **5e cost restored (A)** — Greater Surge costs void damage = half your current HP (unreducible) instead of the symbolic flat 4d6; 3-slot/2-ability trims + 1-HP-floor clause kept; Divine Inspiration r8 brackets the pricing | `84b191a` |
-| lesser-wish | **REMOVED wholesale (stakeholder)** — neither the plan-directed fortune-menu redesign nor the 5e original (free-1st-level-cast + shrinking-die death-roulette) wanted in the set; store file deleted, vendor untouched, rides revisions.md "Missing from store"; store 176→175 | see commit |
+| lesser-wish | **REMOVED wholesale (stakeholder)** — neither the plan-directed fortune-menu redesign nor the 5e original (free-1st-level-cast + shrinking-die death-roulette) wanted in the set; store file deleted, vendor untouched, rides revisions.md "Missing from store"; store 176→175 | `975c6fc` |
+| anomalous-object | **Thievery + uncommon + flat duration (B-variant)** — rarity → uncommon (plot-bypass gate, Farsight logic); attended-object interaction → Thievery check vs Reflex DC (his overridable, Steal idiom); sustained dropped → flat 1 hour (H9 → flat 8 hours); `attack` trait off with the roll; routing comparables(2–9)→buff(2–7) = expected lens artifact (no hostile axis post-attack-trait, Take Me Instead precedent) | see commit |
 
 ## Status
 
