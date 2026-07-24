@@ -65,6 +65,17 @@ export const PRODUCT_LINE_OVERRIDE: Readonly<Record<string, string>> = {
   "Liturgy of the Iridite Vol.2": "Homebrew",
 };
 
+/** Book-level license for override books (0030 S4): `deriveBookLicense`'s two
+ * tiers (licenseMap membership; a matching `source`-category entity's own
+ * license) both require AoN-side presence a homebrew book never has, so LotI2
+ * fell to `"unknown"` — rendered as a literal "License unknown" badge on
+ * `/sources` despite every one of its entities carrying `OGL` from
+ * `system.publication`. Same committed-override posture (and key contract) as
+ * `PRODUCT_LINE_OVERRIDE` above. */
+export const BOOK_LICENSE_OVERRIDE: Readonly<Record<string, License>> = {
+  "Liturgy of the Iridite Vol.2": "OGL",
+};
+
 function majorityProductLine(votes: ReadonlyMap<string, number>): string | undefined {
   let best: string | undefined;
   let bestCount = -1;
@@ -128,7 +139,8 @@ export function buildSourcesIndex(input: SourcesIndexBuildInput): {
     books.push({
       book,
       ...(productLine !== undefined ? { productLine } : {}),
-      license: deriveBookLicense(book, input.bookSourceLicense.get(book)),
+      license:
+        BOOK_LICENSE_OVERRIDE[book] ?? deriveBookLicense(book, input.bookSourceLicense.get(book)),
       edition: deriveBookEdition(book, editions),
       entityCount,
       categoryCounts,

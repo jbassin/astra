@@ -143,6 +143,18 @@ describe("buildSourcesIndex (D29-43)", () => {
       expect(result.stats.otherBooks).toBe(0);
     });
 
+    it("the LotI2 book-level license is OGL via BOOK_LICENSE_OVERRIDE (0030 S4 — both deriveBookLicense tiers need AoN-side presence)", () => {
+      const result = buildSourcesIndex({
+        finalEntities: [entity("spell/loti2", HOMEBREW_BOOK)],
+        aonCitations: [],
+        bookNameMap: new Map(),
+        bookSourceLicense: new Map(),
+        sourceEntityRefByBook: new Map(),
+      });
+      const row = result.file.books.find((b) => b.book === HOMEBREW_BOOK);
+      expect(row?.license).toBe("OGL");
+    });
+
     it("the override wins over an AoN majority vote for the same (hypothetical) book string", () => {
       const result = buildSourcesIndex({
         finalEntities: [entity("spell/loti2", HOMEBREW_BOOK)],
