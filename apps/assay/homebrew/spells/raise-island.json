@@ -64,6 +64,7 @@
       "rarity": "common",
       "traditions": [
         "arcane",
+        "divine",
         "primal"
       ],
       "value": [
