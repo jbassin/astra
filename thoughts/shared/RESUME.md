@@ -36,54 +36,48 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `84b191a`, 2026-07-23 — assay (0030) ROUND 5: the item-7 REVIEW LOOP is RUNNING and 26 decisions are LANDED — set-wide >1-hour-RITUAL rule decided + all 3 ritual conversions built, all 10 reclassified-out done, 16 of the judgment lane done; ▶ NEXT = continue the loop with the SAME card structure (one spell per message: 5e original · jmnario conversion · plain-English what-changed · comparables · options + staff lean → stakeholder decides in chat → apply + commit + INDEX log row per decision) — 6 judgment-lane spells left (lesser-wish, anomalous-object, connection, ebb-and-flow, lockstep-fate, fault-line), then the 73 fast-lane; codex gate H still open; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `c7e6464`, 2026-07-23 — assay (0030) ROUND 5: **ITEM 7 REVIEW COMPLETE — all 108 pool spells resolved (32 judgment-lane + 3 rituals + 73 fast-lane), the WHOLE worklist 1–7 is DONE**; store = 175 spells (lesser-wish removed), revisions.md = 91 deviations, all pushed; ▶ NEXT = cheap-ritual-props residue sweep (small) → codex ingest scoping (the first new multi-session chunk) → Foundry module → joint review w/ friend; codex gate H still open; heartwood ON HOLD)
 
-> **✅ assay (0030) R5 — item-7 review session 1, 2026-07-23 (`08c72e5`…`84b191a`):**
-> 1. **⭐ FORMAT LOCKED BY STAKEHOLDER — keep this structure on resume.** One spell
->    per message, the full card: the 5e original · jmnario's conversion (as stored) ·
->    plain-English what-changed · similar official spells · options + staff lean
->    (lean marked). Stakeholder answers in chat (batched AskUserQuestion RETRACTED —
->    he rejected the multi-question form). Per decision: edit store → run
->    `score-homebrew` (verify score/routing) → `homebrew-revisions` regen → INDEX.md
->    running-log row (+ commit hash backfilled next commit) → one conventional
->    commit. The full decision ledger lives in `INDEX.md` §"Review decisions".
-> 2. **Set-wide rule (stakeholder):** casts **over 1 hour → rituals** (hard boundary;
->    official data has no spell >1h except the exactly-1h Create Food/Magic Mailbox/
->    Remake trio — so bound-minds/celestial-preservation/excavation stay spells).
->    Built: **Hellforging** `08c72e5` (r7 ritual, Creature Creation table levels,
->    50k-gp premium kept) · **Overhaul** `549a34e` (r5 ritual, Reflex→Will→Fort
->    hourly gauntlet, H7 deleted, crit-success = choose ancestry) · **Worldweaver**
->    `6ce6089` (r10 Wish-pattern ritual, 15 secondaries, Wish-register ladder,
->    +mythic trait). ⭐ Tooling: the revisions differ was BLIND to `ritual` +
->    `traits.rarity` — widened in `08c72e5` (proven no-op on the other 175).
-> 3. **Reclassified-out 10/10 done:** artist's-rendition `dcc8cb8` (lead clause
->    restored) · horns keep · divine-razor `ec2d8fb` (⭐ reality-cut restored — 60 ft
->    through-walls Strikes) · righteous-pressure `f154995` (vitality→spirit, his own
->    checklistFailure) · festering-slick `1753266` (living-qualifier dropped) ·
->    selfshape keep · kosmoturgist's-weapon `4608223` (Defend lesser-cover restored)
->    · mc-claws keep · planar-shield `5cd0099` (Trigger line formatted) · solar-fury
->    `ac74355` (double-trigger → turn-start only). Zero dice changes; every score
->    verified unchanged; artifacts recorded.
-> 4. **Judgment lane 16 done:** fumble `f2bccfe` (escape valve @ checks + 15-ft
->    threshold) · flashback `f443665` (full H2–H5 ladder restored) · forensic-analysis
->    `cf2f3a4` (24h cooldown + mood descriptor) · let's-start-a-fight `90c05cd`
->    (improvised-only + brawl sentence deleted) · tunnel-vision `0fcaee4` (recast-ends-
->    prior + tiebreak trimmed) · mark-of-protection keep `08a9331` · farsight `3ac1358`
->    (in-person sigils + circle-bound explicit) · reduce-resistivity keep `ef14bd2` ·
->    reflective-defense `ece3165` (editor-voice deleted) · mystic-negation `e5debf1`
->    (counteract legalized + 3-success burnout) · perfect-pocket `346afcd` (stasis
->    dropped ENTIRELY — stakeholder, no spoilage softener) · sphere-of-ruin `e3f79d6`
->    (batch-0 deferral CLOSED: tax stays stripped, caster-adjacent pursuit restored) ·
->    earworm keep `cd94ddf` · eye-stalks keep `29b7f7a` · take-me-instead `c4a07f6`
->    (→ "DC 20 Diplomacy check", A1) · extra-motivation `84b191a` (Greater Surge cost
->    back to half-current-HP void).
-> 5. **▶ RESUME AT: next card = lesser-wish**, then anomalous-object, connection,
->    ebb-and-flow, lockstep-fate (queued text bug: hold/discharge lifecycle
->    contradiction), fault-line — then the **73 fast-lane** (leans formed live;
->    expect keep-shaped; queued there: Sphere of Preservation gets the reciprocal
->    Ruin-synergy sentence). After item 7: cheap-ritual-props residue → codex ingest
->    scoping → Foundry module → joint review w/ friend (revisions.md = the artifact,
->    now 77 deviations).
+> **✅ assay (0030) R5 — item-7 review session 2, 2026-07-23 (`975c6fc`…`c7e6464`, 14 commits):**
+> 1. **Judgment lane finished (6 cards):** lesser-wish **REMOVED WHOLESALE** `975c6fc`
+>    (stakeholder wanted neither the fortune-menu redesign nor the 5e original; store
+>    176→175, vendor untouched, rides revisions.md "Missing from store" — recoverable) ·
+>    anomalous-object `1bd47d9` (Thievery-vs-Reflex-DC replaces the attack roll, rarity
+>    → uncommon, sustained dropped → flat 1h/H9 8h; attack trait off → routing flip
+>    comparables→buff = expected lens artifact) · connection keep `d914cac` (batch-0
+>    pearl deferral CLOSED — Telepathic Bond r5 official precedent) · ebb-and-flow
+>    `6ecd28a` (**rank 3→4**, his own Everything-Spell checklist remedy; crit-success
+>    tier deleted per new convention; Allied/Enemy block labels flattened) ·
+>    lockstep-fate `17ee54f` (hold/discharge contradiction fixed) · fault-line
+>    `4411ce7` (divine restored to ALL THREE terrain-scale kosmoturgy holdouts —
+>    school now 28/28 divine; range 500→120; verdict −0.63→+1.12 HOT = the documented
+>    range-bucket artifact, dice untouched).
+> 2. **⭐ PROCESS CHANGE (stakeholder, mid-fast-lane):** compact cards; **stop only
+>    where the staff read finds a real decision**; policy-covered fixes applied +
+>    logged WITHOUT stopping; keeps logged in batched INDEX rows. (The full-card
+>    one-per-message format stays for anything stop-worthy.) New text conventions
+>    landed: **crit-success tier deleted when identical to success** (Slow idiom) ·
+>    **no labeled Allied/Enemy Effect blocks** (flatten to normal spell prose).
+> 3. **Fast lane 73/73 done in one sweep:** flags extracted from all 73 dossiers, staff-
+>    judged against policy. 61 keeps (most flags = policy FPs or STALE — batch-0's
+>    encoding sweep had already fixed the markdown/Trigger formatting the dossiers
+>    flagged; propagating-blast damage + taboo curse-rank flags also stale) · 8 spells
+>    policy-fixed in 3 batch commits `c0b4a92`/`59b791c`/`c18d93e` (crit-success dedup
+>    ×2, chrysalis GM-fiat trim, lend-time Trigger format, planar-pyre 5e fade clause,
+>    sphere-of-preservation QUEUED Ruin-synergy sentence + H10 redundancy trim,
+>    nightfall → uncommon per plot-scale precedent ×2, do-my-bidding emanation range
+>    idiom) · **4 stops dealt as cards:** flicker → **FLUTTERSTEP** `d49ea0e` (official
+>    rank-4 Flicker name collision; + d20-threshold → DC 11 flat check per the 5e-ism
+>    map; seededFrom pairing held) · fluid-form `064d775` (5e poison + Stunned
+>    immunities restored — unacknowledged drop) · incensed-bestial-rage `28f74f8`
+>    (5e exhaustion exit-cost restored as Fatigued-on-end) · lucky-ward keep `c7e6464`
+>    (the dropped ally-save half is load-bearing for r2 vs Bless+Bane pricing).
+> 4. **▶ NEXT: (a) cheap-ritual-props residue sweep** — non-consumed flavor props on
+>    long casts (mental-balance's blindfold/scales is the known instance; sweep
+>    cost.value across the 175); **(b) codex ingest scoping** (licenseMap + Foundry-
+>    only join + surfacing decisions — scope doc first); **(c) Foundry compendium
+>    module; (d) joint review** (revisions.md @ 91 deviations = the artifact, INDEX.md
+>    §"Review decisions" = the complete per-spell ledger).
 
 ---
 

@@ -248,7 +248,35 @@ negation's 3-counter burnout, extra-motivation's half-current-HP cost; anti-expl
 perfect-pocket's stasis DELETED) + official-idiom fixes (vitality→spirit when fiends
 must be hurt, counteract-modifier legalization, Trigger-line formatting) — ZERO dice
 changes across all 26, every score verified unchanged. Full ledger in
-`results/homebrew-item7/INDEX.md`. ▶ RESUME: next card = **lesser-wish**, then
-anomalous-object/connection/ebb-and-flow/lockstep-fate (hold-discharge text bug
-queued)/fault-line, then the 73 fast-lane (live leans; Sphere of Preservation gets the
-reciprocal Ruin-synergy sentence there). revisions.md now 77 deviations.
+`results/homebrew-item7/INDEX.md`. revisions.md was 77 deviations at session-1 end.
+
+**ITEM 7 SESSION 2 (2026-07-23, `975c6fc`…`c7e6464`) — ITEM 7 + THE WHOLE WORKLIST
+COMPLETE.** All 108 resolved; store 175 (lesser-wish REMOVED wholesale — stakeholder
+liked neither redesign nor original; deletion rides revisions.md "Missing from store",
+vendor recoverable); revisions.md 91 deviations. ⭐ **PROCESS CHANGE mid-fast-lane
+(stakeholder): compact cards + stop ONLY where the staff read finds a real decision** —
+policy-covered fixes applied+logged without stopping, keeps batched into grouped INDEX
+rows/commits; full one-per-message cards remain for stop-worthy spells only. ⭐ New text
+conventions: crit-success tier DELETED when identical to success (Slow idiom — applied
+ebb-and-flow/disrupt-movement/taboo); labeled "Allied Effect:/Enemy Effect:" blocks
+flatten to normal spell prose; GM-fiat restrictions redundant with cast time deleted
+(chrysalis). ⭐ Fast-lane sweep mechanics that worked: extract all 73 dossiers' Open-
+flags sections in one pass, judge against the policy list personally (NO agent triage —
+the ⅓-false-positive lesson), verify checkables against the live store before believing
+them — **most dossier flags were policy FPs or STALE** (batch-0's encoding sweep had
+already fixed the flagged markdown/Trigger formatting; propagating-blast damage +
+taboo curse-rank flags stale too). ⭐ Notable decisions: ebb-and-flow rank 3→4 (his own
+Everything-Spell checklist remedy — Haste-lite+Slow-lite AoE at the single-target
+anchors' rank); fault-line + hypercompression + raise-island all got divine (kosmoturgy
+28/28 divine now); fault-line range 500→120 flipped −0.63→+1.12 HOT = the documented
+range-bucket lens artifact striking live (dice untouched, recorded not "fixed");
+anomalous-object attack-trait removal flipped routing comparables→buff (no-hostile-axis
+artifact, Take Me Instead class); flicker renamed **FLUTTERSTEP** (name collision with
+the OFFICIAL rank-4 Flicker — check homebrew names against the snapshot; rename recipe
+held: git mv + name field, seededFrom untouched, differ pairs via provenance);
+fluid-form poison+Stunned immunities and incensed-bestial-rage Fatigued-on-end restored
+(the dropped-COST/dropped-IMMUNITY classes); lucky-ward's dropped ally-save half KEPT
+dropped (load-bearing for rank vs Bless+Bane — a drop can be the correct pricing).
+▶ NEXT: cheap-ritual-props residue sweep (mental-balance blindfold/scales = known
+instance) → codex ingest scoping (licenseMap + Foundry-only join + surfacing — scope
+doc first) → Foundry module → joint review (revisions.md = the artifact).
