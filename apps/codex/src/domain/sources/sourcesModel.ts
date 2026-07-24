@@ -34,6 +34,14 @@ export const OTHER_GROUP_LABEL = "Other";
  * before Blog Posts") — `FacetPanel.tsx`'s grouped Source section
  * (`orderProductLines`, below) imports this list directly rather than
  * re-declaring it, so the panel and `/sources` can never disagree again.
+ *
+ * 0030 S3 (D30-45): "Homebrew" appended LAST — after every real AoN-observed
+ * line, still before the trailing `OTHER_GROUP_LABEL` bucket (which is never
+ * pinned here; `orderProductLines` always forces it last regardless of this
+ * list). Appending (not inserting alphabetically) is required: an unpinned
+ * line sorts alphabetically among itself, and "Homebrew" would otherwise
+ * land ahead of "Lost Omens"/"Rulebooks" — the stakeholder wants it reading
+ * as an addendum to the official product lines, not competing with them.
  */
 export const PINNED_PRODUCT_LINE_ORDER: readonly string[] = [
   "Rulebooks",
@@ -44,6 +52,7 @@ export const PINNED_PRODUCT_LINE_ORDER: readonly string[] = [
   "Comics",
   "Blog Posts",
   "April Fools",
+  "Homebrew",
 ];
 
 /**

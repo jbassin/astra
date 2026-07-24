@@ -77,7 +77,13 @@
 // tier 1 — the 243 AoN-known (productLine-carrying) books, hand-curated
 // ---------------------------------------------------------------------------
 
-const CURATED_MAP: Record<string, string> = {
+// Exported for `abbreviations.test.ts` only (0030 S3, D30-45): the
+// zero-collision test below is fixture-driven (the fixture is a *measured*
+// superset of every key in both maps, not a structural guarantee) — a
+// direct test over these two maps' own values is the backstop that can't go
+// stale if a future curated/override entry lands before its book is ever
+// added to `bookNames.fixture.json`.
+export const CURATED_MAP: Record<string, string> = {
   "A Caroling Horse (Of Course. Of Course.)": "ACH", // UNCERTAIN: one-off blog post
   "A Few Flowers More": "AFFM",
   "A Fistful of Flowers": "AFoF",
@@ -141,6 +147,7 @@ const CURATED_MAP: Record<string, string> = {
   "Knights of Lastwall": "LOKL",
   Legends: "LOL",
   "Little Trouble in Big Absalom": "LTiBA",
+  "Liturgy of the Iridite Vol.2": "LotI2", // D30-45: the assay homebrew store's product line
   Malevolence: "Mal", // UNCERTAIN: short generic code, single-word title
   "Monster Core": "MC",
   "Monster Core 2": "MC2",
@@ -327,7 +334,7 @@ const CURATED_MAP: Record<string, string> = {
 // (generated) tier; checked BEFORE the generator, see the file header.
 // ---------------------------------------------------------------------------
 
-const OTHER_OVERRIDES: Record<string, string> = {
+export const OTHER_OVERRIDES: Record<string, string> = {
   "Foundry Journal: Ancestries": "FJ:Ancestries",
   "Foundry Journal: Archetypes": "FJ:Archetypes",
   "Foundry Journal: Classes": "FJ:Classes",

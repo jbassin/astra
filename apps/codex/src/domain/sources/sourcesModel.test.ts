@@ -79,4 +79,19 @@ describe("groupSourcesByProductLine (D29-43)", () => {
   it("an empty input yields no groups at all", () => {
     expect(groupSourcesByProductLine([])).toEqual([]);
   });
+
+  it("'Homebrew' is pinned LAST among the real product lines, still before Other (D30-45)", () => {
+    const groups = groupSourcesByProductLine([
+      book({ book: "H1", productLine: "Homebrew" }),
+      book({ book: "AF1", productLine: "April Fools" }),
+      book({ book: "R1", productLine: "Rulebooks" }),
+      book({ book: "O1" }),
+    ]);
+    expect(groups.map((g) => g.productLine)).toEqual([
+      "Rulebooks",
+      "April Fools",
+      "Homebrew",
+      OTHER_GROUP_LABEL,
+    ]);
+  });
 });

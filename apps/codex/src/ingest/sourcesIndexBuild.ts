@@ -50,6 +50,21 @@ export interface SourcesIndexStats {
   belowNinetyPctGuard: boolean;
 }
 
+/**
+ * D30-45: the homebrew product-line override, consulted BEFORE the AoN
+ * majority vote below — the store's `system.publication.title` never carries
+ * an AoN `primary_source_category` (zero citations, `loadHomebrewSide`
+ * routes it around the AoN join entirely per D30-43), so the majority-vote
+ * path alone would always drop it into the "Other" bucket. **Keyed on the
+ * post-`bookNormalize` FINAL book string** — for this title the normalized
+ * form IS the literal title (asserted in `sourcesIndexBuild.test.ts` against
+ * `normalizeBookNames` directly, so a future title with punctuation can't
+ * silently miss the override).
+ */
+export const PRODUCT_LINE_OVERRIDE: Readonly<Record<string, string>> = {
+  "Liturgy of the Iridite Vol.2": "Homebrew",
+};
+
 function majorityProductLine(votes: ReadonlyMap<string, number>): string | undefined {
   let best: string | undefined;
   let bestCount = -1;
@@ -99,7 +114,8 @@ export function buildSourcesIndex(input: SourcesIndexBuildInput): {
   for (const book of entityCountByBook.keys()) {
     const entityCount = entityCountByBook.get(book) ?? 0;
     const editions = editionsByBook.get(book) ?? [];
-    const productLine = majorityProductLine(votesByBook.get(book) ?? new Map());
+    const productLine =
+      PRODUCT_LINE_OVERRIDE[book] ?? majorityProductLine(votesByBook.get(book) ?? new Map());
     if (productLine !== undefined) {
       classifiedBooks++;
       classifiedEntities += entityCount;

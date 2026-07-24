@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import type { CodexEntity } from "../schema/entity";
-import { buildSourcesIndex } from "./sourcesIndexBuild";
+import { normalizeBookNames } from "./bookNormalize";
+import { buildSourcesIndex, PRODUCT_LINE_OVERRIDE } from "./sourcesIndexBuild";
 
 function entity(
   id: string,
@@ -109,5 +110,52 @@ describe("buildSourcesIndex (D29-43)", () => {
     });
     expect(result.stats.classifiedEntityPct).toBe(50);
     expect(result.stats.belowNinetyPctGuard).toBe(true);
+  });
+
+  // 0030 S3 (D30-45): the LotI2 product-line override — consulted BEFORE the
+  // AoN majority vote, since the homebrew store never carries AoN citations
+  // at all (D30-43 routes it around the AoN join entirely).
+  describe("PRODUCT_LINE_OVERRIDE (D30-45)", () => {
+    const HOMEBREW_BOOK = "Liturgy of the Iridite Vol.2";
+
+    it("the override key equals bookNormalize's own output for the literal title", () => {
+      // The override map is keyed on the POST-bookNormalize final book
+      // string, not the raw Foundry `publication.title` — for this title
+      // the normalized form IS the literal title (no whitespace/case-fold/
+      // prefix-merge rule touches it), asserted here so a future title with
+      // punctuation can't silently miss the override.
+      expect(Object.keys(PRODUCT_LINE_OVERRIDE)).toEqual([HOMEBREW_BOOK]);
+      const { entities } = normalizeBookNames([entity("spell/x", HOMEBREW_BOOK)], new Set());
+      expect(entities[0]?.source.book).toBe(HOMEBREW_BOOK);
+    });
+
+    it("the LotI2 book gets productLine Homebrew even with ZERO AoN citations", () => {
+      const result = buildSourcesIndex({
+        finalEntities: [entity("spell/loti2", HOMEBREW_BOOK)],
+        aonCitations: [],
+        bookNameMap: new Map(),
+        bookSourceLicense: new Map(),
+        sourceEntityRefByBook: new Map(),
+      });
+      const row = result.file.books.find((b) => b.book === HOMEBREW_BOOK);
+      expect(row?.productLine).toBe("Homebrew");
+      expect(result.stats.classifiedBooks).toBe(1);
+      expect(result.stats.otherBooks).toBe(0);
+    });
+
+    it("the override wins over an AoN majority vote for the same (hypothetical) book string", () => {
+      const result = buildSourcesIndex({
+        finalEntities: [entity("spell/loti2", HOMEBREW_BOOK)],
+        aonCitations: [
+          { book: HOMEBREW_BOOK, productLine: "Rulebooks" },
+          { book: HOMEBREW_BOOK, productLine: "Rulebooks" },
+        ],
+        bookNameMap: new Map(),
+        bookSourceLicense: new Map(),
+        sourceEntityRefByBook: new Map(),
+      });
+      const row = result.file.books.find((b) => b.book === HOMEBREW_BOOK);
+      expect(row?.productLine).toBe("Homebrew");
+    });
   });
 });

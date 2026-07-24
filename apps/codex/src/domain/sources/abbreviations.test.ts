@@ -3,7 +3,7 @@ import { join } from "node:path";
 
 import { describe, expect, it } from "vitest";
 
-import { abbreviateBook } from "./abbreviations";
+import { abbreviateBook, CURATED_MAP, OTHER_OVERRIDES } from "./abbreviations";
 
 /** The committed 496-book-name fixture (D29-68) — book NAMES are not
  * gitignored, only the built `sources-index.json` is (its own
@@ -20,10 +20,10 @@ function loadBookNames(): string[] {
 }
 
 describe("abbreviateBook (D29-68)", () => {
-  it("the committed fixture has exactly 496 distinct book names", () => {
+  it("the committed fixture has exactly 497 distinct book names", () => {
     const names = loadBookNames();
-    expect(names).toHaveLength(496);
-    expect(new Set(names).size).toBe(496);
+    expect(names).toHaveLength(497);
+    expect(new Set(names).size).toBe(497);
   });
 
   it("matches the stakeholder's own worked example verbatim", () => {
@@ -96,5 +96,32 @@ describe("abbreviateBook (D29-68)", () => {
     expect(
       abbreviateBook("Pathfinder Society Scenario #6-01: Intro to the Year of Immortal Influence"),
     ).toBe("PS:IYII");
+  });
+
+  // 0030 S3 (D30-45): the fixture proves nothing about a NEW book on its
+  // own (the 496-book fixture never regenerates) — these are the automated
+  // backstops the spec calls for, independent of any future fixture drift.
+  it("abbreviates the LotI2 homebrew store's book title directly", () => {
+    expect(abbreviateBook("Liturgy of the Iridite Vol.2")).toBe("LotI2");
+  });
+
+  it("the LotI2 title is present in the fixture (497, was 496) and collision-free there too", () => {
+    const names = loadBookNames();
+    expect(names).toContain("Liturgy of the Iridite Vol.2");
+    expect(abbreviateBook("Liturgy of the Iridite Vol.2")).toBe("LotI2");
+  });
+
+  it("zero-collision over the raw CURATED_MAP + OTHER_OVERRIDES values directly, independent of the fixture", () => {
+    const byAbbrev = new Map<string, string[]>();
+    for (const [book, abbrev] of [
+      ...Object.entries(CURATED_MAP),
+      ...Object.entries(OTHER_OVERRIDES),
+    ]) {
+      const bucket = byAbbrev.get(abbrev) ?? [];
+      bucket.push(book);
+      byAbbrev.set(abbrev, bucket);
+    }
+    const collisions = [...byAbbrev.entries()].filter(([, books]) => books.length > 1);
+    expect(collisions).toEqual([]);
   });
 });
