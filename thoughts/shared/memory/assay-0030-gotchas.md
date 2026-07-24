@@ -221,6 +221,34 @@ effect-on-success, sustain-vs-concentration, attack-trait/defense-null conventio
 brief agents WITH the policy list next time. ⭐ Set-wide review question queued:
 hours-long casts as spells vs RITUALS (Hellforging: official Creature Creation table =
 level-14 at ritual rank 9, not spell rank 7). ⚠ `diff` + batched-python shell output
-corrupted this session → [[shell-output-reliability]]. ▶ RESUME: run the review
-(one card/message; set-wide ritual Q first, then reclassified-out 10, then judgment
-lane, then 73 fast-lane with live leans).
+corrupted this session → [[shell-output-reliability]].
+
+**ITEM 7 REVIEW SESSION 1 (2026-07-23, `08c72e5`…`84b191a`, 26 decisions):** ⭐ **THE CARD
+STRUCTURE IS STAKEHOLDER-LOCKED — keep on resume:** one spell per message — 5e original ·
+jmnario's conversion as stored · plain-English what-changed · similar official spells ·
+options + staff lean — decide in chat (a batched AskUserQuestion across 3 spells was
+REJECTED mid-flight; policy batching stays OK), then per decision: store edit →
+`score-homebrew` (verify score/routing unchanged unless intended) → `homebrew-revisions`
+→ INDEX.md "Review decisions" table row → one conventional commit. **SET-WIDE RULE
+(stakeholder): casts >1 hour → RITUALS** (hard boundary; official data: no spell >1h,
+three exactly-1h utility spells — the 1h trio stays spell-side). Ritual conversion recipe
+proven ×3 (hellforging r7 `08c72e5` / overhaul r5 `549a34e` / worldweaver r10 `6ce6089`):
+type stays "spell" + `system.ritual = {primary:{check},secondary:{casters,checks}}`,
+traditions → [], cast-traits (concentrate/manipulate) dropped, rarity → uncommon per
+official idiom (rare stays if deliberate), heighten tiers dissolve into ritual-rank
+scaling or the ladder, degree-of-success ladder per official register (Wish's ladder =
+the rank-10 template; Creature Creation table = the creation template; primary-check
+tier by rank: expert r5 / master r7 / legendary r10). ⭐ The revisions differ was BLIND
+to `ritual` + `traits.rarity` (fixed `08c72e5` — check `_DIFF_FIELDS` coverage when a
+review adds a new field class). ⭐ Review-verdict shape that emerged: nearly every store
+edit was TEXT-ONLY restoration of dropped 5e clauses (identity beats: divine-razor's
+through-walls reality-cut, let's-start-a-fight's improvised-only brawl; governors:
+forensic-analysis' 24h cooldown, tunnel-vision's one-instance exclusivity, mystic-
+negation's 3-counter burnout, extra-motivation's half-current-HP cost; anti-exploit:
+perfect-pocket's stasis DELETED) + official-idiom fixes (vitality→spirit when fiends
+must be hurt, counteract-modifier legalization, Trigger-line formatting) — ZERO dice
+changes across all 26, every score verified unchanged. Full ledger in
+`results/homebrew-item7/INDEX.md`. ▶ RESUME: next card = **lesser-wish**, then
+anomalous-object/connection/ebb-and-flow/lockstep-fate (hold-discharge text bug
+queued)/fault-line, then the 73 fast-lane (live leans; Sphere of Preservation gets the
+reciprocal Ruin-synergy sentence there). revisions.md now 77 deviations.

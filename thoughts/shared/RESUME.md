@@ -36,47 +36,60 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `ffd7ad8`, 2026-07-23 — assay (0030) ROUND 5: item 7 PREP COMPLETE — 108-spell pool derived from the LIVE scorer (not the doc's stale 73+21), 108 facts-only dossiers collated by a 14-agent workflow, batch-0 set-wide sweeps BUILT (encoding + curse-convention + prose restoration), all 35 judgment-lane dossiers ENRICHED with options + staff lean; ▶ NEXT = run the item-7 REVIEW itself (one pre-built card per spell, stakeholder decides in chat; open with the set-wide long-cast-vs-RITUAL question); codex gate H still the open codex item; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `84b191a`, 2026-07-23 — assay (0030) ROUND 5: the item-7 REVIEW LOOP is RUNNING and 26 decisions are LANDED — set-wide >1-hour-RITUAL rule decided + all 3 ritual conversions built, all 10 reclassified-out done, 16 of the judgment lane done; ▶ NEXT = continue the loop with the SAME card structure (one spell per message: 5e original · jmnario conversion · plain-English what-changed · comparables · options + staff lean → stakeholder decides in chat → apply + commit + INDEX log row per decision) — 6 judgment-lane spells left (lesser-wish, anomalous-object, connection, ebb-and-flow, lockstep-fate, fault-line), then the 73 fast-lane; codex gate H still open; heartwood ON HOLD)
 
-> **✅ assay (0030) R5 — item-7 prep session, 2026-07-23, all pushed (`a385307`…`ffd7ad8`):**
-> 1. **Pool + dossiers:** `apps/assay/results/homebrew-item7/` — `queue.json` (108 =
->    73 ledger + 25 open wide-range + 10 §4a reclassified-out; derived from live
->    `score-homebrew`, 9 already-decided wide rows excluded) + 108 per-spell dossiers
->    (fixed template: 5e original · store conversion · what-changed · balanceBullets ·
->    snapshot-verified comparables · prior touches · flags) via a 14-agent Workflow
->    (`a385307`). `INDEX.md` = the triage of all 98 collation flags + review lanes +
->    running status. ⭐ Workflow gotcha: `args` did NOT reach the script (`args.queue`
->    undefined, instant fail) — inline the data into the script and resume by runId.
-> 2. **Batch-0 (4 stakeholder decisions, engineer-built):** `b737e18` structural
->    encoding sweep (adapter+store lockstep — heightening ×10 incl. real interval
->    blocks for ashen-pack/lyrr's-shell + all 3 kosmoturgist's-weapon partitions,
->    hellforging/raise-island defense promotion, propagating-blast damage parse,
->    `**`→`<strong>` ×20; ONE routing change: propagating-blast ledger→quantitative
->    −1.06; revisions deviation-set byte-unchanged) · `7839a81` curse-removal
->    convention ×5 (divine-regression/fast-forward/overhaul/poisoned-backflow/taboo →
->    counteract-vs-spell-rank, valves kept) · `f91b2d6` prose restoration ×5
->    (earworm/inquisition/forensic-analysis/laixa's/nightfall; excavation+awkward
->    verified no-ops). Sphere-of-Ruin spam tax: stakeholder chose judge-at-review
->    (resolved in-dossier: leave stripped, restore caster-adjacent pursuit start).
-> 3. **Enrichment (staff, all 35 judgment-lane dossiers):** each now ends with
->    "## Options & staff lean". Highlights: several collation flags were FALSE
->    POSITIVES vs documented policy/idiom (school-trait strips, 1A→2A systemic map,
->    Slow-precedent success tiers, sustain-vs-concentration semantics, attack-trait/
->    defense-null official conventions); ⭐ SET-WIDE review question surfaced:
->    hours-long casts as spells vs RITUALS (Hellforging = poster child — official
->    Creature Creation table prices its level-14 output at ritual rank 9, not spell
->    rank 7; Overhaul same direction); text bugs queued (Take Me Instead
->    Charisma/Society contradiction, Lockstep Fate hold/discharge lifecycle,
->    Reflective Defense embedded editor-voice — a voice-sweep escapee).
-> 4. **▶ RESUME AT: the review loop.** Format LOCKED: one spell per message (dossier
->    card + lean), decide in chat, apply+commit per decision, probes via temp store
->    edits + real scorer. Suggested order: set-wide ritual question → 10
->    reclassified-out (mostly record-artifact-keep) → rest of judgment lane → 73
->    fast-lane (leans formed live; expect keep-shaped). After item 7: cheap-ritual-
->    props residue → codex ingest scoping → Foundry module → joint review w/ friend.
-> 5. ⚠ Environment: bare `diff` + batched multi-`python3` Bash loops returned WRONG
->    output this session (RTK proxy suspect) — see [[shell-output-reliability]];
->    use git diff / single-process Python for load-bearing comparisons.
+> **✅ assay (0030) R5 — item-7 review session 1, 2026-07-23 (`08c72e5`…`84b191a`):**
+> 1. **⭐ FORMAT LOCKED BY STAKEHOLDER — keep this structure on resume.** One spell
+>    per message, the full card: the 5e original · jmnario's conversion (as stored) ·
+>    plain-English what-changed · similar official spells · options + staff lean
+>    (lean marked). Stakeholder answers in chat (batched AskUserQuestion RETRACTED —
+>    he rejected the multi-question form). Per decision: edit store → run
+>    `score-homebrew` (verify score/routing) → `homebrew-revisions` regen → INDEX.md
+>    running-log row (+ commit hash backfilled next commit) → one conventional
+>    commit. The full decision ledger lives in `INDEX.md` §"Review decisions".
+> 2. **Set-wide rule (stakeholder):** casts **over 1 hour → rituals** (hard boundary;
+>    official data has no spell >1h except the exactly-1h Create Food/Magic Mailbox/
+>    Remake trio — so bound-minds/celestial-preservation/excavation stay spells).
+>    Built: **Hellforging** `08c72e5` (r7 ritual, Creature Creation table levels,
+>    50k-gp premium kept) · **Overhaul** `549a34e` (r5 ritual, Reflex→Will→Fort
+>    hourly gauntlet, H7 deleted, crit-success = choose ancestry) · **Worldweaver**
+>    `6ce6089` (r10 Wish-pattern ritual, 15 secondaries, Wish-register ladder,
+>    +mythic trait). ⭐ Tooling: the revisions differ was BLIND to `ritual` +
+>    `traits.rarity` — widened in `08c72e5` (proven no-op on the other 175).
+> 3. **Reclassified-out 10/10 done:** artist's-rendition `dcc8cb8` (lead clause
+>    restored) · horns keep · divine-razor `ec2d8fb` (⭐ reality-cut restored — 60 ft
+>    through-walls Strikes) · righteous-pressure `f154995` (vitality→spirit, his own
+>    checklistFailure) · festering-slick `1753266` (living-qualifier dropped) ·
+>    selfshape keep · kosmoturgist's-weapon `4608223` (Defend lesser-cover restored)
+>    · mc-claws keep · planar-shield `5cd0099` (Trigger line formatted) · solar-fury
+>    `ac74355` (double-trigger → turn-start only). Zero dice changes; every score
+>    verified unchanged; artifacts recorded.
+> 4. **Judgment lane 16 done:** fumble `f2bccfe` (escape valve @ checks + 15-ft
+>    threshold) · flashback `f443665` (full H2–H5 ladder restored) · forensic-analysis
+>    `cf2f3a4` (24h cooldown + mood descriptor) · let's-start-a-fight `90c05cd`
+>    (improvised-only + brawl sentence deleted) · tunnel-vision `0fcaee4` (recast-ends-
+>    prior + tiebreak trimmed) · mark-of-protection keep `08a9331` · farsight `3ac1358`
+>    (in-person sigils + circle-bound explicit) · reduce-resistivity keep `ef14bd2` ·
+>    reflective-defense `ece3165` (editor-voice deleted) · mystic-negation `e5debf1`
+>    (counteract legalized + 3-success burnout) · perfect-pocket `346afcd` (stasis
+>    dropped ENTIRELY — stakeholder, no spoilage softener) · sphere-of-ruin `e3f79d6`
+>    (batch-0 deferral CLOSED: tax stays stripped, caster-adjacent pursuit restored) ·
+>    earworm keep `cd94ddf` · eye-stalks keep `29b7f7a` · take-me-instead `c4a07f6`
+>    (→ "DC 20 Diplomacy check", A1) · extra-motivation `84b191a` (Greater Surge cost
+>    back to half-current-HP void).
+> 5. **▶ RESUME AT: next card = lesser-wish**, then anomalous-object, connection,
+>    ebb-and-flow, lockstep-fate (queued text bug: hold/discharge lifecycle
+>    contradiction), fault-line — then the **73 fast-lane** (leans formed live;
+>    expect keep-shaped; queued there: Sphere of Preservation gets the reciprocal
+>    Ruin-synergy sentence). After item 7: cheap-ritual-props residue → codex ingest
+>    scoping → Foundry module → joint review w/ friend (revisions.md = the artifact,
+>    now 77 deviations).
+
+---
+
+### Previous section (2026-07-23, earlier) — item-7 prep (superseded above)
+
+## (was) Current state (as of `ffd7ad8` — item 7 PREP COMPLETE: 108-spell pool from the LIVE scorer + 108 facts-only dossiers via a 14-agent Workflow (`a385307`; ⭐ Workflow `args` never reached the script — inline + resume by runId) + batch-0 sweeps BUILT (`b737e18` encoding lockstep incl. the differ-invisible heightening fixes · `7839a81` curse-convention ×5 · `f91b2d6` prose restoration ×5) + all 35 judgment-lane dossiers enriched with options + staff lean (⭐ ~⅓ of collation flags = FALSE POSITIVES vs documented policy; ⭐ the long-cast-vs-RITUAL set-wide question surfaced here — Hellforging the poster child). Detail in [[assay-0030-gotchas]]; ⚠ [[shell-output-reliability]] — bare `diff`/batched multi-`python3` returned WRONG output, use git diff / single-process Python.)
 
 ---
 

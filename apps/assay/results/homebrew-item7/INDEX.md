@@ -151,6 +151,14 @@ Magic Mailbox / Remake precedent).
   sphere-of-ruin, earworm, monstrous-copy-eye-stalks, take-me-instead, extra-motivation,
   lesser-wish, anomalous-object, connection, ebb-and-flow, lockstep-fate, fault-line.
   Fast-lane spells get their lean live at review (no pre-written section).
+- 2026-07-23 (review session 1): **26 decisions LANDED** — the set-wide >1-hour-ritual
+  rule + 3 ritual conversions, all 10 reclassified-out, 16 judgment-lane (full ledger in
+  the "Review decisions" table above). Card structure LOCKED by stakeholder: one spell
+  per message — 5e original · conversion · what-changed · comparables · options + lean —
+  decide in chat, apply+commit+log per decision. ▶ NEXT CARD: **lesser-wish**, then
+  anomalous-object, connection, ebb-and-flow, lockstep-fate (hold/discharge text bug
+  queued), fault-line; then the 73 fast-lane (Sphere of Preservation reciprocal-synergy
+  sentence queued there).
 - 2026-07-23: **ENRICHMENT COMPLETE — all 35 judgment-lane dossiers now carry an
   "## Options & staff lean" section** (the 73 fast-lane spells deliberately get their
   lean live at review). Recurring findings from the pass: several dossier flags were
