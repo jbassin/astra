@@ -39,7 +39,7 @@
       }
     },
     "description": {
-      "value": "<p><strong>Trigger</strong> A creature within 60 feet that you can see deals damage to you.</p><p>You call a searing lance of solar light from the peak of Elysium to strike down your attacker.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes 5d10 fire damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d10.</p>"
+      "value": "<p><strong>Trigger</strong> A creature within 60 feet that you can see deals damage to you.</p><p>You call a searing lance of solar light from the peak of Elysium to strike down your attacker with 5d10 fire damage.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.</p><p><strong>Critical Failure</strong> The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Blinded]{Blinded} until the start of your next turn.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 1d10.</p>"
     },
     "duration": {
       "sustained": false,

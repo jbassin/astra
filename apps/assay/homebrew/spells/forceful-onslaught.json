@@ -42,7 +42,11 @@
     },
     "heightening": {
       "levels": {
-        "9": {}
+        "9": {
+          "damage": {
+            "0": "1d6"
+          }
+        }
       },
       "type": "fixed"
     },

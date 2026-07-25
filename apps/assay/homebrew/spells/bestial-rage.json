@@ -23,18 +23,11 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You channel the gestalt collective's memory of wildshaping at its most savage, sharpening your current beast form into a state of heightened frenzy. This spell must be cast simultaneously with a wild shape polymorph spell or as part of activating a wild shape ability. If you are not transforming into a beast form on the same action, this spell fails harmlessly and the slot is not spent.</p><p>For the duration of your current wild shape:<br />- You gain a +1 status bonus to melee attack rolls made with your beast form's natural attacks.<br />- Your beast form's natural attack damage dice increase by one step (d4 → d6 → d8 → d10 → d12).<br />- Creatures attacking you with melee Strikes gain a +1 circumstance bonus to their attack rolls.</p><p>This is a morph effect that layers on top of your wild shape polymorph. It does not stack with other morph effects applied to the same attack.</p><p>If you have the Wild Shape class feat and use this spell on the same action as your wild shape activation, you expend the wild shape use normally. If your wild shape ends for any reason, this spell ends as well.</p><hr /><p><strong>Heightened (5th)</strong> The status bonus to melee attacks increases to +2, and the damage die step increases by two steps instead of one.</p><p><strong>Heightened (7th)</strong> You also gain a +2 status bonus to Athletics checks while in the frenzied form, and once per round when you score a critical hit with a natural attack, you may immediately make one additional natural attack as a free action (this additional attack takes the normal multiple-attack penalty).</p>"
+      "value": "<p>You channel the gestalt collective's memory of wildshaping at its most savage, sharpening your current beast form into a state of heightened frenzy. This spell must be cast simultaneously with a polymorph spell or as part of activating a polymorph ability.</p><p>For the duration of your current polymorph, you gain a +1 status bonus to melee attack rolls made with your natural attacks, and your natural attack damage dice increase by one step: d4 to d6, d6 to d8, d8 to d10, or d10 to d12. Creatures attacking you with melee Strikes gain a +1 circumstance bonus to their attack rolls.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "until your wild shape ends"
-    },
-    "heightening": {
-      "levels": {
-        "5": {},
-        "7": {}
-      },
-      "type": "fixed"
     },
     "level": {
       "value": 3

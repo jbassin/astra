@@ -29,11 +29,6 @@
       "sustained": false,
       "value": "1 minute"
     },
-    "heightening": {
-      "damage": {},
-      "interval": 1,
-      "type": "interval"
-    },
     "level": {
       "value": 2
     },

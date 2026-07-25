@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of wildshaping to thicken your skin into the coarse, layered hide of a great beast. You gain 5 temporary Hit Points. While these temporary Hit Points remain, your hide hardens your exterior against glancing blows; you gain a +1 circumstance bonus to AC. Both benefits last until the spell ends or until the temporary Hit Points are depleted, whichever comes first.</p><hr /><p><strong>Heightened (3rd)</strong> The temporary Hit Points increase to 10.</p><p><strong>Heightened (5th)</strong> The temporary Hit Points increase to 15, and the circumstance bonus to AC increases to +2.</p><p><strong>Heightened (7th)</strong> The temporary Hit Points increase to 25.</p><p><strong>Heightened (9th)</strong> The temporary Hit Points increase to 35, and the circumstance bonus to AC increases to +3.</p>"
+      "value": "<p>You draw upon the collective's memory of wildshaping to thicken your skin into the coarse, layered hide of a great beast. At the beginning of each of your turns, you gain 5 temporary Hit Points. While these temporary Hit Points remain, your hide hardens your exterior against glancing blows; you gain a +1 circumstance bonus to AC.</p><hr /><p><strong>Heightened (3rd)</strong> The temporary Hit Points increase to 10.</p><p><strong>Heightened (5th)</strong> The temporary Hit Points increase to 15.</p><p><strong>Heightened (7th)</strong> The temporary Hit Points increase to 25.</p><p><strong>Heightened (9th)</strong> The temporary Hit Points increase to 35.</p>"
     },
     "duration": {
       "sustained": false,

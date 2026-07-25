@@ -52,11 +52,19 @@
       }
     },
     "description": {
-      "value": "<p>You rapidly compress and expand the space around you, exerting extreme force on surrounding creatures. Each creature in the emanation, including you, takes 6d6 void damage and 6d6 bludgeoning damage from the spatial shockwave.</p><p><strong>Optional sacrifice.</strong> Before rolling damage, you may choose to take 10 void damage yourself (ignoring your own resistance and immunity to void damage, if any). If you do, you select a number of creatures in the area up to your spellcasting ability modifier (minimum 1); you can choose yourself. Each chosen creature improves the degree of success of its saving throw against this spell by one step.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage and is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p><hr /><p><strong>Heightened (+1)</strong> Both the void damage and the bludgeoning damage each increase by 1d6.</p>"
+      "value": "<p>You rapidly compress and expand the space around you, exerting extreme force on surrounding creatures. Each creature in the emanation, including you, takes 6d6 void damage and 6d6 bludgeoning damage from the spatial shockwave.</p><p><strong>Optional sacrifice.</strong> Before rolling damage, you may choose to take 10 void damage yourself, ignoring your own resistance or immunity to void damage. If you do, you select a number of creatures in the area up to your spellcasting ability modifier, with a minimum of 1; you can choose yourself. Each chosen creature improves the degree of success of its saving throw against this spell by one step.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> The creature takes half damage.</p><p><strong>Failure</strong> The creature takes full damage.</p><p><strong>Critical Failure</strong> The creature takes double damage and is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p><hr /><p><strong>Heightened (+1)</strong> Both the void damage and the bludgeoning damage each increase by 1d6.</p>"
     },
     "duration": {
       "sustained": false,
       "value": ""
+    },
+    "heightening": {
+      "damage": {
+        "0": "1d6",
+        "1": "1d6"
+      },
+      "interval": 1,
+      "type": "interval"
     },
     "level": {
       "value": 5

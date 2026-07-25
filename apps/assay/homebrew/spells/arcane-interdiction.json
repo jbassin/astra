@@ -26,18 +26,11 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You stress the threads of magical energy in a 60-foot emanation centered on you, making it harder for spells to manifest within the area. The emanation moves with you. Any creature that attempts to Cast a Spell while inside the emanation must succeed at a flat check (DC 5 + the spell's rank) or the spell is lost; the slot is expended and the spell has no effect. You are exempt from this effect for the purpose of sustaining Arcane Interdiction itself.</p><p>Additionally, any creature inside the emanation that is concentrating on a spell must attempt a DC 10 flat check at the start of each of its turns inside the area, or lose concentration on that spell.</p><p>Creatures entering the area mid-turn must attempt the flat check if they cast a spell on that same turn.</p><hr /><p><strong>Heightened (6th)</strong> The flat check DC to cast spells in the area increases by 2 (DC 7 + spell rank), and the concentration check DC increases to 12.</p><p><strong>Heightened (8th)</strong> The flat check DC increases to 10 + spell rank, and the concentration check DC increases to 15.</p>"
+      "value": "<p>You stress the threads of magical energy in a 60-foot emanation, making it harder for spells to manifest within the area. Any enemy that attempts to Cast a Spell while inside the emanation must succeed at a flat check of DC 5 + the spell's rank or the spell is lost; the slot is expended and the spell has no effect.</p><p>Creatures entering the area mid-turn must attempt the flat check if they cast a spell on that same turn.</p><hr /><p><strong>Heightened (+2)</strong> The flat check DC to cast spells in the area increases by 2.</p>"
     },
     "duration": {
       "sustained": true,
       "value": "1 minute"
-    },
-    "heightening": {
-      "levels": {
-        "6": {},
-        "8": {}
-      },
-      "type": "fixed"
     },
     "level": {
       "value": 4
