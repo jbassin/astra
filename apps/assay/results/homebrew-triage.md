@@ -460,3 +460,32 @@ converts + one commit per card decision; `score-homebrew` set-diff before/after 
 feeds the buff lane — drift is EXPECTED on converted buffs, characterize don't assume
 zero); `homebrew-revisions` regen (each convert = a new deviation vs vendor);
 revisions.md stays hand-edit-only.
+
+## 12. End-review text sweep (2026-07-24, RUN — stakeholder feedback applied same day)
+
+**Provenance:** stakeholder end-review of the live ingest ("definitely not fully
+enumerating all places these issues were seen") — 7 text-quality rules + 2 frontend items
+(header title only on parent pages; pathfinder-icons.ttf action glyphs — tracked codex-side).
+
+**OUTCOME (`f64cdde` exemplars · `563be83` sweep · `161204d` revisions): 111 spells
+edited (3 exemplars + 108 sweep), 64 clean, revisions.md 132→156.** The 7 rules, applied
+set-wide by three partitioned engineers off a shared policy brief + the 3 hand-calibrated
+exemplars (patishvat's-perfect-pocket Bulk redesign 3/50 H3 6/100 as SPECIFIED;
+charming-memory dedup/de-slop; gambler's-trick gloss strip): em-dashes out ×70 (en-dash
+minus/"1–3" range idiom verified official and KEPT); redundant die/rank parens deleted;
+tag-parens ((no save)/(sight)/trait tags) deleted; load-bearing parens promoted to prose
+(preserve-foodstuffs et al.); trait-gloss + generic-rules-explainer sentences deleted;
+duplicate clauses deduped; body-vs-ladder outcomes now ladder-only; exactly-basic ladders
+collapsed to prose basic saves ×9 (antimagic-shroud the named example; tag's collapse also
+removed a WRONG half-damage restatement); crit≡adjacent-tier branch deleted ×8 (reposition
+named; rule now explicitly bidirectional — cf==f too).
+
+**Verification:** zero non-description field changes (structural set-diff, all 107 files);
+issue-class rescan all zeroes; every full-ladder collapse retains a prose basic-save
+sentence (falling-star's was restored by hand — the one orchestrator catch); score
+set-diff vs `6f53b58`: ZERO verdict/routing drift, 2 comparables-lens neighbor artifacts
+(bubble-bubble rankRange [1,6]→[1,9], touch-of-madness reshuffle — documented class).
+
+**Flags for the stakeholder (not fixed, mechanics questions):** monstrous-copy-stinger
+Hutijin Venom Stage 1 ≡ Stage 2 byte-identical; monstrous-copy-tentacle Tentacle Venom
+Stage 2 ≡ Stage 3 byte-identical — both look like affliction-progression conversion bugs.
