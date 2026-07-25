@@ -490,7 +490,43 @@ set-diff vs `6f53b58`: ZERO verdict/routing drift, 2 comparables-lens neighbor a
 Hutijin Venom Stage 1 ≡ Stage 2 byte-identical; monstrous-copy-tentacle Tentacle Venom
 Stage 2 ≡ Stage 3 byte-identical — both look like affliction-progression conversion bugs.
 
-## 13. Scriptorium-calibrated sweep (2026-07-25, DRAFT — awaiting stakeholder ratification)
+## 13. Scriptorium-calibrated sweep (2026-07-25, RATIFIED same day — all four decisions)
+
+**Ratification:** Lane 1 R1–R4 set-wide, apply-without-stopping · D13-a = **full-store
+lane now** (not as-you-review) · D13-b = staff re-convert from the 5e originals, cards
+for sign-off before commit · cadence = **sweep first**, scriptorium pass resumes on the
+post-sweep text. Original draft follows.
+
+**RUN RECORD (same day):** four partitioned sonnet engineers (34/46/46/46, fangs+horns
+excluded) + orchestrator merge. **95/172 spells edited** (`feat(assay): scriptorium-
+calibrated sweep`), revisions.md 156→**167**. Mid-run rule added by the stakeholder:
+**R5 — base damage declared in the body; ladder lines say full/half/double damage**
+(Ignition exemplar; now a standing text convention). D13-b landed separately (cards a/a,
+both with body-declared damage): Fangs r1 3d6 melee-attack + crit-Prone · Horns r2 3d12
++ Stride-20-ft rider menu; verdicts +0.66/+0.93 recorded as the attack-roll
+all-or-nothing artifact (Hydraulic Push anchors 3d6@r1 officially). Ashen-pack
+marginalia = a sustain→flat conversion (duration field + Command line reworded to
+once-per-round single action) — overrides its §11 keep. Gates: 95 files, 0 parse
+failures, 0 field changes outside description/heightening/duration(ashen-pack only);
+rescan marker-parens 38→6 (survivors = official "such as"/"minimum 1" idiom),
+opportunity-attack + emanation-centered → 0, wildshape/concentration survivors all
+verified flavor-voice or the official concentrate trait; **score set-diff vs the
+pre-sweep baseline: ZERO drift** beyond the committed D13-b pair (grey-frost's
+inverted-severity ladder byte-preserved through its R5 rewrite).
+
+**FLAGS (stakeholder digest, none applied):** mixed-heightening pattern with no official
+precedent ×2 (propagating-blast: (+1) damage + fixed target-count tiers;
+festering-slick: (+1) + fixed 5th tier) · fast-forward's Str/Dex/Con penalty triad
+doesn't map to the calibrated Clumsy exemplar · thaumaturgic-inhibition's deliberately
+stationary emanation vs its `system.area` schema (needs an area-field edit, out of
+sweep scope) · reset's Failure line references two enemy initiative rolls the prose
+never grants (pre-existing, exposed by label-flattening) · blades-of-bone carries an
+orphaned structured-damage entry from its struck Strike text · chrysalis Heightened
+(8th) has a backwards Perception-DC comparison (pre-existing) · hellforging says
+"psychic damage" (not a PF2e type; mental?) · monstrous-copy-claws heightened die
+sequence 2d12→3d10→3d12→4d12 looks like a typo · body-enhancement-hide + charming-memory
+kept fixed tiers (progressions not clean enough to collapse safely) · time-loop Success
+grants 24h immunity that Critical Success omits (design question).
 
 **Provenance:** the stakeholder's scriptorium prose review (21/174 spells reviewed,
 acupuncture → body-enhancement-horns; 67 live marginalia in
