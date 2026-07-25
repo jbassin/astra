@@ -37,7 +37,7 @@
       }
     },
     "description": {
-      "value": "<p><strong>Trigger</strong> A creature within range is damaged by an attack or effect.</p><p>You twist time to force a creature to relive the worst moment of its recent past. The target must attempt a Will save against your spell DC.</p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target takes damage of the same type equal to the triggering damage (maximum 30).</p><p><strong>Critical Failure</strong> As failure, but the echoed damage has no maximum.</p><hr /><p><strong>Heightened (+1)</strong> The maximum echoed damage increases by 6.</p>"
+      "value": "<p><strong>Trigger</strong> A creature within range is damaged by an attack or effect.</p><p>You twist time to force a creature to relive the worst moment of its recent past. The target must attempt a Will save against your spell DC.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target takes damage of the same type equal to the triggering damage (maximum 30).</p><p><strong>Critical Failure</strong> As failure, but the echoed damage has no maximum.</p><hr /><p><strong>Heightened (+1)</strong> The maximum echoed damage increases by 6.</p>"
     },
     "duration": {
       "sustained": false,

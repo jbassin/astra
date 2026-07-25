@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -26,7 +26,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You anchor a chronomantic shell to a relative point you designate within range \u2014 such as the hull of a ship, the center of a wagon, or the base of a tent. A sphere with a 100-foot radius radiates from that anchor point and moves with it. Within this sphere, environmental conditions are reset to a calm state of the caster's choosing at the moment of casting: wind stills to a gentle breeze, rain ceases, temperature moderates, and waves calm to a placid sea. The shell has no effect on weather conditions created by magic after the casting. Creatures and objects inside the sphere are unaffected by external mundane weather for the duration.</p><hr /><p><strong>Heightened (+1)</strong> The radius of the shell increases by 100 feet.</p>"
+      "value": "<p>You anchor a chronomantic shell to a relative point you designate within range, such as the hull of a ship, the center of a wagon, or the base of a tent. A sphere with a 100-foot radius radiates from that anchor point and moves with it. Within this sphere, environmental conditions are reset to a calm state of the caster's choosing at the moment of casting: wind stills to a gentle breeze, rain ceases, temperature moderates, and waves calm to a placid sea. The shell has no effect on weather conditions created by magic after the casting. Creatures and objects inside the sphere are unaffected by external mundane weather for the duration.</p><hr /><p><strong>Heightened (+1)</strong> The radius of the shell increases by 100 feet.</p>"
     },
     "duration": {
       "sustained": false,

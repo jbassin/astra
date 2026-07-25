@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) \u2014 kept as a description appendix only"
+        "fixed-rank heightening text has no structurally-parseable damage bump (a non-damage effect, e.g. added targets/area) — kept as a description appendix only"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You channel kosmoturgy through your right hand, siphoning the kinetic force of incoming blows and storing it as a cosmic charge that you can spend to devastate your enemies. For the duration, once per round when a creature's attack roll against you fails (including a critical failure), you gain 1 charge. You can hold a maximum of 3 charges at one time. Charges dissipate when the spell ends.</p><p><strong>Expend Charge:</strong> When you successfully make a Strike, you may expend 1 charge as part of that Strike (before the damage roll). That Strike's damage roll gains the following fortune effect: you roll the damage dice twice and take the higher result.</p><p>This spell is paired with Left Hand of Judgment (which governs the counter-attack reaction). Both spells can be active simultaneously, but casting a second of the pair while the other is already active does not suppress the first \u2014 unlike Left Hand, Right Hand is passive and does not interfere with reactions.</p><hr /><p><strong>Heightened (6th)</strong> You can hold up to 5 charges, and you also gain 1 charge the first time each round that you successfully hit a creature with a Strike (stacks with charges from missed attacks against you).</p><p><strong>Heightened (8th)</strong> Expending a charge on a Strike also increases the Strike's damage by a number equal to your spellcasting ability modifier.</p>"
+      "value": "<p>You channel kosmoturgy through your right hand, siphoning the kinetic force of incoming blows and storing it as a cosmic charge that you can spend to devastate your enemies. For the duration, once per round when a creature's attack roll against you fails (including a critical failure), you gain 1 charge. You can hold a maximum of 3 charges at one time. Charges dissipate when the spell ends.</p><p><strong>Expend Charge:</strong> When you successfully make a Strike, you may expend 1 charge as part of that Strike (before the damage roll). That Strike's damage roll gains the following fortune effect: you roll the damage dice twice and take the higher result.</p><p>This spell is paired with Left Hand of Judgment (which governs the counter-attack reaction). Both spells can be active simultaneously, but casting a second of the pair while the other is already active does not suppress the first; unlike Left Hand, Right Hand is passive and does not interfere with reactions.</p><hr /><p><strong>Heightened (6th)</strong> You can hold up to 5 charges, and you also gain 1 charge the first time each round that you successfully hit a creature with a Strike (stacks with charges from missed attacks against you).</p><p><strong>Heightened (8th)</strong> Expending a charge on a Strike also increases the Strike's damage by a number equal to your spellcasting ability modifier.</p>"
     },
     "duration": {
       "sustained": false,

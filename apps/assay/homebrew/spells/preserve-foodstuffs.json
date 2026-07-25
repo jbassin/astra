@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You freeze time within a closed container, perfectly preserving all contents inside. While the spell is active, nothing inside the container ages, spoils, rots, or changes state; perishables remain indefinitely fresh. The spell has no effect on living creatures (it automatically fails if any living creature is inside when the spell is cast). The spell ends immediately when the container is opened, at which point normal time resumes inside. This spell can preserve containers of up to 10 cubic feet in volume.</p><hr /><p><strong>Heightened (3rd)</strong> The container volume increases to 50 cubic feet. You can also target multiple sealed containers up to that combined volume.</p>"
+      "value": "<p>You freeze time within a closed container, perfectly preserving all contents inside. While the spell is active, nothing inside the container ages, spoils, rots, or changes state; perishables remain indefinitely fresh. The spell has no effect on living creatures. It automatically fails if any living creature is inside when the spell is cast. The spell ends immediately when the container is opened, at which point normal time resumes inside. This spell can preserve containers of up to 10 cubic feet in volume.</p><hr /><p><strong>Heightened (3rd)</strong> The container volume increases to 50 cubic feet. You can also target multiple sealed containers up to that combined volume.</p>"
     },
     "duration": {
       "sustained": false,

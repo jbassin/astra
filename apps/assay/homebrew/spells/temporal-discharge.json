@@ -4,7 +4,7 @@
     "assay": {
       "adapterWarnings": [
         "defense text has qualifiers beyond the base save/attack shape, not structurally represented (only the primary save/attack-roll mapped): 'basic Reflex save (when triggered)'",
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -29,7 +29,7 @@
       }
     },
     "description": {
-      "value": "<p>You spend ten minutes channeling magical energy into a touched object, storing a temporal charge within it. When you cast the spell, choose one of the following damage types: acid, cold, electricity, fire, sonic, or void. Also speak a command word (a unique word or phrase) in a language you know. The charged object is otherwise unchanged in appearance; a successful Recall Knowledge or Seek check against your spell DC reveals the presence of a magical aura.</p><p><strong>Trigger:</strong> The first time a creature touches the object without speaking the command word within 6 seconds of touching it, the stored energy discharges. The triggering creature must attempt a Reflex save against your spell DC.</p><p>The object is not destroyed by the discharge.</p><p><strong>Critical Success</strong> The creature takes no damage.</p><p><strong>Success</strong> The creature takes half damage (5d6 of the chosen type).</p><p><strong>Failure</strong> The creature takes full damage: 10d6 of the chosen type.</p><p><strong>Critical Failure</strong> The creature takes double damage: 20d6 of the chosen type.</p><hr /><p><strong>Heightened (+1)</strong> The damage on failure increases by 2d6, and the duration extends by 1 day per additional rank (until the caster's next daily preparations plus 1 day at rank 5, etc., to a maximum of 1 week at rank 7).</p>"
+      "value": "<p>You spend ten minutes channeling magical energy into a touched object, storing a temporal charge within it. When you cast the spell, choose one of the following damage types: acid, cold, electricity, fire, sonic, or void. Also speak a command word (a unique word or phrase) in a language you know. The charged object is otherwise unchanged in appearance; a successful Recall Knowledge or Seek check against your spell DC reveals the presence of a magical aura.</p><p><strong>Trigger:</strong> The first time a creature touches the object without speaking the command word within 6 seconds of touching it, the stored energy discharges, requiring the triggering creature to attempt a basic Reflex save against your spell DC and take 10d6 damage of the chosen type.</p><p>The object is not destroyed by the discharge.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d6, and the duration extends by 1 day per additional rank (until the caster's next daily preparations plus 1 day at rank 5, etc., to a maximum of 1 week at rank 7).</p>"
     },
     "duration": {
       "sustained": false,

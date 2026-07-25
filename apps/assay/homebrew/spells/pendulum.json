@@ -3,7 +3,7 @@
   "flags": {
     "assay": {
       "adapterWarnings": [
-        "interval ('+N') heightening text is not a pure damage bump \u2014 kept as a description appendix only, not structurally represented"
+        "interval ('+N') heightening text is not a pure damage bump — kept as a description appendix only, not structurally represented"
       ],
       "seededFrom": {
         "commit": "efc8e310210a2577411c62ee95f09a58ef79f164",
@@ -28,7 +28,7 @@
       }
     },
     "description": {
-      "value": "<p>You bend fate to move in perfectly predictable patterns. The target must attempt a Will save.</p><p>While the spell is active, if the target fails its Will save, its d20 results follow a rigid oscillating sequence instead of being random: its first roll is treated as 20, second as 1, third as 19, fourth as 2, fifth as 18, sixth as 3, and so on, alternating between high and low results. The target still makes its roll visibly but replaces the result with the next number in the sequence.</p><p></p><p><strong>Critical Success</strong> The target is unaffected.</p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target's d20 rolls follow the oscillating fate sequence for 1 minute. The target is aware that something is wrong but cannot determine the pattern.</p><p><strong>Critical Failure</strong> As failure, and the target doesn't realize the sequence is predictable until it has rolled at least twice.</p><hr /><p><strong>Heightened (+2)</strong> You can target 1 additional creature with this spell.</p>"
+      "value": "<p>You bend fate to move in perfectly predictable patterns. The target must attempt a Will save.</p><p>The oscillating fate sequence replaces the target's d20 rolls with a fixed pattern: the first roll is treated as 20, the second as 1, the third as 19, the fourth as 2, the fifth as 18, the sixth as 3, and so on, alternating between high and low results. The target still makes its roll visibly but replaces the result with the next number in the sequence.</p><p></p><p><strong>Success</strong> The target is unaffected.</p><p><strong>Failure</strong> The target's d20 rolls follow the oscillating fate sequence for 1 minute. The target is aware that something is wrong but cannot determine the pattern.</p><p><strong>Critical Failure</strong> As failure, and the target doesn't realize the sequence is predictable until it has rolled at least twice.</p><hr /><p><strong>Heightened (+2)</strong> You can target 1 additional creature with this spell.</p>"
     },
     "duration": {
       "sustained": false,
