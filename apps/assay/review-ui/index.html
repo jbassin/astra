@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LotI2 Scriptorium — prose review</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Ctext y='13' font-size='13'%3E%E2%9C%92%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English+SC&family=IM+Fell+English:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --parchment:#f0e6cf; --parchment-deep:#e6d9ba; --parchment-shade:#d9c99f;
+  --ink:#2b2115; --ink-soft:#5a4a33; --ink-faint:#8a7a5e;
+  --rubric:#8a1a12; --rubric-bright:#a52a1a;
+  --gilt:#946f22; --verdigris:#3d6b52;
+  --note:#274c77; --highlight:rgba(165,42,26,.14);
+  --leaf-w: 42rem;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{
+  font-family:"EB Garamond",Georgia,serif; color:var(--ink);
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 0%, rgba(255,252,240,.55), transparent 60%),
+    radial-gradient(ellipse 100% 90% at 90% 100%, rgba(150,120,60,.18), transparent 55%),
+    repeating-linear-gradient(93deg, rgba(120,90,40,.028) 0 2px, transparent 2px 5px),
+    var(--parchment);
+  min-height:100vh; overflow:hidden;
+}
+body::after{ /* grain */
+  content:""; position:fixed; inset:0; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.38 0 0 0 0 0.22 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+#app{display:grid; grid-template-columns:17rem 1fr 19rem; height:100vh}
+
+/* ---------- index rail ---------- */
+#rail{
+  border-right:3px double var(--ink-faint); background:linear-gradient(180deg,var(--parchment-deep),var(--parchment));
+  display:flex; flex-direction:column; min-height:0;
+}
+#rail header{padding:1.1rem 1rem .6rem}
+#rail h1{
+  font-family:"IM Fell English SC",serif; font-weight:400; font-size:1.3rem; line-height:1.15;
+  color:var(--rubric); letter-spacing:.02em;
+}
+#rail h1 small{display:block; font-size:.72rem; color:var(--ink-soft); font-family:"IM Fell English",serif; font-style:italic; letter-spacing:.04em; margin-top:.15rem}
+#progress{font-size:.78rem; color:var(--ink-soft); margin:.5rem 1rem 0; font-variant:small-caps; letter-spacing:.06em}
+#progress b{color:var(--verdigris)}
+#search{
+  margin:.6rem .9rem; padding:.35rem .6rem; font:inherit; font-size:.9rem;
+  background:rgba(255,252,242,.65); border:1px solid var(--ink-faint); border-radius:2px; color:var(--ink);
+  outline:none;
+}
+#search:focus{border-color:var(--gilt); box-shadow:0 0 0 2px rgba(148,111,34,.18)}
+#list{overflow-y:auto; flex:1; padding:.25rem 0 1.5rem; scrollbar-width:thin; scrollbar-color:var(--ink-faint) transparent}
+.item{
+  display:flex; align-items:baseline; gap:.45rem; padding:.28rem .9rem .28rem 1rem; cursor:pointer;
+  font-size:.92rem; border-left:3px solid transparent; color:var(--ink-soft);
+}
+.item:hover{background:rgba(148,111,34,.08); color:var(--ink)}
+.item.active{border-left-color:var(--rubric); background:rgba(138,26,18,.07); color:var(--ink); font-weight:600}
+.item .tick{width:.85em; flex:none; color:var(--verdigris); font-size:.8em; opacity:0}
+.item.reviewed .tick{opacity:1}
+.item .nm{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.item .cc{flex:none; font-size:.7rem; color:var(--note); font-family:"Caveat",cursive; font-weight:600}
+
+/* ---------- main ---------- */
+#main{display:flex; flex-direction:column; min-width:0; min-height:0}
+#masthead{
+  display:flex; align-items:center; gap:1rem; padding:.8rem 1.6rem .6rem;
+  border-bottom:1px solid rgba(90,74,51,.35);
+}
+#masthead h2{
+  font-family:"IM Fell English SC",serif; font-weight:400; font-size:1.75rem; color:var(--rubric);
+  line-height:1; text-shadow:0 1px 0 rgba(255,252,240,.6);
+}
+#masthead .rank{font-family:"IM Fell English",serif; font-style:italic; color:var(--gilt); font-size:1rem}
+#masthead .spacer{flex:1}
+.ctl{
+  font:inherit; font-size:.82rem; font-variant:small-caps; letter-spacing:.05em;
+  background:none; border:1px solid var(--ink-faint); border-radius:2px; color:var(--ink-soft);
+  padding:.25rem .7rem; cursor:pointer;
+}
+.ctl:hover{border-color:var(--gilt); color:var(--ink)}
+.ctl.on{background:var(--verdigris); border-color:var(--verdigris); color:#f4efdf}
+.ctl.rev.on{background:var(--verdigris)}
+#folios{
+  flex:1; overflow-y:auto; display:grid; grid-template-columns:1fr 1fr; gap:0;
+  padding:1.2rem 1.4rem 4rem; align-items:start; scrollbar-width:thin; scrollbar-color:var(--ink-faint) transparent;
+}
+#folios.three{grid-template-columns:1fr 1fr 1fr}
+.leaf{
+  background:linear-gradient(160deg, rgba(255,252,242,.75), rgba(244,233,205,.55) 60%, rgba(226,209,168,.6));
+  border:1px solid rgba(90,74,51,.3); box-shadow:0 2px 14px rgba(70,50,20,.12), inset 0 0 60px rgba(180,150,90,.12);
+  padding:1.5rem 1.8rem 2rem; margin:0 .6rem; min-width:0; position:relative;
+}
+.leaf + .leaf{border-left:1px solid rgba(90,74,51,.3)}
+.leaf h3{
+  font-variant:small-caps; letter-spacing:.14em; font-weight:600; font-size:.8rem; color:var(--gilt);
+  text-align:center; margin-bottom:.2rem;
+}
+.leaf h3::after{content:"❦"; display:block; color:var(--rubric); font-size:.9rem; margin-top:.25rem}
+.leaf .srcname{text-align:center; font-family:"IM Fell English",serif; font-style:italic; font-size:1.05rem; color:var(--ink-soft); margin-bottom:.9rem}
+.statline{font-size:.95rem; margin:.12rem 0; color:var(--ink)}
+.statline b{font-variant:small-caps; letter-spacing:.04em; font-weight:600; color:var(--ink-soft)}
+.traits{display:flex; flex-wrap:wrap; gap:.3rem; margin:.5rem 0 .6rem}
+.trait{
+  font-size:.68rem; font-variant:small-caps; letter-spacing:.08em; padding:.08rem .5rem;
+  border:1px solid var(--gilt); color:var(--gilt); border-radius:1px; background:rgba(148,111,34,.07);
+}
+.trait.rare{border-color:var(--note); color:var(--note)}
+.divider{border:none; border-top:1px solid rgba(90,74,51,.3); margin:.9rem auto; width:70%;}
+.prose{font-size:1.02rem; line-height:1.62}
+.prose p{margin:.6rem 0; text-indent:0}
+.prose p:first-of-type::first-letter{
+  font-family:"IM Fell English SC",serif; font-size:2.6em; float:left; line-height:.82;
+  padding:.04em .08em 0 0; color:var(--rubric);
+}
+.prose strong{font-weight:600; color:var(--rubric)}
+.prose em{font-style:italic}
+.prose ul{margin:.5rem 0 .5rem 1.4rem}
+.prose table{border-collapse:collapse; margin:.7rem 0; font-size:.92rem}
+.prose th,.prose td{border:1px solid rgba(90,74,51,.4); padding:.25rem .6rem; text-align:left}
+.prose th{font-variant:small-caps; background:rgba(148,111,34,.1)}
+.ref{border-bottom:1px dotted var(--verdigris); color:var(--verdigris)}
+.dice{font-weight:600; color:var(--ink)}
+.paren{background:var(--highlight); border-bottom:1px solid var(--rubric-bright); border-radius:1px}
+.hsec{margin-top:.75rem}
+.hsec b{color:var(--rubric)}
+mark.q{background:rgba(39,76,119,.16); color:inherit}
+
+/* ---------- margin rail (comments) ---------- */
+#margin{
+  border-left:3px double var(--ink-faint); background:linear-gradient(180deg,var(--parchment),var(--parchment-deep));
+  display:flex; flex-direction:column; min-height:0;
+}
+#margin header{padding:1rem 1rem .4rem; font-variant:small-caps; letter-spacing:.1em; font-size:.85rem; color:var(--ink-soft)}
+#notes{overflow-y:auto; flex:1; padding:.3rem .9rem 2rem; scrollbar-width:thin; scrollbar-color:var(--ink-faint) transparent}
+.note{
+  background:rgba(255,252,242,.7); border:1px solid rgba(90,74,51,.3); border-left:3px solid var(--note);
+  padding:.5rem .65rem .45rem; margin:.55rem 0; border-radius:1px; box-shadow:0 1px 4px rgba(70,50,20,.1);
+  transform:rotate(-.35deg);
+}
+.note:nth-child(even){transform:rotate(.3deg)}
+.note .pane-tag{font-size:.62rem; font-variant:small-caps; letter-spacing:.08em; color:var(--gilt)}
+.note .quote{
+  font-size:.78rem; font-style:italic; color:var(--ink-soft); border-left:2px solid var(--ink-faint);
+  padding-left:.45rem; margin:.25rem 0; max-height:4.5em; overflow:hidden;
+}
+.note .body{font-family:"Caveat",cursive; font-size:1.12rem; line-height:1.25; color:var(--note); word-wrap:break-word}
+.note .del{float:right; border:none; background:none; color:var(--ink-faint); cursor:pointer; font-size:.8rem; padding:0 .1rem}
+.note .del:hover{color:var(--rubric)}
+#notes .empty{font-family:"IM Fell English",serif; font-style:italic; color:var(--ink-faint); font-size:.9rem; text-align:center; margin-top:2rem}
+
+/* ---------- selection quill + popover ---------- */
+#quill{
+  position:fixed; z-index:30; display:none; width:2.1rem; height:2.1rem; border-radius:50%;
+  border:1px solid var(--gilt); background:var(--parchment); color:var(--rubric);
+  font-size:1.1rem; cursor:pointer; box-shadow:0 2px 8px rgba(70,50,20,.3); line-height:1;
+}
+#quill:hover{background:var(--rubric); color:var(--parchment)}
+#popover{
+  position:fixed; z-index:31; display:none; width:19rem; background:var(--parchment);
+  border:1px solid var(--gilt); box-shadow:0 6px 24px rgba(70,50,20,.35); padding:.7rem; border-radius:2px;
+}
+#popover .quote{font-size:.78rem; font-style:italic; color:var(--ink-soft); max-height:3.6em; overflow:hidden; margin-bottom:.4rem; border-left:2px solid var(--ink-faint); padding-left:.4rem}
+#popover textarea{
+  width:100%; height:5.2rem; font-family:"Caveat",cursive; font-size:1.15rem; color:var(--note);
+  background:rgba(255,252,242,.8); border:1px solid var(--ink-faint); padding:.4rem .5rem; resize:vertical; outline:none;
+}
+#popover textarea:focus{border-color:var(--note)}
+#popover .row{display:flex; gap:.5rem; justify-content:flex-end; margin-top:.45rem}
+#toast{
+  position:fixed; bottom:1.2rem; left:50%; transform:translateX(-50%); z-index:40;
+  background:var(--ink); color:var(--parchment); font-size:.85rem; padding:.4rem 1rem; border-radius:2px;
+  opacity:0; transition:opacity .25s; pointer-events:none;
+}
+kbd{font-family:inherit; border:1px solid var(--ink-faint); border-radius:2px; padding:0 .3em; font-size:.85em; background:rgba(255,252,242,.6)}
+#hints{font-size:.72rem; color:var(--ink-faint); padding:.4rem 1rem .8rem; border-top:1px solid rgba(90,74,51,.25)}
+</style>
+</head>
+<body>
+<div id="app">
+  <nav id="rail">
+    <header>
+      <h1>Scriptorium<small>Liturgy of the Iridite, Vol. II — prose review</small></h1>
+      <div id="progress"></div>
+      <input id="search" type="search" placeholder="Search spells… ( / )" autocomplete="off">
+    </header>
+    <div id="list"></div>
+    <div id="hints"><kbd>j</kbd>/<kbd>k</kbd> next·prev &nbsp;<kbd>r</kbd> reviewed &nbsp;<kbd>i</kbd> intermediate &nbsp;<kbd>/</kbd> search</div>
+  </nav>
+  <main id="main">
+    <div id="masthead">
+      <h2 id="spellname"></h2><span class="rank" id="spellrank"></span>
+      <span class="spacer"></span>
+      <button class="ctl" id="interBtn" title="show the friend's intermediate conversion">intermediate</button>
+      <button class="ctl rev" id="revBtn">mark reviewed</button>
+      <button class="ctl" id="prevBtn">‹ prev</button>
+      <button class="ctl" id="nextBtn">next ›</button>
+    </div>
+    <div id="folios">
+      <section class="leaf" id="leaf-original" data-pane="original">
+        <h3>The Original Hand</h3><div class="srcname" id="orig-src"></div><div id="orig-body"></div>
+      </section>
+      <section class="leaf" id="leaf-intermediate" data-pane="intermediate" style="display:none">
+        <h3>The Middle Copy</h3><div class="srcname">friend's PF2e conversion</div><div id="inter-body"></div>
+      </section>
+      <section class="leaf" id="leaf-store" data-pane="store">
+        <h3>The Current Recension</h3><div class="srcname">canonical store — as live on the codex</div><div id="store-body"></div>
+      </section>
+    </div>
+  </main>
+  <aside id="margin">
+    <header>Marginalia</header>
+    <div id="notes"></div>
+  </aside>
+</div>
+<button id="quill" title="annotate selection">✒</button>
+<div id="popover">
+  <div class="quote" id="pop-quote"></div>
+  <textarea id="pop-text" placeholder="Leave your note…"></textarea>
+  <div class="row">
+    <button class="ctl" id="pop-cancel">cancel</button>
+    <button class="ctl on" id="pop-save">inscribe</button>
+  </div>
+</div>
+<div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s);
+let DATA=[], STATE={comments:[],reviewed:{}}, cur=0, showInter=false;
+
+/* ---------- 5e renderer ---------- */
+const ORD=["cantrip","1st","2nd","3rd","4th","5th","6th","7th","8th","9th"];
+function tag5e(str){
+  return esc(str).replace(/\{@(\w+) ([^{}]*)\}/g,(m,t,body)=>{
+    const parts=body.split("|");
+    const disp=parts[2]||parts[0];
+    if(t==="b"||t==="bold")return "<strong>"+parts[0]+"</strong>";
+    if(t==="i"||t==="italic")return "<em>"+parts[0]+"</em>";
+    if(t==="damage"||t==="dice")return '<span class="dice">'+parts[0]+"</span>";
+    if(t==="scaledice"||t==="scaledamage")return '<span class="dice">'+parts[0]+"</span>";
+    if(t==="hit")return "+"+parts[0];
+    if(t==="condition"||t==="spell"||t==="creature"||t==="race"||t==="skill"||t==="item")
+      return '<span class="ref">'+disp+"</span>";
+    return disp;
+  });
+}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}
+function ent5e(e){
+  if(typeof e==="string")return "<p>"+tag5e(e)+"</p>";
+  if(Array.isArray(e))return e.map(ent5e).join("");
+  if(!e||typeof e!=="object")return "";
+  if(e.type==="list")return "<ul>"+(e.items||[]).map(i=>"<li>"+(typeof i==="string"?tag5e(i):ent5e(i))+"</li>").join("")+"</ul>";
+  if(e.type==="table"){
+    let h="<table>";
+    if(e.caption)h+="<caption>"+esc(e.caption)+"</caption>";
+    if(e.colLabels)h+="<tr>"+e.colLabels.map(c=>"<th>"+tag5e(String(c))+"</th>").join("")+"</tr>";
+    for(const row of e.rows||[])
+      h+="<tr>"+row.map(c=>"<td>"+(typeof c==="string"?tag5e(c):tag5e(String(c?.roll?.exact??c?.roll?.min??c?.entry??"")))+"</td>").join("")+"</tr>";
+    return h+"</table>";
+  }
+  let h="";
+  if(e.name)h+='<div class="hsec"><b>'+esc(e.name)+"</b></div>";
+  if(e.entries)h+=ent5e(e.entries);
+  if(e.entry)h+=ent5e(e.entry);
+  return h;
+}
+function time5e(t){return (t||[]).map(x=>x.number+" "+x.unit).join(", ")}
+function range5e(r){
+  if(!r)return "";
+  if(r.type==="point"){const d=r.distance||{}; return d.type==="self"?"Self":d.type==="touch"?"Touch":(d.amount??"")+" "+(d.type??"")}
+  const d=r.distance||{}; return "Self ("+(d.amount??"")+"-"+(d.type??"")+" "+r.type+")";
+}
+function dur5e(ds){
+  return (ds||[]).map(d=>{
+    if(d.type==="instant")return "Instantaneous";
+    if(d.type==="permanent")return "Permanent"+(d.ends?" (until "+d.ends.join("/")+")":"");
+    if(d.type==="timed"){const u=d.duration||{};return (d.concentration?"Concentration, up to ":u.upTo?"Up to ":"")+(u.amount??"")+" "+(u.type??"")+((u.amount??1)>1?"s":"")}
+    if(d.type==="special")return "Special";
+    return d.type;
+  }).join("; ");
+}
+function comp5e(c){
+  if(!c)return "";
+  const p=[];
+  if(c.v)p.push("V"); if(c.s)p.push("S");
+  if(c.m)p.push("M"+(typeof c.m==="string"?" ("+c.m+")":typeof c.m==="object"&&c.m.text?" ("+c.m.text+")":""));
+  return p.join(", ");
+}
+function renderOriginal(o){
+  if(!o)return "<p><em>No 5e original found for this spell.</em></p>";
+  const lvl=o.level===0?"Cantrip":ORD[o.level]+"-level";
+  let h='<div class="statline"><b>'+lvl+"</b> "+esc(o.school||"")+(o.meta&&o.meta.ritual?" (ritual)":"")+"</div>";
+  h+='<div class="statline"><b>Casting Time</b> '+esc(time5e(o.time))+"</div>";
+  h+='<div class="statline"><b>Range</b> '+esc(range5e(o.range))+"</div>";
+  h+='<div class="statline"><b>Components</b> '+esc(comp5e(o.components))+"</div>";
+  h+='<div class="statline"><b>Duration</b> '+esc(dur5e(o.duration))+"</div>";
+  const cls=(((o.classes||{}).fromClassList)||[]).map(c=>c.name).join(", ");
+  if(cls)h+='<div class="statline"><b>Classes</b> '+esc(cls)+"</div>";
+  h+='<hr class="divider">';
+  h+='<div class="prose">'+ent5e(o.entries)+"</div>";
+  if(o.entriesHigherLevel&&o.entriesHigherLevel.length)
+    h+='<div class="prose">'+ent5e(o.entriesHigherLevel)+"</div>";
+  return h;
+}
+
+/* ---------- store renderer ---------- */
+const ORD2=n=>{const s=["th","st","nd","rd"],v=n%100;return n+(s[(v-20)%10]||s[v]||s[0])};
+function markParens(html){
+  // wrap (…) in text nodes, skipping official Heightened (+N)/(Nth) labels
+  const tpl=document.createElement("template"); tpl.innerHTML=html;
+  const walk=document.createTreeWalker(tpl.content,NodeFilter.SHOW_TEXT), hits=[];
+  while(walk.nextNode())if(walk.currentNode.nodeValue.includes("("))hits.push(walk.currentNode);
+  for(const node of hits){
+    const frag=document.createDocumentFragment(); let rest=node.nodeValue, m;
+    const re=/\([^()]*\)/;
+    while((m=re.exec(rest))){
+      frag.appendChild(document.createTextNode(rest.slice(0,m.index)));
+      const official=/^\(\s*(\+\d+|\d+(st|nd|rd|th))\s*\)$/.test(m[0]);
+      if(official)frag.appendChild(document.createTextNode(m[0]));
+      else{const sp=document.createElement("span");sp.className="paren";sp.textContent=m[0];frag.appendChild(sp)}
+      rest=rest.slice(m.index+m[0].length);
+    }
+    frag.appendChild(document.createTextNode(rest));
+    node.parentNode.replaceChild(frag,node);
+  }
+  return tpl.innerHTML;
+}
+function actions(t){return {"1":"◆","2":"◆◆","3":"◆◆◆"}[t]||t}
+function renderStore(sy,name){
+  const tr=sy.traits||{};
+  let h='<div class="statline"><b>Rank '+sy.level.value+"</b></div>";
+  let traits=(tr.value||[]).map(t=>'<span class="trait">'+esc(t)+"</span>").join("");
+  if((tr.rarity||"common")!=="common")traits='<span class="trait rare">'+esc(tr.rarity)+"</span>"+traits;
+  if(traits)h+='<div class="traits">'+traits+"</div>";
+  const rows=[["Traditions",(tr.traditions||[]).join(", ")],["Cast",actions((sy.time||{}).value||"")],
+    ["Range",(sy.range||{}).value],["Area",sy.area?((sy.area.value||"")+"-foot "+(sy.area.type||"")):""],
+    ["Targets",(sy.target||{}).value],
+    ["Defense",sy.defense&&sy.defense.save?((sy.defense.save.basic?"basic ":"")+sy.defense.save.statistic):""],
+    ["Duration",(sy.duration||{}).sustained?("sustained"+((sy.duration.value)?" up to "+sy.duration.value:"")):(sy.duration||{}).value],
+    ["Cost",(sy.cost||{}).value],["Requirements",sy.requirements]];
+  for(const [k,v] of rows)if(v)h+='<div class="statline"><b>'+k+"</b> "+esc(v)+"</div>";
+  h+='<hr class="divider">';
+  h+='<div class="prose">'+markParens(sy.description.value)+"</div>";
+  // many store descriptions embed their Heightened lines in prose; only render
+  // the structural heightening field when the prose doesn't already carry one
+  const hei=/Heightened\s*\(/.test(sy.description.value)?{}:(sy.heightening||{});
+  if(hei.type==="interval"){
+    const parts=[];
+    for(const f of Object.values(hei.damage||{}))parts.push("damage +"+f);
+    if(hei.area)parts.push("area +"+hei.area+" feet");
+    h+='<div class="hsec prose"><b>Heightened (+'+(hei.interval||1)+")</b> "+esc(parts.join(", ")||"(see JSON)")+"</div>";
+  }else if(hei.type==="fixed"){
+    for(const [lvl,over] of Object.entries(hei.levels||{}).sort((a,b)=>a[0]-b[0])){
+      const d=over&&over.description&&over.description.value;
+      h+='<div class="hsec prose"><b>Heightened ('+ORD2(+lvl)+")</b> "+(d?markParens(d):"<em>(non-prose override: "+esc(Object.keys(over||{}).join(", "))+")</em>")+"</div>";
+    }
+  }
+  return h;
+}
+function renderInter(it){
+  if(!it)return "<p><em>No intermediate found.</em></p>";
+  let h='<div class="statline"><b>Rank '+it.rank+"</b></div>";
+  const traits=(it.traits||[]).map(t=>'<span class="trait">'+esc(t)+"</span>").join("");
+  if(traits)h+='<div class="traits">'+traits+"</div>";
+  const rows=[["Traditions",(it.traditions||[]).join(", ")],["Cast",it.cast?actions(String(it.cast.actions??""))+(it.cast.time?" "+it.cast.time:""):""],
+    ["Range",it.range],["Area",it.area],["Targets",it.targets],["Defense",it.defense],["Duration",it.duration],["Cost",it.cost]];
+  for(const [k,v] of rows)if(v)h+='<div class="statline"><b>'+k+"</b> "+esc(String(v))+"</div>";
+  h+='<hr class="divider"><div class="prose">'+(it.description||"").split(/\n\n+/).map(p=>"<p>"+esc(p)+"</p>").join("")+"</div>";
+  for(const he of it.heightened||[])
+    h+='<div class="hsec prose"><b>Heightened ('+esc(he.trigger)+")</b> "+esc(he.text)+"</div>";
+  if(it.successTiers)h+='<div class="prose">'+Object.entries(it.successTiers).map(([k,v])=>"<p><strong>"+esc(k)+"</strong> "+esc(v)+"</p>").join("")+"</div>";
+  return h;
+}
+
+/* ---------- state + nav ---------- */
+async function api(path,body){
+  const r=await fetch(path,body?{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)}:{});
+  return r.json();
+}
+function commentsFor(slug){return STATE.comments.filter(c=>c.slug===slug)}
+function renderList(filter){
+  const q=(filter||"").toLowerCase();
+  $("#list").innerHTML=DATA.map((s,i)=>{
+    if(q&&!s.name.toLowerCase().includes(q))return "";
+    const n=commentsFor(s.slug).length;
+    return '<div class="item'+(i===cur?" active":"")+(STATE.reviewed[s.slug]?" reviewed":"")+'" data-i="'+i+'">'+
+      '<span class="tick">✓</span><span class="nm">'+esc(s.name)+"</span>"+(n?'<span class="cc">'+n+" ✎</span>":"")+"</div>";
+  }).join("");
+  const done=Object.values(STATE.reviewed).filter(Boolean).length;
+  $("#progress").innerHTML="<b>"+done+"</b> of "+DATA.length+" reviewed · "+STATE.comments.length+" notes";
+}
+function renderNotes(){
+  const cs=commentsFor(DATA[cur].slug);
+  $("#notes").innerHTML=cs.length?cs.map(c=>
+    '<div class="note"><button class="del" data-id="'+c.id+'" title="strike this note">✕</button>'+
+    '<div class="pane-tag">'+esc(c.pane)+"</div>"+
+    (c.quote?'<div class="quote">“'+esc(c.quote)+"”</div>":"")+
+    '<div class="body">'+esc(c.note)+"</div></div>").join("")
+    :'<div class="empty">The margin awaits your hand.<br>Select any passage to annotate it.</div>';
+}
+function show(i){
+  cur=Math.max(0,Math.min(DATA.length-1,i));
+  const s=DATA[cur];
+  $("#spellname").textContent=s.name;
+  $("#spellrank").textContent="rank "+s.store.level.value;
+  $("#orig-src").textContent="5e original — “"+s.seededFrom.originalName+"”";
+  $("#orig-body").innerHTML=renderOriginal(s.original);
+  $("#store-body").innerHTML=renderStore(s.store,s.name);
+  $("#inter-body").innerHTML=renderInter(s.intermediate);
+  $("#revBtn").classList.toggle("on",!!STATE.reviewed[s.slug]);
+  $("#revBtn").textContent=STATE.reviewed[s.slug]?"✓ reviewed":"mark reviewed";
+  $("#folios").scrollTop=0;
+  renderList($("#search").value); renderNotes(); hideQuill();
+  const el=document.querySelector('.item.active'); if(el)el.scrollIntoView({block:"nearest"});
+}
+function toast(msg){const t=$("#toast");t.textContent=msg;t.style.opacity=1;setTimeout(()=>t.style.opacity=0,1400)}
+
+/* ---------- selection commenting ---------- */
+let pending=null;
+function hideQuill(){$("#quill").style.display="none"}
+function hidePopover(){$("#popover").style.display="none";pending=null}
+document.addEventListener("mouseup",e=>{
+  const t=e.target instanceof Element?e.target:null;
+  if(t&&(t.closest("#popover")||t.closest("#quill")))return;
+  setTimeout(()=>{
+    const sel=window.getSelection();
+    const txt=sel?sel.toString().trim():"";
+    if(!txt||txt.length<2){hideQuill();return}
+    const leaf=sel.anchorNode&&sel.anchorNode.parentElement&&sel.anchorNode.parentElement.closest(".leaf");
+    if(!leaf){hideQuill();return}
+    const rect=sel.getRangeAt(0).getBoundingClientRect();
+    const q=$("#quill");
+    q.style.display="block";
+    q.style.left=Math.min(window.innerWidth-50,rect.right+8)+"px";
+    q.style.top=Math.max(8,rect.top-10)+"px";
+    pending={pane:leaf.dataset.pane,quote:txt.slice(0,400)};
+  },10);
+});
+$("#quill").addEventListener("click",()=>{
+  if(!pending)return;
+  const q=$("#quill").getBoundingClientRect();
+  const p=$("#popover");
+  p.style.display="block";
+  p.style.left=Math.min(window.innerWidth-320,q.left)+"px";
+  p.style.top=Math.min(window.innerHeight-220,q.bottom+6)+"px";
+  $("#pop-quote").textContent="“"+pending.quote+"”";
+  $("#pop-text").value=""; $("#pop-text").focus();
+  hideQuill();
+});
+$("#pop-cancel").addEventListener("click",hidePopover);
+$("#pop-save").addEventListener("click",async()=>{
+  const note=$("#pop-text").value.trim();
+  if(!note||!pending)return;
+  const c={id:crypto.randomUUID(),slug:DATA[cur].slug,spell:DATA[cur].name,pane:pending.pane,quote:pending.quote,note,at:new Date().toISOString()};
+  STATE.comments.push(c);
+  hidePopover(); renderNotes(); renderList($("#search").value);
+  await api("/api/comment",c); toast("inscribed");
+});
+$("#pop-text").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&(e.metaKey||e.ctrlKey))$("#pop-save").click();
+  if(e.key==="Escape")hidePopover();
+});
+$("#notes").addEventListener("click",async e=>{
+  const b=e.target.closest(".del"); if(!b)return;
+  STATE.comments=STATE.comments.filter(c=>c.id!==b.dataset.id);
+  renderNotes(); renderList($("#search").value);
+  await api("/api/comment/delete",{id:b.dataset.id});
+});
+
+/* ---------- controls ---------- */
+$("#list").addEventListener("click",e=>{const it=e.target.closest(".item");if(it)show(+it.dataset.i)});
+$("#search").addEventListener("input",()=>renderList($("#search").value));
+$("#prevBtn").addEventListener("click",()=>show(cur-1));
+$("#nextBtn").addEventListener("click",()=>show(cur+1));
+$("#revBtn").addEventListener("click",async()=>{
+  const slug=DATA[cur].slug;
+  STATE.reviewed[slug]=!STATE.reviewed[slug];
+  show(cur);
+  await api("/api/reviewed",{slug,reviewed:STATE.reviewed[slug]});
+});
+$("#interBtn").addEventListener("click",()=>{
+  showInter=!showInter;
+  $("#interBtn").classList.toggle("on",showInter);
+  $("#leaf-intermediate").style.display=showInter?"":"none";
+  $("#folios").classList.toggle("three",showInter);
+});
+document.addEventListener("keydown",e=>{
+  if(e.target.matches("input,textarea"))
+    {if(e.key==="Escape")e.target.blur(); return}
+  if(e.key==="j")show(cur+1);
+  else if(e.key==="k")show(cur-1);
+  else if(e.key==="r")$("#revBtn").click();
+  else if(e.key==="i")$("#interBtn").click();
+  else if(e.key==="/"){e.preventDefault();$("#search").focus()}
+  else if(e.key==="Escape"){hidePopover();hideQuill()}
+});
+
+/* ---------- boot ---------- */
+(async()=>{
+  const [data,state]=await Promise.all([api("/data.json"),api("/api/state")]);
+  DATA=data.spells; STATE=state;
+  show(0);
+})();
+</script>
+</body>
+</html>
