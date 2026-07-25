@@ -341,3 +341,42 @@ byte-identical, SigNoz 0 ERROR. ⭐ THE finds:
 - Process: stakeholder delegated trait copy + all decisions mid-build to END-REVIEW — 8 copy
   blocks staff-authored from a full-store characterization pass; decision ledger = spec §5.
   ▶ NEXT: stakeholder end-review → Foundry compendium module (same store) → joint review.
+
+**SCRIPTORIUM ROUND (2026-07-25, `9f899d2`…`d7eae83`) — the stakeholder end-review surface
++ the §13 marginalia-calibrated sweep:** `apps/assay/review-ui/` (stdlib-only server :10390,
+gitignored `data.json` regen via `build_data.py` — RESEED AFTER EVERY STORE EDIT so his pass
+reads current text; `state/comments.jsonl` = THE marginalia artifact, `op:delete` lines
+retract earlier ids — resolve before consuming). ⭐ THE finds:
+- **Marginalia → policy pipeline works:** his 21-spell/67-comment pass distilled into 6
+  classes → triage §13 (dry-run counts vs the real store) → AskUserQuestion ratification ×4
+  → 4 partitioned sonnet engineers off a shared brief w/ his strikes as calibration
+  exemplars → 95/172 edited, ZERO score drift. Sweep-first-then-resume-review cadence
+  ratified (scriptorium reads a moving target otherwise).
+- **⭐ NEW STANDING CONVENTION R5: base damage declared in the BODY prose; ladder lines say
+  full/half/double damage** (Ignition = the official exemplar). Joins the §12 seven rules +
+  crit≡success-delete + no-labeled-blocks.
+- **Marginalia can target NON-description fields:** ashen-pack's "sustained up to" strike
+  quoted the rendered DURATION line — a description-only engineer can't apply it; the
+  orchestrator applies via the §11 sustain→flat recipe (flag + duration + prose scrub). A
+  stakeholder strike OVERRIDES a prior staff keep (§11 had kept ashen-pack).
+- **Store JSON is NOT uniformly serialized** — a `json.load`/`json.dump` round-trip
+  normalizes unicode escaping/newlines beyond the intended edit (chunk-3 caught its own via
+  git diff, redid as raw-text substitutions). Prefer raw-text substitution for
+  description-only edits; json round-trip only when a structured field must change.
+- **D13-b class: wrong-TEMPLATE conversions** — BE Fangs/Horns were claws-clone buffs but
+  the 5e originals are one-shot ATTACK spells (checked `gen_homebrew.json` `entries`).
+  Attack-roll all-or-nothing = another documented lens-artifact family (no half-on-miss;
+  official Hydraulic Push proves 3d6@r1) — verdicts +0.66/+0.93 recorded, dice kept.
+- **Verification recipe held again:** structural flatten-diff gate (only
+  description/heightening/duration changed across 95 files), issue-class rescan w/
+  survivor triage (wildshape survivors = the author's "collective's memory of wildshaping"
+  FLAVOR voice; concentration survivors = the official concentrate TRAIT — grep counts
+  alone would false-positive both), score set-diff vs a pre-captured baseline.
+- Process: mid-run brief amendments via SendMessage need provenance framing — all 4
+  engineers verified the brief file on disk before applying R5 (the P6 injection-suspicion
+  pattern holding); one engineer ran a read-only `git status` despite the ban
+  (transparent, harmless — restate the rule anyway).
+- **▶ OPEN:** the 10-item flag digest in triage §13 RUN record (stakeholder cards);
+  scriptorium pass resumes at body-enhancement-horns→ (21/174 done); then Foundry
+  compendium module → joint review (revisions.md @ 167; store = 174 after
+  hardlight-bridge removal).

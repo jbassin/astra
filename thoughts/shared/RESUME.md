@@ -36,7 +36,52 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `e802927`, 2026-07-24 — assay (0030) ROUND 5: **HOMEBREW → CODEX INGEST BUILT + DEPLOYED + LIVE in one session** (scope `61cbf73` R0–R4 → spec D30-42..48 `507390f` adversarial ×2 → S1 `b09a0d6` · S2 `8e4f1a1` · S3 `37de595` · S4 rename `633b843`+license `cd3ed04`+dagster `187087d`+record `e802927`): the 175-spell "Liturgy of the Iridite Vol.2" store + 8 school trait pages live on codex.iridi.cc, corpus 44,982, all gates A–G met; store = 175 spells, revisions.md = **122** deviations (Glitterdust→**Glimmerdust** S4 rename); ⚠ **STAKEHOLDER END-REVIEW PENDING** — he delegated trait-page copy + all in-flight decisions to a post-build review (list in spec §5); ▶ NEXT = **stakeholder end-review of the ingest round** → Foundry compendium module → joint review w/ friend; codex gate H (P2–P14 + now the homebrew surface) still open; heartwood ON HOLD)
+## Current state — UPDATE THIS SECTION (as of `d7eae83`, 2026-07-25 — assay (0030) ROUND 5: **STAKEHOLDER END-REVIEW IN FLIGHT via SCRIPTORIUM + the §13 SCRIPTORIUM-CALIBRATED SWEEP RUN same day** (his prose pass 21/174 → marginalia distilled to policy → ratified ×4 → 4-engineer sweep: **95/172 edited, zero score drift**, revisions.md **167**; D13-b Fangs/Horns re-converted as attack spells, cards a/a; **NEW STANDING CONVENTION R5: base damage declared in the body, ladder says full/half/double** — Ignition exemplar); store = **174** (hardlight-bridge removed `4a724ff`); ▶ NEXT = **stakeholder resumes the scriptorium pass on the post-sweep text** (data.json reseeded) + deal the **10-item flag digest** (triage §13 RUN record) as compact cards → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+
+> **✅ assay (0030) R5 — scriptorium round, 2026-07-25 (`98587c9`…`d7eae83`, all pushed):**
+> 1. **Context (uncheckpointed prior commits, same round):** sustain sweep §11 22
+>    converted (`0fa37a8`…`6f53b58`) · end-review text sweep §12 111 edited/7-rule
+>    (`563be83`, revisions 132→156) · exemplar fixes `f64cdde` · affliction-stage
+>    repairs `92c9574` · hardlight-bridge REMOVED `4a724ff` (store 175→174) · codex
+>    end-review UI round `9250e41` · **scriptorium built** `9f899d2`+`e09670e` =
+>    `apps/assay/review-ui/` (stdlib server :10390; side-by-side 5e original / store /
+>    friend's intermediate; select-to-annotate marginalia → `state/comments.jsonl` =
+>    THE review artifact; strike = one-click kind:remove).
+> 2. **His pass began (21/174, 67 live marginalia)** → staff distilled 6 comment
+>    classes → **§13 sweep proposal** `98587c9` (dry-run counts vs the real store) →
+>    stakeholder ratified all 4 decisions (Lane 1 set-wide · D13-a full-store
+>    translation-not-rewrite · D13-b staff re-convert · sweep-first cadence).
+> 3. **D13-b cards (a/a):** BE Fangs/Horns were claws-template CLONES; 5e originals
+>    are one-shot attack spells → re-converted `fc5bf6d` (Fangs r1 3d6 melee attack +
+>    crit-Prone · Horns r2 3d12 + Stride-20ft rider menu; +0.66/+0.93 recorded as the
+>    attack-roll all-or-nothing artifact — Hydraulic Push anchors 3d6@r1 official).
+>    Mid-card stakeholder rule → **R5 base-damage-in-body** (now standing, brief
+>    amended mid-run, engineers applied retroactively).
+> 4. **Sweep RUN** `0f4c8f0` (4 partitioned sonnet engineers 34/46/46/46 off a shared
+>    brief + marginalia as calibration): 95/172 edited — all 66 marginalia applied
+>    (ashen-pack's "sustained up to" strike lived in the DURATION field → orchestrator
+>    applied sustain→flat via the §11 recipe, overrides its §11 keep) · R1 parens
+>    38→6 · R4 opportunity-attack/emanation-centered → 0 (wildshape/concentration
+>    survivors verified flavor-voice or the official concentrate trait) · gates: 0
+>    non-sanctioned field changes, **score set-diff vs baseline = ZERO drift**,
+>    grey-frost's inverted-severity ladder byte-preserved. revisions.md 156→**167**
+>    `9511da0`; RUN record + 10-item flag digest in triage §13 `d7eae83`.
+> 5. **⚠ OPEN — the 10-item flag digest (stakeholder cards):** mixed-heightening ×2
+>    (propagating-blast, festering-slick) · fast-forward penalty triad · thaumaturgic-
+>    inhibition stationary-emanation vs area schema · reset enemy-initiative gap ·
+>    blades-of-bone orphaned damage entry · chrysalis backwards Perception DC ·
+>    hellforging "psychic" damage type · monstrous-copy-claws die-sequence typo ·
+>    time-loop immunity asymmetry.
+> - **▶ NEXT: stakeholder resumes scriptorium** (`review-ui/`, data.json reseeded
+>   post-sweep; reviewed.json keeps his 21) + flag cards → **Foundry compendium
+>   module** (same store) → joint review (revisions.md @ 167). codex gate H
+>   unchanged; heartwood ⏸; webhook rotation etc. unchanged.
+
+---
+
+### Previous section (2026-07-24) — homebrew→codex ingest (superseded above)
+
+## (was) Current state (as of `e802927`, 2026-07-24 — assay (0030) ROUND 5: **HOMEBREW → CODEX INGEST BUILT + DEPLOYED + LIVE in one session** (scope `61cbf73` R0–R4 → spec D30-42..48 `507390f` adversarial ×2 → S1 `b09a0d6` · S2 `8e4f1a1` · S3 `37de595` · S4 rename `633b843`+license `cd3ed04`+dagster `187087d`+record `e802927`): the 175-spell "Liturgy of the Iridite Vol.2" store + 8 school trait pages live on codex.iridi.cc, corpus 44,982, all gates A–G met; store = 175 spells, revisions.md = **122** deviations (Glitterdust→**Glimmerdust** S4 rename); ⚠ **STAKEHOLDER END-REVIEW PENDING** — he delegated trait-page copy + all in-flight decisions to a post-build review (list in spec §5); ▶ NEXT = **stakeholder end-review of the ingest round** → Foundry compendium module → joint review w/ friend; codex gate H (P2–P14 + now the homebrew surface) still open; heartwood ON HOLD)
 
 > **✅ assay (0030) R5 — homebrew → codex ingest, 2026-07-24 (`9d72157`…`e802927`, all pushed):**
 > 1. **Pre-ingest store curation (stakeholder-decided live):** Time Jump → **Stolen
