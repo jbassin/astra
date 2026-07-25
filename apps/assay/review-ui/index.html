@@ -151,15 +151,21 @@ mark.q{background:rgba(39,76,119,.16); color:inherit}
 .note .body{font-family:"Caveat",cursive; font-size:1.12rem; line-height:1.25; color:var(--note); word-wrap:break-word}
 .note .del{float:right; border:none; background:none; color:var(--ink-faint); cursor:pointer; font-size:.8rem; padding:0 .1rem}
 .note .del:hover{color:var(--rubric)}
+.note.remove{border-left-color:var(--rubric)}
+.note.remove .quote{text-decoration:line-through; text-decoration-color:rgba(138,26,18,.6)}
+.note.remove .body{color:var(--rubric); font-variant:small-caps; font-family:"EB Garamond",serif; font-size:.85rem; letter-spacing:.08em}
 #notes .empty{font-family:"IM Fell English",serif; font-style:italic; color:var(--ink-faint); font-size:.9rem; text-align:center; margin-top:2rem}
 
 /* ---------- selection quill + popover ---------- */
-#quill{
-  position:fixed; z-index:30; display:none; width:2.1rem; height:2.1rem; border-radius:50%;
+#seltools{position:fixed; z-index:30; display:none; gap:.35rem}
+#seltools button{
+  width:2.1rem; height:2.1rem; border-radius:50%;
   border:1px solid var(--gilt); background:var(--parchment); color:var(--rubric);
-  font-size:1.1rem; cursor:pointer; box-shadow:0 2px 8px rgba(70,50,20,.3); line-height:1;
+  font-size:1.05rem; cursor:pointer; box-shadow:0 2px 8px rgba(70,50,20,.3); line-height:1;
 }
-#quill:hover{background:var(--rubric); color:var(--parchment)}
+#seltools button:hover{background:var(--rubric); color:var(--parchment)}
+#strike{color:var(--ink); text-decoration:line-through}
+#strike:hover{background:var(--ink); color:var(--parchment); text-decoration:line-through}
 #popover{
   position:fixed; z-index:31; display:none; width:19rem; background:var(--parchment);
   border:1px solid var(--gilt); box-shadow:0 6px 24px rgba(70,50,20,.35); padding:.7rem; border-radius:2px;
@@ -217,7 +223,10 @@ kbd{font-family:inherit; border:1px solid var(--ink-faint); border-radius:2px; p
     <div id="notes"></div>
   </aside>
 </div>
-<button id="quill" title="annotate selection">✒</button>
+<div id="seltools">
+  <button id="quill" title="annotate selection">✒</button>
+  <button id="strike" title="mark selection for removal">abc</button>
+</div>
 <div id="popover">
   <div class="quote" id="pop-quote"></div>
   <textarea id="pop-text" placeholder="Leave your note…"></textarea>
@@ -395,10 +404,10 @@ function renderList(filter){
 function renderNotes(){
   const cs=commentsFor(DATA[cur].slug);
   $("#notes").innerHTML=cs.length?cs.map(c=>
-    '<div class="note"><button class="del" data-id="'+c.id+'" title="strike this note">✕</button>'+
+    '<div class="note'+(c.kind==="remove"?" remove":"")+'"><button class="del" data-id="'+c.id+'" title="strike this note">✕</button>'+
     '<div class="pane-tag">'+esc(c.pane)+"</div>"+
     (c.quote?'<div class="quote">“'+esc(c.quote)+"”</div>":"")+
-    '<div class="body">'+esc(c.note)+"</div></div>").join("")
+    '<div class="body">'+(c.kind==="remove"?"✂ remove this":esc(c.note))+"</div></div>").join("")
     :'<div class="empty">The margin awaits your hand.<br>Select any passage to annotate it.</div>';
 }
 function show(i){
@@ -420,11 +429,20 @@ function toast(msg){const t=$("#toast");t.textContent=msg;t.style.opacity=1;setT
 
 /* ---------- selection commenting ---------- */
 let pending=null;
-function hideQuill(){$("#quill").style.display="none"}
+const mkId=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10));
+function hideQuill(){$("#seltools").style.display="none"}
 function hidePopover(){$("#popover").style.display="none";pending=null}
+async function saveComment(kind,note){
+  if(!pending)return;
+  const c={id:mkId(),kind,slug:DATA[cur].slug,spell:DATA[cur].name,pane:pending.pane,quote:pending.quote,note,at:new Date().toISOString()};
+  STATE.comments.push(c);
+  hidePopover(); hideQuill(); renderNotes(); renderList($("#search").value);
+  try{await api("/api/comment",c); toast(kind==="remove"?"marked for removal":"inscribed")}
+  catch(e){toast("⚠ save failed — is the server up?")}
+}
 document.addEventListener("mouseup",e=>{
   const t=e.target instanceof Element?e.target:null;
-  if(t&&(t.closest("#popover")||t.closest("#quill")))return;
+  if(t&&(t.closest("#popover")||t.closest("#seltools")))return;
   setTimeout(()=>{
     const sel=window.getSelection();
     const txt=sel?sel.toString().trim():"";
@@ -432,32 +450,29 @@ document.addEventListener("mouseup",e=>{
     const leaf=sel.anchorNode&&sel.anchorNode.parentElement&&sel.anchorNode.parentElement.closest(".leaf");
     if(!leaf){hideQuill();return}
     const rect=sel.getRangeAt(0).getBoundingClientRect();
-    const q=$("#quill");
-    q.style.display="block";
-    q.style.left=Math.min(window.innerWidth-50,rect.right+8)+"px";
+    const q=$("#seltools");
+    q.style.display="flex";
+    q.style.left=Math.min(window.innerWidth-100,rect.right+8)+"px";
     q.style.top=Math.max(8,rect.top-10)+"px";
     pending={pane:leaf.dataset.pane,quote:txt.slice(0,400)};
   },10);
 });
 $("#quill").addEventListener("click",()=>{
   if(!pending)return;
-  const q=$("#quill").getBoundingClientRect();
+  const q=$("#seltools").getBoundingClientRect();
   const p=$("#popover");
   p.style.display="block";
   p.style.left=Math.min(window.innerWidth-320,q.left)+"px";
   p.style.top=Math.min(window.innerHeight-220,q.bottom+6)+"px";
   $("#pop-quote").textContent="“"+pending.quote+"”";
   $("#pop-text").value=""; $("#pop-text").focus();
-  hideQuill();
+  $("#seltools").style.display="none";
 });
+$("#strike").addEventListener("click",()=>saveComment("remove",""));
 $("#pop-cancel").addEventListener("click",hidePopover);
-$("#pop-save").addEventListener("click",async()=>{
+$("#pop-save").addEventListener("click",()=>{
   const note=$("#pop-text").value.trim();
-  if(!note||!pending)return;
-  const c={id:crypto.randomUUID(),slug:DATA[cur].slug,spell:DATA[cur].name,pane:pending.pane,quote:pending.quote,note,at:new Date().toISOString()};
-  STATE.comments.push(c);
-  hidePopover(); renderNotes(); renderList($("#search").value);
-  await api("/api/comment",c); toast("inscribed");
+  if(note)saveComment("note",note);
 });
 $("#pop-text").addEventListener("keydown",e=>{
   if(e.key==="Enter"&&(e.metaKey||e.ctrlKey))$("#pop-save").click();
