@@ -551,9 +551,25 @@ grants 24h immunity that Critical Success omits (design question).
   monotonic (avg 13/16.5/19.5/26). The d12→d10→d12 die zigzag is off official idiom —
   flagged for the joint review, not unilaterally rewritten.
 - **body-enhancement-hide + charming-memory** — informational only (R3 keeps), no action.
-- **Cards (stakeholder decisions):** mixed-heightening pattern (propagating-blast +
-  festering-slick) · fast-forward penalty triad · thaumaturgic-inhibition area frame —
-  resolutions recorded below as decided.
+- **Card 1 — mixed heightening → DAMAGE-ONLY (stakeholder: option c).**
+  propagating-blast + festering-slick drop their fixed trigger-count tiers; each keeps
+  the single (+1) damage line, now STRUCTURALLY represented (interval heightening per
+  the extraplanar-pulse shape) — the Foundry module will auto-scale them. Zero score
+  drift.
+- **Card 2 — fast-forward triad → NAMED CONDITIONS (stakeholder: option a).**
+  Failure = Enfeebled 2 + Clumsy 2 + Speed −10; crit = Enfeebled 3 + Clumsy 3 + Speed
+  −20 (the redundant 1-min Enfeebled 2 rider folded in); the Con axis is carried by
+  H8's existing Drained rider. Comparables neighbors reshuffled (range 3–6 → 5–9, rank
+  6 in-range) — the documented lens artifact, recorded.
+- **Card 3 — thaumaturgic-inhibition: WITHDRAWN as a card, resolved as R2.** The
+  card's premise was WRONG (staff error, stakeholder-corrected): per Player Core p.428
+  an emanation "issues forth from each side of your space" with NO default movement —
+  movement is the AURA trait's behavior. So the stationary sentence was a redundant
+  restatement of the default (exactly the R2 class), the `system.area` emanation field
+  was already correct, and H8's "moves with you" is a genuine explicit override that
+  stays. Sentence deleted. Residue sweep for the class found ONE sibling store-wide:
+  mystic-negation's "The sphere does not move on its own." preamble (its action-move
+  grant carries the mechanic; official Floating Flame has no such line) — trimmed.
 
 **Provenance:** the stakeholder's scriptorium prose review (21/174 spells reviewed,
 acupuncture → body-enhancement-horns; 67 live marginalia in
