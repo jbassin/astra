@@ -143,7 +143,7 @@ function ClassMainPane({
       />
     );
   }
-  return <EntityRenderPane data={data} superseded={superseded} standalone />;
+  return <EntityRenderPane data={data} superseded={superseded} />;
 }
 
 function ClassSlugComponent() {

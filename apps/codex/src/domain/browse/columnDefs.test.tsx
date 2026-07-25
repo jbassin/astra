@@ -353,10 +353,10 @@ describe("columnDefs: cell renderers", () => {
     }
   });
 
-  it("simple castTime values render an ActionGlyph (an <svg>, not raw text)", () => {
+  it("simple castTime values render an ActionGlyph (the icon-font span, not raw text)", () => {
     const col = colByKey(spellCols, "castTime");
     const r = row({ id: "spell/x", name: "X", facets: { castTime: "2" } });
-    expect(renderCell(col, r)).toContain("<svg");
+    expect(renderCell(col, r)).toContain("codex-action-glyph");
   });
 
   it("a composite castTime ('1 or 2') renders glyph-connective-glyph", () => {
@@ -364,7 +364,7 @@ describe("columnDefs: cell renderers", () => {
     const r = row({ id: "spell/x", name: "X", facets: { castTime: "1 or 2" } });
     const html = renderCell(col, r);
     expect(html).toContain("codex-col-cast-composite");
-    expect((html.match(/<svg/g) ?? []).length).toBe(2);
+    expect((html.match(/codex-action-glyph/g) ?? []).length).toBe(2);
     expect(html).toContain("or");
   });
 
@@ -372,7 +372,7 @@ describe("columnDefs: cell renderers", () => {
     const col = colByKey(spellCols, "castTime");
     const r = row({ id: "spell/x", name: "X", facets: { castTime: "1 minute" } });
     const html = renderCell(col, r);
-    expect(html).not.toContain("<svg");
+    expect(html).not.toContain("codex-action-glyph");
     expect(html).toContain("1 minute");
     expect(html).toContain('title="1 minute"');
   });
@@ -393,7 +393,7 @@ describe("columnDefs: cell renderers", () => {
     const col = colByKey(featCols, "actionCost");
     const r = row({ id: "feat/x", name: "X", facets: { actionCost: "passive" } });
     const html = renderCell(col, r);
-    expect(html).not.toContain("<svg");
+    expect(html).not.toContain("codex-action-glyph");
     expect(html).toContain("Passive");
   });
 });

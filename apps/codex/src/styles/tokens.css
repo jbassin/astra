@@ -71,6 +71,10 @@
   --font-body: "EB Garamond", serif;
   --font-condensed: "Oswald", sans-serif; /* renamed from --font-mono (D29-46) — the
     statblock/omnibar/rules-tree/citation "mechanical voice" slot */
+  --font-action-icons: "Pathfinder Icons", sans-serif; /* the real Paizo action-cost
+    icon font (`public/pathfinder-icons.ttf`), self-hosted via the plain @font-face
+    in globals.css (not @fontsource — it's a local repo asset, not an npm package);
+    ActionGlyph (`src/ui/actionGlyph.tsx`) is its only consumer */
 
   /* --- P8 S1 (D29-77): row-density tokens, LISTING register only — the
      site-wide density pass (body font/pane padding/header) is S2's job and

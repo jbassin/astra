@@ -53,30 +53,28 @@ function entityTypeTag(entity: CodexEntity): string {
 const SIZE_CHIP_CATEGORIES: ReadonlySet<string> = new Set(["creature", "vehicle"]);
 
 /**
- * D29-112 (P11 S4) — `standalone` (default `false`, so every existing
- * caller — the regen-goldens script's bare `EntityPage`, `entityPage.test.
- * tsx`, the split-view entry pane via `EntityRenderPane` — keeps rendering
- * the h1 fully VISIBLE, byte-identical, no prop threading required of
- * them): `true` ONLY for the standalone `/{category}/{slug}` route (via
- * `EntityRenderPane`) and the bespoke `/class/{slug}` route (via
- * `ClassPage`), where the root header now carries the VISIBLE title instead
- * (`HeaderTitle.tsx`) — the in-content h1 stays in the SSR DOM (document
- * outline + a11y tree intact) but renders sr-only, via the
- * `codex-entity-name-standalone` modifier class (`globals.css`). The
- * popover (`Popover.tsx`) clones this exact STANDALONE page's SSR HTML
- * wholesale, so the cloned h1 carries this SAME modifier — `globals.css`'s
- * `.popover-inner .codex-entity-name-standalone` override re-shows it there
- * (the review's headline B1 catch: a bare, unscoped sr-only rule on this
- * class would have killed the popover's title site-wide).
+ * D29-112 (P11 S4) introduced a `standalone` prop that pulled this h1
+ * sr-only on the standalone `/{category}/{slug}` and `/class/{slug}` routes
+ * (the root header carried the visible title instead, `HeaderTitle.tsx`).
+ * A later stakeholder redirect scoped header-carries-title back down to
+ * parent/listing surfaces only ("when going to a SPECIFIC page, the title
+ * shouldn't replace the codex header") — `deriveHeaderTitle` no longer
+ * resolves a title for either route, so this h1 is unconditionally VISIBLE
+ * again, same as every other caller (the regen-goldens script, `entityPage.
+ * test.tsx`, the split-view entry pane via `EntityRenderPane`) always
+ * rendered it. The `standalone` prop and its `codex-entity-name-standalone`
+ * sr-only CSS + the popover's `.popover-inner .codex-entity-name-standalone`
+ * re-show override (the old B1 interlock) are removed outright, not just
+ * bypassed — the popover (`Popover.tsx`) clones the live page's SSR HTML
+ * wholesale, so its cloned h1 is visible by construction now too, with no
+ * override needed.
  */
 export function EntityHeader({
   entity,
   ctx,
-  standalone = false,
 }: {
   entity: CodexEntity;
   ctx: RenderCtx;
-  standalone?: boolean;
 }): ReactElement {
   return (
     <header className="codex-entity-header">
@@ -86,13 +84,7 @@ export function EntityHeader({
           (`.codex-entity-title-row`, globals.css), with the trait pill
           row immediately below it per the same section. */}
       <div className="codex-entity-title-row">
-        <h1
-          className={
-            standalone ? "codex-entity-name codex-entity-name-standalone" : "codex-entity-name"
-          }
-        >
-          {entity.name}
-        </h1>
+        <h1 className="codex-entity-name">{entity.name}</h1>
         <span className="codex-entity-type-tag">{entityTypeTag(entity)}</span>
       </div>
       <div className="codex-entity-meta-row">

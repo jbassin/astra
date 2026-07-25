@@ -13,27 +13,29 @@ import { displayCategoryName } from "@/domain/render/displayCategoryName";
  * router match tree, so this is flash-free and hydration-safe by
  * construction — no `useEffect`/`useState` anywhere in this file.
  *
+ * Stakeholder redirect (post-D29-112): header-carries-title is scoped to
+ * PARENT/LISTING surfaces only — "when going to a SPECIFIC page, the title
+ * shouldn't replace the codex header; that behavior should only be for the
+ * parent pages like /spell." SPECIFIC pages (an entity's own
+ * `/{category}/{slug}` — including rules DOCS, which land on this exact
+ * same route — and the bespoke `/class/$slug` page) now fall through to the
+ * `default: null` case below (wordmark), and their own in-content h1 is
+ * VISIBLE again (`EntityHeader.tsx`/`ClassPage.tsx` — the `standalone`
+ * sr-only mechanism this decision introduced is removed outright, not just
+ * bypassed, since nothing renders it any more).
+ *
  * - listing routes (`/$category/`) — title = `displayCategoryName(params.
  *   category)`. No loader dependency at all (immune to the D29-89 SSR
  *   windowed-projection timing — `params` resolves before any loader data
- *   does).
- * - entity routes (`/$category/$slug`) — title = the route's own dehydrated
- *   `loaderData.entity.name`. Rules DOCS (an individual `/rules/{slug}`
- *   page) land on this exact same route (`category === "rules"`) and need
- *   no special-casing — same field, same posture.
- * - the bespoke `/class/$slug` route (P12) — SAME field, same posture as
- *   `/$category/$slug` (its `ClassPageData` extends `EntityPageData`, so
- *   `loaderData.entity.name` is there identically). This case was MISSED at
- *   P12: `ClassPage`/the fail-soft pane both render their h1 `standalone`
- *   (sr-only, on the premise the header carries the visible title — the
- *   D29-112 contract), so without it a class page had NO visible title at
- *   all, just the wordmark.
+ *   does). UNCHANGED — a parent/listing surface.
  * - the `/rules` tree-browser route itself — title = `displayCategoryName
  *   ("rules")` ("Rules"), a fixed page name (no params/loaderData needed).
- * - everything else (landing `/`, `/search`, `/categories`, `/sources`, an
- *   unmatched/404 path) — `null`, meaning "keep the wordmark" (the ONLY
- *   home affordance before this decision existed — `deriveHeaderTitle`
- *   returning `null` is exactly how that survives unmodified).
+ *   UNCHANGED — a parent surface (the tree browser, not an individual doc).
+ * - everything else (landing `/`, `/search`, `/categories`, `/sources`, a
+ *   specific entity/rules-doc/class page, an unmatched/404 path) — `null`,
+ *   meaning "keep the wordmark" (the ONLY home affordance before D29-112
+ *   existed — `deriveHeaderTitle` returning `null` is exactly how that
+ *   survives unmodified).
  */
 
 interface MinimalRouteMatch {
@@ -54,12 +56,11 @@ export function deriveHeaderTitle(matches: readonly MinimalRouteMatch[]): string
       const category = leaf.params?.category;
       return typeof category === "string" ? displayCategoryName(category) : null;
     }
-    case "/$category/$slug":
-    case "/class/$slug": {
-      const loaderData = leaf.loaderData as { entity?: { name?: unknown } } | undefined;
-      const name = loaderData?.entity?.name;
-      return typeof name === "string" ? name : null;
-    }
+    // `/$category/$slug` (incl. rules DOCS, same route) and `/class/$slug`
+    // are SPECIFIC pages, not parents — the stakeholder redirect above
+    // scopes header-carries-title to listing/`/rules` only, so both fall
+    // through to `default: null` (wordmark) instead of resolving
+    // `loaderData.entity.name` the way this switch used to.
     case "/rules":
       return displayCategoryName("rules");
     default:

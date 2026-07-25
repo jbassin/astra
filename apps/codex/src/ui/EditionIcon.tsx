@@ -5,9 +5,11 @@ import { GLYPH_IDS } from "./GlyphDefs";
 /**
  * The stakeholder's "History vs. Spark" icon pass — replaces every
  * user-visible "Remaster"/"Legacy" TEXT pill site-wide with a compact
- * square inline SVG glyph (NOT an icon font — icon fonts blank out in
- * rasterized PNG export, same reasoning `actionGlyph.tsx` already
- * documents). Both glyphs share one `0 0 100 100` viewBox so they occupy
+ * square inline SVG glyph. `actionGlyph.tsx`'s own action-cost glyphs later
+ * switched TO an icon font on a separate stakeholder directive
+ * (`ACTIONS-GLYPH-SOURCE.md`) — this component is untouched by that switch
+ * (out of scope: "action icons" specifically) and stays inline SVG. Both
+ * glyphs share one `0 0 100 100` viewBox so they occupy
  * identical bounding boxes; `fill`/`stroke: currentColor` so the existing
  * `.codex-edition-remaster` amber hook (and the default
  * `--color-ink-dim`) keep working unchanged.

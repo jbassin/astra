@@ -187,15 +187,15 @@ describe("nodes.tsx: per-kind totality (D29-24)", () => {
     // track is actionCost "passive" (an exploration activity) — glyphless by design
     const passive = html([{ kind: "inlineAction", action: "track" }]);
     expect(passive).toContain("Track");
-    expect(passive).not.toContain("<svg");
+    expect(passive).not.toContain("codex-action-glyph");
     // disable-device's action entity carries NO actionCost facet — also glyphless
     const costless = html([{ kind: "inlineAction", action: "disable-device" }]);
     expect(costless).toContain("Disable Device");
-    expect(costless).not.toContain("<svg");
+    expect(costless).not.toContain("codex-action-glyph");
     // an unrecognized future slug falls back the same way
     const unknown = html([{ kind: "inlineAction", action: "some-future-macro" }]);
     expect(unknown).toContain("Some Future Macro");
-    expect(unknown).not.toContain("<svg");
+    expect(unknown).not.toContain("codex-action-glyph");
   });
 
   it("template: '{distance}-foot {shape}' text, label overrides", () => {
@@ -207,7 +207,7 @@ describe("nodes.tsx: per-kind totality (D29-24)", () => {
 
   it("actionGlyph: renders via the B1 shim (see actionGlyph.test.ts for the vocabulary)", () => {
     const out = html([{ kind: "actionGlyph", cost: "Single Action" }]);
-    expect(out).toContain("svg"); // ActionGlyph is an <svg>, not the ErrorChip fallback
+    expect(out).toContain("codex-action-glyph"); // ActionGlyph's span, not the ErrorChip fallback
   });
 
   it("localizedBoilerplate: renders its children in place", () => {

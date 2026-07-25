@@ -59,11 +59,11 @@ describe("ClassPage: root + header (D29-119)", () => {
     expect(html).toContain('data-category="class"');
   });
 
-  it("exactly one h1, rendered sr-only via the standalone modifier (mirrors the entity route)", async () => {
+  it("exactly one h1, fully visible (the header stays the plain wordmark post-redirect)", async () => {
     const { html } = await renderClassPage(loadClass("fighter"));
     const h1Matches = html.match(/<h1[^>]*>/g) ?? [];
     expect(h1Matches).toHaveLength(1);
-    expect(h1Matches[0]).toContain("codex-entity-name-standalone");
+    expect(h1Matches[0]).not.toContain("codex-entity-name-standalone");
     expect(html).toContain("Fighter");
   });
 

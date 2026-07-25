@@ -14,6 +14,24 @@
  */
 @import "./tokens.css";
 
+/* The real Paizo "Pathfinder-Icons" action-cost icon font, self-served from
+   the repo (`public/pathfinder-icons.ttf` — a local asset, not an npm
+   package, so a plain @font-face rather than the site's usual
+   `@fontsource/*` CSS-import pattern, __root.tsx). `font-display: swap`
+   matches every other self-hosted font this site declares (`@fontsource`'s
+   own default) — a brief flash of a missing-glyph box before the font
+   loads is consistent with how the rest of the site already handles
+   webfont load timing, and `ActionGlyph`'s `aria-label`/`title` keep the
+   cost meaningful even in that brief window. `src/ui/actionGlyph.tsx` is
+   its only consumer (`.codex-action-glyph`, below). */
+@font-face {
+  font-family: "Pathfinder Icons";
+  src: url("/pathfinder-icons.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
 *,
 *::before,
 *::after {
@@ -538,18 +556,6 @@ select:focus-visible,
   padding-bottom: 0.6rem;
   border-bottom: 1px solid var(--color-rule);
 }
-/* D29-112 (P11 S4) — once the h1 above is pulled sr-only (the
-   `.codex-entity-name-standalone` rule below), it's removed from the flex
-   flow entirely, leaving the type-tag as the row's ONLY remaining flex
-   item — `justify-content: space-between` with a single item collapses to
-   flex-start (per spec, a single flex item can't have "space between"
-   itself), so the tag would float alone-left instead of staying at the
-   row's right edge. `:has()` scopes the fix to exactly that case — the
-   split-view/regen-goldens render (h1 still visible, two real flex items)
-   keeps its original `space-between` untouched. */
-.codex-entity-title-row:has(.codex-entity-name-standalone) {
-  justify-content: flex-end;
-}
 .codex-entity-name {
   color: var(--color-heading-maroon);
   font-family: var(--font-heading), serif;
@@ -557,32 +563,13 @@ select:focus-visible,
   font-size: clamp(1.6rem, 4vw, 2.2rem);
   font-weight: 600;
 }
-/* D29-112 — the standalone entity route's own h1 stays in the SSR DOM
-   (document outline + a11y tree intact) but renders sr-only: the root
-   header now carries the VISIBLE title (`HeaderTitle.tsx`,
-   `useMatches`-derived), so this modifier removes the in-content h1 from
-   the visual flow without `display:none`/`visibility:hidden` (either of
-   which would ALSO drop it from the outline/AT, not just the viewport —
-   the standard "sr-only" clip-box technique instead). Applies ONLY when
-   `EntityPage`'s own `standalone` prop is true (the entity ROUTE) — the
-   split-view entry pane and the regen-goldens script both render the bare
-   `codex-entity-name` class with the title fully visible, unaffected.
-   `.popover-inner .codex-entity-name-standalone` (below, near the popover
-   rules) overrides this back to visible — the popover clones the
-   STANDALONE page's SSR HTML wholesale, so the cloned h1 carries this
-   SAME modifier, and a bare/unscoped sr-only rule here would have killed
-   the popover's title site-wide (the review's headline B1 catch). */
-.codex-entity-name-standalone {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
+/* D29-112 (P11 S4) once pulled this h1 sr-only via a `standalone` modifier
+   class on the standalone entity/class routes (the root header carried the
+   visible title instead) — a later stakeholder redirect scoped
+   header-carries-title back down to parent/listing surfaces only, so the
+   modifier class + its popover re-show override are REMOVED outright (not
+   just unused): this h1 is unconditionally visible everywhere now, same as
+   the split-view entry pane always rendered it. */
 .codex-entity-type-tag {
   flex: none;
   color: var(--color-ink-dim);
@@ -621,6 +608,26 @@ select:focus-visible,
 }
 .codex-edition-remaster {
   color: var(--color-accent-amber);
+}
+/* `ActionGlyph` (`src/ui/actionGlyph.tsx`) — the real action-cost icon-font
+   character, dropped into running text. `font-size: 1em`/`line-height: 1`
+   keep it sized off the surrounding text exactly like the prior inline-SVG
+   implementation did (`height: 1em`); the glyphs' own natural advance
+   widths already vary correctly per cost (one-action/free/reaction ≈1em,
+   two-actions ≈1.56em, three-actions ≈2.08em — no manual width math, see
+   `ACTIONS-GLYPH-SOURCE.md`). `vertical-align` mirrors the old SVG's
+   `-0.12em` baseline nudge. The a11y contract lives on the element itself
+   (`role="img"`/`aria-label`, set in the component) — a screen reader that
+   honors `role="img"` announces only the label, never the raw PUA
+   character. */
+.codex-action-glyph {
+  display: inline-block;
+  font-family: var(--font-action-icons);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: -0.12em;
 }
 .codex-rarity {
   font-size: 0.85rem;
@@ -970,11 +977,13 @@ select:focus-visible,
    `displayCategoryName(params.category)`) on every `/{category}` listing —
    there's no "embedded" listing context that still needs this h1 visible
    (`BrowseListing` has exactly one production call site, the listing
-   route), unlike the entity h1's two-consumer split. Same sr-only
-   technique as `.codex-entity-name-standalone` above (kept as a separate
-   rule rather than a shared utility class — this selector needs no `:has()`
-   layout companion, the row below was never `space-between`-keyed on two
-   items the way the entity title row was). */
+   route) — UNCHANGED by the later stakeholder redirect that made the
+   entity h1 (`.codex-entity-name`, above) visible again: listings are a
+   parent/listing surface, still in scope for header-carries-title. The
+   standard sr-only clip-box technique, kept as its own rule rather than a
+   shared utility class (this selector needs no `:has()` layout companion —
+   the row below was never `space-between`-keyed on two items the way the
+   entity title row was). */
 .codex-listing-title {
   position: absolute;
   width: 1px;
@@ -2542,34 +2551,11 @@ select:focus-visible,
    `.codex-entity-page` article, see `entityPage.tsx`), so the cloned page's
    h1 lands inside `.popover-inner` at its full standalone size unless
    re-scaled here. Scoped to the plain `.codex-entity-name` selector — this
-   rule alone is untouched by D29-112 (S4): it still applies whether or not
-   the modifier below is also present on the same element. */
+   rule alone was always unconditional (the h1 is visible everywhere now,
+   see that class's own comment above — the old `-standalone` sr-only
+   modifier + this override's B1 re-show counterpart are both gone). */
 .popover-inner .codex-entity-name {
   font-size: 1.1rem;
-}
-/* D29-112 (S4, now built) — THE B1 interlock: the popover clones the
-   STANDALONE page's SSR HTML verbatim, so the cloned h1 carries the SAME
-   `codex-entity-name-standalone` modifier the live standalone page's own h1
-   does (`entityPage.tsx`'s `standalone` prop) — meaning the bare, unscoped
-   `.codex-entity-name-standalone { sr-only }` rule above would ALSO hide the
-   popover's clone, since that rule matches by class alone regardless of
-   ancestor. This descendant selector's higher specificity (0,2,0 vs the
-   bare rule's 0,1,0) wins REGARDLESS of source order, undoing every sr-only
-   property back to a normal, visible, in-flow inline element — the popover
-   must NEVER lose its title (the review's headline B1 catch; verified live
-   at S4 build time: `.codex-entity-name` inside `.popover-inner` computed
-   `display: inline` / fully visible while the standalone page's OWN copy of
-   the same h1 computed the sr-only 1px clip-box). */
-.popover-inner .codex-entity-name-standalone {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: 0;
-  margin: 0;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-  border: 0;
 }
 /* D29-105b: the edition banner ("This page has a newer/older edition...")
    is page-level chrome, not summary content — hide it inside the compact

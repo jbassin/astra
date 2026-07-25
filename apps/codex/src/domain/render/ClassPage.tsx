@@ -525,7 +525,7 @@ export function ClassPage({
       data-category={entity.category}
     >
       <Popover />
-      <EntityHeader entity={entity} ctx={ctx} standalone />
+      <EntityHeader entity={entity} ctx={ctx} />
 
       <CoreTraitsBox stats={stats} headingId={coreTraitsId} />
 

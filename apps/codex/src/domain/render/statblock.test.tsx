@@ -63,7 +63,7 @@ describe("EmbeddedItemSections (dragon strikes/actions + spellcaster variant's s
     expect(out).toContain("Jaws");
     expect(out).toContain("+27");
     expect(out).toContain("3d12+14 piercing");
-    expect(out).toContain("<svg"); // the strike's action glyph
+    expect(out).toContain("codex-action-glyph"); // the strike's action glyph
     expect(out).not.toContain("undefined");
   });
 

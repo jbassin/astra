@@ -42,30 +42,22 @@ function TraitCrossNav({ trait }: { trait: string }): ReactElement {
 }
 
 /**
- * D29-112 (P11 S4) — `standalone` (default `false`, so every existing
- * caller — the regen-goldens script's bare `EntityPage`, `entityPage.test.
- * tsx`, the split-view entry pane via `EntityRenderPane` — keeps rendering
- * the h1 fully VISIBLE, byte-identical, no prop threading required of
- * them): `true` ONLY for the standalone `/{category}/{slug}` route (via
- * `EntityRenderPane`), where the root header now carries the VISIBLE title
- * instead (`HeaderTitle.tsx`) — the in-content h1 stays in the SSR DOM
- * (document outline + a11y tree intact) but renders sr-only, via the
- * `codex-entity-name-standalone` modifier class (`globals.css`). The
- * popover (`Popover.tsx`) clones this exact STANDALONE page's SSR HTML
- * wholesale, so the cloned h1 carries this SAME modifier — `globals.css`'s
- * `.popover-inner .codex-entity-name-standalone` override re-shows it there
- * (the review's headline B1 catch: a bare, unscoped sr-only rule on this
- * class would have killed the popover's title site-wide).
+ * D29-112 (P11 S4) introduced a `standalone` prop that pulled the h1 inside
+ * `EntityHeader` sr-only on the standalone `/{category}/{slug}` route (the
+ * root header carried the visible title instead, `HeaderTitle.tsx`). A
+ * later stakeholder redirect scoped header-carries-title back down to
+ * parent/listing surfaces only, so `EntityHeader`'s h1 is unconditionally
+ * visible again and this component no longer threads a `standalone` prop
+ * at all — see `EntityHeader.tsx`'s own updated comment for the full
+ * history.
  */
 export function EntityPage({
   entity,
   ctx,
-  standalone = false,
   assay,
 }: {
   entity: CodexEntity;
   ctx: RenderCtx;
-  standalone?: boolean;
   /** D30-39/40 — optional, defaults to `undefined`: every EXISTING caller
    * (the 7 flagship goldens' bare construction in `goldens.test.tsx`,
    * `scripts/regen-goldens.ts`, this file's own `entityPage.test.tsx`
@@ -95,7 +87,7 @@ export function EntityPage({
       data-entity-id={entity.id}
       data-category={entity.category}
     >
-      <EntityHeader entity={entity} ctx={ctx} standalone={standalone} />
+      <EntityHeader entity={entity} ctx={ctx} />
 
       {/* D29-72 (P7): when an AoN body is present, the AoN prose is the
           statblock of record — the structured statblock cards AND the

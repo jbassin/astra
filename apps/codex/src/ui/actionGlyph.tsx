@@ -1,7 +1,5 @@
 import type { ReactElement } from "react";
 
-import { GLYPH_IDS } from "./GlyphDefs";
-
 /**
  * D29-46 — moved verbatim from the gothic lib's `render/glyphs/actions.tsx` (the
  * spec's own instruction: "moved, not rewritten"). Theme-agnostic (`fill:
@@ -10,21 +8,25 @@ import { GLYPH_IDS } from "./GlyphDefs";
  * AoN/Foundry vocabulary shim re-points its import here, unchanged
  * otherwise).
  *
- * R5 (D29-65) — the 3 `<path>`-producing sites below now draw the REAL
- * traced pf2e action-icon outlines (see `./ACTIONS-GLYPH-SOURCE.md` for the
- * exact source/version/conversion provenance) instead of the placeholder
- * approximations this file shipped with at D29-46. Pure asset swap: every
- * prop signature, `role="img"`/`aria-label`/`<title>`, and the inline-SVG
- * (never a font) mechanism are byte-identical — no downstream call site
- * (`statblock.tsx`, `facetHeader.tsx`, `nodes.tsx`, `text.ts`) changes.
- *
- * P8-follow-up dedupe (`GlyphDefs.tsx`) — every instance below now emits
- * `<use href="#codex-glyph-...">` against the ONE shared `<symbol>` set
- * mounted once in `src/routes/__root.tsx`, instead of re-emitting the same
- * path `d=` string per instance (measured: 2,936 uses of these 3 shapes on
- * a single `/feat` SSR). The public contract — prop signatures, `role`/
- * `aria-label`/`<title>`, sizing, `fill: currentColor` — is unchanged; only
- * the internal `<path>` became a `<use>` against the shared defs.
+ * Stakeholder directive ("use the icons in pathfinder-icons.ttf for the
+ * action icons") — this file now renders the REAL Paizo "Pathfinder-Icons"
+ * compatibility font (`public/pathfinder-icons.ttf`, self-served via the
+ * `@font-face` in `globals.css`) instead of the R5 traced-SVG outlines it
+ * shipped with before (see `./ACTIONS-GLYPH-SOURCE.md` for the full
+ * provenance/switch record). Each `ActionCost` maps to ONE Private-Use-Area
+ * character in that font — its own `[one-action]`/`[two-actions]`/
+ * `[three-actions]`/`[reaction]`/`[free-action]` GSUB ligatures resolve to
+ * these SAME 6 codepoints (`fontTools` GSUB dump, ACTIONS-GLYPH-SOURCE.md),
+ * used directly here rather than depending on `liga`-substitution support
+ * — a plain literal character is portable everywhere, including
+ * `renderToStaticMarkup` (no DOM, no font shaping engine available). Plain
+ * text server/client-identical — no hydration hazard. The public contract
+ * (prop signature, `role="img"`/`aria-label`/`title` a11y equivalents) is
+ * unchanged from the SVG era; only the render target (`<span>` + a
+ * character instead of an `<svg>` + `<use>`) is new — no downstream call
+ * site (`statblock.tsx`, `facetHeader.tsx`, `nodes.tsx`, `columnDefs.tsx`,
+ * `text.ts`) changes, since every one of them consumes `ActionGlyph`/
+ * `normalizeActionCost` only, never the SVG internals.
  */
 
 /** PF2e action-economy costs. Purely visual — no rules meaning attached. */
@@ -62,70 +64,38 @@ const LABELS: Record<ActionCost, string> = {
 };
 
 /**
- * The real traced pf2e action-pip chevron (glyph `one`/`A` in the source
- * font) lives as `<symbol id={GLYPH_IDS.pip}>` in `GlyphDefs.tsx` (exact
- * traced-path provenance: `./ACTIONS-GLYPH-SOURCE.md`). Natural bounding
- * box x:0–7.5, y:3–13 (a 16-tall viewBox) — i.e. the SAME box the old
- * placeholder triangle's FIRST pip occupied shifted left by 1 (the old
- * triangle was `M${x} 3 L${x+7} 8 L${x} 13`, so its x:1–8 first-pip box;
- * this path is that box translated to start at 0). `Pip` below re-applies
- * that `-1` via the `<use>` element's own `x` attribute (SVG2: `x`/`y` on a
- * `<use>` translate the referenced content exactly like the old
- * `transform="translate(dx,0)"` did) so the existing `count * 9 + 1` width /
- * `i * 9 + 1` offset composition math needed no change — the multi-pip
- * layout is untouched, only the shape moved into the shared defs.
+ * The font's own Private-Use-Area codepoints (`fontTools` cmap dump,
+ * `./ACTIONS-GLYPH-SOURCE.md`) — one PRE-COMPOSED glyph per cost, including
+ * the two/three-action shapes (unlike the old SVG's single reused pip
+ * chevron repeated N times at a fixed spacing, this font already ships
+ * "two-actions"/"three-actions" as their own wider multi-chevron glyphs, so
+ * no manual N-pip composition/spacing math is needed here at all).
  */
-const PIP_WIDTH = 7.5;
-const PIP_HEIGHT = 16;
-
-/** A single filled "action pip" chevron, offset `x` units along the shared strip. */
-function Pip({ x }: { x: number }): ReactElement {
-  const dx = x - 1;
-  return <use href={`#${GLYPH_IDS.pip}`} x={dx} width={PIP_WIDTH} height={PIP_HEIGHT} />;
-}
+const GLYPH_CHARS: Record<ActionCost, string> = {
+  "1": "\uE902", // [one-action]
+  "2": "\uE901", // [two-actions]
+  "3": "\uE900", // [three-actions]
+  reaction: "\uE904", // [reaction]
+  free: "\uE903", // [free-action]
+};
 
 /**
- * Inline SVG action glyph (NOT an icon font — icon fonts blank out in
- * rasterized PNG export). `fill: currentColor` so theme CSS controls color.
- * Each instance is now a thin `<use>` wrapper against the shared `<symbol>`
- * defs (`GlyphDefs.tsx`, mounted once in `src/routes/__root.tsx`) instead of
- * re-emitting the traced path data per instance.
+ * The action-icon-font glyph, rendered as a plain character (`GLYPH_CHARS`)
+ * inside a `.codex-action-glyph` `<span>` (`globals.css` — the self-hosted
+ * `@font-face` + that class's own `font-family`/sizing rule). `role`/
+ * `aria-label` come from a plain object spread (not literal JSX attributes)
+ * — the same `EditionIcon.tsx` convention, which sidesteps oxlint's
+ * `jsx-a11y/prefer-tag-over-role` false positive (the rule can't see past a
+ * literal `role="img"` string to know this is an icon-font glyph, not a
+ * raster-`<img>` candidate). `title` is the plain-DOM equivalent of the old
+ * SVG `<title>` child — a native hover tooltip, same accessible name.
  */
 export function ActionGlyph({ cost }: { cost: ActionCost }): ReactElement {
   const label = LABELS[cost];
-  const common = {
-    role: "img" as const,
-    "aria-label": label,
-    height: "1em",
-    fill: "currentColor",
-    style: { verticalAlign: "-0.12em" as const },
-  };
-
-  if (cost === "reaction") {
-    return (
-      <svg {...common} viewBox="0 0 16 16" width="1em">
-        <title>{label}</title>
-        <use href={`#${GLYPH_IDS.reaction}`} width={16} height={16} />
-      </svg>
-    );
-  }
-  if (cost === "free") {
-    return (
-      <svg {...common} viewBox="0 0 16 16" width="1em">
-        <title>{label}</title>
-        <use href={`#${GLYPH_IDS.free}`} width={16} height={16} />
-      </svg>
-    );
-  }
-
-  const count = Number(cost);
-  const width = count * 9 + 1;
+  const common = { role: "img" as const, "aria-label": label, title: label };
   return (
-    <svg {...common} viewBox={`0 0 ${width} 16`} width={`${width / 16}em`}>
-      <title>{label}</title>
-      {Array.from({ length: count }, (_, i) => (
-        <Pip key={i} x={i * 9 + 1} />
-      ))}
-    </svg>
+    <span {...common} className="codex-action-glyph">
+      {GLYPH_CHARS[cost]}
+    </span>
   );
 }

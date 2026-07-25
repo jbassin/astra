@@ -23,24 +23,22 @@ import { type RenderCtx, rootRenderCtx } from "./nodes";
  * `<RulesLayout>` itself only when `rulesNav` is present.
  */
 /**
- * D29-112 (P11 S4) — `standalone` (default `undefined`, i.e. falsy) threads
- * straight through to `EntityPage`'s own prop of the same name: BOTH the
- * standalone entity route and the split-view right pane consume `EntityPage`
- * ONLY via this component now, so this is the ONE seam that needs to know
- * which caller is which. The entity route passes `standalone` (the root
- * header carries the visible title there, `HeaderTitle.tsx`); the
- * split-view pane omits it entirely — an embedded context, same posture as
- * the regen-goldens script, where the h1 stays fully visible (nothing else
- * in that pane's own chrome shows the entity's name).
+ * D29-112 (P11 S4) once threaded a `standalone` prop straight through to
+ * `EntityPage`'s own prop of the same name, so the standalone entity route
+ * and the split-view right pane could render `EntityHeader`'s h1
+ * differently (sr-only vs visible). A later stakeholder redirect scoped
+ * header-carries-title back down to parent/listing surfaces only, so
+ * `EntityPage` no longer has a `standalone` prop to thread at all — BOTH
+ * the standalone entity route and the split-view right pane now render the
+ * h1 fully visible, unconditionally, via this same component (see
+ * `EntityHeader.tsx`'s own updated comment for the full history).
  */
 export function EntityRenderPane({
   data,
   superseded,
-  standalone,
 }: {
   data: EntityPageData;
   superseded: boolean;
-  standalone?: boolean;
 }): ReactElement {
   const { entity, embeds, knownTraitIds, attachedSidebars, assay } = data;
   const baseCtx = rootRenderCtx({
@@ -75,7 +73,7 @@ export function EntityRenderPane({
           preview pane renders the Assay block exactly like the standalone
           route (accepted, recorded in the spec's status header — "DOES
           appear in the ?entry= preview pane"). */}
-      <EntityPage entity={entity} ctx={ctx} standalone={standalone} assay={assay} />
+      <EntityPage entity={entity} ctx={ctx} assay={assay} />
       {attachedSidebars !== undefined ? (
         <AttachedSidebars sidebars={attachedSidebars} superseded={superseded} ctx={ctx} />
       ) : null}

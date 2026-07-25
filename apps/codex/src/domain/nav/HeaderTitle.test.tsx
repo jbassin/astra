@@ -37,20 +37,22 @@ describe("deriveHeaderTitle (D29-112, pure — decoupled from useMatches' own bi
     expect(deriveHeaderTitle([{ routeId: "/$category/", params: {} }])).toBeNull();
   });
 
-  it("an entity route (/$category/$slug) -> loaderData.entity.name verbatim", () => {
+  it("an entity route (/$category/$slug) -> wordmark (null) — a SPECIFIC page, not a parent", () => {
+    // Post-stakeholder-redirect: header-carries-title is scoped to
+    // parent/listing surfaces only. An entity page's own h1 is visible
+    // again (EntityHeader.tsx), so the header stays the plain wordmark.
     const title = deriveHeaderTitle([
       {
         routeId: "/$category/$slug",
         loaderData: { entity: { name: "Heal" } },
       },
     ]);
-    expect(title).toBe("Heal");
+    expect(title).toBeNull();
   });
 
-  it("the bespoke /class/$slug route (P12) -> loaderData.entity.name, same as /$category/$slug", () => {
-    // The post-P12 fix: without this case a class page had NO visible title
-    // at all (its h1 renders standalone/sr-only on the premise the header
-    // carries the title) — just the wordmark.
+  it("the bespoke /class/$slug route (P12) -> wordmark (null), same as /$category/$slug", () => {
+    // A class page's own h1 is visible again too (ClassPage.tsx) — no
+    // longer sr-only on the premise the header carries the title.
     const title = deriveHeaderTitle([
       {
         routeId: "/class/$slug",
@@ -58,10 +60,10 @@ describe("deriveHeaderTitle (D29-112, pure — decoupled from useMatches' own bi
         loaderData: { entity: { name: "Fighter" } },
       },
     ]);
-    expect(title).toBe("Fighter");
+    expect(title).toBeNull();
   });
 
-  it("a rules DOC (category === 'rules', same route) needs no special-casing — same field", () => {
+  it("a rules DOC (category === 'rules', same route) -> wordmark (null) too — a specific page", () => {
     const title = deriveHeaderTitle([
       {
         routeId: "/$category/$slug",
@@ -69,15 +71,7 @@ describe("deriveHeaderTitle (D29-112, pure — decoupled from useMatches' own bi
         loaderData: { entity: { name: "Tools of Play" } },
       },
     ]);
-    expect(title).toBe("Tools of Play");
-  });
-
-  it("an entity route with no loaderData yet (in-flight) -> wordmark, never throws", () => {
-    expect(deriveHeaderTitle([{ routeId: "/$category/$slug" }])).toBeNull();
-    expect(deriveHeaderTitle([{ routeId: "/$category/$slug", loaderData: {} }])).toBeNull();
-    expect(
-      deriveHeaderTitle([{ routeId: "/$category/$slug", loaderData: { entity: {} } }]),
-    ).toBeNull();
+    expect(title).toBeNull();
   });
 
   it("the /rules tree-browser route -> the fixed 'Rules' title", () => {
@@ -139,5 +133,29 @@ describe("HeaderTitle (D29-112) — mounted against a real router", () => {
     const homeGlyph = screen.getByRole("link", { name: "codex home" });
     expect(homeGlyph.getAttribute("href")).toBe("/");
     expect(screen.queryByRole("link", { name: "codex" })).toBeNull(); // wordmark gone
+  });
+
+  it("an entity route (/$category/$slug) mounted for real -> still the plain wordmark, not the entity name", async () => {
+    const rootRoute = createRootRoute({ component: () => <Outlet /> });
+    const categoryRoute = createRoute({
+      getParentRoute: () => rootRoute,
+      path: "$category",
+      component: () => <Outlet />,
+    });
+    const slugRoute = createRoute({
+      getParentRoute: () => categoryRoute,
+      path: "$slug",
+      component: HeaderTitle,
+      loader: () => ({ entity: { name: "Heal" } }),
+    });
+    const router = createRouter({
+      routeTree: rootRoute.addChildren([categoryRoute.addChildren([slugRoute])]),
+      history: createMemoryHistory({ initialEntries: ["/spell/heal"] }),
+    });
+    render(<RouterProvider router={router} />);
+    const wordmark = await screen.findByRole("link", { name: "codex" });
+    expect(wordmark.getAttribute("href")).toBe("/");
+    expect(screen.queryByText("Heal")).toBeNull();
+    expect(screen.queryByRole("link", { name: "codex home" })).toBeNull();
   });
 });

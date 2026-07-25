@@ -76,11 +76,12 @@ function EntityRouteComponent() {
   // bare listing rows themselves (spec's own reasoning for restricting the
   // mount point away from an 8k-row list).
   //
-  // D29-112 (P11 S4) — `standalone`: this IS the standalone entity route
-  // (as opposed to the split-view right pane, which omits the prop) — the
-  // root header now carries the visible title (`HeaderTitle.tsx`), so the
-  // in-content h1 renders sr-only here (`EntityPage`'s own doc comment).
-  const page = <EntityRenderPane data={data} superseded={superseded} standalone />;
+  // This IS the standalone entity route (as opposed to the split-view right
+  // pane) — no `standalone` prop any more (removed post-D29-112, see
+  // `EntityHeader.tsx`'s comment): the header now stays the plain wordmark
+  // here (a stakeholder redirect scoped header-carries-title down to
+  // parent/listing pages only) and the in-content h1 renders fully visible.
+  const page = <EntityRenderPane data={data} superseded={superseded} />;
 
   // P4 S3 (D29-41): the tree sidebar/trail/pager wrap ONLY rules entity
   // pages carrying a resolved `rulesNav` — every other category's page is

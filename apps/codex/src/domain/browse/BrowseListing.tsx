@@ -894,14 +894,16 @@ export function BrowseListing({
     <div className="codex-listing">
       <header className="codex-listing-header">
         {/* D29-112 (P11 S4) — the root header now carries the VISIBLE title
-            (`HeaderTitle.tsx`, resolved via `useMatches`/`params.category`);
-            this in-content h1 stays in the SSR DOM (document outline + a11y
-            tree intact, `globals.css`'s sr-only rule on this class) purely
-            for that reason — exactly one visible h1 per document, matching
-            the entity route's own `codex-entity-name-standalone` posture.
-            Still `displayCategoryName` (D29-109d, created early by this
-            same decision), same as the header's own title text and this
-            route's `<title>`. */}
+            (`HeaderTitle.tsx`, resolved via `useMatches`/`params.category`)
+            for this LISTING route (a parent/listing surface, still in scope
+            after the later stakeholder redirect that scoped
+            header-carries-title away from entity/class pages specifically —
+            see `HeaderTitle.tsx`'s own comment); this in-content h1 stays in
+            the SSR DOM (document outline + a11y tree intact, `globals.css`'s
+            sr-only rule on this class) purely for that reason — exactly one
+            visible h1 per document. Still `displayCategoryName` (D29-109d,
+            created early by this same decision), same as the header's own
+            title text and this route's `<title>`. */}
         <h1 className="codex-listing-title">{displayCategoryName(category)}</h1>
         {/* D29-112 — count line + hint + the D29-111 reveal control + the
             search input + Filters button compact to ONE slim row

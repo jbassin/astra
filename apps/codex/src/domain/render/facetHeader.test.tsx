@@ -205,17 +205,22 @@ describe("GenericFacetLine: `valued` renders as a bare word only when true (D29-
 });
 
 describe("GenericFacetLine: `actionCost` renders via the action-glyph idiom (D29-104)", () => {
-  it("a real action cost renders an ActionGlyph <svg>, not 'Action Cost: 2' text", () => {
+  it("a real action cost renders an ActionGlyph (the icon-font span), not 'Action Cost: 2' text", () => {
     const entity = entityWith("creature-ability", { actionCost: "2" });
     const html = renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />);
-    expect(html).toContain("<svg");
+    expect(html).toContain("codex-action-glyph");
     expect(text(html)).not.toContain("Action Cost");
   });
 
   it("'passive' (the majority generic-group value, 762/1,131) renders as bare unlabeled text, matching FeatFacetHeader's own idiom", () => {
     const entity = entityWith("creature-ability", { actionCost: "passive" });
     const html = renderToStaticMarkup(<GenericFacetLine entity={entity} ctx={ctx} />);
-    expect(html).not.toContain("<svg");
+    // Exact class match — NOT a bare substring check: "passive" falls to the
+    // shim's own `codex-action-glyph-unknown` wrapper (CodexActionGlyph's
+    // "unknown" fallback, still bare text inside), which itself CONTAINS the
+    // "codex-action-glyph" substring, so a loose `.not.toContain` here would
+    // false-fail against that legitimate fallback markup.
+    expect(html).not.toContain('class="codex-action-glyph"');
     const out = text(html);
     expect(out).toContain("passive");
     expect(out).not.toContain("Action Cost");
