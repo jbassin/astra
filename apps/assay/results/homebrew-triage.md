@@ -528,6 +528,33 @@ sequence 2d12→3d10→3d12→4d12 looks like a typo · body-enhancement-hide + 
 kept fixed tiers (progressions not clean enough to collapse safely) · time-loop Success
 grants 24h immunity that Critical Success omits (design question).
 
+**FLAG DIGEST DISPOSITIONS (2026-07-25, staff-dealt per the compact-card process —
+6 resolved without stopping, 3 dealt as cards):**
+
+- **reset — FIXED.** The Failure line now grants the reroll it referenced: "The enemy
+  rerolls its initiative twice, and you choose which of the two results applies to it"
+  (the 5e original's roll-twice-caster-picks, restored self-contained).
+- **blades-of-bone — FIXED.** Orphaned structured-damage entry (1d6 piercing, from the
+  struck Strike text; absent from the 5e original) deleted. Expected score move recorded:
+  EV 21→17.5, verdict −1.86→−2.34 COLD — the only delta in the full set-diff.
+- **chrysalis — FIXED.** H8 Perception DC un-inverted: "visually imperceptible; a
+  creature must succeed at a DC 30 Perception check to notice it" (the redundant "cast
+  time remains 10 minutes" clause dropped with it).
+- **hellforging — FIXED.** 5e original reads "3d10 psychic + 2d10 necrotic" → store now
+  "3d10 mental and 2d10 void" per the 5e-ism damage-type map (the old text's "psychic
+  and mental" had mapped necrotic the wrong way).
+- **time-loop — FIXED.** Immunity asymmetry resolved by dominance: Critical Success line
+  deleted per the crit-≡-success convention; the Success line (unaffected + 24h temp
+  immunity) now covers both success degrees.
+- **monstrous-copy-claws — KEEP, no edit.** The 2d12→3d10→3d12→4d12 ladder is NOT a
+  store typo: the friend's intermediate conversion carries it verbatim and it's
+  monotonic (avg 13/16.5/19.5/26). The d12→d10→d12 die zigzag is off official idiom —
+  flagged for the joint review, not unilaterally rewritten.
+- **body-enhancement-hide + charming-memory** — informational only (R3 keeps), no action.
+- **Cards (stakeholder decisions):** mixed-heightening pattern (propagating-blast +
+  festering-slick) · fast-forward penalty triad · thaumaturgic-inhibition area frame —
+  resolutions recorded below as decided.
+
 **Provenance:** the stakeholder's scriptorium prose review (21/174 spells reviewed,
 acupuncture → body-enhancement-horns; 67 live marginalia in
 `review-ui/state/comments.jsonl`). The annotations cluster into a small set of classes —

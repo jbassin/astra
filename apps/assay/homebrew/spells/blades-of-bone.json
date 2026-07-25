@@ -40,16 +40,6 @@
         ],
         "materials": [],
         "type": "piercing"
-      },
-      "2": {
-        "applyMod": false,
-        "category": null,
-        "formula": "1d6",
-        "kinds": [
-          "damage"
-        ],
-        "materials": [],
-        "type": "piercing"
       }
     },
     "defense": null,
