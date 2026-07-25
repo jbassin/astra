@@ -489,3 +489,93 @@ set-diff vs `6f53b58`: ZERO verdict/routing drift, 2 comparables-lens neighbor a
 **Flags for the stakeholder (not fixed, mechanics questions):** monstrous-copy-stinger
 Hutijin Venom Stage 1 ≡ Stage 2 byte-identical; monstrous-copy-tentacle Tentacle Venom
 Stage 2 ≡ Stage 3 byte-identical — both look like affliction-progression conversion bugs.
+
+## 13. Scriptorium-calibrated sweep (2026-07-25, DRAFT — awaiting stakeholder ratification)
+
+**Provenance:** the stakeholder's scriptorium prose review (21/174 spells reviewed,
+acupuncture → body-enhancement-horns; 67 live marginalia in
+`review-ui/state/comments.jsonl`). The annotations cluster into a small set of classes —
+most of them *policy*, not per-spell judgment — that survived the §12 seven-rule sweep
+because §12 never enumerated them. Rather than hand-striking ~3 instances per spell for
+the remaining 153 spells, this sweep applies the distilled policy set-wide so the
+remaining scriptorium pass can focus on real per-spell calls.
+
+**Why §12 missed these:** §12's paren rules covered *redundant die/rank* parens and *tag*
+parens; the §13 classes are worked-example/enumeration parentheticals, defensive
+interaction pre-litigation sentences, bespoke fixed-tier Heightened blocks, and residual
+5e vocabulary — none on the §12 list.
+
+### Lanes
+
+**Lane 0 — apply the existing marginalia verbatim (21 reviewed spells, 67 annotations).**
+Strikes (`kind:remove`) delete the quoted text; notes carry the specified replacement.
+These are direct stakeholder edits, not proposals — apply, then re-run the differ.
+
+**Lane 1 — mechanical sweep over the remaining 153 spells** (engineer lanes off this
+policy brief + the marginalia as calibration exemplars):
+
+- **R1 — explaining parentheticals.** Delete worked examples ("(so at rank 4 it targets a
+  5th-rank slot or lower…)"), enumerations ("(a door, a pit, … etc.)"), edge-case
+  qualifiers ("(minimum 1st rank)", "(no daily saves to recover)"). Load-bearing content
+  is *promoted to prose*, never kept parenthesized ("lift out of parentheses" ×2 in the
+  marginalia). Dry-run: 38 marker-matched explainers; **259 parentheticals ≥15 chars
+  across 129 spells** = the full read-every-paren surface (keep/promote/delete per site).
+- **R2 — defensive interaction sentences.** Delete sentences that pre-litigate rules
+  interactions the general rules already govern: "This spell has no effect on creatures
+  that lack spell slots…", "The orb cannot absorb cantrips, rituals…", "The emanation
+  moves with you." (aura makes it implicit), "…for the purpose of sustaining X itself",
+  "does not stack with other morph effects", class-feat interaction paragraphs.
+  Dry-run grep floor: **25 sentences / 22 spells**; the marginalia rate (12 confirmed in
+  21 spells) suggests ~90–100 store-wide — engineer-read territory, grep is only a lead.
+- **R3 — Heightened fixed tiers → the official (+N) idiom.** Where fixed tiers are pure
+  numeric progressions (damage +1d6 per tier, targets +2 per tier, DC +2 per tier),
+  collapse to `Heightened (+1)/(+2)` per the official pattern (find an official exemplar
+  per collapse — stakeholder instruction). Tiers granting *genuinely different effects*
+  stay fixed (official idiom too). Corollary: any value the (+N) line scales must be
+  stated in the body (Attraction's missing base 2d6). Dry-run: **92 spells carry 163
+  fixed-tier entries; 48 spells have ≥2 tiers** (the BE family runs 3rd/5th/7th/9th
+  ladders that are pure scaling); 68 spells already use (+N).
+- **R4 — 5e vocabulary residue.** concentration/concentrating (**19 hits** — each is
+  either a dead 5e-ism to delete per Arcane Interdiction's "not a thing in pathfinder",
+  or a Sustain reference to re-word); wild shape/wildshaping (**26 hits** → polymorph or
+  delete per the Bestial Rage strikes); opportunity attack (**1** → reactive strike);
+  "emanation centered on you" (**1** → aura); ad-hoc penalty stacks → named conditions
+  (Awkward's −1 atk/Cha-skills/Cha-saves → Clumsy 1 + −1 status Cha-skills; −2 tier →
+  Clumsy 2). The condition-mapping arm is judgment-flavored: engineers flag, don't
+  freelance beyond the calibrated Clumsy exemplar.
+
+**Lane 2 — stop-worthy items (stakeholder decisions, NOT sweepable):**
+
+- **D13-a — translation-not-rewrite doctrine.** The Almonk's Retribution marginalia
+  ("rewrites like this suck. Use the original prose but updated to use pathfinder
+  terminology") reads as set-wide doctrine: where the store invented flavor prose or
+  restructured prose into lists, restore the 5e original's prose translated to PF2e
+  terms (Artist's Rendition's list → prose is the second exemplar). Set-wide this means
+  a per-spell store-vs-vendor flavor diff over all 174 — a separate judgment lane, and
+  it interacts with the §8 voice sweep's deliberate edits. Ratify scope before running.
+- **D13-b — BE:Fangs + BE:Horns re-conversion.** Confirmed against the vendor 5e
+  originals: both are ONE-SHOT melee spell attacks (Fangs 3d6 piercing + prone rider;
+  Horns 3d12 bludgeoning + a charge-rider menu), but the store carries claws-template
+  persistent Strike-granting buffs. Re-convert from source; not an edit.
+- **D13-c — "creature" → "enemy" targeting scope.** Marginalia on Arcane Interdiction;
+  needs a policy: hostile-only auras/zones say "enemy", neutral zones stay "creature".
+  Per-site judgment; engineers flag candidates only.
+
+### Verification plan (the §11/§12 gates)
+
+Description-field-only set-diff over every touched file (zero non-description changes);
+issue-class rescan (R1–R4 patterns → zero, minus recorded keeps); score set-diff vs HEAD
+= zero verdict/routing drift expected (comparables-lens neighbor reshuffles are the
+documented artifact class); `homebrew-revisions` regen (count moves both ways —
+vendor-matching edits VANISH); every (+N) collapse retains its base value in the body.
+
+### Open decisions to batch (stakeholder)
+
+1. Ratify Lane 1 R1–R4 as set-wide policy (engineers apply without stopping)?
+2. D13-a translation-not-rewrite: full-store flavor-restoration lane now, or defer to
+   the continuing scriptorium pass (spells get it as he reaches them)?
+3. D13-b Fangs/Horns re-conversion: staff re-map from the 5e originals, or does he want
+   to redesign at the table?
+4. Scriptorium cadence after the sweep: his pass resumes on the post-sweep text (store
+   re-seeds scriptorium's data.json) — confirm he's fine reviewing a moving target, or
+   should the sweep wait until his pass completes?
