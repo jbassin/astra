@@ -1,0 +1,44 @@
+# Take Me Instead
+
+> **Flagged parentheticals in this spell:**
+> - `(you immediately gain @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} 1)`
+> - `(including potions, spells with the healing trait, and natural recovery)`
+> - `(with 1-hour rider on caster)` `[duration.value]`
+
+**Rank 2** · concentrate, healing, mercuromancy, vitality
+
+**Traditions:** divine, occult  
+**Cast:** 1 minute  
+**Range:** touch  
+**Targets:** the corpse of 1 creature that died within the last hour  
+**Duration:** instantaneous (with 1-hour rider on caster)  
+
+---
+
+You touch the corpse of a creature you knew well and make a solemn bargain with fate: you offer yourself in its place.
+This spell requires 1 minute of uninterrupted casting, during which you must remain in contact with the corpse.
+
+Attempt a DC 20 Diplomacy check.
+If the creature was a family member, a close companion, or a romantic partner, you gain a +4 circumstance bonus to this check.
+
+On a success, the creature is restored to 1 HP and can act normally.
+You immediately fall Unconscious and begin making recovery checks as if you had reached 0 HP and the Dying condition (you immediately gain Dying 1).
+For the next 1 hour, you cannot benefit from healing effects (including potions, spells with the healing trait, and natural recovery); you can still be stabilized and can make recovery checks normally.
+If you die while under this rider, no spell of rank 4 or lower can restore you to life.
+
+On a failure, the corpse is unaffected.
+You take 2d8 void damage from the strain of the attempt.
+
+---
+**Heightened (4th)** The DC decreases to 15, and the creature returns with 25% of its maximum HP instead of 1 HP. The no-healing rider on the caster is reduced to 10 minutes.
+
+**Heightened (6th)** The DC decreases to 10.
+The creature returns with 50% of its maximum HP.
+You still fall to Dying 1, but the no-healing rider on the caster is removed.
+
+---
+
+**Heightened (4th)** *(non-prose override: )*
+
+**Heightened (6th)** *(non-prose override: )*
+
