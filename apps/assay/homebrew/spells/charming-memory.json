@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You plant a shimmering aura of warm false memory around yourself, seeding the ambient mental impressions of nearby creatures with pleasant recollections of you that feel genuine. For the duration, you gain a +1 status bonus to Deception, Diplomacy, and Performance checks. This spell has no effect in combat and cannot influence creatures in combat — it is a social lubricant only. The subtle trait means no perceptible sign of spellcasting is visible once the spell is cast.</p><hr /><p><strong>Heightened (4th)</strong> The status bonus increases to +2.</p><p><strong>Heightened (7th)</strong> The status bonus increases to +3 and also applies to Intimidation checks.</p>"
+      "value": "<p>You plant a shimmering aura of warm false memory around yourself, seeding the ambient mental impressions of nearby creatures with pleasant recollections of you that feel genuine. For the duration, you gain a +1 status bonus to Deception, Diplomacy, and Performance checks. This spell has no effect in combat.</p><hr /><p><strong>Heightened (4th)</strong> The status bonus increases to +2.</p><p><strong>Heightened (7th)</strong> The status bonus increases to +3 and also applies to Intimidation checks.</p>"
     },
     "duration": {
       "sustained": false,

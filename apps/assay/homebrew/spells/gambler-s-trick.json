@@ -21,7 +21,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You gently tug the threads of probability to nudge a single, minor act of chance in your favor. When you Cast this Spell, choose one of the following minor random events that is actively occurring within range: a coin flip, a die roll (a d4 through d20) used for a non-critical game of chance or minor contest, a card draw from a shuffled deck, or an equivalent petty act of fortune. You choose the result of the event from among the event's possible outcomes. This spell cannot affect attack rolls, skill checks, saving throws, initiative, or any other mechanical resolution, and it has no effect in combat. The fortune trait on this spell means that additional fortune effects cannot further alter the chosen result.</p>"
+      "value": "<p>You gently tug the threads of probability to nudge a single, minor act of chance in your favor. When you Cast this Spell, choose one minor random event actively occurring within range: a coin flip, a die roll in a game of chance or minor contest, a card draw from a shuffled deck, or an equivalent petty act of fortune. You choose the result of the event from among its possible outcomes. This spell cannot affect attack rolls, skill checks, saving throws, initiative, or any other mechanical resolution, and it has no effect in combat.</p>"
     },
     "duration": {
       "sustained": false,
