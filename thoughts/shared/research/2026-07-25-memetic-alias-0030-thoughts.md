@@ -70,11 +70,19 @@ alias nodes at parse time, scoped to homebrew docs only.
 string }`. Additive schema-union arm in `nodes.ts` + emit-Zod. Homebrew-only producer;
 official corpus byte-identical (gate mirrors ingest-round gate B).
 
-**D3 — Render:** a `.codex-alias` span. Resting state = alias text with the "weird
-dreamlike effect" (CSS shimmer/blur/иridescence — needs a visual mock, R1). Hover =
-transient reveal of the true name; click = pinned toggle back and forth. Client side is
-a small delegated handler (P13 listener pattern). `prefers-reduced-motion` gets a
-static treatment (e.g., subtle underglow, no animation).
+**D3 — Render: RESOLVED — "Veiled Iridescence" (mock variant D, stakeholder-picked
+2026-07-25).** Resting state = the alias under a static soft blur (~0.55px, NO
+breathing/opacity animation) with a slow iridescent gradient sweep through the letters
+(background-clip: text). Hover/focus = one crisp step to full reveal (kill the
+animation on hover — CSS animations own their properties and beat the transition, the
+mock's proven bug). The revealed true name is **centered on the alias's midpoint,
+absolutely positioned — the line never reflows**; a longer name extends symmetrically
+past both ends over a parchment wash (background + soft box-shadow in the page color)
+so it stays legible over neighbors. Click/Enter/Space = pinned reveal (gold underline),
+pins reset per load. Client side is a small delegated handler (P13 listener pattern).
+`prefers-reduced-motion`: static gradient position + the blur stays as the tell.
+Reference implementation: the mock artifact (`scratchpad/alias-mocks.html`, variant D
+`.v-veiled` + the shared `.alias` skeleton — port, don't rewrite).
 
 **D4 — Accessibility:** the span is focusable (`tabindex=0`, `role="button"`,
 `aria-label "obfuscated name, activate to reveal"`); keyboard reveal on Enter/Space;
@@ -92,15 +100,16 @@ proper nouns), so candidates surface even where he hasn't annotated.
 **D7 — Foundry module: zero work.** Store text is alias-only under D1; the module
 inherits correctness.
 
-## Open questions (resolve before spec — batch to stakeholder)
+## Open questions
 
-- **R1 — Visual treatment.** "Weird dreamlike effect" needs his eye: shimmer? blur-in?
-  color oscillation? Propose 2–3 CSS mocks on a real spell page and let him pick.
-  (Lean: subtle iridescent shimmer + slight letter-drift, calm enough for body text.)
-- **R2 — Toggle scope.** Per-instance click-pin (lean), or also a page/site-wide "lift
-  the veil" control that reveals every alias at once?
+- **R1 — Visual treatment: RESOLVED 2026-07-25.** Stakeholders reviewed the 4-variant
+  mock artifact and picked **D "Veiled Iridescence"** (see D3 for the full contract:
+  static blur + iridescent sweep, crisp full reveal centered on the alias footprint,
+  no reflow, length-overflow over a parchment wash).
+- **R2 — Toggle scope: RESOLVED 2026-07-25.** Per-instance click-pin only; **no
+  site-wide "lift the veil" control** (stakeholder: not necessary).
 - **R3 — Reveal persistence.** Does a pinned reveal survive navigation (localStorage),
-  or reset per page load (lean: reset — the effect IS the flavor)?
+  or reset per page load (lean: reset — the effect IS the flavor; the mock resets).
 - **R4 — Alias granularity.** One global alias per true name (lean — the registry is
   global), or can the same name carry different aliases in different spells? His
   `<name|alias>` syntax is per-site; if he ever issues two different aliases for one
