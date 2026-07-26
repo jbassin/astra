@@ -18,6 +18,11 @@ options + a lean, none of it decided.
 
 ## POLICY CARD P1 — Obfuscation scope + the alias table (10 rows, 7 spells)
 
+> **DEALT 2026-07-26 — HELD.** Stakeholder: the whole obfuscation question (alias table,
+> Grey Waste pick, monster-name scope, **including the Beholder IP fix**) is deferred to a
+> dedicated sweep during the review, once everything else is done. The table below stands
+> as the staff draft for that sweep.
+
 The T10 conceit (in-universe memetic obfuscation of the author's homeworld nouns) needs
 two rulings:
 
@@ -52,6 +57,10 @@ to all D&D-only creature names (if yes, a short follow-up sweep enumerates them)
 
 ## POLICY CARD P2 — Heightening tier conventions (T5, ~19 spells)
 
+> **DEALT 2026-07-26.** **P2a RATIFIED** — collapse the 8 pure-numeric ladders to
+> `(+N)` (apply in the policy sweep). **P2b HELD** — loosening tiers stay as-is;
+> covered per-spell during the regular review.
+
 **P2a — Pure-numeric fixed ladders → collapse to the official `(+N)` idiom.** Verified
 pure (no qualitative change between tiers): gift-of-the-archmage (two identical +2
 tiers), mystic-negation, monstrous-copy-eye-stalks (5e original WAS linear +1/level),
@@ -78,6 +87,12 @@ were later found already-adjudicated by the digest's own T5-keep appendix (compr
 
 ## POLICY CARD P3 — Condition-mapping extensions (T8, 5 spells)
 
+> **DEALT 2026-07-26 — RATIFIED, all four mappings**, with **Stunned (not Paralyzed)
+> for gravity-anvil** (stakeholder: Stunned is strictly weaker — Stunned 3 ≈ Paralyzed,
+> pick the weaker register). cone-of-decay→Drained · fast-forward→Drained at base rank ·
+> fumble + weight-of-the-world→Clumsy (fumble's non-stacking Clumsy-1 heighten tier
+> collapses). Apply in the policy sweep.
+
 The brief maps Str→Enfeebled / Dex→Clumsy / Con→Drained and says flag beyond the
 exemplars. The fleet surfaced four extensions to ratify:
 - gravity-anvil: bespoke "can't act" state → **Paralyzed** (or Stunned; pick register).
@@ -90,6 +105,14 @@ exemplars. The fleet surfaced four extensions to ratify:
 *Staff lean:* ratify all four; they're the brief's own table applied honestly.
 
 ## POLICY CARD P4 — T6 disposition defaults (the big one: ~100 rows)
+
+> **DEALT 2026-07-26.** **P4a RATIFIED** (translate invented flavor back to the plain
+> register). **P4b RATIFIED w/ POWER GUARD** — restore silently-dropped clauses ONLY
+> where restoration doesn't meaningfully change power; anything power-shifting gets
+> flagged instead of restored. **P4c NOT dealt as chat cards** — stakeholder redirect:
+> surface the per-spell decisions as CONTEXT IN THE SCRIPTORIUM (review-ui) so they're
+> handled during his own review pass, not one-at-a-time in chat. Part B below feeds
+> that integration, not a card-dealing session.
 
 This card FORMALIZES the still-open D13-a "translation-not-rewrite" doctrine from
 triage §13b Lane 2 — the dossier partitions independently converged on the same

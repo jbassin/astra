@@ -28,7 +28,7 @@
       }
     },
     "description": {
-      "value": "<p>Time thickens around a mighty creature, dragging at its limbs and dulling the edge of its greatness. The target must attempt a Fortitude save.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> For the duration, the creature can't use mythic abilities (abilities with the mythic trait) or spend Mythic Points.</p><p><strong>Failure</strong> As success, and the creature also can't take reactions.</p><p><strong>Critical Failure</strong> As failure, and the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p>"
+      "value": "<p>You slow down the flow of time around a mighty creature. The target must attempt a Fortitude save.</p><p><strong>Critical Success</strong> The creature is unaffected.</p><p><strong>Success</strong> For the duration, the creature can't use mythic abilities (abilities with the mythic trait) or spend Mythic Points.</p><p><strong>Failure</strong> As success, and the creature also can't take reactions.</p><p><strong>Critical Failure</strong> As failure, and the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p>"
     },
     "duration": {
       "sustained": false,

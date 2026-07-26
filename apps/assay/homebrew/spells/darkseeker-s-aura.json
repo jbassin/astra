@@ -42,7 +42,7 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>A swirling mist of corrosive black vapor from the plane of Gehenna engulfs your body. For the duration, any creature that hits you with a melee Strike takes 2d6 acid damage.</p><p>As a 2-action activity, you can focus the vapor into a single corrosive burst against one creature within melee reach. Make a melee spell attack roll against that creature. On a hit, the target takes 8d6 acid damage. This attack ends the aura immediately; the vapor is entirely consumed.</p><hr /><p><strong>Heightened (+1)</strong> The aura's retaliation damage increases by 1d6, and the focused attack damage increases by 2d6.</p>"
+      "value": "<p>A swirling mist of corrosive black vapor from the plane of Gehenna engulfs your body. For the duration, any creature that hits you with a melee Strike takes 2d6 acid damage.</p><p>As a 2-action activity, you can focus the vapor into a single corrosive burst against one creature within melee reach. Make a melee spell attack roll against that creature. On a hit, the target takes 8d6 acid damage. This attack ends the aura immediately.</p><hr /><p><strong>Heightened (+1)</strong> The aura's retaliation damage increases by 1d6, and the focused attack damage increases by 2d6.</p>"
     },
     "duration": {
       "sustained": false,

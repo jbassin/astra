@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You compress the ambient air around a creature you touch, hardening it into a near-solid shell of force-locked atmosphere. For the duration, the target gains resistance 10 to bludgeoning, piercing, slashing, and force damage. You cannot have this spell active on more than one creature at a time; casting it again ends the previous casting.</p><hr /><p><strong>Heightened (+1)</strong> The resistance increases by 5.</p>"
+      "value": "<p>You compress the ambient air around a willing creature you touch, hardening it into a near-solid shell of force-locked atmosphere. For the duration, the target gains resistance 10 to bludgeoning, piercing, slashing, and force damage. You cannot have this spell active on more than one creature at a time; casting it again ends the previous casting.</p><hr /><p><strong>Heightened (+1)</strong> The resistance increases by 5.</p>"
     },
     "duration": {
       "sustained": false,

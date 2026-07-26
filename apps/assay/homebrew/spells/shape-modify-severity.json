@@ -23,18 +23,16 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell; if you are not, the spell fails with no effect. You hone the natural weapons of your current form to vicious, almost painful keenness, trading reliable aim for devastating power. For the duration, your unarmed Strikes in your current form deal 2d6 additional damage, but take a -2 circumstance penalty to attack rolls.</p><hr /><p><strong>Heightened (5th)</strong> The bonus damage increases to 3d6 and the attack roll penalty is reduced to -1.</p><p><strong>Heightened (7th)</strong> The bonus damage increases to 4d6. The attack roll penalty is removed entirely.</p>"
+      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell; if you are not, the spell fails with no effect. You increase the sharpness of your natural weapons, but blunt your senses in the process. For the duration, your unarmed Strikes in your current form deal 2d6 additional damage, but take a -2 circumstance penalty to attack rolls.</p><hr /><p><strong>Heightened (+2)</strong> The bonus damage increases by 1d6, and the attack roll penalty is reduced by 1.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "until your polymorph effect ends"
     },
     "heightening": {
-      "levels": {
-        "5": {},
-        "7": {}
-      },
-      "type": "fixed"
+      "damage": {},
+      "interval": 2,
+      "type": "interval"
     },
     "level": {
       "value": 3

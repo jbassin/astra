@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You inscribe a memetic language-matrix into the minds of up to four willing creatures, touching each in turn as part of the casting. For the duration, each target can understand any language they read or hear. In addition, each target can speak in any language they understand through this spell as long as they are physically capable of speech.</p><hr /><p><strong>Heightened (+1)</strong> You can affect one additional willing creature.</p>"
+      "value": "<p>You grant the ability to understand any language to up to four willing creatures, touching each in turn as part of the casting. For the duration, each target can understand any language they read or hear. In addition, each target can speak in any language they understand through this spell as long as they are physically capable of speech.</p><hr /><p><strong>Heightened (+1)</strong> You can affect one additional willing creature.</p>"
     },
     "duration": {
       "sustained": false,

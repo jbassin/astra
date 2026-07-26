@@ -23,18 +23,16 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell; if you are not, the spell fails with no effect. You elongate and lighten the limbs of your current form for explosive mobility, trading defense for speed. For the duration, your Speeds increase by 20 feet for all movement types available to your current form, but you take a -2 circumstance penalty to AC.</p><hr /><p><strong>Heightened (5th)</strong> The Speed increase rises to 30 feet, and the AC penalty is reduced to -1.</p><p><strong>Heightened (7th)</strong> The Speed increase rises to 40 feet, and the AC penalty is removed entirely.</p>"
+      "value": "<p>You draw upon the collective's memory of polymorphing to refine your current form. You must be polymorphed to Cast this Spell; if you are not, the spell fails with no effect. You increase the speed of your current form, but decrease its padding. For the duration, your Speeds increase by 20 feet for all movement types available to your current form, but you take a -2 circumstance penalty to AC.</p><hr /><p><strong>Heightened (+2)</strong> The Speed increase rises by 10 feet, and the AC penalty is reduced by 1.</p>"
     },
     "duration": {
       "sustained": false,
       "value": "until your polymorph effect ends"
     },
     "heightening": {
-      "levels": {
-        "5": {},
-        "7": {}
-      },
-      "type": "fixed"
+      "damage": {},
+      "interval": 2,
+      "type": "interval"
     },
     "level": {
       "value": 3

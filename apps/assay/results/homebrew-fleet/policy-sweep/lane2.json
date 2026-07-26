@@ -1,0 +1,55 @@
+{
+  "edits": [
+    {
+      "slug": "gravity-anvil",
+      "rule": "P3/T8",
+      "field": "system.description.value (Critical Failure line)",
+      "before_quote": "The creature takes double damage and is incapacitated until the end of its next turn, unable to use actions, reactions, or free actions. At the end of its turn, it may attempt another Fortitude save; on a success the incapacitation ends.",
+      "after_quote": "The creature takes double damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned} until it succeeds at a Fortitude save, which it can attempt at the end of each of its turns.",
+      "corpus_citation": "apps/codex/data/corpus/condition/stunned.json: \"You've become senseless. You can't act.\" — confirms Stunned is the correct named-condition target for the bespoke \"can't act\" state. apps/codex/data/corpus/creature/ankylosaurus@legacy.json: \"...it's stunned until the end of its next turn\" — official precedent for bare Stunned (no value) + 'until X' duration idiom. apps/codex/data/corpus/spell/darkened-eyes.json (Core Rulebook, official): \"...the target is also [blinded] for the duration. It can attempt a new save at the end of each of its turns. If it succeeds, it's no longer blinded...\" — official precedent for the repeat-save-to-end-each-turn structure paired with a named condition. apps/assay/vendor/run_balance/base_spells_5e/gen_homebrew.json (Gravity Anvil, 5e original): \"An incapacitated creature can repeat the saving throw at the end of each of its turns; a successful save ends the incapacitation\" — confirms the repeat-save structure is the faithful 5e carry, which the rewrite preserves.",
+      "notes": "Stakeholder ratified Stunned over Paralyzed 2026-07-26 (see ledger below). Register choice deliberately weaker than the source's plain no-action-except-Recall-Knowledge framing per the stakeholder's own reasoning. No structural-field lockstep needed: system.duration.value stays \"varies\", system.heightening/traits untouched, neither references the incapacitation wording."
+    },
+    {
+      "slug": "fumble",
+      "rule": "P3/T8",
+      "field": "system.description.value (Critical Failure line + Heightened(6th) line)",
+      "before_quote": "As failure, but the target also takes a -2 status penalty to Reflex saves for the duration, and the initial Will save at the end of each of its turns is not granted. Instead, the target must succeed at two consecutive Will saves (one at the end of a turn and one at the start of the next) before the effect ends.</p><hr /><p><strong>Heightened (6th)</strong> The penalty to Reflex saves on a critical failure increases to -3, and the spell also imposes @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 1} on a critical failure for the duration.",
+      "after_quote": "As failure, but the target also becomes @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 1} for the duration, and the initial Will save at the end of each of its turns is not granted. Instead, the target must succeed at two consecutive Will saves (one at the end of a turn and one at the start of the next) before the effect ends.</p><hr /><p><strong>Heightened (6th)</strong> On a critical failure, the target becomes @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 2} instead of Clumsy 1.",
+      "corpus_citation": "sweep-brief-v3.md T8: \"...Dex-based -> Clumsy... Earlier-review exemplar: 'It becomes Clumsy 1 and takes a -1 status penalty...' replacing a bespoke stack.\" apps/assay/homebrew/spells/fast-forward.json is the in-store exemplar for the @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy N} reference format, mirrored verbatim here.",
+      "notes": "Contingent fix applied per CARDS.md:383 disposition: base -2/-3 Reflex penalty -> Clumsy 1/2 (T8's calibrated Dex exemplar); the Heightened(6th) tier's separate +Clumsy-1 stack (same status-penalty type, does not stack per PF2e rules) collapses into a single Clumsy 2 result on the crit-fail tier, exactly as the ratified card specifies (CARDS.md P3 card + row-383 disposition: 'the crit-fail tier resolves to a single Clumsy 2'). Escape-valve/movement-trigger mechanics (commit f2bccfe) untouched -- not in the edited spans."
+    },
+    {
+      "slug": "weight-of-the-world",
+      "rule": "P3/T8",
+      "field": "system.description.value (Failure + Critical Failure lines)",
+      "before_quote": "The creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} for 1 minute and takes a –2 status penalty to attack rolls and Strength-based skill checks. At the end of each of its turns, the affected creature can attempt a new Fortitude save; on a success, the effect ends.</p><p><strong>Critical Failure</strong> As failure, but the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 2} for 1 minute and the status penalty increases to –3.",
+      "after_quote": "The creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} for 1 minute and becomes @UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled 2} and @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 2}. At the end of each of its turns, the affected creature can attempt a new Fortitude save; on a success, the effect ends.</p><p><strong>Critical Failure</strong> As failure, but the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 2} for 1 minute and is @UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled 3} and @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 3} instead.",
+      "corpus_citation": "apps/assay/homebrew/spells/fast-forward.json Failure/Critical-Failure lines (\"...becomes Enfeebled 2 and Clumsy 2...\" / \"...Enfeebled 3 and Clumsy 3 instead...\") are the stakeholder-ratified Card-2 exemplar this mirrors exactly, including the crit-fail one-step-up-on-both-conditions scaling.",
+      "notes": "Both the Str axis (attack rolls + Str-based skill checks -> Enfeebled) and the previously-dropped Dex axis (per CARDS.md:882, the store had silently dropped the 5e original's Dexterity-based-check penalty -> Clumsy) are restored via the joint Enfeebled+Clumsy mapping, per CARDS.md:886 disposition (\"the joint card should decide whether to apply Enfeebled + Clumsy together... instead of a flat, Str-only status penalty\"). Existing Slowed 1/2 values and the 1-minute duration are untouched, exactly as scoped. Zero change to anything else: the T6 dropped-Dash-exhaustion clause (CARDS.md:877/880, no prior ruling, a separate open CARD) was left alone -- see skips. Heightened(+2) radius line untouched (DIGEST already confirmed non-bloat, unrelated to T8)."
+    },
+    {
+      "slug": "touch-of-madness",
+      "rule": "P3/T3",
+      "field": "system.description.value (Critical Failure line)",
+      "before_quote": "As failure, and the target immediately Strides toward the nearest visible creature and attacks it, regardless of allegiance (as the confusion condition for 1 round), before the longer-term curse takes hold.",
+      "after_quote": "As failure, and the target is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} for 1 round before the longer-term curse takes hold.",
+      "corpus_citation": "apps/assay/homebrew/spells/cerebral-disruption.json Critical Failure line: \"As failure, and the target is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} for 1 round.\" -- the store's own sibling idiom for this exact situation, mirrored verbatim (same phrase shape, same @UUID reference format). apps/codex/data/corpus/condition/confused.json: \"You don't have your wits about you, and you attack wildly... you don't treat anyone as your ally... You use all your actions to Strike...\" -- confirms the deleted descriptive clause (\"Strides toward the nearest visible creature and attacks it, regardless of allegiance\") is redundant restatement of what the Confused condition itself already governs, not lost information.",
+      "notes": "Direct condition application replaces the comparison-style parenthetical per the assignment. The damage-free degree structure (Success/Failure/Critical Failure boundaries, the permanent Fractures-of-Madness curse, the counteract-to-remove clause) is completely untouched -- settled per triage.md §10 Stakeholder B, 2026-07-22 (CARDS.md:839/844)."
+    }
+  ],
+  "skips": [
+    {
+      "slug": "cone-of-decay",
+      "rule": "P3/T8",
+      "reason": "The 5e permanent-Con-loss undead penalty was converted to bonus damage instead of Drained. This is a prior-decision-settled row, not an open P3 conversion: the stakeholder session explicitly reviewed and KEPT the current design (undead-crit-fail 4d10 bonus damage counted at full weight against the r7 budget).",
+      "citation": "homebrew-triage.md §2 (item 1, stakeholder session, 2026-07-22): \"Cone of Decay | 7 | KEPT 8d10 -- verdict = undead-crit-fail 4d10 counted at full weight (base alone -1.18, riders pay it); not-halved caveat dropped.\" Also CARDS.md:177-179 (Cone of Decay dossier) and MEMORY.md's own P3 ratification note: \"cone-of-decay->Drained\" is listed among the four P3 mappings in the policy-card header, but the per-spell dossier + triage record show this exact row was already adjudicated and KEPT as bonus damage in the 2026-07-22 session -- treating it as still-open would silently reverse a stakeholder decision, so it is skipped per the assignment's explicit instruction."
+    },
+    {
+      "slug": "fast-forward",
+      "rule": "P3/T8",
+      "reason": "fast-forward's Card-2 named-conditions ruling deliberately carries the Con axis on the Heightened(8th) Drained rider, not at base rank -- this is itself the exemplar the other four spells' conversions mirror, and its own T8/Con-mapping question is a separate, already-settled design call (base rank has no Con axis to convert; Drained is added only at H8).",
+      "citation": "CARDS.md:338 (Fast Forward dossier): \"T8 (POLICY:P3-condition-map) -- Con-based disadvantage -> Drained per the brief's mapping, but only added at Heightened(8th), not base rank.\" fast-forward.json's own description.value already shows Drained 2/3 gated behind \"Heightened (8th)\", confirming the current text matches this settled placement; no edit made to this file (used only as the read-only Card-2 exemplar per the assignment's READ FIRST instructions)."
+    }
+  ],
+  "flags": []
+}

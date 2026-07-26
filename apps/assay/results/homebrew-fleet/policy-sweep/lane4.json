@@ -1,0 +1,116 @@
+{
+  "edits": [
+    {
+      "slug": "lucky-ward",
+      "rule": "FIX",
+      "field": "system.description.value",
+      "before_quote": "must attempt a Will save; resolve the save separately for each enemy, and once an enemy has rolled, it doesn't roll again from this casting.",
+      "after_quote": "must attempt a Will save; once an enemy has rolled, it doesn't roll again from this casting.",
+      "notes": "CARDS.md L500 (T4 FIX disposition): dropped the redundant 'resolve the save separately for each enemy' restatement (T4 over-explanation — 'each enemy ... must attempt a Will save' already implies per-enemy resolution). Kept 'once an enemy has rolled, it doesn't roll again from this casting' verbatim per the assignment — that's the load-bearing anti-reroll-cheese rule, not a restatement. Did not touch the T5 heighten ladder or either T6 row (both SETTLED per prior INDEX.md L145 citation, held cards)."
+    },
+    {
+      "slug": "monstrous-copy-shell",
+      "rule": "FIX",
+      "field": "system.description.value",
+      "before_quote": "Trigger: A ranged spell attack roll targets you, a line spell would pass through your space, or you would be targeted by a spell that requires a ranged attack roll; Frequency: once per round.",
+      "after_quote": "Trigger: A ranged spell attack roll targets you, or a line spell would pass through your space; Frequency: once per round.",
+      "corpus_citation": "5e original (apps/assay/vendor/run_balance/base_spells_5e/gen_homebrew.json, 'Monstrous Copy: Shell'): single trigger names 3 distinct categories ('magic missile spell, a line spell, or a spell that requires a ranged attack roll'); store's translation of 'magic missile' collapsed to the same wording as its own third clause ('a ranged spell attack roll targets you' == 'targeted by a spell that requires a ranged attack roll'), duplicating one condition instead of stating two.",
+      "notes": "Merged the duplicate 1st/3rd clauses into the two genuinely distinct triggers per CARDS.md L549 FIX disposition. Frequency line and the AC/resistance addition (both CARD/held per L548 and L550) left untouched."
+    },
+    {
+      "slug": "sphere-of-ruin",
+      "rule": "FIX",
+      "field": "system.description.value",
+      "before_quote": "<p><strong>Failure</strong> Roll 1d6 to determine the effect: 1–3: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}; 4–5: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} until the start of your next turn; 6: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} until the start of your next turn.</p><p><strong>Critical Failure</strong> Roll 1d6 to determine the effect: 1–3: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2}; 4–5: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} for 1 round and must attempt a Will save at the start of its next turn to end the confusion; 6: the creature Strides in a random direction using its full Speed and falls @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone} at the destination.</p>",
+      "after_quote": "<p><strong>Failure Table</strong></p><table><thead><tr><th>d6</th><th>Effect</th></tr></thead><tbody><tr><td>1–3</td><td>The creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</td></tr><tr><td>4–5</td><td>The creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} until the start of your next turn.</td></tr><tr><td>6</td><td>The creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} until the start of your next turn.</td></tr></tbody></table><p><strong>Critical Failure Table</strong></p><table><thead><tr><th>d6</th><th>Effect</th></tr></thead><tbody><tr><td>1–3</td><td>The creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2}.</td></tr><tr><td>4–5</td><td>The creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} for 1 round and must attempt a Will save at the start of its next turn to end the confusion.</td></tr><tr><td>6</td><td>The creature Strides in a random direction using its full Speed and falls @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone} at the destination.</td></tr></tbody></table><p><strong>Critical Success</strong> The creature is unaffected and is temporarily immune to this casting for 10 minutes.</p><p><strong>Success</strong> The creature is unaffected.</p><p><strong>Failure</strong> Roll 1d6 on the Failure table to determine the effect.</p><p><strong>Critical Failure</strong> Roll 1d6 on the Critical Failure table to determine the effect.</p>",
+      "corpus_citation": "Format mirrors apps/assay/homebrew/spells/cerebral-disruption.json and monstrous-copy-eye-stalks.json (<table><thead><tr><th>...</th></tr></thead><tbody>...) — the store's existing named-roll-table convention. Since sphere-of-ruin has two DIFFERENT d6 outcome sets (Failure vs Critical Failure, not one table used twice like cerebral-disruption), built two named tables ('Failure Table' / 'Critical Failure Table') captioned by <strong> headers so each degree-of-success line can name which table it rolls on unambiguously. Both tables placed before the degree-of-success block, same position cerebral-disruption uses.",
+      "notes": "The d6 outcomes themselves are byte-identical, only reformatted into table rows; zero mechanical change per CARDS.md L762 FIX disposition."
+    },
+    {
+      "slug": "suspension",
+      "rule": "FIX",
+      "field": "system.description.value",
+      "before_quote": "The vines extend and retract as you move, always anchoring to the nearest surface. For the duration,",
+      "after_quote": "The vines extend and retract as you move, always anchoring to the nearest surface. If a vine is destroyed, it's immediately replaced. For the duration,",
+      "corpus_citation": "5e original: 'if any of the vines are destroyed they are immediately replaced with more vines' — dropped from the store version entirely.",
+      "notes": "Restored the dropped durability clause per CARDS.md L776 FIX disposition, direct port translated to the store's existing plain register. Left the separate 'natural expiration landing' T6 flag untouched (CARD, not FIX, not in this assignment)."
+    },
+    {
+      "slug": "suspension",
+      "rule": "FIX",
+      "field": "system.description.value",
+      "before_quote": "If you are falling when you cast this spell (using a reaction or if you lose consciousness), the vines catch you, negating all falling damage.",
+      "after_quote": "If you are falling when you cast this spell (using a reaction), the vines catch you, negating all falling damage.",
+      "notes": "Struck the 'or if you lose consciousness' arm per CARDS.md L775 (T1 CARD, lean strike): no PF2e-legal mechanism lets an unconscious creature cast a reaction spell, so as written that arm was mechanically meaningless. Kept the '(using a reaction)' arm per the assignment's explicit instruction to keep it if it does real work; flagging below that this spell's own system.time.value is '2' (a two-action cast), not a reaction, so the surviving 'using a reaction' arm's fit with this spell's own casting-time field is itself unclear — left untouched since only the unconsciousness arm was in scope, but noting the residual ambiguity for the next reviewer rather than freelancing further."
+    },
+    {
+      "slug": "wall-of-time",
+      "rule": "FIX",
+      "field": "system.description.value",
+      "before_quote": "You tear a rift in linear time and shape it into a translucent, rippling wall of temporal energy at a point within range. The wall is intangible;",
+      "after_quote": "You tear a rift in linear time and shape it into a translucent, rippling wall of temporal energy at a point within range, forming either a straight wall up to 60 feet long, 20 feet high, and 1 foot thick, or a ring up to 20 feet in diameter, 20 feet high, and 1 foot thick. The wall is intangible;",
+      "corpus_citation": "5e original: 'You can make a straight wall up to 60 feet long, 20 feet high, and 1 foot thick, or a circular wall up to 20 feet high, 1 foot thick, and forming a closed circle 20 feet in diameter.' Also matches the file's own adapterWarnings fossil text verbatim ('a straight wall up to 60 feet long and 20 feet high, or a ring 20 feet in diameter and 20 feet high, 1 foot thick'). Phrasing idiom ('either a straight ... or a ... ring, with the same height') mirrors the store's own wall-of-fire.json prose exactly ('either a 5-foot-thick wall of flame in a straight line up to 60 feet long and 10 feet high, or a 5-foot-thick, 10-foot-radius ring of flame with the same height').",
+      "notes": "STRUCTURAL FIELD FINDING: verified system.area against all 14 official wall-* spells in apps/codex/data/snapshots/foundry/pf2e-8.3.0/packs/pf2e/spells/spells/ (wall-of-stone, wall-of-fire, wall-of-ice, wall-of-force, wall-of-metal, wall-of-flesh, wall-of-mirrors, wall-of-shadow, wall-of-thorns, wall-of-virtue, wall-of-water, wall-of-wind, wall-of-radiance, wall-of-shrubs) — every single one carries system.area:null and system.target.value:\"\", with wall dimensions expressed ONLY in prose, never structurally. This contradicts the assignment's premise that official wall spells structure system.area for dimensions. The coherent action mirroring the verified official convention is: leave system.area as null (unchanged, already null) and restore the dimensions in prose only, which is what this edit does. Did not touch the crossing-mechanic design or the Heightened(7th) block (both held cards per CARDS.md L872-873)."
+    },
+    {
+      "slug": "legend-killer",
+      "rule": "P4a",
+      "field": "system.description.value",
+      "before_quote": "Time thickens around a mighty creature, dragging at its limbs and dulling the edge of its greatness. The target must attempt a Fortitude save.",
+      "after_quote": "You slow down the flow of time around a mighty creature. The target must attempt a Fortitude save.",
+      "corpus_citation": "5e original: 'You slow down the flow of time around a legendary creature, robbing it of the speed necessary to perform legendary actions.' Store already uses 'mighty creature' as its PF2e-native translation of 'legendary creature' (kept, matches the settled mythic-vs-legendary-actions redesign) — only the ornate opening clause was replaced with the plain register.",
+      "notes": "Per CARDS.md L483/L486 (T6, low-stakes CARD) — mythic-redesign mechanics (untouched) are a separate, already-settled question; this edit is pure register restoration."
+    },
+    {
+      "slug": "mass-fluency",
+      "rule": "P4a",
+      "field": "system.description.value",
+      "before_quote": "You inscribe a memetic language-matrix into the minds of up to four willing creatures, touching each in turn as part of the casting.",
+      "after_quote": "You grant the ability to understand any language to up to four willing creatures, touching each in turn as part of the casting.",
+      "corpus_citation": "5e original: 'You grant up to four willing creatures the ability to understand any language they read or hear.' Store's 'memetic language-matrix' jargon has no 5e counterpart; the touch-each-target casting beat was kept per the assignment (necessary PF2e translation, not flavor invention).",
+      "notes": "Per CARDS.md L509/L512 (T6 CARD). Left the rest of the description (the 'For the duration, each target can understand...' sentence and the speak-clause) untouched — not flagged in the dossier and outside this row's scope."
+    },
+    {
+      "slug": "mental-balance",
+      "rule": "P4a",
+      "field": "system.description.value",
+      "before_quote": "You carefully strip away all emotional attachments, cognitive biases, and memetic influence from the target's mind, leaving behind only cool reason.",
+      "after_quote": "You carefully strip away all emotional attachments, cognitive biases, and memetic influence from the target's mind.",
+      "corpus_citation": "5e original: 'You temporarily remove all of a creature's emotional attachments or biases.' — no closing flourish equivalent to 'leaving behind only cool reason' exists in 5e; struck it, translating back to the plain register by dropping the decorative tail rather than rewording it (nothing in 5e to translate it to).",
+      "notes": "Per CARDS.md L516/L524 (T6, one of two flavor-only rows in this card). Did not touch the auto-Perception clause, the 'cannot lie' clause, or the 6th-rank heighten tier — all explicitly held per the assignment."
+    },
+    {
+      "slug": "mental-balance",
+      "rule": "P4a",
+      "field": "system.description.value",
+      "before_quote": "all its decisions must be logically consistent with the available evidence and any applicable laws or codes it is bound by.",
+      "after_quote": "all its decisions must follow the letter of the law it is bound by.",
+      "corpus_citation": "5e original: 'All decisions the creature makes while under the spell's influence must follow the spirit and letter of the law...' — used 'follow the letter of the law' (omitting 'spirit', since the store's narrower 'letter'-only framing pairs with its separately-held 'cannot lie'/'logically consistent' clauses and adding 'spirit' back would restate an unbudgeted restriction beyond a pure register change).",
+      "notes": "Per CARDS.md L518/L524 (T6, second flavor-only row in the same card). Did not touch the favoritism/loyalty clause immediately before it or anything after — minimal targeted substitution only."
+    },
+    {
+      "slug": "tag",
+      "rule": "P4a",
+      "field": "system.description.value",
+      "before_quote": "you glow softly, visibly suffused with unstable force.",
+      "after_quote": "you glow brightly.",
+      "corpus_citation": "5e original: 'You draw the unstable magic essence from between planes into your body, glowing brightly in the process.' Store reversed the intensity ('softly') and added ornamentation ('visibly suffused with unstable force'); restored the plain 'glowing brightly'.",
+      "notes": "Per CARDS.md L783/L792 (T6 verify2). Did not touch the delivery-mode count or the hold-penalty/Transfer-Count mechanic — both are separate held CARD rows in the same dossier entry, explicitly out of scope."
+    },
+    {
+      "slug": "time-step",
+      "rule": "P4a",
+      "field": "system.description.value",
+      "before_quote": "You briefly step forward through time, vanishing from your current location and skipping ahead by one tick of the clock.",
+      "after_quote": "You briefly step forward through time, vanishing from your current location.",
+      "corpus_citation": "5e original: 'You briefly step forward in time. You disappear from your location and reappear at the beginning of your next turn...' — no 'tick of the clock' phrase or equivalent exists in 5e; it's invented flavor with no mechanical content, so struck rather than reworded.",
+      "notes": "Per CARDS.md L824/L826 (T6). Left the four-clause protection enumeration ('cannot be targeted... cannot be detected... cannot observe or interact... not affected by anything') untouched — that is a separate, held T6 flag (a genuine content-expansion question, not a register one) explicitly out of scope for this row."
+    }
+  ],
+  "skips": [],
+  "flags": [
+    "wall-of-time: the assignment's premise that official wall spells structure system.area for dimensions did not hold on inspection (verified null across all 14 official wall-* spells in the codex Foundry snapshot) — resolved by leaving system.area null and restoring dimensions in prose only; see that edit's notes for the full citation. Flagging in case a downstream reviewer expected a populated area object.",
+    "suspension: the surviving '(using a reaction)' parenthetical arm sits oddly against this spell's own system.time.value of '2' (a two-action spell, not a reaction) — its own internal coherence is questionable, but striking it was outside this row's scope (only the unconsciousness arm was assigned). Left as a CARD-worthy residue for the next review pass rather than freelancing a second strike.",
+    "mass-fluency: after this edit, the immediately-following sentence ('For the duration, each target can understand any language they read or hear.') now closely echoes the rewritten opening clause — a possible T2 redundancy — but it was not flagged in the dossier and is outside this P4a row's scope, so left untouched."
+  ]
+}
