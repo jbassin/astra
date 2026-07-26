@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You twist luck around your body like a shimmering mirror. Until the start of your next turn, you gain resistance 30 to all damage from spells and magical effects. If any single source deals damage that you reduce to 0 with this resistance, you immediately deal force damage equal to the amount reduced to 0 to the source of that damage (if the source is a creature, it takes this force damage with no save; if the source is an area or trap, the damage is simply negated).</p><hr /><p><strong>Heightened (9th)</strong> Resistance increases to 40 and applies to all damage, not just magical.</p>"
+      "value": "<p>You twist luck around your body like a shimmering mirror. Until the start of your next turn, you gain resistance 30 to all damage from spells and magical effects. If any single source deals damage that you reduce to 0 with this resistance, you immediately deal force damage equal to the amount reduced to 0 to the source of that damage; if the source is a creature, it takes this force damage with no save.</p><hr /><p><strong>Heightened (9th)</strong> Resistance increases to 40 and applies to all damage, not just magical.</p>"
     },
     "duration": {
       "sustained": false,

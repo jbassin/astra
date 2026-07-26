@@ -1,0 +1,378 @@
+[
+  {
+    "slug": "hypercompression",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "The area within 30 feet of the orb counts as difficult terrain for any creature moving away from the orb.",
+        "action": "flag",
+        "why": "original had a two-tier escalating movement penalty (4 ft of movement per 1 ft within 10 ft, 2 ft per 1 ft within 30 ft); store flattened this to a single difficult-terrain band at 30 ft only."
+      },
+      {
+        "rule": "T6",
+        "quote": "Small or smaller unsecured nonmagical objects within 5 feet of the orb are automatically destroyed at the end of each of your turns.",
+        "action": "flag",
+        "why": "original also had unsecured objects fully within the area pulled into the orb; that half of the design is dropped entirely, not just this destruction clause."
+      },
+      {
+        "rule": "T5",
+        "quote": "The damage at 5 feet increases by 1d10.",
+        "action": "flag",
+        "why": "keep: correct flat +1d10 idiom, base 8d10 stated in body."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "illusory-illusion",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "The creature can attempt a new Will save at the end of each of its turns if it takes damage from the 'illusory' source.",
+        "action": "flag",
+        "why": "original granted the re-save via EITHER careful examination OR taking damage; store kept only the damage trigger and dropped the examination trigger."
+      },
+      {
+        "rule": "T5",
+        "quote": "The maximum size of the chosen target increases to a 40-foot cube, and the save DC for per-turn saves increases by 2.",
+        "action": "flag",
+        "why": "keep: matches the (+N) idiom bundling two scaled values in one clause, both stated in body."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "incensed-bestial-rage",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "You cannot use the Sustain action to alter the details of the original polymorph spell; the incensed form is locked in its most feral configuration.",
+        "action": "flag",
+        "why": "reads as defensive fencing around a Sustain-action interaction not in the original; could instead be a genuine override if the base polymorph normally allows Sustain-shifting — stakeholder call, not struck outright."
+      },
+      {
+        "rule": "T5",
+        "quote": "The additional damage increases by 1d6 and the temporary HP increases by 10.",
+        "action": "flag",
+        "why": "keep: correct combined +2 idiom, base 2d6 damage / 20 temp HP stated in body."
+      },
+      {
+        "rule": "T6",
+        "quote": "You gain 20 temporary HP and a +2 status bonus to Athletics checks.",
+        "action": "flag",
+        "why": "original's design gave advantage on your own melee attacks in exchange for enemies also getting advantage against you; store dropped the offensive-advantage half entirely and substituted unrelated benefits (temp HP, Athletics) that aren't in the original at all."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "inquisition",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Additionally, the spell's duration increases to sustained up to 1 hour.",
+        "action": "flag",
+        "why": "keep: fixed tiers (4th/6th) grant qualitatively different targeting rules, not a pure numeric ladder."
+      },
+      {
+        "rule": "T6",
+        "quote": "the echo may attempt another Will save (the same DC, no penalty) to resist answering that question.",
+        "action": "flag",
+        "why": "original's secondary resistance save was rolled with disadvantage (harder to succeed, i.e. more likely to spill the secret); store flattened it to a neutral same-DC reroll, softening the original's escalating design."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "instant-exit",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "The portal is visible and any creature can observe it before choosing whether to step through.",
+        "action": "delete",
+        "why": "restates the self-evident — a visible, shimmering portal can obviously be seen and observed before use; pre-answers an interaction nobody asked about."
+      },
+      {
+        "rule": "T5",
+        "quote": "The malfunction result on the d20 expands to 1–3, and you can set a rough directional preference for the destination; the GM chooses the exact location within 90 degrees of your indicated direction.",
+        "action": "flag",
+        "why": "keep: fixed tiers add qualitatively different mechanics (choice of shared/separate destinations, directional control), not a pure ladder."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "jolt",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "The free action is lost if not used before the start of your next turn.",
+        "action": "delete",
+        "why": "redundant restatement — already established by 'it must use before the start of your next turn' in the granting sentence."
+      },
+      {
+        "rule": "T2",
+        "quote": "This spell does not grant extra actions that persist into the target's own turn.",
+        "action": "delete",
+        "why": "restates a rule already guaranteed by the 'before the start of your next turn' window, which by definition excludes the target's own turn."
+      },
+      {
+        "rule": "T5",
+        "quote": "Each target may use the free action for a Strike, a Stride, or both (in any order).",
+        "action": "flag",
+        "why": "keep: fixed tiers add qualitatively different range/target-count and then unlock combined use, not a pure ladder."
+      },
+      {
+        "rule": "T6",
+        "quote": "This free action can be used to make one Strike with a weapon or unarmed attack the target currently has at the ready, or to Stride up to 10 feet.",
+        "action": "flag",
+        "why": "original granted EACH target both an attack and a 10-foot move automatically; store's base version only grants one or the other, reserving 'both' for the +9th heightened tier — a flattening of the base design into an upgrade path that wasn't in the original."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "kosmoturgist-s-armor",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(to 15 at 7th, 20 at 8th, etc.)",
+        "action": "delete",
+        "why": "worked-example enumeration of the ladder the (+1) flat-increment line already fully specifies."
+      },
+      {
+        "rule": "T5",
+        "quote": "The resistance increases by 5 (to 15 at 7th, 20 at 8th, etc.).",
+        "action": "flag",
+        "why": "keep: flat +5 idiom is correct, base resistance 10 stated in body; the worked-example tail is separately struck under T1."
+      },
+      {
+        "rule": "T6",
+        "quote": "You compress the ambient air around a creature you touch, hardening it into a near-solid shell of force-locked atmosphere.",
+        "action": "flag",
+        "why": "original specified 'one willing creature'; store's body prose drops the willing qualifier (the structural target field still says '1 willing creature', so this is a prose-only fidelity gap, not a mechanics change)."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "kosmoturgist-s-weapon",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Attack and Defend mode damage increases by 1d10; Control mode damage increases by 1d10.",
+        "action": "rewrite",
+        "replacement": "Attack, Defend, and Control mode damage each increase by 1d10.",
+        "why": "a single +1d10 applies to all three modes; the redundant split clause is consolidated into one flat-increment sentence."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "laixa-s-expert-intuition",
+    "findings": [
+      {
+        "rule": "T4",
+        "quote": "If your Perception modifier for Sense Motive would already result in a total of 15 or higher, this spell provides no mechanical benefit, though the check still benefits from the spell's heightened awareness.",
+        "action": "delete",
+        "why": "over-explains self-evident math (using 15 as your result only helps when it beats your natural roll) and ends in a hand-wavy non-mechanical reassurance."
+      },
+      {
+        "rule": "T1",
+        "quote": "(if the GM calls for such a check)",
+        "action": "delete",
+        "why": "defensive hedging parenthetical — whether the GM calls for a check is already the GM's default call."
+      },
+      {
+        "rule": "T6",
+        "quote": "In addition, while this spell is active you cannot be magically compelled or enchanted into believing false information you have already consciously identified as false during the duration. New deceptions presented after you cast the spell that you have not examined are not automatically rejected, however.",
+        "action": "flag",
+        "why": "entire paragraph is invented content with no counterpart in the original, which was a single sentence ('you can replace the number you roll with a 15')."
+      },
+      {
+        "rule": "T5",
+        "quote": "The minimum Perception result for Sense Motive checks increases to 20, and you also gain the same minimum result on Diplomacy checks to read emotions and Deception checks to recognize that someone else is using Deception",
+        "action": "flag",
+        "why": "keep: fixed tier adds qualitatively different skills and a higher floor, not a pure numeric ladder."
+      }
+    ],
+    "clean": ["T2", "T3", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "laixa-s-historical-tracker",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(or to your Recall Knowledge)",
+        "action": "delete",
+        "why": "matches the struck exemplar pattern — a parenthetical Recall Knowledge qualifier."
+      },
+      {
+        "rule": "T5",
+        "quote": "You can identify the ancestry or creature type of the tracked creature in addition to its size and direction.",
+        "action": "flag",
+        "why": "keep: fixed tiers reveal qualitatively different information (race/type, then a proper name), not a pure ladder."
+      },
+      {
+        "rule": "T6",
+        "quote": "The duration increases to 1 hour.",
+        "action": "flag",
+        "why": "original's higher-level text only added revealed information (race, then name) with no duration scaling at all; the per-tier duration escalation (10 min to 1 hr to 8 hr) is a store invention not present in the original."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "left-hand-of-judgment",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "This spell is paired with Right Hand of Judgment. Left Hand governs the defensive reaction; Right Hand governs the offensive charge. Casters who know both may use either in the same encounter but cannot benefit from both simultaneously if both are active; casting the second suppresses the first.",
+        "action": "delete",
+        "why": "a whole spell-pairing/interaction paragraph — matches the struck 'whole class-feat interaction paragraphs' pattern."
+      },
+      {
+        "rule": "T5",
+        "quote": "The free Strike from Gravitational Counter can target any creature within 30 feet (not just the triggering attacker) as your gravitational pull redirects the energy.",
+        "action": "flag",
+        "why": "keep: fixed tiers grant qualitatively different effects (trigger widening, then retargeting), not a pure ladder."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "legend-killer",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Time thickens around a mighty creature, dragging at its limbs and dulling the edge of its greatness.",
+        "action": "flag",
+        "why": "voice check on a deliberately-redesigned spell (the mythic-vs-legendary-actions mechanics are an intentional PF2e-native redesign, not restored): the original's plain register ('You slow down the flow of time around a legendary creature, robbing it of the speed necessary to perform legendary actions') was replaced with more ornate, punched-up phrasing."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "lend-time",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You sacrifice your own turn to gift a fragment of your action-potential to a nearby ally.",
+        "action": "rewrite",
+        "replacement": "You lend your turn to a willing ally within range.",
+        "why": "invented metaphor ('action-potential') diverges from the original's plain register ('you can lend time to a creature of your choosing within range')."
+      },
+      {
+        "rule": "T5",
+        "quote": "The ally gains 2 extra actions on their inserted turn. Alternatively, you may target 2 willing allies, each gaining 1 action on an inserted partial turn instead.",
+        "action": "flag",
+        "why": "keep: fixed tier offers a qualitatively different choice (more actions for one ally vs. more targets), not a pure ladder."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "let-s-start-a-fight",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "you can't end the spell early.",
+        "action": "delete",
+        "why": "restates a default — the spell carries no dismiss trait, so it already can't be ended early; also redundant with the preceding clause in the same sentence."
+      },
+      {
+        "rule": "T5",
+        "quote": "The burst radius increases by 10 feet and the minimum group size decreases by 2.",
+        "action": "flag",
+        "why": "keep: combined (+2) idiom bundling two scaled values, both stated in body. Note: the adapter flags this tier as not structurally represented (minimum group size isn't a modeled schema field) — a pre-existing gap, untouched by this review since no value was edited."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "lockstep-fate",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "once per round",
+        "action": "delete",
+        "why": "unneeded frequency fence — the effect is already naturally bounded by 'you can hold only one roll at a time'."
+      },
+      {
+        "rule": "T2",
+        "quote": "The link ends when you discharge a held roll, when you stop sustaining the spell, or when the duration expires.",
+        "action": "rewrite",
+        "replacement": "The link ends when you discharge a held roll.",
+        "why": "trailing clauses restate sustained-spell/duration-expiry defaults."
+      },
+      {
+        "rule": "T2",
+        "quote": "each remaining link ends when it receives a discharge, when you stop sustaining the spell, or when the duration expires.",
+        "action": "rewrite",
+        "replacement": "each remaining link ends when it receives a discharge.",
+        "why": "same default-restatement trailing clause repeated in the 6th-rank tier."
+      },
+      {
+        "rule": "T5",
+        "quote": "You can target up to 3 creatures; each attempts its own save. You maintain a single pool of held rolls (maximum 2 at a time) and may assign any held roll to any linked creature's next d20.",
+        "action": "flag",
+        "why": "keep: fixed tiers add qualitatively different mechanics (multi-hold, multi-target), not a pure ladder."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "lucky-stars",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(starting with 4 at rank 5, 5 at rank 7, etc.)",
+        "action": "delete",
+        "why": "worked-example enumeration of the ladder the (+2) flat-increment line already fully specifies."
+      },
+      {
+        "rule": "T2",
+        "quote": "You cannot spend star charges for both fortune and misfortune on the same roll.",
+        "action": "delete",
+        "why": "fences an impossible edge case — fortune applies only to your own rolls and misfortune only to rolls made against you, so the 'same roll' overlap this sentence guards against can never occur."
+      },
+      {
+        "rule": "T5",
+        "quote": "You gain 1 additional star charge when you cast this spell",
+        "action": "flag",
+        "why": "keep: correct flat +1-charge idiom, base 3 charges stated in body (the worked-example tail is separately struck under T1)."
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "lucky-ward",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The status bonus and penalty both increase to +2 / -2.",
+        "action": "flag",
+        "why": "pure numeric ladder (+1 base, then +2 at 6th, +3 at 9th, penalty mirroring) split across two fixed tiers with an irregular rank interval (base 2nd, +4 ranks to 6th, +3 more to 9th) — a strike candidate for collapsing into a flat (+N) idiom, but the irregular interval means a clean collapse would move the rank thresholds; stakeholder call rather than a mechanical text edit."
+      },
+      {
+        "rule": "T6",
+        "quote": "You twist the threads of fate in a dome around yourself so that fortune favors your companions and turns its back on your foes.",
+        "action": "flag",
+        "why": "keep: voice matches the original's plain register closely enough. Per the prior review round, the dropped ally-save-half and the fixed-bonus-vs-1d4-random mechanic are deliberate pricing decisions and are not re-flagged here — only prose voice was judged for this spell."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "lyrr-s-chronomantic-shell",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The radius of the shell increases by 100 feet.",
+        "action": "flag",
+        "why": "keep: correct flat +100-ft idiom, matches the original's own higher-level rule exactly, base 100-ft radius stated in body."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  }
+]

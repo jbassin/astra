@@ -40,7 +40,7 @@
       }
     },
     "description": {
-      "value": "<p>You draw a sliver of pure, solid phlogiston from a luminous plane and let it fall to a point you can see within range. The shard detonates in a silent, blinding flare, and creatures in the area must scatter from the falling light. The shard deals 11d6 vitality damage to creatures in the area, with a basic Reflex save. The detonation also creates bright light in a 100-foot emanation from the point of impact until the end of your next turn; this light counts as natural sunlight for the purpose of effects that depend on it.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d6.</p>"
+      "value": "<p>You draw a sliver of pure, solid phlogiston from a luminous plane and let it fall to a point you can see within range. Each creature in the area must attempt a basic Reflex save against the shard's detonation, taking 11d6 vitality damage. The detonation also creates bright light in a 100-foot emanation from the point of impact until the end of your next turn; this light counts as natural sunlight for the purpose of effects that depend on it.</p><hr /><p><strong>Heightened (+1)</strong> The damage increases by 2d6.</p>"
     },
     "duration": {
       "sustained": false,

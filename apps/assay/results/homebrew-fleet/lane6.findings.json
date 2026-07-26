@@ -1,0 +1,405 @@
+[
+  {
+    "slug": "patishvat-s-perfect-pocket",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The pocket can hold items of 6 Bulk or less, up to a combined 100 Bulk.",
+        "action": "flag",
+        "why": "keep: single fixed 3rd-rank tier doubling capacity, not a bloat ladder; no collapse needed."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "pendulum",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+2)",
+        "action": "flag",
+        "why": "keep: already the correct flat idiom (interval +2 = +1 target), matches structural heightening.interval=2."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "phlogistic-shield",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(rank 5 at 5th, rank 6 at 6th, and so on)",
+        "action": "delete",
+        "why": "worked-example enumeration in parens on the (+1) heightening line; the flat sentence already states the rule."
+      },
+      {
+        "rule": "T4",
+        "quote": "The lens only blocks spells that have a point of origin or target on one side and a target or trajectory through the lens.",
+        "action": "delete",
+        "why": "redundant restatement of the blocking rule already established in the first paragraph plus the area-effect carve-out immediately prior."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: single flat +1 idiom is correct once the worked-example parenthetical is struck (see T1)."
+      }
+    ],
+    "clean": ["T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "planar-pyre",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Both the fire damage and the piercing damage each increase by 1d8.",
+        "action": "flag",
+        "why": "keep: correct flat-idiom format matching structural interval heightening on both damage components."
+      },
+      {
+        "rule": "T6",
+        "quote": "Both the fire damage and the piercing damage each increase by 1d8.",
+        "action": "flag",
+        "why": "original's higher-level clause let the caster CHOOSE only one damage type (fire or piercing) to increase per slot level; store flattened this to both types always increasing. Design divergence — verify intentional."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "planar-shield",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "This is not a spell attack; it is an automatic burst.",
+        "action": "delete",
+        "why": "pre-litigation clarification restating what's already implied by 'takes 2d6 vitality damage with no save' (no attack roll mentioned = automatic)."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> The damage per charge increases by 1d6.",
+        "action": "flag",
+        "why": "keep: flat idiom, directly matches original's per-level damage scaling."
+      },
+      {
+        "rule": "T5",
+        "quote": "The number of charges increases to 6.",
+        "action": "flag",
+        "why": "suspect bloat tier — matches the struck exemplar pattern of 'a tier extending a cap' (charge count is a numeric limit, not a qualitatively new effect); original's higher-level text only scaled damage, never charge count."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "poisoned-backflow",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "The curse does not trigger on healing potions consumed by the target or on natural healing.",
+        "action": "delete",
+        "why": "pre-answers an edge case already excluded by the trigger condition ('by Casting a Spell with the healing trait')."
+      },
+      {
+        "rule": "T3",
+        "quote": "The curse can be removed only through effects that target curses, such as @UUID[Compendium.pf2e.spells-srd.Item.Cleanse Affliction]{Cleanse Affliction}; this requires a successful counteract check against this spell's rank.",
+        "action": "rewrite",
+        "replacement": "The curse can be removed only with a successful counteract check against this spell's rank.",
+        "why": "official-spell name-drop (Cleanse Affliction) plus the self-evident 'effects that target curses' clause (T4); brief mandates curse removal be exactly one sentence."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> The void damage increases by 1d6.",
+        "action": "flag",
+        "why": "keep: flat idiom, correct format."
+      },
+      {
+        "rule": "T5",
+        "quote": "The curse also triggers when the target uses the Aid action to help another creature regain Hit Points.",
+        "action": "flag",
+        "why": "keep: fixed tier adds a genuinely different trigger vector (Aid action), not merely loosening a numeric cap."
+      }
+    ],
+    "clean": ["T1", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "preserve-foodstuffs",
+    "findings": [
+      {
+        "rule": "T4",
+        "quote": "at which point normal time resumes inside",
+        "action": "delete",
+        "why": "over-explains the self-evident consequence of 'the spell ends immediately when the container is opened'."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (3rd)</strong> The container volume increases to 50 cubic feet. You can also target multiple sealed containers up to that combined volume.",
+        "action": "flag",
+        "why": "keep: single fixed tier bundles a genuinely different capability (multi-container targeting), not pure numeric bloat."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "propagating-blast",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(apply all weapon properties, traits, and any rune effects; this does not consume an additional action)",
+        "action": "rewrite",
+        "replacement": "; this does not consume an additional action.",
+        "why": "enumeration ('weapon properties, traits, and any rune effects') is self-evident from 'suffers the effects of a successful melee Strike'; the no-extra-action clause is load-bearing and gets promoted to plain prose."
+      },
+      {
+        "rule": "T4",
+        "quote": "Only one such weapon-effect trigger occurs per casting, applied to the first eligible creature in the line starting from you.",
+        "action": "delete",
+        "why": "fully redundant with the Failure/Critical Failure entries, which already state 'if it is the first failing creature in the line, it also suffers the effects...'."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> The force damage increases by 1d8.",
+        "action": "flag",
+        "why": "keep: settled structural (+1) damage-only heightening per prior round; correct flat idiom."
+      }
+    ],
+    "clean": ["T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "raise-island",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(or from beneath a body of water)",
+        "action": "rewrite",
+        "replacement": ", or from beneath a body of water,",
+        "why": "load-bearing alternate source (core to the spell's own name/concept), promoted out of parens to plain prose rather than left parenthesized."
+      },
+      {
+        "rule": "T4",
+        "quote": "The slab floats at a height of 10 feet.",
+        "action": "delete",
+        "why": "redundant restatement — already stated in the same paragraph ('levitate it 10 feet above the terrain')."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (9th)</strong> The slab is 200 feet to a side and can be commanded to move at 20 feet per round.",
+        "action": "flag",
+        "why": "keep: fixed tier scales both size and speed, a genuine power increase appropriate for a rank 7->9 jump, not mere cap-loosening bloat."
+      }
+    ],
+    "clean": ["T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "rearrange-fate",
+    "findings": [
+      {
+        "rule": "T4",
+        "quote": "The creature cannot roll d20s normally for these two rolls; it draws from its fate pool instead.",
+        "action": "delete",
+        "why": "redundant restatement of 'it must use those pre-rolled results' plus invented 'fate pool' flavor terminology not in the original."
+      },
+      {
+        "rule": "T2",
+        "quote": "Any unused fate results are lost when the spell ends.",
+        "action": "delete",
+        "why": "positive restatement of the rules default that an effect stops applying once its duration ends (matches the struck 'shroud persists for the duration' exemplar)."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> You can target 1 additional willing creature.",
+        "action": "flag",
+        "why": "keep: flat idiom, directly matches original's per-level additional-creature scaling."
+      }
+    ],
+    "clean": ["T1", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "reduce-resistivity",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(to –3 on failure, –4 on critical failure)",
+        "action": "delete",
+        "why": "worked-out numeric example in parens on the (+2) heightening line; the flat increment sentence already states the rule."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+2)",
+        "action": "flag",
+        "why": "keep: single flat (+2) idiom is correct once the worked-example parenthetical is struck (see T1)."
+      },
+      {
+        "rule": "T6",
+        "quote": "Additionally, the first time the creature benefits from its resistance to a damage type during this duration, that resistance is reduced by 5 until the end of its next turn.",
+        "action": "flag",
+        "why": "wholly new resistance-reduction mechanic invented beyond the original, which only granted disadvantage on saves against magic — no resistance interaction at all. Verify intentional; also extended in the Critical Failure line ('all of the creature's resistances to damage are reduced by 5')."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "reflective-defense",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "you gain resistance 30 to all damage from spells and magical effects.",
+        "action": "flag",
+        "why": "original grants full negation ('the damage is reduced to 0') with no cap; store capped it to Resistance 30 — a design simplification from absolute immunity to a bounded resistance. Verify intentional."
+      },
+      {
+        "rule": "T1",
+        "quote": "(if the source is a creature, it takes this force damage with no save; if the source is an area or trap, the damage is simply negated)",
+        "action": "rewrite",
+        "replacement": "; if the source is a creature, it takes this force damage with no save.",
+        "why": "the creature clause is load-bearing (translated from the original) and is promoted to plain prose; the added area/trap edge case is an unneeded fence — non-creature sources obviously can't take force damage back."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (9th)</strong> Resistance increases to 40 and applies to all damage, not just magical.",
+        "action": "flag",
+        "why": "keep: fixed tier broadens scope to all damage, a genuinely different qualitative effect, not pure numeric bloat."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "repetitious-trauma",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(or mental if no damage type is known)",
+        "action": "rewrite",
+        "replacement": ", or mental if no damage type is known,",
+        "why": "genuine edge-case rule (target never took prior damage) that is load-bearing, not fluff — promoted out of parens to plain prose."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> The damage increases by 2d6.",
+        "action": "flag",
+        "why": "keep: flat idiom, correct format."
+      },
+      {
+        "rule": "T6",
+        "quote": "the target must attempt a Will saving throw against 8d6 damage of the relived type",
+        "action": "flag",
+        "why": "original had staged damage — 6d6 on the initial cast, 4d6 on each subsequent bonus-action re-save; store flattened this to a uniform 8d6 every round (with the base-cast/re-save mechanic itself correctly translated to PF2e's Sustain idiom). Verify the uniform-damage flattening is intentional."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "reposition",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> The maximum teleportation distance increases by 10 feet.",
+        "action": "flag",
+        "why": "keep: format is a correct flat idiom; the underlying axis-swap is separately flagged under T6."
+      },
+      {
+        "rule": "T6",
+        "quote": "The maximum teleportation distance increases by 10 feet.",
+        "action": "flag",
+        "why": "original's higher-level clause scaled additional TARGETS (1 per slot above 1st); store's heightening scales DISTANCE instead — a different scaling axis than the original. Verify intentional."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "reset",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> The number of targets increases by 1.",
+        "action": "flag",
+        "why": "keep: flat idiom, directly matches original's per-level additional-target scaling."
+      },
+      {
+        "rule": "T6",
+        "quote": "it may immediately reroll its initiative, taking the higher of the new roll or its current initiative value (this is a fortune effect)",
+        "action": "flag",
+        "why": "original's ally benefit was reroll TWICE and keep the better of the two new results (no save needed); store changed this to a single reroll compared against the creature's current value. Verify intentional simplification."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "retributive-force",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)</strong> The extra force damage on your Strikes increases by 1d4 and the launch distance on failure increases by 5 feet.",
+        "action": "flag",
+        "why": "keep: single flat-line idiom format is correct; the die-size content is separately flagged under T6."
+      },
+      {
+        "rule": "T6",
+        "quote": "The extra force damage on your Strikes increases by 1d4",
+        "action": "flag",
+        "why": "original's higher-level scaling is 1d6 per slot level (matching the base die); store's increment is 1d4, a mismatched die size. Verify intentional."
+      },
+      {
+        "rule": "T6",
+        "quote": "when a creature within melee reach hits you with a melee Strike, that creature must attempt a Fortitude save against your spell DC",
+        "action": "flag",
+        "why": "original required only ONE save, at the moment of your own first retributive Strike; failing that single save then made every subsequent melee attack against you trigger the automatic launch for the rest of the duration. Store changed this to a fresh save required every time you're struck — a different design shape than the original's one-time gate. Verify intentional."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "return-spell",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(using the same DC)",
+        "action": "rewrite",
+        "replacement": ", using the same DC,",
+        "why": "load-bearing disambiguation (whose DC applies once the spell is reflected) promoted out of parens to plain prose."
+      },
+      {
+        "rule": "T1",
+        "quote": "(six between both parties)",
+        "action": "delete",
+        "why": "worked-out arithmetic aside (3+3=6) restating what 'three saving throws total' already states."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (9th)</strong> The warded creature can use the reaction twice per round and the spell can rebound up to four times total per triggered spell.",
+        "action": "flag",
+        "why": "keep candidate, but flag for verification: the base allows up to six total saves (three per party) with one reaction per round; the heightened tier grants two reactions per round but caps total rebounds at four — that reads as a tighter cap despite being framed as an upgrade. Confirm this is intentional before treating it as settled."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "revisit",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(though you choose direction again)",
+        "action": "rewrite",
+        "replacement": ", though you choose the direction again",
+        "why": "load-bearing clarification (falling continues but you pick the direction) promoted out of parens to plain prose."
+      },
+      {
+        "rule": "T4",
+        "quote": "You teleport to any unoccupied location you personally occupied within the last 10 minutes.",
+        "action": "delete",
+        "why": "fully redundant with the first sentence (location/timeframe already stated) and the later 'cannot teleport into a space that is currently occupied' sentence (unoccupied requirement already covered)."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (7th)</strong> You can revisit a location you occupied within the last hour, and you can bring up to 2 willing creatures who are adjacent to you at the time of casting.",
+        "action": "flag",
+        "why": "keep: single fixed 7th-rank milestone matches the store's established idiom for non-damage utility scaling; the base/heightened window split is separately flagged under T6."
+      },
+      {
+        "rule": "T6",
+        "quote": "a location you occupied within the last 10 minutes",
+        "action": "flag",
+        "why": "original's base spell allowed any location visited within the last HOUR; store nerfed the base window to 10 minutes and gated the original's full 1-hour range behind the 7th-rank Heightened tier. Verify this scope change is intentional."
+      }
+    ],
+    "clean": ["T2", "T3", "T7", "T8", "T9", "T10"]
+  }
+]

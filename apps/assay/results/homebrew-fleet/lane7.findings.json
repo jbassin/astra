@@ -1,0 +1,439 @@
+[
+  {
+    "slug": "rewind-and-playback",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(your choice of how many to restore, up to the maximum)",
+        "action": "rewrite",
+        "replacement": "promoted to plain prose as part of the T6 restoration: \"Choose the number of Hit Points to restore to the target, up to 3d8+24.\"",
+        "why": "load-bearing choice mechanic was parenthesized instead of stated in plain prose"
+      },
+      {
+        "rule": "T6",
+        "quote": "The target regains up to 3d8+24 Hit Points (your choice of how many to restore, up to the maximum). You then take void damage equal to the number of Hit Points restored; this damage is not subject to resistances, immunities, or damage reduction, though it can be healed normally after you take it.",
+        "action": "rewrite",
+        "replacement": "Choose the number of Hit Points to restore to the target, up to 3d8+24. You take 1d6 void damage for every 6 Hit Points restored, rounding up to the next multiple of 6; this damage can't be reduced by resistance, immunity, or any other means, since you're absorbing it directly, but it can be healed normally afterward.",
+        "why": "original used a 6-HP-to-1d6 conversion ratio (roughly 58% cost); store flattened this to a full 1:1 HP-to-damage exchange, dropping the original's ratio design"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: flat (+1) increment matches the Diamond Dust idiom, and the scaled base value (3d8+24) is stated in the body"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "right-hand-of-judgment",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(including a critical failure)",
+        "action": "delete",
+        "why": "restates that 'fails' already covers critical failure"
+      },
+      {
+        "rule": "T1",
+        "quote": "(before the damage roll)",
+        "action": "rewrite",
+        "replacement": "before you roll damage",
+        "why": "load-bearing timing requirement was parenthesized instead of stated in plain prose"
+      },
+      {
+        "rule": "T1",
+        "quote": "(stacks with charges from missed attacks against you)",
+        "action": "delete",
+        "why": "over-explains that both charge sources feed the same pool, which is self-evident"
+      },
+      {
+        "rule": "T2",
+        "quote": "This spell is paired with Left Hand of Judgment (which governs the counter-attack reaction). Both spells can be active simultaneously, but casting a second of the pair while the other is already active does not suppress the first; unlike Left Hand, Right Hand is passive and does not interfere with reactions.",
+        "action": "delete",
+        "why": "a whole interaction paragraph pre-answering an interaction nobody asked about, matches the struck 'whole class-feat interaction paragraphs' exemplar"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (6th)",
+        "action": "flag",
+        "why": "keep: the 6th/8th fixed tiers each grant a genuinely different effect (raised charge cap plus a new trigger; bonus Strike damage), not pure numeric bloat"
+      },
+      {
+        "rule": "T6",
+        "quote": "once per round when a creature's attack roll against you fails",
+        "action": "flag",
+        "why": "original's charge trigger was taking the Dodge action (a proactive player choice); store substituted a reactive trigger off enemy misses — a substantive mechanic redesign, not a simple translation; needs stakeholder confirmation this was intentional"
+      },
+      {
+        "rule": "T6",
+        "quote": "grant that Strike's damage roll a fortune effect: you roll the damage dice twice and take the higher result",
+        "action": "flag",
+        "why": "original let you upgrade a successful hit into a critical hit outright; store substituted a weaker fortune-reroll-on-damage effect — a mechanic redesign beyond translation"
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "sapping-lightning",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": ", meaning it cannot cast that spell for the suppression's duration",
+        "action": "delete",
+        "why": "trailing clause re-deriving what 'suppressed' already means; the degree-of-success block below already states the duration"
+      },
+      {
+        "rule": "T6",
+        "quote": "suppressed rather than consumed",
+        "action": "flag",
+        "why": "original permanently destroyed the creature's spell slot (lost until otherwise recovered); store's version only suppresses it until the end of the creature's next turn, a much softer effect — flag whether this severity drop was intended"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: flat (+1) increment matches the Diamond Dust idiom, base damage (9d12) stated in body"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "shape-modify-accuracy",
+    "findings": [
+      {
+        "rule": "T8",
+        "quote": "You draw upon the collective's memory of wildshaping to refine your current form.",
+        "action": "rewrite",
+        "replacement": "You draw upon the collective's memory of polymorphing to refine your current form.",
+        "why": "'wildshaping' is a dead 5e-ism; the rest of the spell already correctly uses 'polymorphed'"
+      },
+      {
+        "rule": "T2",
+        "quote": "This spell ends immediately when you leave your polymorphed form.",
+        "action": "delete",
+        "why": "restates the Duration field's own trigger ('until your wild shape ends')"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "suspect tier block: the attack bonus scales +2/+3/+4 at ranks 3/5/7 (a clean +1-per-2-ranks interval) but the damage-penalty reduction (2d6→1d6) only shifts at the top tier, breaking a clean collapse — recommend stakeholder decide whether to collapse the bonus to an interval line and keep the damage-penalty change as a separate bespoke note, or leave both fixed"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "shape-modify-armor",
+    "findings": [
+      {
+        "rule": "T8",
+        "quote": "You draw upon the collective's memory of wildshaping to refine your current form.",
+        "action": "rewrite",
+        "replacement": "You draw upon the collective's memory of polymorphing to refine your current form.",
+        "why": "'wildshaping' is a dead 5e-ism; the rest of the spell already correctly uses 'polymorphed'"
+      },
+      {
+        "rule": "T2",
+        "quote": "This spell ends immediately when you leave your polymorphed form.",
+        "action": "delete",
+        "why": "restates the Duration field's own trigger ('until your wild shape ends')"
+      },
+      {
+        "rule": "T3",
+        "quote": "Sudden Charge",
+        "action": "flag",
+        "why": "official PF2e feat name-drop used as a mechanical example; the clause is also logically odd (Dash has no Speed minimum) — recommend stakeholder review rather than a silent rewrite"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "suspect tier block: the AC bonus scales cleanly (+2/+3/+4) but the Speed penalty changes mechanic type between tiers (base tier sets Speed to a flat 15 ft; higher tiers instead reduce Speed by a shrinking amount) — an inconsistent design pattern, flag for stakeholder"
+      },
+      {
+        "rule": "T6",
+        "quote": "You reinforce the exterior of your current form into thick, rigid plates, trading agility for protection.",
+        "action": "flag",
+        "why": "original was flat ('increase the protection... decrease its speed'); store added invented imagery ('thick, rigid plates') beyond simple translation"
+      }
+    ],
+    "clean": ["T1", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "shape-modify-severity",
+    "findings": [
+      {
+        "rule": "T8",
+        "quote": "You draw upon the collective's memory of wildshaping to refine your current form.",
+        "action": "rewrite",
+        "replacement": "You draw upon the collective's memory of polymorphing to refine your current form.",
+        "why": "'wildshaping' is a dead 5e-ism; the rest of the spell already correctly uses 'polymorphed'"
+      },
+      {
+        "rule": "T2",
+        "quote": "This spell ends immediately when you leave your polymorphed form.",
+        "action": "delete",
+        "why": "restates the Duration field's own trigger ('until your wild shape ends')"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "collapse candidate: damage bonus (2d6/3d6/4d6) and attack penalty (-2/-1/0) both scale by a clean flat amount every +2 ranks (3→5→7) — recommend collapsing to a single Heightened (+2) line per the Diamond Dust idiom instead of two fixed tiers"
+      },
+      {
+        "rule": "T6",
+        "quote": "You hone the natural weapons of your current form to vicious, almost painful keenness, trading reliable aim for devastating power.",
+        "action": "flag",
+        "why": "original was flat ('increase the sharpness of your claws... blunt your senses'); store invented embellished imagery ('vicious, almost painful keenness') beyond translation"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "shape-modify-speed",
+    "findings": [
+      {
+        "rule": "T8",
+        "quote": "You draw upon the collective's memory of wildshaping to refine your current form.",
+        "action": "rewrite",
+        "replacement": "You draw upon the collective's memory of polymorphing to refine your current form.",
+        "why": "'wildshaping' is a dead 5e-ism; the rest of the spell already correctly uses 'polymorphed'"
+      },
+      {
+        "rule": "T2",
+        "quote": "This spell ends immediately when you leave your polymorphed form.",
+        "action": "delete",
+        "why": "restates the Duration field's own trigger ('until your wild shape ends')"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "collapse candidate: Speed bonus (20/30/40 ft) and AC penalty (-2/-1/0) both scale by a clean flat amount every +2 ranks — recommend collapsing to a single Heightened (+2) line instead of two fixed tiers"
+      },
+      {
+        "rule": "T6",
+        "quote": "You elongate and lighten the limbs of your current form for explosive mobility, trading defense for speed.",
+        "action": "flag",
+        "why": "original was flat ('increase the speed... decrease its padding'); store invented imagery ('elongate and lighten the limbs', 'explosive mobility') beyond translation"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "solar-fury",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "You may Sustain the spell on your turn to maintain the aura; while the spell is sustained, the emanation persists and continues to damage each creature that begins its turn inside it.",
+        "action": "delete",
+        "why": "restates the default behavior of a sustained aura/emanation; not present in the original and not needed given the Duration field already marks this sustained"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: flat (+1) increment matches the Diamond Dust idiom, base damage (4d6) stated in body"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "solar-rebuke",
+    "findings": [
+      {
+        "rule": "T10",
+        "quote": "the peak of Elysium",
+        "action": "flag",
+        "why": "Elysium is a D&D-cosmology plane name; suggest <Elysium|the solar plane> to match solar-fury's own already-established paraphrase"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: flat (+1) increment matches the Diamond Dust idiom, base damage (5d10) stated in body"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "spawn-abyssal-sprite",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You crack a demon's finger bone and hurl an abyssal bolt of void energy at a creature you can see within range.",
+        "action": "flag",
+        "why": "original summons an actual sprite creature that attacks ('You summon an angry sprite from the depths of the Abyss to attack one creature'); store replaced the summon-and-attack conceit with a direct bolt-spell — the spell's own name 'Spawn Abyssal Sprite' no longer matches its mechanic"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: flat (+2) increment matches the Diamond Dust idiom, base damage (12d6) stated in body; scoped to the initial hit only to avoid compounding along the chain, a deliberate balance choice"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "sphere-of-preservation",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(round down for half dice; for a d6 treat as 3, a d8 as 4, a d10 as 5, a d12 as 6, a d4 as 2)",
+        "action": "rewrite",
+        "replacement": "rounding down: 2 on a d4, 3 on a d6, 4 on a d8, 5 on a d10, and 6 on a d12",
+        "why": "load-bearing per-die median values were parenthesized instead of stated in plain prose"
+      },
+      {
+        "rule": "T2",
+        "quote": "or checks not involving dice",
+        "action": "delete",
+        "why": "vestigial trailing clause — the flat-check exception already covers the only real case"
+      },
+      {
+        "rule": "T2",
+        "quote": "Fortune and misfortune effects that would cause rerolls do not apply within the sphere; only the median result stands.",
+        "action": "delete",
+        "why": "pre-litigation interaction clause pre-answering a question nobody asked"
+      },
+      {
+        "rule": "T2",
+        "quote": "Casting another spell while sustaining this one is permitted; the sustain cost is paid separately.",
+        "action": "delete",
+        "why": "restates the general Sustain-a-Spell default"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (8th)",
+        "action": "flag",
+        "why": "keep: fixed emanation-doubling tiers (8th/10th) match standard PF2e aura-heightening idiom"
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "sphere-of-ruin",
+    "findings": [
+      {
+        "rule": "T9",
+        "quote": "Roll 1d6 to determine the effect: 1–3: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}; 4–5: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} until the start of your next turn; 6: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} until the start of your next turn.",
+        "action": "flag",
+        "why": "run-on d6-outcome prose should become a named table per T9, with the Failure line referring to it instead of spelling out the roll inline"
+      },
+      {
+        "rule": "T9",
+        "quote": "Roll 1d6 to determine the effect: 1–3: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2}; 4–5: the creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} for 1 round and must attempt a Will save at the start of its next turn to end the confusion; 6: the creature Strides in a random direction using its full Speed and falls @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone} at the destination.",
+        "action": "flag",
+        "why": "run-on d6-outcome prose should become a named table per T9, with the Critical Failure line referring to it instead of spelling out the roll inline"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T10"]
+  },
+  {
+    "slug": "stolen-moment",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(or the nearest unoccupied space)",
+        "action": "rewrite",
+        "replacement": ", or the nearest unoccupied space if that space is occupied,",
+        "why": "load-bearing exception was parenthesized instead of stated in plain prose"
+      },
+      {
+        "rule": "T1",
+        "quote": "(except those that expired during the displacement)",
+        "action": "rewrite",
+        "replacement": ", except any that would have already expired during the displacement,",
+        "why": "load-bearing exception was parenthesized instead of stated in plain prose"
+      },
+      {
+        "rule": "T4",
+        "quote": "and does not exist from the perspective of the current timeline",
+        "action": "delete",
+        "why": "narrative flourish beyond the mechanical need; 'cannot act, cannot be targeted' already fully covers the mechanic"
+      }
+    ],
+    "clean": ["T2", "T3", "T5", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "summon-heart",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: flat (+1) increment matches the Diamond Dust idiom, base damage (11d10) stated in body"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "summon-servant",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "The summoned servant acts on your initiative count, and you direct it as part of Sustaining the spell.",
+        "action": "delete",
+        "why": "restates the general minion-trait default (summoned minions act on your turn and are directed via Sustain) — this is now automatic in PF2e via the summon/summoned/minion traits, unlike 5e which required spelling it out"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (2nd)",
+        "action": "flag",
+        "why": "keep: standard PF2e summon-spell heightening idiom — the non-linear creature-level curve (1/2/3/5/7/9/11/13/15) requires individually listed fixed tiers, matching every official summon-family spell"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "suspension",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(using a reaction or if you lose consciousness)",
+        "action": "flag",
+        "why": "edge-case parenthetical not in the original; unclear how casting occurs while unconscious — needs stakeholder clarification rather than a blind edit"
+      },
+      {
+        "rule": "T6",
+        "quote": "The vines extend and retract as you move, always anchoring to the nearest surface.",
+        "action": "flag",
+        "why": "original also specified that destroyed vines are immediately replaced with more vines — that durability clause is missing from the store version"
+      },
+      {
+        "rule": "T6",
+        "quote": "If you move farther than 30 feet from any solid surface, this fly Speed ends immediately and you fall normally.",
+        "action": "flag",
+        "why": "original guaranteed a harmless landing when the spell ends naturally ('the vines will harmlessly lower you to the ground'); store's version has no equivalent for natural expiration while airborne, only sudden departure past 30 ft"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "keep: single fixed tier (5th) grants a genuinely different, stronger version of the same effect, not bloat"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "swap",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Each creature retains its current facing, velocity, and any carried momentum.",
+        "action": "rewrite",
+        "replacement": "Each creature retains its current facing and momentum.",
+        "why": "original's terse 'maintain momentum for both of the swapped parties' was expanded into three overlapping/redundant terms"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: (+1) target-count idiom is fine, but note the structural heightening field is absent from system.heightening (already logged by the store's own adapterWarning as a known non-damage-bump limitation, not new)"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  }
+]

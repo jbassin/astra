@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You donate a fraction of your own time-stream to willing allies, jolting each of them forward by a breath. Each target immediately gains 1 free action it must use before the start of your next turn. This free action can be used to make one Strike with a weapon or unarmed attack the target currently has at the ready, or to Stride up to 10 feet. The Stride and the Strike can be taken in either order if both are triggered by the same target (the target chooses).</p><p>The free action is lost if not used before the start of your next turn. This spell does not grant extra actions that persist into the target's own turn.</p><hr /><p><strong>Heightened (7th)</strong> The range increases to 60 feet and you can target up to 6 willing creatures.</p><p><strong>Heightened (9th)</strong> Each target may use the free action for a Strike, a Stride, or both (in any order).</p>"
+      "value": "<p>You donate a fraction of your own time-stream to willing allies, jolting each of them forward by a breath. Each target immediately gains 1 free action it must use before the start of your next turn. This free action can be used to make one Strike with a weapon or unarmed attack the target currently has at the ready, or to Stride up to 10 feet. The Stride and the Strike can be taken in either order if both are triggered by the same target (the target chooses).</p><hr /><p><strong>Heightened (7th)</strong> The range increases to 60 feet and you can target up to 6 willing creatures.</p><p><strong>Heightened (9th)</strong> Each target may use the free action for a Strike, a Stride, or both (in any order).</p>"
     },
     "duration": {
       "sustained": false,

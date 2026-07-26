@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You reach through time and pull a creature's wounds backward, rewinding the damage into the past and redirecting it through yourself as a conduit. The target regains up to 3d8+24 Hit Points (your choice of how many to restore, up to the maximum). You then take void damage equal to the number of Hit Points restored; this damage is not subject to resistances, immunities, or damage reduction, though it can be healed normally after you take it.</p><hr /><p><strong>Heightened (+1)</strong> The maximum healing increases by 1d8+8.</p>"
+      "value": "<p>You reach through time and pull a creature's wounds backward, rewinding the damage into the past and redirecting it through yourself as a conduit. Choose the number of Hit Points to restore to the target, up to 3d8+24. You take 1d6 void damage for every 6 Hit Points restored, rounding up to the next multiple of 6; this damage can't be reduced by resistance, immunity, or any other means, since you're absorbing it directly, but it can be healed normally afterward.</p><hr /><p><strong>Heightened (+1)</strong> The maximum healing increases by 1d8+8.</p>"
     },
     "duration": {
       "sustained": false,

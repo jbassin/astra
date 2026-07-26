@@ -1,0 +1,501 @@
+[
+  {
+    "slug": "flutterstep",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(the attacker's action is not disrupted; the attack simply misses)",
+        "action": "delete",
+        "why": "explaining parenthetical restating what 'the attack misses' self-evidently means"
+      },
+      {
+        "rule": "T2",
+        "quote": "This does not trigger Reactive Strikes.",
+        "action": "delete",
+        "why": "restates the rules default that teleportation (no move action taken) doesn't trigger movement-based reactions"
+      },
+      {
+        "rule": "T2",
+        "quote": " The 5-foot teleports from both abilities count as forced movement for the purpose of abilities that react to movement.",
+        "action": "delete",
+        "why": "pre-litigation fence pre-answering an interaction (forced-movement-reactive abilities) nobody asked about; not in the original"
+      },
+      {
+        "rule": "T5",
+        "quote": "Flutter Step increases to 15 feet, and Spatial Dodge increases to a 15-foot teleport. The flat check DC for Spatial Dodge decreases to 8.",
+        "action": "flag",
+        "why": "keep: fixed tiers (5th/7th) each bundle multiple distinct changes (distance, DC, uses/round, new free-action follow-up) — not a numeric ladder"
+      },
+      {
+        "rule": "T6",
+        "quote": "You gain intuitive control of the spatial eddies around you, bending short distances through the gaps between places.",
+        "action": "rewrite",
+        "replacement": "You gain better control of the eddies in the space around you, letting you find small shortcuts from place to place.",
+        "why": "punched-up flourish vs the original's plainer phrasing; restore original prose translated"
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "focus-break",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 2}, and it cannot Sustain any magical effect until the start of its next turn",
+        "action": "flag",
+        "why": "original's concentration spell only ever ended the sustained effect on a failed save — no Stunned/lockout penalty; the escalating Stunned tiers are invented content beyond translation, stakeholder call"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "force-drumfire",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(you choose new targets each time)",
+        "action": "rewrite",
+        "replacement": ", choosing new targets each time,",
+        "why": "load-bearing retargeting clarification left parenthetical; promote to plain prose"
+      },
+      {
+        "rule": "T2",
+        "quote": "The missiles disappear when the spell ends.",
+        "action": "delete",
+        "why": "restates the rules default that a sustained spell's effects end when the spell ends"
+      },
+      {
+        "rule": "T3",
+        "quote": "(such as that created by the Shield cantrip's block reaction)",
+        "action": "delete",
+        "why": "official-spell name-drop (Shield cantrip) used as a delivery comparison"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+2)</strong> The number of missiles increases by 1.",
+        "action": "flag",
+        "why": "keep: idiom is a compliant flat +2 ladder; NOTE store JSON system.heightening is null despite this body text — structural data doesn't reflect the heightened tier (same bug class as force-drumfire's own die-size precedent), needs a data fix outside prose-edit scope"
+      },
+      {
+        "rule": "T8",
+        "quote": "You can choose to concentrate multiple missiles on fewer targets.",
+        "action": "rewrite",
+        "replacement": "You can choose to focus multiple missiles on fewer targets.",
+        "why": "'concentrate' reads confusingly against the spell's own concentrate trait; reword to avoid the 5e-concentration echo"
+      }
+    ],
+    "clean": ["T4", "T6", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "forceful-charge",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The damage on a critical failure increases by 2d6.",
+        "action": "flag",
+        "why": "keep: single flat +1 tier scaling crit-failure damage matches the flat-increment idiom; base 4d6 stated in body"
+      },
+      {
+        "rule": "T6",
+        "quote": "Cosmic force propels you in a straight line with terrifying momentum.",
+        "action": "rewrite",
+        "replacement": "Cosmic force propels you forward at extreme speed in a straight line.",
+        "why": "invented 'terrifying momentum' flourish not in the original's plainer 'pushed forward at extreme speed'"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "forceful-onslaught",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(these are refreshed each turn; they do not stack with themselves)",
+        "action": "delete",
+        "why": "explaining parenthetical restating the default temp-HP-doesn't-stack rule"
+      },
+      {
+        "rule": "T2",
+        "quote": "Effects that would kill it outright still do so.",
+        "action": "delete",
+        "why": "pre-litigation fence pre-answering an edge case (instant-kill effects) nobody asked; instant-kill effects already override by their own text"
+      },
+      {
+        "rule": "T5",
+        "quote": "The additional Strike damage increases to 3d6, and the first time the target is reduced to 0 Hit Points during the duration, it doesn't gain the @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} condition until it falls @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} at the start of its next turn.",
+        "action": "flag",
+        "why": "keep: single named-level tier (9th) bundles a flat damage bump with further narrowing the death-avoidance mechanic; not a repeating numeric ladder"
+      },
+      {
+        "rule": "T6",
+        "quote": "it gains the @UUID[Compendium.pf2e.conditionitems.Item.Dying]{Dying} condition as normal, but it doesn't fall @UUID[Compendium.pf2e.conditionitems.Item.Unconscious]{Unconscious} until the start of its next turn and can act normally until then. It attempts recovery checks as normal, and it can't be stabilized by any means while it remains conscious this way.",
+        "action": "flag",
+        "why": "original let the target keep fighting indefinitely at 0 HP until 3 failed death saves; store flattened this into a 1-round delay of unconsciousness — significant simplification of the staged/escalating original design"
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "forensic-analysis",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(a single yes-or-no answer)",
+        "action": "rewrite",
+        "replacement": ", a single yes-or-no answer,",
+        "why": "load-bearing definition of what a 'secret' is left parenthetical; promote to plain prose"
+      },
+      {
+        "rule": "T1",
+        "quote": "(each a yes-or-no answer)",
+        "action": "rewrite",
+        "replacement": ", each a yes-or-no answer,",
+        "why": "same load-bearing content parenthesized; promote to plain prose"
+      },
+      {
+        "rule": "T1",
+        "quote": "(not just yes/no)",
+        "action": "delete",
+        "why": "redundant qualifier given the base-rank yes/no restriction is already established"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (4th)</strong> In Secrets Mode you may ask open-ended questions (not just yes/no); the target answers truthfully to the best of its knowledge. In Statistics Mode you learn two statistics per casting instead of one.",
+        "action": "flag",
+        "why": "keep: fixed tiers (4th/6th) unlock genuinely new capabilities (open-ended questions, simultaneous dual-mode casting), not a numeric ladder"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "fugue",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(as the confusion condition, but limited to 1 round)",
+        "action": "delete",
+        "why": "redundant explaining parenthetical — the Confused tag plus 'for 1 round' already states this fully"
+      },
+      {
+        "rule": "T5",
+        "quote": "The spell can target up to 3 creatures, each of which makes a separate Will save.",
+        "action": "flag",
+        "why": "keep: single tier unlocking a multi-target capability, not a numeric ladder"
+      },
+      {
+        "rule": "T6",
+        "quote": "Your touch floods the target's mind with a dreamlike haze, erasing memory of identity and purpose.",
+        "action": "rewrite",
+        "replacement": "Your touch causes the target to forget its identity and purpose.",
+        "why": "punched-up flourish vs the original's plain 'causes a creature to forget its identity and history'"
+      },
+      {
+        "rule": "T6",
+        "quote": "The creature is @UUID[Compendium.pf2e.conditionitems.Item.Confused]{Confused} about the current situation for 1 round (as the confusion condition, but limited to 1 round) as the haze briefly washes over it.",
+        "action": "flag",
+        "why": "original states 'a successful save negates the spell' entirely (full negation); store instead gives a partial Confused effect on Success — deviates from the original's binary pass/fail, stakeholder call"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "fumble",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(your choice of which hand it drops from if it wields two weapons)",
+        "action": "delete",
+        "why": "edge-case enumeration parenthetical, matches the struck exemplar pattern; unnecessary hand-holding"
+      },
+      {
+        "rule": "T2",
+        "quote": "or when the spell ends",
+        "action": "delete",
+        "why": "restates the rules default that an effect ends when its spell ends"
+      },
+      {
+        "rule": "T5",
+        "quote": "The penalty to Reflex saves on a critical failure increases to -3, and the spell also imposes @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 1} on a critical failure for the duration.",
+        "action": "flag",
+        "why": "keep: single named-level tier (6th) bundles a related penalty step-up with a new condition; not a repeating ladder — but see the T8 flag on the underlying redundancy"
+      },
+      {
+        "rule": "T8",
+        "quote": "the target also takes a -2 status penalty to Reflex saves for the duration",
+        "action": "flag",
+        "why": "ad-hoc Dex-based penalty; T8's exemplar maps Dex-based rolls to Clumsy — this bespoke Reflex-only penalty should likely just be a Clumsy value instead"
+      },
+      {
+        "rule": "T8",
+        "quote": "The penalty to Reflex saves on a critical failure increases to -3, and the spell also imposes @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 1} on a critical failure for the duration.",
+        "action": "flag",
+        "why": "heightened tier layers a separate Clumsy 1 on top of the ad-hoc Reflex penalty — same status-penalty type, doesn't stack, so the addition is partly redundant with the -3 Reflex penalty; consolidate onto Clumsy"
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "gallows",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(which must be within 500 feet when you cast the spell and must be a fixed constructed object such as a wall, pillar, archway, or frame)",
+        "action": "rewrite",
+        "replacement": ", which must be within 500 feet when you cast the spell and must be a fixed constructed object (such as a wall, pillar, archway, or frame)",
+        "why": "load-bearing 500-foot restriction hidden inside a parenthetical enumeration; promote to plain prose, keep the 'such as' idiom nested"
+      },
+      {
+        "rule": "T2",
+        "quote": "The designated structure must be within your line of sight when you cast the spell.",
+        "action": "delete",
+        "why": "redundant restatement of the opening sentence's 'structure within your line of sight' requirement"
+      },
+      {
+        "rule": "T2",
+        "quote": "The soul and its fate are unaffected; only the physical body is relocated.",
+        "action": "delete",
+        "why": "pre-litigation fence pre-answering an interaction (the soul/afterlife) nobody asked about; not in the original"
+      },
+      {
+        "rule": "T5",
+        "quote": "You can designate any structure you have visited personally within 100 miles, not just one in your line of sight. The spell's duration becomes until your next daily preparations.",
+        "action": "flag",
+        "why": "keep: single named tier (6th) bundles a range/method change with a duration change — genuinely different effect, not a numeric ladder"
+      },
+      {
+        "rule": "T6",
+        "quote": "You press your palm to the creature and bind its death to a structure within your line of sight, weaving a planar tether that will drag the creature's body to the gallows-site upon its death.",
+        "action": "flag",
+        "why": "heavily embellished vs the original's spare two-sentence description ('linked to a structure... teleported... bound by stout ropes'); consider restoring closer to source phrasing"
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "gambler-s-trick",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "This spell cannot affect attack rolls, skill checks, saving throws, initiative, or any other mechanical resolution, and it has no effect in combat.",
+        "action": "delete",
+        "why": "defensive pre-litigation restriction list; the spell's own definition (coin flips, die rolls in games of chance, card draws) already excludes formal task resolutions"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "gift-of-the-archmage",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "When the recipient casts the spell, it uses their actions and their position (not yours).",
+        "action": "delete",
+        "why": "restates the default that whoever casts a spell uses their own actions and position; matches the struck 'measuring range... from its position instead of your own' exemplar"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (7th)</strong> The maximum rank of the spell you can gift increases to 6.</p><p><strong>Heightened (9th)</strong> The maximum rank of the spell you can gift increases to 8.",
+        "action": "flag",
+        "why": "two fixed tiers (7th/9th) apply the identical +2-to-max-rank operation — classic collapsible ladder; candidate for a single 'Heightened (+2)' flat line, flagged per T5's bespoke-tier-block guidance"
+      },
+      {
+        "rule": "T6",
+        "quote": "You lose access to that spell until the gift is used or the duration ends: if you prepared the spell, the slot is expended; if you know it via a repertoire, you treat yourself as having one fewer spell slot of that rank for the duration.",
+        "action": "flag",
+        "why": "original had a cancel-early option (caster suffers exhaustion to reclaim the spell), used the recipient's Intelligence modifier, and capped one gift per spell-slot-level; store dropped the cancel-early mechanic and the stone/sigil flavor entirely — flattened translation, stakeholder call on whether to restore"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "glimmerdust",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "The coating does not wash off on its own during the spell's duration.",
+        "action": "delete",
+        "why": "pre-litigation fence pre-answering an edge case (washing off) nobody asked about"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+2)</strong> The cone increases by 15 feet.",
+        "action": "flag",
+        "why": "keep: flat +2 ladder matches the ideal idiom exactly; base 30-foot cone stated in body"
+      },
+      {
+        "rule": "T6",
+        "quote": "Any creature that starts its turn in the area, or that moves into the area, is immediately coated.",
+        "action": "flag",
+        "why": "contradicts the degree-of-success table below (Critical Success says 'the glitter fails to coat the creature') — this sentence states unconditional coating while the table implies coating is Fortitude-save-gated; internal inconsistency introduced during translation, needs stakeholder clarification"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "gravity-anvil",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The damage on a failure increases by 1d10.",
+        "action": "flag",
+        "why": "keep: flat +1 ladder matches the ideal idiom; base 10d10 stated in body"
+      },
+      {
+        "rule": "T6",
+        "quote": "You conjure an anvil of pure compressed gravity and slam it down on a single target you can see within range, dealing 10d10 force damage.",
+        "action": "rewrite",
+        "replacement": "You conjure an anvil of pure compressed gravity and slam it down on a single target you can see within range. The target must attempt a Fortitude save, taking 10d10 force damage on a failure.",
+        "why": "the original explicitly names the saving throw ('must make a Dexterity saving throw'); the store version never states what save the target attempts at all (structural data confirms Fortitude) — restoring the missing save-type declaration, matching the sibling spells' established idiom"
+      },
+      {
+        "rule": "T8",
+        "quote": "incapacitated until the end of its next turn, unable to use actions, reactions, or free actions",
+        "action": "flag",
+        "why": "ad-hoc 'can't act' state closely matches the Paralyzed condition; consider a condition tag instead of bespoke text (flagged beyond T8's named exemplars per its own instruction)"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "grey-frost",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(the affliction ends if the spell ends, except at stage 3)",
+        "action": "flag",
+        "why": "load-bearing exception clause left parenthetical in the Maximum Duration field; should be promoted to plain prose, but the affliction stat-block format is tight — stakeholder call on exact phrasing"
+      },
+      {
+        "rule": "T1",
+        "quote": "(Escape DC equals your spell DC; successfully Escaping shatters the ice and ends the affliction)",
+        "action": "flag",
+        "why": "the Escape DC part is legitimate official affliction idiom, but 'successfully Escaping shatters the ice and ends the affliction' is load-bearing effect description bundled into the same parenthetical — should be promoted out, needs care given the tight affliction-block format"
+      },
+      {
+        "rule": "T5",
+        "quote": "The initial damage on a failure increases by 1d8, and Stage 1's per-round cold damage increases by 1d8.",
+        "action": "flag",
+        "why": "keep: flat +1 ladder scaling two related base values (initial hit and Stage 1 recurring damage); both bases (3d8) stated in body"
+      },
+      {
+        "rule": "T10",
+        "quote": "the Grey Waste",
+        "action": "flag",
+        "replacement": "<Grey Waste|a bleak, ash-choked plane of endless cold>",
+        "why": "D&D-cosmology proper noun (the Grey Waste of Hades) appears plainly; suggest an in-world alias per the author's obfuscation conceit"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "grosteque-selfshape",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "These two grants don't stack; only the highest current value applies.",
+        "action": "delete",
+        "why": "restates the default PF2e temp-HP-doesn't-stack rule (same class as forceful-onslaught's similar clause)"
+      },
+      {
+        "rule": "T5",
+        "quote": "Your size increases by one step (to Huge, or as large as you can safely fit), the additional Strike damage increases by 1d6, and the temporary Hit Points you gain (both on cast and each turn) each increase by 5.",
+        "action": "flag",
+        "why": "keep: multi-value flat +2 ladder (size/damage/temp-HP) is a reasonable bundled idiom; NOTE store JSON system.heightening.damage is empty {} despite the +1d6 Strike-damage text — structural mismatch, needs a data fix outside prose-edit scope (same bug class as force-drumfire)"
+      },
+      {
+        "rule": "T8",
+        "quote": "You funnel your gestalt wildshaping energy outward rather than inward, distorting and massively enlarging your form beyond its natural limits.",
+        "action": "rewrite",
+        "replacement": "You funnel your gestalt polymorph energy outward rather than inward, distorting and massively enlarging your form beyond its natural limits.",
+        "why": "'wildshaping' is a dead 5e-ism (T8 exemplar: wild shape/wildshaping → polymorph); the spell's own second paragraph already correctly says 'polymorph spells' elsewhere"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "haunt",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(but not their exact location if they are more than 500 feet away)",
+        "action": "delete",
+        "why": "redundant with the very next sentence, which already states exact location applies only within 500 feet"
+      },
+      {
+        "rule": "T1",
+        "quote": "(not detailed vision, but awareness of open space versus blocked space from the target's vantage point)",
+        "action": "rewrite",
+        "replacement": ", not detailed vision but awareness of open space versus blocked space from the target's vantage point",
+        "why": "load-bearing definition of 'vague impression' left parenthetical; promote to plain prose"
+      },
+      {
+        "rule": "T2",
+        "quote": "and the action is wasted",
+        "action": "delete",
+        "why": "restates the action-economy default that a failed activity still costs its action"
+      },
+      {
+        "rule": "T5",
+        "quote": "The teleportation range increases to 60 feet, and you may teleport to any unoccupied space within 60 feet of the target regardless of line of sight.",
+        "action": "flag",
+        "why": "keep: single named tier (6th) bundles a range increase with removing the line-of-sight restriction — genuinely different effect, not a numeric ladder"
+      },
+      {
+        "rule": "T6",
+        "quote": "you always know the approximate direction and distance to the target creature (but not their exact location if they are more than 500 feet away)",
+        "action": "flag",
+        "why": "original grants unconditional, always-exact location awareness ('You always know where the creature is'); store weakens this to approximate-beyond-500-feet — a mechanic flattening/nerf vs the source, stakeholder call"
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "healing-draught",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The healing increases by 1d8+8.",
+        "action": "flag",
+        "why": "keep: flat +1 ladder matches the ideal idiom; base 6d8+30 stated in body (note: original's heightening also added an extra dose per level — see the T6 flag; this ladder only carries the healing-amount half of that design)"
+      },
+      {
+        "rule": "T6",
+        "quote": "Only one Healing Draught can exist at a time from a given caster; casting this spell again while a previous draught exists causes the previous one to immediately fade.",
+        "action": "flag",
+        "why": "original bottle held 3 doses (affecting 3 creatures) and each heightened slot level added another dose; store version is single-dose-only with heightening only scaling the healing amount — significant flattening of the multi-dose design, stakeholder call"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "hellforging",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(11 at rank 7; 15 at rank 9; 17 at rank 10)",
+        "action": "rewrite",
+        "replacement": "—11 at rank 7, 15 at rank 9, 17 at rank 10",
+        "why": "load-bearing numeric data (the actual crit-success levels) left parenthetical; promote to plain prose"
+      },
+      {
+        "rule": "T2",
+        "quote": "and the ritual can be attempted again",
+        "action": "delete",
+        "why": "restates the default that a failed ritual may be re-attempted"
+      },
+      {
+        "rule": "T3",
+        "quote": "(see <em>Animate Object</em>)",
+        "action": "delete",
+        "why": "official-ritual name-drop (Animate Object) cited as a reference"
+      },
+      {
+        "rule": "T6",
+        "quote": "The inscription fails to take, and uncontrolled energies surge through you: you take 3d10 mental damage and 2d10 void damage. The core and the mechanical body are unharmed, and the ritual can be attempted again.",
+        "action": "flag",
+        "why": "original allowed repeated in-casting retries (maintain the spell, re-rolling the save each turn, taking damage per failure) before the core shatters; store collapsed this into a single check with a plain retry-later option — flattened the original's multi-turn escalation into a single roll (a reasonable ritual idiom, but a mechanic deviation from source), stakeholder call. Damage-type translation (psychic/necrotic → mental/void) is correct Remaster vocabulary, not flagged."
+      }
+    ],
+    "clean": ["T4", "T5", "T7", "T8", "T9", "T10"]
+  }
+]

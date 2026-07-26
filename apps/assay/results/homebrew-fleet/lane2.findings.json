@@ -1,0 +1,449 @@
+[
+  {
+    "slug": "djura-s-righteous-pressure",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(not merely undead and fiends)",
+        "action": "delete",
+        "why": "over-explains 'also affects', self-evident from 'also'"
+      },
+      {
+        "rule": "T2",
+        "quote": "Once a creature attempts this save against a given round of the aura, it is not forced to save again until the start of its next turn.",
+        "action": "delete",
+        "why": "invented fencing clause not in original, pre-answers an edge case"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (6th)",
+        "action": "flag",
+        "why": "keep: broadens target scope to evil humanoids (genuinely different effect) plus a flat damage bump, appropriately fixed"
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "do-my-bidding",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (9th)",
+        "action": "flag",
+        "why": "keep: unlocks autonomous pursuit without caster presence (genuinely different effect) bundled with a range bump, appropriately fixed"
+      },
+      {
+        "rule": "T6",
+        "quote": "If you cease leading or give contradictory orders, the effect ends for that creature.",
+        "action": "flag",
+        "why": "original: 'the spell ends and the crowd becomes hostile toward you' on the same trigger — the hostility consequence is dropped"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "earworm",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "You can end your auditory link as a free action at any time without ending the spell.",
+        "action": "delete",
+        "why": "restates a rules default (a non-sustained spell's duration is unaffected by what you do with your attention)"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "keep: grants location tracking, a genuinely different effect, appropriately fixed"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (7th)",
+        "action": "flag",
+        "why": "pure duration+range extension (until next daily prep; range to 30 ft) with no new effect — matches the brief's struck 'relaxing a limit' bloat pattern, flag for stakeholder call"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "ebb-and-flow",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(no multi-Strike abilities)",
+        "action": "delete",
+        "why": "self-evident from 'limited to one Strike or one other action per turn'"
+      },
+      {
+        "rule": "T2",
+        "quote": "(maximum 1 extra, not cumulative with other sources)",
+        "action": "delete",
+        "why": "fencing clause pre-answering a stacking question nobody asked"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "pure numeric bump (speed bonus +10, radius +10) with no new effect — suspect bloat, flag for stakeholder call"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (7th)",
+        "action": "flag",
+        "why": "keep: adds Prone-on-crit-fail and extends the reaction benefit to late arrivals, genuinely different effects"
+      },
+      {
+        "rule": "T6",
+        "quote": "creating a zone where your allies move freely while your enemies wade through temporal molasses",
+        "action": "delete",
+        "why": "invented flourish not in the plain original; the mechanic is already stated in the next sentence"
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "eldritch-horror",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(you choose targets)",
+        "action": "rewrite",
+        "replacement": ", chosen by you,",
+        "why": "original states this in plain prose ('you select the targets'); promote out of parens"
+      },
+      {
+        "rule": "T2",
+        "quote": "they can't affect or be affected by anything outside the portal.",
+        "action": "delete",
+        "why": "invented fencing not in original, restates the default implication of being on another plane"
+      },
+      {
+        "rule": "T6",
+        "quote": "A creature inside the portal can spend a single action to attempt an Athletics check or an Escape attempt against your spell DC",
+        "action": "flag",
+        "why": "original restricts this escape attempt to 'at the end of their turn'; that timing restriction is dropped"
+      },
+      {
+        "rule": "T10",
+        "quote": "You tear open a portal to the Far Realms on the floor or ground",
+        "action": "flag",
+        "why": "D&D-cosmology plane name; suggest <Far Realms|the Roiling Beyond>"
+      },
+      {
+        "rule": "T10",
+        "quote": "Creatures inside the portal are in the Far Realms, removed from the plane where the portal was cast",
+        "action": "flag",
+        "why": "same D&D-cosmology plane name, second occurrence; suggest <Far Realms|the Roiling Beyond>"
+      }
+    ],
+    "clean": ["T3", "T4", "T5", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "elemental-sink",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(a free action on that Sustain)",
+        "action": "rewrite",
+        "replacement": "",
+        "why": "load-bearing action-cost detail left in parens; folded into the sentence in the rewrite"
+      },
+      {
+        "rule": "T5",
+        "quote": "The additional damage increases by 3d4.",
+        "action": "flag",
+        "why": "structural heightening.damage delta was '1d4', mismatched with this text's '3d4'; corrected the structural field to 3d4 to match the stated text (no text change)"
+      },
+      {
+        "rule": "T6",
+        "quote": "The additional damage increases by 3d4.",
+        "action": "flag",
+        "why": "original's higher-level text scaled Sustain duration (8hr/24hr) by slot, not damage; the store replaced that axis entirely with damage scaling — a necessary system adaptation but a genuine mechanic substitution worth stakeholder awareness"
+      },
+      {
+        "rule": "T9",
+        "quote": "If you roll the maximum value on any of this additional damage's dice, the sink also causes one of the following extra effects depending on the chosen damage type:</p><p>- <strong>Acid:</strong> One creature adjacent to the target takes 1 acid damage.<br />- <strong>Cold:</strong> The target's Speed is reduced by 10 feet until the end of its next turn.<br />- <strong>Electricity:</strong> The target cannot take reactions until the end of its next turn.<br />- <strong>Fire:</strong> The target sheds bright light in a 10-foot emanation until the end of its next turn, and the next Strike against it before the end of its next turn gains a +1 circumstance bonus to the attack roll.<br />- <strong>Sonic:</strong> The target is pushed 5 feet away from you.",
+        "action": "rewrite",
+        "replacement": "If you roll the maximum value on any of this additional damage's dice, the sink also causes an extra effect depending on the chosen damage type, as shown below.</p><table><tr><th>Damage Type</th><th>Effect</th></tr><tr><td>Acid</td><td>One creature adjacent to the target takes 1 acid damage.</td></tr><tr><td>Cold</td><td>The target's Speed is reduced by 10 feet until the end of its next turn.</td></tr><tr><td>Electricity</td><td>The target cannot take reactions until the end of its next turn.</td></tr><tr><td>Fire</td><td>The target sheds bright light in a 10-foot emanation until the end of its next turn, and the next Strike against it before the end of its next turn gains a +1 circumstance bonus to the attack roll.</td></tr><tr><td>Sonic</td><td>The target is pushed 5 feet away from you.</td></tr></table>",
+        "why": "run-on prose list of rolled outcomes becomes a named-entry table per house convention"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T10"]
+  },
+  {
+    "slug": "erase",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(including glyphs, sigils, and spellbook pages)",
+        "action": "rewrite",
+        "replacement": ", including glyphs, sigils, and spellbook pages,",
+        "why": "original states this plainly ('including spellbooks and glyphs'); promote out of parens"
+      },
+      {
+        "rule": "T1",
+        "quote": "; a Detect Magic or Recall Knowledge check against your spell DC reveals only that something has been erased",
+        "action": "delete",
+        "why": "matches the brief's own struck exemplar pattern ('(or an Identify or Recall Knowledge check)') — over-explains what inspection reveals"
+      },
+      {
+        "rule": "T3",
+        "quote": " (such as a glyph of warding)",
+        "action": "delete",
+        "why": "official-spell name-drop as a worked example"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (3rd)",
+        "action": "flag",
+        "why": "keep: unlocks erasing scrolls/formula books, a genuinely different effect"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "keep: unlocks erasing runes/property runes, a genuinely different effect"
+      }
+    ],
+    "clean": ["T2", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "excavation",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(such as building walls, castle foundations, or worked stone floors)",
+        "action": "delete",
+        "why": "explaining parenthetical with worked examples; 'artificially constructed stone or masonry' is already clear"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: already matches the preferred +N idiom (single value, the spell's own core mechanic, not a peripheral cap)"
+      },
+      {
+        "rule": "T10",
+        "quote": "You channel power from the Plane of Earth, allowing you to excavate terrain at a rapid rate.",
+        "action": "flag",
+        "why": "D&D-cosmology plane name; suggest <Plane of Earth|the Deep Below>"
+      },
+      {
+        "rule": "T10",
+        "quote": "The removed material is returned to the Plane of Earth.",
+        "action": "flag",
+        "why": "same D&D-cosmology plane name, second occurrence; suggest <Plane of Earth|the Deep Below>"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "extra-motivation",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(the spells in those slots must be spells you have already prepared or have in your repertoire)",
+        "action": "rewrite",
+        "replacement": ", provided the spells were already prepared in those slots or are in your repertoire,",
+        "why": "load-bearing eligibility rule left in parens; promote to plain prose"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "extraplanar-beam",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The damage increases by 1d12.",
+        "action": "flag",
+        "why": "keep: already matches the preferred +N idiom, structural interval matches text"
+      },
+      {
+        "rule": "T6",
+        "quote": "The creature takes full damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.",
+        "action": "flag",
+        "why": "original blinds on any failed save for a full minute with a recurring Con-save recovery check; the store shrinks this to Dazzled/Blinded lasting only until the caster's next turn — a significant flattening"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "extraplanar-pulse",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The vitality damage increases by 2d6.",
+        "action": "flag",
+        "why": "keep: already matches the preferred +N idiom, structural interval matches text"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "falling-star",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The damage increases by 2d6.",
+        "action": "flag",
+        "why": "keep: already matches the preferred +N idiom, structural interval matches text"
+      },
+      {
+        "rule": "T6",
+        "quote": "The shard detonates in a silent, blinding flare, and creatures in the area must scatter from the falling light. The shard deals 11d6 vitality damage to creatures in the area, with a basic Reflex save.",
+        "action": "rewrite",
+        "replacement": "Each creature in the area must attempt a basic Reflex save against the shard's detonation, taking 11d6 vitality damage.",
+        "why": "invented dramatic flourish ('scatter from the falling light') replaces the original's plain, functional phrasing"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "farsight",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "You can link one additional sigil per casting beyond your Intelligence modifier, and you can switch between sigils as a free action instead of an Interact action.",
+        "action": "flag",
+        "why": "mixed tier: the '+1 sigil' portion matches the brief's struck limit-extension bloat pattern, while the free-action switch is a genuinely different effect — flag for stakeholder call rather than unilaterally splitting/collapsing"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "fast-forward",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(permanent until the curse is removed)",
+        "action": "rewrite",
+        "replacement": ", which persists until the curse is removed,",
+        "why": "load-bearing override of Drained's normal rest-recovery left in parens; promote to plain prose"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (8th)",
+        "action": "flag",
+        "why": "keep: layers Drained onto the existing curse, a genuinely additive effect, not pure numeric bloat"
+      },
+      {
+        "rule": "T6",
+        "quote": "It becomes @UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled 2} and @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 2}, and its Speed is reduced by 10 feet.",
+        "action": "flag",
+        "why": "original's curse also halves weapon-attack damage; that penalty axis has no equivalent anywhere in the store text and is dropped entirely"
+      },
+      {
+        "rule": "T8",
+        "quote": "It becomes @UUID[Compendium.pf2e.conditionitems.Item.Enfeebled]{Enfeebled 2} and @UUID[Compendium.pf2e.conditionitems.Item.Clumsy]{Clumsy 2}, and its Speed is reduced by 10 feet. This curse persists until removed.",
+        "action": "flag",
+        "why": "original also disadvantages Constitution-based checks/saves; per the brief's own mapping (Con-based → Drained) that should appear at base rank, but Drained is only added at Heightened(8th), leaving a gap at the base rank"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "fault-line",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(rubble and fissures)",
+        "action": "delete",
+        "why": "decorative explaining parenthetical, not load-bearing"
+      },
+      {
+        "rule": "T4",
+        "quote": "The difficult terrain can be cleared by spending 1 minute of work per 5-foot square.",
+        "action": "delete",
+        "why": "over-explains a GM-adjudicated detail the original never specifies"
+      },
+      {
+        "rule": "T5",
+        "quote": "The damage increases by 2d10 and the line increases in length by 10 feet.",
+        "action": "flag",
+        "why": "keep: already matches the preferred +N idiom, both scaled values stated in body, structural matches"
+      }
+    ],
+    "clean": ["T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "festering-slick",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(from any source: spells, abilities, potions, natural healing)",
+        "action": "delete",
+        "why": "explaining enumeration in parens; 'cannot regain Hit Points' is already comprehensive"
+      },
+      {
+        "rule": "T5",
+        "quote": "The void damage on trigger increases by 1d6.",
+        "action": "flag",
+        "why": "keep: already matches the preferred +N idiom, structural interval matches text"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "flashback",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(it can hear but sounds seem distant)",
+        "action": "delete",
+        "why": "redundant restatement of 'aware of its surroundings as if from far away'"
+      },
+      {
+        "rule": "T1",
+        "quote": "(sight, hearing, and any special senses the target possessed at the time)",
+        "action": "rewrite",
+        "replacement": ", including sight, hearing, and any special senses the target possessed at the time,",
+        "why": "original states this in plain prose; promote out of parens"
+      },
+      {
+        "rule": "T1",
+        "quote": "(you are incapacitated)",
+        "action": "rewrite",
+        "replacement": "because you become incapacitated",
+        "why": "load-bearing trigger condition left in parens; promote to plain prose"
+      },
+      {
+        "rule": "T2",
+        "quote": "(they cannot interact or change events)",
+        "action": "delete",
+        "why": "fencing clause pre-answering an interaction question nobody asked"
+      },
+      {
+        "rule": "T5",
+        "quote": "The memory window extends to 1 week.",
+        "action": "flag",
+        "why": "four fixed tiers are almost purely a time-window ladder (1wk/1mo/1yr/any-time) matching the brief's struck 'relaxing a time limit' bloat pattern; the 3rd tier bundles a genuinely different whisper ability, complicating a clean collapse — flag for stakeholder call"
+      },
+      {
+        "rule": "T6",
+        "quote": "While sharing the memory, you and any observers are @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} but are otherwise free to act.",
+        "action": "flag",
+        "why": "original makes observers fully deaf and blind; the store downgrades this to Dazzled, a much lighter cost for the same shared-sense benefit"
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "fluid-form",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The resistance increases to 15 and you also gain resistance 10 to acid damage. You can flow up walls and across ceilings, gaining a 20-foot climb Speed.",
+        "action": "flag",
+        "why": "keep: multiple genuinely different additions (acid resistance, climb speed), not pure numeric bloat"
+      },
+      {
+        "rule": "T6",
+        "quote": "If the spell ends while you are in a space too small for your normal form, you are automatically expelled to the nearest unoccupied space large enough to contain you; if no such space is within 30 feet, you are squeezed out over 1 round and become @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} for 1 minute from the traumatic reconstitution.",
+        "action": "flag",
+        "why": "original's two-branch mechanic (container shatters, or you're stuck in fluid form until released) is replaced entirely by an auto-expel/Slowed mechanic — a wholesale substitution, not a translation"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  }
+]

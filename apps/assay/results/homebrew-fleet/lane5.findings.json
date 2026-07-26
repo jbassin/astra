@@ -1,0 +1,431 @@
+[
+  {
+    "slug": "macabredanse",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "It cannot act in combat (it has 1 HP and is destroyed if it takes any damage).",
+        "action": "rewrite",
+        "replacement": "It cannot act in combat; it has 1 HP and is destroyed if it takes any damage.",
+        "why": "load-bearing mechanical content (1 HP, destroyed by any damage) left parenthesized; promoted to plain prose."
+      },
+      {
+        "rule": "T6",
+        "quote": "You create a brief, harmless sensory flourish: candles gutter, a cold draft passes, whispers rustle from nowhere, or the scent of old earth drifts through the air.",
+        "action": "rewrite",
+        "replacement": "You create a brief, harmless sensory effect: flickering candles, a puff of cold wind, a cacophony of unintelligible whispers, or the faint odor of decay.",
+        "why": "store punched up the original's plain example list into invented flavor imagery; restored closer to the 5e original's own examples translated to PF2e prose."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "mark-of-protection",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(an attack, spell, or effect)",
+        "action": "delete",
+        "why": "worked-example enumeration adding nothing beyond 'a single source'."
+      },
+      {
+        "rule": "T2",
+        "quote": "Both of you must be able to occupy each other's spaces; if either space is blocked, the reaction fails.",
+        "action": "delete",
+        "why": "restates the game's existing occupancy default (two creatures can't share a space); pre-litigates an edge case nobody asked about."
+      },
+      {
+        "rule": "T6",
+        "quote": "You can only have one Mark of Protection active at a time. Casting this spell while a Mark is already active on another creature ends the previous Mark.",
+        "action": "flag",
+        "why": "the 5e original allowed marking multiple creatures simultaneously by expending an additional spell slot per target; the store flattened this to single-target-only baseline (with heightened tiers unlocking more) — a mechanical simplification of the original's design, not just a text issue, so flagging for stakeholder rather than unilaterally restoring multi-slot-casting."
+      },
+      {
+        "rule": "T1",
+        "quote": "you choose which marked creature to swap with (you can only intercept one at a time, and you still take the damage once regardless of how many marks are active).",
+        "action": "rewrite",
+        "replacement": "you choose which marked creature to swap with, though you can only intercept one at a time and take the damage once regardless of how many marks are active.",
+        "why": "load-bearing mechanical clarification left parenthesized; promoted to plain prose."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (6th)",
+        "action": "flag",
+        "why": "keep: both fixed tiers (6th: extra mark capacity, 8th: resistance) grant genuinely different effects, not a pure numeric ladder."
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "mass-fluency",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You inscribe a memetic language-matrix into the minds of up to four willing creatures, touching each in turn as part of the casting.",
+        "action": "flag",
+        "why": "embellished beyond the original's plain 'You grant up to four willing creatures the ability to understand any language they read or hear' — the touch-per-target mechanic is a necessary PF2e translation, but 'memetic language-matrix' is invented flavor; flagging since the school-flavor framing may be intentional across this book's memetics spells."
+      },
+      {
+        "rule": "T4",
+        "quote": "interpreting it perfectly regardless of dialect or cipher",
+        "action": "delete",
+        "why": "over-explains what 'understand any language they read or hear' already self-evidently means."
+      },
+      {
+        "rule": "T2",
+        "quote": "The effect is purely linguistic. It does not grant cultural context, decode intentional obfuscation, or reveal meaning @UUID[Compendium.pf2e.conditionitems.Item.Hidden]{Hidden} beneath the literal words.",
+        "action": "delete",
+        "why": "pre-answers edge-case interactions nobody asked about; not present in the 5e original at all."
+      },
+      {
+        "rule": "T1",
+        "quote": "(5 at 7th, 6 at 8th, etc.)",
+        "action": "delete",
+        "why": "worked-example arithmetic redundant with the flat 'one additional creature' (+1) line."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: correct flat (+1) idiom once the T1 worked-example parenthetical is removed, base of 4 stated in body. Note: system.heightening is entirely absent from this store file (not even null) per its own adapterWarnings — a structural gap outside this rule's text-only scope, surfaced for awareness."
+      }
+    ],
+    "clean": ["T3", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "mental-balance",
+    "findings": [
+      {
+        "rule": "T4",
+        "quote": "For the duration, the target gains the following benefits and restrictions:",
+        "action": "delete",
+        "why": "meta-framing sentence that only announces the next two paragraphs; redundant restatement."
+      },
+      {
+        "rule": "T6",
+        "quote": "leaving behind only cool reason",
+        "action": "flag",
+        "why": "embellished flavor addition not in the original's plain 'You temporarily remove all of a creature's emotional attachments or biases.'"
+      },
+      {
+        "rule": "T6",
+        "quote": "The target automatically succeeds at Perception checks to notice memetic effects or illusions that target its emotions, though it must still attempt Will saves normally.",
+        "action": "flag",
+        "why": "invented mechanic not present in the 5e original at all, materially expanding the spell's power; flagging rather than unilaterally cutting since it may be a deliberate balance addition from an earlier round."
+      },
+      {
+        "rule": "T2",
+        "quote": "(the GM adjudicates what constitutes an irrational decision)",
+        "action": "delete",
+        "why": "pre-litigation parenthetical fencing an edge-case GM-call nobody asked about."
+      },
+      {
+        "rule": "T6",
+        "quote": "logically consistent with the available evidence and any applicable laws or codes it is bound by",
+        "action": "flag",
+        "why": "embellished rewrite of the original's plainer 'must follow the spirit and letter of the law, and the subject is incapable of showing favoritism.'"
+      },
+      {
+        "rule": "T6",
+        "quote": "The target cannot lie, and cannot be compelled by magically-imposed emotion to act against its rational conclusions.",
+        "action": "flag",
+        "why": "invented content with no counterpart in the 5e original; flagging as a substantive addition beyond translation."
+      },
+      {
+        "rule": "T5",
+        "quote": "The restrictions on emotion-based decisions are somewhat relaxed; the target may acknowledge emotional context even if it cannot act solely on emotion.",
+        "action": "flag",
+        "why": "the 6th-rank tier bundles a numeric micro-upgrade (+1 more status bonus, +Perception) with a limit-loosening clause — the loosening-a-restriction pattern was repeatedly struck as bloat elsewhere; flagging as a suspect tier rather than unilaterally cutting."
+      }
+    ],
+    "clean": ["T1", "T3", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-claws",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The claws' damage increases to 3d12 slashing.",
+        "action": "flag",
+        "why": "the 8th-rank tier is a pure numeric-only step (unlike the flanking 7th/9th tiers, which each also grant a distinct burrow-speed benefit) — a suspect bloat filler between two genuinely-different-effect tiers; flagging rather than collapsing since the die-type progression (2d12→3d10→3d12→4d12) doesn't reduce cleanly to a flat (+N) increment."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-eye-stalks",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(or the same target, if you choose)",
+        "action": "rewrite",
+        "replacement": "or the same target if you choose",
+        "why": "load-bearing targeting option left parenthesized; promoted to plain prose."
+      },
+      {
+        "rule": "T2",
+        "quote": "All rays fire simultaneously when you Cast the Spell.",
+        "action": "delete",
+        "why": "restates the rules default that a single spellcasting action's effects resolve together; pre-litigates a question nobody asked."
+      },
+      {
+        "rule": "T2",
+        "quote": "The @UUID[Compendium.pf2e.conditionitems.Item.Frightened]{Frightened} condition decreases by 1 at the end of each of the creature's turns.",
+        "action": "delete",
+        "why": "restates the Frightened condition's own built-in default decay, which the condition's rules text already covers."
+      },
+      {
+        "rule": "T9",
+        "quote": "1. Charm Ray. The target must attempt a Will save.",
+        "action": "rewrite",
+        "replacement": "table",
+        "why": "complex rolled effect (d8 of ray outcomes) was written as run-on prose with <br/> separators; converted into a named-entry table (matching the cerebral-disruption.json house convention), with the intro paragraph now referring to 'the Eye Stalks table.' Full table content preserved verbatim per row, see applied file."
+      },
+      {
+        "rule": "T6",
+        "quote": "roll 1d8 on the following table to determine its effect",
+        "action": "flag",
+        "why": "the 5e original was a d10/10-option table including a Paralyzing Ray and a Death Ray; the store dropped both, reducing to a d8/8-option table — a flattened/simplified design, flagging per the T6 doctrine on dropped staged mechanics."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (8th)",
+        "action": "flag",
+        "why": "the 5e original's higher-level text was a clean linear '+1 ray per slot level above 7th' — exactly the flat (+N) idiom. The store instead fixed this into 8th/9th tiers AND bolted on an invented 'ray damage increases by 2d10' escalation not present in the original at all. Flagging both the non-idiomatic fixed-tier conversion (T5) and the invented damage-scaling axis (T6) together since untangling them safely needs a balance call."
+      },
+      {
+        "rule": "T1",
+        "quote": "roll 1d8 four times (rerolling duplicates)",
+        "action": "rewrite",
+        "replacement": "roll 1d8 four times, rerolling duplicates",
+        "why": "load-bearing procedural clarification left parenthesized; promoted to plain prose (applied within the otherwise-flagged Heightened block, since this specific edit carries no balance risk)."
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-shell",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You gain a +2 circumstance bonus to AC.<br />- You gain resistance 15 to physical damage.",
+        "action": "flag",
+        "why": "the 5e original's Tarrasque-carapace spell only ever had the magic-deflection mechanic; the store invented two entirely new defensive benefits (AC bonus, physical resistance) with no counterpart in the original, substantially expanding the spell's scope. Flagging rather than cutting since these may be a deliberate earlier-round balance addition to give the spell baseline value at 9th rank."
+      },
+      {
+        "rule": "T2",
+        "quote": "A ranged spell attack roll targets you, a line spell would pass through your space, or you would be targeted by a spell that requires a ranged attack roll",
+        "action": "flag",
+        "why": "the first and third trigger clauses appear to duplicate the same condition (a ranged spell attack roll targeting you); looks like a leftover from translating the original's 'magic missile spell' trigger. Flagging for stakeholder disambiguation rather than guessing which clause to cut."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-stinger",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: already correct (+1) flat idiom, base poison damage (4d10) stated in body. Affliction stage structure is settled design per prior legalization; text reviewed and clean."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-tail",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (8th)",
+        "action": "flag",
+        "why": "two fixed tiers (8th: 3d12, 9th: 4d10) are a pure numeric-only ladder with no bundled qualitative change, matching the same non-idiomatic pattern as monstrous-copy-claws/tentacle; flagging rather than collapsing since the die-type alternation (3d10→3d12→4d10) doesn't reduce cleanly to a flat (+N) increment."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-tentacle",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (6th)",
+        "action": "flag",
+        "why": "four fixed tiers (6th-9th) are a pure numeric-only damage ladder with no qualitative differences, the sibling spells' worst offender of this pattern (2d8→2d10→3d8→3d10→4d8); flagging rather than collapsing since the alternating die-type/count progression doesn't reduce cleanly to one flat (+N) increment."
+      },
+      {
+        "rule": "T6",
+        "quote": "has the agile, disarm, grapple, magical, reach (15 feet), trip, and unarmed traits",
+        "action": "flag",
+        "why": "the 5e original had two additional staged mechanics dropped entirely in translation: 'While you are grappling a creature with this whip, you can't use it to make attacks at other creatures' and 'If the target is Medium or smaller, it is also restrained until the grapple ends' — both are flattened/simplified out of the store version with no replacement."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-wail",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: already correct (+1) flat idiom, base damage (8d8) stated in body."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "move-the-cosmic-wheel",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Inanimate objects are cut off at the edge; ambulatory creatures from both planes caught inside can attempt to escape.",
+        "action": "flag",
+        "why": "the 5e original had a staged edge-case dropped entirely: living creatures that don't fit inside the bubble are shunted outside of it before the swap occurs. The store's version has no equivalent for creatures that don't fit."
+      },
+      {
+        "rule": "T6",
+        "quote": "though plane-dependent effects interact according to the physics of whichever side they are on",
+        "action": "flag",
+        "why": "the original had a specific mechanic here (energy such as necrotic leaks across the boundary at no more than a foot or two per hour) that got generalized away into vague 'physics of whichever side' language — a flattened mechanic, not just a dropped worked example."
+      },
+      {
+        "rule": "T6",
+        "quote": "another plane of existence to the spot you designate within range",
+        "action": "flag",
+        "why": "minor: the original qualified the plane as one 'with which you are familiar, either through personal experience or intense study' — dropped in the store version. Low stakes but noted for completeness."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "mystic-negation",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "you may use a single action (which has the concentrate trait) to move the sphere up to 20 feet",
+        "action": "rewrite",
+        "replacement": "you may use a single action with the concentrate trait to move the sphere up to 20 feet",
+        "why": "load-bearing trait clarification left parenthesized; promoted to plain prose."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (7th)",
+        "action": "flag",
+        "why": "the 5e original's higher-level text was a clean linear '+1 max negated rank per slot level above 5th' — the flat (+N) idiom. The store instead fixed this into 7th/9th tiers; flagging the non-idiomatic conversion alongside the T6 finding below since they're the same span."
+      },
+      {
+        "rule": "T6",
+        "quote": "the zone of effect expands to 40 feet",
+        "action": "flag",
+        "why": "invented escalation axis (counteract radius growing 30→40→60 ft) with no counterpart in the 5e original, which only ever scaled the max negated spell rank. This is a substantive mechanical addition, not a text/prose issue, so flagging for a balance call rather than unilaterally deleting granted power. Note: the '3-counter burnout governor' clause elsewhere in the body is confirmed-deliberate settled design per brief and was not touched."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "nightfall",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(approximately 5,280 feet)",
+        "action": "delete",
+        "why": "worked-example unit conversion of '1 mile', matches the struck exemplar pattern exactly."
+      },
+      {
+        "rule": "T4",
+        "quote": "The spell creates a localized nighttime environment, with all the attendant conditions of darkness and moonlight. Effects that depend on natural darkness or nighttime conditions apply within the area as if it were true night.",
+        "action": "delete",
+        "why": "redundant restatement of what the preceding paragraph already establishes (the area perceives as nighttime darkness); over-explains a self-evident consequence."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (4th)",
+        "action": "flag",
+        "why": "keep: matches the 5e original's own non-linear, order-of-magnitude fixed-tier design (600 ft / 1 mile / 10 miles) verbatim — not reducible to a flat additive increment, so correctly left fixed."
+      }
+    ],
+    "clean": ["T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "oblivion",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: already correct (+1) flat idiom (both damage types +1d6), base (6d6/6d6) stated in body."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "oddly-satisfying",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "The creature makes its per-turn Will save at the end of its turn (rather than the start) and must succeed twice to break free.",
+        "action": "rewrite",
+        "replacement": "The creature makes its per-turn Will save at the end of its turn instead of the start, and must succeed twice to break free.",
+        "why": "load-bearing timing distinction from the Failure tier left parenthesized; promoted to plain prose."
+      },
+      {
+        "rule": "T2",
+        "quote": "(same DC)",
+        "action": "delete",
+        "why": "restates the default that a repeated save against the same spell effect uses the same DC unless stated otherwise."
+      },
+      {
+        "rule": "T4",
+        "quote": "(no longer requires touch)",
+        "action": "delete",
+        "why": "redundant with 'range becomes 30 feet', which already implies touch range no longer applies."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (7th)",
+        "action": "flag",
+        "why": "keep: single non-repeating tier that changes range and target count qualitatively — not a numeric ladder, correctly fixed."
+      }
+    ],
+    "clean": ["T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "outside-of-time",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "If cast on an unwilling creature, the creature becomes a valid target only with its explicit consent; this spell functions only on willing targets. A caster intending to trap an unwilling creature must use a different effect.",
+        "action": "delete",
+        "why": "pre-litigates a scenario the spell's own target field ('1 willing creature or unattended object') already forecloses; not present in the 5e original."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "overhaul",
+    "findings": [
+      {
+        "rule": "T3",
+        "quote": "It can be reversed only through effects that target curses, such as @UUID[Compendium.pf2e.spells-srd.Item.Cleanse Affliction]{Cleanse Affliction}, or by casting Overhaul again; removing it this way requires a successful counteract check against this spell's rank.",
+        "action": "rewrite",
+        "replacement": "This is a permanent polymorph, treated as a curse. Removing it requires a successful counteract check against this spell's rank, or it can be undone by casting Overhaul again.",
+        "why": "named an official Paizo spell (Cleanse Affliction) as a removal-mechanic comparison; replaced with the brief's prescribed plain counteract-check template, keeping the self-reference to Overhaul (the spell's own name)."
+      },
+      {
+        "rule": "T1",
+        "quote": "(the GM determines this, typically by rolling on a table of available ancestries in the setting)",
+        "action": "delete",
+        "why": "explaining parenthetical elaborating an edge-case procedure; matches the struck exemplar pattern."
+      },
+      {
+        "rule": "T6",
+        "quote": "The creature's ancestry changes to a randomly determined humanoid ancestry",
+        "action": "flag",
+        "why": "the 5e original had an elaborate d100 ancestry table (19 weighted 5e race options) plus a Charisma (Persuasion) check to influence the result; the store dropped the entire table and the influence-check mechanic, replacing them with an abstracted 'setting ancestries' + degree-of-success system. Likely a necessary adaptation (the original's named 5e races don't map to this homebrew PF2e setting), but flagging per the T6 doctrine on dropped staged/tabular design for stakeholder visibility."
+      }
+    ],
+    "clean": ["T2", "T4", "T5", "T7", "T8", "T9", "T10"]
+  }
+]

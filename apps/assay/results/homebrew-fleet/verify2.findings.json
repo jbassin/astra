@@ -1,0 +1,376 @@
+[
+  {
+    "slug": "flutterstep",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "You may use Spatial Dodge once per round.",
+        "action": "flag",
+        "why": "restates the default 1-reaction-per-round rule; rank 7's 'twice per round' already carries the actual override, so the base line is a redundant restatement of a rules default"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "keep: rank 5/7 tiers add qualitatively different riders (DC change + a free-action Flutter Step chain at rank 7), not pure numeric bloat"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "focus-break",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "and the creature is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}",
+        "action": "flag",
+        "why": "invented content: the 5e original is a plain Con save to maintain concentration with no condition consequence at all; the Stunned 1/Stunned 2 escalation has no basis in the source"
+      },
+      {
+        "rule": "T6",
+        "quote": "it cannot Sustain any magical effect until the start of its next turn.",
+        "action": "flag",
+        "why": "the store carries no Heightened block at all; the original's entire higher-level design ('DC increases by 1 per spell slot level above 5th') was dropped without translation, unlike every other spell in this set which preserves a heighten idiom"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "gambler-s-trick",
+    "findings": [],
+    "clean": ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "grey-frost",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(Escape DC equals your spell DC; successfully Escaping shatters the ice and ends the affliction)",
+        "action": "rewrite",
+        "replacement": "Escape DC equals your spell DC; successfully Escaping shatters the ice and ends the affliction.",
+        "why": "load-bearing mechanical content (what ends the affliction, and the DC) left parenthesized instead of promoted to plain prose"
+      },
+      {
+        "rule": "T1",
+        "quote": "(the affliction ends if the spell ends, except at stage 3)",
+        "action": "rewrite",
+        "replacement": "the affliction ends if the spell ends, except at stage 3;",
+        "why": "a genuine override of the default (affliction normally tracks the spell) buried in parens instead of stated in plain prose"
+      },
+      {
+        "rule": "T6",
+        "quote": "Stage 1</strong> @UUID[Compendium.pf2e.conditionitems.Item.Restrained]{Restrained}",
+        "action": "flag",
+        "why": "the original's progression is a repeated Con save each turn (one fail = instant petrification, three non-consecutive successes = spell ends) with the creature still saving even while petrified unless concentration is held the full minute; the store replaces this with a standard PF2e affliction stage-ladder (Escape-based stage 1, automatic stage 2\u21923 progression) that drops the original's asymmetric save-to-freeze/save-to-escape design entirely"
+      },
+      {
+        "rule": "T6",
+        "quote": "flash-freezing its body from the outside in",
+        "action": "flag",
+        "why": "invented flavor clause with no counterpart in the original, which only says the caster 'manifests the brutal cold of the Grey Waste in a creature you touch'"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: pure flat +1d8 increment idiom, correctly collapsed (original had no heightening at all, this is the needed addition done right)"
+      },
+      {
+        "rule": "T10",
+        "quote": "the brutal cold of the Grey Waste",
+        "action": "flag",
+        "why": "Grey Waste (of Hades) is a named D&D cosmology plane; appears plainly and should be obfuscated, e.g. <Grey Waste|the Ashen Wastes>"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "hypercompression",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(a free action as part of Sustaining)",
+        "action": "flag",
+        "why": "borderline worked-example parenthetical; could be promoted to plain prose ('...at the start of each of your turns as a free action when you Sustain the spell')"
+      },
+      {
+        "rule": "T6",
+        "quote": "The area within 30 feet of the orb counts as difficult terrain for any creature moving away from the orb.",
+        "action": "flag",
+        "why": "the original has a two-tier escalating movement cost (4 feet per 1 foot within 10 feet; 2 feet per 1 foot within 30 feet); the store flattens this into a single uniform 'difficult terrain' rule for the whole 30-foot zone, losing the harsher near-field tier"
+      },
+      {
+        "rule": "T6",
+        "quote": "Small or smaller unsecured nonmagical objects within 5 feet of the orb are automatically destroyed at the end of each of your turns.",
+        "action": "flag",
+        "why": "the original has TWO separate object rules: all unsecured objects in the area are pulled into the orb, AND small nonmagical objects within 5 feet are destroyed; the store keeps only the destruction rule and drops the 'objects are pulled into the orb' mechanic entirely"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: pure flat +1d10 increment idiom, correctly collapsed (original had no heightening, needed PF2e addition done right)"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "laixa-s-expert-intuition",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Laixa's insight sharpens your mind to an uncanny acuity, allowing you to pierce deceptions with preternatural certainty.",
+        "action": "delete",
+        "why": "wholly invented flavor sentence; the 5e original is a single terse mechanical sentence with no comparable introductory flavor at all"
+      },
+      {
+        "rule": "T6",
+        "quote": "In addition, while this spell is active you cannot be magically compelled or enchanted into believing false information you have already consciously identified as false during the duration.",
+        "action": "flag",
+        "why": "this entire clause is invented \u2014 the original is one sentence granting only the Insight-check replacement; this whole immunity mechanic has no basis in the source"
+      },
+      {
+        "rule": "T4",
+        "quote": "New deceptions presented after you cast the spell that you have not examined are not automatically rejected, however.",
+        "action": "delete",
+        "why": "self-evident scope restatement (of course unexamined new lies aren't covered); teaches the obvious edge case"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (6th)",
+        "action": "flag",
+        "why": "keep: adds new skill-check scope (Diplomacy, Deception) rather than pure numeric bloat"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "lucky-ward",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Allies in the emanation gain a +1 status bonus to attack rolls.",
+        "action": "flag",
+        "why": "original grants allies a bonus to BOTH attack rolls and saving throws (automatic, no save); store drops the saving-throw bonus for allies entirely, keeping only the attack-roll bonus"
+      },
+      {
+        "rule": "T6",
+        "quote": "must attempt a Will save; resolve the save separately for each enemy, and once an enemy has rolled, it doesn't roll again from this casting.",
+        "action": "flag",
+        "why": "original imposes an automatic (no-save) penalty to both attack rolls and saving throws on every enemy in the aura; store converts this into a resistible Will save that, on a mere failure, only penalizes attack rolls (saves are only penalized on critical failure) and allows full resistance/temporary immunity \u2014 a substantial restructuring beyond vocabulary translation"
+      },
+      {
+        "rule": "T4",
+        "quote": "resolve the save separately for each enemy",
+        "action": "flag",
+        "why": "self-evident from 'each enemy...must attempt a Will save' \u2014 restates that each creature rolls its own save"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (6th)</strong> The status bonus and penalty both increase to +2 / -2.</p><p><strong>Heightened (9th)</strong> Both increase to +3 / -3.",
+        "action": "rewrite",
+        "replacement": "Heightened (+3) The status bonus and penalty each increase by 1.",
+        "why": "bespoke two-tier block is actually a pure numeric ladder (+1/-1 every 3 ranks) \u2014 matches the struck 'flat check DC increases by 2' exemplar exactly and should collapse to a flat (+N) idiom"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "monstrous-copy-shell",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You gain a +2 circumstance bonus to AC.<br />- You gain resistance 15 to physical damage.",
+        "action": "rewrite",
+        "replacement": "You gain a +2 circumstance bonus to AC and resistance 15 to physical damage,",
+        "why": "wholly invented mechanics \u2014 the 5e original grants only the d6 magic-deflection ability, no AC bonus and no damage resistance of any kind; also formatted as a dashed bullet list rather than prose"
+      },
+      {
+        "rule": "T2",
+        "quote": "Frequency: once per round.",
+        "action": "flag",
+        "why": "possibly redundant with the default 1-reaction-per-round economy (as with flutterstep's 'once per round' line), though stat-block Frequency fields are also common official idiom \u2014 flagging for judgment"
+      },
+      {
+        "rule": "T6",
+        "quote": "A ranged spell attack roll targets you, a line spell would pass through your space, or you would be targeted by a spell that requires a ranged attack roll",
+        "action": "flag",
+        "why": "original explicitly names magic missile (an auto-hit spell requiring no attack roll) as a trigger alongside line spells and ranged-attack spells; the store's trigger requires an attack roll throughout, silently dropping coverage for auto-hit force-type spells"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "oblivion",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Each creature in the emanation, including you, takes 6d6 void damage and 6d6 bludgeoning damage from the spatial shockwave.",
+        "action": "rewrite",
+        "replacement": "Each creature in the emanation, including you, must attempt a basic Reflex save against 6d6 void damage and 6d6 bludgeoning damage from the spatial shockwave.",
+        "why": "the original explicitly calls for a Dexterity saving throw; the store's body never states which save applies anywhere in the text (every sibling spell in this sample states its save type inline)"
+      },
+      {
+        "rule": "T6",
+        "quote": "Each chosen creature improves the degree of success of its saving throw against this spell by one step.",
+        "action": "flag",
+        "why": "original guarantees chosen creatures automatically succeed (full immunity); store only guarantees a one-step improvement, which can still leave a weak roll at mere 'success' (half damage) rather than immunity"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: pure flat +1d6/+1d6 increment idiom, correctly collapsed"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "planar-shield",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(including the attacker)",
+        "action": "rewrite",
+        "replacement": ", including the attacker,",
+        "why": "load-bearing scope clarification (whether the triggering attacker also takes the damage) left parenthesized instead of promoted to plain prose"
+      },
+      {
+        "rule": "T6",
+        "quote": "The number of charges increases to 6.",
+        "action": "flag",
+        "why": "wholly invented tier \u2014 the original's only higher-level rule is a flat 1d6 damage increase per slot above 2nd; there is no charge-cap growth in the source"
+      },
+      {
+        "rule": "T5",
+        "quote": "The number of charges increases to 6.",
+        "action": "flag",
+        "why": "matches the struck exemplar pattern of tiers that merely loosen a cap/limit \u2014 suspect bloat candidate on top of having no basis in the original (see T6)"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "repetitious-trauma",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "On the round you cast this spell and each round you Sustain it, the target must attempt a Will saving throw against 8d6 damage of the relived type.",
+        "action": "flag",
+        "why": "original has a two-tier design: 6d6 on the initial cast vs a weaker 4d6 on each bonus-action repeat; the store flattens both into one uniform 8d6 applied every round"
+      },
+      {
+        "rule": "T4",
+        "quote": "Each round's save is rolled separately.",
+        "action": "delete",
+        "why": "self-evident restatement of 'each round...must attempt a Will saving throw'"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: pure flat +2d6 increment idiom, correctly collapsed"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "sapping-lightning",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "A failing creature also has its highest-rank currently prepared, spontaneous, or innate spell slot suppressed rather than consumed.",
+        "action": "flag",
+        "why": "original mechanic is a PERMANENT loss of the creature's highest-level spell slot; store softens this to a temporary suppression that recovers by the end of the creature's next turn (per the Failure line) \u2014 a substantial severity change, not just vocabulary translation"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+1)",
+        "action": "flag",
+        "why": "keep: matches the original's own flat per-rank scaling idiom (already expressed as scaled dice in the source)"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "sphere-of-preservation",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "This affects all dice rolls that occur entirely within the emanation: attack rolls, damage rolls, and saving throw rolls.",
+        "action": "rewrite",
+        "replacement": "This affects all dice rolls that occur entirely within the emanation: skill checks, attack rolls, damage rolls, and saving throw rolls.",
+        "why": "original's affected-category list explicitly includes ability checks; the store's enumerated list omits any check category entirely"
+      },
+      {
+        "rule": "T2",
+        "quote": "It does not affect flat checks.",
+        "action": "delete",
+        "why": "redundant with the preceding closed enumerated list (attack/damage/saving throw rolls only) which already excludes flat checks by omission \u2014 pre-answers an edge case the list already resolves"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (8th)</strong> The emanation expands to 60 feet.</p><p><strong>Heightened (10th)</strong> The emanation expands to 120 feet.",
+        "action": "rewrite",
+        "replacement": "Heightened (+2) The emanation's radius doubles.",
+        "why": "fixed two-tier block is a pure doubling ladder on a regular +2-rank cadence \u2014 matches the struck 'flat check DC increases by 2' exemplar pattern and should collapse to a flat (+N) idiom"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "tag",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "If the current carrier ends their turn still holding the charge, the Transfer Count increases by 3.",
+        "action": "flag",
+        "why": "original also forces an immediate detonation roll against the holder at that moment ('roll as if it was transferred to you'); the store only raises future odds, dropping the immediate self-check"
+      },
+      {
+        "rule": "T6",
+        "quote": "you glow softly, visibly suffused with unstable force",
+        "action": "flag",
+        "why": "original says 'glowing brightly'; store both reverses the intensity and adds ornamentation not present in the source"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (+2)",
+        "action": "flag",
+        "why": "keep: pure flat increment idiom (+1d8 fire/+1d8 mental), correctly collapsed"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "time-step",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "cannot be targeted by any effect, cannot be detected, cannot observe or interact with the world, and are not affected by anything that happens in your absence",
+        "action": "flag",
+        "why": "original states only two protections (unaffected by events during the interval, unaware of them); store expands this into four enumerated clauses, including new claims (untargetable, undetectable) absent from the source \u2014 list-ification plus invented scope"
+      },
+      {
+        "rule": "T6",
+        "quote": "skipping ahead by one tick of the clock",
+        "action": "flag",
+        "why": "minor invented flavor turn of phrase; the original just says you disappear and reappear, with no 'tick of the clock' framing"
+      },
+      {
+        "rule": "T1",
+        "quote": "(the creature must be adjacent to you when you cast the spell and reappears adjacent to you)",
+        "action": "rewrite",
+        "replacement": "if the creature is adjacent to you when you cast the spell, it reappears adjacent to you",
+        "why": "load-bearing placement rule for the heightened ally-transport rider left parenthesized instead of promoted to plain prose"
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (4th)",
+        "action": "flag",
+        "why": "keep: both rank-4 and rank-6 tiers add qualitatively different riders (turn-skip choice; ally transport + range) rather than pure numeric bloat"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  }
+]

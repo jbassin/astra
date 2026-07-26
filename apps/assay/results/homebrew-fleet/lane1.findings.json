@@ -1,0 +1,474 @@
+[
+  {
+    "slug": "chrysalis",
+    "findings": [
+      {
+        "rule": "T4",
+        "quote": "it cannot perceive the outside world, cannot take actions, cannot speak or be spoken to, and is not aware of what happens outside",
+        "action": "flag",
+        "why": "four-part enumeration over-explains what 'completely cut off from external stimuli' already implies; original just says cut off from outside stimuli."
+      },
+      {
+        "rule": "T5",
+        "quote": "The cocoon's HP increases to 40 and its Hardness increases to 10, and the cocoon is visually imperceptible; a creature must succeed at a DC 30 Perception check to notice it.",
+        "action": "flag",
+        "why": "keep: fixed tier adds a qualitative effect (imperceptibility+detection DC), not a pure numeric ladder."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "compression",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": ", a flat, living silhouette that retains awareness and sensation but occupies no physical depth",
+        "action": "delete",
+        "why": "invented flavor appositive not in the original; delete to leave the plain framing already stated (\"a two-dimensional representation of itself\")."
+      },
+      {
+        "rule": "T6",
+        "quote": "the target is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} and can't use the Stride action",
+        "action": "flag",
+        "why": "original fully incapacitates during reversion (no actions, no movement); store only blocks Stride and applies Slowed 1 — flattened mechanic, verify intentional."
+      },
+      {
+        "rule": "T5",
+        "quote": "Heightened (5th)",
+        "action": "flag",
+        "why": "keep: two fixed heightened tiers (5th/7th) each add qualitatively distinct effects (locked-door passage, 1-action reversion, extended resistance, barrier-passing), not a pure numeric ladder."
+      },
+      {
+        "rule": "T8",
+        "quote": "Reverting to 3D form requires 1 minute of concentration",
+        "action": "flag",
+        "why": "'concentration' is 5e mechanic vocabulary that could be misread against PF2e's Sustain/concentrate trait; consider rewording (e.g. 'sustained effort')."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "compressive-weapon",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(up to the spell's range of 30 feet)",
+        "action": "delete",
+        "why": "redundant edge-case qualifier restating the spell's own range field; also restated again in the following sentences."
+      },
+      {
+        "rule": "T2",
+        "quote": "You cannot use this spell to make Strikes against targets beyond 30 feet.",
+        "action": "delete",
+        "why": "restates the range cap already implied by the spell's range property and by the following end-condition sentence."
+      },
+      {
+        "rule": "T2",
+        "quote": "The weapon still requires line of effect.",
+        "action": "flag",
+        "why": "possibly restates the general line-of-effect requirement for Strikes; the 'spatial shortcut' flavor may justify the clarification — stakeholder call."
+      },
+      {
+        "rule": "T5",
+        "quote": "The range of the compressive reach increases by 10 feet.",
+        "action": "flag",
+        "why": "keep: already idiomatic single (+1) flat-increment line; base range (30 ft) stays stated in the 'spell ends' sentence after the T1/T2 deletions."
+      },
+      {
+        "rule": "T6",
+        "quote": "You compress the intervening space between yourself and a target creature, creating a spatial shortcut through which your weapon's reach always finds the target.",
+        "action": "flag",
+        "why": "the 5e original grants advantage on your next two attack rolls only; store invented an entirely different mechanic (extended-reach Strikes for the whole duration) — too large a divergence for a translation-only fix, needs stakeholder review."
+      }
+    ],
+    "clean": ["T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "cone-of-decay",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The base void damage increases by 1d10.",
+        "action": "flag",
+        "why": "keep: idiomatic single (+1d10) flat increment matching structural heightening; base (8d10) stated in body."
+      },
+      {
+        "rule": "T6",
+        "quote": "Creatures in the cone take 8d10 void damage from the ravaging decomposition with a basic Fortitude save.",
+        "action": "flag",
+        "why": "the 5e original deals NO direct damage to living creatures (only gear destruction on a failed Con save); undead alone took Constitution drain. Store invented direct void damage to all creatures and replaced the undead Con-drain with flat bonus damage — verify intentional."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "cone-of-silence",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(they simply hear nothing)",
+        "action": "delete",
+        "why": "explaining parenthetical clarifying flavor rationale, not mechanically load-bearing."
+      },
+      {
+        "rule": "T1",
+        "quote": "(the sudden re-introduction of sound overwhelms it)",
+        "action": "delete",
+        "why": "explaining parenthetical clarifying flavor rationale, not mechanically load-bearing."
+      },
+      {
+        "rule": "T4",
+        "quote": "A creature fully within the cone cannot use auditory actions, cannot make sound, and cannot receive auditory information from within the cone.",
+        "action": "flag",
+        "why": "largely re-derives paragraph 1's 'no sound can enter, exit, or propagate through the area' in creature-specific terms — possible over-explanation, but the auditory-action restriction may be mechanically load-bearing; stakeholder call."
+      },
+      {
+        "rule": "T5",
+        "quote": "The cone extends to 120 feet. The silence is total even for creatures who succeed at the Fortitude save",
+        "action": "flag",
+        "why": "keep: fixed tier changes the qualitative nature of a successful save (only Deafened-immunity, not silence-immunity) plus range, not a pure numeric ladder."
+      },
+      {
+        "rule": "T6",
+        "quote": "Every creature in the area when you Cast the Spell, and every creature that enters the area, must attempt a Fortitude save when first affected.",
+        "action": "flag",
+        "why": "the 5e original has no save at all — any creature/object in the cone is automatically deafened and thunder-immune. Store invented a full 4-degree save structure; verify intentional (not a required PF2e translation since auto-effects without saves are common)."
+      },
+      {
+        "rule": "T8",
+        "quote": "immune to thunder damage",
+        "action": "rewrite",
+        "replacement": "immune to sonic damage",
+        "why": "'thunder damage' is 5e vocabulary; PF2e's equivalent damage type is sonic."
+      }
+    ],
+    "clean": ["T2", "T3", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "connection",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You raise a conch to your ear and speak the name of a creature you know well, opening a thread of telepathic contact between you.",
+        "action": "rewrite",
+        "replacement": "You open a telepathic connection to a willing creature you know personally.",
+        "why": "invented conch-prop flavor not in the original; restore the original's plain framing (T6)."
+      },
+      {
+        "rule": "T5",
+        "quote": "You can include up to 3 willing creatures you know in the connection; any participant can communicate with any other.",
+        "action": "flag",
+        "why": "keep: introduces a genuinely new capability (group communication), not a pure ladder."
+      },
+      {
+        "rule": "T5",
+        "quote": "Duration becomes 1 hour and the planar miss chance drops to 1%.",
+        "action": "flag",
+        "why": "suspect: loosens duration and reduces the planar-miss chance — a limit-loosening tier matching the brief's flag-candidate bloat pattern."
+      },
+      {
+        "rule": "T5",
+        "quote": "You can include up to 8 willing creatures.",
+        "action": "flag",
+        "why": "suspect: pure cap increase (3→8) with no new capability — limit-loosening bloat pattern the brief calls out as a strike candidate."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "containment-orbs",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(arcane, divine, occult, or primal)",
+        "action": "rewrite",
+        "replacement": ": arcane, divine, occult, or primal",
+        "why": "load-bearing enumeration of the only 4 valid traditions must be promoted to plain prose, not parenthesized."
+      },
+      {
+        "rule": "T1",
+        "quote": "(loaded or empty)",
+        "action": "delete",
+        "why": "edge-case qualifier restating what 'any remaining orbs' already covers unambiguously."
+      },
+      {
+        "rule": "T5",
+        "quote": "You gain one additional orb.",
+        "action": "flag",
+        "why": "keep: idiomatic single (+1 orb) flat increment. Note: system.heightening is null despite this prose tier — pre-existing structural gap, flagging for record, not fixed here (out of text-review scope)."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "copy",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(including spellbook pages, scrolls, and glyphs)",
+        "action": "rewrite",
+        "replacement": ", including spellbook pages, scrolls, and glyphs,",
+        "why": "parenthetical enumeration should be plain prose per T1 (matches the original's unparenthesized phrasing)."
+      },
+      {
+        "rule": "T4",
+        "quote": ", does not function as the original magical item, and cannot be used as a spell source or activated",
+        "action": "delete",
+        "why": "self-evident consequences of 'does not retain magical properties' — over-explanation."
+      },
+      {
+        "rule": "T5",
+        "quote": "You can copy up to 250 pages of text, and the copy retains any non-magical illustrations or illuminations with perfect fidelity.",
+        "action": "flag",
+        "why": "keep: bundles a qualitative addition (illustration fidelity) with the page-count bump, not a pure numeric ladder."
+      },
+      {
+        "rule": "T6",
+        "quote": "The copy is indistinguishable from the original to mundane inspection but can be identified as a copy with a successful Recall Knowledge check against your spell DC.",
+        "action": "flag",
+        "why": "entirely invented detection mechanic not present in the 5e original; verify intentional."
+      }
+    ],
+    "clean": ["T2", "T3", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "darkseeker-s-aura",
+    "findings": [
+      {
+        "rule": "T10",
+        "quote": "the plane of Gehenna",
+        "action": "flag",
+        "replacement": "<Gehenna|the Bleak Waste>",
+        "why": "Gehenna is D&D-cosmology proper noun; suggested in-world alias 'the Bleak Waste' (consistent with darkseeker-s-restraint's occurrence)."
+      },
+      {
+        "rule": "T6",
+        "quote": "any creature that hits you with a melee Strike takes 2d6 acid damage",
+        "action": "flag",
+        "why": "the 5e original also grants the caster resistance to acid damage — omitted entirely here (flattened design)."
+      },
+      {
+        "rule": "T5",
+        "quote": "The aura's retaliation damage increases by 1d6, and the focused attack damage increases by 2d6.",
+        "action": "flag",
+        "why": "keep: already idiomatic single (+N) line with two flat increments matching structural heightening.damage; base values (2d6/8d6) stated in body."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "darkseeker-s-restraint",
+    "findings": [
+      {
+        "rule": "T10",
+        "quote": "Gehenna",
+        "action": "flag",
+        "replacement": "<Gehenna|the Bleak Waste>",
+        "why": "D&D-cosmology proper noun; suggested in-world alias 'the Bleak Waste' (consistent across the darkseeker spells)."
+      },
+      {
+        "rule": "T2",
+        "quote": "and is @UUID[Compendium.pf2e.conditionitems.Item.Off-Guard]{Off-Guard}",
+        "action": "delete",
+        "why": "Restrained already grants off-guard (and immobilized) by RAW default — verified against apps/codex corpus condition/restrained.json; redundant restatement."
+      },
+      {
+        "rule": "T2",
+        "quote": "(against your spell DC) as part of a 2-action Escape attempt",
+        "action": "delete",
+        "why": "the Escape action already defaults to the spell's DC for spell effects and costs 1 action (verified against corpus action/escape.json), not 2 — redundant and factually off."
+      },
+      {
+        "rule": "T1",
+        "quote": "(instead of @UUID[Compendium.pf2e.conditionitems.Item.Grabbed]{Grabbed})",
+        "action": "rewrite",
+        "replacement": ", not Grabbed,",
+        "why": "promote parenthetical clarifier to plain prose (T1)."
+      },
+      {
+        "rule": "T1",
+        "quote": "(not restrained)",
+        "action": "rewrite",
+        "replacement": ", not Restrained",
+        "why": "promote parenthetical clarifier to plain prose (T1)."
+      },
+      {
+        "rule": "T5",
+        "quote": "The initial and per-turn damage increase by 1d8.",
+        "action": "flag",
+        "why": "keep: idiomatic single (+1d8) line matching structural heightening.damage for both damage instances; base (3d8) stated in body."
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "dead-ringer",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(because you attacked or cast a spell)",
+        "action": "delete",
+        "why": "redundant restatement of the already-stated invisibility-ending trigger."
+      },
+      {
+        "rule": "T1",
+        "quote": "(rather than ending immediately)",
+        "action": "delete",
+        "why": "redundant clarifying parenthetical restating the contrast already implied by 'persists for 1 minute after'."
+      },
+      {
+        "rule": "T5",
+        "quote": "Your invisibility persists for 1 minute after you attack or cast a spell",
+        "action": "flag",
+        "why": "keep: qualitative single fixed tier (extends invisibility duration post-trigger), not a numeric ladder."
+      },
+      {
+        "rule": "T6",
+        "quote": "such as being struck down, poisoned, or burned",
+        "action": "flag",
+        "why": "invented illustrative examples not in the original, which ties the illusion strictly to 'whatever ailment you avoided' without listing generic examples."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "deja-vu",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The maximum echoed damage increases by 6.",
+        "action": "flag",
+        "why": "keep: idiomatic single flat +6 increment to the damage cap; base cap (30) stated in body."
+      },
+      {
+        "rule": "T6",
+        "quote": "The target must attempt a Will save against your spell DC.",
+        "action": "flag",
+        "why": "original also forces the target to re-attempt (with disadvantage) any saving throw it succeeded against the original triggering attack, imposing the original effects on a new failure — this staged mechanic is entirely dropped in the store version."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "disperse-magic",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "(the basic save degrees shift one step in your favor for the damage roll only)",
+        "action": "delete",
+        "why": "redundant restatement of the mechanic already stated in plain terms in the preceding clause."
+      },
+      {
+        "rule": "T5",
+        "quote": "The circumstance bonus to the triggering save increases to +3, and you can also grant the bonus to one adjacent ally who is also targeted by the same effect.",
+        "action": "flag",
+        "why": "keep: bundles a qualitative addition (extends to an ally) with the numeric bump, not a pure ladder."
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "disrupt-movement",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(rather than Speed 0)",
+        "action": "rewrite",
+        "replacement": ", not reduced to Speed 0,",
+        "why": "promote parenthetical clarifier to plain prose (T1)."
+      },
+      {
+        "rule": "T5",
+        "quote": "You can target up to 5 creatures, and the critical failure effect also causes the target to be",
+        "action": "flag",
+        "why": "keep: bundles a target-count increase with a qualitative crit-fail change (Immobilized replaces Speed 0), not a pure numeric ladder."
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "distorted-mark",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "the next time the target takes damage from a melee Strike by a creature other than you",
+        "action": "flag",
+        "why": "the 5e original triggers on being hit by ANY attack (not melee-specific); store narrows the decompression trigger to melee Strikes only — verify intentional."
+      },
+      {
+        "rule": "T5",
+        "quote": "The decompression damage increases by 1d4.",
+        "action": "flag",
+        "why": "keep: idiomatic single flat +1d4 line at interval 2, matching structural heightening; base (1d4) stated in body."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "divine-regression",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(healing spells, fast healing, regeneration, potions, the Treat Wounds activity targeting it)",
+        "action": "delete",
+        "why": "redundant worked-example enumeration; 'any source' already covers this exhaustively."
+      },
+      {
+        "rule": "T1",
+        "quote": "(treating partial minutes as full)",
+        "action": "delete",
+        "why": "edge-case qualifier in parens."
+      },
+      {
+        "rule": "T3",
+        "quote": "The affliction also ends if effects that target curses, such as @UUID[Compendium.pf2e.spells-srd.Item.Cleanse Affliction]{Cleanse Affliction}, are used to counteract it (counteract rank 2).",
+        "action": "rewrite",
+        "replacement": "The affliction ends if a successful counteract check is made against this spell's rank.",
+        "why": "official-spell name-drop; curse/affliction removal must be the one canonical sentence per house convention."
+      },
+      {
+        "rule": "T5",
+        "quote": "The initial void damage increases by 1d8.",
+        "action": "flag",
+        "why": "keep: idiomatic single (+1d8) line matching structural heightening; base (3d8) stated in body."
+      }
+    ],
+    "clean": ["T2", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "djura-s-divine-protection",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The resistance increases by 5.",
+        "action": "flag",
+        "why": "ambiguous which resistance (physical bludgeoning/piercing/slashing, force, or both) this scales; also system.heightening is null despite this prose tier — needs clarification before it's a safe keep."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "djura-s-divine-razor",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Only one creature can be cursed at a time; a new hit against a different creature transfers the curse.",
+        "action": "flag",
+        "why": "invented mechanic not present in the 5e original, which doesn't limit the curse to one creature or describe transfer behavior; verify intentional."
+      },
+      {
+        "rule": "T6",
+        "quote": "can reach the cursed creature anywhere within 60 feet",
+        "action": "flag",
+        "why": "the 5e original allows attacking 'regardless of distance or obstacles' (unlimited range); store caps this at 60 feet — verify intentional."
+      },
+      {
+        "rule": "T5",
+        "quote": "The initial bonus damage increases by 1d10, and the per-hit curse damage increases by 1d6.",
+        "action": "flag",
+        "why": "keep: idiomatic single (+N) line, but note the per-hit curse damage (2d6 in body) has no structural damage/heightening representation at all (only the 3d10 initial bonus is tracked) — pre-existing structural gap, flagging for record."
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  }
+]

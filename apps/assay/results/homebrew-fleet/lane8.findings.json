@@ -1,0 +1,402 @@
+[
+  {
+    "slug": "taboo",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(a particular witnessed event, a specific location, or a specific named individual; the GM has final say that the topic is sufficiently specific)",
+        "action": "rewrite",
+        "replacement": "such as a particular witnessed event, a specific location, or a specific named individual. The GM has final say on whether the topic is sufficiently specific",
+        "why": "parenthetical enumeration + folded-in GM ruling; promote to plain prose using the 'such as' keep-idiom"
+      },
+      {
+        "rule": "T3",
+        "quote": "Magical effects that target curses, such as @UUID[Compendium.pf2e.spells-srd.Item.Cleanse Affliction]{Cleanse Affliction}, end this spell; this requires a successful counteract check against this spell's rank.",
+        "action": "rewrite",
+        "replacement": "Removing it requires a successful counteract check against this spell's rank.",
+        "why": "official-spell name-drop (Cleanse Affliction) plus T4 over-explanation of curse removal; house convention is exactly one sentence"
+      },
+      {
+        "rule": "T4",
+        "quote": "The tongue returns to normal size on its own after 1d4 minutes.",
+        "action": "delete",
+        "why": "redundant restatement of the duration already given in 'unable to speak for 1d4 minutes'"
+      },
+      {
+        "rule": "T5",
+        "quote": "You may designate up to 2 taboos on the same creature, or target 1 additional creature with a single taboo each.",
+        "action": "flag",
+        "why": "keep: qualitative either/or upgrade (extra taboo or target), not a numeric ladder value"
+      }
+    ],
+    "clean": ["T2", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "tag",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(representing the energy destabilizing in a reluctant host)",
+        "action": "delete",
+        "why": "explanatory parenthetical justifying why the mechanic works, not needed"
+      },
+      {
+        "rule": "T1",
+        "quote": "(the energy dissipates harmlessly)",
+        "action": "delete",
+        "why": "explanatory flavor parenthetical restating that nothing happens on non-detonation"
+      },
+      {
+        "rule": "T6",
+        "quote": "As a single action that has the manipulate trait, you can transfer the charge to a creature within your reach by touching it, or as a reaction when you are hit by a melee attack, you can transfer the charge to the attacker.",
+        "action": "flag",
+        "why": "original has THREE delivery methods (transfer via your own successful melee attack, as an action, as a reaction when hit); store keeps only two, dropping the own-attack delivery mode"
+      },
+      {
+        "rule": "T6",
+        "quote": "If the current carrier ends their turn still holding the charge, the Transfer Count increases by 3 (representing the energy destabilizing in a reluctant host).",
+        "action": "flag",
+        "why": "original forces an immediate self-directed roll (with +30% detonation chance) when you hold it a full round; store only bumps a counter for a future transfer with no immediate roll — the self-risk-if-you-sit-on-it design is altered"
+      }
+    ],
+    "clean": ["T10", "T2", "T3", "T4", "T5", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "take-me-instead",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "For the next 1 hour, you cannot benefit from healing effects (including potions, spells with the healing trait, and natural recovery); you can still be stabilized and can make recovery checks normally.",
+        "action": "rewrite",
+        "replacement": "For the next 1 hour, you cannot benefit from healing effects, including potions, spells with the healing trait, or natural recovery.",
+        "why": "parenthetical enumeration should be promoted to plain prose (T1); trailing clause reasserting stabilizing/recovery checks pre-answers an edge case nobody would read the ban to cover (T2, folded into the same edit)"
+      },
+      {
+        "rule": "T2",
+        "quote": "you can still be stabilized and can make recovery checks normally",
+        "action": "delete",
+        "why": "trailing fencing clause pre-answering an interaction (stabilizing/recovery checks aren't 'healing') nobody would reasonably dispute"
+      },
+      {
+        "rule": "T5",
+        "quote": "The DC decreases to 15, and the creature returns with 25% of its maximum HP instead of 1 HP. The no-healing rider on the caster is reduced to 10 minutes.",
+        "action": "flag",
+        "why": "keep: two fixed tiers each escalate three coupled real effects (DC, HP restored, rider severity) together, mirroring official rank-gated resurrection-style scaling, not a numeric-only ladder"
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "talk-the-talk",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "You don't need to make a Recall Knowledge or Society check to access this information; it simply surfaces in your mind as you engage.",
+        "action": "delete",
+        "why": "pre-answers an interaction nobody asked (whether a check is needed) that the spell's own grant of knowledge already settles"
+      },
+      {
+        "rule": "T4",
+        "quote": " as you can speak familiarly with strangers about themselves and the social context.",
+        "action": "delete",
+        "why": "trailing clause over-explains why the bonus applies, self-evident from the spell's premise"
+      },
+      {
+        "rule": "T5",
+        "quote": "The +2 status bonus increases to +3, and the information now includes private social affiliations, known enemies, and recent notable activities: anything the subject would discuss in a semi-private setting with peers.",
+        "action": "flag",
+        "why": "keep: single fixed tier expanding info scope + bonus together, a genuinely different tier not a repeating ladder"
+      }
+    ],
+    "clean": ["T1", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "temporal-discharge",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(a unique word or phrase)",
+        "action": "delete",
+        "why": "parenthetical over-explains what a command word is, self-evident"
+      },
+      {
+        "rule": "T2",
+        "quote": "The object is not destroyed by the discharge.",
+        "action": "delete",
+        "why": "pre-answers an edge case (object survival) nobody would assume otherwise by default"
+      },
+      {
+        "rule": "T5",
+        "quote": "and the duration extends by 1 day per additional rank, to a maximum of 1 week",
+        "action": "flag",
+        "why": "a duration-extending-to-a-cap clause riding on the damage (+N) line — matches the brief's flagged bloat pattern (tiers merely loosening a duration limit); candidate to strike, leaving Heightened (+1) as a pure damage bump"
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "temporal-threshold",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "and the duration of the @UUID[Compendium.pf2e.conditionitems.Item.Paralyzed]{Paralyzed} condition on a critical failure increases by 1 round",
+        "action": "flag",
+        "why": "extends/loosens a status-duration limit each rank riding on the damage (+N) line — matches the flagged bloat pattern; candidate to strike, leaving the tier as a pure damage bump"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "thaumaturgic-inhibition",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The emanation moves with you and affects your own higher-rank slots unless you expend a free action each round to maintain your connection to the weave.",
+        "action": "flag",
+        "why": "keep: genuinely different capability (self-affecting mobility) gated behind an upkeep cost, not a numeric ladder or bloat"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "thaumaturgic-obstruction",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The emanation radius increases by 30 feet.",
+        "action": "flag",
+        "why": "keep: standard flat-increment area heightening idiom, no bloat"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "time-loop",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(the spell was expended, the target died, the square is blocked)",
+        "action": "delete",
+        "why": "worked-example enumeration in parens for a self-evident term ('impossible'), matches the struck exemplar pattern"
+      },
+      {
+        "rule": "T1",
+        "quote": "(with any targets and directions)",
+        "action": "rewrite",
+        "replacement": ", choosing any targets and directions freely",
+        "why": "load-bearing scope clarifier left parenthesized; promote to plain prose"
+      },
+      {
+        "rule": "T5",
+        "quote": "You can target up to 3 creatures. Each makes its own Will save.",
+        "action": "flag",
+        "why": "keep: single fixed jump (1 to 3 targets) at rank 8, not a repeating +N ladder"
+      },
+      {
+        "rule": "T6",
+        "quote": "and is temporarily immune to Time Loop for 24 hours.",
+        "action": "flag",
+        "why": "original teleports the target back to its prior-turn space UNCONDITIONALLY, with the save only gating the replay-compulsion; store makes the teleport itself conditional on failing the save — a structural change from the original's design (the immunity clause itself is separately settled per project note)"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "time-step",
+    "findings": [
+      {
+        "rule": "T4",
+        "quote": "On the turn you reappear, you are incapable of casting Time Step again (if you attempt to, the casting fails and the slot is wasted).",
+        "action": "delete",
+        "why": "fully redundant restatement of 'You cannot cast this spell twice in a row,' plus an explanatory parenthetical spelling out a self-evident consequence"
+      },
+      {
+        "rule": "T5",
+        "quote": "The reappearance range increases to 60 feet, and you can bring up to one willing creature of your size or smaller with you (the creature must be adjacent to you when you cast the spell and reappears adjacent to you).",
+        "action": "flag",
+        "why": "keep: two genuinely different fixed-tier upgrades (skip-turn timing option; extended range + ally transport), not a numeric ladder"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "touch-of-madness",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "treats all non-hostile creatures as friendly (following the last spoken order given to it unless compliance would cause self-harm)",
+        "action": "rewrite",
+        "replacement": "treats all non-hostile creatures as friendly, following the last spoken order given to it unless compliance would cause self-harm",
+        "why": "load-bearing behavioral detail left parenthesized; promote to plain prose"
+      },
+      {
+        "rule": "T3",
+        "quote": "The curse persists indefinitely and can be removed only through effects that target curses, such as @UUID[Compendium.pf2e.spells-srd.Item.Cleanse Affliction]{Cleanse Affliction}; this requires a successful counteract check against this spell's rank.",
+        "action": "rewrite",
+        "replacement": "Removing it requires a successful counteract check against this spell's rank.",
+        "why": "official-spell name-drop plus T4 over-explanation of curse removal; house convention is exactly one sentence"
+      },
+      {
+        "rule": "T3",
+        "quote": "(as the confusion condition for 1 round)",
+        "action": "flag",
+        "why": "comparison-style condition reference ('as the X condition') rather than applying/tagging the condition directly or stating the mechanic plainly; flag rather than freelance the exact confusion-condition mapping"
+      },
+      {
+        "rule": "T6",
+        "quote": "You overwhelm a creature's mind with a cascade of contradictory impulses and shattered cognition. The target must attempt a Will save.",
+        "action": "flag",
+        "why": "original deals 4d6 psychic damage unconditionally (regardless of save outcome) in addition to the Wisdom-save mind-break effect; the store conversion has no damage component at all (system.damage is empty) — a dropped mechanical layer"
+      }
+    ],
+    "clean": ["T2", "T4", "T5", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "tunnel-vision",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "; additional fortune effects cannot further alter the roll",
+        "action": "delete",
+        "why": "restates a general PF2e rule default (fortune effects don't stack) that doesn't need restating"
+      },
+      {
+        "rule": "T5",
+        "quote": "The status bonus to initiative increases to +2, and the fortune re-roll can be used twice instead of once.",
+        "action": "flag",
+        "why": "keep: single fixed tier escalating both values together, consistent with the deliberately-restored single-target exclusivity design; not a repeating numeric ladder"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "umbral-assimilation",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(this functions as the invisible condition, but ends immediately if you use a hostile action rather than at the start of your next turn)",
+        "action": "rewrite",
+        "replacement": ", functioning as the invisible condition; this ends immediately if you use a hostile action, rather than lasting until the start of your next turn",
+        "why": "load-bearing override (early-end trigger) left parenthesized; promote to plain prose"
+      },
+      {
+        "rule": "T5",
+        "quote": "The magical darkness you create lasts until the end of the spell's duration rather than until the end of your next turn.",
+        "action": "flag",
+        "why": "extends/loosens the darkness-persistence duration at a higher rank — matches the brief's flagged bloat pattern (tiers merely relaxing a time limit); candidate to strike or fold into base text"
+      },
+      {
+        "rule": "T10",
+        "quote": "Carceri",
+        "action": "flag",
+        "why": "named D&D outer plane (the Tarterian Depths of Carceri) appearing plainly; suggest <Carceri|the Umbral Deep, a nameless plane of shadow>"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T6", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "wall-of-time",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "(the wall cannot be flipped or reoriented, only slid)",
+        "action": "delete",
+        "why": "pre-litigation fence anticipating a rules-lawyer argument ('along the ground' already implies translation only) nobody would reasonably raise"
+      },
+      {
+        "rule": "T5",
+        "quote": "The wall also imposes a Fortitude save (DC = your spell DC) on any creature that passes through it; on a failure, the creature is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} until the start of its next turn.",
+        "action": "flag",
+        "why": "this tier reintroduces the original's base-rank slow-on-cross mechanic as a rank-7-only add-on; see the linked T6 finding — whether this stays a heightened tier depends on resolving the base-mechanic substitution"
+      },
+      {
+        "rule": "T6",
+        "quote": "You tear a rift in linear time and shape it into a translucent, rippling wall of temporal energy at a point within range.",
+        "action": "flag",
+        "why": "original specifies concrete wall dimensions and a straight-vs-circular shape choice (60 ft long/20 ft high/1 ft thick straight wall, or 20 ft diameter circular wall); the store version has no size/shape specification at all (structural area is also null) — a dropped mechanical component, confirmed by the file's own adapterWarnings fossil text naming the original dimensions"
+      },
+      {
+        "rule": "T6",
+        "quote": "A creature that crosses the wall (in either direction) must expend an additional action to do so; if the creature crosses as part of a Stride, that Stride counts as having moved an additional 10 feet of difficult terrain.",
+        "action": "flag",
+        "why": "original's base mechanic (rank 5) imposes a slow-spell-equivalent effect on any creature that crosses, unconditionally; store invents a new action-tax/difficult-terrain mechanic for the base rank and defers the original's slow-equivalent effect entirely to the Heightened(7th) tier — a significant restructuring of the escalation design"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "weight-of-the-world",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The burst radius increases by 10 feet.",
+        "action": "flag",
+        "why": "keep: standard flat-increment area heightening idiom, no bloat"
+      },
+      {
+        "rule": "T6",
+        "quote": "Each creature in the area must attempt a Fortitude saving throw.",
+        "action": "flag",
+        "why": "original also inflicts a level of exhaustion specifically if the affected creature uses the Dash action — an escalating conditional penalty entirely absent from the store conversion"
+      },
+      {
+        "rule": "T8",
+        "quote": "takes a –2 status penalty to attack rolls and Strength-based skill checks",
+        "action": "flag",
+        "why": "original imposes disadvantage on both Strength- and Dexterity-based checks (plus attack rolls); store only captures Strength-based skill checks + attack rolls, dropping the Dexterity-based component — mapping to Enfeebled/Clumsy needs a stakeholder call rather than freelancing"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "worldweaver",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(examples: 'this person is never born,' 'this battle's outcome is reversed,' 'this artifact is never created,' 'this planar incursion is turned back at its origin')",
+        "action": "rewrite",
+        "replacement": "such as 'this person is never born,' 'this battle's outcome is reversed,' 'this artifact is never created,' or 'this planar incursion is turned back at its origin'",
+        "why": "worked-example enumeration walled off in parens; original uses inline 'such as' prose (the keep-idiom) for the same kind of example"
+      },
+      {
+        "rule": "T1",
+        "quote": "('this person remembers the prior timeline')",
+        "action": "rewrite",
+        "replacement": ", such as 'this person remembers the prior timeline'",
+        "why": "single worked example in parens; promote to the 'such as' keep-idiom matching the rest of the spell"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "zone-of-minimization",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(each die result counts as 1, flat bonuses are unaffected)",
+        "action": "rewrite",
+        "replacement": ": each die result counts as 1, though flat damage bonuses are unaffected",
+        "why": "load-bearing scope clarification (directly built on by the Heightened(9th) tier) left parenthesized; promote to plain prose"
+      },
+      {
+        "rule": "T2",
+        "quote": "A creature that leaves the zone is no longer affected. A creature that enters the zone is immediately subject to the effect.",
+        "action": "delete",
+        "why": "restates the standard PF2e default for an ongoing zone effect (in-area-only, no default persistence after leaving)"
+      },
+      {
+        "rule": "T2",
+        "quote": "(though creatures inside who cast spells deal minimum damage with those spells' damage rolls as well)",
+        "action": "delete",
+        "why": "re-derives what the earlier 'deal minimum damage on all of their damage rolls' clause already implies for anyone inside the zone"
+      },
+      {
+        "rule": "T5",
+        "quote": "The burst radius increases to 30 feet.",
+        "action": "flag",
+        "why": "keep: two genuinely different fixed tiers (extending minimization to flat bonuses; area increase), not bloat or a pure ladder"
+      }
+    ],
+    "clean": ["T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  }
+]

@@ -1,0 +1,370 @@
+[
+  {
+    "slug": "chrysalis",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "while you and other companions continue at normal speed",
+        "action": "flag",
+        "why": "invented flavor with no counterpart in the original prose"
+      },
+      {
+        "rule": "T6",
+        "quote": "it cannot perceive the outside world, cannot take actions, cannot speak or be spoken to, and is not aware of what happens outside",
+        "action": "delete",
+        "why": "original states only 'completely cut off from outside stimuli' \u2014 this is a punched-up enumeration invented beyond that single clause (list-ification)"
+      },
+      {
+        "rule": "T5",
+        "quote": "The cocoon's HP increases to 40 and its Hardness increases to 10, and the cocoon is visually imperceptible; a creature must succeed at a DC 30 Perception check to notice it.",
+        "action": "flag",
+        "why": "keep: genuinely different effect (adds invisibility + detection DC), not a pure numeric ladder; original had no entriesHigherLevel at all so new scaling was unavoidable"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "compression",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "The transformation takes 1 minute of sustained physical contact.",
+        "action": "flag",
+        "why": "invented duration: the 5e original's initial cast is 1 action (only REVERTING took 1 minute); this also contradicts the store's own 2-action cast time field"
+      },
+      {
+        "rule": "T8",
+        "quote": "the target is @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} and can't use the Stride action",
+        "action": "flag",
+        "why": "condition mapping beyond T8's stated exemplars \u2014 original's 'incapacitated and can't move' mapped to Slowed 1, a judgment call worth stakeholder confirmation rather than freelancing"
+      },
+      {
+        "rule": "T5",
+        "quote": "The reversion time is reduced to 1 action.",
+        "action": "flag",
+        "why": "loosens a time limit \u2014 matches the brief's struck 'tiers relaxing a time limit' anti-pattern; candidate for removal"
+      },
+      {
+        "rule": "T5",
+        "quote": "The resistance increases to 10. The target can also pass through locked doors and windows, but not magically sealed ones, without opening them.",
+        "action": "flag",
+        "why": "keep: genuinely different capability (locked-door passage), not pure numeric bloat"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "cone-of-decay",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Creatures in the cone take 8d10 void damage from the ravaging decomposition with a basic Fortitude save.",
+        "action": "flag",
+        "why": "the 5e original deals NO direct damage to creatures at all \u2014 only a Con save that destroys gear, plus a separate Con-drain for undead; this is an invented damage mechanic layered on top of the original design"
+      },
+      {
+        "rule": "T8",
+        "quote": "Undead take an additional 4d10 void damage.",
+        "action": "flag",
+        "why": "original's undead penalty is a permanent Constitution-score loss (ability drain), which is exactly what PF2e's Drained condition models; converting it to flat bonus damage instead is a judgment call worth flagging rather than freelancing"
+      },
+      {
+        "rule": "T5",
+        "quote": "The base void damage increases by 1d10.",
+        "action": "flag",
+        "why": "keep: pure damage-ladder collapse matching the Diamond Dust exemplar exactly"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T9", "T10"]
+  },
+  {
+    "slug": "darkseeker-s-aura",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(Interact + Cast a Spell)",
+        "action": "delete",
+        "why": "explaining parenthetical spelling out the activity's components \u2014 official spells don't gloss 2-action activities inline like this"
+      },
+      {
+        "rule": "T6",
+        "quote": "For the duration, any creature that hits you with a melee Strike takes 2d6 acid damage.",
+        "action": "flag",
+        "why": "original also grants 'you gain resistance to acid damage' as self-protection from your own vapor \u2014 that whole clause is missing from the store version"
+      },
+      {
+        "rule": "T6",
+        "quote": "This attack ends the aura immediately; the vapor is entirely consumed.",
+        "action": "flag",
+        "why": "invented flavor beyond the original's plain 'a hit... ends this spell'"
+      },
+      {
+        "rule": "T5",
+        "quote": "The aura's retaliation damage increases by 1d6, and the focused attack damage increases by 2d6.",
+        "action": "flag",
+        "why": "keep: standard pure damage-ladder heightening across two damage instances"
+      },
+      {
+        "rule": "T10",
+        "quote": "from the plane of Gehenna",
+        "action": "flag",
+        "why": "Gehenna is a named D&D outer plane (from the original 5e text too) \u2014 needs a <Gehenna|alias> pair, e.g. <Gehenna|a plane of ceaseless corrosive torment>"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9"]
+  },
+  {
+    "slug": "deja-vu",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "A creature within range is damaged by an attack or effect.",
+        "action": "flag",
+        "why": "original's trigger is specifically a creature 'being the target of an attack' \u2014 adding 'or effect' widens the trigger scope beyond the source"
+      },
+      {
+        "rule": "T6",
+        "quote": "The target must attempt a Will save against your spell DC.",
+        "action": "flag",
+        "why": "a whole second mechanic from the original is missing: 'if the creature made a saving throw as part of the previous attack and succeeded, it must remake the saving throw with disadvantage or suffer the original effects' \u2014 this escalation clause was dropped entirely, not just this sentence"
+      },
+      {
+        "rule": "T5",
+        "quote": "The maximum echoed damage increases by 6.",
+        "action": "flag",
+        "why": "keep: pure ladder matching exemplar"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "disperse-magic",
+    "findings": [
+      {
+        "rule": "T5",
+        "quote": "The circumstance bonus to the triggering save increases to +3, and you can also grant the bonus to one adjacent ally who is also targeted by the same effect.",
+        "action": "flag",
+        "why": "keep: genuinely different capability (extends the bonus to an ally), not pure numeric bloat"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T6", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "distorted-mark",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You speak a short sonic invocation and strike with your melee weapon, weaving a lattice of compressed space around the target.",
+        "action": "delete",
+        "why": "the original opens directly with the mechanic ('As a part of the action used to cast this spell...') \u2014 this whole scene-setting sentence is invented flavor with no counterpart"
+      },
+      {
+        "rule": "T6",
+        "quote": "the target is marked with a destabilized spatial resonance until the start of your next turn",
+        "action": "flag",
+        "why": "original just says 'the space around the target is slightly distorted' \u2014 'destabilized spatial resonance' is invented jargon"
+      },
+      {
+        "rule": "T5",
+        "quote": "The decompression damage increases by 1d4.",
+        "action": "flag",
+        "why": "keep: pure damage-ladder matching exemplar; correctly mirrors the original's cantrip character-level scaling (5th/11th/17th)"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "djura-s-divine-protection",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "compresses a layer of air to the density of tempered steel",
+        "action": "flag",
+        "why": "original just says the air becomes 'solid' \u2014 'density of tempered steel' is an invented specific simile"
+      },
+      {
+        "rule": "T5",
+        "quote": "The resistance increases by 5.",
+        "action": "flag",
+        "why": "keep: pure numeric ladder matching exemplar"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "djura-s-divine-razor",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(it may attempt this save at the end of each of its turns)",
+        "action": "rewrite",
+        "replacement": "attempting this save at the end of each of its turns",
+        "why": "load-bearing timing rule left parenthesized instead of promoted to plain prose"
+      },
+      {
+        "rule": "T6",
+        "quote": "The next time you hit a creature with a melee Strike using the infused weapon before this spell ends, you deal an additional 3d10 force damage.",
+        "action": "flag",
+        "why": "original's bonus applies only to 'the first time you hit... during this turn' \u2014 the store widens the window to any hit before the spell ends, a scope change"
+      },
+      {
+        "rule": "T6",
+        "quote": "The curse ends when the spell ends or when the creature succeeds at a Will saving throw against your spell DC",
+        "action": "flag",
+        "why": "original's curse has no escape mechanism at all (ends only when the spell ends) \u2014 this repeated-save escape clause is invented, and doesn't follow T3's one-sentence counteract-check convention for curse removal either"
+      },
+      {
+        "rule": "T6",
+        "quote": "your blade cutting through the intervening space",
+        "action": "flag",
+        "why": "invented flavor beyond the original's plain 'regardless of distance or obstacles'"
+      },
+      {
+        "rule": "T5",
+        "quote": "The initial bonus damage increases by 1d10, and the per-hit curse damage increases by 1d6.",
+        "action": "flag",
+        "why": "keep: pure ladder across two damage instances, matches exemplar"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "do-my-bidding",
+    "findings": [
+      {
+        "rule": "T1",
+        "quote": "(but not suicidal action)",
+        "action": "rewrite",
+        "replacement": "though not suicidal action",
+        "why": "load-bearing behavioral limit left parenthesized instead of promoted to plain prose"
+      },
+      {
+        "rule": "T6",
+        "quote": "If you cease leading or give contradictory orders, the effect ends for that creature.",
+        "action": "flag",
+        "why": "original also states the consequence 'the spell ends and the crowd becomes hostile toward you' \u2014 that whole risk clause is missing from the store version"
+      },
+      {
+        "rule": "T5",
+        "quote": "The range and emanation increase to 120 feet, and you need not be present to maintain the compulsion; affected creatures pursue the goal autonomously for the duration.",
+        "action": "flag",
+        "why": "keep: genuinely different capability (autonomous pursuit), not pure numeric bloat"
+      }
+    ],
+    "clean": ["T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "erase",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "The object or surface appears virgin to all mundane inspection.",
+        "action": "flag",
+        "why": "original's plainer 'appears to have never been written on' \u2014 'virgin' is an unnecessary register punch-up"
+      },
+      {
+        "rule": "T5",
+        "quote": "You can erase magical writing from prepared scrolls and formula books; a magical scroll erased this way is destroyed without activating.",
+        "action": "flag",
+        "why": "keep: genuinely different capability tier, necessary new scaling since the original had no entriesHigherLevel at all"
+      },
+      {
+        "rule": "T5",
+        "quote": "You can erase runes and property runes inscribed on weapons and armor; each rune erased is permanently destroyed.",
+        "action": "flag",
+        "why": "keep: genuinely different capability tier"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "extraplanar-beam",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "You open a conduit to the space between planes, firing a beam of pulsing violet-white light harvested from the interplanar void.",
+        "action": "flag",
+        "why": "original's plainer 'You fire a beam of pulsing violet light harvested from the space between planes' \u2014 'conduit'/'interplanar void' is an invented register punch-up"
+      },
+      {
+        "rule": "T6",
+        "quote": "The creature takes full damage and is @UUID[Compendium.pf2e.conditionitems.Item.Dazzled]{Dazzled} until the start of your next turn.",
+        "action": "flag",
+        "why": "original's blinded creature gets a repeated Constitution save each turn to shake it off early \u2014 the store replaced that escalating recovery design with a flat fixed duration"
+      },
+      {
+        "rule": "T5",
+        "quote": "The damage increases by 1d12.",
+        "action": "flag",
+        "why": "keep: pure ladder matching exemplar"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "extraplanar-pulse",
+    "findings": [
+      {
+        "rule": "T2",
+        "quote": "The target can spend an action to attempt a Fortitude save to reduce the @UUID[Compendium.pf2e.conditionitems.Item.Sickened]{Sickened} condition by 1.",
+        "action": "delete",
+        "why": "restates the Sickened condition's own default recovery rule (retching to reduce sickened by 1) \u2014 a positive restatement of a rules default"
+      },
+      {
+        "rule": "T6",
+        "quote": "On a critical hit with the attack roll, the Fortitude save is made at a -2 status penalty.",
+        "action": "flag",
+        "why": "invented complexity with no counterpart in the original, which has a plain repeated-save recovery and no attack-crit interaction"
+      },
+      {
+        "rule": "T5",
+        "quote": "The vitality damage increases by 2d6.",
+        "action": "flag",
+        "why": "keep: pure ladder matching exemplar"
+      }
+    ],
+    "clean": ["T1", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "farsight",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "Drawing a new circle requires 1 day and 250 gp, while empowering a previously placed circle takes only 1 minute.",
+        "action": "flag",
+        "why": "original also describes the circle's physical form ('a flat design of a geometric shape with a 5-foot radius') and the sigil's size/behavior ('reappears when you are scrying through it... no more than an inch in diameter') \u2014 those descriptive/mechanical details are dropped"
+      },
+      {
+        "rule": "T5",
+        "quote": "You can link one additional sigil per casting beyond your Intelligence modifier, and you can switch between sigils as a free action instead of an Interact action.",
+        "action": "flag",
+        "why": "keep: genuinely different capability, necessary new scaling since the original had no entriesHigherLevel"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  },
+  {
+    "slug": "fluid-form",
+    "findings": [
+      {
+        "rule": "T6",
+        "quote": "if no such space is within 30 feet, you are squeezed out over 1 round and become @UUID[Compendium.pf2e.conditionitems.Item.Slowed]{Slowed 1} for 1 minute from the traumatic reconstitution",
+        "action": "flag",
+        "why": "original's mechanic is entirely different: a too-tight container SHATTERS if it can, or the creature REMAINS in fluid form until released \u2014 the store invented an unrelated auto-expulsion-plus-Slowed mechanic"
+      },
+      {
+        "rule": "T6",
+        "quote": "dissolving your solid body into an animated mass of thick, viscous liquid that retains your mass and volume but becomes fully amorphous",
+        "action": "flag",
+        "why": "original explicitly transforms 'yourself and all items you are carrying' into liquid \u2014 the store's opening sentence drops the carried-items clause entirely, leaving gear's fate unstated"
+      },
+      {
+        "rule": "T5",
+        "quote": "The resistance increases to 15 and you also gain resistance 10 to acid damage. You can flow up walls and across ceilings, gaining a 20-foot climb Speed.",
+        "action": "flag",
+        "why": "keep: genuinely different capabilities (acid resistance, climb Speed), not pure numeric bloat"
+      }
+    ],
+    "clean": ["T1", "T2", "T3", "T4", "T7", "T8", "T9", "T10"]
+  }
+]
