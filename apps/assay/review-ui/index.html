@@ -153,6 +153,23 @@ mark.q{background:rgba(39,76,119,.16); color:inherit}
 .dcard h4{font-family:"IM Fell English",serif; font-style:italic; font-weight:400; font-size:1.08rem; color:var(--rubric); margin-bottom:.3rem}
 .dcard .dbody-text{font-size:.92rem; line-height:1.55; white-space:pre-wrap}
 .dcard .dsrc{font-size:.68rem; color:var(--ink-faint); font-variant:small-caps; letter-spacing:.06em; margin-top:.4rem}
+.dcard .dctl{display:flex; align-items:center; gap:.4rem; margin-top:.55rem; flex-wrap:wrap}
+.dopt{
+  font:inherit; font-size:.82rem; padding:.15rem .6rem; cursor:pointer; border-radius:2px;
+  border:1px solid var(--gilt); background:rgba(255,252,242,.5); color:var(--ink-soft);
+}
+.dopt:hover{border-color:var(--rubric); color:var(--ink)}
+.dopt.sel{background:var(--verdigris); border-color:var(--verdigris); color:#f4efdf}
+.dnote{
+  flex:1; min-width:9rem; font:inherit; font-size:.85rem; padding:.2rem .5rem;
+  border:1px solid var(--ink-faint); border-radius:2px; background:rgba(255,252,242,.65); color:var(--ink); outline:none;
+}
+.dnote:focus{border-color:var(--note)}
+.dresp{margin-top:.5rem; font-size:.9rem; color:var(--verdigris)}
+.dresp b{font-variant:small-caps; letter-spacing:.04em}
+.dresp .dnote-text{font-family:"Caveat",cursive; font-size:1.08rem; color:var(--note)}
+.dretract{border:none; background:none; color:var(--ink-faint); cursor:pointer; font-size:.72rem; font-variant:small-caps; letter-spacing:.05em; margin-left:.4rem}
+.dretract:hover{color:var(--rubric)}
 
 /* ---------- margin rail (comments) ---------- */
 #margin{
@@ -175,6 +192,8 @@ mark.q{background:rgba(39,76,119,.16); color:inherit}
 .note .body{font-family:"Caveat",cursive; font-size:1.12rem; line-height:1.25; color:var(--note); word-wrap:break-word}
 .note .del{float:right; border:none; background:none; color:var(--ink-faint); cursor:pointer; font-size:.8rem; padding:0 .1rem}
 .note .del:hover{color:var(--rubric)}
+.note.decision{border-left-color:var(--rubric-bright)}
+.note.decision .body{color:var(--verdigris)}
 .note.remove{border-left-color:var(--rubric)}
 .note.remove .quote{text-decoration:line-through; text-decoration-color:rgba(138,26,18,.6)}
 .note.remove .body{color:var(--rubric); font-variant:small-caps; font-family:"EB Garamond",serif; font-size:.85rem; letter-spacing:.08em}
@@ -423,7 +442,8 @@ function renderList(filter){
   $("#list").innerHTML=DATA.map((s,i)=>{
     if(q&&!s.name.toLowerCase().includes(q))return "";
     const n=commentsFor(s.slug).length;
-    const dn=(s.decisions||[]).length;
+    const answered=new Set(STATE.comments.filter(c=>c.kind==="decision").map(c=>c.decisionId));
+    const dn=(s.decisions||[]).filter(d=>!answered.has(d.id)).length;
     return '<div class="item'+(i===cur?" active":"")+(STATE.reviewed[s.slug]?" reviewed":"")+'" data-i="'+i+'">'+
       '<span class="tick">✓</span><span class="nm">'+esc(s.name)+"</span>"+
       (dn?'<span class="pd" title="'+dn+' pending decision'+(dn===1?"":"s")+'">⚑'+dn+"</span>":"")+
@@ -435,24 +455,44 @@ function renderList(filter){
 function renderNotes(){
   const cs=commentsFor(DATA[cur].slug);
   $("#notes").innerHTML=cs.length?cs.map(c=>
-    '<div class="note'+(c.kind==="remove"?" remove":"")+'"><button class="del" data-id="'+c.id+'" title="strike this note">✕</button>'+
+    '<div class="note'+(c.kind==="remove"?" remove":c.kind==="decision"?" decision":"")+'"><button class="del" data-id="'+c.id+'" title="strike this note">✕</button>'+
     '<div class="pane-tag">'+esc(c.pane)+"</div>"+
     (c.quote?'<div class="quote">“'+esc(c.quote)+"”</div>":"")+
-    '<div class="body">'+(c.kind==="remove"?"✂ remove this":esc(c.note))+"</div></div>").join("")
+    '<div class="body">'+(c.kind==="remove"?"✂ remove this":c.kind==="decision"?("⚑ "+(c.choice?"("+esc(c.choice)+") ":"")+esc(c.note||"")):esc(c.note))+"</div></div>").join("")
     :'<div class="empty">The margin awaits your hand.<br>Select any passage to annotate it.</div>';
+}
+function responseFor(did){
+  const rs=STATE.comments.filter(c=>c.kind==="decision"&&c.decisionId===did);
+  return rs.length?rs[rs.length-1]:null;
 }
 function renderDecisions(s){
   const ds=s.decisions||[];
   const panel=$("#decisions");
-  panel.classList.remove("open");
-  if(!ds.length){panel.style.display="none";$("#decisionsBody").innerHTML="";return}
+  if(!ds.length){panel.style.display="none";panel.classList.remove("open");$("#decisionsBody").innerHTML="";return}
   panel.style.display="block";
-  $("#decisionsTitle").textContent="Pending decisions ("+ds.length+")";
-  $("#decisionsBody").innerHTML=ds.map(d=>
-    '<div class="dcard"><h4>'+esc(d.title)+"</h4>"+
-    '<div class="dbody-text">'+esc(d.body)+"</div>"+
-    (d.source?'<div class="dsrc">'+esc(d.source)+"</div>":"")+
-    "</div>").join("");
+  panel.classList.add("open");
+  const open=ds.filter(d=>!responseFor(d.id)).length;
+  $("#decisionsTitle").textContent=open?("Pending decisions ("+open+" of "+ds.length+")"):("Decisions ("+ds.length+" · all answered)");
+  $("#decisionsBody").innerHTML=ds.map((d,idx)=>{
+    const resp=responseFor(d.id);
+    let letters=[...new Set([...d.body.matchAll(/\(([a-z])\)/g)].map(m=>m[1]))].sort();
+    if(!letters.every((l,i)=>l.charCodeAt(0)===97+i))letters=[]; // stray "(s)" etc. → free-text
+    let tail;
+    if(resp){
+      tail='<div class="dresp">✓ recorded: '+(resp.choice?"<b>("+esc(resp.choice)+")</b> ":"")+
+        (resp.note?'<span class="dnote-text">'+esc(resp.note)+"</span>":"")+
+        '<button class="dretract" data-id="'+resp.id+'">retract</button></div>';
+    }else{
+      tail='<div class="dctl" data-idx="'+idx+'">'+
+        letters.map(l=>'<button class="dopt" data-choice="'+l+'">('+l+')</button>').join("")+
+        '<input class="dnote" placeholder="'+(letters.length?"note (optional)…":"your call…")+'">'+
+        '<button class="ctl drec">record</button></div>';
+    }
+    return '<div class="dcard"><h4>'+esc(d.title)+"</h4>"+
+      '<div class="dbody-text">'+esc(d.body)+"</div>"+
+      (d.source?'<div class="dsrc">'+esc(d.source)+"</div>":"")+
+      tail+"</div>";
+  }).join("");
 }
 function show(i){
   cur=Math.max(0,Math.min(DATA.length-1,i));
@@ -526,8 +566,43 @@ $("#pop-text").addEventListener("keydown",e=>{
 $("#notes").addEventListener("click",async e=>{
   const b=e.target.closest(".del"); if(!b)return;
   STATE.comments=STATE.comments.filter(c=>c.id!==b.dataset.id);
-  renderNotes(); renderList($("#search").value);
+  renderNotes(); renderList($("#search").value); renderDecisions(DATA[cur]);
   await api("/api/comment/delete",{id:b.dataset.id});
+});
+
+/* ---------- decision responses ---------- */
+async function saveDecision(d,choice,note){
+  const c={id:mkId(),kind:"decision",slug:DATA[cur].slug,spell:DATA[cur].name,pane:"decision",
+    decisionId:d.id,quote:d.title,choice,note,at:new Date().toISOString()};
+  STATE.comments.push(c);
+  renderDecisions(DATA[cur]); renderNotes(); renderList($("#search").value);
+  try{await api("/api/comment",c); toast("decision recorded")}
+  catch(e){toast("⚠ save failed — is the server up?")}
+}
+function recordFromCtl(ctl){
+  const d=(DATA[cur].decisions||[])[+ctl.dataset.idx]; if(!d)return;
+  const sel=ctl.querySelector(".dopt.sel");
+  const note=ctl.querySelector(".dnote").value.trim();
+  if(!sel&&!note){toast("pick an option or write your call first");return}
+  saveDecision(d,sel?sel.dataset.choice:"",note);
+}
+$("#decisionsBody").addEventListener("click",async e=>{
+  const opt=e.target.closest(".dopt");
+  if(opt){
+    for(const b of opt.parentElement.querySelectorAll(".dopt"))b.classList.toggle("sel",b===opt&&!b.classList.contains("sel"));
+    return;
+  }
+  const rec=e.target.closest(".drec");
+  if(rec){recordFromCtl(rec.closest(".dctl"));return}
+  const ret=e.target.closest(".dretract");
+  if(ret){
+    STATE.comments=STATE.comments.filter(c=>c.id!==ret.dataset.id);
+    renderDecisions(DATA[cur]); renderNotes(); renderList($("#search").value);
+    await api("/api/comment/delete",{id:ret.dataset.id});
+  }
+});
+$("#decisionsBody").addEventListener("keydown",e=>{
+  if(e.key==="Enter"&&e.target.matches(".dnote"))recordFromCtl(e.target.closest(".dctl"));
 });
 
 /* ---------- controls ---------- */
