@@ -712,3 +712,41 @@ vendor-matching edits VANISH); every (+N) collapse retains its base value in the
 4. Scriptorium cadence after the sweep: his pass resumes on the post-sweep text (store
    re-seeds scriptorium's data.json) — confirm he's fine reviewing a moving target, or
    should the sweep wait until his pass completes?
+
+## 13c. Fleet re-sweep RUN record (2026-07-25 late — brief v3, stakeholder-sanctioned)
+
+**Run:** 8 sonnet engineer lanes × 142 spells (174 − the 32 in `review-ui/state/reviewed.json`,
+frozen as the regression set — the live file says 32, not the estimated 33; pool re-derived live).
+Each lane read 5e original + store only (no intermediate), produced a per-spell×rule ledger
+(`results/homebrew-fleet/lane{1..8}.findings.json`), and applied policy-covered delete/rewrite
+findings in-partition. **423 findings: 236 flag rows (108 T5-keeps + 128 decisions), the rest
+applied.** All lanes died once mid-launch to a session usage limit and resumed cleanly from
+transcripts (zero partial edits — tree was clean at death).
+
+**Verification lane:** 2 adversarial verifiers (blind to lane ledgers), 30-spell sample =
+14 clean-heavy (fewest applied edits) + 16 full-alphabet spread, T6-weighted per the
+calibration record. 92 verifier findings → token-overlap join vs lane ledgers → 44 uncovered
+deltas → staff-judged personally (the ⅓-FP rule): **14 applied** (13 prose + 1 heightening
+lockstep), 31 added to the digest as verifier-delta flags. Notable applied deltas:
+sphere-of-preservation H8/H10 → `Heightened (+2) radius doubles` (fixed→interval lockstep, the
+pendulum/taboo empty-damage encoding); oblivion body gained its basic Reflex save (structure
+already said reflex — body/structure drift, reverse-lockstep class); extraplanar-pulse's
+Sickened-recovery restatement deleted (verified against `corpus/condition/sickened.json`);
+shape-modify ×4 `system.duration` "until your wild shape ends" → polymorph wording (T8 residue
+in a STRUCTURAL field — body-only sweeps miss these).
+
+**Gates:** structural flatten-diff over all 174 = only description/heightening/duration changed;
+score set-diff vs pre-sweep baseline = **zero verdict drift**, ONE routing flip (mass-fluency
+comparables→ledger: a T2 deletion removed a spuriously-promoted `@UUID` Hidden ref — documented
+lens artifact, honest improvement); 9 flag-quotes stale post-edit (overlapping applied edits
+clipped their spans — concerns live, re-quote from current text when dealing cards);
+`homebrew-revisions` 168→173 deviations. Commit `4e6d4e3` (timer-swept label — see marker
+`7a276e6`; the linguist-commit timer struck the add→commit window AGAIN and had already pushed;
+timer stopped for the rest of the session).
+
+**▶ THE DIGEST: `results/homebrew-fleet/DIGEST.md` — 159 stakeholder decisions** (T6 76+
+dominates: dropped/invented/substituted mechanics vs the 5e originals). Cross-cutting items:
+the T10 monster-name scope call (**Beholder = WotC Product Identity — real IP exposure on a
+published codex page**, recommend aliasing at minimum Beholder); 9 alias pairs proposed;
+pre-existing prose-without-structure heightening gaps on 9 spells; djura-s-righteous-pressure's
+heightening damage field mismatch. Deal as compact cards, stop-only-on-real-decisions.
