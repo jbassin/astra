@@ -25,6 +25,12 @@ def store_html(s):
     return UUID_RE.sub(lambda m: f'<span class="ref">{m.group(2) or m.group(1)}</span>', s)
 
 
+DECISIONS_PATH = Path(ROOT, "decisions.json")
+try:
+    decisions = json.loads(DECISIONS_PATH.read_text())
+except FileNotFoundError:
+    decisions = {}
+
 originals = {
     s["name"]: s
     for s in json.loads(Path(VENDOR, "base_spells_5e", "gen_homebrew.json").read_text())["spell"]
@@ -71,6 +77,7 @@ for f in sorted(glob.glob(os.path.join(STORE, "*.json"))):
             "store": sy,
             "original": orig,
             "intermediate": inter,
+            "decisions": decisions.get(slug, []),
         }
     )
 

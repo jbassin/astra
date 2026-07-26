@@ -64,6 +64,10 @@ body::after{ /* grain */
 .item.reviewed .tick{opacity:1}
 .item .nm{flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .item .cc{flex:none; font-size:.7rem; color:var(--note); font-family:"Caveat",cursive; font-weight:600}
+.item .pd{
+  flex:none; font-size:.66rem; font-weight:700; color:#f8ede0; background:var(--rubric-bright);
+  border-radius:1px; padding:0 .38em; letter-spacing:.02em;
+}
 
 /* ---------- main ---------- */
 #main{display:flex; flex-direction:column; min-width:0; min-height:0}
@@ -129,6 +133,26 @@ body::after{ /* grain */
 .hsec{margin-top:.75rem}
 .hsec b{color:var(--rubric)}
 mark.q{background:rgba(39,76,119,.16); color:inherit}
+
+/* ---------- pending decisions panel ---------- */
+#decisions{display:none; margin:.7rem 1.6rem 0; border:1px solid var(--rubric-bright); border-radius:2px;
+  background:rgba(165,42,26,.06); box-shadow:0 1px 6px rgba(70,50,20,.15)}
+#decisions .dhead{
+  display:flex; align-items:center; gap:.5rem; padding:.5rem .9rem; cursor:pointer;
+  background:var(--rubric-bright); color:#f8ede0; font-variant:small-caps; letter-spacing:.06em;
+  font-size:.92rem; font-weight:600; border-radius:1px;
+}
+#decisions .dhead:hover{background:var(--rubric)}
+#decisions .dhead .flag{font-size:1rem}
+#decisions .dhead .car{margin-left:auto; font-size:.8rem; transition:transform .15s; display:inline-block}
+#decisions.open .dhead .car{transform:rotate(90deg)}
+#decisions .dbody{display:none; padding:.2rem 1.1rem .9rem}
+#decisions.open .dbody{display:block}
+.dcard{margin:.75rem 0; padding-top:.65rem; border-top:1px dashed rgba(90,74,51,.35)}
+.dcard:first-child{border-top:none; padding-top:0}
+.dcard h4{font-family:"IM Fell English",serif; font-style:italic; font-weight:400; font-size:1.08rem; color:var(--rubric); margin-bottom:.3rem}
+.dcard .dbody-text{font-size:.92rem; line-height:1.55; white-space:pre-wrap}
+.dcard .dsrc{font-size:.68rem; color:var(--ink-faint); font-variant:small-caps; letter-spacing:.06em; margin-top:.4rem}
 
 /* ---------- margin rail (comments) ---------- */
 #margin{
@@ -205,6 +229,10 @@ kbd{font-family:inherit; border:1px solid var(--ink-faint); border-radius:2px; p
       <button class="ctl rev" id="revBtn">mark reviewed</button>
       <button class="ctl" id="prevBtn">‹ prev</button>
       <button class="ctl" id="nextBtn">next ›</button>
+    </div>
+    <div id="decisions">
+      <div class="dhead" id="decisionsHead"><span class="flag">⚑</span><span id="decisionsTitle"></span><span class="car">▸</span></div>
+      <div class="dbody" id="decisionsBody"></div>
     </div>
     <div id="folios">
       <section class="leaf" id="leaf-original" data-pane="original">
@@ -395,8 +423,11 @@ function renderList(filter){
   $("#list").innerHTML=DATA.map((s,i)=>{
     if(q&&!s.name.toLowerCase().includes(q))return "";
     const n=commentsFor(s.slug).length;
+    const dn=(s.decisions||[]).length;
     return '<div class="item'+(i===cur?" active":"")+(STATE.reviewed[s.slug]?" reviewed":"")+'" data-i="'+i+'">'+
-      '<span class="tick">✓</span><span class="nm">'+esc(s.name)+"</span>"+(n?'<span class="cc">'+n+" ✎</span>":"")+"</div>";
+      '<span class="tick">✓</span><span class="nm">'+esc(s.name)+"</span>"+
+      (dn?'<span class="pd" title="'+dn+' pending decision'+(dn===1?"":"s")+'">⚑'+dn+"</span>":"")+
+      (n?'<span class="cc">'+n+" ✎</span>":"")+"</div>";
   }).join("");
   const done=Object.values(STATE.reviewed).filter(Boolean).length;
   $("#progress").innerHTML="<b>"+done+"</b> of "+DATA.length+" reviewed · "+STATE.comments.length+" notes";
@@ -410,6 +441,19 @@ function renderNotes(){
     '<div class="body">'+(c.kind==="remove"?"✂ remove this":esc(c.note))+"</div></div>").join("")
     :'<div class="empty">The margin awaits your hand.<br>Select any passage to annotate it.</div>';
 }
+function renderDecisions(s){
+  const ds=s.decisions||[];
+  const panel=$("#decisions");
+  panel.classList.remove("open");
+  if(!ds.length){panel.style.display="none";$("#decisionsBody").innerHTML="";return}
+  panel.style.display="block";
+  $("#decisionsTitle").textContent="Pending decisions ("+ds.length+")";
+  $("#decisionsBody").innerHTML=ds.map(d=>
+    '<div class="dcard"><h4>'+esc(d.title)+"</h4>"+
+    '<div class="dbody-text">'+esc(d.body)+"</div>"+
+    (d.source?'<div class="dsrc">'+esc(d.source)+"</div>":"")+
+    "</div>").join("");
+}
 function show(i){
   cur=Math.max(0,Math.min(DATA.length-1,i));
   const s=DATA[cur];
@@ -419,6 +463,7 @@ function show(i){
   $("#orig-body").innerHTML=renderOriginal(s.original);
   $("#store-body").innerHTML=renderStore(s.store,s.name);
   $("#inter-body").innerHTML=renderInter(s.intermediate);
+  renderDecisions(s);
   $("#revBtn").classList.toggle("on",!!STATE.reviewed[s.slug]);
   $("#revBtn").textContent=STATE.reviewed[s.slug]?"✓ reviewed":"mark reviewed";
   $("#folios").scrollTop=0;
@@ -496,6 +541,7 @@ $("#revBtn").addEventListener("click",async()=>{
   show(cur);
   await api("/api/reviewed",{slug,reviewed:STATE.reviewed[slug]});
 });
+$("#decisionsHead").addEventListener("click",()=>$("#decisions").classList.toggle("open"));
 $("#interBtn").addEventListener("click",()=>{
   showInter=!showInter;
   $("#interBtn").classList.toggle("on",showInter);

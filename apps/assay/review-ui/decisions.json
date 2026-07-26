@@ -1,0 +1,496 @@
+{
+  "chrysalis": [
+    {
+      "id": "chrysalis-1",
+      "title": "Keep or trim the 4-part 'cut off from stimuli' enumeration?",
+      "body": "5e says only \"completely cut off from outside stimuli\"; the store expands this to a 4-part list (can't perceive/act/speak/be spoken to). Both are additions, not distortions - no factual error either way.\n\nOptions: (a) trim to match 5e's one-clause register; (b) keep the enumeration - it heads off real table disputes (e.g. \"can it still hear?\") that the vaguer 5e phrasing invites.\n\nStaff lean: (b) keep - cheap insurance against rules-lawyering.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "compression": [
+    {
+      "id": "compression-1",
+      "title": "Reversion: restore full incapacitation, or keep Slowed 1 + no-Stride?",
+      "body": "5e's reversion effect was \"incapacitated, can't move\"; the store's is Slowed 1 + can't Stride, a real flattening (not a misread).\n\nOptions: restore full incapacitation during reversion (5e-faithful) vs. keep Slowed 1 (PF2e-idiomatic partial restriction, avoids a bespoke \"no actions at all\" clause).\n\nStaff lean: keep as-is - Slowed 1 already maps cleanly to an existing condition.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "compressive-weapon": [
+    {
+      "id": "compressive-weapon-1",
+      "title": "Keep the explicit 'still requires line of effect' sentence?",
+      "body": "This may just restate a default (Strikes already need line of effect), but the spell's \"spatial shortcut\" flavor makes an explicit restatement defensible.\n\nStaff lean: keep the sentence - low cost either way.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "compressive-weapon-2",
+      "title": "The invented extended-reach-Strikes engine - revert, shrink, or keep?",
+      "body": "5e only grants advantage on your next two attack rolls against the target. The store instead invents a wholly different mechanic: ignore-distance Strikes for the entire (now 1-minute, per the already-applied sustain fix) duration, capped at 30 ft with line of effect required. This is the heaviest open card in the batch.\n\nOptions: (a) revert to 5e's advantage-on-next-two-attacks; (b) keep the extended-reach engine but shrink its window (e.g. 3 rounds, matching 5e's actual concentration span) instead of the full minute; (c) keep as-is (a genuinely different but rank-priced ability).\n\nStaff lean: (b) - preserves the \"spatial shortcut\" identity without granting a full minute of always-in-reach Strikes.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "cone-of-silence": [
+    {
+      "id": "cone-of-silence-1",
+      "title": "Keep the auditory-action restriction sentence (casting spells with auditory/linguistic traits)?",
+      "body": "This clause may re-derive paragraph 1's \"no sound propagates,\" but it's mechanically load-bearing beyond that plain statement (it blocks casting spells with auditory/linguistic traits).\n\nStaff lean: keep, but trim the sentence's redundant lead-in.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "cone-of-silence-2",
+      "title": "No-save auto-deafen (5e) vs. the store's invented 4-degree save structure?",
+      "body": "5e's cone auto-deafens and grants thunder immunity to everyone inside, no roll at all. The store instead gates the whole effect behind a Fortitude save with 4 degrees of success - a real, un-adjudicated design choice affecting the whole spell's power, not just phrasing.\n\nOptions: (a) auto-effect per 5e (no save - also common PF2e idiom); (b) keep the save structure (softer for players, more typical PF2e design for area effects); (c) split - auto-deafen on entry, save only for the total-silence upgrade.\n\nStaff lean: (b) keep - a no-save total-silence-plus-deafen at rank 5 reads harsh next to comparable PF2e control spells.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "connection": [
+    {
+      "id": "connection-1",
+      "title": "Heightened(8th)/(9th): strike as bloat, or keep the duration/miss-chance loosening and the 3->8 cap bump?",
+      "body": "5e scales connection by spending extra spell slots for more participants - no fixed duration/miss-chance/cap tiers exist at all, so the store's whole heightening ladder is a PF2e-native invention. The flagged 8th-tier duration/miss-chance loosening and 9th-tier cap bump are exactly what they're flagged as: pure limit relaxations with no new capability (unlike the 7th-tier, which adds real group-communication capability and is separately judged fine).\n\nThis is one of the stakeholder-held \"heighten tier only loosens a limit\" bloat-strike rows - the strike-by-default policy was proposed and HELD for a per-spell decision during review, not applied automatically.\n\nStaff lean (from the policy card): strike-by-default, absent a reason this spell's case is the exception.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "copy": [
+    {
+      "id": "copy-1",
+      "title": "Keep the invented Recall-Knowledge detection mechanic?",
+      "body": "5e's Copy has no detection clause of any kind; the store added one wholesale.\n\nOptions: (a) keep - gives a Foundry-forgery use case narrative teeth without changing the copy's practical utility; (b) strip for fidelity.\n\nStaff lean: (a) keep - flavor-adjacent utility with no balance stakes at rank 1.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "distorted-mark": [
+    {
+      "id": "distorted-mark-1",
+      "title": "Widen the trigger back to 'any attack,' or keep melee-Strike-only?",
+      "body": "5e's decompression trigger fires on any hit by any attack; the store restricts it to melee Strikes by a creature other than the caster - a real scope narrowing.\n\nOptions: widen back to any attack (5e-faithful, more universally triggerable at rank 1) vs. keep melee-only (narrower, arguably fairer for a cantrip-adjacent rank-1 rider).\n\nStaff lean: widen to \"any attack\" - the narrowing isn't compensated by extra power elsewhere.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "djura-s-divine-protection": [
+    {
+      "id": "djura-s-divine-protection-1",
+      "title": "Heightened(+1): does the +5 resistance bump apply to the physical trio, the force resistance, or both?",
+      "body": "Store body reads \"resistance 10 to bludgeoning/piercing/slashing... as well as resistance 10 to force... Heightened(+1): The resistance increases by 5\" - genuinely ambiguous which pool(s) get the bump. system.heightening is entirely absent from the JSON, so this needs a decision before it can be structured.\n\nStaff lean: both pools (simplest to structure, matches the spell's \"all damage types get harder to hurt through\" identity) - then structure it.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "djura-s-divine-razor": [
+    {
+      "id": "djura-s-divine-razor-1",
+      "title": "One-creature-at-a-time + curse-transfer mechanic - keep or drop?",
+      "body": "5e's curse has no target limit or transfer rule at all; the store invented both. (The 60-ft range cap on this same curse is already settled separately - not part of this decision.)\n\nOptions: keep (gives a single-target curse identity, prevents multi-curse stacking abuse) vs. drop the transfer clause (simpler, closer to 5e).\n\nStaff lean: keep - multi-target curse stacking at rank 5 would be a real balance risk.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "djura-s-divine-razor-2",
+      "title": "Bonus-damage window: 'first hit this turn' (5e) or 'any hit before spell ends' (store, wider)?",
+      "body": "5e's bonus damage is strictly first-hit-of-the-turn; the store widened it to any hit before the spell ends.\n\nOptions: revert to first-hit-this-turn (5e-faithful, weaker) vs. keep any-hit-before-end (stronger, matches the \"lasting curse\" flavor).\n\nStaff lean: keep as-is, but flag as the actual power lever if this spell's score ever reads hot.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "djura-s-divine-razor-3",
+      "title": "Curse escape: convert to the standing counteract-check convention, or keep the bespoke repeated-Will-save?",
+      "body": "The store invented a repeated-Will-save escape that doesn't follow the project's standing convention (curse-removal text should specify a counteract check vs. spell rank - used elsewhere, e.g. Touch of Madness/Cerebral Disruption). This spell wasn't on the queued conversion list when that convention was set.\n\nOptions: convert to the standing counteract-check convention (consistency) vs. keep the bespoke repeated-Will-save (its own valid, already-functioning escape design).\n\nStaff lean: convert, for consistency now that the convention exists.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "earworm": [
+    {
+      "id": "earworm-1",
+      "title": "Heightened(7th): strike the duration/range loosening, or keep it?",
+      "body": "The 7th-rank tier extends duration to \"until next daily prep\" and range to 30 ft, adding no new capability - a pure limit-loosening tier (unlike the 5th-rank tier, which adds genuinely different location-tracking and is separately fine). This is one of the stakeholder-held bloat-strike rows: the strike-by-default policy was proposed and HELD for a per-spell call during review.\n\nStaff lean (from the policy card): strike-by-default, absent a reason this tier is the exception.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "ebb-and-flow": [
+    {
+      "id": "ebb-and-flow-1",
+      "title": "Heightened(5th): strike the pure numeric bump (speed +10, radius +10), or keep it?",
+      "body": "The 5th-rank tier is a pure numeric bump with no new capability (unlike the 7th-rank tier, which adds Prone-on-crit-fail and is separately fine). This is one of the stakeholder-held bloat-strike rows: the strike-by-default policy was proposed and HELD for a per-spell call during review.\n\nStaff lean (from the policy card): strike-by-default, absent a reason this tier is the exception.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "extraplanar-pulse": [
+    {
+      "id": "extraplanar-pulse-1",
+      "title": "Keep the invented crit-hit -> -2 Fortitude-save penalty rider?",
+      "body": "5e has a plain repeated-save recovery mechanic with no crit interaction at all. The store invented one: a crit hit on the attack roll grants a -2 status penalty to the Fortitude save.\n\nOptions: (a) strip the crit-interaction (closer to 5e, simpler); (b) keep it (a small skill-reward flourish with real but minor stakes).\n\nStaff lean: (b) keep - a self-contained, low-complexity reward; the spell's overall pricing was already reviewed and kept with this rider factored in.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "farsight": [
+    {
+      "id": "farsight-1",
+      "title": "Heightened(6th): strike the '+1 sigil' bloat clause, keep the free-action switch alone?",
+      "body": "The 6th-rank tier is genuinely mixed: \"+1 sigil\" matches the struck limit-extension bloat pattern, while \"switch as a free action\" is a distinct, non-bloat effect. This is one of the stakeholder-held bloat-strike rows - the strike-by-default policy was proposed and HELD for a per-spell call during review.\n\nOptions: (a) strike the +1-sigil clause, keep the free-action switch alone as the whole Heightened(6th) effect; (b) keep both bundled as one tier (more sigils = more to juggle, hence needing quicker switching).\n\nStaff lean: (a), consistent with the ratified struck-limit-extension precedent elsewhere.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "focus-break": [
+    {
+      "id": "focus-break-1",
+      "title": "No Heightened block at all - add one, or leave it rank-5-only?",
+      "body": "Unlike every other spell in the set, Focus Break carries no Heightened section whatsoever (the invented damage-scaling heighten was separately removed as a deliberate stakeholder call - that removal is settled and not part of this decision).\n\nOptions: (a) leave rank-5-only, no heighten - fits the current auto-resolving Fort-lockdown design but breaks the set-wide \"every spell keeps some heighten idiom\" convention; (b) add a Heightened(+1/+2) line extending the Stunned/lockout duration; (c) add a fixed higher-rank tier bundling a rider (e.g. Slowed).\n\nStaff lean: (b) - keeps set-wide consistency without re-litigating the already-settled Stunned-tier keep.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "fugue": [
+    {
+      "id": "fugue-1",
+      "title": "4-degree save structure vs. 5e's binary negation-on-success?",
+      "body": "5e: single Wisdom save, success = spell fully negated. The store adds a 4-degree-of-success ladder where a bare Success now inflicts a new 1-round Confused (Critical Success matches 5e's full negation; Failure/Critical Failure track the original memory-loss effect).\n\nOptions: (a) keep the 4-tier structure - PF2e's standard save-spell idiom, a mild always-something tax on Success; (b) restore true binary (Success = fully negated, drop Confused) - truer to source but atypical for PF2e; (c) fold Success into Critical Success for a clean binary.\n\nStaff lean: (a) keep as-is - PF2e save spells at this rank rarely go all-or-nothing, and a 1-round Confused \"success\" cost is mild for a rank-5 mental effect.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "gift-of-the-archmage": [
+    {
+      "id": "gift-of-the-archmage-1",
+      "title": "Restore the dropped cancel-early-for-exhaustion / Int-mod / one-gift-per-slot-level rules?",
+      "body": "5e lets the recipient use their own Intelligence modifier, lets the caster cancel the gift early for 1 exhaustion, and caps gifts at one per slot level. The store instead has the recipient use the caster's own DC/attack modifier (PF2e has no portable Int-mod plug-in for a borrowed cast), drops cancel-early entirely, and relies on \"expend your own slot\" as an implicit cap rather than stating one. (The separate Heightened(+2) ladder-collapse on this spell has already been applied.)\n\nOptions: (a) restore a cancel-early mechanic with a PF2e-native cost (e.g. Drained/Fatigued); (b) leave as-is - recipient-uses-caster's-DC is consistent with how PF2e handles other granted-casting effects; (c) restore cancel-early only, leave Int-mod/cap dropped.\n\nStaff lean: (b) leave as-is - reads as a deliberate, rank-appropriate simplification rather than an oversight.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "haunt": [
+    {
+      "id": "haunt-1",
+      "title": "Restore unconditional exact-location tracking, or keep the 500-ft approximate/exact split?",
+      "body": "5e: \"You always know where the creature is, and it can never be hidden from you\" - unconditional, no range limit. The store gates exact location behind 500 ft (approximate direction/distance always available beyond that) - a real range-gated downgrade from omniscient tracking. (The Hidden-immunity clause is preserved either way, and a separate rank-4 KEPT decision already treats the teleport engine as this spell's balancing lens.)\n\nOptions: (a) restore unconditional exact-location tracking - matches source fidelity, but is a very strong rank-4 effect with almost no counterplay; (b) keep the 500-ft approximate/exact split (current); (c) raise the exact-location range at a Heightened tier instead, mirroring the spell's existing 60-ft teleport-range Heightened(6th).\n\nStaff lean: (b) keep as-is - unconditional omniscient tracking at rank 4 with no range cap is a bigger outlier than the teleport clause, and the range gate is a modest, reasonable concession.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "healing-draught": [
+    {
+      "id": "healing-draught-1",
+      "title": "Restore multi-dose scaling, or keep the single-dose/replace-on-recast design?",
+      "body": "5e's bottle holds 3 doses, +1 dose per heightened slot above 6th. The store instead has a single dose, replace-on-recast, with heightening scaling HP only - a real, undecided design collapse from a multi-target consumable to a single-target one. (The healing amount itself and the mass-cure-without-a-check fix are already settled, separate from this dose-count question.)\n\nOptions: (a) restore multi-dose scaling (3 base, +1/heightened rank) - closest to source, but turns a single-target heal into a party-wide heal at a rank where PF2e's own multi-target heals are more tightly gated; (b) keep single-dose (current), justified by the \"one draught at a time\" replace-on-recast clause acting as its own anti-stacking mechanism; (c) split the difference - 2 doses base, +1 per heightened tier, capped below 5e's uncapped scaling.\n\nStaff lean: (b) keep as-is - the spell's identity was already framed as \"a potion, not a mass-heal,\" and multi-dose scaling cuts against that even though dose count wasn't phrased as its own ruling.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "hypercompression": [
+    {
+      "id": "hypercompression-1",
+      "title": "Restore the two-tier movement penalty, or keep the flattened single-band difficult terrain?",
+      "body": "5e has a two-tier movement tax (4 ft-per-1-ft within 10 ft, 2 ft-per-1-ft within 30 ft); the store replaces both with a flat difficult-terrain band at 30 ft - a real softening, since difficult terrain is weaker than either 5e tier. (The dropped object-pull clause and the Sustain-as-free-action wording have already been restored/fixed separately.)\n\nOptions: (a) restore the two-tier penalty using PF2e's \"greater difficult terrain\" (2 ft/1 ft) within 10 ft plus difficult terrain within 30 ft as the near-exact idiom match; (b) keep the current flattened single-band difficult terrain - simpler, official-idiom-clean, but strictly weaker than the source.\n\nStaff lean: (a) - greater difficult terrain appears to have been missed in conversion, not a deliberate simplification.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "illusory-illusion": [
+    {
+      "id": "illusory-illusion-1",
+      "title": "Add a PF2e-native examine-trigger re-save, or keep damage-only?",
+      "body": "5e allows a re-save via careful examination OR being damaged; the store dropped the examine path, keeping only damage-only re-save.\n\nOptions: (a) add a PF2e-native examine-trigger (e.g. a Seek action against the target) - truer to source but needs a concrete action, not vague \"notices something's off\"; (b) keep damage-only, consistent with this project's general anti-GM-fiat leaning seen on sibling spells (though never logged for this spell specifically); (c) formally log a \"no fix\" decision citing that precedent so it stops re-flagging.\n\nStaff lean: (b) - likely already policy-consistent, just needs a one-line sign-off to close the flag.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "incensed-bestial-rage": [
+    {
+      "id": "incensed-bestial-rage-1",
+      "title": "Keep the Sustain-action lockout clause, or strike it as redundant fencing?",
+      "body": "5e has no Sustain mechanic at all to restrict - this clause is pure PF2e-side invention, neither a restoration nor an erosion of the source. (The temp-HP/Athletics substitution on this spell is already settled/kept separately.)\n\nOptions: (a) keep as harmless flavor-lockout closing a reshape loophole; (b) strike as redundant fencing (low-rank polymorph bases rarely offer Sustain-reshaping anyway); (c) log it as a deliberate anti-abuse clause.\n\nStaff lean: (a) keep, but log the decision so it stops re-surfacing.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "jolt": [
+    {
+      "id": "jolt-1",
+      "title": "Restore Strike-AND-Stride at base rank, or keep the OR-then-heighten-to-AND structure?",
+      "body": "5e: \"each can also move up to 10 feet before or after the attack\" - both, always, no exceptions. The store's base rank 5 only grants Strike OR Stride (target's choice); \"both\" unlocks only at Heightened(+9th). The converter's own unactioned note flags this exact gap, warning that restoring \"AND\" at base rank would make Jolt strictly stronger than its cited anchor Haste per action, likely requiring a rank bump to 6.\n\nOptions: (a) restore Strike-AND-Stride at base rank 5 - true to source, but per the converter's own note would need a rank bump to 6; (b) keep the current OR-then-heighten-to-AND structure - comparables already find Jolt's total action-economy output smaller than its cited anchors at base rank; (c) grant AND at a lower heighten tier (e.g. 7th) instead of 9th.\n\nStaff lean: (b) keep as-is - restoring \"AND\" without moving the rank would break the existing comparable math; if revisited, it needs the rank trade evaluated together, not a silent restore.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "laixa-s-expert-intuition": [
+    {
+      "id": "laixa-s-expert-intuition-1",
+      "title": "Keep, trim, or cut the invented 'can't be re-fooled by already-caught lies' paragraph?",
+      "body": "5e is one sentence (replace the number you roll with a 15 on Insight vs. a lie). The store adds a full second paragraph making the caster unable to be re-deceived about facts already identified as false. The paragraph's presence is process-settled (a deliberate restoration of previously adapter-dropped prose, not an unreviewed hallucination), but its content was explicitly left open for review.\n\nOptions: (a) keep - thematically apt for an \"expert intuition\" spell, low mechanical stakes (only blocks re-deception on already-caught lies); (b) trim to a one-clause version; (c) cut, restoring 5e's single-sentence scope.\n\nStaff lean: (a) keep - narrow, flavorful, doesn't grant new save/DC math.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "laixa-s-historical-tracker": [
+    {
+      "id": "laixa-s-historical-tracker-1",
+      "title": "Keep the invented duration-escalation axis (10 min -> 1 hr -> 8 hr), or flatten to match 5e?",
+      "body": "5e's higher tiers only reveal more identity info (race, then name) at a single flat duration across every cast level. The store adds an entirely separate duration-escalation axis on top of the same info-reveal ladder, tripling then increasing duration 8x by rank 6.\n\nOptions: (a) keep duration scaling - precedented PF2e idiom (many detection/scrying-style spells extend duration on heighten); (b) strip duration escalation, flat duration at every tier to match 5e 1:1; (c) keep duration growth only at the top (6th) tier.\n\nStaff lean: (a) keep - this is a rank-2 utility/tracking spell, duration growth is low-risk and standard heighten currency.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "lucky-ward": [
+    {
+      "id": "lucky-ward-1",
+      "title": "Heightened ladder (+1/+2/+3 across an irregular rank interval): force a P2a-style flat collapse, or leave it?",
+      "body": "The +1/+2/+3 attack-bonus/penalty ladder is a pure numeric progression, but it runs across an irregular rank interval (2nd base, +4 to 6th, +3 to 9th) that won't collapse cleanly to the flat \"(+N)\" idiom the way the monstrous-copy family's tiers did. (The spell's r2 pricing, including the dropped ally-save half, is already settled separately.)\n\nStaff lean: leave as-is - the irregular interval means forcing a collapse would likely resolve the same way the monstrous-copy family's asymmetric ladders did (keep, don't force a collapse that shifts rank thresholds).",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "mass-fluency": [
+    {
+      "id": "mass-fluency-1",
+      "title": "Residual: the sentence right after the plain-register fix now echoes it - trim?",
+      "body": "The policy sweep replaced \"memetic language-matrix\" with plain \"grant the ability to understand any language,\" but the very next sentence (\"For the duration, each target can understand any language they read or hear\") now closely restates that opening clause - a possible new redundancy introduced by the fix itself, flagged by the sweep but left untouched (out of that row's scope).\n\nLow-stakes: worth a quick look during review, no design stakes either way.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "mental-balance": [
+    {
+      "id": "mental-balance-1",
+      "title": "Auto-Perception-vs-illusions + 'cannot lie' compulsion-immunity - keep both, cut both, or keep one?",
+      "body": "5e is two sentences (remove biases, +advantage on illusion/memetic saves, must follow letter of law). The store stacks on top of that core: an auto-succeed-at-Perception-vs-memetic-effects/emotion-illusions clause, and a \"cannot lie, cannot be compelled by magically-imposed emotion\" clause - both wholly invented, no 5e counterpart. Cumulatively these push the spell from \"resist manipulation\" toward \"near-immune to social engineering.\" (Two separate flavor-only sentences on this same spell have already been translated back to plain register.)\n\nOptions: (a) keep both - thematically coherent \"rational actor\" package for a rank-4 spell; (b) cut both, restoring 5e's narrower scope (save-bonus + law-abiding only); (c) keep one, cut the other.\n\nStaff lean: (c) - keep auto-Perception (on-theme anti-illusion utility), cut \"cannot lie\" (redundant with the law-abiding clause and adds an unbudgeted Zone-of-Truth-style compulsion immunity).",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "mental-balance-2",
+      "title": "Heightened(6th): strike the restriction-loosening half, keep only the +1 status/Perception bump?",
+      "body": "The 6th-rank tier bundles a numeric micro-bump (+1 status, +Perception) together with a restriction-loosening clause (relaxed emotion-decision rule) - exactly the loosening-a-limit anti-pattern struck elsewhere. This is one of the stakeholder-held bloat-strike rows: the strike-by-default policy was proposed and HELD for a per-spell call during review.\n\nStaff lean (from the policy card): split the tier - keep the +1 status/Perception bump, strike the restriction-loosening sentence.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "monstrous-copy-shell": [
+    {
+      "id": "monstrous-copy-shell-1",
+      "title": "Rank-9 capstone: keep the invented +2 circumstance AC + resistance 15 to physical?",
+      "body": "5e's Tarrasque-carapace spell is purely a d6 deflect-or-reflect reaction mechanic, no passive AC/resistance at all. The store adds both as flat passive benefits on top, with no source basis.\n\nOptions: (a) keep both bonuses - reasonable capstone floor; (b) keep only one (lean AC, since resistance 15 stacks awkwardly with the reaction's own damage-negation); (c) cut both, spell relies purely on the reaction.\n\nStaff lean: (a) keep - rank 9 needs a baseline effect beyond a d6 gamble.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "monstrous-copy-shell-2",
+      "title": "Keep the explicit 'Frequency: once per round' line?",
+      "body": "Low-stakes: this may be redundant with the default once-per-round reaction economy, but official statblocks do use explicit Frequency fields even under that default.\n\nStaff lean: keep, matches official idiom.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "monstrous-copy-tentacle": [
+    {
+      "id": "monstrous-copy-tentacle-1",
+      "title": "Restore the dropped 'can't attack others while grappling' / 'auto-Restrained if Medium-or-smaller' clauses?",
+      "body": "5e has both: a caster-side restriction (can't attack others while grappling with the whip) and a target-side debuff (auto-Restrained if Medium or smaller). The store has neither, relying instead on the Tentacle Venom stage-ladder (Enfeebled/Clumsy -> Paralyzed) as its follow-up control. Dropping the caster-side restriction is a buff; dropping the target-side debuff is a nerf.\n\nOptions: (a) accept as-is - the Tentacle Venom affliction (Paralyzed by stage 2) already out-does the dropped Restrained clause; (b) restore both for source parity; (c) restore only the Restrained clause (free extra control, no real caster cost).\n\nStaff lean: (a) accept - the venom ladder more than compensates.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "move-the-cosmic-wheel": [
+    {
+      "id": "move-the-cosmic-wheel-1",
+      "title": "Restore the dropped too-large-to-fit shunt-outside edge case?",
+      "body": "5e shunts creatures too large to fit outside the swapped bubble before the swap; the store has no equivalent, relying on its uniform Will-save escape system instead (which functionally supersedes 5e's narrower size-based auto-shunt for any creature of any size).\n\nStaff lean: accept as-is - the blanket Will-save system already provides a general escape path that subsumes the narrower 5e exception; restoring it adds complexity without changing outcomes.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "move-the-cosmic-wheel-2",
+      "title": "Restore the specific cross-boundary energy-leak rate, or keep the vague 'physics of whichever side' language?",
+      "body": "5e specifies a concrete leak rate (\"no more than a foot or two per hour\"); the store generalized this into vague \"physics of whichever side\" phrasing.\n\nOptions: (a) restore explicit slow-leak-rate language for balance precision; (b) keep vague GM-fiat phrasing (simpler, standard ritual-flavor territory).\n\nStaff lean: (b) keep - precise leak rates rarely matter at the table for an 8-hour rank-8 ritual.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "move-the-cosmic-wheel-3",
+      "title": "Restore the dropped plane-familiarity qualifier?",
+      "body": "5e requires the plane be one \"with which you are familiar, through experience or study\"; the store's opening line drops this qualifier entirely. Purely descriptive, no mechanical stakes.\n\nStaff lean: no-op / accept as-is.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "mystic-negation": [
+    {
+      "id": "mystic-negation-1",
+      "title": "Entangled ladder + invented radius growth - untangle how?",
+      "body": "5e's heightening is a clean linear \"+1 max negated rank per slot above 5th.\" The store's own max-negated-rank progression (base 3, 7th->5, 9th->7) is actually the same clean +1-per-rank line and could collapse to the flat \"(+1)\" idiom - but it's entangled at the same tiers with an invented radius-growth axis (30->40->60 ft) that has no 5e counterpart and is a real, undecided power addition (a bigger antimagic-negation footprint). Untangling the two needs one balance call, so this was routed here rather than mechanically collapsed in the policy sweep.\n\nOptions: (a) keep both axes as-is - radius growth gives heightening real value beyond the rank cap; (b) collapse the max-negated-rank tiers to a flat (+1) line (matches 5e, matches the ratified ladder-collapse idiom) and strike the radius growth entirely (restores exact 5e parity); (c) keep the radius growth but collapse the rank-tier structure to the flat idiom.\n\nStaff lean: (c) - the flat-idiom conversion is a clean text improvement regardless of which way the power call goes.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "planar-pyre": [
+    {
+      "id": "planar-pyre-1",
+      "title": "Heighten both damage types every tier, or restore the choose-one-type mechanic?",
+      "body": "5e lets the caster choose only ONE damage type (fire or piercing) to scale per heightened slot; the store scales both types every tier, no choice.\n\nOptions: (a) keep both-scale (a common, simpler PF2e idiom for two-damage-type spells); (b) restore the choose-one mechanic (closer to source, slightly weaker); (c) split the increment (e.g. +1d8 total, allocated to one type per rank).\n\nStaff lean: (a) keep - dual-type flat scaling reads as intentional PF2e-idiom simplification, not power creep (total dice added is modest either way).",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "planar-shield": [
+    {
+      "id": "planar-shield-1",
+      "title": "Heightened(5th): strike the charge-cap increase (4->6), or keep it?",
+      "body": "5e's heighten axis is purely +1d6 damage per slot above 2nd - the charge-count-increase tier (4->6 charges) has no 5e basis at all, matching the cap-extension bloat anti-pattern struck elsewhere. This is one of the stakeholder-held bloat-strike rows - the strike-by-default policy was proposed and HELD for a per-spell call during review.\n\nStaff lean (from the policy card): strike the charge-count tier, keeping only the existing per-charge damage Heightened(+1) line.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "repetitious-trauma": [
+    {
+      "id": "repetitious-trauma-1",
+      "title": "Flatten sustained-round damage: restore a taper, or keep the flat 8d6/round?",
+      "body": "5e staged the damage down on repeat (6d6 initial cast, 4d6 on each Sustain re-save, avg 21 then 14). The store instead deals a uniform 8d6 every round (avg 28) - higher than BOTH 5e values, uncapped by any taper. This reads as more than a translation flatten; it's a real DPR increase (an uncapped save-for-half Sustain nova, indefinitely repeatable). The Sustain mechanic itself is separately reviewed and kept - this is about the per-round value only.\n\nOptions: (a) keep flat 8d6/round (simpler, still save-gated); (b) restore the taper (e.g. 8d6 initial / 6d6 per Sustain) to cap sustained DPR; (c) reduce base to 6d6 flat, matching 5e's initial-cast value.\n\nStaff lean: (b) - preserves the simpler single-value idiom while reining in the uncapped-recast escalation.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "reposition": [
+    {
+      "id": "reposition-1",
+      "title": "Heighten axis: distance (+10 ft, store) or targets (+1, 5e)?",
+      "body": "5e's heighten axis adds TARGETS (+1 per slot above 1st); the store's heighten axis instead adds DISTANCE (+10 ft) - a different scaling axis entirely, undecided.\n\nOptions: (a) keep distance-scaling (store's choice) - avoids stacking multi-target forced-movement/battlefield-control power onto a rank-1 spell; (b) restore target-count scaling to match 5e and the common PF2e \"+1 target per 2 levels\" convention; (c) hybrid (targets at odd tiers, distance at even).\n\nStaff lean: (a) keep - multi-target forced repositioning at low rank is a stronger crowd-control lever than extra range, and the store's more conservative choice avoids that escalation.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "reset": [
+    {
+      "id": "reset-1",
+      "title": "Ally initiative benefit: keep the single-reroll-vs-current-value (fortune effect), or restore true double-reroll-keep-best?",
+      "body": "5e's ally benefit is a pure double-reroll, keep the better of the two new results, no reference value needed. The store changed this to a single reroll compared against the creature's current initiative (PF2e's standard \"fortune effect\" phrasing). (A separate, already-applied fix restored the enemy Failure line's own double-reroll wording - this decision is about the ally clause only.)\n\nOptions: (a) keep current single-reroll-vs-current (matches official PF2e fortune-effect phrasing convention more closely than a literal double-reroll would); (b) restore true double-reroll-keep-best-of-two-new-rolls for source parity; (c) hybrid - reroll twice, keep best of all three values.\n\nStaff lean: (a) keep - statistically similar generosity, and matches the idiom PF2e uses elsewhere for \"reroll and take the better\" fortune effects.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "retributive-force": [
+    {
+      "id": "retributive-force-1",
+      "title": "Heighten die-size: fix +1d4 to +1d6 (matching the base die), or keep as a deliberate rank-1 throttle?",
+      "body": "5e's own Heightened line is +1d6 force per slot level above 1st, matching the base 1d6 die exactly. The store's heighten increment is +1d4 - a genuine mismatch, not vocabulary noise.\n\nOptions: (a) fix to 1d6 to match the vendor idiom exactly (simplest); (b) keep 1d4 as a deliberate rank-1 throttle - this is a level-1 buff, and the power-ledger session already eyeballed the rank-1 riders without flagging it.\n\nStaff lean: keep 1d4 - no evidence the drop was accidental, and rank-1 riders were already reviewer-approved once.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "retributive-force-2",
+      "title": "Save structure: restore 5e's one-time gate-then-automatic curse, or keep the store's fresh-save-every-hit design?",
+      "body": "5e imposes ONE Con save on the creature you first hit; failing it makes that creature's own subsequent melee attacks auto-trigger the launch-back for the rest of the duration - a one-and-done curse-the-target shape. The store instead makes ANY creature that melees you attempt a fresh Fortitude save every single hit - a materially different, recurring action-economy shape.\n\nOptions: (a) restore the original's one-time-gate-then-automatic design; (b) keep the store's every-hit fresh-save reactive design (arguably a cleaner PF2e binary-save idiom, avoids a \"curse persists on one enemy\" edge case); (c) hybrid.\n\nStaff lean: keep the store's redesign - repeat all-or-nothing saves per PF2e convention over 5e's one-shot-curse structure - but flag for explicit sign-off since it changes the spell's whole shape.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "revisit": [
+    {
+      "id": "revisit-1",
+      "title": "Restore the full 1-hour base recall window, or keep the 10-minute base + 7th-rank gate?",
+      "body": "5e: \"a location you've visited within the last hour,\" no gating. The store's base rank is 10 minutes, with the full hour (plus bringing up to 2 willing creatures) restored only at Heightened(7th) - an undocumented scope reduction on the base spell.\n\nOptions: (a) restore the full 1-hour base window (5e-faithful, removes the artificial heighten-gate); (b) keep the 10-minute base + hour-at-7th gate (a reasonable rank-5 power throttle - unlimited-hour teleport-with-momentum is strong for a rank-5 slot); (c) split the difference (e.g. 30 min base).\n\nStaff lean: keep as-is - gating unlimited recency behind a heighten tier is a normal PF2e scaling lever, and 10 minutes is still generous for in-combat use.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "right-hand-of-judgment": [
+    {
+      "id": "right-hand-of-judgment-1",
+      "title": "Charge trigger: restore proactive Dodge-action generation, or keep the store's reactive on-enemy-miss trigger?",
+      "body": "5e: taking the Dodge action grants a charge (proactive). The store instead grants a charge once per round when a creature's attack roll against you fails (reactive) - a real mechanic redesign, not a translation.\n\nOptions: (a) restore Dodge-action charge generation (5e-faithful, rewards a proactive turtle build); (b) keep the store's reactive-on-enemy-miss trigger (fits melee/tank play better, avoids a \"just spam Dodge\" degenerate loop).\n\nStaff lean: keep the store's redesign, but confirm intentionally - it meaningfully shifts which builds benefit.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "right-hand-of-judgment-2",
+      "title": "Payload: restore an outright critical-hit upgrade, or keep the fortune-effect (roll twice, take higher)?",
+      "body": "5e: expend a charge to turn a normal hit into a critical hit outright. The store instead grants a fortune effect (roll damage twice, take higher) - a real mechanic redesign.\n\nOptions: (a) restore auto-crit-on-hit (5e-faithful but very strong and off PF2e idiom - official PF2e essentially never grants free crit upgrades this cheaply); (b) keep the fortune-reroll substitute.\n\nStaff lean: keep the store's fortune effect - auto-crit-upgrade has no clean official analog at this rank/cost; the reroll is the correct-strength translation.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "sapping-lightning": [
+    {
+      "id": "sapping-lightning-1",
+      "title": "Restore permanent spell-slot destruction, or keep the store's temporary suppression?",
+      "body": "5e: the target \"loses its highest-level unspent spell slot\" - permanent, recovered only through normal means. The store's Failure line instead suppresses the slot only until the end of the creature's next turn - fully temporary, a real substantial severity drop from the source.\n\nOptions: (a) restore permanent slot loss (5e-faithful, but PF2e has no official precedent for permanently destroying a resource without recourse - very punishing for a rank-7 single-target save-based spell); (b) keep the temporary suppression (aligns with PF2e's general aversion to un-recoverable resource loss); (c) middle ground - suppress until the end of the encounter or until the creature's next daily prep.\n\nStaff lean: keep the store's softened version - \"permanently destroy a spell slot\" has no clean official-idiom anchor, and the softer version is what the power-ledger scoring already assumes.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "shape-modify-accuracy": [
+    {
+      "id": "shape-modify-accuracy-1",
+      "title": "Heighten asymmetry (attack bonus scales every 2 ranks; damage-penalty reduction only shifts at the top tier) - fix or leave?",
+      "body": "Base +2 attack/-2d6 damage; H5 +3 attack (damage penalty unchanged); H7 +4 attack AND damage penalty drops to -1d6. The attack-bonus axis collapses cleanly to a flat interval; the damage-penalty axis does not (flat until rank 7), so this sibling was excluded from the ladder-collapse policy that its siblings (shape-modify-severity/-speed) received.\n\nOptions: (a) collapse only the attack-bonus line to a Heightened(+N)-style interval and keep the damage-penalty change as its own bespoke rank-7 note; (b) leave both axes as fixed tiers, unmodified (simplest, avoids inventing an intermediate damage-penalty value); (c) redesign the damage-penalty axis to also step evenly (e.g. 2d6/1d6/1d6, or drop the penalty a half-step at rank 5).\n\nStaff lean: leave both fixed - this is a narrow subclass utility spell where an odd asymmetric curve is low-stakes, not worth extra engineering.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "shape-modify-armor": [
+    {
+      "id": "shape-modify-armor-1",
+      "title": "Heighten asymmetry (AC scales cleanly; Speed penalty changes mechanic type between tiers) - fix or leave?",
+      "body": "AC bonus scales cleanly (+2/+3/+4) across the fixed 5th/7th tiers, but the Speed penalty changes mechanic type between tiers (base = flat 15 ft; higher tiers = shrinking flat reduction) rather than scaling the same way. (The Dash/Sudden-Charge parenthetical on this same spell has already been struck as a defect fix, and the invented-imagery opening line has already been translated back to plain register - neither is part of this decision.)\n\nOptions: same three shapes as shape-modify-accuracy's equivalent card: (a) collapse the AC line only + bespoke Speed note; (b) leave both fixed; (c) redesign the Speed axis to match.\n\nStaff lean: leave fixed - same low-stakes rationale as its sibling.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "spawn-abyssal-sprite": [
+    {
+      "id": "spawn-abyssal-sprite-1",
+      "title": "Rename to fit the bolt conceit, rebuild as an actual summon, or patch flavor to justify the current name?",
+      "body": "5e: \"You summon an angry sprite from the depths of the Abyss to attack one creature.\" The store replaced the summon-and-attack conceit with a direct chain-bolt spell (\"You crack a demon's finger bone and hurl an abyssal bolt of void energy\") - the spell's own name, \"Spawn Abyssal Sprite,\" no longer matches its mechanic. The chain-bolt damage itself is already in-band and calibrated separately.\n\nOptions: (a) rename the spell to fit the bolt conceit (e.g. \"Abyssal Bolt\" or similar) - cheapest, preserves the already-calibrated mechanic; (b) rebuild as an actual PF2e summon-and-attack spell to match the name - a much larger scope change requiring a real creature stat block; (c) keep the bolt mechanic and patch the flavor text to justify the name (e.g. the bolt is shaped like a biting sprite).\n\nStaff lean: (a) or (c) - don't rebuild the mechanic; cheapest fix is aligning name-to-mechanic rather than mechanic-to-name.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "suspension": [
+    {
+      "id": "suspension-1",
+      "title": "Residual: does 'using a reaction' fit this spell's own 2-action cast time?",
+      "body": "The policy sweep struck the mechanically-meaningless \"or if you lose consciousness\" arm from this parenthetical, but left \"using a reaction\" - and that surviving arm sits oddly against the spell's own system.time.value of \"2\" (a two-action cast, not a reaction). Flagged by the sweep as a residue for the next review pass rather than freelancing a second strike.\n\nLow-stakes: worth a quick look during review - either the parenthetical needs rewording, or there's a casting-time nuance (e.g. a reaction variant) that isn't otherwise documented.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "suspension-2",
+      "title": "Restore the guaranteed harmless landing at natural spell expiration?",
+      "body": "5e guarantees a harmless landing when the spell ends naturally while airborne; the store only covers the case where you're forcibly pulled more than 30 ft away, with no equivalent for natural expiration while still aloft. (The vine-durability clause on this same spell has already been restored separately.)\n\nOptions: (a) restore the guaranteed harmless landing at natural expiration (5e-faithful); (b) leave as-is, matching the official Fly spell's harsher precedent (you fall if still aloft when Fly ends).\n\nStaff lean: worth an explicit call since it trades player safety for idiom-consistency with official Fly.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "tag": [
+    {
+      "id": "tag-1",
+      "title": "Restore the third (own-melee-attack) delivery mode for the tag transfer?",
+      "body": "5e's Tag transfers via three delivery methods: a successful melee attack, an action, or a reaction when hit. The store keeps only two (action + reaction), dropping the melee-attack delivery mode. A prior stakeholder note on this spell's HOT-list resolution mentions fixing \"action-mode transfer targeting,\" but doesn't clearly confirm it covered restoring this third mode - treat that prior note as inconclusive, not settled.\n\nOptions: (a) restore the own-melee-attack transfer mode (5e-faithful, gives martial-caster hybrids a third option); (b) keep the store's two-mode version (simpler action economy, avoids a \"free\" transfer riding on every hit).\n\nStaff lean: worth restoring (a) - losing a whole delivery vector wasn't clearly a deliberate call.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "tag-2",
+      "title": "Restore the immediate self-roll penalty for holding the charge a full round?",
+      "body": "5e: holding the magic a full round forces an immediate self-directed roll at +30% detonation chance. The store instead only bumps a counter (Transfer Count +3) for a future transfer, with no immediate roll - a real design softening (defers the self-risk instead of applying it now).\n\nOptions: (a) restore the immediate self-roll at +30% on holding a full round (matches the original's real self-risk-if-you-sit-on-it design); (b) keep the store's counter-bump-only version (softer, defers the risk to the next transfer).\n\nStaff lean: keep the store's version - the spell's overall \"probabilistic detonation\" design was already reviewed and kept as a whole, suggesting this variant was implicitly in scope.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "temporal-discharge": [
+    {
+      "id": "temporal-discharge-1",
+      "title": "Heightened(+1): strike the bundled duration-extension clause?",
+      "body": "The Heightened(+1) line reads \"the damage increases by 2d6, and the duration extends by 1 day per additional rank, to a maximum of 1 week\" - the duration-extension half has no basis in the 5e original and reads as bolted onto the damage line. This is one of the stakeholder-held bloat-strike rows - the strike-by-default policy was proposed and HELD for a per-spell call during review.\n\nStaff lean (from the policy card): strike the duration-extension clause, leaving Heightened(+1) as a pure damage bump.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "temporal-threshold": [
+    {
+      "id": "temporal-threshold-1",
+      "title": "Heightened(+1): strike the bundled Paralyzed-duration extension?",
+      "body": "The Heightened(+1) line reads \"the damage on failure increases by 2d10 force, and the duration of the Paralyzed condition on a critical failure increases by 1 round\" - same bolted-on-duration-clause shape as temporal-discharge. This is one of the stakeholder-held bloat-strike rows - the strike-by-default policy was proposed and HELD for a per-spell call during review.\n\nStaff lean (from the policy card): strike the Paralyzed-duration extension, leaving Heightened(+1) as a pure damage bump.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "time-loop": [
+    {
+      "id": "time-loop-1",
+      "title": "Restore unconditional teleport-back (save only gates the replay), or keep the store's fully save-gated version?",
+      "body": "5e: the creature is teleported back to its prior-turn space unconditionally; the Wisdom save only determines whether it must then replay its actions. The store instead makes the teleport itself conditional on failing the save - on Success, nothing happens at all. (The immunity-clause wording on this spell is already fixed/settled separately - this is about the deeper teleport-conditional-vs-unconditional structure.)\n\nOptions: (a) restore unconditional teleport (always reposition the target, save only gates the forced replay) - closer to 5e, adds battlefield control even on a successful save; (b) keep the store's fully save-gated version (nothing happens on Success) - matches PF2e's typical all-or-nothing degree-of-success idiom.\n\nStaff lean: keep the store's gated version - PF2e strongly favors uniform degrees of success, and the split-effect structure is a distinctly 5e pattern.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "time-step": [
+    {
+      "id": "time-step-1",
+      "title": "Trim the four-clause protection expansion back to 5e's narrower two-clause guarantee?",
+      "body": "5e states only two protections: unaffected by events during the interval, and unaware of them. The store expands this to four enumerated clauses, including two genuinely new, stronger claims not implied by the 5e text: cannot be targeted, cannot be detected.\n\nOptions: (a) trim back to the 5e original's narrower two-clause guarantee (more conservative, avoids accidentally granting immunity to ongoing/persistent effects that should still land); (b) keep the four-clause version - PF2e conversions generally need explicit interaction rules where 5e leaves things vague, and \"cannot be targeted/detected\" is a reasonable disambiguation of \"unaffected and unaware,\" not obviously an overreach.\n\nStaff lean: keep - PF2e idiom demands the explicit version, and it doesn't obviously change the spell's power level.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "umbral-assimilation": [
+    {
+      "id": "umbral-assimilation-1",
+      "title": "Heightened(8th) darkness-persistence extension is this spell's ONLY rank-8 benefit - what replaces a bare strike?",
+      "body": "The 8th-rank tier extends the created darkness's persistence from \"until end of your next turn\" to \"until the spell ends\" - matching the stakeholder-held bloat-strike pattern. But unlike other bloat-strike candidates, this spell has NO damage line at all: the entire Heightened(8th) tier IS the duration relaxation, with nothing else to fall back on. A verbatim strike per the general policy would leave rank 8 with zero benefit, which the policy doesn't anticipate.\n\nThis needs a replacement benefit at 8th rank, not a bare deletion - e.g. a different, non-bloat rider (an area bump, a save-DC tweak, or a new minor effect) to fill the tier once the duration-loosening is struck.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "wall-of-time": [
+    {
+      "id": "wall-of-time-1",
+      "title": "Base-rank crossing mechanic: restore 5e's unconditional slow-equivalent, or keep the store's action-tax/difficult-terrain redesign?",
+      "body": "5e's base-rank mechanic imposes an unconditional slow-equivalent on crossing the wall (no save). The store instead invents a new action-tax/difficult-terrain mechanic for the base rank, deferring the save-gated slow-equivalent entirely to Heightened(7th). (The wall's missing dimensions have already been restored in prose separately, confirmed against all 14 official wall-* spells, which also keep dimensions prose-only.)\n\nOptions: (a) restore the original's unconditional slow-equivalent at base rank, dropping the invented action-tax; (b) keep the store's redesign - action-economy tax is a legitimate, PF2e-native zone-control tool at rank 5, with the slow-equivalent reserved as a real Heightened(7th) upgrade; (c) stack both at base rank (likely too strong for rank 5).\n\nStaff lean: keep the store's redesign as intentional escalation, but this needs explicit sign-off since it changes power distribution across the two ranks.",
+      "source": "fleet-digest 2026-07-26"
+    },
+    {
+      "id": "wall-of-time-2",
+      "title": "Heightened(7th) slow-equivalent add-on - keep, redundant, or re-tune? (depends on the base-rank call above)",
+      "body": "The Heightened(7th) tier reintroduces the original's base-rank slow-on-cross mechanic as a rank-7-only add-on. Whether this tier stays, becomes redundant, or needs re-tuning depends entirely on how the base-rank mechanic question (this spell's other open decision) resolves - decide that one first, then revisit this tier.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ],
+  "weight-of-the-world": [
+    {
+      "id": "weight-of-the-world-1",
+      "title": "Restore the dropped Dash-triggered exhaustion clause?",
+      "body": "5e's original imposes disadvantage on attack rolls and Strength/Dexterity-based checks, AND gives a level of exhaustion specifically if the affected creature uses the Dash action - that Dash/exhaustion clause is entirely absent from the store conversion. (The Dexterity-based-check gap has already been fixed by mapping to Enfeebled+Clumsy together, separate from this Dash clause.) PF2e's Remaster has no 5e-style escalating exhaustion system, so a literal port isn't available.\n\nOptions: (a) add a PF2e analog (e.g. Dashing while Slowed by this effect causes Fatigued); (b) leave dropped - the Slowed condition already discourages movement, and an extra \"punish Dash specifically\" micro-rule is a distinctly 5e pattern PF2e generally avoids.\n\nStaff lean: leave dropped.",
+      "source": "fleet-digest 2026-07-26"
+    }
+  ]
+}
