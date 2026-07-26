@@ -36,7 +36,57 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `d7eae83`, 2026-07-25 — assay (0030) ROUND 5: **STAKEHOLDER END-REVIEW IN FLIGHT via SCRIPTORIUM + the §13 SCRIPTORIUM-CALIBRATED SWEEP RUN same day** (his prose pass 21/174 → marginalia distilled to policy → ratified ×4 → 4-engineer sweep: **95/172 edited, zero score drift**, revisions.md **167**; D13-b Fangs/Horns re-converted as attack spells, cards a/a; **NEW STANDING CONVENTION R5: base damage declared in the body, ladder says full/half/double** — Ignition exemplar); store = **174** (hardlight-bridge removed `4a724ff`); ▶ NEXT = **stakeholder resumes the scriptorium pass on the post-sweep text** (data.json reseeded) + deal the **10-item flag digest** (triage §13 RUN record) as compact cards → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+## Current state — UPDATE THIS SECTION (as of `b8e0035`+docs, 2026-07-25 late — assay (0030) ROUND 5: **REVIEW PAUSED BY THE REVIEWER post-sweep (§13 under-delivered on judgment lanes) → all remediation LANDED: flag digest 10/10 dealt · his 28 new marginalia APPLIED · calibration loop COMPLETE, sweep-brief v3 = FLEET-READY at 96% blind recall**; alias feature scoped + R1/R2 resolved (variant D picked off the live mock artifact); revisions.md **168**, store 174, scriptorium reseeded; ▶ NEXT = **stakeholder go/no-go on the FLEET RE-SWEEP** (~141 spells, 8 lanes + T6-heavy verification lane, brief `apps/assay/results/sweep-brief-v3.md`, plan in triage §13b) → reviewer resumes AFTER it lands → fleet flag-digest cards → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+
+> **✅ assay (0030) R5 — flag digest + review-pause remediation + calibration, 2026-07-25 late (`30082ac`…`b8e0035`, all pushed):**
+> 1. **Flag digest 10/10 dealt** (compact-card process): 5 defect fixes `30082ac`
+>    (reset reroll grant · blades-of-bone orphaned 1d6, EV 21→17.5 · chrysalis
+>    Perception DC · hellforging mental/void per the 5e-ism map · time-loop immunity
+>    dominance) · claws ladder VERIFIED authored (friend's intermediate carries it —
+>    keep, joint-review flag) · card 1 = mixed heightening → DAMAGE-ONLY `c4a81ef`
+>    (propagating-blast + festering-slick gain structural (+1)) · card 2 =
+>    fast-forward → Enfeebled/Clumsy mapping `ecc2c48` · card 3 WITHDRAWN —
+>    **staff rules error, stakeholder-corrected: emanations are STATIONARY by RAW,
+>    aura is what moves** → plain R2 deletions ×2 `6572de2` + feedback memory
+>    [[verify-rules-against-corpus]] `6c8734e`.
+> 2. **⚠ THE REVIEWER PAUSED** ("couldn't keep reviewing in this state"): resumed
+>    post-sweep, left 28 marginalia across 12 B–C spells in ~30 min (several
+>    personally abusive — user informed), quit. Diagnosis (triage §13b): the §13
+>    sweep's gates only measured greppable patterns; R2/D13-a judgment lanes
+>    under-delivered. **All 28 APPLIED `7c9577f`** (bodydouble −7 spans · hide →
+>    Diamond-Dust (+2) · carnage RE-ADAPTED from his pasted 5e original ·
+>    cerebral-disruption 6-row curse TABLE restored · charming-memory D13-a
+>    restoration · mind/celestial/checkpoint-H10 tiers struck w/ structural lockstep)
+>    + hr audit ×4 more `7c9577f` + bubble area 5→10 lockstep `4e86e17` (prose-only
+>    edits MUST check structural fields — the mock surfaced it). **New conventions:**
+>    hr ONLY body→Heightened · NO official-spell name-drops in bodies · no
+>    over-explanation · rolled effects get named tables · reviewed spells (33) are a
+>    FROZEN regression set.
+> 3. **Calibration loop COMPLETE** (the process redesign the pause demanded — gold-set
+>    pattern): r1 invalid (brief quoted test strikes — contamination), r2 blind 80%
+>    (2 class-shaped gaps), **v3 closed both → r3 = 24/25 (96%)**, residue = one-run
+>    T6 variance → verification lane briefed T6-heaviest. Brief committed:
+>    `apps/assay/results/sweep-brief-v3.md`; record + fleet plan in triage §13b.
+> 4. **Alias feature (`<name|alias>` memetic obfuscation) scoped + partially
+>    resolved:** scope doc `thoughts/shared/research/2026-07-25-memetic-alias-0030-
+>    thoughts.md` `61a4a3a` (registry-over-inline lean, alias inline-node, Foundry
+>    zero-work, search indexes alias only) · live mock artifact (4 treatments on the
+>    real Bubble Bubble card) → **stakeholders picked D "Veiled Iridescence"**; R1+R2
+>    RESOLVED `8634d8d`, mock committed as the D3 reference implementation `b8e0035`
+>    (`…/2026-07-25-memetic-alias-mock.html`); R3/R4 minor, resolve at spec time.
+>    Build NOT started (stakeholder: plan only).
+> - **▶ NEXT: (1) stakeholder go on the fleet re-sweep** — ~141 spells, 8 partitioned
+>   engineer lanes off brief v3 (5e original + store ONLY, no intermediate),
+>   per-spell×rule ledgers, verifier lane (20% sample + clean-heavy, T6 focus),
+>   policy edits applied / flags → digest cards; **(2) reviewer resumes scriptorium
+>   AFTER the fleet lands** (reseed again); (3) Foundry compendium module; (4) joint
+>   review (revisions.md @ 168). codex gate H unchanged; heartwood ⏸.
+
+---
+
+### Previous section (2026-07-25, earlier) — scriptorium sweep (superseded above)
+
+## (was) Current state (as of `d7eae83`, 2026-07-25 — assay (0030) ROUND 5: **STAKEHOLDER END-REVIEW IN FLIGHT via SCRIPTORIUM + the §13 SCRIPTORIUM-CALIBRATED SWEEP RUN same day** (his prose pass 21/174 → marginalia distilled to policy → ratified ×4 → 4-engineer sweep: **95/172 edited, zero score drift**, revisions.md **167**; D13-b Fangs/Horns re-converted as attack spells, cards a/a; **NEW STANDING CONVENTION R5: base damage declared in the body, ladder says full/half/double** — Ignition exemplar); store = **174** (hardlight-bridge removed `4a724ff`); ▶ NEXT = **stakeholder resumes the scriptorium pass on the post-sweep text** (data.json reseeded) + deal the **10-item flag digest** (triage §13 RUN record) as compact cards → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
 
 > **✅ assay (0030) R5 — scriptorium round, 2026-07-25 (`98587c9`…`d7eae83`, all pushed):**
 > 1. **Context (uncheckpointed prior commits, same round):** sustain sweep §11 22

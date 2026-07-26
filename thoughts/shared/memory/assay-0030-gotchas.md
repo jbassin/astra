@@ -380,3 +380,39 @@ retract earlier ids — resolve before consuming). ⭐ THE finds:
   scriptorium pass resumes at body-enhancement-horns→ (21/174 done); then Foundry
   compendium module → joint review (revisions.md @ 167; store = 174 after
   hardlight-bridge removal).
+
+**FLAG DIGEST + REVIEW PAUSE + CALIBRATION (2026-07-25 late, `30082ac`…`b8e0035`):**
+digest 10/10 dealt (5 defect fixes · claws ladder = friend-authored, KEEP+joint-review
+flag · mixed-heightening → damage-only structural (+1) · fast-forward → Enfeebled/
+Clumsy · thaumaturgic card WITHDRAWN — staff asserted emanations move by RAW,
+BACKWARDS: [[verify-rules-against-corpus]], grep `apps/codex/data/corpus/rules/`
+before any rules claim). ⚠ **THE REVIEWER PAUSED angrily post-sweep** — 28 marginalia
+on 12 B–C spells proved §13's judgment lanes (R2/D13-a) under-delivered; its gates
+only measured greppable patterns. All 28 applied `7c9577f` (+hr audit ×4, carnage
+re-adapted from his pasted 5e original, cerebral curse TABLE restored). ⭐ **New
+conventions:** hr ONLY between body↔Heightened · NO official-spell name-drops in
+bodies · no over-explanation ("are you a child?") · rolled effects = named body
+tables · his 33 reviewed spells = FROZEN regression set. ⭐ **Prose-edit
+structural-lockstep bug class ×2:** marginalia are prose selections — the structural
+field must follow (bubble-bubble area 5→10 `4e86e17` caught only via the mock;
+blades-of-bone's orphaned 1d6). ⭐ **Calibration gold-set pattern for text sweeps**
+(the linguist gate-J idea applied to prose): his marginalia = labeled ground truth;
+blind engineer vs held-out set; **r1 INVALID — brief quoted test-set strikes as
+exemplars (contamination trap: exemplars must come from a DIFFERENT labeled range)**;
+r2 80% w/ 2 class-shaped gaps → v3 (mandatory per-Heightened-block disposition +
+clause-level T2 + as-if-by in T3) → **r3 96%; residual = single-run T6 flavor-rewrite
+variance → verification lane briefed T6-heaviest**. Brief committed:
+`apps/assay/results/sweep-brief-v3.md`; fleet plan in triage §13b; ground truth
+derivable from `review-ui/state/comments.jsonl` tombstoned rows ≥2026-07-25T23Z,
+pre-application texts at `7c9577f^`. Scorer gotcha: engineer quotes raw `@UUID[…]`
+where marginalia quote rendered text — token-overlap matching + manual pass on
+misses. ⭐ **CSS: an animation owns its properties and BEATS a :hover transition**
+(the mock's "half-fade" bug — kill the animation on hover). **Alias feature:** scope
+`thoughts/shared/research/2026-07-25-memetic-alias-0030-thoughts.md`; stakeholders
+picked variant **D "Veiled Iridescence"** off the live mock (R1/R2 RESOLVED; mock
+committed as D3 reference impl `…/2026-07-25-memetic-alias-mock.html`); registry-
+over-inline so Foundry ships zero true names; search indexes alias only (by design).
+**▶ OPEN: stakeholder go on the FLEET RE-SWEEP** (~141 spells, 8 lanes off brief v3 —
+5e original + store ONLY, no intermediate — + T6-heavy verifier lane, flags → digest
+cards); reviewer resumes ONLY after it lands (reseed data.json again); then Foundry
+module → joint review (revisions.md @ 168).

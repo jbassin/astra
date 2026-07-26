@@ -605,6 +605,26 @@ bubble-bubble 10-foot ×2, (+1)→(+2), Feywild→"land of fae".
   dreamlike hover/click reveal of the true name; Foundry shows only the alias. Store
   text carries aliases now; codex feature needs its own scope doc.
 
+**CALIBRATION LOOP (2026-07-25 late, complete): brief v3 = FLEET-READY at 96% blind
+recall.** Ground truth = his 28 post-sweep marginalia (25 findable; 3 pure-number
+judgments excluded). r1 INVALID — the brief quoted test-set strikes as exemplars
+(contamination; engineer self-reported "exact brief exemplar" matches). r2 (clean
+brief, pre-sweep-67 exemplars only): 20/25 = 80%, misses clustered in 2 classes —
+un-flagged tier blocks (celestial H6/H8, checkpoint H10) + sub-sentence fencing
+clauses (bodydouble "or touch", "measuring…"). v3 closed both: MANDATORY per-
+Heightened-block disposition (keep needs stated justification) + clause-level T2 arm
++ as-if-by comparisons in T3. r3: **24/25 = 96%**, the residual miss = single-run T6
+variance (charming-memory flavor rewrite; r2 caught it, r3 didn't) → covered by the
+verification lane briefed T6-heaviest. Precision healthy both rounds (extras were
+legitimate unmarked candidates, not noise). **The brief: `sweep-brief-v3.md`** (this
+directory). Ground truth derivable from `review-ui/state/comments.jsonl` (tombstoned
+rows at ≥2026-07-25T23:00Z); the 12 pre-application spell texts are at `7c9577f^`.
+**▶ Fleet plan (awaiting stakeholder go):** ~141 unreached spells (174 − his 33,
+frozen as regression set), 8 engineer lanes ×~18 producing per-spell×rule ledgers off
+brief v3 + 5e-original-vs-store reads (NO intermediate — stakeholder call), verifiers
+on a 20% sample + clean-heavy spells with T6 focus, policy-covered edits applied
+in-partition, ALL action=flag items → stakeholder digest, standard gates after.
+
 **Provenance:** the stakeholder's scriptorium prose review (21/174 spells reviewed,
 acupuncture → body-enhancement-horns; 67 live marginalia in
 `review-ui/state/comments.jsonl`). The annotations cluster into a small set of classes —
