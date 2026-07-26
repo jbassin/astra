@@ -67,13 +67,18 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 >    /mass-fluency text verified through the edge, hardlight-bridge 404, pagefind-entry
 >    200, SigNoz **0 ERROR logs / 0 error traces** (8,124 spans). No image rebuild
 >    (zero code changes).
-> - **▶ NEXT: (1) deal `results/homebrew-fleet/DIGEST.md` as compact cards** — 159
->   decisions (T6 dropped/invented/substituted mechanics dominate; orchestrator items:
->   T10 monster-name scope — **Beholder is WotC Product Identity, real IP exposure** —
->   9 proposed alias pairs, 9 pre-existing prose-without-structure heightening gaps,
->   djura-s-righteous-pressure heightening-field mismatch); **(2) reseed scriptorium**
->   (`build_data.py`) so the reviewer resumes on post-fleet text; (3) Foundry compendium
->   module; (4) joint review (revisions.md @ 173). codex gate H unchanged; heartwood ⏸.
+> - **▶ NEXT: (1) deal the PREPPED REVIEW DECK `apps/assay/results/homebrew-fleet/
+>   CARDS.md`** — the 159 digest rows are pre-triaged (4 dossier partitions, every flag
+>   verified vs store/5e/ledgers): **36 SETTLED w/ citations · 38 → 4 policy cards ·
+>   17 FIX (batch-approvable) · ~50 real spell-cards**. Deal order: policy cards P1
+>   (alias table + **Beholder = WotC Product Identity IP exposure**) · P2 (tier
+>   bloat: collapse-arm + strike-arm) · P3 (condition mappings) · P4 (T6 defaults —
+>   formalizes the open D13-a doctrine; ratification shrinks Part B further) → then
+>   per-spell cards heaviest-first (compressive-weapon, djura-s-divine-razor,
+>   cone-of-silence, healing-draught, haunt, jolt, mental-balance, wall-of-time, tag,
+>   right-hand-of-judgment lead). **(2) reseed scriptorium** (`build_data.py`) so the
+>   reviewer resumes on post-fleet text; (3) Foundry compendium module; (4) joint
+>   review (revisions.md @ 173). codex gate H unchanged; heartwood ⏸.
 
 ---
 
