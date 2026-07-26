@@ -17,7 +17,7 @@
   "system": {
     "area": {
       "type": "burst",
-      "value": 5
+      "value": 10
     },
     "cost": {
       "value": ""
