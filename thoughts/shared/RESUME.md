@@ -36,7 +36,48 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `b8e0035`+docs, 2026-07-25 late — assay (0030) ROUND 5: **REVIEW PAUSED BY THE REVIEWER post-sweep (§13 under-delivered on judgment lanes) → all remediation LANDED: flag digest 10/10 dealt · his 28 new marginalia APPLIED · calibration loop COMPLETE, sweep-brief v3 = FLEET-READY at 96% blind recall**; alias feature scoped + R1/R2 resolved (variant D picked off the live mock artifact); revisions.md **168**, store 174, scriptorium reseeded; ▶ NEXT = **stakeholder go/no-go on the FLEET RE-SWEEP** (~141 spells, 8 lanes + T6-heavy verification lane, brief `apps/assay/results/sweep-brief-v3.md`, plan in triage §13b) → reviewer resumes AFTER it lands → fleet flag-digest cards → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+## Current state — UPDATE THIS SECTION (as of `9215d99`, 2026-07-26 early — assay (0030) ROUND 5: **THE FLEET RE-SWEEP RAN, GATED, AND DEPLOYED in one autonomous session** (stakeholder go → 8 sonnet lanes × 142 spells off brief v3 + 2-verifier T6-heavy pass → gates all green → codex redeployed live, corpus 44,981, SigNoz 0 ERROR); store text now fleet-swept, revisions.md **173**, store 174; **▶ NEXT = deal the fleet FLAG DIGEST as stakeholder cards** (`apps/assay/results/homebrew-fleet/DIGEST.md` — **159 decisions**, T6-dominated; incl. the Beholder-is-WotC-Product-Identity call + 9 alias pairs) → reseed scriptorium data.json + reviewer resumes → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+
+> **✅ assay (0030) R5 — fleet re-sweep, 2026-07-25 late → 07-26 early (`4e6d4e3`+marker
+> `7a276e6`, §13c record `9215d99`, all pushed + DEPLOYED):**
+> 1. **Run:** 8 engineer lanes × 142 spells (pool re-derived LIVE: reviewed.json froze
+>    **32** not the estimated 33) off `sweep-brief-v3.md`; 423 findings, policy edits
+>    applied in-partition, per-spell×rule ledgers in `results/homebrew-fleet/`. All 8
+>    lanes died once to a session usage limit at launch and resumed cleanly from
+>    transcripts (tree was clean — zero partial edits).
+> 2. **Verification:** 2 adversarial verifiers (blind to lane ledgers), 30-spell sample
+>    (14 clean-heavy + 16 spread), T6-weighted → 44 uncovered deltas → staff-judged
+>    personally → **14 applied** (sphere-of-preservation H8/H10 → `(+2) radius doubles`
+>    w/ fixed→interval lockstep; oblivion body gained its basic Reflex save — structure
+>    already said reflex, the REVERSE-lockstep class; Sickened-recovery restatement
+>    deleted after corpus verification; shape-modify ×4 duration field "wild shape" →
+>    polymorph — T8 residue in a STRUCTURAL field), 31 → digest.
+> 3. **Gates:** structural flatten-diff clean (only description/heightening/duration
+>    changed across 103 files); score set-diff **zero verdict drift**; ONE routing flip
+>    (mass-fluency comparables→ledger — a T2 deletion removed a spuriously-promoted
+>    `@UUID` Hidden ref; documented lens artifact, honest); revisions 168→**173**;
+>    his 32 reviewed spells byte-untouched (frozen regression set held).
+> 4. **⚠ The linguist-commit timer struck the add→commit window AGAIN** and had already
+>    pushed → `4e6d4e3` is the fleet sweep under a mislabeled chore(linguist) message;
+>    marker `7a276e6` carries the real provenance (never force-push). Timer was stopped
+>    for the session — **RESTARTED at session end (verify `is-active` on load)**.
+> 5. **Deploy (store-text-only, LIVE):** in-place transform (no snapshot re-fetch) →
+>    corpus **44,981** (−1 = hardlight-bridge, removed post-ingest, now propagated) →
+>    Pagefind reindex 44,981/33 s → codex container restart; live gates: sphere/oblivion
+>    /mass-fluency text verified through the edge, hardlight-bridge 404, pagefind-entry
+>    200, SigNoz **0 ERROR logs / 0 error traces** (8,124 spans). No image rebuild
+>    (zero code changes).
+> - **▶ NEXT: (1) deal `results/homebrew-fleet/DIGEST.md` as compact cards** — 159
+>   decisions (T6 dropped/invented/substituted mechanics dominate; orchestrator items:
+>   T10 monster-name scope — **Beholder is WotC Product Identity, real IP exposure** —
+>   9 proposed alias pairs, 9 pre-existing prose-without-structure heightening gaps,
+>   djura-s-righteous-pressure heightening-field mismatch); **(2) reseed scriptorium**
+>   (`build_data.py`) so the reviewer resumes on post-fleet text; (3) Foundry compendium
+>   module; (4) joint review (revisions.md @ 173). codex gate H unchanged; heartwood ⏸.
+
+---
+
+### Previous section (2026-07-25 late) — review-pause remediation (superseded above)
 
 > **✅ assay (0030) R5 — flag digest + review-pause remediation + calibration, 2026-07-25 late (`30082ac`…`b8e0035`, all pushed):**
 > 1. **Flag digest 10/10 dealt** (compact-card process): 5 defect fixes `30082ac`

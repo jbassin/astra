@@ -412,7 +412,49 @@ misses. ⭐ **CSS: an animation owns its properties and BEATS a :hover transitio
 picked variant **D "Veiled Iridescence"** off the live mock (R1/R2 RESOLVED; mock
 committed as D3 reference impl `…/2026-07-25-memetic-alias-mock.html`); registry-
 over-inline so Foundry ships zero true names; search indexes alias only (by design).
-**▶ OPEN: stakeholder go on the FLEET RE-SWEEP** (~141 spells, 8 lanes off brief v3 —
-5e original + store ONLY, no intermediate — + T6-heavy verifier lane, flags → digest
-cards); reviewer resumes ONLY after it lands (reseed data.json again); then Foundry
-module → joint review (revisions.md @ 168).
+**▶ (was) OPEN: stakeholder go on the FLEET RE-SWEEP** — GRANTED + RUN, next block.
+
+**THE FLEET RE-SWEEP (2026-07-25 late → 07-26, `4e6d4e3`+marker `7a276e6`+`9215d99`) —
+RUN + GATED + DEPLOYED in one autonomous session.** 8 sonnet lanes × 142 spells off
+brief v3 (pool re-derived LIVE: reviewed.json = **32** frozen, not the doc's ~33/33 —
+always read the state file), 423 findings, policy edits in-partition; 2 blind T6-heavy
+verifiers over 30 spells (14 clean-heavy by fewest-applied-edits + 16 alphabet spread)
+→ token-overlap join → 44 deltas → staff-judged (⅓-FP rule) → 14 applied / 31 digest.
+Gates: flatten-diff clean · score set-diff ZERO verdict drift · revisions 168→173.
+DIGEST = `results/homebrew-fleet/DIGEST.md`, **159 decisions**. ⭐ THE finds:
+- **The whole 8-lane fleet died at launch to a SESSION USAGE LIMIT** (resets hourly-ish;
+  10:50pm that night) — all resumed cleanly via SendMessage post-reset (the standing
+  session-limit-resume pattern scales to 8 agents); tree was clean at death, so check
+  `git status` before assuming partial edits.
+- **The linguist-commit timer struck the add→commit window AGAIN and had PUSHED** —
+  `4e6d4e3` is the fleet sweep wearing a chore(linguist) label; pushed ⇒ no reset,
+  provenance marker commit instead (`7a276e6`). `systemctl --user stop
+  linguist-commit.timer` BEFORE any multi-commit window, restart after.
+- **Reverse-lockstep class (new):** oblivion's structured defense said basic-Reflex but
+  the BODY never stated the save — body catches up to structure, the mirror image of
+  the prose→structure lockstep bug. Also T8 residue hides in STRUCTURAL fields
+  (shape-modify ×4 `duration.value` said "until your wild shape ends") — body-only
+  sweeps can't see it; flatten-diff the structure too.
+- **Non-damage (+N) heightening encodes as `{"damage": {}, "interval": N,
+  "type": "interval"}`** (pendulum/taboo precedent; glimmerdust adds `area: <flat-bump>`
+  — a DOUBLING can't use `area`, prose carries it).
+- **Flag-quote staleness is expected:** overlapping applied edits clip flagged spans
+  (9 rows) — concerns stay live; re-quote from current text when dealing cards. And
+  verifier "top misses" heavily re-found lane FLAGS (convergence signal) — always join
+  ledgers before counting misses.
+- **Routing flips from text deletion are real:** mass-fluency comparables→ledger when a
+  T2 delete removed a spuriously-promoted `@UUID` Hidden ref (false condition
+  promotion) — honest improvement, record don't revert.
+- **oxfmt formats `results/**` JSON** (only `homebrew/**` + `vendor/**` are ignored) —
+  generated ledgers need a `pnpm run format` before commit.
+- Deploy for store-TEXT-only changes = in-place transform (no snapshot re-fetch) +
+  `just codex-search-index` + `docker compose restart codex` — NO image rebuild;
+  corpus −1 vs ingest = hardlight-bridge's post-ingest removal propagating (per-category
+  `ls` counts include `_index.json`, +1 each vs report).
+- Digest cross-cutting items for the cards: T10 monster-name scope (**Beholder = WotC
+  Product Identity — IP exposure on a published page**, lanes read T10 as
+  planes/locations only); 9 alias pairs proposed; 9 spells carry heightening prose w/o
+  structural fields (pre-existing); djura-s-righteous-pressure heightening damage field
+  mismatch.
+**▶ OPEN:** deal DIGEST.md as compact cards → reseed scriptorium (`build_data.py`) →
+reviewer resumes on post-fleet text → Foundry module → joint review (revisions @ 173).
