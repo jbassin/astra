@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of wildshaping to sharpen one of your senses into the acuity of a great beast. Choose one of the following sense modifications: you develop low-light vision, gain a +2 circumstance bonus to Perception checks that rely on hearing, or gain a +2 circumstance bonus to Survival checks to Track by scent. The chosen modification persists for the duration.</p><hr /><p><strong>Heightened (2nd)</strong> Choose two sense modifications instead of one.</p><p><strong>Heightened (3rd)</strong> Gain all three sense modifications. The Perception bonus (hearing) and Survival bonus (scent) each increase to +3.</p>"
+      "value": "<p>You draw upon the collective's memory of wildshaping to sharpen one of your senses into the acuity of a great beast. Choose one of the following sense modifications: you develop low-light vision, gain a +2 circumstance bonus to Perception checks that rely on hearing, or gain a +2 circumstance bonus to Survival checks to Track by scent. The chosen modification persists for the duration.</p><hr /><p><strong>Heightened (2nd)</strong> Choose two sense modifications instead of one.</p><p><strong>Heightened (3rd)</strong> Gain all three sense modifications. The Perception bonus and Survival bonus each increase to +3.</p>"
     },
     "duration": {
       "sustained": false,

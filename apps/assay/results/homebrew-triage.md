@@ -571,6 +571,40 @@ grants 24h immunity that Critical Success omits (design question).
   mystic-negation's "The sphere does not move on its own." preamble (its action-move
   grant carries the mechanic; official Floating Flame has no such line) — trimmed.
 
+## 13b. Post-sweep review pause + remediation (2026-07-25 late)
+
+**The reviewer resumed post-sweep (B–C range, 12 spells, 28 marginalia in ~30 min) and
+PAUSED — the §13 sweep under-delivered on the judgment lanes (R2 defensive sentences,
+D13-a flavor restoration) because its gates only measured greppable patterns.** Process
+diagnosis + redesign agreed with the stakeholder: marginalia are now labeled ground
+truth; sweeps get a held-out CALIBRATION GATE (engineer vs his actual strikes on the 12,
+gold-set style), per-spell full reads (5e original + store — intermediate dropped from
+briefs to save context), per-spell×class structured ledgers (clean/edited/flagged), and
+an adversarial verification lane, before any fleet touches the unreached ~150.
+
+**All 28 marginalia APPLIED + tombstoned; pre-application text of the 12 snapshotted for
+calibration.** Highlights: bodydouble −7 defensive/over-specified spans · hide tiers →
+`Heightened (+2) +5 temp HP` (Diamond Dust pattern) · mind/celestial-preservation/
+checkpoint-H10 heightening struck (structural fields dropped in lockstep) ·
+cerebral-disruption got its 6-row named curse-effect TABLE back + one-sentence
+removal text · charming-memory opening restored from the 5e original (D13-a) ·
+carnage RE-ADAPTED from the stakeholder-pasted 5e original (4-stage escalating
+Sustain assault, 6d12/8d12; verdict −2.98→−2.46 COLD = per-cast lens artifact) ·
+bubble-bubble 10-foot ×2, (+1)→(+2), Feywild→"land of fae".
+
+**NEW CONVENTIONS (from tonight's marginalia):**
+- `<hr>` sits ONLY between body and Heightened — never before the degree-of-success
+  list (audit found + fixed 4 more: BE-horns, hellforging, overhaul, worldweaver).
+- NO references to specific official spells/feats inside spell bodies (Massacre, Heal,
+  Sound Body, Cleanse Affliction all excised); state the mechanic plainly.
+- No over-explanation/pre-litigation (extends R2's reach; "of course a curse can only
+  be removed through effects that target curses").
+- Complex rolled effects get a named-entry TABLE in the body; degree text refers to it.
+- **⏸ PARKED — the `<name|alias>` memetic-obfuscation feature:** in-universe proper
+  nouns (first: `<Feywild|land of fae>`) display the alias; codex should render a
+  dreamlike hover/click reveal of the true name; Foundry shows only the alias. Store
+  text carries aliases now; codex feature needs its own scope doc.
+
 **Provenance:** the stakeholder's scriptorium prose review (21/174 spells reviewed,
 acupuncture → body-enhancement-horns; 67 live marginalia in
 `review-ui/state/comments.jsonl`). The annotations cluster into a small set of classes —

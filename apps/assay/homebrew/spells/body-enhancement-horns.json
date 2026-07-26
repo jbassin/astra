@@ -34,7 +34,7 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of wildshaping to partially modify your body, growing a set of heavy curved horns and rushing at your target. Make a melee spell attack roll against a creature within your reach, dealing 3d12 bludgeoning damage on a hit. If you Strode at least 20 feet in a straight line toward the target this turn, a hit also inflicts one of the following effects of your choice: the target is pushed 10 feet away from you, the target is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}, or the target takes an additional 1d12 bludgeoning damage.</p>\n<hr />\n<p><strong>Critical Success</strong> The target takes double damage.</p>\n<p><strong>Success</strong> The target takes full damage.</p>\n<hr />\n<p><strong>Heightened (+1)</strong> The damage increases by 1d12.</p>"
+      "value": "<p>You draw upon the collective's memory of wildshaping to partially modify your body, growing a set of heavy curved horns and rushing at your target. Make a melee spell attack roll against a creature within your reach, dealing 3d12 bludgeoning damage on a hit. If you Strode at least 20 feet in a straight line toward the target this turn, a hit also inflicts one of the following effects of your choice: the target is pushed 10 feet away from you, the target is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}, or the target takes an additional 1d12 bludgeoning damage.</p>\n<p><strong>Critical Success</strong> The target takes double damage.</p>\n<p><strong>Success</strong> The target takes full damage.</p>\n<hr />\n<p><strong>Heightened (+1)</strong> The damage increases by 1d12.</p>"
     },
     "duration": {
       "sustained": false,

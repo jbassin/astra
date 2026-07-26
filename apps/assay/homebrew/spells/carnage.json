@@ -22,17 +22,7 @@
       "0": {
         "applyMod": false,
         "category": null,
-        "formula": "6d6",
-        "kinds": [
-          "damage"
-        ],
-        "materials": [],
-        "type": "force"
-      },
-      "1": {
-        "applyMod": false,
-        "category": null,
-        "formula": "4d6",
+        "formula": "6d12",
         "kinds": [
           "damage"
         ],
@@ -47,7 +37,7 @@
       }
     },
     "description": {
-      "value": "<p>You tear open the fabric of space and fling yourself across the battlefield in a single brutal arc, bringing your weapon to bear against everything in reach. When you Cast this Spell, you immediately teleport up to 120 feet to an unoccupied space you can see, then make a single melee Strike against every creature adjacent to you in your new location, rolling once and applying the result to all of them. These Strikes count as a single attack for your multiple attack penalty, which increases only after all of them resolve. Each creature struck also takes 6d6 force damage from the spatial rupture with a basic Fortitude save; your weapon Strike resolves normally regardless of the save's outcome.</p><p>When you Sustain this Spell, you teleport up to 60 feet to an unoccupied space you can see, then make a single melee Strike against every creature adjacent to you, rolling once and applying the result to all of them; these Strikes likewise count as a single attack for your multiple attack penalty. Each creature struck also takes 4d6 force damage with a basic Fortitude save.</p><p><strong>Critical Success</strong> The creature takes no force damage from the spatial rupture.</p><p><strong>Success</strong> The creature takes half force damage.</p><p><strong>Failure</strong> The creature takes full force damage.</p><p><strong>Critical Failure</strong> The creature takes double force damage and is @UUID[Compendium.pf2e.conditionitems.Item.Stunned]{Stunned 1}.</p>"
+      "value": "<p>You tear open the fabric of space and fling yourself across the battlefield. When you Cast this Spell, you teleport up to 120 feet to an unoccupied space you can see, then make a melee Strike against each creature within your reach. Roll one attack roll and apply it to every target; these Strikes count as a single attack for your multiple attack penalty. A creature you hit takes an additional 6d12 force damage.</p><p>On your subsequent turns, you can Sustain the spell to continue your deadly assault. Each time you Sustain it, the assault has a different effect:</p><p><strong>Second Sustain</strong> You teleport up to 60 feet, then make a melee Strike against each creature in a 20-foot cone, rolling once and applying the result to all of them. Each creature you hit is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone} and takes an additional 6d12 force damage.</p><p><strong>Third Sustain</strong> You teleport up to 30 feet, then make a melee Strike against one creature within your reach. If the target is above half its maximum Hit Points, the Strike deals an additional 6d12 force damage. If you hit, the target is @UUID[Compendium.pf2e.conditionitems.Item.Paralyzed]{Paralyzed} until the end of your next turn.</p><p><strong>Fourth Sustain</strong> You teleport up to 60 feet into the air and descend, smashing into the ground at a point you can see within 120 feet of where you started. You take no falling damage. Each creature within 30 feet of you must attempt a basic Fortitude save against 6d12 force damage. You then make a melee Strike against one creature within your reach; if you hit, the target takes an additional 8d12 force damage.</p>"
     },
     "duration": {
       "sustained": true,

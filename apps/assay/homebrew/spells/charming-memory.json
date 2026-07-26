@@ -23,7 +23,7 @@
     "damage": {},
     "defense": null,
     "description": {
-      "value": "<p>You plant a shimmering aura of warm false memory around yourself, seeding the ambient mental impressions of nearby creatures with pleasant recollections of you that feel genuine. For the duration, you gain a +1 status bonus to Deception, Diplomacy, and Performance checks. This spell has no effect in combat.</p><hr /><p><strong>Heightened (4th)</strong> The status bonus increases to +2.</p><p><strong>Heightened (7th)</strong> The status bonus increases to +3 and also applies to Intimidation checks.</p>"
+      "value": "<p>You plant temporary, false, pleasant memories of yourself in the minds of nearby creatures, endearing yourself to them. For the duration, you gain a +1 status bonus to Deception, Diplomacy, and Performance checks. This spell has no effect in combat.</p><hr /><p><strong>Heightened (4th)</strong> The status bonus increases to +2.</p><p><strong>Heightened (7th)</strong> The status bonus increases to +3 and also applies to Intimidation checks.</p>"
     },
     "duration": {
       "sustained": false,

@@ -34,7 +34,7 @@
     },
     "defense": null,
     "description": {
-      "value": "<p>You draw upon the collective's memory of wildshaping to partially modify your body, transforming your mouth into the jaws of a beast. Make a melee spell attack roll against a creature within your reach, dealing 3d6 piercing damage on a hit.</p>\n<hr />\n<p><strong>Critical Success</strong> The target takes double damage and is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p>\n<p><strong>Success</strong> The target takes full damage.</p>\n<hr />\n<p><strong>Heightened (+1)</strong> The damage increases by 1d6.</p>"
+      "value": "<p>You draw upon the collective's memory of wildshaping to partially modify your body, transforming your mouth into the jaws of a beast. Make a melee spell attack roll against a creature within your reach, dealing 3d6 piercing damage on a hit.</p>\n<p><strong>Critical Success</strong> The target takes double damage and is knocked @UUID[Compendium.pf2e.conditionitems.Item.Prone]{Prone}.</p>\n<p><strong>Success</strong> The target takes full damage.</p>\n<hr />\n<p><strong>Heightened (+1)</strong> The damage increases by 1d6.</p>"
     },
     "duration": {
       "sustained": false,
