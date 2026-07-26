@@ -81,8 +81,8 @@ past both ends over a parchment wash (background + soft box-shadow in the page c
 so it stays legible over neighbors. Click/Enter/Space = pinned reveal (gold underline),
 pins reset per load. Client side is a small delegated handler (P13 listener pattern).
 `prefers-reduced-motion`: static gradient position + the blur stays as the tell.
-Reference implementation: the mock artifact (`scratchpad/alias-mocks.html`, variant D
-`.v-veiled` + the shared `.alias` skeleton — port, don't rewrite).
+Reference implementation: `thoughts/shared/research/2026-07-25-memetic-alias-mock.html`
+(variant D `.v-veiled` + the shared `.alias` skeleton — port, don't rewrite).
 
 **D4 — Accessibility:** the span is focusable (`tabindex=0`, `role="button"`,
 `aria-label "obfuscated name, activate to reveal"`); keyboard reveal on Enter/Space;

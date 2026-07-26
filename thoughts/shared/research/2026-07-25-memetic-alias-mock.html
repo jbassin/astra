@@ -1,0 +1,382 @@
+<title>Memetic Alias — Treatment Mocks</title>
+<style>
+  :root {
+    --page: #eee7d8;
+    --page-alt: #e9e1ce;
+    --ink: #231f1a;
+    --ink-dim: #4a4238;
+    --ink-faint: #8a7c63;
+    --maroon: #7a2e2c;
+    --maroon-dark: #5e211f;
+    --gold: #b99b5d;
+    --gold-frame: #c2a46d;
+    --panel: #e7d6b3;
+    --pill-bg: #4e3a26;
+    --pill-border: #b99b5d;
+    --pill-text: #f3e9d2;
+    --veil-a1: #6d5aa8;
+    --veil-a2: #2e7d8a;
+    --veil-a3: #a85c8a;
+    --serif: "EB Garamond", "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+    --cond: Oswald, "Arial Narrow", "Avenir Next Condensed", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --page: #1a1510; --page-alt: #211b14; --ink: #e6dcc6; --ink-dim: #bfb298;
+      --ink-faint: #857a63; --maroon: #c96a5e; --maroon-dark: #e08a7a;
+      --gold: #c9a96b; --gold-frame: #8c7038; --panel: #26201736;
+      --veil-a1: #a795e8; --veil-a2: #6cc3d5; --veil-a3: #d98cb8;
+    }
+  }
+  :root[data-theme="light"] {
+    --page: #eee7d8; --page-alt: #e9e1ce; --ink: #231f1a; --ink-dim: #4a4238;
+    --ink-faint: #8a7c63; --maroon: #7a2e2c; --maroon-dark: #5e211f;
+    --gold: #b99b5d; --gold-frame: #c2a46d; --panel: #e7d6b3;
+    --veil-a1: #6d5aa8; --veil-a2: #2e7d8a; --veil-a3: #a85c8a;
+  }
+  :root[data-theme="dark"] {
+    --page: #1a1510; --page-alt: #211b14; --ink: #e6dcc6; --ink-dim: #bfb298;
+    --ink-faint: #857a63; --maroon: #c96a5e; --maroon-dark: #e08a7a;
+    --gold: #c9a96b; --gold-frame: #8c7038; --panel: #26201736;
+    --veil-a1: #a795e8; --veil-a2: #6cc3d5; --veil-a3: #d98cb8;
+  }
+
+  html { background: var(--page); }
+  body {
+    margin: 0;
+    font-family: var(--serif);
+    color: var(--ink);
+    background:
+      radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 8%) 100%) fixed,
+      linear-gradient(var(--page), var(--page-alt)) fixed;
+    line-height: 1.5;
+    font-size: 17px;
+  }
+  main { max-width: 46rem; margin: 0 auto; padding: 2.5rem 1.25rem 5rem; }
+
+  .eyebrow {
+    font-family: var(--cond); text-transform: uppercase; letter-spacing: 0.14em;
+    font-size: 0.72rem; color: var(--ink-faint);
+  }
+  h1 {
+    font-variant: small-caps; font-weight: 600; letter-spacing: 0.02em;
+    font-size: 2rem; margin: 0.2rem 0 0.4rem; color: var(--maroon); text-wrap: balance;
+  }
+  .lede { color: var(--ink-dim); max-width: 62ch; margin: 0 0 2rem; }
+  .lede em { color: var(--ink); }
+
+  section.variant { margin-bottom: 3rem; }
+  .variant-head { display: flex; align-items: baseline; gap: 0.7rem; margin-bottom: 0.35rem; }
+  .variant-tag {
+    font-family: var(--cond); font-size: 0.72rem; letter-spacing: 0.12em;
+    color: var(--pill-text); background: var(--pill-bg); border: 1px solid var(--pill-border);
+    padding: 0.15rem 0.5rem; border-radius: 2px; text-transform: uppercase;
+  }
+  .variant-head h2 {
+    font-variant: small-caps; font-weight: 600; font-size: 1.25rem; margin: 0; color: var(--ink);
+  }
+  .variant-note { color: var(--ink-dim); font-size: 0.92rem; margin: 0 0 0.9rem; max-width: 62ch; }
+
+  .card {
+    border: 1px solid var(--gold-frame);
+    border-top: 3px solid var(--maroon);
+    background: color-mix(in srgb, var(--page) 65%, var(--panel));
+    padding: 1.1rem 1.35rem 1.25rem;
+    border-radius: 2px;
+  }
+  .card-title { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; }
+  .card-title h3 { font-variant: small-caps; font-weight: 700; font-size: 1.3rem; margin: 0; color: var(--maroon); }
+  .card-title .ranklab { font-family: var(--cond); text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.85rem; color: var(--ink-dim); }
+  .pills { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.45rem 0 0.7rem; }
+  .pill {
+    font-family: var(--cond); font-size: 0.66rem; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--pill-text); background: var(--pill-bg); border: 1px solid var(--pill-border);
+    padding: 0.12rem 0.45rem; border-radius: 2px;
+  }
+  .statline { font-size: 0.95rem; margin: 0.15rem 0; }
+  .statline b { font-variant: small-caps; font-weight: 700; }
+  .card hr { border: 0; border-top: 1px solid rgb(185 155 93 / 40%); margin: 0.8rem 0; }
+  .card p { margin: 0.45rem 0; }
+  .degree b { font-variant: small-caps; }
+
+  .length-test {
+    border: 1px dashed var(--gold-frame);
+    border-radius: 2px;
+    padding: 0.55rem 0.9rem;
+    margin-top: 0.6rem;
+    font-size: 0.95rem;
+  }
+  .length-test .lt-tag {
+    font-family: var(--cond); font-size: 0.62rem; text-transform: uppercase;
+    letter-spacing: 0.12em; color: var(--ink-faint); display: block; margin-bottom: 0.15rem;
+  }
+
+  /* ---------- the alias element ---------- */
+  /* The button's inline footprint is ALWAYS the alias's own width — revealing
+     never reflows the line. The true name overlays centered on the alias's
+     midpoint; when longer, it extends past both ends over a parchment wash. */
+  .alias {
+    all: unset;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    vertical-align: baseline;
+    white-space: nowrap;
+  }
+  .alias .veil { transition: opacity 0.16s ease; display: inline-block; }
+  .alias .true-name {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    opacity: 0;
+    color: var(--maroon);
+    font-weight: 600;
+    pointer-events: none;
+    padding: 0 0.28em;
+    background: color-mix(in srgb, var(--page) 94%, var(--maroon));
+    box-shadow: 0 0 0.45em 0.2em color-mix(in srgb, var(--page) 94%, var(--maroon));
+    border-radius: 2px;
+    transition: opacity 0.16s ease;
+    z-index: 2;
+  }
+  .alias:hover, .alias:focus-visible, .alias.pinned { z-index: 3; }
+  .alias:hover .true-name, .alias:focus-visible .true-name, .alias.pinned .true-name { opacity: 1; }
+  .alias:hover .veil, .alias:focus-visible .veil, .alias.pinned .veil {
+    opacity: 0;
+    animation: none; /* animations own their properties — kill them or the hover never fully reveals */
+  }
+  .alias.pinned .true-name { text-decoration: underline; text-decoration-color: var(--gold); text-underline-offset: 3px; }
+  .alias:focus-visible { outline: 2px solid var(--gold-frame); outline-offset: 2px; }
+
+  /* A — iridescent shimmer */
+  .v-shimmer .veil {
+    background: linear-gradient(100deg,
+      var(--ink) 20%, var(--veil-a1) 38%, var(--veil-a2) 50%, var(--veil-a3) 62%, var(--ink) 80%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shimmer 5.5s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { background-position: 100% 0; }
+    50% { background-position: 0 0; }
+  }
+
+  /* B — dream haze */
+  .v-haze .veil {
+    filter: blur(0.6px);
+    animation: breathe 4.5s ease-in-out infinite;
+    color: var(--ink-dim);
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.62; filter: blur(0.8px); }
+    50% { opacity: 0.95; filter: blur(0.25px); }
+  }
+
+  /* C — unsettled ink */
+  .v-ink .veil {
+    color: var(--ink);
+    text-shadow: 0 0 0.9px color-mix(in srgb, var(--maroon) 55%, transparent);
+    animation: waver 3.8s ease-in-out infinite;
+  }
+  @keyframes waver {
+    0%, 100% { transform: translateY(0) skewX(0deg); text-shadow: 0 0 0.9px color-mix(in srgb, var(--maroon) 55%, transparent); }
+    30% { transform: translateY(-0.5px) skewX(-1.2deg); text-shadow: 0.5px 0 1.3px color-mix(in srgb, var(--maroon) 70%, transparent); }
+    65% { transform: translateY(0.4px) skewX(0.8deg); text-shadow: -0.5px 0 1.1px color-mix(in srgb, var(--gold) 80%, transparent); }
+  }
+  .v-ink .alias:hover .true-name, .v-ink .alias:focus-visible .true-name {
+    animation: flicker-in 0.28s steps(3, end);
+  }
+  @keyframes flicker-in { 0% { opacity: 0.2; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+
+  /* D — veiled iridescence: A's shimmer through B's haze, held still (no breathing);
+     hover snaps to a full, crisp reveal. */
+  .v-veiled .veil {
+    background: linear-gradient(100deg,
+      var(--ink) 20%, var(--veil-a1) 38%, var(--veil-a2) 50%, var(--veil-a3) 62%, var(--ink) 80%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: blur(0.55px);
+    animation: shimmer 5.5s ease-in-out infinite;
+  }
+  .v-veiled .alias:hover .veil, .v-veiled .alias:focus-visible .veil, .v-veiled .alias.pinned .veil {
+    opacity: 0; filter: none; animation: none; transition: opacity 0.1s ease;
+  }
+  .v-veiled .alias:hover .true-name, .v-veiled .alias:focus-visible .true-name, .v-veiled .alias.pinned .true-name {
+    transition: opacity 0.1s ease;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .veil, .true-name { animation: none !important; transition: none !important; }
+    .v-shimmer .veil, .v-veiled .veil { background-position: 50% 0; }
+    .v-haze .veil { opacity: 0.75; filter: blur(0.4px); }
+  }
+
+  .contract {
+    border-top: 1px solid rgb(185 155 93 / 40%);
+    padding-top: 1.25rem;
+    color: var(--ink-dim);
+    font-size: 0.92rem;
+    max-width: 62ch;
+  }
+  .contract h2 { font-variant: small-caps; font-size: 1.1rem; margin: 0 0 0.5rem; color: var(--ink); }
+  .contract ul { padding-left: 1.2rem; margin: 0.4rem 0; }
+  .contract li { margin: 0.25rem 0; }
+  .kbd {
+    font-family: var(--cond); font-size: 0.72rem; border: 1px solid var(--gold-frame);
+    border-radius: 2px; padding: 0 0.3rem; background: var(--panel); color: var(--ink);
+  }
+</style>
+
+<main>
+  <p class="eyebrow">codex · homebrew · design decision R1</p>
+  <h1>The Memetic Veil — four treatments</h1>
+  <p class="lede">Each obfuscated name shows its <em>alias</em> under a dreamlike effect;
+  hovering (or focusing) reveals the true name <em>centered on the alias's footprint</em> —
+  the line never reflows, and a longer name extends past both ends of the alias over a
+  parchment wash. Clicking pins the reveal. The spell card's real pair is
+  <em>“land of fae”</em> ⇢ <em>Feywild</em>; each variant also carries a length test with a
+  deliberately longer sample name, <em>“the wood”</em> ⇢ <em>Neverwinter Wood</em>.</p>
+
+  <section class="variant v-shimmer">
+    <div class="variant-head"><span class="variant-tag">A</span><h2>Iridescent Shimmer</h2></div>
+    <p class="variant-note">Ordinary ink that light keeps catching wrong — a slow
+    iridescent sweep, like oil on water.</p>
+    <article class="card">
+      <div class="card-title"><h3>Bubble Bubble</h3><span class="ranklab">Spell 4</span></div>
+      <div class="pills"><span class="pill">Concentrate</span><span class="pill">Manipulate</span><span class="pill">Planara</span></div>
+      <p class="statline"><b>Traditions</b> arcane, occult, primal</p>
+      <p class="statline"><b>Cast</b> two actions · <b>Range</b> 120 feet · <b>Area</b> 10-foot burst</p>
+      <p class="statline"><b>Defense</b> Reflex · <b>Duration</b> varies (see below)</p>
+      <hr>
+      <p>You summon a bubble from the
+        <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">land of fae</span><span class="true-name">Feywild</span></button>
+        that floats rapidly toward a point within range and detonates. All creatures
+        within 10 feet of the point of impact must attempt a Reflex save. Creatures hit
+        are covered with viscous fey goop.</p>
+      <p class="degree"><b>Success</b> The creature is unaffected.</p>
+      <p class="degree"><b>Failure</b> The creature is covered in bubble goop until it scrapes it off as described above.</p>
+      <p class="degree"><b>Critical Failure</b> As failure, and the penalty worsens to Clumsy 2.</p>
+      <hr>
+      <p><b>Heightened (+2)</b> You can create one additional bubble, targeting a different 10-foot burst within range.</p>
+    </article>
+    <div class="length-test"><span class="lt-tag">Length test — name longer than alias</span>
+      The exiles fled beyond
+      <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">the wood</span><span class="true-name">Neverwinter Wood</span></button>
+      before the gates closed, and no map they carried survived the crossing.</div>
+  </section>
+
+  <section class="variant v-haze">
+    <div class="variant-head"><span class="variant-tag">B</span><h2>Dream Haze</h2></div>
+    <p class="variant-note">The alias never quite comes into focus — softly blurred,
+    breathing between faint and almost-legible.</p>
+    <article class="card">
+      <div class="card-title"><h3>Bubble Bubble</h3><span class="ranklab">Spell 4</span></div>
+      <div class="pills"><span class="pill">Concentrate</span><span class="pill">Manipulate</span><span class="pill">Planara</span></div>
+      <p class="statline"><b>Traditions</b> arcane, occult, primal</p>
+      <p class="statline"><b>Cast</b> two actions · <b>Range</b> 120 feet · <b>Area</b> 10-foot burst</p>
+      <p class="statline"><b>Defense</b> Reflex · <b>Duration</b> varies (see below)</p>
+      <hr>
+      <p>You summon a bubble from the
+        <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">land of fae</span><span class="true-name">Feywild</span></button>
+        that floats rapidly toward a point within range and detonates. All creatures
+        within 10 feet of the point of impact must attempt a Reflex save. Creatures hit
+        are covered with viscous fey goop.</p>
+      <p class="degree"><b>Success</b> The creature is unaffected.</p>
+      <p class="degree"><b>Failure</b> The creature is covered in bubble goop until it scrapes it off as described above.</p>
+      <p class="degree"><b>Critical Failure</b> As failure, and the penalty worsens to Clumsy 2.</p>
+      <hr>
+      <p><b>Heightened (+2)</b> You can create one additional bubble, targeting a different 10-foot burst within range.</p>
+    </article>
+    <div class="length-test"><span class="lt-tag">Length test — name longer than alias</span>
+      The exiles fled beyond
+      <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">the wood</span><span class="true-name">Neverwinter Wood</span></button>
+      before the gates closed, and no map they carried survived the crossing.</div>
+  </section>
+
+  <section class="variant v-ink">
+    <div class="variant-head"><span class="variant-tag">C</span><h2>Unsettled Ink</h2></div>
+    <p class="variant-note">The ink never settled — a minute waver with maroon-and-gold
+    bleed; the ward flickers before the true name steadies.</p>
+    <article class="card">
+      <div class="card-title"><h3>Bubble Bubble</h3><span class="ranklab">Spell 4</span></div>
+      <div class="pills"><span class="pill">Concentrate</span><span class="pill">Manipulate</span><span class="pill">Planara</span></div>
+      <p class="statline"><b>Traditions</b> arcane, occult, primal</p>
+      <p class="statline"><b>Cast</b> two actions · <b>Range</b> 120 feet · <b>Area</b> 10-foot burst</p>
+      <p class="statline"><b>Defense</b> Reflex · <b>Duration</b> varies (see below)</p>
+      <hr>
+      <p>You summon a bubble from the
+        <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">land of fae</span><span class="true-name">Feywild</span></button>
+        that floats rapidly toward a point within range and detonates. All creatures
+        within 10 feet of the point of impact must attempt a Reflex save. Creatures hit
+        are covered with viscous fey goop.</p>
+      <p class="degree"><b>Success</b> The creature is unaffected.</p>
+      <p class="degree"><b>Failure</b> The creature is covered in bubble goop until it scrapes it off as described above.</p>
+      <p class="degree"><b>Critical Failure</b> As failure, and the penalty worsens to Clumsy 2.</p>
+      <hr>
+      <p><b>Heightened (+2)</b> You can create one additional bubble, targeting a different 10-foot burst within range.</p>
+    </article>
+    <div class="length-test"><span class="lt-tag">Length test — name longer than alias</span>
+      The exiles fled beyond
+      <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">the wood</span><span class="true-name">Neverwinter Wood</span></button>
+      before the gates closed, and no map they carried survived the crossing.</div>
+  </section>
+
+  <section class="variant v-veiled">
+    <div class="variant-head"><span class="variant-tag">D</span><h2>Veiled Iridescence</h2></div>
+    <p class="variant-note">The requested composite: B's soft blur held perfectly still —
+    no breathing — with A's iridescent sweep moving through it. Hovering drops the veil
+    entirely in one crisp step: full reveal, no half-fade.</p>
+    <article class="card">
+      <div class="card-title"><h3>Bubble Bubble</h3><span class="ranklab">Spell 4</span></div>
+      <div class="pills"><span class="pill">Concentrate</span><span class="pill">Manipulate</span><span class="pill">Planara</span></div>
+      <p class="statline"><b>Traditions</b> arcane, occult, primal</p>
+      <p class="statline"><b>Cast</b> two actions · <b>Range</b> 120 feet · <b>Area</b> 10-foot burst</p>
+      <p class="statline"><b>Defense</b> Reflex · <b>Duration</b> varies (see below)</p>
+      <hr>
+      <p>You summon a bubble from the
+        <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">land of fae</span><span class="true-name">Feywild</span></button>
+        that floats rapidly toward a point within range and detonates. All creatures
+        within 10 feet of the point of impact must attempt a Reflex save. Creatures hit
+        are covered with viscous fey goop.</p>
+      <p class="degree"><b>Success</b> The creature is unaffected.</p>
+      <p class="degree"><b>Failure</b> The creature is covered in bubble goop until it scrapes it off as described above.</p>
+      <p class="degree"><b>Critical Failure</b> As failure, and the penalty worsens to Clumsy 2.</p>
+      <hr>
+      <p><b>Heightened (+2)</b> You can create one additional bubble, targeting a different 10-foot burst within range.</p>
+    </article>
+    <div class="length-test"><span class="lt-tag">Length test — name longer than alias</span>
+      The exiles fled beyond
+      <button class="alias" aria-pressed="false" aria-label="obfuscated name, activate to reveal"><span class="veil">the wood</span><span class="true-name">Neverwinter Wood</span></button>
+      before the gates closed, and no map they carried survived the crossing.</div>
+  </section>
+
+  <div class="contract">
+    <h2>Interaction contract (all variants)</h2>
+    <ul>
+      <li><b>Hover / focus</b> — full reveal of the true name, centered on the alias's
+        midpoint. The line never reflows; a longer name extends symmetrically past both
+        ends of the alias, floating over a parchment wash so it stays legible.</li>
+      <li><b>Click, <span class="kbd">Enter</span>, or <span class="kbd">Space</span></b> — pins the reveal (gold underline); click again to re-veil. Pins reset on page load.</li>
+      <li><b>Reduced motion</b> — all animation stops; the veiled word keeps a static tell so it still reads as obfuscated.</li>
+      <li><b>Foundry</b> — displays the alias only; the module data never contains the true name.</li>
+      <li><b>Search</b> — indexes the alias only. Searching “Feywild” finds nothing, by design.</li>
+    </ul>
+    <p>“the wood” ⇢ “Neverwinter Wood” is an illustrative sample pair for the length
+    test only, not store content. Fonts are stand-ins for the codex's EB Garamond /
+    Cormorant SC / Oswald; the palette is the codex's own parchment token set.</p>
+  </div>
+</main>
+
+<script>
+  document.querySelectorAll(".alias").forEach(a => {
+    a.addEventListener("click", () => {
+      const on = a.classList.toggle("pinned");
+      a.setAttribute("aria-pressed", String(on));
+    });
+  });
+</script>
