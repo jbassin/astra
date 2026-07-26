@@ -36,7 +36,47 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `9215d99`, 2026-07-26 early — assay (0030) ROUND 5: **THE FLEET RE-SWEEP RAN, GATED, AND DEPLOYED in one autonomous session** (stakeholder go → 8 sonnet lanes × 142 spells off brief v3 + 2-verifier T6-heavy pass → gates all green → codex redeployed live, corpus 44,981, SigNoz 0 ERROR); store text now fleet-swept, revisions.md **173**, store 174; **▶ NEXT = deal the fleet FLAG DIGEST as stakeholder cards** (`apps/assay/results/homebrew-fleet/DIGEST.md` — **159 decisions**, T6-dominated; incl. the Beholder-is-WotC-Product-Identity call + 9 alias pairs) → reseed scriptorium data.json + reviewer resumes → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+## Current state — UPDATE THIS SECTION (as of `69aa47f`, 2026-07-26 late — assay (0030) ROUND 5: **THE FLEET DIGEST IS DEALT, THE POLICY SWEEP APPLIED, AND THE RESIDUE LIVES IN THE SCRIPTORIUM** (interactive card session → P1 HELD wholesale / P2a / P2b HELD / P3 / P4a+P4b ratified + 17 FIX batched → 4-lane sweep `33d9a84`, 36 spells, gates green, revisions **174** → scriptorium pending-decisions feature `69aa47f`, 52 spells / 65 in-UI cards, data.json reseeded → codex REDEPLOYED live, corpus 44,981, SigNoz clean); **▶ NEXT = the reviewer resumes the scriptorium pass** (post-sweep text + the ⚑ pending-decision cards in-UI) → the HELD end-of-review obfuscation sweep (P1 alias table + Grey-Waste pick + monster-name scope + **the Beholder WotC-Product-Identity fix** — exposure accepted meanwhile) → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+
+> **✅ assay (0030) R5 — card deal + policy sweep + scriptorium decisions, 2026-07-26
+> late (`33d9a84` sweep · `69aa47f` scriptorium, both pushed + DEPLOYED):**
+> 1. **The deck was dealt live** (CARDS.md Part A carries the DEALT annotations):
+>    P1 obfuscation **HELD wholesale** — alias table, Grey-Waste pick, monster-name
+>    scope AND the Beholder-IP fix all wait for a dedicated end-of-review sweep ·
+>    P2a ratified · P2b HELD (loosening tiers stay; per-spell during review) · P3
+>    ratified with **Stunned (not Paralyzed) for gravity-anvil** ("Stunned 3 ≈
+>    Paralyzed" — weaker register wins) · P4a+P4b ratified (P4a formalizes D13-a;
+>    P4b restores only power-neutral drops) · P4c → scriptorium, not chat · 17 FIX
+>    batch-approved. ⭐ Process: AskUserQuestion hides pre-tool context — cards are
+>    dealt as PLAIN-TEXT questions now (stakeholder ban).
+> 2. **Sweep `33d9a84`** (4 sonnet lanes, 36 spells): 3 real P2a collapses (the
+>    other 5 policy-card listings were zigzag/settled — ⭐ Part A cards contradicted
+>    Part B dossiers; prior decisions + arithmetic won, skips cited), P3 ×4, P4a
+>    ×~18, P4b (do-my-bidding hostility), all FIXes. Gates: flatten-diff clean ·
+>    169/174 scores byte-stable, 5 explained lens drifts, ZERO routing flips (after
+>    fixing ⭐ sphere-of-ruin table-blinding — tables must sit AFTER the degree
+>    block, Unfathomable-Song idiom) · frozen 32 byte-untouched · revisions 173→174.
+>    Ledgers: `results/homebrew-fleet/policy-sweep/{lane1-4.json,GATES.md}`.
+> 3. **Scriptorium `69aa47f`:** committed `review-ui/decisions.json` (52 spells /
+>    65 pending cards: unapplied CARDs + 9 held-P2b tiers + residual flags, each w/
+>    options + staff lean), per-spell panel + ⚑N rail badges in index.html,
+>    build_data.py fail-soft wiring, data.json reseeded (174/none/none), his
+>    `state/` untouched (reviewed.json still the frozen 32).
+> 4. **Deploy (store-text-only, LIVE):** transform direct (no snapshot re-fetch) →
+>    corpus 44,981 exact → Pagefind 44,981/33 s → export-codex artifact refreshed
+>    (5 score records) → codex restart; edge-verified edited text ×2, pagefind 200,
+>    SigNoz 0 ERROR / 0 error traces.
+> - **▶ NEXT: (1) reviewer resumes the scriptorium** — post-sweep text with the
+>   pending-decision cards in-UI; decisions.json is hand-maintained as calls
+>   resolve. **(2) End-of-review obfuscation sweep** (all of P1, incl. Beholder).
+>   (3) Foundry compendium module. (4) Joint review (revisions.md @ 174). codex
+>   gate H unchanged; heartwood ⏸.
+
+---
+
+### Previous section (2026-07-26 early) — fleet re-sweep (superseded above)
+
+## (was) Current state (as of `9215d99`, 2026-07-26 early — assay (0030) ROUND 5: **THE FLEET RE-SWEEP RAN, GATED, AND DEPLOYED in one autonomous session** (stakeholder go → 8 sonnet lanes × 142 spells off brief v3 + 2-verifier T6-heavy pass → gates all green → codex redeployed live, corpus 44,981, SigNoz 0 ERROR); store text now fleet-swept, revisions.md **173**, store 174; **▶ NEXT = deal the fleet FLAG DIGEST as stakeholder cards** (`apps/assay/results/homebrew-fleet/DIGEST.md` — **159 decisions**, T6-dominated; incl. the Beholder-is-WotC-Product-Identity call + 9 alias pairs) → reseed scriptorium data.json + reviewer resumes → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
 
 > **✅ assay (0030) R5 — fleet re-sweep, 2026-07-25 late → 07-26 early (`4e6d4e3`+marker
 > `7a276e6`, §13c record `9215d99`, all pushed + DEPLOYED):**

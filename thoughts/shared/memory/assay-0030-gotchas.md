@@ -458,3 +458,45 @@ DIGEST = `results/homebrew-fleet/DIGEST.md`, **159 decisions**. ⭐ THE finds:
   mismatch.
 **▶ OPEN:** deal DIGEST.md as compact cards → reseed scriptorium (`build_data.py`) →
 reviewer resumes on post-fleet text → Foundry module → joint review (revisions @ 173).
+
+**THE CARD-DEAL + POLICY SWEEP + SCRIPTORIUM-DECISIONS ROUND (2026-07-26, `33d9a84`+`69aa47f`, pushed + DEPLOYED):**
+the 159-row fleet digest was dealt as policy cards, applied, and the residue moved INTO the review UI.
+**Dispositions:** P1 obfuscation (alias table + Grey-Waste pick + monster-name scope + **the Beholder
+WotC-Product-Identity fix**) — **HELD wholesale** for a dedicated end-of-review sweep (stakeholder call,
+exposure accepted meanwhile) · P2a ratified · P2b HELD (loosening tiers stay; per-spell during review) ·
+P3 ratified w/ **Stunned over Paralyzed for gravity-anvil** ("stunned is strictly weaker — Stunned 3 ≈
+Paralyzed"; pick the weaker register) · P4a+P4b ratified (P4b = restore ONLY power-neutral drops; **P4a
+ratification IS the D13-a doctrine formalized** — earlier dossier keep-leans on flavor are superseded) ·
+P4c + all residual CARDs → scriptorium, NOT chat · 17 FIX batch-approved sight-unseen.
+**⭐ Part A policy cards CONTRADICTED Part B dossiers** (different prep agents): the P2a card listed 8
+collapsibles but 4 were die-zigzag ladders that mathematically can't be one (+N) line (and were already
+keep-ruled, triage L549/INDEX L105+L121); the P3 card listed cone-of-decay/fast-forward whose mappings
+were already stakeholder-settled 2026-07-22. **Prior explicit decisions + arithmetic beat a generic
+ratification made without that context** — honor them, skip, cite, report. Only 3 P2a collapses were real.
+**⭐ The table-blinding lens class:** the degree splitter (`conditions.py` `_DEGREE_HEADING_RE`) only
+attributes conditions inside `<strong>Failure</strong>`-headed sections — lane 4's tables-BEFORE-degrees
+layout on sphere-of-ruin made it fully unpriceable (routing comparables→ledger:utility). Official idiom
+(Unfathomable Song, its own top comparable): degree block FIRST, "Roll 1d6 on the table below", ONE
+table after — table conditions then attribute to the last degree section (mild artifact, priceable).
+Orchestrator restructured to a single 3-col table (1d6 | Failure | Critical Failure); routing restored.
+**Official wall spells have NO structured area** — all 14 `wall-*` in the Foundry snapshot carry
+`area:null`, dimensions prose-only (lane verified before following my wrong brief; wall-of-time now matches).
+**P2a empty-stub find:** the 3 collapsed spells' old `heightening.levels` were `{"7":{},"9":{}}` empty
+stubs (ladders lived in prose only) → collapse = `{damage:{},interval:N,type:interval}` swap, no data loss.
+**Gates (all green):** flatten-diff 35 files description-only (+the 3 heightening swaps) · score set-diff
+169/174 byte-stable, 5 explained lens drifts, ZERO routing flips · frozen 32 byte-untouched · revisions
+173→**174**. Ledgers + gate record: `results/homebrew-fleet/policy-sweep/{lane1-4.json,GATES.md}`.
+**Scriptorium pending-decisions feature** (`69aa47f`): committed `review-ui/decisions.json` (52 spells /
+65 entries — unapplied CARDs + the 9 held-P2b tiers + GATES residual flags; SETTLED/applied/P1 excluded),
+`build_data.py` attaches per-spell (fail-soft), index.html renders a collapsed "Pending decisions (N)"
+band + ⚑N rail badges; data.json reseeded 174/none/none; `state/` untouched. Hand-maintain decisions.json
+as calls resolve.
+**Store-text deploy recipe (no snapshot re-fetch):** `pnpm --filter @astra/codex transform` directly
+(skip codex-refresh's two fetch steps) → corpus 44,981 exact → `just codex-search-index` (33 s) →
+`uv run assay export-codex` + cp to `apps/codex/data/assay/` (5 score records changed) → `docker compose
+restart codex` → edge-grep edited text + pagefind 200 + SigNoz 0 ERROR/0 error-traces. Corpus glob
+counts ≠ report count (meta files) — trust report.md's "final corpus" line.
+**Process:** ⭐ **AskUserQuestion hides all pre-tool context from the user** — the card-deal stalled twice
+until context moved INTO the question text; stakeholder then banned the tool for card-dealing entirely:
+**deal cards as plain-text questions**. Two lanes ran read-only git despite the ban (self-reported;
+restate the rule per brief — it keeps not sticking).
