@@ -1,0 +1,43 @@
+// The starter menhir quiz (D31-4) — 5 lighthearted PF2e rules-trivia questions for
+// a session-opener round. Every fact here is verified against the codex rules
+// corpus (apps/codex/data/corpus/rules/*.json, Player Core) — never asserted from
+// recall (see [[verify-rules-against-corpus]]):
+//   - turn.json p.11: "A creature can typically use up to three actions during its turn."
+//   - natural-1-and-natural-20.json p.401: a natural 20 "is one degree of success
+//     better than it would be by numbers alone."
+//   - flanking.json p.425: a flanked creature is off-guard, "taking a –2
+//     circumstance penalty to AC" against the flanking creatures.
+//   - dying.json p.411: "If this value ever reaches dying 4, you die."
+//   - hero-points.json p.27: "Your character usually begins each game session
+//     with 1 Hero Point."
+quiz "The Undercroft Opener" {
+    question "How many actions does your turn hand you in Pathfinder 2e — before anything slows you down?" time=20 {
+        option "2"
+        option "3" correct=#true
+        option "4"
+        option "5"
+    }
+    question "You roll a natural 20 on a check. What actually happens to your degree of success?" time=20 {
+        option "Nothing — natural rolls don't matter, only the total"
+        option "It's automatically a critical success, full stop"
+        option "It steps one degree better than the numbers alone would give" correct=#true
+    }
+    question "Two allies flank a foe in melee. How off-guard does the target become?" time=20 {
+        option "-1 circumstance penalty to AC"
+        option "-2 circumstance penalty to AC" correct=#true
+        option "-4 status penalty to AC"
+        option "It just loses its reactions"
+    }
+    question "Your dying condition value creeps up. At what value do you shuffle off this mortal coil?" time=20 {
+        option "Dying 2"
+        option "Dying 3"
+        option "Dying 4" correct=#true
+        option "Dying 6"
+    }
+    question "How many Hero Points does a fresh character usually start a session with?" time=20 {
+        option "0"
+        option "1" correct=#true
+        option "3"
+        option "5"
+    }
+}

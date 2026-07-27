@@ -67,6 +67,10 @@ def test_real_config_kdl_loads_and_types_are_right() -> None:
     assert cfg.codex.port == 10374
     assert cfg.codex.public_origin == "https://codex.iridi.cc"
     assert cfg.codex.data_path == "/ruby/data/experiments/astra/apps/codex/data"
+    assert cfg.menhir.service_name == "astra.menhir"
+    assert cfg.menhir.port == 10375
+    assert cfg.menhir.public_origin == "https://menhir.iridi.cc"
+    assert cfg.menhir.results_path == "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"
 
 
 def test_secret_fields_are_lazy_refs_not_plaintext() -> None:

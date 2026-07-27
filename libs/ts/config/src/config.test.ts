@@ -73,6 +73,12 @@ describe("@astra/config", () => {
     expect(cfg.codex.port).toBe(10374);
     expect(cfg.codex.publicOrigin).toBe("https://codex.iridi.cc");
     expect(cfg.codex.dataPath).toBe("/ruby/data/experiments/astra/apps/codex/data");
+    expect(cfg.menhir.serviceName).toBe("astra.menhir");
+    expect(cfg.menhir.port).toBe(10375);
+    expect(cfg.menhir.publicOrigin).toBe("https://menhir.iridi.cc");
+    expect(cfg.menhir.resultsPath).toBe(
+      "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl",
+    );
   });
 
   test("secret fields are lazy refs, not plaintext", () => {

@@ -312,6 +312,19 @@ codex {
     data-path "/ruby/data/experiments/astra/apps/codex/data"
 }
 
+menhir {
+    // menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay
+    // template (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same
+    // config-single-source contract: server.ts binds this port + names telemetry;
+    // no PORT env. Behind Caddy at menhir.iridi.cc → host 10375. results-path is the
+    // host-absolute JSONL append target (identical-path bind mount, D29-53
+    // convention — plain config fields have no env override).
+    service-name "astra.menhir"
+    port 10375
+    public-origin "https://menhir.iridi.cc"
+    results-path "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"
+}
+
 caddy {
     cloudflare-dns-token ref="sops:cloudflare_key"
 }

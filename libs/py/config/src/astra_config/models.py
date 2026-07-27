@@ -248,6 +248,18 @@ class CodexConfig(_Base):
     data_path: str = "/ruby/data/experiments/astra/apps/codex/data"
 
 
+class MenhirConfig(_Base):
+    # menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay
+    # template (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same
+    # config-single-source contract: server.ts binds this port + names telemetry;
+    # no PORT env. results_path is the host-absolute JSONL append target
+    # (identical-path bind mount, D29-53 convention).
+    service_name: str = "astra.menhir"
+    port: int = 10375
+    public_origin: str = "https://menhir.iridi.cc"
+    results_path: str = "/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"
+
+
 class CaddyConfig(_Base):
     cloudflare_dns_token: SecretRef | None = None
 
@@ -273,4 +285,5 @@ class Config(_Base):
     portal: PortalConfig = Field(default_factory=PortalConfig)
     portal_headless: PortalHeadlessConfig = Field(default_factory=PortalHeadlessConfig)
     codex: CodexConfig = Field(default_factory=CodexConfig)
+    menhir: MenhirConfig = Field(default_factory=MenhirConfig)
     caddy: CaddyConfig = Field(default_factory=CaddyConfig)

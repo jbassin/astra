@@ -275,6 +275,20 @@ const Codex = z
   })
   .strict();
 
+// menhir (0031) — a Kahoot-style session-opener quiz, on the weal-overlay template
+// (srvx server + SSE fan-out + vite React SPA, no auth per R4). Same config-
+// single-source contract as the other services: server.ts binds this port + names
+// telemetry; no PORT env. resultsPath is the host-absolute JSONL append target
+// (identical-path bind mount, D29-53 convention).
+const Menhir = z
+  .object({
+    serviceName: z.string().default("astra.menhir"),
+    port: z.number().default(10375),
+    publicOrigin: z.string().default("https://menhir.iridi.cc"),
+    resultsPath: z.string().default("/ruby/data/experiments/astra/artifacts/menhir/results.jsonl"),
+  })
+  .strict();
+
 const Caddy = z.object({ cloudflareDnsToken: secret() }).strict();
 
 const Telemetry = z
@@ -311,6 +325,7 @@ export const ConfigSchema = z
     portal: Portal.default(() => Portal.parse({})),
     portalHeadless: PortalHeadless.default(() => PortalHeadless.parse({})),
     codex: Codex.default(() => Codex.parse({})),
+    menhir: Menhir.default(() => Menhir.parse({})),
     caddy: Caddy.default(() => Caddy.parse({})),
   })
   .strict();

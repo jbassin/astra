@@ -1,0 +1,39 @@
+{
+  "name": "@astra/menhir",
+  "version": "0.0.0",
+  "private": true,
+  "description": "menhir — a Kahoot-style session-opener quiz. Host screen + phone shape buttons, timed MCQ, speed scoring, no auth (R4).",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:server": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs --watch server.ts",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node --import ../../libs/ts/site-kit/src/nodeTsResolve.mjs server.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astra/config": "workspace:*",
+    "@astra/observe": "workspace:*",
+    "@astra/site-kit": "workspace:*",
+    "@bgotink/kdl": "^0.4.0",
+    "@fontsource/cinzel": "^5.2.8",
+    "@fontsource/cormorant-sc": "^5.2.8",
+    "@fontsource/eb-garamond": "^5.2.7",
+    "@fontsource/oswald": "^5.2.8",
+    "qrcode": "^1.5.4",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "srvx": "0.11.20",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "vite": "8.1.3",
+    "vitest": "^4.1.9"
+  }
+}

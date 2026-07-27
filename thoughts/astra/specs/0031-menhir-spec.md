@@ -214,7 +214,9 @@ diverge on derivations).
 
 - **S1 — engine + server (sonnet).** Scaffold (package.json/tsconfig/vite+vitest configs/
   Dockerfile) **+ the `pyproject.toml` uv exclude (FIRST — the dir's existence alone reds the
-  uv lane)**; `schema.ts` incl. §4a; pure `game.ts` reducer + `rooms.ts` runtime; `quizzes.ts`;
+  uv lane)**; the D31-7 `config.kdl` block + BOTH schema mirrors + both config-test value
+  assertions (moved from S3 — the server entry consumes `cfg.menhir` from day one; safe for
+  live services, images bake config at build so nothing running re-reads it); `schema.ts` incl. §4a; pure `game.ts` reducer + `rooms.ts` runtime; `quizzes.ts`;
   `results.ts`; srvx wiring incl. SSE registry + projections; starter quiz; unit tests: scoring
   worked table, absolute-action idempotency (double-`next` advances once), zero-connected
   never-early-closes, all-connected-answered closes, stale `timerFired` no-op, lobby-only
@@ -229,8 +231,7 @@ diverge on derivations).
   1920×1080, EVERY phase incl. lobby QR) against the brief: codex-parchment ground + genuine
   Kahoot energy, host screen readable from across the room, no generic-AI blandness. Findings
   triaged by the orchestrator; accepted fixes applied before S3. Gates S3.
-- **S3 — deploy + sweep (orchestrator).** config.kdl + BOTH schema mirrors + both config-test
-  value assertions; compose service + identical-path artifacts mount + `artifacts-init`;
+- **S3 — deploy + sweep (orchestrator).** Compose service + identical-path artifacts mount + `artifacts-init`;
   Dockerfile (quizzes COPY) + the 14-file manifest ripple (prove w/ one sibling build); caddy
   stanza (handle-wrapped); 3-layer noindex; `just up` (menhir-scoped if the tree carries
   concurrent work) + `just caddy-reload`; edge verification; SigNoz check; README; spec §7
