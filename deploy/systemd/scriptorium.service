@@ -1,0 +1,16 @@
+[Unit]
+Description=LotI2 scriptorium — the assay (0030) homebrew prose-review UI (stdlib server, port 10390)
+Documentation=https://github.com/jbassin/astra
+
+[Service]
+WorkingDirectory=/ruby/data/experiments/astra
+# Stdlib-only server (no workspace entanglement) — the system python3 is enough,
+# and stabler than a pyenv shim. State (comments.jsonl / reviewed.json) lives in
+# apps/assay/review-ui/state/ on the host; the unit exists so the review surface
+# survives shell/session churn while it's exposed at scriptorium.iridi.cc.
+ExecStart=/usr/bin/python3 apps/assay/review-ui/server.py 10390
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target

@@ -332,6 +332,25 @@ alert-sudoers-install:
     echo "installed /etc/sudoers.d/astra-gdrive; verifying passwordless restart is allowed:"
     sudo -n /usr/bin/systemctl restart gdrive.service && echo "OK — watchdog can now self-heal a vanished mount"
 
+# Install + start the scriptorium (the assay 0030 prose-review UI) as a user unit so
+# it survives shell/session churn while exposed at scriptorium.iridi.cc (basicauth'd
+# stanza in sites.caddyfile). Idempotent; re-run after editing the unit. Kills any
+# ad-hoc `python3 server.py 10390` first (the port would collide). Disable with
+# `systemctl --user disable --now scriptorium` when the review closes.
+scriptorium-install:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    cd /ruby/data/experiments/astra
+    unit_dir="$HOME/.config/systemd/user"
+    mkdir -p "$unit_dir"
+    cp deploy/systemd/scriptorium.service "$unit_dir/"
+    systemctl --user daemon-reload
+    # an ad-hoc foreground server may hold :10390 — replace it with the unit
+    pkill -f 'review-ui/server\.py' 2>/dev/null || true
+    sleep 1
+    systemctl --user enable --now scriptorium.service
+    systemctl --user --no-pager status scriptorium.service | head -5
+
 # Migrate faerrin's historical episode CATALOG (script + digest) into astra's
 # episodes corpus (step 2 — catalog union), so episodes_index + the snapshot include
 # the back-catalog alongside live pipeline renders. Idempotent; live renders win for

@@ -227,9 +227,98 @@ mark.q{background:rgba(39,76,119,.16); color:inherit}
 }
 kbd{font-family:inherit; border:1px solid var(--ink-faint); border-radius:2px; padding:0 .3em; font-size:.85em; background:rgba(255,252,242,.6)}
 #hints{font-size:.72rem; color:var(--ink-faint); padding:.4rem 1rem .8rem; border-top:1px solid rgba(90,74,51,.25)}
+
+/* ---------- mobile topbar + drawers (hidden on desktop by default) ---------- */
+#mtopbar{display:none}
+#drawerBackdrop{display:none}
+
+@media (max-width:880px){
+  html,body{height:100%}
+  body{overflow:hidden}
+  #mtopbar{
+    display:flex; align-items:center; gap:.6rem;
+    position:fixed; top:0; left:0; right:0; height:2.75rem; z-index:50;
+    padding:0 .6rem; padding-top:env(safe-area-inset-top);
+    background:linear-gradient(180deg,var(--parchment-deep),var(--parchment));
+    border-bottom:1px solid rgba(90,74,51,.35);
+  }
+  #mtopbar button{
+    font:inherit; font-size:1.15rem; background:none; border:1px solid var(--ink-faint); border-radius:2px;
+    color:var(--ink-soft); width:2.5rem; height:2.5rem; min-height:40px; flex:none;
+    display:flex; align-items:center; justify-content:center; position:relative; cursor:pointer;
+  }
+  #mtName{
+    flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    font-family:"IM Fell English SC",serif; font-weight:400; color:var(--rubric); font-size:1.05rem;
+  }
+  #mtNoteCount{
+    position:absolute; top:-.25rem; right:-.25rem; background:var(--rubric-bright); color:#f8ede0;
+    font-size:.6rem; font-family:"EB Garamond",serif; border-radius:50%; min-width:1.15rem; height:1.15rem;
+    display:flex; align-items:center; justify-content:center; padding:0 .1rem;
+  }
+  #mtNoteCount:empty{display:none}
+
+  #drawerBackdrop.show{
+    display:block; position:fixed; inset:0; background:rgba(20,15,8,.45); z-index:55;
+  }
+
+  #app{
+    display:block; grid-template-columns:none;
+    height:100vh; height:100dvh;
+    padding-top:calc(2.75rem + env(safe-area-inset-top));
+    overflow:hidden;
+  }
+  #main{height:100%}
+  #rail,#margin{
+    position:fixed; top:0; bottom:0; width:min(80vw,19rem); z-index:60;
+    height:100vh; height:100dvh; transition:transform .2s ease; box-shadow:0 0 24px rgba(20,15,8,.35);
+  }
+  #rail{left:0; transform:translateX(-100%)}
+  #margin{right:0; transform:translateX(100%)}
+  #rail.drawer-open{transform:translateX(0)}
+  #margin.drawer-open{transform:translateX(0)}
+
+  #masthead{flex-wrap:wrap; row-gap:.5rem; padding:.7rem 1rem .5rem}
+  #masthead h2{font-size:1.3rem}
+  .ctl{min-height:40px; padding:.4rem .8rem}
+
+  #folios,#folios.three{grid-template-columns:1fr; padding:1rem .8rem 3rem}
+  .leaf{margin:0 0 1rem; padding:1rem}
+  .leaf+.leaf{border-left:none; border-top:1px solid rgba(90,74,51,.3)}
+
+  #decisions{margin:.6rem .8rem 0}
+  /* the panel starts expanded — cap it so long card stacks can't shove the
+     spell text off a phone screen; the cards scroll within the panel */
+  #decisions.open .dbody{max-height:45dvh; overflow-y:auto}
+  .dopt{min-height:40px; padding:.4rem .8rem}
+  .dnote{flex:1 1 100%; width:100%}
+
+  #seltools{
+    left:.6rem; right:.6rem; top:auto; width:auto;
+    bottom:calc(.6rem + env(safe-area-inset-bottom));
+    justify-content:center; gap:1rem; background:var(--parchment);
+    border:1px solid var(--gilt); border-radius:10px; padding:.5rem;
+    box-shadow:0 4px 20px rgba(70,50,20,.35);
+  }
+  #seltools button{width:2.75rem; height:2.75rem; font-size:1.2rem}
+
+  #popover{
+    left:.6rem; right:.6rem; top:auto;
+    bottom:calc(.6rem + env(safe-area-inset-bottom));
+    width:min(19rem,calc(100vw - 1.2rem)); max-width:none;
+  }
+
+  #search,.dnote,#pop-text{font-size:16px}
+}
 </style>
 </head>
 <body>
+<div id="mtopbar">
+  <button id="mtRail" aria-label="Spell list" title="spell list">☰</button>
+  <span id="mtName"></span>
+  <button id="mtNotes" aria-label="Marginalia" title="marginalia">✎<span id="mtNoteCount"></span></button>
+</div>
+<div id="drawerBackdrop"></div>
 <div id="app">
   <nav id="rail">
     <header>
@@ -454,6 +543,7 @@ function renderList(filter){
 }
 function renderNotes(){
   const cs=commentsFor(DATA[cur].slug);
+  $("#mtNoteCount").textContent=cs.length?String(cs.length):"";
   $("#notes").innerHTML=cs.length?cs.map(c=>
     '<div class="note'+(c.kind==="remove"?" remove":c.kind==="decision"?" decision":"")+'"><button class="del" data-id="'+c.id+'" title="strike this note">✕</button>'+
     '<div class="pane-tag">'+esc(c.pane)+"</div>"+
@@ -498,6 +588,7 @@ function show(i){
   cur=Math.max(0,Math.min(DATA.length-1,i));
   const s=DATA[cur];
   $("#spellname").textContent=s.name;
+  $("#mtName").textContent=s.name;
   $("#spellrank").textContent="rank "+s.store.level.value;
   $("#orig-src").textContent="5e original — “"+s.seededFrom.originalName+"”";
   $("#orig-body").innerHTML=renderOriginal(s.original);
@@ -515,7 +606,9 @@ function toast(msg){const t=$("#toast");t.textContent=msg;t.style.opacity=1;setT
 /* ---------- selection commenting ---------- */
 let pending=null;
 const mkId=()=>(crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+"-"+Math.random().toString(36).slice(2,10));
+const isSmallScreen=()=>window.matchMedia("(max-width:880px)").matches||window.matchMedia("(pointer:coarse)").matches;
 function hideQuill(){$("#seltools").style.display="none"}
+function popoverOpen(){return $("#popover").style.display==="block"}
 function hidePopover(){$("#popover").style.display="none";pending=null}
 async function saveComment(kind,note){
   if(!pending)return;
@@ -534,21 +627,50 @@ document.addEventListener("mouseup",e=>{
     if(!txt||txt.length<2){hideQuill();return}
     const leaf=sel.anchorNode&&sel.anchorNode.parentElement&&sel.anchorNode.parentElement.closest(".leaf");
     if(!leaf){hideQuill();return}
-    const rect=sel.getRangeAt(0).getBoundingClientRect();
     const q=$("#seltools");
     q.style.display="flex";
-    q.style.left=Math.min(window.innerWidth-100,rect.right+8)+"px";
-    q.style.top=Math.max(8,rect.top-10)+"px";
+    if(isSmallScreen()){
+      q.style.removeProperty("left"); q.style.removeProperty("top");
+    }else{
+      const rect=sel.getRangeAt(0).getBoundingClientRect();
+      q.style.left=Math.min(window.innerWidth-100,rect.right+8)+"px";
+      q.style.top=Math.max(8,rect.top-10)+"px";
+    }
     pending={pane:leaf.dataset.pane,quote:txt.slice(0,400)};
   },10);
 });
+/* touch selections on iOS rarely fire mouseup at the right moment (the native
+   selection handles/callout keep adjusting after finger-up) — selectionchange
+   is the reliable signal there; debounced, mobile/coarse-pointer only. */
+let selChangeTimer=null;
+document.addEventListener("selectionchange",()=>{
+  if(!isSmallScreen())return;
+  clearTimeout(selChangeTimer);
+  selChangeTimer=setTimeout(()=>{
+    if(popoverOpen())return;
+    const sel=window.getSelection();
+    const txt=sel&&!sel.isCollapsed?sel.toString().trim():"";
+    if(!txt||txt.length<2){hideQuill();return}
+    const anchor=sel.anchorNode&&(sel.anchorNode.nodeType===1?sel.anchorNode:sel.anchorNode.parentElement);
+    const leaf=anchor&&anchor.closest&&anchor.closest(".leaf");
+    if(!leaf){hideQuill();return}
+    pending={pane:leaf.dataset.pane,quote:txt.slice(0,400)};
+    const q=$("#seltools");
+    q.style.removeProperty("left"); q.style.removeProperty("top");
+    q.style.display="flex";
+  },250);
+});
 $("#quill").addEventListener("click",()=>{
   if(!pending)return;
-  const q=$("#seltools").getBoundingClientRect();
   const p=$("#popover");
   p.style.display="block";
-  p.style.left=Math.min(window.innerWidth-320,q.left)+"px";
-  p.style.top=Math.min(window.innerHeight-220,q.bottom+6)+"px";
+  if(isSmallScreen()){
+    p.style.removeProperty("left"); p.style.removeProperty("top");
+  }else{
+    const q=$("#seltools").getBoundingClientRect();
+    p.style.left=Math.min(window.innerWidth-320,q.left)+"px";
+    p.style.top=Math.min(window.innerHeight-220,q.bottom+6)+"px";
+  }
   $("#pop-quote").textContent="“"+pending.quote+"”";
   $("#pop-text").value=""; $("#pop-text").focus();
   $("#seltools").style.display="none";
@@ -605,8 +727,26 @@ $("#decisionsBody").addEventListener("keydown",e=>{
   if(e.key==="Enter"&&e.target.matches(".dnote"))recordFromCtl(e.target.closest(".dctl"));
 });
 
+/* ---------- mobile drawers (rail + marginalia as overlay panels) ---------- */
+function openDrawer(id){
+  $("#"+id).classList.add("drawer-open");
+  $("#drawerBackdrop").classList.add("show");
+}
+function closeDrawers(){
+  $("#rail").classList.remove("drawer-open");
+  $("#margin").classList.remove("drawer-open");
+  $("#drawerBackdrop").classList.remove("show");
+}
+function toggleDrawer(id){
+  if($("#"+id).classList.contains("drawer-open"))closeDrawers();
+  else openDrawer(id);
+}
+$("#mtRail").addEventListener("click",()=>toggleDrawer("rail"));
+$("#mtNotes").addEventListener("click",()=>toggleDrawer("margin"));
+$("#drawerBackdrop").addEventListener("click",closeDrawers);
+
 /* ---------- controls ---------- */
-$("#list").addEventListener("click",e=>{const it=e.target.closest(".item");if(it)show(+it.dataset.i)});
+$("#list").addEventListener("click",e=>{const it=e.target.closest(".item");if(it){show(+it.dataset.i);closeDrawers()}});
 $("#search").addEventListener("input",()=>renderList($("#search").value));
 $("#prevBtn").addEventListener("click",()=>show(cur-1));
 $("#nextBtn").addEventListener("click",()=>show(cur+1));
@@ -631,7 +771,7 @@ document.addEventListener("keydown",e=>{
   else if(e.key==="r")$("#revBtn").click();
   else if(e.key==="i")$("#interBtn").click();
   else if(e.key==="/"){e.preventDefault();$("#search").focus()}
-  else if(e.key==="Escape"){hidePopover();hideQuill()}
+  else if(e.key==="Escape"){hidePopover();hideQuill();closeDrawers()}
 });
 
 /* ---------- boot ---------- */
