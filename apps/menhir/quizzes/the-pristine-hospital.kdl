@@ -1,0 +1,89 @@
+// Session-recap quiz for 000.through-a-song-darkly.2026-7-20 ("The Pristine
+// Hospital — Descent Into the Sleeping Clan"). Story-beat questions only (GM
+// direction: no die-roll/combat trivia, no out-of-character moments). Every fact
+// verified against the transcript
+// (apps/linguist/transcripts/000.through-a-song-darkly.2026-7-20.txt); spelling
+// "Ugathal" is GM-canonical (the transcription wobbles between renderings).
+// Correct answers are deliberately spread across option positions — menhir maps
+// option index → shape tile in fixed order (game.ts shapeFor), no shuffle.
+//   - Ugathals "small ropey worm-like creatures that wear people's skin",
+//     piloting mindless flesh drones (~L2941-3005)
+//   - former hospital, third floor, ruled by the dying heart "Lifeline" (~L3067-3109)
+//   - Yao/Protectorate belief: the true Aurelia trapped far on the horizon,
+//     singing for true believers to come save her (~L1773-1781)
+//   - Yao's armor terms: look any time / "if you lose it I will kill you and the
+//     rest of your organization" (~L1911-1925)
+//   - Amber Call courting allies against the Iridescent Church; the Protectorate
+//     declined ("we were already promised") (~L1901-1902)
+//   - Lance's curse: "a coven of night hags", earned in his arrogant youth (~L2086, L2239-2244)
+//   - sandwich day two: gone, no note, "All right. No more sandwiches" + the
+//     week of meal-prepped sandwiches (~L2815-2820)
+//   - Anzu's five-day research: reverse/alter the Herald's harmony besetting his
+//     sister (GM-corrected term — the transcript says "harmony"), Benny + Johnny
+//     assisting (~L2609-2800)
+//   - the sleeping-clan-first vote: strike before they wake + Anzu's research
+//     window, back topside before the tithe (~L1524-1527, L2824-2858)
+//   - the pristine section: spotless repaired hallways, working electricity,
+//     bright white lights (~L3280-3284)
+quiz "Last Week, Through a Song Darkly — The Pristine Hospital" {
+    question "The Machine God finally named the sleeping clan. What exactly is an Ugathal?" time=20 {
+        option "A sleeping tengu"
+        option "A worm that wears stolen skin" correct=#true
+        option "A spider that is also on fire"
+        option "A mindless flesh drone with delusions of grandeur"
+    }
+    question "The sleeping clan squats in a former hospital on the third floor, ruled by a dying, not-quite-sane heart. Its name?" time=20 {
+        option "Mainspring"
+        option "Triage"
+        option "Heartline"
+        option "Lifeline" correct=#true
+    }
+    question "What do Yao and the Protectorate believe the Voidsong actually is?" time=20 {
+        option "A memetic weapon of the Iridescent Church"
+        option "Lifeline's dying heartbeat echoing up the Strider"
+        option "The trapped Aurelia, singing for rescue" correct=#true
+        option "A lure the Ugathals use to fish for fresh skins"
+    }
+    question "Yao showed Anzu a piece of Aurelia's armor, handed down mentor to mentor. On what terms?" time=20 {
+        option "Look any time — lose it and everyone dies" correct=#true
+        option "Take it, with his blessing, down to the third floor"
+        option "A straight trade: the armor for the Map"
+        option "Anzu can borrow it once the Voidsong research pans out"
+    }
+    question "Word around the Protectorate: what is Amber Call up to?" time=20 {
+        option "Allying with the Iridescent Church"
+        option "Buying up the tire yard"
+        option "Recruiting allies against the Iridescent Church" correct=#true
+        option "Digging a private shaft into the undercroft"
+    }
+    question "Lance's curse traces back to a bit of arrogance in his youth. Who laid it on him?" time=20 {
+        option "The Iridescent Church"
+        option "A coven of night hags" correct=#true
+        option "A jilted Brithwyn priest"
+        option "Lifeline"
+    }
+    question "Day two, the sandwich went down to Marin, vanished, and no note came back up. Johnny's response?" time=20 {
+        option "Sent a third sandwich with a strongly worded note"
+        option "Rode the elevator down after it"
+        option "Blamed Benny"
+        option "No more sandwiches" correct=#true
+    }
+    question "Anzu committed five days of research — with Benny and Johnny as his lab rats — toward what?" time=20 {
+        option "Forging a counterfeit of Aurelia's armor"
+        option "Reversing the Herald's harmony on his sister" correct=#true
+        option "Mapping the third floor before the descent"
+        option "A cure for Lance's curse"
+    }
+    question "What tipped the vote toward hitting the sleeping clan before the waking clan?" time=20 {
+        option "The Machine God ordered it as tribute"
+        option "The waking clan offered a truce until the tithe"
+        option "Bishop refused to help against anyone else"
+        option "Catch them unawares before they wake" correct=#true
+    }
+    question "Deep in the decayed Strider, what made the sleeping clan's stretch feel immediately wrong?" time=20 {
+        option "Total darkness and dead silence"
+        option "Walls papered in stolen skin"
+        option "Spotless halls lit by electric white lights" correct=#true
+        option "It was flooded to the knees"
+    }
+}
