@@ -1,0 +1,62 @@
+/**
+ * menhir's own design tokens (D31-6). Base palette VALUES are copied from
+ * `apps/codex/src/styles/tokens.css` (the "Liturgy of the Iridite" parchment
+ * system) — menhir owns its own copy, same precedent as codex's own D29-46/R6
+ * (codex dropped gothic outright rather than importing it; menhir never had a
+ * gothic dependency to begin with, so this file is the base palette from day
+ * one, plus the Kahoot answer-identity accents this app adds on top).
+ *
+ * Fonts are self-hosted via @fontsource (imported in main.tsx, mirroring
+ * codex's __root.tsx): Cinzel (display), Cormorant SC (heading — the token
+ * this file needs it for), EB Garamond (body), Oswald (condensed — timer +
+ * score digits, D31-6).
+ */
+:root {
+  /* --- parchment base (values from apps/codex/src/styles/tokens.css) --- */
+  --color-void: #eee7d8; /* page background */
+  --color-page-bg-alt: #e9e1ce;
+  --color-page-vignette: rgb(0 0 0 / 8%);
+  --color-ink: #231f1a;
+  --color-ink-dim: #4a4238;
+  --color-ink-faint: #8a7c63;
+
+  --color-heading-maroon: #7a2e2c;
+  --color-heading-maroon-dark: #5e211f;
+  --color-gold-rule: #b99b5d;
+  --color-gold-frame: #c2a46d;
+  --color-gold-frame-dark: #8c7038;
+
+  --color-callout-tan-bg: #e7d6b3;
+  --color-callout-tan-border: #3a2e22;
+
+  --color-accent: var(--color-heading-maroon);
+  --color-accent-amber: var(--color-gold-rule);
+  --color-rule: rgb(185 155 93 / 40%);
+  --color-rule-bright: var(--color-gold-frame);
+  --color-elevated: var(--color-callout-tan-bg);
+  --color-hover: rgb(220 231 236 / 70%);
+
+  /* --- type families --- */
+  --font-display: "Cinzel", serif; /* rare, ceremonial — the menhir wordmark */
+  --font-heading: "Cormorant SC", serif; /* question text, section headings */
+  --font-body: "EB Garamond", serif; /* prose, labels */
+  --font-condensed: "Oswald", sans-serif; /* timer + score digits (D31-6) */
+
+  /* --- Kahoot answer identities (D31-6) — shape+color double encoding --- */
+  --shape-triangle: #e21b3c;
+  --shape-triangle-dark: #9e0f26;
+  --shape-diamond: #1368ce;
+  --shape-diamond-dark: #0c4a97;
+  --shape-circle: #d89e00;
+  --shape-circle-dark: #a67900;
+  --shape-square: #26890c;
+  --shape-square-dark: #196008;
+
+  /* --- structural tokens (new — no codex equivalent needed) --- */
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
+  --radius-pill: 999px;
+  --shadow-card: 0 6px 18px rgb(35 31 26 / 18%), 0 1px 0 rgb(255 255 255 / 30%) inset;
+  --shadow-lift: 0 12px 28px rgb(35 31 26 / 26%);
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+}

@@ -1,17 +1,21 @@
 import { createRoot } from "react-dom/client";
 
-// Placeholder client — S1 ships the engine + server only. The real player/host
-// views (§3 of the spec), tokens.css (D31-6), QR (D31-12), and the SSE client
-// land in S2. This exists so `vite build` produces a real dist/ for the server
-// to serve, proving the static-serving + SPA-fallback wiring end to end.
-function App() {
-  return (
-    <main>
-      <h1>menhir</h1>
-      <p>Engine + server (S1) are live. The player/host client SPA lands in S2.</p>
-    </main>
-  );
-}
+// menhir's self-hosted parchment-system fonts (D31-6) — mirrors codex's
+// __root.tsx font-import list verbatim (same weights: Cinzel 700 for the rare
+// display wordmark, Cormorant SC 600 for headings/question text, EB Garamond
+// for body prose, Oswald for the condensed timer/score digits).
+import "@fontsource/cinzel/700.css";
+import "@fontsource/cormorant-sc/600.css";
+import "@fontsource/eb-garamond/400.css";
+import "@fontsource/eb-garamond/400-italic.css";
+import "@fontsource/eb-garamond/600.css";
+import "@fontsource/eb-garamond/700.css";
+import "@fontsource/oswald/500.css";
+import "@fontsource/oswald/700.css";
+import "./styles/tokens.css";
+import "./styles/app.css";
+
+import { App } from "./App";
 
 const root = document.getElementById("root");
 if (root) createRoot(root).render(<App />);
