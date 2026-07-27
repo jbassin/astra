@@ -203,6 +203,32 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # menhir: the Kahoot-style session-opener quiz (0031). SSE behind Caddy with
+  # flush_interval -1. No secrets (no auth, D31-9's hostToken is minted per game).
+  # Results JSONL rides an IDENTICAL-PATH rw bind mount (host path == container
+  # path — plain config fields have no env override, the D29-53 convention);
+  # `just artifacts-init` pre-creates the dir as uid 1000.
+  menhir:
+    build:
+      context: ..
+      dockerfile: apps/menhir/Dockerfile
+    image: astra-menhir:local
+    container_name: astra-menhir
+    # Node 24 runtime (see weal-overlay); node:24-slim global fetch → healthcheck.
+    command: ["node", "--import", "../../libs/ts/site-kit/src/nodeTsResolve.mjs", "server.ts"]
+    user: "1000:1000" # see weal-bot
+    ports:
+      - "10375:10375"
+    volumes:
+      - /ruby/data/experiments/astra/artifacts/menhir:/ruby/data/experiments/astra/artifacts/menhir
+    networks: [signoz-net]
+    healthcheck:
+      test: ["CMD", "node", "-e", "await fetch('http://localhost:10375/').then(r=>process.exit(r.ok?0:1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
   strider:
     build:
       context: ..

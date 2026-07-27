@@ -68,7 +68,7 @@ up:
 artifacts-init:
     #!/usr/bin/env bash
     set -euo pipefail
-    mkdir -p "{{artifacts}}"/audio/{akasha,mouthpiece,orator} "{{artifacts}}"/postgres "{{artifacts}}"/portal-oauth
+    mkdir -p "{{artifacts}}"/audio/{akasha,mouthpiece,orator} "{{artifacts}}"/postgres "{{artifacts}}"/portal-oauth "{{artifacts}}"/menhir
 
 # Stop the stack; keep volumes (ClickHouse / Postgres / SigNoz data persist).
 down:

@@ -257,6 +257,41 @@ diverge on derivations).
 - **G** Docs: `apps/menhir/README.md` (author a quiz, run a game, where results land, the
   deploy-ends-live-games caveat); RESUME/memory checkpoint.
 
-## 7. Build record
+## 7. Build record (2026-07-27 — BUILT + DEPLOYED + LIVE in one day)
 
-(appended at build time)
+- **S1** `17bae8f` (sonnet engineer): full deliverable incl. uv exclude + config in both strict
+  schemas; 34 unit tests; live-boot proven via curl. Sanctioned deviation: the starter quiz is
+  PF2e-rules trivia w/ corpus-cited facts (campaign lore risked invented "facts"; GM authors
+  campaign sets later). Engineer caught + fixed a no-op-branch state-mutation bug in its own
+  reducer during testing.
+- **S2** `5b0568d` (sonnet engineer): both views + QR + styling + 23 component tests (59 total
+  incl. S1's 34 unchanged, minus overlap); full 3-question game live-proven via Playwright incl.
+  server-restart → `gone` recovery.
+- **S2b** `ad17173` (opus designer, gate F disposition): ~25 findings — 14 host-side + 6
+  player-side + 4 cross-cutting APPLIED (three-band host shell, invite lobby, full-bleed tiles
+  w/ contrast fix + collision-proof grid, TimeBar, reveal share-bars, real podium, drawn-SVG
+  marks replacing tofu emoji, paper grain, reduced-motion); 2 DECLINED (player score bar =
+  wire-contract change; confetti vs print aesthetic); 1 BLOCKER FLAGGED → staff-fixed in the
+  same commit: the rooms.ts timer-disarm bug (any mid-question reduction consumed the countdown
+  permanently) + a rooms.test.ts regression pair on an injected TestClock. One process note:
+  the designer wedged Chromium by holding 6 fake-player EventSources in one tab (per-origin
+  connection limit) — diagnosed it itself, moved bots out of the browser.
+- **S3** (orchestrator): deploy wiring committed with this record — compose service +
+  identical-path artifacts mount + artifacts-init, the manifest ripple (**15** enumerating
+  Dockerfiles total: the review's 14 + menhir's own), handle-wrapped caddy stanza, 3-layer
+  noindex. Post-deploy staff fix: S1 shipped counters but NO spans (repo pattern = manual
+  spans; no auto-instrumentation in @astra/observe) → `menhir.{create,join,answer,host_action}`
+  spans added, container rebuilt.
+- **Gates:** A both lanes green (uv lane incl. the exclude; vp 33 members; ssrSmoke 7 =
+  documented pre-existing baseline). B 59/59 incl. the S2b regression pair. C the S2 Playwright
+  full-game run (2-player, host+phone viewports; declared local-only per spec). D live:
+  edge 200 + noindex header + robots.txt; SSE fan-out through the edge <1 s (join visible on the
+  host stream pre-close); zero-connected guard observed live (2 answered / 0 connected → no
+  early close — POST-only "players" aren't connected, by design); absolute-action no-op observed
+  live (wrong fromPhase end → no-op); container game end → podium → results row appended,
+  `artifacts/menhir/results.jsonl` host-owned jbassin (uid 1000). E SigNoz: 4 counters +
+  create/join/host_action spans hasError:false, 0 ERROR logs stack-wide in the window.
+  F above. G this record + README + RESUME/memory checkpoint.
+- **Register (post-v1 candidates):** ledger.iridi.cc card for menhir (explicitly out of v1);
+  campaign-flavored quiz sets (GM-authored); a CI job for the two-client smoke; player-visible
+  score during questions (needs a wire-contract change).

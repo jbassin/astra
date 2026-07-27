@@ -245,6 +245,29 @@ scriptorium.iridi.cc {
 	reverse_proxy localhost:10390
 }
 
+# menhir — the Kahoot-style session-opener quiz (0031), a Compose SSE service on
+# port 10375. No auth (stakeholder R4; per-game hostToken guards host actions).
+# Noindexed 3-layer like codex (meta + robots.txt in the app, header here). The
+# SSE event stream needs unbuffered proxying (weal-overlay/orator posture) — the
+# handle-wrapped matcher keeps the catch-all from claiming /api/events/* (which
+# would silently buffer EventSource frames).
+# (*.iridi.cc wildcard — no DNS record needed; cert mints on first hit.)
+menhir.iridi.cc {
+	import astra_site
+	header X-Robots-Tag noindex
+
+	@sse path /api/events/*
+	handle @sse {
+		reverse_proxy localhost:10375 {
+			flush_interval -1
+		}
+	}
+
+	handle {
+		reverse_proxy localhost:10375
+	}
+}
+
 # OTLP/HTTP ingest for browser RUM (config.kdl telemetry.rum-endpoint points
 # here). Reverse-proxies the SigNoz collector's host port; the collector has no
 # CORS of its own, so reflect it here for *.iridi.cc frontends only.

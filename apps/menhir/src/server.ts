@@ -1,12 +1,15 @@
 import { readFile, stat } from "node:fs/promises";
 import { resolve } from "node:path";
 
+import { getTracer } from "@astra/observe";
 import { serveFile } from "@astra/site-kit";
 import { type Server, serve } from "srvx";
 
 import { must } from "./assert";
 import type { Phase } from "./game";
 import { createRoomsRuntime, type RoomsRuntime, type RoomsRuntimeOptions } from "./rooms";
+
+const tracer = getTracer("astra.menhir");
 
 const SSE_HEADERS = {
   "content-type": "text/event-stream",
@@ -181,20 +184,39 @@ export function createApp(opts: AppOptions): {
     return serveFile(req, target);
   }
 
+  /** Manual span per mutating API call (the weal-overlay `overlay.ingest` idiom —
+   * @astra/observe registers no HTTP auto-instrumentation, so unwrapped routes
+   * emit no traces at all). Static/SSE paths stay unspanned (long-lived streams
+   * make useless spans). */
+  function traced(name: string, code: string, fn: () => Promise<Response>): Promise<Response> {
+    return tracer.startActiveSpan(name, async (span) => {
+      span.setAttribute("menhir.room", code);
+      try {
+        const res = await fn();
+        span.setAttribute("http.status_code", res.status);
+        return res;
+      } finally {
+        span.end();
+      }
+    });
+  }
+
   async function handle(req: Request): Promise<Response> {
     const { pathname } = new URL(req.url);
     const method = req.method;
 
     if (method === "GET" && pathname === "/api/quizzes") return handleQuizzes();
-    if (method === "POST" && pathname === "/api/game") return handleCreateGame(req);
+    if (method === "POST" && pathname === "/api/game") {
+      return traced("menhir.create", "", () => handleCreateGame(req));
+    }
 
     const gameMatch = /^\/api\/game\/([^/]+)\/(join|answer|host)$/.exec(pathname);
     if (method === "POST" && gameMatch) {
       const code = must(gameMatch[1], "gameMatch[1] (the route regex has 2 capture groups)");
       const action = must(gameMatch[2], "gameMatch[2] (the route regex has 2 capture groups)");
-      if (action === "join") return handleJoin(req, code);
-      if (action === "answer") return handleAnswer(req, code);
-      return handleHostAction(req, code);
+      if (action === "join") return traced("menhir.join", code, () => handleJoin(req, code));
+      if (action === "answer") return traced("menhir.answer", code, () => handleAnswer(req, code));
+      return traced("menhir.host_action", code, () => handleHostAction(req, code));
     }
 
     const eventsMatch = /^\/api\/events\/([^/]+)$/.exec(pathname);
