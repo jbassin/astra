@@ -88,7 +88,7 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self.send_error(404)
 
-    def log_message(self, fmt, *args):
+    def log_message(self, format, *args):  # noqa: A002 — stdlib signature (Liskov)
         pass
 
 
