@@ -1730,11 +1730,21 @@ input {
   margin: 0 auto;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 24rem));
+  /* min(20rem, 100%) lets tracks compress below 20rem on phone widths —
+     a fixed 20rem floor overflows the viewport as soon as a second quiz
+     exists (auto-fit resolves multiple full-width tracks). justify-self
+     pins the list to its grid area so fit-content sizing from the
+     host-picker's justify-items: center can't widen it past the screen. */
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 24rem));
   justify-content: center;
+  justify-self: stretch;
   gap: 1.25rem;
   max-width: 78rem;
   width: 100%;
+  /* grid items default to min-width auto = a min-content floor, which held
+     this list at (tracks × 20rem) and overflowed phones once a second quiz
+     existed — 0 lets it shrink to its grid area. */
+  min-width: 0;
   align-content: start;
 }
 
