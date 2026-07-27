@@ -1,7 +1,8 @@
 # 0031 — menhir: Kahoot-style session-opener quiz (spec)
 
-**Status:** FINAL (adversarial pair 2026-07-27: realtime lens 4 blockers + 6 majors, deploy lens
-3 blockers + 3 majors, all folded below; overlapping findings merged)
+**Status:** BUILT + DEPLOYED + LIVE on menhir.iridi.cc (2026-07-27, one session — §7 build
+record; all gates A–G met). Spec was FINAL after the adversarial pair (realtime lens 4 blockers +
+6 majors, deploy lens 3 blockers + 3 majors, all folded; overlapping findings merged).
 **Scope doc:** `thoughts/shared/research/2026-07-27-menhir-0031-thoughts.md` (R1–R5 stakeholder-resolved)
 **Template subsystem:** weal-overlay (srvx/Node-24 server + vite React SPA + SSE); styling from
 codex's parchment token system.

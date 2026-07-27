@@ -36,7 +36,47 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `69aa47f`, 2026-07-26 late — assay (0030) ROUND 5: **THE FLEET DIGEST IS DEALT, THE POLICY SWEEP APPLIED, AND THE RESIDUE LIVES IN THE SCRIPTORIUM** (interactive card session → P1 HELD wholesale / P2a / P2b HELD / P3 / P4a+P4b ratified + 17 FIX batched → 4-lane sweep `33d9a84`, 36 spells, gates green, revisions **174** → scriptorium pending-decisions feature `69aa47f`, 52 spells / 65 in-UI cards, data.json reseeded → codex REDEPLOYED live, corpus 44,981, SigNoz clean); **▶ NEXT = the reviewer resumes the scriptorium pass** (post-sweep text + the ⚑ pending-decision cards in-UI) → the HELD end-of-review obfuscation sweep (P1 alias table + Grey-Waste pick + monster-name scope + **the Beholder WotC-Product-Identity fix** — exposure accepted meanwhile) → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
+## Current state — UPDATE THIS SECTION (as of `7bc3017`, 2026-07-27 — **menhir (0031) COMPLETE + LIVE** and **the scriptorium PUBLIC + MOBILE** — two workstreams in one day; assay review continues in the reviewer's hands)
+
+> **✅ menhir (0031) — Kahoot-style session-opener quiz, scope→spec→build→design-gate→deploy
+> in ONE session, 2026-07-27 (spec `e71fffd` · S1 `17bae8f` · S2 `5b0568d` · S2b `ad17173` ·
+> S3 `7bc3017`, all pushed, LIVE at `https://menhir.iridi.cc`):**
+> 1. **Product:** host screen (screen-shared) + phone players via lobby QR / 4-letter code;
+>    timed MCQ on the four Kahoot shape tiles; speed scoring + streaks; scoreboard/podium;
+>    committed KDL quizzes (`apps/menhir/quizzes/`, starter = corpus-cited PF2e trivia);
+>    results JSONL at `artifacts/menhir/results.jsonl`; no auth (per-game hostToken).
+> 2. **Process:** stakeholder R1–R5 via AskUserQuestion → spec D31-1..12 hardened by an
+>    adversarial pair (7 blockers pre-killed: uv exclude, timer driver, roster early-close,
+>    answer-leaking snapshots, identical-path mounts, quizzes COPY, dual config mirrors) →
+>    sonnet S1/S2 → **opus design-review gate S2b** (stakeholder-mandated; ~25 findings
+>    applied, caught the ⭐ timer-disarm blocker staff-fixed same commit) → orchestrator S3.
+> 3. **Gates A–G all met** (spec §7 build record: both CI lanes, 59 tests incl. the rooms
+>    TestClock regression pair, live edge game, SigNoz spans+counters clean, 0 ERROR).
+> 4. **Register (post-v1):** ledger card for menhir · campaign quiz sets (GM-authored — drop
+>    KDL + `docker compose up -d --build menhir`) · CI job for the 2-client smoke · player
+>    score-during-question (wire-contract change). ⚠ redeploy ends live games (in-memory).
+> - Gotchas: [[menhir-0031-gotchas]].
+>
+> **✅ scriptorium exposure round, 2026-07-27 (`8f0eb2f` mobile+edge · `431c154` auth drop ·
+> `afaa11a` ty fix, all pushed + LIVE):** the assay review UI is now PUBLIC at
+> `https://scriptorium.iridi.cc` (stakeholder call: NO auth; noindexed) and MOBILE-friendly
+> (≤880px: drawer rails, stacked panes, touch annotation via selectionchange — iOS fires no
+> mouseup on selections, bottom-sheet popover, decisions panel scroll-capped). Server = systemd
+> user unit (`just scriptorium-install`, `Restart=always`) — no longer a session-shell child.
+> Teardown when review closes: drop the caddy stanza + `systemctl --user disable --now
+> scriptorium`. **The reviewer's scriptorium pass continues on his phone** — his state/
+> marginalia untouched throughout; staff processes new `comments.jsonl` decisions as they land.
+> - **▶ NEXT (unchanged from the assay thread): (1) reviewer resumes the scriptorium**
+>   (now mobile) → staff applies his decisions; **(2) the HELD end-of-review obfuscation
+>   sweep** (P1: alias table "Veiled Iridescence" D, Grey-Waste, monster-name scope, the
+>   Beholder WotC-Product-Identity fix); (3) Foundry compendium module; (4) joint review
+>   (revisions.md @ 174). codex gate H still open; heartwood ⏸.
+
+---
+
+### Previous section (2026-07-26 late) — card deal + scriptorium decisions (superseded above)
+
+## (was) Current state (as of `69aa47f`, 2026-07-26 late — assay (0030) ROUND 5: **THE FLEET DIGEST IS DEALT, THE POLICY SWEEP APPLIED, AND THE RESIDUE LIVES IN THE SCRIPTORIUM** (interactive card session → P1 HELD wholesale / P2a / P2b HELD / P3 / P4a+P4b ratified + 17 FIX batched → 4-lane sweep `33d9a84`, 36 spells, gates green, revisions **174** → scriptorium pending-decisions feature `69aa47f`, 52 spells / 65 in-UI cards, data.json reseeded → codex REDEPLOYED live, corpus 44,981, SigNoz clean); **▶ NEXT = the reviewer resumes the scriptorium pass** (post-sweep text + the ⚑ pending-decision cards in-UI) → the HELD end-of-review obfuscation sweep (P1 alias table + Grey-Waste pick + monster-name scope + **the Beholder WotC-Product-Identity fix** — exposure accepted meanwhile) → Foundry compendium module → joint review; codex gate H still open; heartwood ⏸)
 
 > **✅ assay (0030) R5 — card deal + policy sweep + scriptorium decisions, 2026-07-26
 > late (`33d9a84` sweep · `69aa47f` scriptorium, both pushed + DEPLOYED):**
