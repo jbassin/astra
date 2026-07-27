@@ -7,6 +7,7 @@
 import { useEffect, useState } from "react";
 
 import { createGame, listQuizzes, type QuizListItem } from "../api";
+import { MenhirMark } from "../marks";
 import { navigate } from "../router";
 import { loadStoredHost, saveStoredHost, type StoredHost } from "../storage";
 
@@ -39,11 +40,13 @@ export function HostPicker() {
 
   return (
     <div className="host-shell host-picker">
-      <h1 className="menhir-wordmark" style={{ textAlign: "center" }}>
-        menhir — host a quiz
-      </h1>
+      <header className="picker-head">
+        <MenhirMark className="picker-stone" />
+        <h1 className="menhir-wordmark">menhir</h1>
+        <p className="picker-lede">Pick a quiz. The room opens the moment you do.</p>
+      </header>
       {resumable && (
-        <p style={{ textAlign: "center" }}>
+        <p className="picker-resume">
           <button
             type="button"
             className="btn btn-secondary"
@@ -54,12 +57,12 @@ export function HostPicker() {
         </p>
       )}
       {error && (
-        <p className="host-error" role="alert" style={{ textAlign: "center" }}>
+        <p className="host-error" role="alert">
           {error}
         </p>
       )}
-      {!quizzes && <p style={{ textAlign: "center" }}>Loading quizzes…</p>}
-      {quizzes && quizzes.length === 0 && <p style={{ textAlign: "center" }}>No quizzes found.</p>}
+      {!quizzes && <p className="picker-status">Loading quizzes…</p>}
+      {quizzes && quizzes.length === 0 && <p className="picker-status">No quizzes found.</p>}
       <ul className="quiz-list">
         {quizzes?.map((quiz) => (
           <li key={quiz.id}>

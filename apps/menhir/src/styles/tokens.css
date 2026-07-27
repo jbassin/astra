@@ -42,15 +42,34 @@
   --font-body: "EB Garamond", serif; /* prose, labels */
   --font-condensed: "Oswald", sans-serif; /* timer + score digits (D31-6) */
 
-  /* --- Kahoot answer identities (D31-6) — shape+color double encoding --- */
+  /* --- Kahoot answer identities (D31-6) — shape+color double encoding ---
+   *
+   * `--shape-*` is the IDENTITY value the spec pins; `--shape-*-deep` is the
+   * bottom of each tile's ramp and `--shape-*-edge` the hard bevel under it.
+   * The circle's ramp runs darker than a naive shade of #d89e00 on purpose:
+   * white text on raw #d89e00 measures ~2.1:1, far under the 4.5:1 bar, and
+   * this screen is READ FROM ACROSS A ROOM. Shape+color double encoding means
+   * the identity survives the darker fill (the glyph still carries the hue). */
   --shape-triangle: #e21b3c;
-  --shape-triangle-dark: #9e0f26;
+  --shape-triangle-deep: #a4102a;
+  --shape-triangle-edge: #6d0a1c;
   --shape-diamond: #1368ce;
-  --shape-diamond-dark: #0c4a97;
+  --shape-diamond-deep: #0b4a99;
+  --shape-diamond-edge: #072f63;
   --shape-circle: #d89e00;
-  --shape-circle-dark: #a67900;
+  --shape-circle-deep: #93650a;
+  --shape-circle-edge: #5f4104;
   --shape-square: #26890c;
-  --shape-square-dark: #196008;
+  --shape-square-deep: #175d07;
+  --shape-square-edge: #0d3a04;
+
+  /* --- medals (podium) — drawn, never emoji (headless/projector font gaps) --- */
+  --medal-gold: #e8c455;
+  --medal-gold-deep: #9a7420;
+  --medal-silver: #cfc9bd;
+  --medal-silver-deep: #8b8578;
+  --medal-bronze: #cb9a63;
+  --medal-bronze-deep: #855c31;
 
   /* --- structural tokens (new — no codex equivalent needed) --- */
   --radius-md: 0.75rem;
@@ -58,5 +77,12 @@
   --radius-pill: 999px;
   --shadow-card: 0 6px 18px rgb(35 31 26 / 18%), 0 1px 0 rgb(255 255 255 / 30%) inset;
   --shadow-lift: 0 12px 28px rgb(35 31 26 / 26%);
+  --shadow-tile: 0 10px 0 -2px rgb(35 31 26 / 22%), 0 18px 32px rgb(35 31 26 / 22%);
   --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --tile-text-shadow: 0 2px 6px rgb(0 0 0 / 45%);
+
+  /* Paper grain + vignette — the parchment ground has to read as a PRINTED
+   * page, not a flat tan fill, or the whole app looks like an unstyled form.
+   * Inline SVG feTurbulence (no asset request, no new dep). */
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='0.38'/%3E%3C/svg%3E");
 }

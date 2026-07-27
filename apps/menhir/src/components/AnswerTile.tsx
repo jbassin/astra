@@ -5,7 +5,13 @@
  * drifts between the two roles. Always a `<button>` (oxlint's
  * `no-static-element-interactions` — a non-interactive tile is simply a
  * `disabled` button, never a clickable-looking `<div>`).
+ *
+ * Layout is a 3-slot grid — glyph · label · trailing badge/count — because the
+ * first pass absolutely-positioned the reveal checkmark into the top-right
+ * corner, which is exactly where the answer count sits: on every correct tile
+ * the ✓ and the count drew on top of each other. Slots can't collide.
  */
+import { CheckMark } from "../marks";
 import { ShapeGlyph, type Shape } from "../shapes";
 
 export interface AnswerTileProps {
@@ -15,6 +21,9 @@ export interface AnswerTileProps {
   label?: string;
   /** Reveal-phase per-option answer count (host only). */
   count?: number;
+  /** Reveal-phase share of all answers, 0–1 — drives the bar behind the label
+   * so the spread of a question reads at a glance from across the room. */
+  share?: number;
   /** Reveal-phase correctness highlight (host only). */
   correct?: boolean;
   /** True once reveal has run and this option was NOT the correct one — dims it. */
@@ -31,6 +40,7 @@ export function AnswerTile({
   shape,
   label,
   count,
+  share,
   correct,
   dim,
   selected,
@@ -58,8 +68,21 @@ export function AnswerTile({
       disabled={disabled || !onClick}
       aria-label={accessibleLabel}
     >
-      <ShapeGlyph shape={shape} />
-      {label && <span>{label}</span>}
+      {share !== undefined && (
+        <span
+          className="answer-tile-share"
+          style={{ transform: `scaleX(${Math.max(0.015, share)})` }}
+        />
+      )}
+      <span className="answer-tile-glyph">
+        <ShapeGlyph shape={shape} />
+      </span>
+      {label && <span className="answer-tile-label">{label}</span>}
+      {correct && (
+        <span className="answer-tile-badge">
+          <CheckMark />
+        </span>
+      )}
       {count !== undefined && <span className="answer-tile-count">{count}</span>}
     </button>
   );

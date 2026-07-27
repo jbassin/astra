@@ -26,19 +26,22 @@ export function ActionBar({ phase, isLastQuestion, onStart, onNext, onEnd }: Act
 
   return (
     <div className="action-bar">
+      {/* `End game` is destructive and lives one click from the primary control,
+       * so it renders as a quiet outline, never a second filled button competing
+       * with the action the host actually wants. */}
+      <button type="button" className="btn btn-quiet" onClick={onEnd}>
+        End game
+      </button>
       {phase === "lobby" && (
-        <button type="button" className="btn" onClick={onStart}>
+        <button type="button" className="btn btn-primary" onClick={onStart}>
           Start game
         </button>
       )}
       {phase !== "lobby" && (
-        <button type="button" className="btn" onClick={onNext}>
+        <button type="button" className="btn btn-primary" onClick={onNext}>
           {nextLabel(phase, isLastQuestion)}
         </button>
       )}
-      <button type="button" className="btn btn-danger" onClick={onEnd}>
-        End game
-      </button>
     </div>
   );
 }

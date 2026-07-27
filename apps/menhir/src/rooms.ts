@@ -213,6 +213,21 @@ export function createRoomsRuntime(opts: RoomsRuntimeOptions): RoomsRuntime {
     room.state = result.state;
     room.lastActivity = now;
     applyEffects(code, room, result.effects, now);
+    // Re-arm the outstanding question deadline when a reduction consumed the
+    // timer without scheduling a new one — only openQuestion emits `schedule`,
+    // so without this an answer/join/connect during a live question would
+    // permanently disarm the countdown (S2b review blocker).
+    if (
+      room.timer === null &&
+      room.state.phase === "question" &&
+      room.state.questionStartedAt !== null
+    ) {
+      const q = room.state.questions[room.state.questionIndex];
+      if (q) {
+        const at = room.state.questionStartedAt + q.time * 1000;
+        applyEffects(code, room, [{ kind: "schedule", at }], now);
+      }
+    }
     return result;
   }
 

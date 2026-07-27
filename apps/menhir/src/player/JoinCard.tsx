@@ -2,8 +2,14 @@
  * The player join card (spec §3) — code prefilled from `?code=` (D31-12,
  * `codeFromQuery`), name field, 16px+ inputs (tokens.css) so iOS Safari never
  * zooms the viewport on focus.
+ *
+ * Each field is its own `.field` block: the first pass left `<label>` and
+ * `<input>` as inline siblings in a bare `<div>`, so "Your name" sat wrapped
+ * against the left edge of its own input instead of above it.
  */
 import { useState } from "react";
+
+import { MenhirMark } from "../marks";
 
 export interface JoinCardProps {
   initialCode: string;
@@ -27,8 +33,10 @@ export function JoinCard({ initialCode, pending, error, onJoin }: JoinCardProps)
         onJoin(code.trim().toUpperCase(), name.trim());
       }}
     >
+      <MenhirMark className="join-stone" />
       <h1 className="menhir-wordmark">menhir</h1>
-      <div>
+      <p className="join-lede">The stone is set. Take your place.</p>
+      <div className="field">
         <label htmlFor="join-code">Game code</label>
         <input
           id="join-code"
@@ -42,7 +50,7 @@ export function JoinCard({ initialCode, pending, error, onJoin }: JoinCardProps)
           inputMode="text"
         />
       </div>
-      <div>
+      <div className="field">
         <label htmlFor="join-name">Your name</label>
         <input
           id="join-name"
