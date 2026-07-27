@@ -234,17 +234,14 @@ portal.iridi.cc {
 # scriptorium — the LotI2 homebrew prose-review UI (assay 0030): a host-run stdlib
 # python server (deploy/systemd/scriptorium.service, port 10390), NOT a Compose
 # service. A temporary surface so the stakeholder can review from his phone; remove
-# this stanza (+ disable the unit) when the review closes. The server has
-# unauthenticated append-only write endpoints, so the WHOLE host sits behind
-# basicauth (v2.7 spelling; renamed basic_auth in 2.8) — credentials were handed to
-# the stakeholder out-of-band. Noindexed like codex (plain header — must always win).
-# (*.iridi.cc wildcard — no DNS record needed; cert mints on first hit, ~20-60s.)
+# this stanza (+ disable the unit) when the review closes. NO auth (stakeholder call,
+# heartwood D5 posture): the write endpoints are append-only marginalia on an
+# obscure noindexed host, and the review artifact is staff-judged before any apply.
+# Noindexed like codex (plain header — must always win).
+# (*.iridi.cc wildcard — no DNS record needed; cert already minted.)
 scriptorium.iridi.cc {
 	import astra_site
 	header X-Robots-Tag noindex
-	basicauth {
-		review $2a$14$3VbvssXu///CsHYh0et2U.0khyruovq0U2ZKOvdWlDFALIcvi63ze
-	}
 	reverse_proxy localhost:10390
 }
 
