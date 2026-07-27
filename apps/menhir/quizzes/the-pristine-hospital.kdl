@@ -25,7 +25,7 @@
 //     window, back topside before the tithe (~L1524-1527, L2824-2858)
 //   - the pristine section: spotless repaired hallways, working electricity,
 //     bright white lights (~L3280-3284)
-quiz "Last Week, Through a Song Darkly — The Pristine Hospital" {
+quiz "The Pristine Hospital" {
     question "The Machine God finally named the sleeping clan. What exactly is an Ugathal?" time=20 {
         option "A sleeping tengu"
         option "A worm that wears stolen skin" correct=#true
