@@ -19348,6 +19348,620 @@
           "text": "No. No, it probably won't."
         }
       ]
+    },
+    {
+      "id": "000.through-a-song-darkly.2026-7-27",
+      "arcNo": 0,
+      "arcSlug": "through-a-song-darkly",
+      "arcTitle": "Through a Song, Darkly",
+      "episodeNo": 13,
+      "isMain": true,
+      "date": "2026-7-27",
+      "dateSortKey": 20260727,
+      "title": "Silver Needles and Walking Dead Zones",
+      "episodeTitle": "Silver Needles and Walking Dead Zones",
+      "hosts": {
+        "A": {
+          "name": "Bram",
+          "persona": "warm, boisterous, fluent but imprecise; the storyteller who relives the best moments with relish and happily embellishes. Talks in long, rolling run-on sentences that pile clause on clause; makes big sweeping claims he then has to walk back; reliably gets a name, number, or detail wrong and gets corrected (usually by Maeve); now and then runs clean out of sentence and lands on a shrug like \"you... you had to be there.\" Drives the recap forward and overshoots"
+        },
+        "B": {
+          "name": "Maeve",
+          "persona": "warm and dry, precise but pointed; the long-time regular whose knowledge of the setting is lived rather than studied. Lands the exact word, name, or date the others fumble for and reins Bram in with a flat one-line correction — she finishes her sentences and finishes them short. But she's not only the fact-checker: she needles, too, pushing on WHY the characters did what they did and making Bram defend his reads, poking at the table's heroics and at sentiment with a wink. Grounds events in how the world actually works; the only one reliably right, so let her be plainly wrong exactly once so she isn't an oracle"
+        }
+      },
+      "synopsis": "Deep in the Strider's underbelly, the party breaches a corrupted hospital tended by skin-wearing horrors — the Maker, the Maid, and their Skindrone caretakers. With the creatures' regenerating guardian moments from waking something far worse, every strike counts. After the dust settles, Anzu risks his mind to peer inside a 700-year-old slumbering servant of the Herald — and glimpses a burning world watched over by six towering figures, a song both gentler and more dangerous than the Voidsong he already carries. The name \"Ashen Pact\" echoes in its wake.",
+      "durationMs": 0,
+      "hasAudio": false,
+      "hasTranscript": false,
+      "audioVersion": "",
+      "transcript": [
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "No, no, no, okay, so — look, the whole night starts with Josh running that A.I. quiz thing, right, which was a whole bit, and I'll give him credit, it was funny, but the REAL story starts the second we're back in that hospital and the Maid is banging on that glass — and I'm telling you right now, the energy at the table shifted, because everyone suddenly realized, oh, this isn't just a fight, this is a PUZZLE, and if we don't solve the puzzle we all die."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The quiz was a tangent, I agree, but let's not skip over why they were IN the hospital in the first place. They walked in clustered. Josh said it himself at the top — all four of them grouped up and walked through the front door after Benny got hit by a hostile spell."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, but that's last session's problem, we covered that—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "No, it's THIS session's problem, because it's why the combat was as messy as it was. They were scattered across vat-tops with tentacles on the floor and the Maker in their faces before they'd even established a plan. The positioning was reactive all night because they never had positioning to begin with."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Reactivity is — look, I'll grant you the entry was sloppy, but once combat resumed, Johnny's opening play from last session was STILL paying dividends. He had two skindrones calmed, one of them tangled in the slither — which, by the way, is the silliest rename in Pathfinder history, they turned tentacles into SNAKES because of copyright—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's Slither, not snakes. The spell creates a field of grasping terrain. And yes, Johnny's Calm was the single most important spell of the encounter, I'm not arguing that. What I'm arguing is that the party treated it as a license to stop thinking tactically."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's harsh, Maeve—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Is it? Benny's first action this session is Sudden Leap at the Maker — and he rolls a natural one. Falls prone. Wastes two actions standing back up. That's not bad luck, that's a bad decision to commit that hard, that early, when you don't know what the Maid does yet."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Okay, but the INTENT was right — Benny's trying to get pressure on the Maker because the Maker is the spellcaster, and you always kill the caster first, that's just—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's exactly the kind of instinct I'm talking about. The Maker wasn't the priority. The MAID was the priority. The thing banging on the glass, trying to wake up whatever's in that central vat — THAT was the clock. And nobody fully clocked that until the Maid had already spent multiple actions on the glass."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "See, I think that's unfair, because the moment it became clear — the moment the Maid stood back up and went back to the glass AFTER they'd knocked it down — the table pivoted hard. That's when it became a focus-fire situation, and honestly, I thought the pivoting was the most impressive part of the night."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The pivoting was good, I'll give you that. But here's the thing — the Maid had REGENERATION. They were knocking it down and it kept standing back up. That's not a pivot, that's a puzzle they should have identified earlier."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "They didn't know! They hadn't—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They had fought oogathals before. The thing Benny hit last session tried to regain hit points and Benny's weapon has that anti-healing transcendence. The mechanic existed. It took them multiple rounds of the Maid standing back up before anyone went, oh, maybe we need to figure out what's keeping it alive."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fine, fine, the regeneration caught them flat-footed. But once they DID clock it, the play was — okay, so here's where I think the real brilliance of the session comes in, because you've got this regenerating corpse that keeps getting back up, and Benny's standing on top of the vat with his anti-healing weapon, and every time she stands up, he knocks her back down. That's a LOCK. That's a hard lock on the encounter's timer while the rest of the party handles everything else."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was effective, I'll grant. But let's be precise about why — Benny's weapon has a passive that forces a will save against any healing effect, including fast healing and regeneration. So the Maid had to make a D.C. twenty-four will save every time it tried to revive, and—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And it kept making them! The thing rolled well!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It did. Which means the lock was leaky. They got lucky that the Maid was on death's door enough that even partial damage kept putting it back down. If the Maid had been healthier, Benny standing there whacking a corpse would have been a wasted action every round."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But it WASN'T healthier, and the play WORKED, and I think you're — you're doing that thing where you take a successful outcome and reverse-engineer why it was actually bad, and I don't think that's—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm saying the success papered over the gaps. There's a difference. And the gaps matter because they showed up again in the Maker fight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh, the Maker. Okay, let me — let me get to the Maker, because THIS is where Johnny's play was genuinely, genuinely brilliant. So the Maker is this chitinous crab-spellcaster thing, it's been casting black tentacles and illusions and mindfog, and Johnny casts Silence ON BENNY. Not on the Maker — on Benny. He turns the nine-year-old android into a walking antimagic zone and sends him at the Maker like a heat-seeking missile."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That was clever, I'll give Johnny full credit for that. Silencing the Maker shut down its casting, and because Benny was adjacent, the zone moved with him."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And that's why the Maker spent the rest of the fight just trying to bite Benny's head off! Literally! Over and over! Because it had nothing else!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The bite still hurt. Benny took enormous damage across that fight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Sure, but the point is the Maker was NEUTRALIZED. One spell, one action, and the party's biggest threat was reduced to a melee brute. That's a championship play."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'll agree it was the play of the night tactically. But I want to note that the silence also cut both ways — Benny couldn't receive any beneficial spells while he was in that zone either. Argyle couldn't heal him, couldn't buff him. So every point of damage Benny took was damage he just had to eat."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — okay, that's technically true, but Benny was IN THE ZONE, Johnny was casting spells from OUTSIDE the zone, and Argyle could still heal when Benny moved away from the Maker—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Which he didn't, because he was body-blocking the Maker. So Argyle's healing was capped to the windows where Benny wasn't silenced, which were narrow. And Benny was bleeding the entire fight."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "God, the bleeding. Okay, you want to talk about Benny's dice? Because I need to talk about Benny's dice. This man could not roll above a five on recovery checks. The entire table is watching him just bleed out, round after round, and he's rolling — what was it, four twos? Five twos?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Josh pulled up the dice history and his average was a five. On a d-twenty. That's not bad luck, that's statistically improbable. He rolled something like four twos in a row across recovery checks."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And he's just sitting there going, yep, still bleeding, still bleeding, cool, great, love this, and meanwhile the Maker is biting his head off for — what was the big hit, like forty-four damage on one crit?"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The crit bite was forty-four. And there was a second bite for twenty-eight later. Benny was eating massive damage every round on top of the persistent bleed, and his recovery checks were catastrophically low."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But he STAYED. That's the thing — he stayed on that vat, he kept knocking the Maid down, he kept pressure on the Maker, he ate all that damage, and he never bailed. That's a nine-year-old android with more spine than half the adults at that table."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "He stayed because he had to. If he left, the Maid gets back up and keeps banging on the glass. It wasn't heroism, it was triage."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I disagree, I think there's real character in that choice — he could have gone after the Maker for personal glory, he could have chased the kill, but instead he sat on a corpse and played goalie. That's maturity, that's—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "That's a fighter with no ranged options and one job. Let's not over-narrativize it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "You're impossible. Okay — fine, so the combat grinds on, and there's this whole stretch where the Maker is silenced and the Maid keeps dying and getting back up, and then — THEN — the pivotal moment. Anzu pulls the Maid's corpse into the black tentacles — into the slither — using some kind of telekinetic yank, and the skindrone gets dragged in too, and he just DISEMBOWELS them with void damage while they're stuck."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The spell was Vampiric Feast, and the key play was that the Maid was an unattended object — a corpse — so it automatically critically failed its Reflex save. That's why it got yanked the full thirty feet. The skindrone just happened to be in the area and got pulled in too. The temp H.P. was a nice bonus."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It was a great turn. He pulled the corpse away from the glass, he killed the skindrone, he got temp H.P. — that's an all-in-one turn that essentially broke the encounter open."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'll agree it was the turning point. But the Maid still got back up after that, if you recall — it was Johnny who finally put it down for good with silver needle darts."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "OH — the silver! Yes! So the Maid keeps regenerating, nobody knows what damage type stops it, and Johnny — who has literally one attack spell, needle darts, which he can make out of different materials — he's been trying different metals all fight. He tries fire through the illusory creature, nothing. And then he goes, okay, silver. And he hits it with silver needles and the whole body just — Josh describes it bubbling up with this black caustic liquid and collapsing into fleshy ooze. That was the answer. Silver."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And here's where I'll needle you — the party should have been checking for weaknesses much earlier. Josh even pointed it out mid-fight: nobody had checked weaknesses on any of these creatures. They were just hitting it with whatever."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "To be fair, they were a little BUSY —"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "They were busy because they didn't check weaknesses. That's circular. If you'd identified silver in round two instead of round whatever-it-was, the Maid dies cleanly, the Maker dies faster, Benny takes less damage. The entire resource drain of that fight traces back to not doing basic recall knowledge."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'll give you that one, that's a fair criticism. But the flip side is — Johnny HAD the silver. He had needle darts with different materials. He was prepared for this. The fact that he had the right tool in his pocket and just needed to try it, that speaks to good character building even if the in-fight prioritization was off."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Sure, credit to the build. But I want to flag something else about that combat — the Maker's Hypercognition. The Maker cast a spell that profiled the entire party for weaknesses and resistances, and the party didn't react to that at all. That's information warfare — the enemy was learning about them, and nobody treated it as a threat."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Honestly, I think the Maker profiling them and finding nothing useful was the funniest beat of the fight. It spent an action going, let me scan you... and then just went, okay, I guess I'll bite the child's head off again."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It did learn that none of them had notable weaknesses or resistances, which is itself useful intel for the enemy. But you're right that the immediate payoff was underwhelming."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the combat resolves — the Maker goes down to Argyle's spiritual armament, the skindrones collapse when their controller dies, and the party is standing in this creepy hospital surrounded by vats of sleeping creatures and this big central tank with a ball of leeches in it. And THAT's where the session actually starts, if you ask me."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'd agree with that. The combat was a preamble. The investigation and the mind dive were the session."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, so Anzu does this occultism check — and I want to say, this is where Tanner's character really comes into his own, because Anzu is the ONLY person at that table who can do what happens next — and he rolls a thirty-six, which is a critical, and Josh just starts LAYING OUT the lore. The heart is called Lifeline. It's been corrupted, same as the Machine God was. The creatures in the vats used to be humanoid, they've been given worm characteristics — five pulsing bands around the neck and chest, like the five hearts a worm has."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Five hearts in rings. That's real biology — earthworms do have five pseudohearts. Josh mapped that onto the corrupted humanoid design. And the black raiment the creatures wear, which connects back to the Fae they encountered in the Verdant Expanse one-shot and the flame creatures under Teller's Run."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And the blue liquid! The glowing blue stuff circulating through the vats — Anzu identifies it as the same stuff from Sable and Suns weapons. That's the Sable and Suns connection. These creatures are being bathed in military-grade compound."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Diluted, but the same base compound. That's a significant lore connection — it means Sable and Suns' technology has roots in something these Ashen Pact creatures brought with them, or at least something derived from the same source."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the party has this decision point, and it's a REAL decision — they can poison the entire system through the intake ports Argyle found, which kills everything including the heart, but then they lose the energy. Or they can pull the heart's energy first, but that might wake everything up before they can poison the vats. There's no clean option."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And Josh was clear — even if they coordinated, they couldn't do both fast enough. Killing the heart via the valve might wake the creatures. Poisoning the system kills the heart before they can extract. It's a genuine dilemma."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And this is where I think the table made the RIGHT call, even though it cost them seventy energy — they chose to poison. Because waking those things up — no, no, that wasn't—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Wait, no. They didn't poison first. They went for the mind dive FIRST. The poisoning came after. The decision order matters."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Right, right, okay, yes — Anzu says, hold on, before we kill these things, I want to try to hear what's in their heads. Because they're Herald followers, and Herald followers carry a song, and Anzu carries the Voidsong, and if there's another song in there, he needs to know what it is. That's the play."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And that's the moment I want to push on, because it's the most dangerous decision of the campaign so far and I think the table underweighted the risk."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Underweighted — Maeve, Argyle cast Augury on it! He got a mixed result, good-bad-good-bad oscillating, which is about as clear a maybe as you can get from that spell. They KNEW it was a coin flip."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Exactly. A coin flip on a mental intrusion into a seven-hundred-year-old servant of an outer god. That's not a coin flip you should take."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the payoff! If Anzu can hear the song, he can understand what he's carrying. He can maybe figure out how to help his sister. He's been researching the Voidsong harmony for days at this point — this is the breakthrough he's been looking for."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And if he fails the save, he's enraptured by an alien god's song and the party has to either restrain him or fight him while standing in a hospital full of sleeping horrors. The downside is catastrophic. The upside is informational. That's a terrible risk calculus."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I hear you, but — okay, so the setup alone tells you the table took it seriously. Argyle and Benny leave to go harvest spider venom from old corpses — a three-hour round trip through the piston room and the silk curtains. While they're gone, Anzu is setting up mental defenses, Johnny is casting Heroism, Soothe, providing aid. They spent actual time and resources preparing."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the preparation rolls were middling. Anzu's occultism to set up was a twenty-nine — a success, but not a crit. Josh was clear that Anzu had done what he could but didn't know if it was enough. And then the actual dive required three checks — occultism, will, and diplomacy — and he needed to do well on ALL of them."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Johnny's aid was — okay, this is insane — Johnny rolls a forty-five on his aid check. Forty-five! That's a critical success that gives Anzu a plus three circumstance on one of the three checks. And the table is just losing their minds."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The aid was impressive. But here's the thing — Anzu still failed the occultism check. He rolled a thirty-one, which was a failure. His will save was a thirty-one, which was also marginal. His diplomacy was a twenty-seven. None of those were clean successes."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But he got THROUGH. The will save is where it almost went sideways — Josh describes Anzu's eyes going glassy, he's being pulled into the song, and Johnny — Johnny, who carries the Voidsong himself — opens his mouth and just... SCREAMS the Voidsong at Anzu. As a verbal eruption. Not as a spell, just as—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "As a way to trigger his mythic reroll ability. The ability lets an ally within thirty feet reroll a failed will save against a mental effect. So mechanically, it's a reaction that grants a reroll with a plus one circumstance bonus."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Mechanically, yes, but NARRATIVELY — Johnny, the bard who is himself infected with the Voidsong, uses that very song as a weapon to SHOCK Anzu out of the alien harmony. That's — that's poetry. That's the best moment of the night."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was a good use of a reaction, and the narrative justification was clean. I'll give it that. And the reroll succeeded — Anzu got a thirty-three, which was enough to pull back."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Enough to pull back, but not before he SAW it. The vision. And Josh just — he goes on this incredible description, right, Anzu is pulled into the creature's mind and at first it's like listening to a radio, there's this muffled word exchange, and he pushes deeper, and suddenly he FALLS through the curtain into this other place. A grassy plain. But the grass is the wrong color, bluish-teal. The air smells WRONG — different oxygen, different mixture. It's another world. It's not Færrin."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's the same world from the Voidsong vision — the riverbank, the city with the strange architecture, the twisted organic buildings with yellow roofs. That's the original Voidsong dream. But now it's on fire. The whole plain is burning."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And standing on the horizon, looking down like they're outside a diorama, are SIX FIGURES. And Josh describes each one — the multi-crowned faceless king, the many-armed figure with spell components and one green eye, the two-torsoed creature stabbing itself, the horned figure Anzu has seen before, the human with mandibles playing a horn, and the charred body tied to a stake, RAINING fire down on the world. That's the Ashen Pact. That's all six of them."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "And the song — this is the critical detail — the song in the creature's mind is NOT the Voidsong. It's gentler. It's welcoming. It pulls up happy memories, contentedness. The Voidsong is insistent, it PUSHES you. This song just asks you to listen. And Josh framed that as MORE dangerous, not less, because it doesn't trigger your defenses. It's a warm hand on your shoulder pulling you into the fire."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's — yeah, that's the read. The Voidsong is a hook in your mouth. This song is a warm bath. And the warm bath is the one that drowns you."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The only words Anzu could make out — on a twenty perception, which was a failure — were \"Ashen Pact\" repeated over and over. That's the name. That's what they call themselves."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Josh says it so casually, right, he's like, oh, by the way, the only lyric you could make out was \"Ashen Pact\" repeated endlessly, and the table just—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Josh also said he'd been sitting on that name and was relieved they finally heard it. He even made the joke about how the party called the Herald \"the feet\" for God knows how long."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Oh god, the FEET. That's — okay, that's a whole other thing, but yes, Josh has been waiting for them to get the name, and they finally have it, and honestly the way it was delivered was perfect. It wasn't a dramatic reveal. It was a fragment of a lyric overheard in a failed perception check. That's how you deliver apocalyptic lore."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I agree, the delivery was strong. But I want to go back to the risk question, because Anzu's escape was not clean. He took mental damage on the way out — half of a rebound effect — and the creature's skull caved in when he withdrew. He killed the thing by looking at it. That tells you something about the violence of that psychic connection."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And then his counteract check to dispel any lingering influence — he rolled a thirty-two, and Josh said it was inconclusive. Might not have been anything to dispel. Might not have been strong enough. They don't KNOW if Anzu brought something back with him."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Exactly. That's an open thread. And given that Anzu already carries the Voidsong, adding exposure to the Ashen Pact's harmony on top of that — that's compounding risk. The character now has two alien songs potentially rattling around in his head."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But he has information he didn't have before. He knows the Ashen Pact is six figures. He knows they're watching over a burning world. He knows their song is different from the Voidsong. And he has a NAME. That's actionable intelligence."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Intelligence that he can't fully interpret yet. The party spent the rest of the session trying to figure out how the Ashen Pact connects to the Thessians, to the Sinister Six, to the echo fragments, and they got... nowhere definitive."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I mean, they got SOMEWHERE. The connection to the Sinister Six table that Josh showed them — Compulsion, Eternity, Judgment, Recall, Supremacy, and one more — that's six. And the Ashen Pact is six. And the six figures in the vision map, thematically, onto something. The horned figure matches Pyre, the faceless king could be—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Could be. That's speculation. The party doesn't have enough to confirm any mapping. And they were explicitly wrong about some things — like, they tried to match \"Deeps\" onto the table and Josh said no, the Deeps died. Leitmotif is the Harrow. So the Sinister Six and the Ashen Pact overlap in some way but aren't identical, and the party hasn't untangled that yet."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "But the THEORIZING — the energy at the table during that section was incredible. You've got Noah connecting the lighthouse cracking the firmament to the Ashen Pact getting through, you've got Mike with the Eric Andre memes — which, honestly, were the funniest thing all night, the \"let me in\" and then \"why would the Ashen Pact do this\"—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Eric Andre framing was funny. The actual lore speculation was messy."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The lore speculation was the PARTY engaging with the world! That's what you want! These are players who care enough about the setting to argue about Thessian generations at midnight!"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "I'm not criticizing the engagement. I'm saying the conclusions were preliminary and some were wrong. That's fine for a table discussion, but I don't want to act like they cracked the code. They didn't. They found a thread and they're pulling it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Fair. Fair. But let me — can we go back to the poisoning? Because I think the actual DECISION to poison the vats deserves more attention than we've given it. After the mind dive, Anzu pulls back, they've got the spider venom that Argyle and Benny harvested, and they inject it into the intake ports. And Josh describes the liquid spreading through the system — the creatures jerk, go still, their skin rots. Everything dies. Clean. No combat, no risk, just... poison."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It was the correct call. They gave up seventy energy, which is substantial, but the alternative — waking those creatures — would have been, by Benny's own words, a guaranteed TPK."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "And Benny would know! Benny's the one who, at the end, asks Josh how close they were, and Josh confirms — the thing in the central vat had a health bar, it had turns, and if it had woken up with the creatures in the vats, it would have been a full doomsday scenario."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Josh said there were two actions left before it would have woken. Two actions. That's how close the Maid was to breaking the glass."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Two actions! That's — when I tell you my blood ran cold at the table when Josh confirmed that—"
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You were not at the table."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I was there in SPIRIT, Maeve. In spirit."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You were not at the table. But yes, two actions is razor-thin. And it validates the focus-fire call on the Maid. Whatever else was suboptimal in that fight, the decision to prioritize stopping the Maid from waking the heart was correct."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "Thank you! That's my point! The table read the urgency correctly even if the execution was messy. And the Machine God — when they poison the system, the Machine God says, I appreciate you putting one of my comrades to rest, and he starts taking over the Fane. That's the party's alliance paying off. They're building something real down there."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Machine God expanding its influence is a double-edged sword, though. The party is empowering a seven-hundred-year-old heart that they've known for what, a couple of weeks? Anzu trusts it because the alternative is the Harlequins, and that's—"
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "It's a reasonable calculus."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a limited calculus. The Machine God is useful NOW. The question is what it wants LATER. And Atum — Benny's father — is intensely interested in the Machine God's construction. That's a flag."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's a flag for LATER. Right now, the Machine God is the best ally they have, and they just gave it another Fane. That's a win."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "On the route back, Anzu's natural twenty on survival gives them something interesting — two navigation routes to lifts near the Pale Lantern Society and Amber Call. Josh notes the hospital's position is directly between those two factions. And the Machine God mentions the Iridescent Church has been delving in the undercroft."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "So the Church is poking around down there too. That's a pressure point — if the Church finds out the party is allied with the Machine God and is expanding its territory, that changes the political calculus on the Strider significantly."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It does. And it raises the question of whether the party should have told the Machine God about the Ashen Pact vision, or whether that's information they should hold close. Anzu didn't share everything in the moment."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "He told them the broad strokes — six figures, burning world, the name. But the specifics of the song, the difference between it and the Voidsong, the fact that it felt welcoming — I think that's still in Anzu's head, and I think that's the right call for now. He needs to process it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "Or he needs to tell someone who can help him interpret it. He's got Yao at the Protectorate, he's got the Voidsong research project with Benny and Johnny. Sitting on this alone is how you end up enraptured."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "That's a fair point. The one thing I keep coming back to, though, is — the party walked into that hospital to deal with the sleeping clan, and they did. They dealt with it. The fight was ugly, the resource drain was real, Benny nearly bled out on a vat, Anzu nearly lost his mind to an alien song — but they walked in and handled it. And they came out with the most significant lore drop of the campaign. That's a good night."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "It's a successful night with significant unresolved risk. The mind dive was reckless. The combat positioning was sloppy. The weakness identification was late. But the outcome was positive and the information gain was substantial. I'll concede the night was a net positive. I just want the record to show that the margin was thinner than the party seems to think."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "The record will show that Benny's dice were the real villain, and that Johnny screaming the Voidsong at his friend to save him from an alien god's lullaby is the moment of the campaign. We can agree to disagree on the rest."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "The Voidsong reroll was the moment. I'll give you that one."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'll take it."
+        },
+        {
+          "speaker": "B",
+          "name": "Maeve",
+          "text": "You'll take it."
+        },
+        {
+          "speaker": "A",
+          "name": "Bram",
+          "text": "I'll take it and I'll run."
+        }
+      ]
     }
   ]
 }
