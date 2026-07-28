@@ -225,6 +225,12 @@ mark.q{background:rgba(39,76,119,.16); color:inherit}
   background:var(--ink); color:var(--parchment); font-size:.85rem; padding:.4rem 1rem; border-radius:2px;
   opacity:0; transition:opacity .25s; pointer-events:none;
 }
+#syncBadge{
+  position:fixed; bottom:1.2rem; left:1.2rem; z-index:40; display:none;
+  background:var(--gilt); color:#f8ede0; font-size:.78rem; font-variant:small-caps;
+  letter-spacing:.05em; padding:.3rem .7rem; border-radius:2px;
+  box-shadow:0 2px 8px rgba(70,50,20,.3); pointer-events:none;
+}
 kbd{font-family:inherit; border:1px solid var(--ink-faint); border-radius:2px; padding:0 .3em; font-size:.85em; background:rgba(255,252,242,.6)}
 #hints{font-size:.72rem; color:var(--ink-faint); padding:.4rem 1rem .8rem; border-top:1px solid rgba(90,74,51,.25)}
 
@@ -309,6 +315,9 @@ kbd{font-family:inherit; border:1px solid var(--ink-faint); border-radius:2px; p
   }
 
   #search,.dnote,#pop-text{font-size:16px}
+
+  /* keep the sync badge clear of the bottom-sheet seltools/popover */
+  #syncBadge{bottom:auto; top:calc(3.1rem + env(safe-area-inset-top)); left:auto; right:.6rem}
 }
 </style>
 </head>
@@ -372,6 +381,7 @@ kbd{font-family:inherit; border:1px solid var(--ink-faint); border-radius:2px; p
   </div>
 </div>
 <div id="toast"></div>
+<div id="syncBadge"></div>
 <script>
 const $=s=>document.querySelector(s);
 let DATA=[], STATE={comments:[],reviewed:{}}, cur=0, showInter=false;
@@ -523,8 +533,48 @@ function renderInter(it){
 /* ---------- state + nav ---------- */
 async function api(path,body){
   const r=await fetch(path,body?{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)}:{});
+  if(!r.ok)throw new Error(path+" → "+r.status);
   return r.json();
 }
+
+/* ---------- offline durability: localStorage outbox + state mirror ----------
+   Every write lands in the outbox BEFORE the network sees it; a flush loop
+   drains it FIFO whenever connectivity returns (server dedupes replays by id).
+   STATE is mirrored so an offline reload — subway tab eviction — loses nothing. */
+const OB_KEY="scriptorium:outbox", MIR_KEY="scriptorium:state";
+let OUTBOX=[]; try{OUTBOX=JSON.parse(localStorage.getItem(OB_KEY)||"[]")}catch(e){OUTBOX=[]}
+let flushing=false;
+function syncBadge(){
+  const b=$("#syncBadge");
+  b.style.display=OUTBOX.length?"block":"none";
+  if(OUTBOX.length)b.textContent="✎ "+OUTBOX.length+" awaiting sync";
+}
+function persistOutbox(){localStorage.setItem(OB_KEY,JSON.stringify(OUTBOX)); syncBadge()}
+function saveMirror(){try{localStorage.setItem(MIR_KEY,JSON.stringify(STATE))}catch(e){}}
+function enqueue(path,body){
+  OUTBOX.push({path,body}); persistOutbox(); saveMirror(); flushOutbox();
+}
+async function flushOutbox(){
+  if(flushing)return;
+  flushing=true;
+  try{
+    while(OUTBOX.length){
+      await api(OUTBOX[0].path,OUTBOX[0].body);
+      OUTBOX.shift(); persistOutbox();
+    }
+  }catch(e){/* offline or server down — the interval/online listener retries */}
+  flushing=false; syncBadge();
+}
+function overlayOutbox(){
+  // server state predates whatever is still queued — re-apply the queue locally
+  for(const {path,body} of OUTBOX){
+    if(path==="/api/comment"&&!STATE.comments.some(c=>c.id===body.id))STATE.comments.push(body);
+    else if(path==="/api/comment/delete")STATE.comments=STATE.comments.filter(c=>c.id!==body.id);
+    else if(path==="/api/reviewed")STATE.reviewed[body.slug]=!!body.reviewed;
+  }
+}
+window.addEventListener("online",flushOutbox);
+setInterval(flushOutbox,20000);
 function commentsFor(slug){return STATE.comments.filter(c=>c.slug===slug)}
 function renderList(filter){
   const q=(filter||"").toLowerCase();
@@ -610,13 +660,13 @@ const isSmallScreen=()=>window.matchMedia("(max-width:880px)").matches||window.m
 function hideQuill(){$("#seltools").style.display="none"}
 function popoverOpen(){return $("#popover").style.display==="block"}
 function hidePopover(){$("#popover").style.display="none";pending=null}
-async function saveComment(kind,note){
+function saveComment(kind,note){
   if(!pending)return;
   const c={id:mkId(),kind,slug:DATA[cur].slug,spell:DATA[cur].name,pane:pending.pane,quote:pending.quote,note,at:new Date().toISOString()};
   STATE.comments.push(c);
   hidePopover(); hideQuill(); renderNotes(); renderList($("#search").value);
-  try{await api("/api/comment",c); toast(kind==="remove"?"marked for removal":"inscribed")}
-  catch(e){toast("⚠ save failed — is the server up?")}
+  enqueue("/api/comment",c);
+  toast(kind==="remove"?"marked for removal":"inscribed");
 }
 document.addEventListener("mouseup",e=>{
   const t=e.target instanceof Element?e.target:null;
@@ -685,21 +735,21 @@ $("#pop-text").addEventListener("keydown",e=>{
   if(e.key==="Enter"&&(e.metaKey||e.ctrlKey))$("#pop-save").click();
   if(e.key==="Escape")hidePopover();
 });
-$("#notes").addEventListener("click",async e=>{
+$("#notes").addEventListener("click",e=>{
   const b=e.target.closest(".del"); if(!b)return;
   STATE.comments=STATE.comments.filter(c=>c.id!==b.dataset.id);
   renderNotes(); renderList($("#search").value); renderDecisions(DATA[cur]);
-  await api("/api/comment/delete",{id:b.dataset.id});
+  enqueue("/api/comment/delete",{id:b.dataset.id});
 });
 
 /* ---------- decision responses ---------- */
-async function saveDecision(d,choice,note){
+function saveDecision(d,choice,note){
   const c={id:mkId(),kind:"decision",slug:DATA[cur].slug,spell:DATA[cur].name,pane:"decision",
     decisionId:d.id,quote:d.title,choice,note,at:new Date().toISOString()};
   STATE.comments.push(c);
   renderDecisions(DATA[cur]); renderNotes(); renderList($("#search").value);
-  try{await api("/api/comment",c); toast("decision recorded")}
-  catch(e){toast("⚠ save failed — is the server up?")}
+  enqueue("/api/comment",c);
+  toast("decision recorded");
 }
 function recordFromCtl(ctl){
   const d=(DATA[cur].decisions||[])[+ctl.dataset.idx]; if(!d)return;
@@ -708,7 +758,7 @@ function recordFromCtl(ctl){
   if(!sel&&!note){toast("pick an option or write your call first");return}
   saveDecision(d,sel?sel.dataset.choice:"",note);
 }
-$("#decisionsBody").addEventListener("click",async e=>{
+$("#decisionsBody").addEventListener("click",e=>{
   const opt=e.target.closest(".dopt");
   if(opt){
     for(const b of opt.parentElement.querySelectorAll(".dopt"))b.classList.toggle("sel",b===opt&&!b.classList.contains("sel"));
@@ -720,7 +770,7 @@ $("#decisionsBody").addEventListener("click",async e=>{
   if(ret){
     STATE.comments=STATE.comments.filter(c=>c.id!==ret.dataset.id);
     renderDecisions(DATA[cur]); renderNotes(); renderList($("#search").value);
-    await api("/api/comment/delete",{id:ret.dataset.id});
+    enqueue("/api/comment/delete",{id:ret.dataset.id});
   }
 });
 $("#decisionsBody").addEventListener("keydown",e=>{
@@ -750,11 +800,11 @@ $("#list").addEventListener("click",e=>{const it=e.target.closest(".item");if(it
 $("#search").addEventListener("input",()=>renderList($("#search").value));
 $("#prevBtn").addEventListener("click",()=>show(cur-1));
 $("#nextBtn").addEventListener("click",()=>show(cur+1));
-$("#revBtn").addEventListener("click",async()=>{
+$("#revBtn").addEventListener("click",()=>{
   const slug=DATA[cur].slug;
   STATE.reviewed[slug]=!STATE.reviewed[slug];
   show(cur);
-  await api("/api/reviewed",{slug,reviewed:STATE.reviewed[slug]});
+  enqueue("/api/reviewed",{slug,reviewed:STATE.reviewed[slug]});
 });
 $("#decisionsHead").addEventListener("click",()=>$("#decisions").classList.toggle("open"));
 $("#interBtn").addEventListener("click",()=>{
@@ -776,9 +826,24 @@ document.addEventListener("keydown",e=>{
 
 /* ---------- boot ---------- */
 (async()=>{
-  const [data,state]=await Promise.all([api("/data.json"),api("/api/state")]);
-  DATA=data.spells; STATE=state;
-  show(0);
+  if("serviceWorker" in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});
+  let data=null;
+  try{data=await api("/data.json")}catch(e){}
+  if(!data){
+    document.body.innerHTML='<p style="margin:2rem;font-family:serif;font-size:1.1rem">'+
+      "Could not load the spell data — open the scriptorium once while online to seed the offline copy.</p>";
+    return;
+  }
+  try{
+    STATE=await api("/api/state");
+    overlayOutbox();
+  }catch(e){
+    // offline: fall back to the local mirror (already includes any queued writes)
+    try{STATE=JSON.parse(localStorage.getItem(MIR_KEY))||STATE}catch(e2){}
+  }
+  saveMirror();
+  DATA=data.spells;
+  show(0); syncBadge(); flushOutbox();
 })();
 </script>
 </body>

@@ -20,21 +20,33 @@ REVIEWED = os.path.join(STATE, "reviewed.json")
 os.makedirs(STATE, exist_ok=True)
 
 
+def _comment_rows():
+    if not os.path.exists(COMMENTS):
+        return
+    for line in Path(COMMENTS).read_text().splitlines():
+        line = line.strip()
+        if line:
+            yield json.loads(line)
+
+
 def load_state():
-    comments, dead = [], set()
-    if os.path.exists(COMMENTS):
-        for line in Path(COMMENTS).read_text().splitlines():
-            line = line.strip()
-            if not line:
-                continue
-            row = json.loads(line)
-            if row.get("op") == "delete":
-                dead.add(row["id"])
-            else:
-                comments.append(row)
+    # keep-first dedupe by id: the offline outbox may replay a POST whose first
+    # attempt landed but whose response was lost mid-connectivity
+    comments, seen, dead = [], set(), set()
+    for row in _comment_rows():
+        if row.get("op") == "delete":
+            dead.add(row["id"])
+        elif row["id"] not in seen:
+            seen.add(row["id"])
+            comments.append(row)
     comments = [c for c in comments if c["id"] not in dead]
     reviewed = json.loads(Path(REVIEWED).read_text()) if os.path.exists(REVIEWED) else {}
     return {"comments": comments, "reviewed": reviewed}
+
+
+def already_logged(row_id, op=None):
+    """True if comments.jsonl already carries this row (replay-safe appends)."""
+    return any(r["id"] == row_id and r.get("op") == op for r in _comment_rows())
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -62,6 +74,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path in ("/", "/index.html"):
             self._file("index.html", "text/html; charset=utf-8")
+        elif self.path == "/sw.js":
+            self._file("sw.js", "text/javascript; charset=utf-8")
         elif self.path == "/data.json":
             self._file("data.json", "application/json")
         elif self.path == "/api/state":
@@ -73,12 +87,14 @@ class Handler(BaseHTTPRequestHandler):
         n = int(self.headers.get("content-length", 0))
         row = json.loads(self.rfile.read(n) or b"{}")
         if self.path == "/api/comment":
-            with open(COMMENTS, "a") as f:
-                f.write(json.dumps(row) + "\n")
+            if not already_logged(row["id"]):
+                with open(COMMENTS, "a") as f:
+                    f.write(json.dumps(row) + "\n")
             self._json({"ok": True})
         elif self.path == "/api/comment/delete":
-            with open(COMMENTS, "a") as f:
-                f.write(json.dumps({"op": "delete", "id": row["id"]}) + "\n")
+            if not already_logged(row["id"], op="delete"):
+                with open(COMMENTS, "a") as f:
+                    f.write(json.dumps({"op": "delete", "id": row["id"]}) + "\n")
             self._json({"ok": True})
         elif self.path == "/api/reviewed":
             reviewed = json.loads(Path(REVIEWED).read_text()) if os.path.exists(REVIEWED) else {}
