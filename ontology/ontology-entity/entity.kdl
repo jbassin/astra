@@ -142,6 +142,10 @@ entity "Argyle's" {
     alias "Artie Kyle's"
     source "defs"
 }
+entity "Ashen Pact" kind="deity" page="Divinity/Ashen Pact/index" {
+    alias "Ashen Pack"
+    source "akasha"
+}
 entity "Atum" {
     alias "Adam"
     source "defs"

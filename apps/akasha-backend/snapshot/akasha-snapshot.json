@@ -1,6 +1,55 @@
 {
   "edges": [
     {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Regent",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Regent"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Esoterica",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Esoterica"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/War",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "War"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Giant",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Giant"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Herald",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Herald"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Divinity/Ashen Pact/Pyre",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Pyre"
+    },
+    {
+      "alias": null,
+      "heading": null,
+      "resolved": "Phenomena/Firmament",
+      "source": "Divinity/Ashen Pact/index",
+      "target": "Firmament"
+    },
+    {
       "alias": "Hallia",
       "heading": null,
       "resolved": "Geography/Calaria/Hallia/index",
@@ -2206,6 +2255,58 @@
         "title": null
       },
       "path": "Divinity/Ashen Pact/War"
+    },
+    {
+      "crossrefs": [
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Regent"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Esoterica"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "War"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Giant"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Herald"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Pyre"
+        },
+        {
+          "alias": null,
+          "heading": null,
+          "target": "Firmament"
+        }
+      ],
+      "date": "2026-07-30T00:00:00-04:00",
+      "frontmatter": {
+        "aliases": [
+          "Ashen Pack"
+        ],
+        "extra": {
+          "date": "2026-07-30T00:00:00-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/index"
     },
     {
       "crossrefs": [
