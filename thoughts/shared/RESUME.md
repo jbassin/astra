@@ -36,7 +36,20 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `e4b93b4`, 2026-07-29 — **disk-full incident RECOVERED** (edge back, scriptorium healed + hardened, gdrive re-authed); menhir (0031) COMPLETE + LIVE; assay review continues in the reviewer's hands)
+## Current state — UPDATE THIS SECTION (as of `fa97e9f`, 2026-07-30 — **Ashen Pact wiki entries LIVE + the 2026-7-27 episode RE-RENDERED with forced wiki grounding**; disk-full incident recovered 07-29; menhir (0031) COMPLETE + LIVE; assay review continues in the reviewer's hands)
+
+> **✅ Ashen Pact content round, 2026-07-29/30 (`dbce94e` six entries · `b00b0ee`+`87ccc33`
+> index added-then-reverted · `fa97e9f` episode snapshot, all pushed + LIVE):** six
+> stakeholder-authored deity entries live under `akasha.iridi.cc/Divinity/Ashen-Pact/`
+> (Regent, Esoterica, War, Giant, Herald, Pyre — verbatim bodies, no `@deity` mechanics);
+> the **index page is deliberately OFF the site** (stakeholder call) but **baked into the
+> current dagster-code image only**, so mouthpiece grounding matches "Ashen Pact" until the
+> next `just up` rebuild silently drops it (recover from `b00b0ee` if wanted permanently —
+> would need a render-only exclusion mechanism, unbuilt). The **2026-7-27 episode was
+> re-rendered live** ("The Quiz, the Maid, and the Ashen Pact", 24.3 min real ElevenLabs)
+> with all 7 refs FORCE-prepended into its `digest.json` — the script recites the six
+> descriptions from wiki text the transcript never contained. Recipe + gotchas:
+> [[ashen-pact-mouthpiece-grounding]].
 
 > **✅ 2026-07-29 disk-full incident — FULLY RECOVERED same day (`151b331` scriptorium
 > hardening · `e4b93b4` caddy boot fix, both pushed; details in
