@@ -412,8 +412,9 @@ entity "Embercall's" {
     alias "Ember\\s*Calls"
     source "defs"
 }
-entity "Esoterica" {
+entity "Esoterica" kind="deity" page="Divinity/Ashen Pact/Esoterica" {
     alias "esoterica"
+    source "akasha"
     source "defs"
 }
 entity "Estañion" {
@@ -559,8 +560,9 @@ entity "Giannos Hasikos" kind="person" page="Org/Ministry of Cultural Progress/P
     alias "Giannos"
     source "akasha"
 }
-entity "Giant" {
+entity "Giant" kind="deity" page="Divinity/Ashen Pact/Giant" {
     alias "giant"
+    source "akasha"
     source "defs"
 }
 entity "Gin Soaked Rag" kind="person" page="Org/Iconoclasm/People/Gin Soaked Rag" {
@@ -619,9 +621,10 @@ entity "Heir of the Plague" kind="deity" page="Divinity/Outer Gods/Heir of the P
     alias "Heir"
     source "akasha"
 }
-entity "Herald" {
+entity "Herald" kind="deity" page="Divinity/Ashen Pact/Herald" {
     alias "herald"
     alias "Harold"
+    source "akasha"
     source "defs"
 }
 entity "Hey, Aut" {
@@ -1099,8 +1102,9 @@ entity "Psiburst" {
     alias "Psyburst"
     source "defs"
 }
-entity "Pyre" {
+entity "Pyre" kind="deity" page="Divinity/Ashen Pact/Pyre" {
     alias "pyre"
+    source "akasha"
     source "defs"
 }
 entity "Pyrelight" kind="org" page="Org/Pyrelight/index" {
@@ -1127,8 +1131,9 @@ entity "Raelion" kind="place" page="Geography/Raelion/index" {
 entity "Ralph Bishop" kind="person" page="Org/The Scale/People/Ralph Bishop" {
     source "akasha"
 }
-entity "Regent" {
+entity "Regent" kind="deity" page="Divinity/Ashen Pact/Regent" {
     alias "regent"
+    source "akasha"
     source "defs"
 }
 entity "Renge" {
@@ -1516,8 +1521,9 @@ entity "Walter Stoke" kind="person" page="Org/Iridescent Church/People/Walter St
     alias "Walter"
     source "akasha"
 }
-entity "War" {
+entity "War" kind="deity" page="Divinity/Ashen Pact/War" {
     alias "war"
+    source "akasha"
     source "defs"
 }
 entity "Watcher With 1,000 Eyes" kind="deity" page="Divinity/Outer Gods/Watcher With 1,000 Eyes" {

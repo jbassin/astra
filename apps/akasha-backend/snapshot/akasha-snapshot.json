@@ -2124,6 +2124,90 @@
       "path": "Bestiary/Ugathal"
     },
     {
+      "crossrefs": [],
+      "date": "2026-07-29T23:41:12-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-29T23:41:12-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/Esoterica"
+    },
+    {
+      "crossrefs": [],
+      "date": "2026-07-29T23:41:12-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-29T23:41:12-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/Giant"
+    },
+    {
+      "crossrefs": [],
+      "date": "2026-07-29T23:41:12-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-29T23:41:12-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/Herald"
+    },
+    {
+      "crossrefs": [],
+      "date": "2026-07-29T23:41:12-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-29T23:41:12-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/Pyre"
+    },
+    {
+      "crossrefs": [],
+      "date": "2026-07-29T23:41:12-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-29T23:41:12-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/Regent"
+    },
+    {
+      "crossrefs": [],
+      "date": "2026-07-29T23:41:12-04:00",
+      "frontmatter": {
+        "aliases": [],
+        "extra": {
+          "date": "2026-07-29T23:41:12-04:00"
+        },
+        "img": null,
+        "tags": [],
+        "title": null
+      },
+      "path": "Divinity/Ashen Pact/War"
+    },
+    {
       "crossrefs": [
         {
           "alias": "Hallia",
