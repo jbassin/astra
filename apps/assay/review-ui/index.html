@@ -565,6 +565,27 @@ async function flushOutbox(){
   }catch(e){/* offline or server down — the interval/online listener retries */}
   flushing=false; syncBadge();
 }
+function reconcileMirror(){
+  // the server lost state once (disk-full truncated reviewed.json): anything
+  // the mirror knows that the server doesn't gets re-applied AND re-queued,
+  // instead of saveMirror() destroying the last surviving copy of it
+  let mir=null; try{mir=JSON.parse(localStorage.getItem(MIR_KEY))}catch(e){}
+  if(!mir)return;
+  const queued=new Set(OUTBOX.map(o=>o.body&&o.body.id));
+  for(const c of mir.comments||[]){
+    if(c&&c.id&&!STATE.comments.some(x=>x.id===c.id)&&!queued.has(c.id)){
+      STATE.comments.push(c); OUTBOX.push({path:"/api/comment",body:c});
+    }
+  }
+  for(const [slug,v] of Object.entries(mir.reviewed||{})){
+    // only heal server-side ABSENCE; an explicit false is a deliberate unmark
+    if(v&&!(slug in STATE.reviewed)){
+      STATE.reviewed[slug]=true;
+      OUTBOX.push({path:"/api/reviewed",body:{slug,reviewed:true}});
+    }
+  }
+  persistOutbox();
+}
 function overlayOutbox(){
   // server state predates whatever is still queued — re-apply the queue locally
   for(const {path,body} of OUTBOX){
@@ -836,6 +857,7 @@ document.addEventListener("keydown",e=>{
   }
   try{
     STATE=await api("/api/state");
+    reconcileMirror();
     overlayOutbox();
   }catch(e){
     // offline: fall back to the local mirror (already includes any queued writes)

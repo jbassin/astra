@@ -29,6 +29,15 @@ def _comment_rows():
             yield json.loads(line)
 
 
+def _read_reviewed():
+    # fail-soft: a disk-full incident once truncated this file to 0 bytes, and a
+    # parse error here took down /api/state (and with it the client's sync loop)
+    try:
+        return json.loads(Path(REVIEWED).read_text())
+    except (OSError, json.JSONDecodeError):
+        return {}
+
+
 def load_state():
     # keep-first dedupe by id: the offline outbox may replay a POST whose first
     # attempt landed but whose response was lost mid-connectivity
@@ -40,8 +49,7 @@ def load_state():
             seen.add(row["id"])
             comments.append(row)
     comments = [c for c in comments if c["id"] not in dead]
-    reviewed = json.loads(Path(REVIEWED).read_text()) if os.path.exists(REVIEWED) else {}
-    return {"comments": comments, "reviewed": reviewed}
+    return {"comments": comments, "reviewed": _read_reviewed()}
 
 
 def already_logged(row_id, op=None):
@@ -97,9 +105,13 @@ class Handler(BaseHTTPRequestHandler):
                     f.write(json.dumps({"op": "delete", "id": row["id"]}) + "\n")
             self._json({"ok": True})
         elif self.path == "/api/reviewed":
-            reviewed = json.loads(Path(REVIEWED).read_text()) if os.path.exists(REVIEWED) else {}
+            reviewed = _read_reviewed()
             reviewed[row["slug"]] = bool(row["reviewed"])
-            Path(REVIEWED).write_text(json.dumps(reviewed, indent=1))
+            # atomic replace — a plain write_text truncates first, so a full
+            # disk (or a crash mid-write) destroys the whole map
+            tmp = REVIEWED + ".tmp"
+            Path(tmp).write_text(json.dumps(reviewed, indent=1))
+            os.replace(tmp, REVIEWED)
             self._json({"ok": True})
         else:
             self.send_error(404)
