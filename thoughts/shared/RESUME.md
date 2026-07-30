@@ -36,7 +36,26 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `7bc3017`, 2026-07-27 — **menhir (0031) COMPLETE + LIVE** and **the scriptorium PUBLIC + MOBILE** — two workstreams in one day; assay review continues in the reviewer's hands)
+## Current state — UPDATE THIS SECTION (as of `e4b93b4`, 2026-07-29 — **disk-full incident RECOVERED** (edge back, scriptorium healed + hardened, gdrive re-authed); menhir (0031) COMPLETE + LIVE; assay review continues in the reviewer's hands)
+
+> **✅ 2026-07-29 disk-full incident — FULLY RECOVERED same day (`151b331` scriptorium
+> hardening · `e4b93b4` caddy boot fix, both pushed; details in
+> [[reboot-boot-traps-2026-07-29]]):** the box filled, was resolved + rebooted — the
+> FIRST reboot in 108 days, which exposed two latent boot traps that took the whole
+> `*.iridi.cc` edge down (caddy: no CF_API_TOKEN at boot → parse-safe
+> `{$CF_API_TOKEN:unset-at-boot}` default, run `just caddy-reload` after any reboot;
+> caddy: stock `LimitNPROC=512` vs uid-1000 at 845 threads post run-as-1000 cutover →
+> root drop-in `LimitNPROC=infinity`). Fallout fixed: scriptorium
+> `state/reviewed.json` truncated to 0 B (non-atomic write_text during disk-full) →
+> restored from store−fleet-lanes reconstruction (exactly the frozen 32), server now
+> fail-soft + atomic-replace, client gained boot-time `reconcileMirror()` (heals
+> server-side loss from the phone's localStorage mirror instead of destroying it);
+> gdrive OAuth state lost → stakeholder re-authed headless, mount + craig-sync live;
+> stale faerrin `vellum-render.service` crash-loop disabled. Reviewer's
+> `comments.jsonl` survived intact (127 comments); her backed-up outbox drains on
+> next page contact. Note `72dc4b5` (scriptorium offline durability — outbox/mirror/
+> service worker, built 07-28 in another session) is what made the mirror-based
+> recovery possible.
 
 > **✅ menhir (0031) — Kahoot-style session-opener quiz, scope→spec→build→design-gate→deploy
 > in ONE session, 2026-07-27 (spec `e71fffd` · S1 `17bae8f` · S2 `5b0568d` · S2b `ad17173` ·
