@@ -36,7 +36,41 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `f191e2d`, 2026-07-31 — **assay (0030): THE FULL REVIEW IS APPLIED + DEPLOYED LIVE** — the reviewer finished her scriptorium pass; all comments applied, decision cards discarded, P1 obfuscation CLOSED; ▶ NEXT = Foundry compendium module → joint review)
+## Current state — UPDATE THIS SECTION (as of `79affe5`, 2026-07-31 late — **"Liturgy of the Iridite Vol.2" Homebrewery book BUILT + LIVE-RENDER-VERIFIED** — the 173-spell store is now a paste-ready 64-page spell compendium; ▶ NEXT = stakeholder reviews the book content + drops art in, then Foundry compendium module → joint review)
+
+> **✅ Liturgy Vol.2 Homebrewery book, 2026-07-31 late (`585e754` vol1 reference ·
+> `3048db6` generator · `8dbb224`+`79affe5` pagination fix rounds · `239d664`
+> content+output, all pushed):**
+> 1. **Product:** `apps/codex/books/liturgy_vol2/` — generated Homebrewery-v3 markdown
+>    (paste into the text editor) + byte-verbatim vol1 css (Style tab). 64 pages: front
+>    matter (cover/credits/how-to-read), toc, 8 school chapters (antillurgy→…→seraphic
+>    capstone) each = authored opener + full-width spell-list table + spells by rank in
+>    vol1's `{{ruleBlock}}` idiom. Regenerate: `uv run assay export-book`; after big
+>    store-text edits re-run `tools/measure-heights.mjs` (refreshes calibration.json).
+> 2. **Pipeline:** `assay export-book` (book.py, 27 tests) converts store HTML →
+>    Homebrewery md (glyphs, trait pills, `::` rows, Heightened postambles, ritual
+>    check rows, trigger-lift) and paginates on MEASURED px heights (committed
+>    calibration.json) with blocks flowing across columns like official print.
+> 3. **⭐ The Homebrewery render traps (each cost a live-audit round, all pinned in
+>    generated-style comments + [[liturgy-vol2-homebrewery-gotchas]]):** theme's
+>    `spellList` class = 4-col name-list trap · blocks are `display:inline-block` =
+>    NEVER fragment (the "huge empty gaps" root cause; fix = display:block + break
+>    overrides, all !important) · default `column-fill: balance` spills a clipped 3rd
+>    column · calibration must be margin-INCLUSIVE (~12% error) · verify via clipboard-
+>    paste into /new (client-side only; API POST blocked by permission classifier).
+> 4. **⚠ Stakeholder review pending on the book:** chapter-intro creative liberties
+>    (Timekeepers/Concord of Hours, Almonk/Djura bios, imprimatur page, seraphic
+>    "was it ever cast" ambiguity), 23 staff-trimmed spell summaries, credits TODOs,
+>    10 art slots (ART-SLOTS.md manifest; chapter openers reserve right column).
+> - **▶ NEXT: (1) stakeholder book review + art; (2) Foundry compendium module**
+>   (trigger-field + cost-surfacing questions at its scoping); **(3) joint review**
+>   (revisions.md @ 173). codex gate H unchanged; heartwood ⏸.
+
+---
+
+### Previous section (2026-07-31 early) — assay final-review application (superseded above)
+
+## (was) Current state (as of `f191e2d`, 2026-07-31 — **assay (0030): THE FULL REVIEW IS APPLIED + DEPLOYED LIVE** — the reviewer finished her scriptorium pass; all comments applied, decision cards discarded, P1 obfuscation CLOSED; ▶ NEXT = Foundry compendium module → joint review)
 
 > **✅ assay (0030) — final-review application round, 2026-07-31 (`52b538e` mystic-negation
 > removal · `14a0076` Spawn rename · `f191e2d` sweep, all pushed + DEPLOYED):**
