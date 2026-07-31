@@ -5,6 +5,33 @@ metadata:
   type: project
 ---
 
+PROJECT 2026-07-31 **▶ FINAL-REVIEW APPLICATION ROUND — the reviewer's completed
+scriptorium pass APPLIED + DEPLOYED in one session (`52b538e` mystic-negation removal ·
+`14a0076` Spawn Abyssal Sprite→Spawn Animated Spite · `f191e2d` 287-comment sweep, all
+pushed, codex LIVE at corpus 44,980):** comments.jsonl is an APPEND-LOG (514 raw − 110
+`op:delete` tombstones → 294 live; resolve tombstones FIRST — her own deletions retract
+comments, e.g. the Bubble Bubble feasibility question was self-deleted). Stakeholder
+retractions honored: force→spirit family dropped ×6 (Propagating Blast's mechanics rewrite
+kept, damage type held force); **the `<name|alias>` markup design is DEAD** — her `<X|Y>`
+notes were applied as plain renames, which CLOSED the held P1 obfuscation sweep (Gehenna→
+the Fetid Maw · Far Realms→Slip · Plane of Earth→Quarry · Orichalcum→Faerock · Grey Waste→
+Nowhere · Carceri→Umberii · Beholder→**the Aberrant** by follow-up ask); decision cards
+DISCARDED wholesale (decisions.json deleted; build_data fail-softs). ⭐ Finds: ONE terse
+comment can be SET-WIDE (her "as a … activity" note → granted-named-action rule across 5
+files); action-cost markers normalized to `<span class="action-glyph">` — codex's
+foundryHtml ingest treats it as a first-class node (real glyphs; her "Should be icon" ×2
+sanctioned it); a routing flip can be the CORRECT verdict of a strike, not an artifact
+(shell's AC/resist bullets struck → no-priceable-effect is right — diagnose old-vs-new
+per-spell `assay score --spell` before blaming the lens; `OTEL_SDK_DISABLED=true` silences
+export noise); the missing-pathspec git-add abort struck AGAIN (deleted-file pathspec →
+commit captured only pre-staged content; amend pre-push); RTK grep garbled two mid-gate
+greps — python comparators. Residue for the Foundry-module round: homebrew ingest DROPS
+`system.cost` (costs incl. Faerock invisible on codex — pre-existing); store schema has no
+trigger field ("Trigger in header" ×3 skipped — schema decision); tentacle heighten gap
+r5→8th is her drawn boundary; scriptorium teardown awaits her confirmation. Store **173**
+spells, revisions.md **173 deviations / 3 missing**. ▶ NEXT: Foundry compendium module →
+joint review.
+
 **PROJECT 2026-07-19 — assay (0030) COMPLETE through round 3, one session:** `apps/assay`
 (uv member) scores PF2e homebrew spells against the codex Foundry snapshot
 (`apps/codex/data/snapshots/foundry/pf2e-*/packs/pf2e/spells/spells/`, read-only). Scope

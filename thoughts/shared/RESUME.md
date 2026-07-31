@@ -36,7 +36,57 @@ everything else points at durable docs). Update it when you finish a slice/subsy
 
 ---
 
-## Current state — UPDATE THIS SECTION (as of `fa97e9f`, 2026-07-30 — **Ashen Pact wiki entries LIVE + the 2026-7-27 episode RE-RENDERED with forced wiki grounding**; disk-full incident recovered 07-29; menhir (0031) COMPLETE + LIVE; assay review continues in the reviewer's hands)
+## Current state — UPDATE THIS SECTION (as of `f191e2d`, 2026-07-31 — **assay (0030): THE FULL REVIEW IS APPLIED + DEPLOYED LIVE** — the reviewer finished her scriptorium pass; all comments applied, decision cards discarded, P1 obfuscation CLOSED; ▶ NEXT = Foundry compendium module → joint review)
+
+> **✅ assay (0030) — final-review application round, 2026-07-31 (`52b538e` mystic-negation
+> removal · `14a0076` Spawn rename · `f191e2d` sweep, all pushed + DEPLOYED):**
+> 1. **The reviewer finished her full pass** (174/174 reviewed; comments.jsonl = 514 raw →
+>    294 live after her in-UI tombstones). Her retractions honored: the force→spirit family
+>    (6 comments) dropped; the `<name|alias>` design is DEAD — her `<X|Y>` notes applied as
+>    **plain renames** (Gehenna→the Fetid Maw · Far Realms→Slip · Plane of Earth→Quarry ·
+>    Orichalcum→Faerock · Grey Waste→Nowhere · Carceri→Umberii · follow-up ask:
+>    Beholder→**the Aberrant**) — **this CLOSED the held P1 obfuscation sweep** (store-wide
+>    grep zero D&D-IP survivors). **Decision cards DISCARDED wholesale** (stakeholder call:
+>    "read my comments") — `review-ui/decisions.json` deleted, build_data fail-softs.
+> 2. **Application: 287 comments across 117 spells via 4 sonnet lanes** off
+>    `results/final-review/BRIEF.md` (per-comment ledgers lane{1-4}.json; 269 applied /
+>    11 amended / 7 skipped-with-reason). Set-wide finds: her Umbral note = a SET-WIDE
+>    "as a N-action activity"→granted-named-action rule (5 files); action-cost markers
+>    normalized to `<span class="action-glyph">` (her "Should be icon" ×2 — the codex
+>    foundryHtml ingest handles it as a first-class node, real glyphs render). Headline
+>    edits: mystic-negation REMOVED (store **173**) · Spawn Abyssal Sprite→**Spawn Animated
+>    Spite** (collision-clean) · talk-the-talk r3→2 touch/single-target · weight-of-the-world
+>    r5→6 · wall-of-time redesigned (Heightened promoted to base, gains Fortitude save) ·
+>    rewind-and-playback heal deliberately UNCAPPED (cost mechanic governs).
+> 3. **Gates all green:** flatten-diff = sanctioned fields only (113 description / 55
+>    heightening restructures / 7 defense; every outlier comment-backed) · score set-diff:
+>    **14 drifts / 6 routing flips, every one comment-explained** (e.g. shell's AC/resist
+>    bullets struck → correctly no-priceable-effect) · revisions.md regenerated = **173
+>    deviations / 3 missing-from-store** · both CI lanes green (678 pytest; oxlint
+>    `--threads=4`).
+> 4. **Deploy (store-text, LIVE):** transform-direct → corpus spell 2,633→2,632, Pagefind
+>    **44,980** (−1 exact) → export-codex artifact (1,144 entries) → codex restart;
+>    edge-verified (mystic-negation 404 · spawn-animated-spite 200 · aliases live ·
+>    glyph spans render `codex-action-glyph` · jolt 60 ft · wall-of-time Fortitude);
+>    SigNoz **0 ERROR / 0 error traces**. Scriptorium data.json reseeded (0 cards).
+> 5. **⚠ Gotcha struck again:** missing-pathspec ABORTED a `git add` (deleted-file pathspec)
+>    → sweep commit initially captured only the pre-staged deletion; recovered by amend
+>    pre-push. ⚠ RTK grep/compaction garbled two greps mid-gate — python was the comparator.
+> 6. **Residue (registered):** homebrew ingest DROPS `system.cost` → costs (incl. Faerock)
+>    invisible on codex pages — PRE-EXISTING gap (hellforging never showed cost either),
+>    matters for the Foundry module round · monstrous-copy-tentacle heighten gap (base r5 →
+>    next tier 8th, her drawn strike boundary — flag at joint review) · "Trigger in header"
+>    ×3 skipped (store schema has no trigger field — schema decision, ask before Foundry
+>    module) · scriptorium teardown pending her confirmation (unit + caddy stanza live).
+> - **▶ NEXT: (1) Foundry compendium module** (consumes the store; resolve the trigger-field
+>   + cost-surfacing questions in its scoping); **(2) joint review** with the friend
+>   (revisions.md @ 173 deviations is THE artifact). codex gate H unchanged; heartwood ⏸.
+
+---
+
+### Previous section (2026-07-30) — Ashen Pact round (superseded above)
+
+## (was) Current state (as of `fa97e9f`, 2026-07-30 — **Ashen Pact wiki entries LIVE + the 2026-7-27 episode RE-RENDERED with forced wiki grounding**; disk-full incident recovered 07-29; menhir (0031) COMPLETE + LIVE; assay review continues in the reviewer's hands)
 
 > **✅ Ashen Pact content round, 2026-07-29/30 (`dbce94e` six entries · `b00b0ee`+`87ccc33`
 > index added-then-reverted · `fa97e9f` episode snapshot, all pushed + LIVE):** six
