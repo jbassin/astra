@@ -76,3 +76,7 @@ apps/linguist/script/*
 !apps/linguist/script/.gitkeep
 apps/mouthpiece-backend/episodes/*
 !apps/mouthpiece-backend/episodes/.gitkeep
+
+# Homebrewery book references — keep the md/css sources, not the rendered PDFs
+# (7 MB binaries re-exportable from the Homebrewery editor).
+apps/codex/books/**/*.pdf

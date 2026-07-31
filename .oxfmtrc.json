@@ -26,6 +26,7 @@
     "**/*.sdPlugin/**",
     "**/codex/data/**",
     "**/codex/fixtures/**",
+    "**/codex/books/**",
     "**/assay/vendor/**",
     "**/assay/homebrew/**"
   ]
