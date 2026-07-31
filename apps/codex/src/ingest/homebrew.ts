@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 
 import type { CodexEntity } from "../schema/entity";
-import type { CodexNode } from "../schema/nodes";
+import type { BlockNode, CodexNode, InlineNode, StatRowNode } from "../schema/nodes";
 import { EnricherGrammarError, type EnricherContext } from "./enrichers";
 import { assembleFoundryEntity, type RawFoundryDoc } from "./foundryEntities";
 import { FoundryHtmlError, parseFoundryHtml } from "./foundryHtml";
@@ -90,6 +90,84 @@ function hasRitual(rawDoc: unknown): boolean {
   return (rawDoc as { system?: { ritual?: unknown } }).system?.ritual !== undefined;
 }
 
+/** The store doc's own `system.cost`/`system.ritual` stat fields, read via
+ * the same narrow-structural-cast posture as `hasRitual` above (official
+ * Foundry spell docs never carry `ritual`, and `RawSystem` declares neither
+ * field). */
+interface RawStatFields {
+  system?: {
+    cost?: { value?: unknown };
+    ritual?: {
+      primary?: { check?: unknown };
+      secondary?: { casters?: unknown; checks?: unknown };
+    };
+  };
+}
+
+function statCell(label: string, value: string): InlineNode[] {
+  const marks = { italic: false, superscript: false };
+  return [
+    { kind: "text", content: label, marks: { ...marks, bold: true } },
+    { kind: "text", content: ` ${value}`, marks: { ...marks, bold: false } },
+  ];
+}
+
+/**
+ * Synthesizes the AoN-style statblock rows an official ritual/costed spell
+ * gets from its AoN side — which homebrew docs don't pass through, so
+ * `system.cost` and `system.ritual` were invisible on every homebrew page
+ * (hellforging's 50,000 gp body, the ritual caster requirements the
+ * 2026-07-31 review asked after). Mirrors `ritual/resurrect`'s real shape:
+ * row one `Cost`/`Secondary Casters`, row two `Primary Check`/`Secondary
+ * Checks`, each cell a bold label + plain ` value` run. `Cast` is
+ * deliberately NOT synthesized — the entity header already renders
+ * `facets.castTime`. Rows with no populated cell are omitted entirely, so a
+ * plain costless spell gains nothing; a row left with a SINGLE cell emits as
+ * a bold-label paragraph instead (`CodexEntitySchema` pins `statRow.cells`
+ * to >=2, mirroring the P10 candidacy rule — a lone bold-label line IS a
+ * paragraph, pre-collapse AoN shape).
+ */
+function synthesizeStatRows(rawDoc: unknown): BlockNode[] {
+  const sys = (rawDoc as RawStatFields).system;
+  const rowOne: InlineNode[][] = [];
+  const rowTwo: InlineNode[][] = [];
+
+  const cost = sys?.cost?.value;
+  if (typeof cost === "string" && cost.trim() !== "") rowOne.push(statCell("Cost", cost.trim()));
+
+  const casters = sys?.ritual?.secondary?.casters;
+  if (typeof casters === "number" && casters > 0) {
+    rowOne.push(statCell("Secondary Casters", String(casters)));
+  }
+
+  const primaryCheck = sys?.ritual?.primary?.check;
+  if (typeof primaryCheck === "string" && primaryCheck.trim() !== "") {
+    rowTwo.push(statCell("Primary Check", primaryCheck.trim()));
+  }
+  const secondaryChecks = sys?.ritual?.secondary?.checks;
+  if (typeof secondaryChecks === "string" && secondaryChecks.trim() !== "") {
+    rowTwo.push(statCell("Secondary Checks", secondaryChecks.trim()));
+  }
+
+  const rows: BlockNode[] = [];
+  for (const cells of [rowOne, rowTwo]) {
+    if (cells.length >= 2) {
+      const row: StatRowNode = { kind: "statRow", cells };
+      rows.push(row);
+    } else if (cells.length === 1 && cells[0] !== undefined) {
+      rows.push({ kind: "paragraph", children: cells[0] });
+    }
+  }
+  return rows;
+}
+
+function withSynthesizedStats(entity: CodexEntity, rawDoc: unknown): CodexEntity {
+  const rows = synthesizeStatRows(rawDoc);
+  if (rows.length === 0) return entity;
+  const body: BlockNode[] = [...rows, ...entity.body];
+  return { ...entity, body };
+}
+
 function rerouteToRitual(entity: CodexEntity, report: ReportFn): CodexEntity {
   const rerouted: CodexEntity = {
     ...entity,
@@ -146,7 +224,8 @@ export function loadHomebrewSide(
         seenIds,
       });
       if (!entity) continue; // defensive: mapCategory("spells","spell") never excludes
-      entities.push(hasRitual(rawDoc) ? rerouteToRitual(entity, report) : entity);
+      const withStats = withSynthesizedStats(entity, rawDoc);
+      entities.push(hasRitual(rawDoc) ? rerouteToRitual(withStats, report) : withStats);
     } catch (e) {
       if (e instanceof EnricherGrammarError || e instanceof FoundryHtmlError) {
         hardFailures.push({ path: file.relPath, message: e.message });

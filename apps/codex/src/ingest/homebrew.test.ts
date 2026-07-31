@@ -131,6 +131,108 @@ describe("loadHomebrewSide (D30-42)", () => {
     expect(plain?.id).toBe("spell/a-plain-spell");
   });
 
+  it("synthesizes ritual/cost statRows at the head of the body (resurrect shape: Cost/Secondary Casters row, then Primary Check/Secondary Checks row)", () => {
+    const dir = freshHomebrewDir();
+    const doc = ritualDoc("A Ritual");
+    (doc.system as Record<string, unknown>).cost = { value: "a 50 gp gem (consumed)" };
+    writeDoc(dir, "a-ritual", doc);
+    const { report } = collector();
+    const result = loadHomebrewSide(dir, new UuidIndex(), report, []);
+    const body = result.entities[0]?.body ?? [];
+    expect(body[0]).toEqual({
+      kind: "statRow",
+      cells: [
+        [
+          {
+            kind: "text",
+            content: "Cost",
+            marks: { bold: true, italic: false, superscript: false },
+          },
+          {
+            kind: "text",
+            content: " a 50 gp gem (consumed)",
+            marks: { bold: false, italic: false, superscript: false },
+          },
+        ],
+        [
+          {
+            kind: "text",
+            content: "Secondary Casters",
+            marks: { bold: true, italic: false, superscript: false },
+          },
+          {
+            kind: "text",
+            content: " 1",
+            marks: { bold: false, italic: false, superscript: false },
+          },
+        ],
+      ],
+    });
+    expect(body[1]).toEqual({
+      kind: "statRow",
+      cells: [
+        [
+          {
+            kind: "text",
+            content: "Primary Check",
+            marks: { bold: true, italic: false, superscript: false },
+          },
+          {
+            kind: "text",
+            content: " Arcana (expert)",
+            marks: { bold: false, italic: false, superscript: false },
+          },
+        ],
+        [
+          {
+            kind: "text",
+            content: "Secondary Checks",
+            marks: { bold: true, italic: false, superscript: false },
+          },
+          {
+            kind: "text",
+            content: " Crafting",
+            marks: { bold: false, italic: false, superscript: false },
+          },
+        ],
+      ],
+    });
+    // the parsed description follows the synthesized rows untouched
+    expect(body[2]?.kind).toBe("paragraph");
+  });
+
+  it("synthesizes a lone Cost as a bold-label PARAGRAPH (statRow.cells pins >=2) for a costed non-ritual spell, and nothing for a plain doc", () => {
+    const dir = freshHomebrewDir();
+    const costed = plainSpellDoc("A Costed Spell");
+    (costed.system as Record<string, unknown>).cost = { value: "special ink worth 15 gp" };
+    writeDoc(dir, "a-costed-spell", costed);
+    // empty-string cost (the store's own "no cost" shape) must synthesize nothing
+    const empty = plainSpellDoc("An Empty Cost");
+    (empty.system as Record<string, unknown>).cost = { value: "" };
+    writeDoc(dir, "an-empty-cost", empty);
+    writeDoc(dir, "a-plain-spell", plainSpellDoc("A Plain Spell"));
+    const { report } = collector();
+    const result = loadHomebrewSide(dir, new UuidIndex(), report, []);
+    const costedBody = result.entities.find((e) => e.slug === "a-costed-spell")?.body ?? [];
+    expect(costedBody[0]).toEqual({
+      kind: "paragraph",
+      children: [
+        { kind: "text", content: "Cost", marks: { bold: true, italic: false, superscript: false } },
+        {
+          kind: "text",
+          content: " special ink worth 15 gp",
+          marks: { bold: false, italic: false, superscript: false },
+        },
+      ],
+    });
+    expect(costedBody[1]?.kind).toBe("paragraph");
+    for (const slug of ["an-empty-cost", "a-plain-spell"]) {
+      const body = result.entities.find((e) => e.slug === slug)?.body ?? [];
+      expect(body[0]?.kind).toBe("paragraph");
+      expect(body.some((n) => n.kind === "statRow")).toBe(false);
+    }
+  });
+
   it("D30-46: slugMismatchCount increments exactly once per basename/sluggify(name) disagreement (possessive-apostrophe class)", () => {
     const dir = freshHomebrewDir();
     // sluggify() strips the apostrophe entirely ("almonks-drain"); the store
